@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
-- **Needs from user:** Register by 15 Oct. Capture an indoor space (e.g. home) with your phone following `deliverables/capture-sop.md` once published, and note your phone model (LiDAR or not).
-- **Risks:** _(lead fills)_
+- **Phase:** 1–4 in parallel (research fan-out · walking skeleton on Deep Blending *drjohnson*).
+- **Plan:** SOP first (gate) → E2E skeleton (Brush 3DGS on Metal → scene alignment → walkable grid + A* → Spark WASD viewer with POIs and paths) → contracts → ADR 001 → abstract.
+- **Doing:** 7 background research agents (several failed with model-API 408 timeouts because the shared machine's network is saturated; retried). Lead builds the skeleton.
+- **Next:** navigation geometry on drjohnson → viewer → eval numbers → architecture + ADR → abstract → thought node.
+- **Needs from user:** (1) Register by 15 Oct. (2) **Capture your home with [`deliverables/capture-sop.md`](deliverables/capture-sop.md)** (≈15–20 min; print [`deliverables/assets/marker_aruco_4x4_id0_150mm.pdf`](deliverables/assets/marker_aruco_4x4_id0_150mm.pdf) if you can) and note your phone model (LiDAR or not). (3) Azure GPU quota is 0 for modern GPU families: request a quota increase (e.g. 4–8 vCPU "Standard NCASv3_T4 Family" or 36 vCPU NVadsA10v5 in Central India/East US), or approve spot use, so CUDA-only tools (gsplat, nerfstudio, VGGT at scale) can run.
+- **Risks:** shared M5 is heavily loaded (training 2× slower than expected; network ~0.3 MB/s); no CUDA; public-dataset licences for hosting derived twins unverified.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Namma Space — Techfest IIT Bombay. Teams that complete the full pipeline including AR navigation are considered for full-time roles at Juspay. Prize pool ₹1,50,000 (top 3).
@@ -55,3 +55,11 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (p
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 05:25 IST — Phase 0 done; SOP v1.0 published; first splat trained
+- Brief re-read against `_briefs/namma-space.txt`. What we must show: R1 (31 Oct) a free-roam WASD web viewer of the user's own space + ≤5-page abstract + 3–5 min video + repo with test data; R2 (target 17 Nov) POI click + search + obstacle-aware floor paths; finals Day-1 capture→deploy under a time limit (speed and automation are scored indirectly in 4 of 6 criteria).
+- Compute check: Azure CLI works (VS Enterprise subscription) but GPU quota is 0 for T4/A10/A100/H100 families (`az vm list-usage`); only retired NC/NV families have quota. Decision: Apple-silicon tools tonight (Brush on Metal, pycolmap 4.2.1); CUDA ask under *Needs from user*.
+- Dataset: Deep Blending *drjohnson* (263 images, 1332×876, multi-room house) from the Hugging Face mirror `nvs-bench/deepblending` (Inria's server delivered ~6 KB/s). The mirror ships COLMAP poses (80,861 points, 0.56 px mean reprojection error, read with pycolmap).
+- Splat: Brush v0.3.0 (Metal), 15k steps, max 2M splats, eval split every 8th image → 2213.8 s wall-clock on the shared M5 (`/usr/bin/time`), 6.9 GB peak memory, 472 MB PLY. Reproduce: see `components/splat-training/README.md` (to be committed).
+- SOP v1.0 published: `deliverables/capture-sop.md`, with a printable ArUco scale marker (a detector self-test finds id 0). Novel SOP elements: voice tags → automatic POIs; the walked route used as walkable-space evidence; camera height as a fallback scale.
+- Research agents: 10 launched at 02:58; the companies, datasets, posing, web-viewer and social agents failed at 0 turns with model-API "408 timed out reading request body" (network saturation on the shared machine). Relaunched the capture, posing, web-viewer, datasets and social agents.
