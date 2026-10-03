@@ -10,12 +10,29 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
+- **Phase:** 1 — SOTA research (Phase 0 brief done; see *Phase 0 extraction* below).
+- **Plan (to 08:30 IST):** research fan-out (8 agents) → component map + typed contracts → per-component innovation scan + six hats / adversarial / first-principles on spike candidates → ADR 001 → walking skeleton + eval harness on public data + labelled synthetic child data → first autoresearch ratchet on the spike → proposal draft + architecture diagram → fact-check → push.
+- **Doing:** 8 background research agents: r1 official data (ASER/PARAKH/UDISE+/NIPUN/FLS) · r2 what is deployed today (VSK, Sunbird/cQube, state FLN apps, NGO/ed-tech) · r3 causal evidence (TaRL, diagnostic feedback, governance reform, data inflation) · r4 methods SOTA (IRT/CDM/CAT/linking/SAE/forensics/audits/ASR) · r5 governance & standards (NDEAR, APAAR, DPDP Rules, Ed-Fi/CASE) · r6 2025–26 news + X signal · r7 public datasets + fetch scripts · r8 international practice (Tusome/Tangerine, Ceará, Semáforo Escuela). Lead: drafting component map + contracts.
+- **Next:** landscape.md synthesis → components.md → per-component research → ADR 001 → skeleton.
 - **Needs from user:** Register by 15 Oct for one theme (after the 12 Oct selection). Teammates (≤4): names and skills.
-- **Risks:** _(lead fills)_
+- **Risks:** (1) public data granularity — PARAKH/ASER may not be downloadable below state/district level → mitigated by labelled synthetic child data calibrated to published aggregates; (2) "generic dashboard" trap — judges asked for a concrete architecture grounded in the datasets, so every component must name the dataset field it consumes; (3) hallucinated numbers — every number in deliverables must trace to `research/sources/*.md` or a committed run.
+
+## Phase 0 extraction (from `_briefs/india71.txt`, verified 4 Oct 02:10 IST)
+**Hard constraints**
+- Round 1 (due **1 Nov**): proposal ≤ **6 pages**, A4, 1-inch margins, Arial ≥ 11 pt, single PDF `India71_100_[Team ID].pdf`, via the official Google Form (no email). Sections: Team info · Problem identification · Evidence & context · Existing ecosystem · Proposed solution · Expected impact.
+- Expected: "a concrete technical architecture - a data pipeline, diagnostic or analytics engine, or decision-support platform - grounded in these existing datasets, and not a generic ed-tech pitch". Must engage with ≥ 1 of: (1) governance & standardisation, (2) point-of-use decision support, (3) policy-monitoring feedback loops.
+- Team ≤ 4, cross-institute OK, **one theme per team, fixed at registration (closes 15 Oct)**. Solutions must be original, "not protected by patents, copyrights, or publications". Queries only via the Techfest portal *Doubt* section.
+- Shortlist 8 Nov (top 10 per theme). Finals 16–18 Dec at IIT Bombay: 10-min presentation + 5-min jury Q&A covering problem validation & stakeholders, ecosystem, detailed solution, roadmap, feasibility, scalability, impact assessment.
+
+**Judging criterion → what we must be able to show**
+| Criterion | Evidence we must produce |
+|---|---|
+| Problem identification | One precise, *measurable* scorecard-vs-reality gap for a named underserved group, quantified from official + independent data (ASER 2024, PARAKH 2024, UDISE+). |
+| Evidence & context | Cited numbers from primary reports; causal evidence on what converts data into learning (TaRL, diagnostic-feedback RCTs, data-inflation audits). |
+| Existing-ecosystem analysis | Map of what is deployed (VSKs, UDISE+, DIKSHA/Sunbird, APAAR, state FLN apps, NGO tools) and *evidenced* reasons the gap persists. |
+| Proposed solution | Architecture diagram + typed component contracts + a working demo with real numbers; name the dataset field each component consumes. |
+| Feasibility & roadmap | Plugs into existing VSKs / Samagra Shiksha processes and staff (teacher, CRC, BRC, DIET, SMC); costed pilot → state → national path; risks. |
+| Impact & scalability | Beneficiaries counted from UDISE+; impact range from cited effect sizes; simulation with stated assumptions; scale via DPGs and VSKs. |
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** The India @71/100 Challenge — Techfest IIT Bombay. Prize pool ₹1,00,000.
@@ -59,3 +76,6 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (t
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 02:50 IST — Phase 0 done; Phase 1 fan-out
+Read PLAYBOOK, the seeded brief and `_briefs/india71.txt`; extracted hard constraints and the criterion → evidence map (above). Toolchain checked: Python 3.11, uv, pdftotext, numpy/pandas/scipy/sklearn/pydantic; Azure subscription enabled (not needed yet). Launched 8 background research agents (r1–r8, see *Now*). Assumption (overnight, no user input): we engage all three engagement areas, with governance/standardisation as the spine, because it is what makes the other two trustworthy; to be confirmed by ADR 001.
