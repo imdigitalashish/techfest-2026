@@ -1,0 +1,41 @@
+{
+  "properties": {
+    "sensor_estimated_kg": {
+      "title": "Sensor Estimated Kg",
+      "type": "number"
+    },
+    "claimed_kg": {
+      "title": "Claimed Kg",
+      "type": "number"
+    },
+    "ratio": {
+      "title": "Ratio",
+      "type": "number"
+    },
+    "flag": {
+      "enum": [
+        "ok",
+        "review",
+        "reject"
+      ],
+      "title": "Flag",
+      "type": "string"
+    },
+    "reasons": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Reasons",
+      "type": "array"
+    }
+  },
+  "required": [
+    "sensor_estimated_kg",
+    "claimed_kg",
+    "ratio",
+    "flag"
+  ],
+  "title": "Reconciliation",
+  "type": "object"
+}

@@ -1,0 +1,112 @@
+{
+  "$defs": {
+    "Detection": {
+      "properties": {
+        "bbox_xyxy": {
+          "description": "pixels, image coordinates",
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Bbox Xyxy",
+          "type": "array"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Score",
+          "type": "number"
+        }
+      },
+      "required": [
+        "bbox_xyxy",
+        "label",
+        "score"
+      ],
+      "title": "Detection",
+      "type": "object"
+    }
+  },
+  "description": "C5 output for one frame.",
+  "properties": {
+    "frame_id": {
+      "title": "Frame Id",
+      "type": "string"
+    },
+    "t": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "T"
+    },
+    "image_wh": {
+      "maxItems": 2,
+      "minItems": 2,
+      "prefixItems": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "integer"
+        }
+      ],
+      "title": "Image Wh",
+      "type": "array"
+    },
+    "detections": {
+      "items": {
+        "$ref": "#/$defs/Detection"
+      },
+      "title": "Detections",
+      "type": "array"
+    },
+    "model_id": {
+      "description": "weights name + git sha / file hash",
+      "title": "Model Id",
+      "type": "string"
+    },
+    "latency_ms": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latency Ms"
+    }
+  },
+  "required": [
+    "frame_id",
+    "image_wh",
+    "detections",
+    "model_id"
+  ],
+  "title": "FrameDetections",
+  "type": "object"
+}

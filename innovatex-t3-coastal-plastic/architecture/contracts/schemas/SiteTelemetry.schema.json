@@ -1,0 +1,293 @@
+{
+  "$defs": {
+    "FillEstimate": {
+      "properties": {
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "t": {
+          "format": "date-time",
+          "title": "T",
+          "type": "string"
+        },
+        "fill_fraction": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Fill Fraction",
+          "type": "number"
+        },
+        "covered_area_m2": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Covered Area M2"
+        },
+        "method": {
+          "enum": [
+            "camera_segmentation",
+            "range_sensor",
+            "fused",
+            "simulated"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "site_id",
+        "t",
+        "fill_fraction",
+        "method",
+        "confidence",
+        "provenance"
+      ],
+      "title": "FillEstimate",
+      "type": "object"
+    },
+    "FluxEstimate": {
+      "description": "C6 output: items crossing the counting line in a window, converted to mass.",
+      "properties": {
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "t_start": {
+          "format": "date-time",
+          "title": "T Start",
+          "type": "string"
+        },
+        "t_end": {
+          "format": "date-time",
+          "title": "T End",
+          "type": "string"
+        },
+        "items_crossed": {
+          "minimum": 0,
+          "title": "Items Crossed",
+          "type": "integer"
+        },
+        "items_per_min": {
+          "minimum": 0,
+          "title": "Items Per Min",
+          "type": "number"
+        },
+        "by_label": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "default": {},
+          "title": "By Label",
+          "type": "object"
+        },
+        "est_kg": {
+          "minimum": 0,
+          "title": "Est Kg",
+          "type": "number"
+        },
+        "est_kg_ci90": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Est Kg Ci90",
+          "type": "array"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "site_id",
+        "t_start",
+        "t_end",
+        "items_crossed",
+        "items_per_min",
+        "est_kg",
+        "est_kg_ci90",
+        "method",
+        "provenance"
+      ],
+      "title": "FluxEstimate",
+      "type": "object"
+    },
+    "Provenance": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "observed",
+            "reanalysis",
+            "forecast",
+            "harmonic_prediction",
+            "model_output",
+            "simulated",
+            "synthetic",
+            "assumption"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+          "title": "Source",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "description": "C8: message from an edge node (MQTT/HTTPS JSON). Twin output must set simulated=True.",
+  "properties": {
+    "schema_version": {
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "site_id": {
+      "title": "Site Id",
+      "type": "string"
+    },
+    "t": {
+      "format": "date-time",
+      "title": "T",
+      "type": "string"
+    },
+    "simulated": {
+      "title": "Simulated",
+      "type": "boolean"
+    },
+    "battery_v": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Battery V"
+    },
+    "solar_w": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Solar W"
+    },
+    "water_level_m": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Water Level M"
+    },
+    "rain_mm_last_h": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rain Mm Last H"
+    },
+    "fill": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FillEstimate"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "flux": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FluxEstimate"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "health": {
+      "description": "e.g. lens_dirty, low_battery, tamper",
+      "items": {
+        "type": "string"
+      },
+      "title": "Health",
+      "type": "array"
+    }
+  },
+  "required": [
+    "site_id",
+    "t",
+    "simulated"
+  ],
+  "title": "SiteTelemetry",
+  "type": "object"
+}

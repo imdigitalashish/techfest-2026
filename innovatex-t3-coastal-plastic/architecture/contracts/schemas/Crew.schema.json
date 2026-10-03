@@ -1,0 +1,38 @@
+{
+  "properties": {
+    "crew_id": {
+      "title": "Crew Id",
+      "type": "string"
+    },
+    "base_site_id": {
+      "title": "Base Site Id",
+      "type": "string"
+    },
+    "shift_start_h": {
+      "description": "local IST hour",
+      "maximum": 23,
+      "minimum": 0,
+      "title": "Shift Start H",
+      "type": "integer"
+    },
+    "shift_hours": {
+      "exclusiveMinimum": 0,
+      "title": "Shift Hours",
+      "type": "number"
+    },
+    "clear_rate_kg_per_h": {
+      "exclusiveMinimum": 0,
+      "title": "Clear Rate Kg Per H",
+      "type": "number"
+    }
+  },
+  "required": [
+    "crew_id",
+    "base_site_id",
+    "shift_start_h",
+    "shift_hours",
+    "clear_rate_kg_per_h"
+  ],
+  "title": "Crew",
+  "type": "object"
+}

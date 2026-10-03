@@ -1,0 +1,82 @@
+{
+  "$defs": {
+    "Assignment": {
+      "properties": {
+        "crew_id": {
+          "title": "Crew Id",
+          "type": "string"
+        },
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "expected_cleared_kg": {
+          "minimum": 0,
+          "title": "Expected Cleared Kg",
+          "type": "number"
+        },
+        "reason": {
+          "default": "",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "crew_id",
+        "site_id",
+        "start",
+        "end",
+        "expected_cleared_kg"
+      ],
+      "title": "Assignment",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "issued_at": {
+      "format": "date-time",
+      "title": "Issued At",
+      "type": "string"
+    },
+    "policy_id": {
+      "title": "Policy Id",
+      "type": "string"
+    },
+    "assignments": {
+      "items": {
+        "$ref": "#/$defs/Assignment"
+      },
+      "title": "Assignments",
+      "type": "array"
+    },
+    "objective": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Objective",
+      "type": "object"
+    }
+  },
+  "required": [
+    "plan_id",
+    "issued_at",
+    "policy_id",
+    "assignments"
+  ],
+  "title": "DispatchPlan",
+  "type": "object"
+}

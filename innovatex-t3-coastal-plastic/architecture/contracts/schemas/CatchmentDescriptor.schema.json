@@ -1,0 +1,106 @@
+{
+  "$defs": {
+    "Provenance": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "observed",
+            "reanalysis",
+            "forecast",
+            "harmonic_prediction",
+            "model_output",
+            "simulated",
+            "synthetic",
+            "assumption"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+          "title": "Source",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "area_km2": {
+      "exclusiveMinimum": 0,
+      "title": "Area Km2",
+      "type": "number"
+    },
+    "population": {
+      "minimum": 0,
+      "title": "Population",
+      "type": "integer"
+    },
+    "informal_settlement_fraction": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Informal Settlement Fraction",
+      "type": "number"
+    },
+    "waste_collection_coverage": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Waste Collection Coverage",
+      "type": "number"
+    },
+    "runoff_coefficient": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Runoff Coefficient",
+      "type": "number"
+    },
+    "wards": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Wards",
+      "type": "array"
+    },
+    "provenance": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Provenance"
+      },
+      "description": "per-field provenance",
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "required": [
+    "area_km2",
+    "population",
+    "informal_settlement_fraction",
+    "waste_collection_coverage",
+    "runoff_coefficient"
+  ],
+  "title": "CatchmentDescriptor",
+  "type": "object"
+}

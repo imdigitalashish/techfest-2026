@@ -1,0 +1,188 @@
+{
+  "$defs": {
+    "CatchmentDescriptor": {
+      "properties": {
+        "area_km2": {
+          "exclusiveMinimum": 0,
+          "title": "Area Km2",
+          "type": "number"
+        },
+        "population": {
+          "minimum": 0,
+          "title": "Population",
+          "type": "integer"
+        },
+        "informal_settlement_fraction": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Informal Settlement Fraction",
+          "type": "number"
+        },
+        "waste_collection_coverage": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Waste Collection Coverage",
+          "type": "number"
+        },
+        "runoff_coefficient": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Runoff Coefficient",
+          "type": "number"
+        },
+        "wards": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Wards",
+          "type": "array"
+        },
+        "provenance": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Provenance"
+          },
+          "description": "per-field provenance",
+          "title": "Provenance",
+          "type": "object"
+        }
+      },
+      "required": [
+        "area_km2",
+        "population",
+        "informal_settlement_fraction",
+        "waste_collection_coverage",
+        "runoff_coefficient"
+      ],
+      "title": "CatchmentDescriptor",
+      "type": "object"
+    },
+    "Provenance": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "observed",
+            "reanalysis",
+            "forecast",
+            "harmonic_prediction",
+            "model_output",
+            "simulated",
+            "synthetic",
+            "assumption"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+          "title": "Source",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "site_id": {
+      "title": "Site Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "lat": {
+      "maximum": 90,
+      "minimum": -90,
+      "title": "Lat",
+      "type": "number"
+    },
+    "lon": {
+      "maximum": 180,
+      "minimum": -180,
+      "title": "Lon",
+      "type": "number"
+    },
+    "waterbody": {
+      "title": "Waterbody",
+      "type": "string"
+    },
+    "outfall_type": {
+      "enum": [
+        "nullah_outfall",
+        "river_mouth",
+        "creek",
+        "beach"
+      ],
+      "title": "Outfall Type",
+      "type": "string"
+    },
+    "tidal": {
+      "title": "Tidal",
+      "type": "boolean"
+    },
+    "channel_width_m": {
+      "exclusiveMinimum": 0,
+      "title": "Channel Width M",
+      "type": "number"
+    },
+    "boom_length_m": {
+      "minimum": 0,
+      "title": "Boom Length M",
+      "type": "number"
+    },
+    "boom_capacity_m3": {
+      "minimum": 0,
+      "title": "Boom Capacity M3",
+      "type": "number"
+    },
+    "catchment": {
+      "$ref": "#/$defs/CatchmentDescriptor"
+    },
+    "provenance": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Provenance"
+      },
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "required": [
+    "site_id",
+    "name",
+    "lat",
+    "lon",
+    "waterbody",
+    "outfall_type",
+    "tidal",
+    "channel_width_m",
+    "boom_length_m",
+    "boom_capacity_m3",
+    "catchment"
+  ],
+  "title": "Site",
+  "type": "object"
+}

@@ -1,0 +1,42 @@
+{
+  "properties": {
+    "bbox_xyxy": {
+      "description": "pixels, image coordinates",
+      "maxItems": 4,
+      "minItems": 4,
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "title": "Bbox Xyxy",
+      "type": "array"
+    },
+    "label": {
+      "title": "Label",
+      "type": "string"
+    },
+    "score": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Score",
+      "type": "number"
+    }
+  },
+  "required": [
+    "bbox_xyxy",
+    "label",
+    "score"
+  ],
+  "title": "Detection",
+  "type": "object"
+}

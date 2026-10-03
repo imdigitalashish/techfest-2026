@@ -1,0 +1,148 @@
+{
+  "$defs": {
+    "Provenance": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "observed",
+            "reanalysis",
+            "forecast",
+            "harmonic_prediction",
+            "model_output",
+            "simulated",
+            "synthetic",
+            "assumption"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+          "title": "Source",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "description": "C4 output: hourly mass balance at the barrier (kg).\nInvariant: arrived = captured + escaped_entrainment + escaped_overtopping + escaped_bypass;\nstored(t) = stored(t-1) + captured - refloated - cleared >= 0.",
+  "properties": {
+    "site_id": {
+      "title": "Site Id",
+      "type": "string"
+    },
+    "t": {
+      "items": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "title": "T",
+      "type": "array"
+    },
+    "arrived_kg": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Arrived Kg",
+      "type": "array"
+    },
+    "captured_kg": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Captured Kg",
+      "type": "array"
+    },
+    "escaped_entrainment_kg": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Escaped Entrainment Kg",
+      "type": "array"
+    },
+    "escaped_overtopping_kg": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Escaped Overtopping Kg",
+      "type": "array"
+    },
+    "escaped_bypass_kg": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Escaped Bypass Kg",
+      "type": "array"
+    },
+    "refloated_kg": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Refloated Kg",
+      "type": "array"
+    },
+    "cleared_kg": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Cleared Kg",
+      "type": "array"
+    },
+    "stored_kg": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Stored Kg",
+      "type": "array"
+    },
+    "fill_fraction": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Fill Fraction",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "site_id",
+    "t",
+    "arrived_kg",
+    "captured_kg",
+    "escaped_entrainment_kg",
+    "escaped_overtopping_kg",
+    "escaped_bypass_kg",
+    "refloated_kg",
+    "cleared_kg",
+    "stored_kg",
+    "fill_fraction",
+    "provenance"
+  ],
+  "title": "InterceptorSeries",
+  "type": "object"
+}

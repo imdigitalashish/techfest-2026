@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
-- **Needs from user:** Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Hardware purchases for the prototype come later.
-- **Risks:** _(lead fills)_
+- **Phase:** 1–4 in parallel (research fan-out + walking skeleton), since 02:10 IST 4 Oct.
+- **Plan (working hypothesis, ADR 001 pending):** target source = single-use flexible plastics (carry bags, sachets/MLP, thermocol, bottles) from dense settlements and markets that enter nullahs and leak at tidal outfalls into Mahim / Malad / Mahul creeks. System = a *measured, tide-aware interception network*: (1) flood-safe, tide-aware boom/trap at nullah outfalls; (2) solar camera node counting plastic flux + boom fill; (3) forecast- and tide-aware clearance dispatch; (4) tamper-evident MRV ledger → pay contractors per verified kg, route catch to recycling/co-processing (EPR); (5) ward hotspot feedback for source reduction. Spike candidates: vision flux sensing (C5/C6), forecast+tide-aware dispatch (C9/C10), MRV anti-fraud reconciliation (C11).
+- **Doing:** child sessions — *T3 detection + flux* (C5/C6 + autoresearch), *T3 digital twin + dispatch* (C1–C4, C9–C10 + autoresearch), *T3 dashboard + MRV ledger* (C11, C12), *T3 research: Mumbai + policy*, *T3 research: tech + companies*. Lead: contracts, components.md, ADR 001, selection memo, deliverables.
+- **Next:** push contracts → components.md → per-component research → ADR 001 (six hats + adversarial) → zonal-pitch.md + prototype-plan.md → integrate child results → push by 08:30.
+- **Needs from user:** decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Nothing blocks tonight's work.
+- **Risks:** (1) model-API congestion (HTTP 408) killed 13 research sub-agents overnight → work moved to resumable child sessions with small-context rules; tool round-trips take 5–8 min. (2) No public imagery of Mumbai nullahs → detector metrics are on a public proxy dataset; domain shift (black water, hyacinth, monsoon rain) is a known gap. (3) Simulator parameters are partly ASSUMPTION → we claim *relative* policy gains under Monte Carlo, not absolute tonnage.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** InnovateX: The Future Habitats Challenge — Techfest IIT Bombay. Prize pool ₹80,000; top 3 teams per theme.
@@ -37,12 +37,31 @@
 - Policy: Plastic Waste Management Rules and Extended Producer Responsibility (EPR).
 - What companies ship: river-interception and waste-tracking startups — check recent deployments.
 
+## Phase 0 — what we must be able to show (from the official statement)
+- **Hard constraints:** team ≤ 4 students; one theme per team; original work (not patented/published); Round 1 = in-person 10-min pitch at the zonal, nothing to upload; Round 2 = report + *working prototype* by 1 Dec; finals 15–18 Dec at IIT Bombay.
+- **Judging → evidence:** novelty → spike with a measured gain over the status quo · functionality under tides/monsoon/corrosion → twin driven by real 2019–2025 tide + rain, flume prototype, dashboard · cost & market → BOM with sourced prices, ₹/tonne vs today, revenue levers (EPR, verified contractor payment) · feasibility → power budget for monsoon insolation, maintenance and calibration plan · scalability → per-site config over fixed contracts; other coastal cities · impact → kg diverted with uncertainty, overflow hours avoided · design & ergonomics → ward-engineer dashboard + crew view · **bonus** → Mumbai specifics (BRIMSTOWAD outfalls, high-tide days, Mithi, booms, desilting probe).
+
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 03:00 — Research and builds run in child sessions (resumable) rather than sub-agents after repeated HTTP 408 failures.
+- 2026-10-04 05:10 — Contracts v0.1 (`architecture/contracts/contracts.py`, pydantic v2) fix every component's I/O; children build behind them.
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| C1 | Forcing (tide + rain) | site, period → `ForcingSeries` | Open-Meteo ERA5 rain; tide source TBD | – | building | tide RMSE vs gauge |
+| C2 | Catchment plastic load | rain, catchment → `LoadSeries` | build-up / wash-off model | – | building | NSE vs boom catch (needs field data) |
+| C3 | Outfall hydraulics | rain, tide → `HydraulicSeries` | rational method + tidal stage | – | building | — |
+| C4 | Interceptor model | load, hydraulics → `InterceptorSeries` | fixed-efficiency boom | candidate (tide-aware trap) | building | capture efficiency vs flume |
+| C5 | Vision detector | frame → `FrameDetections` | YOLO11n | candidate | building | held-out mAP50 |
+| C6 | Flux counter | detections → `FluxEstimate` | ByteTrack + line crossing | candidate | building | count error % |
+| C7 | Fill estimator | frame + range → `FillEstimate` | ultrasonic / ToF range | – | planned | fill MAE |
+| C8 | Edge telemetry | sensors → `SiteTelemetry` | MQTT over 4G / NB-IoT | – | planned | delivery rate, bytes/day |
+| C9 | Risk forecaster | rain fcst, tide, fill → `SiteForecast` | rain-threshold rule | candidate | building | Brier score |
+| C10 | Dispatch planner | states, forecasts, crews → `DispatchPlan` | fixed schedule (status quo) | candidate | building | escaped kg at equal crew-hours |
+| C11 | MRV ledger | clearance records → `LedgerEntry` | manual weighbridge slips | candidate | building | inflated-claim recall at ≤5% false flags |
+| C12 | Dashboard | `DashboardBundle` → UI | — | – | building | task time (later) |
+| C13 | Recovery & upcycling | `CatchComposition` → `RecoveryRoute` | kabadiwala + co-processing | – | planned | ₹/t, diversion rate |
+| C14 | Source attribution | outfall flux + catchments → `WardHotspot` | ward complaints | – | planned | rank correlation (sim) |
 
 ## Selection memo
 _First version due in the morning package (08:30 IST, 4 Oct); final by 7 Oct, 12:00 IST (one theme is pitched at the Delhi zonal on 10 Oct). Score each 1–5 with one line of evidence._
@@ -57,3 +76,9 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 7 Oct, 12
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 02:10–05:15 IST — Phase 0 done; research fan-out; builds launched
+- Read PLAYBOOK, seeded brief and the official statement; extracted constraints and judging → evidence (above).
+- Launched 8 research sub-agents, then 7 narrower ones; 13 died with HTTP 408 ("timed out reading request body") as contexts grew — a machine-wide API congestion problem (sibling projects' agents failed the same way). Partial notes survived in `research/` (e.g. BRIMSTOWAD outfall counts) but lack source URLs, so they must be re-verified before use.
+- Switched to 5 resumable child sessions (detection, twin + dispatch, dashboard + MRV, two research compilers) with small-context rules and a 07:45 IST results deadline.
+- Wrote contracts v0.1 for C1–C14.

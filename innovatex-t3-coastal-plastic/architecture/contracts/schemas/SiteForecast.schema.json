@@ -1,0 +1,106 @@
+{
+  "$defs": {
+    "Provenance": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "observed",
+            "reanalysis",
+            "forecast",
+            "harmonic_prediction",
+            "model_output",
+            "simulated",
+            "synthetic",
+            "assumption"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+          "title": "Source",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "site_id": {
+      "title": "Site Id",
+      "type": "string"
+    },
+    "issued_at": {
+      "format": "date-time",
+      "title": "Issued At",
+      "type": "string"
+    },
+    "horizon_h": {
+      "exclusiveMinimum": 0,
+      "title": "Horizon H",
+      "type": "integer"
+    },
+    "p_overflow": {
+      "description": "P(barrier overflows or must release within horizon)",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "P Overflow",
+      "type": "number"
+    },
+    "expected_arrival_kg": {
+      "minimum": 0,
+      "title": "Expected Arrival Kg",
+      "type": "number"
+    },
+    "expected_fill_fraction": {
+      "minimum": 0,
+      "title": "Expected Fill Fraction",
+      "type": "number"
+    },
+    "drivers": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "e.g. rain_mm_next_24h, max_tide_m",
+      "title": "Drivers",
+      "type": "object"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "site_id",
+    "issued_at",
+    "horizon_h",
+    "p_overflow",
+    "expected_arrival_kg",
+    "expected_fill_fraction",
+    "provenance"
+  ],
+  "title": "SiteForecast",
+  "type": "object"
+}

@@ -1,0 +1,92 @@
+{
+  "$defs": {
+    "Provenance": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "observed",
+            "reanalysis",
+            "forecast",
+            "harmonic_prediction",
+            "model_output",
+            "simulated",
+            "synthetic",
+            "assumption"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+          "title": "Source",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "description": "C2 output: plastic arriving at the outfall per hour (before interception).",
+  "properties": {
+    "site_id": {
+      "title": "Site Id",
+      "type": "string"
+    },
+    "t": {
+      "items": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "title": "T",
+      "type": "array"
+    },
+    "items_per_h": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Items Per H",
+      "type": "array"
+    },
+    "kg_per_h": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Kg Per H",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "site_id",
+    "t",
+    "items_per_h",
+    "kg_per_h",
+    "provenance"
+  ],
+  "title": "LoadSeries",
+  "type": "object"
+}

@@ -1,0 +1,101 @@
+{
+  "$defs": {
+    "Provenance": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "observed",
+            "reanalysis",
+            "forecast",
+            "harmonic_prediction",
+            "model_output",
+            "simulated",
+            "synthetic",
+            "assumption"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+          "title": "Source",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "description": "C3 output: flow state at the boom line.",
+  "properties": {
+    "site_id": {
+      "title": "Site Id",
+      "type": "string"
+    },
+    "t": {
+      "items": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "title": "T",
+      "type": "array"
+    },
+    "discharge_m3s": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Discharge M3S",
+      "type": "array"
+    },
+    "surface_velocity_ms": {
+      "description": "signed: + seaward (ebb/outflow), - landward (flood tide)",
+      "items": {
+        "type": "number"
+      },
+      "title": "Surface Velocity Ms",
+      "type": "array"
+    },
+    "water_level_m": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Water Level M",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "site_id",
+    "t",
+    "discharge_m3s",
+    "surface_velocity_ms",
+    "water_level_m",
+    "provenance"
+  ],
+  "title": "HydraulicSeries",
+  "type": "object"
+}

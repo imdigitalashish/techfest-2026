@@ -1,0 +1,105 @@
+{
+  "$defs": {
+    "Provenance": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "observed",
+            "reanalysis",
+            "forecast",
+            "harmonic_prediction",
+            "model_output",
+            "simulated",
+            "synthetic",
+            "assumption"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+          "title": "Source",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "description": "C1 output: hourly environmental forcing at a site (real data, labelled).",
+  "properties": {
+    "site_id": {
+      "title": "Site Id",
+      "type": "string"
+    },
+    "t": {
+      "items": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "title": "T",
+      "type": "array"
+    },
+    "rain_mm_h": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Rain Mm H",
+      "type": "array"
+    },
+    "tide_m": {
+      "items": {
+        "type": "number"
+      },
+      "title": "Tide M",
+      "type": "array"
+    },
+    "tide_datum": {
+      "enum": [
+        "CD",
+        "MSL"
+      ],
+      "title": "Tide Datum",
+      "type": "string"
+    },
+    "rain_provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "tide_provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "site_id",
+    "t",
+    "rain_mm_h",
+    "tide_m",
+    "tide_datum",
+    "rain_provenance",
+    "tide_provenance"
+  ],
+  "title": "ForcingSeries",
+  "type": "object"
+}

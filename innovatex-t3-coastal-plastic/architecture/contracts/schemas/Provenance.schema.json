@@ -1,0 +1,47 @@
+{
+  "properties": {
+    "kind": {
+      "enum": [
+        "observed",
+        "reanalysis",
+        "forecast",
+        "harmonic_prediction",
+        "model_output",
+        "simulated",
+        "synthetic",
+        "assumption"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "source": {
+      "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+      "title": "Source",
+      "type": "string"
+    },
+    "retrieved_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Retrieved At"
+    },
+    "notes": {
+      "default": "",
+      "title": "Notes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "kind",
+    "source"
+  ],
+  "title": "Provenance",
+  "type": "object"
+}

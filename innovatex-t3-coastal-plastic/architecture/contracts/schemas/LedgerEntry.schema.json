@@ -1,0 +1,169 @@
+{
+  "$defs": {
+    "ClearanceRecord": {
+      "properties": {
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "crew_id": {
+          "title": "Crew Id",
+          "type": "string"
+        },
+        "t_start": {
+          "format": "date-time",
+          "title": "T Start",
+          "type": "string"
+        },
+        "t_end": {
+          "format": "date-time",
+          "title": "T End",
+          "type": "string"
+        },
+        "claimed_wet_kg": {
+          "description": "what the contractor/crew reports",
+          "minimum": 0,
+          "title": "Claimed Wet Kg",
+          "type": "number"
+        },
+        "weighbridge_wet_kg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Weighbridge Wet Kg"
+        },
+        "pre_fill_fraction": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pre Fill Fraction"
+        },
+        "post_fill_fraction": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Post Fill Fraction"
+        },
+        "photo_sha256": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Photo Sha256",
+          "type": "array"
+        },
+        "gps_track_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gps Track Sha256"
+        }
+      },
+      "required": [
+        "site_id",
+        "crew_id",
+        "t_start",
+        "t_end",
+        "claimed_wet_kg"
+      ],
+      "title": "ClearanceRecord",
+      "type": "object"
+    },
+    "Reconciliation": {
+      "properties": {
+        "sensor_estimated_kg": {
+          "title": "Sensor Estimated Kg",
+          "type": "number"
+        },
+        "claimed_kg": {
+          "title": "Claimed Kg",
+          "type": "number"
+        },
+        "ratio": {
+          "title": "Ratio",
+          "type": "number"
+        },
+        "flag": {
+          "enum": [
+            "ok",
+            "review",
+            "reject"
+          ],
+          "title": "Flag",
+          "type": "string"
+        },
+        "reasons": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "sensor_estimated_kg",
+        "claimed_kg",
+        "ratio",
+        "flag"
+      ],
+      "title": "Reconciliation",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "seq": {
+      "minimum": 0,
+      "title": "Seq",
+      "type": "integer"
+    },
+    "record": {
+      "$ref": "#/$defs/ClearanceRecord"
+    },
+    "reconciliation": {
+      "$ref": "#/$defs/Reconciliation"
+    },
+    "prev_hash": {
+      "title": "Prev Hash",
+      "type": "string"
+    },
+    "hash": {
+      "description": "sha256 over canonical JSON of (seq, record, reconciliation, prev_hash)",
+      "title": "Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "seq",
+    "record",
+    "reconciliation",
+    "prev_hash",
+    "hash"
+  ],
+  "title": "LedgerEntry",
+  "type": "object"
+}

@@ -1,0 +1,997 @@
+{
+  "$defs": {
+    "Assignment": {
+      "properties": {
+        "crew_id": {
+          "title": "Crew Id",
+          "type": "string"
+        },
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "start": {
+          "format": "date-time",
+          "title": "Start",
+          "type": "string"
+        },
+        "end": {
+          "format": "date-time",
+          "title": "End",
+          "type": "string"
+        },
+        "expected_cleared_kg": {
+          "minimum": 0,
+          "title": "Expected Cleared Kg",
+          "type": "number"
+        },
+        "reason": {
+          "default": "",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "crew_id",
+        "site_id",
+        "start",
+        "end",
+        "expected_cleared_kg"
+      ],
+      "title": "Assignment",
+      "type": "object"
+    },
+    "CatchmentDescriptor": {
+      "properties": {
+        "area_km2": {
+          "exclusiveMinimum": 0,
+          "title": "Area Km2",
+          "type": "number"
+        },
+        "population": {
+          "minimum": 0,
+          "title": "Population",
+          "type": "integer"
+        },
+        "informal_settlement_fraction": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Informal Settlement Fraction",
+          "type": "number"
+        },
+        "waste_collection_coverage": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Waste Collection Coverage",
+          "type": "number"
+        },
+        "runoff_coefficient": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Runoff Coefficient",
+          "type": "number"
+        },
+        "wards": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Wards",
+          "type": "array"
+        },
+        "provenance": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Provenance"
+          },
+          "description": "per-field provenance",
+          "title": "Provenance",
+          "type": "object"
+        }
+      },
+      "required": [
+        "area_km2",
+        "population",
+        "informal_settlement_fraction",
+        "waste_collection_coverage",
+        "runoff_coefficient"
+      ],
+      "title": "CatchmentDescriptor",
+      "type": "object"
+    },
+    "ClearanceRecord": {
+      "properties": {
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "crew_id": {
+          "title": "Crew Id",
+          "type": "string"
+        },
+        "t_start": {
+          "format": "date-time",
+          "title": "T Start",
+          "type": "string"
+        },
+        "t_end": {
+          "format": "date-time",
+          "title": "T End",
+          "type": "string"
+        },
+        "claimed_wet_kg": {
+          "description": "what the contractor/crew reports",
+          "minimum": 0,
+          "title": "Claimed Wet Kg",
+          "type": "number"
+        },
+        "weighbridge_wet_kg": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Weighbridge Wet Kg"
+        },
+        "pre_fill_fraction": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pre Fill Fraction"
+        },
+        "post_fill_fraction": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Post Fill Fraction"
+        },
+        "photo_sha256": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Photo Sha256",
+          "type": "array"
+        },
+        "gps_track_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Gps Track Sha256"
+        }
+      },
+      "required": [
+        "site_id",
+        "crew_id",
+        "t_start",
+        "t_end",
+        "claimed_wet_kg"
+      ],
+      "title": "ClearanceRecord",
+      "type": "object"
+    },
+    "DispatchPlan": {
+      "properties": {
+        "plan_id": {
+          "title": "Plan Id",
+          "type": "string"
+        },
+        "issued_at": {
+          "format": "date-time",
+          "title": "Issued At",
+          "type": "string"
+        },
+        "policy_id": {
+          "title": "Policy Id",
+          "type": "string"
+        },
+        "assignments": {
+          "items": {
+            "$ref": "#/$defs/Assignment"
+          },
+          "title": "Assignments",
+          "type": "array"
+        },
+        "objective": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Objective",
+          "type": "object"
+        }
+      },
+      "required": [
+        "plan_id",
+        "issued_at",
+        "policy_id",
+        "assignments"
+      ],
+      "title": "DispatchPlan",
+      "type": "object"
+    },
+    "FillEstimate": {
+      "properties": {
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "t": {
+          "format": "date-time",
+          "title": "T",
+          "type": "string"
+        },
+        "fill_fraction": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Fill Fraction",
+          "type": "number"
+        },
+        "covered_area_m2": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Covered Area M2"
+        },
+        "method": {
+          "enum": [
+            "camera_segmentation",
+            "range_sensor",
+            "fused",
+            "simulated"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "site_id",
+        "t",
+        "fill_fraction",
+        "method",
+        "confidence",
+        "provenance"
+      ],
+      "title": "FillEstimate",
+      "type": "object"
+    },
+    "FluxEstimate": {
+      "description": "C6 output: items crossing the counting line in a window, converted to mass.",
+      "properties": {
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "t_start": {
+          "format": "date-time",
+          "title": "T Start",
+          "type": "string"
+        },
+        "t_end": {
+          "format": "date-time",
+          "title": "T End",
+          "type": "string"
+        },
+        "items_crossed": {
+          "minimum": 0,
+          "title": "Items Crossed",
+          "type": "integer"
+        },
+        "items_per_min": {
+          "minimum": 0,
+          "title": "Items Per Min",
+          "type": "number"
+        },
+        "by_label": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "default": {},
+          "title": "By Label",
+          "type": "object"
+        },
+        "est_kg": {
+          "minimum": 0,
+          "title": "Est Kg",
+          "type": "number"
+        },
+        "est_kg_ci90": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Est Kg Ci90",
+          "type": "array"
+        },
+        "method": {
+          "title": "Method",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "site_id",
+        "t_start",
+        "t_end",
+        "items_crossed",
+        "items_per_min",
+        "est_kg",
+        "est_kg_ci90",
+        "method",
+        "provenance"
+      ],
+      "title": "FluxEstimate",
+      "type": "object"
+    },
+    "ForcingSeries": {
+      "description": "C1 output: hourly environmental forcing at a site (real data, labelled).",
+      "properties": {
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "t": {
+          "items": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "title": "T",
+          "type": "array"
+        },
+        "rain_mm_h": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Rain Mm H",
+          "type": "array"
+        },
+        "tide_m": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Tide M",
+          "type": "array"
+        },
+        "tide_datum": {
+          "enum": [
+            "CD",
+            "MSL"
+          ],
+          "title": "Tide Datum",
+          "type": "string"
+        },
+        "rain_provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "tide_provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "site_id",
+        "t",
+        "rain_mm_h",
+        "tide_m",
+        "tide_datum",
+        "rain_provenance",
+        "tide_provenance"
+      ],
+      "title": "ForcingSeries",
+      "type": "object"
+    },
+    "InterceptorSeries": {
+      "description": "C4 output: hourly mass balance at the barrier (kg).\nInvariant: arrived = captured + escaped_entrainment + escaped_overtopping + escaped_bypass;\nstored(t) = stored(t-1) + captured - refloated - cleared >= 0.",
+      "properties": {
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "t": {
+          "items": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "title": "T",
+          "type": "array"
+        },
+        "arrived_kg": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Arrived Kg",
+          "type": "array"
+        },
+        "captured_kg": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Captured Kg",
+          "type": "array"
+        },
+        "escaped_entrainment_kg": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Escaped Entrainment Kg",
+          "type": "array"
+        },
+        "escaped_overtopping_kg": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Escaped Overtopping Kg",
+          "type": "array"
+        },
+        "escaped_bypass_kg": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Escaped Bypass Kg",
+          "type": "array"
+        },
+        "refloated_kg": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Refloated Kg",
+          "type": "array"
+        },
+        "cleared_kg": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Cleared Kg",
+          "type": "array"
+        },
+        "stored_kg": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Stored Kg",
+          "type": "array"
+        },
+        "fill_fraction": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Fill Fraction",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "site_id",
+        "t",
+        "arrived_kg",
+        "captured_kg",
+        "escaped_entrainment_kg",
+        "escaped_overtopping_kg",
+        "escaped_bypass_kg",
+        "refloated_kg",
+        "cleared_kg",
+        "stored_kg",
+        "fill_fraction",
+        "provenance"
+      ],
+      "title": "InterceptorSeries",
+      "type": "object"
+    },
+    "LedgerEntry": {
+      "properties": {
+        "seq": {
+          "minimum": 0,
+          "title": "Seq",
+          "type": "integer"
+        },
+        "record": {
+          "$ref": "#/$defs/ClearanceRecord"
+        },
+        "reconciliation": {
+          "$ref": "#/$defs/Reconciliation"
+        },
+        "prev_hash": {
+          "title": "Prev Hash",
+          "type": "string"
+        },
+        "hash": {
+          "description": "sha256 over canonical JSON of (seq, record, reconciliation, prev_hash)",
+          "title": "Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "seq",
+        "record",
+        "reconciliation",
+        "prev_hash",
+        "hash"
+      ],
+      "title": "LedgerEntry",
+      "type": "object"
+    },
+    "Provenance": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "observed",
+            "reanalysis",
+            "forecast",
+            "harmonic_prediction",
+            "model_output",
+            "simulated",
+            "synthetic",
+            "assumption"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+          "title": "Source",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Reconciliation": {
+      "properties": {
+        "sensor_estimated_kg": {
+          "title": "Sensor Estimated Kg",
+          "type": "number"
+        },
+        "claimed_kg": {
+          "title": "Claimed Kg",
+          "type": "number"
+        },
+        "ratio": {
+          "title": "Ratio",
+          "type": "number"
+        },
+        "flag": {
+          "enum": [
+            "ok",
+            "review",
+            "reject"
+          ],
+          "title": "Flag",
+          "type": "string"
+        },
+        "reasons": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "sensor_estimated_kg",
+        "claimed_kg",
+        "ratio",
+        "flag"
+      ],
+      "title": "Reconciliation",
+      "type": "object"
+    },
+    "Site": {
+      "properties": {
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "lat": {
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Lat",
+          "type": "number"
+        },
+        "lon": {
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Lon",
+          "type": "number"
+        },
+        "waterbody": {
+          "title": "Waterbody",
+          "type": "string"
+        },
+        "outfall_type": {
+          "enum": [
+            "nullah_outfall",
+            "river_mouth",
+            "creek",
+            "beach"
+          ],
+          "title": "Outfall Type",
+          "type": "string"
+        },
+        "tidal": {
+          "title": "Tidal",
+          "type": "boolean"
+        },
+        "channel_width_m": {
+          "exclusiveMinimum": 0,
+          "title": "Channel Width M",
+          "type": "number"
+        },
+        "boom_length_m": {
+          "minimum": 0,
+          "title": "Boom Length M",
+          "type": "number"
+        },
+        "boom_capacity_m3": {
+          "minimum": 0,
+          "title": "Boom Capacity M3",
+          "type": "number"
+        },
+        "catchment": {
+          "$ref": "#/$defs/CatchmentDescriptor"
+        },
+        "provenance": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Provenance"
+          },
+          "title": "Provenance",
+          "type": "object"
+        }
+      },
+      "required": [
+        "site_id",
+        "name",
+        "lat",
+        "lon",
+        "waterbody",
+        "outfall_type",
+        "tidal",
+        "channel_width_m",
+        "boom_length_m",
+        "boom_capacity_m3",
+        "catchment"
+      ],
+      "title": "Site",
+      "type": "object"
+    },
+    "SiteForecast": {
+      "properties": {
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "issued_at": {
+          "format": "date-time",
+          "title": "Issued At",
+          "type": "string"
+        },
+        "horizon_h": {
+          "exclusiveMinimum": 0,
+          "title": "Horizon H",
+          "type": "integer"
+        },
+        "p_overflow": {
+          "description": "P(barrier overflows or must release within horizon)",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "P Overflow",
+          "type": "number"
+        },
+        "expected_arrival_kg": {
+          "minimum": 0,
+          "title": "Expected Arrival Kg",
+          "type": "number"
+        },
+        "expected_fill_fraction": {
+          "minimum": 0,
+          "title": "Expected Fill Fraction",
+          "type": "number"
+        },
+        "drivers": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "description": "e.g. rain_mm_next_24h, max_tide_m",
+          "title": "Drivers",
+          "type": "object"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "site_id",
+        "issued_at",
+        "horizon_h",
+        "p_overflow",
+        "expected_arrival_kg",
+        "expected_fill_fraction",
+        "provenance"
+      ],
+      "title": "SiteForecast",
+      "type": "object"
+    },
+    "SiteTelemetry": {
+      "description": "C8: message from an edge node (MQTT/HTTPS JSON). Twin output must set simulated=True.",
+      "properties": {
+        "schema_version": {
+          "default": "0.1.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "site_id": {
+          "title": "Site Id",
+          "type": "string"
+        },
+        "t": {
+          "format": "date-time",
+          "title": "T",
+          "type": "string"
+        },
+        "simulated": {
+          "title": "Simulated",
+          "type": "boolean"
+        },
+        "battery_v": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Battery V"
+        },
+        "solar_w": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Solar W"
+        },
+        "water_level_m": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Water Level M"
+        },
+        "rain_mm_last_h": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rain Mm Last H"
+        },
+        "fill": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FillEstimate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "flux": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FluxEstimate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "health": {
+          "description": "e.g. lens_dirty, low_battery, tamper",
+          "items": {
+            "type": "string"
+          },
+          "title": "Health",
+          "type": "array"
+        }
+      },
+      "required": [
+        "site_id",
+        "t",
+        "simulated"
+      ],
+      "title": "SiteTelemetry",
+      "type": "object"
+    }
+  },
+  "description": "Everything the static dashboard reads (one JSON file).",
+  "properties": {
+    "schema_version": {
+      "default": "0.1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "git_sha": {
+      "title": "Git Sha",
+      "type": "string"
+    },
+    "sites": {
+      "items": {
+        "$ref": "#/$defs/Site"
+      },
+      "title": "Sites",
+      "type": "array"
+    },
+    "forcing": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ForcingSeries"
+      },
+      "title": "Forcing",
+      "type": "array"
+    },
+    "interceptor": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/InterceptorSeries"
+      },
+      "title": "Interceptor",
+      "type": "array"
+    },
+    "forecasts": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SiteForecast"
+      },
+      "title": "Forecasts",
+      "type": "array"
+    },
+    "plans": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/DispatchPlan"
+      },
+      "title": "Plans",
+      "type": "array"
+    },
+    "telemetry": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SiteTelemetry"
+      },
+      "title": "Telemetry",
+      "type": "array"
+    },
+    "ledger": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/LedgerEntry"
+      },
+      "title": "Ledger",
+      "type": "array"
+    },
+    "metrics": {
+      "additionalProperties": {
+        "additionalProperties": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "type": "object"
+      },
+      "description": "component -> {metric: value, 'reproduce': command}",
+      "title": "Metrics",
+      "type": "object"
+    },
+    "disclaimers": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Disclaimers",
+      "type": "array"
+    }
+  },
+  "required": [
+    "generated_at",
+    "git_sha",
+    "sites"
+  ],
+  "title": "DashboardBundle",
+  "type": "object"
+}

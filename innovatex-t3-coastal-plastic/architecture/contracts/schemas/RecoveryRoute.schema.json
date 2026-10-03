@@ -1,0 +1,121 @@
+{
+  "$defs": {
+    "Provenance": {
+      "properties": {
+        "kind": {
+          "enum": [
+            "observed",
+            "reanalysis",
+            "forecast",
+            "harmonic_prediction",
+            "model_output",
+            "simulated",
+            "synthetic",
+            "assumption"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "source": {
+          "description": "URL, dataset id, or 'component:<name>@<git-sha>'",
+          "title": "Source",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retrieved At"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "source"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "category": {
+      "title": "Category",
+      "type": "string"
+    },
+    "route": {
+      "enum": [
+        "mechanical_recycling",
+        "co_processing",
+        "waste_to_energy",
+        "landfill",
+        "organic_compost"
+      ],
+      "title": "Route",
+      "type": "string"
+    },
+    "kg": {
+      "minimum": 0,
+      "title": "Kg",
+      "type": "number"
+    },
+    "epr_category": {
+      "anyOf": [
+        {
+          "enum": [
+            "I",
+            "II",
+            "III",
+            "IV"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Epr Category"
+    },
+    "value_inr": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Value Inr"
+    },
+    "value_provenance": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Provenance"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    }
+  },
+  "required": [
+    "category",
+    "route",
+    "kg"
+  ],
+  "title": "RecoveryRoute",
+  "type": "object"
+}
