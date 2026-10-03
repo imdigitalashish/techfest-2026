@@ -1,0 +1,36 @@
+[project]
+name = "p9-guardrail"
+version = "0.1.0"
+description = "Perceptron 2026 Problem 9 - pre-execution guardrail that checks an agent's proposed tool call against a verifiable source before it runs"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "pydantic>=2.8",
+    "numpy>=1.26",
+    "rank-bm25>=0.2.2",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+llm = [
+    "mlx-lm>=0.28",
+]
+agent = [
+    "langgraph>=1.0",
+    "langchain>=1.0",
+    "langchain-core>=1.0",
+]
+nli = [
+    "torch>=2.4",
+    "transformers>=4.45",
+    "sentence-transformers>=3.0",
+]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["components", "eval", "tests"]
+addopts = "-q"
+
+[tool.uv]
+package = false
