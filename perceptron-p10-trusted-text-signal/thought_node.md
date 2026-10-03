@@ -10,12 +10,33 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
+- **Phase:** 0 done → 1 (SOTA research) running in parallel with 4 (data + walking skeleton).
+- **Plan:** research fan-out (R1–R7) → landscape.md → component map + contracts → per-component innovation scan → ADR 001 spike (six hats + adversarial antithesis + first principles) → skeleton + frozen eval with real baselines on StockNet → first ratchet loop → abstract + architecture → selection memo → message Supervisor.
+- **Doing:** research agents R1 conformal-TS, R2 robust-CP prior art (retry), R3 fusion (retry), R4 manipulation, R5 companies (retry), R6 datasets, R7 social signal; lead: env + StockNet profiling.
+- **Next:** landscape.md · components.md + contracts · skeleton baselines · ADR 001 · abstract.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** _(lead fills)_
+- **Risks:** network is slow tonight (3 research agents died on 408 timeouts; pip timeouts) · FNSPID news is 5.7 GB + 23 GB (stream-filter, never store whole) · text→direction signal is weak in the literature, so the pitch must not rest on beating price-only accuracy.
+
+## Phase 0 — what the judges must be able to see (lead, 4 Oct 03:00 IST)
+**The crux in our words.** Three things interact: (1) the text signal is weak and noisy, and probably says more about *how much* a price will move than *which way*; (2) daily returns are not exchangeable (volatility clustering, regime shifts), so a split-conformal interval is valid only on average and can under-cover exactly when it matters; (3) an adversary who injects or edits text moves the input at test time, which no standard conformal guarantee covers — the interval can be narrow, shifted and confidently wrong. "Meaningful" therefore has to be operationalised, not asserted.
+
+**"Meaningful bound" — our operational definition (drives the eval harness):**
+1. *Valid:* long-run coverage ≈ 1−α on a time-ordered held-out period (Kupiec unconditional-coverage test).
+2. *Conditionally valid:* coverage holds within regimes (volatility tercile, text-volume tercile, attacked vs clean) and misses are not clustered in time (Christoffersen independence test).
+3. *Efficient:* smallest width at that validity (mean width, Winkler interval score).
+4. *Robust:* coverage degrades gracefully, and provably within a stated budget, when up to k documents per ticker-day are adversarial.
+5. *Useful:* the interval changes a decision for the better (e.g. act only when the interval excludes zero) — secondary, economic sanity check.
+
+| Criterion (weight) | Evidence we must show |
+|---|---|
+| Problem understanding (20%) | The three-part crux above, with citations for weak text→direction signal and non-exchangeable returns |
+| Technical soundness (25%) | Named models/tools/datasets; time-ordered splits; no look-ahead (timestamp alignment test); runs on an M5 |
+| Innovation (20%) | A spike beyond "FinBERT + MAPIE": manipulation-aware conformal layer (see ADR 001 once written) |
+| Clarity (10%) | One diagram; every claim tied to a metric |
+| Evaluation rigor (15%) | Baselines (price-only, text-only, fusion × split CP / CQR / ACI); coverage, width, Winkler, Kupiec, Christoffersen; conditional coverage; attack budgets |
+| Team fit (10%) | Week-by-week plan around the 19–25 Nov exams; teammates' skills (needs user) |
+
+**Assumptions (overnight, no user input):** A1 team = Ashish + up to two teammates TBD. A2 skeleton dataset = StockNet (tweets + prices, 88 US stocks, 2014–2015, MIT licence; the benchmark used by published tweet-injection attacks); FNSPID news (KDD 2024) as the long-history set for regime shifts later. A3 target = next-day close-to-close log return per ticker; information set = documents timestamped before that day's close (America/New_York). A4 α = 0.1 primary (also 0.05, 0.2). A5 strictly time-ordered train → calibration → test splits.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
