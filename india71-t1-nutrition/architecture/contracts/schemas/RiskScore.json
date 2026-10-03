@@ -1,0 +1,110 @@
+{
+  "$defs": {
+    "ReasonCode": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "text_en": {
+          "title": "Text En",
+          "type": "string"
+        },
+        "text_hi": {
+          "title": "Text Hi",
+          "type": "string"
+        },
+        "weight": {
+          "description": "Signed contribution to the score (model-specific scale)",
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "code",
+        "text_en",
+        "text_hi",
+        "weight"
+      ],
+      "title": "ReasonCode",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "child_key": {
+      "title": "Child Key",
+      "type": "string"
+    },
+    "awc_code": {
+      "title": "Awc Code",
+      "type": "string"
+    },
+    "as_of": {
+      "format": "date",
+      "title": "As Of",
+      "type": "string"
+    },
+    "horizon_days": {
+      "exclusiveMinimum": 0,
+      "title": "Horizon Days",
+      "type": "integer"
+    },
+    "target": {
+      "enum": [
+        "incident_wasting",
+        "incident_sam"
+      ],
+      "title": "Target",
+      "type": "string"
+    },
+    "probability": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Probability",
+      "type": "number"
+    },
+    "rank_in_awc": {
+      "minimum": 1,
+      "title": "Rank In Awc",
+      "type": "integer"
+    },
+    "reasons": {
+      "items": {
+        "$ref": "#/$defs/ReasonCode"
+      },
+      "title": "Reasons",
+      "type": "array"
+    },
+    "data_confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Data Confidence",
+      "type": "number"
+    },
+    "model_version": {
+      "title": "Model Version",
+      "type": "string"
+    },
+    "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "child_key",
+    "awc_code",
+    "as_of",
+    "horizon_days",
+    "target",
+    "probability",
+    "rank_in_awc",
+    "reasons",
+    "data_confidence",
+    "model_version",
+    "synthetic"
+  ],
+  "title": "RiskScore",
+  "type": "object"
+}

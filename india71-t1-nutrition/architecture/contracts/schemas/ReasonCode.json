@@ -1,0 +1,30 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "code": {
+      "title": "Code",
+      "type": "string"
+    },
+    "text_en": {
+      "title": "Text En",
+      "type": "string"
+    },
+    "text_hi": {
+      "title": "Text Hi",
+      "type": "string"
+    },
+    "weight": {
+      "description": "Signed contribution to the score (model-specific scale)",
+      "title": "Weight",
+      "type": "number"
+    }
+  },
+  "required": [
+    "code",
+    "text_en",
+    "text_hi",
+    "weight"
+  ],
+  "title": "ReasonCode",
+  "type": "object"
+}

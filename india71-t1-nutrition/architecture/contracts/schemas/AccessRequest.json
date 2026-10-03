@@ -1,0 +1,140 @@
+{
+  "$defs": {
+    "DataCategory": {
+      "enum": [
+        "identified_child",
+        "pseudonymous_child",
+        "risk_score",
+        "health_record",
+        "aggregate"
+      ],
+      "title": "DataCategory",
+      "type": "string"
+    },
+    "Purpose": {
+      "enum": [
+        "service_delivery",
+        "care_coordination",
+        "supervision",
+        "programme_monitoring",
+        "public_reporting",
+        "research",
+        "model_training",
+        "other"
+      ],
+      "title": "Purpose",
+      "type": "string"
+    },
+    "Role": {
+      "enum": [
+        "aww",
+        "asha",
+        "anm",
+        "ls",
+        "cdpo",
+        "mo_phc",
+        "dpo",
+        "dm",
+        "state",
+        "public",
+        "researcher",
+        "system"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "ScopeLevel": {
+      "enum": [
+        "awc",
+        "village",
+        "sector",
+        "project",
+        "district",
+        "state",
+        "national"
+      ],
+      "title": "ScopeLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "actor_id": {
+      "title": "Actor Id",
+      "type": "string"
+    },
+    "actor_role": {
+      "$ref": "#/$defs/Role"
+    },
+    "actor_scope_level": {
+      "$ref": "#/$defs/ScopeLevel"
+    },
+    "actor_scope_id": {
+      "title": "Actor Scope Id",
+      "type": "string"
+    },
+    "purpose": {
+      "$ref": "#/$defs/Purpose"
+    },
+    "data_category": {
+      "$ref": "#/$defs/DataCategory"
+    },
+    "subject_child_key": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Subject Child Key"
+    },
+    "subject_scope_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Subject Scope Id"
+    },
+    "consent_artefact_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Consent Artefact Id"
+    },
+    "requested_at": {
+      "format": "date-time",
+      "title": "Requested At",
+      "type": "string"
+    }
+  },
+  "required": [
+    "request_id",
+    "actor_id",
+    "actor_role",
+    "actor_scope_level",
+    "actor_scope_id",
+    "purpose",
+    "data_category",
+    "requested_at"
+  ],
+  "title": "AccessRequest",
+  "type": "object"
+}

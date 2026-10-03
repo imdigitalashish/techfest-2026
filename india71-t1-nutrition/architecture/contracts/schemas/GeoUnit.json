@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "description": "ICDS administrative hierarchy (codes are opaque strings).",
+  "properties": {
+    "state_code": {
+      "title": "State Code",
+      "type": "string"
+    },
+    "district_code": {
+      "title": "District Code",
+      "type": "string"
+    },
+    "project_code": {
+      "title": "Project Code",
+      "type": "string"
+    },
+    "sector_code": {
+      "title": "Sector Code",
+      "type": "string"
+    },
+    "awc_code": {
+      "title": "Awc Code",
+      "type": "string"
+    },
+    "village_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Village Code"
+    }
+  },
+  "required": [
+    "state_code",
+    "district_code",
+    "project_code",
+    "sector_code",
+    "awc_code"
+  ],
+  "title": "GeoUnit",
+  "type": "object"
+}

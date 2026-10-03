@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/SourceSystem"
+        },
+        "source_record_id": {
+          "title": "Source Record Id",
+          "type": "string"
+        },
+        "extracted_at": {
+          "format": "date-time",
+          "title": "Extracted At",
+          "type": "string"
+        },
+        "synthetic": {
+          "description": "True for simulator-derived records; propagates to derived artefacts",
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source",
+        "source_record_id",
+        "extracted_at",
+        "synthetic"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "SourceSystem": {
+      "enum": [
+        "poshan_tracker",
+        "rch",
+        "uwin",
+        "abdm",
+        "nrc",
+        "simulator"
+      ],
+      "title": "SourceSystem",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "child_key": {
+      "title": "Child Key",
+      "type": "string"
+    },
+    "occurred_on": {
+      "format": "date",
+      "title": "Occurred On",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "thr_received",
+        "hcm_received",
+        "home_visit",
+        "counselling",
+        "referral_made",
+        "referral_completed"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "event_id",
+    "child_key",
+    "occurred_on",
+    "kind",
+    "provenance"
+  ],
+  "title": "ServiceEvent",
+  "type": "object"
+}

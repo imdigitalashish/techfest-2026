@@ -1,0 +1,218 @@
+{
+  "$defs": {
+    "GeoUnit": {
+      "additionalProperties": false,
+      "description": "ICDS administrative hierarchy (codes are opaque strings).",
+      "properties": {
+        "state_code": {
+          "title": "State Code",
+          "type": "string"
+        },
+        "district_code": {
+          "title": "District Code",
+          "type": "string"
+        },
+        "project_code": {
+          "title": "Project Code",
+          "type": "string"
+        },
+        "sector_code": {
+          "title": "Sector Code",
+          "type": "string"
+        },
+        "awc_code": {
+          "title": "Awc Code",
+          "type": "string"
+        },
+        "village_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Village Code"
+        }
+      },
+      "required": [
+        "state_code",
+        "district_code",
+        "project_code",
+        "sector_code",
+        "awc_code"
+      ],
+      "title": "GeoUnit",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/SourceSystem"
+        },
+        "source_record_id": {
+          "title": "Source Record Id",
+          "type": "string"
+        },
+        "extracted_at": {
+          "format": "date-time",
+          "title": "Extracted At",
+          "type": "string"
+        },
+        "synthetic": {
+          "description": "True for simulator-derived records; propagates to derived artefacts",
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source",
+        "source_record_id",
+        "extracted_at",
+        "synthetic"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Sex": {
+      "enum": [
+        "M",
+        "F"
+      ],
+      "title": "Sex",
+      "type": "string"
+    },
+    "SourceSystem": {
+      "enum": [
+        "poshan_tracker",
+        "rch",
+        "uwin",
+        "abdm",
+        "nrc",
+        "simulator"
+      ],
+      "title": "SourceSystem",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "child_key": {
+      "title": "Child Key",
+      "type": "string"
+    },
+    "geo": {
+      "$ref": "#/$defs/GeoUnit"
+    },
+    "sex": {
+      "$ref": "#/$defs/Sex"
+    },
+    "dob": {
+      "format": "date",
+      "title": "Dob",
+      "type": "string"
+    },
+    "measured_on": {
+      "format": "date",
+      "title": "Measured On",
+      "type": "string"
+    },
+    "weight_kg": {
+      "anyOf": [
+        {
+          "exclusiveMaximum": 80,
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Weight Kg"
+    },
+    "length_height_cm": {
+      "anyOf": [
+        {
+          "exclusiveMaximum": 200,
+          "exclusiveMinimum": 20,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Length Height Cm"
+    },
+    "measure_position": {
+      "anyOf": [
+        {
+          "enum": [
+            "recumbent",
+            "standing"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Measure Position"
+    },
+    "muac_cm": {
+      "anyOf": [
+        {
+          "exclusiveMaximum": 40,
+          "exclusiveMinimum": 3,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Muac Cm"
+    },
+    "oedema": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Oedema"
+    },
+    "measured_by": {
+      "description": "Pseudonymous worker id (for worker-level credibility)",
+      "title": "Measured By",
+      "type": "string"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "event_id",
+    "child_key",
+    "geo",
+    "sex",
+    "dob",
+    "measured_on",
+    "measured_by",
+    "provenance"
+  ],
+  "title": "MeasurementEvent",
+  "type": "object"
+}

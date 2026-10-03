@@ -1,0 +1,70 @@
+{
+  "$defs": {
+    "SourceSystem": {
+      "enum": [
+        "poshan_tracker",
+        "rch",
+        "uwin",
+        "abdm",
+        "nrc",
+        "simulator"
+      ],
+      "title": "SourceSystem",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "child_key": {
+      "description": "Pseudonymous key: HMAC-SHA256(vault_key, cluster id); stable across sources",
+      "title": "Child Key",
+      "type": "string"
+    },
+    "members": {
+      "items": {
+        "maxItems": 2,
+        "minItems": 2,
+        "prefixItems": [
+          {
+            "$ref": "#/$defs/SourceSystem"
+          },
+          {
+            "type": "string"
+          }
+        ],
+        "type": "array"
+      },
+      "title": "Members",
+      "type": "array"
+    },
+    "method": {
+      "enum": [
+        "deterministic",
+        "probabilistic",
+        "clerical_review",
+        "singleton"
+      ],
+      "title": "Method",
+      "type": "string"
+    },
+    "match_probability": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Match Probability",
+      "type": "number"
+    },
+    "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "child_key",
+    "members",
+    "method",
+    "match_probability",
+    "synthetic"
+  ],
+  "title": "LinkDecision",
+  "type": "object"
+}

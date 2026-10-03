@@ -1,0 +1,54 @@
+{
+  "$defs": {
+    "Role": {
+      "enum": [
+        "aww",
+        "asha",
+        "anm",
+        "ls",
+        "cdpo",
+        "mo_phc",
+        "dpo",
+        "dm",
+        "state",
+        "public",
+        "researcher",
+        "system"
+      ],
+      "title": "Role",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "on": {
+      "format": "date",
+      "title": "On",
+      "type": "string"
+    },
+    "from_status": {
+      "title": "From Status",
+      "type": "string"
+    },
+    "to_status": {
+      "title": "To Status",
+      "type": "string"
+    },
+    "by_role": {
+      "$ref": "#/$defs/Role"
+    },
+    "note": {
+      "default": "",
+      "title": "Note",
+      "type": "string"
+    }
+  },
+  "required": [
+    "on",
+    "from_status",
+    "to_status",
+    "by_role"
+  ],
+  "title": "TaskTransition",
+  "type": "object"
+}

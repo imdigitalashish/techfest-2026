@@ -1,0 +1,126 @@
+{
+  "$defs": {
+    "AlertKind": {
+      "enum": [
+        "sam",
+        "mam",
+        "risk_high",
+        "growth_faltering",
+        "data_recheck",
+        "health_signal"
+      ],
+      "title": "AlertKind",
+      "type": "string"
+    },
+    "GeoUnit": {
+      "additionalProperties": false,
+      "description": "ICDS administrative hierarchy (codes are opaque strings).",
+      "properties": {
+        "state_code": {
+          "title": "State Code",
+          "type": "string"
+        },
+        "district_code": {
+          "title": "District Code",
+          "type": "string"
+        },
+        "project_code": {
+          "title": "Project Code",
+          "type": "string"
+        },
+        "sector_code": {
+          "title": "Sector Code",
+          "type": "string"
+        },
+        "awc_code": {
+          "title": "Awc Code",
+          "type": "string"
+        },
+        "village_code": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Village Code"
+        }
+      },
+      "required": [
+        "state_code",
+        "district_code",
+        "project_code",
+        "sector_code",
+        "awc_code"
+      ],
+      "title": "GeoUnit",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "alert_id": {
+      "title": "Alert Id",
+      "type": "string"
+    },
+    "child_key": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Child Key"
+    },
+    "geo": {
+      "$ref": "#/$defs/GeoUnit"
+    },
+    "kind": {
+      "$ref": "#/$defs/AlertKind"
+    },
+    "severity": {
+      "description": "4 = most urgent",
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Severity",
+      "type": "integer"
+    },
+    "created_on": {
+      "format": "date",
+      "title": "Created On",
+      "type": "string"
+    },
+    "evidence": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "recommended_action": {
+      "title": "Recommended Action",
+      "type": "string"
+    },
+    "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "alert_id",
+    "geo",
+    "kind",
+    "severity",
+    "created_on",
+    "recommended_action",
+    "synthetic"
+  ],
+  "title": "Alert",
+  "type": "object"
+}

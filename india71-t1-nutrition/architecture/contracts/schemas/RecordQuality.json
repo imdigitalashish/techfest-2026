@@ -1,0 +1,65 @@
+{
+  "$defs": {
+    "QualityFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "warn",
+            "reject"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "severity",
+        "detail"
+      ],
+      "title": "QualityFinding",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/QualityFinding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "usable": {
+      "title": "Usable",
+      "type": "boolean"
+    },
+    "confidence": {
+      "description": "Probability the record reflects a true measurement",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    }
+  },
+  "required": [
+    "event_id",
+    "usable",
+    "confidence"
+  ],
+  "title": "RecordQuality",
+  "type": "object"
+}

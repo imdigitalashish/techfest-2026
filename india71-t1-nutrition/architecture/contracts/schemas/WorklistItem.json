@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "child_local_ref": {
+      "description": "Beneficiary id inside the worker's own app; resolved to a name on-device",
+      "title": "Child Local Ref",
+      "type": "string"
+    },
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "action": {
+      "title": "Action",
+      "type": "string"
+    },
+    "due_on": {
+      "format": "date",
+      "title": "Due On",
+      "type": "string"
+    },
+    "priority": {
+      "minimum": 1,
+      "title": "Priority",
+      "type": "integer"
+    },
+    "reason_en": {
+      "title": "Reason En",
+      "type": "string"
+    },
+    "reason_hi": {
+      "title": "Reason Hi",
+      "type": "string"
+    }
+  },
+  "required": [
+    "child_local_ref",
+    "task_id",
+    "action",
+    "due_on",
+    "priority",
+    "reason_en",
+    "reason_hi"
+  ],
+  "title": "WorklistItem",
+  "type": "object"
+}

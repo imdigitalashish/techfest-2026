@@ -1,0 +1,162 @@
+{
+  "$defs": {
+    "Sex": {
+      "enum": [
+        "M",
+        "F"
+      ],
+      "title": "Sex",
+      "type": "string"
+    },
+    "SourceSystem": {
+      "enum": [
+        "poshan_tracker",
+        "rch",
+        "uwin",
+        "abdm",
+        "nrc",
+        "simulator"
+      ],
+      "title": "SourceSystem",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Quasi-identifiers of one child record in one source system. Identity vault only.",
+  "properties": {
+    "source": {
+      "$ref": "#/$defs/SourceSystem"
+    },
+    "source_record_id": {
+      "title": "Source Record Id",
+      "type": "string"
+    },
+    "child_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Child Name"
+    },
+    "mother_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Mother Name"
+    },
+    "father_name": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Father Name"
+    },
+    "dob": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dob"
+    },
+    "sex": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Sex"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "village_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Village Code"
+    },
+    "awc_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Awc Code"
+    },
+    "facility_code": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Facility Code"
+    },
+    "mobile_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Mobile Hash"
+    },
+    "shared_ids": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Tokens such as rch_id, uwin_id, abha_number_token, pt_beneficiary_id. Never raw Aadhaar.",
+      "title": "Shared Ids",
+      "type": "object"
+    },
+    "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "source",
+    "source_record_id",
+    "synthetic"
+  ],
+  "title": "IdentityRecord",
+  "type": "object"
+}

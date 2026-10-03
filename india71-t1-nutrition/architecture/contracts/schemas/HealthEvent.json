@@ -1,0 +1,117 @@
+{
+  "$defs": {
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/SourceSystem"
+        },
+        "source_record_id": {
+          "title": "Source Record Id",
+          "type": "string"
+        },
+        "extracted_at": {
+          "format": "date-time",
+          "title": "Extracted At",
+          "type": "string"
+        },
+        "synthetic": {
+          "description": "True for simulator-derived records; propagates to derived artefacts",
+          "title": "Synthetic",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source",
+        "source_record_id",
+        "extracted_at",
+        "synthetic"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "SourceSystem": {
+      "enum": [
+        "poshan_tracker",
+        "rch",
+        "uwin",
+        "abdm",
+        "nrc",
+        "simulator"
+      ],
+      "title": "SourceSystem",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "child_key": {
+      "title": "Child Key",
+      "type": "string"
+    },
+    "occurred_on": {
+      "format": "date",
+      "title": "Occurred On",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "birth_weight",
+        "preterm_birth",
+        "immunisation_given",
+        "immunisation_missed",
+        "illness_diarrhoea",
+        "illness_ari",
+        "hospitalisation",
+        "nrc_admission",
+        "nrc_discharge",
+        "maternal_anaemia",
+        "maternal_short_stature",
+        "maternal_low_bmi",
+        "asha_home_visit"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Value"
+    },
+    "unit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Unit"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    }
+  },
+  "required": [
+    "event_id",
+    "child_key",
+    "occurred_on",
+    "kind",
+    "provenance"
+  ],
+  "title": "HealthEvent",
+  "type": "object"
+}

@@ -1,0 +1,81 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "unit_type": {
+      "enum": [
+        "awc",
+        "worker",
+        "sector",
+        "project",
+        "district"
+      ],
+      "title": "Unit Type",
+      "type": "string"
+    },
+    "unit_id": {
+      "title": "Unit Id",
+      "type": "string"
+    },
+    "period": {
+      "pattern": "^\\d{4}-\\d{2}$",
+      "title": "Period",
+      "type": "string"
+    },
+    "n_measurements": {
+      "minimum": 0,
+      "title": "N Measurements",
+      "type": "integer"
+    },
+    "indices": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "Named indices; definitions in components/credibility_engine/README.md",
+      "title": "Indices",
+      "type": "object"
+    },
+    "credibility": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Credibility",
+      "type": "number"
+    },
+    "band": {
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "insufficient_data"
+      ],
+      "title": "Band",
+      "type": "string"
+    },
+    "recommended_action": {
+      "enum": [
+        "none",
+        "remeasure_sample",
+        "supportive_supervision",
+        "equipment_check"
+      ],
+      "title": "Recommended Action",
+      "type": "string"
+    },
+    "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "unit_type",
+    "unit_id",
+    "period",
+    "n_measurements",
+    "indices",
+    "credibility",
+    "band",
+    "recommended_action",
+    "synthetic"
+  ],
+  "title": "UnitCredibility",
+  "type": "object"
+}

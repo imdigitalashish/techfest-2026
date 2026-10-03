@@ -10,12 +10,30 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
-- **Needs from user:** Register by 15 Oct for one theme (after the 12 Oct selection). Teammates (≤4): names and skills.
-- **Risks:** _(lead fills)_
+- **Phase:** 1–2 (SOTA research running in parallel with component map + contracts). Started 02:05 IST, 4 Oct.
+- **Plan (to 08:30 IST):** (1) 8 research agents → `research/sources/R*.md` → `research/landscape.md`; (2) component map + typed contracts (`architecture/`); (3) per-component research + six hats / adversarial / first-principles → ADR 001; (4) walking skeleton on WHO standards + SYNTHETIC cohort, eval harness with real numbers; (5) round-1 proposal + architecture diagram; (6) first auto-research loop on a spike.
+- **Doing:** research agents R1 gov systems · R2 law & standards · R3 evidence & numbers · R4a early-warning SOTA · R4b data quality / linkage / privacy SOTA · R5 deployed today · R6b social signal (retry) · R7b data sources (retry). Lead: Phase 0, WHO tables (done), components + contracts.
+- **Next:** landscape.md → components.md + contracts → builders → ADR 001 → proposal draft.
+- **Needs from user:** Register by 15 Oct for one theme (after the 12 Oct selection). Teammates (≤4): names and skills. (Probable) DHS Program account for NFHS-5 microdata — details to follow from R7b.
+- **Risks:** no public Poshan Tracker microdata (demo relies on SYNTHETIC data; real-data validation becomes a pilot item) · research-agent timeouts (2 already failed; relaunched narrower) · proposal must fit 6 A4 pages.
+
+## Phase 0 — what the judges must be able to see (from `_briefs/india71.txt`)
+| Criterion (official) | What we must show | Evidence we will produce |
+|---|---|---|
+| Problem identification | One measurable gap + one named underserved group | Survey-vs-admin wasting gap (NFHS-5 vs Poshan Tracker) and who falls through it — numbers from R3 |
+| Evidence & context | Credible numbers with primary sources | Verified numbers table (NFHS-5, PIB/Parliament answers, SDG India Index, cohort studies) |
+| Existing-ecosystem analysis | Current schemes/systems and why the gap persists | Systems map (Poshan Tracker, RCH/ANMOL, U-WIN, ABDM, CMAM protocol 2023, NRCs, state campaigns) + cited root causes |
+| Proposed solution | Concrete technical architecture, not policy alone | Component map with typed contracts, decision-rights matrix + escalation protocol, DPDP-mapped safeguards, working demo |
+| Feasibility & roadmap | Stakeholders, resources, constraints | Plugs into existing apps (no new AWW app, no new data entry), phased district → state pilot, cost, risks |
+| Impact & scalability | Beneficiaries, outcomes, scale path | Metrics: lead time, early-catch rate, time-to-action, data credibility; evaluation design; national scale-out |
+
+Hard constraints: ≤6 pages A4, 1-inch margins, Arial ≥11 pt, single PDF `India71_100_[Team ID].pdf`, via Google Form, due 1 Nov · team ≤4, one theme per team, fixed at registration (15 Oct) · original work · finals 16–18 Dec: 10-min talk + 5-min Q&A (problem validation, ecosystem, solution, roadmap, feasibility, scalability, impact).
+
+**Assumptions (overnight, recorded instead of asking):**
+- A1. We build Theme 1 fully; the theme choice is made by the 12 Oct selection memo.
+- A2. No public Poshan Tracker microdata exists; the demo uses official WHO growth-standard tables plus a clearly labelled SYNTHETIC cohort calibrated to published NFHS-5 and cohort-study parameters. Real-data validation becomes a pilot item.
+- A3. WHO tables come from WHO's `anthro` repository (GPL-3.0, commit b776d8a, 30 Jan 2026), are kept in gitignored `.data/` with a fetch script, and our z-score code is our own implementation of the published WHO method (no GPL code copied).
+- A4. Working name for the system: **Poshan Setu** ("bridge") — renameable.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** The India @71/100 Challenge — Techfest IIT Bombay. Prize pool ₹1,00,000.

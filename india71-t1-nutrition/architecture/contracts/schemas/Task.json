@@ -1,0 +1,123 @@
+{
+  "$defs": {
+    "Role": {
+      "enum": [
+        "aww",
+        "asha",
+        "anm",
+        "ls",
+        "cdpo",
+        "mo_phc",
+        "dpo",
+        "dm",
+        "state",
+        "public",
+        "researcher",
+        "system"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "TaskTransition": {
+      "additionalProperties": false,
+      "properties": {
+        "on": {
+          "format": "date",
+          "title": "On",
+          "type": "string"
+        },
+        "from_status": {
+          "title": "From Status",
+          "type": "string"
+        },
+        "to_status": {
+          "title": "To Status",
+          "type": "string"
+        },
+        "by_role": {
+          "$ref": "#/$defs/Role"
+        },
+        "note": {
+          "default": "",
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "on",
+        "from_status",
+        "to_status",
+        "by_role"
+      ],
+      "title": "TaskTransition",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "alert_id": {
+      "title": "Alert Id",
+      "type": "string"
+    },
+    "owner_role": {
+      "$ref": "#/$defs/Role"
+    },
+    "owner_scope_id": {
+      "title": "Owner Scope Id",
+      "type": "string"
+    },
+    "action": {
+      "title": "Action",
+      "type": "string"
+    },
+    "due_on": {
+      "format": "date",
+      "title": "Due On",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "open",
+        "done",
+        "escalated",
+        "closed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "escalation_level": {
+      "minimum": 0,
+      "title": "Escalation Level",
+      "type": "integer"
+    },
+    "protocol_ref": {
+      "description": "Which protocol step this task implements (citation key)",
+      "title": "Protocol Ref",
+      "type": "string"
+    },
+    "history": {
+      "items": {
+        "$ref": "#/$defs/TaskTransition"
+      },
+      "title": "History",
+      "type": "array"
+    }
+  },
+  "required": [
+    "task_id",
+    "alert_id",
+    "owner_role",
+    "owner_scope_id",
+    "action",
+    "due_on",
+    "status",
+    "escalation_level",
+    "protocol_ref"
+  ],
+  "title": "Task",
+  "type": "object"
+}

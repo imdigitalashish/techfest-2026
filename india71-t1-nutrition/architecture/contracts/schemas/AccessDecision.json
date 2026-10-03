@@ -1,0 +1,64 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "allow",
+        "allow_transformed",
+        "deny"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "transform": {
+      "enum": [
+        "none",
+        "pseudonymise",
+        "aggregate",
+        "suppress_small_cells",
+        "dp_noise"
+      ],
+      "title": "Transform",
+      "type": "string"
+    },
+    "legal_basis": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Citation, e.g. 'DPDP Act 2023 s.7(b)'",
+      "title": "Legal Basis"
+    },
+    "rule_id": {
+      "title": "Rule Id",
+      "type": "string"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    },
+    "policy_version": {
+      "title": "Policy Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "request_id",
+    "decision",
+    "transform",
+    "rule_id",
+    "reason",
+    "policy_version"
+  ],
+  "title": "AccessDecision",
+  "type": "object"
+}

@@ -1,0 +1,116 @@
+{
+  "$defs": {
+    "Role": {
+      "enum": [
+        "aww",
+        "asha",
+        "anm",
+        "ls",
+        "cdpo",
+        "mo_phc",
+        "dpo",
+        "dm",
+        "state",
+        "public",
+        "researcher",
+        "system"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "WorklistItem": {
+      "additionalProperties": false,
+      "properties": {
+        "child_local_ref": {
+          "description": "Beneficiary id inside the worker's own app; resolved to a name on-device",
+          "title": "Child Local Ref",
+          "type": "string"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "due_on": {
+          "format": "date",
+          "title": "Due On",
+          "type": "string"
+        },
+        "priority": {
+          "minimum": 1,
+          "title": "Priority",
+          "type": "integer"
+        },
+        "reason_en": {
+          "title": "Reason En",
+          "type": "string"
+        },
+        "reason_hi": {
+          "title": "Reason Hi",
+          "type": "string"
+        }
+      },
+      "required": [
+        "child_local_ref",
+        "task_id",
+        "action",
+        "due_on",
+        "priority",
+        "reason_en",
+        "reason_hi"
+      ],
+      "title": "WorklistItem",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "worker_role": {
+      "$ref": "#/$defs/Role"
+    },
+    "worker_id": {
+      "title": "Worker Id",
+      "type": "string"
+    },
+    "scope_id": {
+      "title": "Scope Id",
+      "type": "string"
+    },
+    "week_of": {
+      "format": "date",
+      "title": "Week Of",
+      "type": "string"
+    },
+    "capacity": {
+      "description": "Max items the worker can act on this week",
+      "minimum": 0,
+      "title": "Capacity",
+      "type": "integer"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/WorklistItem"
+      },
+      "title": "Items",
+      "type": "array"
+    },
+    "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "worker_role",
+    "worker_id",
+    "scope_id",
+    "week_of",
+    "capacity",
+    "items",
+    "synthetic"
+  ],
+  "title": "Worklist",
+  "type": "object"
+}

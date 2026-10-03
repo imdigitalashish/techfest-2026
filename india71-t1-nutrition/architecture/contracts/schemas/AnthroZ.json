@@ -1,0 +1,140 @@
+{
+  "additionalProperties": false,
+  "description": "WHO 2006 Child Growth Standards z-scores for one MeasurementEvent.",
+  "properties": {
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "child_key": {
+      "title": "Child Key",
+      "type": "string"
+    },
+    "age_days": {
+      "minimum": 0,
+      "title": "Age Days",
+      "type": "integer"
+    },
+    "waz": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Waz"
+    },
+    "lhaz": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Lhaz"
+    },
+    "wlhz": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Wlhz"
+    },
+    "baz": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Baz"
+    },
+    "muacz": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Muacz"
+    },
+    "flags": {
+      "description": "WHO biologically-implausible flags",
+      "items": {
+        "enum": [
+          "waz",
+          "lhaz",
+          "wlhz",
+          "baz",
+          "muacz"
+        ],
+        "type": "string"
+      },
+      "title": "Flags",
+      "type": "array"
+    },
+    "nutrition_status": {
+      "enum": [
+        "sam",
+        "mam",
+        "normal",
+        "unknown"
+      ],
+      "title": "Nutrition Status",
+      "type": "string"
+    },
+    "stunting": {
+      "enum": [
+        "severe",
+        "moderate",
+        "none",
+        "unknown"
+      ],
+      "title": "Stunting",
+      "type": "string"
+    },
+    "underweight": {
+      "enum": [
+        "severe",
+        "moderate",
+        "none",
+        "unknown"
+      ],
+      "title": "Underweight",
+      "type": "string"
+    },
+    "standard": {
+      "const": "WHO-2006",
+      "default": "WHO-2006",
+      "title": "Standard",
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "child_key",
+    "age_days",
+    "nutrition_status",
+    "stunting",
+    "underweight"
+  ],
+  "title": "AnthroZ",
+  "type": "object"
+}

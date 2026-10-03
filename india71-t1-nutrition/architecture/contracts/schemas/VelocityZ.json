@@ -1,0 +1,62 @@
+{
+  "additionalProperties": false,
+  "description": "WHO 2009 growth-velocity z-score between two measurements of the same child.",
+  "properties": {
+    "child_key": {
+      "title": "Child Key",
+      "type": "string"
+    },
+    "from_event_id": {
+      "title": "From Event Id",
+      "type": "string"
+    },
+    "to_event_id": {
+      "title": "To Event Id",
+      "type": "string"
+    },
+    "interval_months": {
+      "maximum": 6,
+      "minimum": 1,
+      "title": "Interval Months",
+      "type": "integer"
+    },
+    "weight_velocity_z": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Weight Velocity Z"
+    },
+    "length_velocity_z": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Length Velocity Z"
+    },
+    "standard": {
+      "const": "WHO-2009-velocity",
+      "default": "WHO-2009-velocity",
+      "title": "Standard",
+      "type": "string"
+    }
+  },
+  "required": [
+    "child_key",
+    "from_event_id",
+    "to_event_id",
+    "interval_months"
+  ],
+  "title": "VelocityZ",
+  "type": "object"
+}

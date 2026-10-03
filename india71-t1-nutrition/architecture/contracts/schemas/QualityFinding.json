@@ -1,0 +1,29 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "code": {
+      "title": "Code",
+      "type": "string"
+    },
+    "severity": {
+      "enum": [
+        "info",
+        "warn",
+        "reject"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "detail": {
+      "title": "Detail",
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "severity",
+    "detail"
+  ],
+  "title": "QualityFinding",
+  "type": "object"
+}

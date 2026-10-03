@@ -1,0 +1,117 @@
+{
+  "$defs": {
+    "ScopeLevel": {
+      "enum": [
+        "awc",
+        "village",
+        "sector",
+        "project",
+        "district",
+        "state",
+        "national"
+      ],
+      "title": "ScopeLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "geo_level": {
+      "$ref": "#/$defs/ScopeLevel"
+    },
+    "geo_id": {
+      "title": "Geo Id",
+      "type": "string"
+    },
+    "period": {
+      "title": "Period",
+      "type": "string"
+    },
+    "indicator": {
+      "title": "Indicator",
+      "type": "string"
+    },
+    "numerator": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Numerator"
+    },
+    "denominator": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Denominator"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Value"
+    },
+    "suppressed": {
+      "title": "Suppressed",
+      "type": "boolean"
+    },
+    "mechanism": {
+      "enum": [
+        "exact",
+        "small_cell_suppressed",
+        "dp_laplace",
+        "dp_gaussian"
+      ],
+      "title": "Mechanism",
+      "type": "string"
+    },
+    "epsilon": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Epsilon"
+    },
+    "credibility_adjusted": {
+      "default": false,
+      "title": "Credibility Adjusted",
+      "type": "boolean"
+    },
+    "synthetic": {
+      "title": "Synthetic",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "geo_level",
+    "geo_id",
+    "period",
+    "indicator",
+    "suppressed",
+    "mechanism",
+    "synthetic"
+  ],
+  "title": "AggregateCell",
+  "type": "object"
+}
