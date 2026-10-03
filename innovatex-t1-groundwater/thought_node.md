@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
-- **Needs from user:** Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Hardware purchases for the prototype come later.
-- **Risks:** _(lead fills)_
+- **Phase:** 1 — SOTA research (fan-out running) · Phase 2 contracts started in parallel. Phase 0 done (see *Phase 0 — what we must show*).
+- **Plan:** research fan-out → component map + typed contracts → per-component innovation scan + six hats + adversarial review + first principles → ADR 001 spike → walking skeleton (real India-WRIS/CGWB Delhi data + labelled simulated sensors) + eval harness → first auto-research loop → zonal pitch + prototype plan → selection memo v1. Morning package 08:30 IST.
+- **Doing (agents):** r1a Delhi hydrogeology · r1b1 CGWA rules & market · r1b2 Delhi rules/RWH/NGT/tariffs · r2 companies & deployments · r3 hardware/power/connectivity/prices · r4 analytics SOTA · r5 real-data access (India-WRIS, weather, USGS high-frequency, iAWE) · r6 social signal & competitions · FP first-principles detectability physics. Lead: contracts + skeleton.
+- **Next:** landscape.md synthesis → components.md → builders (sim, hydro-twin, detector, dashboard) → ADR 001 → deliverables.
+- **Needs from user:** Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Hardware purchases for the prototype come later (BOM in `deliverables/prototype-plan.md`).
+- **Risks:** (1) research agents slow / transient model failures (two relaunched) → incremental writing, smaller scopes; (2) real high-frequency Delhi data may not be public → USGS high-frequency wells for real-signal validation + clearly labelled simulation; (3) physics may limit hidden-pump detection to large pumps/confined aquifers → FP agent quantifying before we commit the spike.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** InnovateX: The Future Habitats Challenge — Techfest IIT Bombay. Prize pool ₹80,000; top 3 teams per theme.
@@ -35,6 +35,20 @@
 - Hardware: piezometers / pressure transducers, EC/TDS/nitrate/fluoride sensing, LoRaWAN or NB-IoT for underground links, low-power design.
 - Analytics: leak detection from acoustic or pressure transients, anomaly detection for illegal extraction, aquifer models (MODFLOW via FloPy).
 - What companies ship: smart-water and groundwater-monitoring startups and utility deployments — check recent launches.
+
+## Phase 0 — what we must show (from the official statement, `_briefs/innovatex.txt`)
+**Hard constraints.** Team ≤4, students, one theme per team, original work (not patented/published). Round 1 = 10-min in-person pitch at the zonal, nothing submitted online; must cover team info (name, Team ID, theme no., contacts), precise problem, background + why existing solutions fall short, proposed solution + technology + how it works, impact & scalability. Top 5 per zonal advance. Round 2: report + working prototype by 1 Dec (solution description, prototype evidence, cost & market viability, implementation plan, scalability plan, impact assessment); finals 15–18 Dec at IIT Bombay. Only the team leader submits online. Queries only via the portal's Doubt section.
+
+| Judging criterion (official) | What we must be able to show |
+|---|---|
+| Creativity & novelty | One idea a judge hasn't seen: a spike component that beats what ships today, with a number |
+| Functionality & usability (incl. subterranean connectivity) | A working twin + dashboard on real Delhi data; link budget and store-and-forward from a borewell; failure handling |
+| Cost & market value | Sourced BOM (₹/node), cost vs incumbent loggers/flow meters, who pays (CGWA NOC compliance, DJB, RWAs) |
+| Technical feasibility (power, calibration, maintenance, weather) | Power budget → battery years; calibration routine; drift/QC; Delhi heat (45 °C+) & monsoon; maintenance schedule |
+| Regional scalability | Works on any India-WRIS station; parameters per aquifer type (alluvium vs hard rock); regulatory hooks that exist nationwide (CGWA) |
+| Environmental & socioeconomic impact | Quantified: m³ of extraction made visible/avoided, recharge verified, ₹ value at Delhi tariffs/tanker prices |
+| Design & ergonomics | Operator-first dashboard (inspection queue), citizen view, installable node in a 4–6" casing |
+| Bonus: problem-centric (local) | Delhi-specific numbers: CGWB assessment, over-exploited units, telemetric stations, NGT orders, tanker mafia, RWH mandate |
 
 ## Key decisions
 - _(none yet)_
@@ -56,3 +70,9 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 7 Oct, 12
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 03:25 IST — Phase 0 done; Phase 1 fan-out running
+- Read PLAYBOOK, seeded brief and `_briefs/innovatex.txt`; wrote *Phase 0 — what we must show* (criteria → evidence).
+- Launched research workers r1a, r1b, r2, r3, r4, r5 (data), r6, and a First-Principles physics agent. r6 and r1b failed with transient model errors (408, request too large); relaunched r6 and split r1b into r1b1 (CGWA) + r1b2 (Delhi rules/tariffs) with small-fetch, write-incrementally instructions.
+- Early finding (r5, live query): India-WRIS ArcGIS REST `arc.indiawris.gov.in/server/rest/services/NWIC/GroundwaterLevel_Stations/MapServer/0` returns 382 stations with `state_name='Delhi'`, from CGWB and "Delhi SW GW", some flagged telemetric (DWLR). Notes: `components/data-ingest/research_sources.md`.
+- Assumptions (no user available): ground the pitch in Delhi (zonal venue); target the user's team as ≤4 students; prototype budget unconstrained but BOM must be credible for a student build.
