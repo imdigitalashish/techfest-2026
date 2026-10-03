@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 1 — SOTA research (Phase 0 brief done; see *Phase 0 extraction* below).
-- **Plan (to 08:30 IST):** research fan-out (8 agents) → component map + typed contracts → per-component innovation scan + six hats / adversarial / first-principles on spike candidates → ADR 001 → walking skeleton + eval harness on public data + labelled synthetic child data → first autoresearch ratchet on the spike → proposal draft + architecture diagram → fact-check → push.
-- **Doing:** 8 background research agents: r1 official data (ASER/PARAKH/UDISE+/NIPUN/FLS) · r2 what is deployed today (VSK, Sunbird/cQube, state FLN apps, NGO/ed-tech) · r3 causal evidence (TaRL, diagnostic feedback, governance reform, data inflation) · r4 methods SOTA (IRT/CDM/CAT/linking/SAE/forensics/audits/ASR) · r5 governance & standards (NDEAR, APAAR, DPDP Rules, Ed-Fi/CASE) · r6 2025–26 news + X signal · r7 public datasets + fetch scripts · r8 international practice (Tusome/Tangerine, Ceará, Semáforo Escuela). Lead: drafting component map + contracts.
-- **Next:** landscape.md synthesis → components.md → per-component research → ADR 001 → skeleton.
+- **Phase:** 2–4 overlapping — component map + contracts done; builders running; spike selection in progress.
+- **Plan (to 08:30 IST):** builders A+B finish skeleton + eval harness → ADR 001 (six hats + antithesis + first principles) → landscape.md from research files → round-1 proposal + architecture.md → first autoresearch ratchet on C5 → fact-check → push.
+- **Doing:** builder-a (simulator, C2 canonical, C3 competency, C4 diagnostics, C7 teacher view, C12 governance) · builder-b (C5 trust/audit spike candidate, C6 small-area estimation, C9 allocation, C10 dashboard, eval harness, autoresearch scaffold) · data-extractor (ASER 2024 + PARAKH 2024 tables → `data/public/`) · r2a national DPI (VSK, Sunbird, DIKSHA, APAAR) · r2b states & NGOs · r1n UDISE+/NIPUN targets · r3n causal evidence · r4n SAE/forensics/audit methods · antithesis (rubber-duck) + first-principles on the spike. Original r1/r3/r5/r8 still running since 02:50 (likely stuck in API retries).
+- **Next:** ADR 001 → landscape.md → proposal → autoresearch loop → fact-check.
 - **Needs from user:** Register by 15 Oct for one theme (after the 12 Oct selection). Teammates (≤4): names and skills.
-- **Risks:** (1) public data granularity — PARAKH/ASER may not be downloadable below state/district level → mitigated by labelled synthetic child data calibrated to published aggregates; (2) "generic dashboard" trap — judges asked for a concrete architecture grounded in the datasets, so every component must name the dataset field it consumes; (3) hallucinated numbers — every number in deliverables must trace to `research/sources/*.md` or a committed run.
+- **Risks:** (1) **model API outage** 03:00–05:00 IST (408 "timed out reading request body" across sessions) killed r2, r4, r7 and stalled others; mitigated with narrow, append-as-you-go re-runs; (2) public data granularity — PARAKH state/district report pages returned 403 from this network; ASER 2024 district estimates exist as PDFs → demo uses labelled synthetic child data calibrated to published aggregates; (3) "policing teachers" framing risk for the audit spike — under adversarial review; (4) every number in deliverables must trace to `research/sources/*.md` or a committed run.
 
 ## Phase 0 extraction (from `_briefs/india71.txt`, verified 4 Oct 02:10 IST)
 **Hard constraints**
@@ -60,8 +60,22 @@ The statement expects a concrete technical architecture grounded in these datase
 - _(none yet)_
 
 ## Components
+Full specs: [architecture/components.md](architecture/components.md) · contracts: [architecture/contracts/fln_contracts.py](architecture/contracts/fln_contracts.py)
+
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| C1 | Source connectors | sources → raw rows + Provenance | state ETL / VSK ingestion | no | spec | ingest validation pass rate |
+| C2 | Canonical model & identity | raw → School/Student/Response | Ed-Fi/CEDS-style, UDISE+/LGD codes | no | building (A) | validation pass rate; linkage F1 |
+| C3 | Competency framework & crosswalk | docs/items → Competency/Item (Q-matrix) | SCERT expert mapping | no | building (A) | κ vs expert Q-matrix |
+| C4 | Diagnostic engine | Responses → ChildDiagnosis | ASER highest-level rule | candidate | building (A) | level accuracy; items to P≥0.9 |
+| C5 | Trust & audit engine | reported results → TrustAssessment | ad hoc third-party checks | **proposed** | building (B) | block MAE (pp) at 10 % audit budget |
+| C6 | Linking + small-area estimation | TrustAssessment + anchors → AreaEstimate | direct averages | candidate | building (B) | block RMSE; CI coverage |
+| C7 | Teacher point-of-use | ChildDiagnosis → TeacherPlan | state apps / chatbots | no | building (A) | payload bytes; SMS segments |
+| C8 | CRC visit planner | AreaEstimate + trust → VisitPlan | rota | no | spec | need-weighted coverage |
+| C9 | Allocation & policy feedback | AreaEstimate → AllocationDecision | enrolment-proportional | candidate | building (B) | expected extra children vs oracle |
+| C10 | Dashboards | estimates → HTML/JSON | VSK dashboards | no | building (B) | disclosure pass rate; KB |
+| C11 | Action ledger & outcome loop | ActionRecord → effects | none | no | spec | % actions with outcome in 6 wks |
+| C12 | Governance & access | AccessRequest → AccessDecision | role portals | no | building (A) | policy suite pass rate |
 
 ## Selection memo
 _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (the team registers for one theme by 15 Oct). Score each 1–5 with one line of evidence._
@@ -79,3 +93,6 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
 ### 2026-10-04 02:50 IST — Phase 0 done; Phase 1 fan-out
 Read PLAYBOOK, the seeded brief and `_briefs/india71.txt`; extracted hard constraints and the criterion → evidence map (above). Toolchain checked: Python 3.11, uv, pdftotext, numpy/pandas/scipy/sklearn/pydantic; Azure subscription enabled (not needed yet). Launched 8 background research agents (r1–r8, see *Now*). Assumption (overnight, no user input): we engage all three engagement areas, with governance/standardisation as the spine, because it is what makes the other two trustworthy; to be confirmed by ADR 001.
+
+### 2026-10-04 05:15 IST — Outage recovery; Phase 2 contracts + component map; builders launched
+Model API timed out (HTTP 408) for ~2 h across many sessions: r2 (deployed today), r4 (methods) and r7 (datasets) failed, though r4 and r7 left usable files (`research/sources/methods-sota.md`, `datasets-agent-notes.md`) and r7 downloaded ASER 2024 (full report), PARAKH 2024 Grade 3 report and the PARAKH technical report into `.data/raw/`. Wrote typed contracts (`architecture/contracts/fln_contracts.py`, 19 JSON Schemas) and the 12-component map (`architecture/components.md`, five "breaks" between a recorded number and a changed outcome: commensurability, trust, granularity, actionability, closed loop). Launched builders A and B, a local-file data extractor, narrow re-runs (r1n, r2a, r2b, r3n, r4n) and the antithesis + first-principles agents on the spike. Assumption: proposed spike = C5 trust & audit engine pending ADR 001.

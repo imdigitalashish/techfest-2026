@@ -1,0 +1,13 @@
+{
+  "note": "Illustrative ASER-style proxy framework; NIPUN Lakshya Soochi mapping pending verification.",
+  "competencies": [
+    {"code":"L.LETTER","subject":"language","grade_target":3,"label":"Recognises letters","prerequisites":[],"source_ref":"ASER assessment ladder (proxy); NIPUN Lakshya Soochi mapping pending verification"},
+    {"code":"L.WORD","subject":"language","grade_target":3,"label":"Reads words","prerequisites":["L.LETTER"],"source_ref":"ASER assessment ladder (proxy); NIPUN Lakshya Soochi mapping pending verification"},
+    {"code":"L.PARA","subject":"language","grade_target":3,"label":"Reads Std I paragraph","prerequisites":["L.WORD"],"source_ref":"ASER assessment ladder (proxy); NIPUN Lakshya Soochi mapping pending verification"},
+    {"code":"L.STORY","subject":"language","grade_target":3,"label":"Reads Std II story","prerequisites":["L.PARA"],"source_ref":"ASER assessment ladder (proxy); NIPUN Lakshya Soochi mapping pending verification"},
+    {"code":"M.NUM1_9","subject":"numeracy","grade_target":3,"label":"Recognises numbers 1-9","prerequisites":[],"source_ref":"ASER assessment ladder (proxy); NIPUN Lakshya Soochi mapping pending verification"},
+    {"code":"M.NUM11_99","subject":"numeracy","grade_target":3,"label":"Recognises numbers 11-99","prerequisites":["M.NUM1_9"],"source_ref":"ASER assessment ladder (proxy); NIPUN Lakshya Soochi mapping pending verification"},
+    {"code":"M.SUB","subject":"numeracy","grade_target":3,"label":"Solves two-digit subtraction","prerequisites":["M.NUM11_99"],"source_ref":"ASER assessment ladder (proxy); NIPUN Lakshya Soochi mapping pending verification"},
+    {"code":"M.DIV","subject":"numeracy","grade_target":3,"label":"Solves division","prerequisites":["M.SUB"],"source_ref":"ASER assessment ladder (proxy); NIPUN Lakshya Soochi mapping pending verification"}
+  ]
+}

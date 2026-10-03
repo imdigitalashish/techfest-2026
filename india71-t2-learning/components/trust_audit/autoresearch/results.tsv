@@ -1,0 +1,2 @@
+timestamp	commit	hypothesis	metric	delta	kept	notes
+2026-10-04T05:07:02+05:30	NA	baseline transparent rank-risk audit calibration	NA	NA	true	SYNTHETIC baseline row; run eval.py to fill metric
