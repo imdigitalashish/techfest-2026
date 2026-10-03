@@ -10,12 +10,24 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
-- **Needs from user:** Register by 15 Oct for one theme (after the 12 Oct selection). Teammates (≤4): names and skills.
-- **Risks:** _(lead fills)_
+- **Phase:** 1 (SOTA research, 8 agents) ∥ 2 (component map — lead). Phase 0 done 02:55 IST.
+- **Plan (to 08:30 IST):** 03:00–04:00 research lands + component contracts → 04:00 per-component research + six-hats/antithesis/first-principles on spike candidates → 04:30–06:30 walking skeleton (simulator, usage-state, uplift targeting, DP accountability) + eval harness with real numbers, first ratchet loop → 06:30–08:00 landscape, ADR 001, selection memo, round-1 proposal (≤6 pp), architecture.md → 08:00 fact-check, push.
+- **Doing:** research agents r1 evidence-numbers · r2 regulation-governance · r3 last-mile-deployed · r4 interventions-and-targeting · r5 privacy-tech · r6 social-signal · r7 accountability-nsfi · d1 public-data fetch (all background, write to `research/` and `eval/public_data/`). Lead: component map + contracts.
+- **Next:** landscape.md synthesis → components.md + contracts → per-component research → ADR 001 → skeleton + eval → autoresearch → deliverables.
+- **Needs from user:** Register by 15 Oct for one theme (after the 12 Oct selection). Teammates (≤4): names and skills. Nothing blocks tonight.
+- **Risks:** (1) No account-level PMJDY/DBT data is public → targeting is evaluated on a clearly-labelled synthetic simulator calibrated to public aggregates, plus public uplift benchmarks; the real-data part of the demo is district/state level. (2) Policy-oriented jury → the ML must serve a governance story, not lead it. (3) Cross-bank person-level linkage touches Aadhaar Act s.29 / DPDP → keep person lists inside the account-holding bank; only tokenised linkage in a regulated clean room; government sees aggregates. (4) Reactivated dormant accounts are mule-fraud targets → reactivation needs a fraud gate.
+
+## Brief → what we must be able to show (Phase 0, 02:55 IST)
+Hard constraints: one theme per team, fixed at registration (15 Oct); team ≤4; Round 1 = ≤6 pages A4, 1-inch margins, Arial ≥11 pt, single PDF `India71_100_[Team ID].pdf` via Google Form by 1 Nov; must be a concrete technical architecture (targeting model / interoperable access layer / governance dashboard), not a financial product; original work. Round 2 (16–18 Dec): 10-min talk + 5-min Q&A.
+
+| Judging criterion | What we must show |
+|---|---|
+| Problem identification | One named gap for one named community, stated as a measurable number (scorecard value vs lived-reality value). |
+| Evidence & context | A cited numbers table (PMJDY, inoperative accounts from Parliament answers, FI-Index, Findex 2025, NFHS-5, DBT, NPCI) + our own analysis of real public data. |
+| Existing ecosystem | Map of schemes and rails (PMJDY, DBT/APBS/NPCI mapper, BC/BC Sakhi/IPPB, AePS, UPI 123PAY, AA, re-KYC drives, UDGAM, NSFI/FI-Index/SLBC) + an evidenced root-cause tree of why the gap persists. |
+| Proposed solution | Architecture diagram + component contracts + data-governance matrix (who sees what, at what granularity, on what legal basis) + working demo. |
+| Feasibility & roadmap | Owners per component (DFS, RBI, NPCI, banks, SLBC/LDM, DBT Mission), legal basis, pilot design (randomised, 1 district), timeline, costs (labelled estimates), risk register. |
+| Impact & scalability | Evidence-based effect sizes, simulated impact (labelled), KPIs, scale path over existing rails. |
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** The India @71/100 Challenge — Techfest IIT Bombay. Prize pool ₹1,00,000.
@@ -60,3 +72,6 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (t
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 02:55 IST — Phase 0 done; Phase 1 launched
+Read PLAYBOOK, seeded brief and `_briefs/india71.txt`; brief verified against the official text (constraints and the judging→evidence map are in *Brief → what we must be able to show*). Launched 8 background agents: r1 evidence numbers, r2 regulation and governance, r3 last-mile and what is deployed today, r4 intervention evidence and uplift/targeting methods, r5 privacy-preserving computation, r6 practitioner/social signal, r7 NSFI and accountability metrics, d1 real public-data fetcher. Assumption (no user input tonight): the demo uses real public aggregates for the district/state layer and a labelled synthetic simulator for account-level targeting, because no account-level PMJDY/DBT data is public.
