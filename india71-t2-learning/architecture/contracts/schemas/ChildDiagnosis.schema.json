@@ -1,0 +1,124 @@
+{
+  "$defs": {
+    "MasteryEstimate": {
+      "additionalProperties": false,
+      "properties": {
+        "competency_code": {
+          "title": "Competency Code",
+          "type": "string"
+        },
+        "p_mastery": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "P Mastery",
+          "type": "number"
+        },
+        "n_items": {
+          "minimum": 0,
+          "title": "N Items",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "competency_code",
+        "p_mastery",
+        "n_items"
+      ],
+      "title": "MasteryEstimate",
+      "type": "object"
+    },
+    "Subject": {
+      "enum": [
+        "language",
+        "numeracy"
+      ],
+      "title": "Subject",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "student": {
+      "description": "Salted pseudonym of PEN/APAAR",
+      "pattern": "^ps_[0-9a-f]{16}$",
+      "title": "Student",
+      "type": "string"
+    },
+    "udise_code": {
+      "description": "11-digit UDISE+ school code",
+      "pattern": "^\\d{11}$",
+      "title": "Udise Code",
+      "type": "string"
+    },
+    "grade": {
+      "title": "Grade",
+      "type": "integer"
+    },
+    "subject": {
+      "$ref": "#/$defs/Subject"
+    },
+    "level": {
+      "description": "ReadingLevel or MathLevel value",
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Level",
+      "type": "integer"
+    },
+    "level_confidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Level Confidence",
+      "type": "number"
+    },
+    "mastery": {
+      "items": {
+        "$ref": "#/$defs/MasteryEstimate"
+      },
+      "title": "Mastery",
+      "type": "array"
+    },
+    "next_competency": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "lowest unmastered competency whose prerequisites are mastered",
+      "title": "Next Competency"
+    },
+    "meets_grade_goal": {
+      "description": "P(child meets the NIPUN goal for their grade)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Meets Grade Goal",
+      "type": "number"
+    },
+    "method": {
+      "title": "Method",
+      "type": "string"
+    },
+    "as_of": {
+      "format": "date",
+      "title": "As Of",
+      "type": "string"
+    }
+  },
+  "required": [
+    "student",
+    "udise_code",
+    "grade",
+    "subject",
+    "level",
+    "level_confidence",
+    "mastery",
+    "meets_grade_goal",
+    "method",
+    "as_of"
+  ],
+  "title": "ChildDiagnosis",
+  "type": "object"
+}

@@ -1,0 +1,99 @@
+{
+  "$defs": {
+    "Subject": {
+      "enum": [
+        "language",
+        "numeracy"
+      ],
+      "title": "Subject",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "udise_code": {
+      "description": "11-digit UDISE+ school code",
+      "pattern": "^\\d{11}$",
+      "title": "Udise Code",
+      "type": "string"
+    },
+    "subject": {
+      "$ref": "#/$defs/Subject"
+    },
+    "grade": {
+      "title": "Grade",
+      "type": "integer"
+    },
+    "reported_pct_meeting_goal": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Reported Pct Meeting Goal",
+      "type": "number"
+    },
+    "risk_score": {
+      "description": "P(reported figure inflated beyond tolerance)",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Risk Score",
+      "type": "number"
+    },
+    "flags": {
+      "description": "forensic rules that fired",
+      "items": {
+        "type": "string"
+      },
+      "title": "Flags",
+      "type": "array"
+    },
+    "selected_for_audit": {
+      "title": "Selected For Audit",
+      "type": "boolean"
+    },
+    "audit_inclusion_prob": {
+      "description": "for Horvitz-Thompson weighting",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Audit Inclusion Prob",
+      "type": "number"
+    },
+    "audited_pct_meeting_goal": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Audited Pct Meeting Goal"
+    },
+    "adjusted_pct_meeting_goal": {
+      "description": "audit-calibrated estimate",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Adjusted Pct Meeting Goal",
+      "type": "number"
+    },
+    "adjusted_se": {
+      "minimum": 0.0,
+      "title": "Adjusted Se",
+      "type": "number"
+    }
+  },
+  "required": [
+    "udise_code",
+    "subject",
+    "grade",
+    "reported_pct_meeting_goal",
+    "risk_score",
+    "selected_for_audit",
+    "audit_inclusion_prob",
+    "adjusted_pct_meeting_goal",
+    "adjusted_se"
+  ],
+  "title": "TrustAssessment",
+  "type": "object"
+}

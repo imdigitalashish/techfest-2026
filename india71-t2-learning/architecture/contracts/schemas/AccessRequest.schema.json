@@ -1,0 +1,79 @@
+{
+  "$defs": {
+    "AreaLevel": {
+      "enum": [
+        "school",
+        "cluster",
+        "block",
+        "district",
+        "state"
+      ],
+      "title": "AreaLevel",
+      "type": "string"
+    },
+    "Role": {
+      "enum": [
+        "teacher",
+        "head_teacher",
+        "smc",
+        "crc",
+        "brc",
+        "deo",
+        "state",
+        "auditor"
+      ],
+      "title": "Role",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "role": {
+      "$ref": "#/$defs/Role"
+    },
+    "actor_scope": {
+      "description": "UDISE code / cluster / block / district / state code the actor is responsible for",
+      "title": "Actor Scope",
+      "type": "string"
+    },
+    "resource": {
+      "enum": [
+        "child_diagnosis",
+        "teacher_plan",
+        "trust_assessment",
+        "area_estimate",
+        "raw_responses"
+      ],
+      "title": "Resource",
+      "type": "string"
+    },
+    "target_scope": {
+      "title": "Target Scope",
+      "type": "string"
+    },
+    "target_level": {
+      "$ref": "#/$defs/AreaLevel"
+    },
+    "purpose": {
+      "enum": [
+        "remediation",
+        "mentoring",
+        "planning",
+        "audit",
+        "research"
+      ],
+      "title": "Purpose",
+      "type": "string"
+    }
+  },
+  "required": [
+    "role",
+    "actor_scope",
+    "resource",
+    "target_scope",
+    "target_level",
+    "purpose"
+  ],
+  "title": "AccessRequest",
+  "type": "object"
+}

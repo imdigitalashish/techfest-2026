@@ -1,0 +1,113 @@
+{
+  "$defs": {
+    "Subject": {
+      "enum": [
+        "language",
+        "numeracy"
+      ],
+      "title": "Subject",
+      "type": "string"
+    },
+    "TeachingGroup": {
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "level": {
+          "title": "Level",
+          "type": "integer"
+        },
+        "student_refs": {
+          "description": "roll numbers or first names, local to the teacher's device",
+          "items": {
+            "type": "string"
+          },
+          "title": "Student Refs",
+          "type": "array"
+        },
+        "activity_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Activity Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label",
+        "level",
+        "student_refs",
+        "activity_ids"
+      ],
+      "title": "TeachingGroup",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "udise_code": {
+      "description": "11-digit UDISE+ school code",
+      "pattern": "^\\d{11}$",
+      "title": "Udise Code",
+      "type": "string"
+    },
+    "grade": {
+      "title": "Grade",
+      "type": "integer"
+    },
+    "subject": {
+      "$ref": "#/$defs/Subject"
+    },
+    "week_of": {
+      "format": "date",
+      "title": "Week Of",
+      "type": "string"
+    },
+    "groups": {
+      "items": {
+        "$ref": "#/$defs/TeachingGroup"
+      },
+      "title": "Groups",
+      "type": "array"
+    },
+    "message_text": {
+      "title": "Message Text",
+      "type": "string"
+    },
+    "channel": {
+      "enum": [
+        "whatsapp",
+        "sms",
+        "ivr",
+        "offline_pwa"
+      ],
+      "title": "Channel",
+      "type": "string"
+    },
+    "language": {
+      "description": "ISO 639 code, e.g. 'hi'",
+      "title": "Language",
+      "type": "string"
+    },
+    "payload_bytes": {
+      "minimum": 0,
+      "title": "Payload Bytes",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "udise_code",
+    "grade",
+    "subject",
+    "week_of",
+    "groups",
+    "message_text",
+    "channel",
+    "language",
+    "payload_bytes"
+  ],
+  "title": "TeacherPlan",
+  "type": "object"
+}

@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "crc_id": {
+      "title": "Crc Id",
+      "type": "string"
+    },
+    "week_of": {
+      "format": "date",
+      "title": "Week Of",
+      "type": "string"
+    },
+    "visits": {
+      "items": {
+        "description": "11-digit UDISE+ school code",
+        "pattern": "^\\d{11}$",
+        "type": "string"
+      },
+      "title": "Visits",
+      "type": "array"
+    },
+    "agenda": {
+      "additionalProperties": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "description": "udise_code -> what to observe / coach / re-test",
+      "title": "Agenda",
+      "type": "object"
+    },
+    "expected_children_reached": {
+      "title": "Expected Children Reached",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "crc_id",
+    "week_of",
+    "visits",
+    "agenda",
+    "expected_children_reached"
+  ],
+  "title": "VisitPlan",
+  "type": "object"
+}

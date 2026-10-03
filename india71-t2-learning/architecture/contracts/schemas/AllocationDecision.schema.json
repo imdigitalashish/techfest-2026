@@ -1,0 +1,47 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "area_code": {
+      "title": "Area Code",
+      "type": "string"
+    },
+    "resource": {
+      "enum": [
+        "remedial_camp",
+        "teacher_training_slot",
+        "tlm_grant",
+        "volunteer",
+        "crc_visit_days"
+      ],
+      "title": "Resource",
+      "type": "string"
+    },
+    "units": {
+      "minimum": 0.0,
+      "title": "Units",
+      "type": "number"
+    },
+    "expected_additional_children_meeting_goal": {
+      "title": "Expected Additional Children Meeting Goal",
+      "type": "number"
+    },
+    "equity_weighted_score": {
+      "title": "Equity Weighted Score",
+      "type": "number"
+    },
+    "rationale": {
+      "title": "Rationale",
+      "type": "string"
+    }
+  },
+  "required": [
+    "area_code",
+    "resource",
+    "units",
+    "expected_additional_children_meeting_goal",
+    "equity_weighted_score",
+    "rationale"
+  ],
+  "title": "AllocationDecision",
+  "type": "object"
+}

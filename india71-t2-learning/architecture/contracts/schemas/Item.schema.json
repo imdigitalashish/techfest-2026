@@ -1,0 +1,87 @@
+{
+  "$defs": {
+    "SourceSystem": {
+      "enum": [
+        "udise_plus",
+        "state_assessment",
+        "classroom_tool",
+        "orf_app",
+        "parakh",
+        "aser",
+        "audit_retest",
+        "attendance"
+      ],
+      "title": "SourceSystem",
+      "type": "string"
+    },
+    "Subject": {
+      "enum": [
+        "language",
+        "numeracy"
+      ],
+      "title": "Subject",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "item_id": {
+      "title": "Item Id",
+      "type": "string"
+    },
+    "instrument": {
+      "$ref": "#/$defs/SourceSystem"
+    },
+    "subject": {
+      "$ref": "#/$defs/Subject"
+    },
+    "competency_codes": {
+      "description": "Q-matrix row",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Competency Codes",
+      "type": "array"
+    },
+    "max_score": {
+      "default": 1.0,
+      "title": "Max Score",
+      "type": "number"
+    },
+    "irt_a": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "discrimination, if calibrated",
+      "title": "Irt A"
+    },
+    "irt_b": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "difficulty, if calibrated",
+      "title": "Irt B"
+    }
+  },
+  "required": [
+    "item_id",
+    "instrument",
+    "subject",
+    "competency_codes"
+  ],
+  "title": "Item",
+  "type": "object"
+}

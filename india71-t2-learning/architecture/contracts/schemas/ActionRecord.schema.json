@@ -1,0 +1,66 @@
+{
+  "$defs": {
+    "Role": {
+      "enum": [
+        "teacher",
+        "head_teacher",
+        "smc",
+        "crc",
+        "brc",
+        "deo",
+        "state",
+        "auditor"
+      ],
+      "title": "Role",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "action_id": {
+      "title": "Action Id",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "teacher_plan_sent",
+        "plan_acknowledged",
+        "crc_visit",
+        "remedial_camp",
+        "training",
+        "smc_meeting",
+        "audit_retest"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "area_code": {
+      "title": "Area Code",
+      "type": "string"
+    },
+    "actor_role": {
+      "$ref": "#/$defs/Role"
+    },
+    "on": {
+      "format": "date",
+      "title": "On",
+      "type": "string"
+    },
+    "linked_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Linked Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "action_id",
+    "kind",
+    "area_code",
+    "actor_role",
+    "on"
+  ],
+  "title": "ActionRecord",
+  "type": "object"
+}

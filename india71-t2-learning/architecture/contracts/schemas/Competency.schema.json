@@ -1,0 +1,55 @@
+{
+  "$defs": {
+    "Subject": {
+      "enum": [
+        "language",
+        "numeracy"
+      ],
+      "title": "Subject",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "code": {
+      "description": "e.g. 'L.G3.ORF' (subject.grade.skill)",
+      "title": "Code",
+      "type": "string"
+    },
+    "subject": {
+      "$ref": "#/$defs/Subject"
+    },
+    "grade_target": {
+      "description": "grade by whose end the goal should be met (0=Balvatika)",
+      "maximum": 5,
+      "minimum": 0,
+      "title": "Grade Target",
+      "type": "integer"
+    },
+    "label": {
+      "title": "Label",
+      "type": "string"
+    },
+    "prerequisites": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Prerequisites",
+      "type": "array"
+    },
+    "source_ref": {
+      "description": "citation to NIPUN Bharat Lakshya Soochi / NCERT learning outcome",
+      "title": "Source Ref",
+      "type": "string"
+    }
+  },
+  "required": [
+    "code",
+    "subject",
+    "grade_target",
+    "label",
+    "source_ref"
+  ],
+  "title": "Competency",
+  "type": "object"
+}

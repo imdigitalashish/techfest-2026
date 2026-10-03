@@ -1,0 +1,30 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "allowed": {
+      "title": "Allowed",
+      "type": "boolean"
+    },
+    "transform": {
+      "enum": [
+        "none",
+        "pseudonymise",
+        "aggregate",
+        "suppress"
+      ],
+      "title": "Transform",
+      "type": "string"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "allowed",
+    "transform",
+    "reason"
+  ],
+  "title": "AccessDecision",
+  "type": "object"
+}

@@ -1,0 +1,112 @@
+{
+  "$defs": {
+    "AreaLevel": {
+      "enum": [
+        "school",
+        "cluster",
+        "block",
+        "district",
+        "state"
+      ],
+      "title": "AreaLevel",
+      "type": "string"
+    },
+    "SourceSystem": {
+      "enum": [
+        "udise_plus",
+        "state_assessment",
+        "classroom_tool",
+        "orf_app",
+        "parakh",
+        "aser",
+        "audit_retest",
+        "attendance"
+      ],
+      "title": "SourceSystem",
+      "type": "string"
+    },
+    "Subject": {
+      "enum": [
+        "language",
+        "numeracy"
+      ],
+      "title": "Subject",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Area-level published figure (PARAKH / ASER / state report) used as an anchor.",
+  "properties": {
+    "source": {
+      "$ref": "#/$defs/SourceSystem"
+    },
+    "area_level": {
+      "$ref": "#/$defs/AreaLevel"
+    },
+    "area_code": {
+      "title": "Area Code",
+      "type": "string"
+    },
+    "subject": {
+      "$ref": "#/$defs/Subject"
+    },
+    "grade": {
+      "title": "Grade",
+      "type": "integer"
+    },
+    "indicator": {
+      "description": "e.g. 'pct_reading_std2_text', 'mean_scale_score'",
+      "title": "Indicator",
+      "type": "string"
+    },
+    "value": {
+      "title": "Value",
+      "type": "number"
+    },
+    "std_error": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Std Error"
+    },
+    "n_sampled": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "N Sampled"
+    },
+    "year": {
+      "title": "Year",
+      "type": "integer"
+    },
+    "citation": {
+      "title": "Citation",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source",
+    "area_level",
+    "area_code",
+    "subject",
+    "grade",
+    "indicator",
+    "value",
+    "year",
+    "citation"
+  ],
+  "title": "AggregateObservation",
+  "type": "object"
+}

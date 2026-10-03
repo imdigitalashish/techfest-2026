@@ -1,0 +1,27 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "competency_code": {
+      "title": "Competency Code",
+      "type": "string"
+    },
+    "p_mastery": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "P Mastery",
+      "type": "number"
+    },
+    "n_items": {
+      "minimum": 0,
+      "title": "N Items",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "competency_code",
+    "p_mastery",
+    "n_items"
+  ],
+  "title": "MasteryEstimate",
+  "type": "object"
+}

@@ -1,0 +1,36 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "label": {
+      "title": "Label",
+      "type": "string"
+    },
+    "level": {
+      "title": "Level",
+      "type": "integer"
+    },
+    "student_refs": {
+      "description": "roll numbers or first names, local to the teacher's device",
+      "items": {
+        "type": "string"
+      },
+      "title": "Student Refs",
+      "type": "array"
+    },
+    "activity_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Activity Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "label",
+    "level",
+    "student_refs",
+    "activity_ids"
+  ],
+  "title": "TeachingGroup",
+  "type": "object"
+}
