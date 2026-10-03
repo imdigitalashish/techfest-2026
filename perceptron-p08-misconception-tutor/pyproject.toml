@@ -1,0 +1,23 @@
+[project]
+name = "p8-misconception-tutor"
+version = "0.1.0"
+description = "Perceptron 2026 P8: a tutor that traces wrong answers to executable misconceptions and generates verified, discriminative follow-up problems."
+requires-python = ">=3.11"
+dependencies = [
+  "pydantic>=2.6",
+  "sympy>=1.12",
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "pyarrow>=14",
+  "scikit-learn>=1.4",
+  "rank-bm25>=0.2.2",
+  "requests>=2.31",
+  "pytest>=8",
+]
+
+[project.optional-dependencies]
+dense = ["sentence-transformers>=3.0", "torch>=2.3"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["components", "architecture", "eval"]
