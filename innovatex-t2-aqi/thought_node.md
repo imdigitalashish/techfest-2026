@@ -10,12 +10,31 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
-- **Needs from user:** Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Hardware purchases for the prototype come later.
-- **Risks:** _(lead fills)_
+- **Phase:** 1 — SOTA research (running) + data path for the walking skeleton (in progress). Phase 0 done (see *Phase 0 — constraints* below).
+- **Plan:** research fan-out → choose the pollution source + spike (ADR 001) → components + contracts → walking skeleton on real CPCB data (OpenAQ public S3 archive) + Open-Meteo meteorology → forecasting/attribution eval with real numbers → zonal pitch + prototype plan → selection memo. All by 08:30 IST.
+- **Doing:** 4 research agents (companies/products, sensors + calibration + fence-line methods, hardware BOM with Indian prices, dust-suppression evidence). Lead: Delhi station discovery in the OpenAQ archive, then data pipeline.
+- **Next:** (1) ingest Delhi CPCB hourly PM + meteorology; (2) baseline forecasts (persistence, climatology, gradient boosting) on a time-ordered split; (3) components.md + contracts; (4) ADR 001; (5) deliverables.
+- **Needs from user:** Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Hardware purchases for the prototype come later. Optional: a free OpenAQ API key (explore.openaq.org) would simplify live ingestion; not blocking (we use the public S3 archive).
+- **Risks:** (1) Network uplink saturated by ~20 parallel sessions: 5 of 8 research agents died with HTTP 408 at turn 0; mitigation: ≤4 concurrent agents, short prompts, shared brief file, lead does targeted searches itself. (2) Forecasting PM in Delhi winter is a crowded space (IITM's operational systems) — the spike must sit where incumbents don't. (3) Low-cost optical sensors under-read coarse dust (to verify) — matters if the source is construction dust.
+
+## Phase 0 — constraints (from `_briefs/innovatex.txt`, read 4 Oct 02:10 IST)
+- **Round 1 (Delhi zonal, 10 Oct, 10 min, in person, no online submission):** team info · precise problem within the theme · background and why existing solutions fall short · proposed solution and technology · impact and scalability. Top 5 per zonal advance; results the same day.
+- **Round 2:** report + **working prototype** on the website by **1 Dec** (only the team leader submits; one submission): solution description · prototype evidence of functionality and usability · cost and market viability · implementation plan · scalability plan across India · impact assessment. Finals 15–18 Dec at IIT Bombay.
+- **Rules:** team ≤ 4 students, cross-institute allowed; one theme per team; solution must be original and "not protected by patents, copyrights, or publications" → don't publish the core idea before the finals; attribute all borrowed methods.
+- **What we must be able to show (judging → evidence):**
+
+| Criterion | Evidence we need |
+|---|---|
+| Creativity & novelty | A spike that existing networks/products don't do, shown against a named incumbent |
+| Functionality & usability (incl. "high-dust atmospheres") | A working pipeline + dashboard on real data now; hardware node + actuator by 1 Dec with a field/bench test in dust |
+| Cost & market value | BOM with sourced Indian prices; a payer (who pays and why: regulation, fines, savings) |
+| Technical feasibility (power, calibration, maintenance, weather) | Power budget from datasheets; a calibration method with held-out numbers; maintenance plan; monsoon/fog/heat handling |
+| Regional scalability | Same design under other Indian cities' rules and climates; per-site cost; no city-specific retraining needed (or a cheap path) |
+| Environmental & socioeconomic impact | Quantified PM reduction / exposure avoided / water saved / jobs protected, each with cited factors and stated uncertainty |
+| Design & ergonomics | Operator-first UI (site supervisor, regulator, resident); installable by one technician |
+| Bonus: local depth | Delhi-specific pain points with numbers: GRAP, CAQM/DPCC rules, source apportionment, seasons |
+
+- **Assumptions (decided, overnight mode):** A1 city = Delhi-NCR (we pitch at the Delhi zonal; bonus is for local depth). A2 pollution source chosen in ADR 001 after research; working hypothesis = construction & demolition dust. A3 real data = CPCB/DPCC monitors via the OpenAQ public S3 archive (no key) + Open-Meteo (ERA5 meteorology, CAMS forecasts). A4 anything simulated is labelled SIMULATED in code, data and slides.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** InnovateX: The Future Habitats Challenge — Techfest IIT Bombay. Prize pool ₹80,000; top 3 teams per theme.
@@ -56,3 +75,8 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 7 Oct, 12
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 03:55 IST — Phase 0 done; Phase 1 research running; data path found
+- Read PLAYBOOK, this brief and `_briefs/innovatex.txt`; wrote *Phase 0 — constraints* (judging → evidence map, assumptions A1–A4).
+- Research fan-out: 8 agents launched at 02:10; a truncated launch call plus model-API timeouts (HTTP 408, "timed out reading request body", turn 0) killed 5 of them. Relaunched with a shared brief (`research/raw/_AGENT_BRIEF.md`) and short prompts. Running: companies/products, sensors + calibration + fence-line, hardware BOM, dust-suppression evidence. Partial notes kept from the dead grounding agent: `research/raw/delhi-grounding.md` (unverified until re-checked).
+- Data: the OpenAQ v3 API needs a key (HTTP 401), but the public S3 archive works unsigned. Verified: location 235 = "Anand Vihar, New Delhi - DPCC", 15-min PM10 on 2025-11-01. Open-Meteo archive (ERA5, incl. boundary-layer height) and air-quality (CAMS) APIs answer without a key. Scanning OpenAQ IDs 1–15000 for stations in the Delhi bbox (`components/ingest/discover_openaq_delhi.py`).
