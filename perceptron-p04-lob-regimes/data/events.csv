@@ -1,0 +1,7 @@
+event_id,date,utc_time,type,category,description,source_url,verified
+fomc-2023-02-01,2023-02-01,19:00,scheduled,FOMC,"FOMC statement (meeting Jan 31-Feb 1, 2023); release 2:00 p.m. EST",https://www.federalreserve.gov/newsevents/pressreleases/monetary20230201a.htm,yes (accessed 2026-10-04)
+fomc-2023-11-01,2023-11-01,18:00,scheduled,FOMC,"FOMC statement (meeting Oct 31-Nov 1, 2023); release 2:00 p.m. EDT",https://www.federalreserve.gov/newsevents/pressreleases/monetary20231101a.htm,yes (accessed 2026-10-04)
+fomc-2024-05-01,2024-05-01,18:00,scheduled,FOMC,"FOMC statement (meeting Apr 30-May 1, 2024); release 2:00 p.m. EDT",https://www.federalreserve.gov/newsevents/pressreleases/monetary20240501a.htm,yes (accessed 2026-10-04)
+nfp-2023-09-01,2023-09-01,12:30,scheduled,NFP,"Employment Situation (Aug 2023) 8:30 a.m. EDT - date not verified (bls.gov returns 403 to scripted access)",https://www.bls.gov/bls/news-release/empsit.htm,no
+nfp-2024-11-01,2024-11-01,12:30,scheduled,NFP,"Employment Situation (Oct 2024) 8:30 a.m. EDT - date not verified (bls.gov 403)",https://www.bls.gov/bls/news-release/empsit.htm,no
+nfp-2025-08-01,2025-08-01,12:30,scheduled,NFP,"Employment Situation (Jul 2025) 8:30 a.m. EDT - date not verified (bls.gov 403)",https://www.bls.gov/bls/news-release/empsit.htm,no
