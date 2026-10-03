@@ -1,0 +1,366 @@
+                           Techfest 2026-27
+
+                The India @ 71/100 Challenge
+
+
+Objective:
+India has made remarkable progress across education, healthcare, financial
+inclusion, and social welfare over the past decade. According to the NITI Aayog
+SDG India Index 2023–24, the country now scores 71 out of 100, reflecting
+real, measurable gains.
+
+But national averages often hide what's happening on the ground. Good policies
+exist; the gap lies in how well they reach the people who need them most. The
+India @ 71/100 Challenge invites students to close exactly this gap: identify
+where implementation is falling short, and design practical, scalable solutions that
+strengthen what already exists rather than reinventing it. Bring your ideas to life at
+Techfest, IIT Bombay, Asia's largest science and technology festivals.​
+​
+The India @ 71/100 Challenge is a national innovation competition where
+participants identify a real implementation challenge within one of the three
+competition themes and propose a practical, evidence-based solution. Using
+research, credible data, and ground-level understanding, teams will develop
+solutions that are innovative, feasible, and scalable. ​
+​
+Challenge question​
+Identify one measurable gap between India's development scorecard and the lived
+reality of an underserved group (including socially marginalised groups) within one
+of the three competition themes, and design a solution that could be realistically
+implemented and scaled in the real world.
+
+The challenge spans three themes; choose one and build a solution within it. ​
+
+
+Theme 1: Maternal & Early Childhood Nutrition
+
+Overview
+
+India runs one of the world's largest maternal and child nutrition data ecosystems -
+Anganwadis, ASHA workers, and Poshan Abhiyaan/Mission Poshan 2.0 - yet
+undernutrition remains one of the country's most persistent public health
+challenges. The ICDS-CAS/Poshan Tracker application already digitally tracks
+growth-monitoring and service-delivery indicators for close to 9 crore children. The
+implementation gap is therefore rarely an absence of data; it is that this data is not
+consistently governed, integrated, or acted upon in real time - it sits in siloed
+dashboards, is used mostly for retrospective reporting rather than early warning,
+and is not interoperable with the health system's own digital records. This theme
+asks participants to treat nutrition data as critical public infrastructure and design
+the data-governance and decision-support layer that policy intent alone cannot
+deliver.
+
+Problem Statement
+From a data governance and policy-implementation perspective, design a
+technologically robust solution that closes the gap between what Poshan
+Abhiyaan/Mission Poshan 2.0 already collects and what frontline systems actually
+act on. ​
+Your solution must engage with at least one of the following:
+
+1) Interoperability & data flow - how should Anganwadi (ICDS-CAS/Poshan
+Tracker), ASHA/health-system, and community-level records be linked or made
+interoperable so at-risk children are flagged before, not after, severe malnutrition
+develops?
+
+2) Decision rights & accountability - who should see which data, at what frequency,
+and through what escalation protocol, so that a block or district administrator can
+act on early-warning signals within existing service-delivery timelines?
+
+3) Data quality & governance safeguards - how should data validation, consent, and
+child-data privacy be built into the system design from the outset, consistent with
+applicable data-protection and data-sharing norms?
+
+Participants are expected to submit a concrete technical architecture - a data
+pipeline, alerting or decision-support model, or platform design - and not a policy
+recommendation alone.
+
+Suggested Data Sources & References:
+
+   ●​ Poshan Tracker / ICDS-CAS dashboards, Ministry of Women & Child
+      Development;
+   ●​ National Family Health Survey (NFHS-5), 2019-21, Ministry of Health &
+      Family Welfare;
+   ●​ Mission Poshan 2.0 guidelines, Ministry of Women & Child Development;
+   ●​ Ayushman Bharat Digital Mission, National Health Authority - for health-data
+      interoperability standards;
+   ●​ Digital Personal Data Protection Act, 2023 - for consent and data-governance
+      obligations;
+   ●​ National Data Governance Framework Policy, Ministry of Electronics &
+      Information Technology, 2022 - for inter-agency data-sharing norms.
+
+                                         or
+
+Theme 2: Foundational Learning Outcomes
+Overview
+India has achieved near-universal school enrolment, yet ASER 2024 and the
+government's own PARAKH Rashtriya Sarvekshan (2024) confirm that a majority of
+children are not acquiring foundational reading and numeracy skills at their
+expected grade level. The National Education Policy (NEP) 2020 and the NIPUN
+Bharat Mission for Foundational Literacy and Numeracy already set clear policy
+targets, and India runs one of the world's largest school data systems through
+UDISE+. The implementation gap is less about missing data than about how
+policy-mandated assessment and attendance data is governed, aggregated, and
+converted into classroom-level and system-level decisions. This theme asks
+participants to close the gap between what schools already record and what
+actually changes for a struggling learner.
+
+Problem Statement
+From a data governance and policy-implementation perspective, design a
+technologically robust intervention that converts India's existing school data
+ecosystem (UDISE+, ASER, PARAKH, state assessment systems) into a
+decision-support system aligned with the NIPUN Bharat/FLN policy mandate.
+
+Your solution must engage with at least one of the following:
+
+1) Data governance & standardisation - how should attendance, assessment, and
+learning-level data be standardised and made interoperable across UDISE+, state
+assessment platforms, and classroom-level tools so a teacher, block official, and
+state administrator see a consistent picture?
+
+2) Decision-support at point of use - how can existing data be surfaced as an
+actionable, low-bandwidth tool for teachers to identify and remediate specific
+learning gaps, rather than remaining a compliance report?
+
+3) Policy-monitoring feedback loops - how should PARAKH/ASER-style diagnostic
+data feed back into resource allocation, teacher training, or School Management
+Committee decisions at the block or district level?
+
+Participants are expected to submit a concrete technical architecture - a data
+pipeline, diagnostic or analytics engine, or decision-support platform - grounded in
+these existing datasets, and not a generic ed-tech pitch.
+
+Suggested Data Sources & References:
+
+   ●​ ASER 2024, Annual Status of Education Report, ASER Centre/Pratham
+   ●​ PARAKH Rashtriya Sarvekshan 2024, Ministry of Education / PARAKH
+      (Performance Assessment, Review and Analysis of Knowledge for Holistic
+      Development)
+   ●​ UDISE+ (Unified District Information System for Education Plus), Ministry of
+      Education
+   ●​ National Education Policy (NEP) 2020
+   ●​ NIPUN Bharat Mission for Foundational Literacy and Numeracy, Ministry of
+      Education, 2021
+   ●​ DIKSHA - National Digital Infrastructure for Teachers
+
+                                          or
+
+Theme 3: Financial Inclusion & Meaningful Banking Access
+Overview
+India has dramatically expanded formal banking access through the Pradhan Mantri
+Jan Dhan Yojana (PMJDY), bringing over 56 crore people into the financial system,
+and the RBI's Financial Inclusion Index (FI-Index) confirms steady national
+progress. Yet roughly a quarter of these accounts remain inactive, and usage of
+digital payments, credit, and DBT-linked benefits remains uneven across gender,
+geography, and literacy levels. The policy and data infrastructure for inclusion
+already exists - PMJDY, the DBT Mission, Aadhaar-enabled payments, and UPI - but
+converting formal access into meaningful, sustained usage requires better
+governance of the data these systems already generate. This theme is not about
+building new fintech products; it is about using the transaction, DBT, and
+account-status data already flowing through India's Digital Public Infrastructure to
+close the access-to-usage gap.
+
+Problem Statement
+From a data governance and policy-implementation perspective, design a
+technologically robust solution that uses existing financial-inclusion data - PMJDY
+account and transaction status, DBT Mission records, RBI FI-Index indicators - to
+move beneficiaries from merely holding a formal account to actively and
+meaningfully using financial services.
+
+Your solution must engage with at least one of the following:
+
+1)Data-driven targeting & governance - how should dormancy, DBT-linkage, and
+usage data be governed and shared, within applicable RBI/NPCI/DBT Mission
+data-protection norms, to identify and prioritise specific inactive-account segments
+for intervention?
+
+2) Interoperable last-mile infrastructure - how can Aadhaar-enabled payment
+systems, UPI, and Business Correspondent networks be better integrated with
+existing account data to reduce friction for low-literacy or rural users?
+
+3) Policy feedback & accountability - how should account-activity data feed back
+into the National Strategy for Financial Inclusion targets so implementers can be
+held accountable for usage, not just enrollment?
+
+Participants are expected to submit a concrete technical architecture - a data-driven
+targeting model, interoperable payment/access layer, or governance dashboard -
+and not a new financial product concept alone.
+
+Suggested Data Sources & References:
+
+   ●​ Pradhan Mantri Jan Dhan Yojana (PMJDY) dashboards, Department of
+      Financial Services, Ministry of Finance
+   ●​ RBI Financial Inclusion Index (FI-Index), Reserve Bank of India
+   ●​ National Strategy for Financial Inclusion, Reserve Bank of India
+   ●​ Direct Benefit Transfer (DBT) Mission dashboards, DBT Bharat, Cabinet
+      Secretariat
+   ●​ National Payments Corporation of India (NPCI) - UPI/AePS usage data
+   ●​ Digital Personal Data Protection Act, 2023 - for consent and data-sharing
+      safeguards in financial data use
+
+
+Objectives & Deliverables
+
+Participants are expected to:
+
+   ●​ Identify a Measurable Implementation Gap: Select a specific problem
+      within one of the three competition themes where India's development
+      indicators differ from the lived experiences of an underserved community.
+   ●​ Analyze the Existing Ecosystem: Study current government schemes,
+      public infrastructure, available datasets, or community initiatives addressing
+      the problem, and identify why the implementation gap continues to persist.
+   ●​ Develop an Innovative Solution: Design a practical intervention that
+      strengthens existing systems through technology, process improvements,
+      behavioural interventions, community participation, policy innovation, or
+      other suitable approaches.
+   ●​ Demonstrate Feasibility: Explain how the proposed solution can be
+      realistically implemented, considering stakeholders, resources, operational
+      constraints, and long-term sustainability.
+   ●​ Estimate Social Impact: Clearly define the intended beneficiaries, expected
+      outcomes, measurable impact, and the potential for scaling the solution
+      beyond its initial implementation.
+
+
+
+
+Competition Structure & Timeline
+
+Eligibility & Team Rules
+    • Team Size: Maximum of 4 members per team.
+    • Eligibility: Open to all students with a valid institutional ID.
+      Cross-institutional teams are permitted.
+    • Each team may register for only one theme.
+
+Competition Format
+
+Round 1: Concept Proposal Submission
+
+This is the preliminary screening round where teams present their understanding of
+the problem and their proposed solution. The objective is to evaluate the
+significance of the identified implementation gap, the novelty of the proposed
+approach, and its overall feasibility.
+
+The proposal should be concise and include:
+
+   ●​ Team Information: Team Name, Team ID, Institution, and Contact Details.
+   ●​ Problem Identification: The implementation gap selected within the
+      chosen theme and the underserved community it affects.
+   ●​ Evidence & Context: Supporting data, reports, or research demonstrating
+      the significance of the problem.
+   ●​ Existing Ecosystem: Brief analysis of current schemes, initiatives, or
+      solutions and the remaining implementation gap.
+   ●​ Proposed Solution: A high-level description of the solution, explaining how
+      it addresses the identified gap.
+   ●​ Expected Impact: Intended beneficiaries and anticipated social impact.
+
+The complete proposal should not exceed 6 pages (A4, 1-inch margins, Arial font,
+minimum 11pt, single PDF file)
+
+Submission: All Round 1 proposals must be submitted via the official Round 1
+Google Form (link to be shared with registered teams). The form will require you to
+upload your documentation PDF. Ensure your PDF is named India71_100_[Team
+ID].pdf. Submissions via email will not be accepted.
+
+Shortlist: Top 10 teams per theme (30 total) advance to Round 2.
+
+
+Round 2: Final Presentation (Techfest, IIT Bombay)
+
+Shortlisted teams will present a refined version of their proposal before an expert
+jury followed by a Q & A during Techfest, IIT Bombay.
+
+The presentation should include:
+
+   ●​   Problem validation and stakeholder understanding
+   ●​   Existing ecosystem analysis
+   ●​   Detailed solution
+   ●​   Implementation roadmap
+   ●​   Feasibility analysis
+   ●​   Scalability
+   ●​   Impact assessment
+
+Each team will receive 10 minutes for the presentation followed by a 5-minute
+jury interaction. Winners are determined by jury scores. Decisions of organizers and
+judges are final and binding.
+
+
+Key Dates
+
+
+ Event                                     Deadline
+Registration closes                         15th October
+
+Round 1 submission                          1st November
+
+Shortlist announcement                      8th November
+
+Finals                                      16th - 18th December 2026
+
+
+
+Evaluation, Prizes, and Recognition
+
+Evaluation Criteria
+Proposals and presentations are evaluated on the following, drawn directly from what
+teams are asked to submit across both rounds:
+
+   ●​ Problem Identification: How clearly does the team define the
+      implementation gap and the specific underserved community it affects?
+   ●​ Evidence & Context: How well is the problem supported by credible data,
+      reports, or research demonstrating its significance and scale?
+   ●​ Existing Ecosystem Analysis: Has the team studied current government
+      schemes, infrastructure, or community initiatives already addressing this
+      problem, and clearly explained why the gap persists despite them?
+   ●​ Proposed Solution: How well does the solution address the identified gap?
+      Is the approach, whether technology, policy, process, or community-based,
+      clearly explained?
+   ●​ Feasibility & Implementation Roadmap: How realistic is the plan for
+      implementation, considering stakeholders, resources, and operational
+      constraints?
+   ●​ Impact & Scalability: How clearly are the intended beneficiaries and
+      expected outcomes defined, and how credible is the potential to scale the
+      solution beyond its initial pilot?
+
+General Rules
+
+   1.​ Teams must register online at techfest.org, receiving a Team ID for future
+       reference.
+   2.​ The organizers' and judges' decisions are final and binding. Techfest reserves
+       the right to verify participant details.
+   3.​ Techfest, IIT Bombay, is not responsible for late or lost entries.
+   4.​ Solutions must be original and not protected by patents, copyrights, or
+       publications.
+   5.​ The latest information will be available on techfest.org, with registered
+       participants notified of changes via email.
+   6.​ All technical, procedural, and competition-related queries must be submitted
+       directly through the Techfest Competition Portal under the Doubt section.
+       Participants are strictly requested to regularly check the portal for answers
+       and updates
+   7.​ Official communication for important announcements will be through the
+       email siddhi@techfest.org. Queries submitted via email will not be
+       entertained
+Certificate Policy
+
+   1. The top three teams per theme in Round 2 receive a Certificate of
+      Excellence.
+   2. Only those teams that are shortlisted for the finals and also give a
+      final presentation about their work during Techfest 2026-27 would
+      be awarded an E-Certificate of Participation.
+
+Prize Money
+Prize money will be awarded to the top three teams via NEFT, latest by May 2027.
+
+Prize Money Submission Process
+
+   ●​ Submission Channel: Complete the prize money form directly on the
+      website after the final round concludes. The winners will be able to view the
+      form through their registered email ID
+   ●​ Deadline: The form must be submitted by December 31, 2026.
+
+Details Needed for the Website Form
+
+When filling out the form on the website, make sure you have the following bank
+account details ready:
+
+   1.​ Account Holder's Name
+   2.​ Account Number
+   3.​ Bank Name and Branch Name
+   4.​ IFSC Code
+

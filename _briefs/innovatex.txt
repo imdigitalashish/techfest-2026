@@ -1,0 +1,333 @@
+                          Techfest 2026-27
+
+                                 InnovateX
+InnovateX: The Future Habitats Challenge is a premier national innovation
+competition calling on India’s youngest minds and future leaders to solve critical
+urban and environmental challenges for a sustainable tomorrow. Hosted by
+Techfest, IIT Bombay, Asia's Largest Science & Technology Festival, this challenge
+is a platform for building practical, high-impact solutions from the ground up.
+
+We are seeking young problem-solvers, creators, designers, and systems thinkers
+who want to move beyond textbook concepts and create tangible prototypes that
+can transform our cities, starting from their own neighborhoods and scaling up to
+the national stage.
+
+
+
+Competition Themes
+
+Theme 1 : Underground Water Management
+
+Domain Overview
+
+IoT-based Underground Water Management focuses on using connected sensors,
+monitoring systems, and data analytics to understand and preserve groundwater
+resources. Cities face severe challenges in groundwater depletion, contamination,
+illegal extraction, pipeline leakages, and unpredictable recharge rates. IoT
+technologies can provide real-time insights into water levels, flow behaviour, and
+quality parameters, enabling smarter and more sustainable water management.
+Effective solutions in this domain contribute directly to sustainability and resource
+security.
+
+
+Challenge Question
+
+How can IoT technologies be designed and deployed to effectively monitor,
+protect, and manage underground water resources in an urban city? Propose an
+innovative IoT-based solution that addresses a specific groundwater-related
+challenge such as water level monitoring, contamination detection, illegal
+extraction prevention, pipeline leakage detection, or aquifer recharge analysis.
+Your solution should detail the problem, proposed technology, impact, and
+feasibility within a framework.
+
+
+Objectives and Deliverables
+
+• A Specific Underground Water Problem: Participants should identify a clear
+challenge related to groundwater levels, quality, usage, or distribution.
+
+• Propose an IoT-Based Solution: Present a comprehensive solution using IoT
+sensors, communication systems, and analytics tools, highlighting innovation,
+scalability, and practicality.
+
+• Demonstrate Technical Feasibility: Explain how the IoT system would
+function, including sensor operation, data collection, network requirements, and
+real-time monitoring features.
+
+• Identify Operational Challenges: Address issues such as underground
+connectivity, sensor durability, power consumption, maintenance, and data
+reliability.
+
+• Economic Analysis: Evaluate the cost-effectiveness of the proposed IoT
+solution and suggest a sustainable model for large-scale adoption in cities.
+
+• Environmental and Social Impact: Assess how the solution supports
+groundwater conservation, reduces wastage, improves water quality, and benefits
+communities.
+
+Theme 2: Rising AQI Levels in Modern Urban Cities
+
+Domain Overview
+
+Air pollution has become one of the most critical environmental challenges in
+rapidly urbanizing cities. Increasing vehicular emissions, industrial activity,
+construction dust, and waste burning contribute to escalating Air Quality Index
+(AQI) levels. Prolonged exposure to poor air quality leads to respiratory illnesses,
+reduced visibility, and long-term environ- mental degradation. As cities continue
+to grow, smart-city technologies must play a vital role in monitoring, predicting,
+and reducing AQI to ensure healthier and more sustainable urban living.
+Challenge Question
+
+How can technologies be leveraged to monitor, predict, and reduce rising AQI
+levels in modern urban environments? Propose an innovative solution using IoT
+sensors, AI-driven air quality forecasting, adaptive traffic control, drone-based
+monitoring, or urban planning strategies. Your solution should address a specific
+pollution source and outline its benefits, feasibility, and implementation strategy
+
+Objectives and Deliverables
+
+• Address a specific problem: Participants should identify a primary contributor
+to rising AQI-vehicular emissions, industrial zones, construction dust, waste
+burning, etc.
+
+• Propose an Innovative Solution: Develop a feasible, sustainable, and
+scalable solution using smart technologies to reduce or control air pollution.
+
+• Demonstrate Practical Feasibility: Explain how the proposed system
+operates and justify its effectiveness in real-world scenarios.
+
+• Implementation Plan: Provide a deployment strategy, including sensor
+placement, data collection, analytics, and integration with existing city systems.
+
+• Identify Potential Challenges: Discuss obstacles such as sensor calibration,
+weather effects, maintenance, or system reliability.
+
+• Analyze Economic Viability: Present a cost-effective plan for large-scale
+adoption and long-term operation in urban regions.
+
+• Evaluate Environmental Impact: Quantify how the solution contributes to
+pollution reduction, public health improvement, and sustainability.
+
+
+
+Theme 3: Rising plastic pollution in Coastal Cities
+
+Domain Overview
+
+Coastal plastic pollution has become one of the most critical environmental
+challenges in rapidly urbanizing megacities. In a coastal hub like Mumbai,
+increasing single-use plastic consumption, unsegregated municipal waste, open
+dumping, and stormwater runoffs contribute to escalating marine debris. Survey
+data estimates that approximately 5 million kilograms (5,000 metric tonnes)
+of plastic waste flow annually from Mumbai's waterways, creeks, and
+stormwater drains (nullahs) into the Arabian Sea. Prolonged accumulation of this
+waste chokes critical mangrove ecosystems, severely disrupts marine life, and
+worsens urban flooding during monsoons. As coastal cities continue to grow,
+smart-city technologies, automated interception systems, and circular-economy
+models must play a vital role in monitoring, capturing, and upcycling plastic waste
+to ensure cleaner and more sustainable urban-marine living.
+
+Challenge Question
+How can technologies be leveraged to monitor, intercept, and reduce rising plastic
+waste leakage into Mumbai's coastal and urban drainage networks? Propose an
+innovative solution using IoT waste-level sensors, automated river/creek
+skimmers,    AI-driven   sorting    mechanisms,      barrier-net   systems,    or
+community-integrated recycling strategies. Your solution should address a specific
+plastic waste source and outline its benefits, feasibility, and implementation
+strategy.
+
+Objectives and Deliverables
+   ●​ Address a Specific Problem: Participants should identify a primary
+      contributor to Mumbai's marine plastic pollution such as single-use plastics
+      entering stormwater drains, creek-mouth accumulation, unsegregated
+      household garbage, or beach litter.
+   ●​ Propose an Innovative Solution: Develop a feasible, sustainable, and
+      scalable hardware or software solution using smart technologies to
+      intercept, clear, or upcycle waste effectively.
+   ●​ Demonstrate Practical Feasibility: Explain how the proposed system
+      operates in real-world coastal or urban environments and justify its
+      mechanical or digital effectiveness.
+   ●​ Implementation Plan: Provide a deployment strategy, including
+      installation sites (e.g., specific creeks, drainage outlets like Malad or
+      Trombay, or high-footfall coastal zones), data collection, analytics, and
+      integration with existing municipal systems.
+   ●​ Identify Potential Challenges: Discuss obstacles such as marine
+      corrosion, tidal fluctuations, regular maintenance, monsoon overflow, or
+      system reliability.
+   ●​ Analyze Economic Viability: Present a cost-effective plan for large-scale
+      adoption, maintenance, and long-term operation within urban regions.
+   ●​ Evaluate Environmental Impact: Quantify how the solution contributes
+      to plastic reduction, marine life preservation, urban flood prevention, and
+      overall sustainability.
+
+Participants are allowed to choose any one of the Theme from the above themes
+
+
+Competition Structure & Timeline
+
+Eligibility & Team Rules
+
+   ● Team Size: A maximum of 4 members per team.
+   ● Eligibility: Open to all students with a valid ID from their educational
+      institution. Cross-institutional teams are encouraged.
+
+Competition Format
+
+Round 1: Abstract Submission & Presentation
+
+Round 1 requires teams to pitch their concept physically at their regional zonal
+center, showcasing their proposed architecture, design flow, and feasibility plan.
+
+Your submission should be clear, concise, and original, containing:
+   ●​ Team Information – Team name, Team ID,Theme number and contact
+      details for all members.
+   ●​ Problem Statement – A precise description of the specific problem you are
+      addressing from one of the 3 competition themes.
+   ●​ Background & Context – Briefly mention existing solutions (if any) and why
+      they fall short.
+   ●​ Proposed Solution – A short explanation of your original and innovative
+      idea, including the technology you plan to use and how it works.
+   ●​ Impact & Scalability – A brief summary of the potential social and economic
+      impact and how it can be scaled to benefit a large population.
+
+Note : Each team will be getting 10 Mins of time to present their solution.
+
+The Top five people from each regional zonal center will qualify for Round 2
+All the students who qualified for round 2 , should start working on their
+prototype.
+
+Note :You do not need to make any submissions for Round 1; all submissions are
+evaluated at the zonal venues.
+
+Round 2: Final Report & Prototype Submission and Final Presentations
+Submit a detailed report and working prototype including:
+   ●​ Detailed Solution Description – How it works, its design, and technology
+      used.
+   ●​ Prototype Demonstration – Evidence of functionality and usability for target
+      users
+   ●​ Cost & Market Viability – Estimated cost, affordability, and potential market
+      fit.
+   ●​ Implementation Plan – Steps for deployment and adaptability to different
+      conditions.
+   ●​ Scalability Plan – How it can be expanded for wider impact across India.
+   ●​ Impact Assessment – Clear estimation of social and economic benefits.
+
+
+The final report must be submitted by December 1, 2026 on the website.
+
+Submission Guidelines:
+All online submissions for this competition must be made through the
+official Techfest website prior to the specified deadline. Only the Team
+Leader is authorized to submit on behalf of the team. Submissions made by
+any other team member will not be considered valid, multiple submissions
+from the same team will not be accepted and may lead to disqualification
+from the competition.
+
+
+
+Final Presentations
+
+Final presentations will be held at Techfest, IIT Bombay, from December 15-18,
+2026. This is the stage where the top teams will compete for the final
+prize.Please note that the decisions of the organizers and judges are final and
+binding. Participants must submit their Abstract Submission and Final Report on
+the website.
+Timeline:
+
+Event                                        Dates
+
+Registration closes                          As per the date of respective city zonal
+
+Round 1 submission and Presentation          On the date of that city zonal
+
+Results of Round 1                           On the day of that city zonal
+
+Final report submission deadline             1st December 2026
+
+Finals                                       15-18th December
+
+Evaluation, Prizes, and Recognition:
+
+Evaluation Criteria
+  ●​ Creativity and Novelty: How original and innovative is the proposed idea?
+     How effectively does it introduce new smart technologies, IoT architectures,
+     or mechanical approaches compared to existing solutions?
+  ●​ Functionality and Usability: How well does the working prototype or
+     simulation perform? Is the system reliable, accurate, and robust when
+     operating under real-world environmental pressures (such as subterranean
+     connectivity, marine corrosion, tidal shifts, or high-dust atmospheres)?
+  ●​ Cost and Market Value: Is the solution economically viable and
+     affordable? Does it present a sustainable financial model for long-term
+     municipal, industrial, or community adoption?
+  ●​ Technical Implementation & Feasibility: Is the solution technically
+     feasible, repeatable, and resilient? How well does it account for operational
+     challenges like power consumption, sensor calibration, maintenance, and
+     severe weather conditions?
+  ●​ Regional Scalability: Can the solution be easily scaled and adapted to
+     diverse geographical, infrastructural, and regulatory landscapes across
+     different cities and coastal hubs in India?
+  ●​ Environmental & Socioeconomic Impact: What is the quantifiable
+     impact on resource preservation, pollution mitigation (such as water
+     conservation, AQI improvement, or marine plastic diversion), and public
+     health or community well-being?
+  ●​ Design & Ergonomics: Is the system architecture, hardware layout, or
+     software interface well-thought-out, user-centric, and optimized for
+     operators, municipal authorities, or local communities?
+  ●​ Problem-Centric Approach (Bonus Points): Teams that demonstrate a
+     deep, nuanced understanding of their chosen theme (Underground Water
+     Management, Rising AQI, or Coastal Plastic Pollution in regions like
+     Mumbai) will receive extra credit. This includes providing a detailed analysis
+     of specific local pain points and showing how their solution directly targets
+     those unique challenges rather than relying on a generic product.
+
+
+General Rules
+
+  1.​ Teams must register online at techfest.org, receiving a Team ID for
+      future reference.
+  2.​ Registration and Round 1 submissions are open until the date of
+      respective City zonals.
+  3.​ The organizers and judges' decisions are final and binding. Techfest
+      reserves the right to verify participant details.
+  4.​ Techfest, IIT Bombay, is not responsible for late or lost entries.
+  5.​ Solutions must be original and not protected by patents, copyrights,
+      or publications.
+  6.​ The latest information will be available on techfest.org, with
+      registered participants being notified of changes via email.
+  7.​ All technical, procedural, and competition-related queries must be
+      submitted directly through the Techfest Competition Portal under the Doubt
+      section. Participants are strictly requested to regularly check the portal for
+      answers and updates
+  8.​ Official communication for important announcements will be through the
+      satwik@techfest.org. Queries submitted via email will not be entertained
+
+
+
+
+Certificate Policy
+
+  1. The top three teams per theme in Round 2 will receive a Certificate of
+     Excellence.
+  2. All teams attending Round 2 at IIT Bombay will receive an
+     e-certificate.
+Prize Money​
+Prize money will be awarded to the top three teams per theme via NEFT by the
+latest May 2027
+
+Prize Money Submission Process
+
+   ●​ Submission Channel: Complete the prize money form directly on the
+      website after the final round concludes. The winners will be able to view
+      the form through their registered email ID
+   ●​ Deadline: The form must be submitted by December 31, 2026.
+
+Details Needed for the Website Form
+
+When filling out the form on the website, make sure you have the following bank
+account details ready:
+
+   1.​ Account Holder's Name
+   2.​ Account Number
+   3.​ Bank Name and Branch Name
+   4.​ IFSC Code
+

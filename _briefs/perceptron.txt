@@ -1,0 +1,431 @@
+                                   Presents
+                 Perceptron Hackathon 2026
+
+Introduction & Vision
+
+The IITB-OPtiver AI Innovation Lab Hackathon invites builders to tackle ten
+concrete, technically demanding problems spanning efficient AI systems, causal
+reasoning, financial markets, multi-agent coordination, education, and trustworthy
+AI. Unlike a single open-ended brief, each theme below bundles multiple related
+problem statements. Teams pick one theme, then one specific problem within it,
+and are evaluated on the depth and rigor of their technical plan, not a working
+prototype, at this stage.
+
+
+Competition Themes
+Theme 1: Efficient AI at Scale
+
+Problem 1: Cheap Fine-Tuning Across Weak, Scattered Devices
+
+Context:Organizations often want to specialize a shared model using data that lives
+         on many different machines without moving the raw data anywhere.
+Challenge:Build a lightweight fine-tuning scheme where even low-power devices
+           can meaningfully contribute updates to a shared model, training stays
+           stable even when devices drop out mid-run, and one data-rich device
+           can't quietly dominate the result.
+Starter Resources:HuggingFace PEFT (LoRA) + an open federated learning
+                  framework (e.g. Flower), applied to a small open model (GPT-2 or
+                 TinyLlama scale)
+Minimum Viable:
+   ●​ Simulate 3–5 nodes with different data splits and compute budgets
+   ●​ Show the shared model converges despite the heterogeneity
+Stretch Goals:
+   ●​ Simulate node dropout mid-training
+   ●​ Compare a smarter aggregation strategy against naive averaging
+
+Problem 2: Squeezing Long-Context Inference into Less Memory
+
+Context: Long documents or chat histories strain GPU memory, mostly from the
+         cache a model keeps for past tokens.
+Challenge: Shrink that cache significantly while barely hurting the model's ability to
+           recall earlier content.
+
+
+
+Starter Resources: Open reference implementations of existing cache-compression
+                  techniques (e.g. StreamingLLM, H2O), applied to a small model
+                  (1-3B params)
+Minimum Viable:
+   ●​ Apply an existing compression technique and measure memory savings vs.
+      an uncompressed baseline
+   ●​ Show the accuracy drop on a small, long-context recall task
+Stretch Goals:
+   ●​ Propose a modification to an existing method
+   ●​ Benchmark against 2+ baselines
+
+Note: Choose either Problem 1 or Problem 2 (not both) as your team's single
+problem statement for Round 1.
+
+Theme 2: Cause and Effect in AI Decisions
+
+Problem 3: Did the Policy Actually Work, or Did It Just Look Like It Did?
+
+Context: A deployed decision system shapes the very outcomes later used to judge
+         it,so simple before/after metrics can mislead.
+Challenge: Estimate what would have happened under a different policy, using only
+            logged data from the current one.
+Starter Resources: A public bandit-feedback or off-policy evaluation dataset (e.g.
+                    Open Bandit Dataset), or a synthetic dataset with known
+                    ground-truth counterfactuals.
+Minimum Viable:
+   ●​ Apply a standard off-policy evaluation method (e.g. inverse propensity
+      weighting or a doubly robust estimator)
+   ●​ Show a concrete case where this estimate differs from a naive before/after
+      number
+Stretch Goals:
+   ●​ Quantify uncertainty on the counterfactual estimate
+   ●​ A basic sensitivity analysis for unobserved confounding
+
+Note: This theme currently has a single problem statement.
+
+
+Theme 3: Markets & Trading Intelligence
+
+Problem 4: Order Book Forecasting Under Regime Shifts
+
+Context:Limit order book dynamics change abruptly around macro announcements,
+         volatility spikes, and liquidity shocks. Models trained on one regime often
+         degrade silently when the regime changes.
+Challenge: Build a short-horizon LOB forecasting model that detects when the data
+           distribution has shifted and adapts, instead of silently degrading.
+           Starter Resources: Public LOB datasets (e.g. LOBSTER sample data, or
+           crypto exchange order-book data via exchange APIs)
+Minimum Viable:
+   ●​ Predict short-term price direction or spread from order book features
+   ●​ Detect at least one distribution shift using a simple statistical test (e.g. rolling
+      KS test) and show the model reacting to it
+Stretch Goals:
+   ●​ Multiple regime-adaptive prediction heads
+   ●​ Latency benchmarking under a defined budget
+
+Problem 5: Market-Impact-Aware Execution Strategy
+
+Context: A firm's own large orders move the market it's trying to trade in, so naive
+         models overstate expected returns.
+Challenge: Build an execution agent that reduces slippage compared to a standard
+          baseline by accounting for its own market impact.
+Starter Resources: An open market simulator (e.g. ABIDES)
+Minimum Viable:
+   ●​ Implement a TWAP/VWAP baseline
+   ●​ Build one agent (rule-based, heuristic, or simple RL) that measurably beats
+      the baseline on slippage in the simulator
+Stretch Goals:
+   ●​ Explicit counterfactual modeling of "what the book would look like without
+      our order"
+   ●​ Multi-step feedback-loop analysis
+
+Problem 6: Cross-Asset Statistical Arbitrage with Latency Budgets
+Context: Arbitrage opportunities across correlated instruments exist for only
+         milliseconds before they close.
+Challenge:Identify and rank cross-asset mispricings in near real time, trading off
+           Signal confidence against acting-on-it latency.
+Starter Resources: Synthetic paired price series, or public multi-exchange crypto
+                    price data for the same asset.
+
+Minimum Viable:
+   ●​ Detect mispricings using a threshold or statistical model
+   ●​ Report how fast the opportunity typically decays
+Stretch Goals:
+   ●​ Simulated end-to-end latency budget
+   ●​ A basic paper-trading demo
+Note: Choose exactly one of Problems 4, 5, or 6 as your team's problem statement.
+
+
+Theme 4: Agents That Compete, Cooperate, and Adapt
+
+Problem 7: Splitting a Shared Resource When Demand Keeps Changing
+
+Context: Delivery fleets, compute clusters, or robot swarms must divide limited
+         resources among agents while demand shifts unpredictably.
+Challenge: Build a multi-agent system that reallocates resources as demand shifts,
+           using some form of look-ahead rather than a fixed static policy.
+Starter Resources: An open multi-agent simulation environment (e.g. a grid-world
+                   dispatch simulator, or PettingZoo-based environment) provided
+                   or pointed to by organizers.
+Minimum Viable:
+   ●​ Implement a rule-based baseline allocator
+   ●​ Build one agent (RL or planning-based) that outperforms it when demand
+      suddenly shifts
+Stretch Goals:
+   ●​ Handle both an abrupt shock and a gradual drift in the same run
+   ●​ Evaluate over long horizons, not just short episodes
+
+Note: This theme currently has a single problem statement.
+
+
+
+
+Theme 5: AI That Teaches
+
+Problem 8: A Tutor That Finds the Real Reason You're Stuck
+
+Context: Struggling with quant reasoning, math, or code usually isn't about missing
+         facts it's one specific misunderstanding producing the same class of
+         mistake repeatedly.
+Challenge: Build a tutoring system that traces a learner's wrong answers back to a
+            likely root misunderstanding and generates targeted follow-up problems.
+Starter Resources: A public dataset of student errors (e.g. ASSISTments, or a
+coding-error dataset), or a small hand-built taxonomy of 3–5 common
+misconceptions if no dataset fits.
+
+Minimum Viable:
+   ●​ Classify a wrong answer into one of 3–5 misconception categories
+   ●​ Automatically generate a new practice problem targeted at that category
+Stretch Goals:
+   ●​ Track a learner's misconceptions across multiple sessions
+   ●​ Show some evidence the targeted problems actually reduce that error type
+      over time
+
+Note: This theme currently has a single problem statement.
+
+
+Theme 6: AI You Can Actually Trust
+
+Problem 9: Catching an Agent Before It Acts on a Bad Idea
+
+Context: Agents that call tools and take multi-step actions can hallucinate a
+plausible but ungrounded action.
+Challenge: Build a guardrail layer that checks a proposed action against a verifiable
+source before it executes.
+Starter Resources: An existing agent framework (LangChain/LangGraph or similar)
+plus a small reference knowledge base for grounding checks.
+Minimum Viable:
+   ●​ Build a checker that verifies at least one class of agent action against a
+       source before execution
+   ●​ Demonstrate it catching at least one deliberately bad/hallucinated action
+Stretch Goals:
+   ●​ Add routing between a fast/cheap model and a slower/careful one based on
+       risk
+   ●​ A small red-teaming test suite
+
+
+
+Problem 10: Trusting a Signal Extracted from Messy, Manipulated Text
+
+Context: Decisions increasingly lean on signals from unstructured text alongside
+numeric data, but that text is noisy and sometimes manipulated.
+Challenge: Fuse text and time-series data into one signal and report a confidence
+bound on each prediction that's meaningful.
+Starter Resources: A public financial news + price dataset (widely available on
+Kaggle),plus an existing conformal prediction library (e.g. MAPIE) instead of
+building calibration machinery from scratch.
+Minimum Viable:
+   ●​ Build a fusion model combining text sentiment and time-series signal
+   ●​ Wrap predictions with an off-the-shelf conformal prediction method for
+       confidence bounds
+Stretch Goals:
+   ●​ Test robustness under one adversarial or noisy-label scenario
+   ●​ Check whether the confidence bounds are actually well-calibrated, not just
+       present
+
+Note: Choose either Problem 9 or Problem 10 as your team's problem statement.
+
+
+Competition Structure & Timeline
+
+
+Eligibility & Team Rules
+
+   ● Team Size: A maximum of 3 members per team.
+   ● Eligibility: Open to all students with a valid ID from their educational
+     institution. Cross-institutional teams are encouraged.
+
+
+Round Structure
+
+Round 1: Online abstract submission, evaluated by a panel against the
+         criteria below.
+
+Round 2: Finals. A total of 25-30 teams are selected across all themes combined
+(not 30 per theme) to advance to the in-person finals at IIT Bombay.Teams must
+bring a working code / prototype demonstrating their Minimum Viable scope (and
+any stretch goals attempted).Round 1 was plan-only, but Round 2 requires an
+actual functioning build to present and demo to the judges.
+
+Midway Check : Roughly 15 days before the finals, each of these shortlisted teams
+submits a 1-page progress report. This is a lightweight checkpoint to confirm the
+team is on track and has not stalled or pivoted away from its stated plan . it is not
+separately scored, but flags teams needing support or follow-up before the final
+judging.
+
+
+
+Finals : At the finals, each team presents to a joint panel of judges from Optiver
+and IIT Bombay professors. Scores from the panel are normalized across all 30
+teams (regardless of theme) on a common scale, and the top 3 teams overall (not
+top 3 per theme) are declared the winners.
+
+
+
+Teams choose one problem statement from the 10 listed across the 6 themes
+(Efficient AI at Scale, Cause & Effect in AI Decisions, Markets & Trading Intelligence,
+Agents, AI That Teaches, AI You Can Trust).
+
+
+
+
+Abstract Format
+
+Suggested length: 600–900 words (roughly 1–1.5 pages), plus an optional 1-page
+architecture/approach diagram.
+             Section                             What to include
+
+    Problem & Theme chosen         Which of the 10 problem statements, and 2–3
+                                  sentences on why it's interesting/relevant to the
+                                                       team.
+
+ Understanding of the challenge   Restate the core technical difficulty in your own
+                                  words — shows you've actually grasped what's
+                                    hard about it, not just the surface prompt.
+
+       Proposed approach            Concrete method/architecture you intend to
+                                     build. Name specific techniques, models,
+                                  datasets, or tools. Avoid vague phrases like "we
+                                            will use AI/ML to solve this."
+
+         Minimum Viable              Map your plan explicitly to the problem's
+                                   Minimum Viable bullets ,what will exist and be
+                                           demoable by the deadline.
+
+        Stretch ambitions           Which stretch goal(s) you'd attempt if time
+                                   allows, and why they're the natural next step.
+
+     Novelty / differentiation      If your approach deviates from the "obvious"
+                                             baseline, call it out explicitly.
+
+         Evaluation plan          How you'll show your solution actually works —
+                                    metrics, baselines you'll compare against,
+                                         datasets/simulators you'll use.
+
+      Feasibility and Risks           Brief note on relevant skills across the 3
+                                   members and why you can execute this in the
+                                   available time. Also add what could go wrong?
+
+
+Not required: code, results, or working prototypes at this stage. Round 1 is judged
+on the plan, not execution. (Though a rough diagram or pseudo-architecture is a
+strong plus.)
+Evaluation Criteria
+
+
+        Criterion           Weight      What reviewers are checking for
+
+ Problem Understanding &     20%       Does the abstract correctly identify the
+        Relevance                    actual technical crux of the problem? Is the
+                                      scope realistic for the problem's Minimum
+                                                       Viable bar?
+
+   Technical Soundness       25%      Is the proposed method technically valid?
+       & Feasibility                    Are named tools/datasets/techniques
+                                        appropriate and actually suited to the
+                                      problem? Can this be built by 3 people in
+                                              the hackathon timeframe?
+
+   Innovation / Novelty      20%      Does the approach go beyond the obvious
+                                       baseline named in "Starter Resources"?
+                                     Any original ideas in method, evaluation, or
+                                                       framing?
+
+   Clarity & Structure of    10%     Is the writing precise and specific (concrete
+          Abstract                         techniques/metrics) rather than
+                                       buzzword-heavy? Can a reviewer picture
+                                            the actual system being built?
+
+    Impact & Rigor of        15%        Are the proposed metrics/baselines
+     Evaluation Plan                 meaningful? Would the comparison actually
+                                                  prove the claim
+
+   Team Fit & Readiness      10%      Does the team's stated skill mix plausibly
+                                        support the plan? Is there a credible
+                                      week-by-week or milestone sense of how
+                                                 they'll get to MVP?
+
+
+
+Scoring scale (per criterion)
+
+  ●​ 5 – Excellent: Precise, technically deep, clearly feasible, shows original
+     thinking.
+  ●​ 4–Strong: Solid plan, minor gaps in depth or specificity.
+  ●​ 3–Adequate:Understands          the     problem       but     approach   is
+      generic/under-specified.
+  ●​ 2–Weak:Misunderstands part of the problem, or approach is infeasible/vague.
+  ●​ 1 – Poor: Boilerplate/buzzword abstract with no concrete technical plan.
+Weighted score = Σ (criterion score × weight). Normalize to rank teams.
+
+Final Presentations
+
+Final presentations will be held at Techfest, IIT Bombay, from December 15-18,
+2026. This is the stage where the top teams will compete for the final prizes.
+Please note that the decisions of the organizers and judges are final and binding
+
+Submission Guidelines for Round 1 and Midway Report :
+All online submissions for this competition must be made through the official
+Techfest website prior to the specified deadline. Only the Team Leader is authorized
+to submit on behalf of the team. Submissions made by any other team member will
+not be considered valid, multiple submissions from the same team will not be
+accepted and may lead to disqualification from the competition.
+
+Key Dates
+
+
+                  Event                                     Dates
+
+            Registration closes                         15th October
+
+      Round 1 submission Deadline                        31st October
+
+         Shortlist announcement                        10th November
+
+              Midway Check                              1st December
+
+                  Finals                              15-18th December
+
+
+General Rules
+
+   1.​ Teams must register online at techfest.org, receiving a Team ID for
+       future reference.
+   2.​ The organizers and judges' decisions are final and binding. Techfest reserves
+       the right to verify participant details.
+   3.​ Techfest, IIT Bombay, is not responsible for late or lost entries.
+   4.​ Solutions must be original and not protected by patents, copyrights,
+       or publications.
+   5.​ The latest information will be available on techfest.org, with registered
+       participants being notified of changes via email.
+   6.​ All technical, procedural, and competition-related queries must be
+       submitted directly through the Techfest Competition Portal under the
+       Doubt section. Participants are strictly requested to regularly check the
+       portal for answers and updates
+   7.​ Official communication for important announcements will be through
+       the email satwik@techfest.org. Queries submitted via email will not be
+       entertained.
+
+
+Certificate Policy
+
+   1. The top three teams in Round 2 receive a Certificate of Excellence.
+   2. All the teams that are qualified for round 2 will receive an
+      E-certificate
+
+
+Prize Money
+Prize money will be awarded to the top three teams via NEFT, latest by May 2027.
+
+Prize Money Submission Process
+
+   ●​ Submission Channel: Complete the prize money form directly on the
+      website after the final round concludes. The winners would be able to view
+      the form through their registered email ID
+   ●​ Deadline: The form must be submitted by December 31, 2026.
+
+Details Needed for the Website Form
+
+When filling out the form on the website, make sure you have the following bank
+account details ready:
+
+   1.​ Account Holder's Name
+   2.​ Account Number
+   3.​ Bank Name and Branch Name
+   4.​ IFSC Code
+

@@ -1,0 +1,16 @@
+.DS_Store
+.env
+.env.*
+**/.data/
+**/.cache/
+**/__pycache__/
+**/.venv/
+**/venv/
+**/node_modules/
+**/.ipynb_checkpoints/
+**/wandb/
+**/mlruns/
+*.safetensors
+*.ckpt
+*.pth
+*.gguf

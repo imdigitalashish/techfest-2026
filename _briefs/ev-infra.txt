@@ -1,0 +1,388 @@
+                        Techfest 2026-27
+
+
+
+
+          EV Infra & Green Mobility AI Challenge
+
+Objective
+India’s automotive sector is undergoing a major transformation, driven by the
+adoption of electric mobility, the expansion of charging infrastructure, advances in
+vehicle technologies, and an increasing focus on environmentally sustainable
+manufacturing. National initiatives such as FAME and PM E-DRIVE have supported
+this transition, creating a need for robust, India-specific digital tools and datasets
+that can strengthen infrastructure planning and sustainability assessment.
+
+Two critical information gaps currently constrain evidence-based decision-making.
+First, EV charging infrastructure information remains fragmented across multiple
+platforms and networks, making it difficult to assess national coverage, identify
+underserved regions, and align future deployment with actual vehicle populations.
+Second, automotive Life Cycle Assessment studies largely rely on international
+datasets that may not adequately reflect India’s electricity mix, materials,
+manufacturing processes, supply chains, logistics systems, vehicle-use patterns,
+and recycling ecosystem.​
+​
+Government Institutions, including the Ministry of Heavy Industries and its CPSEs /
+ABs/ Test agencies under it such as International Centre for Automotive Technology
+(ICAT), require scalable and transparent analytical solutions to support EV
+infrastructure planning, automotive sustainability assessment, policy formulation,
+technology evaluation, and industry engagement.
+
+Through this innovation challenge, student teams are invited to develop practical,
+data-driven solutions under either of the following two challenge tracks.
+Challenge Question
+Participants may choose to participate in any one of the following two challenges.
+
+Challenge 1: EV Infra Map India
+Mapping and Integration of Nationwide EV Charger Installations Based on Vehicle
+Population Using VAHAN Data
+India's charging infrastructure is expanding through the efforts of government
+agencies, public-sector entities, charge point operators, utilities, and private
+companies. However, information on installed chargers is distributed across multiple
+applications and databases. This fragmentation limits the ability to develop a unified
+view of charging availability and assess whether infrastructure deployment is
+aligned with EV adoption across regions.
+
+Objective
+Develop a data-driven national platform that:
+
+   ●​ Integrates and maps existing public EV charging infrastructure across India.
+   ●​ Uses VAHAN vehicle registration data to assess the relationship between EV
+      population and charging availability.
+   ●​ Identifies underserved areas and charging infrastructure gaps.
+   ●​ Estimates future charging infrastructure requirements across different
+      regions.
+   ●​ Supports evidence-based planning by MHI, ICAT, state governments, and
+      other relevant stakeholders.
+
+Data Layers to Integrate
+Teams may consider integrating the following broad data layers:
+
+ Data Layer                           Illustrative Sources
+
+ EV    population      &    vehicle   VAHAN database and state transport data
+ registration
+
+ Existing       EV         charging   Public charging applications, charger networks
+ infrastructure                       and open databases
+
+ Geographic   &      administrative   GIS platforms and open mapping sources
+ boundaries
+ Road and mobility network           National highways, major roads and transport
+                                     corridors
+
+ Demographic      and   economic     Population, urbanisation and commercial activity
+ activity                            datasets
+
+ Electricity infrastructure          Publicly available grid and utility information
+
+ Supporting             contextual   Tourism,  logistics,      land-use     and    urban
+ information                         development data
+
+
+
+Where live or detailed datasets are unavailable, teams may use publicly available,
+open-source, sample, or realistic synthetic datasets. All data sources and
+assumptions must be clearly documented.
+
+Expected Deliverables
+Teams selecting this challenge should submit:
+
+   ●​ Functional prototype or web-based platform presenting a unified view of
+      EV charging infrastructure.
+   ●​ Interactive national GIS map showing existing chargers, infrastructure
+      coverage, and identified gaps.
+   ●​ Analytical methodology document explaining the approach used for
+      integration, gap assessment, and estimation.
+   ●​ Charger requirement estimation and recommendation module for
+      selected states, districts, cities, or transport corridors.
+   ●​ Decision-support dashboard presenting relevant indicators and planning
+      insights.
+   ●​ Presentation or demonstration video showcasing the solution for at least
+      one representative geography.
+   ●​ Scalability roadmap outlining how the solution could be expanded into a
+      nationwide planning platform.
+
+
+
+
+Challenge 2: Green Auto India
+Creation of an India-Specific Life Cycle Assessment Database for the Automotive
+Sector
+The environmental footprint of a vehicle extends beyond its operation and includes
+raw material extraction, component production, vehicle manufacturing, energy
+consumption, transportation, maintenance, recycling, and end-of-life treatment.
+However, many Life Cycle Assessment studies currently depend on international or
+global-average datasets that may not accurately represent Indian conditions.
+
+An indigenous automotive LCA database can support more credible environmental
+assessments, sustainable product development, green manufacturing, policy
+evaluation, ESG reporting, and technology comparison across conventional, electric,
+hybrid, and other emerging vehicle technologies.
+
+Objective
+Develop an India-specific automotive      Life   Cycle Assessment database and
+assessment framework that:
+
+   ●​ Represents key materials, components, processes, energy sources, logistics
+      activities, and end-of-life pathways relevant to India.
+   ●​ Enables estimation of the environmental footprint of automotive products and
+      technologies.
+   ●​ Supports comparisons across vehicle technologies, materials, components, or
+      manufacturing choices.
+   ●​ Provides a transparent and scalable foundation for sustainability assessment.
+   ●​ Supports MHI, ICAT, automotive manufacturers, suppliers, researchers, and
+      policymakers in evidence-based decision-making.
+
+Data Layers to Integrate
+Teams may consider integrating the following broad data layers:
+
+ Data Layer                  Illustrative Sources
+
+ Materials                   Steel, aluminium, copper, plastics, composites and
+                             recycled materials
+
+ Vehicle components          Body, chassis, powertrain, battery, tyres, electronics
+                             and other major systems
+
+ Manufacturing processes     Casting, forging, machining, moulding,      stamping,
+                             welding, painting and assembly
+
+ Energy sources              Electricity, renewable energy, natural gas, hydrogen
+                             and other fuels
+ Transportation & logistics   Road, rail,   coastal   shipping   and   other   freight
+                              movements
+
+ Vehicle-use phase            Energy or fuel consumption,         maintenance     and
+                              operational parameters
+
+ End-of-life systems          Reuse, recycling, recovery and disposal pathways
+
+ Environmental indicators     Greenhouse gas emissions and other relevant impact
+                              categories
+
+
+
+Teams are not expected to create an exhaustive national database during the
+competition. They may demonstrate the proposed framework using a defined set of
+materials, components, processes, or vehicle systems. All sources, boundaries,
+assumptions, limitations, and data-quality considerations must be clearly stated.
+
+Expected Deliverables
+Teams selecting this challenge should submit:
+
+   ●​ Prototype India-specific automotive LCA database covering a clearly
+      defined scope.
+   ●​ Database architecture and data-collection framework demonstrating
+      how additional datasets can be incorporated.
+   ●​ Environmental impact calculation engine for selected automotive
+      materials, components, or vehicle technologies.
+   ●​ Web-based dashboard or visualisation platform presenting lifecycle
+      results and comparisons.
+   ●​ Methodology document explaining system boundaries, assumptions, data
+      sources, calculations, and limitations.
+   ●​ Demonstration case study applying the proposed database to at least one
+      automotive product, component, material, or technology.
+   ●​ Scalability roadmap outlining how the solution could support wider
+      adoption by ICAT, industry, researchers, and policymakers.
+
+
+
+
+Competition Format
+Round 1: Concept & Roadmap Submission
+The submission should be concise and include:
+
+   ●​ Team Information: Team Name, Team ID, Institution, and Contact Details.
+   ●​ Methodology Document: Explaining the team's understanding of the
+      problem and the analytical approach they intend to use (e.g., for integration,
+      gap assessment, and estimation under Challenge 1, or the LCA framework
+      under Challenge 2).
+   ●​ Implementation Roadmap: A complete, step-by-step plan explaining
+      exactly how the team intends to build their proposed solution — including the
+      data sources to be used, tools/technologies planned, development stages,
+      and how they intend to arrive at the final prototype ahead of the Grand
+      Finale.
+
+Submission Guidelines: Online submissions for this competition must be made
+through the official Techfest website prior to the specified deadline. Only the Team
+Leader is authorized to submit on behalf of the team. Submissions made by any
+other team member will not be considered valid, multiple submissions from the
+same team will not be accepted and may lead to disqualification from the
+competition.
+Shortlisting: There is no fixed number of teams to be shortlisted. The
+top-performing teams, as determined by the evaluation panel, will advance to
+Round 2: the Grand Finale at Techfest, IIT Bombay.
+
+Evaluation Criteria for Round 1
+
+ Evaluation Criterion                      Weight
+
+Problem Understanding & Relevance         25%
+
+Feasibility & Technical Soundness of 25%
+Approach
+
+Innovation    /   Novelty   of   Proposed 20%
+Solution
+
+Clarity   &      Completeness           of 20%
+Implementation Roadmap
+
+Planned Data Strategy        (sources   & 10%
+integration approach)
+Total                                         100%
+
+
+
+
+Round 2: Grand Finale              -   Live   Demonstration    &     Presentation
+(Techfest, IIT Bombay)
+
+Shortlisted teams are expected to build their proposed solution in line with the
+Implementation Roadmap submitted in Round 1, and present a live
+demonstration of their working prototype before an expert jury.
+
+The presentation should include:
+
+   ●​ A live demonstration of the working prototype/solution, covering the
+      Expected Deliverables listed under the chosen challenge track (see Expected
+      Deliverables).
+   ●​ A brief walkthrough of how the final solution builds on or has evolved from
+      the roadmap submitted in Round 1.
+
+Q&A: Following the presentation, each team will go through a Q&A / jury
+interaction session based on a live demonstration presented.
+
+Evaluation Criteria for Round 2
+
+ Evaluation Criterion                                         Weight
+
+ Technical & Analytical Robustness                            25%
+
+ Data Quality & Integration                                   20%
+
+ Relevance & Practical Usability                              20%
+
+ Innovation                                                   15%
+
+ Scalability & Replicability                                  10%
+
+ Presentation & Communication                                 10%
+
+ Total                                                        100%
+
+Suggested Solution Approach (Indicative)
+Teams are free to develop their own methodology. A broad solution-development
+approach may include:
+
+   ●​ Problem Definition: Define the intended users, decision-making
+      requirement, study boundary, and expected outputs.
+   ●​ Data Collection: Identify, compile, and document suitable public,
+      open-source, sample, or synthetic datasets.
+   ●​ Data Integration: Standardise and combine datasets into a consistent
+      analytical structure.
+   ●​ Analysis     and     Estimation: Apply suitable statistical, geospatial,
+      optimisation, LCA, or AI-based techniques.
+   ●​ Validation: Test the model against available benchmarks, sample cases, or
+      alternative scenarios.
+   ●​ Visualisation: Present outputs through a clear, interactive, and
+      non-technical user interface.
+   ●​ Recommendations: Translate analytical results into actionable planning or
+      sustainability insights.
+   ●​ Scalability Assessment: Explain how the prototype can be expanded across
+      geographies, datasets, vehicle categories, or automotive applications.
+Solutions will be judged on the intelligence, transparency, and defensibility of the
+approach rather than access to premium or proprietary datasets.
+
+
+
+
+Team Specification and Eligibility
+
+Eligibility & Team Rules
+
+   ●​ Team Size: 2-5 members per team.
+   ●​ Eligibility: Open to all undergraduate and postgraduate students.
+      Cross-department and cross-college teams are encouraged.
+   ●​ Each team may register and submit a solution under one challenge track
+      only.
+   ●​ An individual may not participate as a member of more than one team.
+
+
+
+Key Dates
+
+ Event                                         Dates
+
+ Registration deadline                         15th October 2026
+Round 1 Submission deadline                   30th October 2026
+
+Round 1 Result announcement                   7th November 2026
+
+Round 2 : Finale at Techfest, IIT Bombay      16th – 18th December 2026
+
+
+
+
+General Rules
+
+  1.​ Teams must register online at techfest.org, receiving a Team ID for future
+      reference.
+  2.​ The organizers' and judges' decisions are final and binding. Techfest reserves
+      the right to verify participant details.
+  3.​ All submissions must be the original work of the participating team.
+  4.​ Open-source tools, libraries, models, and public datasets may be used with
+      appropriate attribution.
+  5.​ Any synthetic data used in the solution must be clearly identified and
+      documented.
+  6.​ Teams must disclose the use of AI tools, third-party software, external
+      datasets, and pre-built frameworks.
+  7.​ Finalists must be available to present and defend their solution during the
+      Grand Finale at IIT Bombay.
+  8.​ Techfest, IIT Bombay, is not responsible for late or lost entries.
+  9.​ Solutions must be original and not protected by patents, copyrights, or
+      publications.
+  10.​The latest information will be available on techfest.org, with registered
+      participants notified of changes via email.
+  11.​All technical, procedural, and competition-related queries must be submitted
+      directly through the Techfest Competition Portal under the Doubt section.
+      Participants are strictly requested to regularly check the portal for answers
+      and updates
+  12.​Official communication for important announcements will be through the
+      email siddhi@techfest.org. Queries submitted via email will not be
+      entertained
+
+
+Certificate Policy and Recognition
+
+  ●​ Certificates of merit and national recognition for finalists during
+      the Techfest finale.
+   ●​ Opportunity to showcase the solution before senior officials of the
+      ICAT / MHI and industry leaders.
+   ●​ Potential pathway for the most promising ideas to inform real
+      municipal / ULB charging - infrastructure planning.
+
+
+
+Prize Money
+Prize money will be awarded to the Top 3 Teams per Challenge via NEFT, latest
+by May 2027.
+
+Prize Money Submission Process
+
+   ●​ Submission Channel: Complete the prize money form directly on the website
+      after the final round concludes. The winners will be able to view the form
+      through their registered email ID
+   ●​ Deadline: The form must be submitted by December 31, 2026.
+
+Details Needed for the Website Form
+
+When filling out the form on the website, make sure you have the following bank
+account details ready:
+
+   1.​ Account Holder's Name
+   2.​ Account Number
+   3.​ Bank Name and Branch Name
+   4.​ IFSC Code
+

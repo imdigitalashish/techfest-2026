@@ -1,0 +1,131 @@
+                            Techfest 2026-27
+                          2nd APCTT Hackathon 2026
+
+                  AI for Technology Readiness
+Objective:
+
+To develop functional AI-powered, AI-assisted, or hybrid assessment tools capable
+of evaluating Technology Readiness Levels (TRL 1–9) from unstructured technical
+documentation, streamlining technology transfer workflows, and providing
+transparent, auditable evidence for innovation ecosystems across developing
+nations.
+
+Challenge Question:
+
+How can an AI pipeline accurately parse raw technology documentation (e.g.,
+patents, research papers, R&D reports), predict its correct Technology Readiness
+Level (TRL 1–9), synthesize supporting evidence, and output an auditable,
+actionable gap analysis to guide technology progression?
+
+Note on Evaluation & Instructions: The detailed problem statement instructions,
+specific dataset guidelines, assessment criteria checklist, and development sample
+cases will be officially released to all registered teams on October 10, 2026,
+immediately after registrations close.
+
+Scope & Required Deliverables
+The complete dataset guidelines, assessment criteria, sample development cases,
+and detailed track specifications will be officially released to all registered teams on
+October 10, 2026.
+Format of Competition:
+Round 1: AI Hackathon & Hidden Evaluation (Online):
+
+Structure: Teams develop their AI model using approved public data sources. Upon
+submission, models undergo a strict code/model freeze. Organizers execute frozen
+models on an undisclosed private evaluation set.
+Registered teams are allowed a maximum of 3 code submission attempts before
+the Stage 1 deadline.
+
+For the first 2 submissions, organizers will run automated testing on the code and
+provide diagnostic feedback, including operational execution status (whether the
+code runs successfully or fails) and benchmark performance scores.
+
+The 3rd submission serves as the final, immutable entry for official Stage 1
+ranking and code freeze
+
+Evaluation Criteria (100% Performance-Based):
+
+   ●​ Model Ordinal Accuracy & Precision on Hidden Evaluation Set (Primary Score)
+   ●​ Strict pass/fail compliance on output schema, execution speed, and
+      dependency checks
+
+Round 2: System Hackathon & Grand Finale (IIT Bombay Campus)
+
+Structure: National finalists integrate their Stage 1 frozen model into a working
+end-to-end system. On Day 2, teams process undisclosed live-challenge technology
+files, demonstrate system usability, and pitch to an expert panel.
+
+Team Specification and Eligibility
+   ●​ Age Limit: All participants must be 35 years of age or younger on
+      December 17, 2026.
+   ●​ Team Size: Teams of 1 to 3 members.
+   ●​ Eligibility: Open to undergraduate/postgraduate students, researchers,
+      independent developers, and industry professionals.
+   ●​ Single Registration Rule: A participant can only be part of one team.
+      Duplicate registrations lead to immediate disqualification.
+
+Timeline:
+
+
+ Event:                                                 Date:
+
+ Online Registration Opens                              September 17, 2026
+
+
+ Registration Closes                                    October 10, 2026
+ Model Training Guide & Criteria Released                 October 10, 2026
+
+ Final Model & Code Submission Deadline (Stage            November 15, 2026 (23:59
+ 1)                                                       IST)
+
+ Announcement of National Finalists                       December 1, 2026
+
+
+ Pre-Event Technical Check & Integration                  December 2–11, 2026
+ Rehearsal
+
+ Stage 2 System Hackathon Grand Finale (IIT               December 16–17, 2026
+ Bombay)
+
+
+General Rules of the Competition
+  1.​ All teams from India must register on techfest.org to receive an official Team
+      ID, which is mandatory for tracking and all submission pathways.
+  2.​ Submissions are frozen at the Stage 1 deadline; no model retraining,
+      fine-tuning, or replacement is permitted for Stage 2.
+  3.​ Minor integration-related bug fixes during Stage 2 require explicit written
+      authorization from the Technical Evaluation Lead.
+  4.​ Submissions must represent the team's original work. Pre-existing code and
+      model weights remain the property of the participants.
+  5.​ Finalists must release their Stage 2 deployment package under the Apache
+      License 2.0 for non-profit developmental use.
+  6.​ Use of undisclosed private API keys, hardcoded output schemas, or
+      plagiarism will result in immediate disqualification.
+  7.​ The use of unauthorized external AI tools during live rounds is strictly
+      prohibited unless explicitly allowed by the judges.
+  8.​ Instructions for specific rounds will be communicated on time to registered
+      email IDs, and official announcements will be posted on techfest.org.
+  9.​ All contest queries must be submitted through the official portal's Doubt
+      section.
+  10.​Decisions made by the judges, Techfest Organizers, and the APCTT
+      Evaluation Panel are final and binding on all participants.
+Certificate Policy
+   ●​ Certificate of Participation: Issued to all registered teams that successfully
+      submit a valid Stage 1 runnable model passing technical compliance.
+   ●​ Certificate of Excellence: Awarded to all national finalists qualifying for
+      Stage 2 at IIT Bombay.
+   ●​ Certificate of Merit: Awarded to the top 3 podium-winning teams of the
+      Grand Finale.
+
+
+
+Prize Money & Rewards:
+   ●​ 1st Place: USD $2,000 equivalent + Regional APCTT Flagship Showcase
+      Invitation
+   ●​ 2nd Place: USD $1,500 equivalent + Regional APCTT Flagship Showcase
+      Invitation
+   ●​ 3rd Place: USD $1,500 equivalent + Regional APCTT Flagship Showcase
+      Invitation
+
+(Note: Travel costs for the representatives of the top three winning teams to
+present at the APCTT Regional Showcase will be covered by APCTT.)
+
