@@ -13,23 +13,22 @@
 - 2026-10-04 08:22 (Supervisor, by message): "Package accepted. Lean limits from 08:30: ≤2 concurrent sub-agents/child sessions; no downloads over 1 GB without a stated reason; heavy jobs one at a time under `nice -n 10`. Next: run ADR 001's falsification tests (clock skew; whether LEV beats the tuned threshold beyond noise on more held-out days). If it still doesn't separate, say so in the memo." → acting (see Now/Log).
 
 ## Now
-- **Phase:** ▶ DEMO (PLAYBOOK §11), started 2026-10-04 17:28 IST (Supervisor 17:28, user directive). The evaluation phase is DONE at 378ac26: memo = keep P7, P6 as Theme 3 fallback.
-- **Plan:** one child session, the *demo builder*, owns `demo/`.
-  1. It proposes the "crazy" element; I approve it.
-  2. It builds to the §11 bar: `demo/run.sh` (one command, offline, first visual ≤ 60 s), `demo/SCRIPT.md`, `demo/fallback/`, `demo/smoke.sh`.
-  3. I spawn one `gpt-6-astra` (max) "judge watching the demo" review (child session 2 of 2) and decide its dispositions.
-  4. I verify run and smoke from a clean checkout, then message the Supervisor "DEMO DONE".
-- **Demo core (lead's brief to the builder):**
-  - Lead with what is *robust*: on a real cross-venue BTC replay, latency-aware selection stays positive where naive trading turns negative. Threshold − naive is significant under every simulator.
-  - LEV vs threshold is shown honestly as modest, with a strict-fills toggle.
-  - Decay clock with the cadence floor; live compiled decision timing.
-  - Every number comes from committed results or committed code running live on a committed slice.
-- **Doing (17:29):** [P6 demo builder](ghapp://sessions/d90f3e4a-6dd4-4baf-8ddd-6a1e15f31123), child 1 of 2, is building. At 17:36 I approved its crazy element **A, "Race the machine"**, with 7 conditions (see Log).
-- **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills for the abstract's [TEAM] lines.
+- **Phase:** ✅ **DEMO DONE** (20:26 IST, 4 Oct; PLAYBOOK §11). The evaluation phase was already DONE (memo: keep P7, with P6 as the Theme 3 fallback). The project is idle until the 12 Oct selection or new Inbox items.
+- **Demo:** `demo/run.sh`, verified at **74075ed** from a clean checkout (no `.data`/`.cache`, venv from the lock):
+  - smoke **31/31** (headless browser included);
+  - first visual **0.7 s**, LIVE **9.3 s**; fresh-venv worst case about 2–7 s page, 44–129 s LIVE, per SCRIPT.md, with the page usable offline meanwhile;
+  - crazy element: **Race the machine**, plus the latency knob, fee switch and frozen/strict toggle;
+  - `gpt-6-astra` demo judge: 53→ initial wow 3 · clarity 2 · honesty 3 · robustness 3 · fit 5; after fixes wow 4 · clarity 3 · honesty 4 · robustness 4 · fit 5. The residual D04 and D11 are fixed and smoke-guarded.
+- **If P6 is picked on 12 Oct, next:**
+  1. Fill the [TEAM] lines.
+  2. Rerun the benchmark on our own finer-cadence recordings.
+  3. Build a streaming detector open signal and the paper trader.
+  4. Pre-register a fresh confirmatory test.
+  5. Model inventory limits and deeper-book fills.
+- **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names, skills, motivation and ownership for the [TEAM] lines.
 - **Risks:**
-  - Demo honesty: the LEV gain is fragile, so the demo must not imply a validated edge.
-  - Committed-slice size: keep assets ≤ 10 MB.
-  - First visual ≤ 60 s despite Numba JIT: the page must render from exported JSON while the backend warms up.
+  - Public replay cannot pin down LEV's value; the demo says so.
+  - The live demo needs the venv set up beforehand; the offline standalone HTML is the fallback.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -251,3 +250,9 @@ Folder, brief and journal created. The lead session starts Phase 0.
     - backend loss detected in 0.5 s, with no LIVE label afterwards.
   - `run.sh`: first visual **0.3 s**, live **3.4 s** (warm bytecode).
   - Short re-review requested from the same `gpt-6-astra` judge session.
+- **20:23–20:26 — DEMO DONE.**
+  - Builder READY at 74075ed: the D04 residual (race panel relabelled on backend loss, asserted before interaction) and D11 (344 spoken words, about 115 s, plus the race) are fixed.
+  - **Final clean-checkout check:** smoke **31/31 in 134 s** (cold venv, headless Chrome: race 20.9 s within the 45 s deadline; backend loss detected in 3.4 s with every label offline; day grid = committed V0/V1 totals; compiled LEV = sklearn exactly). `run.sh`: first visual **0.7 s**, LIVE **9.3 s**.
+  - Temporary clones removed; my demo servers were stopped (other projects' servers left untouched).
+  - Reviews: `gpt-6-astra` demo review plus re-review, 12 items, all accepted (dispositions + ledger).
+  - "DEMO DONE" sent to the Supervisor. README has a Demo section.

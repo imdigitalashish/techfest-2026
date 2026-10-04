@@ -2,6 +2,11 @@
 
 Perceptron Hackathon 2026 (IIT Bombay × Optiver), Problem 6. Journal: [thought_node.md](thought_node.md). Spike decision: [ADR 001](architecture/adr/001-spike.md). Round-1 draft: [deliverables/round1-abstract.md](deliverables/round1-abstract.md).
 
+## Demo (finals, PLAYBOOK §11)
+- `demo/run.sh`: one command, offline. It opens a 3-step stage view: a replay of real 2026-10-01 cross-venue BTC mispricings, a latency knob with naive / tuned threshold / LEV side by side, and **Race the machine**, where the judge's reaction time goes into the committed simulator.
+- `demo/smoke.sh` is the headless check; `demo/SCRIPT.md` is the 3-minute talk track; `demo/fallback/` holds the standalone HTML, screenshots and an MP4.
+- One-time setup: `uv venv .venv --python 3.11 && uv pip install --python .venv/bin/python -r requirements.lock --compile-bytecode`.
+
 ## Reproduce (from this folder)
 Heavy steps go through `eval/run_guarded.sh`, which runs them under nice 10 and pauses them while system memory is low. Pinned environment: `requirements.lock`.
 ```bash
