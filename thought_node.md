@@ -6,16 +6,24 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (11:55 IST, 4 Oct)
+## Now (12:45 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
-- **Active:** Namma Space (has GPU priority; P1 and P9 GPU jobs SIGSTOP-frozen until its Brush run ends) · InnovateX T1 (deck ready; final review applying) · P9 (final abstract; frontier-judge baseline running on Azure gpt-4.1-mini) · P1 · P4.
-- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7.
-- **Queue:** APCTT (when the 10 Oct data lands) → P10 → P5 → P3 → EV C1 → India@71 T3 → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
-- **Needs you today:** a 2-min mini-SOP test clip for Namma Space (see its Inbox / my chat message); Delhi zonal registration by 9 Oct.
+- **Active:**
+  - Namma Space: Brush E2E is thrashing on memory; kill/restart decision at 13:15.
+  - P9: applying the astra review of its abstract.
+  - P1: GPU queue resumed 12:31.
+  - P4: gpt-6-sol reproduction of the v2 holdout is running.
+  - P10: resumed 12:44 into InnovateX T1's slot.
+- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1.
+- **Queue:** APCTT (when the 10 Oct data lands) → P5 → P3 → EV C1 → India@71 T3 → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
+- **Needs you today:**
+  - free memory (see *Mac memory* below);
+  - a 2-min mini-SOP test clip for Namma Space;
+  - Delhi zonal registration by 9 Oct.
 
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
-- [ ] **By 9 Oct — InnovateX:** decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register; the theme is chosen from the 7 Oct memos.
+- [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
 - [ ] **By 15 Oct:** register Perceptron (one problem), EV (one track), Namma Space, India@71 (one theme) — after the 12 Oct selection memos.
 - [ ] **Teammates:** names and skills for every "team fit" section (Perceptron ≤3 · APCTT 1–3 · EV 2–5 · Namma Space ≤4 · India@71 ≤4 · InnovateX ≤4).
 - [ ] **Namma Space capture (ready now):** follow [namma-space/deliverables/capture-sop.md](namma-space/deliverables/capture-sop.md) (~15–20 min for a 2–3 room home): 4K30 video, HDR off, AE/AF lock; print the ArUco marker at 100% scale or measure the camera height; say room/object names aloud while filming; fill `capture.json`; transfer originals by AirDrop/cable (not WhatsApp); note phone model and LiDAR yes/no.
@@ -24,9 +32,19 @@
 - [ ] **Azure resource created overnight (FYI, costs money):** P8 provisioned Azure OpenAI `tf26-p08-aoai-1004` (resource group `rg-tf26-p08`, Sweden Central, gpt-4.1-mini). Delete the resource group if P8 isn't pursued.
 - [ ] **If P8 is chosen:** its stretch goal needs a ~30-learner pilot in November.
 
-- [ ] **Mac memory (08:50):** swap is ~97% full (34.6 of 35.8 GB). Your own VM (`com.apple.Virtualization`, ~16 GB incl. compressed) and CapCut are the largest non-project users. Pausing them while the projects run, or approving Azure compute for heavy jobs, would stop the slowdowns. I've asked P1 and P9 to shrink their jobs.
+- [ ] **Mac memory (updated 12:45):**
+  - Memory level is 23% (my job-pause line is 25%) and swap is 22.5 of 23.5 GB on this 24 GB Mac.
+  - Your VM (`com.apple.Virtualization`, up 7 days, 6.2 GB resident + 9.9 GB compressed) is by far the largest user. CapCut (~2.3 GB) and Brave/Chrome (~5 GB) come next.
+  - Namma Space's 3D training is spending 79% of its CPU time in the kernel, i.e. thrashing.
+  - Quitting the VM (Docker/OrbStack/UTM) and CapCut while the projects run is the single biggest speed-up. I've already closed the projects' leftover browsers and servers.
 - [ ] **India@71 T1 (✅ Completed — please review):** team names + Team ID for `India71_100_[TeamID].pdf`; a state/district WCD contact for a pilot data extract; a union/worker-association contact for co-design.
 - [ ] **EV C2:** access to the ISO 14040/14044 standards text (IIT Delhi library or BIS) for the LCA jury Q&A; an environmental/mechanical teammate; team name, Team ID, institution and contacts for the Round-1 header.
+- [ ] **InnovateX T1 JalSakshi (✅ Completed — please review `innovatex-t1-groundwater/deliverables/`):**
+  - register for the Delhi zonal by 9 Oct and fill in the team details;
+  - a hardware teammate;
+  - one timed rehearsal using `presenter-card.pdf`;
+  - a pilot contact or letter (e.g. DJB, as the rainwater-harvesting nodal agency);
+  - supplier quotes for the parts in `prototype-plan.md`.
 ## Portfolio (08:18 IST) — package = landscape, components, contracts, ADR, deliverables, eval, memo
 | Project | Package | Memo (self-score) | Last push | Note |
 |---|---|---|---|---|
@@ -62,6 +80,22 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 12:45 IST — InnovateX T1 completed; 408 storm; memory
+- **InnovateX T1 DONE (8c183b9), verified on main:**
+  - Zonal deck (9 + 5 backup slides, PDF/PPTX), presenter card, 28-question Q&A prep, offline demo and Round-2 prototype plan (₹11,166/node).
+  - gpt-6-astra final-deck review: READY WITH FIXES, 28/28 items handled.
+  - 7/7 tests pass. Headline 13.1% = `event_mdape` 13.097 in `eval/results/recharge_v1_evalv2_holdout.json` (simulation stress test).
+  - P10 resumed into the slot.
+- **12:11 storm:** all 5 leads hit HTTP 408 at once ("timed out reading request body").
+  - Each request uploads the whole conversation; long-lived leads are 400k+ tokens (~2 MB per request).
+  - Four leads recovered on their own; Namma was nudged at 12:31.
+  - `watch.py` now flags a turn that died on an error (DIED) immediately, instead of after 6 min.
+  - No lead rotation: the heaviest leads are near done, and fresh queued leads start small.
+- **Spot-checks:**
+  - P4's pre-registration (11:43) and Amendment 1 (11:58) predate the single holdout run (12:02).
+  - P9's held-out test was re-run once after the sol code-review fixes; the abstract discloses it. One stale README line was flagged to P9.
+- **Memory:** level 23%, swap 22.5/23.5 GB. Closed IX-T1's and EV C2's leftover Playwright Chromes and the EV C2 dashboard server. Namma's Brush is thrashing (79% kernel time); it decides at 13:15 whether to restart with lower memory.
+
 ### 2026-10-04 11:55 IST — Sweep
 - EV C2 (11:12) and P7 (11:17) completed and verified; P1 and P4 resumed.
 - P9's real-error results: 36–43% harmful-catch at 1.85% false-block. Against a small (1.7B) LLM judge at a matched stop rate, P9 stops 48% of harmful calls vs 28%. A frontier-judge baseline (Azure gpt-4.1-mini, full and cascade) is running to rule out a strawman comparison.
