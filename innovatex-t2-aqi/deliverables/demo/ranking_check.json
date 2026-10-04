@@ -1,0 +1,6 @@
+{
+ "what": "Rank 20 simulated sites (emission scale log-uniform 0.1\u20133, 'medium' scenario) by mean estimated increment in work hours, Jan\u2013Sep 2026 (held out)",
+ "spearman_rho": 0.992,
+ "top5_overlap": 5,
+ "provenance": "SIMULATED sites on REAL background + wind"
+}

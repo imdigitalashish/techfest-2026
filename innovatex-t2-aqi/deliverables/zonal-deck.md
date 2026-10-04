@@ -23,7 +23,7 @@ style: |
 ‹Member 1 — role› · ‹Member 2 — role› · ‹Member 3 — role› · ‹Member 4 — role› · ‹email / phone›
 
 <!--
-TIME 0:00–0:20 (20 s). LOGISTICS: present zonal-deck.pdf from your own laptop; backup slides B1–B6 follow the last main slide. Cue card: presenter-card.pdf.
+TIME 0:00–0:20 (20 s). LOGISTICS: present zonal-deck.pdf from your own laptop, with demo/dustledger-demo.html pre-opened in a second tab (offline); backup slides B1–B7 follow the last main slide. Cue card: presenter-card.pdf.
 SAY: "We're ‹team›. Every winter Delhi stops every construction site, clean or dirty, because it can't tell them apart. We propose a way to measure each site's own dust. Today we have the data pipeline and a stress-tested simulation; the sensor ring is our Round-2 build."
 -->
 
@@ -267,6 +267,16 @@ MAE of the site's own PM10, µg/m³. Stress factors from an independent review: 
 Not included: buck converters, cabling, masts, radiation shields, SIM/data, installation, reference co-location, upkeep. Every line with its URL: deliverables/bom/bom.csv. The relay listing was out of stock; the SX1262 module's IN865 band is unconfirmed.
 
 <!-- BACKUP. Use for "how much does it cost?" Say "parts" every time; installed and lifetime costs are not known yet. -->
+
+---
+
+# B7 · Offline demo (screenshot) <span class="sim">SIMULATED sites · REAL background + wind</span>
+
+![h:340](demo/demo.png)
+
+Six simulated sites ranked by their own dust over a real Delhi week. Held-out check, 20 simulated sites: Spearman ρ 0.99, 5 of the true top-5 found — an easy test (emissions differ up to 30-fold).
+
+<!-- BACKUP. If the demo tab fails, show this. Say: "Real background and wind; simulated sites. The list tells an inspector where to look first; the truth toggle shows where the ring is wrong — Site D and F swap places because both are near the noise floor." -->
 
 ---
 

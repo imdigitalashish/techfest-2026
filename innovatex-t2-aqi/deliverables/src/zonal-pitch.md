@@ -3,8 +3,9 @@
 *Status, 4 Oct 2026: a fully documented **alternative** to T1 (JalSakshi), which two independent judges picked for the Delhi zonal on 10 Oct. One InnovateX theme per team; the user decides. Rendered from `deliverables/src/zonal-pitch.md`.*
 
 **The package**
-- Deck: [`zonal-deck.md`](zonal-deck.md) → [`zonal-deck.pdf`](zonal-deck.pdf) / [`zonal-deck.pptx`](zonal-deck.pptx). 10 main slides + 6 backups, timed speaker notes (9:15 route + 45 s reserve), status labels BUILT · SIMULATED · PLANNED on every claim.
+- Deck: [`zonal-deck.md`](zonal-deck.md) → [`zonal-deck.pdf`](zonal-deck.pdf) / [`zonal-deck.pptx`](zonal-deck.pptx). 10 main slides + 7 backups, timed speaker notes (9:15 route + 45 s reserve), status labels BUILT · SIMULATED · PLANNED on every claim.
 - Q&A prep: [`qa-prep.md`](qa-prep.md) (22 questions, honest answers). Presenter card: [`presenter-card.pdf`](presenter-card.pdf).
+- Offline demo: [`demo/dustledger-demo.html`](demo/dustledger-demo.html) — real Delhi background and wind, simulated sites; regulator ranking + site view ([README](demo/README.md)).
 - Prototype plan with a verified parts list and power budget: [`prototype-plan.md`](prototype-plan.md).
 - Numbers: run numbers rendered from committed results by `eval/render_docs.py`; cited numbers bound to [`research/fact-check.md`](../research/fact-check.md); `eval/check_docs.py` fails on drift.
 

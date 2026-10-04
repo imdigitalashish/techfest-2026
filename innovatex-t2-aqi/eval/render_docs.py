@@ -85,6 +85,9 @@ def keys() -> dict[str, str]:
     k["bom_wind_share_pct"] = pct0(bt["wind_share_of_total"])
     k["bom_kit_vs_fine2l_pct"] = pct0(bt["kit_total_inr"] / 200000)  # yardstick: CAQM 2024 schedule, ₹1–2 lakh per site violation (fact F6)
     k["bom_kit_vs_fine1l_pct"] = pct0(bt["kit_total_inr"] / 100000)
+    rc = json.loads((ROOT / "deliverables" / "demo" / "ranking_check.json").read_text())
+    k["demo_rho"] = f"{rc['spearman_rho']:.2f}"
+    k["demo_top5"] = str(rc["top5_overlap"])
     pw = json.loads((ROOT / "deliverables" / "bom" / "power_budget.json").read_text())
     k["pw_load"] = f1(pw["load_wh_per_day"])
     k["pw_margin"] = f1(pw["worst_month_margin"])

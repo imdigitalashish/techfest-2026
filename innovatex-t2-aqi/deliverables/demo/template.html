@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>DustLedger — offline demo</title>
+<style>
+ body{font-family:"Avenir Next","Segoe UI",system-ui,sans-serif;margin:16px;color:#1f2937;background:#fff}
+ h1{font-size:22px;margin:0 0 4px;color:#0f766e} .sub{color:#555;font-size:13px;margin-bottom:12px}
+ .row{display:flex;gap:18px;align-items:flex-start} .panel{flex:1;border:1px solid #ddd;border-radius:8px;padding:10px 12px}
+ .tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:4px;background:#eef2f5}
+ .sim{font-size:11px;font-weight:700;padding:1px 6px;border-radius:4px;background:#fdecd3;color:#b45309}
+ table{border-collapse:collapse;width:100%;font-size:13px;margin:6px 0} th,td{border:1px solid #ddd;padding:3px 6px;text-align:right}
+ th{background:#eef2f5} td:nth-child(2),th:nth-child(2){text-align:left} tr.sel{background:#e6f4f1} tr{cursor:pointer}
+ .truth{color:#6b7280;display:none} body.showtruth .truth{display:table-cell}
+ .note{font-size:12px;color:#555;margin-top:6px} .legend span{margin-right:12px;font-size:12px}
+ button{font-size:12px;padding:3px 8px;margin:4px 0}
+</style></head>
+<body>
+<h1>DustLedger — which construction site added the dust?</h1>
+<div class="sub">Offline demo · no internet needed · <span class="tag">REAL</span> Delhi monitors + ERA5 wind · <span class="sim">SIMULATED</span> sites, plumes and sensors · nothing here is a field measurement</div>
+<div class="row">
+ <div class="panel" style="flex:0.9">
+  <b>Delhi's background, winter 2025–26</b> <span class="tag">REAL</span>
+  <div id="real"></div>
+  <div class="note">Daily mean PM10 at 4 CPCB/DPCC monitors (OpenAQ public archive). A sensor at a site's fence mostly measures this — the site's own dust is a small difference on top.</div>
+  <b>The demo week, 17–23 Nov 2025</b> <span class="tag">REAL</span>
+  <div id="bg"></div>
+  <div class="note">Hourly PM10 at Major Dhyan Chand National Stadium (DPCC) and ERA5 wind speed (dashed; top of the chart = 6 m/s). Below 0.5 m/s the ring says "inconclusive".</div>
+ </div>
+ <div class="panel">
+  <b>Regulator view: rank sites by their own measured dust</b> <span class="sim">SIMULATED sites</span>
+  <button onclick="document.body.classList.toggle('showtruth')">Show / hide simulation truth</button>
+  <table id="tab"><thead><tr><th>Rank</th><th>Site</th><th>Own dust, work hours (µg/m³)</th><th>Hours &gt; 50</th><th>Inconclusive</th><th>Mist-on h (timer h)</th><th class="truth">True own dust</th><th class="truth">True rank</th></tr></thead><tbody></tbody></table>
+  <div class="note">Click a site. "Own dust" = the ring's estimate of the site's PM10 increment at its fence (method: ring + idle-hour self-calibration). Inspect the top of the list first; DPCC still verifies before any penalty. Small or negative values mean the site's own dust is below what the ring can resolve.</div>
+  <div id="site"></div>
+  <div class="legend"><span style="color:#0f766e">━ DustLedger estimate (gaps = inconclusive)</span><span class="truth-l" style="color:#9ca3af">┅ simulation truth (hidden in real life)</span><span style="color:#b45309">▮ misting on</span></div>
+  <div class="note" id="foot"></div>
+ </div>
+</div>
+<script>
+const D = /*DATA*/null;
+const NS = "http://www.w3.org/2000/svg";
+function svg(w,h){const s=document.createElementNS(NS,"svg");s.setAttribute("width",w);s.setAttribute("height",h);s.setAttribute("viewBox",`0 0 ${w} ${h}`);return s}
+function el(s,tag,a){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);s.appendChild(e);return e}
+function line(s,xs,ys,X,Y,attrs){let d="",pen=false;ys.forEach((v,i)=>{if(v===null||v===undefined||isNaN(v)){pen=false;return}d+=(pen?"L":"M")+X(xs[i]).toFixed(1)+","+Y(v).toFixed(1);pen=true});el(s,"path",Object.assign({d,fill:"none"},attrs))}
+const TOP=24;
+function axes(s,W,H,m,ymax,yl,xl){el(s,"line",{x1:m,y1:H-24,x2:W-8,y2:H-24,stroke:"#999"});el(s,"line",{x1:m,y1:TOP,x2:m,y2:H-24,stroke:"#999"});
+ for(let k=0;k<=4;k++){const v=ymax*k/4,y=H-24-(H-24-TOP)*k/4;el(s,"text",{x:m-4,y:y+4,"text-anchor":"end","font-size":10,fill:"#555"}).textContent=Math.round(v)}
+ el(s,"text",{x:4,y:12,"font-size":11,fill:"#333"}).textContent=yl; xl.forEach(([x,t],i)=>{el(s,"text",{x,y:H-8,"font-size":10,fill:"#555","text-anchor":i===0?"start":"end"}).textContent=t})}
+// left: real daily PM10
+(function(){const W=460,H=200,m=36,s=svg(W,H),cols=["#1f2937","#0f766e","#b45309","#6b7280"];const names=Object.keys(D.daily);const n=D.daily[names[0]].t.length;
+ let ymax=0;names.forEach(k=>D.daily[k].v.forEach(v=>{if(v>ymax)ymax=v}));ymax=Math.ceil(ymax/100)*100;
+ const X=i=>m+(W-m-8)*i/(n-1),Y=v=>H-24-(H-24-TOP)*v/ymax;axes(s,W,H,m,ymax,"PM10, µg/m³",[[X(0),D.daily[names[0]].t[0]],[X(n-1),D.daily[names[0]].t[n-1]]]);
+ names.forEach((k,j)=>{line(s,[...Array(n).keys()],D.daily[k].v,X,Y,{stroke:cols[j],"stroke-width":1.2});el(s,"text",{x:130+j*85,y:12,"font-size":10,fill:cols[j]}).textContent=k.replace("Major Dhyan Chand Stadium","MDC Stadium")});
+ document.getElementById("real").appendChild(s)})();
+// left: demo week background + wind
+(function(){const b=D.bg_week,W=460,H=180,m=36,s=svg(W,H),n=b.t.length;let ymax=Math.ceil(Math.max(...b.pm10_6929.filter(v=>v!==null))/100)*100;
+ const X=i=>m+(W-m-30)*i/(n-1),Y=v=>H-24-(H-24-TOP)*v/ymax,Yw=v=>H-24-(H-24-TOP)*v/6;axes(s,W,H,m,ymax,"PM10, µg/m³",[[X(0),b.t[0].slice(0,5)],[X(n-1),b.t[n-1].slice(0,5)]]);
+ line(s,[...Array(n).keys()],b.pm10_6929,X,Y,{stroke:"#1f2937","stroke-width":1.2});line(s,[...Array(n).keys()],b.wind_ms,X,Yw,{stroke:"#0f766e","stroke-dasharray":"3,3","stroke-width":1});
+ el(s,"text",{x:W-4,y:12,"font-size":10,fill:"#0f766e","text-anchor":"end"}).textContent="wind 0–6 m/s";document.getElementById("bg").appendChild(s)})();
+// right: table + site chart
+const tb=document.querySelector("#tab tbody");
+const sites=[...D.sites].sort((a,b)=>a.rank_est-b.rank_est);
+function drawSite(st){const box=document.getElementById("site");box.innerHTML="";const W=620,H=230,m=40,s=svg(W,H),n=st.t.length;
+ const vals=st.est.filter(v=>v!==null).concat(st.truth);let ymax=Math.max(100,Math.ceil(Math.min(800,Math.max(...vals))/100)*100);
+ const X=i=>m+(W-m-8)*i/(n-1),Y=v=>H-24-(H-24-TOP)*Math.max(-50,Math.min(v,ymax))/ymax;
+ st.mist.forEach((v,i)=>{if(v)el(s,"rect",{x:X(i)-1.5,y:H-30,width:3,height:6,fill:"#b45309"})});
+ axes(s,W,H,m,ymax,`${st.name}: own PM10 µg/m³ (clipped at ${ymax})`,[[X(0),st.t[0].slice(0,5)],[X(n-1),st.t[n-1].slice(0,5)]]);
+ el(s,"line",{x1:m,y1:Y(D.thresh),x2:W-8,y2:Y(D.thresh),stroke:"#b45309","stroke-dasharray":"2,4"});
+ const g=el(s,"g",{class:"truthg"});line(g,[...Array(n).keys()],st.truth,X,Y,{stroke:"#9ca3af","stroke-dasharray":"4,3","stroke-width":1.2});
+ g.style.display=document.body.classList.contains("showtruth")?"":"none";
+ line(s,[...Array(n).keys()],st.est,X,Y,{stroke:"#0f766e","stroke-width":1.5});box.appendChild(s)}
+sites.forEach(st=>{const tr=document.createElement("tr");tr.innerHTML=`<td>${st.rank_est}</td><td>${st.name}</td><td>${st.est_mean_work??"–"}</td><td>${st.hours_gt50_est}</td><td>${st.inconclusive_pct}%</td><td>${st.mist_hours} (${st.timer_hours})</td><td class="truth">${st.true_mean_work}</td><td class="truth">${st.rank_true}</td>`;
+ tr.onclick=()=>{document.querySelectorAll("#tab tr").forEach(r=>r.classList.remove("sel"));tr.classList.add("sel");drawSite(st)};tb.appendChild(tr)});
+document.querySelector("button").addEventListener("click",()=>{const g=document.querySelector(".truthg");if(g)g.style.display=document.body.classList.contains("showtruth")?"":"none"});
+tb.firstChild.click();
+const rc=D.ranking_check;document.getElementById("foot").innerHTML=`Misting rule (demo heuristic): on when the estimate &gt; ${D.thresh} µg/m³, the wind isn't calm and it isn't raining; its effect on dust is <b>not modelled</b>. Ranking check on held-out Jan–Sep 2026 (20 simulated sites): Spearman ρ = ${rc.spearman_rho}, ${rc.top5_overlap} of the true top-5 sites found in the estimated top-5. <span class="sim">SIMULATED</span>`;
+</script>
+</body></html>

@@ -1,6 +1,6 @@
 # DustLedger — presenter card (Delhi zonal, 10 min)
 
-**Open:** zonal-deck.pdf on your own laptop · backups B1–B6 after slide 10 · team fields on slide 1 filled in · this card printed.
+**Open:** zonal-deck.pdf on your own laptop · demo/dustledger-demo.html in a second tab (offline) · backups B1–B7 after slide 10 · team fields on slide 1 filled in · this card printed.
 
 | # | Time | Slide | Land this line |
 |---|---|---|---|
