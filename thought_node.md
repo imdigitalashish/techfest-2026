@@ -124,7 +124,7 @@
 - **P2 DEMO DONE (4066d32):** the replay smoke passed in my clone in 10 s. Live checks need the 2.5 GB weights; the lead ran them from a clean clone (20/20 rows).
   - Crazy element: a memory slider. At 10% memory, P2's method recalls a planted fact that the eviction baselines (StreamingLLM, SnapKV) forget. Shown with the honest caveat: on paraphrased questions, longer answers give full 32/48 vs RoD 36/48.
 - Slot → P1 demo ("unplug the tablet": a real Flower process kill).
-- Correction (appended 19:56 IST): this entry was committed at 19:54 IST. The "19:58" heading and the "19:57" in the P1 brief were estimated, not read from the clock (PLAYBOOK §6).
+- Correction (appended 19:55 IST, re-checked 19:55 IST): this entry was committed at 19:53:04 IST (git). The "19:58" heading and the "19:57" in the P1 brief were estimated, not read from the clock (PLAYBOOK §6).
 ### 2026-10-04 19:29 IST — P10 demo done (first of 20)
 - **P10 "Break the band" DEMO DONE (74e8dce):** I re-ran demo/smoke.sh and it passes all checks (62 PASS lines). Astra demo review: 78/100, "would lean in: yes".
   - Crazy element: a judge writes a fake pump post. One bot post breaks plain CQR, while the certified band holds.
