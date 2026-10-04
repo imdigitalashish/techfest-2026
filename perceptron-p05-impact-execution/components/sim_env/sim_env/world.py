@@ -58,8 +58,44 @@ class WorldResult:
         return out
 
 
+def _synchronise_rng(agents, seed: int) -> None:
+    """Per-agent, per-wakeup random streams (C2 spike).
+
+    Each background agent's decision RNG is re-keyed at every wakeup from
+    (seed, agent id, wakeup count), and its wake-time draws come from a dedicated
+    timing stream. A state-dependent number of draws in one cycle then can't shift
+    the agent's later randomness, so twins differ only through causal responses to
+    our orders. The marginal distributions of all draws are unchanged.
+    """
+    for ag in agents:
+        aid = int(ag.id)
+        base = (seed * 1_000_003 + aid * 7_919 + 17) % (2 ** 32)
+        timing_rs = np.random.RandomState((base * 31 + 12_345) % (2 ** 32))
+        state = {"k": 0}
+        orig_wakeup = ag.wakeup
+
+        def wakeup(t, _ag=ag, _orig=orig_wakeup, _base=base, _state=state):
+            _state["k"] += 1
+            _ag.random_state = np.random.RandomState((_base + _state["k"] * 104_729) % (2 ** 32))
+            return _orig(t)
+
+        ag.wakeup = wakeup
+        if hasattr(ag, "get_wake_frequency"):
+            orig_gwf = ag.get_wake_frequency
+
+            def gwf(_ag=ag, _orig=orig_gwf, _trs=timing_rs):
+                saved = _ag.random_state
+                _ag.random_state = _trs
+                try:
+                    return _orig()
+                finally:
+                    _ag.random_state = saved
+
+            ag.get_wake_frequency = gwf
+
+
 def run_world(seed: int, agent_factory: Callable[[int, np.random.RandomState], object],
-              end_time: str = "10:05:00", book_log_depth: int = 1) -> WorldResult:
+              end_time: str = "10:05:00", book_log_depth: int = 1, rng_sync: str = "naive") -> WorldResult:
     cfg = rmsc04.build_config(seed=seed, date=DATE, end_time=end_time,
                               stdout_log_level="WARNING", log_orders=False,
                               book_logging=True, book_log_depth=book_log_depth)
@@ -67,6 +103,8 @@ def run_world(seed: int, agent_factory: Callable[[int, np.random.RandomState], o
     our_rs = np.random.RandomState(seed=(seed * 7919 + 104729) % (2 ** 32))
     agent = agent_factory(our_id, our_rs)
     cfg = config_add_agents(cfg, [agent])
+    if rng_sync == "per_wakeup":
+        _synchronise_rng(cfg["agents"][1:our_id], seed)
     import os
     log_dir = f"p5_{os.getpid()}_{seed}_{np.random.RandomState(None).randint(1 << 30)}"
     end_state = abides.run(cfg, log_dir=log_dir, kernel_random_state=cfg["random_state_kernel"])

@@ -17,11 +17,14 @@ def make_factory(policy, side: str, quantity: int, start: str, end: str, n_slots
     return factory
 
 
-def run_null(seed: int, side: str, start: str, end: str, n_slots: int, end_time: str) -> WorldResult:
+def run_null(seed: int, side: str, start: str, end: str, n_slots: int, end_time: str,
+             rng_sync: str = "naive") -> WorldResult:
     from execution_agent.policies import TwapPolicy
-    return run_world(seed, make_factory(TwapPolicy(), side, 0, start, end, n_slots), end_time=end_time)
+    return run_world(seed, make_factory(TwapPolicy(), side, 0, start, end, n_slots), end_time=end_time,
+                     rng_sync=rng_sync)
 
 
 def run_treatment(seed: int, policy, side: str, quantity: int, start: str, end: str, n_slots: int,
-                  end_time: str) -> WorldResult:
-    return run_world(seed, make_factory(policy, side, quantity, start, end, n_slots), end_time=end_time)
+                  end_time: str, rng_sync: str = "naive") -> WorldResult:
+    return run_world(seed, make_factory(policy, side, quantity, start, end, n_slots), end_time=end_time,
+                     rng_sync=rng_sync)
