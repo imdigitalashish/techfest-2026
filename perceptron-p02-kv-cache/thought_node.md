@@ -10,26 +10,32 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ measuring and reviewing. T1 done (16:18); T2 running; then S4, T3, post-hoc E1–E5, sol reproduction. PREREG plus 4 amendments, all committed before the outcomes they govern.
-- **Results so far (T1, rendered in [eval/RESULTS.md](eval/RESULTS.md)):**
-  - **Pre-registered primary passed:** RoD − StreamingLLM +0.40 (CI +0.25 to +0.54) at 25% memory.
-  - RoD beats all 9 query-agnostic baselines, including kvpress's.
-  - **S7 non-inferiority vs full not shown** (−0.25).
-  - Exploratory: at 10% memory RoD 0.854 vs full 0.833 (baselines ≤ 0.06). Replication R1 on T2 is pre-registered.
-  - Mechanism: block hit ↑, accuracy given hit ↓ (0.98 → 0.55): key–value confusion with more recalled needle blocks.
-  - Identity checks I1–I3 pass.
-- **Doing:**
-  - VM chain T2 → S4 → T3 → post-hoc (ETA about 18:45).
-  - [gpt-6-sol](ghapp://sessions/377140bc-8a99-47d1-bed3-2b53e4b22b70) waits for `posthoc.done` to reproduce.
-  - [gpt-6-astra](ghapp://sessions/97e5f61d-3add-4e44-9c65-d77e119bfb8a) waits for the final abstract (phase 2).
-- **Next:** T2 → R1 → memo scores update by rule → T3/S4/post-hoc → final render → astra phase 2 → sol reproduction → ledger → deallocate VM → "DONE — slot free".
+- **Phase:** ▶ finishing (2026-10-04 18:08 IST).
+  - All pre-registered runs are done (T1, T2, S4, T3), plus amendments 1–5.
+  - Remaining before DONE:
+    1. Post-hoc E1–E5 (running on the VM), then E6 (max_new=32 sensitivity).
+    2. The gpt-6-sol reproduction (after `e6.done`).
+    3. gpt-6-astra phase 2 on the final abstract, then the demo review.
+    4. Demo builder finishes.
+    5. Final render, VM deallocation, "DONE — slot free".
+- **Results:** [eval/RESULTS.md](eval/RESULTS.md). Memo **4.2/5** by pre-fixed rules ([deliverables/selection-memo.md](deliverables/selection-memo.md)).
+  - **Primary passed** (+0.40 at 25%) and **replicated** on T2 (+0.375). RoD beats all 9 query-agnostic baselines.
+  - **Not near-lossless at 25%** (−0.25 vs full).
+  - **At 10% memory RoD ≈ full** on T1 (0.854 vs 0.833) and above full on T2 (+0.23), but T2's full ceiling is depressed by a 10-token answer limit (amendment 5; E6 pending).
+  - Mechanism: look-alike confusion as more blocks are recalled (T1).
+  - Halo does not help.
+  - T3 (aliased keys) is too hard even for the full cache (10%), so meaning-based retrieval is untested; RoD's block hit there is 23% vs lexical 73%.
+- **Doing:** VM post-hoc/E6.
+  - [P2 demo builder](ghapp://sessions/931e0d5e-6f6f-4cc3-ac7a-2f28c39c2b5c) is building.
+  - [gpt-6-sol](ghapp://sessions/377140bc-8a99-47d1-bed3-2b53e4b22b70) waits for `e6.done`.
+  - [gpt-6-astra](ghapp://sessions/97e5f61d-3add-4e44-9c65-d77e119bfb8a) is idle, waiting for the final abstract (≤ 2 running at once).
 - **Needs from user:** register by 15 Oct (if P2 is chosen over P1; only one of P1/P2 is allowed). Teammates' names and skills for the team-fit section.
 - **Risks:**
-  1. R1 may not replicate.
-  2. Approximate re-prefill (E2 decides).
-  3. Synthetic task and n=12.
-  4. CPU timings only.
-  5. Narrow novelty.
+  1. Synthetic needles, n=12 per split.
+  2. Approximate re-prefill (E2 pending).
+  3. CPU-only timings.
+  4. Narrow novelty.
+  5. The demo isn't built yet.
 
 ## Phase 0 — what the judges need to see (from `_briefs/perceptron.txt`)
 - **MVP bullets → evidence:** (a) one existing method applied + memory saved vs uncompressed → a table of *retained KV bytes* (counting every index/scale byte) and measured peak memory, per method and ratio; (b) accuracy drop on a small long-context recall task → needle-recall accuracy with 95% Wilson CIs vs the full cache.
@@ -228,3 +234,14 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Spawned [P2 demo builder](ghapp://sessions/931e0d5e-6f6f-4cc3-ac7a-2f28c39c2b5c), then approved its proposal "Forget 90%, then ask anything": live plant-a-needle, a budget knob (10–50%), an X-ray block strip, side-by-side baselines, plus a replay of the committed rows.
   - Adjustments I required: show m, label live results "single example", sketch heat computed by committed code, the non-monotonic dip shown, and a smoke test that doesn't assert RoD's outcome.
 - **Abstract:** 847 words rendered; headline and caveats now include the T2 replication with a hedged mechanism.
+
+### 2026-10-04 18:08 IST: S4 and T3 done; T2 truncation confound handled
+- **Supervisor 17:37: T2 truncation confound.** 12 of the full cache's 26 wrong T2 answers are preambles cut off at 10 tokens.
+  - Agreed: R1 is kept as registered, and the T2 look-alike mechanism clause is withdrawn.
+  - **Amendment 5** (17:39) adds exploratory E6 (max_new=32, lenient + strict first-number scoring) on T2 contexts.
+  - The sol reviewer now waits for `e6.done`.
+- **S4 (halo 64 vs 0):** +0.00 / −0.08 / −0.06 at 10 / 25 / 50%. A small recompute context does not fix the approximate KV.
+- **T3 (aliased keys):** full-cache ceiling 0.104, so S6 is **inconclusive by rule** (+0.06, CI −0.02 to +0.15). RoD's block hit is 0.23 vs lexical 0.73 at 10%: no evidence that the sketch retrieves by meaning.
+- **Byte checks:** 0 violations (T1 36 cells, T2 36, T3 24).
+- **Abstract:** 873 words rendered; caveats now include S2 (T1/T2), mechanism, halo, the T3 negative and CPU time.
+
