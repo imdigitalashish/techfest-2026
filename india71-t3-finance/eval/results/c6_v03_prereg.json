@@ -1,0 +1,1453 @@
+{
+ "args": {
+  "seeds": [
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29
+  ],
+  "n": 50000,
+  "pilot": 0.3,
+  "tag": "prereg"
+ },
+ "summary": {
+  "random": {
+   "normalised_mean": 0.0,
+   "normalised_sd": 0.0,
+   "value_mean": 70.214
+  },
+  "status_quo": {
+   "normalised_mean": 0.038169999999999996,
+   "normalised_sd": 0.006872820866766911,
+   "value_mean": 86.9493
+  },
+  "risk_bc": {
+   "normalised_mean": -0.08109999999999999,
+   "normalised_sd": 0.014128536921973045,
+   "value_mean": 34.697500000000005
+  },
+  "best_arm_only": {
+   "normalised_mean": 0.30057,
+   "normalised_sd": 0.07212701836189943,
+   "value_mean": 201.89910000000003
+  },
+  "rule": {
+   "normalised_mean": 0.4615099999999999,
+   "normalised_sd": 0.03400262898332683,
+   "value_mean": 272.4968
+  },
+  "challenger": {
+   "normalised_mean": 0.5473600000000001,
+   "normalised_sd": 0.0711751860630593,
+   "value_mean": 310.1862
+  },
+  "gated": {
+   "normalised_mean": 0.4693199999999999,
+   "normalised_sd": 0.0430435128677946,
+   "value_mean": 275.8419
+  },
+  "reference": {
+   "normalised_mean": 1.0,
+   "normalised_sd": 0.0,
+   "value_mean": 508.4731
+  }
+ },
+ "runs": [
+  {
+   "seed": 20,
+   "seeded_share": 0.97,
+   "eligible": 19881,
+   "holdout": 1988,
+   "budget_inr": 198810.0,
+   "pilot_train": 5971,
+   "info": {
+    "stage1": "sms_ivr",
+    "upgrade": "bc_visit",
+    "k1": 17893,
+    "k2": 1496
+   },
+   "gate": {
+    "pass": false,
+    "ipw_diff": 0.004684673042129751,
+    "lower_bound_90": -0.010661669682088391,
+    "n_validation": 2559,
+    "n_train": 5971
+   },
+   "policies": {
+    "random": {
+     "value": 70.601,
+     "spend": 198794,
+     "treated": 2911,
+     "holdout_treated": 0,
+     "women_share": 0.5709,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 753,
+      "bc_visit": 700,
+      "upi_onboard": 713,
+      "incentive": 745
+     },
+     "normalised": 0.0
+    },
+    "status_quo": {
+     "value": 90.191,
+     "spend": 198800,
+     "treated": 1986,
+     "holdout_treated": 15,
+     "women_share": 0.5478,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1986
+     },
+     "normalised": 0.0443
+    },
+    "risk_bc": {
+     "value": 40.827,
+     "spend": 198800,
+     "treated": 1988,
+     "holdout_treated": 0,
+     "women_share": 0.6187,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1988
+     },
+     "normalised": -0.0673
+    },
+    "best_arm_only": {
+     "value": 211.947,
+     "spend": 53679,
+     "treated": 17893,
+     "holdout_treated": 0,
+     "women_share": 0.5769,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 17893
+     },
+     "normalised": 0.3196
+    },
+    "rule": {
+     "value": 278.978,
+     "spend": 198791,
+     "treated": 17893,
+     "holdout_treated": 0,
+     "women_share": 0.5769,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16397,
+      "bc_visit": 1496
+     },
+     "normalised": 0.4711
+    },
+    "challenger": {
+     "value": 337.35,
+     "spend": 198791,
+     "treated": 17893,
+     "holdout_treated": 0,
+     "women_share": 0.5769,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16397,
+      "bc_visit": 1496
+     },
+     "normalised": 0.6031
+    },
+    "gated": {
+     "value": 278.978,
+     "spend": 198791,
+     "treated": 17893,
+     "holdout_treated": 0,
+     "women_share": 0.5769,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16397,
+      "bc_visit": 1496
+     },
+     "normalised": 0.4711
+    },
+    "reference": {
+     "value": 512.889,
+     "spend": 198808,
+     "treated": 8647,
+     "holdout_treated": 0,
+     "women_share": 0.5771,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 6786,
+      "bc_visit": 1691,
+      "incentive": 170
+     },
+     "normalised": 1.0
+    }
+   },
+   "secs": 70.3,
+   "linkage_sensitivity": {
+    "perfect_linkage_challenger_minus_rule": 0.13870000000000005
+   }
+  },
+  {
+   "seed": 21,
+   "seeded_share": 0.97,
+   "eligible": 19403,
+   "holdout": 1940,
+   "budget_inr": 194030.0,
+   "pilot_train": 5767,
+   "info": {
+    "stage1": "sms_ivr",
+    "upgrade": "bc_visit",
+    "k1": 17463,
+    "k2": 1460
+   },
+   "gate": {
+    "pass": true,
+    "ipw_diff": 0.022783265191145426,
+    "lower_bound_90": 0.00831629568516907,
+    "n_validation": 2471,
+    "n_train": 5767
+   },
+   "policies": {
+    "random": {
+     "value": 71.228,
+     "spend": 193978,
+     "treated": 2839,
+     "holdout_treated": 0,
+     "women_share": 0.5918,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 736,
+      "bc_visit": 696,
+      "upi_onboard": 689,
+      "incentive": 718
+     },
+     "normalised": 0.0
+    },
+    "status_quo": {
+     "value": 82.14,
+     "spend": 194000,
+     "treated": 1926,
+     "holdout_treated": 11,
+     "women_share": 0.5582,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1926
+     },
+     "normalised": 0.0255
+    },
+    "risk_bc": {
+     "value": 26.814,
+     "spend": 194000,
+     "treated": 1940,
+     "holdout_treated": 0,
+     "women_share": 0.6938,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1940
+     },
+     "normalised": -0.1037
+    },
+    "best_arm_only": {
+     "value": 208.759,
+     "spend": 52389,
+     "treated": 17463,
+     "holdout_treated": 0,
+     "women_share": 0.5821,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 17463
+     },
+     "normalised": 0.3213
+    },
+    "rule": {
+     "value": 270.92,
+     "spend": 194009,
+     "treated": 17463,
+     "holdout_treated": 0,
+     "women_share": 0.5821,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16003,
+      "bc_visit": 1460
+     },
+     "normalised": 0.4665
+    },
+    "challenger": {
+     "value": 304.371,
+     "spend": 194009,
+     "treated": 17463,
+     "holdout_treated": 0,
+     "women_share": 0.5821,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16003,
+      "bc_visit": 1460
+     },
+     "normalised": 0.5446
+    },
+    "gated": {
+     "value": 304.371,
+     "spend": 194009,
+     "treated": 17463,
+     "holdout_treated": 0,
+     "women_share": 0.5821,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16003,
+      "bc_visit": 1460
+     },
+     "normalised": 0.5446
+    },
+    "reference": {
+     "value": 499.318,
+     "spend": 194030,
+     "treated": 8513,
+     "holdout_treated": 0,
+     "women_share": 0.5823,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 6705,
+      "bc_visit": 1655,
+      "incentive": 153
+     },
+     "normalised": 1.0
+    }
+   },
+   "secs": 67.5,
+   "linkage_sensitivity": {
+    "perfect_linkage_challenger_minus_rule": 0.15359999999999996
+   }
+  },
+  {
+   "seed": 22,
+   "seeded_share": 0.97,
+   "eligible": 19626,
+   "holdout": 1963,
+   "budget_inr": 196260.0,
+   "pilot_train": 5888,
+   "info": {
+    "stage1": "sms_ivr",
+    "upgrade": "bc_visit",
+    "k1": 17663,
+    "k2": 1477
+   },
+   "gate": {
+    "pass": false,
+    "ipw_diff": -0.016139071459487918,
+    "lower_bound_90": -0.02823047353393262,
+    "n_validation": 2523,
+    "n_train": 5888
+   },
+   "policies": {
+    "random": {
+     "value": 70.387,
+     "spend": 196165,
+     "treated": 2841,
+     "holdout_treated": 0,
+     "women_share": 0.5949,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 725,
+      "bc_visit": 689,
+      "upi_onboard": 717,
+      "incentive": 710
+     },
+     "normalised": 0.0
+    },
+    "status_quo": {
+     "value": 86.682,
+     "spend": 196200,
+     "treated": 1976,
+     "holdout_treated": 15,
+     "women_share": 0.5476,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1976
+     },
+     "normalised": 0.0374
+    },
+    "risk_bc": {
+     "value": 32.543,
+     "spend": 196200,
+     "treated": 1962,
+     "holdout_treated": 0,
+     "women_share": 0.6014,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1962
+     },
+     "normalised": -0.0869
+    },
+    "best_arm_only": {
+     "value": 211.616,
+     "spend": 52989,
+     "treated": 17663,
+     "holdout_treated": 0,
+     "women_share": 0.5834,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 17663
+     },
+     "normalised": 0.3244
+    },
+    "rule": {
+     "value": 278.856,
+     "spend": 196258,
+     "treated": 17663,
+     "holdout_treated": 0,
+     "women_share": 0.5834,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16186,
+      "bc_visit": 1477
+     },
+     "normalised": 0.4789
+    },
+    "challenger": {
+     "value": 327.156,
+     "spend": 196258,
+     "treated": 17663,
+     "holdout_treated": 0,
+     "women_share": 0.5834,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16186,
+      "bc_visit": 1477
+     },
+     "normalised": 0.5898
+    },
+    "gated": {
+     "value": 278.856,
+     "spend": 196258,
+     "treated": 17663,
+     "holdout_treated": 0,
+     "women_share": 0.5834,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16186,
+      "bc_visit": 1477
+     },
+     "normalised": 0.4789
+    },
+    "reference": {
+     "value": 505.726,
+     "spend": 196259,
+     "treated": 8492,
+     "holdout_treated": 0,
+     "women_share": 0.5835,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 6633,
+      "bc_visit": 1647,
+      "incentive": 212
+     },
+     "normalised": 1.0
+    }
+   },
+   "secs": 75.2,
+   "linkage_sensitivity": {
+    "perfect_linkage_challenger_minus_rule": 0.09670000000000001
+   }
+  },
+  {
+   "seed": 23,
+   "seeded_share": 0.97,
+   "eligible": 19963,
+   "holdout": 1996,
+   "budget_inr": 199630.0,
+   "pilot_train": 6097,
+   "info": {
+    "stage1": "sms_ivr",
+    "upgrade": "incentive",
+    "k1": 17967,
+    "k2": 2802
+   },
+   "gate": {
+    "pass": false,
+    "ipw_diff": 0.00174058237159367,
+    "lower_bound_90": -0.015518197824118183,
+    "n_validation": 2612,
+    "n_train": 6097
+   },
+   "policies": {
+    "random": {
+     "value": 67.578,
+     "spend": 199622,
+     "treated": 2869,
+     "holdout_treated": 0,
+     "women_share": 0.5699,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 729,
+      "bc_visit": 729,
+      "upi_onboard": 722,
+      "incentive": 689
+     },
+     "normalised": 0.0
+    },
+    "status_quo": {
+     "value": 87.088,
+     "spend": 199600,
+     "treated": 1989,
+     "holdout_treated": 12,
+     "women_share": 0.549,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1989
+     },
+     "normalised": 0.0448
+    },
+    "risk_bc": {
+     "value": 36.763,
+     "spend": 199600,
+     "treated": 1996,
+     "holdout_treated": 0,
+     "women_share": 0.6268,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1996
+     },
+     "normalised": -0.0707
+    },
+    "best_arm_only": {
+     "value": 209.31,
+     "spend": 53901,
+     "treated": 17967,
+     "holdout_treated": 0,
+     "women_share": 0.5753,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 17967
+     },
+     "normalised": 0.3252
+    },
+    "rule": {
+     "value": 227.228,
+     "spend": 199605,
+     "treated": 17967,
+     "holdout_treated": 0,
+     "women_share": 0.5753,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 15165,
+      "incentive": 2802
+     },
+     "normalised": 0.3663
+    },
+    "challenger": {
+     "value": 224.665,
+     "spend": 199605,
+     "treated": 17967,
+     "holdout_treated": 0,
+     "women_share": 0.5753,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 15165,
+      "incentive": 2802
+     },
+     "normalised": 0.3604
+    },
+    "gated": {
+     "value": 227.228,
+     "spend": 199605,
+     "treated": 17967,
+     "holdout_treated": 0,
+     "women_share": 0.5753,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 15165,
+      "incentive": 2802
+     },
+     "normalised": 0.3663
+    },
+    "reference": {
+     "value": 503.392,
+     "spend": 199629,
+     "treated": 8781,
+     "holdout_treated": 0,
+     "women_share": 0.5818,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 6918,
+      "bc_visit": 1698,
+      "incentive": 165
+     },
+     "normalised": 1.0
+    }
+   },
+   "secs": 65.0,
+   "linkage_sensitivity": {
+    "perfect_linkage_challenger_minus_rule": 0.12590000000000007
+   }
+  },
+  {
+   "seed": 24,
+   "seeded_share": 0.97,
+   "eligible": 20079,
+   "holdout": 2008,
+   "budget_inr": 200790.0,
+   "pilot_train": 5964,
+   "info": {
+    "stage1": "sms_ivr",
+    "upgrade": "bc_visit",
+    "k1": 18071,
+    "k2": 1511
+   },
+   "gate": {
+    "pass": false,
+    "ipw_diff": -0.004473391036078499,
+    "lower_bound_90": -0.015920930099694346,
+    "n_validation": 2556,
+    "n_train": 5964
+   },
+   "policies": {
+    "random": {
+     "value": 70.944,
+     "spend": 200761,
+     "treated": 2968,
+     "holdout_treated": 0,
+     "women_share": 0.5809,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 802,
+      "bc_visit": 722,
+      "upi_onboard": 719,
+      "incentive": 725
+     },
+     "normalised": 0.0
+    },
+    "status_quo": {
+     "value": 86.085,
+     "spend": 200700,
+     "treated": 2015,
+     "holdout_treated": 12,
+     "women_share": 0.5489,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 2015
+     },
+     "normalised": 0.0343
+    },
+    "risk_bc": {
+     "value": 39.302,
+     "spend": 200700,
+     "treated": 2007,
+     "holdout_treated": 0,
+     "women_share": 0.6298,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 2007
+     },
+     "normalised": -0.0718
+    },
+    "best_arm_only": {
+     "value": 213.574,
+     "spend": 54213,
+     "treated": 18071,
+     "holdout_treated": 0,
+     "women_share": 0.5809,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 18071
+     },
+     "normalised": 0.3235
+    },
+    "rule": {
+     "value": 276.474,
+     "spend": 200780,
+     "treated": 18071,
+     "holdout_treated": 0,
+     "women_share": 0.5809,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16560,
+      "bc_visit": 1511
+     },
+     "normalised": 0.4661
+    },
+    "challenger": {
+     "value": 310.47,
+     "spend": 200780,
+     "treated": 18071,
+     "holdout_treated": 0,
+     "women_share": 0.5809,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16560,
+      "bc_visit": 1511
+     },
+     "normalised": 0.5432
+    },
+    "gated": {
+     "value": 276.474,
+     "spend": 200780,
+     "treated": 18071,
+     "holdout_treated": 0,
+     "women_share": 0.5809,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16560,
+      "bc_visit": 1511
+     },
+     "normalised": 0.4661
+    },
+    "reference": {
+     "value": 511.876,
+     "spend": 200789,
+     "treated": 8938,
+     "holdout_treated": 0,
+     "women_share": 0.5851,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 7073,
+      "bc_visit": 1711,
+      "incentive": 154
+     },
+     "normalised": 1.0
+    }
+   },
+   "secs": 35.5,
+   "linkage_sensitivity": {
+    "perfect_linkage_challenger_minus_rule": 0.017699999999999994
+   }
+  },
+  {
+   "seed": 25,
+   "seeded_share": 0.97,
+   "eligible": 19818,
+   "holdout": 1982,
+   "budget_inr": 198180.0,
+   "pilot_train": 5837,
+   "info": {
+    "stage1": "sms_ivr",
+    "upgrade": "bc_visit",
+    "k1": 17836,
+    "k2": 1491
+   },
+   "gate": {
+    "pass": false,
+    "ipw_diff": -0.0003704642200165661,
+    "lower_bound_90": -0.018166939890539677,
+    "n_validation": 2501,
+    "n_train": 5837
+   },
+   "policies": {
+    "random": {
+     "value": 71.799,
+     "spend": 198166,
+     "treated": 2834,
+     "holdout_treated": 0,
+     "women_share": 0.5797,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 707,
+      "bc_visit": 740,
+      "upi_onboard": 704,
+      "incentive": 683
+     },
+     "normalised": 0.0
+    },
+    "status_quo": {
+     "value": 89.668,
+     "spend": 198100,
+     "treated": 1979,
+     "holdout_treated": 11,
+     "women_share": 0.5558,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1979
+     },
+     "normalised": 0.0405
+    },
+    "risk_bc": {
+     "value": 24.681,
+     "spend": 198100,
+     "treated": 1981,
+     "holdout_treated": 0,
+     "women_share": 0.5977,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1981
+     },
+     "normalised": -0.1067
+    },
+    "best_arm_only": {
+     "value": 210.539,
+     "spend": 53508,
+     "treated": 17836,
+     "holdout_treated": 0,
+     "women_share": 0.5814,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 17836
+     },
+     "normalised": 0.3142
+    },
+    "rule": {
+     "value": 283.363,
+     "spend": 198135,
+     "treated": 17836,
+     "holdout_treated": 0,
+     "women_share": 0.5814,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16345,
+      "bc_visit": 1491
+     },
+     "normalised": 0.4792
+    },
+    "challenger": {
+     "value": 336.293,
+     "spend": 198135,
+     "treated": 17836,
+     "holdout_treated": 0,
+     "women_share": 0.5814,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16345,
+      "bc_visit": 1491
+     },
+     "normalised": 0.5991
+    },
+    "gated": {
+     "value": 283.363,
+     "spend": 198135,
+     "treated": 17836,
+     "holdout_treated": 0,
+     "women_share": 0.5814,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16345,
+      "bc_visit": 1491
+     },
+     "normalised": 0.4792
+    },
+    "reference": {
+     "value": 513.315,
+     "spend": 198180,
+     "treated": 8826,
+     "holdout_treated": 0,
+     "women_share": 0.5861,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 6990,
+      "bc_visit": 1694,
+      "incentive": 142
+     },
+     "normalised": 1.0
+    }
+   },
+   "secs": 25.8,
+   "linkage_sensitivity": {
+    "perfect_linkage_challenger_minus_rule": 0.134
+   }
+  },
+  {
+   "seed": 26,
+   "seeded_share": 0.97,
+   "eligible": 19835,
+   "holdout": 1984,
+   "budget_inr": 198350.0,
+   "pilot_train": 5940,
+   "info": {
+    "stage1": "sms_ivr",
+    "upgrade": "bc_visit",
+    "k1": 17851,
+    "k2": 1492
+   },
+   "gate": {
+    "pass": false,
+    "ipw_diff": -0.01744528715675972,
+    "lower_bound_90": -0.03450730664113608,
+    "n_validation": 2545,
+    "n_train": 5940
+   },
+   "policies": {
+    "random": {
+     "value": 70.902,
+     "spend": 198318,
+     "treated": 2838,
+     "holdout_treated": 0,
+     "women_share": 0.581,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 706,
+      "bc_visit": 694,
+      "upi_onboard": 734,
+      "incentive": 704
+     },
+     "normalised": 0.0
+    },
+    "status_quo": {
+     "value": 87.663,
+     "spend": 198300,
+     "treated": 1971,
+     "holdout_treated": 17,
+     "women_share": 0.5282,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1971
+     },
+     "normalised": 0.0376
+    },
+    "risk_bc": {
+     "value": 38.088,
+     "spend": 198300,
+     "treated": 1983,
+     "holdout_treated": 0,
+     "women_share": 0.5946,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1983
+     },
+     "normalised": -0.0735
+    },
+    "best_arm_only": {
+     "value": 212.998,
+     "spend": 53553,
+     "treated": 17851,
+     "holdout_treated": 0,
+     "women_share": 0.5726,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 17851
+     },
+     "normalised": 0.3185
+    },
+    "rule": {
+     "value": 278.663,
+     "spend": 198277,
+     "treated": 17851,
+     "holdout_treated": 0,
+     "women_share": 0.5726,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16359,
+      "bc_visit": 1492
+     },
+     "normalised": 0.4657
+    },
+    "challenger": {
+     "value": 317.164,
+     "spend": 198277,
+     "treated": 17851,
+     "holdout_treated": 0,
+     "women_share": 0.5726,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16359,
+      "bc_visit": 1492
+     },
+     "normalised": 0.552
+    },
+    "gated": {
+     "value": 278.663,
+     "spend": 198277,
+     "treated": 17851,
+     "holdout_treated": 0,
+     "women_share": 0.5726,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16359,
+      "bc_visit": 1492
+     },
+     "normalised": 0.4657
+    },
+    "reference": {
+     "value": 517.052,
+     "spend": 198350,
+     "treated": 8558,
+     "holdout_treated": 0,
+     "women_share": 0.5744,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 6705,
+      "bc_visit": 1696,
+      "incentive": 157
+     },
+     "normalised": 1.0
+    }
+   },
+   "secs": 22.1,
+   "linkage_sensitivity": {
+    "perfect_linkage_challenger_minus_rule": 0.07569999999999999
+   }
+  },
+  {
+   "seed": 27,
+   "seeded_share": 0.97,
+   "eligible": 20024,
+   "holdout": 2002,
+   "budget_inr": 200240.0,
+   "pilot_train": 6030,
+   "info": {
+    "stage1": "sms_ivr",
+    "upgrade": "bc_visit",
+    "k1": 18022,
+    "k2": 1506
+   },
+   "gate": {
+    "pass": false,
+    "ipw_diff": 0.0015346737033745895,
+    "lower_bound_90": -0.01421217886951197,
+    "n_validation": 2583,
+    "n_train": 6030
+   },
+   "policies": {
+    "random": {
+     "value": 69.906,
+     "spend": 200203,
+     "treated": 2876,
+     "holdout_treated": 0,
+     "women_share": 0.5727,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 716,
+      "bc_visit": 675,
+      "upi_onboard": 752,
+      "incentive": 733
+     },
+     "normalised": 0.0
+    },
+    "status_quo": {
+     "value": 91.282,
+     "spend": 200200,
+     "treated": 2030,
+     "holdout_treated": 10,
+     "women_share": 0.5626,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 2030
+     },
+     "normalised": 0.0492
+    },
+    "risk_bc": {
+     "value": 34.747,
+     "spend": 200200,
+     "treated": 2002,
+     "holdout_treated": 0,
+     "women_share": 0.6169,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 2002
+     },
+     "normalised": -0.081
+    },
+    "best_arm_only": {
+     "value": 214.952,
+     "spend": 54066,
+     "treated": 18022,
+     "holdout_treated": 0,
+     "women_share": 0.5858,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 18022
+     },
+     "normalised": 0.334
+    },
+    "rule": {
+     "value": 276.747,
+     "spend": 200148,
+     "treated": 18022,
+     "holdout_treated": 0,
+     "women_share": 0.5858,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16516,
+      "bc_visit": 1506
+     },
+     "normalised": 0.4763
+    },
+    "challenger": {
+     "value": 302.325,
+     "spend": 200148,
+     "treated": 18022,
+     "holdout_treated": 0,
+     "women_share": 0.5858,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16516,
+      "bc_visit": 1506
+     },
+     "normalised": 0.5352
+    },
+    "gated": {
+     "value": 276.747,
+     "spend": 200148,
+     "treated": 18022,
+     "holdout_treated": 0,
+     "women_share": 0.5858,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16516,
+      "bc_visit": 1506
+     },
+     "normalised": 0.4763
+    },
+    "reference": {
+     "value": 504.181,
+     "spend": 200240,
+     "treated": 8781,
+     "holdout_treated": 0,
+     "women_share": 0.588,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 6895,
+      "bc_visit": 1685,
+      "incentive": 201
+     },
+     "normalised": 1.0
+    }
+   },
+   "secs": 22.4,
+   "linkage_sensitivity": {
+    "perfect_linkage_challenger_minus_rule": 0.06230000000000002
+   }
+  },
+  {
+   "seed": 28,
+   "seeded_share": 0.97,
+   "eligible": 19060,
+   "holdout": 1906,
+   "budget_inr": 190600.0,
+   "pilot_train": 5679,
+   "info": {
+    "stage1": "sms_ivr",
+    "upgrade": "bc_visit",
+    "k1": 17154,
+    "k2": 1434
+   },
+   "gate": {
+    "pass": false,
+    "ipw_diff": -0.008801341798714873,
+    "lower_bound_90": -0.023182619247595387,
+    "n_validation": 2433,
+    "n_train": 5679
+   },
+   "policies": {
+    "random": {
+     "value": 71.07,
+     "spend": 190548,
+     "treated": 2769,
+     "holdout_treated": 0,
+     "women_share": 0.58,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 701,
+      "bc_visit": 688,
+      "upi_onboard": 673,
+      "incentive": 707
+     },
+     "normalised": 0.0
+    },
+    "status_quo": {
+     "value": 86.769,
+     "spend": 190600,
+     "treated": 1910,
+     "holdout_treated": 22,
+     "women_share": 0.5759,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1910
+     },
+     "normalised": 0.0358
+    },
+    "risk_bc": {
+     "value": 40.954,
+     "spend": 190600,
+     "treated": 1906,
+     "holdout_treated": 0,
+     "women_share": 0.5997,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1906
+     },
+     "normalised": -0.0687
+    },
+    "best_arm_only": {
+     "value": 215.389,
+     "spend": 51462,
+     "treated": 17154,
+     "holdout_treated": 0,
+     "women_share": 0.5777,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 17154
+     },
+     "normalised": 0.3291
+    },
+    "rule": {
+     "value": 281.522,
+     "spend": 190560,
+     "treated": 17154,
+     "holdout_treated": 0,
+     "women_share": 0.5777,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 15720,
+      "bc_visit": 1434
+     },
+     "normalised": 0.4799
+    },
+    "challenger": {
+     "value": 334.547,
+     "spend": 190560,
+     "treated": 17154,
+     "holdout_treated": 0,
+     "women_share": 0.5777,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 15720,
+      "bc_visit": 1434
+     },
+     "normalised": 0.6008
+    },
+    "gated": {
+     "value": 281.522,
+     "spend": 190560,
+     "treated": 17154,
+     "holdout_treated": 0,
+     "women_share": 0.5777,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 15720,
+      "bc_visit": 1434
+     },
+     "normalised": 0.4799
+    },
+    "reference": {
+     "value": 509.603,
+     "spend": 190600,
+     "treated": 8464,
+     "holdout_treated": 0,
+     "women_share": 0.5784,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 6675,
+      "bc_visit": 1604,
+      "incentive": 185
+     },
+     "normalised": 1.0
+    }
+   },
+   "secs": 24.9,
+   "linkage_sensitivity": {
+    "perfect_linkage_challenger_minus_rule": 0.1195
+   }
+  },
+  {
+   "seed": 29,
+   "seeded_share": 0.97,
+   "eligible": 20015,
+   "holdout": 2001,
+   "budget_inr": 200150.0,
+   "pilot_train": 5892,
+   "info": {
+    "stage1": "sms_ivr",
+    "upgrade": "bc_visit",
+    "k1": 18014,
+    "k2": 1506
+   },
+   "gate": {
+    "pass": false,
+    "ipw_diff": -0.019460057067433843,
+    "lower_bound_90": -0.034813663671786926,
+    "n_validation": 2525,
+    "n_train": 5892
+   },
+   "policies": {
+    "random": {
+     "value": 67.725,
+     "spend": 200104,
+     "treated": 2851,
+     "holdout_treated": 0,
+     "women_share": 0.5858,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 708,
+      "bc_visit": 710,
+      "upi_onboard": 741,
+      "incentive": 692
+     },
+     "normalised": 0.0
+    },
+    "status_quo": {
+     "value": 81.925,
+     "spend": 200100,
+     "treated": 1993,
+     "holdout_treated": 10,
+     "women_share": 0.5549,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 1993
+     },
+     "normalised": 0.0323
+    },
+    "risk_bc": {
+     "value": 32.256,
+     "spend": 200100,
+     "treated": 2001,
+     "holdout_treated": 0,
+     "women_share": 0.7001,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 2001
+     },
+     "normalised": -0.0807
+    },
+    "best_arm_only": {
+     "value": 109.907,
+     "spend": 200100,
+     "treated": 2001,
+     "holdout_treated": 0,
+     "women_share": 0.5702,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "bc_visit": 2001
+     },
+     "normalised": 0.0959
+    },
+    "rule": {
+     "value": 272.217,
+     "spend": 200124,
+     "treated": 18014,
+     "holdout_treated": 0,
+     "women_share": 0.5826,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16508,
+      "bc_visit": 1506
+     },
+     "normalised": 0.4651
+    },
+    "challenger": {
+     "value": 307.521,
+     "spend": 200124,
+     "treated": 18014,
+     "holdout_treated": 0,
+     "women_share": 0.5826,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16508,
+      "bc_visit": 1506
+     },
+     "normalised": 0.5454
+    },
+    "gated": {
+     "value": 272.217,
+     "spend": 200124,
+     "treated": 18014,
+     "holdout_treated": 0,
+     "women_share": 0.5826,
+     "floor_ok": true,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 16508,
+      "bc_visit": 1506
+     },
+     "normalised": 0.4651
+    },
+    "reference": {
+     "value": 507.379,
+     "spend": 200150,
+     "treated": 8532,
+     "holdout_treated": 0,
+     "women_share": 0.5887,
+     "floor_ok": null,
+     "within_budget": true,
+     "mix": {
+      "sms_ivr": 6655,
+      "bc_visit": 1710,
+      "incentive": 167
+     },
+     "normalised": 1.0
+    }
+   },
+   "secs": 32.5,
+   "linkage_sensitivity": {
+    "perfect_linkage_challenger_minus_rule": 0.09289999999999998
+   }
+  }
+ ]
+}

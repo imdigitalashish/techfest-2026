@@ -19,3 +19,6 @@ Policy means ± s.d. over the 10 seeds: random 0.000 · status_quo 0.035 ± 0.00
 3. **Small pilots break arm ranking:** in 2 of 10 worlds (seeds 12 and 15) the pilot picked the wrong stage-1 arm and the rule captured ≤ 0.08. Pilot size per arm is therefore a first-order design input.
 
 **Consequence for the documents (per the registered decision rule):** the default stays the transparent rule; the model is a gated challenger. Documents may state H1 with its CI, labelled SYNTHETIC, together with points 2 and 3.
+
+## Dated note — 2026-10-04 15:12 IST (code review, issue 1)
+The registered numbers above are reproduced exactly by the gpt-6-sol review, but in seeds 12 and 15 the stage-1 arm cost more than the per-person budget, the rule made no upgrades, and `challenger_who` differed from the rule only by choosing stage-1 recipients by model score — not the "same stage 1, model chooses whom to upgrade" policy described in `c6_v02.md`. H1's interpretation is therefore qualified for those two seeds. The corrected test is `c6_v03.md` (results `c6_v03_results.md`). Registered text above is unchanged.

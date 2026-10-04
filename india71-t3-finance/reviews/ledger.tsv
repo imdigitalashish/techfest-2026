@@ -1,1 +1,3 @@
 date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	proposal-v1.0 (hostile judge; T1-vs-T3 ranking)	gpt-6-astra	max	15	15	0	blocking: cross-bank identity premise (UIDAI entity-segregated vaults), legal boundary, renderer dropped team block -> v1.1 bank-local phase 1, per-flow legal table, renderer fixed; issue 15 PDF rename rejected (no Team ID yet; Supervisor placeholder); ranks T1 higher
+2026-10-04	code + eval + reproduction (+ C5 addendum)	gpt-6-sol	max	18	18	0	all headline numbers reproduced; blocking: v0.2 challenger != registered description (seeds 12/15), invertible DP seed, women floor off on deployable rule, C5 customer-scope bypass -> fixed; C6 v0.3 re-registered (H1 +0.086, H2, H3 pass); BC task cap deferred, checkpoint publication qualified

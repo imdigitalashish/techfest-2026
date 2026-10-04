@@ -4,6 +4,7 @@ Usage (from india71-t3-finance/): .venv/bin/python deliverables/render_numbers.p
 """
 import json
 import pathlib
+import re
 
 import numpy as np
 
@@ -74,7 +75,7 @@ def main():
                    "{{C6_SECTION}}": c6_section()}.items():
         assert k in s, k
         s = s.replace(k, val)
-    assert "{{" not in s
+    assert not re.search(r"\{\{[A-Z0-9_]+\}\}", s), "unfilled placeholder"
     (ROOT / "deliverables" / "round1-proposal.md").write_text(s)
     print("wrote deliverables/round1-proposal.md")
 

@@ -1,0 +1,96 @@
+{
+ "H1_challenger_vs_rule": {
+  "comparison": "challenger - rule",
+  "mean_diff": 0.08584999999999998,
+  "ci95": [
+   0.057178924164274156,
+   0.11452107583572581
+  ],
+  "p_one_sided": 4.072271747339174e-05,
+  "seeds_positive": 9,
+  "n": 10
+ },
+ "H2_rule_vs_best_arm_only": {
+  "comparison": "rule - best_arm_only",
+  "mean_diff": 0.16094,
+  "ci95": [
+   0.10296907035958901,
+   0.21891092964041098
+  ],
+  "p_one_sided": 7.216755397846369e-05,
+  "seeds_positive": 10,
+  "n": 10
+ },
+ "S1_rule_vs_status_quo": {
+  "comparison": "rule - status_quo",
+  "mean_diff": 0.42334000000000005,
+  "ci95": [
+   0.3973390927618772,
+   0.4493409072381229
+  ],
+  "p_one_sided": 1.9864613619854507e-11,
+  "seeds_positive": 10,
+  "n": 10
+ },
+ "S2_gated_vs_rule": {
+  "comparison": "gated - rule",
+  "mean_diff": 0.007809999999999995,
+  "ci95": [
+   -0.009857447441453972,
+   0.02547744744145396
+  ],
+  "p_one_sided": 0.17171819806895677,
+  "seeds_positive": 1,
+  "n": 10
+ },
+ "S3_perfect_linkage_challenger_minus_rule": {
+  "mean_diff": 0.10170000000000001,
+  "ci95": [
+   0.07211347870727708,
+   0.13128652129272295
+  ],
+  "p_one_sided": 1.3877792765281507e-05,
+  "seeds_positive": 10,
+  "n": 10
+ },
+ "gate_pass_count": 1,
+ "H3_floors_all": true,
+ "H3_budgets_all": true,
+ "H3_holdout_untreated_all": true,
+ "means": {
+  "random": 0.0,
+  "status_quo": 0.038169999999999996,
+  "risk_bc": -0.08109999999999999,
+  "best_arm_only": 0.30057,
+  "rule": 0.4615099999999999,
+  "challenger": 0.5473600000000001,
+  "gated": 0.4693199999999999,
+  "reference": 1.0
+ },
+ "sds": {
+  "random": 0.0,
+  "status_quo": 0.006872820866766911,
+  "risk_bc": 0.014128536921973045,
+  "best_arm_only": 0.07212701836189943,
+  "rule": 0.03400262898332683,
+  "challenger": 0.0711751860630593,
+  "gated": 0.0430435128677946,
+  "reference": 0.0
+ },
+ "value_means": {
+  "random": 70.214,
+  "status_quo": 86.9493,
+  "risk_bc": 34.697500000000005,
+  "best_arm_only": 201.89910000000003,
+  "rule": 272.4968,
+  "challenger": 310.1862,
+  "gated": 275.8419,
+  "reference": 508.4731
+ },
+ "eligible_mean": 19770.4,
+ "pilot_train_mean": 5906.5,
+ "gate_validation_mean": 2530.8,
+ "H1_pass": true,
+ "H2_pass": true,
+ "H3_pass": true
+}
