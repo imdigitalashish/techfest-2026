@@ -72,6 +72,32 @@ The theme asks us to monitor, intercept and reduce plastic leaking from Mumbai's
   - Spike 1: drop it if P2 does not beat P1 by more than the Monte Carlo spread on held-out years.
   - Spike 2: drop the "ratchet" claim if reversed-flow flume tests show no retention gain over an angled boom, or if the fuse cannot keep head rise under the cap.
 
+## Update 17:10 IST — ablations, the twin's leak decomposition, hostile review (SIMULATED / SENSITIVITY)
+Sources: [`analysis.json`](../../components/twin_sim/results/analysis.json) (reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis`); [hostile review](../../reviews/2026-10-04-final-deck-gpt-6-astra.md); [lead response](../../reviews/2026-10-04-final-deck-lead-response.md).
+
+**Dispatch ablations (held-out 2024–25, paired):**
+- tide timing alone −3.2% (central 90% scenario range −12.0% to +0.6%);
+- forecasts alone −0.4%;
+- ranking by kg alone −2.0%.
+
+None clears zero alone. Only the full policy vs the fill-fraction rule does (−5.6%). Spike 1 is therefore claimed only as a *combined* policy in one model, and a cheap kg-ranked sensor rule is the first field comparator.
+
+**What "escape under the boom" is made of:**
+- 51% of all escape is the (1 − e_max) still-water leak we *assumed*;
+- 38% is speed-driven;
+- only 13.2% of arriving plastic comes at speeds above the capture curve's midpoint.
+
+The largest modelled loss is therefore an assumption. **The first tow-tank measurement is a real boom's still-water leak (T1), then capture vs speed (T6).**
+
+**Boom angle (SENSITIVITY, a consequence of the assumed curve, not a confirmation):**
+- 45°: −10.4%;
+- 30°: −15.0%;
+- 20°: −17.2%. A 20° boom is about 2.9× the channel width, which may not fit narrow nullahs.
+
+**FWCE definition (fixes an inconsistency the reviewer found).** Use the analysis's definition everywhere: (cleared + stored at season end) ÷ *unique* catchment load, with re-arrivals of re-floated debris excluded. Stored material is temporary retention, not final diversion. The first-principles section above used "kg arriving"; that denominator double-counts re-arrivals and is superseded.
+
+**Reviewer verdict:** NOT READY unchanged (1 blocker, 11 major, 4 minor); agrees T3 should not replace T1. All 16 items were addressed (15 accepted, 1 partly); see the lead response. The spike framing stands, but the pitch now presents every hardware lever as a test to run, not a result.
+
 ## Update 08:00 IST — prior art for Spike 2 (lead check)
 Passive floating litter traps for tidal waterways already exist. The Bandalong Litter Trap is a floating device that collects and retains floating litter and is "suitable for most waterways wider than 2 metres, including waterways subject to tidal action" (bandalong.com.au). It is built from HDPE and marine-grade aluminium and adapts to water-level changes (stormwatersystems.com); both pages were opened 2026-10-04. A one-way flap mechanism is described only by a search summary, so it is UNVERIFIED.
 

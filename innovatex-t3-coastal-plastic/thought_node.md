@@ -89,25 +89,29 @@
 | C14 | Source attribution | outfall flux + catchments → `WardHotspot` | ward complaints | – | planned | rank correlation (sim) |
 
 ## Selection memo
-_v2, 4 Oct 2026, 16:30 IST (after the afternoon evidence; final after the cross-model reviews). **Context:** T1 JalSakshi was picked for the Delhi zonal by two independent judges. This memo is the honest case for and against T3 as the alternative. Scores are 1–5 with one line of evidence each. Sources: [fact-check](research/fact-check.md) · [results](eval/RESULTS.md)._
+_FINAL v3, 4 Oct 2026, 17:10 IST, after the gpt-6-astra hostile-judge review ([review](reviews/2026-10-04-final-deck-gpt-6-astra.md); [lead response](reviews/2026-10-04-final-deck-lead-response.md)). **Context:** T1 JalSakshi was picked for the Delhi zonal by two independent judges. This memo is the honest case for and against T3 as the alternative. Scores are this memo's 1–5 judgments, not official-rubric totals or qualification odds. Sources: [fact-check](research/fact-check.md) · [results](eval/RESULTS.md)._
 
 - **Winnability — 3/5.**
-  - For: specific, current and Mumbai-grounded, which is the theme's own city. The brief's 5 million kg figure is The Ocean Cleanup's 2026 survey. BMC is growing its boom network from 9 to 23 at ≈ ₹1 crore each, plus a ₹14.5 crore two-year O&M contract, so there is a clear buyer and a clear budget line. T1 lacks this.
-  - Against: an internationally known incumbent (The Ocean Cleanup + Plastic Fischer) already holds the two outlets the brief names, and a Delhi audience gets no home advantage.
-- **Innovation headroom — 2/5 on today's evidence, 4/5 if the tow tank confirms the pocket.**
-  - Tide-aware dispatch robustly beats the sensor-only rule: −5.6% escaped, better in 39/40 draws (SIMULATED). Against today's fixed schedule the gain is small and uncertain (−2.1%, interval crosses zero).
-  - The twin says escape is mostly under the boom, so the big lever is capture geometry and retention. That claim is a SENSITIVITY, and one-way floating traps are prior art (Bandalong).
-  - T1 scored 3 on novelty under hostile review.
-- **Feasibility by 1 Dec — 4/5.** A tow-tank flume with every part sourced, URL and date per line: structure ₹4,969.12 + electronics ₹33,957.99. The dashboard, twin and evidence records are BUILT. The schedule avoids the exams. Needs a hands-on teammate, as T1 does.
-- **Demo strength — 3/5 now, 4/5 with the tow tank.** Live dashboard and twin figures today. At the finals, a boom model towed back and forth while the pocket keeps its catch.
-- **Fit with the user's strengths — 3/5.** Systems, data and evidence pipelines fit well; the detector is commodity; hydraulics and fabrication need a teammate.
-- **Cost realism — weaker than T1.** A field node is ₹83,481.98 (Pi 5, AI HAT, 4G, 1.28 kWh battery) against T1's ≈ ₹11k. A duty-cycled variant needs a much smaller battery, but it is not yet priced as a set.
+  - For: Mumbai-specific grounding, which the hostile judge scored 4/5. That covers The Ocean Cleanup's 2026 survey, BMC's boom expansion (a May 2025 report: 9 → 23 at about ₹1 crore each), a ₹14.5 crore two-year maintenance contract, the 2026 flood plan, and low-value packaging evidence.
+  - Against: a named department with existing budget lines is *prospective* demand, not a commitment, and T1 also names a prospective customer. Strong incumbents (The Ocean Cleanup, Plastic Fischer) already operate at or near the named sites. A Delhi audience gets no home advantage.
+- **Innovation headroom — 2/5 on today's evidence.** Every result is *simulated*:
+  - The full dispatch policy beats a fill-fraction rule (−5.6%, lower in 39 of 40 parameter settings of one model). No single ingredient clears zero alone: tide timing −3.2%, forecasts −0.4%, kg ranking −2.0%.
+  - Against an assumed fixed roster the gain is small and uncertain (−2.1%).
+  - The hardware levers (angle −10% to −17%, pocket −5%) follow from capture curves we assumed. About half of modelled escape is an assumed still-water leak.
+  - Passive floating litter traps for tidal waterways are prior art (Bandalong); a one-way flap is described only in a search summary (UNVERIFIED).
+  - A positive tow-tank test would reduce risk; it would not make a known trap concept novel.
+- **Feasibility by 1 Dec — 4/5.** A closed-loop bench rig needs no field permission: a tow tank (listed parts ₹39,222.11 incl. electronics), node, twin and records. The software is BUILT, the detector is trained (held-out test mAP50 0.857; cross-site 0.524), and the schedule avoids the exams. It needs a hands-on teammate, as T1 does.
+- **Demo strength — 3/5 now, 4/5 with the tow tank.**
+- **Fit with the user's strengths — 3/5.** Systems, data and evidence pipelines fit; hydraulics and fabrication need a teammate.
+- **Cost realism — unresolved.** A field node is ₹83,481.98 in *listed parts*, excluding installation, anchoring, the retrofit and servicing. Comparisons with T1's node price are not like-for-like; T1's rain gauge and shared gateway and T3's retrofit and service burden differ.
 - **Biggest risks:**
-  - every outcome number is simulated, with the circularity stated;
-  - the hardware lever is unproven and has prior art;
-  - AGPL-3.0 on the detector stack for any commercial use;
-  - "why not The Ocean Cleanup?"
-- **Verdict (honest):** **against switching.** T3's mean is ≈ 3.0 vs T1's 3.4 after hostile review. T3's strongest card (named buyer and budget, Mumbai specificity) does not outweigh its modest measured gains, a ~7× costlier node and a strong incumbent at the named sites. Keep T3 as a documented alternative. It becomes competitive only if a two-hour reversal test shows clear pocket retention before 10 Oct.
+  - unproven flood safety of the fail-open section;
+  - fill observability when the camera is degraded;
+  - wet-to-dry mass evidence;
+  - contractor adoption;
+  - all outcome numbers simulated, with circularity stated;
+  - AGPL-3.0 on the detector stack for commercial use.
+- **Verdict:** **against switching from T1.** The hostile judge agrees. The reason is execution and evidence maturity, not the score gap: T3 asks judges to accept more unresolved physical and institutional links (interception geometry, flood safety, fill observability, mass evidence, adoption) than T1 does. T3 stays a complete, honest, documented alternative.
 - **One-line pitch:** *"Mumbai already clears its nullah trash booms daily under contract. NullahNet proposes to make them measurable: tide-timed clearance, a retrofit designed to keep the catch without raising flood levels (tested in a tow tank first), and pay on evidenced kilograms."*
 
 ## Log
