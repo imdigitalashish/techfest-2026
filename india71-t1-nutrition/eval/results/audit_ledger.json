@@ -1,0 +1,2 @@
+AUDIT_LEDGER_METRIC {"n_mutations": 100, "tamper_detection_rate": 1.0}
+{"tamper_detection_rate": 1.0, "n_mutations": 100}

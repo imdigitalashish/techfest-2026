@@ -1,0 +1,2 @@
+POLICY_GATE_METRIC {"false_allows": 0, "n_cases": 29, "pass_rate": 1.0}
+{"pass_rate": 1.0, "false_allows": 0, "n_cases": 29}
