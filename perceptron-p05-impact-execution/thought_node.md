@@ -19,11 +19,8 @@
   - Both cross-model reviews: gpt-6-sol reproduced H1 bit-for-bit (7/7 issues accepted); gpt-6-astra scored the draft 2.80/5 (16/16 accepted).
   - Amendment A1 committed before E10 results.
   - Claims, render and check_docs tooling; abstract and architecture templates.
-- **Doing:** waiting on two child reviews: gpt-6-astra re-scoring the final abstract, and gpt-6-sol checking the claims tooling and E10 reproduction. No compute is running. Updated 2026-10-04 13:44 IST.
-- **Next:**
-  1. Record both reviews in `reviews/ledger.tsv`.
-  2. Fill `astra_final` and render the memo; `check_docs` and pytest must pass.
-  3. Push and message the Supervisor "DONE — slot free".
+- **Doing:** waiting for gpt-6-astra's short re-score of abstract v1.1 (requested to satisfy PLAYBOOK §10: review the final deliverable before DONE). Everything else in the definition of done is complete and green: `eval/check_docs.py` OK, pytest 7/7. Updated 2026-10-04 13:59 IST.
+- **Next:** record the v1.1 score in `reviews/ledger.tsv`; re-render; check; push; message the Supervisor "DONE — slot free".
 - **Needs from user:** register by 15 Oct if P5 is picked at the 12 Oct selection; teammates' names and skills (the abstract has placeholders).
 - **Risks:** (1) sub-tick effects in a simulator with near-linear impact; (2) E10 may not replicate; (3) machine load slows runs.
 
@@ -86,22 +83,22 @@
 <!-- memo:begin (rendered from deliverables/selection-memo.template.md; edit the template) -->
 _v3 (final for the 12 Oct pick unless new evidence arrives). Rendered from `deliverables/selection-memo.template.md` by `eval/render_docs.py`. Numbers come from `eval/results/` and `reviews/ledger.tsv`; `eval/check_docs.py` checks them. Comparisons with other projects come from their own memos on `main`, read on 4 Oct._
 
-**Bottom line: I recommend _against_ P5 as the team's single Perceptron problem**, unless the user specifically wants a trading-domain entry for the Optiver judges. P5 now has the most rigorous evaluation in the portfolio but no confirmed result:
+**Bottom line: I recommend _against_ P5 as the team's single Perceptron problem**, unless the user specifically wants a trading-domain entry for the Optiver judges. P5 has an unusually rigorous evaluation (pre-registration with timestamps, replication, two cross-model reviews, independent reproduction) but no confirmed result:
 - Its minimum viable claim ("an agent that measurably beats TWAP") failed its strictly pre-registered replication.
 - The starter simulator's impact physics makes that claim hard to earn.
 
 | Criterion | Score | Evidence |
 |---|---|---|
-| Winnability | **2/5** | E6 beat TWAP by 0.034 bps [0.013, 0.056] (n = 200). It did not reproduce on validation seeds (E8: +0.006). The strictly pre-registered replication was **not confirmed** (E10, n = 400: -0.013 [-0.029, +0.003]). Pooled over the fixed-size test blocks (n = 600, descriptive): -0.020 [-0.032, -0.007] bps, i.e. 0.20¢/share. The hostile judge (gpt-6-astra) scored the draft 2.80/5 and the final abstract 3.25/5. |
-| Innovation headroom | **3/5** | Common random numbers are classical. Our part is an ABIDES evaluation discipline: synchronised twins (paired dispersion ÷6, CIs 7.7× tighter, but spreads 13% wider under the coupling), a per-seed decomposition, a realism gate, and replication. The counterfactual-mid estimator failed its held-out test (R² 0.15 / -0.02). |
+| Winnability | **2/5** | E6 beat TWAP by 0.034 bps [0.013, 0.056] (n = 200). It did not reproduce on validation seeds (E8: +0.006). The strictly pre-registered replication was **not confirmed** (E10, n = 400: -0.013 [-0.029, +0.003]). Pooled over the fixed-size test blocks (n = 600, descriptive): -0.020 [-0.032, -0.007] bps, i.e. 0.20¢/share. The hostile judge (gpt-6-astra) scored the draft 2.80/5 and the latest final abstract 3.25/5. |
+| Innovation headroom | **3/5** | Common random numbers are classical. Our part is an ABIDES evaluation discipline: synchronised twins (paired dispersion ÷6, CIs 7.7× tighter, but spreads 13% wider under the coupling), a per-seed decomposition, a realism gate, and replication. The counterfactual-mid estimator failed its held-out test (seed-averaged R² 0.15 / -0.02; per seed 0.010 / -0.004). |
 | Feasibility by the deadline | **4/5** | Everything runs on the M5 (CPU only). 4,450 treatment–twin pairs are committed. An independent model (gpt-6-sol) reproduced the headline rows bit-for-bit. What is still needed is research: a realistic-impact market or a better tactic, so the timeline risk sits in science, not engineering. |
-| Demo strength | **3/5** | Twin markets side by side, and "who ends up holding our shares" (value agents absorb 102%) are visual. But the headline effect is a fifth of a tick, and impact in ABIDES is near-linear (slope 0.87). |
+| Demo strength | **3/5** | Twin markets side by side and net-inventory shifts by agent type (value agents' net inventory rises by 102% of our shares) are visual. But the pooled effect is 0.20¢ per share against a 1¢ tick, and the registered impact-vs-size slope is 1.01 [0.55, 1.76] rather than the square-root law's δ ≈ 0.5. |
 | Fit with the user's strengths | **4/5** | Simulation at scale, reproducibility and systems engineering fit; RL and market-microstructure depth would have to come from teammates. |
 
 - **Biggest risk:** sub-tick effects in a simulator whose impact law is unrealistic. Optiver judges will ask "so what?", and today the answer is the instrument rather than an agent.
 - **What would change my mind:** a realism-gated market (square-root-like, partly permanent impact) in which the same pipeline shows a replicated gain over TWAP and VWAP. We estimate 2–3 weeks of work, with no guarantee.
 - **Versus the other candidates** (their memos on `main`): P10, P7 and P1 self-score winnability 4, each reporting a measured win in its own memo (P10: coverage held under injected documents; P7: a pre-registered demand-shock comparison; P1: per-device loss reductions under federated LoRA). P9 and P4 self-score 3. On evidence, P5 belongs below P10, P7 and P1.
-- **One-line pitch (if chosen anyway):** *"Before claiming to beat TWAP, measure your own footprint: twin markets show how much of our cost we caused, and a pre-registered replication shows how little scheduling can buy when impact is near-linear."*
+- **One-line pitch (if chosen anyway):** *"Before claiming to beat TWAP, measure your own footprint: twin markets show how much of our cost we caused, and a pre-registered replication shows that our scheduling gain is not yet distinguishable from zero."*
 <!-- memo:end -->
 
 ## Log
@@ -267,3 +264,25 @@ Those labels were estimates, 1–7 min ahead of the clock. The other headers are
   - `deliverables/round1-abstract.md` is rendered from its template; MV item 2 says "not yet met on total slippage", per the registered rule.
   - `deliverables/architecture.md` is rendered and status-tagged.
   - The selection memo is templated: **recommendation against P5** as the single Perceptron pick (winnability 2/5).
+
+### 2026-10-04 13:59 IST — Final reviews in; abstract v1.1; claims hardened
+- **gpt-6-astra final re-score of v1.0: 3.25/5 (65/100)**, up from 2.80. Nine items, all accepted and fixed in v1.1:
+  - removed the post hoc "near-linear ⇒ TWAP near-optimal" inference;
+  - same-arm E12 accounting (touch arm net ΔIS +0.001 [−0.032, +0.033]);
+  - descriptive attribution wording with the ±0.02 bps margin;
+  - "top-of-book event logs" scope;
+  - seed-averaged vs per-seed R²;
+  - "no momentum amplification was detected";
+  - incumbent search marked [planned];
+  - model-conditional counterfactual and externally anchored calibration targets.
+- **gpt-6-sol follow-up:**
+  - Reproduced E10 H2 (−0.012651 [−0.028501, +0.002586]) and the E6∪E10 pool; 2 rerun seeds matched 10/10 rows.
+  - Six items, all accepted:
+    - atomic rendering;
+    - claims recomputed from CSVs (attribution, E11; E7 cross-checked);
+    - the registered 10k seed-sorted bootstrap everywhere (H2 upper bound +0.0002, still not confirmed);
+    - count-like integers traced;
+    - review scores wired from the ledger;
+    - top-of-book wording.
+- `eval/check_docs.py`: 237 claims, 86 placeholders, no drift, no untraced numbers. Pytest 7/7 (includes the docs-drift test).
+- Selection memo (rendered): **recommend against P5** as the single Perceptron pick. Scores: winnability 2, innovation 3, feasibility 4, demo 3, fit 4.
