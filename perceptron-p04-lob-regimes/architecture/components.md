@@ -41,7 +41,7 @@ flowchart LR
 | **C8 Evaluator** | Score every policy the same way, with uncertainty. | p, `Labels`, alarms, events → metrics JSON/markdown | — | autocorrelated errors (moving-block bootstrap, 600-step blocks) | — | prequential log-loss, accuracy, AUC, Brier, gross edge bps, event-window log-loss, detection report | — (the harness itself; frozen) |
 | **C9 Latency bench** | Measure what the online loop costs. | per-step `perf_counter_ns` → p50/p99/p99.9 µs | C7 | noisy neighbours (runs share the machine) | report against the budget | Python reference loop | p99 µs per step against the budget (stretch goal) |
 
-⚡ = spike component (see [ADR 001](adr/001-spike.md)).
+⚡ = spike component (see [ADR 001](adr/001-spike.md)). **v2 (pre-registered, 22 held-out days):** the spike that survived is C7 = volatility-regime gate plus C6 = harm gate (CUSUM of delayed loss − ln 2 → shrink toward 0.5), with the calibrated KS kept as an audit signal. Numbers: [`eval/results/v2_holdout.md`](../eval/results/v2_holdout.md). Protocol: [`eval/PREREGISTRATION.md`](../eval/PREREGISTRATION.md).
 
 ## Budgets (proposed; to be argued in the abstract)
 

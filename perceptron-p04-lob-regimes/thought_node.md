@@ -144,3 +144,23 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - The registered spike gets H=10, B=600 (by the rule).
   - Post-dev revision `spike_gate` (regime gate + harm-gated shrink): λ=0.5, H=20, B=300 by the same rule. Stated in advance: on dev it does *not* beat plain gating (0.6492 vs 0.6489); harm abstention helps only inside the event window.
 - **Holdout run launched 11:58 IST**, single run: `nice -n 10 python eval/run_v2.py --stage holdout --tag v2_holdout --workers 3`.
+
+### 2026-10-04 12:00–12:50 IST — Holdout results, final deliverables, reviews spawned
+- **Holdout** (single pre-registered run, commit `a9b310b`, clean tree, runtime 247 s): [`eval/results/v2_holdout.md`](eval/results/v2_holdout.md). 97.5% day-cluster CIs, 22 days.
+  - **H1 (registered Fixed-Share spike < static): not supported.** −0.0010 [−0.0044, +0.0020].
+  - **H2 (spike < KS→refit): supported.** −0.0278 [−0.0316, −0.0245], 22/22 days.
+  - **Post-dev `spike_gate`:** −0.0093 [−0.0129, −0.0062] vs static (22/22); −0.0361 vs KS→refit. Vs regime gate alone: +0.0006 [+0.0003, +0.0009] (H3 not supported, as Amendment 1 predicted).
+  - **Comparators vs static:** regime gate −0.0099; GBDT −0.0052; daily retraining −0.0009 (CI spans 0); calibrated-KS→refit +0.0109 (still harmful). Textbook KS→refit is worse than static on 21/22 days.
+  - **Alarms:** calibrated lean KS 0.7/day (16 over 22 days) vs 48/day for the textbook test.
+  - **Edge:** gross 0.297 bps per signal, spread 0.013 bps, break-even fee 0.132 bps/side, against taker fees of 5.0 bps (Regular) and 1.7 bps (VIP 9). Not tradable as a taker; the maker upper bound is positive only at a 0% maker fee, and it ignores queues and adverse selection.
+- **FOMC replay figure** `deliverables/figures/day_2024-05-01.png` (dev day): the calibrated KS fired at 18:09:32 and the harm gate at 18:17:43 (statement 18:00 UTC); both also fired after the 07:10 sell-off (harm 07:24, KS 07:42). The textbook KS fired every 30 min all day.
+- **Final docs:**
+  - the abstract (868 words incl. title; every required section; `[TEAM]` placeholders);
+  - the architecture diagram;
+  - ADR 001 *v2 outcome*;
+  - landscape §6b plus the official fee source;
+  - the final selection memo (3.8/5).
+- **Number check:** `python eval/check_numbers.py` passes (163 quoted numbers matched to `eval/results/*`; external figures allowlisted with a reason in `eval/check_numbers_allow.tsv`).
+- **Cross-model reviews spawned** (PLAYBOOK §10, 2 child sessions):
+  - `gpt-6-astra` (max): hostile judge and methodology on the abstract, spike and pre-registration → `reviews/2026-10-04-abstract-and-spike-gpt-6-astra.md`.
+  - `gpt-6-sol` (max): reproduction of the holdout numbers and code review → `reviews/2026-10-04-repro-and-code-gpt-6-sol.md`. It uses a symlink to this worktree's `.data`, so there is no re-download.

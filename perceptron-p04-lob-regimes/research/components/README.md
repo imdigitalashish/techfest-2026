@@ -29,6 +29,8 @@
 - **Baseline:** logistic regression, d=17. AUC 0.674 dev / 0.618 holdout.
 - **Candidates:** (1) LightGBM head; (2) small MLP (MLPLOB-like) via PyTorch/MLX — scalar: holdout log-loss at a fixed latency budget (an inference-compute frontier in the spirit of arXiv 2606.25986).
 
+> **v2 update (2026-10-04):** pre-registered held-out results for C6/C7 are in [`../../eval/results/v2_holdout.md`](../../eval/results/v2_holdout.md); the decision is recorded in ADR 001 *v2 outcome*.
+
 ## C6 Shift monitor ⚡ (spike)
 - **State of the art:** KS/KSWIN, ADWIN, Page-Hinkley/CUSUM, BOCPD (and its robust version), e-detectors with ARL guarantees, conformal test martingales (2026 optimal constructions), harmful-shift tracking (Podkopaev & Ramdas).
 - **Baseline:** Bonferroni rolling KS (48 alarms/day — saturated) and Page-Hinkley on log-loss.
