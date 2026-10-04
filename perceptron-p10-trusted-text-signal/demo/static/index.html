@@ -328,11 +328,10 @@ function renderMeta(){
 let daySeq = 0;
 async function loadDay(sel){
   const seq = ++daySeq;
-  let d;
   try{
-    d = await api("/api/day", sel);
+    const got = await api("/api/day", sel);
     if(seq!==daySeq) return;
-    S.day = d;
+    S.day = got;
   }catch(e){ $("dayMeta").innerHTML = `<span class="err">${esc(e.message)}</span>`; return; }
   document.querySelectorAll("#dayList button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.t===S.day.ticker && b.dataset.d===S.day.date)));
   const d = S.day, sc = S.meta.showcase;
