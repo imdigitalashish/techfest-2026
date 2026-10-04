@@ -24,7 +24,7 @@ style: |
 <span class="tag">BUILT</span> software we ran · <span class="tag">SIMULATED</span> digital-twin output · <span class="tag">SYNTHETIC</span> generated test data · <span class="tag">SENSITIVITY</span> assumption-driven · <span class="tag">PLANNED</span> not built yet
 
 <!--
-TIME 0:00–0:30 (30 s). LOGISTICS: present zonal-deck.pdf from your own laptop; the dashboard (components/dashboard/site, served with python3 -m http.server) open in a second tab, offline.
+TIME 0:00–0:30 (30 s). LOGISTICS: present zonal-deck.pdf from your own laptop; the dashboard open in a second tab (bash deliverables/serve_dashboard.sh, then http://localhost:8765); it runs offline except the map tiles.
 SAY: "We're ‹team›. Our problem is one specific leak: floating single-use packaging escaping through Mumbai's small storm-water outfalls. Mumbai already has trash booms; we make them work harder and make their numbers trustworthy."
 LINE TO LAND: "We don't propose another barrier. We make the city's existing barriers accountable."
 DON'T SAY "we built a prototype". The software is built; the hardware is PLANNED.

@@ -28,6 +28,6 @@ Status: complete as an **alternative** to the team's chosen Delhi-zonal theme (T
 
 **On the day:**
 - Present the PDF from your own laptop.
-- Open the dashboard offline in a second tab.
+- Open the dashboard in a second tab: `bash deliverables/serve_dashboard.sh` (offline except map tiles).
 - Fill the ‹team› placeholders on slide 1.
 - Rehearse to 9:15 with the presenter card.

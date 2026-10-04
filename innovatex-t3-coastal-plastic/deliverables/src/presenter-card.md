@@ -1,6 +1,6 @@
 # NullahNet — presenter card · Theme 3 · 10 min (aim 9:15, keep 45 s spare)
 
-**Before you start:** present `zonal-deck.pdf` from your own laptop. Open the dashboard offline in a second tab (`components/dashboard/site`, served with `python3 -m http.server`). Backup slides 11–14: dashboard · how the twin works · limits · sources.
+**Before you start:** present `zonal-deck.pdf` from your own laptop. Open the dashboard in a second tab: `bash deliverables/serve_dashboard.sh`, then http://localhost:8765 (offline except map tiles). Backup slides 11–14: dashboard · how the twin works · limits · sources.
 
 | # | Time | Slide | Line to land |
 |---|---|---|---|
