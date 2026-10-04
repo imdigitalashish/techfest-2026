@@ -226,3 +226,8 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
   - Success = Holm-significant gain over the better extreme in ≥ 21/28 cells, and no significant loss > 0.5 pp.
 - README updated with the v2 reproduction commands.
 - Waiting on the two review sessions.
+
+### 2026-10-04 11:08–11:18 IST — Reproduction review, gated-trust preview
+- **gpt-6-sol headline reproduction** (child session): every headline number reproduced exactly (7/7 analyses; 8 episode replays, 31/31 metrics, highspy 1.15.1). Three wording items accepted: tested scalar trust vs planned per-zone trust; "not an upper bound" docstring; "~6 ms end-to-end". Recorded in `reviews/` and the ledger.
+- **`mpc-gated` implemented**, with a tuning-seed preview (`eval/results/gated-tuning-preview`): regime gating adds ≈0 over the best fixed trust (+0.01 pp in shock+drift). The gain is global shrinkage. ADR note: amend Addendum B (city-wide regime and uncertainty-calibrated shrinkage) before any test run.
+- Waiting on the gpt-6-astra final-abstract review session.

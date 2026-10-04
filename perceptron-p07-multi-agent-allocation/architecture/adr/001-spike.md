@@ -163,3 +163,16 @@ The detector's job shifts from "restart the level" to "gate how much the plan tr
 **Neither base planner dominates with EWMA.** Legacy − new = +0.30 at (1,3) and +0.88 at (8,10), but −0.57 at (4,3) and −1.66 at (8,3).
 
 **Conclusion.** The value of a better forecast, and of the change detector, is a property of the *forecast–planner pair*. It is not a property of forecast accuracy, nor of (L, P) alone. This strengthens the decision-aware trust spike (A″): trust must be tuned on the decision outcome for the planner actually deployed. The pre-registered falsification test (Addendum B) will cover both planner variants.
+
+## Update 2026-10-04 11:15 IST — gated-trust preview on tuning seeds (`eval/results/gated-tuning-preview/summary.md`)
+
+- **Setup:** seeds 0–9 (tuning only); L=1, P=10; abandonment-aware LP.
+- **Gating adds ≈0 over the best fixed trust.**
+  - shock+drift: the best gated arm (τ_shock 0.25, τ_quiet 0.5) is +0.99 pp vs EWMA (10/10), but only +0.01 pp vs fixed trust 0.5.
+  - shock: fixed trust 0.25 is best.
+  - τ_quiet = 1 with any τ_shock equals EWMA.
+- **So the benefit is *global* shrinkage of the forecast** (hedging certainty equivalence), not local down-weighting around alarms.
+- **Design note for Addendum B** (to be amended, dated, before any test run):
+  - Make the regime signal city-wide: trust ↓ globally while any shock regime is active.
+  - Add an uncertainty-calibrated shrinkage (e.g. per-zone forecast variance relative to the mean), so trust is not a single hand-tuned scalar.
+  - Fixed-trust and extremes remain the comparators.
