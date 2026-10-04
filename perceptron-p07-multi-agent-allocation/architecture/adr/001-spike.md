@@ -176,3 +176,13 @@ The detector's job shifts from "restart the level" to "gate how much the plan tr
   - Make the regime signal city-wide: trust ↓ globally while any shock regime is active.
   - Add an uncertainty-calibrated shrinkage (e.g. per-zone forecast variance relative to the mean), so trust is not a single hand-tuned scalar.
   - Fixed-trust and extremes remain the comparators.
+
+## Update 2026-10-04 17:58 IST — design-space preview on tuning seeds (`eval/results/trust-designs-tuning-preview/summary.md`)
+
+- **Setup:** seeds 0–9 only; L=1, P=10. Designs: city-wide regime gate (`mpc-gated@scope=1`); detector-free uncertainty shrinkage (`mpc-unctrust@kappa`); fixed global trust 0.5.
+- **No adaptive design beats the best fixed global trust (0.5).**
+  - Best city gate: +0.02 pp [−0.03, +0.06] (shock); −0.05 (shock+drift).
+  - Uncertainty shrinkage: −0.02 at best (shock, κ=1); −0.15 at best (shock+drift, κ=0.5).
+- **Implication for Addendum B/B1:** at (1,10) the spike will likely fail criterion (b) (beat the best fixed trust). The effective ingredient so far is decision-tuned *shrinkage* (a fixed trust chosen on served fraction), not regime adaptivity.
+- **Before the test run:** tune across the full (L,P) grid on seeds 0–49. Adaptivity may matter at long lead times, where forecasts hurt most.
+- **Fallback claim if (b) fails:** "a single decision-tuned trust level beats both certainty equivalence and ignoring the forecast", subject to criterion (a) on fresh seeds.

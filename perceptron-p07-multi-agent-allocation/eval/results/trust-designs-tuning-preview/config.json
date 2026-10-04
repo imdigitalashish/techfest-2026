@@ -1,0 +1,25 @@
+{
+ "scenarios": [
+  "shock",
+  "shock+drift"
+ ],
+ "policies": [
+  "mpc-queue",
+  "mpc-ewma",
+  "mpc-ewma@trust=0.5",
+  "mpc-unctrust@kappa=0.25",
+  "mpc-unctrust@kappa=0.5",
+  "mpc-unctrust@kappa=1",
+  "mpc-gated@scope=1,tau_shock=0.25,tau_quiet=0.5",
+  "mpc-gated@scope=1,tau_shock=0.5,tau_quiet=0.75"
+ ],
+ "seeds": "0-9",
+ "n_agents": 40,
+ "patience": 10,
+ "horizon": 1440,
+ "workers": 2,
+ "out": "eval/results/trust-designs-tuning-preview",
+ "legacy": false,
+ "n_jobs": 160,
+ "wall_s": 197.93484902381897
+}

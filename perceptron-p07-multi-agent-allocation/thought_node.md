@@ -262,3 +262,8 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
   - smoke.sh ≤ 2 min;
   - SCRIPT.md contingency lines.
 - Also: landscape §3c added (Serverless in the Wild, ServerlessLLM, Llumnix abstracts) to back the analogy wording.
+
+### 2026-10-04 17:58 IST — Trust design-space preview (tuning seeds)
+- `mpc-gated@scope=1` (city-wide regime gate) and `mpc-unctrust` (detector-free uncertainty shrinkage) are implemented and tested (11 tests pass).
+- Preview on seeds 0–9 at L=1, P=10 (`eval/results/trust-designs-tuning-preview`): no adaptive design beats the best fixed trust of 0.5 (best: +0.02 pp, n.s.). Recorded in ADR 001. Grid-wide tuning on seeds 0–49 comes before the B/B1 test.
+- The demo builder is building; no action needed from me until it reports.
