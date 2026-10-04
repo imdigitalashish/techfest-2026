@@ -240,7 +240,7 @@
     var sg = await LedgerVerify.verifySignatures(S.entries, S.aux.signatures || [], S.aux.key_registry || {});
     var ms = Math.round(performance.now() - t0);
     S.marks = new Set(r.badSeqs);
-    var sigTxt = sg.supported ? ' · signatures ' + (sg.checked - sg.badSeqs.length) + '/' + sg.checked + ' valid (Ed25519)' : ' · Ed25519 signature check needs a newer browser (checked in the Python tests)';
+    var sigTxt = sg.supported ? ' · crew signatures on stored hashes ' + (sg.checked - sg.badSeqs.length) + '/' + sg.checked + ' valid (Ed25519)' : ' · Ed25519 signature check needs a newer browser (checked in the Python tests)';
     if (r.ok) { st.className = 'status ok'; st.textContent = '✓ ' + r.checked + ' records intact; head matches the published anchor · SHA-256 via ' + r.engine + sigTxt + ' · ' + ms + ' ms'; }
     else { st.className = 'status bad'; st.textContent = '✗ Tampering detected: ' + r.problems[0] + (r.problems.length > 1 ? ' (+' + (r.problems.length - 1) + ' more)' : '') + sigTxt; }
     renderLedger(S.marks);
