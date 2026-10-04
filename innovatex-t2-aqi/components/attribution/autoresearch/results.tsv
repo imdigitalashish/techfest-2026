@@ -1,0 +1,4 @@
+timestamp_ist	commit	hypothesis	method	dev_scalar_MAE	test_scalar_MAE	delta_dev_vs_prev_best	kept	notes
+2026-10-04T07:57	da58d6d	baseline: fixed W→E pair, raw readings	pair_fixed	86.02	76.99	—	baseline	cov 1.00; CSI>50 dev 0.33 test 0.33; seed 20261004
+2026-10-04T07:57	da58d6d	wind-resolved ring (down-most minus up-most node), abstain ws<0.5 m/s	ring	45.33	62.10	-40.69	kept	cov 0.95; CSI>50 dev 0.63 test 0.55
+2026-10-04T07:57	da58d6d	ring + inter-node self-calibration on idle night hours (trailing 14 d ratio-to-median)	ring_selfcal	30.08	36.21	-15.25	kept (CANDIDATE)	cov 0.95; CSI>50 dev 0.77 test 0.72; single seed — multi-seed check pending
