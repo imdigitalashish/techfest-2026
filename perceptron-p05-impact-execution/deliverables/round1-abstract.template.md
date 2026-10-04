@@ -8,16 +8,16 @@
 Theme 3, **Problem 5: Market-Impact-Aware Execution Strategy**. A large order moves the price its owner pays, and market makers such as Optiver sit on the other side. Before trusting any "beats TWAP" number, we want to know, with error bars, how much of our cost we caused.
 
 ## 2. Understanding of the challenge
-Slippage is endogenous: our orders consume liquidity and other agents react. Historical replay cannot identify the no-order price; an agent-based simulator (ABIDES) supplies a model-conditional one. We measured three obstacles [evaluated]:
-1. **Noise.** After our first trade a same-seed twin without our order drifts apart: the mid gap's std grows from {{gap_std_60}}¢ (1 min) to {{gap_std_1200}}¢ (20 min), against a mean impact of {{gap_mean_300}}¢.
+Slippage is endogenous: our orders consume liquidity; other agents react. Historical replay cannot identify the no-order price; an agent-based simulator (ABIDES) supplies a model-conditional one. We measured three obstacles [evaluated]:
+1. **Noise.** After our first trade a same-seed twin without our order drifts apart: the mid gap's std grows from {{gap_std_60}}¢ (1 min) to {{gap_std_1200}}¢ (20 min), while the 5-min mean gap is {{gap_mean_300}}¢.
 2. **Physics.** Impact grows roughly linearly with size: the registered five-size slope is {{e7_delta}} [{{e7_delta_lo}}, {{e7_delta_hi}}] ({{e7_valid_pct}}% of bootstrap draws usable; post hoc three-size estimate {{e7_delta_resolved}}), against δ ≈ 0.5 for the square-root law. Whether any impact is permanent is unresolved.
 3. **Statistics.** Sub-tick effects need paired designs, pre-registration and replication.
 
 ## 3. Proposed approach
 - **Simulator** [built]: J.P. Morgan's ABIDES (rmsc04: an exchange and {{n_trading_agents}} noise, value, momentum and market-maker agents; 35-minute sessions), run through our Python 3.11 adapter.
 - **Synchronised twins** [evaluated]:
-  - Each seed runs with our agent and with a null agent, coupled by re-keying every agent's random stream at each wake-up (common random numbers). Pre-trade top-of-book event logs match exactly ({{e12_n}} seeds × {{e12_arms}} arms, E12).
-  - In E4 ({{e4_n}} seeds), own-impact dispersion fell {{noise_reduction}}× ({{own_std_naive}} → {{own_std_sync}} bps). On the same {{e3_e5_n}} test seeds, paired CIs tightened {{ci_tightening}}× (E3 vs E5).
+  - Each seed runs with our agent and a null agent, coupled by re-keying every background agent's random stream at each wake-up (common random numbers). Pre-trade top-of-book event logs match exactly ({{e12_n}} seeds × {{e12_arms}} arms, E12).
+  - In E4 ({{e4_n}} seeds), own-impact dispersion fell {{noise_reduction}}× ({{own_std_naive}} → {{own_std_sync}} bps). On the same {{e3_e5_n}} test seeds, paired-difference std fell {{ci_tightening}}× (median of four policies; E3 vs E5).
   - The coupling keeps volume and trade counts within ±10% but widens mean spreads by {{e11_spread_pct}}%; volatility, autocorrelation and depth are unresolved (E11). Counterfactuals are conditional on this altered market.
 - **Cost accounting** [built]: shortfall = drift + own impact (twin mid − our mid) + cost against the decision-time mid. It splits into decision-to-fill delay and at-fill concession.
 - **Realism gate** [planned]: calibrate the agent mix to external, pre-declared impact targets (square-root exponent, permanent fraction), with held-out checks; MarS is the out-of-family check.

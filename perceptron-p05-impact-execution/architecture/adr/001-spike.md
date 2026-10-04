@@ -42,7 +42,7 @@ Slippage for a SELL = (exogenous drift) + (our own displacement of the mid) + (s
 ## Addendum, 2026-10-04 13:19 IST: what the evidence and two cross-model reviews changed
 Sources: `eval/preregistration.md` (E7–E12 and amendment A1); `reviews/2026-10-04-*-decisions.md` (gpt-6-sol: 7 issues accepted; gpt-6-astra: 16 accepted).
 - **The spike as an instrument holds, with narrower wording.**
-  - Synchronised twins reduced paired dispersion about 6× (E4) and paired-CI width about 7.7× (E3 vs E5).
+  - Synchronised twins reduced own-impact dispersion about 6× (E4) and the std of paired policy differences about 7.7× (E3 vs E5, median of four policies; corrected wording 4 Oct after the demo review).
   - That is a *common-random-numbers coupling*. The counterfactual is conditional on the simulator and the coupling. Whether the coupling preserves market statistics is tested in E11.
   - "Bit-identical" is withdrawn: the committed check compares 1-s sampled mids with ≈1¢ tolerance. An exact event-level check is used from E12 on.
 - **The ghost book is renamed the "counterfactual-mid estimator" and is unresolved.**
