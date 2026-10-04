@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
+- **Phase:** 1–4, compressed. LEAN MODE (Supervisor, 05:50 IST): no sub-agents or downloads over 200 MB before 08:30; the lead works alone.
+- **Plan:** Morning package in the Supervisor's order: (a) this node → (b) `research/landscape.md` → (c) `architecture/components.md` + contracts → (d) ADR 001 → (e) selection memo → (f) `deliverables/round1-abstract.md` + `architecture.md` → (g) a walking skeleton on a ground-truth simulator, plus the small Open Bandit Dataset sample if it is reachable.
+- **Doing:** Lead, alone: primary-source reads via the arXiv API and GitHub API (small requests), then writing.
+- **Next:** landscape → components → ADR → memo → abstract → skeleton numbers.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** _(lead fills)_
+- **Risks:** Saturated network (all 8 research sub-agents died at 0 turns on HTTP 408). Mitigation: sequential, small requests. The full Open Bandit Dataset is too big to download tonight, so tonight's real-data numbers use only the small sample bundled with obp.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -59,3 +59,13 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 02:05 IST — Phase 0 done; research fan-out launched
+- Read `PLAYBOOK.md`, this brief and `_briefs/perceptron.txt` (verified: problem text, MVP and stretch bullets, rounds, judging weights and dates match the seeded brief).
+- What we must be able to show, from the judging weights: (1) the crux in our own words: the policy changes the data and the world drifts, so a before/after number confounds the policy's effect with trend, mix shift and selection (20%); (2) a valid estimator with stated assumptions — overlap, logged propensities, no unmeasured confounding — plus a feasible plan (25%); (3) something beyond "run IPW/DR from obp" (20%); (4) an evaluation that proves the claim — ground truth from a simulator and the OBD Random→BTS protocol, coverage of intervals, bias of the naive number (15%).
+- Created the folder layout and a uv venv (`.venv`, Python 3.11; numpy 2.4.6, scipy 1.17.1, pandas 3.0.6, scikit-learn 1.9.1, pydantic 2.13.5; installed offline from the uv cache because PyPI downloads timed out).
+- Spawned 8 research sub-agents (R1 estimators, R2 uncertainty, R3 confounding, R4 code and datasets, R5 companies, R6 feedback loops, R7 social signal, R8 trading and competition intel).
+
+### 2026-10-04 05:55 IST — All 8 research agents failed; switching to lean mode
+- Every sub-agent failed at 0 turns with `408 Timed out reading request body`, so no research files were produced. The network is saturated across the portfolio.
+- Supervisor's lean-mode directive (05:50) received: no sub-agents, small requests, nothing over 200 MB, push every 30 minutes. Plan reordered to match. Research is now done directly: arXiv API and GitHub API records saved under `research/sources/`.
