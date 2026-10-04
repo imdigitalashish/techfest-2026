@@ -46,10 +46,10 @@ Query-scored key indices (Quest, ArkVale) and token recomputation (CacheBlend, H
 - **Unit of analysis:** 12 held-out contexts, with context-clustered bootstrap CIs. Scorer tuning used only development seeds (an exploratory best of 322 variants).
 - **Metrics:** recall, retained and answer-time bytes, compression, needle-block hit rate and latency overhead.
 - **Preliminary results:** <!-- p2:headline:begin -->
-_Measured results pending (pre-registered runs in progress)._
+On 12 held-out ~4k-token contexts (48 independent questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. At 25% of the KV memory, StreamingLLM recalls 19%, kvpress SnapKV 6% and ExpectedAttention 4%; RoD recalls 58% (95% CI 44%–73%) while retaining 7.7× less state than the full cache. Pre-registered: RoD − StreamingLLM +0.40 (95% CI +0.25 to +0.54); RoD − full -0.25 (-0.42 to -0.08), non-inferiority at a 5-point margin not shown.
 <!-- p2:headline:end -->
 - **Controls:** <!-- p2:caveats:begin -->
-_Controls pending._
+At 25% memory: RoD minus a lexical index over the same ids, +0.04 (95% CI -0.04 to +0.12); CPU time per answer 6.2× StreamingLLM's.
 <!-- p2:caveats:end -->
 
 ## Feasibility and risks

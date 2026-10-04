@@ -69,11 +69,17 @@ _v2 (final for the 12 Oct gate) will be written to [deliverables/selection-memo.
 - **v1 (4 Oct, 08:10; superseded):** winnability 3 · innovation 4 · feasibility 5 · demo 4 · fit 5. At the time there were no measured numbers; v1 described the RoD design before tuning.
 - **Pre-registered results so far:**
 <!-- p2:verdicts:begin -->
-- **Primary** (RoD − StreamingLLM, keep 0.25, T1): pending → pending
-- **S1** (RoD vs each query-agnostic baseline, keep 0.25, T1): pending
-- **S2** (RoD − RoD-lexical, keep 0.25, T1 literal): pending
+- **Primary** (RoD − StreamingLLM, keep 0.25, T1): +0.396 (95% CI +0.25 to +0.54, 12 contexts) → **SUCCESS** (lower bound > 0)
+- **S7** (RoD − full cache, keep 0.1, T1) (descriptive): +0.021 (95% CI -0.15 to +0.19, 12 contexts)
+- **S7** (RoD − full cache, keep 0.25, T1) (confirmatory, margin −0.05): -0.250 (95% CI -0.42 to -0.08, 12 contexts) → non-inferiority **not shown**
+- **S7** (RoD − full cache, keep 0.5, T1) (descriptive): -0.229 (95% CI -0.40 to -0.06, 12 contexts)
+- **S1** (RoD vs each query-agnostic baseline, keep 0.25, T1): beats **all** 9 baselines; weakest margin kvpress TOVA +0.229 (95% CI +0.04 to +0.40, 12 contexts)
+- **S2** (RoD − RoD-lexical, keep 0.25, T1 literal): +0.042 (95% CI -0.04 to +0.12, 12 contexts) → no evidence the sketch beats lexical retrieval
 - **S2** (RoD − RoD-lexical, keep 0.25, T2 paraphrase): pending
 - **S3** (primary replicated on T2 paraphrase): pending
+- **S5** (RoD − baseline, keep 0.1, T1): StreamingLLM (ours) +0.833 (95% CI +0.71 to +0.94, 12 contexts); SnapKV-variant (ours, +4 sinks) +0.854 (95% CI +0.73 to +0.96, 12 contexts); H2O-style (ours) +0.854 (95% CI +0.73 to +0.96, 12 contexts); RoD-lexical (control) +0.417 (95% CI +0.31 to +0.52, 12 contexts); kvpress ExpectedAttention +0.854 (95% CI +0.73 to +0.96, 12 contexts)
+- **S5** (RoD − baseline, keep 0.5, T1): StreamingLLM (ours) +0.167 (95% CI +0.02 to +0.31, 12 contexts); SnapKV-variant (ours, +4 sinks) +0.375 (95% CI +0.21 to +0.56, 12 contexts); H2O-style (ours) +0.333 (95% CI +0.15 to +0.50, 12 contexts); RoD-lexical (control) +0.000 (95% CI -0.08 to +0.08, 12 contexts); kvpress ExpectedAttention not run
+- **Byte check T1**: RoD answer-time bytes > a baseline's stored bytes in 0 of 36 (context, keep) cells
 <!-- p2:verdicts:end -->
 
 ## Log
