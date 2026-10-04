@@ -43,7 +43,8 @@ def train(label: str = "trl_current", D: int = 4096, alpha: float = 1.0, out: Pa
     Xc = X - xm
     W = np.linalg.solve(Xc.T @ Xc + alpha * np.eye(D, dtype=np.float32), Xc.T @ (T - mu))
     out.parent.mkdir(parents=True, exist_ok=True)
-    np.savez(out, W=W, mu=mu, xm=xm, idf=idf, D=D, label=label, n_train=len(tr))
+    prior = np.bincount(y.astype(int), minlength=K + 1)[1:].astype(np.float64)
+    np.savez(out, W=W, mu=mu, xm=xm, idf=idf, D=D, label=label, n_train=len(tr), prior=prior / prior.sum())
     return out
 
 
@@ -52,6 +53,14 @@ class Model:
         z = np.load(path)
         self.W, self.mu, self.xm, self.idf, self.D = z["W"], z["mu"], z["xm"], z["idf"], int(z["D"])
         self.model_id = f"thr_ridge_v0:{z['label']}:n{int(z['n_train'])}:D{self.D}"
+        self.prior = z["prior"] if "prior" in z.files else np.full(K, 1.0 / K)
+
+    def prior_distribution(self) -> dict:
+        """Training-label prior: the documented fallback for empty or unreadable input."""
+        p = np.asarray(self.prior, dtype=float) + 1e-6
+        p = p / p.sum()
+        return {"p": [float(v) for v in p], "p_gt": [float(min(max(v, 0.0), 1.0)) for v in 1 - np.cumsum(p)[:-1]],
+                "model_id": self.model_id + ":prior"}
 
     def predict(self, text: str) -> dict:
         x = featurize([text], self.D) * self.idf

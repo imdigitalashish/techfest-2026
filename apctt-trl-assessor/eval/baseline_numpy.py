@@ -57,8 +57,10 @@ def qwk(y, p):
 def metrics(y, p):
     y, p = np.asarray(y), np.asarray(p)
     prec = [np.mean(y[p == c] == c) for c in range(1, K + 1) if np.any(p == c)]
+    labels = sorted(set(y.tolist()) | set(p.tolist()))  # sklearn convention; never-predicted classes count as 0
+    macro_p = float(np.mean([np.mean(y[p == c] == c) if np.any(p == c) else 0.0 for c in labels]))
     return {"n": int(len(y)), "exact_acc": float(np.mean(y == p)), "within1_acc": float(np.mean(np.abs(y - p) <= 1)),
-            "mae": float(np.mean(np.abs(y - p))), "qwk": qwk(y, p),
+            "mae": float(np.mean(np.abs(y - p))), "qwk": qwk(y, p), "macro_precision": macro_p,
             "macro_precision_predicted_classes": float(np.mean(prec)) if prec else 0.0}
 
 

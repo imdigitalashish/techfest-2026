@@ -41,8 +41,9 @@ def extract(doc: dict, rubric: dict | None = None, max_items: int = 60) -> list[
                 polarity = "negated" if r["_negated"].search(sent) else ("planned" if r["_planned"].search(sent) else "achieved")
                 scale = next((k for k, rx in r["_scale"] if rx.search(sent)), "unknown")
                 start = m.start() + (len(sent) - len(sent.lstrip()))
+                quote = sent.strip()[:1000]
                 items.append({"evidence_id": f"e{len(items)}", "section_id": sec["section_id"],
-                              "char_start": start, "char_end": m.end(), "quote": sent.strip()[:1000],
+                              "char_start": start, "char_end": start + len(quote), "quote": quote,
                               "signal": lv["signal"], "environment": lv["environment"], "scale": scale,
                               "polarity": polarity, "confidence": 0.5})
                 if len(items) >= max_items:

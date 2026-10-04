@@ -1,42 +1,196 @@
 {
-  "rubric_id": "eu_annex_g+nasa_v0",
-  "sources": [
-    "European Commission, Horizon 2020 WP 2014-2015 General Annex G (TRL) — https://ec.europa.eu/research/participants/data/ref/h2020/wp/2014_2015/annexes/h2020-wp1415-annex-g-trl_en.pdf (opened 2026-10-04)",
-    "NASA SCaN, Technology Readiness Levels — https://www.nasa.gov/directorates/somd/space-communications-navigation-program/technology-readiness-levels/ (opened 2026-10-04)"
-  ],
-  "note": "Level text = EU Annex G wording (verbatim). Cue phrases are derived from the EU and NASA level wording only, never from evaluation documents. To be replaced by the APCTT assessment-criteria checklist on 10 Oct.",
-  "levels": [
-    {"level": 1, "criterion_id": "L1_basic_principles", "signal": "basic_principle", "environment": "none", "text": "basic principles observed",
-     "cues": ["basic principles?", "fundamental (research|principles?|physics)", "theoretical (study|analysis|framework|model)", "first principles", "scientific research"],
-     "actions": ["Formulate a concrete technology concept and its intended application."]},
-    {"level": 2, "criterion_id": "L2_concept", "signal": "concept", "environment": "none", "text": "technology concept formulated",
-     "cues": ["concept(ual)? (design|study|formulat\\w*)", "technology concept", "feasibility (study|analysis)", "practical applications?", "speculative", "paper study"],
-     "actions": ["Run analytical and laboratory studies that test the concept's critical function (proof of concept)."]},
-    {"level": 3, "criterion_id": "L3_proof_of_concept", "signal": "proof_of_concept", "environment": "lab", "text": "experimental proof of concept",
-     "cues": ["proof[- ]of[- ]concept", "analytical and laboratory stud\\w*", "laboratory (experiment|test|measurement)s?", "experimental(ly)? (validat\\w*|demonstrat\\w*|verif\\w*)", "bench[- ]top"],
-     "actions": ["Integrate the components and validate them together in the laboratory."]},
-    {"level": 4, "criterion_id": "L4_lab_validation", "signal": "lab_validation", "environment": "lab", "text": "technology validated in lab",
-     "cues": ["validat\\w* in (the |a )?lab(oratory)?", "laboratory validation", "breadboard", "components? (were |are )?(integrated|tested together)", "lab(oratory)?[- ]scale (prototype|demonstrat\\w*)"],
-     "actions": ["Test a higher-fidelity breadboard in a relevant (simulated or industrially relevant) environment."]},
-    {"level": 5, "criterion_id": "L5_relevant_env_validation", "signal": "relevant_env_validation", "environment": "relevant", "text": "technology validated in relevant environment",
-     "cues": ["relevant environment", "industrially relevant", "realistic (environment|conditions)", "simulated (environment|operational conditions)", "high[- ]fidelity (breadboard|test)", "thermal[- ]vacuum", "vibration test"],
-     "actions": ["Demonstrate a representative system or subsystem prototype in the relevant environment."]},
-    {"level": 6, "criterion_id": "L6_relevant_env_demo", "signal": "relevant_env_demo", "environment": "relevant", "text": "technology demonstrated in relevant environment",
-     "cues": ["(fully functional|engineering|representative) (prototype|model)", "prototype (was |has been )?demonstrated", "demonstrat\\w* in (a |the )?relevant environment", "engineering development unit", "subsystem (prototype|demonstration)"],
-     "actions": ["Demonstrate the system prototype in the operational environment (field, flight or plant trial)."]},
-    {"level": 7, "criterion_id": "L7_operational_prototype", "signal": "operational_prototype", "environment": "operational", "text": "system prototype demonstration in operational environment",
-     "cues": ["operational environment", "field (test|trial|demonstration)s?", "flight test", "in[- ]orbit (demonstration|test)", "space environment", "pilot (plant|line|deployment|scale)"],
-     "actions": ["Complete the final system and pass qualification testing."]},
-    {"level": 8, "criterion_id": "L8_qualified_system", "signal": "qualified_system", "environment": "operational", "text": "system complete and qualified",
-     "cues": ["(flight|space)[- ]qualified", "qualification (test|testing|campaign)", "\\bqualified\\b", "certifi(ed|cation)", "system complete"],
-     "actions": ["Prove the actual system in operation over a successful mission or in competitive production."]},
-    {"level": 9, "criterion_id": "L9_proven_operation", "signal": "proven_operation", "environment": "operational", "text": "actual system proven in operational environment",
-     "cues": ["flight[- ]proven", "successful mission", "commercially available", "in (routine |commercial )?(operation|service|production)", "competitive manufacturing", "deployed (in|at) (scale|production)"],
-     "actions": ["Sustain operation; track reliability and cost data."]}
-  ],
-  "polarity": {
-    "planned": ["\\bwill\\b", "\\bplan(s|ned)? to\\b", "\\bpropos(e|ed|es)\\b", "\\baim(s)? to\\b", "\\bgoal\\b", "\\bobjective\\b", "\\bintend(s|ed)? to\\b", "\\bwould\\b", "\\bcould\\b", "\\bto be (developed|demonstrated|tested|validated)\\b", "\\bphase ii\\b", "\\bfuture\\b"],
-    "negated": ["\\bnot yet\\b", "\\bhas not been\\b", "\\bhave not been\\b", "\\bno (prior|previous)\\b", "\\bnever been\\b"]
+ "rubric_id": "eu_annex_g+nasa_v0",
+ "sources": [
+  "European Commission, Horizon 2020 WP 2014-2015 General Annex G (TRL) — https://ec.europa.eu/research/participants/data/ref/h2020/wp/2014_2015/annexes/h2020-wp1415-annex-g-trl_en.pdf (opened 2026-10-04)",
+  "NASA SCaN, Technology Readiness Levels — https://www.nasa.gov/directorates/somd/space-communications-navigation-program/technology-readiness-levels/ (opened 2026-10-04)"
+ ],
+ "note": "Level text = EU Annex G wording (verbatim). Cue phrases are derived from the EU and NASA level wording only, never from evaluation documents. To be replaced by the APCTT assessment-criteria checklist on 10 Oct. `actions_to_reach` = what a technology must demonstrate to attain this level (v0.1: fixed an off-by-one found in review).",
+ "levels": [
+  {
+   "level": 1,
+   "criterion_id": "L1_basic_principles",
+   "signal": "basic_principle",
+   "environment": "none",
+   "text": "basic principles observed",
+   "cues": [
+    "basic principles?",
+    "fundamental (research|principles?|physics)",
+    "theoretical (study|analysis|framework|model)",
+    "first principles",
+    "scientific research"
+   ],
+   "actions_to_reach": [
+    "Observe and report the basic scientific principles underlying the technology."
+   ]
   },
-  "scale": {"system": "\\bsystems?\\b", "subsystem": "\\bsub-?systems?\\b", "component": "\\bcomponents?\\b"}
+  {
+   "level": 2,
+   "criterion_id": "L2_concept",
+   "signal": "concept",
+   "environment": "none",
+   "text": "technology concept formulated",
+   "cues": [
+    "concept(ual)? (design|study|formulat\\w*)",
+    "technology concept",
+    "feasibility (study|analysis)",
+    "practical applications?",
+    "speculative",
+    "paper study"
+   ],
+   "actions_to_reach": [
+    "Formulate a concrete technology concept and its intended application."
+   ]
+  },
+  {
+   "level": 3,
+   "criterion_id": "L3_proof_of_concept",
+   "signal": "proof_of_concept",
+   "environment": "lab",
+   "text": "experimental proof of concept",
+   "cues": [
+    "proof[- ]of[- ]concept",
+    "analytical and laboratory stud\\w*",
+    "laboratory (experiment|test|measurement)s?",
+    "experimental(ly)? (validat\\w*|demonstrat\\w*|verif\\w*)",
+    "bench[- ]top"
+   ],
+   "actions_to_reach": [
+    "Run analytical and laboratory studies that test the concept's critical function (proof of concept)."
+   ]
+  },
+  {
+   "level": 4,
+   "criterion_id": "L4_lab_validation",
+   "signal": "lab_validation",
+   "environment": "lab",
+   "text": "technology validated in lab",
+   "cues": [
+    "validat\\w* in (the |a )?lab(oratory)?",
+    "laboratory validation",
+    "breadboard",
+    "components? (were |are )?(integrated|tested together)",
+    "lab(oratory)?[- ]scale (prototype|demonstrat\\w*)"
+   ],
+   "actions_to_reach": [
+    "Integrate the components and validate them together in the laboratory."
+   ]
+  },
+  {
+   "level": 5,
+   "criterion_id": "L5_relevant_env_validation",
+   "signal": "relevant_env_validation",
+   "environment": "relevant",
+   "text": "technology validated in relevant environment",
+   "cues": [
+    "relevant environment",
+    "industrially relevant",
+    "realistic (environment|conditions)",
+    "simulated (environment|operational conditions)",
+    "high[- ]fidelity (breadboard|test)",
+    "thermal[- ]vacuum",
+    "vibration test"
+   ],
+   "actions_to_reach": [
+    "Test a higher-fidelity breadboard in a relevant (simulated or industrially relevant) environment."
+   ]
+  },
+  {
+   "level": 6,
+   "criterion_id": "L6_relevant_env_demo",
+   "signal": "relevant_env_demo",
+   "environment": "relevant",
+   "text": "technology demonstrated in relevant environment",
+   "cues": [
+    "(fully functional|engineering|representative) (prototype|model)",
+    "prototype (was |has been )?demonstrated",
+    "demonstrat\\w* in (a |the )?relevant environment",
+    "engineering development unit",
+    "subsystem (prototype|demonstration)"
+   ],
+   "actions_to_reach": [
+    "Demonstrate a representative system or subsystem prototype in the relevant environment."
+   ]
+  },
+  {
+   "level": 7,
+   "criterion_id": "L7_operational_prototype",
+   "signal": "operational_prototype",
+   "environment": "operational",
+   "text": "system prototype demonstration in operational environment",
+   "cues": [
+    "operational environment",
+    "field (test|trial|demonstration)s?",
+    "flight test",
+    "in[- ]orbit (demonstration|test)",
+    "space environment",
+    "pilot (plant|line|deployment|scale)"
+   ],
+   "actions_to_reach": [
+    "Demonstrate the system prototype in the operational environment (field, flight or plant trial)."
+   ]
+  },
+  {
+   "level": 8,
+   "criterion_id": "L8_qualified_system",
+   "signal": "qualified_system",
+   "environment": "operational",
+   "text": "system complete and qualified",
+   "cues": [
+    "(flight|space)[- ]qualified",
+    "qualification (test|testing|campaign)",
+    "\\bqualified\\b",
+    "certifi(ed|cation)",
+    "system complete"
+   ],
+   "actions_to_reach": [
+    "Complete the final system and pass qualification testing."
+   ]
+  },
+  {
+   "level": 9,
+   "criterion_id": "L9_proven_operation",
+   "signal": "proven_operation",
+   "environment": "operational",
+   "text": "actual system proven in operational environment",
+   "cues": [
+    "flight[- ]proven",
+    "successful mission",
+    "commercially available",
+    "in (routine |commercial )?(operation|service|production)",
+    "competitive manufacturing",
+    "deployed (in|at) (scale|production)"
+   ],
+   "actions_to_reach": [
+    "Prove the actual system in operation over a successful mission or in competitive production."
+   ]
+  }
+ ],
+ "polarity": {
+  "planned": [
+   "\\bwill\\b",
+   "\\bplan(s|ned)? to\\b",
+   "\\bpropos(e|ed|es)\\b",
+   "\\baim(s)? to\\b",
+   "\\bgoal\\b",
+   "\\bobjective\\b",
+   "\\bintend(s|ed)? to\\b",
+   "\\bwould\\b",
+   "\\bcould\\b",
+   "\\bto be (developed|demonstrated|tested|validated)\\b",
+   "\\bphase ii\\b",
+   "\\bfuture\\b"
+  ],
+  "negated": [
+   "\\bnot yet\\b",
+   "\\bhas not been\\b",
+   "\\bhave not been\\b",
+   "\\bno (prior|previous)\\b",
+   "\\bnever been\\b"
+  ]
+ },
+ "scale": {
+  "system": "\\bsystems?\\b",
+  "subsystem": "\\bsub-?systems?\\b",
+  "component": "\\bcomponents?\\b"
+ }
 }

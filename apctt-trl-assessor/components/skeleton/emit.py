@@ -1,6 +1,9 @@
-"""C7 Assemble & validate: build the Assessment and validate it against architecture/contracts (stdlib validator).
+"""C7 Assemble & validate: build the internal Assessment and validate it against our own contracts.
 
-The official output schema (10 Oct) will be loaded from its file and validated the same way; nothing is inlined.
+The stdlib validator below covers ONLY the keywords our internal contracts use and raises on any other keyword
+(fail-closed), so it can never silently pass an unfamiliar schema. The official output (10 Oct) needs an explicit
+adapter Assessment -> official record and a standards-complete validator (or the organisers' checker); the internal
+dry run is not evidence of official compliance.
 """
 from __future__ import annotations
 
@@ -11,6 +14,8 @@ from .paths import resource
 
 CONTRACTS = resource("contracts.schema.json", "architecture/contracts/contracts.schema.json")
 _TYPES = {"object": dict, "array": list, "string": str, "boolean": bool, "null": type(None)}
+SUPPORTED = {"$ref", "$schema", "$id", "$defs", "title", "description", "type", "enum", "required", "properties",
+             "additionalProperties", "items", "minItems", "maxItems", "minimum", "maximum", "maxLength"}
 
 
 def load_schema(path: Path = CONTRACTS) -> dict:
@@ -20,6 +25,9 @@ def load_schema(path: Path = CONTRACTS) -> dict:
 def validate(inst, schema: dict, root: dict, path: str = "$") -> list[str]:
     """Minimal JSON Schema subset: $ref, type, enum, required, properties, additionalProperties(bool|schema),
     items, minItems, maxItems, minimum, maximum, maxLength."""
+    unknown = set(schema) - SUPPORTED
+    if unknown:
+        raise NotImplementedError(f"internal validator does not implement {sorted(unknown)}; use a full JSON Schema validator")
     if "$ref" in schema:
         node = root
         for part in schema["$ref"].lstrip("#/").split("/"):

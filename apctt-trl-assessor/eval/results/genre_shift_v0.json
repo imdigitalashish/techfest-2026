@@ -1,0 +1,245 @@
+{
+ "label": "trl_current",
+ "D": 4096,
+ "alpha": 1.0,
+ "A_cross_source": {
+  "train=all|test=sbir_sttr": {
+   "n_train": 6352,
+   "ridge_round": {
+    "n": 907,
+    "exact_acc": 0.293,
+    "within1_acc": 0.756,
+    "mae": 1.03,
+    "qwk": 0.219
+   },
+   "thr_median": {
+    "n": 907,
+    "exact_acc": 0.303,
+    "within1_acc": 0.757,
+    "mae": 1.026,
+    "qwk": 0.218
+   }
+  },
+  "train=all|test=nasa_internal": {
+   "n_train": 6352,
+   "ridge_round": {
+    "n": 750,
+    "exact_acc": 0.301,
+    "within1_acc": 0.732,
+    "mae": 1.081,
+    "qwk": 0.332
+   },
+   "thr_median": {
+    "n": 750,
+    "exact_acc": 0.323,
+    "within1_acc": 0.729,
+    "mae": 1.061,
+    "qwk": 0.317
+   }
+  },
+  "train=sbir_sttr|test=sbir_sttr": {
+   "n_train": 3505,
+   "ridge_round": {
+    "n": 907,
+    "exact_acc": 0.297,
+    "within1_acc": 0.759,
+    "mae": 1.004,
+    "qwk": 0.195
+   },
+   "thr_median": {
+    "n": 907,
+    "exact_acc": 0.332,
+    "within1_acc": 0.764,
+    "mae": 0.974,
+    "qwk": 0.222
+   }
+  },
+  "train=sbir_sttr|test=nasa_internal": {
+   "n_train": 3505,
+   "ridge_round": {
+    "n": 750,
+    "exact_acc": 0.204,
+    "within1_acc": 0.643,
+    "mae": 1.319,
+    "qwk": 0.126
+   },
+   "thr_median": {
+    "n": 750,
+    "exact_acc": 0.213,
+    "within1_acc": 0.62,
+    "mae": 1.321,
+    "qwk": 0.085
+   }
+  },
+  "train=nasa_internal|test=sbir_sttr": {
+   "n_train": 2847,
+   "ridge_round": {
+    "n": 907,
+    "exact_acc": 0.288,
+    "within1_acc": 0.691,
+    "mae": 1.168,
+    "qwk": 0.092
+   },
+   "thr_median": {
+    "n": 907,
+    "exact_acc": 0.275,
+    "within1_acc": 0.641,
+    "mae": 1.266,
+    "qwk": 0.075
+   }
+  },
+  "train=nasa_internal|test=nasa_internal": {
+   "n_train": 2847,
+   "ridge_round": {
+    "n": 750,
+    "exact_acc": 0.297,
+    "within1_acc": 0.745,
+    "mae": 1.053,
+    "qwk": 0.345
+   },
+   "thr_median": {
+    "n": 750,
+    "exact_acc": 0.328,
+    "within1_acc": 0.744,
+    "mae": 1.036,
+    "qwk": 0.34
+   }
+  }
+ },
+ "B_truncation": {
+  "full (title+description+benefits)": {
+   "ridge_round": {
+    "n": 1657,
+    "exact_acc": 0.297,
+    "within1_acc": 0.745,
+    "mae": 1.053,
+    "qwk": 0.314
+   },
+   "thr_median": {
+    "n": 1657,
+    "exact_acc": 0.312,
+    "within1_acc": 0.745,
+    "mae": 1.042,
+    "qwk": 0.302
+   }
+  },
+  "title only": {
+   "ridge_round": {
+    "n": 1657,
+    "exact_acc": 0.262,
+    "within1_acc": 0.689,
+    "mae": 1.188,
+    "qwk": 0.109
+   },
+   "thr_median": {
+    "n": 1657,
+    "exact_acc": 0.255,
+    "within1_acc": 0.678,
+    "mae": 1.217,
+    "qwk": 0.112
+   }
+  },
+  "description only": {
+   "ridge_round": {
+    "n": 1657,
+    "exact_acc": 0.308,
+    "within1_acc": 0.733,
+    "mae": 1.062,
+    "qwk": 0.292
+   },
+   "thr_median": {
+    "n": 1657,
+    "exact_acc": 0.3,
+    "within1_acc": 0.733,
+    "mae": 1.088,
+    "qwk": 0.258
+   }
+  },
+  "benefits only": {
+   "ridge_round": {
+    "n": 1657,
+    "exact_acc": 0.272,
+    "within1_acc": 0.702,
+    "mae": 1.139,
+    "qwk": 0.189
+   },
+   "thr_median": {
+    "n": 1657,
+    "exact_acc": 0.289,
+    "within1_acc": 0.709,
+    "mae": 1.131,
+    "qwk": 0.169
+   }
+  },
+  "first 60 words of description": {
+   "ridge_round": {
+    "n": 1657,
+    "exact_acc": 0.274,
+    "within1_acc": 0.693,
+    "mae": 1.149,
+    "qwk": 0.192
+   },
+   "thr_median": {
+    "n": 1657,
+    "exact_acc": 0.282,
+    "within1_acc": 0.694,
+    "mae": 1.163,
+    "qwk": 0.157
+   }
+  }
+ },
+ "C_paired_papers": {
+  "n_papers": 204,
+  "n_projects": 98,
+  "n_train": 7909,
+  "label_dist": {
+   "2": 37,
+   "3": 115,
+   "4": 30,
+   "5": 11,
+   "6": 8,
+   "7": 2,
+   "8": 1
+  },
+  "description": {
+   "ridge_round": {
+    "n": 204,
+    "exact_acc": 0.319,
+    "within1_acc": 0.848,
+    "mae": 0.848,
+    "qwk": 0.364
+   },
+   "thr_median": {
+    "n": 204,
+    "exact_acc": 0.402,
+    "within1_acc": 0.877,
+    "mae": 0.74,
+    "qwk": 0.414
+   },
+   "mean_expected_trl": 3.615
+  },
+  "paper_abstract": {
+   "ridge_round": {
+    "n": 204,
+    "exact_acc": 0.255,
+    "within1_acc": 0.745,
+    "mae": 1.044,
+    "qwk": 0.206
+   },
+   "thr_median": {
+    "n": 204,
+    "exact_acc": 0.348,
+    "within1_acc": 0.755,
+    "mae": 0.941,
+    "qwk": 0.212
+   },
+   "mean_expected_trl": 3.799
+  },
+  "mae_paper_minus_description_ridge": 0.196,
+  "bootstrap95_ci": [
+   0.069,
+   0.319
+  ],
+  "corr_expected_trl_desc_vs_paper": 0.289
+ }
+}
