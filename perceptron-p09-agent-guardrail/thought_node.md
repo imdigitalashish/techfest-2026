@@ -10,12 +10,13 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 done → 1 (research) + 2 (components) + 4 (walking skeleton) in parallel. Updated 02:58 IST.
-- **Plan (to 08:30):** (1) research fan-out → `research/landscape.md`; (2) component map + typed contracts; (3) walking skeleton: trading-desk agent with real tools + reference KB, pre-execution checker, red-team suite → real catch rate / false-block rate / latency numbers vs baselines; (4) ADR 001 spike via six hats + adversarial review; (5) abstract + architecture diagram + selection memo; (6) first ratchet loop on the spike.
-- **Doing:** lead: contracts + skeleton. Research sub-agents: r5 (routing/AI control/pre-trade rules) running; r1/r2/r4/r6/r7 relaunching with narrower scope (first batch died on API 408 timeouts, 0 output).
-- **Next:** relaunch research → build env + checker + eval → baselines → ADR → deliverables.
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** sub-agent API instability (4 of 7 research agents failed on 408s) → lead does critical research directly, agents write incrementally; shared 24 GB Mac with 19 sibling projects → small local models (Qwen3-1.7B/8B 4-bit MLX), NLI models <500 MB; GitHub Models endpoint returns a stub "OK" here and Azure has no AI resources → everything runs locally (also makes the finals demo offline-safe).
+- **Phase:** morning package ready (Phases 1, 2, 3-lite, 4 done; Phase 5 scaffolded). Updated 07:35 IST.
+- **Headline:** *Cite-Before-Act*: a guard in the agent's pre-tool hook that checks the provenance of every argument (user words / reference KB / trusted tool data; untrusted text is never a source of intent) plus pre-trade-style contracts (SEC 15c3-5 analogues). The unverifiable residue goes to a risk-routed fast/careful local model whose quoted evidence must verify verbatim, then to a human.
+- **Real numbers** (synthetic suite, held-out test split, 183 calls; `python -m eval.run_eval --guards none,schema,t0 --split test`): Tier 0 catch **100%** (147/147), false-block **0%** (0/36), escalation **0%**, p95 **2.06 ms**. Schema-only catch **0%**; no guard **0%**. Dev: Tier 0 catch 100%, false-block 0%, escalation 16.7% (all from the hard paraphrase family). LLM-judge (Qwen3-1.7B) baseline and fast cascade are running under heavy swap; results go to `eval/results/` when done.
+- **Doing:** lead only (Supervisor lean mode: no sub-agents). LLM-judge 1.7B on a stratified 1/3 test subsample, then cascade:fast on dev (background shell).
+- **Next (ordered):** (1) commit LLM baseline numbers + update abstract/memo; (2) τ-bench historical-trajectory replay (real model errors; MIT; ~40 MB); (3) LLM-paraphrased test family; (4) live LangGraph agent + interceptor + self-repair demo; (5) ratchet loop on the mention parser/resolver (`components/checker/autoresearch/`); (6) independent adversarial review of ADR 001 when sub-agents are allowed again; (7) research gaps: AgentHarm, Agent-SafetyBench, BFCL, RTS 6, the Knight Capital order.
+- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section of the abstract (placeholders now).
+- **Risks:** (1) synthetic-suite optimism, since the same author wrote templates and rules → τ-bench replay + paraphrase family; (2) paraphrase brittleness of regex mention parsing → LLM resolver, escalation rate tracked; (3) local LLM latency/memory on a shared Mac (8B not measured tonight); (4) close 2026 work (ActGov, ContrAgent, closed-world resolution) → precise novelty claim (argument-value provenance, three-way verdict, verified-quote residue resolution, frontier evaluation).
 
 ## Phase 0 — constraints and "what we must show" (from `_briefs/perceptron.txt`, read 4 Oct 02:05 IST)
 - **Hard rules:** team ≤3 students; one problem per team (P9 *or* P10 within Theme 6, and one of the 10 overall); original work; submission only by the team leader via the Techfest portal; queries only via the portal's Doubt section. Round 1 is plan-only ("code, results, or working prototypes" not required) — but real numbers make the plan credible. Finals need a working build demonstrating the MVP (+ stretch goals attempted); scores normalised across all ~30 finalist teams, top 3 overall win.
@@ -53,23 +54,51 @@
 - What companies ship: agent-security products and the guardrail designs published by frontier labs and agent-platform companies.
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — All models run locally (MLX: Qwen3-1.7B/8B 4-bit). `models.github.ai` returns a stub here and Azure has no AI resources; this also makes the demo offline-safe.
+- 2026-10-04 — Demo domain: a trading-desk operations agent (orders, transfers, cancels, client messages) checked against synthetic reference data, limits, a restricted list and a numbered policy. Chosen for the Optiver panel (pre-trade risk checks = "check before it executes").
+- 2026-10-04 — Spikes: S1 argument provenance + three-way verdict + quote-verified LLM residue resolution; S2 risk-routed, calibrated fast/careful cascade. See [ADR 001](architecture/adr/001-spike.md).
+- 2026-10-04 — Primary metric `score = catch − false_block − 0.5·escalation`, always reported with latency p50/p95. Suite split by phrasing family.
 
 ## Components
+Full contracts: [architecture/components.md](architecture/components.md) · pydantic: [architecture/contracts/models.py](architecture/contracts/models.py)
+
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| 1 | Agent runtime | messages → ToolCall | LangGraph ReAct + Qwen3 | | planned | task success |
+| 2 | Interceptor (pre-tool hook) | ToolCall+Context → GuardRequest → execute/feedback/interrupt | LangChain `wrap_tool_call` | | planned | mediation completeness, overhead ms |
+| 3 | Context recorder | tool results → trust-labelled Observations, SessionState | message history | | in contracts | trust-label accuracy |
+| 4 | Reference KB | query → record + locator | JSON + BM25 | | built | alias accuracy, policy recall@3 |
+| 5 | Mention parser | text → Mentions | regex/lexicon | S1 | built | extraction F1 |
+| 6 | Tier-0 checker | call+ctx → CheckResult[] | schema / static rules | **S1** | built | catch @ FB≤1%, p95 ms |
+| 7 | Risk router | request → risk, tier | fixed per-tool | **S2** | built (linear) | cost @ fixed catch |
+| 8 | LLM resolver + quote verifier | unverifiable check → pass/fail/unverifiable | LLM-as-judge | **S1/S2** | built | resolution precision/rate |
+| 9 | Decision + feedback | checks → Decision, feedback | boolean | | built | repair rate |
+| 10 | Human approval | escalate → approve/reject | LangGraph `interrupt()` | | planned | escalation rate on good |
+| 11 | Red-team generator | KB+templates → SuiteItem[] | hand lists | | built (367) | class coverage, label checks |
+| 12 | Eval harness | suite × guard → metrics | — | | built | score, latency |
+| 13 | Calibrator | verdicts → thresholds | hand-tuned | S2 | planned | realised miss rate vs α |
+| 14 | Audit log | Verdict → JSONL | logging | | partial | completeness |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+_First version 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
+- **Winnability — 4.** We already exceed the MVP (4 action classes, 295 typed bad calls, real numbers). Many teams will likely submit "LangGraph + LLM judge"; we can show where that baseline fails and what ours costs. Pre-trade risk control is the panel's own language. Risk: it can read as "just validation" unless the provenance idea is explained crisply.
+- **Innovation headroom — 4.** Spike: per-argument provenance with a third *unverifiable* verdict, and LLMs allowed only to resolve the residue with verbatim-verified quotes, plus a risk-routed calibrated cascade. Nearest 2026 work: ActGov (SMT policy sets), ContrAgent (LTLf contracts), closed-world resolution (registry/signature only; it names argument values as the residue it can't catch), Cedar gates. None checks argument values against a knowledge source (landscape §2, §5).
+- **Feasibility by the deadline — 5.** The skeleton, KB, checker, suite and eval were built in one night on the M5 with local models and no paid APIs. External data (τ-bench logs) is MIT-licensed and ~40 MB. Every milestone lands before 17 Nov, clear of the 19–25 Nov exams.
+- **Demo strength — 5.** A live agent proposes an invented ticker or a ×10 fat-finger; it is blocked in <1 ms with the clause cited, and the agent repairs it. An injected email asks for a transfer; it is blocked as "untrusted origin". A frontier dashboard compares no guard, schema, LLM judge and ours.
+- **Fit with the user's strengths — 5.** Large-scale systems + frontier models. Microsoft background is directly relevant (Azure Prompt Shields, groundedness and task adherence are among the industry baselines we position against).
+- **Biggest risk:** synthetic-suite optimism (100% catch from templates written by the rule author) could look like a toy to judges → τ-bench replay of real model errors + LLM-paraphrased family before the abstract is final.
+- **One-line pitch:** *Pre-trade risk checks for AI agents: every argument of every action must cite its source, or it doesn't execute.*
+- **Overall: 4.6/5.**
 
 ## Log
+### 2026-10-04 07:35 IST — Morning package written (lean mode)
+- **Research.** 9 more agents launched at ~03:00; 6 died on 408s. Survivors wrote `notes/verifier-models.md`, `notes/social-and-incidents.md`, `notes/routing-control-cascades.md` and partial `notes/companies-*.md` + `notes/tool-call-hallucination.md`. Following the Supervisor's 05:51 lean-mode order, the lead captured 27 arXiv abstracts verbatim (`notes/arxiv-abstracts.md`), including 11 papers from Jul–Sep 2026 found by date-sorted arXiv search. Closest: closed-world resolution 2609.19425, ContrAgent 2609.18128, ActGov 2609.24446, "What Can Be Enforced?" 2607.22868, "Stale Does Not Mean Unsafe" 2609.29522. The lead also extracted SEC 15c3-5(c) verbatim (`notes/pretrade-risk-controls.md`) and wrote `research/landscape.md`.
+- **Architecture.** `architecture/components.md` (14 components, contracts, isolated metrics, mermaid); pydantic contracts plus exported JSON Schemas; ADR 001 (six hats, thesis/antithesis/synthesis; the antithesis was written by the lead because no independent agent was allowed; redo it).
+- **Build.** Synthetic desk KB (17 instruments incl. 3 fictional, 6 accounts, limits, restricted list, 25-clause policy), DeskSim tools, Tier-0 provenance + pre-trade checks, risk router, quote-verified LLM cascade, LLM-judge baseline, mutation red-team suite (367 items; 72 good / 295 bad; 11 classes; split by family), eval harness, 6 contract tests passing.
+- **Numbers.** See *Now*. The guard surfaced 2 mislabelled suite items (notional below the ₹50 lakh threshold). Labels were fixed and a test added.
+- **Machine.** ~42 GB swap in use by sibling workloads. The LLM-judge run needed ~20–30 s/item, so the 8B run was dropped and the 1.7B judge runs on a stratified 1/3 subsample.
+- **Deliverables.** `deliverables/round1-abstract.md` (874 words of prose), `deliverables/architecture.md`, selection memo (above).
+
 ### 2026-10-04 02:58 IST — Phase 0 done; research fan-out partly failed
 - Read PLAYBOOK, seeded brief, and the official statement (`_briefs/perceptron.txt`); extracted rules and judging → evidence table (above).
 - Environment: Apple M5, 24 GB RAM (~34% free with siblings running), 70 GB disk free; Python 3.11 + uv; MLX models cached (Qwen3-8B-4bit, Qwen3-1.7B-4bit, Qwen3-0.6B); Ollama present. Azure: VS Enterprise subscription, no Cognitive Services accounts. `models.github.ai` returns a bare `200 OK` stub from this machine → unusable. **Assumption:** run every model locally (MLX + small NLI); this also keeps the finals demo offline.
