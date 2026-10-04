@@ -9,7 +9,10 @@ stretch). Embeddings are cached by text hash in .cache/emb_minilm.parquet.
 from __future__ import annotations
 
 import hashlib
+import json
 import os
+import subprocess
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -52,6 +55,16 @@ class MiniLMEncoder:
         clean = [clean_text(t) for t in texts]
         keys = [hashlib.sha1(t.encode()).hexdigest() for t in clean]
         todo = sorted({k: t for k, t in zip(keys, clean) if k not in self._mem}.items(), key=lambda kv: len(kv[1]))
+        if todo and "lightgbm" in sys.modules and not os.environ.get("P10_ENCODE_CHILD"):
+            # torch's OpenMP pool + multithreaded LightGBM in one process segfaults on macOS: encode in a child
+            env = {**os.environ, "P10_ENCODE_CHILD": "1"}
+            code = ("import json, sys; from components.text_scorer.minilm import MiniLMEncoder; "
+                    "MiniLMEncoder(cache_dir=sys.argv[1]).encode(json.load(sys.stdin))")
+            subprocess.run([sys.executable, "-c", code, str(self.cache_path.parent)], input=json.dumps([t for _, t in todo]),
+                           text=True, check=True, env=env)
+            z = np.load(self.cache_path, allow_pickle=False)
+            self._mem = dict(zip(z["keys"].tolist(), z["emb"]))
+            todo = []
         if todo:
             if self._mdl is None:
                 self._load()

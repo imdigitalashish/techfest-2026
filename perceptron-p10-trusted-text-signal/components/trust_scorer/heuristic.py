@@ -23,10 +23,11 @@ def _norm(t: str) -> str:
 
 
 def trust_of(followers, age_days, verified, n_cashtags) -> np.ndarray:
-    f_follow = np.clip(np.log1p(np.asarray(followers, float)) / np.log(10_000), 0, 1)
-    f_age = np.clip(np.asarray(age_days, float) / 365.0, 0, 1)
-    f_ver = np.asarray(verified, float)
-    p_spam = (np.asarray(n_cashtags) >= 4).astype(float)
+    """Vectorised; scalar inputs give a 1-element array."""
+    f_follow = np.clip(np.log1p(np.atleast_1d(np.asarray(followers, float))) / np.log(10_000), 0, 1)
+    f_age = np.clip(np.atleast_1d(np.asarray(age_days, float)) / 365.0, 0, 1)
+    f_ver = np.atleast_1d(np.asarray(verified, float))
+    p_spam = (np.atleast_1d(np.asarray(n_cashtags)) >= 4).astype(float)
     return np.clip(0.4 * f_follow + 0.4 * f_age + 0.2 * f_ver - 0.2 * p_spam + 0.1, 0.05, 1.0)
 
 

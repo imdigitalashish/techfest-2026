@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import time
 from pathlib import Path
 
@@ -67,6 +68,10 @@ def main(tag: str = "baseline_v1", suffix: str = "", scorer_name: str = "vader+f
     OUT.mkdir(parents=True, exist_ok=True)
     panel = pd.read_parquet(f".cache/panel{suffix}.parquet")
     docs = pd.read_parquet(f".cache/docs_scored{suffix}.parquet")
+    if os.environ.get("P10_SMOKE"):  # fast end-to-end check on 3 tickers; never used for reported results
+        keep = sorted(panel["ticker"].unique())[:3]
+        panel, docs = panel[panel["ticker"].isin(keep)], docs[docs["ticker"].isin(keep)]
+        tag = "SMOKE_" + tag
     train, cal, test = split(panel)
     G = groups_for(panel, train)
     res = {"meta": {"alpha": ALPHA, "seed": SEED, "train": [str(train.trade_date.min().date()), TRAIN_END],
