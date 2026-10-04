@@ -23,7 +23,8 @@
     - P2: ablations (nonorm, tauact, PreLort-style seg) × 5.
     - P3: clean scenario × 5. P4: ladder. P5: extras.
     - ≈ 2.5 min per run; P1 due around 12:20.
-  - **Child session** "P1 review: code+eval (gpt-6-sol)" is running.
+  - **GPU FROZEN** for Namma Space (Supervisor ~11:46): runner PID 44556 stopped, no training running. Restart on "GPU free" with `kill 44556 && scripts/handover_to_queue.sh 0`.
+  - Child session "P1 review: abstract+spike (gpt-6-astra)" is running. The gpt-6-sol code review is done; dispositions are recorded.
   - **Done since resume:**
     - FFA-LoRA + FlexLoRA implemented from the papers' equations;
     - bounded norm shares; sliced uploads; `env.code_sha` provenance;
@@ -249,3 +250,32 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
   Per-domain gains vs the untuned model: AnchorLoRA is CI > 0 on 5/5 domains; the starter only on wiki (+0.369), with the other four significantly negative.
 - **Memory rule.** Implemented in `eval/queue_runner.py`. The level hovers at 23–36 %, so runs pause and resume often (9 pauses by 11:30).
+
+### 2026-10-04 12:10 IST — Lead: code review acted on; GPU frozen for Namma Space; hostile-judge review started
+- **GPU freeze (Supervisor request, about 11:46).** Our queue runner **PID 44556** has been stopped (SIGSTOP, state T) since about 11:41. Its last child (`fedavg_ab_homo` seed 2) finished at 11:43 and saved its result. **No P1 training process is running.**
+  - On "GPU free" I will `kill 44556` (it still holds the old queue code) and restart with `scripts/handover_to_queue.sh 0`.
+  - The queue file is unchanged and finished runs are skipped, so nothing is lost or duplicated.
+  - CPU-only work continues.
+- **Code + eval review (gpt-6-sol, max):** 3 BLOCKING / 10 MAJOR / 1 MINOR. **13 accepted, 1 partly rejected.** Dispositions are appended to `reviews/2026-10-04-code-eval-gpt-6-sol.md`; the ledger row is in `reviews/ledger.tsv`. Key changes:
+  - Claims narrowed:
+    - no device memory or compute claim; only trainable parameters and uplink ∝ r_k;
+    - dropout stability is claimed only at evaluation checkpoints (every 3 rounds);
+    - per-domain wins are reported with Bonferroni adjustment.
+  - Controls queued: starter + partial work (`fedavg_ab_homo_partial`); leave-one-mechanism-out ablations; effective-scale-4 sensitivity (tag `v2a64`, = literal PEFT r=8, α=32).
+  - Reproducibility:
+    - the exact token blocks are committed (`eval/data/*.npz`, 1 MB, sha1 c5a6afcf6d80) and the loader prefers them;
+    - `scripts/data_manifest.py` finds 0 exact train/eval or cross-domain duplicate documents;
+    - but each domain's eval set is **only 2–3 documents** (6,144 tokens), now disclosed;
+    - the readmes source pool changed after the `flwr` install, which is why the blocks are committed;
+    - `flwr` pinned; a fresh offline venv passes all 19 tests;
+    - provenance digests per run; the summarizer rejects duplicate or dirty runs.
+- **Abstract v2** is rendered from the template: 865 words, number check PASS. Provisional at n = 3/2 seeds:
+
+  | Comparison (AnchorLoRA − baseline, macro) | Δ | 95 % CI |
+  |---|---|---|
+  | Starter | −0.083 | [−0.111, −0.054] |
+  | FFA-LoRA | −0.051 | [−0.079, −0.024] |
+  | FlexLoRA | −0.080 | [−0.188, +0.028] |
+
+  AnchorLoRA improves 4/5 domains Bonferroni-significant.
+- **Started** child session "P1 review: abstract+spike (gpt-6-astra)" (max effort): rubric scores, novelty vs CF-LoRA/PreLort, over-claims. The sol session is archived.
