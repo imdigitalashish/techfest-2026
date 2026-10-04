@@ -56,6 +56,10 @@ class SimConfig:
     laz_mean_birth: float = -0.55
     laz_decline: float = 1.25
     laz_child_sd: float = 0.95
+    # fabricating-worker pattern (defaults = frozen-eval world; vary for anti-gaming checks)
+    fab_real_p: float = 0.33
+    fab_dw: tuple = (0.05, 0.25)
+    fab_dl: tuple = (0.3, 1.0)
 
 
 SEASON = np.array([1.0, 1.0, 1.0, 1.0, 1.1, 1.25, 1.5, 1.6, 1.4, 1.1, 1.0, 1.0])  # Jan..Dec hazard multiplier (assumption)
@@ -196,7 +200,7 @@ def simulate(cfg: SimConfig | None = None) -> dict[str, pd.DataFrame]:
     # fabricating workers: real measurement only in ~1 of 3 months, otherwise copy forward with smooth gains
     cm = cm.sort_values(["child_key", "month_index"]).reset_index(drop=True)
     fab = geo.worker_type.to_numpy()[cm.awc_i] == "fabricating"
-    real_month = rng.random(len(cm)) < 0.33
+    real_month = rng.random(len(cm)) < cfg.fab_real_p
     last_w, last_l, last_key = np.nan, np.nan, None
     W, L, K = cm.weight_kg.to_numpy(copy=True), cm.length_height_cm.to_numpy(copy=True), cm.child_key.to_numpy()
     rec, cop = cm.recorded.to_numpy(copy=True), cm.copied.to_numpy(copy=True)
@@ -206,8 +210,8 @@ def simulate(cfg: SimConfig | None = None) -> dict[str, pd.DataFrame]:
         if fab[i]:
             rec[i] = True
             if not real_month[i] and np.isfinite(last_w):
-                W[i] = np.round(last_w + rng.uniform(0.05, 0.25), 1)
-                L[i] = np.round(last_l + rng.uniform(0.3, 1.0), 1)
+                W[i] = np.round(last_w + rng.uniform(*cfg.fab_dw), 1)
+                L[i] = np.round(last_l + rng.uniform(*cfg.fab_dl), 1)
                 cop[i] = True
         if rec[i]:
             last_w, last_l = W[i], L[i]

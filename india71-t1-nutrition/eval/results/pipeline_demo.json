@@ -1,0 +1,32 @@
+{
+  "label": "SYNTHETIC district run \u2014 see docstring",
+  "as_of": "2026-06-25",
+  "children_measured_this_month": 5307,
+  "awcs": 120,
+  "records_rejected_pct_all_months": 4.22,
+  "awcs_low_credibility": 47,
+  "alerts_by_kind": {
+    "mam": 838,
+    "sam": 123,
+    "risk_high": 600,
+    "data_recheck": 47
+  },
+  "tasks": 1608,
+  "worklists": 140,
+  "sms_messages": 1222,
+  "sms_max_chars": 80,
+  "true_incident_wasting_next_3m": 685,
+  "incident_cases_flagged_now_pct": 25.8,
+  "risk_alert_precision_pct": 41.5,
+  "true_sam_now": 106,
+  "access_decisions": [
+    "aww/identified_child/service_delivery: allow",
+    "dpo/identified_child/programme_monitoring: deny",
+    "aww/identified_child/service_delivery: deny",
+    "public/aggregate/public_reporting: allow_transformed"
+  ],
+  "audit_entries": 1612,
+  "audit_chain_verified": true,
+  "runtime_s": 330.8,
+  "synthetic": true
+}
