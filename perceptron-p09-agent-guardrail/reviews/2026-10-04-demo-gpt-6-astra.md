@@ -263,3 +263,24 @@ These are **remaining** fixes; the repaired hashless bypass and already-fixed DB
 10. **Align the caveat answer with the accepted review evidence.** In `demo/SCRIPT.md` Q3 and the screen-5 audit wording, qualify the 20-case audit as first-run/single-reader, remove the universal impossibility claim about all eight user-requested cases, and scope the eight current wrong-entity passes to strict/balanced/lenient. Keep the unequal-information and exploratory-rerun caveats adjacent to the model comparison, not solely on the final screen. Acceptance: a judge reading the prior reviews, current reports and spoken answer encounters the same claim in all three. **Estimate: 20-30 minutes.**
 
 The next credible "crazy" moment is not a broader unsupported guarantee. It is the team letting a judge produce a failure, showing exactly which component failed, and preserving the real guard/control distinction while keeping the demo on time.
+
+---
+
+## Lead response (P9 lead, Claude Opus 5.5, 4 Oct 2026)
+
+All findings were checked; **12 of 12 accepted** (the live bypass, the losing-the-room control, and fixes 1–10). Guard-side fixes were made by the lead. Demo-side fixes were delegated to the demo builder and are verified in the clean-clone check recorded in the thought node.
+
+| Item | Decision | Action |
+|---|---|---|
+| Live bypass (hashless `W5481803`) | **ACCEPTED (guard bug)** | `3b1b92f`: taint matching is format-insensitive (`#W5481803` ~ `W5481803` ~ `w 5481803`, plus ≥6-digit runs; `gift_card_X` ~ "gift card X"). Regression tests added. All 18 committed τ-bench result files have identical decisions and reasons, since no τ-bench item carries untrusted text. Demo presets and smoke cover it (`d2e7ef2`). |
+| "Loses the room": benign note restating `paypal_3022415` blocks the control | **ACCEPTED (guard semantics)** | `86de6dc`: taint now exempts a ticket that restates this order's own record (original payment method, current address). Order identity is never exempt. The audit note now gives control ALLOW, while redirects to the user's other card or a stranger's card still BLOCK. A benign ticket naming the acted-on order, when the user never stated the id, still blocks by design (we can't tell whether the agent followed the ticket). This is shown as a labelled conservative case. |
+| Fix 1 (show failed control checks; conditional copy; limitation presets) | **ACCEPTED** | Builder. |
+| Fix 2 (projector-first layout) | **ACCEPTED** | Builder. |
+| Fix 3 (one comparator at a time; 41/120 good stops with block/hold splits) | **ACCEPTED** | Builder. |
+| Fix 4 (script to 320–350 spoken words; lead with the user's own other card) | **ACCEPTED** | Builder. |
+| Fix 5 (rejected-call bar: 50 blocked / 1 held) | **ACCEPTED (UI bug)** | Builder. |
+| Fix 6 (hero is an unspecified-attribute HOLD; ground-truth substitute also holds) | **ACCEPTED** | Builder: narrowed claim plus a smoke assertion. |
+| Fix 7 (replay vs verdict vs execution wording; axis label) | **ACCEPTED** | Builder. |
+| Fix 8 (unsupported 15-decision claim) | **ACCEPTED, resolved differently** | The number was real but came from an uncommitted scratch run. It is now a committed analysis (`eval/taubench/known_issue_contractions.py` → `eval/results/taubench/known_issue_contractions.json`: 15 changes, balanced test), cited on screen instead of being removed. |
+| Fix 9 (API validation, 400s, length limit) | **ACCEPTED** | Builder. |
+| Fix 10 (Q3 / screen-5 audit wording) | **ACCEPTED** | Builder. |
