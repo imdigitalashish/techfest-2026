@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** DEMO phase (PLAYBOOK §11). Demo built and verified from a clean clone; visual fixes and the astra demo review in progress. Round-1 package final pending [TEAM] details. Updated 12:46 IST, 4 Oct.
+- **Phase:** DEMO DONE (21:23 IST, 4 Oct). `bash perceptron-p09-agent-guardrail/demo/run.sh` gives first visual in 0.2 s and the live page in 1.9 s from a fresh clone. `demo/smoke.sh` 154/154 PASS; pytest 13/13; check_docs 22/22. The Round-1 package stays final pending [TEAM] details.
 - **Deliverables:**
   - `deliverables/round1-abstract.md`: 877 words. All 22 quoted numbers are verified against `eval/results/` and the τ-bench README by `eval/check_docs.py`, which is part of pytest (7/7 pass).
   - `deliverables/architecture.md`: diagram.
@@ -123,6 +123,12 @@ _Final, 4 Oct 2026 (v4). Re-scored after both cross-model reviews; supersedes v1
 - **Overall: 3.8 / 5.** Recommendation: a solid, low-risk Perceptron pick whose claims are modest but survive adversarial review. Choose it over P7 if P7's spike stays unreplicated; it will not win on novelty alone.
 
 ## Log
+### 2026-10-04 21:23 IST — DEMO DONE
+- **Lead's clean-clone verification of the final demo** (`a4f7aa1`, on main): first visual 0.2 s (recorded gallery), live page 1.9 s; `smoke.sh` 154 PASS / 0 FAIL; pytest 13/13; `check_docs` 22 claims, 0 problems. Fallback screenshots inspected (14 PNGs).
+- **Demo:** (1) REAL τ-bench errors; (2) "Hijack the agent": a typed ticket, a SCRIPTED agent, the LIVE guard, benign controls and a labelled known false block; (3) operating-point knob; (4) SYNTHETIC desk; (5) caveats.
+- **Reviews:** gpt-6-astra demo review 12/12 accepted (ledger). Two real guard weaknesses found by the review process were fixed without changing any committed τ-bench decision.
+- Demo builder session archived. Messaged the Supervisor "DEMO DONE".
+
 ### 2026-10-04 21:11 IST — Demo review applied
 - **gpt-6-astra demo review:** scores 7/7/8 of 10 (lean-in / believe numbers / problem fit), 12 findings, all accepted (`reviews/2026-10-04-demo-gpt-6-astra.md`, ledger).
 - **Guard fixes (lead):** each verified to leave the 18 committed τ-bench result files identical:
