@@ -122,3 +122,9 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **District demand** (`eval/results/mh_district_demand.csv`): Pune 282,970 BEV (30,428 4W), Nagpur 113,736 (27,143 3W), Mumbai 78,814 (33,950 4W — most cars), Nashik 77,534, Kolhapur 71,548. Segment mix: 2W 83.6%, 3W 5.5%, 4W 9.6%, bus 0.4%, goods 0.8%.
 - Benchmark-equivalence requirement (not a demand model): to match the national median density (308 BEV/station) Maharashtra needs 3,848 stations (it has 4,155 official); to match Karnataka (152.4) it needs 7,776 (+3,621). Per-district figures are in the CSV.
 
+### 2026-10-04 09:55 IST — Second auto-research loop (C9, spike 2): real ledger
+- `components/adoption_forecast/autoresearch/`: a frozen `eval.py` (36 states; DEV = rolling one-step origins 2022→23 and 2023→24; HOLDOUT 2024→25, lead-only; metric = registration-weighted WAPE), `forecaster.py`, `program.md`, `results.tsv`.
+- 8 hypotheses, DEV WAPE: naive 0.281 (baseline) · 1-yr growth 0.783 · damped growth 0.308 · pooled growth 50:50 0.270 · pooled national growth 0.244 · share-logit k = 3 0.847 / damped 0.245 · **share-logit k = 2, pooled 50:50, damped 0.5: 0.178 (kept, −37%)**.
+- **Holdout (2024→2025):** naive 0.150 · pooled national growth 0.101 · share-logit 0.110 (national error +2.0%). Both pooled models beat naive by 27–33%; the DEV winner is not confirmed over pooled growth (0.009 gap, inside noise) → next: monthly data for more origins, then an ensemble.
+- Observation: CY2026 to date (to 4 Oct) = 2,556,580 BEV registrations, already more than all of CY2025 (2,356,971), so adoption is re-accelerating after the 2023–25 slowdown (yearly growth ×3.1 in 2022, then ×1.49, ×1.28, ×1.16).
+
