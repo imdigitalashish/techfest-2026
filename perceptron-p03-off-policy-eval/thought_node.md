@@ -17,12 +17,13 @@
   - [ADR 001](architecture/adr/001-spike.md): spikes are the C9 Decomposer and the C8+C7 Robustness Certificate.
   - [Abstract draft](deliverables/round1-abstract.md) (894 words) and [architecture diagram](deliverables/architecture.md).
   - Skeleton components: simulator, estimators (IPW/SNIPW/DM/DR/Switch-DR), Wald/bootstrap intervals, MSM sensitivity bounds, decomposer.
-- **Doing:** The 30-seed simulator bank v0 is running (`eval/run_sim_bank.py`; the machine's load average is about 80, so it is slow). Next is the OBD Random→BTS check on the 10k-row sample.
+- **Doing:** Finished the walking skeleton and eval harness, with real numbers committed:
+  - **Simulator bank v0** (SYNTHETIC; 30 seeds; [`eval/results/sim_bank_summary.md`](eval/results/sim_bank_summary.md); reproduce with `.venv/bin/python eval/run_sim_bank.py --seeds 30`). In S1 the naive before/after is −0.0558 against a true policy effect of +0.0752: the naive sign is wrong in 30/30 seeds. DR gives +0.0748 (RMSE 0.0058, Wald coverage 0.93). S2 mirrors it (naive +0.0892, truth −0.0837, DR −0.0822). In S4 (unlogged override) every estimator is biased (DR −0.069, coverage 0); MSM bounds contain the truth at Γ_true in 10/10 seeds, and Γ\* has median 1.25.
+  - **OBD sample** (REAL; [`eval/results/obd_sample_summary.md`](eval/results/obd_sample_summary.md); reproduce with `.venv/bin/python eval/run_obd.py`). On-policy BTS CTR is 0.00420 (CI 0.00293–0.00547). IPW and DR estimates from the Random logs, 0.00455–0.00521, all have CIs containing the truth: inconclusive at 10k rows. A diagnostic shows the deployed BTS ≠ the static obp prior.
+  - Contract tests: 8/8 pass (`.venv/bin/python -m pytest -q tests`).
 - **Next:**
-  1. Commit bank and OBD numbers; put the real numbers into the abstract.
-  2. Contract tests.
-  3. After lean mode: an independent rubber-duck review of ADR 001, per-component research files, the first ratchet loop on C6.
-  4. Full OBD (26M rows) via Azure or a chunked download.
+  1. A first ratchet scaffold on C6 (program.md, frozen eval.py, results.tsv baseline).
+  2. After lean mode: an independent rubber-duck review of ADR 001; per-component research files; check the OBP paper on how BTS propensities were generated; full OBD (26M rows) via Azure or a chunked download; a semi-synthetic OBD before/after with injected drift; a waterfall plot for the demo.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
 - **Risks:**
   - The network is saturated, so research fan-out is deferred.
@@ -112,3 +113,15 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - With an unlogged override (S4), every estimator was biased by about −0.07 with 0% coverage; MSM bounds held the truth at Γ_true and flagged fragility (Γ\* about 1.25).
   - S1/S2 drift was too weak to flip the naive sign, so before freezing bank v0 the drifts were set to ±1.0 logit, chosen from ground-truth-only checks: S1 truth +0.075 vs naive −0.054; S2 truth −0.084 vs naive +0.090.
 - **Supervisor 07:22:** alignment check answered (the abstract was already on main; order agreed).
+
+### 2026-10-04 07:45 IST — Real numbers committed; abstract updated
+- **Sim bank v0** (SYNTHETIC; 30 seeds; 10k rows per period; `eval/run_sim_bank.py --seeds 30`; results in `eval/results/`):
+  - Naive before/after has the wrong sign in 30/30 seeds in both S1 (drift masks a gain) and S2 (drift fakes a gain).
+  - DR is within RMSE ≤ 0.006 of the truth, with 93% Wald coverage in S1–S3.
+  - S5 (low overlap, ESS 79/10k): IPW and DR coverage 0.90 with wide CIs; Switch-DR is narrow but covers only 0.63. This shows the classic variance–coverage trade-off and is a target for the C7 ratchet.
+  - S4 (hidden override): OPE fails (DR bias −0.069; coverage 0) while naive keeps the right sign, so OPE is not magic when propensities are wrong. The MSM joint bounds contain the truth at Γ_true (6.94) in 10/10 seeds, and Γ\* (median 1.25) flags the conclusion as fragile. This is exactly the stretch-2 story.
+- **OBD sample** (REAL; 10k rows per policy): every estimator's interval contains the on-policy BTS CTR (0.00420); inconclusive at this size.
+  - Finding: the BTS logs' own propensities do not match obp's static BTS prior. Correlation 0.074 at (item, position); logged median propensity 0.064 vs 0.019 from the prior; empirical item frequencies correlate 0.595 with the prior.
+  - Hypothesis (UNVERIFIED): the deployed BTS updated its posterior during the week. So we added a week-average empirical-BTS evaluation policy (ESS 2,639 vs 1,644 for the prior).
+- **Abstract:** MVP bullets now carry these numbers, labelled as simulator vs the real OBD sample (863 words).
+- **Tests:** 8/8 contract tests pass.
