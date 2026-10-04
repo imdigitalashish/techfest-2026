@@ -7,6 +7,7 @@ import pytest
 
 from twin_sim import analysis as AN
 from twin_sim import dispatch as DP
+from twin_sim import interceptor as IC
 from twin_sim import params as PR
 from twin_sim import risk_forecaster as RF
 from twin_sim import sim
@@ -64,6 +65,40 @@ def test_summarise_small_run():
     assert np.all(runs["P2|b_fail_open_fuse"]["rel"] == 0.0)
     assert s["fuse_sensitivity_P2"]["a_current_release"]["escaped_rel_vs_a"]["median"] == 0.0
     assert len(s["per_draw"]["P2"]["escaped_kg"]) == 2
+    assert set(s["entrainment_split"]["P2"]) == {"floor_1_minus_emax", "velocity_driven"}
+    ang = s["boom_angle_sensitivity_P2"]
+    assert set(ang) == set(AN.ANGLE_HARDWARE) and ang["a_current_release"]["theta90"]["escaped_rel_vs_theta90"]["median"] == 0.0
+    assert not any(k.endswith("|theta90") for k in s["per_draw"])
+
+
+def test_angle_switch_default_identical_and_monotone(season_2023):
+    P, phys, fc = season_2023
+    base = sim.run_season(phys, P, DP.make_policy("P0", fc), fc, sensor_seed=5)
+    same = sim.run_season(phys, dict(P, sin_theta=1.0), DP.make_policy("P0", fc), fc, sensor_seed=5)
+    assert np.array_equal(base["escaped"], same["escaped"]) and np.array_equal(base["ent"], same["ent"])
+    v = np.linspace(-1.5, 1.5, 31)[:, None, None] * np.ones_like(P["e_max"])
+    e90, e20 = IC.efficiency(v, P), IC.efficiency(v, dict(P, sin_theta=AN.ANGLES[20]))
+    assert (e20 >= e90 - 1e-12).all() and (e20 <= P["e_max"] + 1e-12).all()
+
+
+def test_entrainment_split_and_mass_balance_with_angle(season_2023):
+    P, phys, fc = season_2023
+    r = sim.run_season(phys, dict(P, sin_theta=AN.ANGLES[30]), DP.make_policy("P2", fc), fc, sensor_seed=5,
+                       record=True)
+    rec = r["rec"]
+    assert np.allclose(rec["ent_floor"] + rec["ent_vel"], rec["ent"], atol=1e-9)
+    assert (rec["ent_floor"] >= 0).all() and (rec["ent_vel"] >= -1e-9).all()
+    assert np.allclose(rec["arrived"], rec["captured"] + rec["ent"] + rec["over"] + rec["byp"], atol=1e-6)
+    assert np.allclose(r["load"], r["escaped"] + r["cleared"] + r["end_stored"] + r["end_pool"], atol=1e-6)
+
+
+def test_exposure_small():
+    ex = AN.exposure_nominal(years=[2024])
+    for a in AN.ANGLES:
+        assert 0.0 <= ex[f"theta{a}"]["share_of_hours"] <= 1.0
+        assert 0.0 <= ex[f"theta{a}"]["share_of_arrived_kg"] <= 1.0
+    assert ex["theta20"]["share_of_hours"] <= ex["theta90"]["share_of_hours"]
+    assert len(ex["theta90"]["by_site"]) == 4
 
 
 def test_analysis_json_if_present():
@@ -75,3 +110,16 @@ def test_analysis_json_if_present():
     assert d["label"] == "SIMULATED" and "twin_sim.analysis" in d["reproduce"]
     assert d["checks"]["escaped_median_matches_metrics_json"] and d["checks"]["equal_crew_hours"]
     assert d["checks"]["mass_balance_max_abs_err_kg"] < 1e-3
+
+
+
+def test_analysis_json_angle_keys_if_regenerated():
+    p = RESULTS / "analysis.json"
+    if not p.exists():
+        pytest.skip("run python -m twin_sim.analysis first")
+    d = json.loads(p.read_text())
+    new = {"entrainment_split", "boom_angle_sensitivity_P2", "exposure_P2_nominal"}
+    if not new & set(d):
+        pytest.skip("analysis.json predates the boom-angle keys; regenerate with python -m twin_sim.analysis")
+    assert new <= set(d)
+    assert set(d["boom_angle_sensitivity_P2"]) == set(AN.ANGLE_HARDWARE)

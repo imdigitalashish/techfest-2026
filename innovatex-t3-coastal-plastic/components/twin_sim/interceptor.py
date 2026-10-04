@@ -11,7 +11,9 @@ from ._paths import C
 
 
 def efficiency(v_ms: np.ndarray, P: dict) -> np.ndarray:
-    return P["e_max"] / (1.0 + np.exp((np.abs(v_ms) - P["v50_ms"]) / P["v_width_ms"]))
+    # SENSITIVITY switch sin_theta (absent = 1, boom normal to the flow): entrainment sees |v|*sin(theta)
+    vn = np.abs(v_ms) * P.get("sin_theta", 1.0)
+    return P["e_max"] / (1.0 + np.exp((vn - P["v50_ms"]) / P["v_width_ms"]))
 
 
 def access_factor(v_ms, level_m, rain_mm_h, P: dict) -> np.ndarray:
@@ -39,6 +41,7 @@ def step(stored, pool, fresh_kg, v_ms, level_m, bypass, crew_kg_cap, P: dict) ->
     captured = np.where(bypass, 0.0, np.minimum(pot, room))
     over = np.where(bypass, 0.0, pot - np.minimum(pot, room))
     ent = np.where(bypass, 0.0, arrived - pot)
+    ent_floor = np.where(bypass, 0.0, (1.0 - P["e_max"]) * arrived)   # leaks even at slack water
     byp = np.where(bypass, arrived, 0.0)
     s1 = stored + captured
     # Optional SENSITIVITY switches (absent = baseline behaviour, bit-identical):
@@ -52,7 +55,8 @@ def step(stored, pool, fresh_kg, v_ms, level_m, bypass, crew_kg_cap, P: dict) ->
     s2 = s1 - refl
     cleared = np.minimum(s2, crew_kg_cap)
     return dict(stored=s2 - cleared, pool=pool + refl, arrived=arrived, captured=captured, ent=ent,
-                over=over, byp=byp, refl=refl, rel=rel, cleared=cleared)
+                over=over, byp=byp, refl=refl, rel=rel, cleared=cleared,
+                ent_floor=ent_floor, ent_vel=ent - ent_floor)
 
 
 def interceptor_series(site_id, t, rec: dict, capacity_kg: float, source: str) -> "C.InterceptorSeries":

@@ -172,3 +172,22 @@ The 90% intervals of the shares are in the JSON. For entrainment's share of esca
 - **The fuse matters little here because release is rare.** On the ERA5 0.25° rain scale there are only 13 bypass site-hours in 2024–2025. With gauge-scale rain peaks the fuse could matter more (UNTESTED).
 - **The pocket rows scale the assumed tidal re-float rate** (k_refloat 0.01–0.08 /h). Keeping more catch raises overtopping (P2 median 31.6 t → 44.1 t → 50.4 t), and the net figures above include this.
 - **Still omitted from the twin:** travel time between sites, minimum clearance duration, gated (flap-gate) outfalls, boom angle θ, and a perfect-foresight oracle policy.
+
+## 7. Boom angle, entrainment split and exposure (SENSITIVITY / SIMULATED; numbers pending)
+
+The code and tests are in place. The numbers are not run yet because the shared heavy-job lock was busy. To produce them: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis`. This writes these new keys to `results/analysis.json`:
+- `boom_angle_sensitivity_P2`
+- `entrainment_split`
+- `exposure_P2_nominal`
+
+The existing keys are unchanged: the default switches are bit-identical, which is tested.
+
+**Method.** The setup matches §6: held-out Jun–Sep 2024+2025, 40 draws, P2 knobs unchanged.
+- **Boom angle θ ∈ {90° (current), 45°, 30°, 20°}.** Entrainment uses the normal velocity: e(v) takes |v|·sin θ, with e_max unchanged. Each angle is run with the current release behaviour and with the fuse plus re-float × 0.5. Reported: escaped kg as a paired change vs θ = 90° with the same hardware, and vs the current setup (no fuse, θ = 90°); FWCE.
+- **Entrainment split.** The floor (1 − e_max)·arrived leaks even at slack water. The velocity-driven part is (e_max − e)·arrived. Each is reported as a share of escaped.
+- **Exposure.** P2 with nominal parameters: the share of site-hours, and of arrived kg, with |v|·sin θ > v50 (0.45 m/s).
+
+**Caveats.**
+- Boom angle is not field evidence. Boom length grows as W/sin θ (×2.9 at 20°). Capacity, cost and mooring loads are held fixed or not modelled.
+- P2's forecaster still assumes θ = 90°, so the policy is unchanged.
+- The circularity caveat in §6 applies.

@@ -7,6 +7,9 @@ budget, P2 knobs and held-out monsoons (Jun-Sep 2024+2025) as results/metrics.js
 3. FWCE = (cleared + stored at season end) / catchment load. Each kg is counted once: re-arrivals
    of re-floated debris are not double-counted.
 4. Fail-open fuse SENSITIVITY with P2. Assumption-driven, not evidence.
+5. Boom-angle SENSITIVITY with P2: entrainment sees |v|*sin(theta). Entrainment is split into the
+   (1 - e_max) slack-water floor and the velocity-driven part. Exposure is the share of hours and of
+   arrived kg at |v| > v50 (P2, nominal parameters).
 
 Reproduce: cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis
 """
@@ -25,7 +28,7 @@ from .run import N_DRAWS, SEED, git_sha
 
 REPRO = "cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis"
 KEYS = ("arrived", "captured", "ent", "over", "byp", "refl", "rel", "cleared", "escaped", "load",
-        "end_stored", "end_pool", "crew_h")
+        "end_stored", "end_pool", "crew_h", "ent_floor", "ent_vel")
 CAUSES = {"entrainment": "ent", "overtopping": "over", "bypass_release": "byp"}
 VARIANTS = {
     "a_current_release": {},
@@ -35,23 +38,67 @@ VARIANTS = {
 }
 
 
-def run_heldout(n_draws: int = N_DRAWS, seed: int = SEED, years: list | None = None) -> dict:
-    """Per-draw totals (D,) summed over sites and years, for P0, P1, P2 and the P2 hardware variants."""
+ANGLES = {90: 1.0, 45: float(np.sin(np.radians(45))), 30: 0.5, 20: float(np.sin(np.radians(20)))}
+ANGLE_HARDWARE = ["a_current_release", "c_fuse_refloat_x0.5"]
+
+
+def run_configs(configs: dict, n_draws: int = N_DRAWS, seed: int = SEED, years: list | None = None) -> dict:
+    """configs: name -> (policy, extra P switches). Per-draw totals (D,) summed over sites and years."""
     years = years or sim.HOLDOUT_YEARS
     P = sim.param_arrays(PR.draw(n_draws, seed))
-    names = ["P0", "P1", "P2"] + [f"P2|{v}" for v in VARIANTS if VARIANTS[v]]
-    runs: dict = {n: None for n in names}
+    runs: dict = {n: None for n in configs}
     for y in years:
         phys = sim.physics(y, P)
         fc = RF.season_forecast(y)
-        for name in names:
-            pol, _, var = name.partition("|")
-            r = sim.run_season(phys, dict(P, **VARIANTS[var]) if var else P, DP.make_policy(pol, fc), fc,
+        for name, (pol, extra) in configs.items():
+            r = sim.run_season(phys, dict(P, **extra) if extra else P, DP.make_policy(pol, fc), fc,
                                sensor_seed=seed + y)
             part = {k: (r[k].sum(axis=-1) if r[k].ndim == 2 else r[k]) for k in KEYS}
             runs[name] = part if runs[name] is None else {k: runs[name][k] + part[k] for k in KEYS}
-    runs["P2|a_current_release"] = runs["P2"]
     return runs
+
+
+def run_heldout(n_draws: int = N_DRAWS, seed: int = SEED, years: list | None = None) -> dict:
+    """P0, P1, P2, the P2 fuse variants and the P2 boom-angle variants (theta90 = aliases)."""
+    configs = {p: (p, {}) for p in ("P0", "P1", "P2")}
+    configs.update({f"P2|{v}": ("P2", VARIANTS[v]) for v in VARIANTS if VARIANTS[v]})
+    configs.update({f"P2|{h}|theta{a}": ("P2", dict(VARIANTS[h], sin_theta=s))
+                    for h in ANGLE_HARDWARE for a, s in ANGLES.items() if a != 90})
+    runs = run_configs(configs, n_draws, seed, years)
+    runs["P2|a_current_release"] = runs["P2"]
+    for h in ANGLE_HARDWARE:
+        runs[f"P2|{h}|theta90"] = runs[f"P2|{h}"]
+    return runs
+
+
+def exposure_nominal(years: list | None = None) -> dict:
+    """SIMULATED exposure, P2 with nominal parameters: share of hours and of arrived kg at |v|*sin(theta) > v50."""
+    from .sites import SITE_IDS
+    years = years or sim.HOLDOUT_YEARS
+    P = sim.param_arrays([PR.nominal()])
+    v50 = float(P["v50_ms"][0, 0])
+    hrs = {a: np.zeros(len(SITE_IDS)) for a in ANGLES}
+    kg = {a: np.zeros(len(SITE_IDS)) for a in ANGLES}
+    n_h, arr_tot = 0, np.zeros(len(SITE_IDS))
+    for y in years:
+        phys = sim.physics(y, P)
+        fc = RF.season_forecast(y)
+        r = sim.run_season(phys, P, DP.make_policy("P2", fc), fc, sensor_seed=SEED + y, record=True)
+        v, arr = np.abs(phys["v"][:, 0, :]), r["rec"]["arrived"][:, 0, :]
+        n_h += v.shape[0]
+        arr_tot += arr.sum(0)
+        for a, s in ANGLES.items():
+            fast = v * s > v50
+            hrs[a] += fast.sum(0)
+            kg[a] += (arr * fast).sum(0)
+    out = {"v50_ms_nominal": v50, "hours_per_site": n_h}
+    for a in ANGLES:
+        out[f"theta{a}"] = {"share_of_hours": round(float(hrs[a].sum() / (n_h * len(SITE_IDS))), 4),
+                            "share_of_arrived_kg": round(float(kg[a].sum() / arr_tot.sum()), 4)}
+    out["theta90"]["by_site"] = {sid: {"share_of_hours": round(float(hrs[90][i] / n_h), 4),
+                                       "share_of_arrived_kg": round(float(kg[90][i] / arr_tot[i]), 4)}
+                                 for i, sid in enumerate(SITE_IDS)}
+    return out
 
 
 def dist(x, nd: int = 4) -> dict:
@@ -100,6 +147,24 @@ def summarise(runs: dict, metrics: dict | None = None) -> dict:
             "flood_release_kg": dist(runs[f"P2|{v}"]["rel"], 0),
             "tidal_refloat_kg": dist(runs[f"P2|{v}"]["refl"] - runs[f"P2|{v}"]["rel"], 0)}
         for v in VARIANTS}
+    out["entrainment_split"] = {p: {
+        part: {"kg": dist(runs[p][k], 0), "share_of_escaped": dist(runs[p][k] / runs[p]["escaped"]),
+               "share_of_entrainment": dist(runs[p][k] / runs[p]["ent"])}
+        for part, k in (("floor_1_minus_emax", "ent_floor"), ("velocity_driven", "ent_vel"))}
+        for p in ("P0", "P1", "P2")}
+    if all(f"P2|{h}|theta{a}" in runs for h in ANGLE_HARDWARE for a in ANGLES):
+        E0, F0 = runs["P2"]["escaped"], fwce(runs["P2"])
+        out["boom_angle_sensitivity_P2"] = {h: {f"theta{a}": {
+            "sin_theta": round(s, 4), "boom_length_factor_1_over_sin_theta": round(1 / s, 3),
+            "escaped_kg": dist(runs[f"P2|{h}|theta{a}"]["escaped"], 0),
+            "escaped_rel_vs_theta90": paired(runs[f"P2|{h}|theta{a}"]["escaped"], runs[f"P2|{h}|theta90"]["escaped"]),
+            "escaped_rel_vs_current_a_theta90": paired(runs[f"P2|{h}|theta{a}"]["escaped"], E0),
+            "fwce": dist(fwce(runs[f"P2|{h}|theta{a}"])),
+            "fwce_delta_pp_vs_theta90": dist((fwce(runs[f"P2|{h}|theta{a}"]) - fwce(runs[f"P2|{h}|theta90"])) * 100, 2),
+            "fwce_delta_pp_vs_current_a_theta90": dist((fwce(runs[f"P2|{h}|theta{a}"]) - F0) * 100, 2),
+            "velocity_entrainment_share_of_escaped": dist(runs[f"P2|{h}|theta{a}"]["ent_vel"]
+                                                          / runs[f"P2|{h}|theta{a}"]["escaped"])}
+            for a, s in ANGLES.items()} for h in ANGLE_HARDWARE}
     bal = max(float(np.abs(R["load"] - R["escaped"] - R["cleared"] - R["end_stored"] - R["end_pool"]).max())
               for R in runs.values())
     out["checks"] = {"mass_balance_max_abs_err_kg": round(bal, 6),
@@ -111,13 +176,14 @@ def summarise(runs: dict, metrics: dict | None = None) -> dict:
         out["checks"]["escaped_median_matches_metrics_json"] = bool(all(abs(ours[p] - theirs[p]) <= 1 for p in ours))
         out["checks"]["metrics_json_escaped_median"] = theirs
     out["per_draw"] = {n: {"escaped_kg": np.round(R["escaped"], 0).tolist(), "fwce": np.round(fwce(R), 4).tolist()}
-                       for n, R in sorted(runs.items())}
+                       for n, R in sorted(runs.items()) if not n.endswith("|theta90")}
     return out
 
 
 def main():
     metrics = json.loads((RESULTS / "metrics.json").read_text())
     res = summarise(run_heldout(), metrics)
+    res["exposure_P2_nominal"] = exposure_nominal()
     doc = {
         "label": "SIMULATED",
         "what": "digital-twin analysis, held-out monsoons Jun-Sep 2024+2025, 4 sites summed; real forcing "
@@ -136,12 +202,20 @@ def main():
             "flood_release": "stored debris released during bypass/high head (current hardware), into the pool",
             "fuse": "SENSITIVITY: at release only the arriving flux passes; the pocket keeps its catch",
             "refloat_mult": "SENSITIVITY: one-way pocket scales tidal re-float; x1 with the fuse equals variant b",
+            "sin_theta": "SENSITIVITY: boom at angle theta to the flow; e(v) uses the normal component |v|*sin(theta), "
+                         "e_max unchanged; boom length (W/sin theta), capacity, cost and loads not modelled; P2's "
+                         "forecaster still assumes theta=90 (policy unchanged)",
+            "ent_floor": "(1 - e_max) * arrived outside bypass: leaks even at slack water (ASSUMPTION e_max 0.70-0.95)",
+            "ent_vel": "(e_max - e(v)) * arrived outside bypass: velocity-driven entrainment",
+            "exposure": "P2, nominal parameters, held-out years: share of site-hours and of arrived kg with "
+                        "|v|*sin(theta) > v50 (0.45 m/s nominal)",
         },
         "caveats": [
             "SIMULATED: escaped_kg is computed by the same assumed process model that the policies act on, so "
             "results show relative value under stated assumptions, not field evidence; field calibration comes "
             "in Round 2.",
             "Fuse/pocket rows are SENSITIVITY runs (assumption-driven), not evidence about real hardware.",
+            "Boom-angle rows are SENSITIVITY runs (assumption-driven): boom angle is not field evidence.",
             "No retuning: P2 knobs, draws, seeds and crew budget identical to results/metrics.json.",
         ],
         **res,
