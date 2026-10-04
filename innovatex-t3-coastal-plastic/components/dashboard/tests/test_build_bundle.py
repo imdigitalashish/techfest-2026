@@ -53,7 +53,7 @@ def test_interceptor_mass_balance_holds(built):
 def test_flatten_and_trim():
     f = build_bundle.flatten({"a": {"b": 1, "c": True}, "d": None, "e": [1, 2], "reproduce": "x"})
     assert f == {"a.b": 1.0, "a.c": 1.0, "d": "null", "e": "[1, 2]", "reproduce": "x"}
-    part = {"forecasts": [{"issued_at": "2026-10-04T00:00:00Z"}], "telemetry": [],
+    part = {"forecasts": [{"site_id": "X", "horizon_h": 48, "issued_at": "2026-10-04T00:00:00Z"}], "telemetry": [],
             "forcing": [{"t": [f"2026-10-0{d}T00:00:00Z" for d in range(1, 8)], "rain_mm_h": list(range(7)), "tide_datum": "MSL"}]}
     s = build_bundle.trim(part, past_h=48)["forcing"][0]
     assert s["t"][0] == "2026-10-02T00:00:00Z" and s["rain_mm_h"] == [1, 2, 3, 4, 5] and s["tide_datum"] == "MSL"
