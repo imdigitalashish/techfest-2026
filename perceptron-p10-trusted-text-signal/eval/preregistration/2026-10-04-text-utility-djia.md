@@ -1,6 +1,6 @@
 # Pre-registration — does text add value? (unseen data: Kaggle DJIA news)
 
-- **Registered:** 4 Oct 2026, ~13:20 IST, by the P10 lead. The git commit that adds this file also freezes the analysis code, `eval/text_utility_djia.py`; its timestamp precedes any run on the real data.
+- **Registered:** 4 Oct 2026, 12:55:28 IST (commit `dd8bcd1`), by the P10 lead. The git commit that adds this file also freezes the analysis code, `eval/text_utility_djia.py`; its timestamp precedes any run on the real data.
 - **Why:** the strongest critique of P10 (independent review, `research/notes/review-adr001-rubber-duck.md`) is "drop the text". On StockNet, price-only matches fusion (pinball 0.3513 vs 0.3518). StockNet's test period has been looked at several times, so the question is tested once, on data we have not analysed.
 
 ## Data
@@ -43,4 +43,4 @@ Train ≤ 2012-12-31 · calibration 2013-01-01 → 2014-06-30 · test 2014-07-01
 The result is reported whichever way it comes out. No re-runs with changed features, target, splits or hyperparameters. Any later analysis is labelled exploratory. Bugs found after the run are fixed, documented below, and re-run once, with both runs reported.
 
 ## Deviations
-- _(none yet)_
+- Header correction only (before the real run): the registration time was first written as an estimate ("~13:20 IST"); the registration commit is `dd8bcd1` at 12:55:28 IST. No change to hypotheses, code or data.
