@@ -112,7 +112,7 @@ def slice_compact(entry: dict, budget_bytes: int, out: Path) -> dict:
             continue
         df = pd.read_csv(io.BytesIO(header + block), usecols=keep)
         part = {
-            "ts": pd.to_datetime(df["timestamp"], format="ISO8601", utc=True).astype("int64").to_numpy(),
+            "ts": pd.to_datetime(df["timestamp"], format="ISO8601", utc=True).dt.as_unit("ns").astype("int64").to_numpy(),
             "item": df["item_id"].to_numpy(np.int16),
             "pos": df["position"].to_numpy(np.int8),
             "click": df["click"].to_numpy(np.int8),
