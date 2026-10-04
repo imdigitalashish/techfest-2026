@@ -16,6 +16,7 @@ unless --force <stage>):
 Writes <work>/report.json and prints the local viewer command.
 """
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -78,6 +79,13 @@ def main():
     os.makedirs(work, exist_ok=True)
     rp = os.path.join(work, "report.json")
     report = json.load(open(rp)) if os.path.exists(rp) else {"name": a.name, "input": os.path.abspath(a.input), "stages": {}}
+    files = sorted(os.path.join(dp, f) for dp, _, fs in os.walk(a.input) for f in fs)
+    fp = hashlib.sha1("".join(f"{os.path.relpath(f, a.input)}:{os.path.getsize(f)}:{int(os.path.getmtime(f))};"
+                              for f in files).encode()).hexdigest()
+    if report.get("input_fingerprint") not in (None, fp):
+        print("input changed since the cached run -> all stages re-run", flush=True)
+        report["stages"] = {}
+    report["input_fingerprint"] = fp
     cap_path = os.path.join(a.input, "capture.json")
     cap = json.load(open(cap_path)) if os.path.exists(cap_path) else {}
     paths = {"frames": os.path.join(work, "frames"), "sfm": os.path.join(work, "sfm"), "splat": os.path.join(work, "splat"),
@@ -155,6 +163,8 @@ def main():
         remap[keep] = np.arange(keep.sum())
         mm = keep[sc.obs_pt_idx]
         g = build_grid(P[keep], C, C[sc.obs_img_idx[mm]], remap[sc.obs_pt_idx[mm]])
+        if not g["navigable"].any():
+            raise RuntimeError("walkable stage produced an EMPTY navigable grid — check alignment/scale before packaging")
         os.makedirs(paths["pkg"], exist_ok=True)
         json.dump(to_json(g), open(os.path.join(paths["pkg"], "nav.json"), "w"))
         cij = np.floor((C[:, [0, 2]] - g["lo"]) / g["cell"]).astype(int)

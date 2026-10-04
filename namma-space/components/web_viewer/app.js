@@ -32,7 +32,8 @@ const splats = new SplatMesh({ url: new URL(manifest.splat.url, base).href });
 scene.add(splats);
 let loadedMs = null;
 if (splats.initialized && typeof splats.initialized.then === "function") {
-  splats.initialized.then(() => { loadedMs = performance.now() - T0; $("banner").style.display = "none"; });
+  splats.initialized.then(() => { loadedMs = performance.now(); // ms since navigation start (performance.timeOrigin)
+    $("banner").style.display = "none"; });
 } else setTimeout(() => ($("banner").style.display = "none"), 1500);
 
 const EYE = manifest.eye_height_m || 1.6;
@@ -218,7 +219,7 @@ renderer.setAnimationLoop(() => {
   if (frameMs.length > 2000) frameMs.splice(0, 1000);
   move(dt);
   renderer.render(scene, camera);
-  if (firstFrameMs === null) firstFrameMs = now - T0;
+  if (firstFrameMs === null) firstFrameMs = now; // ms since navigation start
   if (now - hudT > 250) {
     hudT = now; drawMini();
     const s = window.__nsStats(), p = camera.position;

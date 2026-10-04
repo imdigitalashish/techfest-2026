@@ -37,3 +37,26 @@ Snapshot reviewed: `fdd62bc` (the worktree matched `origin/main`; there was no b
 - Could **not** rerun `eval/nav_eval_v3.py` or inspect `.data/work/drjohnson_e2e/report.json` here: both the dataset/model/alignment/PLY and that ignored report are absent from this worktree. `test_data/fetch_drjohnson.sh` downloads only the source photos/model (≈208 MB), not the ~472 MB trained splat or its alignment, and the published v3 command names the older internal artifact locations. Treat the numerical JSON as a committed result, not an independently reproduced one.
 - `setup.sh` targets Apple silicon/macOS and pins Python packages and Brush's release tag, but not ffmpeg/uv versions, the Brush archive checksum, or the dataset's Hugging Face revision/file hashes. `fetch_drjohnson.sh` uses a mutable `main` API listing and `curl -sSL` without a content checksum. `test_data/README.md:6` promises `sample_home/` only **after** the user's capture; no owned test data is committed yet.
 - The viewer's additional `playwright-core` dependency is in `components/web_viewer/autoresearch/package-lock.json` but not installed by `setup.sh`; Chrome and `npm ci` for that measurement are not part of the quick start. Current stage cache keys do not include inputs or dependency hashes (H5), so repeat runs may reproduce **stale** outputs rather than the supplied capture.
+
+---
+## Lead decisions (Claude Opus 5.5, project lead) — 2026-10-04 11:07 IST
+| ID | Decision | Action / reason |
+|---|---|---|
+| B1 | **ACCEPTED (limitation)** | The hold-out is camera positions only. SfM and the splat reference use all images, so v3 is a same-scene consistency check, not ground truth. Stated in the abstract. A real-geometry scene (ARKitScenes laser mesh) and an untouched capture are scheduled for R2 |
+| B2 | **ACCEPTED** | Wording fixed: "all pairs among eligible endpoints (29/33 and 30/33 cameras; endpoints moved ≤0.5 m to verified-free cells; refusals 0% under that condition)" |
+| B3 | **ACCEPTED, FIXED** | `camera_bootstrap()` added: CFC 95% CI resampling cameras (2000 draws) gives ≈0.31–0.69, vs ±0.05 pair-level. Wording: "no evidence of a difference, not equivalence" |
+| B4 | **ACCEPTED (manual), PARTLY REJECTED (auto-walk)** | Manual movement is now sub-stepped at ≤ half a cell, so it can't tunnel through a one-cell wall. Auto-walk follows planner polylines whose segments are supercover-LOS-checked on the same NavGrid, so they stay navigable by construction. A runtime assertion is scheduled anyway |
+| B5 | **ACCEPTED** | The E2E `report.json` is committed as `eval/results/drjohnson_e2e_report.json` when the run finishes; abstract placeholders are filled only from it |
+| H1 | **ACCEPTED, FIXED** | Clearance margin is now cell·√2/2 (certifies ≥ r to every obstacle-cell centre); contract test updated |
+| H2 | **ACCEPTED, FIXED** | Reference geodesic forbids diagonal corner-cutting (same rule as the candidate A*) |
+| H3 | **ACCEPTED, FIXED** | Planner returns `ok: False` on an empty grid; the orchestrator's walkable stage raises on an empty grid before packaging |
+| H4 | **ACCEPTED (scheduled R2)** | JS snap now exact Euclidean-nearest. Still to do: export the EDT clearance field in `nav.json` + cross-language golden-grid tests + evaluate actual browser polylines |
+| H5 | **ACCEPTED, FIXED** | A re-run invalidates downstream stages, and an input fingerprint (path, size, mtime) resets the cache when the capture changes |
+| H6 | **ACCEPTED, FIXED** | `train()` deletes stale renders and PLYs before training |
+| H7 | **ACCEPTED, FIXED (SOP)** | SOP v1.1: 1× lens for every clip (one camera model per capture). Per-clip cameras (PER_FOLDER) are a later option |
+| H8 | **ACCEPTED** | Voice-tag POIs are stated as planned (R2), not shipped. POIs today come from the manual frame-spec tool (explicit step) + in-viewer tagging |
+| M1 | **ACCEPTED (scheduled R2)** | Room/item click via Spark raycast (`minRaycastOpacity`) → POI/region hit-test |
+| M2 | **ACCEPTED, FIXED** | Viewer times are now ms since navigation start (`performance.now()` = timeOrigin-relative) |
+| M3 | **ACCEPTED** | The E ratchet will reject a trial unless the same trial's quality manifest shows ≤1 dB PSNR loss and no page errors (`program.md`) |
+| M4 | **ACCEPTED, FIXED** | README now documents the v3 command with explicit `--colmap/--alignment/--ply` and the runtime note |
+| M5 | **ACCEPTED (limitation)** | Single-level assumption documented; multi-floor (finals venue) needs per-floor segmentation + stair links (R2/finals) |

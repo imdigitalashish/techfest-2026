@@ -50,7 +50,8 @@ test_data/           fetch script for the public scene; our own sample capture
 ```bash
 .venv/bin/python components/path_planner/planner.py          # planner contract test (doorway)
 .venv/bin/python components/scene_alignment/test_marker_scale.py
-.venv/bin/python eval/nav_eval_v2.py --out eval/results/drjohnson_nav_v2.json
+.venv/bin/python eval/test_nav_eval_v3.py                     # evaluator contract test (doorway geodesic)
+.venv/bin/python eval/nav_eval_v3.py --colmap .data/deepblending/drjohnson/sparse/0 --alignment .data/packages/drjohnson/alignment.json --ply .data/runs/drjohnson_brush/drjohnson_15000.ply --out eval/results/drjohnson_nav_v3.json   # needs the public scene + a trained splat (≈10 min CPU); for your own run use .data/work/<name>/{sfm/colmap/sparse/0,alignment.json,splat/splat_15000.ply}
 .venv/bin/python components/walkable_space/autoresearch/loop.py   # ratchet (frozen eval.py)
 ```
 

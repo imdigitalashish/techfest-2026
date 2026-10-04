@@ -12,7 +12,7 @@ Pairs: ALL pairs of valid held-out endpoints that the reference itself connects 
 Per pair, the candidate (NavGrid from buffered training frames + A*) either REFUSES (no path, or snap
   > 0.25 m) or returns a route; the full polyline (endpoint -> snapped start -> path -> snapped goal ->
   endpoint) is sampled every 2.5 cm and COLLIDES if any sample is out of the reference bounds or has
-  clearance < r + half a cell (conservative swept disc).
+  clearance < r + cell·√2/2 (conservative: certifies distance ≥ r to every obstacle-cell centre; diagonal moves may not cut corners, matching the candidate A*).
 Score: CFC@r = share of pairs with a non-colliding route (refusal and collision both fail). Reported with
   Wilson 95% intervals, refusal and collision rates, stretch vs the reference geodesic, and paired sign
   tests between variants on identical pairs.
@@ -63,7 +63,8 @@ def reference(d, radius):
     occ = np.zeros((nx, nz), np.int32)
     np.add.at(occ, (ij[:, 0], ij[:, 1]), 1)
     edt = ndimage.distance_transform_edt(~(occ >= REF_MIN_SPLATS)) * REF_CELL
-    free = edt >= radius + REF_CELL / 2
+    margin = REF_CELL * math.sqrt(2) / 2  # a sample anywhere in a cell is within this of the cell centre
+    free = edt >= radius + margin
     idx = -np.ones((nx, nz), np.int64)
     idx[free] = np.arange(free.sum())
     rows, cols, w = [], [], []
@@ -72,10 +73,13 @@ def reference(d, radius):
         src = (slice(0, nx - di), slice(k0, k1))
         dst = (slice(di, nx), slice(k0 + dk, k1 + dk))
         m = free[src] & free[dst]
+        if di and dk:  # no diagonal corner-cutting (same rule as the candidate A*)
+            m &= free[(slice(di, nx), slice(k0, k1))] & free[(slice(0, nx - di), slice(k0 + dk, k1 + dk))]
         rows.append(idx[src][m]); cols.append(idx[dst][m]); w.append(np.full(int(m.sum()), wt * REF_CELL))
     G = sparse.coo_matrix((np.concatenate(w), (np.concatenate(rows), np.concatenate(cols))),
                           shape=(free.sum(), free.sum())).tocsr()
-    return {"lo": lo, "nx": nx, "nz": nz, "edt": edt, "free": free, "idx": idx, "G": G, "radius": radius}
+    return {"lo": lo, "nx": nx, "nz": nz, "edt": edt, "free": free, "idx": idx, "G": G, "radius": radius,
+            "margin": margin}
 
 
 def endpoints(ref, C, cams, search=0.5):
@@ -110,7 +114,7 @@ def evaluate_one(d, ref, offset=0, buffer=2, holdout_every=8, use_carving=True, 
     cams = sorted(ep)
     dist = csgraph.dijkstra(ref["G"], directed=False, indices=[ep[c][1] for c in cams])
     pl = GridPlanner(g["navigable"], g["clearance"], g["lo"], g["cell"])
-    r_need = ref["radius"] + REF_CELL / 2
+    r_need = ref["radius"] + ref["margin"]
     outcomes, stretches = {}, []
     for i, a in enumerate(cams):
         for b in cams[i + 1:]:

@@ -1,8 +1,8 @@
-# Namma Space — Capture SOP v1.0 (phone → navigable 3D twin)
+# Namma Space — Capture SOP v1.1 (phone → navigable 3D twin)
 
 **Who:** anyone with a smartphone. **Time:** ~15–20 min for a 2–3 room home (prep 5 min + ~2 min per room + 3 min checks; estimate, not yet measured). **Output:** one or more videos + a filled `capture.json`, which our pipeline turns into a walkable 3D web twin with POIs and paths.
 
-> Status: v1.0, 4 Oct 2026. Rules come from what our pipeline needs: camera posing (COLMAP/GLOMAP SfM or feed-forward), 3D Gaussian Splatting, and floor/obstacle extraction for navigation. Each rule has a *why*. The cross-check against official capture guides (Polycam, Luma, Scaniverse, Matterport, RealityScan, nerfstudio, COLMAP) is in progress in `research/capture-best-practices.md`; anything it changes ships as v1.1.
+> Status: v1.1, 4 Oct 2026 (v1.1: one lens for all clips — code-review finding H7). Rules come from what our pipeline needs: camera posing (COLMAP global SfM), 3D Gaussian Splatting, and floor/obstacle extraction for navigation. Each rule has a *why*. The cross-check against official capture guides is in `research/capture-best-practices.md` (pending); see `research/companies.md` for vendor guidance found so far.
 
 ## The 5 rules that matter most
 1. **Sharp frames.** Walk slowly (about half your normal pace) and turn slowly (a full turn takes at least 12 s). Blurry frames are the main cause of failed reconstructions.
@@ -25,7 +25,7 @@
 | Mode | Camera → **Video** | Camera → Video (Pro/Manual video if available) | Video gives dense overlap automatically |
 | Resolution / fps | **4K at 30 fps** (Settings → Camera → Record Video) | 4K 30 fps | More pixels per frame → sharper splats; we extract ~2–4 frames/s |
 | HDR video | **Off** (Settings → Camera → Record Video → HDR Video) | HDR off | HDR (HLG/Dolby Vision) frames tone-map inconsistently when extracted |
-| Lens | **1× main lens**; don't zoom or switch lenses during a clip | 1× main | One lens per clip = one camera model. Use 0.5× only for a whole clip in tight spaces (bathroom, narrow corridor) |
+| Lens | **1× main lens for every clip**; don't zoom or switch lenses, even in small rooms | 1× main | The pipeline assumes **one camera model for the whole capture** (all clips). Mixing 0.5× and 1× breaks the shared intrinsics |
 | Stabilisation | Standard (avoid "Action mode" / "Cinematic") | Standard | Action and Cinematic modes crop and warp frames |
 | Exposure/focus | Long-press the screen on a mid-brightness wall → **AE/AF LOCK** | Lock AE/AF (Pro mode: shutter ≥1/120 s, ISO auto) | Brightness that changes between frames creates "floaters" and colour seams |
 | Orientation | **Landscape**; never rotate the phone mid-clip | Landscape | Constant image size and intrinsics |
