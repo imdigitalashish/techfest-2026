@@ -10,16 +10,20 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED 09:55 IST, 4 Oct** by user decision (Supervisor). Only 3 projects run at a time; the Delhi-zonal pick will be T1 or T2. Morning package delivered and accepted 08:22.
-- **Resume point (in order, when un-paused):**
-  1. **Detector baseline.** `cd innovatex-t3-coastal-plastic/components/detection && bash baseline_when_calm.sh`. It trains YOLO11n only while the 1-min load is below 20, with a ≤60 min cap. Then run `bash run_after_train.sh A <weights>` to write `results/metrics.json` (test + val + Groningen) and the flux count, then `bash run_after_train.sh B <weights>` for the ratchet. The script was queued at 08:35 and never started (load was 67); no T3 process is running.
-  2. **Twin (`components/twin_sim`):** split escape into entrainment, overflow and bypass; add a fail-open-fuse SENSITIVITY; compute a paired P2−P1 interval. Reproduce the current numbers with `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run`.
-  3. **Contracts v0.2:** optional `signature`, `signer_key_id` on `LedgerEntry` and `ledger_anchor` on `DashboardBundle`, then `python3 architecture/contracts/export_schemas.py`.
-  4. **Pitch:** fill the 6 ⟨FILL⟩ markers (team details, trained mAP ×2, flume result, retrofit cost) and resolve the 2 [V] claims. This is needed only if T3 is ever pitched.
-  5. **Flume T2/T3** (needs a teammate) — [prototype-plan](deliverables/prototype-plan.md) §3.
-  6. **C14 source attribution:** not started.
-  7. **After any change:** regenerate results with `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`.
-- **Child sessions:** all idle. *T3 detection + flux* was told at 09:50 to drop its queued training. Twin, dashboard + ledger, and both research sessions are finished. None spawned since.
+- **Phase:** ▶ **RESUMED 2026-10-04 15:57 IST** (Supervisor). T1 JalSakshi is the Delhi-zonal pick. T3's job is to be a complete, honest, documented alternative, not to out-spin T1.
+- **Definition of done (Supervisor, 15:56):**
+  1. **Evidence:**
+     - YOLO11n detector baseline: "GPU request" sent first; ≤60 min.
+     - Twin: escape split by cause (entrainment, overflow, bypass), fail-open fuse sensitivity, paired P2−P1 interval. All SIMULATED and labelled.
+  2. **Zonal package at T1's bar:** deck (PDF + PPTX), Q&A prep, one-page presenter card, prototype plan with ₹ + URL + date for every part. ⟨FILL⟩ markers filled; the 2 [V] claims resolved or marked UNVERIFIED.
+  3. **Numbers rendered from committed results:** `eval/render_docs.py` + `eval/check_docs.py` (drift check); licences recorded in `README.md`.
+  4. **Cross-model reviews as child sessions:** gpt-6-astra (max) as hostile judge on deck and pitch; gpt-6-sol (max) on code and eval, reproducing the headline numbers. Recorded in `reviews/` + `reviews/ledger.tsv`.
+  5. **Final memo (honest T3 vs T1),** thought node current, all pushed → message "DONE — slot free".
+- **Doing:**
+  - Lead: render/check system, deck, Q&A, presenter card, prototype-plan pricing, licences.
+  - Children (≤2 at a time): *T3 digital twin + dispatch* does the twin analyses; *T3 detection + flux* does the YOLO baseline after the GPU grant.
+  - Heavy jobs are serialised with the lock `/tmp/t3-heavy.lock`, run under `nice -n 10`, and start only when `kern.memorystatus_level` ≥ 30.
+- **Rules now:** child sessions only, no `task` sub-agents. No `git stash` / `--autostash`. Timestamps from `TZ=Asia/Kolkata date`.
 - **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments, leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup's 2026 Interceptors cover the big Malad and Trombay creek mouths. NullahNet is the network layer for the rest:
   - pocket-fill sensing;
   - tide-aware dispatch (Spike 1, support: −2.1% escaped in the twin);
