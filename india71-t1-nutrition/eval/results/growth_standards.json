@@ -1,0 +1,1 @@
+{"metric": "max_abs_z_error_vs_WHO_tables", "value": 0.003, "n_points": 87408, "per_table": {"wfa-boys": 0.0014, "wfa-girls": 0.0014, "lhfa-boys": 0.0003, "lhfa-girls": 0.0003, "wfl-boys": 0.003, "wfl-girls": 0.0028, "wfh-boys": 0.0011, "wfh-girls": 0.001}}
