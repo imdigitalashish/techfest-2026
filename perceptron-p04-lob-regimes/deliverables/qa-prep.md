@@ -53,3 +53,11 @@ We will compare them. The volatility gate is the transparent, O(1) baseline that
 **11. "Was your holdout really unseen?"**
 Not entirely, and we say so. The protocol was committed before evaluation, but one of the 22 held-out days (2025-08-01) had been read in an earlier exploratory run. Excluding it changes no conclusion (`eval/results/v2_holdout_sensitivity.md`). The registered method (Fixed-Share) failed H1. The regime gate with confidence shrinkage was added after dev and before the holdout run, so it is reported as secondary.
 
+**12. "Your gate mostly picks the high-volatility head. Isn't it just one better model?"**
+No; we tested this post hoc (exploratory). Every head alone does worse than the gate on the 22 held-out days:
+- high-vol head alone: +0.0141 log-loss, better on only 1/22 days;
+- mid-vol head alone: +0.0138;
+- low-vol head alone: +0.0526.
+
+On held-out days the gate selects the low/mid/high heads 20.7% / 33.2% / 46.0% of the time, and the mix swings by day: 2026-01-01 is 75.7% low-vol, 2026-03-01 is 93.7% high-vol. The gain comes from switching (`eval/results/v2_holdout_posthoc_heads.md`, `eval/results/head_usage.md`).
+

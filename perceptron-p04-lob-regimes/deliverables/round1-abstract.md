@@ -31,7 +31,7 @@ Order-flow price impact scales inversely with depth (Cont, Kukanov & Stoikov 201
 2. **Detect a shift and react:** the CUSUM drives the reaction. In an illustrative development replay (2024-05-01) the KS audit fired at 18:09:32, after the 18:00 UTC FOMC statement, and the CUSUM at 18:17:43, shrinking forecasts. A known-shift replay with the gate on and off will test causality.
 
 ## Stretch ambitions
-- **Multiple regime heads:** implemented. Against a single EWMA-normalised head they cut held-out log-loss by 0.0083 (post-hoc ablation, better on 22/22 days).
+- **Multiple regime heads:** implemented. Against a single EWMA-normalised head they cut held-out log-loss by 0.0083 (post-hoc ablation, 22/22 days). Each head alone does worse than switching (+0.0138 to +0.0526).
 - **Latency:** target ≤50 µs p99 per compiled step including features and detectors. The Python adapter step is 4.8 µs p50 but 85.6 µs p99 (excluding features): unmet; end-to-end latency is unmeasured. Feed delay (Tardis) has a 2.9 ms median.
 - **Next:** a spread-change head.
 
