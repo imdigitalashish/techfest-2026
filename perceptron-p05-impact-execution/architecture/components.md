@@ -41,7 +41,7 @@ flowchart LR
 | C9 | `eval_harness` | Seed splits, paired comparisons, CIs, ledger | `ExperimentSpec` → CSV + summary (`ComparisonResult`) | C2, C8, C10 | Unpaired mean over seeds | **CI half-width** of ΔIS at fixed compute (variance-reduction factor vs unpaired) | ✅ v0 (runner + calibrate) |
 | C10 | `feedback_attribution` | Say who absorbed or amplified our order, and how the market responded over time | `TwinPair` → `Attribution` (Δposition by agent type, MM spread/depth response, impulse response) | C1 data | none | **Share-conservation residual** (Σ Δpos + our qty = 0) and attribution CI width | ✅ v0 (Δpos by type) |
 | C11 | `learner` / autoresearch | Improve the policy parameters (or an RL policy) against the frozen eval | `results.tsv` → new `PolicySpec` | C9 | grid search | Validation ΔIS vs TWAP (paired) | ⏳ next |
-| C12 | `demo_ui` | Show the book vs the ghost book, the impact path and the decomposition live | results → figures/app | — | — | n/a (demo) | ⏳ |
+| C12 | `demo_ui` | Show our market vs its ghost twin, the footprint, the size knob and the honest scoreboard | committed results + live twin runs → offline page (`demo/`) | C1, C2, C8 | — | `demo/smoke.sh` passes; first visual ≤ 60 s | ✅ Ghost Market demo (ef608074) |
 
 ## Seed protocol (C9)
 - **train** seeds 0–99: calibration only (kernel, volume curve). **val** 100–199: tuning and autoresearch. **test** 1000–1199: final claims, touched once per release.

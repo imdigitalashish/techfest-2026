@@ -16,7 +16,7 @@
   2. Build to §11: `demo/run.sh`, baseline side by side with a judge knob, SIMULATED labels on every screen, numbers from committed results, `demo/SCRIPT.md`, `demo/fallback/`, `demo/smoke.sh`.
   3. One gpt-6-astra demo review, recorded in `reviews/`.
   4. The lead verifies from a clean checkout, then sends "DEMO DONE".
-- **Doing:** the demo builder (child session 'P5 demo builder') is building the approved 'GHOST MARKET' design; target ~23:30 IST. The lead then verifies from a clean worktree and runs the gpt-6-astra demo review. Updated 2026-10-04 21:54 IST.
+- **Doing:** the demo is built (ef608074) and verified by the lead from a clean worktree. The gpt-6-astra demo review (child session) is running. Updated 2026-10-04 22:26 IST. Updated 2026-10-04 21:54 IST.
 - **Earlier phase (definition of done, met 14:08):** see the Log.
 - **Delivered:**
   - E8, E7, E9, E10, E11 and E12, each pre-registered by commit time.
@@ -321,3 +321,11 @@ Those labels were estimates, 1–7 min ahead of the clock. The other headers are
   - "1 new seed (live)";
   - a headless `DEMO_NO_OPEN=1` READY line;
   - a source footnote on every panel.
+
+### 2026-10-04 22:26 IST — Demo built (ef608074); lead verification from a clean worktree of origin/main
+- **Without the setup step:** `DEMO_NO_OPEN=1 demo/run.sh` prints READY (http://127.0.0.1:8650/) about 1 s after launch. `demo/smoke.sh` passes in 1 s; the live lane is skipped with its reason ("ABIDES not fetched").
+- **After the README setup** (venv + `scripts/fetch_abides.sh`), `demo/smoke.sh` passes in 4 s, including a live run: seed 101 in 3.4 s; pre-trade top-5 identity 304/304 (TWAP) and 304/304 (impact-aware); T1 gaps −8.0¢ / −7.0¢ equal the committed `E7_size_q4000.csv` / `E8_ablation_val.csv` rows.
+- **Wording audit** (grep of index.html and SCRIPT.md): all 8 approval amendments present; no "took the other side", "vanish", "fails", "absorb", "bit-identical", "certified", "beats TWAP" or "ghost book".
+- **Labelling:** SIMULATED stamped in the sticky header and on every chart canvas; 13 "source:" footnotes.
+- **Fallback:** 8 screenshots in talk order.
+- The verification server was stopped after use. The clean worktree is at `/tmp/p5_clean_demo_check` (to be removed after the review).

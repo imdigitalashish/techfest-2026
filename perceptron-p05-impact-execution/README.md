@@ -7,6 +7,9 @@ Start with the journal: [`thought_node.md`](thought_node.md). Morning-package do
 - [`architecture/adr/001-spike.md`](architecture/adr/001-spike.md)
 - [`deliverables/round1-abstract.md`](deliverables/round1-abstract.md)
 
+## Demo (Ghost Market)
+`demo/run.sh` gives the first visual in about 1 s and works offline. Every screen is labelled SIMULATED (ABIDES). The talk track is `demo/SCRIPT.md`; screenshots are in `demo/fallback/`; `demo/smoke.sh` is the headless check. The live "bring your own seed" lane needs the setup steps below.
+
 ## Reproduce
 ```bash
 cd perceptron-p05-impact-execution
