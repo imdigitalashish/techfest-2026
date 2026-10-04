@@ -12,6 +12,7 @@
 ## Now
 - **Phase:** 2–4 overlapping — component map + contracts done; builders running; spike selection in progress.
 - **Plan (to 08:30 IST):** builders A+B finish skeleton + eval harness → ADR 001 (six hats + antithesis + first principles) → landscape.md from research files → round-1 proposal + architecture.md → first autoresearch ratchet on C5 → fact-check → push.
+- **Mode:** LEAN (Supervisor, 05:50): no new sub-agents; sequential work; push every 30 min.
 - **Doing:** builder-a (simulator, C2 canonical, C3 competency, C4 diagnostics, C7 teacher view, C12 governance) · builder-b (C5 trust/audit spike candidate, C6 small-area estimation, C9 allocation, C10 dashboard, eval harness, autoresearch scaffold) · data-extractor (ASER 2024 + PARAKH 2024 tables → `data/public/`) · r2a national DPI (VSK, Sunbird, DIKSHA, APAAR) · r2b states & NGOs · r1n UDISE+/NIPUN targets · r3n causal evidence · r4n SAE/forensics/audit methods · antithesis (rubber-duck) + first-principles on the spike. Original r1/r3/r5/r8 still running since 02:50 (likely stuck in API retries).
 - **Next:** ADR 001 → landscape.md → proposal → autoresearch loop → fact-check.
 - **Needs from user:** Register by 15 Oct for one theme (after the 12 Oct selection). Teammates (≤4): names and skills.
@@ -78,14 +79,14 @@ Full specs: [architecture/components.md](architecture/components.md) · contract
 | C12 | Governance & access | AccessRequest → AccessDecision | role portals | no | building (A) | policy suite pass rate |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (the team registers for one theme by 15 Oct). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+_v1, 4 Oct 2026 06:00 IST (lead). Final by 12 Oct. Scores 1–5 with one line of evidence._
+- **Winnability — 4/5.** Theme 2 has the richest public evidence base of the three (ASER 2024 full report and state tables on disk; PARAKH 2024 national reports public; UDISE+), and the brief explicitly penalises "a generic ed-tech pitch" — the trap most teams will fall into. Our entry is a decision layer with typed contracts and moderation, grounded field-by-field in these datasets.
+- **Innovation headroom — 4/5.** Spike 2, *measurement assurance* (rotating sentinel re-tests during existing CRC visits → model-assisted calibration → small-area block estimates benchmarked to PARAKH/ASER), is uncommon in Indian FLN practice (novelty check pending in `research/sources/methods-sae-audit.md`). Spike 1 (adaptive check → Monday plan in ≤ 3 SMS → 6-week recheck) is incremental alone, strong as a loop on a shared competency spine. See [ADR 001](architecture/adr/001-spike.md).
+- **Feasibility by the deadline — 5/5.** Runs entirely on the Mac (numpy/scipy); no hardware, credentials or real child data needed for Round 1. User effort: team details, a read-through, PDF export (~2 h), outside the 19–25 Nov exams.
+- **Demo strength — 4/5.** A Hindi WhatsApp/SMS/IVR "Monday plan" for a teacher (659 bytes / 3 SMS in the first run) plus a moderated block dashboard with intervals, on a synthetic district calibrated to ASER 2024 government-school Std III levels (23.4 % reading, 27.6 % subtraction).
+- **Fit with the user's strengths — 4/5.** National-scale data architecture (contracts, DPI integration with UDISE+/VSK/DIKSHA/APAAR, privacy by design) and statistical ML (IRT, small-area estimation, sampling design).
+- **Biggest risk.** A jury may read the simulation as self-validating; mitigations: real-data ASER/PARAKH analysis, sensitivity analysis across bias scenarios, and a pilot design with staggered roll-out. Second risk: "policing teachers" — addressed by the non-punitive moderation design (ADR 001).
+- **One-line pitch.** *Ek Tasveer turns the data India's schools already collect into one trusted picture — a Monday plan for every Grade 1–3 teacher and moderated, interval-backed block numbers for every official — so the three in four Grade 3 children in rural government schools who cannot yet read a Grade 2 text get the right help this week.*
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -96,3 +97,6 @@ Read PLAYBOOK, the seeded brief and `_briefs/india71.txt`; extracted hard constr
 
 ### 2026-10-04 05:15 IST — Outage recovery; Phase 2 contracts + component map; builders launched
 Model API timed out (HTTP 408) for ~2 h across many sessions: r2 (deployed today), r4 (methods) and r7 (datasets) failed, though r4 and r7 left usable files (`research/sources/methods-sota.md`, `datasets-agent-notes.md`) and r7 downloaded ASER 2024 (full report), PARAKH 2024 Grade 3 report and the PARAKH technical report into `.data/raw/`. Wrote typed contracts (`architecture/contracts/fln_contracts.py`, 19 JSON Schemas) and the 12-component map (`architecture/components.md`, five "breaks" between a recorded number and a changed outcome: commensurability, trust, granularity, actionability, closed loop). Launched builders A and B, a local-file data extractor, narrow re-runs (r1n, r2a, r2b, r3n, r4n) and the antithesis + first-principles agents on the spike. Assumption: proposed spike = C5 trust & audit engine pending ADR 001.
+
+### 2026-10-04 06:00 IST — ADR 001, proposal skeleton, selection memo v1; lean mode
+Antithesis (rubber-duck) argued the audit spike is asserted-not-demonstrated, reads as surveillance, costs 100,000+ visits at 10 % national scale, and misses the classroom payoff. Synthesis adopted in [ADR 001](architecture/adr/001-spike.md): **Spike 1 = classroom action loop (C4 → C7 → C11)**, **Spike 2 = non-punitive measurement assurance (C5 + C6)** with uncertainty/decision-value sampling, a random floor, no published school-level trust labels, re-tests riding on CRC visits, and results reported as a sensitivity analysis. Verified ASER 2024 headline in the report text (govt-school Std III reading at Std II level 16.3 % → 23.4 %, subtraction 20.2 % → 27.6 %); `data/public/aser2024_state_std3.csv` has 180 rows. Builder A: 37 tests pass; CAT uses 7.5 of 16 items; governance 26/26. First Monday plan: 659 bytes (Hindi WhatsApp), 3 SMS segments. Supervisor switched all leads to lean mode (network saturated: 405/408 errors are request-upload timeouts); r3 and r8 failed, narrow re-runs continue. Selection memo v1 written.
