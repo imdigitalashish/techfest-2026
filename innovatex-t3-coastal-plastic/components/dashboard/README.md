@@ -47,5 +47,5 @@ Boom fill, escape and telemetry are `simulated` and drawn on a hatched backgroun
 - **Forecasts and plans.** The page shows the shortest available horizon (the twin issues 48 h). Plans of the latest issue appear as policy tabs; P0 is labelled reference because the twin's metrics report P1/P2 "reduction vs P0".
 
 ## Not yet in
-- Detection card: it shows an empty state until `components/detection/results/` lands. Re-run `build_bundle.py` once it does.
+- Detection card: the C5 session has not yet published `metrics.json`, so the card shows its newest results file, `zeroshot_groningen_eval.json`: COCO YOLO11n zero-shot on the Groningen split, mAP50 0.405, with the source file named in the card. Sample images with boxes appear once `results/sample_detections.json` exists. Re-run `build_bundle.py` when it lands.
 - No usability metric yet (task time). That is planned with real ward staff.

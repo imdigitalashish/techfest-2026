@@ -165,6 +165,14 @@ def detection_samples(out_site: Path, max_n: int = 4) -> list[dict]:
     return out
 
 
+def detection_metrics_file() -> Path | None:
+    """metrics.json per the brief; until it exists, the newest other results JSON (e.g. a zero-shot eval)."""
+    if (DET / "metrics.json").exists():
+        return DET / "metrics.json"
+    cands = sorted((p for p in DET.glob("*.json") if p.name != "sample_detections.json"), key=lambda p: p.stat().st_mtime)
+    return cands[-1] if cands else None
+
+
 def git_sha() -> str:
     try:
         return subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=HERE,
@@ -182,8 +190,10 @@ def build(mock: bool = False, out_site: Path = HERE / "site", past_h: int = 144,
     part = trim(raw, past_h)
     assert chain.verify(entries, aux["anchor"]).ok
     metrics = {k: flatten(v) for k, v in (part.get("metrics") or {}).items()}
-    if (DET / "metrics.json").exists():
-        metrics["detection"] = flatten(json.loads((DET / "metrics.json").read_text()))
+    det = detection_metrics_file()
+    if det is not None:
+        metrics["detection"] = {"source_file": f"components/detection/results/{det.name}",
+                                **flatten(json.loads(det.read_text()))}
     if MRV_METRICS.exists():
         metrics["mrv_ledger"] = flatten(json.loads(MRV_METRICS.read_text()))
     disclaimers = [
@@ -198,7 +208,7 @@ def build(mock: bool = False, out_site: Path = HERE / "site", past_h: int = 144,
         "generated_at": datetime.now(timezone.utc), "git_sha": git_sha(), **{k: part[k] for k in PART_KEYS if k != "metrics"},
         "ledger": [e.model_dump(mode="json") for e in entries], "metrics": metrics, "disclaimers": disclaimers})
     aux["inputs"] = {"twin": "components/twin_sim/results/bundle_part.json" if use_twin else "SYNTHETIC mock (mock_inputs.py)",
-                     "detection": "components/detection/results" if (DET / "metrics.json").exists() else None,
+                     "detection": None if det is None else f"components/detection/results/{det.name}",
                      "reproduce": REPRODUCE + ("" if use_twin else " --mock")}
     aux["detection_samples"] = detection_samples(out_site)
     out_site.mkdir(parents=True, exist_ok=True)
