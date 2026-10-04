@@ -13,7 +13,7 @@ Call graph (who calls whom, in what shape):
 from __future__ import annotations
 
 import random
-from typing import Protocol, runtime_checkable
+from typing import Optional, Protocol, runtime_checkable
 
 from .models import (
     Diagnosis,
@@ -47,6 +47,11 @@ class Normalizer(Protocol):
 class BugLibrary(Protocol):
     def misconceptions(self) -> list[Misconception]: ...
     def predict(self, item: Item) -> list[PredictedAnswer]: ...
+
+
+@runtime_checkable
+class ComposableBugLibrary(BugLibrary, Protocol):
+    def predict_set(self, item: Item, misconception_ids: list[str]) -> Optional[str]: ...
 
 
 @runtime_checkable

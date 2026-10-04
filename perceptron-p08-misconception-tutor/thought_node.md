@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** _(lead fills)_
+- **Phase:** 4 — walking skeleton built (contract tests 8/8 pass); evals + morning-package docs in progress. LEAN MODE (Supervisor, 05:45): no new sub-agents, small requests.
+- **Plan:** Misconceptions as **executable bug switches** on one exact interpreter → (1) exact-likelihood diagnosis, (2) SymPy-verified *discriminative* item generation, (3) Bayesian tracer over *sets* of misconceptions across sessions with EIG item selection; evaluate on real Eedi data + simulated learners (labelled synthetic).
+- **Doing (lead, sequential):** eval scripts (generation validity, diagnosis, simulation A/B) → landscape.md → components.md → ADR 001 → selection memo → round-1 abstract + architecture.md.
+- **Next:** independent adversarial review of the spike (rubber-duck) once the network recovers; LLM bug-compiler on the Eedi catalogue; Eedi option-level data for real multi-session tracking.
+- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section. A Kaggle account login to download the official Eedi 2024 competition files (we use a community HF mirror meanwhile; fidelity UNVERIFIED).
+- **Risks:** (1) synthetic-learner results only show the policy works under our assumptions; (2) the executable pack covers 5 arithmetic misconceptions, not Eedi's long tail (LLM retrieval covers that); (3) Eedi 2024 data via an unofficial mirror; (4) GitHub Models rate limits for the LLM baselines.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -59,3 +59,17 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 02:05 IST — Phase 0 done, Phase 1 launched
+- Brief verified against `_briefs/perceptron.txt` (matches the seeded Brief). What we must show: MVP = (a) wrong answer → one of 3–5 misconception categories, (b) auto-generated practice problem targeted at that category; stretch = cross-session tracking + evidence the targeted problems reduce that error type. Round 1 is plan-only (600–900 words); finals need a working build.
+- Env: Apple M5, 24 GB, 70 GB free disk; Python 3.11 + uv; no Kaggle credentials; HF token present; GitHub Models API works (gpt-4.1-mini); Azure VS Enterprise subscription active (not needed so far).
+- Found official Eedi data on HF: `Eedi/Eedi-Misconceptions-Graph` v1.0 (CC BY 4.0; 8,117 misconceptions, 2,258 constructs, updated 2026-09-16) and `Eedi/Question-Anchored-Tutoring-Dialogues-2k` (CC BY-NC). Kaggle Eedi 2024 data via community mirror `cdtmc/eedi-ir` (4,370 labelled question–distractor pairs, 2,587 misconceptions, 5 folds; no licence stated → research use only, fidelity UNVERIFIED).
+- 7 research sub-agents launched.
+
+### 2026-10-04 03:35 IST — Outage
+Model API returned "408 Timed out reading request body" for most agents (network saturated; Supervisor confirmed portfolio-wide). 5 of 7 research agents died with no output; relaunched narrower ones that write incrementally. Lost ~85 min.
+
+### 2026-10-04 05:45 IST — Skeleton up
+- Assumption (recorded, not asked): MVP domain = school arithmetic with 5 categories linked to exact Eedi misconception names: LTR (Kaggle-2024 id 1507), SQ_DOUBLE (2316; graph 15012), SUB_NEG (2566), FRAC_ADD (217), NEG_TIMES_NEG (1597; graph 14310). Chosen because each is executable, frequent in Eedi's catalogue, and they produce *distinct* wrong answers on shared problem families.
+- Built: contracts v0.1.1 (`architecture/contracts/`), bug pack (`components/bugs/school_math.py`: one exact interpreter + 5 composable bug switches), normaliser, SymPy verifier, template-discriminative generator, Bayes diagnoser + LLM zero-shot baseline, set-Bayes tracer with EIG, policies, simulated learners. `pytest components/tests` → 8 passed.
+- Supervisor LEAN MODE received 05:45: no new sub-agents; sequential work; push every 30 min.

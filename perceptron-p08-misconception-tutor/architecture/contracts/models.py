@@ -20,7 +20,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
 
-CONTRACT_VERSION = "0.1.0"
+CONTRACT_VERSION = "0.1.1"
 
 
 def utcnow() -> datetime:
@@ -63,7 +63,7 @@ class Item(BaseModel):
     options: list[Option] = Field(default_factory=list)  # empty => free response
     target_misconception_id: Optional[str] = None
     provenance: Literal["template", "llm", "eedi", "hand"] = "template"
-    construct: Optional[str] = None
+    construct_name: Optional[str] = None
 
 
 class Response(BaseModel):
@@ -98,6 +98,7 @@ class DiagnosisRequest(BaseModel):
     response: Response
     predicted: list[PredictedAnswer] = Field(default_factory=list)  # from the bug library, if any
     candidates: Optional[list[str]] = None  # closed set (MVP: 3-5 categories); None => open catalogue
+    prior: Optional[dict[str, float]] = None  # class prior over candidates (+ "slip"); None => uniform
     top_k: int = 25
 
 
@@ -165,6 +166,7 @@ class LearnerState(BaseModel):
     beliefs: dict[str, MisconceptionBelief] = Field(default_factory=dict)
     history: list[Observation] = Field(default_factory=list)
     sessions: list[str] = Field(default_factory=list)
+    model_state: dict = Field(default_factory=dict)  # implementation-specific (e.g. joint over misconception sets)
     contract_version: str = CONTRACT_VERSION
 
 
