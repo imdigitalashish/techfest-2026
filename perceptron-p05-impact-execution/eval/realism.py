@@ -19,12 +19,12 @@ T1, T_POST = 1200, 1800
 
 
 def load(exp):
-    out = {}
-    for f in sorted(glob.glob(os.path.join(ROOT, ".data", "runs", exp, "seed_*.pkl"))):
-        r = pickle.load(open(f, "rb"))
-        p = r["runs"]["TWAP"]["path"]
-        out[int(r["seed"])] = (float(p[T1]), float(p[T_POST]), float(np.sum(r["slot_vol"])))
-    return out
+    """From the committed CSV (review sol #3): impact_end_cents = gap at T1, impact_post10_cents = gap at T1+600 s."""
+    import pandas as pd
+    d = pd.read_csv(os.path.join(ROOT, "eval", "results", f"{exp}.csv"))
+    d = d[d.label == "TWAP"]
+    return {int(r.seed): (float(r.impact_end_cents), float(r.impact_post10_cents), float(r.window_volume_null))
+            for r in d.itertuples()}
 
 
 def slope(x, y):

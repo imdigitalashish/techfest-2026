@@ -11,6 +11,7 @@ import pandas as pd
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 R = os.path.join(ROOT, "eval", "results")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 
 def _ci(d, n=10000):
@@ -111,7 +112,8 @@ def g_speed(c):
 
 
 def g_e8(c):
-    j = _json("E8_ablation_val_attribution.json")
+    from attribution import analyze
+    j = analyze(_csv("E8_ablation_val.csv"), "E8_ablation_val")   # recomputed from the CSV
     k = j["contrasts"]
     fmt = lambda t: (f"{t[0]:+.3f}", f"{t[1]:+.3f}", f"{t[2]:+.3f}")
     c["e8_n"] = f"{j['n_seeds']}"
@@ -128,6 +130,13 @@ def g_e8(c):
 
 def g_e7(c):
     j = _json("realism_scorecard.json")
+    # consistency: point estimate recomputed from the committed CSVs must equal the JSON (review sol #3)
+    from realism import load, slope
+    data = {q: load(f"E7_size_q{q}") for q in j["qs"]}
+    seeds = sorted(set.intersection(*[set(v) for v in data.values()]))
+    m = np.array([np.mean([data[q][s_][0] for s_ in seeds]) for q in j["qs"]])
+    part = np.array(j["qs"], float) / np.mean([data[j["qs"][0]][s_][2] for s_ in seeds])
+    assert abs(slope(np.log(part), np.log(m)) - j["delta"]) < 1e-9, "realism_scorecard.json is stale vs E7 CSVs"
     ph = j["post_hoc"]
     c["e7_delta_resolved"] = f"{ph['delta_resolved']:.2f}"
     c["e7_delta_resolved_lo"], c["e7_delta_resolved_hi"] = f"{ph['delta_resolved_ci95'][0]:.2f}", f"{ph['delta_resolved_ci95'][1]:.2f}"
@@ -150,6 +159,7 @@ def g_e9(c):
     o, k = j["kernel_oos_second_half"], j["kernel"]
     c["e9_r2_twap"], c["e9_r2_probe"] = f"{o['twap']['r2_mean_path']:.2f}", f"{o['probe']['r2_mean_path']:.2f}"
     c["e9_tau"] = f"{k['tau_s']:.0f}"
+    c["e9_r2_seed_twap"], c["e9_r2_seed_probe"] = f"{o['twap']['r2_per_seed']:.3f}", f"{o['probe']['r2_per_seed']:.3f}"
     c["e9_rmse"] = f"{np.mean([o['twap']['rmse_per_seed_cents'], o['probe']['rmse_per_seed_cents']]):.1f}"
     nn = _json("calibration_e1_numeric_split.json")["kernel_oos_second_half"]
     c["e1_rmse"] = f"{np.mean([nn['twap']['rmse_per_seed_cents'], nn['probe']['rmse_per_seed_cents']]):.1f}"
@@ -161,13 +171,14 @@ def g_e9(c):
 def g_e10(c):
     df = _csv("E10_replication_test.csv")
     m, lo, hi, P = _paired(df, "IA_sched_only", "TWAP", "is_bps")
-    d = np.sort((P["IA_sched_only"] - P["TWAP"]).values)
+    d = (P["IA_sched_only"] - P["TWAP"]).values          # seed-sorted (registered procedure; review sol #4)
     bm = np.random.RandomState(0).choice(d, size=(10000, len(d))).mean(1)
     up = float(np.percentile(bm, 95))
     c["e10_n"] = f"{df.seed.nunique()}"
     c["e10_dis"], c["e10_lo"], c["e10_hi"], c["e10_up95"] = f"{m:+.3f}", f"{lo:+.3f}", f"{hi:+.3f}", f"{up:+.3f}"
     c["e10_h2"] = "confirmed" if up < 0 else "not confirmed"
-    j = _json("E10_replication_test_attribution.json")
+    from attribution import analyze
+    j = analyze(df, "E10_replication_test")                # recomputed from the CSV (review sol #3)
     om, olo, ohi, _ = _paired(df, "IA_sched_only", "TWAP", "own_impact_bps")
     c["e10_own"], c["e10_own_lo"], c["e10_own_hi"] = f"{om:+.3f}", f"{olo:+.3f}", f"{ohi:+.3f}"
     im, ilo, ihi, _ = _paired(df, "IA_sched_only", "TWAP", "instant_bps")
@@ -176,7 +187,6 @@ def g_e10(c):
     c["e10_B_label"] = j["a1_labels"]["B_frontload_main"]["is_bps"]
     c["e10_A_label"] = j["a1_labels"]["A_qp_main"]["is_bps"]
     c["e10_A_own_label"] = j["a1_labels"]["A_qp_main"]["own_impact_bps"]
-    j = _json("E10_replication_test_attribution.json")
     k = j["contrasts"]
     c["e10_attr_is"], c["e10_attr_own"] = j["attribution_is"], j["attribution_own"]
     for key, name in [("A_qp_main", "A"), ("B_frontload_main", "B"), ("D_fixed_feedback", "D")]:
@@ -209,6 +219,7 @@ def g_e10(c):
         vlo, vhi = _ci(v)
         c[f"fb_{name}"], c[f"fb_{name}_lo"], c[f"fb_{name}_hi"] = f"{v.mean():+,.0f}", f"{vlo:+,.0f}", f"{vhi:+,.0f}"
         c[f"fb_{name}_pct"] = f"{100 * v.mean() / q:.0f}"
+        c[f"fb_{name}_abs"] = f"{abs(v.mean()):,.0f}"
 
 
 def g_reviews(c):
@@ -225,7 +236,9 @@ def g_reviews(c):
 
 
 def g_e11(c):
-    j = _json("E11_market_laws.json")
+    from market_laws import summarize
+    d = _csv("E11_market_laws.csv")
+    j, _ = summarize(d, int(d.seed.min()), int(d.seed.max()) + 1)   # recomputed from the CSV
     c["e11_n"] = f"{j['n_per_engine']}"
     lab = [v["label"] for k, v in j.items() if isinstance(v, dict)]
     c["e11_preserved"], c["e11_total"] = f"{sum(x.startswith('preserved') for x in lab)}", f"{len(lab)}"
@@ -240,11 +253,15 @@ def g_e11(c):
 def g_e12(c):
     df = _csv("E12_filltime_test.csv")
     c["e12_n"] = f"{df.seed.nunique()}"
+    c["e12_arms"] = f"{df.label.nunique()}"
     c["e12_exact"], c["e12_rows"] = f"{int(df.pre_window_exact.astype(bool).sum())}", f"{len(df)}"
     for arm, key in [("IA_full", "ia"), ("TWAP_touch_limit", "tl")]:
         for m in ("delay_bps", "at_fill_bps", "instant_bps"):
             mm, lo, hi, _ = _paired(df, arm, "TWAP", m)
             c[f"e12_{key}_{m[:-4]}"], c[f"e12_{key}_{m[:-4]}_lo"], c[f"e12_{key}_{m[:-4]}_hi"] = f"{mm:+.3f}", f"{lo:+.3f}", f"{hi:+.3f}"
+    for m_, key in [("is_bps", "is"), ("drift_bps", "drift"), ("own_impact_bps", "own"), ("delay_bps", "delay")]:
+        mm, lo, hi, _ = _paired(df, "TWAP_touch_limit", "TWAP", m_)
+        c[f"e12_tl_{key}_d"], c[f"e12_tl_{key}_d_lo"], c[f"e12_tl_{key}_d_hi"] = f"{mm:+.3f}", f"{lo:+.3f}", f"{hi:+.3f}"
     am, alo, ahi, _ = _paired(df, "TWAP_touch_limit", "TWAP", "at_fill_bps")
     c["e12_tl_at_fill_abs"], c["e12_tl_at_fill_abs_lo"], c["e12_tl_at_fill_abs_hi"] = f"{-am:.3f}", f"{-ahi:.3f}", f"{-alo:.3f}"
     res = (df.instant_bps - df.delay_bps - df.at_fill_bps).abs().max()

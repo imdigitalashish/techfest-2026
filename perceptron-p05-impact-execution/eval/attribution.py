@@ -28,12 +28,14 @@ def verdict(a, b):
             (False, False): "unattributed at this n"}[(ea, eb)]
 
 
-def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--exp", default="E8_ablation_val"); a = ap.parse_args()
-    df = pd.read_csv(os.path.join(ROOT, "eval", "results", f"{a.exp}.csv"))
-    labels = ["TWAP", "QP_only", "TWAP_legacy_fb", "IA_sched_only", "IA_sched_fixed"]
+LABELS = ["TWAP", "QP_only", "TWAP_legacy_fb", "IA_sched_only", "IA_sched_fixed"]
+
+
+def analyze(df, exp=""):
+    """Pure function of the experiment CSV (used by eval/claims.py; review sol #3)."""
+    labels = LABELS
     seeds = sorted(set.intersection(*[set(df[df.label == l].seed) for l in labels]))
-    out = dict(exp=a.exp, n_seeds=len(seeds), seeds=[seeds[0], seeds[-1]],
+    out = dict(exp=exp, n_seeds=len(seeds), seeds=[seeds[0], seeds[-1]],
                integrity=dict(pre_window_identical=bool(df.pre_window_identical.all()),
                               all_filled=bool((df.filled == df.qty).all())), arms={}, contrasts={})
     for m in METRICS:
@@ -59,6 +61,14 @@ def main():
     out["a1_interaction_detected"] = {m: lab(c["C_interaction"][m]).startswith("detected") for m in ("is_bps", "own_impact_bps")}
     out["attribution_is"] = verdict(c["A_qp_main"]["is_bps"], c["B_frontload_main"]["is_bps"])
     out["attribution_own"] = verdict(c["A_qp_main"]["own_impact_bps"], c["B_frontload_main"]["own_impact_bps"])
+    return out
+
+
+def main():
+    ap = argparse.ArgumentParser(); ap.add_argument("--exp", default="E8_ablation_val"); a = ap.parse_args()
+    df = pd.read_csv(os.path.join(ROOT, "eval", "results", f"{a.exp}.csv"))
+    out = analyze(df, a.exp)
+    labels, seeds, c = LABELS, list(range(out["seeds"][0], out["seeds"][1] + 1)), out["contrasts"]
     json.dump(out, open(os.path.join(ROOT, "eval", "results", f"{a.exp}_attribution.json"), "w"), indent=1)
     f = lambda t: f"{t[0]:+.4f} [{t[1]:+.4f}, {t[2]:+.4f}]"
     L = [f"# {a.exp}: pre-registered attribution (eval/preregistration.md, E8)", "",

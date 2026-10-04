@@ -1,3 +1,5 @@
 date	artifact	model	effort	issues	accepted	rejected	note
 2026-10-04	code+eval+reproduction (E6 H1, pipeline)	gpt-6-sol	max	7	7	0	Reproduction matched 12/12 rows; 3 major (calibration split order, passive-fill TCA label, E7 bootstrap conditioning) + 4 minor; all accepted, fixes in this commit or after E10
 2026-10-04	Round-1 abstract draft + H1 claim	gpt-6-astra	max	16	16	0	Weighted rubric 2.80/5 (56/100) on the pre-E10 draft; 2 blockers (mechanism mislabel; ghost-book overclaim + SELL sign); all accepted, #16 blocked on user (teammates)
+2026-10-04	Round-1 abstract final v1.0 (re-score, db4ed95)	gpt-6-astra	max	9	9	0	Weighted rubric 3.25/5 (65/100) on final v1.0; all 9 accepted and fixed in v1.1 (team staffing blocked on user)
+2026-10-04	claims pipeline + E10 reproduction	gpt-6-sol	max	6	6	0	E10 H2 and E6+E10 pool reproduced; 2 rerun seeds matched 10/10 rows; all 6 accepted (atomic render, CSV-based claims, registered 10k bootstrap, count tracing, top-of-book wording, ledger wiring)

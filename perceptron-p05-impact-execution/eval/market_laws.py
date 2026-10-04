@@ -47,6 +47,15 @@ def main():
     import pandas as pd
     df = pd.DataFrame(rows).sort_values(["mode", "seed"])
     df.to_csv(os.path.join(ROOT, "eval", "results", "E11_market_laws.csv"), index=False, float_format="%.6g")
+    out, L = summarize(df, lo, hi)
+    json.dump(out, open(os.path.join(ROOT, "eval", "results", "E11_market_laws.json"), "w"), indent=1)
+    open(os.path.join(ROOT, "eval", "results", "E11_market_laws.md"), "w").write("\n".join(L) + "\n")
+    print("\n".join(L))
+
+
+def summarize(df, lo, hi):
+    """Pure function of the committed E11 CSV (used by eval/claims.py; review sol #3)."""
+    df = df.sort_values(["mode", "seed"])
     rs = np.random.RandomState(0)
     out, L = {}, ["# E11: market statistics, native vs synchronised null worlds (pre-registered)", "",
                   f"Seeds {lo}–{hi - 1}, n = {hi - lo} worlds per engine (independent samples); 09:35–09:55. "
@@ -68,9 +77,7 @@ def main():
         out[st] = dict(native=float(x.mean()), synced=float(y.mean()), value=float(v), ci95=[float(lo_), float(hi_)], label=lab)
         L.append(f"| {st} | {x.mean():.4g} | {y.mean():.4g} | {v:.3f} | [{lo_:.3f}, {hi_:.3f}] | {lab} |")
     out["n_per_engine"] = hi - lo
-    json.dump(out, open(os.path.join(ROOT, "eval", "results", "E11_market_laws.json"), "w"), indent=1)
-    open(os.path.join(ROOT, "eval", "results", "E11_market_laws.md"), "w").write("\n".join(L) + "\n")
-    print("\n".join(L))
+    return out, L
 
 
 if __name__ == "__main__":

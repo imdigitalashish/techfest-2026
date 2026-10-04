@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.join(ROOT, "eval"))
 from claims import compute  # noqa: E402
 from render_docs import DOCS, PH, render, target_text  # noqa: E402
 
+COUNT_LIKE = re.compile(r"(?<![\w.{])\d[\d,]*(?:\s?/\s?\d[\d,]*)?\s+(?:fresh |new |validation |test |train(?:ing)? )?(?:seeds|runs|worlds|draws)\b")
 RESULT_LIKE = re.compile(r"(?<![\w.{])[-+−]?\d[\d,]*\.\d+(?:\s?[%×x])?|(?<![\w.{])\d+(?:\.\d+)?\s?[%×]")
 ALLOW = [  # (regex, reason)
     (r"\b\d{4}\.\d{4,5}\b", "arXiv identifier"),
@@ -24,6 +25,7 @@ ALLOW = [  # (regex, reason)
     (r"600–900", "rubric word limit"),
     (r"±10%", "pre-registered equivalence margin (E11), not a result"),
     (r"95%(?= CI)", "confidence level, not a result"),
+    (r"±0\.02 bps", "pre-registered equivalence margin (amendment A1), not a result"),
 ]
 
 
@@ -33,7 +35,7 @@ def untraced(text):
     for rx, _ in ALLOW:
         allowed += [m.span() for m in re.finditer(rx, body)]
     bad = []
-    for m in RESULT_LIKE.finditer(body):
+    for m in list(RESULT_LIKE.finditer(body)) + list(COUNT_LIKE.finditer(body)):
         if not any(a <= m.start() < b for a, b in allowed):
             line = body[:m.start()].count("\n") + 1
             bad.append(f"line {line}: '{m.group(0)}'")

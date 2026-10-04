@@ -84,7 +84,24 @@
 
 ## Selection memo
 <!-- memo:begin (rendered from deliverables/selection-memo.template.md; edit the template) -->
-_(rendered by eval/render_docs.py)_
+_v3 (final for the 12 Oct pick unless new evidence arrives). Rendered from `deliverables/selection-memo.template.md` by `eval/render_docs.py`. Numbers come from `eval/results/` and `reviews/ledger.tsv`; `eval/check_docs.py` checks them. Comparisons with other projects come from their own memos on `main`, read on 4 Oct._
+
+**Bottom line: I recommend _against_ P5 as the team's single Perceptron problem**, unless the user specifically wants a trading-domain entry for the Optiver judges. P5 now has the most rigorous evaluation in the portfolio but no confirmed result:
+- Its minimum viable claim ("an agent that measurably beats TWAP") failed its strictly pre-registered replication.
+- The starter simulator's impact physics makes that claim hard to earn.
+
+| Criterion | Score | Evidence |
+|---|---|---|
+| Winnability | **2/5** | E6 beat TWAP by 0.034 bps [0.013, 0.056] (n = 200). It did not reproduce on validation seeds (E8: +0.006). The strictly pre-registered replication was **not confirmed** (E10, n = 400: -0.013 [-0.029, +0.003]). Pooled over the fixed-size test blocks (n = 600, descriptive): -0.020 [-0.032, -0.007] bps, i.e. 0.20¢/share. The hostile judge (gpt-6-astra) scored the draft 2.80/5 and the final abstract 3.25/5. |
+| Innovation headroom | **3/5** | Common random numbers are classical. Our part is an ABIDES evaluation discipline: synchronised twins (paired dispersion ÷6, CIs 7.7× tighter, but spreads 13% wider under the coupling), a per-seed decomposition, a realism gate, and replication. The counterfactual-mid estimator failed its held-out test (R² 0.15 / -0.02). |
+| Feasibility by the deadline | **4/5** | Everything runs on the M5 (CPU only). 4,450 treatment–twin pairs are committed. An independent model (gpt-6-sol) reproduced the headline rows bit-for-bit. What is still needed is research: a realistic-impact market or a better tactic, so the timeline risk sits in science, not engineering. |
+| Demo strength | **3/5** | Twin markets side by side, and "who ends up holding our shares" (value agents absorb 102%) are visual. But the headline effect is a fifth of a tick, and impact in ABIDES is near-linear (slope 0.87). |
+| Fit with the user's strengths | **4/5** | Simulation at scale, reproducibility and systems engineering fit; RL and market-microstructure depth would have to come from teammates. |
+
+- **Biggest risk:** sub-tick effects in a simulator whose impact law is unrealistic. Optiver judges will ask "so what?", and today the answer is the instrument rather than an agent.
+- **What would change my mind:** a realism-gated market (square-root-like, partly permanent impact) in which the same pipeline shows a replicated gain over TWAP and VWAP. We estimate 2–3 weeks of work, with no guarantee.
+- **Versus the other candidates** (their memos on `main`): P10, P7 and P1 self-score winnability 4, each reporting a measured win in its own memo (P10: coverage held under injected documents; P7: a pre-registered demand-shock comparison; P1: per-device loss reductions under federated LoRA). P9 and P4 self-score 3. On evidence, P5 belongs below P10, P7 and P1.
+- **One-line pitch (if chosen anyway):** *"Before claiming to beat TWAP, measure your own footprint: twin markets show how much of our cost we caused, and a pre-registered replication shows how little scheduling can buy when impact is near-linear."*
 <!-- memo:end -->
 
 ## Log

@@ -45,13 +45,16 @@ def main():
     if missing:
         print("WARNING missing sources:", missing)
     json.dump(claims, open(os.path.join(ROOT, "eval", "results", "claims.json"), "w"), indent=1, sort_keys=True)
-    for tpl, tgt, markers in DOCS:
+    staged = []
+    for tpl, tgt, markers in DOCS:        # render everything first; write only if all succeed (review sol #1)
         tp = os.path.join(ROOT, tpl)
         if not os.path.exists(tp):
             print("skip (no template):", tpl)
             continue
-        write_target(os.path.join(ROOT, tgt), "\n" + render(open(tp).read(), claims).strip("\n") + "\n" if markers
-                     else render(open(tp).read(), claims), markers)
+        r = render(open(tp).read(), claims)
+        staged.append((tgt, "\n" + r.strip("\n") + "\n" if markers else r, markers))
+    for tgt, text, markers in staged:
+        write_target(os.path.join(ROOT, tgt), text, markers)
         print("rendered", tgt)
 
 

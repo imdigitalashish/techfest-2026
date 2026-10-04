@@ -25,8 +25,8 @@ flowchart TB
   TCA --> EV["Evaluation [evaluated]: paired ΔIS vs TWAP / VWAP / front-loaded TWAP,<br/>pre-registered fixed-n blocks + replication"]
   SC["Realism scorecard [evaluated]: impact-vs-size slope, permanence,<br/>market statistics; recalibration gate [planned]"] --> EV
   FB --> EV
-  EV --> AR["Development-time policy search [built; PPO deferred]<br/>paired vs incumbent, untouched confirmation seeds"]
+  EV --> AR["Policy search [planned]: paired candidate vs incumbent,<br/>untouched confirmation seeds; PPO deferred"]
   AR --> AGENT
 ```
 
-**Reading it:** both worlds share a seed and a random-number coupling, so they match until our first order. Afterwards, differences between them measure our footprint *within this simulator*. The agent never sees World B; the estimator that is meant to stand in for it live has not yet passed its held-out test.
+**Reading it:** both worlds share a seed and a random-number coupling; their pre-trade top-of-book logs match exactly. Afterwards, differences between them measure our footprint *within this simulator under the coupling*, which itself widens spreads (E11). The agent never sees World B; the estimator that is meant to stand in for it live has not yet passed its held-out test.
