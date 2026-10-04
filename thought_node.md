@@ -6,16 +6,17 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (14:11 IST, 4 Oct)
+## Now (14:20 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - Namma Space: SfM fixed (exhaustive matching, 263/263 cameras, ATE 0.07% of the scene, behind a new degeneracy gate). Brush run 3 started 14:00 with the GPU held; ETA 14:25.
-  - P3: real OBD results, an overlap gate frozen before it was applied, demo verdicts; applying its astra and sol reviews.
-  - EV C1: Round-1 methodology and roadmap v2 rendered; code review in; corridor norm (MoP 20 km) prototype.
-  - India@71 T3: pre-registered C6 v0.2 shows the learned challenger beating the transparent rule (+0.079, 10/10 seeds, SYNTHETIC).
-  - P6: resumed 14:11 into P5's slot.
+  - Namma Space: Brush run 3 (verified poses) has held the GPU since 14:00; ETA ≈14:25.
+  - P3: held-out gate validation passed (pre-registered 14:10:45 → results 14:17:14; answers 53% of 1,536 unseen runs); reviews applied.
+  - EV C1: Round-1 methodology and roadmap v2; astra review in, sol review running; suggested a criteria→evidence map.
+  - India@71 T3: proposal v1.0 PDF (6 pp, Arial ≥ 11 pt, fonts embedded). ADR 002 ships the transparent rule, with the challenger gated until real pilot data (it won only on SYNTHETIC data). Legal citations being verified (DPDP Rules 2025).
+  - P6: walk-forward extension under a memory-guarded runner.
 - **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5.
 - **Queue:** APCTT (when the 10 Oct data lands) → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
+- **Memory:** level 26–33%. The pressure is your VM (~16 GB incl. compressed) plus Namma's Brush (4.5 GB); project Python processes are small.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -88,6 +89,13 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 14:20 IST — Sweep
+- Pre-registration order verified on main:
+  - India@71 T3 C6 v0.2: registered 14:00:34 → run 14:03:13 (SYNTHETIC, fresh seeds 10–19).
+  - P3 gate validation: registered 14:10:45 → results 14:17:14.
+- Namma: Brush run 3 started 14:00 on a verified pose solve (263/263 cameras, ATE 0.07% of the scene). The degenerate sequential-matching model is kept as evidence and is now caught by a sanity gate.
+- Deep round EV C1: proposed a criteria→evidence map and appendix tables for a concise Round-1 submission.
+
 ### 2026-10-04 14:11 IST — P5 completed
 - **P5 DONE (1ebd409), verified on main:** check_docs 237 claims OK; 7 tests; abstract body 895 words.
   - The strict replication (E10, n = 400 fresh seeds) did not confirm the headline; the abstract was reframed accordingly.
