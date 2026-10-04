@@ -6,17 +6,16 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (14:36 IST, 4 Oct)
+## Now (14:58 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - Namma Space: Brush run 3 (verified poses) running since 14:00, slowed by memory pressure; GPU held.
-  - EV C1: Round-1 docs v2; reviews being triaged.
-  - India@71 T3: proposal PDF v1.0 (6 pp); policy engine 22/22; reviews running.
-  - P6: 12-day walk-forward pre-registered 14:24 (5 already-seen days disclosed; unseen-7 subset); compiled LEV in Numba; reviews running.
-  - P2: resumed 14:36 into P3's slot. It runs on its own Azure CPU VM (Standard_D8ds_v5), away from the local GPU and memory pressure.
-- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3.
-- **Queue:** APCTT (when the 10 Oct data lands) → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
-- **Memory:** level 21–25%. Your VM (~16 GB incl. compressed) plus Namma's Brush (5.6 GB) dominate; project Python processes are small.
+  - Namma Space: E2E from raw photos succeeded (held-out PSNR 29.56 dB, SSIM 0.929, 45.8 min). Viewer walking p95 22.4 ms. Now preparing a CC BY-SA public demo scene (labelled; not the R1 link).
+  - India@71 T3: proposal PDF v1.0, policy engine, both reviews in; triaging.
+  - P6: the pre-registered 12-day walk-forward passed (+$298.9/day simulated, 12/12; unseen-7 +$342.8, 7/7). Sensitivity Amendment 1 (strict fills, markouts) registered before running; LEV vs GBM ablations are exploratory.
+  - P2: PyTorch CPU twin on its Azure VM (logit parity passed); pre-registration next.
+  - P8: resumed 14:58 into EV C1's slot.
+- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1.
+- **Queue:** APCTT (when the 10 Oct data lands) → India@71 T2 → InnovateX T2 → InnovateX T3.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -37,6 +36,11 @@
   - Namma Space's 3D training is spending 79% of its CPU time in the kernel, i.e. thrashing.
   - Quitting the VM (Docker/OrbStack/UTM) and CapCut while the projects run is the single biggest speed-up. I've already closed the projects' leftover browsers and servers.
 - [ ] **India@71 T1 (✅ Completed — please review):** team names + Team ID for `India71_100_[TeamID].pdf`; a state/district WCD contact for a pilot data extract; a union/worker-association contact for co-design.
+- [ ] **EV track pick by 15 Oct (one track per team). Both are ✅ Completed — please review.**
+  - **C1 (EV Infra Map, `ev-c1-infra-map-india/`):** memo 4.1/5; astra 70/100. A national charger map validated against official state counts, a purged-backtest VAHAN forecast (error 0.177 vs 0.360 naive), and district supply validated on Chhattisgarh.
+  - **C2 (Green Auto LCA, `ev-c2-green-auto-lca/`):** memo 4.0/5.
+  - C1's own call: **C1, narrowly** (within rubric noise). It flips to C2 if your team has an LCA person but no GIS/data person.
+  - Optional for C1: route the BEE charger-API request via MHI/ICAT.
 - [ ] **EV C2:** access to the ISO 14040/14044 standards text (IIT Delhi library or BIS) for the LCA jury Q&A; an environmental/mechanical teammate; team name, Team ID, institution and contacts for the Round-1 header.
 - [ ] **InnovateX T1 JalSakshi (✅ Completed — please review `innovatex-t1-groundwater/deliverables/`):**
   - register for the Delhi zonal by 9 Oct and fill in the team details;
@@ -90,6 +94,13 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 14:58 IST — EV C1 completed
+- **EV C1 DONE (9c9e1e3), verified on main:** check_docs OK (6 docs, 262 rendered keys, 28 fact rows).
+  - Reviews: sol 11 items, astra 70/100 with 17 items, all accepted (1 routed to the user).
+  - Memo 4.1 vs C2's 4.0: C1, narrowly.
+- P8 resumed into the slot.
+- **P6:** the pre-registered 12-day test passed. Frozen eval code was unchanged between registration (604f54d) and the run (9cadff6).
+
 ### 2026-10-04 14:36 IST — P3 completed
 - **P3 DONE (563f013), verified on main:** check_docs PASS (0 untraced numbers); 14 tests.
   - Reviews: astra 59 → 69/100, sol reproduced all 44 abstract numbers; 25 items accepted. Memo 3.6/5; recommends P7 narrowly.
