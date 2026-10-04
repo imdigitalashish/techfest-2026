@@ -141,3 +141,14 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - VGGT-Ω (arXiv 2605.15195) is real, but FAIR non-commercial.
   - MapAnything (arXiv 2509.13414, Apache-2.0, metric, ~2000 views) is the licence-cleanest feed-forward option; AnySplat (MIT) for feed-forward Gaussians. Neither has confirmed MPS support.
   - OpenSplat has confirmed Metal (AGPL-3.0).
+
+### 2026-10-04 11:35 IST — Research complete (verified); gpt-6-sol review processed; Round-1 review running
+- **Child sessions** (visible in the sidebar; idle, work pushed, not archived):
+  - [companies research](ghapp://sessions/f288d1bd-555c-428d-800f-15071f60f1bc) → `research/companies.md` (`fdd62bc`, ≈59 primary pages). No product ships capture → twin → walkable map → search → route → AR in one zero-install link; hosted 8th Wall shut down on 28 Feb 2026; Meta Hyperscape sharing was removed on 12 May 2026; nothing public on Juspay + spatial.
+  - [SOTA nav/POI/AR/viewer](ghapp://sessions/4eb75b17-eb5d-4b07-9a64-ad9b17993992) → `research/sota-navigation-semantics-ar.md` (`1cff9ce`). R2 collision baseline = PlayCanvas splat-transform (MIT). iOS Safari has no WebXR → Android WebXR + hloc (DISK/ALIKED + LightGlue); backup Immersal. Spark `.RAD` paged LoD for spike E. Training-free POIs: SAM 3 / YOLOE + VLM + OCR.
+  - [gpt-6-sol code review](ghapp://sessions/afbe9615-c383-40ca-ae49-6bc86988c90b) → `reviews/2026-10-04-pipeline-eval-gpt-6-sol.md` (`42d4c69`): 18 items, 17 accepted + 1 partly rejected; fixes pushed (see the decisions table in that file).
+  - [gpt-6-astra Round-1 deliverable review](ghapp://sessions/6191e0c7-c5e1-4355-945f-a14226a55f57) running since 11:20.
+- **`research/landscape.md` v1** rewritten as a verified synthesis (per-component SOTA → our choice; what companies ship; positioning; ≥7 wrong search leads caught).
+- **eval v3 corrected** (gpt-6-sol H1/H2: margin cell·√2/2, no reference corner-cutting) and re-run: CFC 0.443–0.490 for every variant; **camera-level bootstrap 95% CI ≈0.30–0.69** (pair-level Wilson ±0.05 was too narrow); refusals 0% among 29/33 and 30/33 eligible endpoints; paired sign tests p ≥ 0.06 (no evidence of a difference, not equivalence).
+- **Supervisor alignment (11:15):** agreed — the abstract leads with what R1 scores; walkable space is an R2 baseline with a frozen evaluator; the 0.788 → 0.970 result is dropped (leakage); path safety is a known gap with a fix plan.
+- **E2E run:** Brush has been training for 82+ min (37 min when the machine was quieter). Likely GPU contention (CapCut ≈65% CPU plus other sessions). Waiting; the stage cache keeps SfM.
