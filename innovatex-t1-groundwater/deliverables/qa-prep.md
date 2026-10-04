@@ -21,7 +21,7 @@
 2. **"Your 3 % grades your own simulator."**
    - **Yes. That's why we lead with 13 %.** 3.0 % is same-model.
    - With non-linear drains and an imperfect gauge it's 13.1 % on holdout, and 14.5 % with a realistic probe offset. And 1 storm in 10 is off by more than ~60 %, so per-storm numbers carry a wide band.
-   - We rejected five candidate fixes that helped one test but hurt another, under a rule we fixed before running them.
+   - We rejected five candidate fixes under a rule fixed before running them: four helped one test but hurt another, and one didn't help enough.
    - Real evidence will be blind weighed-water trials on a drum rig by 1 Dec.
 3. **"What's actually real here?"**
    - **Real:** the Delhi groundwater data (India-WRIS, 185 telemetric stations, 483k readings), the rain (ERA5) and the software.

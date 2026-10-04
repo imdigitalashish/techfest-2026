@@ -1,6 +1,6 @@
 # Zonal pitch — talk track (Delhi, 10 Oct 2026, 10 minutes) — FINAL v2
 
-- **Slides + per-slide speaker notes + timing:** [`zonal-deck.md`](zonal-deck.md). Marp markdown: open it in VS Code with the Marp extension, or export with `npx @marp-team/marp-cli zonal-deck.md --pdf`.
+- **Slides + per-slide speaker notes + timing:** [`zonal-deck.md`](zonal-deck.md). Ready-made exports: [`zonal-deck.pdf`](zonal-deck.pdf) and [`zonal-deck.pptx`](zonal-deck.pptx). Regenerate with `CHROME_PATH=... npx @marp-team/marp-cli@4 zonal-deck.md --pdf --allow-local-files` (PPTX slides are images; edit the `.md`).
 - **Live demo:** [`demo/jalsakshi-demo.html`](demo/jalsakshi-demo.html). Offline; the 60-second script is in `demo/README.md`.
 - **Q&A:** [`qa-prep.md`](qa-prep.md) (25 questions).
 - **Review response** that shaped this version: [`../reviews/2026-10-04-lead-response.md`](../reviews/2026-10-04-lead-response.md).

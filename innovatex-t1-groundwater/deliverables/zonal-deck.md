@@ -76,10 +76,8 @@ India-WRIS public API, fetched 4 Oct 2026 (483,253 Delhi readings):
 - **23 %** of readings are exactly 0.000 m; **17 %** of 6-h slots are missing
 - where the data are clean, water levels rose a median **2.5 m** in the 2025 monsoon (79 stations)
 
-<span class="small">Reproduce: `eval/realdata_profile.py`</span>
-
 <!--
-TIME 2:30–3:15 (45 s).
+TIME 2:30–3:15 (45 s). Reproduce: eval/realdata_profile.py
 SAY: "This is our code on public data. The network that should show the aquifer responding is mostly stale or zero. So we QC it before we believe it. And where it's clean, the monsoon visibly recharges the aquifer: worth getting right."
 -->
 
@@ -108,12 +106,9 @@ POINT at the four verdicts. "Implausible" is how we catch a bucket poured to fak
 
 # 60-second demo (offline laptop)
 
-1. **REAL:** Delhi's DWLR network: zeros, gaps, 2026 reporting
-2. **SIMULATED pit, REAL rain** (ERA5, Jul–Aug 2025): each storm becomes an event with a verdict
-3. The drain rate decays → **"Maintenance due"** ticket
-4. A bucket poured with no rain → **"Implausible"**
+**REAL** Delhi DWLR network → **SIMULATED** pit on **REAL** 2025 rain → a verdict per storm → **"Implausible"** and **"Maintenance due"** tickets
 
-![w:1000](figures/demo_screenshot.png)
+![w:640](figures/demo_screenshot.png)
 
 <!--
 TIME 4:45–6:00 (75 s).
@@ -137,7 +132,7 @@ Simulated pits, real Delhi rain; median error of infiltrated volume per storm.
 - Fake pours (no rain to explain them) flagged: **10/10 simulated fakes** in every test. Honest storms wrongly flagged: ≤ 1.3 %.
 - Clogged-pit verdict (end of season): precision 0.60–0.67, recall 0.90–1.0 (stress tests, holdout)
 
-We **rejected** five fixes that improved the stress test because they made another test worse. That rule was set before we ran them.
+We **rejected** five candidate fixes under a rule set before running them: four helped one test but hurt another, and one didn't help enough.
 
 <!--
 TIME 6:00–7:00 (60 s).
