@@ -1,7 +1,7 @@
 """C6 v0.3 — fixes code-review issues 1, 3, 4 and 5 of v0.2 (reviews/2026-10-04-code-gpt-6-sol.md).
 
-DEFAULT RULE (transparent): a 10% randomised holdout is drawn first and gets standard service only. Stage 1: the arm
-  with the highest pilot effect per rupee (among arms with a positive effect) goes to every remaining eligible person,
+DEFAULT RULE (transparent): a 10% randomised holdout is drawn first and gets standard service only. Stage 1: the
+  cheapest arm not shown harmful by the pilot (one-sided 95% upper bound >= 0) goes to every remaining eligible person,
   or to a women-floor-stratified lottery if the budget cannot cover everyone. Stage 2 (only if stage 1 covers everyone):
   the leftover budget upgrades a women-floor-stratified lottery to the arm with the best extra effect per extra rupee.
 CHALLENGER (learned): an exact copy of the rule's plan — same holdout, same stage-1 recipients, same upgrade arm, same
@@ -37,8 +37,11 @@ def arm_ate(arm, y) -> dict:
 
 
 def stage1_arm(ate: dict, costs: dict):
-    pos = [a for a in ARMS if ate[a][0] > 0]
-    return max(pos, key=lambda a: ate[a][0] / costs[a]) if pos else None
+    """The cheapest arm that the pilot has not shown to be harmful (one-sided 95% upper bound >= 0). Light-touch nudges
+    have tiny, hard-to-estimate effects; excluding them on a noisy negative point estimate wastes the budget (dev
+    seeds, 4 Oct). If every arm is shown harmful, nothing is sent."""
+    ok = [a for a in ARMS if ate[a][0] + 1.645 * ate[a][1] >= 0]
+    return min(ok, key=lambda a: costs[a]) if ok else None
 
 
 def upgrade_arm(ate: dict, costs: dict, s1: str):
@@ -70,7 +73,8 @@ def rule_plan(n: int, ate: dict, costs: dict, budget: float, female: np.ndarray,
               rng: np.random.Generator, holdout_frac: float = 0.10) -> dict:
     arms = np.full(n, "none", dtype=object)
     holdout = np.zeros(n, dtype=bool)
-    holdout[rng.permutation(n)[: int(round(holdout_frac * n))]] = True
+    for grp in (np.flatnonzero(female), np.flatnonzero(~female)):  # gender-stratified holdout keeps the eligible mix
+        holdout[rng.permutation(grp)[: int(round(holdout_frac * len(grp)))]] = True
     elig = np.flatnonzero(~holdout)
     info = {"stage1": None, "upgrade": None, "k1": 0, "k2": 0}
     s1 = stage1_arm(ate, costs)
@@ -103,19 +107,26 @@ def challenger_plan(rule: dict, U: pd.DataFrame, female: np.ndarray, floor: floa
     return arms
 
 
-def floor_ok(arms: np.ndarray, female: np.ndarray, floor: float, tol: float = 1e-9) -> bool:
-    """Women's share >= floor among stage-1 recipients and among upgrades (where feasible)."""
+def floor_ok(arms: np.ndarray, female: np.ndarray, floor: float, available: np.ndarray | None = None) -> bool:
+    """Women's floor on the plan: (i) the set receiving any outreach — trivially met if it covers every available
+    (non-holdout) person, else women's share >= min(floor, feasible) within one person; (ii) the upgraded set
+    (arms other than the most common one), same test."""
+    avail = np.ones(len(arms), bool) if available is None else np.asarray(available, bool)
     treated = arms != "none"
-    if not treated.any():
-        return True
-    groups = [treated]
-    vals = [a for a in set(arms[treated])]
+
+    def ok(mask) -> bool:
+        k = int(mask.sum())
+        if k == 0:
+            return True
+        need = min(math.ceil(floor * k), int((female & avail).sum()))
+        return int(female[mask].sum()) >= need - 1
+
+    if treated.any() and not (treated[avail].all() and treated.sum() == avail.sum()) and not ok(treated):
+        return False
+    vals, cnts = np.unique(arms[treated], return_counts=True)
     if len(vals) > 1:
-        groups = [arms == v for v in vals]
-    for g in groups:
-        k, w_avail = int(g.sum()), int(female.sum())
-        need = min(math.ceil(floor * k), w_avail) / k if k else 0
-        if female[g].mean() + tol < min(floor, need):
+        main = vals[cnts.argmax()]
+        if not ok(treated & (arms != main)):
             return False
     return True
 

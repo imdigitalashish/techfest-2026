@@ -36,13 +36,13 @@
      "gamers": 38
     },
     "ci95_coverage_M4": 0.955,
-    "dp_epsilon1": {
+    "dp_eps_total1_half_each": {
      "unit": {
-      "mae_pp": 0.0846888517298354,
+      "mae_pp": 0.1693740513388095,
       "persons_per_cell": 3000.0
      },
      "district": {
-      "mae_pp": 0.010425109480987627,
+      "mae_pp": 0.020849448103456847,
       "persons_per_cell": 30000.0
      }
     }
@@ -70,13 +70,13 @@
      "gamers": 37
     },
     "ci95_coverage_M4": 0.925,
-    "dp_epsilon1": {
+    "dp_eps_total1_half_each": {
      "unit": {
-      "mae_pp": 0.0703669145726043,
+      "mae_pp": 0.14075454160485312,
       "persons_per_cell": 3000.0
      },
      "district": {
-      "mae_pp": 0.006337440002567586,
+      "mae_pp": 0.012674009848400725,
       "persons_per_cell": 30000.0
      }
     }
@@ -104,13 +104,13 @@
      "gamers": 42
     },
     "ci95_coverage_M4": 0.955,
-    "dp_epsilon1": {
+    "dp_eps_total1_half_each": {
      "unit": {
-      "mae_pp": 0.06961205180441057,
+      "mae_pp": 0.13921157648704546,
       "persons_per_cell": 3000.0
      },
      "district": {
-      "mae_pp": 0.00564715998838311,
+      "mae_pp": 0.01129407614979372,
       "persons_per_cell": 30000.0
      }
     }
@@ -138,13 +138,13 @@
      "gamers": 52
     },
     "ci95_coverage_M4": 0.935,
-    "dp_epsilon1": {
+    "dp_eps_total1_half_each": {
      "unit": {
-      "mae_pp": 0.070095740540564,
+      "mae_pp": 0.1401948193624131,
       "persons_per_cell": 3000.0
      },
      "district": {
-      "mae_pp": 0.005892324490247847,
+      "mae_pp": 0.011785132947457894,
       "persons_per_cell": 30000.0
      }
     }
@@ -172,13 +172,13 @@
      "gamers": 45
     },
     "ci95_coverage_M4": 0.92,
-    "dp_epsilon1": {
+    "dp_eps_total1_half_each": {
      "unit": {
-      "mae_pp": 0.07257336439304499,
+      "mae_pp": 0.14516190457857814,
       "persons_per_cell": 3000.0
      },
      "district": {
-      "mae_pp": 0.009108206422120402,
+      "mae_pp": 0.018215932322202394,
       "persons_per_cell": 30000.0
      }
     }
@@ -208,13 +208,13 @@
      "gamers": 38
     },
     "ci95_coverage_M4": 0.955,
-    "dp_epsilon1": {
+    "dp_eps_total1_half_each": {
      "unit": {
-      "mae_pp": 0.02116551019039145,
+      "mae_pp": 0.042330776985180694,
       "persons_per_cell": 12000.0
      },
      "district": {
-      "mae_pp": 0.002609693062387286,
+      "mae_pp": 0.005219336912207495,
       "persons_per_cell": 120000.0
      }
     }
@@ -242,13 +242,13 @@
      "gamers": 37
     },
     "ci95_coverage_M4": 0.97,
-    "dp_epsilon1": {
+    "dp_eps_total1_half_each": {
      "unit": {
-      "mae_pp": 0.017591859174275318,
+      "mae_pp": 0.03518500600885954,
       "persons_per_cell": 12000.0
      },
      "district": {
-      "mae_pp": 0.001586630812121376,
+      "mae_pp": 0.003173206880578427,
       "persons_per_cell": 120000.0
      }
     }
@@ -276,13 +276,13 @@
      "gamers": 42
     },
     "ci95_coverage_M4": 0.945,
-    "dp_epsilon1": {
+    "dp_eps_total1_half_each": {
      "unit": {
-      "mae_pp": 0.01741252783108873,
+      "mae_pp": 0.03482426696255441,
       "persons_per_cell": 12000.0
      },
      "district": {
-      "mae_pp": 0.001412117913620753,
+      "mae_pp": 0.002824220566482183,
       "persons_per_cell": 120000.0
      }
     }
@@ -310,13 +310,13 @@
      "gamers": 52
     },
     "ci95_coverage_M4": 0.93,
-    "dp_epsilon1": {
+    "dp_eps_total1_half_each": {
      "unit": {
-      "mae_pp": 0.017511494035198624,
+      "mae_pp": 0.03502315963876243,
       "persons_per_cell": 12000.0
      },
      "district": {
-      "mae_pp": 0.0014737666885920875,
+      "mae_pp": 0.002947563484970578,
       "persons_per_cell": 120000.0
      }
     }
@@ -344,13 +344,13 @@
      "gamers": 45
     },
     "ci95_coverage_M4": 0.97,
-    "dp_epsilon1": {
+    "dp_eps_total1_half_each": {
      "unit": {
-      "mae_pp": 0.018164883691741143,
+      "mae_pp": 0.03633072422457923,
       "persons_per_cell": 12000.0
      },
      "district": {
-      "mae_pp": 0.002277583902168534,
+      "mae_pp": 0.004555137771666967,
       "persons_per_cell": 120000.0
      }
     }

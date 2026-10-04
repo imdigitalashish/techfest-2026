@@ -1,10 +1,36 @@
 {
- "n_scenarios": 22,
- "correct": 22,
+ "n_scenarios": 29,
+ "correct": 29,
  "allows": 8,
  "false_allows": 0,
- "n_mutations": 65,
- "mutations_detected": 65,
+ "n_mutations": 89,
+ "mutations_detected": 89,
+ "by_attack": {
+  "flip_decision": [
+   29,
+   29
+  ],
+  "delete": [
+   29,
+   29
+  ],
+  "swap_next": [
+   28,
+   28
+  ],
+  "truncate_tail": [
+   1,
+   1
+  ],
+  "forged_suffix_without_key": [
+   1,
+   1
+  ],
+  "keyed_suffix_after_checkpoint": [
+   1,
+   1
+  ]
+ },
  "rows": [
   {
    "id": "S01",
@@ -72,10 +98,10 @@
   },
   {
    "id": "S09",
-   "expected": true,
-   "got": true,
-   "rule_expected": "A3",
-   "rule_got": "A3",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D6",
+   "rule_got": "D6",
    "ok": true
   },
   {
@@ -180,6 +206,62 @@
    "got": false,
    "rule_expected": "D3",
    "rule_got": "D3",
+   "ok": true
+  },
+  {
+   "id": "S23",
+   "expected": true,
+   "got": true,
+   "rule_expected": "A3",
+   "rule_got": "A3",
+   "ok": true
+  },
+  {
+   "id": "S24",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D5",
+   "rule_got": "D5",
+   "ok": true
+  },
+  {
+   "id": "S25",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D5",
+   "rule_got": "D5",
+   "ok": true
+  },
+  {
+   "id": "S26",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D0",
+   "rule_got": "D0",
+   "ok": true
+  },
+  {
+   "id": "S27",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D7",
+   "rule_got": "D7",
+   "ok": true
+  },
+  {
+   "id": "S28",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D0",
+   "rule_got": "D0",
+   "ok": true
+  },
+  {
+   "id": "S29",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D7",
+   "rule_got": "D7",
    "ok": true
   }
  ]

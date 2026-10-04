@@ -11,21 +11,30 @@ import numpy as np
 import pandas as pd
 
 
-def incremental(df: pd.DataFrame, unit: str = "unit_id", y: str = "meaningful", hold: str = "holdout") -> pd.DataFrame:
+def incremental(df: pd.DataFrame, unit: str = "unit_id", y: str = "meaningful", hold: str = "holdout",
+                min_n: int = 30) -> pd.DataFrame:
+    """Treated-minus-holdout difference per unit with a 95% CI. Units with fewer than min_n treated or holdout persons
+    get status 'insufficient_data' and no estimate (pool them or wait for more months) instead of a silent NaN."""
     g = df.groupby([unit, hold])[y].agg(["mean", "count", "var"]).unstack(hold)
-    t_m, c_m = g[("mean", False)], g[("mean", True)]
-    t_n, c_n = g[("count", False)], g[("count", True)]
-    t_v, c_v = g[("var", False)].fillna(0.25), g[("var", True)].fillna(0.25)
-    est = t_m - c_m
-    se = np.sqrt(t_v / t_n + c_v / c_n)
+    col = lambda stat, h: g[(stat, h)] if (stat, h) in g.columns else pd.Series(np.nan, index=g.index)
+    t_m, c_m = col("mean", False), col("mean", True)
+    t_n, c_n = col("count", False).fillna(0), col("count", True).fillna(0)
+    t_v, c_v = col("var", False).fillna(0.25), col("var", True).fillna(0.25)
+    ok = (t_n >= min_n) & (c_n >= min_n)
+    est = (t_m - c_m).where(ok)
+    se = np.sqrt(t_v / t_n.where(ok) + c_v / c_n.where(ok))
     return pd.DataFrame({"incremental": est, "se": se, "ci_low": est - 1.96 * se, "ci_high": est + 1.96 * se,
-                         "persons": t_n + c_n, "mu_rate": (t_m * t_n + c_m * c_n) / (t_n + c_n)})
+                         "persons": t_n + c_n, "mu_rate": (t_m.fillna(0) * t_n + c_m.fillna(0) * c_n) / (t_n + c_n),
+                         "status": np.where(ok, "ok", "insufficient_data")})
 
 
 def eb_shrink(inc: pd.DataFrame, group: pd.Series) -> pd.Series:
     """Empirical-Bayes shrinkage of unit estimates toward their group (district) mean."""
     out = inc["incremental"].copy()
     for _, idx in inc.groupby(group).groups.items():
+        idx = [i for i in idx if inc.at[i, "status"] == "ok"]
+        if not idx:
+            continue
         e, s2 = inc.loc[idx, "incremental"], inc.loc[idx, "se"] ** 2
         tau2 = max(e.var(ddof=1) - s2.mean(), 1e-6) if len(e) > 2 else 1e-6
         w = tau2 / (tau2 + s2)

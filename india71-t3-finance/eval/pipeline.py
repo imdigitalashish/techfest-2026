@@ -21,8 +21,9 @@ from components.usage_state.classify import classify
 KEY_TARGETING = b"demo-key-targeting-not-secret"
 
 
-def build(seed: int = 0, n_persons: int = 40_000, seeded_share: float = 0.97, observable: bool = True) -> dict:
-    w = simulate(SimConfig(n_persons=n_persons, seed=seed))
+def build(seed: int = 0, n_persons: int = 40_000, seeded_share: float = 0.97, observable: bool = True,
+          pilot_fraction: float = 0.2) -> dict:
+    w = simulate(SimConfig(n_persons=n_persons, seed=seed, pilot_fraction=pilot_fraction))
     acc, persons = w["accounts"], w["persons"]
     usage = classify(w["account_month"])
     rng = np.random.default_rng(seed + 101)

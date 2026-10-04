@@ -77,14 +77,15 @@ def run(seed: int, quarters: int) -> dict:
     coverage = float(((inc["ci_low"] <= truth["tau"]) & (truth["tau"] <= inc["ci_high"])).mean())
     # DP release of person meaningful-use rate: per unit and per district, epsilon = 1 each (separate ledgers)
     out_dp = {}
+    ledger = Ledger(1.0)  # ONE budget for both overlapping tables (code-review issue 9): epsilon 0.5 each
     for level, key in (("unit", "unit_id"), ("district", "district")):
         cnt = df.groupby(key)["meaningful"].agg(["sum", "count"]).rename(columns={"sum": "numerator", "count": "denominator"})
-        rel = release_rates(cnt, eps=1.0, ledger=Ledger(1.0), table=level, seed=seed)
+        rel = release_rates(cnt, eps=0.5, ledger=ledger, table=level, seed=seed)  # seeded: simulation only
         out_dp[level] = {"mae_pp": float((rel["rate"] - cnt["numerator"] / cnt["denominator"]).abs().mean() * 100),
                          "persons_per_cell": float(cnt["denominator"].mean())}
     return {"seed": seed, "quarters": quarters, "spearman_rho": rho, "share_of_gamers_in_top20": rho_gamers_top,
             "gaming_flags": {"true_pos": tp, "false_pos": fp, "gamers": int(truth["games"].sum())},
-            "ci95_coverage_M4": coverage, "dp_epsilon1": out_dp}
+            "ci95_coverage_M4": coverage, "dp_eps_total1_half_each": out_dp}
 
 
 def main():
@@ -104,7 +105,7 @@ def main():
         print(f"  gaming flag: TP {np.mean([r['gaming_flags']['true_pos'] for r in runs]):.1f} / {runs[0]['gaming_flags']['gamers']} gamers (seed 0), FP {np.mean([r['gaming_flags']['false_pos'] for r in runs]):.1f}"
               f" | M4 95% CI coverage {np.mean([r['ci95_coverage_M4'] for r in runs]):.3f}")
         for lvl in ("unit", "district"):
-            print(f"  DP eps=1 {lvl:8s}: MAE {np.mean([r['dp_epsilon1'][lvl]['mae_pp'] for r in runs]):.3f} pp at ~{runs[0]['dp_epsilon1'][lvl]['persons_per_cell']:,.0f} persons per cell")
+            print(f"  DP eps=0.5 of a total 1.0 {lvl:8s}: MAE {np.mean([r['dp_eps_total1_half_each'][lvl]['mae_pp'] for r in runs]):.3f} pp at ~{runs[0]['dp_eps_total1_half_each'][lvl]['persons_per_cell']:,.0f} persons per cell")
     out = ROOT / "eval" / "results" / "scorecard_spikeB.json"
     out.write_text(json.dumps({"config": CFG, "runs": {str(k): v for k, v in allres.items()}}, indent=1))
     print("wrote", out)
