@@ -10,28 +10,21 @@
 - _(none)_
 
 ## Now
-_Updated 2026-10-04 10:25 IST._
-- **Phase:** active batch (Supervisor, 09:55). Working toward the DoD: MVP + both stretch goals with held-out CIs; spike end-to-end test; real-trace replay; final abstract + architecture; cross-model reviews recorded; final memo.
-- **Plan:** the hostile-judge review (48/100) drove the v2 protocol:
-  - abandonment-aware LP and same-solver ablations (myopic H=L+1; queue-only, no forecast);
-  - **pre-registration** (`eval/preregistration.md`, committed before the run): reference rules fixed on tuning seeds, 30 fresh test seeds 200–229, Holm;
-  - then the (L,P) phase diagram, the move-cost Pareto curve, NYC TLC replay, and week/month horizons.
+_Updated 2026-10-04 10:55 IST._
+- **Phase:** active batch, closing the DoD. MVP plus both stretch goals done with held-out CIs. Spike tested end-to-end: pre-registered replication **failed**, reported. NYC replay done. Final abstract drafted (900 words). Memo final.
 - **Doing:**
-  - `eval/results/mvp-v2` is running (1440 episodes).
-  - `eval/run_v2_queue.sh` will then run phase-v2 → pareto-v2 → nyc-v2 → long-week-v2 → long-month-v2, sequentially under `nice -n 10`.
-  - Cross-model reviews in flight (sub-agents started before the sessions-only directive): gpt-6-astra (spike + phase law), gpt-6-sol (code + eval correctness).
-  - The final-abstract review will run as a child session.
+  - Follow-up runs: matched-α (`phase-v2b`) and forecast-trust sweep (`trust-v2`); then planner sensitivity (`phase-v2c`).
+  - Next: the final-abstract cross-model review as a **child session** (gpt-6-astra, max).
 - **Next:**
-  1. Read confirm.md and phase-v2; update ADR 001 with the verdict on H1.
-  2. Address the astra/sol findings; record them in `reviews/`.
-  3. Final abstract + architecture.
-  4. gpt-6-astra review session of the final abstract.
-  5. Final selection memo.
-  6. "DONE — slot free" to the Supervisor.
-- **Needs from user:** register by 15 Oct; teammates' names and skills (the abstract uses `[TEAM]` placeholders).
+  1. Fold in the trust/sensitivity results.
+  2. Launch the abstract review session; record ACCEPTED/REJECTED in `reviews/` and the ledger.
+  3. Replace `round1-abstract.md` with the reviewed final.
+  4. "DONE — slot free" to the Supervisor.
+- **Needs from user:** register by 15 Oct; teammates' names and skills (`[TEAM-1..3]` placeholders in the abstract).
 - **Risks:**
-  - A single-seed probe showed the queue-only LP beating forecast-MPC at L=1, P=10. If that holds across seeds, the "look-ahead" story must credit *supply-side* look-ahead (the LP over lead time) and frame demand forecasts as valuable only when L is large relative to P.
-  - CPU is shared with other active projects.
+  - The spike is now a plan (decision-aware trust), not yet a result.
+  - LP limitations: τ=0 matching approximation; solver-specific tie-breaks (backend recorded).
+  - Demand is mostly synthetic (NYC replay mitigates).
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -82,18 +75,25 @@ Details: [architecture/components.md](architecture/components.md) · contracts: 
 | C12 | Demo dashboard | sim stream → UI, click-to-shock | — | — | planned | fps / latency |
 
 ## Selection memo
-_First version, 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
-- **Winnability — 4.** The MVP was reached overnight. On held-out seeds 100–109, the look-ahead MPC beats the best rule on 10/10 seeds: +3.9 pp served under shock (CI [+3.3, +4.6]) and +5.4 pp under shock+drift ([+5.2, +5.7]), losing 82–121 fewer requests in the two hours after the shock (`eval/results/mvp-v1/summary.md`). P7 is the only problem in Theme 4, so it probably draws many "RL on PettingZoo" entries. We separate ourselves through evaluation rigour (frozen seeds, paired CIs, oracle regret) and a falsifiable lead-time law.
-- **Innovation headroom — 3 (down from 3.5 at 08:05).**
-  - The spike: a statistical change detector inside the forecaster that feeds the rolling-horizon planner, plus a lost ≈ Δλ·max(0, d + L − P) "when look-ahead pays" phase diagram.
-  - For: the first ratchet run beats the EWMA reference on the isolated metric (0.4154 vs 0.4385; detection in ~5.6 steps).
-  - Against: there is no *end-to-end* detector gain yet. At P=10 and at P=3 (1-step hops), detector = EWMA = oracle; H1 is unsupported so far. And "MPC beats rules" alone is known (Iglesias 2018).
-  - Second spike candidate: LP dual-price (market-style) decentralised coordination.
-- **Feasibility — 5.** Simulator, baselines, MPC, harness, statistics and the ratchet already run on the M5 CPU; no GPU or data download is needed. The RL comparator is optional. Everything user-dependent can finish before 17 Nov.
-- **Demo strength — 4.** A live grid where a judge clicks to inject a shock: the detector fires, units pre-position and the baselines lag, with live served-fraction and CI panels. Less flashy than a 3D or LLM demo, but very legible.
-- **Fit with the user's strengths — 5.** This is autoscaling and dispatch: lead time = cold start, patience = timeout. Large-scale systems and optimisation are Ashish's home turf, and the compute-cluster instantiation maps directly.
-- **Biggest risk:** the innovation could shrink to "MPC beats rules" if H1 fails. Judges may also call synthetic demand a toy. Mitigations: the phase diagram either way, real-trace replay (NYC TLC), and the RL comparator.
-- **One-line pitch:** "Dispatchers and autoscalers react one lead time too late. We detect demand regime changes statistically, re-plan over the lead time, and prove with frozen-seed CIs exactly when look-ahead pays."
+_**Final for the 12 Oct pick** (2026-10-04 10:55 IST); supersedes the 07:35 first version. Scores 1–5, each with its evidence._
+- **Winnability — 4.**
+  - For: the pre-registered confirmatory test is decisive. MPC beats the reference rule (fixed on tuning seeds) in 6/6 scenarios on 30/30 fresh seeds, Holm p = 1.1e-8: shock +3.7 pp [+3.3, +4.2], shock+drift +5.5 [+5.4, +5.6] (`eval/results/mvp-v2/confirm.md`).
+  - For: both stretch goals are done — week +6.3 pp (10/10 seeds) and month +6.4 pp (4/4).
+  - For: the NYC real-trace replay gives +2.5 pp (20/20).
+  - For: three cross-model reviews are recorded. That rigour (pre-registration, ablations, honest negatives) is rare among hackathon entries.
+  - Against: "MPC beats heuristics" alone is known (Iglesias 2018).
+- **Innovation headroom — 3** (was 3.5).
+  - The detector spike as built **failed its pre-registered replication**: it adds losses at (1,10) and (8,10).
+  - The new spike, decision-aware forecast trust, rests on a measured counter-intuitive finding: a *better* forecast (even the true rates) lowered service by 1.1–1.5 pp at long lead times, and a queue-only planner beat forecast planners under pure shocks.
+  - The idea has prior art (Smart Predict-then-Optimize 2022; decision-focused learning 2019). Our novelty is narrow: regime-gated trust in lead-time-aware dispatch, plus the (L, P) map. It is untested until the pre-registered trust test.
+- **Feasibility — 5.** Everything runs on the M5 CPU. A full pre-registered 1440-episode grid takes ~15 min; a week-long run takes 2.5 min. No GPU or large data is needed. RL is optional. All user-dependent work can be done before 17 Nov.
+- **Demo strength — 4.** A click-to-shock live grid; the NYC July-4 replay (1.4 vs 39.6 requests lost in the surge window); the (L, P) heatmap; the service-vs-movement Pareto plot; the week-long panel where the greedy rule decays from 91% to 47% served.
+- **Fit with the user's strengths — 5.** The mapping is autoscaling (L = cold start, P = request timeout) and dispatch (L = travel, P = patience), squarely in large-scale systems plus optimisation.
+- **Biggest risk:** judges see "MPC beats rules" as incremental, and the spike is a plan rather than a result by 31 Oct. Mitigations:
+  - run the pre-registered trust test in Oct;
+  - lead with the counter-intuitive, pre-registered finding;
+  - keep the (L, P) map with failures.
+- **One-line pitch:** "Planning over the lead time beats every rule we tested — and we show, pre-registered, when a better forecast makes it serve fewer people. Next: decision-aware forecast trust for fleets and autoscalers."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -167,7 +167,7 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
 - **phase-v1** (legacy planner, seeds 100–109, 720 steps; `python -m eval.phase --hops 1 2 4 8 --patience 3 10 --seeds 100-109 --horizon 720 --out eval/results/phase-v1`):
   - Detector − EWMA at P=3: L=1 −0.01 pp, L=2 +0.58 [+0.35, +0.80] (9/10), L=4 +1.36 [+1.20, +1.50] (10/10), L=8 +2.40 [+2.17, +2.64] (10/10).
   - Detector − EWMA at P=10: null for L ≤ 4; +0.65 (10/10) at L=8.
-  - Perfect-forecast (true-rate MPC) − EWMA follows the same pattern, so the detector recovers ~51–71% of the forecast value in the cells where forecasts matter.
+  - Perfect-forecast (true-rate MPC) − EWMA follows the same pattern, so the detector recovers ~51–71% of the forecast value in the cells where forecasts matter. **[RETRACTED 10:50 — did not replicate in the pre-registered phase-v2 with the abandonment-aware planner; see the 10:50 entry.]**
   - **H1 supported qualitatively under the legacy planner.**
 - **Planner backend:** warm-started highspy, 5–9× faster than scipy-IPM, with identical objectives (contract test). Legacy reproduction verified: mvp-v1 seed 100 matches to 1e-16.
 - **NYC TLC adapter** (sub-agent):
@@ -177,3 +177,26 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
   - `research/components/real-trace-replay.md`.
 - **Hostile-judge review** (rubber-duck): 48/100. Recorded in `reviews/` (14 accepted, 1 rejected). The biggest fixes are ablations, pre-registration, abandonment-aware LP, wording on "multi-agent" and "oracle", and the movement Pareto curve.
 - **Pre-registration** committed (10:15) before the mvp-v2 run. The tuning-seed rule run is in `eval/results/tuning-rules`.
+
+### 2026-10-04 10:25–10:55 IST — Confirmatory results, failed replication, real trace, long horizons
+- **mvp-v2, pre-registered** (30 fresh seeds 200–229; `eval/results/mvp-v2/confirm.md`):
+  - MPC beats the pre-registered reference rule in 6/6 scenarios, 30/30 seeds each, Holm p = 1.1e-8.
+  - Shock +3.73 pp [+3.28, +4.20]; shock+drift +5.47 [+5.36, +5.59]; shock+drift+spikes +5.99 [+5.82, +6.15].
+  - Ablations:
+    - myopic horizon is worse everywhere;
+    - queue-only (no forecast) is −2.68 pp under drift but **+1.19 pp and 62 fewer lost per shock** under a pure shock;
+    - the detector adds +8.0 lost per shock at (1,10).
+- **phase-v2, pre-registered H1 replication** (Addendum A; 20 fresh seeds; abandonment-aware LP; `eval/results/phase-v2/summary.md`):
+  - **H1 not replicated**: the detector adds losses at (1,10), Holm p = 0.026, and at (8,10), Holm p = 0.011.
+  - The true-rate forecast is worse at L ≥ 4 (−1.1 to −1.5 pp).
+  - Planning beats the best rule in 7/8 cells (20/20 seeds each).
+  - Diagnostic (seed 200, (4,3)): the legacy LP moves units 1.6–2× more, and sharper forecasts make the abandonment-aware LP passive.
+  - "51–71% capture" is **retired**.
+- **NYC real trace** (July 3–4 2025, 20 thinning replicates; `eval/results/nyc-v2`): MPC +2.52 pp [+2.39, +2.67] vs reactive (20/20). Observed July-4 21:30–23:30 surge (cause UNVERIFIED): 1.4 vs 39.6 lost. Here the forecast helps (queue-only −0.47 pp).
+- **Long horizons:**
+  - Week (`long-week-v2`, 10 seeds): +6.34 pp [+6.26, +6.43]; greedy decays 0.91 → 0.47.
+  - Month (`long-month-v2`, 4 seeds): +6.37 pp [+6.29, +6.44].
+- **Pareto** (`pareto-v2` + mvp-v2 shock rows): the planner at a move cost of 0.5 serves 0.937 at 0.41 empty hops per served request, dominating reactive (0.900, 0.59) and static.
+- **Reviews:** gpt-6-sol (code + eval, 9 items, all accepted, 2 fixes deferred) and gpt-6-astra (spike + law, 8 items, 7 accepted). Supervisor framing (10:47) accepted: lead with the forecast-hurts-planner finding; spike = decision-aware forecast trust.
+- **Citations verified:** Elmachtoub & Grigas (Management Science 2022) and Wilder et al. (AAAI 2019) via arXiv API plus Crossref; Page (1954) bibliographic record via Crossref.
+- **Fixes:** rates now reach only the oracle; `pending_frac`; seed-bootstrap CIs for long runs; integer `@k=v` parsing; `--legacy` in phase; Holm per endpoint in `confirm.py`.

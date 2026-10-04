@@ -50,6 +50,14 @@ Moving a resource takes time: a vehicle has to drive, a GPU replica has to load 
 
 **Reading.** The pieces exist separately: change detection (rows 1–2), distribution-free online calibration (rows 3–5) and risk-calibrated decisions (row 6). In this partial scan we found **no work that couples a change detector's state with conformal-calibrated safety buffers inside a rolling-horizon resource allocator.** That is a candidate innovation, labelled *not found in a partial search*, not "novel".
 
+## 3b. Predict-then-optimise: why a better forecast can hurt (added 2026-10-04 10:50 IST)
+
+| Work | Venue (verified via Crossref) | What it says (arXiv abstract, opened 2026-10-04) | Relevance |
+|---|---|---|---|
+| Elmachtoub & Grigas — Smart "Predict, then Optimize" ([arXiv 1710.08005](https://arxiv.org/abs/1710.08005)) | Management Science 2022, DOI 10.1287/mnsc.2020.3922 | ML tools "minimize prediction error and do not account for how the predictions will be used in the downstream optimization problem"; proposes SPO, which "directly leverages the optimization problem structure" | Our phase-v2 finding: with an abandonment-aware LP, a *more accurate* (true-rate) forecast lowers served fraction by 1.1–1.5 pp at long lead times. |
+| Wilder, Dilkina & Tambe — Decision-focused learning for combinatorial optimisation ([arXiv 1809.05504](https://arxiv.org/abs/1809.05504)) | AAAI 2019, DOI 10.1609/aaai.v33i01.33011658 | the training loss "may easily be misaligned with the end goal, which is to make the best decisions possible" | Motivates tuning forecast *trust* for served fraction, not forecast error (spike A′). |
+| Page — Continuous inspection schemes (CUSUM) | Biometrika 41(1–2):100–115, 1954, DOI 10.1093/biomet/41.1-2.100 (bibliographic record verified via Crossref; full text paywalled, not opened) | — | Origin of the CUSUM used in C4. |
+
 ## 4. Evaluation methodology (what a quant judge will look for)
 - **Agarwal et al. 2021** ([2108.13264](https://arxiv.org/abs/2108.13264), NeurIPS Outstanding Paper): report interval estimates, not point estimates; use performance profiles and the interquartile mean (IQM). Rankings change once uncertainty is accounted for. Library: rliable.
 - **Gorsane et al. 2022** ([2209.10485](https://arxiv.org/abs/2209.10485)): a meta-analysis of 75 cooperative-MARL papers (2016–2022) finds "worrying trends" in evaluation and proposes a standard protocol. *Protocol details not opened — UNVERIFIED.*
@@ -97,7 +105,7 @@ Pure end-to-end RL allocation is not what ships. Learning appears as a value or 
 **Where we borrow, and where we try to beat it.**
 - We **borrow** the production structure: forecaster → optimiser → reactive guardrail. Our MPC re-plans every step on the observed queue, so the queue acts as the reactive guardrail inside the planner.
 - We **beat the guardrail heuristics**. The production shock responses are fixed-threshold heuristics: Knative's 200% panic threshold, Dynamo's manual thresholds, AWS/Azure "scale-out only". We replace them with an explicit statistical change detector (Poisson CUSUM, later BOCPD) whose false-alarm rate is a *tunable, measured* quantity. We also plan symmetric moves (supply can be pulled out of a cooling zone, not only added).
-- We **add what none of them report**: a post-shock recovery metric with confidence intervals over many seeds, against a clairvoyant oracle.
+- We **add what none of them report**: requests lost per shock with confidence intervals over many pre-registered seeds, plus same-planner ablations against a true-rate-forecast reference (a perfect forecast, not an upper bound).
 
 ## 7. Coverage gaps / UNVERIFIED (be honest)
 - **Compute-cluster papers thread failed** (worker died on network errors). These are *not opened tonight, so not cited*: Llumnix, ServerlessLLM, DistServe, Splitwise (and its Azure LLM inference traces), Google Autopilot, Resource Central, "Serverless in the Wild" (Azure Functions trace), DeepRM, Decima, Gavel, Pollux, square-root staffing. Re-run when the network recovers.

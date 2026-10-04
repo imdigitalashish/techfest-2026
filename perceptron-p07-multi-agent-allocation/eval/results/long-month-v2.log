@@ -1,0 +1,7 @@
+                         served_frac  lost_frac  mean_wait  empty_per_srv
+scenario   policy                                                        
+long-month greedy             0.7356     0.2644     3.7265         0.3242
+           mpc-cusum-v1       0.9383     0.0617     2.1050         0.6439
+           mpc-ewma           0.9398     0.0602     2.1113         0.6603
+           reactive           0.8761     0.1238     3.3941         0.6919
+16 episodes in 169s -> eval/results/long-month-v2

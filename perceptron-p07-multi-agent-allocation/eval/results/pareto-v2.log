@@ -1,0 +1,7 @@
+                               served_frac  lost_frac  mean_wait  empty_per_srv
+scenario policy                                                                
+shock    mpc-ewma@c_move=0.2        0.9424     0.0573     1.9153         0.4591
+         mpc-ewma@c_move=0.5        0.9373     0.0623     1.9868         0.4131
+         mpc-ewma@c_move=1.0        0.9046     0.0949     2.3011         0.3147
+         mpc-queue@c_move=0.5       0.9096     0.0896     3.3086         0.2499
+120 episodes in 67s -> eval/results/pareto-v2

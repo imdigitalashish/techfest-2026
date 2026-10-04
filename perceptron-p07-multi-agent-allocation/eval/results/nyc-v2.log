@@ -1,0 +1,10 @@
+                           served_frac  lost_frac  mean_wait  empty_per_srv
+scenario     policy                                                        
+nyc-jul03-04 greedy             0.9526     0.0449     2.4754         0.2518
+             mpc-cusum-v1       0.9978     0.0016     0.7663         0.3531
+             mpc-ewma           0.9981     0.0015     0.7389         0.3640
+             mpc-queue          0.9934     0.0051     1.8532         0.2640
+             oracle             0.9981     0.0016     0.7097         0.3533
+             reactive           0.9729     0.0264     1.5286         0.3938
+             static             0.9360     0.0624     2.0154         0.3308
+140 episodes in 104s -> eval/results/nyc-v2

@@ -79,7 +79,7 @@ where Δλ is the extra demand rate, d the detection delay, L the reallocation l
 - **Run:** `eval/results/p3-v1` (shock, seeds 100–104, P=3, 1-step hops; reproduce with `.venv/bin/python -m eval.harness --scenarios shock --policies greedy reactive mpc-ewma mpc-cusum-v1 oracle --seeds 100-104 --patience 3 --horizon 1440 --out eval/results/p3-v1`).
 - **Served fraction:** greedy 0.802 · reactive 0.783 · mpc-ewma 0.889 · mpc-cusum-v1 0.889 · oracle 0.890.
 - **Look-ahead vs best rule:** +8.7 pp (paired CI [+7.0, +10.8]), 5/5 seeds; n=5 caps the Wilcoxon p at 0.062. The margin roughly doubles from P=10 (+3.9 pp). That fits the first-principles story: the shorter the patience, the more structurally late reactive allocation is.
-- **H1 (detector beats EWMA, growing as P/L shrinks):** *not supported at P ∈ {3, 10} with 1-step hops*. The detector, the EWMA and even the clairvoyant forecast tie.
+- **H1 (detector beats EWMA, growing as P/L shrinks):** *not supported at P ∈ {3, 10} with 1-step hops*. The detector, the EWMA and even the true-rate forecast tie.
 - **Reason:** lead time here is 1–3 steps and H=6, so the MPC's view of the *observed* queue plus the units about to free up already captures the shock. Forecasts only matter when L is large relative to the reaction window.
 - **Next test:** a hop-time knob of 3–5 steps per hop, which needs multi-step edges in the time-expanded LP, with H ≥ L + P.
 - **Fallback if that also ties:** promote Spike B (price-based decentralised coordination). Keep the look-ahead planner plus the measured (L, P) law as the headline.
@@ -116,3 +116,37 @@ The detector's job shifts from "restart the level" to "gate how much the plan tr
 - Degenerate LP optima make trajectories solver-specific (the backend is recorded per run).
 - L slows only empty repositioning (a set-up delay), not loaded trips.
 - The stylised law G ≈ q([d_E+L−P]₊ − [d_D+L−P]₊) predicts a kink and a plateau, not unbounded growth. The mechanism test is planned.
+
+## Decision (revised 2026-10-04 10:55 IST) — supersedes H1 and the "restart the forecast" spike
+
+**Evidence.**
+- *phase-v2* is the pre-registered replication (Addendum A): fresh seeds 200–219, abandonment-aware LP.
+  - **H1 did not replicate.** Detector − EWMA, requests lost per shock: +4.4 at (1,10), Holm p = 0.026; +21.9 at (8,10), Holm p = 0.011. Only (2,3) points the predicted way (−9.3, n.s.).
+  - Even the **true-rate** forecast lowers served fraction at long lead times: −1.09 / −1.49 / −1.10 pp at (4,3) / (8,3) / (8,10).
+  - Under the legacy never-abandoning backlog (phase-v1) the same comparisons were positive. **Forecast value depends on how the planner treats uncertain demand.**
+  - The "51–71% capture" figure is **retired**. It held only under the legacy planner.
+  - A paired same-seed planner-sensitivity run (`eval/results/phase-v2c`) quantifies this.
+- *Robust across everything run:* planning over the lead time beats the best rule.
+  - Pre-registered mvp-v2: 6/6 scenarios, 30/30 seeds.
+  - phase-v2: 7/8 cells, 20/20 seeds each.
+  - Week: +6.3 pp. Month: +6.4 pp. NYC real trace: +2.5 pp.
+  - Pareto: at a move cost of 0.5 the planner serves more *and* moves less than the reactive rule.
+- *Prior art for the mechanism* — a more accurate forecast is not a better decision:
+  - Elmachtoub & Grigas, "Smart Predict, then Optimize", Management Science 2022;
+  - Wilder, Dilkina & Tambe, decision-focused learning, AAAI 2019.
+  - Both verified (`research/landscape.md` §3b).
+
+**Decision.**
+- **Spike A″ = decision-aware forecast trust.** The planner plans on trust_z × forecast_z. Trust is set per zone from calibrated forecast uncertainty and the change detector's regime state, and tuned on **served fraction (decision loss), not forecast error**.
+- The change detector is kept only as an input to trust, not as a level-restart.
+- Novelty claim kept narrow: the decision-focused idea is prior art. Our contribution is (a) its use for regime-gated trust in lead-time-aware dispatch, and (b) the measured (L, P) map, including failures. A wider prior-art check is to be done before the 31 Oct claim.
+
+**Pre-registered falsification test (to be committed before running, as Addendum B):**
+- On fresh seeds, across the (L, P) grid and the scenario suite, tuned trust must beat **both** trust = 1 (EWMA-MPC) and trust = 0 (queue-only LP) on served fraction, with Holm correction.
+- If it does not, we report that, and the deliverable rests on the robust planning claim plus the map.
+- Exploratory signal so far: the trust sweep at L=1, P=10 (`eval/results/trust-v2`).
+
+**Consequences.**
+- The abstract leads with the robust claim plus the finding "a better forecast can make a certainty-equivalent planner serve fewer people".
+- Innovation headroom in the memo is lowered to 3, with an honest note.
+- The RL comparator and decentralised price coordination remain stretch goals.

@@ -1,0 +1,23 @@
+{
+ "scenarios": [
+  "long-week"
+ ],
+ "policies": [
+  "static",
+  "greedy",
+  "reactive",
+  "mpc-queue",
+  "mpc-ewma",
+  "mpc-cusum-v1",
+  "oracle"
+ ],
+ "seeds": "200-209",
+ "n_agents": 40,
+ "patience": 10,
+ "horizon": 0,
+ "workers": 8,
+ "out": "eval/results/long-week-v2",
+ "legacy": false,
+ "n_jobs": 70,
+ "wall_s": 152.96157813072205
+}

@@ -1,0 +1,10 @@
+                        served_frac  lost_frac  mean_wait  empty_per_srv
+scenario  policy                                                        
+long-week greedy             0.7242     0.2754     3.7090         0.3244
+          mpc-cusum-v1       0.9342     0.0657     2.0909         0.6512
+          mpc-ewma           0.9356     0.0643     2.0974         0.6671
+          mpc-queue          0.9306     0.0692     3.0614         0.5272
+          oracle             0.9350     0.0650     2.0322         0.6394
+          reactive           0.8722     0.1277     3.3981         0.7002
+          static             0.7433     0.2564     3.1789         0.5871
+70 episodes in 153s -> eval/results/long-week-v2

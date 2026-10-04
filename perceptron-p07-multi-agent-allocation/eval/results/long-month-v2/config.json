@@ -1,0 +1,20 @@
+{
+ "scenarios": [
+  "long-month"
+ ],
+ "policies": [
+  "greedy",
+  "reactive",
+  "mpc-ewma",
+  "mpc-cusum-v1"
+ ],
+ "seeds": "200-203",
+ "n_agents": 40,
+ "patience": 10,
+ "horizon": 0,
+ "workers": 8,
+ "out": "eval/results/long-month-v2",
+ "legacy": false,
+ "n_jobs": 16,
+ "wall_s": 169.38226103782654
+}

@@ -1,0 +1,20 @@
+{
+ "scenarios": [
+  "shock"
+ ],
+ "policies": [
+  "mpc-ewma@c_move=0.2",
+  "mpc-ewma@c_move=0.5",
+  "mpc-ewma@c_move=1.0",
+  "mpc-queue@c_move=0.5"
+ ],
+ "seeds": "200-229",
+ "n_agents": 40,
+ "patience": 10,
+ "horizon": 1440,
+ "workers": 8,
+ "out": "eval/results/pareto-v2",
+ "legacy": false,
+ "n_jobs": 120,
+ "wall_s": 66.58766102790833
+}
