@@ -18,6 +18,12 @@ Inputs and outputs use `architecture/contracts/models.py` without modification:
 3. `link.py` also provides a PPRL path using keyed HMAC-SHA256 Bloom-filter CLKs over quasi-identifiers and Dice similarity, so parties can link without exchanging plaintext names.
 4. `eval_linkage.py` reports pairwise precision, recall, F1, clerical-review share, and runtime for ID-only, plaintext, and PPRL methods.
 
+### Stress knobs (added for the demo; defaults reproduce the committed benchmark byte for byte)
+
+- `generate_benchmark(..., shared_id_rate=0.35, extra_noise=0.0)`. `shared_id_rate` is the share of Poshan Tracker records (of children also in the health registry) that carry the RCH ID; 0.35 is a **simulation assumption**, not a measured figure. `extra_noise` adds, per name field and DOB, one extra typo / DOB entry error with that probability, on top of the base noise. It uses its own RNG with a fixed number of draws per field (common random numbers), so a field corrupted at a lower rate is corrupted identically at every higher rate.
+- `identities_for_cohort(children, ...)` gives `cohort_simulator` children Poshan Tracker and health-side identity records with the same name/DOB noise helpers, so a child's measurements and health events can be joined only through linkage (used by `demo/export.py`).
+- Tests: `test_linkage.py` pins the default output's SHA-256 and checks both knobs.
+
 ## Run
 
 From the project root:
