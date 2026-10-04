@@ -10,10 +10,10 @@
 - _(none)_
 
 ## Now
-- **Phase:** 2–4 — walking skeleton running on Deep Blending *drjohnson* (photos → 3DGS → alignment → walkable grid → A*). Lean Mode (Supervisor) until 08:30: no sub-agents, small requests.
-- **Plan:** push code + labelled metrics (done 08:0x) → corrected eval run 2 → architecture/components.md + contracts → ADR 001 → landscape.md → round1-abstract.md → viewer (Spark WASD + POIs + path).
-- **Doing:** eval run 2 (fixed line-of-sight check; dense proxy at opacity > 0.1) in the background; lead writes the docs.
-- **Next:** viewer + packager (.splat export); own SfM run (pycolmap) on raw drjohnson images to time the posing component; held-out PSNR from Brush (`--eval-save-to-disk`); the user's home capture → Round-1 twin.
+- **Phase:** 3–4 — walking skeleton on Deep Blending *drjohnson* (photos → 3DGS → alignment → walkable grid → A*) with real numbers; morning-package docs pushed. Lean Mode ends 08:30 (then ≤3 concurrent sub-agents).
+- **Plan:** viewer + packager (Spark WASD, NavGrid collisions, POIs, path) → first auto-research loop on walkable-space → verify the landscape (≤3 agents) → own SfM run + Brush held-out PSNR → the user's home capture → Round-1 twin.
+- **Doing:** lead: morning package complete (08:20); next is the viewer.
+- **Next:** (1) `components/scene_packager` (.splat export, manifest) + `web/` viewer; (2) `components/walkable_space/autoresearch/` (program.md, frozen eval.py, results.tsv); (3) independent rubber-duck review of ADR 001; (4) landscape verification passes.
 - **Needs from user:** (1) Register by 15 Oct. (2) **Capture your home with [`deliverables/capture-sop.md`](deliverables/capture-sop.md)** (≈15–20 min; print [`deliverables/assets/marker_aruco_4x4_id0_150mm.pdf`](deliverables/assets/marker_aruco_4x4_id0_150mm.pdf) if you can) and note your phone model (LiDAR or not). (3) Azure GPU quota is 0 for modern GPU families: request e.g. 8 vCPU "Standard NCASv3_T4 Family" or 36 vCPU "NVadsA10v5" in Central India / East US.
 - **Risks:** no CUDA (visual quality and Day-1 turnaround); path safety against dense geometry (first run: 17.5–35% of paths within 15 cm of the proxy; being re-measured); dataset licences (drjohnson is non-commercial); shared-machine contention.
 
@@ -67,7 +67,7 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (p
 - **Feasibility by the deadline: 4/5.** No CUDA needed for Round 1: Brush on Metal ran 15k steps in 36.9 min on the shared M5, and the navigation stack runs on CPU (grid 0.2–39 s, A* median 13–41 ms). Round 2 by 17 Nov is realistic; AR is the stretch.
 - **Demo strength: 5/5.** Walk a twin, search "sofa", watch the route bend around furniture; AR arrows on-site for the bonus.
 - **Fit with the user's strengths: 3/5.** Systems and frontier models map onto pipeline orchestration, cloud turnaround and VLM-based POIs/search. 3D vision itself is new territory.
-- **Biggest risk:** visual quality and Day-1 turnaround without a CUDA GPU, and path safety. In the first run, 17.5–35% of paths came within 15 cm of the dense proxy, and the proxy definition was itself flawed (being re-run).
+- **Biggest risk:** visual quality and Day-1 turnaround without a CUDA GPU, and path safety. In run 2, 25% (points only) to 37.5% (with the trajectory prior) of held-out paths pass within 15 cm of the dense 3DGS proxy; the ratchet targets recall at a fixed collision budget.
 - **One-line pitch:** "Walk your space once with a phone and say what's there. Get a link where anyone can walk it, search it and be routed around the sofa — and on-site, follow arrows through the camera."
 
 ## Log
@@ -93,3 +93,9 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - Diagnostics: the Brush PLY is in the COLMAP frame (per-axis percentiles match). Brush opacities are logits with p99 σ ≈ 0.42, so run 2 uses opacity > 0.1 for the dense proxy.
 - Research: `research/datasets.md` written by the retried datasets agent (the drjohnson HF mirror's "MIT" tag is unsupported; the original licence is non-commercial). The other agents failed on API 408s; Supervisor Lean Mode → no new agents until 08:30.
 - Selection memo v1 filled.
+
+### 2026-10-04 08:20 IST — Morning package pushed; eval run 2 (corrected)
+- **Run 2** (`eval/results/drjohnson_nav.json`, `drjohnson_floorplan.png`; fixed line-of-sight planner; dense proxy = 172,217 splats with opacity > 0.1, max scale < 0.2 m, in the 0.15–1.7 m band). Navigable-map recall of held-out positions: 0.788 / 0.879 / 0.939 / 0.970 (points / +carving / +trajectory / both). Paths within 15 cm of the proxy: 25.0% / 25.0% / 37.5% / 37.5%. Path samples in collision: 5.4% / 5.5% / 12.5% / 12.4%. Success 100% in all variants; A* p95 44–175 ms in Python. **The trajectory prior trades clearance for recall**, as ADR 001's antithesis predicted → ratchet objective = recall at a fixed collision budget.
+- Lesson: a `git rebase` during an experiment that writes into tracked paths deleted `eval/results/` mid-run (run-2 attempt 1 crashed). Rule: never rebase while a run writes to tracked paths; write to `.data/` and copy afterwards.
+- Pushed: `architecture/components.md` + `architecture/contracts/contracts.ts`, `architecture/adr/001-spike.md`, `research/landscape.md` v0 (sources opened tonight marked VERIFIED; the rest UNVERIFIED pending agent passes), `deliverables/round1-abstract.md` v0.1, selection memo v1.
+- Not done yet (honest): web viewer and packager; Brush held-out PSNR; our own SfM run (we used the dataset's COLMAP poses); POI extraction; first auto-research loop; independent adversarial review of ADR 001; landscape verification (most "what companies ship" claims are UNVERIFIED).
