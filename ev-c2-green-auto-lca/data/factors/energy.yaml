@@ -1,0 +1,113 @@
+# Energy layer — Indian grid electricity. Schema: architecture/agent-brief.md
+- id: energy.electricity.in.grid_wavg_generation.fy2025_26
+  layer: energy
+  name: India grid weighted-average CO2 emission factor, net generation basis (incl. RE, captive injection; cross-border adjusted)
+  value: 0.675
+  unit: kg CO2/kWh
+  quantity: emission_factor
+  gas_basis: CO2
+  boundary: "Stack CO2 at grid-connected stations / net generation at busbar. Excludes T&D losses, upstream fuel chain (mining, transport, methane), plant construction, non-CO2 gases."
+  geography: IN
+  reference_year: "2025-26"
+  technology: national grid-connected generation mix (Indian Grid, single integrated grid)
+  uncertainty: {distribution: none, low: null, high: null, note: "CEA publishes a point value; station data are measured but some stations use CEA standard values."}
+  source_id: cea-co2-baseline-v22
+  locator: "User Guide v22.0, Table S (p. 1) and Annexure-I (p. 22)"
+  quote: "Average OM BM CM 0.675 0.963 0.446 0.705 ... Average is the average emission of all stations in the grid, weighted by net generation."
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 1}
+  status: verified
+  notes: "1 t CO2/MWh = 1 kg CO2/kWh. Internal check: Annexure-I row 2025-26 gives 1189.29 Mt / 1761.28 BU = 0.675; the methodology text quotes 1189.04 Mt (same rounded factor)."
+- id: energy.electricity.in.grid_om.fy2025_26
+  layer: energy
+  name: India grid simple operating margin (OM) CO2 emission factor
+  value: 0.963
+  unit: kg CO2/kWh
+  quantity: emission_factor
+  gas_basis: CO2
+  boundary: "As grid_wavg but excluding low-cost/must-run sources (hydro, nuclear, RE) — a proxy for the marginal emission factor of additional demand such as new EV charging."
+  geography: IN
+  reference_year: "2025-26"
+  technology: fossil fleet excluding must-run
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: cea-co2-baseline-v22
+  locator: "User Guide v22.0, Table S (p. 1)"
+  quote: "OM is the average emission from all stations excluding the low cost/must run sources."
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 1}
+  status: verified
+- id: energy.electricity.in.grid_bm.fy2025_26
+  layer: energy
+  name: India grid build margin (BM) CO2 emission factor (20% most recent capacity incl. RE)
+  value: 0.446
+  unit: kg CO2/kWh
+  quantity: emission_factor
+  gas_basis: CO2
+  boundary: "Most recent 20% of net generation capacity additions, including RE."
+  geography: IN
+  reference_year: "2025-26"
+  technology: recent capacity additions
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: cea-co2-baseline-v22
+  locator: "User Guide v22.0, Table S (p. 1)"
+  quote: "BM is the average emission of the 20% (by net generation) most recent capacity addition in the grid (including RE)."
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 1}
+  status: verified
+- id: energy.electricity.in.td_loss_share.fy2023_24
+  layer: energy
+  name: All-India transmission and distribution (T&D) losses, share of energy available
+  value: 0.1763
+  unit: fraction
+  quantity: share
+  gas_basis: n/a
+  boundary: "T&D losses include transmission losses (~3-4%) and distribution losses incl. commercial losses (theft, unbilled) — overstates purely technical losses."
+  geography: IN
+  reference_year: "2023-24"
+  technology: national transmission + distribution network
+  uncertainty: {distribution: none, low: null, high: null, note: "Transmission-only losses 3.12-4.24% by region (same source) bound the technical floor."}
+  source_id: loksabha-usq842-2025
+  locator: "Answer to (a)-(d), p. 1"
+  quote: "Further, Transmission and Distribution (T&D) losses which also include the transmission losses are around 17.63% during 2023-24."
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+  notes: "State-wise T&D losses FY 2023-24 are in the same document's Annexure (not yet transcribed)."
+- id: energy.electricity.in.grid_wavg_at_plug.fy2025_26
+  layer: energy
+  name: India grid CO2 emission factor at the consumer meter (generation EF / (1 - T&D loss))
+  value: 0.8195
+  unit: kg CO2/kWh
+  quantity: emission_factor
+  gas_basis: CO2
+  boundary: "Combustion CO2 per kWh delivered to consumers. Excludes upstream fuel chain, non-CO2, infrastructure."
+  geography: IN
+  reference_year: "2025-26 (EF) with 2023-24 losses"
+  technology: national grid, low-voltage delivery
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: cea-co2-baseline-v22
+  locator: "derived"
+  quote: ""
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 1, temporal: 1, geographical: 1, technological: 2}
+  status: derived
+  derivation: "energy.electricity.in.grid_wavg_generation.fy2025_26 / (1 - energy.electricity.in.td_loss_share.fy2023_24) = 0.675 / 0.8237 = 0.8195"
+- id: energy.electricity.in.grid_wavg_generation.series
+  layer: energy
+  name: India grid weighted-average CO2 EF time series FY2013-14..FY2025-26 (incl. RE)
+  value: [0.774, 0.779, 0.774, 0.770, 0.754, 0.744, 0.713, 0.703, 0.715, 0.716, 0.727, 0.710, 0.675]
+  unit: kg CO2/kWh
+  quantity: emission_factor
+  gas_basis: CO2
+  boundary: "As grid_wavg_generation. From 2022-23 adjusted for cross-border transfers and incl. captive injection."
+  geography: IN
+  reference_year: "2013-14..2025-26"
+  technology: national grid
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: cea-co2-baseline-v22
+  locator: "User Guide v22.0, Annexure-I (p. 22), column (6)"
+  quote: "2024-25 1235.96 1461.85 255.01 1740.54 0.710 / 2025-26 1189.29 1424.19 310.58 1761.28 0.675"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 1}
+  status: verified
+  notes: "Years: 2013-14, 2014-15, ..., 2025-26 (13 values)."

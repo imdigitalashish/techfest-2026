@@ -1,0 +1,70 @@
+# Source registry. Every source below was opened by the lead on the access date (PDF/XLSX downloaded to the
+# gitignored .data/raw/ path given in local_copy; re-fetch with data/fetch/fetch_sources.sh).
+- id: cea-co2-baseline-v22
+  title: "CO2 Baseline Database for the Indian Power Sector — User Guide, Version 22.0"
+  publisher: Central Electricity Authority (CEA), Ministry of Power, Government of India
+  year: 2026
+  url: https://cea.nic.in/wp-content/uploads/baseline/2026/09/User_Guide__Version_22.0.pdf
+  type: government-dataset
+  accessed: 2026-10-04
+  local_copy: .data/raw/electricity/cea_ug_v22.pdf
+  notes: "Dated August 2026 on the cover; data for FY 2025-26. Companion workbook below."
+- id: cea-co2-baseline-v22-xlsx
+  title: "Baseline Carbon Dioxide Emission Database, Version 22.0 (station/unit-level workbook)"
+  publisher: Central Electricity Authority (CEA), Government of India
+  year: 2026
+  url: https://cea.nic.in/wp-content/uploads/baseline/2026/09/Baseline_Carbon_Dioxide_Emission_Database_Version_22.0.xlsx
+  type: government-dataset
+  accessed: 2026-10-04
+  local_copy: .data/raw/electricity/cea_db_v22.xlsx
+  notes: "Sheets: Data (4475 rows x 56 cols, unit-level net generation GWh and absolute CO2 by FY 2017-18..2025-26, with STATE, SECTOR, TYPE, FUEL), Results, Transfer (1G), Units + Abbrev, Assumptions."
+- id: loksabha-usq842-2025
+  title: "Lok Sabha Unstarred Question No. 842 — Line losses in power transmission (answered 04.12.2025)"
+  publisher: Ministry of Power, Government of India (citing CEA General Review, Nov 2025)
+  year: 2025
+  url: https://www.sansad.in/getFile/loksabhaquestions/annex/186/AU842_VAJOF4.pdf?source=pqals
+  type: government-report
+  accessed: 2026-10-04
+  local_copy: .data/raw/electricity/ls_au842.pdf
+- id: ipcc-2006-v2-ch1
+  title: "2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 2 (Energy), Chapter 1 Introduction"
+  publisher: IPCC / IGES
+  year: 2006
+  url: https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/2_Volume2/V2_1_Ch1_Introduction.pdf
+  type: standard
+  accessed: 2026-10-04
+  local_copy: .data/raw/fuels/ipcc2006_v2_ch1.pdf
+- id: unsd-eyb-2020-table2
+  title: "Energy Statistics Yearbook 2020 — Table II: Selected conversion factors for crude oil and oil products"
+  publisher: United Nations Statistics Division
+  year: 2020
+  url: https://unstats.un.org/unsd/energystats/pubs/yearbook/2020/09ii.pdf
+  type: dataset
+  accessed: 2026-10-04
+  local_copy: .data/raw/fuels/unsd_conv.pdf
+- id: icct-2w-fc-india-2021
+  title: "Fuel consumption standards for the new two-wheeler fleet in India (ICCT Briefing), S. Anup and A. Deo"
+  publisher: International Council on Clean Transportation (ICCT)
+  year: 2021
+  url: https://theicct.org/wp-content/uploads/2021/12/fuel-consumption-2w-india-aug2021.pdf
+  type: grey-literature
+  accessed: 2026-10-04
+  local_copy: .data/raw/benchmarks/icct_2w_fc_2021.pdf
+  notes: "Table 1 (p. 3) gives life-cycle GHG of 5 Indian 2Ws registered FY 2020-21 by stage, footnote 9 gives all key inputs. Methodology refers to Bieker (2021) global LCA."
+- id: icct-india-lca-factsheet-2021
+  title: "Life-cycle greenhouse gas emissions of combustion engine and electric passenger cars and two-wheelers in India (ICCT Fact Sheet), G. Bieker"
+  publisher: International Council on Clean Transportation (ICCT)
+  year: 2021
+  url: https://theicct.org/wp-content/uploads/2021/12/lca-ghg-emissions-ice-evs-india-sept21_0.pdf
+  type: grey-literature
+  accessed: 2026-10-04
+  local_copy: .data/raw/benchmarks/icct_india_2021.pdf
+  notes: "Figure 2 (p. 3) is a vector chart; stage values digitized from PDF drawing coordinates by data/fetch/digitize_icct_factsheet_2021.py (±0.3 g/km)."
+- id: bw-pedigree-matrix
+  title: "brightway-lca/pedigree_matrix — pedigree_matrix/data.py and pm.py (uncertainty factors and lognormal sigma formula)"
+  publisher: Brightway LCA (open source; GitHub)
+  year: 2022
+  url: https://github.com/brightway-lca/pedigree_matrix/blob/main/pedigree_matrix/data.py
+  type: software
+  accessed: 2026-10-04
+  notes: "version_1 and version_2 uncertainty-factor tables; sigma = sqrt(sum(ln(U_i)^2))/2 including the basic uncertainty factor. Last push 2022-06-16."

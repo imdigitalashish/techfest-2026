@@ -1,0 +1,115 @@
+# Fuels layer. Schema: architecture/agent-brief.md
+- id: fuels.petrol.ncv.ipcc2006
+  layer: fuels
+  name: Motor gasoline net calorific value (IPCC default)
+  value: 44.3
+  unit: MJ/kg
+  quantity: energy_intensity
+  gas_basis: n/a
+  boundary: "Net (lower) calorific value."
+  geography: GLO
+  reference_year: "2006"
+  technology: motor gasoline
+  uncertainty: {distribution: range95, low: 42.5, high: 44.8, note: "IPCC 95% confidence interval"}
+  source_id: ipcc-2006-v2-ch1
+  locator: "Table 1.2 (row Motor Gasoline); TJ/Gg = MJ/kg"
+  quote: "Motor Gasoline 44.3 42.5 44.8"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: verified
+  notes: "Proxy: no India-specific NCV opened yet (India's GHG inventory / BUR may publish country-specific values — data gap)."
+- id: fuels.petrol.co2_per_energy.ipcc2006
+  layer: fuels
+  name: Motor gasoline CO2 emission factor for combustion (IPCC default, oxidation factor 1)
+  value: 69.3
+  unit: g CO2/MJ
+  quantity: emission_factor
+  gas_basis: CO2
+  boundary: "Tank-to-wheel fossil CO2 only (no CH4/N2O)."
+  geography: GLO
+  reference_year: "2006"
+  technology: motor gasoline (E0)
+  uncertainty: {distribution: range95, low: 67.5, high: 73.0, note: "IPCC 95% CI (kg/TJ)"}
+  source_id: ipcc-2006-v2-ch1
+  locator: "Table 1.4, p. 1.23 (row Motor Gasoline): 69 300 kg/TJ (67 500 - 73 000)"
+  quote: "Motor Gasoline 18.9 1 69 300 67 500 73 000"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: verified
+- id: fuels.petrol.density.unsd2020
+  layer: fuels
+  name: Motor gasoline density (from UN conversion factor 1351 litres per metric ton)
+  value: 0.7402
+  unit: kg/L
+  quantity: other
+  gas_basis: n/a
+  boundary: "Standard conversion factor."
+  geography: GLO
+  reference_year: "2020"
+  technology: motor gasoline
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: unsd-eyb-2020-table2
+  locator: "Table II, row Motor gasoline, column Litre"
+  quote: "Motor gasoline 1351 357 297 8.50 0.02329 1.351"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 2, geographical: 3, technological: 1}
+  status: derived
+  derivation: "1000 kg / 1351 L = 0.7402 kg/L"
+- id: fuels.petrol.ttw_co2_per_litre.e0
+  layer: fuels
+  name: Petrol (E0) tank-to-wheel fossil CO2 per litre
+  value: 2.272
+  unit: kg CO2/L
+  quantity: emission_factor
+  gas_basis: CO2
+  boundary: "Combustion CO2 only, no ethanol blending."
+  geography: GLO
+  reference_year: "2006/2020 inputs"
+  technology: motor gasoline E0
+  uncertainty: {distribution: none, low: null, high: null, note: "propagated from inputs in Monte Carlo"}
+  source_id: ipcc-2006-v2-ch1
+  locator: "derived"
+  quote: ""
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: derived
+  derivation: "0.7402 kg/L x 44.3 MJ/kg x 69.3 g/MJ / 1000 = 2.272 kg CO2/L"
+  notes: "India sells ethanol-blended petrol (E10 -> E20); an E20-specific factor is a known gap (fossil CO2/L lower, MJ/L lower). ICCT 2021 uses 2.17 kg CO2e/L for the 2021-2032 blend path."
+- id: fuels.petrol.wtt.in.icct2021
+  layer: fuels
+  name: Petrol well-to-tank GHG per litre, India fuel mix 2021-2032 (incl. ethanol share rising 5% -> 12%)
+  value: 0.64
+  unit: kg CO2e/L
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Well-to-tank: crude extraction, transport, refining, distribution; ethanol production share."
+  geography: IN
+  reference_year: "2021-2032 average"
+  technology: Indian petrol with ethanol blending
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "p. 3, footnote 9"
+  quote: "For the fuel mix, the WTT carbon intensity of 0.64 kg CO2 eq./L and TTW carbon intensity of 2.17 g CO2 eq./L consider an increase of the molasses and cellulosic ethanol share from 5% in 2021 to 12% in 2032."
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+  notes: "Fact sheet states methane at 20-year GWP. Model-based secondary value; primary refinery data (IOCL/BPCL/HPCL BRSR) is a data gap."
+- id: fuels.petrol.ttw.in.icct2021
+  layer: fuels
+  name: Petrol tank-to-wheel GHG per litre, India 2021-2032 blend path (ICCT)
+  value: 2.17
+  unit: kg CO2e/L
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Tank-to-wheel, fossil share of the ethanol-blended fuel."
+  geography: IN
+  reference_year: "2021-2032 average"
+  technology: Indian petrol, ethanol 5% -> 12%
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "p. 3, footnote 9"
+  quote: "TTW carbon intensity of 2.17 g CO2 eq./L"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+  notes: "Source prints 'g CO2 eq./L'; physically this must be kg CO2e/L (E0 combustion = 2.27 kg/L). Recorded as kg — a unit typo in the source, flagged."

@@ -1,0 +1,32 @@
+# Published Indian 2W life-cycle GHG results used as validation targets (transcribed from the opened PDF).
+study:
+  id: icct-2w-fc-india-2021
+  source_id: icct-2w-fc-india-2021
+  locator: "Table 1, p. 3"
+  functional_unit: 1 vehicle-km
+  unit: g CO2e/km
+  boundary: "Well-to-tank (fuel/electricity production incl. T&D) + tank-to-wheel + vehicle production & recycling + battery production; no maintenance row."
+  geography: IN
+  registration_year: "FY 2020-21"
+  gwp_note: "Methane at 20-year GWP (stated on p. 2-3)."
+  inputs_stated:  # footnote 9
+    lifetime_km: 120000
+    production_intensity_kgco2e_per_kg: 5.2
+    curb_weight_kg_range: [108, 130]
+    battery_kgco2e_per_kwh: 69
+    fuel_l_per_100km: {motorcycle_ice: 1.8, scooter_ice: 2.2}
+    elec_kwh_per_100km: {motorcycle_ev: 4.1, scooter_ev: 3.7}
+    fuel_wtt_kgco2e_per_l: 0.64
+    fuel_ttw_kgco2e_per_l: 2.17   # printed as "g CO2 eq./L" in the source (unit typo)
+    elec_wtt_gco2e_per_kwh: 767
+results:
+  - {vehicle: ice_small_motorcycle, label: "ICE small motorcycle (97.2 cc)", wtt: 11.0, ttw: 38.3, vehicle_production: 4.9, battery_production: 0.0, total: 54.2, saving_vs_ice: null}
+  - {vehicle: ev_motorcycle_3p5kwh, label: "Electric motorcycle (3.5 kWh)", battery_kwh: 3.5, wtt: 28.7, ttw: 0.0, vehicle_production: 5.0, battery_production: 2.0, total: 35.7, saving_vs_ice: 0.341}
+  - {vehicle: ev_motorcycle_2p7kwh, label: "Electric motorcycle (2.7 kWh)", battery_kwh: 2.7, wtt: 21.7, ttw: 0.0, vehicle_production: 3.9, battery_production: 1.6, total: 27.1, saving_vs_ice: 0.500}
+  - {vehicle: ice_scooter, label: "ICE scooter (109.5 cc)", wtt: 12.8, ttw: 43.4, vehicle_production: 4.7, battery_production: 0.0, total: 60.9, saving_vs_ice: null}
+  - {vehicle: ev_scooter_2p9kwh, label: "Electric scooter (2.9 kWh)", battery_kwh: 2.9, wtt: 31.7, ttw: 0.0, vehicle_production: 4.2, battery_production: 1.7, total: 37.5, saving_vs_ice: 0.384}
+quote: "Total g CO2 eq./km 54.2 35.7 27.1 60.9 37.5 ... Life-cycle GHG savings compared to ICE — 34.1% 50.0% — 38.4%"
+consistency_findings:
+  - "Battery row reproduces exactly: kWh x 69 / 120000 km (2.9 kWh -> 1.67 g/km, printed 1.7)."
+  - "Fuel rows imply 2.0 L/100 km for the scooter (43.4/2.17; 12.8/0.64), not the stated 2.2 (-9%)."
+  - "Electricity rows imply 4.13 kWh/100 km for the scooter (31.7/767) and 3.74 for the 3.5 kWh motorcycle (28.7/767): the stated 3.7 / 4.1 appear swapped."

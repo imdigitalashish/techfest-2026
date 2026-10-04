@@ -1,0 +1,209 @@
+# Vehicle + battery layer (two-wheelers). Schema: architecture/agent-brief.md
+# Sources opened: ICCT Briefing Aug 2021 (Anup & Deo), Table 1 and footnote 9.
+- id: vehicle.2w.production_intensity.icct2021
+  layer: vehicle
+  name: Two-wheeler production and recycling GHG intensity per kg curb weight (excl. traction battery)
+  value: 5.2
+  unit: kg CO2e/kg
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Cradle-to-gate vehicle manufacture incl. recycling, per kg vehicle; battery separate."
+  geography: GLO
+  reference_year: "2021"
+  technology: two-wheeler (scooter/motorcycle) glider + powertrain
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "p. 3, footnote 9"
+  quote: "The GHG emissions corresponding to the production and recycling of the vehicles are based on carbon intensity of 5.2 kg CO2 eq. per kg and vehicle curb weights of 108–130 kg."
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 3, technological: 2}
+  status: verified
+  notes: "Aggregate factor — the planned bill-of-materials route (Indian steel/aluminium/plastics x process energy x CEA grid) replaces it."
+- id: battery.li_ion.production_intensity.icct2021
+  layer: battery
+  name: Li-ion traction battery production GHG intensity per kWh capacity
+  value: 69
+  unit: kg CO2e/kWh
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Cradle-to-gate battery pack production."
+  geography: GLO
+  reference_year: "2021"
+  technology: Li-ion pack (chemistry not stated in the briefing)
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "p. 3, footnote 9"
+  quote: "For the electric vehicles, the GHG emissions of the production of the batteries is considered with a carbon intensity of 69 kg CO2 eq. per kWh battery capacity."
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 4, technological: 3}
+  status: verified
+  notes: "Indian e-2W packs are largely assembled in India from imported cells; cell-origin grid and chemistry (LFP vs NMC) matter — data gap."
+- id: vehicle.2w.lifetime_km.icct2021
+  layer: vehicle
+  name: Two-wheeler lifetime mileage (ICCT India 2W LCA)
+  value: 120000
+  unit: km
+  quantity: lifetime
+  gas_basis: n/a
+  boundary: "Total lifetime distance over which production emissions are spread."
+  geography: IN
+  reference_year: "2021"
+  technology: two-wheeler
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "p. 3, footnote 9"
+  quote: "These emissions are spread over a vehicle lifetime mileage of 120,000 km."
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+  notes: "Assumption-type input in the source (no survey cited in the briefing). Indian survey-based 2W mileage is a data gap; high leverage on production share."
+- id: vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_footnote
+  layer: use
+  name: ICE scooter (109.5 cc market average FY2020-21) fuel consumption — as stated in footnote
+  value: 2.2
+  unit: L/100km
+  quantity: consumption
+  gas_basis: n/a
+  boundary: "Real-world? not stated."
+  geography: IN
+  reference_year: "FY2020-21"
+  technology: 109.5 cc petrol scooter
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "p. 3, footnote 9"
+  quote: "a fuel consumption of 1.8 L/100 km and 2.2 L/100 km are considered for the gasoline-powered motorcycle and the scooter"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+  notes: "Inconsistent with Table 1: TTW 43.4 g/km / 2.17 kg/L implies 2.0 L/100 km (see .table_implied)."
+- id: vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied
+  layer: use
+  name: ICE scooter fuel consumption implied by ICCT Table 1 (TTW / TTW factor)
+  value: 2.0
+  unit: L/100km
+  quantity: consumption
+  gas_basis: n/a
+  boundary: ""
+  geography: IN
+  reference_year: "FY2020-21"
+  technology: 109.5 cc petrol scooter
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "derived from Table 1 (p. 3)"
+  quote: "Tank-to-wheel g CO2 eq./km 38.3 0.0 0.0 43.4 0.0"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 1}
+  status: derived
+  derivation: "43.4 g/km / 2.17 kg/L = 2.00 L/100 km"
+- id: vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_footnote
+  layer: use
+  name: Electric scooter electricity consumption — as stated in footnote
+  value: 3.7
+  unit: kWh/100km
+  quantity: consumption
+  gas_basis: n/a
+  boundary: "Not stated whether at plug (incl. charger losses) or at battery."
+  geography: IN
+  reference_year: "FY2020-21"
+  technology: 2.9 kWh electric scooter
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "p. 3, footnote 9"
+  quote: "while for the electric motorcycle and scooter an electricity consumption of 4.1 kWh/100 km and 3.7 kWh/100 km are considered"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+  notes: "Inconsistent with Table 1: WTT 31.7 g/km / 767 g/kWh implies 4.13 kWh/100 km (motorcycle 28.7/767 = 3.74) — the two footnote values look swapped."
+- id: vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied
+  layer: use
+  name: Electric scooter electricity consumption implied by ICCT Table 1 (WTT / grid factor)
+  value: 4.13
+  unit: kWh/100km
+  quantity: consumption
+  gas_basis: n/a
+  boundary: "Consistent with ICCT's 767 g CO2e/kWh factor, which includes T&D losses."
+  geography: IN
+  reference_year: "FY2020-21"
+  technology: 2.9 kWh electric scooter
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "derived from Table 1 (p. 3)"
+  quote: "Well-to-tank g CO2 eq./km 11.0 28.7 21.7 12.8 31.7"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: derived
+  derivation: "31.7 g/km / 767 g/kWh x 100 = 4.13 kWh/100 km"
+- id: energy.electricity.in.icct2021_lifecycle_2021_2032
+  layer: energy
+  name: India electricity life-cycle GHG factor used by ICCT (IEA STEPS mix averaged over 2021-2032 lifetime, incl. T&D)
+  value: 0.767
+  unit: kg CO2e/kWh
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Life-cycle (IPCC technology factors) incl. T&D losses; lifetime-average of projected mix."
+  geography: IN
+  reference_year: "2021-2032 average"
+  technology: projected Indian grid mix (IEA Stated Policies)
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "p. 3, footnote 9"
+  quote: "The WTT emissions of the electricity production are considered as 767 g CO2 eq./kWh."
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+- id: vehicle.2w.scooter_ice.curb_mass_implied.icct2021
+  layer: vehicle
+  name: ICE scooter mass implied by ICCT Table 1 (vehicle production g/km x lifetime / 5.2)
+  value: 108.5
+  unit: kg
+  quantity: mass
+  gas_basis: n/a
+  boundary: "Curb weight basis used by ICCT."
+  geography: IN
+  reference_year: "FY2020-21"
+  technology: 109.5 cc petrol scooter
+  uncertainty: {distribution: none, low: null, high: null, note: "Table value rounded to 0.1 g/km => +-1.2 kg"}
+  source_id: icct-2w-fc-india-2021
+  locator: "derived from Table 1 (p. 3) + footnote 9"
+  quote: "Vehicle production g CO2 eq./km 4.9 5.0 3.9 4.7 4.2"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 1}
+  status: derived
+  derivation: "4.7 g/km x 120000 km / 5.2 kg CO2e/kg / 1000 = 108.5 kg (within the stated 108-130 kg)"
+- id: vehicle.2w.scooter_ev.glider_mass_implied.icct2021
+  layer: vehicle
+  name: Electric scooter mass excl. battery implied by ICCT Table 1
+  value: 96.9
+  unit: kg
+  quantity: mass
+  gas_basis: n/a
+  boundary: "Vehicle without traction battery (battery accounted per kWh)."
+  geography: IN
+  reference_year: "FY2020-21"
+  technology: 2.9 kWh electric scooter
+  uncertainty: {distribution: none, low: null, high: null, note: "+-1.2 kg from table rounding"}
+  source_id: icct-2w-fc-india-2021
+  locator: "derived from Table 1 (p. 3) + footnote 9"
+  quote: "Vehicle production g CO2 eq./km 4.9 5.0 3.9 4.7 4.2"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: derived
+  derivation: "4.2 g/km x 120000 km / 5.2 kg CO2e/kg / 1000 = 96.9 kg"
+- id: battery.scooter_ev.capacity.icct2021
+  layer: battery
+  name: Electric scooter battery capacity (ICCT representative model)
+  value: 2.9
+  unit: kWh
+  quantity: other
+  gas_basis: n/a
+  boundary: "Nominal pack capacity."
+  geography: IN
+  reference_year: "FY2020-21"
+  technology: electric scooter
+  uncertainty: {distribution: none, low: null, high: null, note: ""}
+  source_id: icct-2w-fc-india-2021
+  locator: "Table 1 header (p. 3)"
+  quote: "ICE scooter (109.5 cc) Electric scooter (2.9 kWh)"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 1}
+  status: verified
