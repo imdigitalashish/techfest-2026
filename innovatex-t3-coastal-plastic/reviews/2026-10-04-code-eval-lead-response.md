@@ -15,7 +15,7 @@ The reviewer reproduced 13 of 18 headline numbers exactly: the twin (all paired 
 
 Verification after the fixes:
 - `python3 -m pytest eval/tests -q`: 8 passed
-- `python3 -m pytest dashboard/tests mrv_ledger/tests -q` (from `components/`): 32 passed
+- `python3 -m pytest dashboard/tests mrv_ledger/tests -q` (from `components/`): 33 passed
 - `bash deliverables/build.sh`: check_docs 0 problems, 97 aliases
 - `python3 -m pytest twin_sim/tests -q` (from `components/`): 29 passed, including the twin.md drift test
 - detection: 15 tests, per the detection child
