@@ -157,3 +157,25 @@ Leads run on Claude Opus 5.5. Get second opinions from other model families, as 
 - The role mapping follows Oct-2026 published comparisons (secondary sources: Opus 5.5 leads agentic coding; GPT-6 Astra leads reasoning and maths). Treat it as a hypothesis; the ledger decides.
 - **Minimum reviews:** the spike/ADR · the final Round-1 deliverable, before sending DONE · any headline number or claim.
 - **Feedback is advisory; the lead decides.** The reviewer writes its raw review to `<slug>/reviews/<YYYY-MM-DD>-<artifact>-<model>.md`. The lead marks each item ACCEPTED or REJECTED with a reason, and adds one line to `<slug>/reviews/ledger.tsv`: date · artifact · model · effort · issues · accepted · rejected · note.
+
+## 11. The winning demo (user directive, 4 Oct 2026, 17:25 IST)
+We play to win, not just to pass Round 1. A judge's reaction should be: "you did what we asked, and on top of that, look at what this can do." That one striking, true capability, shown live, is what we call a demo.
+
+**Bar for a working demo:**
+1. **One command from a fresh clone:** `demo/run.sh` (or `make demo`) in the project folder.
+   - A documented fetch step is fine; after it, the demo runs offline.
+   - First visual within ≤ 60 s on this Mac.
+   - CPU only unless the Supervisor grants the GPU.
+2. **Shows the core claim live** on committed real data where possible, with a baseline side by side so the gap is visible. SYNTHETIC data is labelled on screen.
+3. **The "crazy" element:** the one capability that makes a judge lean in, for example a shock, an attack, a dropout or a budget squeeze, and the system visibly handling it. At least one knob the judge can turn and watch the system respond.
+4. **Honest:** every on-screen number comes from committed results or is computed live by committed code. No new claims without evidence.
+5. **Fallbacks:** `demo/SCRIPT.md` (a 3-minute talk track: what to click, what to say, which number to point at), plus a recorded fallback (GIF/MP4 or screenshots) in `demo/fallback/` in case live fails.
+6. **Smoke test:** `demo/smoke.sh` (or a pytest) runs headless and asserts the key outputs, so a fresh clone proves it works.
+7. **Review:** one gpt-6-astra (max) "judge watching the demo" review, recorded in `reviews/` and `ledger.tsv`.
+
+**How:** the lead spawns one child session, the *demo builder*, via `create_session`.
+- The builder first proposes the "crazy" element, grounded in the project's strongest committed result; the lead approves it.
+- The builder then builds to the bar above.
+- Prefer a single-file offline HTML/JS page fed by exported results, plus a small Python backend only if live computation is the point.
+- Vendor any JS library locally (no CDN at demo time).
+- The lead verifies `demo/run.sh` and `demo/smoke.sh` from a clean checkout, then messages the Supervisor "DEMO DONE".
