@@ -113,6 +113,14 @@ def test_adapter_never_reads_labels_before_available():
     p2 = run_episode("t", f, L2, ctx, spec).p_up
     np.testing.assert_allclose(p1[: s + H + 1], p2[: s + H + 1])
     assert not np.allclose(p1[s + H + 1:], p2[s + H + 1:])
+    # v2 spike paths: coin expert + harm gate (+ boost) must respect label availability too
+    ctx.cfg["harm"] = {"k": 0.0, "threshold": 2.0, "min_n": 20, "cooldown": 100}
+    spec2 = {"norm": "ewma", "heads": [("static",), ("sgd", 0.01), ("regime", 0), ("coin",)],
+             "combine": "fixed_share", "detectors": ["harm"], "on_alarm": ["boost"]}
+    q1 = run_episode("t2", f, L1, ctx, spec2).p_up
+    q2 = run_episode("t2", f, L2, ctx, spec2).p_up
+    np.testing.assert_allclose(q1[: s + H + 1], q2[: s + H + 1])
+    assert not np.allclose(q1[s + H + 1:], q2[s + H + 1:])
 
 
 def test_detectors_fire_on_obvious_shift_and_not_on_iid():
@@ -136,3 +144,31 @@ def test_metrics():
     assert s["acc"] == 1.0 and s["auc"] == 1.0 and abs(s["logloss"] + np.log(0.8)) < 1e-9
     m, lo, hi = block_bootstrap_ci(np.ones(5000), block=100)
     assert m == 1.0 and lo == 1.0 and hi == 1.0
+
+
+def test_fast_ks_matches_scipy_exactly():
+    from scipy.stats import ks_2samp
+    from components.shift_detector import ks_pvalue_asymp, ks_stat_sorted
+    rng = np.random.default_rng(7)
+    for trial in range(200):
+        n, m = int(rng.integers(50, 5000)), int(rng.integers(5, 80))
+        a = rng.normal(size=n)
+        b = rng.normal(rng.normal(0, 0.5), 1, size=m)
+        if trial % 3 == 0:  # heavy ties, like spread_ticks
+            a, b = np.round(a), np.round(b)
+        r = ks_2samp(b, a, method="asymp")
+        d = ks_stat_sorted(b, np.sort(a))
+        assert abs(d - r.statistic) < 1e-12
+        assert abs(ks_pvalue_asymp(d, m, n) - r.pvalue) < 1e-12
+
+
+def test_harm_cusum_fires_only_when_worse_than_coin_flip():
+    from components.shift_detector import LN2, HarmCUSUM
+    rng = np.random.default_rng(8)
+    # Threshold in nats; ARL0 grows ~exp(2*|drift|*H/var), so H=15 is quiet for a model 0.04 nats
+    # better than a coin flip (sd 0.3) while a 0.05-nat harmful excess is caught in ~300 labels.
+    h = HarmCUSUM(k=0.0, threshold=15.0, min_n=60, cooldown=600)
+    good = [h.update(t, x) for t, x in enumerate(rng.normal(LN2 - 0.04, 0.3, 20000))]
+    assert sum(a is not None for a in good) <= 1
+    bad = [a for t, x in enumerate(rng.normal(LN2 + 0.05, 0.3, 3000), start=20000) if (a := h.update(t, x))]
+    assert bad and bad[0].step < 20000 + 1000

@@ -7,7 +7,12 @@ detectors, (3) updates feature-based detectors, and (4) acts on alarms. Predicti
 
 Policies are declared as data in POLICIES so new ones (autoresearch candidates) are one dict away.
 Head kinds: static | sgd(lr) | periodic(every, window) | alarm_refit(window, min_post) | regime(r)
-Combiner: single | fixed_share(eta, alpha) ; detectors: ks | ph ; on_alarm: refit | boost
+            | coin (constant 0.5 — "abstain") | gbdt (static GBDT, predictions precomputed in batch)
+Combiner: single | gate | fixed_share(eta, alpha)
+Detectors: ks (naive) | ksc (calibrated, v1 feature set) | ksc:<set> (calibrated, cfg["ks_sets"][set])
+           | ph (Page-Hinkley on loss) | harm (HarmCUSUM: delayed loss in excess of ln 2)
+on_alarm: refit | boost.  Policies with "wf": True are run with per-day walk-forward contexts
+(heads and scalers refit on all days strictly before the evaluated day; see refit_context).
 """
 from __future__ import annotations
 
@@ -19,7 +24,7 @@ import numpy as np
 from components.contracts import EpisodeResult, FeatureFrame, Labels
 from components.forecaster import LogisticHead
 from components.normalizer import EWMANorm, StaticNorm
-from components.shift_detector import PageHinkley, RollingKS, calibrate_ks_null
+from components.shift_detector import HarmCUSUM, PageHinkley, RollingKS, calibrate_ks_null
 
 POLICIES: dict[str, dict] = {
     "static_snorm":   dict(norm="static", heads=[("static",)]),
@@ -41,6 +46,22 @@ POLICIES: dict[str, dict] = {
                            combine="fixed_share", detectors=["ksc"], on_alarm=["boost"]),
 }
 
+# v2 (spike) — see eval/PREREGISTRATION.md. FS = the Fixed-Share expert pool used by the spike.
+_FS = [("static",), ("sgd", 0.0005), ("sgd", 0.005), ("periodic", 900, 1800), ("regime", 0), ("regime", 1), ("regime", 2)]
+POLICIES.update({
+    "fs_coin":      dict(norm="ewma", heads=_FS + [("coin",)], combine="fixed_share"),
+    "fs_coin_harm": dict(norm="ewma", heads=_FS + [("coin",)], combine="fixed_share",
+                         detectors=["harm"], on_alarm=["boost"]),
+    "spike":        dict(norm="ewma", heads=_FS + [("coin",)], combine="fixed_share",
+                         detectors=["ksc:lean", "harm"], on_alarm=["boost"]),
+    "static_gbdt":  dict(norm="ewma", heads=[("gbdt",)]),
+    "spike_gbdt":   dict(norm="ewma", heads=_FS + [("gbdt",), ("coin",)], combine="fixed_share",
+                         detectors=["ksc:lean", "harm"], on_alarm=["boost"]),
+    "static_wf":    dict(norm="static", heads=[("static",)], wf=True),
+    "spike_wf":     dict(norm="ewma", heads=_FS + [("coin",)], combine="fixed_share",
+                         detectors=["ksc:lean", "harm"], on_alarm=["boost"], wf=True),
+})
+
 
 @dataclass
 class Context:
@@ -55,6 +76,8 @@ class Context:
     ks_idx: list[int]
     cfg: dict = field(default_factory=dict)
     ks_thresholds: np.ndarray | None = None
+    ks_sets: dict = field(default_factory=dict)   # name -> (idx list, ref sample, calibrated thresholds)
+    gbdt: object | None = None                    # sklearn classifier on EWMA-normalised features
 
 
 def build_context(train: list[tuple[FeatureFrame, Labels]], cfg: dict) -> Context:
@@ -81,7 +104,47 @@ def build_context(train: list[tuple[FeatureFrame, Labels]], cfg: dict) -> Contex
         k = cfg["ks"]
         thr = calibrate_ks_null([f.X for f, _ in train], ks_idx, k["window"], k["subsample"],
                                 cfg["ksc"]["stride"], cfg["ksc"]["quantile"])
-    return Context(names, snorm, enorm, heads, regime, edges, ks_ref, ks_idx, cfg, thr)
+    ks_sets = {}
+    for set_name, feats in cfg.get("ks_sets", {}).items():
+        k = cfg["ks"]
+        idx = [names.index(n) for n in feats]
+        tset = calibrate_ks_null([f.X for f, _ in train], idx, k["window"], k["subsample"],
+                                 cfg["ksc"]["stride"], cfg["ksc"]["quantile"])
+        ks_sets[set_name] = (idx, X[::k["subsample"]][:, idx], tset)
+    gb = None
+    if cfg.get("gbdt"):
+        from sklearn.ensemble import HistGradientBoostingClassifier
+        g = cfg["gbdt"]
+        m = ~np.isnan(y)
+        rows = np.flatnonzero(m)[::g["stride"]]
+        gb = HistGradientBoostingClassifier(max_iter=g["max_iter"], learning_rate=g["learning_rate"],
+                                            max_leaf_nodes=g["max_leaf_nodes"], l2_regularization=g["l2"],
+                                            early_stopping=False, random_state=0)
+        gb.fit(Ze[rows], y[rows].astype(int))
+    return Context(names, snorm, enorm, heads, regime, edges, ks_ref, ks_idx, cfg, thr, ks_sets, gb)
+
+
+def refit_context(prior: list[tuple[FeatureFrame, Labels]], base: Context, stride: int = 5) -> Context:
+    """Walk-forward context: scalers, static heads and regime heads refit on `prior` days
+    (all strictly before the evaluated day; rows subsampled by `stride`). KS references and
+    thresholds are kept from `base` (the training split), so detectors stay comparable."""
+    cfg = base.cfg
+    X = np.vstack([f.X[::stride] for f, _ in prior])
+    y = np.concatenate([l.y[::stride] for _, l in prior])
+    snorm = StaticNorm.fit(X)
+    enorm = EWMANorm(snorm.mu, snorm.sd ** 2, cfg["ewma_halflife_steps"])
+    Zs = snorm.transform(X)
+    Ze = np.vstack([enorm.transform(f.X)[::stride] for f, _ in prior])
+    rv = X[:, base.names.index("rv_600s_bps")]
+    edges = np.quantile(rv, [1 / 3, 2 / 3])
+    reg = np.digitize(rv, edges)
+    heads = {"static": LogisticHead(Zs.shape[1], "static").fit(Zs, y, C=cfg["C"]),
+             "ewma": LogisticHead(Ze.shape[1], "static").fit(Ze, y, C=cfg["C"])}
+    regime = {"ewma": [LogisticHead(Ze.shape[1], f"regime{r}").fit(Ze[reg == r], y[reg == r], C=cfg["C"])
+                       for r in range(3)]}
+    regime["static"] = regime["ewma"]
+    return Context(base.names, snorm, enorm, heads, regime, edges, base.ks_ref, base.ks_idx, cfg,
+                   base.ks_thresholds, base.ks_sets, None)
 
 
 def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
@@ -94,17 +157,26 @@ def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
     T, H, y = Z.shape[0], labels.h_steps, labels.y
     prior = ctx.head_static[norm]
 
-    heads: list[LogisticHead] = []
+    heads: list = []
     kinds = spec["heads"]
-    for k in kinds:
+    fixed_cols: dict[int, np.ndarray] = {}   # experts whose predictions do not depend on online state
+    for i, k in enumerate(kinds):
         if k[0] == "regime":
             heads.append(ctx.head_regime[norm][k[1]].copy())
+        elif k[0] == "coin":
+            heads.append(None)
+            fixed_cols[i] = np.full(T, 0.5)
+        elif k[0] == "gbdt":
+            heads.append(None)
+            fixed_cols[i] = ctx.gbdt.predict_proba(Z)[:, 1]
         else:
             heads.append(prior.copy(name=k[0]))
     K = len(heads)
+    live = [i for i in range(K) if i not in fixed_cols]
     combine = spec.get("combine", "single")
     eta, alpha0 = cfg["fs_eta"], cfg["fs_alpha"]
-    alpha_boost, boost_steps = cfg["fs_alpha_boost"], cfg["fs_boost_steps"]
+    alpha_boost = spec.get("fs_alpha_boost", cfg["fs_alpha_boost"])
+    boost_steps = spec.get("fs_boost_steps", cfg["fs_boost_steps"])
     w = np.full(K, 1.0 / K)
     rv_i = ctx.names.index("rv_600s_bps")
 
@@ -112,11 +184,18 @@ def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
     ks = RollingKS(ctx.ks_ref, ctx.ks_idx, list(cfg["ks_features"]), **cfg["ks"]) if "ks" in dets else None
     if "ksc" in dets:
         ks = RollingKS(ctx.ks_ref, ctx.ks_idx, list(cfg["ks_features"]), **cfg["ks"], thresholds=ctx.ks_thresholds)
+    for d in dets:
+        if d.startswith("ksc:"):
+            idx, ref, thr = ctx.ks_sets[d[4:]]
+            ks = RollingKS(ref, idx, [ctx.names[i] for i in idx], **cfg["ks"], thresholds=thr)
     ph = PageHinkley(**cfg["ph"]) if "ph" in dets else None
+    harm = HarmCUSUM(**{**cfg["harm"], **spec.get("harm", {})}) if "harm" in dets else None
     on_alarm = spec.get("on_alarm", [])
     alarm_heads = [i for i, k in enumerate(kinds) if k[0] == "alarm_refit"]
 
     P = np.full((T, K), 0.5)
+    for i, col in fixed_cols.items():
+        P[:, i] = col
     p = np.full(T, 0.5)
     pred_ns = np.zeros(T, dtype=np.int64)
     step_ns = np.zeros(T, dtype=np.int64)
@@ -145,7 +224,7 @@ def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
             P[t, r] = heads[r].predict(z)
             p[t] = P[t, r]
         else:
-            for k in range(K):
+            for k in live:
                 P[t, k] = heads[k].predict(z)
             p[t] = float(w @ P[t]) if combine == "fixed_share" else P[t, 0]
         t1 = perf()
@@ -162,11 +241,14 @@ def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
             for k, kind in enumerate(kinds):
                 if kind[0] == "sgd":
                     heads[k].sgd_update(Z[j], yj, kind[1], cfg["sgd_l2"], prior)
-            if ph is not None:
+            if ph is not None or harm is not None:
                 pj = min(max(p[j], 1e-12), 1 - 1e-12)
-                al = ph.update(t, -np.log(pj if yj > 0.5 else 1.0 - pj))
-                if al is not None:
-                    fire(al)
+                lj = -np.log(pj if yj > 0.5 else 1.0 - pj)
+                for det in (ph, harm):
+                    if det is not None:
+                        al = det.update(t, lj)
+                        if al is not None:
+                            fire(al)
         for k, kind in enumerate(kinds):
             if kind[0] == "periodic" and t - last_refit[k] >= kind[1] and t - H >= kind[2] // 2:
                 lo = max(0, t - H - kind[2] + 1)

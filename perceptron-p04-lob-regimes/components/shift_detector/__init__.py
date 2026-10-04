@@ -9,13 +9,43 @@ Label-free: it fires on *covariate* shift, whether or not the shift hurts the mo
 PageHinkley on the deployed model's realised (delayed) log-loss: label-based, fires when
 the *loss* drifts up — i.e. on harmful shift. Same recursion as River's PageHinkley
 (mode='up'); see research/notes/shift-detection-sota.md.
+
+HarmCUSUM (the spike's harm gate): one-sided CUSUM on the deployed forecast's delayed log-loss
+in excess of ln 2 — the loss of the coin-flip forecast p = 0.5. It accumulates evidence only
+while the deployed model is doing *worse than abstaining*, the operational meaning of a
+harmful shift (cf. Podkopaev & Ramdas 2022, risk tracking of a deployed model). O(1) per label.
 """
 from __future__ import annotations
 
 import numpy as np
-from scipy.stats import ks_2samp
+from scipy.stats import distributions, ks_2samp
 
 from components.contracts import Alarm
+
+LN2 = float(np.log(2.0))
+
+
+def ks_stat_sorted(cur: np.ndarray, ref_sorted: np.ndarray) -> float:
+    """Two-sample KS distance D between `cur` and an already-sorted reference, O(m log n).
+
+    Equal to scipy.stats.ks_2samp(cur, ref).statistic (ties included): the supremum of
+    |F_cur - F_ref| over the pooled sample is attained either at a value u of `cur` (right
+    limits) or just below one (left limits), so only m unique points need evaluating.
+    """
+    c = np.sort(cur)
+    u = np.unique(c)
+    m, n = c.shape[0], ref_sorted.shape[0]
+    fc_at = np.searchsorted(c, u, side="right") / m
+    fc_bef = np.searchsorted(c, u, side="left") / m
+    fr_at = np.searchsorted(ref_sorted, u, side="right") / n
+    fr_bef = np.searchsorted(ref_sorted, u, side="left") / n
+    return float(max(np.abs(fc_at - fr_at).max(), np.abs(fc_bef - fr_bef).max()))
+
+
+def ks_pvalue_asymp(d: float, n1: int, n2: int) -> float:
+    """Two-sided p-value exactly as scipy.stats.ks_2samp(method='asymp') computes it (SciPy 1.17)."""
+    m, n = sorted([float(n1), float(n2)], reverse=True)
+    return float(np.clip(distributions.kstwo.sf(d, np.round(m * n / (m + n))), 0, 1))
 
 
 class RollingKS:
@@ -38,13 +68,14 @@ class RollingKS:
         if t < self.window or t % self.stride:
             return None
         cur = X_raw[t - self.window + 1:t + 1:self.subsample][:, self.idx]
-        res = [ks_2samp(cur[:, k], self.ref[k], method="asymp") for k in range(len(self.idx))]
         if self.thresholds is None:
-            p = np.array([r.pvalue for r in res])
+            m = cur.shape[0]
+            p = np.array([ks_pvalue_asymp(ks_stat_sorted(cur[:, k], self.ref[k]), m, self.ref[k].shape[0])
+                          for k in range(len(self.idx))])
             self.last_p = p
             reject, k, stat = p.min() * len(self.idx) < self.alpha, int(p.argmin()), float(p.min())
         else:
-            ratio = np.array([r.statistic for r in res]) / self.thresholds
+            ratio = np.array([ks_stat_sorted(cur[:, k], self.ref[k]) for k in range(len(self.idx))]) / self.thresholds
             reject, k, stat = bool(ratio.max() > 1.0), int(ratio.argmax()), float(ratio.max())
         self.hits = self.hits + 1 if reject else 0
         if self.hits >= self.persist and t - self.last_alarm >= self.cooldown:
@@ -68,7 +99,7 @@ def calibrate_ks_null(days_X: list[np.ndarray], feature_idx: list[int], window: 
         for t in range(window, Xi.shape[0], stride):
             cur = Xi[t - window + 1:t + 1:subsample][:, feature_idx]
             for k in range(len(feature_idx)):
-                D[k].append(ks_2samp(cur[:, k], ref[k], method="asymp").statistic)
+                D[k].append(ks_stat_sorted(cur[:, k], ref[k]))
     return np.array([np.quantile(d, quantile) for d in D])
 
 
@@ -90,5 +121,23 @@ class PageHinkley:
         if self.n >= self.min_n and self.m - self.m_min > self.threshold:
             stat = self.m - self.m_min
             self.reset()
+            return Alarm(t, self.name, float(stat))
+        return None
+
+
+class HarmCUSUM:
+    """S_t = max(0, S_{t-1} + loss_t - ln2 - k); alarm when S_t > threshold (then reset + cooldown)."""
+
+    name = "harm_cusum"
+
+    def __init__(self, k: float = 0.0, threshold: float = 5.0, min_n: int = 60, cooldown: int = 600):
+        self.k, self.threshold, self.min_n, self.cooldown = k, threshold, min_n, cooldown
+        self.s, self.n, self.last_alarm = 0.0, 0, -10**9
+
+    def update(self, t: int, loss: float) -> Alarm | None:
+        self.n += 1
+        self.s = max(0.0, self.s + loss - LN2 - self.k)
+        if self.n >= self.min_n and self.s > self.threshold and t - self.last_alarm >= self.cooldown:
+            stat, self.s, self.last_alarm = self.s, 0.0, t
             return Alarm(t, self.name, float(stat))
         return None

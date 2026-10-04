@@ -1,0 +1,290 @@
+{
+ "spike_H10_B120": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "static"
+   ],
+   [
+    "sgd",
+    0.0005
+   ],
+   [
+    "sgd",
+    0.005
+   ],
+   [
+    "periodic",
+    900,
+    1800
+   ],
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ],
+   [
+    "coin"
+   ]
+  ],
+  "combine": "fixed_share",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "boost"
+  ],
+  "harm": {
+   "threshold": 10.0
+  },
+  "fs_boost_steps": 120
+ },
+ "spike_H10_B600": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "static"
+   ],
+   [
+    "sgd",
+    0.0005
+   ],
+   [
+    "sgd",
+    0.005
+   ],
+   [
+    "periodic",
+    900,
+    1800
+   ],
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ],
+   [
+    "coin"
+   ]
+  ],
+  "combine": "fixed_share",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "boost"
+  ],
+  "harm": {
+   "threshold": 10.0
+  },
+  "fs_boost_steps": 600
+ },
+ "spike_H20_B120": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "static"
+   ],
+   [
+    "sgd",
+    0.0005
+   ],
+   [
+    "sgd",
+    0.005
+   ],
+   [
+    "periodic",
+    900,
+    1800
+   ],
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ],
+   [
+    "coin"
+   ]
+  ],
+  "combine": "fixed_share",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "boost"
+  ],
+  "harm": {
+   "threshold": 20.0
+  },
+  "fs_boost_steps": 120
+ },
+ "spike_H20_B600": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "static"
+   ],
+   [
+    "sgd",
+    0.0005
+   ],
+   [
+    "sgd",
+    0.005
+   ],
+   [
+    "periodic",
+    900,
+    1800
+   ],
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ],
+   [
+    "coin"
+   ]
+  ],
+  "combine": "fixed_share",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "boost"
+  ],
+  "harm": {
+   "threshold": 20.0
+  },
+  "fs_boost_steps": 600
+ },
+ "spike_H40_B120": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "static"
+   ],
+   [
+    "sgd",
+    0.0005
+   ],
+   [
+    "sgd",
+    0.005
+   ],
+   [
+    "periodic",
+    900,
+    1800
+   ],
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ],
+   [
+    "coin"
+   ]
+  ],
+  "combine": "fixed_share",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "boost"
+  ],
+  "harm": {
+   "threshold": 40.0
+  },
+  "fs_boost_steps": 120
+ },
+ "spike_H40_B600": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "static"
+   ],
+   [
+    "sgd",
+    0.0005
+   ],
+   [
+    "sgd",
+    0.005
+   ],
+   [
+    "periodic",
+    900,
+    1800
+   ],
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ],
+   [
+    "coin"
+   ]
+  ],
+  "combine": "fixed_share",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "boost"
+  ],
+  "harm": {
+   "threshold": 40.0
+  },
+  "fs_boost_steps": 600
+ }
+}
