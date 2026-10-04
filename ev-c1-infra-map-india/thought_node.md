@@ -10,33 +10,18 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED** (user decision, Supervisor 09:55 IST: only 3 projects run at a time; EV C2 is the EV pick unless the user overrides). No jobs running, no agents running, all work pushed.
-- **State at pause:**
-  - morning package complete;
-  - real-data walking skeleton (national state map + Maharashtra district demand);
-  - two auto-research loops with ledgers (C5 census, C9 forecast).
-- **Resume point (in order):**
-  1. Fold `research/sota-methods.md` + `research/companies-products.md` into `landscape.md` **after** the fact-check. Only 1 of 11 claims is verified so far (WRI India 34,629 PCS / 5.4M EVs, Nov 2024); `research/fact-check.md` is partial and both agent files are unverified.
-  2. C9: switch to VAHAN Month Wise data for more origins; ensemble pooled-growth + share-logit; nowcast 2026.
-  3. C5: third charger source (operator list or UEI), then multiple-systems estimation; label OSM × OCM pairs for C4 F1.
-  4. Maharashtra district map (current boundaries incl. Palghar); SoI-consistent boundaries + compliant basemap for the government-facing UI.
-  5. Verify MoP 2024 norms and PM E-DRIVE targets at primary sources.
-  6. Independent adversarial review of ADR 001.
-  7. Refresh the Round-1 drafts with the Maharashtra and loop results.
-- **Rebuild everything from scratch** (from `ev-c1-infra-map-india/`, ~1 h, all small downloads):
-  - `uv venv .venv && uv pip install --python .venv/bin/python -r pyproject.toml`
-  - `.venv/bin/python components/vahan_ingest/fetch_vahan.py --national --states --rto-state MH` (cached and resumable)
-  - `.venv/bin/python components/charger_ingest/fetch_osm.py`
-  - `(cd .data && git clone --depth 1 --filter=blob:none --sparse https://github.com/openchargemap/ocm-export.git && cd ocm-export && git sparse-checkout set data/IN)`
-  - `.venv/bin/python components/charger_ingest/fetch_ocm.py`
-  - `sh components/admin_geo/fetch_boundaries.sh`
-  - `python3 components/charger_ingest/fetch_sources.py components/charger_ingest/source_urls.txt && python3 components/charger_ingest/official_pcs.py`
-  - `.venv/bin/python -W ignore eval/baseline_state_gap.py && .venv/bin/python -W ignore eval/mh_district_demand.py`
-  - `.venv/bin/python -W ignore components/census_completeness/census_v0.py`
-  - `.venv/bin/python -W ignore components/dashboard_map/build_map.py`
-  - loops: `components/{census_completeness,adoption_forecast}/autoresearch/eval.py --holdout`
-- **Needs from user:** If EV C1 is wanted instead of C2: register by 15 Oct with the track fixed at registration. Team of 2–5: names and skills. Optional: a free Open Charge Map API key.
-- **Risks:** (1) supply data: open sources ≈ 8% of official → capture–recapture far off until denser lists exist; (2) registrations ≠ on-road stock; (3) VAHAN markup changes (the client now self-discovers ids); (4) operator data terms; (5) boundary/basemap compliance for the government-facing map.
+- **Phase:** ▶ **RESUMED 13:05 IST** (batch slot; Supervisor). Goal: the definition of done below, then message "DONE — slot free". EV C2 is ✅ and the default EV pick, so the final memo must argue C1 for or against honestly.
+- **Definition of done (Supervisor 13:05):**
+  1. Facts: finish the fact-check (only 1 of 11 claims verified); verify the MoP 2024 norms and PM E-DRIVE targets at primary sources; every Round-1 number verified or marked UNVERIFIED.
+  2. Analysis: C9 on VAHAN month-wise data (ensemble + 2026 nowcast with backtest error); C5 with a third source + a multiple-systems estimate with CI; a Maharashtra district gap map on current boundaries (incl. Palghar), SoI-consistent for anything government-facing.
+  3. Round-1 methodology + roadmap final: numbers rendered from committed results, a doc-drift check (`eval/check_docs.py`), dashboard checked in a browser.
+  4. Cross-model reviews (child sessions): gpt-6-astra max (hostile judge: ADR 001 + Round-1 docs); gpt-6-sol max (code + eval, reproduce headline numbers) → `reviews/` + `ledger.tsv`.
+  5. Final memo, journal current, pushed.
+- **Doing (lead):** step 1, facts (curl + local extraction, small requests).
+- **Next:** month-wise VAHAN fetch → C9 · third charger source (Overture places / AllThePlaces, open licences) → C5 multiple-systems estimate · MH districts incl. Palghar → gap map · render/check docs · reviewers (≤ 2 child sessions) · memo.
+- **Rules in force:** child sessions only (≤ 2); never `git stash` or `--autostash`; heavy jobs under `nice -n 10`, one at a time, only when `kern.memorystatus_level` ≥ 30; small requests.
+- **Needs from user:** If EV C1 is preferred over C2: register by 15 Oct (track fixed at registration). Team of 2–5: names and skills. Optional: a free Open Charge Map API key.
+- **Risks:** (1) supply data: open sources ≈ 8% of official → capture–recapture biased low; (2) registrations ≠ on-road stock; (3) VAHAN markup changes (client self-discovers ids); (4) operator data terms; (5) boundary/basemap compliance; (6) saturated uplink (408s).
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** EV Infra & Green Mobility AI Challenge — Techfest IIT Bombay with the Ministry of Heavy Industries (MHI) and the International Centre for Automotive Technology (ICAT). Prize pool ₹2,00,000; top 3 teams per track.
@@ -153,4 +138,7 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - No background jobs or agents were running (the fact-checker and companies-products agents had already been stopped). Their partial files are committed: `research/fact-check.md` (1 claim verified) and `research/companies-products.md` (85.6 KB, unverified agent output; not cited anywhere yet).
 - Reproducibility fix before pausing: the PIB source fetcher and boundary download are now committed scripts (`components/charger_ingest/fetch_sources.py` + `source_urls.txt`, `components/admin_geo/fetch_boundaries.sh`), so every number in the docs has a committed reproduce command.
 - Resume point and full rebuild commands: see *Now*.
+
+### 2026-10-04 13:10 IST — Resumed (Supervisor: batch slot)
+- Definition of done received (see *Now*). New rules adopted: PLAYBOOK §4 (child sessions only, ≤ 2), §6 (no stash/autostash), §10 (cross-model reviews + ledger). Memory level 39 at resume.
 
