@@ -1,0 +1,995 @@
+<!doctype html>
+<!--
+THESIS: The marking desk. The tutor is an examiner who shows its working: every claim is a certificate you can check
+  step by step, every prediction is sealed before you answer. Refuses the dark "AI dashboard" with neon metric cards
+  and the chat window.
+OWN-WORLD: Maths exercise-book paper (cool white, faint blue squares) where work happens; blue-black ink; the
+  teacher's red pen for wrong steps and false claims; green for a verified certificate; highlighter yellow for the
+  step where a rule diverges. Model identity hues: engine = ink, GPT-5.5 violet, GPT-5.4-mini blue, GPT-4.1-mini amber.
+STORY: Real Eedi outcomes first (replayed, derived only) -> the judge plays a student and is predicted ->
+  the cascade knob (cost, calls, false claims, LLM unplugged) -> labelled synthetic stress tests.
+FIRST VIEWPORT: top bar with tabs and mode chips; data notice; REAL tab = scoreboard (left) + 304-tile register
+  of real wrong answers (right) coloured by the chosen system; the selected item's marking slip below.
+FORM: standard tabs (Operate mode, projector). One authored moment: the seal opening on reveal.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P8 · A tutor that finds the real reason you're stuck</title>
+<style>
+:root{
+  --paper:#f9fbfe; --sheet:#ffffff; --grid:#e3eaf5; --ink:#16233f; --ink-2:#34425f; --ink-3:#56637d;
+  --rule:#d3dbe8; --rule-2:#e8edf5; --red:#bf2b2b; --red-soft:#fbe4e2; --green:#0f6f4c; --green-soft:#dcf1e7;
+  --hl:#ffe680; --amber:#9a5205; --amber-soft:#fbe9cf; --violet:#5f43b8; --blue:#2360c4; --miss:#e8ecf3;
+  --engine:#16233f; --g55:#5f43b8; --g54:#2360c4; --g41:#9a5205;
+  --r:10px; --shadow:0 1px 2px rgba(22,35,63,.07),0 8px 22px rgba(22,35,63,.07);
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-variant-numeric:tabular-nums}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--blue)}
+.wrap{max-width:1480px;margin:0 auto;padding:0 24px}
+header.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+.top .wrap{display:flex;align-items:center;gap:20px;min-height:62px;flex-wrap:wrap}
+.brand{font-weight:700;font-size:18px;letter-spacing:-.01em;white-space:nowrap}
+.brand small{display:block;font-weight:500;font-size:13px;color:var(--ink-3);letter-spacing:0}
+nav.tabs{display:flex;gap:2px;flex:1;flex-wrap:wrap;min-width:0}
+nav.tabs button{border:0;background:none;padding:18px 12px 15px;font-weight:600;color:var(--ink-3);border-bottom:3px solid transparent;cursor:pointer;font-size:16px;white-space:nowrap}
+nav.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--ink)}
+nav.tabs button:hover{color:var(--ink)}
+nav.tabs button:focus-visible,.chip:focus-visible,.seg button:focus-visible,.tile:focus-visible,.btn:focus-visible,input:focus-visible{outline:3px solid #8fb0ea;outline-offset:2px}
+nav.tabs .k{display:inline-block;min-width:18px;margin-right:6px;padding:0 4px;border:1px solid var(--rule);border-radius:4px;font-size:12px;color:var(--ink-3);text-align:center}
+.modes{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--rule);background:var(--sheet);border-radius:999px;padding:3px 11px;font-size:13px;font-weight:600;color:var(--ink-2);white-space:nowrap}
+.pill.ok{border-color:#9fd3bd;color:var(--green);background:var(--green-soft)}
+.pill.warn{border-color:#e6a6a1;color:var(--red);background:var(--red-soft)}
+.pill.off{color:var(--ink-3)}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor;display:inline-block}
+.notice{background:#eef2f9;border-bottom:1px solid var(--rule);font-size:14px;color:var(--ink-2)}
+.notice .wrap{padding-top:8px;padding-bottom:8px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.notice b{color:var(--ink)}
+.notice.local{background:var(--red-soft);color:#7a1717;border-bottom-color:#e6a6a1}
+.notice details{display:inline}
+.notice summary{cursor:pointer;color:var(--blue)}
+main{padding:22px 0 60px}
+section.tab{display:none}
+section.tab.on{display:block}
+h1,h2,h3{margin:0;letter-spacing:-.01em}
+h1{font-size:28px;line-height:1.2}
+h2{font-size:21px;line-height:1.25}
+h3{font-size:17px}
+p{margin:.35em 0}
+.lede{font-size:18px;color:var(--ink-2);max-width:78ch;margin:6px 0 18px}
+.prov{font-size:13px;color:var(--ink-3);margin-top:10px}
+.prov code,.mono{font-family:var(--mono);font-size:.86em}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}.tags .tag{margin-left:0}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.02em;padding:2px 8px;border-radius:5px;vertical-align:middle;margin-left:8px;border:1px solid}
+.tag.real{color:var(--green);border-color:#9fd3bd;background:var(--green-soft)}
+.tag.replay{color:var(--ink-2);border-color:var(--rule);background:#f1f4f9}
+.tag.live{color:#7a4a00;border-color:#efc77a;background:#fff4d8}
+.tag.synth{color:var(--violet);border-color:#cbbff0;background:#f1edfc}
+.tag.posthoc{color:var(--amber);border-color:#efc78f;background:var(--amber-soft)}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:var(--r);box-shadow:var(--shadow);padding:20px 22px}
+.squared{background-color:var(--sheet);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;background-position:-1px -1px}
+.grid2{display:grid;grid-template-columns:minmax(360px,5fr) minmax(480px,8fr);gap:22px;align-items:start}
+.grid3{display:grid;grid-template-columns:minmax(300px,4fr) minmax(360px,5fr) minmax(340px,5fr);gap:20px;align-items:start}
+.stack>*+*{margin-top:18px}
+.muted{color:var(--ink-3)}
+.small{font-size:14px}
+.nowrap{white-space:nowrap}
+.btn{border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:8px;padding:9px 16px;font-weight:650;cursor:pointer;transition:transform .15s ease-out,background .15s}
+.btn:hover{background:#24365c}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:var(--sheet);color:var(--ink);border-color:var(--rule)}
+.btn.ghost:hover{border-color:var(--ink-3);background:#f4f7fb}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.chip{border:1px solid var(--rule);background:var(--sheet);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:600;color:var(--ink-2);cursor:pointer}
+.chip:hover{border-color:var(--ink-3)}
+.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:9px;overflow:hidden;background:var(--sheet)}
+.seg button{border:0;border-right:1px solid var(--rule);background:none;padding:8px 14px;font-weight:600;font-size:15px;color:var(--ink-2);cursor:pointer}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--ink);color:#fff}
+.seg button[disabled]{color:#a9b2c4;cursor:not-allowed}
+.ctl{display:flex;flex-direction:column;gap:6px}
+.ctl>label,.ctl>.lbl{font-size:13px;font-weight:700;color:var(--ink-3);letter-spacing:.01em}
+/* scoreboard */
+.score h3{margin:2px 0 10px}
+.bars{display:grid;grid-template-columns:132px 1fr 92px;gap:7px 12px;align-items:center}
+.bars .who{font-weight:650;font-size:15px;display:flex;align-items:center;gap:8px}
+.bars .who i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.bars .track{height:20px;background:#eef2f8;border-radius:5px;overflow:hidden;position:relative}
+.bars .fill{width:100%;height:100%;border-radius:5px;transform-origin:left center;transition:transform .3s ease-out}
+.bars .val{font-weight:750;text-align:right;font-size:16px}
+.bars .val small{display:block;font-weight:500;font-size:12px;color:var(--ink-3)}
+.facts{margin:14px 0 0;padding:0;list-style:none;font-size:15px;color:var(--ink-2)}
+.facts li{padding:7px 0;border-top:1px solid var(--rule-2)}
+.facts b{color:var(--ink)}
+/* register */
+.reg-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.register{display:flex;flex-direction:column;gap:12px}
+.group-lbl{font-size:13px;font-weight:700;color:var(--ink-3);margin-bottom:5px}
+.tiles{display:flex;flex-wrap:wrap;gap:3px}
+.tile{width:17px;height:17px;border-radius:3px;border:1px solid transparent;padding:0;cursor:pointer;transition:opacity .15s,transform .15s}
+.tile:hover{transform:scale(1.25)}
+.tile.hit{background:var(--green)}
+.tile.miss{background:var(--miss);border-color:#d5dce8}
+.tile.wrong{background:#f2b8b3;border-color:var(--red)}
+.tile.pass{background:var(--sheet);border-color:#c5cfdf}
+.tile.false{background:var(--red)}
+.tile.related{background:#e9b26a;border-color:var(--amber)}
+.tile.dim{opacity:.16}
+.tile.sel{outline:3px solid var(--ink);outline-offset:1px}
+.tile.changed{box-shadow:0 0 0 3px var(--hl),0 0 0 4px #c9a400;animation:pulse 1.4s ease-out 2}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--hl),0 0 0 1px #c9a400}100%{box-shadow:0 0 0 3px var(--hl),0 0 0 4px #c9a400}}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--ink-2);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .tile{cursor:default;width:13px;height:13px}
+.legend .sw{display:inline-block;width:12px;height:12px;border-radius:3px}
+.legend .tile:hover{transform:none}
+/* marking slip */
+.slip{margin-top:18px}
+.slip-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.slip table{width:100%;border-collapse:collapse;margin-top:12px;font-size:15px}
+.slip th{text-align:left;font-size:13px;color:var(--ink-3);font-weight:700;padding:6px 8px;border-bottom:1px solid var(--rule)}
+.slip td{padding:8px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+.code{font-weight:700;letter-spacing:.01em}
+.code.hit{color:var(--green)}
+.code.bad{color:var(--red)}
+.code.none{color:var(--ink-3);font-weight:600}
+.code.rel{color:var(--amber)}
+.runs{display:flex;gap:6px;flex-wrap:wrap}
+.runs span{border:1px solid var(--rule);border-radius:5px;padding:1px 7px;font-size:13px}
+.runs span.flip{background:var(--hl);border-color:#c9a400}
+.hidden-text{margin-top:14px;padding:12px 14px;border:1px dashed #b9c4d6;border-radius:8px;font-size:14px;color:var(--ink-2);background:#f6f8fc}
+/* working (certificate) */
+.work{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+.work .col{border:1px solid var(--rule);border-radius:8px;padding:10px 12px 12px}
+.work .col h4{margin:0 0 6px;font-size:13px;color:var(--ink-3);font-weight:700}
+.work ol{margin:0;padding-left:22px;font-size:18px;line-height:1.7}
+.work li.rule,.work li.order{font-weight:700;color:var(--red)}
+.work li.rule .t,.work li.order .t{background:linear-gradient(transparent 55%,var(--hl) 55%);padding:0 2px}
+.work li.after{color:var(--red)}
+.work li.hlc .t{background:linear-gradient(transparent 55%,#cdebdc 55%);padding:0 2px}
+.slip td:first-child{white-space:nowrap}
+.work li .why{display:block;font-size:12px;font-weight:600;color:var(--ink-3);line-height:1.3}
+.work .res{margin-top:6px;font-weight:750;font-size:18px}
+.work .res.bad{color:var(--red)}
+.work .res.good{color:var(--green)}
+/* live */
+.q-card{padding:18px 20px 20px;border-radius:var(--r);border:1px solid var(--rule)}
+.q-expr{font-size:40px;font-weight:700;letter-spacing:-.01em;line-height:1.2;margin:6px 0 4px;word-break:break-word}
+.q-note{font-size:13px;color:var(--ink-3)}
+.answer-row{display:flex;gap:10px;margin-top:16px}
+.answer-row input{flex:1;min-width:0;font-size:24px;font-weight:650;padding:10px 14px;border:2px solid var(--ink);border-radius:9px;background:#fff}
+.answer-row input::placeholder{color:#7b879d;font-weight:500}
+.answer-row .btn{font-size:17px;padding:10px 18px}
+.edit-row{display:flex;gap:8px;margin-top:10px}
+.edit-row input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--rule);border-radius:8px;font-size:16px}
+.verdict{border-radius:var(--r);padding:16px 18px;border:1px solid var(--rule);background:var(--sheet)}
+.verdict.cert{border-color:#9fd3bd}
+.verdict.abst{border-color:#c5cfdf;background:#f6f8fc}
+.verdict.corr{border-color:#9fd3bd;background:var(--green-soft)}
+.v-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:20px;font-weight:750}
+.stamp{display:inline-block;border:2px solid var(--green);color:var(--green);border-radius:6px;padding:1px 8px;font-size:13px;font-weight:800;letter-spacing:.06em;transform:rotate(-2deg)}
+.stamp.grey{border-color:var(--ink-3);color:var(--ink-3)}
+.timing{font-size:13px;color:var(--ink-3);margin-top:8px}
+.ruletable{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ruletable span{font-size:13px;border:1px solid var(--rule);border-radius:6px;padding:2px 8px;color:var(--ink-2)}
+.ruletable span b{color:var(--ink)}
+.seal{border:2px dashed var(--ink-3);border-radius:var(--r);padding:16px 18px;background:#fbfcff;position:relative;overflow:hidden}
+.seal.open{border-style:solid;border-color:var(--green);animation:open .45s cubic-bezier(.16,1,.3,1)}
+.seal.miss{border-style:solid;border-color:var(--red)}
+@keyframes open{from{clip-path:inset(0 0 100% 0);filter:blur(3px)}to{clip-path:inset(0 0 0 0);filter:blur(0)}}
+.redact{display:inline-block;min-width:3.5em;height:1.05em;background:var(--ink);border-radius:3px;vertical-align:-2px}
+.hash{font-family:var(--mono);font-size:13px;word-break:break-all;color:var(--ink-2);background:#f1f4f9;border-radius:6px;padding:6px 8px;margin-top:8px}
+.post{display:grid;grid-template-columns:140px 1fr 100px;gap:6px 10px;align-items:center;font-size:14px;margin-top:10px}
+.post .track{height:12px;background:#eef2f8;border-radius:4px;overflow:hidden}
+.post .fill{width:100%;height:100%;background:var(--ink);transform-origin:left center;transition:transform .3s ease-out}
+.post .fill.prior{background:#b9c4d6}
+.practice{margin:10px 0 0;padding-left:20px}
+.practice li{margin:4px 0}
+.counters{display:flex;gap:22px;flex-wrap:wrap;font-size:15px;color:var(--ink-2);margin-top:20px;padding:12px 16px;border:1px solid var(--rule);border-radius:var(--r);background:var(--sheet)}
+.counters b{color:var(--ink);font-size:18px}
+.offline{padding:14px 16px;border:1px solid #e6a6a1;background:var(--red-soft);border-radius:var(--r);color:#7a1717;margin-bottom:16px}
+/* cascade */
+.knobs{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end}
+.budget{min-width:280px}
+.budget input[type=range]{width:100%;accent-color:var(--ink)}
+.big{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:0;margin-top:18px;border:1px solid var(--rule);border-radius:var(--r);overflow:hidden;background:var(--sheet)}
+.big>div{padding:14px 16px;border-right:1px solid var(--rule)}
+.big>div:last-child{border-right:0}
+.big .n{font-size:34px;font-weight:780;letter-spacing:-.02em;line-height:1.1}
+.big .l{font-size:14px;color:var(--ink-2);margin-top:4px}
+.big .s{font-size:12px;color:var(--ink-3);margin-top:4px}
+.ok-mark{color:var(--green);font-weight:800}
+.bad-mark{color:var(--red);font-weight:800}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{font-size:12px;fill:var(--ink-3)}
+.chart .axis{stroke:#c5cfdf}
+.chart .gridl{stroke:#edf1f7}
+.verdictline{margin-top:12px;font-size:16px}
+.ptable{width:100%;border-collapse:collapse;font-size:14px}
+.ptable th{text-align:left;color:var(--ink-3);font-size:12px;padding:6px;border-bottom:1px solid var(--rule);position:sticky;top:0;background:var(--sheet)}
+.ptable td{padding:6px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+.scroll{max-height:340px;overflow:auto;border:1px solid var(--rule);border-radius:8px}
+/* stress */
+.panels{display:grid;grid-template-columns:repeat(2,minmax(380px,1fr));gap:20px}
+.hbars{display:grid;grid-template-columns:170px 1fr 70px;gap:6px 10px;align-items:center;font-size:14px;margin-top:10px}
+.hbars .track{height:16px;background:#eef2f8;border-radius:4px;overflow:hidden}
+.hbars .fill{width:100%;height:100%;transform-origin:left center}
+.hbars .v{text-align:right;font-weight:700}
+@media (max-width:1100px){.grid2,.grid3,.panels{grid-template-columns:1fr}.big{grid-template-columns:repeat(2,1fr)}.big>div:nth-child(2){border-right:0}.big>div:nth-child(-n+2){border-bottom:1px solid var(--rule)}}
+@media (max-width:640px){.wrap{padding:0 14px}.q-expr{font-size:30px}.work{grid-template-columns:1fr}.bars{grid-template-columns:96px 1fr 76px}.post{grid-template-columns:110px 1fr 46px}.hbars{grid-template-columns:120px 1fr 56px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="brand">P8 · Misconception tutor<small>A tutor that finds the real reason you're stuck</small></div>
+    <nav class="tabs" role="tablist" aria-label="Demo sections">
+      <button role="tab" id="t-real" data-tab="real" aria-controls="p-real" aria-selected="true"><span class="k">1</span>Real answers</button>
+      <button role="tab" id="t-live" data-tab="live" aria-controls="p-live" aria-selected="false"><span class="k">2</span>Predict my mistake</button>
+      <button role="tab" id="t-cascade" data-tab="cascade" aria-controls="p-cascade" aria-selected="false"><span class="k">3</span>Cascade &amp; budget</button>
+      <button role="tab" id="t-stress" data-tab="stress" aria-controls="p-stress" aria-selected="false"><span class="k">4</span>Stress tests</button>
+    </nav>
+    <div class="modes">
+      <span class="pill" id="mode-pill"><span class="dot"></span>checking engine…</span>
+      <span class="pill ok" id="llm-pill" title="This demo never calls an LLM: model outputs are replayed from committed runs">LLM calls: 0 · $0</span>
+    </div>
+  </div>
+</header>
+<div class="notice" id="notice">
+  <div class="wrap">
+    <span><b>Data notice.</b> Real items come from Kaggle's "Eedi – Mining Misconceptions in Mathematics" (CC BY-NC 4.0).
+      This page shows only derived outcomes (item ids, codes, costs), never item text (competition rules §7.B).
+      Misconception names are our own descriptions.</span>
+    <details><summary>more</summary>
+      <span> Model outputs (GPT-5.5, GPT-5.4-mini, GPT-4.1-mini) are replayed from committed, pre-registered runs in
+      <code class="mono">eval/results/</code>. Nothing on this page calls an API. Live panels run our engine on this
+      machine. Questions on the LIVE, CASCADE and STRESS tabs are our own (tutor-native or synthetic).</span>
+    </details>
+  </div>
+</div>
+<main class="wrap">
+  <section class="tab on" id="p-real" role="tabpanel" aria-labelledby="t-real"></section>
+  <section class="tab" id="p-live" role="tabpanel" aria-labelledby="t-live"></section>
+  <section class="tab" id="p-cascade" role="tabpanel" aria-labelledby="t-cascade"></section>
+  <section class="tab" id="p-stress" role="tabpanel" aria-labelledby="t-stress"></section>
+</main>
+<script src="data.js"></script>
+<script>
+"use strict";
+const D = window.P8 || null;
+const C = D ? D.claims : {};
+const MODELS = ["gpt-5.5", "gpt-5.4-mini", "gpt-4.1-mini"];
+const SYS = [
+  {id: "engine", label: "Our engine", color: "var(--engine)"},
+  {id: "gpt-5.5", label: "GPT-5.5", color: "var(--g55)"},
+  {id: "gpt-5.4-mini", label: "GPT-5.4-mini", color: "var(--g54)"},
+  {id: "gpt-4.1-mini", label: "GPT-4.1-mini", color: "var(--g41)"},
+];
+const SYSBY = Object.fromEntries(SYS.map(s => [s.id, s]));
+const RULES = D ? D.rules : {};
+const CODES = ["LTR", "SQ_DOUBLE", "SUB_NEG", "FRAC_ADD", "NEG_TIMES_NEG"].filter(c => c in RULES);
+const API = {up: false, mode: "offline", presets: []};
+
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k === "style") el.style.cssText = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const kid of kids.flat(Infinity)) {
+    if (kid == null || kid === false) continue;
+    el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  }
+  return el;
+}
+const $ = (sel, root = document) => root.querySelector(sel);
+const pct = (x, d = 1) => (100 * x).toFixed(d) + "%";
+const usd = (x, d = 2) => "$" + x.toFixed(d);
+const num = x => Number(x).toLocaleString("en-US");
+const minus = s => String(s).replace(/-/g, "\u2212");
+const claim = k => (k in C ? C[k] : "?");
+const ruleName = c => (RULES[c] ? RULES[c].name : c);
+function tag(kind, text) { return h("span", {class: "tag " + kind}, text); }
+function codeSpan(code, cls) {
+  if (code == null) return h("span", {class: "code none"}, "not re-asked");
+  if (code === "NONE") return h("span", {class: "code none" + (cls ? " " + cls : "")}, "NONE");
+  return h("span", {class: "code" + (cls ? " " + cls : ""), title: ruleName(code)}, code);
+}
+function bar(fillColor, frac) {
+  return h("div", {class: "track"}, h("div", {class: "fill", style: `background:${fillColor};transform:scaleX(${Math.max(0, Math.min(1, frac))})`}));
+}
+
+/* ---------- tabs ---------- */
+const TABS = ["real", "live", "cascade", "stress"];
+function showTab(id) {
+  if (!TABS.includes(id)) id = "real";
+  for (const t of TABS) {
+    $("#p-" + t).classList.toggle("on", t === id);
+    $("#t-" + t).setAttribute("aria-selected", String(t === id));
+  }
+  if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
+  if (id === "live" && window.Live) Live.focus();
+}
+for (const b of document.querySelectorAll("nav.tabs button")) b.addEventListener("click", () => showTab(b.dataset.tab));
+document.addEventListener("keydown", e => {
+  if (e.target.closest("input, textarea, select") || e.metaKey || e.ctrlKey || e.altKey) return;
+  const i = "1234".indexOf(e.key);
+  if (i >= 0) showTab(TABS[i]);
+});
+
+/* ---------- engine API ---------- */
+async function call(path, body) {
+  const opts = body === undefined ? {} : {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)};
+  const r = await fetch(path, opts);
+  const j = await r.json().catch(() => ({ok: false, error: "HTTP " + r.status}));
+  if (!r.ok) throw new Error(j.error || "HTTP " + r.status);
+  return j;
+}
+async function health() {
+  const pill = $("#mode-pill");
+  try {
+    const j = await call("/api/health");
+    API.up = true; API.mode = j.mode; API.presets = j.presets || [];
+    if (j.mode === "local-text") {
+      pill.className = "pill warn"; pill.replaceChildren(h("span", {class: "dot"}), "LOCAL TEXT · internal only");
+      const n = $("#notice"); n.classList.add("local");
+      n.firstElementChild.replaceChildren(h("span", null, h("b", null, "LOCAL TEXT IS ON. "),
+        "Eedi competition data from this machine's own .data/ copy, shown for internal verification only. ",
+        "Do not present, record or screenshot (Kaggle rules §7.B; CC BY-NC 4.0). Restart without --local-text for the demo."));
+    } else {
+      pill.className = "pill ok"; pill.replaceChildren(h("span", {class: "dot"}), "No-text mode · engine live");
+    }
+  } catch (e) {
+    API.up = false; API.mode = "offline";
+    pill.className = "pill off"; pill.replaceChildren(h("span", {class: "dot"}), "Replay only · engine offline");
+  }
+  document.dispatchEvent(new Event("api-ready"));
+}
+
+/* ---------- REAL tab ---------- */
+const Real = {
+  sys: "engine", filter: "all", run: 1, sel: null, tiles: new Map(),
+  rows: D ? D.real.items : [], cons: D ? D.real.consistency : {},
+};
+function realCode(row, sys, run) {
+  if (sys === "engine") return row.eng;
+  if (run === 1) return row.llm[sys];
+  const c = Real.cons[row.id];
+  return c && c[sys].codes.length >= run ? c[sys].codes[run - 1] : null;
+}
+function realClass(row, code) {
+  if (code == null) return "dim";
+  if (row.g === "P") return code === row.gold ? "hit" : code === "NONE" ? "miss" : "wrong";
+  if (row.g === "N") return code === "NONE" ? "pass" : "false";
+  return code === "NONE" ? "pass" : code === row.rel ? "related" : "false";
+}
+function changedAny(row) {
+  const c = Real.cons[row.id];
+  return !!c && MODELS.some(m => new Set(c[m].codes).size > 1);
+}
+const FILTERS = [
+  {id: "all", label: "All 304", f: () => true},
+  {id: "cert", label: "Engine certificates", f: r => r.eng !== "NONE"},
+  {id: "fc41", label: "GPT-4.1-mini false claims", f: r => r.g === "N" && r.llm["gpt-4.1-mini"] !== "NONE"},
+  {id: "reasked", label: "Asked again", f: r => !!Real.cons[r.id]},
+  {id: "changed", label: "Changed when asked again", f: r => changedAny(r)},
+];
+function gridCell(workload, model, routing) {
+  return D.grid.find(c => c.workload === workload && c.model === model && c.routing === routing);
+}
+function realScore() {
+  const rows = SYS.map(s => {
+    const cell = s.id === "engine" ? gridCell("real", "gpt-5.5", "engine") : gridCell("real", s.id, "llm");
+    return {s, cell, accStr: s.id === "engine" ? claim("real.exec_accP") : claim(`real.${s.id}.accP`),
+            fcrStr: s.id === "engine" ? claim("real.exec_fcr") : claim(`real.${s.id}.fcr`)};
+  });
+  const certs = Real.rows.filter(r => r.eng !== "NONE");
+  const certP = certs.filter(r => r.g === "P"), certRight = certP.filter(r => r.eng === r.gold);
+  const agree55 = certs.filter(r => r.llm["gpt-5.5"] === r.eng).length;
+  const bound = claim("real.exec.fcr_hi");
+  return h("div", {class: "sheet score"},
+    h("h2", null, `${Real.rows.length} real wrong answers`), h("div", {class: "tags"}, tag("real", "REAL"), tag("replay", "replayed from committed runs"), tag("replay", "pre-registered")),
+    h("p", {class: "lede"}, `${claim("real.n_pos")} wrong answers labelled with one of our five misconceptions, and ${claim("real.n_neg")} same-topic wrong answers caused by other misconceptions. Pre-registered before any model run; outputs replayed, no live API.`),
+    h("h3", null, `Named the labelled misconception · ${claim("real.n_pos")} positives`),
+    h("div", {class: "bars"}, rows.map(r => [
+      h("div", {class: "who"}, h("i", {style: `background:${r.s.color}`}), r.s.label),
+      bar(r.s.color, r.cell.acc_pos),
+      h("div", {class: "val"}, r.accStr, h("small", null, `${r.cell.k_pos}/${r.cell.n_pos}`)),
+    ])),
+    h("h3", {style: "margin-top:18px"}, `Named a misconception that wasn't there · ${claim("real.n_neg")} negatives`),
+    h("div", {class: "bars"}, rows.map(r => [
+      h("div", {class: "who"}, h("i", {style: `background:${r.s.color}`}), r.s.label),
+      bar("var(--red)", r.cell.fcr / 0.25),
+      h("div", {class: "val", style: r.cell.k_fc ? "color:var(--red)" : ""}, r.cell.k_fc ? r.fcrStr : "0",
+        h("small", null, r.cell.k_fc ? `${r.cell.k_fc}/${r.cell.n_neg}` : `of ${r.cell.n_neg} · ≤${bound}`)),
+    ])),
+    h("p", {class: "small muted", style: "margin-top:6px"}, `Bar scale for false claims: 0–25%. "≤${bound}" is the exact 95% upper bound for 0 of ${claim("real.n_neg")}.`),
+    h("ul", {class: "facts"},
+      h("li", null, h("b", null, `When our engine issues a certificate, it names the label: ${certRight.length}/${certP.length} positives`),
+        ` (plus ${certs.length - certP.length} related label). GPT-5.5 gives the same code on ${agree55} of ${certs.length}.`),
+      h("li", null, h("b", null, "Pre-registered gate"), ` (H2: the engine decides every question it can parse): GPT-4.1-mini balanced accuracy ${claim("real.gpt-4.1-mini.ba")} → ${claim("real.gated.gpt-4.1-mini.ba")}; GPT-5.5 ${claim("real.gpt-5.5.ba")} → ${claim("real.gated.gpt-5.5.ba")}, no gain.`),
+      h("li", null, h("b", null, "Bottom line: "), `GPT-5.5 diagnoses far more of these (${claim("real.gpt-5.5.accP")} vs ${claim("real.exec_accP")}). We claim no accuracy edge; our edge is a checkable certificate, identical answers every time (${claim("ph.engine_identical")}), ${claim("ph.engine_ms")} per decision, and $0 where the engine can certify.`)),
+    h("p", {class: "prov"}, "Sources: ", h("code", null, "eval/results/llm_gaps_real_negatives.json"), ", ",
+      h("code", null, "llm_gaps_posthoc.json"), " · protocol ", h("code", null, "eval/llm_gap_protocol.md"), " · rendered via ",
+      h("code", null, "eval/numbers.claims()")));
+}
+function realRegister() {
+  const seg = h("div", {class: "seg", role: "group", "aria-label": "Colour squares by"},
+    SYS.map(s => h("button", {"aria-pressed": String(Real.sys === s.id), onclick: () => { Real.sys = s.id; renderReal(); }}, s.label)));
+  const chips = h("div", {class: "chips", role: "group", "aria-label": "Filter"},
+    FILTERS.map(f => h("button", {class: "chip", "aria-pressed": String(Real.filter === f.id),
+      onclick: () => { Real.filter = Real.filter === f.id && f.id !== "all" ? "all" : f.id; renderReal(); }},
+      f.id === "all" ? f.label : `${f.label} · ${Real.rows.filter(f.f).length}`)));
+  const runs = h("div", {class: "seg", role: "group", "aria-label": "Ask again: committed run"},
+    [1, 2, 3].map(r => h("button", {"aria-pressed": String(Real.run === r), onclick: () => {
+      Real.run = r; if (r > 1 && Real.filter === "all") Real.filter = "reasked"; renderReal(); }}, `Run ${r}`)));
+  const filt = FILTERS.find(f => f.id === Real.filter).f;
+  const groups = [["P", `Positives · ${claim("real.n_pos")} · labelled with one of our five misconceptions`],
+                  ["N", `Negatives · ${claim("real.n_neg")} · same topic, other misconceptions`],
+                  ["S", `Related labels · ${D.real.counts.S_related} · close relatives of our rules (sensitivity only)`]];
+  Real.tiles.clear();
+  const reg = h("div", {class: "register"}, groups.map(([g, label]) => h("div", null,
+    h("div", {class: "group-lbl"}, label),
+    h("div", {class: "tiles"}, Real.rows.filter(r => r.g === g).map(r => {
+      const code = realCode(r, Real.sys, Real.run);
+      let cls = "tile " + realClass(r, code);
+      if (!filt(r)) cls += " dim";
+      if (Real.run > 1 && Real.sys !== "engine" && code != null && code !== realCode(r, Real.sys, 1)) cls += " changed";
+      if (Real.sel === r.id) cls += " sel";
+      const t = h("button", {class: cls, title: `${r.id} · ${SYSBY[Real.sys].label}: ${code ?? "not re-asked"}`,
+        "aria-label": `item ${r.id}`, onclick: () => { Real.sel = r.id; renderReal(); const sl = $(".slip"); if (sl) sl.scrollIntoView({block: "nearest", behavior: "smooth"}); }});
+      Real.tiles.set(r.id, t);
+      return t;
+    })))));
+  const legend = h("div", {class: "legend"},
+    h("span", null, h("i", {class: "tile hit"}), "named the label"),
+    h("span", null, h("i", {class: "tile miss"}), "no diagnosis (positive)"),
+    h("span", null, h("i", {class: "tile wrong"}), "named another of our five"),
+    h("span", null, h("i", {class: "tile pass"}), "correctly said NONE"),
+    h("span", null, h("i", {class: "tile false"}), "false claim"),
+    h("span", null, h("i", {class: "tile related"}), "named the related rule"));
+  return h("div", {class: "sheet"},
+    h("div", {class: "reg-head"}, h("h2", null, "One square per real wrong answer"), seg),
+    chips,
+    h("div", {style: "display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:14px 0 12px"},
+      h("span", {class: "small", style: "font-weight:700;color:var(--ink-3)"}, "Ask it again"), runs, askAgainNote()),
+    reg, legend);
+}
+function askAgainNote() {
+  const s = D.real.consistency_summary;
+  if (Real.run === 1) return h("span", {class: "small muted"}, `Run 1 is the main run. The ${claim("cons.n")} re-asked items were asked twice more (GPT-5.5) or once more (the others); replayed, not live.`);
+  if (Real.sys === "engine") return h("span", {class: "small"}, h("b", null, `Engine: identical every time`), ` (${claim("ph.engine_identical")} over two passes). Pick a model to see its re-runs.`);
+  const m = Real.sys;
+  const changed = Real.rows.filter(r => Real.cons[r.id] && new Set(Real.cons[r.id][m].codes).size > 1);
+  const unparsed = changed.filter(r => !r.ev).length;
+  const where = changed.length && unparsed === changed.length
+    ? ` ${changed.length === 2 ? "Both" : "All"} on questions our parser can't read, where the engine abstains: a cascade would still send them to ${SYSBY[m].label}.`
+    : (unparsed ? ` ${unparsed} of them on questions our parser can't read.` : "");
+  return h("span", {class: "small"}, h("b", null, `${SYSBY[m].label} changed ${s[m].n_disagree} of ${claim("cons.n")} diagnoses`),
+    m === "gpt-4.1-mini" ? " (even at temperature 0)." : ".", where);
+}
+function engineSays(r) {
+  if (r.eng !== "NONE") return [h("span", {class: "stamp"}, "CERTIFICATE"), " ", codeSpan(r.eng, realClass(r, r.eng) === "hit" ? "hit" : realClass(r, r.eng) === "related" ? "rel" : "bad")];
+  return h("span", {class: "code none"}, r.ev ? "No claim: no single rule reproduces this answer" : "No claim: our parser can't read this question");
+}
+function verdictMark(r, code) {
+  const c = realClass(r, code);
+  return {hit: h("span", {class: "ok-mark"}, "✓ named the label"), miss: h("span", {class: "muted"}, "– no diagnosis"),
+          wrong: h("span", {class: "bad-mark"}, "✗ wrong misconception"), pass: h("span", {class: "ok-mark"}, "✓ correctly none"),
+          "false": h("span", {class: "bad-mark"}, "✗ false claim"), related: h("span", {style: "color:var(--amber);font-weight:700"}, "≈ related rule"),
+          dim: h("span", {class: "muted"}, "")}[c];
+}
+function miniWork(ill) {
+  return h("div", {class: "work"},
+    h("div", {class: "col squared"}, h("h4", null, `Correct working · ${ill.expression}`),
+      h("ol", null, ill.clean_steps.map(s => h("li", {class: s.highlight ? "hlc" : ""}, h("span", {class: "t"}, s.text)))),
+      h("div", {class: "res good"}, "= " + ill.key)),
+    h("div", {class: "col squared"}, h("h4", null, "The rule's working"),
+      h("ol", null, ill.steps.map(s => h("li", {class: s.status}, h("span", {class: "t"}, s.text),
+        s.status === "rule" || s.status === "order" ? h("span", {class: "why"}, s.status === "order" ? "left to right: + before ×" : `${s.rule} acts here`) : null))),
+      h("div", {class: "res bad"}, "= " + ill.answer)));
+}
+function realSlip() {
+  const r = Real.rows.find(x => x.id === Real.sel);
+  if (!r) return h("div", {class: "sheet slip"}, h("h2", null, "Marking slip"),
+    h("p", {class: "muted"}, "Pick a square to see what each system said about that wrong answer. Try the filter ",
+      h("b", null, "GPT-4.1-mini false claims"), ", or ", h("b", null, "Engine certificates"), "."));
+  const group = r.g === "P" ? [`Positive · labelled `, codeSpan(r.gold), ` (${ruleName(r.gold)})`]
+    : r.g === "N" ? ["Negative · labelled with another misconception (not one of our five)"]
+    : ["Related label (sensitivity only) · a close relative of ", codeSpan(r.rel)];
+  const c = Real.cons[r.id];
+  const rows = SYS.map(s => {
+    if (s.id === "engine") return h("tr", null, h("td", null, h("b", null, s.label)), h("td", null, engineSays(r)),
+      h("td", null, h("span", {class: "small muted"}, "same on every run")), h("td", null, h("span", {class: "small"}, `${claim("ph.engine_ms")} · $0`)),
+      h("td", null, verdictMark(r, r.eng)));
+    const code = r.llm[s.id];
+    const runs = c ? h("div", {class: "runs"}, c[s.id].codes.map((x, i) => h("span", {class: i > 0 && x !== c[s.id].codes[0] ? "flip" : "",
+      title: i === 0 ? "main run" : `re-asked run ${i + 1}` + (c[s.id].latency_s[i] ? ` · ${c[s.id].latency_s[i]} s` : "")}, `${i + 1}: ${x}`)))
+      : h("span", {class: "small muted"}, "asked once");
+    return h("tr", null, h("td", null, h("b", {style: `color:${s.color}`}, s.label)), h("td", null, codeSpan(code, realClass(r, code) === "hit" ? "hit" : ["false", "wrong"].includes(realClass(r, code)) ? "bad" : "")),
+      h("td", null, runs), h("td", null, h("span", {class: "small"}, `${num(r.rt[s.id])} reasoning tokens · $${r.usd[s.id].toFixed(4)}`)),
+      h("td", null, verdictMark(r, code)));
+  });
+  const illCode = r.eng !== "NONE" ? r.eng : (r.g === "P" ? r.gold : r.rel);
+  const ill = illCode ? D.illustrations[illCode] : null;
+  const local = API.mode === "local-text" ? h("div", {id: "local-text"}, h("button", {class: "btn ghost", onclick: () => loadLocal(r.id)}, "Show local text (internal only)")) : null;
+  return h("div", {class: "sheet slip"},
+    h("div", {class: "slip-head"}, h("h2", null, `Marking slip · item ${r.id}`), h("span", {class: "small muted"}, group)),
+    h("table", null, h("thead", null, h("tr", null, ["System", "Said", "Asked again", "Effort & cost", "Verdict"].map(x => h("th", null, x)))), h("tbody", null, rows)),
+    h("div", {class: "hidden-text"}, h("b", null, "Item text hidden"), " (Kaggle rules §7.B). ",
+      r.eng !== "NONE" ? `The engine re-executed rule ${r.eng} on this question and it reproduced the student's exact wrong answer; that is the certificate.` :
+      r.ev ? "The engine read this question, but no single rule reproduced the student's answer, so it claimed nothing." :
+      "Our parser could not read this question, so the engine claimed nothing; in the cascade it goes to the LLM.",
+      ill ? h("div", {style: "margin-top:10px"}, h("b", null, `What ${illCode} does, shown on our own question`), " (not this Eedi item):", miniWork(ill)) : null),
+    local);
+}
+async function loadLocal(id) {
+  const box = $("#local-text");
+  box.replaceChildren(h("p", {class: "muted"}, "Reading local copy…"));
+  try {
+    const j = await call("/api/real/" + encodeURIComponent(id));
+    box.replaceChildren(h("div", {class: "offline"},
+      h("b", null, "LOCAL TEXT · internal verification only. "), j.notice,
+      h("p", null, h("b", null, "Question: "), j.question), h("p", null, h("b", null, "Correct: "), j.correct, "  ·  ", h("b", null, "Student: "), j.incorrect),
+      h("p", null, `Live engine: ${j.engine} in ${j.engine_ms} ms · export says ${j.export_engine} `, j.engine === j.export_engine ? h("span", {class: "ok-mark"}, "✓ identical") : h("span", {class: "bad-mark"}, "✗ differs")),
+      j.certificate ? miniWork({expression: j.expression, key: j.certificate.key_display, answer: j.certificate.value_display,
+        steps: j.certificate.steps, clean_steps: j.certificate.clean_steps}) : null));
+  } catch (e) { box.replaceChildren(h("p", {class: "bad-mark"}, e.message)); }
+}
+function renderReal() {
+  const el = $("#p-real");
+  const keepScroll = window.scrollY;
+  el.replaceChildren(h("div", {class: "grid2"}, realScore(), h("div", null, realRegister(), realSlip())));
+  window.scrollTo(0, keepScroll);
+}
+/* ---------- LIVE tab: predict my next mistake ---------- */
+const FALLBACK_PRESETS = [{expr: "3 + 4 × 2"}, {expr: "1/8 + 1/8"}, {expr: "5² + 3"}, {expr: "7 − (−2)"}, {expr: "(−3) × (−4) + 2"}, {expr: "2 + 3 × 4²"}];
+const Live = {
+  q: null, cert: null, answer: "", answer2: "", seal: null, rev: null, browserCheck: null, rerun: null, storm: null,
+  err: null, busy: false, k: 0, editing: false, exprDraft: "",
+  n: {decisions: 0, reruns: 0, identical: 0, ms: []},
+  focus() { setTimeout(() => { const i = $(Live.seal && !Live.rev ? "#ans2" : "#ans"); if (i) i.focus(); }, 0); },
+};
+async function liveDo(fn) {
+  Live.busy = true; Live.err = null; renderLive();
+  try { await fn(); } catch (e) { Live.err = e.message; }
+  Live.busy = false; renderLive();
+}
+function setQuestion(q) { Live.q = q; Live.cert = Live.seal = Live.rev = Live.rerun = null; Live.answer = Live.answer2 = ""; Live.browserCheck = null; }
+const loadPreset = expr => liveDo(async () => { setQuestion(await call("/api/parse", {expr})); Live.focus(); });
+const newQuestion = () => liveDo(async () => { setQuestion(await call("/api/question", {k: Live.k++})); Live.focus(); });
+const markIt = () => liveDo(async () => {
+  if (!Live.answer.trim()) throw new Error("Type an answer first.");
+  Live.cert = await call("/api/certify", {tokens: Live.q.tokens, answer: Live.answer});
+  Live.seal = Live.rev = Live.rerun = null; Live.browserCheck = null;
+  Live.n.decisions += 1; Live.n.ms.push(Live.cert.engine_ms);
+});
+const askAgain = () => liveDo(async () => {
+  Live.rerun = await call("/api/rerun", {tokens: Live.q.tokens, answer: Live.answer, n: 1000});
+  Live.n.reruns += Live.rerun.n; Live.n.identical += Live.rerun.identical; Live.n.ms.push(Live.rerun.median_ms);
+});
+const sealIt = () => liveDo(async () => {
+  Live.seal = await call("/api/predict", {tokens: Live.q.tokens, answer: Live.answer});
+  Live.rev = null; Live.answer2 = ""; Live.browserCheck = null; Live.n.decisions += 1; Live.focus();
+});
+const revealIt = () => liveDo(async () => {
+  if (!Live.answer2.trim()) throw new Error("Answer the new question first.");
+  Live.rev = await call("/api/reveal", {token: Live.seal.token, answer: Live.answer2});
+  Live.n.decisions += 1;
+  Live.browserCheck = await sha256hex(Live.rev.committed).then(x => x === Live.seal.hash).catch(() => null);
+});
+const slipStorm = () => liveDo(async () => { Live.storm = await call("/api/slipstorm", {}); });
+async function sha256hex(s) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+function median(xs) { const s = [...xs].sort((a, b) => a - b); return s.length ? s[Math.floor((s.length - 1) / 2)] : null; }
+
+function liveQuestionCol() {
+  const presets = (API.presets.length ? API.presets : FALLBACK_PRESETS);
+  const q = Live.q;
+  return h("div", {class: "sheet stack"},
+    h("div", null, h("h2", null, "Answer it wrong, any way you like"), h("div", {class: "tags"}, tag("live", "LIVE · computed now"), tag("synth", "our own questions")),
+      h("p", {class: "small muted"}, "The engine runs on this machine; no LLM is called.")),
+    h("div", {class: "q-card squared"},
+      h("div", {class: "q-note"}, "Work out"),
+      h("div", {class: "q-expr", "aria-live": "polite"}, q ? q.expression : "…"),
+      h("div", {class: "q-note"}, q && q.note ? q.note : "\u00a0"),
+      h("form", {class: "answer-row", onsubmit: e => { e.preventDefault(); markIt(); }},
+        h("input", {id: "ans", autocomplete: "off", inputmode: "text", placeholder: "your answer", value: Live.answer,
+          "aria-label": "Your answer", disabled: !API.up || !q, oninput: e => { Live.answer = e.target.value; }}),
+        h("button", {class: "btn", type: "submit", disabled: !API.up || !q || Live.busy}, "Mark it"))),
+    h("div", null, h("div", {class: "small", style: "font-weight:700;color:var(--ink-3);margin-bottom:6px"}, "Other questions"),
+      h("div", {class: "chips"},
+        presets.map(p => h("button", {class: "chip", "aria-pressed": String(!!q && q.expression === p.expr), disabled: !API.up,
+          title: p.note || "", onclick: () => loadPreset(p.expr)}, p.expr)),
+        h("button", {class: "chip", disabled: !API.up, onclick: newQuestion}, "New generated question"),
+        h("button", {class: "chip", disabled: !API.up, "aria-pressed": String(Live.editing), onclick: () => { Live.editing = !Live.editing; renderLive(); }}, "Type your own…")),
+      Live.editing ? h("form", {class: "edit-row", onsubmit: e => { e.preventDefault(); loadPreset(Live.exprDraft); }},
+        h("input", {id: "expr", placeholder: "e.g. 6 − (−3) × 2², 2/3 + 1/4", value: Live.exprDraft, "aria-label": "Your own question",
+          oninput: e => { Live.exprDraft = e.target.value; }}),
+        h("button", {class: "btn ghost", type: "submit"}, "Use")) : null),
+    h("details", null, h("summary", {class: "small", style: "cursor:pointer;color:var(--blue)"}, "Stuck? Answer like a student who…"),
+      h("ul", {class: "small", style: "margin:8px 0 0;padding-left:20px"},
+        CODES.map(c => h("li", null, h("b", null, RULES[c].name.toLowerCase()), ` (${c}): ${RULES[c].description}`)))));
+}
+
+function workCols(cert, answerDisplay) {
+  return h("div", {class: "work"},
+    h("div", {class: "col squared"}, h("h4", null, "Correct working"),
+      h("ol", null, cert.clean_steps.map(s => h("li", {class: s.highlight ? "hlc" : ""}, h("span", {class: "t"}, s.text)))),
+      h("div", {class: "res good"}, "= " + cert.key_display)),
+    h("div", {class: "col squared"}, h("h4", null, `Working with ${cert.rules.join(" + ")}`),
+      h("ol", null, cert.steps.map(s => h("li", {class: s.status}, h("span", {class: "t"}, s.text),
+        s.status === "rule" || s.status === "order" ? h("span", {class: "why"}, s.status === "order" ? "left to right: + and − before × and ÷" : `${s.rule} acts here`) : null))),
+      h("div", {class: "res bad"}, "= " + cert.value_display + (answerDisplay && answerDisplay !== cert.value_display ? `  (you wrote ${answerDisplay})` : ""))));
+}
+function liveMarkingCol() {
+  const c = Live.cert;
+  const head = h("h2", null, "Marking");
+  if (!c) return h("div", {class: "sheet"}, head, h("p", {class: "muted", style: "margin-top:10px"},
+    "The engine runs every rule in its pack, alone and in pairs, on this question and compares each result with your exact answer. It names a rule only if that rule reproduces your answer exactly; otherwise it claims nothing."));
+  const rules = h("div", {class: "ruletable", title: "What each rule gives on this question"},
+    h("span", null, "On this question:"), c.rules.map(r => h("span", null, h("b", null, r.rule), " → ", r.value_display ?? "no change")));
+  const again = h("div", {style: "margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"},
+    h("button", {class: "btn ghost", disabled: Live.busy, onclick: askAgain}, "Ask again × 1,000"),
+    Live.rerun ? h("span", {class: Live.rerun.identical === Live.rerun.n ? "ok-mark" : "bad-mark"},
+      `${num(Live.rerun.identical)}/${num(Live.rerun.n)} identical · median ${Live.rerun.median_ms} ms · ${Live.rerun.total_ms} ms in total`) : null);
+  const timing = h("div", {class: "timing"}, `Engine decision ${c.engine_ms} ms on this machine · LLM calls 0`);
+  if (c.verdict === "certificate") {
+    const certs = c.certificates;
+    return h("div", {class: "sheet"}, head, h("div", {class: "verdict cert", style: "margin-top:10px"},
+      h("div", {class: "v-title"}, h("span", {class: "stamp"}, "CERTIFICATE"), certs.map(x => x.rules.join(" + ")).join("  or  ")),
+      h("p", null, certs.length > 1 ? `${certs.length} explanations reproduce your answer ${c.answer_display} exactly. The next question will tell them apart.`
+        : `${certs[0].rules.map(ruleName).join(" + ")}: this rule reproduces your exact answer, ${c.answer_display}.`),
+      certs.map(x => workCols(x, c.answer_display)), timing, rules, again,
+      h("p", {class: "small muted", style: "margin-top:10px"}, "A certificate is evidence, not proof that you hold the misconception: one wrong answer can also be a slip. So the tutor makes a prediction you can check →")));
+  }
+  if (c.verdict === "abstain") return h("div", {class: "sheet"}, head, h("div", {class: "verdict abst", style: "margin-top:10px"},
+    h("div", {class: "v-title"}, h("span", {class: "stamp grey"}, "NO CLAIM"), `Your answer ${c.answer_display}`),
+    h("p", null, c.route), timing, rules, again));
+  if (c.verdict === "correct") return h("div", {class: "sheet"}, head, h("div", {class: "verdict corr", style: "margin-top:10px"},
+    h("div", {class: "v-title"}, "Correct ✓"), h("p", null, "Nothing to diagnose. Now try a wrong answer.")));
+  return h("div", {class: "sheet"}, head, h("div", {class: "verdict abst", style: "margin-top:10px"},
+    h("div", {class: "v-title"}, "Can't read that answer"), h("p", null, "Type a number like −7, or a fraction like 3/4.")));
+}
+
+function postBars(before, after) {
+  return h("div", {class: "post"}, CODES.map(code => {
+    const a = after ? after.marginals[code] : before.marginals[code];
+    const b = before.marginals[code];
+    return [h("div", null, h("b", null, code)), h("div", {class: "track"}, h("div", {class: "fill", style: `transform:scaleX(${a})`})),
+      h("div", {class: "nowrap", style: "text-align:right;font-weight:700"}, after ? h("span", {class: "muted", style: "font-weight:500"}, b.toFixed(2) + " → ") : null, a.toFixed(2))];
+  }));
+}
+function livePredictCol() {
+  const head = h("h2", null, "Predict my next mistake");
+  const c = Live.cert;
+  if (!c || c.verdict !== "certificate") return h("div", {class: "sheet"}, head, h("p", {class: "muted", style: "margin-top:10px"},
+    "After a certificate, the engine writes a new question on which each explanation gives a different answer. It then commits to the answer you will give, before you give it."));
+  const s = Live.seal;
+  if (!s) return h("div", {class: "sheet"}, head,
+    h("p", {style: "margin-top:10px"}, "The engine will write a new question that tells its explanations apart, and seal what you will answer if it is right about you."),
+    h("button", {class: "btn", style: "margin-top:8px;font-size:18px", disabled: Live.busy, onclick: sealIt}, "Seal a prediction"));
+  if (!s.ok) return h("div", {class: "sheet"}, head, h("p", {class: "muted"}, s.reason));
+  const r = Live.rev;
+  const vf = s.verification;
+  const sealed = h("div", {class: "seal" + (r ? (r.verdict === "match" ? " open" : " miss") : "")},
+    h("div", {class: "q-note"}, "New question · generated now"),
+    h("div", {class: "q-expr", style: "font-size:34px"}, s.question.expression),
+    h("p", {style: "font-size:18px;margin-top:8px"}, "Sealed: if you hold ", h("b", null, s.lead), ", you will answer ",
+      r ? h("b", {style: "font-size:22px;color:" + (r.verdict === "match" ? "var(--green)" : "var(--red)")}, r.predictions[s.lead]) : h("span", {class: "redact", title: "hidden until you answer"}), "."),
+    h("div", {class: "small muted"}, `Telling apart: ${s.hypotheses.join(" · ")}. Key checked by ${vf.key_verified_by === "sympy" ? "SymPy" : vf.key_verified_by} ${vf.key_verified ? "✓" : "✗"}; every explanation gives a different answer here ✓.`),
+    h("div", {class: "hash", title: "sha256 of the sealed record, shown before you answer"}, "commitment sha256 ", s.hash));
+  const parts = [head, h("div", {style: "margin-top:10px"}, sealed)];
+  if (!r) {
+    parts.push(h("form", {class: "answer-row", onsubmit: e => { e.preventDefault(); revealIt(); }},
+      h("input", {id: "ans2", autocomplete: "off", placeholder: "answer the new question", value: Live.answer2, "aria-label": "Answer to the new question",
+        oninput: e => { Live.answer2 = e.target.value; }}),
+      h("button", {class: "btn", type: "submit", disabled: Live.busy}, "Reveal")));
+    parts.push(h("p", {class: "small muted"}, "Answer it the same way you answered the first question. The seal is opened only after you answer."));
+    parts.push(h("h3", {style: "margin-top:14px"}, "What the tracer believes now"), postBars(s.posterior, null));
+  } else {
+    const text = {match: `You answered ${r.answer_display}: exactly the sealed prediction for ${r.lead}. Two answers, both reproduced by the same rule.`,
+      other: `You answered ${r.answer_display}: this matches ${r.matched.join(", ")}, not ${r.lead}. The tracer shifts to that explanation.`,
+      correct: `You answered ${r.answer_display}, the correct answer. The first answer may have been a slip; the tracer lowers ${r.lead}.`,
+      none: `You answered ${r.answer_display}: no explanation predicted this. Nothing is claimed; this would go to the LLM.`,
+      unreadable: "Couldn't read that answer."}[r.verdict];
+    parts.push(h("p", {class: "verdictline"}, h("b", null, r.verdict === "match" ? "Prediction met ✓  " : "Prediction not met ✗  "), text));
+    parts.push(h("div", {class: "small"}, "Seal check in this browser: sha256(sealed record) ",
+      Live.browserCheck === true ? h("span", {class: "ok-mark"}, "matches the commitment ✓") : Live.browserCheck === false ? h("span", {class: "bad-mark"}, "does NOT match ✗") : h("span", {class: "muted"}, "unavailable here")));
+    parts.push(h("div", {class: "hash"}, r.committed));
+    parts.push(h("div", {class: "small", style: "margin-top:6px"}, "Conditional predictions: ",
+      Object.entries(r.predictions).map(([k, v]) => h("span", {class: "nowrap", style: "margin-right:12px"}, `if ${k === "slip" ? "it was a slip" : "you hold " + k} → ${v}`))));
+    parts.push(h("h3", {style: "margin-top:14px"}, "What the tracer believes now"), postBars(s.posterior, r.posterior));
+    parts.push(h("p", {class: "small muted"}, "Set-level Bayesian tracer over all 32 combinations of the five rules. Rules that no question has tested stay near their prior (0.30)."));
+    if (r.practice) parts.push(h("h3", {style: "margin-top:14px"}, `Targeted practice · ${r.practice_for.join(" + ")}`),
+      h("ol", {class: "practice"}, r.practice.map(p => h("li", null, h("b", null, p.expression), ` = ${p.key_display}`,
+        h("span", {class: "small muted"}, `  · trap answer ${p.trap_display} · key checked by SymPy ${p.key_verified ? "✓" : "✗"}`)))));
+    parts.push(h("button", {class: "btn ghost", style: "margin-top:12px", onclick: sealIt}, "Seal another prediction"));
+  }
+  return h("div", {class: "sheet"}, parts);
+}
+function liveCounters() {
+  const med = median(Live.n.ms);
+  const st = Live.storm;
+  return h("div", {class: "counters"},
+    h("span", null, "Engine decisions this session ", h("b", null, num(Live.n.decisions + Live.n.reruns))),
+    h("span", null, "Asked again: identical ", h("b", null, Live.n.reruns ? `${num(Live.n.identical)}/${num(Live.n.reruns)}` : "–")),
+    h("span", null, "Median decision ", h("b", null, med == null ? "–" : med + " ms")),
+    h("span", null, "LLM calls ", h("b", null, "0"), " · spend ", h("b", null, "$0")),
+    h("span", {style: "flex-basis:100%"},
+      h("button", {class: "btn ghost", disabled: !API.up || Live.busy, onclick: slipStorm, style: "margin-right:12px"}, "Slip storm: 2,400 random slips"),
+      st ? h("span", null, `${num(st.slips)} slips (correct answer ± 1, 2, 3 or 10) on ${st.items} bank questions in ${st.ms} ms: `,
+        h("b", null, `${num(st.abstain)} no claim`), " · ", h("b", {style: "color:var(--red)"}, `${num(st.collide)} coincide with a rule (${pct(st.collide_share)})`),
+        ". A slip can land on a rule's answer, so the tutor checks with a sealed prediction before it names a misconception.")
+        : h("span", {class: "small muted"}, "Random slips should get no claim. Some will collide with a rule by chance; this counts how often.")));
+}
+function renderLive() {
+  const el = $("#p-live");
+  const focusId = document.activeElement && document.activeElement.id;
+  const offline = !API.up ? h("div", {class: "offline"}, h("b", null, "Live engine offline. "),
+    "This tab needs the local engine: run ", h("code", {class: "mono"}, "demo/run.sh"), " from the project folder. The other tabs replay committed results and work without it.") : null;
+  const err = Live.err ? h("div", {class: "offline"}, Live.err) : null;
+  el.replaceChildren(offline || "", err || "", h("div", {class: "grid3"}, liveQuestionCol(), liveMarkingCol(), livePredictCol()), liveCounters());
+  if (focusId) { const f = document.getElementById(focusId); if (f) { f.focus(); if (f.setSelectionRange && f.value) f.setSelectionRange(f.value.length, f.value.length); } }
+}
+/* ---------- CASCADE tab: knob + budget squeeze ---------- */
+const Cas = {workload: "real", model: "gpt-5.5", routing: "cascade", budget: 8};
+const ROUTING = {
+  llm: {label: "LLM only", help: "Every wrong answer goes to the LLM."},
+  cascade: {label: "Engine first", help: "The engine answers what it can certify; everything else goes to the LLM."},
+  gated: {label: "Engine gate (H2)", help: "Pre-registered H2: the engine decides every question it can parse (a certificate or NONE); the LLM sees only the rest."},
+  engine: {label: "LLM unplugged", help: "No network: the engine certifies what it can and leaves the rest for a teacher."},
+};
+const WORK = {
+  real: {label: "Real Eedi · 304", routings: ["llm", "cascade", "gated", "engine"], pos: "positives", neg: "negatives"},
+  prob: {label: "Tutor-native probability · 120", routings: ["llm", "cascade", "engine"], pos: "misconception answers", neg: "careless slips"},
+};
+const SHORT = {"gpt-5.5": "5.5", "gpt-5.4-mini": "5.4-mini", "gpt-4.1-mini": "4.1-mini"};
+function casCell(w = Cas.workload, m = Cas.model, r = Cas.routing) { return gridCell(w, r === "engine" ? "gpt-5.5" : m, r); }
+function costComparable(c) { return c.routing !== "gated"; }
+function claimChecks(c) {
+  const m = c.model, out = [];
+  const add = (label, shown, key) => { if (key in C) out.push({label, shown, want: C[key], ok: shown === C[key], key}); };
+  if (c.workload === "real") {
+    if (c.routing === "llm") { add("$/1,000", usd(c.usd1000), `casc.real.${m}.cost1000_llm`); add("positives", pct(c.acc_pos), `real.${m}.accP`); add("false claims", pct(c.fcr), `real.${m}.fcr`); }
+    if (c.routing === "cascade") { add("$/1,000", usd(c.usd1000), `casc.real.${m}.cost1000_cascade`); add("balanced acc.", pct(c.ba), `casc.real.${m}.ba`); }
+    if (c.routing === "gated") { add("positives", pct(c.acc_pos), `real.gated.${m}.accP`); add("balanced acc.", pct(c.ba), `real.gated.${m}.ba`); }
+    if (c.routing === "engine") { add("positives", pct(c.acc_pos), "real.exec_accP"); add("false claims", pct(c.fcr), "real.exec_fcr"); }
+  } else {
+    if (c.routing === "llm") { add("$/1,000", usd(c.usd1000), `diag.${m}.cost1000_llm`); add("accuracy", pct(c.ba), `diag.${m}.llm_acc_all`); add("slips blamed", pct(c.fcr), `diag.${m}.llm_slip_fa`); }
+    if (c.routing === "cascade") { add("$/1,000", usd(c.usd1000), `diag.${m}.cost1000_cascade`); add("accuracy", pct(c.ba), `diag.${m}.cascade_acc_all`); }
+  }
+  return out;
+}
+function bestUnder(budget) {
+  const cells = D.grid.filter(c => c.workload === Cas.workload && costComparable(c) && c.usd1000 <= budget + 1e-9);
+  cells.sort((a, b) => b.ba - a.ba || a.usd1000 - b.usd1000);
+  return cells[0] || null;
+}
+function cellName(c) { return c.routing === "engine" ? "Engine only (LLM unplugged)" : `${SYSBY[c.model].label} · ${ROUTING[c.routing].label.toLowerCase()}`; }
+const HEX = {"gpt-5.5": "#5f43b8", "gpt-5.4-mini": "#2360c4", "gpt-4.1-mini": "#9a5205", engine: "#16233f"};
+function scatter() {
+  const W = 620, H = 340, L = 52, R = 22, T = 16, B = 46;
+  const cells = D.grid.filter(c => c.workload === Cas.workload && !(c.routing === "engine" && c.model !== "gpt-5.5"));
+  const xmax = 8, sx = v => Math.sqrt(Math.max(0, v) / xmax);
+  const x = v => L + (W - L - R) * sx(v), y = v => T + (H - T - B) * (1 - (v - 0.5) / 0.5);
+  const sel = casCell(), best = bestUnder(Cas.budget), bx = x(Math.min(Cas.budget, xmax));
+  const s = [];
+  for (let g = 0.5; g <= 1.0001; g += 0.1) s.push(`<line class="gridl" x1="${L}" x2="${W - R}" y1="${y(g)}" y2="${y(g)}"/><text x="${L - 8}" y="${y(g) + 4}" text-anchor="end">${Math.round(g * 100)}%</text>`);
+  for (const v of [0, 0.25, 1, 2, 4, 8]) s.push(`<line class="gridl" x1="${x(v)}" x2="${x(v)}" y1="${T}" y2="${H - B}"/><text x="${x(v)}" y="${H - B + 18}" text-anchor="middle">$${v}</text>`);
+  s.push(`<rect x="${bx}" y="${T}" width="${Math.max(0, x(xmax) - bx)}" height="${H - T - B}" fill="#fbe4e2" opacity=".6"/>`);
+  s.push(`<line x1="${bx}" x2="${bx}" y1="${T}" y2="${H - B}" stroke="#bf2b2b" stroke-dasharray="4 4"/>`);
+  s.push(`<line class="axis" x1="${L}" x2="${W - R}" y1="${H - B}" y2="${H - B}"/><line class="axis" x1="${L}" x2="${L}" y1="${T}" y2="${H - B}"/>`);
+  s.push(`<text x="${(L + W - R) / 2}" y="${H - 8}" text-anchor="middle">LLM cost per 1,000 diagnoses (square-root scale)</text>`);
+  s.push(`<text transform="translate(14 ${(T + H - B) / 2}) rotate(-90)" text-anchor="middle">balanced accuracy</text>`);
+  for (const c of cells) {
+    const col = c.routing === "engine" ? HEX.engine : HEX[c.model];
+    const cx = x(c.usd1000), cy = y(c.ba);
+    const title = `<title>${cellName(c)}: ${usd(c.usd1000)} per 1,000, balanced accuracy ${pct(c.ba)}</title>`;
+    if (best && c === best) s.push(`<circle cx="${cx}" cy="${cy}" r="15" fill="none" stroke="#0f6f4c" stroke-width="2.5"/>`);
+    if (c === sel) s.push(`<circle cx="${cx}" cy="${cy}" r="11" fill="none" stroke="#16233f" stroke-width="2"/>`);
+    if (c.routing === "cascade") s.push(`<rect x="${cx - 6}" y="${cy - 6}" width="12" height="12" rx="2" fill="${col}">${title}</rect>`);
+    else if (c.routing === "gated") s.push(`<circle cx="${cx}" cy="${cy}" r="6" fill="#fff" stroke="${col}" stroke-width="2" stroke-dasharray="3 2">${title}</circle>`);
+    else s.push(`<circle cx="${cx}" cy="${cy}" r="6.5" fill="${col}">${title}</circle>`);
+  }
+  for (const c of [sel, best].filter((v, i, a) => v && a.indexOf(v) === i)) {
+    const cx = x(c.usd1000), cy = y(c.ba), right = cx < W - 190;
+    s.push(`<text x="${right ? cx + 16 : cx - 16}" y="${cy + (c === sel ? -14 : 22)}" text-anchor="${right ? "start" : "end"}" style="font-weight:700;fill:${c === sel ? "#16233f" : "#0f6f4c"}">${cellName(c)}</text>`);
+  }
+  const svg = h("div", {class: "chart"});
+  svg.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cost against balanced accuracy for every routing and model">${s.join("")}</svg>`;
+  const legend = h("div", {class: "legend"},
+    MODELS.map(m => h("span", null, h("i", {class: "sw", style: `background:${HEX[m]}`}), SYSBY[m].label)),
+    h("span", null, h("i", {class: "sw", style: `background:${HEX.engine}`}), "engine only"),
+    h("span", null, "● LLM only"), h("span", null, "■ engine first"), h("span", null, "◌ engine gate"));
+  return h("div", null, svg, legend);
+}
+function budgetInsight() {
+  const m = Cas.model, B = Cas.budget;
+  const llm = gridCell(Cas.workload, m, "llm"), cas = gridCell(Cas.workload, m, "cascade");
+  if (B >= llm.usd1000) return h("p", {class: "small"}, `${SYSBY[m].label} fits this budget even with every answer sent to it (${usd(llm.usd1000)}).`);
+  if (B >= cas.usd1000) return h("p", {class: "small"}, h("b", null, `At ${usd(B)}, ${SYSBY[m].label} fits only with the engine first`), ` (${usd(cas.usd1000)} vs ${usd(llm.usd1000)} for LLM only), at the same false-claim count (${cas.k_fc}).`);
+  return h("p", {class: "small"}, `${SYSBY[m].label} does not fit under ${usd(B)}, even with the engine first (${usd(cas.usd1000)}).`);
+}
+function probTable() {
+  const m = Cas.routing === "engine" ? null : Cas.model;
+  const rows = D.prob.items;
+  return h("div", {style: "margin-top:16px"},
+    h("h3", null, "Every tutor-native item, replayed", tag("synth", "SYNTHETIC · ours")),
+    h("p", {class: "small muted"}, "Each problem appears twice: once with the misconception's answer, once with a careless slip. Model replies, latency and cost are replayed from the committed run (", h("code", null, "llm_gaps_prob_diag_responses.jsonl"), ")."),
+    h("div", {class: "scroll"}, h("table", {class: "ptable"},
+      h("thead", null, h("tr", null, ["Problem (ours)", "Student", "Engine", m ? SYSBY[m].label + " (replayed)" : "LLM", "Latency", "Cost"].map(x => h("th", null, x)))),
+      h("tbody", null, rows.map(r => {
+        const routed = Cas.routing === "llm" || (Cas.routing === "cascade" && r.eng === "NONE");
+        const engineCell = r.eng !== "NONE" ? h("span", {class: "code hit"}, "✓ " + r.eng) : h("span", {class: "code none"}, "no claim");
+        const llm = m && routed ? r.llm[m] : null;
+        const ok = llm == null ? null : llm === r.gold;
+        return h("tr", null, h("td", {style: "max-width:520px"}, r.stem),
+          h("td", {class: "nowrap"}, minus(r.answer), h("div", {class: "small muted"}, r.kind === "bug" ? `${r.code}'s answer` : `slip (key ${minus(r.key)})`)),
+          h("td", null, Cas.routing === "llm" ? h("span", {class: "muted"}, "off") : engineCell),
+          h("td", null, llm == null ? h("span", {class: "muted"}, Cas.routing === "engine" ? "unplugged" : "not called") : h("span", {class: "code " + (ok ? "hit" : "bad")}, (ok ? "✓ " : "✗ ") + llm)),
+          h("td", {class: "nowrap"}, llm == null ? (r.eng !== "NONE" && Cas.routing !== "llm" ? `${D.prob.engine_latency_ms_median} ms` : "–") : `${r.lat[m].toFixed(1)} s`),
+          h("td", {class: "nowrap"}, llm == null ? "$0" : "$" + r.usd[m].toFixed(4)));
+      })))));
+}
+function renderCascade() {
+  const el = $("#p-cascade");
+  const w = WORK[Cas.workload];
+  if (!w.routings.includes(Cas.routing)) Cas.routing = "cascade";
+  const c = casCell();
+  const base = gridCell(Cas.workload, Cas.routing === "engine" ? "gpt-5.5" : Cas.model, "llm");
+  const seg = (items, cur, set, dis) => h("div", {class: "seg", role: "group"}, items.map(([v, label]) =>
+    h("button", {"aria-pressed": String(cur === v), disabled: dis ? dis(v) : false, onclick: () => { set(v); renderCascade(); }}, label)));
+  const knobs = h("div", {class: "knobs"},
+    h("div", {class: "ctl"}, h("span", {class: "lbl"}, "Workload"), seg(Object.entries(WORK).map(([k, v]) => [k, v.label]), Cas.workload, v => { Cas.workload = v; })),
+    h("div", {class: "ctl"}, h("span", {class: "lbl"}, "Routing"), seg(w.routings.map(r => [r, ROUTING[r].label]), Cas.routing, v => { Cas.routing = v; })),
+    h("div", {class: "ctl"}, h("span", {class: "lbl"}, "Second-stage LLM"), seg(MODELS.map(m => [m, SYSBY[m].label]), Cas.model, v => { Cas.model = v; }, () => Cas.routing === "engine")));
+  const saving = Cas.routing === "cascade" ? (Cas.workload === "real" ? C[`casc.real.${Cas.model}.saving`] : C[`diag.${Cas.model}.saving`]) : null;
+  const costN = costComparable(c) ? usd(c.usd1000) : "–";
+  const costSub = !costComparable(c) ? "Not comparable: every negative in this benchmark was chosen to be parseable, so the gate answers all of them for free by design."
+    : Cas.routing === "llm" ? "every answer goes to the LLM" : Cas.routing === "engine" ? "no LLM call" : `LLM only: ${usd(base.usd1000)} · saving ${saving}`;
+  const lat = Cas.workload === "prob"
+    ? `Mean latency per diagnosis ${c.lat_mean_s.toFixed(1)} s${Cas.routing === "cascade" ? ` (LLM only ${base.lat_mean_s.toFixed(1)} s)` : ""}. Engine ${D.prob.engine_latency_ms_median} ms.`
+    : `Latency: median ${SYSBY[Cas.model].label} call ${claim(`cons.${Cas.model}.latency`)} (40 re-asked items); engine ${claim("ph.engine_ms")} per decision.`;
+  const big = h("div", {class: "big"},
+    h("div", null, h("div", {class: "n"}, costN), h("div", {class: "l"}, "LLM cost per 1,000 diagnoses"), h("div", {class: "s"}, costSub)),
+    h("div", null, h("div", {class: "n"}, num(Math.round(c.calls1000))), h("div", {class: "l"}, "LLM calls per 1,000"), h("div", {class: "s"}, `${num(c.calls)} of ${c.n} items sent to the LLM`)),
+    h("div", null, h("div", {class: "n"}, pct(c.acc_pos)), h("div", {class: "l"}, `${w.pos} diagnosed`), h("div", {class: "s"}, `${c.k_pos} of ${c.n_pos}`)),
+    h("div", null, h("div", {class: "n", style: c.k_fc ? "color:var(--red)" : ""}, `${c.k_fc}`), h("div", {class: "l"}, `false claims on ${c.n_neg} ${w.neg}`), h("div", {class: "s"}, c.k_fc ? pct(c.fcr) : "none")));
+  const checks = claimChecks(c);
+  const best = bestUnder(Cas.budget);
+  const budget = h("div", {class: "ctl budget"},
+    h("label", {for: "budget"}, `Budget squeeze: at most ${usd(Cas.budget)} per 1,000 diagnoses`),
+    h("input", {id: "budget", type: "range", min: "0", max: "8", step: "0.05", value: String(Cas.budget),
+      oninput: e => { Cas.budget = Number(e.target.value); renderCascade(); const b = $("#budget"); if (b) b.focus(); }}));
+  const bestLine = best ? h("p", {class: "verdictline"}, "Best balanced accuracy within budget: ", h("b", null, cellName(best)), ` · ${pct(best.ba)} at ${usd(best.usd1000)} `,
+    (best !== c) ? h("button", {class: "btn ghost", style: "padding:4px 10px;font-size:14px", onclick: () => { Cas.model = best.model; Cas.routing = best.routing; renderCascade(); }}, "Use this") : h("span", {class: "ok-mark"}, "(selected)")) : null;
+  const label = Cas.workload === "real"
+    ? [tag("real", "REAL"), tag("posthoc", "POST HOC"), tag("replay", "replayed")]
+    : [tag("synth", "SYNTHETIC"), tag("replay", "replayed")];
+  const note = Cas.workload === "real"
+    ? `Post hoc: the cascade (the pre-registered secondary method HYB) was analysed after the items had been seen. The engine certifies only ${claim("casc.real.engine_answers")} of ${claim("casc.real.n")} real items, so the saving is small.`
+    : "Engine-native items (Addendum B): routing and the engine's accuracy are guaranteed by construction (the engine uses each item's own family rule). This shows the accounting, not independent evidence.";
+  el.replaceChildren(
+    h("div", {class: "sheet"},
+      h("h2", null, "Where should the engine stop and the LLM start?", label),
+      h("p", {class: "lede"}, ROUTING[Cas.routing].help, " Model outputs, tokens and latency are replayed from committed runs; nothing is called."),
+      knobs, big,
+      h("p", {class: "small", style: "margin-top:10px"}, lat),
+      checks.length ? h("p", {class: "small"}, "Checked against committed results (", h("code", null, "eval/numbers.claims()"), "): ",
+        checks.map(k => h("span", {class: k.ok ? "ok-mark" : "bad-mark", style: "margin-right:12px", title: k.key}, `${k.label} ${k.shown} ${k.ok ? "✓" : "✗ committed " + k.want}`))) : null,
+      h("p", {class: "small muted"}, note)),
+    h("div", {class: "grid2", style: "margin-top:20px"},
+      h("div", {class: "sheet"}, budget, bestLine, budgetInsight(),
+        h("p", {class: "small muted"}, "Hollow dashed points (engine gate) are left out of the budget choice: their cost depends on how this benchmark was built."),
+        Cas.workload === "real" ? h("p", {class: "small"}, "Per-item replays of the real items are on tab 1.") : null),
+      h("div", {class: "sheet"}, scatter(), h("p", {class: "small muted"}, "Ring: your selection · green ring: best within budget · shaded: over budget."))),
+    Cas.workload === "prob" ? h("div", {class: "sheet", style: "margin-top:20px"}, probTable()) : "");
+}
+/* ---------- STRESS tab (SYNTHETIC) ---------- */
+const Stress = {optimistic: false};
+function hbars(rows) {
+  return h("div", {class: "hbars"}, rows.map(r => [
+    h("div", null, h("b", {style: `color:${r.color}`}, r.label), r.sub ? h("div", {class: "small muted"}, r.sub) : null),
+    h("div", {class: "track"}, h("div", {class: "fill", style: `background:${r.color};transform:scaleX(${r.v})`})),
+    h("div", {class: "v"}, r.text)]));
+}
+function simChart() {
+  const S = D.synthetic.simulation.settings;
+  const key = Object.keys(S).find(k => k.startsWith(Stress.optimistic ? "main" : "pessimistic"));
+  const ours = S[key]["eig+named (ours)"], rnd = S[key]["random+generic"];
+  const W = 560, H = 250, L = 46, R = 190, T = 14, B = 38;
+  const x = i => L + (W - L - R) * i / 3, y = v => T + (H - T - B) * (1 - v);
+  const path = arr => arr.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
+  const s = [];
+  for (let g = 0; g <= 1.0001; g += 0.25) s.push(`<line class="gridl" x1="${L}" x2="${W - R}" y1="${y(g)}" y2="${y(g)}"/><text x="${L - 8}" y="${y(g) + 4}" text-anchor="end">${Math.round(g * 100)}%</text>`);
+  for (let i = 0; i < 4; i++) s.push(`<text x="${x(i)}" y="${H - B + 18}" text-anchor="middle">session ${i + 1}</text>`);
+  s.push(`<path d="${path(rnd)}" fill="none" stroke="#9a5205" stroke-width="3"/><path d="${path(ours)}" fill="none" stroke="#16233f" stroke-width="3"/>`);
+  s.push(`<text x="${x(3) + 8}" y="${y(rnd[3]) + 4}" style="fill:#9a5205;font-weight:700">random practice ${pct(rnd[3])}</text>`);
+  s.push(`<text x="${x(3) + 8}" y="${y(ours[3]) + 4}" style="fill:#16233f;font-weight:700">ours ${pct(ours[3])}</text>`);
+  const d = h("div", {class: "chart"});
+  d.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Share of misconceptions still held after each session">${s.join("")}</svg>`;
+  return d;
+}
+function renderStress() {
+  const inv = D.synthetic.inversion, tr = D.synthetic.tracing, gen = D.synthetic.prob_gen;
+  const col = m => SYSBY[m].color;
+  const prov = (...files) => h("p", {class: "prov"}, "Source: ", files.map((f, i) => [i ? ", " : "", h("code", null, f)]));
+  $("#p-stress").replaceChildren(
+    h("h1", null, "Stress tests", tag("synth", "SYNTHETIC")),
+    h("p", {class: "lede"}, "Secondary, pre-registered experiments on items and learners we generated. They test the engine's mechanics, not real classrooms. No gap was detected against the reasoning models, and we say so."),
+    h("div", {class: "panels"},
+      h("div", {class: "sheet"},
+        h("h2", null, `Which rules produced this answer? · ${claim("inv.L3.ops")} operators`),
+        hbars([
+          {label: "Our engine", color: "var(--engine)", v: inv.exec.L3, text: pct(inv.exec.L3), sub: "exact by construction"},
+          ...MODELS.map(m => ({label: SYSBY[m].label, color: col(m), v: inv.models[m].levels.L3.acc, text: claim(`inv.${m}.L3`),
+            sub: claim(`inv.${m}.reasoning_per_item`) === "0" ? "no reasoning tokens · under $0.001 per item"
+              : `${claim(`inv.${m}.reasoning_per_item`)} reasoning tokens · ${claim(`inv.${m}.cost_per_item`)} per item`}))]),
+        h("p", {class: "small", style: "margin-top:10px"}, `GPT-5.5 gets every one right, after about ${claim("inv.gpt-5.5.reasoning_per_item")} reasoning tokens (${claim("inv.gpt-5.5.cost_per_item")}) per item. GPT-4.1-mini blames a misconception for ${claim("inv.gpt-4.1-mini.slipfa")} of careless slips. The engine enumerates every combination of rules, so it is exact; the LIVE tab times it.`),
+        prov("eval/results/llm_gaps_inversion.json")),
+      h("div", {class: "sheet"},
+        h("h2", null, "Which rules does a learner hold, after 12 answers?"),
+        hbars([
+          {label: "Our tracer", color: "var(--engine)", v: tr.tracer, text: claim("trace.tracer_exact"), sub: `${tr.n} simulated learners`},
+          ...MODELS.map(m => ({label: SYSBY[m].label, color: col(m), v: tr.models[m].exact, text: claim(`trace.${m}.exact`),
+            sub: m === "gpt-5.5" ? `first ${tr.models[m].n} learners; tracer ${claim("trace.gpt-5.5.paired_tracer")} on the same` : `${tr.models[m].n} learners`}))]),
+        h("p", {class: "small", style: "margin-top:10px"}, `Exact set of held misconceptions. No gap against GPT-5.4-mini (${claim("trace.gpt-5.4-mini.exact")}) or GPT-5.5; GPT-4.1-mini ${claim("trace.gpt-4.1-mini.exact")}. The simulator and the tracer share a generative family, which favours the tracer.`),
+        prov("eval/results/llm_gaps_tracing.json")),
+      h("div", {class: "sheet"},
+        h("h2", null, "Simulated learners: misconceptions still held"),
+        h("div", {style: "display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 4px"},
+          h("div", {class: "seg"}, [[false, "Equal learning rates"], [true, "Optimistic: named feedback ×3"]].map(([v, l]) =>
+            h("button", {"aria-pressed": String(Stress.optimistic === v), onclick: () => { Stress.optimistic = v; renderStress(); }}, l)))),
+        simChart(),
+        h("p", {class: "small"}, Stress.optimistic
+          ? `Assumes named feedback removes a misconception at 0.30 per wrong answer vs 0.10 for "the answer is X": ours ${claim("sim.ours_left")} vs random practice ${claim("sim.random_left")}. An optimistic scenario, not a measurement.`
+          : `Both arms learn at the same rate (0.10); only the choice of questions differs: ours ${claim("sim.pess_ours_left")} vs random practice ${claim("sim.pess_random_left")} after four sessions. Learning rates are assumptions; the pilot must measure them.`),
+        prov("eval/results/simulation.json")),
+      h("div", {class: "sheet"},
+        h("h2", null, "Writing a probability practice problem"),
+        h("p", {class: "small muted"}, "Both the answer key and the misconception's wrong answer must be exact."),
+        hbars([
+          {label: "Our engine", color: "var(--engine)", v: 1, text: "100.0%", sub: "exact by construction"},
+          ...MODELS.map(m => ({label: SYSBY[m].label, color: col(m), v: gen[m].both, text: claim(`prob.gen.${m}.both`), sub: `${gen[m].n} problems`}))]),
+        h("p", {class: "small", style: "margin-top:10px"}, `GPT-5.5 ${claim("prob.gen.gpt-5.5.both")}, GPT-5.4-mini ${claim("prob.gen.gpt-5.4-mini.both")}: no gap against the reasoning models. GPT-4.1-mini ${claim("prob.gen.gpt-4.1-mini.both")}.`),
+        prov("eval/results/llm_gaps_prob_pack.json"))));
+}
+
+/* ---------- init ---------- */
+function init() {
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  window.scrollTo(0, 0);
+  if (!D) {
+    document.querySelector("main").replaceChildren(h("div", {class: "offline"}, "demo/web/data.js is missing. Run ", h("code", null, ".venv/bin/python -m demo.export"), "."));
+    return;
+  }
+  const [tab, arg] = (location.hash.slice(1) || "real").split("/");
+  if (tab === "real" && arg && Real.rows.some(r => r.id === arg)) Real.sel = arg;
+  if (tab === "cascade" && arg && WORK[arg]) Cas.workload = arg;
+  renderReal(); renderCascade(); renderStress(); renderLive();
+  showTab(tab);
+  health().then(async () => {
+    if (API.up) {
+      try { setQuestion(await call("/api/parse", {expr: "3 + 4 × 2"})); } catch (e) { Live.err = e.message; }
+    }
+    renderLive(); renderReal();
+  });
+}
+init();
+</script>
+</body>
+</html>
