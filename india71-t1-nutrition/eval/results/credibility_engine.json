@@ -1,0 +1,1 @@
+{"metric": "auroc_fabricating", "value": 0.6942, "auroc_fabricating": 0.6942, "auroc_nongood": 1.0, "gross_error_recall": 0.9952, "reject_rate": 0.0433, "prev_true": 0.1694, "prev_raw": 0.1829, "prev_cred_filtered": 0.1738, "auroc_fabricating_sd": 0.041, "seeds": [11, 12, 13], "synthetic": true}
