@@ -53,7 +53,11 @@ Self-scores are each lead's own average of winnability, innovation, feasibility,
 
 ### India @71/100 — one theme per team
 1. **[T1 Nutrition — "Poshan Setu"](india71-t1-nutrition/thought_node.md)** · 4.2 · lean. The sharpest verified "scorecard vs reality" gap: Poshan Tracker reports **5.46%** wasting vs NFHS-5's **19.3%** (Rajya Sabha USQ 477; PIB 1988614). It has 10 tested components. Model metrics are synthetic (no public microdata); a state or district data contact would lift it.
-2. **[T3 Financial inclusion — "Sakriya"](india71-t3-finance/thought_node.md)** · 4.2. Inoperative Jan Dhan accounts rose from **14.1% to 26.4%** (Lok Sabha, 8 Dec 2025) while the FI-Index rose. On synthetic data, uplift-based targeting captures 34–38% of achievable gain vs the status quo's 4%.
+2. **[T3 Financial inclusion — "Sakriya"](india71-t3-finance/thought_node.md)** · 4.2. The gap is *accounts vs people*:
+   - Inoperative Jan Dhan accounts rose from **14.1% to 26.4%** (Lok Sabha, 8 Dec 2025).
+   - Yet person-level inactivity *fell* from 27.4% to 14.3% (World Bank Findex, 2021→2024).
+   - Those left behind are concentrated: 19.6% of women account-owners are inactive vs 12.6% of men.
+   - On synthetic data, uplift-based targeting captures 33–37% of achievable gain vs the status quo's 4% (corrected after the lead fixed its own evaluator bug).
 3. **[T2 Learning — "Ek Tasveer"](india71-t2-learning/thought_node.md)** · 4.2. Richest evidence base and a complete proposal; the demo runs on a synthetic district calibrated to ASER 2024.
 
 ### InnovateX — one theme, Delhi zonal 10 Oct
