@@ -225,4 +225,4 @@ The Supervisor spotted journal and registration times running ahead of git. Audi
 
 Those labels were estimates, 1–7 min ahead of the clock. The other headers are earlier than their commits, as they should be.
 
-**H1 caveat found during the audit:** the H1 registration was committed at 08:26:53, ≈ 3 min after E6 launched, and the first E6 seed file was written at 08:25:21. No E6 output was read before the run finished, but H1 is now classified as "registered after launch, before inspection". E10 (registered 13:01:50, first seed 13:05:11) is the strict confirmatory test. Correction table:  (end). From now on every time comes from Sun Oct  4 13:07:19 IST 2026.
+**H1 caveat found during the audit:** the H1 registration was committed at 08:26:53, ≈ 3 min after E6 launched, and the first E6 seed file was written at 08:25:21. No E6 output was read before the run finished, but H1 is now classified as "registered after launch, before inspection". E10 (registered 13:01:50, first seed 13:05:11) is the strict confirmatory test. Correction table: `eval/preregistration.md` (end). From now on every time comes from `TZ=Asia/Kolkata date`.
