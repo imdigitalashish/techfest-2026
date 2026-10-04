@@ -1,0 +1,2 @@
+date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	proposal-v0.3 (hostile judge: policy, feasibility, harm)	gpt-6-astra	max	25	24	1	4 blocking all accepted (ASER proxy vs NIPUN, anchoring, DPDP currency, case register); rejected only invented rupee unit prices (#12 part); see 2026-10-04-proposal-gpt-6-astra.responses.md

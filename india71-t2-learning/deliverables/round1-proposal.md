@@ -1,138 +1,147 @@
-# Ek Tasveer — one trusted picture of every child's foundational learning
-### A NIPUN Bharat decision-support layer built on UDISE+, PARAKH, ASER and state assessments
-*India @ 71/100 Challenge · Theme 2: Foundational Learning Outcomes · Round 1 proposal — draft v0.3 (4 Oct 2026)*
+# Ek Tasveer: one trusted picture of every child's foundational learning
+### A NIPUN Bharat decision layer on UDISE+, state assessments, PARAKH and ASER
+India @ 71/100 Challenge · Theme 2: Foundational Learning Outcomes · Round 1 proposal v1.0
 
-**Team:** ⟦Team name⟧ · **Team ID:** ⟦Team ID⟧ · **Institution(s):** ⟦…⟧ · **Contact:** ⟦email, phone⟧
+**Team:** _[name]_ · **Team ID:** _[after registration]_ · **Institution:** IIT Delhi _(+ teammates)_ · **Contact:** _[email, phone]_
 
 ---
 
-## 1. Problem identification
+## 1. Problem identification: the gap and who falls into it
 
-**The scorecard.** India scores 71/100 on the SDG India Index 2023-24 and 61 on SDG 4 (Quality Education); the adjusted net enrolment rate in elementary education is 96.5 % [1]. NIPUN Bharat (launched 5 July 2021) commits to "universal FLN in primary schools by 2026-27": every child reads with meaning at **≥ 60 words a minute** and handles numbers to 9,999 by the end of Grade 3 [2]. **2026-27 is this school year.**
+**The scorecard.** India scores 71/100 on the SDG India Index 2023-24 [1]. NIPUN Bharat (2021) set "universal FLN in primary schools by 2026-27": by the end of Grade 3 a child reads with meaning at ≥ 60 words a minute and handles numbers to 9,999 [2]. A 2024 parliamentary answer restates the goal as FLN "by Grade 2 by 2026-27" [3]; a pilot follows its state's operative goal order.
 
-**The lived reality.** In rural **government** schools, **23.4 %** of Std III children can read a Std II-level text and **27.6 %** can do at least subtraction (ASER 2024) [3]. Both rose sharply from 2022 (16.3 % and 20.2 %), so the system *can* move — but three in four Grade 3 children in government schools still cannot read a Grade 2 text. In private schools the reading figure is 35.5 % [3].
+**The lived reality (proxy evidence).** In rural **government** schools, **23.4 %** of Std III children could read a Std II-level text and **27.6 %** could do at least subtraction in 2024, up from 16.3 % and 20.2 % in 2022 [4]. These are ASER foundational-skill proxies, not measured NIPUN attainment, but they show most children are far from the goal in the mission's final year. PARAKH 2024 finds Scheduled Tribe children lowest in Grade 3 (maths 57 % vs 61 % for others) [5]; 1,04,125 single-teacher schools enrol 33.8 lakh children [6].
 
-**The measurable gap.** *Share of Grade 3 children in government schools who meet the Grade 3 reading and numeracy goals*: mission target 100 % in 2026-27 [2]; independently measured ≈ 23 % (reading) and ≈ 28 % (subtraction) [3].
+**The implementation gap we target.** Schools already record a lot: UDISE+ holds student-wise records ("more than 60 fields for each student") [6]. States run census-style FLN tests; the Ministry itself says UDISE, NAS, NIPUN Bharat and DIKSHA are "efficient systems working in silos" [7]. The gap is between **recorded** and **acted on, by someone trusted**:
+1. **Untrusted numbers.** Teacher-graded census tests in Madhya Pradesh overstated maths by **38.9** and Hindi by **33.8 percentage points** against independent re-tests [8]. NAS 2017 state averages were "likely artificially high", and ASER is "less reliable" for district averages [9]. Officials cannot see which blocks are truly behind.
+2. **No action loop.** A randomised trial of frequent assessment (CCE) in north-west India found "no impact on language and maths skills" amid "onerous" paperwork [10]; diagnostic reports alone did not raise learning [11].
 
-**The underserved group.** Children in Grades 1–3 of rural government schools — 68.9 % of India's 14.71 lakh schools are government schools [4] — and, within them, those the data system sees least well: children in **1,04,125 single-teacher schools (33.8 lakh enrolled)** [4], Scheduled Tribe children — the lowest-scoring social group in PARAKH 2024 Grade 3 (maths 57 % vs 61 % for others) [7] — Scheduled Caste children, and children whose home language is not the language of instruction.
-
-**The implementation gap — five breaks.** Data is not missing: UDISE+ has held student-wise records ("more than 60 fields for each student") since 2022-23 [4]; states run census-style FLN tests; Vidya Samiksha Kendras (VSKs) run dashboards. Yet the chain *recorded → believed → acted on → rechecked* breaks at five points:
-
-| Break | Today | Consequence |
-|---|---|---|
-| **Commensurability** | ASER levels, PARAKH average scores and state tests use different constructs and scales; no system links them (see §2) | Teacher, block and state see different pictures |
-| **Trust** | Census-style tests are often "proctored and graded by teachers in the same school"; Madhya Pradesh's Pratibha Parv (~6–7 million students) was shown to "mislead inferences about learning levels" [5] | Officials cannot tell progress from reporting pressure |
-| **Granularity** | Trustworthy surveys (ASER, PARAKH) are samples | Silent about a block, a school, a child |
-| **Actionability** | Outputs are averages and "% NIPUN" | Nobody is told *which children, which skill, which activity, this week* |
-| **Closed loop** | Actions are not logged or rechecked | Nobody learns what worked |
+**Pilot measure (baseline taken in phase 0):** the share of Grade 3 children assessed below level who receive a level-appropriate activity and a recheck within six weeks, and the gap between reported and independently re-tested block results, with intervals.
 
 ## 2. Evidence and context
 
 | Evidence | Finding | Source |
 |---|---|---|
-| ASER 2024 (rural, household, one-on-one oral test) | Std III govt: reading Std II text 20.9 % (2018) → 16.3 % (2022) → 23.4 % (2024); subtraction 20.2 % (2022) → 27.6 % (2024) | [3] |
-| Foundational Learning Study 2022 (NCERT; ~86,000 Grade 3 students, 10,000 schools, 20 languages) | Numeracy: 37 % limited, 42 % sufficient, 10 % superior skills | [6] |
-| PARAKH Rashtriya Sarvekshan 2024 (21,15,022 children, 74,229 schools, 781 districts; Grade 3: 5,99,026 students) | Grade 3 average score, language / maths: rural 64 % / 60 %; **ST children lowest at 61 % / 57 %** vs 66 % / 61 % for others; weakest maths competencies (shapes, money) at 50 % | [7] |
-| **Official-data audit, Madhya Pradesh** (re-test in 283 schools) | Official census scores inflated by **+38.9 pp (maths)** and **+33.8 pp (Hindi)** over independent re-test levels of 25.1 % and 37.9 %; in Andhra Pradesh, paper tests inflated by 16–20 pp, while tablet-based tests (≈ US$0.50 per test) mostly removed the distortion | [5] |
-| Diagnostic feedback to teachers, Andhra Pradesh (RCT) | Reports on their pupils' results alone: no detectable learning gain | [13] |
-| School-governance reform, Madhya Pradesh (RCT, 1,774 schools) | High compliance with ratings and improvement plans; learning effects null (maths +0.031 SD, Hindi +0.004 SD) | [14] |
-| Teaching at the Right Level (six RCTs, seven states) | Haryana +0.15 SD (language); Uttar Pradesh learning camps +0.6–0.7 SD; scaled to "over 60 million students" | [8], [15] |
-| Phone + SMS targeted instruction, Botswana (RCT) | +0.121 SD numeracy; SMS alone +0.024 SD (not significant) | [16] |
+| ASER 2024 (rural households, oral one-to-one) | Std III, govt schools: reads Std II text 20.9 % (2018) → 16.3 % (2022) → 23.4 % (2024) | [4] |
+| PARAKH 2024 (21,15,022 children, 74,229 schools) | Grade 3 average score, language / maths: rural 64 / 60 %; ST 61 / 57 % vs 66 / 61 % others | [5] |
+| Independent re-test audit, MP (283 schools) | Official scores +38.9 pp (maths), +33.8 pp (Hindi); tablet tests in Andhra Pradesh largely removed the distortion | [8] |
+| School-governance reform, MP (RCT, 1,774 schools) | High compliance; learning effects null (maths +0.031 SD) | [12] |
+| Teaching at the Right Level (six RCTs, seven states) | Haryana +0.15 SD (language); UP learning camps +0.6–0.7 SD; reaches "over 60 million students" | [13], [14] |
 
-**Our real-data check (27 states).** We linked ASER 2024 and PARAKH 2024 state results. The two national instruments rank states very differently: Spearman ρ = 0.44 for reading/language and 0.26 for arithmetic/maths, with a mean rank gap of ~7 places; Rajasthan is 4th of 27 on PARAKH Grade 3 language (70 %) [22] but 23rd on ASER (12.1 % of government-school Std III children read a Std II text) [3]. Using PARAKH to predict ASER cuts out-of-sample error only from 10.5 to 9.2 points (reading) and 7.9 to 7.6 (maths). The instruments measure different things — so a crosswalk with explicit uncertainty must come before either drives decisions.
+**Our real-data check (27 states).** ASER 2024 government-school reading and PARAKH 2024 Grade 3 language rank states differently (Spearman ρ = 0.44; maths ρ = 0.26). Predicting one from the other barely beats the national mean (out-of-state error 9.2 vs 10.5 points). They measure different constructs and populations, so we **keep them separate** and never substitute one for the other.
 
-**Design lesson.** Reports and ratings produced compliance, not learning [13], [14]; unverified official numbers were off by over 30 points [5]; diagnosis that becomes a grouped, level-appropriate action works [8], [15], [16]. So the layer must make numbers trustworthy and end every diagnosis in an action.
+**Lesson.** Reports and ratings produced compliance, not learning [10]–[12]. Grouped, level-appropriate teaching with protected time and mentoring did produce learning [13]. A decision layer must make numbers trustworthy *and* end in classroom action.
 
-## 3. Existing ecosystem — why the gap persists
+## 3. Existing ecosystem: why the gap persists
 
-| System (deployed) | What it does | What it leaves undone |
+| System | What it does | What the sources reviewed do not document |
 |---|---|---|
-| **UDISE+** [4] | School census + student-wise records since 2022-23 | No learning levels |
-| **VSKs** (state command centres) | Command-centre dashboards: attendance, assessments | Monitoring, not a classroom action; no causal evaluation found |
-| **State FLN assessments + verification** — Haryana *Saksham Ghoshna*: a block is "Saksham" if > 80 % of students score > 50 %, checked by a third-party test in all 119 blocks [10]; Gujarat *Gunotsav*: 3,000 senior officials assess "25% schools from all the blocks" [19]; UP: NIPUN app with external verification [20] | Census data + verification | Verification grades schools or blocks; it is not used to *calibrate* the data, so it must be huge |
-| **AI oral reading** — Wadhwani AI Vaachan Samiksha, ~30,000 Gujarat schools (developer figures) [11] | Tamper-resistant fluency scores | No independent accuracy check found; no remediation plan |
-| **TaRL** (Pratham) [8]; chatbots such as SwiftChat in 14 states (vendor figures) [12] | Assess → group → activities; delivery channels to teachers | Needs a light, recurring diagnostic and follow-up at scale |
+| **UDISE+** [6] | School census; student-wise records since 2022-23 | Learning levels |
+| **Vidya Samiksha Kendras** [7] | State command centres; MoE scope: 15 lakh schools, 26 crore students; Rs. 2–5 crore per State/UT | An evaluated link from dashboard to classroom action |
+| **State FLN verification** — Haryana *Saksham*: third-party test in all 119 blocks [15]; Gujarat *Gunotsav*: 3,000 officials assess 25 % of schools in every block [16] | Large external checks | Use of the check to *calibrate* every school's reported data |
+| **AI oral reading** — Wadhwani AI *Vaachan Samiksha*, ~30,000 Gujarat schools (developer figures) [17] | Tamper-resistant fluency scores | Independent accuracy against human raters |
+| **TaRL** (Pratham) [13] | Assess → group → teach at level | A light recurring check and follow-up inside state systems |
 
-**Why the gap persists.** Data pipes scaled; verified impact did not. Teacher-graded data is fragile, so states verify by brute force, and verification samples are not used as measurement. Dashboards monitor; few systems turn a diagnosis into next week's activity.
+**Why the gap persists.** Pipes scaled faster than trust. Verification is used to grade, not to correct the data. Dashboards monitor, but nothing obliges or equips anyone to act on what they show.
 
-## 4. Proposed solution — "one picture, two loops"
+## 4. Proposed solution: one picture, two loops
 
-Ek Tasveer is **not a new app**: a thin decision layer on what states already run (UDISE+, the state assessment app, the VSK, DIKSHA, WhatsApp/SMS/IVR) that adds the five missing links through 12 components with typed, open contracts (JSON Schema) — adoptable one component at a time.
+Ek Tasveer is **not a new app**. It is a decision layer on what states already run (UDISE+ codes, the state assessment app, the VSK, DIKSHA content, SMS/IVR). It is built as 12 components with open, typed contracts, so a state can adopt one at a time.
 
 ```mermaid
-flowchart LR
-  U[UDISE+ codes, enrolment,<br/>student-wise records] --> C2
-  S[State assessment app] --> C2
-  K[Classroom checks<br/>WhatsApp / IVR / ORF] --> C2
-  P[PARAKH / ASER] --> C6
-  C2[Canonical model<br/>+ pseudonyms] --> C4[Adaptive diagnostic]
-  C3[NIPUN competency<br/>crosswalk] --> C4
-  C4 --> C7[Monday plan<br/>WhatsApp / SMS / IVR]
-  C7 --> C11[Action ledger<br/>+ 6-week recheck]
-  C2 --> C5[Measurement assurance<br/>rotating re-tests]
-  C5 --> C6[Block estimates<br/>+ intervals]
-  C6 --> C9[Allocation + SMC page]
-  C6 --> V[VSK dashboard]
-  C11 --> C9
+flowchart TB
+  A["UDISE+ · state FLN test · classroom checks"] --> B["Canonical records<br/>pseudonymised"]
+  B --> C["Loop 1: short check →<br/>level groups"]
+  C --> D["Weekly plan:<br/>print · SMS · IVR"]
+  D --> E["Support record<br/>+ recheck"]
+  B --> F["Loop 2: independent<br/>re-test sample"]
+  F --> G["Block estimates<br/>+ 90 % intervals"]
+  H["Same-construct survey"] --> G
+  G --> I["Block review · CRC plan<br/>· SMC summary"]
 ```
 
-**Loop 1 — the classroom, weekly.** A teacher runs a few-minute oral check per child on the NIPUN-aligned ladder (letter → word → Grade 1 text → Grade 2 text; numbers → subtraction → division). An adaptive engine stops once ≥ 90 % sure of the level and returns a **Monday plan**: TaRL groups, one activity per group from the state's own content, and a recheck date — one WhatsApp message, ≤ 3 SMS or an IVR call, in the local language. Names stay on the teacher's phone.
+**Loop 1: classroom support (teacher-led, every week).** Once a term the teacher runs a short oral check per child. The default is a printed ASER-style branching tool; an adaptive engine runs on a school or CRC smartphone where one exists. Children are placed in level groups, never labelled. The teacher receives one activity per group from the state's own content, by print, SMS or IVR, plus a recheck date. The state protects a **daily level-grouped period** and CRCs mentor, as in the evaluated TaRL model [13]. We do not claim TaRL's effects for software alone. The check *replaces* the state test's data entry; it is not an extra task.
 
-**Loop 2 — the system, termly ("measurement assurance").** Exam boards already *moderate* school-assessed marks against independent evidence — e.g. Queensland's QCAA reviews "a selected sample" from every school [21]. We adapt that idea, plus survey back-checks and small-area estimation, to FLN census data, using the sample to *calibrate*, not to grade. Each term a small, rotating sample of schools — chosen by statistical uncertainty and decision value, always with a random component, so every school has a known inclusion probability — is re-tested by the cluster coordinator during the regular academic-support visit, who then coaches that group. A model-assisted estimator calibrates every school's reported results; small-area estimation with UDISE+ covariates then gives **block numbers with intervals that add up to the PARAKH/ASER anchor**. No school-level "trust label" is published: the aim is a true picture, not blame.
+**Loop 2: measurement assurance (independent, every term).** We adapt moderation, back-checks and small-area estimation to census FLN data. Each term a rotating random sample of schools (risk-weighted, known inclusion probabilities) is re-tested from a frozen roster within a two-week window. Assessors come from another cluster, scores are blinded, and a 20 % double-assessed subsample estimates assessor error; coaching happens only after scores are recorded. A calibration model corrects every school's reported results. A Fay–Herriot model then gives **block estimates with conservative 90 % intervals**, benchmarked only to an independent survey of the *same construct, population and term*, never to PARAKH scale scores or old ASER rounds. A discrepancy is never treated as proof of cheating.
 
-**Decisions it feeds.** CRC weekly visit plans; block/district allocation of remedial camps and training, ranked by expected children helped and weighted for single-teacher schools and SC/ST share; a one-page pictorial summary for each School Management Committee; interval-backed evidence for district Samagra Shiksha plans.
+**Learning-support record, with a firewall.** The record is time-limited, revisable and institution-owned: group, activity, recheck date, support needs. It holds no ability labels, quotas or rankings of teachers. A state order bars using these diagnostic or moderation records for personnel, transfer or promotion decisions. Parents and teachers can see and correct records, and school-level moderation data stays with the moderation team. Unmet need is reported only as an uncertain aggregate for planning.
 
-**Accountability that rewards finding, not hiding.** A "% NIPUN" target punishes honesty. Like India's TB programme, which incentivises *notification* and treatment completion [23], each child found below level is notified to an owner with a recheck date; a "cure" counts only when someone other than the teacher verifies it; and survey-anchored prevalence × UDISE+ enrolment − notified children estimates **missing cases**. Inaction, not low levels, becomes the visible failure.
+**Inclusion.** No phone, APAAR or Aadhaar is required for service; local temporary IDs work. "Not assessable with this instrument" is a valid outcome with human review. Pilot languages and accessible modes are fixed with SCERT/DIET before launch.
 
-**Governance and standards.** Keys: UDISE+ school code, LGD codes, a salted pseudonym of the student ID; competency codes from the NIPUN Lakshya Soochi. Role- and purpose-bound access: child-level data only on the teacher's device; cells with < 10 children suppressed; school-level moderation data only for the moderation team. The DPDP Act 2023 requires verifiable parental consent for children's data and bars "tracking or behavioural monitoring of children" unless rules exempt a class of processing (s. 9) [18]; the design holds either way, with pseudonymised, purpose-bound server records and consent captured at enrolment where required. NIPUN asks for "IT based solutions … field level child wise monitoring" built on DIKSHA, UDISE+ and NDEAR standards [2] — this is that layer.
+**Data protection (verified dates).** DPDP Act s. 9 requires verifiable parental consent and bars "tracking or behavioural monitoring of children". It commences 18 months after 13 Nov 2025 [18]. Rule 12 and Fourth Schedule item 3 exempt "an educational institution" only for monitoring "for the educational activities of such institution" or safety, and do not exempt s. 9(2) [19]. Pseudonymous records remain personal data. So each purpose (classroom support, state analytics, research, messaging) passes a legal gate with qualified review before live use. Child-level processing is disclosed, minimised and retention-limited.
 
-**Working demo (real runs; synthetic children — no real child data used).** A simulated district (6 blocks, ~600 government primary schools) in which ~30 % of schools inflate teacher-reported results; code, seeds and commands in the repository (`eval/run_eval.py`, `components/*/evaluate.py`).
+| Record (proposed design) | Holds | Who sees it | Kept |
+|---|---|---|---|
+| Learning-support record | pseudonym, group, activity, recheck date, support needs | the child's teacher and head teacher; parent on request | current year + 1 |
+| Re-test sample | pseudonym, independent result, assessor | moderation team (DIET) only | until estimates and appeals close |
+| School-level moderated figure | calibrated share, interval | moderation team and state analyst; never for personnel decisions | two terms |
+| Block estimates | share, 90 % interval, children counted | public (VSK, SMC summaries); cells under 10 children suppressed | aggregate only |
 
-| Result (first runs, 4 Oct 2026) | Value |
+**Working demo (SYNTHETIC children; real runs).** A simulated district (600 schools, 6 blocks) matched to two ASER 2024 marginals, in which 30 % of schools inflate. Results come from a **pre-registered** test on 30 held-out districts (180 blocks):
+
+| Result | Value |
 |---|---|
-| Adaptive check capped at 8 of 16 items: exact level accuracy (5 levels, both subjects, seeds 101–105) | 0.551 — baseline for the auto-research loop |
-| Monday plan, class of 60, Hindi WhatsApp | 659 bytes; 3 SMS segments; IVR script |
-| Block error, "% meeting goal": reported vs moderated (10 % re-tested; 5 seeds; ASER-calibrated) | 4.04 ± 0.32 pp → 2.46 ± 0.69 pp |
-| Detecting inflating schools (AUC) from public signals only | 0.77 |
-| Governance policy tests (`components/governance/evaluate.py`) | 36 / 36 pass |
+| Block error, teacher-reported → moderated (10 % of schools re-tested) | **4.31 → 2.16 pp** |
+| Coverage of nominal 90 % intervals (conservative); mean half-width | **96.7 %** (92.9–98.5); **±6.0 pp** |
+| Re-test budget 5 % / 10 % / 20 % of schools: interval half-width | ±8.3 / ±6.0 / ±4.2 pp |
+| Do ±6 pp intervals separate blocks? (exploratory) | 55 % of blocks fall clearly above or below the district average, all on the correct side; true block spread ≈ 25 pp |
+| Better camp targeting from moderated numbers? | **Not shown** (+0.2 children, CI −5.6 to +6.1); at a 5 % budget it is worse |
+| Adaptive check, 8 of 16 items: exact level (5 levels) | 0.546, vs 0.597 for the full test (synthetic items) |
+| Weekly plan for a class of 60 / policy tests | 755-byte Hindi message, 3 SMS / 36 of 36 pass |
 
-**Honest limits.** In a small district (120 schools, 12 re-tested; one seed) moderation *increased* block error (5.4 → 7.7 pp) and intervals under-covered — minimum sample size and interval calibration are next (90 % intervals cover only 27 % of true block values); allocation gains are not yet shown.
+These are stress tests of the method, not evidence about real states. Item difficulties, error rates and the honesty of classroom data are simulator assumptions, and the adaptive stopping rule is a model rule, not field certainty.
 
 ## 5. Feasibility and implementation roadmap
 
-| Phase | Scope | What happens | Exit criterion |
-|---|---|---|---|
-| 0 (3 months) | 1 district, 2 blocks, clusters staggered | Loop 1 in Grades 1–3; Loop 2 at a 10 % rotating sample; staggered start gives a causal comparison | Teachers use the plan weekly; moderated vs reported gap measured |
-| 1 (1 year) | 1 state via its VSK | Connectors to the state assessment app and UDISE+; SMC pages; AWP&B evidence | Block estimates with intervals in the state's planning cycle |
-| 2 (2–3 years) | Multi-state | Open contracts and components offered as digital public goods | Adopted component-by-component |
+| Who | Role |
+|---|---|
+| State FLN mission / Samagra Shiksha | Order: protected period, firewall, data agreements; funds the pilot |
+| SCERT | Owns competency mapping, tools, languages, content |
+| DIET | Trains and checks assessors; runs the moderation sample |
+| BRC / CRC | Mentoring; re-tests in another cluster |
+| Teachers / SMC | Teach groups; record the termly check / see school summaries |
+| VSK IT team | Hosts approved services only |
+| Independent evaluator | Measures outcomes |
 
-**People and time (design estimates).** Teacher: one short oral check per child per term and one message a week. CRC: at a 10 % rotating sample, a block of 100 schools needs 10 school re-tests per term — about 12 children each, inside visits the CRC already makes. Block/district: the existing monthly review uses the moderated numbers. **Costs:** no new devices; SMS/IVR as fallback; tablet-based re-testing was costed at about US$0.50 per test in the Andhra Pradesh study [5]. **Risks → mitigations:** teacher workload → short adaptive checks; language → per-language validation of items and AI scoring; connectivity → offline-first, SMS/IVR; gaming → rotation, random component, no published labels; privacy → pseudonyms, suppression, purpose limits.
+**Quantities per 100 schools per term (design, at 10 %).** 10 school re-tests × 12 children = 120 independent assessments plus 24 double checks. At 16 items and an assumed 20 seconds per item, a full check takes about 5.3 minutes per child. Prices are to be quoted in phase 0; VSKs already receive Rs. 2–5 crore per State/UT [7].
+
+| Phase | Scope and gate |
+|---|---|
+| 0: feasibility (1 term) | One district, one language. **Gates:** state order, legal review, data-sharing and processor agreements, VSK slot, timetable release. Measures: time use, data quality, harms, the reported vs re-tested gap. No impact claims. |
+| 1: evaluation (1 year) | Cluster-randomised rollout; pre-specified, independently assessed learning outcome; spillover controls. |
+| 2: scale | Only if incremental learning, workload and harm indicators pass; open components as public goods. |
+
+**Risks → mitigations.** Workload → the check replaces existing entry, and the plan is printed. Gaming → random rotation, cross-cluster assessors, no quotas. Stigma → no labels, plus the firewall. Language → validate before use. Weak benefit → stop at the phase-1 gate.
 
 ## 6. Expected impact and scalability
 
-**Beneficiaries.** Grade 1–3 children in government schools of the pilot district, then the state (counted from UDISE+ grade-wise enrolment).
-**Outcome indicators.** Share of Grade 3 children meeting the reading and numeracy goals at block level, with intervals, every term; teacher minutes per child; share of actions rechecked within six weeks; gap between reported and moderated figures.
-**Expected effect and scale.** TaRL-style grouping has strong RCT support [8]; the staggered pilot measures our effect rather than assuming it. No new hardware or app: the layer runs on the state's VSK, uses UDISE+ identifiers and speaks WhatsApp/SMS/IVR.
+**Beneficiaries.** Grade 1–3 children in the pilot district's government schools (counted from UDISE+), with ST children, single-teacher schools and language-minority children tracked separately.
 
-## References (all accessed 4 Oct 2026; quotes and page numbers in `research/sources/`)
-1. NITI Aayog, SDG India Index 2023-24 (PIB). https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2032857 ; SDG 4 score: https://static.pib.gov.in/WriteReadData/userfiles/image/image010QARO.jpeg
-2. Ministry of Education (2021). *NIPUN Bharat*, pp. 2, 5, 12, 29. https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf
-3. ASER Centre (2025). *Annual Status of Education Report (Rural) 2024*. https://asercentre.org/wp-content/uploads/2022/12/ASER_2024_Final-Report_13_2_24-1.pdf
-4. Ministry of Education. *UDISE+ 2024-25*, pp. 10, 28–32. https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf
-5. Singh, A. (2020). *Myths of Official Measurement*. RISE WP 20/042, pp. 1–5. https://riseprogramme.org/sites/default/files/2020-11/RISE_WP-042-Singh.pdf
-6. Rajya Sabha Unstarred Q. 3224 (Foundational Learning Study 2022). https://sansad.in/getFile/annex/259/AU3224.pdf?source=pqars
-7. NCERT (2025). *PARAKH Rashtriya Sarvekshan 2024, National Report*, pp. 1–4. https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_India_IND.pdf
-8. J-PAL. *Teaching at the Right Level* (case study). https://www.povertyactionlab.org/case-study/teaching-right-level-improve-learning
-10. Govt. of Haryana. *The Saksham Haryana programme*. https://www.prharyana.gov.in/en/the-saksham-haryana-programme-an-initiative-of-haryana-school-education-department-which-has-been-0
-11. Wadhwani AI. *Vaachan Samiksha*. https://www.wadhwaniai.org/vaachan-samiksha-leveraging-ai-to-bridge-the-literacy-divide/
-12. AWS (2023). ConveGenius SwiftChat. https://press.aboutamazon.com/in/2023/9/convegenius-builds-swiftchat-conversational-ai-platform-on-aws-to-improve-education-for-100-million-students
-13. Muralidharan & Sundararaman (2010). Diagnostic feedback to teachers. *Economic Journal* (J-PAL summary): https://www.povertyactionlab.org/print/pdf/node/702092
-14. Muralidharan & Singh. *Improving Public Sector Management at Scale?* NBER WP 28129. https://www.nber.org/system/files/working_papers/w28129/w28129.pdf
-15. Banerjee et al. (2016). *Mainstreaming an Effective Intervention: TaRL in India*. https://www.povertyactionlab.org/sites/default/files/research-paper/TaRL_Paper_August2016.pdf
-16. Angrist, Bergman & Matsheng (2022). *Nature Human Behaviour*. https://www.nature.com/articles/s41562-022-01381-z.pdf
-18. *Digital Personal Data Protection Act, 2023*, s. 9.
-19. Govt. of Gujarat. *Gunotsav — About*. https://gunotsav.gujarat.gov.in/aboutus.html
-20. UP NIPUN external assessment RFP (GeM). https://bidplus.gem.gov.in/bidding/bid/downloadBuyerDoc/5579037/17001372817746.pdf
-21. QCAA, *Confirmation*. https://www.qcaa.qld.edu.au/senior/assessment/quality-assurance/confirmation
-22. NCERT (2025). *PRS 2024 State Report: Rajasthan*, p. 14 (+34 state reports). https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_Rajasthan_IND008.pdf
-23. MoHFW, *NSP for TB Elimination 2017–25*, p. 34. https://extranet.who.int/cpcd/sites/default/files/public_file_repository/IND_India_National-Strategic-Plan-for-TB-Elimination_2017-2025.pdf
+**Outcomes.**
+- Children assessed below level who get an activity and a recheck within six weeks.
+- Independently re-tested learning, by group, with intervals.
+- The reported-versus-re-tested gap.
+- Teacher minutes; harm indicators.
+
+**Scale.** The layer reuses UDISE+ identifiers, state apps, VSKs and SMS/IVR. It adds no new hardware, and it expands only if phase 1 shows incremental learning at acceptable cost.
+
+## References (all accessed 4 Oct 2026; quotes in `research/sources/`)
+1. NITI Aayog SDG India Index 2023-24 (PIB). https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2032857
+2. MoE (2021). *NIPUN Bharat*, pp. 2, 5, 12. https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf
+3. Rajya Sabha Unstarred Q. 523, 7 Feb 2024. https://sansad.in/getFile/annex/263/AU523.pdf?source=pqars
+4. ASER Centre (2025). *ASER 2024*. https://asercentre.org/wp-content/uploads/2022/12/ASER_2024_Final-Report_13_2_24-1.pdf
+5. NCERT (2025). *PARAKH Rashtriya Sarvekshan 2024, National Report*, pp. 1–4; 35 state reports. https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_India_IND.pdf
+6. MoE. *UDISE+ 2024-25*, pp. 10, 28–32. https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf
+7. Rajya Sabha Unstarred Q. 349, 20 Jul 2022 (Vidya Samiksha Kendra). https://www.sansad.in/getFile/annex/257/AU349.pdf?source=pqars
+8. Singh, A. (2020). *Myths of Official Measurement*. RISE WP 20/042. https://riseprogramme.org/sites/default/files/2020-11/RISE_WP-042-Singh.pdf
+9. Johnson, D. & Parrado, A. (2021). Assessing the assessments. *IJED* 84. https://riseprogramme.org/sites/default/files/inline-files/Johnson_Assessing%20the%20assessments_RISE%20version_v2.pdf
+10. Berry, J. et al. (2020). Failure of frequent assessment. *J. Dev. Econ.* 143 (summary: https://voxdev.org/topic/education/failure-frequent-assessment-evidence-indias-continuous-and-comprehensive-evaluation)
+11. Muralidharan & Sundararaman (2010). Diagnostic feedback to teachers. *Economic Journal* (summary: https://www.povertyactionlab.org/print/pdf/node/702092)
+12. Muralidharan & Singh. *Improving Public Sector Management at Scale?* NBER WP 28129. https://www.nber.org/system/files/working_papers/w28129/w28129.pdf
+13. J-PAL. *Teaching at the Right Level*. https://www.povertyactionlab.org/case-study/teaching-right-level-improve-learning
+14. Banerjee et al. (2016). *Mainstreaming an Effective Intervention: TaRL in India*. https://www.povertyactionlab.org/sites/default/files/research-paper/TaRL_Paper_August2016.pdf
+15. Govt. of Haryana. *Saksham Haryana*. https://www.prharyana.gov.in/en/the-saksham-haryana-programme-an-initiative-of-haryana-school-education-department-which-has-been-0
+16. Govt. of Gujarat. *Gunotsav*. https://gunotsav.gujarat.gov.in/aboutus.html
+17. Wadhwani AI. *Vaachan Samiksha*. https://www.wadhwaniai.org/vaachan-samiksha-leveraging-ai-to-bridge-the-literacy-divide/
+18. *DPDP Act 2023*, s. 9; commencement G.S.R. 843(E), 13 Nov 2025. https://www.meity.gov.in/static/uploads/2025/11/c56ceae6c383460ca69577428d36828b.pdf
+19. *DPDP Rules 2025*, G.S.R. 846(E), Rule 12, Fourth Schedule. https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf

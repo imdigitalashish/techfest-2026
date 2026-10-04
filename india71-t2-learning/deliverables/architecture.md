@@ -43,14 +43,14 @@ flowchart TB
 ## 2. Loop 1 — classroom, weekly
 ```mermaid
 sequenceDiagram
-  participant T as Teacher (basic phone)
-  participant D as C4 Diagnostic (on device)
+  participant T as Teacher (printed tool or phone)
+  participant D as C4 diagnostic (school/CRC smartphone or server)
   participant P as C7 Planner
   participant L as C11 Ledger
-  T->>D: oral check, child by child (adaptive; stops at P(level) ≥ 0.9)
+  T->>D: termly oral check, child by child (printed branching tool by default; adaptive engine where a device exists)
   D-->>T: level + confidence per child (names stay on device)
   D->>P: levels by pseudonym
-  P-->>T: Monday plan — groups, 1 activity each, recheck date (WhatsApp / ≤ 3 SMS / IVR)
+  P-->>T: weekly plan — groups, 1 activity each, recheck date (print / WhatsApp / ≤ 3 SMS / IVR)
   T->>L: "done" (one tap / IVR key)
   Note over T,L: 4–6 weeks later the same competency is rechecked; the change is logged against the action
 ```
@@ -65,10 +65,10 @@ sequenceDiagram
   participant B as Block / District / VSK
   S->>M: teacher-reported results (school × grade × subject)
   M->>M: choose rotating sample: uncertainty × decision value, random floor, known inclusion probabilities
-  M->>C: re-test 10–12 children per sampled school during the support visit (then coach that group)
+  M->>C: re-test 12 children per sampled school from a frozen roster (cross-cluster assessor, blinded; coach only after recording)
   C-->>M: independent levels
   M->>E: calibrated school estimates + SE (model-assisted, design-weighted)
-  E->>E: Fay–Herriot with UDISE+ covariates; benchmark to PARAKH/ASER anchor (precision-weighted)
+  E->>E: Fay–Herriot model on the reporting bias; benchmark only to an independent same-construct, same-term survey (precision-weighted)
   E-->>B: block numbers with intervals that add up across levels (no school-level trust labels)
 ```
 
@@ -81,7 +81,7 @@ sequenceDiagram
 | Competency | e.g. `L.STORY`, `M.SUB` mapped to NIPUN Lakshya Soochi goals | C3 framework | Grade 3 goal: reads with meaning ≥ 60 wpm; numbers to 9,999 |
 | Item / Response | item ID + Q-matrix row | instrument owner | score, administrator (teacher / CRC / third party / AI), date |
 | AggregateObservation | source × area × indicator × year | PARAKH, ASER | value, SE, n, citation |
-| TrustAssessment | school × subject × grade | C5 | visible only to the moderation team and the state |
+| TrustAssessment | school × subject × grade | C5 | visible only to the moderation team and the state analyst; never used for personnel decisions |
 | AreaEstimate | area × subject × grade | C6 | estimate, 90 % interval, sources used, suppressed flag |
 
 ## 5. Who sees what (C12, enforced by a 36-case test suite)
@@ -94,5 +94,5 @@ sequenceDiagram
 
 ## 6. Deployment
 - Runs inside the state's VSK cloud tenancy; batch jobs (nightly connectors; termly moderation) + a stateless plan service for messages.
-- Teacher side works offline-first (diagnostic is arithmetic on a θ-grid); plans fit one WhatsApp message (~0.7 KB in Hindi for a class of 60 in our run) or three SMS.
+- Teacher side: a printed branching tool works with no device; where a school/CRC smartphone exists the adaptive engine runs offline. Plans fit one WhatsApp message (755 bytes in Hindi for a synthetic class of 60) or three SMS, or are printed.
 - Every component has its own evaluator and contract tests, so states can adopt one component at a time and swap implementations without touching neighbours.

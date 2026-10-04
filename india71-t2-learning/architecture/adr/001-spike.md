@@ -72,6 +72,12 @@ Best alternative offered: the C3 → C4 → C7 → C11 action loop, measured by 
 - **Minimum viable pilot** = C4 (baseline ladder) + C7 + C8 + C11 + C5, plus a state order protecting a daily level-grouped hour; C6 and C9 follow once case data flows.
 - **Metrics:** C5's block MAE stays a guardrail; the pilot's primary metrics are case-finding rate, verified-cure rate and time-to-owner.
 
+## Addendum v3 (2026-10-04 16:04 IST) — after the pre-registered test and the hostile-judge review
+- **Learning-support record replaces the case/cure register.** The TB-programme analogy and "cure" language are dropped (review issue 16): a time-limited, revisable, institution-owned record with no ability labels, no quotas, no teacher rankings, and a state-order firewall against personnel/progression use. The claim that notification "makes truthful reporting the dominant strategy" is **withdrawn** (issue 17: no incentive analysis supports it). Unmet need is reported only as an uncertain aggregate for planning.
+- **Spike 2 measured.** Pre-registered held-out test (`eval/preregistration/2026-10-04-coverage.md`): conservative 90 % intervals (coverage 96.7 %, ±6.0 pp), block MAE 2.16 vs 4.31 pp raw. The interval method changed during development (dev seeds 1–30 only): misclassification correction from a double-assessed subsample, children-weighted HT bias, and a Fay–Herriot model on the reporting bias.
+- **C9 allocation demoted.** Pre-registered: moderated numbers do **not** improve camp targeting (and worsen it at a 5 % budget). Allocation is no longer a value claim; moderated numbers inform the existing review process with intervals.
+- **Anchoring restricted** to an independent same-construct, same-population, same-term survey (issue 6).
+
 ## Consequences
 - Auto-research loop 1 runs on C5 first (its frozen evaluator exists: `components/trust_audit/autoresearch/`), loop 2 on C4 (`components/diagnostics/autoresearch/`).
 - The proposal leads with the teacher's Monday plan and the child, then shows how the same data, moderated, becomes block decisions.
