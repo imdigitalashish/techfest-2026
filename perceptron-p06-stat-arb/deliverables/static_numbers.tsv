@@ -20,3 +20,10 @@
 95	95% confidence level
 2026	Perceptron 2026
 30	LEV target clipped at ±30 bp (components/decision/autoresearch/rules.py fit_gbm_reg clip=30)
+53	hostile-judge plan score 53/100 (reviews/2026-10-04-spike-adr-gpt-6-astra.md)
+100	score scale /100 (same review)
+10	≤ 10 µs decision-step target (components/decision/autoresearch/program.md)
+13	13 first-of-month days (eval/PREREGISTRATION-walkforward-12d.md)
+16	16-core Azure VM, Standard_D16s_v5 (eval/results/sensitivity_amendment1.json run)
+15	finals 15–18 Dec (official brief)
+18	finals 15–18 Dec (official brief)

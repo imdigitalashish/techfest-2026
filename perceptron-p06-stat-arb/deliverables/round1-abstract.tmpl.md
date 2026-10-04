@@ -27,28 +27,29 @@ The compiled decision step (Numba, matching scikit-learn's predictions) takes {{
 
 **Minimum Viable mapping.**
 - *Detect mispricings with a threshold or statistical model:* running on real ticks.
-- *Report how fast the opportunity typically decays:* survival curves with confidence intervals. The median lifetime is {{median_life_ms}} ms (95% CI {{median_ci_lo}}–{{median_ci_hi}}); publication times bound it to {{med_lo}}–{{med_hi}} ms. By pair type it is {{median_perp_perp}} ms (perpetual–perpetual), {{median_spot_perp}} ms (spot–perpetual) and {{median_spot_spot}} ms (spot–spot). Across {{n_months}} monthly samples it ranges from {{month_median_min}} to {{month_median_max}} ms.
+- *Report how fast the opportunity typically decays:* survival curves with confidence intervals. The median lifetime is {{median_life_ms}} ms (95% CI {{median_ci_lo}}–{{median_ci_hi}}); publication times bound it to {{med_lo}}–{{med_hi}} ms. By pair type it is {{median_perp_perp}} ms (perpetual–perpetual), {{median_spot_perp}} ms (spot–perpetual) and {{median_spot_spot}} ms (spot–spot). Across {{n_months}} monthly samples of five markets it ranges from {{month_median_min}} to {{month_median_max}} ms.
 
 **Stretch goals.**
 - *Latency budget:* L = feed + compute + order. Compute takes microseconds; distance takes milliseconds. Tardis collectors see Binance perpetual quotes {{feed_fast_ms}} ms after the exchange timestamp (median), and the slowest venue {{feed_slow_ms}} ms after. From our laptop in India, the fastest 5% of messages arrive {{mac_p05_min}}–{{mac_p05_max}} ms late. At 1 bp per-leg fees, naive trading stops paying at {{be_naive}} ms one-way.
 - *Paper trading:* the live recorder feeds the same pipeline.
 
 **Novelty.** Our contribution is a falsification-first decision benchmark on public data, not a new learner:
-1. We rank by value at arrival. At 50 ms the top decile by LEV earned {{top_decile_lev_slow}} bp per trade, against {{top_decile_edge_slow}} bp ranked by gap size.
+1. We rank by value at arrival. At 50 ms, with the frozen simulator, the top decile by LEV earned {{top_decile_lev_slow}} bp per trade, against {{top_decile_edge_slow}} bp ranked by gap size.
 2. Decay is reported together with its observability limits.
 3. The walk-forward is pre-registered, the stricter simulators are registered amendments, and the ablations are published whatever they show.
 
 **Evaluation plan.** We fit on one month's first day and test on the next. Baselines are naive trading, a tuned per-pair × fee × latency threshold (the bar to beat) and survival EV. The metric is simulated execution surplus (fills after fees, marked against the fair basis), summed over six fee/latency scenarios.
 - *Pre-registered: {{wf_n}} sampled months, {{wf_inspected}} of them previously inspected.* LEV beat the threshold in {{wf_pos}}/{{wf_n}} months, by a mean of {{wf_mean}}/day ({{wf_rel}}); 95% t-interval {{wf_tci}}. Verdict: {{wf_verdict}}. On the {{unseen_n}} months never inspected: {{unseen_pos}}/{{unseen_n}}, {{unseen_mean}}/day ({{unseen_tci}}).
 - *Stricter simulators (registered amendment):* filling at the next published quote gives {{v1_mean}}/day ({{v1_tci}}); adding a mark-to-mid 1 s later gives {{v2_mean}}/day ({{v2_tci}}). Verdict: {{sens_decision}}.
-- *Attribution (exploratory):* LEV beats a GBM classifier by {{x_gbm_mean}}/day ({{x_gbm_tci}}), and the same model without the latency input by {{x_noL_mean}}/day ({{x_noL_tci}}). Survival EV trails the threshold ({{ev_vs_thr}}/day).
+- *Fragility:* dropping intents that reuse a quote already hit ({{collide_lev}} of LEV's trades) leaves {{s3_mean}}/day ({{s3_tci}}). A LEV trained on optimistic fills does not transfer to strict ones ({{v4_mean}}/day).
+- *Attribution (exploratory):* with the frozen simulator, LEV beats a GBM classifier by {{x_gbm_mean}}/day ({{x_gbm_tci}}) and the same model without the latency input by {{x_noL_mean}}/day ({{x_noL_tci}}). With strict fills and markouts, these become {{x_gbm_v2_mean}} and {{x_noL_v2_mean}}/day ({{x_v2_sig}}). Survival EV trails the threshold ({{ev_vs_thr}}/day).
 
 **Feasibility and risks.** [TEAM: skills — systems/latency, ML, quant.] The MVP and both stretch simulators run.
 
 *Milestones:* abstract by 31 Oct; lead–lag and deeper-book fills 1–17 Nov; exams 19–25 Nov; midway report by 1 Dec; paper trading and demo 1–14 Dec.
 
 *Risks:*
-- Venue clocks differ; receive-time replay controls for this.
+- Venue clocks differ; we re-test conclusions under receive-time replay.
 - Publication grids hide sub-cadence dynamics; for the finals we will capture tick-by-tick feeds near the exchanges.
 - Fees can erase every edge (Coinbase Exchange's lowest-volume taker fee is 60 bps).
-- LEV's gain may not survive richer execution models; we test this and report it.
+- Public replay cannot pin down LEV's value; its gain ranges from within noise to {{wf_mean}}/day depending on execution assumptions. We will measure it with live paper fills.

@@ -12,7 +12,7 @@ R = "eval/results/"
 
 
 def usd(x: float) -> str:
-    s = f"{abs(x):,.0f}"
+    s = f"{abs(x):,.1f}" if abs(x) < 10 else f"{abs(x):,.0f}"
     return ("+" if x >= 0 else "−") + "$" + s
 
 
@@ -75,8 +75,8 @@ def build() -> dict[str, str]:
     h["wf_sign_p"] = f"{c['sign_p']:.3f}"
     h["wf_wilcoxon_p"] = f"{c['wilcoxon_p']:.3f}"
     supported = c["t_ci95"][0] > 0 and c["ci95"][0] > 0
-    h["wf_verdict"] = ("supported: both 95% lower bounds are above zero" if supported
-                       else "not established: the t-interval includes zero, so the gain is within noise")
+    h["wf_verdict"] = ("supported (both 95% lower bounds are above zero)" if supported
+                       else "not established (the t-interval includes zero, so the gain is within noise)")
     u = wf["subsets"]["unseen7"]["lev - threshold_pair"]
     h["unseen_n"], h["unseen_pos"], h["unseen_mean"], h["unseen_tci"] = str(u["n_days"]), str(u["days_positive"]), usd(u["mean_usd_per_day"]), ci(*u["t_ci95"])
     tn = wf["comparisons"]["threshold_pair - naive"]
@@ -120,12 +120,19 @@ def build() -> dict[str, str]:
     for key, world in (("v1", "V1_strict"), ("v2", "V2_strict_mo1"), ("v3", "V3_strict_mo10"), ("v4", "V4_transfer")):
         x = w[world]["registered"]["lev - threshold_pair"]
         h[f"{key}_mean"], h[f"{key}_tci"], h[f"{key}_pos"] = usd(x["mean_usd_per_day"]), ci(*x["t_ci95"]), str(x["days_positive"])
-    h["sens_decision"] = ("the gain survives both stricter models" if sen["decision"] == "robust"
+    v1 = w["V1_strict"]["registered"]["lev - threshold_pair"]["mean_usd_per_day"]
+    h["v1_share"] = f"{v1 / c['mean_usd_per_day']:.0%}"
+    h["sens_decision"] = (f"the registered rule passes, but the gain shrinks to {h['v1_share']} of its frozen-simulator value" if sen["decision"] == "robust"
                           else "the gain does not survive the stricter models, so the headline depends on optimistic fills or basis marking")
-    for key, comp in (("x_gbm", "lev - gbm_clf"), ("x_noL", "lev - lev_noL"), ("x_ridge", "lev - ridge")):
-        x = w["V0_frozen"]["exploratory"][comp]
+    for key, world, comp in (("x_gbm", "V0_frozen", "lev - gbm_clf"), ("x_noL", "V0_frozen", "lev - lev_noL"), ("x_ridge", "V0_frozen", "lev - ridge"),
+                             ("x_gbm_v2", "V2_strict_mo1", "lev - gbm_clf"), ("x_noL_v2", "V2_strict_mo1", "lev - lev_noL")):
+        x = w[world]["exploratory"][comp]
         h[f"{key}_mean"], h[f"{key}_tci"], h[f"{key}_pos"] = usd(x["mean_usd_per_day"]), ci(*x["t_ci95"]), str(x["days_positive"])
-    h["collide_lev"] = f"{sen['collisions']['V1_strict']['lev']:.0%}"
+    sig = [w["V2_strict_mo1"]["exploratory"][k]["t_ci95"][0] > 0 for k in ("lev - gbm_clf", "lev - lev_noL")]
+    h["x_v2_sig"] = "both significant" if all(sig) else "neither significant" if not any(sig) else "only one significant"
+    h["collide_lev"] = f"{sen['collisions']['V2_strict_mo1']['lev']:.0%}"
+    s3 = sen["collision_dropped"]["V2_strict_mo1"]["registered"]["lev - threshold_pair"]
+    h["s3_mean"], h["s3_tci"] = usd(s3["mean_usd_per_day"]), ci(*s3["t_ci95"])
 
     cad = {r["leg"]: r for r in json.load(open(R + "update_cadence.json"))["legs"]}
     h["cad_bnf_ms"] = f"{cad['binance-futures_BTCUSDT']['median_gap_ms']:.0f}"
