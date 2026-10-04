@@ -88,3 +88,21 @@ Otherwise the spike is reported as failed and the deliverable rests on the plann
 - empty moves per served request.
 
 **Amendments:** any change to this design must be committed (dated, with a reason) before the first test-seed run.
+
+## Amendment B1 (2026-10-04 11:25 IST; before any test-seed run)
+
+**Reasons.**
+- The tuning-seed preview (`eval/results/gated-tuning-preview`) showed that local regime gating adds ≈0 over the best fixed trust.
+- The gpt-6-astra review (`reviews/2026-10-04-abstract-final-gpt-6-astra.md`, issues 1–2) noted that a universal constant (e.g. 0.5) could pass a test against only trust ∈ {0, 1}.
+
+**Changes to Addendum B.**
+1. **Co-primary comparators.** Gated trust is tested against each of the following, with Holm over cells × comparators:
+   - (a) max(trust 0, trust 1);
+   - (b) the **best fixed trust**, tuned on seeds 0–49;
+   - (c) a **detector-free gate** using forecast-residual uncertainty only, also tuned on seeds 0–49.
+   The spike counts as **successful only if it beats (b) and (c)**. Beating (a) alone is reported as "shrinkage helps", not as regime awareness.
+2. **Gate design space** (all tuned on seeds 0–49, then frozen and committed before testing):
+   - a city-wide regime signal: trust ↓ while any CUSUM alarm is active city-wide;
+   - per-zone uncertainty shrinkage from rolling forecast residuals;
+   - the original per-zone/neighbour alarm gate.
+3. **Unchanged:** seeds 300–329, cells, endpoint, two-sided Wilcoxon, paired bootstrap CIs, reporting of every cell. The success criterion of Addendum B applies to comparators (b) and (c).

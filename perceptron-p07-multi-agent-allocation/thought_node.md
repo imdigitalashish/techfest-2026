@@ -10,21 +10,25 @@
 - _(none)_
 
 ## Now
-_Updated 2026-10-04 10:55 IST._
-- **Phase:** active batch, closing the DoD. MVP plus both stretch goals done with held-out CIs. Spike tested end-to-end: pre-registered replication **failed**, reported. NYC replay done. Final abstract drafted (900 words). Memo final.
-- **Doing:**
-  - Child sessions (cap 2): [P7 review: final abstract (gpt-6-astra)](ghapp://sessions/d2aa3a44-ee56-48d2-90bc-57f11d2a08a7) and [P7 review: headline repro (gpt-6-sol)](ghapp://sessions/a31b5287-a4cf-4ebe-9123-0b6644c8c243).
-  - Planner-sensitivity run `phase-v2c` (legacy backlog, same seeds) running.
-- **Next:**
-  1. Fold in the trust/sensitivity results.
-  2. Launch the abstract review session; record ACCEPTED/REJECTED in `reviews/` and the ledger.
-  3. Replace `round1-abstract.md` with the reviewed final.
-  4. "DONE — slot free" to the Supervisor.
-- **Needs from user:** register by 15 Oct; teammates' names and skills (`[TEAM-1..3]` placeholders in the abstract).
+_Updated 2026-10-04 11:30 IST._
+- **Phase:** active-batch DoD **complete**; "DONE — slot free" sent to the Supervisor.
+- **State:**
+  - MVP plus both stretch goals done with held-out CIs: the pre-registered mvp-v2, week, month.
+  - Spike tested end-to-end: the pre-registered replication **failed** and is reported. The spike was re-scoped to decision-aware forecast trust (Addendum B + B1 pre-registered).
+  - NYC real-trace replay over two periods.
+  - Final abstract v1.2 (881 words) and architecture diagram.
+  - 5 reviews recorded (`reviews/ledger.tsv`): hostile 48 → 71/100; all headline numbers independently reproduced.
+- **Next (October, after the 12 Oct pick):**
+  1. Implement the Addendum B/B1 gate designs, tune on seeds 0–49, freeze, then run seeds 300–329.
+  2. Mechanism test for "a better forecast hurts" (two-zone deterministic deadline; τ=0 matching; tie-break).
+  3. Re-run the failed research threads: compute-cluster autoscaling papers, social/competitions.
+  4. RL comparator (TorchRL MAPPO).
+  5. Click-to-shock demo dashboard before 17 Nov.
+- **Needs from user:** register by 15 Oct; teammates' names and skills (`[TEAM-1..3]` in the abstract).
 - **Risks:**
-  - The spike is now a plan (decision-aware trust), not yet a result.
-  - LP limitations: τ=0 matching approximation; solver-specific tie-breaks (backend recorded).
-  - Demand is mostly synthetic (NYC replay mitigates).
+  - The spike is a plan until Addendum B runs.
+  - LP limitations: τ=0 matching approximation; solver tie-breaks (backend recorded).
+  - Real replay retains synthetic travel, matching and patience.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -80,7 +84,7 @@ _**Final for the 12 Oct pick** (2026-10-04 10:55 IST); supersedes the 07:35 firs
   - For: the pre-registered confirmatory test is decisive. MPC beats the reference rule (fixed on tuning seeds) in 6/6 scenarios on 30/30 fresh seeds, Holm p = 1.1e-8: shock +3.7 pp [+3.3, +4.2], shock+drift +5.5 [+5.4, +5.6] (`eval/results/mvp-v2/confirm.md`).
   - For: both stretch goals are done — week +6.3 pp (10/10 seeds) and month +6.4 pp (4/4).
   - For: the NYC real-trace replay gives +2.5 pp (20/20).
-  - For: three cross-model reviews are recorded. That rigour (pre-registration, ablations, honest negatives) is rare among hackathon entries.
+  - For: five reviews are recorded. The independent hostile score on the final abstract is 71/100 (gpt-6-astra), up from 48/100 for v0.2, and every headline number was independently reproduced (gpt-6-sol). That rigour (pre-registration, ablations, honest negatives) is rare among hackathon entries.
   - Against: "MPC beats heuristics" alone is known (Iglesias 2018).
 - **Innovation headroom — 3** (was 3.5).
   - The detector spike as built **failed its pre-registered replication**: it adds losses at (1,10) and (8,10).
@@ -231,3 +235,13 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
 - **gpt-6-sol headline reproduction** (child session): every headline number reproduced exactly (7/7 analyses; 8 episode replays, 31/31 metrics, highspy 1.15.1). Three wording items accepted: tested scalar trust vs planned per-zone trust; "not an upper bound" docstring; "~6 ms end-to-end". Recorded in `reviews/` and the ledger.
 - **`mpc-gated` implemented**, with a tuning-seed preview (`eval/results/gated-tuning-preview`): regime gating adds ≈0 over the best fixed trust (+0.01 pp in shock+drift). The gain is global shrinkage. ADR note: amend Addendum B (city-wide regime and uncertainty-calibrated shrinkage) before any test run.
 - Waiting on the gpt-6-astra final-abstract review session.
+
+### 2026-10-04 11:15–11:30 IST — Final reviews applied, DONE
+- **gpt-6-astra final-abstract review** (child session, `reviews/2026-10-04-abstract-final-gpt-6-astra.md`): 71/100, 8 issues, all ACCEPTED.
+  - One numeric mismatch fixed: the trust-sweep comparator pair is now +1.13 pp vs full trust and +1.50 vs queue-only.
+  - The spike is marked "planned"; MVP (ii) credits EWMA-MPC; novelty is positioned against Iglesias 2018 and decision-focused learning.
+  - Mechanism wording is qualified; evidence scope is split by suite; the diagram is fixed (H=6 at L=1, not an upper bound, hindsight smoother).
+- **Amendment B1** (before any test run): best fixed trust and a detector-free uncertainty gate are co-primary comparators.
+- **Second NYC period** (July 10–11): +1.52 pp [+1.43, +1.59], 20/20 (`eval/results/nyc-v2b`).
+- **Abstract v1.2:** 881 words. Q&A prep updated.
+- DoD items 1–6 complete; DONE message sent to the Supervisor.

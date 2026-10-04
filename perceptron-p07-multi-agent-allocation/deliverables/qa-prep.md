@@ -41,7 +41,7 @@ Tied LP optima can make episodes differ between solvers. Every row records the b
 Repositioning set-up delay per hop. In autoscaling it is cold-start time, with P the request timeout. In dispatch it is travel time, with P customer patience. Loaded trips are not slowed. This is stated wherever L appears.
 
 **13. "Is the trust spike just a hand-tuned scalar?"**
-Today, yes: an exploratory global trust of 0.5 beats both extremes by +1.1–1.2 pp under shock+drift. A tuning-seed preview showed that local regime gating adds ≈0 over the best fixed trust. Addendum B will therefore be amended before any test run, to city-wide regime gating plus uncertainty-calibrated shrinkage, tuned on seeds 0–49 and tested on 300–329.
+Today, yes: an exploratory global trust of 0.5 beats both extremes by +1.1–1.2 pp under shock+drift. A tuning-seed preview showed that local regime gating adds ≈0 over the best fixed trust. Amendment B1 (committed before any test run) therefore makes the best fixed trust and a detector-free uncertainty gate co-primary comparators. The spike counts only if it beats both on seeds 300–329, after tuning on seeds 0–49.
 
 **14. "How fast is it?"**
 About 6 ms per decision step end to end (median, Apple M5 laptop, shared machine; mvp-v2). A 1440-episode pre-registered grid takes about 15 minutes.
