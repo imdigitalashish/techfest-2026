@@ -243,3 +243,11 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - **My clean-checkout check** (fresh clone, no `.data`/`.cache`, venv from the lock): smoke **18/18 in 104 s**. Day grid at δ = 1/5/20 equals the committed 2026-10-01 V0 and V1 totals; live recompute equals the exported grid; compiled LEV equals sklearn exactly. `run.sh`: first visual **0.7 s**, live **16.7 s**.
   - **`gpt-6-astra` demo review** (child 2 of 2, f8addd0): wow 3, clarity 2, honesty 3, robustness 3, fit 5. All 10 findings accepted (dispositions + ledger), plus one of mine: the two naive break-even figures come from different leg sets.
   - Fix list sent to the builder in priority order: race length; race setup snapshot; copy pass (6-scenario denominator, 5 inspected days, sensitivity-not-bound, uncalibrated laptop timestamps, abstention caption, offline ratio); live-state consistency; 3-step stage view.
+- **19:35–19:55 — Review fixes landed and verified.**
+  - The builder reported READY FOR RE-REVIEW at f953719, with all 10 fixes in: random-first race with deadline and stop, named race setup, backend-loss state, 3-step stage view, copy pass with a smoke guard, offline ratio, re-captured fallback with an automation banner.
+  - **My clean-checkout check** at main b9270bf: smoke **28/28 in 82 s**, including headless-browser checks:
+    - a 5-trial race plus a false start in 24 s, under the 45 s deadline;
+    - the race setup applied after a 20 ms sweep, machine selector +$25.36 = exported grid;
+    - backend loss detected in 0.5 s, with no LIVE label afterwards.
+  - `run.sh`: first visual **0.3 s**, live **3.4 s** (warm bytecode).
+  - Short re-review requested from the same `gpt-6-astra` judge session.
