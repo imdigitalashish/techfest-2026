@@ -81,8 +81,8 @@ Source: [`components/twin_sim/results/metrics.json`](../../components/twin_sim/r
 - Held-out monsoons: 2024 and 2025.
 
 **Results (held-out):**
-- **P2 (forecast- and tide-aware) vs P0 (fixed schedule):** median **2.2% less escaped plastic**. The 90% interval runs from 1.5% *more* to 13.5% less. P2 is better in 29 of 40 draws.
-- **P1 (fill threshold) vs P0:** median 3.1% *more* escaped.
+- **P2 (forecast- and tide-aware) vs P0 (fixed schedule):** median **2.1% less escaped plastic**. The 90% interval runs from 1.5% *more* to 12.5% less. P2 is better in 28 of 40 draws. Most of the gain comes from tide-aware timing: removing it worsens the tuning metric by 3.7%, while forecast terms move it ≤0.5%. The held-out evaluation was run twice; the first run had a forecast look-ahead bug in the 48 h horizon, which was fixed by a causal 24 h horizon. Both runs are disclosed in [twin.md](../../research/components/twin.md) §4.
+- **P1 (fill threshold) vs P0:** median 3.1% *more* escaped (interval +0.01% to +6.0%). P1 ranks booms by fill % rather than by kg at risk.
 - **Captured fraction:** 0.46 (P0) → 0.49 (P2).
 
 **Reading.** Under our process model, dispatch timing moves escape only a few percent. About half the arriving plastic is not captured whatever the schedule. This matches the first-principles review: the binding constraint is capture physics at high flow, not crew timing.

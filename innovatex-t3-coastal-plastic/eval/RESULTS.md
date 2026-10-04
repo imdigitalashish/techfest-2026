@@ -1,6 +1,6 @@
 # Results — every number with its reproduce command
 
-Generated 2026-10-04 07:18 IST at commit `84a114e` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
+Generated 2026-10-04 07:29 IST at commit `e7430e9` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
 
 ## mrv_ledger
 
@@ -59,16 +59,16 @@ Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run
 | heldout_2024_2025.P1.bypass_site_hours_median | 13 |
 | heldout_2024_2025.P1.crew_hours | 3904 |
 | heldout_2024_2025.P1.load_kg_median | 9.644e+05 |
-| heldout_2024_2025.P2.escaped_kg_median | 4.108e+05 |
-| heldout_2024_2025.P2.escaped_kg_p05 | 1.469e+05 |
-| heldout_2024_2025.P2.escaped_kg_p95 | 9.174e+05 |
-| heldout_2024_2025.P2.reduction_vs_P0_median | 0.0215 |
-| heldout_2024_2025.P2.reduction_vs_P0_p05 | -0.015 |
-| heldout_2024_2025.P2.reduction_vs_P0_p95 | 0.1347 |
-| heldout_2024_2025.P2.draws_better_than_P0 | 29 |
-| heldout_2024_2025.P2.captured_fraction_median | 0.4929 |
-| heldout_2024_2025.P2.cleared_kg_median | 4.815e+05 |
-| heldout_2024_2025.P2.overflow_site_hours_median | 89.5 |
+| heldout_2024_2025.P2.escaped_kg_median | 4.116e+05 |
+| heldout_2024_2025.P2.escaped_kg_p05 | 1.475e+05 |
+| heldout_2024_2025.P2.escaped_kg_p95 | 9.178e+05 |
+| heldout_2024_2025.P2.reduction_vs_P0_median | 0.0214 |
+| heldout_2024_2025.P2.reduction_vs_P0_p05 | -0.0149 |
+| heldout_2024_2025.P2.reduction_vs_P0_p95 | 0.1251 |
+| heldout_2024_2025.P2.draws_better_than_P0 | 28 |
+| heldout_2024_2025.P2.captured_fraction_median | 0.4916 |
+| heldout_2024_2025.P2.cleared_kg_median | 4.804e+05 |
+| heldout_2024_2025.P2.overflow_site_hours_median | 87 |
 | heldout_2024_2025.P2.bypass_site_hours_median | 13 |
 | heldout_2024_2025.P2.crew_hours | 3904 |
 | heldout_2024_2025.P2.load_kg_median | 9.644e+05 |
@@ -98,16 +98,16 @@ Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run
 | tuning_2019_2023.P1.bypass_site_hours_median | 158 |
 | tuning_2019_2023.P1.crew_hours | 9760 |
 | tuning_2019_2023.P1.load_kg_median | 2.407e+06 |
-| tuning_2019_2023.P2.escaped_kg_median | 1.066e+06 |
-| tuning_2019_2023.P2.escaped_kg_p05 | 3.832e+05 |
-| tuning_2019_2023.P2.escaped_kg_p95 | 2.313e+06 |
-| tuning_2019_2023.P2.reduction_vs_P0_median | 0.0159 |
-| tuning_2019_2023.P2.reduction_vs_P0_p05 | -0.0107 |
-| tuning_2019_2023.P2.reduction_vs_P0_p95 | 0.1136 |
-| tuning_2019_2023.P2.draws_better_than_P0 | 31 |
-| tuning_2019_2023.P2.captured_fraction_median | 0.465 |
-| tuning_2019_2023.P2.cleared_kg_median | 1.178e+06 |
-| tuning_2019_2023.P2.overflow_site_hours_median | 292.5 |
+| tuning_2019_2023.P2.escaped_kg_median | 1.067e+06 |
+| tuning_2019_2023.P2.escaped_kg_p05 | 3.853e+05 |
+| tuning_2019_2023.P2.escaped_kg_p95 | 2.315e+06 |
+| tuning_2019_2023.P2.reduction_vs_P0_median | 0.0152 |
+| tuning_2019_2023.P2.reduction_vs_P0_p05 | -0.0111 |
+| tuning_2019_2023.P2.reduction_vs_P0_p95 | 0.1083 |
+| tuning_2019_2023.P2.draws_better_than_P0 | 30 |
+| tuning_2019_2023.P2.captured_fraction_median | 0.4642 |
+| tuning_2019_2023.P2.cleared_kg_median | 1.177e+06 |
+| tuning_2019_2023.P2.overflow_site_hours_median | 285 |
 | tuning_2019_2023.P2.bypass_site_hours_median | 158 |
 | tuning_2019_2023.P2.crew_hours | 9760 |
 | tuning_2019_2023.P2.load_kg_median | 2.407e+06 |
@@ -127,5 +127,5 @@ Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run
 | tide_fit.dahisar_mouth.rmse_m | 0.08 |
 | tide_fit.trombay_mahul.variance_explained | 0.9924 |
 | tide_fit.trombay_mahul.rmse_m | 0.079 |
-| git_sha_at_run | f93276f |
+| git_sha_at_run | 312eae6 |
 

@@ -88,7 +88,7 @@ All four results come from runs committed to our repo, each with a reproduce com
 - **Digital twin (SIMULATED plastic, real forcing):**
   - Inputs: 4 Mumbai outfalls; ERA5 rain; archived JMA day-ahead forecasts (so no hindsight); tide fitted with UTide to Open-Meteo Marine sea level (RMSE ≈ 0.08 m).
   - Held-out monsoons 2024–25; 2 crews × 8 h/day for every policy; 40 Monte Carlo draws.
-  - Forecast- and tide-aware dispatch cut escaped plastic by a median **2.2%** vs the fixed schedule (90% interval −1.5% to +13.5%; better in 29 of 40 draws).
+  - Forecast- and tide-aware dispatch cut escaped plastic by a median **2.1%** vs the fixed schedule (90% interval −1.5% to +12.5%; better in 28 of 40 draws). Most of the gain comes from *tide-aware* timing, not from rain forecasts.
   - Clearing whenever the pocket looks full did *worse* (+3.1% escaped).
   - **Lesson:** timing alone is a small lever. About half the arriving plastic is not captured whatever the schedule. So the headline lever is capture physics at high flow, which is why we build the angled-boom ratchet pocket.
   - Reproduce: `python -m twin_sim.run`.
@@ -124,6 +124,7 @@ All four results come from runs committed to our repo, each with a reproduce com
 - **Nov:** edge-node prototype, finished before the 19–25 Nov exams.
 - **1 Dec:** report plus working prototype.
 - **Dec:** finals demo — live flume plus dashboard.
+- **Integration hook:** BMC's ₹13,000 crore flood plan already adds 8–10 ft garbage mesh screens and water-level sensors at 7 pilot sites [M]. NullahNet is the measurement, dispatch and evidence layer for exactly those assets.
 - **Pilot ask:** one BMC ward with 2–3 small outfalls (one gated, one open), with the option of interoperating with the Plastic Fischer / The Ocean Cleanup verification flow.
 
 ---

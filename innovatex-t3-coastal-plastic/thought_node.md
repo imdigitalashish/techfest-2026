@@ -63,7 +63,7 @@
 | C7 | Fill estimator | frame + range → `FillEstimate` | ultrasonic / ToF range | – | planned | fill MAE |
 | C8 | Edge telemetry | sensors → `SiteTelemetry` | MQTT over 4G / NB-IoT | – | planned | delivery rate, bytes/day |
 | C9 | Risk forecaster | rain fcst, tide, fill → `SiteForecast` | rain-threshold rule | candidate | building | Brier score |
-| C10 | Dispatch planner | states, forecasts, crews → `DispatchPlan` | fixed schedule (status quo) | Spike 1 (support) | **done (v0) + ratchet** | held-out escaped kg: −2.2% median vs P0 (SIMULATED) |
+| C10 | Dispatch planner | states, forecasts, crews → `DispatchPlan` | fixed schedule (status quo) | Spike 1 (support) | **done (v0) + ratchet** | held-out escaped kg: −2.1% median vs P0 (SIMULATED) |
 | C11 | MRV ledger | clearance records → `LedgerEntry` | manual weighbridge slips | – (support) | **done (v0)** | recall 0.72 @ 4.7% false flags; precision 0.45 @ 5% prevalence (SYNTHETIC) |
 | C12 | Dashboard | `DashboardBundle` → UI | — | – | **done (v0)** | task time (later) |
 | C13 | Recovery & upcycling | `CatchComposition` → `RecoveryRoute` | kabadiwala + co-processing | – | planned | ₹/t, diversion rate |
@@ -73,7 +73,7 @@
 ## Selection memo
 _First version, 4 Oct 06:20 IST. Final by 7 Oct, 12:00 IST (one theme is pitched at the Delhi zonal on 10 Oct). Scored 1–5, one line of evidence each; **[V]** = still being verified._
 - **Winnability — 3/5.** Strong, current local story. The 5,000 t/yr figure in the brief comes from The Ocean Cleanup's 2026 Mumbai survey, and the brief's "Malad or Trombay" outlets are its two pilot Interceptor sites (MCGM permits, MPCB MoU, Plastic Fischer operating) — [mumbai-context](research/mumbai-context.md). Two cautions: Delhi judges may relate more readily to AQI (T2), and a big NGO already occupies the obvious "barrier at the creek mouth" answer.
-- **Innovation headroom — 3/5 (honest).** First twin result (SIMULATED, held-out 2024–25): forecast- and tide-aware dispatch cuts escaped plastic by a median 2.2% (90% interval −1.5% to +13.5%). Fill-threshold clearing does worse (+3.1%). Timing is a small lever, so the novelty must come from Spike 2: an angled-boom ratchet pocket with a fail-open fuse, retrofitted to existing booms. BMC runs 9 un-instrumented steel-net booms at ≈ ₹1 crore each, with 14 more planned. One-way flap traps are prior art, so we claim only what the flume shows — [ADR 001](architecture/adr/001-spike.md).
+- **Innovation headroom — 3/5 (honest).** First twin result (SIMULATED, held-out 2024–25): forecast- and tide-aware dispatch cuts escaped plastic by a median 2.1% (90% interval −1.5% to +12.5%), mostly from tide-aware timing. Fill-threshold clearing does worse (+3.1%). Timing is a small lever, so the novelty must come from Spike 2: an angled-boom ratchet pocket with a fail-open fuse, retrofitted to existing booms. BMC runs 9 un-instrumented steel-net booms at ≈ ₹1 crore each, with 14 more planned. One-way flap traps are prior art, so we claim only what the flume shows — [ADR 001](architecture/adr/001-spike.md).
 - **Feasibility by the deadline — 4/5.** The software skeleton runs on real ERA5 rain, archived JMA forecasts and fitted tides, all on the M5 Mac. The flume prototype is a tabletop build with sourced electronics: ₹33,958 for the flume, ₹82,282 for the field node. Prototype work fits in 10 Oct – 15 Nov, before the 19–25 Nov exams.
 - **Demo strength at the finals — 4/5.** A reversible-flow flume where the tide turns and the trash stays, the fuse opens before the water rises, and a live dashboard counts it. That is visual and memorable.
 - **Fit with the user's strengths — 3/5.** Systems, ML and data pipelines are a strong fit. Hydraulics and fabrication are not, so the flume needs a teammate with hands-on skills.
@@ -117,7 +117,7 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Sourced BOM: field node ₹82,282; flume electronics ₹33,958.
 - The tech + companies session delivered `research/landscape.md` (with "What companies ship today"), `companies.md`, `components/interception-hardware.md` and `components/sensing-edge-bom.md`.
 - **Twin, held-out 2024–25 (SIMULATED plastic; real ERA5 rain, archived JMA forecasts, UTide tide):**
-  - P2 dispatch: median −2.2% escaped vs the fixed schedule (90% interval −1.5% to +13.5%).
+  - P2 dispatch: median −2.1% escaped vs the fixed schedule (90% interval −1.5% to +12.5%; 28 of 40 draws better). The gain is mostly tide-aware timing. The held-out evaluation was re-run once after a disclosed look-ahead bug fix.
   - P1 fill threshold: +3.1% escaped.
   - Conclusion: timing is a small lever, so ADR 001 now leads with capture hardware (Spike 2). Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run`.
 - **Evidence ledger (SYNTHETIC records):**
