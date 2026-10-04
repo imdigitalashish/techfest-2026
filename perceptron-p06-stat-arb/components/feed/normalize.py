@@ -94,7 +94,13 @@ def parse_live_file(path: str, venue: str) -> list[tuple]:
     books: dict[str, _L2] = {}
     side_state: dict[str, list] = {}
     with gzip.open(path, "rt") as fh:
-        for line in fh:
+        while True:
+            try:
+                line = fh.readline()
+            except (EOFError, OSError):  # file still being written by the recorder
+                break
+            if not line:
+                break
             try:
                 recv_ns, raw = line.split("\t", 1)
                 recv = int(recv_ns) // 1000
@@ -102,7 +108,7 @@ def parse_live_file(path: str, venue: str) -> list[tuple]:
                     continue
                 m = orjson.loads(raw)
                 rows.extend(_parse_msg(venue, m, recv, books, side_state))
-            except Exception:  # noqa: BLE001 — malformed/partial lines are counted by the caller
+            except Exception:  # noqa: BLE001 — malformed/partial lines are skipped
                 continue
     return rows
 

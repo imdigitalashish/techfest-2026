@@ -23,10 +23,14 @@ FEES_BPS: dict[str, tuple[float, float]] = {
     "bitget": (10.0, 4.0),
 }
 FEES_VERIFIED = False
-TIERS = ("retail", "vip", "mm")
+# Headline results use uniform per-leg fee levels ("f<bps>"), which need no venue-specific claim:
+# f0 = zero-fee bound (top market makers), f1/f2 = plausible top-tier taker levels, f5 = mid tier.
+TIERS = ("f0", "f1", "f2", "f5")
 
 
 def taker_bps(venue: str, tier: str) -> float:
+    if tier.startswith("f"):
+        return float(tier[1:])
     if tier == "mm":
         return 0.0
     r, v = FEES_BPS[venue]

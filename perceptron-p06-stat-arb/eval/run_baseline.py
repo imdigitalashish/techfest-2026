@@ -23,7 +23,9 @@ import polars as pl
 from scipy.stats import spearmanr
 
 from components.costs.fees import FEES_VERIFIED, TIERS, leg_venue, taker_bps
-from components.decay.survival import add_features, evaluate, fit_km, fit_weibull_aft, km_summary
+from components.decay.survival import KMByPair, add_features, evaluate, fit_km, fit_weibull_aft, km_summary
+from components.decision.lev import LEV, LEV_FEATURES, add_lev_columns
+from threadpoolctl import threadpool_limits
 from components.decision import policies as P
 from components.detector.cross import detect
 from components.feed.normalize import load_tardis_day
@@ -31,8 +33,9 @@ from components.latency.model import feed_latency_table
 from components.sim.fills import truth_books, simulate
 
 USD = ("coinbase", "kraken", "bitstamp", "deribit")
-DELTAS_MS = [0.0, 0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 50, 100, 250]
+DELTAS_MS = [0.5, 1, 2, 5, 10, 20, 50, 100]
 THETAS = [0.0, 0.5, 1, 2, 3, 5, 10]
+LEV_DELTAS_MS = [0.5, 2, 5, 10, 20, 50]
 Q_MAX = 0.05  # BTC per arbitrage (≈ USD 4k) — labelled sizing assumption
 
 
@@ -156,51 +159,92 @@ def run(args) -> dict:
     compute_us = float(np.ceil(compute_us))
 
     # ---------------- policy frontier on the test day
-    rows, ranking = [], []
+    opp_tr, opp_te = add_lev_columns(opp_tr, legs), add_lev_columns(opp_te, legs)
+    kmp = KMByPair(opp_tr)
+    surv["km_pair"] = evaluate(kmp, opp_te)
+    prep = lambda o, d: o.with_columns((pl.col("t_start_us") + int(d)).alias("t_obs_us"), pl.col("duration_us").alias("duration_obs_us"))  # noqa: E731
+    rows, ranking, lev_info = [], [], {}
     for tier in args.tiers.split(","):
         fees = {l: taker_bps(leg_venue(l), tier) for l in legs}
         tr, te = P.with_net(opp_tr, tier), P.with_net(opp_te, tier)
-        # oracle: zero latency, zero compute, every profitable episode
-        o0 = te.with_columns(pl.col("t_start_us").alias("t_obs_us"), pl.col("duration_us").alias("duration_obs_us"))
+        o0 = prep(te, 0)
         orc = simulate(P.naive(o0, 0.0), books_te, {l: 0.0 for l in legs}, fees, Q_MAX)
         oracle_pnl = float(orc["pnl_usd"].sum()) if orc.height else 0.0
         rows.append(summarise(orc, "oracle", tier, 0.0))
+        # LEV training labels: execute every near-profitable train candidate at each latency in a grid
+        lev_parts = []
+        for d_ms in LEV_DELTAS_MS:
+            d = d_ms * 1000.0
+            cand = prep(tr, d).filter(pl.col("net0_bps") > -2.0)
+            if cand.height == 0:
+                continue
+            it = P.intents(cand, np.ones(cand.height, bool), cand["t_obs_us"].to_numpy() + compute_us, cand["net0_bps"].to_numpy(), "all")
+            r = simulate(it, books_tr, {l: d for l in legs}, fees, Q_MAX)
+            lev_parts.append(it.join(r.select("opp_id", "pnl_bps"), on="opp_id").with_columns(
+                pl.lit(float(np.log((2 * d + compute_us) / 1000.0))).alias("log_L_ms")))
+        levm = None
+        if lev_parts:
+            lev_df = pl.concat(lev_parts)
+            if lev_df.height > 600_000:
+                lev_df = lev_df.sample(600_000, seed=0)
+            levm = LEV().fit(lev_df)
+            x1 = prep(te, 0).head(1).with_columns(pl.lit(0.0).alias("log_L_ms")).select(LEV_FEATURES).to_numpy()
+            with threadpool_limits(1):
+                levm.m.predict(x1)
+                t0 = time.perf_counter()
+                for _ in range(200):
+                    levm.m.predict(x1)
+            lev_info[tier] = {"train_rows": lev_df.height, "predict_us_single": (time.perf_counter() - t0) / 200 * 1e6}
+        lev_compute_us = float(np.ceil(lev_info.get(tier, {}).get("predict_us_single", compute_us)))
         for d_ms in args.deltas:
             d = d_ms * 1000.0
-            prep = lambda o: o.with_columns((pl.col("t_start_us") + int(d)).alias("t_obs_us"), pl.col("duration_us").alias("duration_obs_us"))  # noqa: E731
-            trp, tep = prep(tr), prep(te)
+            trp, tep = prep(tr, d), prep(te, d)
             olat = {l: d for l in legs}
-            tr_naive = simulate(P.naive(trp, compute_us), books_tr, olat, fees, Q_MAX)
-            failed = tr_naive.filter(pl.col("outcome") != "both") if tr_naive.height else tr_naive
-            lam = max(0.0, -float(failed["pnl_bps"].mean())) if failed.height else 0.0
-            best_th, best_p = 0.0, -np.inf
-            for th in THETAS:
-                r = simulate(P.threshold(trp, compute_us, th), books_tr, olat, fees, Q_MAX)
-                p = float(r["pnl_usd"].sum()) if r.height else 0.0
-                if p > best_p:
-                    best_th, best_p = th, p
-            L = np.full(tep.height, 2 * d + compute_us)
+            it_tr = P.naive(trp, compute_us)
+            res_tr = simulate(it_tr, books_tr, olat, fees, Q_MAX)
+            j = it_tr.select("opp_id", "net0_bps", "pair_id").join(res_tr.select("opp_id", "pnl_usd", "pnl_bps", "outcome"), on="opp_id") if it_tr.height else None
+            lam, best_th, theta_pair = 0.0, 0.0, {}
+            if j is not None and j.height:
+                failed = j.filter(pl.col("outcome") != "both")
+                lam = max(0.0, -float(failed["pnl_bps"].mean())) if failed.height else 0.0
+                best_th = max(THETAS, key=lambda th: float(j.filter(pl.col("net0_bps") > th)["pnl_usd"].sum()))
+                for (pid,), g in j.group_by(["pair_id"]):
+                    best = (np.inf, 0.0)
+                    for th in THETAS:
+                        p = float(g.filter(pl.col("net0_bps") > th)["pnl_usd"].sum())
+                        if p > best[1]:
+                            best = (th, p)
+                    theta_pair[float(pid)] = best[0]
+            L = 2 * d + compute_us
+            Larr = np.full(tep.height, L)
             cands = {
                 "naive": P.naive(tep, compute_us),
                 "threshold": P.threshold(tep, compute_us, best_th),
-                "ev_km": P.ev(tep, km, L, lam, compute_us),
-                "ev_aft": P.ev(tep, aft, L, lam, compute_us),
-                "ev_wait_aft": refresh_limits(P.ev_wait(tep, aft, L, lam, compute_us), books_te, d, compute_us, tier),
+                "threshold_pair": P.threshold_pair(tep, compute_us, theta_pair),
+                "ev_km": P.ev(tep, km, Larr, lam, compute_us, "ev_km"),
+                "ev_kmpair": P.ev(tep, kmp, Larr, lam, compute_us, "ev_kmpair"),
+                "ev_wait_kmpair": refresh_limits(P.ev_wait(tep, kmp, Larr, lam, compute_us, "ev_wait_kmpair"), books_te, d, compute_us, tier),
             }
+            if levm is not None:
+                cands["lev"] = P.lev(tep, levm, 2 * d + lev_compute_us, lev_compute_us)
             for name, it in cands.items():
                 r = simulate(it, books_te, olat, fees, Q_MAX)
                 rows.append(summarise(r, name, tier, d_ms, {"lambda_bps": lam, "theta_star_bps": best_th,
                                                             "capture_ratio": (float(r["pnl_usd"].sum()) / oracle_pnl) if (r.height and oracle_pnl > 0) else None}))
                 if name == "naive" and r.height > 50 and d_ms in (0.5, 5.0, 50.0):
-                    j = it.join(r, on="opp_id")
-                    ev_score = P.ev(j.with_columns(pl.lit(0.0).alias("dummy")), aft, np.full(j.height, 2 * d + compute_us), lam, compute_us)
-                    sc = j.select("opp_id", "net0_bps", "pnl_bps").join(ev_score.select("opp_id", pl.col("score").alias("ev_score")), on="opp_id", how="left").fill_null(-1e9)
-                    k = max(1, sc.height // 10)
-                    ranking.append({"tier": tier, "delta_ms": d_ms, "n": sc.height,
-                                    "spearman_net_edge": float(spearmanr(sc["net0_bps"], sc["pnl_bps"]).statistic),
-                                    "spearman_ev": float(spearmanr(sc["ev_score"], sc["pnl_bps"]).statistic),
-                                    "top_decile_bps_by_edge": float(sc.sort("net0_bps", descending=True).head(k)["pnl_bps"].mean()),
-                                    "top_decile_bps_by_ev": float(sc.sort("ev_score", descending=True).head(k)["pnl_bps"].mean())})
+                    jj = it.join(r.select("opp_id", "pnl_bps"), on="opp_id")
+                    s = P._s_at(kmp, jj["pair_id"].to_numpy(), np.full(jj.height, L / 1000.0))
+                    ev_score = s * jj["net0_bps"].to_numpy() - (1 - s) * lam
+                    lev_score = levm.predict(jj, 2 * d + lev_compute_us) if levm is not None else ev_score
+                    pnl = jj["pnl_bps"].to_numpy(); k = max(1, jj.height // 10)
+                    top = lambda sc: float(pnl[np.argsort(-sc)[:k]].mean())  # noqa: E731
+                    ranking.append({"tier": tier, "delta_ms": d_ms, "n": jj.height,
+                                    "spearman_net_edge": float(spearmanr(jj["net0_bps"], pnl).statistic),
+                                    "spearman_ev_kmpair": float(spearmanr(ev_score, pnl).statistic),
+                                    "spearman_lev": float(spearmanr(lev_score, pnl).statistic),
+                                    "top_decile_bps_by_edge": top(jj["net0_bps"].to_numpy()),
+                                    "top_decile_bps_by_ev": top(ev_score), "top_decile_bps_by_lev": top(lev_score)})
+    surv["lev"] = lev_info
     out = {"meta": meta, "latency_tardis_collector": lat.to_dicts(), "decay": decay, "survival": surv,
            "policy_frontier": rows, "ranking": ranking, "runtime_s": time.time() - t_start}
     return out
@@ -224,7 +268,9 @@ def to_markdown(res: dict) -> str:
     s = res["survival"]
     L += ["", "## Survival models (train → test)", "", "| model | IBS (log-t, lower better) | C-index |", "|---|---|---|",
           f"| Kaplan–Meier | {s['km']['ibs_logt']:.4f} | {s['km']['c_index']:.3f} |",
-          f"| Weibull AFT (covariates) | {s['weibull_aft']['ibs_logt']:.4f} | {s['weibull_aft']['c_index']:.3f} |", "",
+          f"| Weibull AFT (covariates) | {s['weibull_aft']['ibs_logt']:.4f} | {s['weibull_aft']['c_index']:.3f} |",
+          f"| Kaplan–Meier by venue pair | {s['km_pair']['ibs_logt']:.4f} | {s['km_pair']['c_index']:.3f} |", "",
+          f"LEV model: {json.dumps(s.get('lev', {}))}", "",
           f"Weibull shape ρ = {s['aft_rho']:.3f} (ρ < 1 ⇒ decreasing hazard: young crosses die fastest). "
           f"EV evaluation cost: {s['ev_compute_us_per_opportunity']:.2f} µs per opportunity (numpy, M5).", ""]
     L += ["## Policy frontier (test day, simulated fills)", "", "| tier | δ one-way (ms) | policy | trades | both-fill | PnL (USD) | mean bps | hit | capture |", "|---|---|---|---|---|---|---|---|---|"]
@@ -232,8 +278,8 @@ def to_markdown(res: dict) -> str:
         cap = "" if r.get("capture_ratio") is None else f"{r['capture_ratio']:.3f}"
         L.append(f"| {r['tier']} | {r['delta_ms']:g} | {r['policy']} | {r['n_trades']} | {r['both_fill_rate']:.3f} | {r['pnl_usd']:.2f} | {r['mean_pnl_bps']:.3f} | {r['hit_rate']:.3f} | {cap} |")
     if res["ranking"]:
-        L += ["", "## Ranking quality among all naive trades", "", "| tier | δ (ms) | n | Spearman(edge, PnL) | Spearman(EV, PnL) | top-decile bps by edge | by EV |", "|---|---|---|---|---|---|---|"]
-        L += [f"| {r['tier']} | {r['delta_ms']:g} | {r['n']} | {r['spearman_net_edge']:.3f} | {r['spearman_ev']:.3f} | {r['top_decile_bps_by_edge']:.3f} | {r['top_decile_bps_by_ev']:.3f} |" for r in res["ranking"]]
+        L += ["", "## Ranking quality among all naive trades (test day)", "", "| tier | δ (ms) | n | Spearman edge | Spearman EV(KM-pair) | Spearman LEV | top-decile bps: edge | EV | LEV |", "|---|---|---|---|---|---|---|---|---|"]
+        L += [f"| {r['tier']} | {r['delta_ms']:g} | {r['n']} | {r['spearman_net_edge']:.3f} | {r['spearman_ev_kmpair']:.3f} | {r['spearman_lev']:.3f} | {r['top_decile_bps_by_edge']:.3f} | {r['top_decile_bps_by_ev']:.3f} | {r['top_decile_bps_by_lev']:.3f} |" for r in res["ranking"]]
     L += ["", f"Runtime {res['runtime_s']:.0f} s. Commit `{res.get('commit', '?')}`. Command: `{res.get('command', '')}`", ""]
     return "\n".join(L)
 

@@ -1,0 +1,11 @@
+timestamp	commit	hypothesis	metric_usd	delta_vs_best	kept	notes
+2026-10-04T06:38:00	4d21a39	H0 per-pair×cell threshold (baseline)	689.27	+0.00	yes	n=3192 hit=0.880 bps=0.710 se=134.0 all_trades=-2432.6
+2026-10-04T06:38:15	4d21a39	H1 global per-cell threshold	341.50	-347.77	no	n=1346 hit=0.675 bps=0.930 se=83.7 all_trades=-2432.6
+2026-10-04T06:40:10	4d21a39	H2 EV, KM survival by pair	651.51	-37.76	no	n=4011 hit=0.830 bps=0.517 se=126.0 all_trades=-2432.6
+2026-10-04T06:40:27	4d21a39	H3 EV, KM by pair×edge bucket	579.79	-109.48	no	n=4013 hit=0.819 bps=0.467 se=99.4 all_trades=-2432.6
+2026-10-04T06:40:40	4d21a39	H4 EV pair×edge, lambda×2	651.71	-37.57	no	n=3035 hit=0.885 bps=0.724 se=137.2 all_trades=-2432.6
+2026-10-04T06:40:58	4d21a39	H5 EV pair×edge, lambda×0.5	328.51	-360.76	no	n=5148 hit=0.742 bps=0.189 se=63.1 all_trades=-2432.6
+2026-10-04T06:44:04	4d21a39	H6 GBM classifier P(win)·win − P(loss)·loss	786.12	+96.85	no	n=4220 hit=0.925 bps=0.594 se=150.8 all_trades=-2432.6
+2026-10-04T06:47:29	4d21a39	H7 GBM regressor of P&L bps (LEV)	788.06	+98.79	no	n=3311 hit=0.916 bps=0.788 se=149.0 all_trades=-2432.6
+2026-10-04T06:47:46	4d21a39	H8 threshold AND EV(pair×edge)	699.94	+10.67	no	n=3025 hit=0.890 bps=0.767 se=140.9 all_trades=-2432.6
+2026-10-04T06:48:34	4d21a39	HOLDOUT 2026-10-01 best={"rule": "threshold", "by": ["pair_id", "fee_bps", "delta_ms"]}	1175.13	+0.00	re-check	H0 baseline holdout=1175.13; best n=3774 hit=0.919
