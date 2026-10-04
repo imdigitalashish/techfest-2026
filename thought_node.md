@@ -6,16 +6,16 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (13:52 IST, 4 Oct)
+## Now (14:11 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - Namma Space: Brush trained cleanly in 24.5 min (vs 36.9), but its own camera solve (SfM) is degenerate on drjohnson (30/262 cameras far off; PSNR 18.3 dB); it reports this as a posing failure. Fix in progress: exhaustive matching plus a trajectory-error gate, then one more ~25-min GPU slot.
-  - P5: the pre-registered 400-seed replication (E10) did not confirm H2. The abstract was retitled honestly ("measure your own footprint before claiming to beat TWAP").
-  - P3: real OBD results plus an overlap gate frozen before it was applied to OBD; reviews running.
-  - EV C1: 3-source estimate validated against official state counts and on Chhattisgarh districts; reviews running.
-  - India@71 T3: resumed 13:52 into P10's slot.
-- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10.
-- **Queue:** APCTT (when the 10 Oct data lands) → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
+  - Namma Space: SfM fixed (exhaustive matching, 263/263 cameras, ATE 0.07% of the scene, behind a new degeneracy gate). Brush run 3 started 14:00 with the GPU held; ETA 14:25.
+  - P3: real OBD results, an overlap gate frozen before it was applied, demo verdicts; applying its astra and sol reviews.
+  - EV C1: Round-1 methodology and roadmap v2 rendered; code review in; corridor norm (MoP 20 km) prototype.
+  - India@71 T3: pre-registered C6 v0.2 shows the learned challenger beating the transparent rule (+0.079, 10/10 seeds, SYNTHETIC).
+  - P6: resumed 14:11 into P5's slot.
+- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5.
+- **Queue:** APCTT (when the 10 Oct data lands) → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -43,12 +43,14 @@
   - one timed rehearsal using `presenter-card.pdf`;
   - a pilot contact or letter (e.g. DJB, as the rainwater-harvesting nodal agency);
   - supplier quotes for the parts in `prototype-plan.md`.
-- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1, P4 and P10 are ✅ Completed and ready for your review; P5 and P3 are still running.
+- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1, P4, P10 and P5 are ✅ Completed and ready for your review; P3 and P6 are still running.
   - **P7 multi-agent allocation:** planning beats the best rule, +3.7 pp under shock and +5.5 pp under shock+drift (30/30 seeds, pre-registered). Its detector spike failed replication. astra hostile score 71/100.
   - **P9 agent guardrail:** on held-out real agent errors, 41% of harmful calls stopped at 2.0% of good calls blocked (30% held for review). astra 62/100; memo 3.8/5.
   - **P1 federated LoRA:** the only method that improves every domain (macro −0.081 vs the starter), at a stated cost on the data-rich domain. astra 68/100 on the draft before its fixes; memo 4.2/5.
   - **P4 order-book regimes:** the most rigorous (sol reproduced it exactly), but the gain is small (−0.0099 log-loss) and not tradable after fees. astra 53/100 before fixes; memo 3.4/5. P4 itself recommends P7 or P9.
   - **P10 trusted text signal:** prediction intervals that keep their promised coverage on messy, manipulated text (89.47% vs a 90% target). Its pre-registered test found the text adds no forecasting value (p = 0.46), so the pitch is trust and coverage guarantees, not alpha. astra 74/100; memo 3.7/5. P10 itself ranks P7 first and P10 a close second.
+  - **P5 impact-aware execution:** its headline failed a strict pre-registered replication on 400 fresh seeds (−0.013 bps, CI [−0.029, +0.003]). The abstract is now honestly about measuring your own market impact. astra 3.45/5; P5 recommends against itself.
+  - **Note:** P4, P5 and P6 are a "choose exactly one" group, and P4 and P5 both recommend against themselves.
   - The astra scores were given at different stages and the memos are self-scored, so treat them as rough, not a ranking.
   - Whichever you pick: teammates' names for the [TEAM] placeholders, then register by 15 Oct.
 ## Portfolio (08:18 IST) — package = landscape, components, contracts, ADR, deliverables, eval, memo
@@ -86,6 +88,13 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 14:11 IST — P5 completed
+- **P5 DONE (1ebd409), verified on main:** check_docs 237 claims OK; 7 tests; abstract body 895 words.
+  - The strict replication (E10, n = 400 fresh seeds) did not confirm the headline; the abstract was reframed accordingly.
+  - E7 slope 1.01 [0.55, 1.76], not square-root.
+  - Reviews: astra 2.80 → 3.45/5; sol reproduced bit-for-bit; every item accepted. The memo recommends against P5.
+- P6 resumed into the slot.
+
 ### 2026-10-04 13:52 IST — P10 completed; Namma jetsam diagnosis
 - **P10 DONE (47ddf82), verified on main:**
   - Its pre-registered DJIA text test found no evidence that text adds value (p = 0.46); a positive control shows the test detects gains of 11% or more.
