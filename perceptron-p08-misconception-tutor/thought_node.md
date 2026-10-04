@@ -190,3 +190,14 @@ Model API returned "408 Timed out reading request body" for most agents (network
 
 ### 2026-10-04 17:16 IST — Timestamp correction
 - Key decisions and Now carried typed times (16:45, 17:40, 17:45) that did not come from the clock. Replaced with the git commit times (16:41, 17:15) and the current clock (17:16), per PLAYBOOK §6.
+
+### 2026-10-04 21:34 IST — Demo phase: licence check, builder plan approved
+- **Kaggle Eedi 2024 rules** (opened via browser): data is CC BY-NC 4.0, and §7.B forbids publishing or redistributing it.
+  - Demo policy: no item text in committed files; derived outcomes only; local text off by default and for internal verification only; names only from the CC BY graph or our own descriptions.
+  - Audit: no item text is committed today. Recorded in landscape §7 and `eval/data/fetch.py`.
+- **Demo builder** (child session "P8 demo builder", `45c59b05`) proposed and I approved:
+  - **Crazy element:** "it predicts your next mistake and commits first". The judge types a wrong answer to a tutor-native item; the engine issues a certificate with a step trace or abstains; it generates a SymPy-verified discriminating follow-up; it seals sha256(prediction‖nonce); then reveals and updates the tracer.
+  - **Knob:** cascade routing × model × workload, plus a budget slider. Values come from per-item committed outcomes and are checked against `claims()`.
+  - **Screens:** REAL first (3 baselines, 304-item browser), LIVE, CASCADE, SYNTHETIC (labelled).
+  - **Builder's finding:** GPT-5.5's 2/40 changed diagnoses fall on items our parser can't read, where the engine abstains, so "ask it again" stays an honest beat and not the headline.
+  - Approval conditions: conditional prediction wording, honesty labels (POST HOC; routing by construction; replayed), and no local text in front of judges.
