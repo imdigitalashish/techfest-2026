@@ -32,6 +32,41 @@ def html_text() -> str:
     return (DEMO / "index.html").read_text()
 
 
+DURATION_KEYS = {"bin_s", "wall_s", "runtime_s"}
+FORBIDDEN_KEYS = {"alarm_s", "alarm_utc", "alarms", "alarm_times", "first_delay_min"}
+
+
+def temporal_violations(o, path: str = "") -> list[str]:
+    """Licence (Tardis ToS 9.2): market-derived timing must be aggregated at >= 10 minutes. Flags any forbidden
+    per-event timing key, and any time-of-day value (keys ending in _s / _utc_s) that is not on a 600-s boundary."""
+    bad = []
+    if isinstance(o, dict):
+        for k, v in o.items():
+            if k in FORBIDDEN_KEYS:
+                bad.append(f"{path}/{k}")
+            elif (k.endswith("_s") or k.endswith("utc_s")) and k not in DURATION_KEYS and isinstance(v, (int, float)) \
+                    and not isinstance(v, bool) and v % 600:
+                bad.append(f"{path}/{k}={v}")
+            else:
+                bad += temporal_violations(v, f"{path}/{k}")
+    elif isinstance(o, list):
+        for i, v in enumerate(o[:3]):
+            bad += temporal_violations(v, f"{path}[{i}]")
+    return bad
+
+
+def series_lengths_ok(d: dict) -> bool:
+    """Every per-bin series has exactly n_bins entries at bin_s >= 600."""
+    nb, ok = d["n_bins"], d["bin_s"] >= 600
+    for rec in list(d.get("policies", {}).values()) + list(d.get("stops", {}).values()):
+        ok &= len(rec["loss_bins"]) == nb
+        ab = rec.get("alarm_bins")
+        for arr in (ab.values() if isinstance(ab, dict) else [ab] if ab is not None else []):
+            ok &= len(arr) == nb
+    ok &= len(d["candles"]) == nb and all(len(r) == nb for r in d["regime_share"])
+    return bool(ok)
+
+
 def main() -> int:
     hold = json.loads((ER / "v2_holdout.json").read_text())
     abl = json.loads((ER / "v2_holdout_posthoc_ablation.json").read_text())
@@ -93,8 +128,11 @@ def main() -> int:
         else:
             check(all("committed" not in rec for rec in rp["policies"].values()), f"{d} is a dev day: no held-out claim attached")
         check(rp["bin_s"] >= 600 and rp["n_bins"] <= 145, f"{d}: time series binned at >= 10 min ({rp['n_bins']} bins)")
-        longest = max_list_len(rp, skip=("alarms", "alarm_s"))
+        longest = max_list_len(rp)
         check(longest <= 145, f"{d}: no series longer than one value per 10 minutes (longest {longest})")
+        tv = temporal_violations(rp)
+        check(not tv, f"{d}: no sub-10-minute event timing (alarms are 10-minute counts)" + (f" {tv[:3]}" if tv else ""))
+        check(series_lengths_ok(rp), f"{d}: every series (losses, alarm counts, candles, heads) has one value per 10-min bin")
 
     print("[4] licence: committed demo outputs are aggregates only")
     tracked = subprocess.run(["git", "ls-files", "demo"], cwd=ROOT, capture_output=True, text=True).stdout.split()
@@ -103,7 +141,10 @@ def main() -> int:
     check(not big, "no tracked demo file > 5 MB")
     for t in tracked:
         if t.endswith(".json"):
-            check(max_list_len(json.loads((ROOT / t).read_text())) <= 200, f"{t}: no per-second arrays")
+            o = json.loads((ROOT / t).read_text())
+            check(max_list_len(o) <= 200, f"{t}: no per-second arrays")
+            tv = temporal_violations(o)
+            check(not tv, f"{t}: no sub-10-minute timing fields" + (f" {tv[:3]}" if tv else ""))
 
     print("[6] Act 2 splice (SEMI-SYNTHETIC): integrity checks")
     si = DEMO / ".cache" / "splice_index.json"
@@ -120,7 +161,8 @@ def main() -> int:
                   f"{sp['file']}: labels after the splice == day B's own labels on every real move "
                   f"(additive shift {d['shift_ticks']} ticks; {c['n_post_labels_compared']} steps)")
             check(c["n_float_noise_ties_flipped"] <= 2, f"{sp['file']}: float-noise ties flipped = {c['n_float_noise_ties_flipped']} (<= 2)")
-            check(max_list_len(d, skip=("alarms",)) <= 145, f"{sp['file']}: 10-minute aggregates only")
+            check(max_list_len(d) <= 145 and series_lengths_ok(d) and not temporal_violations(d),
+                  f"{sp['file']}: 10-minute aggregates only (no event times; alarm counts per bin)")
     for needle in ('id="splice"', "SEMI-SYNTHETIC", "additively"):
         check(needle in html_text(), f"index.html contains {needle!r}")
 

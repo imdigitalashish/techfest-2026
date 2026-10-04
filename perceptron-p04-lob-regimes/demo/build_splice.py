@@ -108,17 +108,19 @@ def main() -> int:
             checks["n_float_noise_ties_flipped"] = int((~real & ~np.isnan(mb) & ~((ys == yb) | (np.isnan(ys) & np.isnan(yb)))).sum())
             out = frame_summary(f, l, ctx, None, f"{a} ⟶ {b} @ {th:02d}:00")
             ll, reg = out.pop("_ll"), out.pop("_reg")
-            out.pop("_bins")
+            out.pop("_bins"), out.pop("_abins")
             before = (f.grid_us >= tau - WIN_S * 10**6) & (f.grid_us < tau)
             after = (f.grid_us >= tau) & (f.grid_us < tau + WIN_S * 10**6)
             win = {p: {"before_2h": float(np.nanmean(ll[p][before])), "after_2h": float(np.nanmean(ll[p][after]))}
                    for p in POLS}
             det = {}
             for p, name in (("ks_refit", "rolling_ks"), ("spike_gate", "rolling_ks_calibrated"), ("spike_gate", "harm_cusum")):
-                ts = np.array(out["policies"][p]["alarms"].get(name, []))
-                post_t = ts[ts >= tau_s]
-                det[name] = {"before": int((ts < tau_s).sum()), "after": int(post_t.size),
-                             "first_delay_min": round(float(post_t.min() - tau_s) / 60, 1) if post_t.size else None}
+                cnt = np.array(out["policies"][p]["alarm_bins"].get(name, [0] * out["n_bins"]))
+                kb = (tau_s - out["start_utc_s"]) // out["bin_s"]  # splice times are on 10-minute boundaries
+                first = np.flatnonzero(cnt[kb:])
+                # first post-splice alarm reported as a 10-minute bin (0 = within the first 10 minutes), not a time
+                det[name] = {"before": int(cnt[:kb].sum()), "after": int(cnt[kb:].sum()),
+                             "first_bin_after": int(first[0]) if first.size else None}
             h1b = (f.grid_us >= tau - 3600 * 10**6) & (f.grid_us < tau)
             h1a = (f.grid_us >= tau) & (f.grid_us < tau + 3600 * 10**6)
             heads = {"before_1h": [float((reg[h1b] == r).mean()) for r in range(3)],

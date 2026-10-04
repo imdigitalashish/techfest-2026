@@ -48,6 +48,12 @@ def frame_summary(f, l, ctx, com: dict | None = None, day: str | None = None) ->
     def bins(x: np.ndarray) -> list:  # align bins to wall-clock 10-minute boundaries (UTC)
         return binned_mean(np.concatenate([np.full(off, np.nan), x]), nb)
 
+    def alarm_bins(steps) -> list:  # alarm COUNTS per 10-minute bin; no alarm times leave this function
+        c = np.zeros(nb, dtype=int)
+        for st in steps:
+            c[(st + off) // BIN_S] += 1
+        return c.tolist()
+
     mid = np.concatenate([np.full(off, np.nan), f.mid])
     candles = []
     for b in range(nb):
@@ -71,16 +77,15 @@ def frame_summary(f, l, ctx, com: dict | None = None, day: str | None = None) ->
         ll = pointwise_logloss(r.p_up, l.y)
         lls[p] = ll
         s = score(r.p_up, l.y, l.move_bps)
-        al = {}
-        for a in r.alarms:
-            al.setdefault(a.detector, []).append(_sec(f, a.step))
-        rec = {"logloss": s["logloss"], "auc": s["auc"], "loss_bins": bins(ll), "alarms": al}
+        dets = sorted({a.detector for a in r.alarms})
+        al = {dt: alarm_bins([a.step for a in r.alarms if a.detector == dt]) for dt in dets}
+        rec = {"logloss": s["logloss"], "auc": s["auc"], "loss_bins": bins(ll), "alarm_bins": al}
         c = com.get(p, {}).get(day or f.day)
         if c is not None:
             rec["committed"] = c
             rec["match"] = bool(abs(c - s["logloss"]) < 1e-9)
         out["policies"][p] = rec
-    out["_ll"], out["_reg"], out["_bins"] = lls, reg, bins
+    out["_ll"], out["_reg"], out["_bins"], out["_abins"] = lls, reg, bins, alarm_bins
     return out
 
 
@@ -90,7 +95,7 @@ def _day(day: str) -> dict:
     key = cache_key([day], ("demo/results/alarm_dial_sweep.json",))
     f, l = load_day(day)
     out = frame_summary(f, l, ctx, com, day)
-    bins = out.pop("_bins")
+    bins, abins = out.pop("_bins"), out.pop("_abins")
     out.pop("_ll"), out.pop("_reg")
     out["stops"] = {}
     tr = ks_window_trace(f.X, ctx)
@@ -101,7 +106,7 @@ def _day(day: str) -> dict:
         r = stop_episode(st, f, l, ctx, cal)
         ll = pointwise_logloss(r.p_up, l.y)
         s = score(r.p_up, l.y, l.move_bps)
-        rec = {"logloss": s["logloss"], "loss_bins": bins(ll), "alarm_s": [_sec(f, a.step) for a in r.alarms]}
+        rec = {"logloss": s["logloss"], "loss_bins": bins(ll), "alarm_bins": abins([a.step for a in r.alarms])}
         if st.startswith("naive_"):
             rec["window_reject_share"] = float((tr["pbon"] < 10.0 ** (-int(st[6:]))).mean())
         c = sweep.get(st, {}).get(day)

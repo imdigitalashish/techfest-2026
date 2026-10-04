@@ -119,7 +119,7 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
     <div><h3>Log-loss 2 hours before vs 2 hours after the splice <span class="chip c-live">live-computed</span> <span class="chip c-synth">SEMI-SYNTHETIC</span></h3>
       <table id="sp-loss"><thead><tr><th>policy</th><th class="num">2 h before</th><th class="num">2 h after</th><th>rank after</th></tr></thead><tbody></tbody></table></div>
     <div><h3>Who noticed, and when? <span class="chip c-live">live-computed</span> <span class="chip c-synth">SEMI-SYNTHETIC</span></h3>
-      <table id="sp-det"><thead><tr><th>signal</th><th class="num">alarms before splice (nothing changed yet)</th><th class="num">after</th><th class="num">first alarm after splice</th></tr></thead><tbody></tbody></table>
+      <table id="sp-det"><thead><tr><th>signal</th><th class="num">alarms before splice (nothing changed yet)</th><th class="num">after</th><th class="num">first alarm after splice (10-min bin)</th></tr></thead><tbody></tbody></table>
       <div class="mut" id="sp-heads" style="margin-top:6px"></div></div>
   </div>
   <div class="verdict" id="sp-verdict"></div>
@@ -229,10 +229,8 @@ function drawReplay(){
   g.fillStyle=C("--mut");g.fillText(pmax.toFixed(0),L+4,16);g.fillText(pmin.toFixed(0),L+4,166);
   // alarms
   const T=s=>L+(s-d.start_utc_s)/(nb*d.bin_s)*(R-L);
-  const stop=d.stops[STOP],sg=d.policies.spike_gate.alarms;
-  const tracks=[["KS (dial) → refit",stop?stop.alarm_s:[],C("--ks")],["KS audit (no action)",sg.rolling_ks_calibrated||[],C("--audit")],["CUSUM → shrink",sg.harm_cusum||[],C("--cusum")]];
-  tracks.forEach(([n,arr,col],i)=>{const y=186+i*28;g.fillStyle=C("--mut");g.fillText(`${n}: ${arr.length}`,L+4,y+8);g.strokeStyle=col;g.lineWidth=1.5;
-    for(const s of arr){g.beginPath();g.moveTo(T(s),y+11);g.lineTo(T(s),y+24);g.stroke();}g.lineWidth=1;});
+  const stop=d.stops[STOP],sg=d.policies.spike_gate.alarm_bins;
+  drawAlarmTracks(g,[["KS (dial) → refit",stop&&stop.alarm_bins,C("--ks")],["KS audit (no action)",sg.rolling_ks_calibrated,C("--audit")],["CUSUM → shrink",sg.harm_cusum,C("--cusum")]],L,bw,nb);
   // regime share
   const cols=["#6cb6ff","#f0b429","#ff6b6b"];for(let b=0;b<nb;b++){let y=282;for(let r=0;r<3;r++){const p=d.regime_share[r][b];if(p==null)continue;g.fillStyle=cols[r];g.fillRect(L+b*bw,y,bw+.5,p*26);y+=p*26;}}
   // loss bins
@@ -251,16 +249,21 @@ function drawReplay(){
   // totals table: the reference is looked up by the SELECTED day in the committed files, never taken from the payload
   const tb=$("#rp-totals tbody");tb.innerHTML="";tbl.dataset.refDay=DAY;
   POLS.forEach(([k,n,c])=>{const p=k==="ks_refit"?{...d.policies[k],...(stop||{})}:d.policies[k];const com=committedFor(k,DAY);
-    const nal=k==="ks_refit"?(stop?stop.alarm_s.length:0):Object.values(p.alarms||{}).reduce((a,x)=>a+x.length,0);
+    const nal=k==="ks_refit"?(stop?stopAlarmCount(stop):0):Object.values(p.alarm_bins||{}).reduce((a,x)=>a+sum(x),0);
     const src=k==="ks_refit"?"sweep":"committed";
     const chk=com==null?`<span class="mut">dev day: no held-out value (illustrative)</span>`:(Math.abs(com-p.logloss)<1e-9?`<span class="ok">✓ live = ${src} (|Δ| &lt; 1e-9)</span>`:`<span class="bad">✗ mismatch</span>`);
     tb.insertAdjacentHTML("beforeend",`<tr><td><i class="sw" style="background:${C(c)}"></i>${k==="ks_refit"?"KS → refit at "+stopLabel(STOP):n}</td><td class="num">${p.logloss.toFixed(6)} ${chip("live-computed")}</td><td class="num">${com==null?"—":com.toFixed(6)}</td><td>${chk}</td><td class="num">${nal}</td></tr>`);});
 }
 
 // The replay payload for `day`, or null. A payload whose own day differs from the key is never used.
-const SCHEMA=2;
+const SCHEMA=3;
 function dayData(day){const d=RP[day];return d&&d.day===day&&d.schema===SCHEMA?d:null;}
-function stopAlarmCount(st){return st.alarm_bins?st.alarm_bins.reduce((a,b)=>a+b,0):st.alarm_s.length;}
+const sum=a=>(a||[]).reduce((x,y)=>x+y,0);
+function stopAlarmCount(st){return sum(st.alarm_bins);}
+// Alarm tracks are drawn from 10-minute alarm COUNTS (no alarm times exist in the data): bar height = count in the bin.
+function drawAlarmTracks(g,tracks,L,bw,nb){tracks.forEach(([n,arr,col],i)=>{const y=186+i*28;arr=arr||new Array(nb).fill(0);
+  g.fillStyle=C("--mut");g.fillText(`${n}: ${sum(arr)} (per 10 min)`,L+4,y+8);g.fillStyle=col;
+  arr.forEach((c,b)=>{if(!c)return;const hh=Math.min(14,5+4*c);g.fillRect(L+b*bw+bw*.15,y+25-hh,Math.max(1.5,bw*.7),hh);});});}
 function committedFor(k,day){
   if(k==="ks_refit"){const s=SW&&SW.stops.find(x=>x.id===STOP);const v=s&&s.per_day[day];return v?v.logloss:null;}
   const r=SB.rows.find(x=>x.policy===k);const v=r&&r.per_day[day];return v==null?null:v;}
@@ -284,7 +287,7 @@ function drawDial(){
   const s=SW.stops.find(x=>x.id===STOP),gate=SW.refs.regime_gated,sep=SW.separation.log10_prob;
   const d=dayData(DAY),ds=d&&d.stops[STOP];
   const v=s.vs_static_snorm,vg=s.vs_regime_gated;
-  $("#dial-readout").innerHTML=`${stopLabel(STOP)}: ${ds?`<span style="color:var(--ks)">${ds.alarm_s.length} alarms on ${DAY}</span> ${chip("live-computed")} · `:""}`+
+  $("#dial-readout").innerHTML=`${stopLabel(STOP)}: ${ds?`<span style="color:var(--ks)">${stopAlarmCount(ds)} alarms on ${DAY}</span> ${chip("live-computed")} · `:""}`+
     `${s.alarms_per_day.toFixed(1)} alarms/day over 22 held-out days ${chip("post-hoc demo sweep")}`;
   let det=`22-day KS → refit: Δ vs static ${f4(v.mean)} [${f4(v.ci97_5[0])}, ${f4(v.ci97_5[1])}], better on ${v.days_better}/22 days; vs regime gate ${f4(vg.mean)} [${f4(vg.ci97_5[0])}, ${f4(vg.ci97_5[1])}], better on ${vg.days_better}/22 days.`;
   if(s.kind==="naive"){det+=` On the 2023 training days themselves (each day against the other eleven), this α rejects <b>${(s.null_train_reject_share*100).toFixed(s.null_train_reject_share<0.01?2:1)}%</b> of 10-minute windows (nominal ${s.log10_alpha>=-3?(10**s.log10_alpha*100)+"%":"≈ 0%"}).`;
@@ -332,7 +335,7 @@ function drawDial(){
 function dialVerdict(){
   const st=SW.stops,best=st.reduce((a,b)=>a.vs_regime_gated.mean<b.vs_regime_gated.mean?a:b);
   const beats=st.filter(s=>s.vs_regime_gated.ci97_5[1]<0),anyMean=st.filter(s=>s.vs_regime_gated.mean<0);
-  const n30=st.find(s=>s.id==="naive_30");const d=dayData(DAY),a30=d&&d.stops.naive_30?d.stops.naive_30.alarm_s.length:null;
+  const n30=st.find(s=>s.id==="naive_30");const d=dayData(DAY),a30=d&&d.stops.naive_30?stopAlarmCount(d.stops.naive_30):null;
   let txt;
   if(beats.length===0&&anyMean.length===0){txt=`<b>Across these ${st.length} tested settings, this KS → refit recipe never beats the state gate.</b> The best of ${st.length} stops is ${stopLabel(best.id)}, still ${f4(best.vs_regime_gated.mean)} [${f4(best.vs_regime_gated.ci97_5[0])}, ${f4(best.vs_regime_gated.ci97_5[1])}] worse than the regime gate (better on ${best.vs_regime_gated.days_better}/22 days).`;}
   else{txt=`<b>Some dial settings match or beat the regime gate:</b> ${(beats.length?beats:anyMean).map(s=>stopLabel(s.id)+" "+f4(s.vs_regime_gated.mean)).join("; ")}. The demo shows this as it is.`;}
@@ -395,8 +398,8 @@ function drawDayCanvas(cv,d,ksAl,ksBins,spliceS){
   const cs=d.candles.filter(Boolean),pmin=Math.min(...cs.map(c=>c[2])),pmax=Math.max(...cs.map(c=>c[1])),Y0=v=>8+(1-(v-pmin)/(pmax-pmin||1))*156;
   d.candles.forEach((c,b)=>{if(!c)return;const [o,hi,lo,cl]=c,col=cl>=o?"#3fd08f":"#ff6b6b";g.strokeStyle=col;g.fillStyle=col;g.beginPath();g.moveTo(X(b),Y0(hi));g.lineTo(X(b),Y0(lo));g.stroke();g.fillRect(X(b)-bw*.35,Math.min(Y0(o),Y0(cl)),bw*.7,Math.max(1,Math.abs(Y0(o)-Y0(cl))));});
   g.fillStyle=C("--mut");g.fillText(pmax.toFixed(0),L+4,28);g.fillText(pmin.toFixed(0),L+4,166);
-  const sg=d.policies.spike_gate.alarms;
-  [["KS (α = 1e-3) → refit",ksAl,C("--ks")],["KS audit (no action)",sg.rolling_ks_calibrated||[],C("--audit")],["CUSUM → shrink",sg.harm_cusum||[],C("--cusum")]].forEach(([n,arr,col],i)=>{const y=186+i*28;g.fillStyle=C("--mut");g.fillText(`${n}: ${arr.length}`,L+4,y+8);g.strokeStyle=col;g.lineWidth=1.5;for(const t of arr){g.beginPath();g.moveTo(T(t),y+11);g.lineTo(T(t),y+24);g.stroke();}g.lineWidth=1;});
+  const sg=d.policies.spike_gate.alarm_bins;
+  drawAlarmTracks(g,[["KS (α = 1e-3) → refit",ksAl,C("--ks")],["KS audit (no action)",sg.rolling_ks_calibrated,C("--audit")],["CUSUM → shrink",sg.harm_cusum,C("--cusum")]],L,bw,nb);
   const cols=["#6cb6ff","#f0b429","#ff6b6b"];for(let b=0;b<nb;b++){let y=282;for(let r=0;r<3;r++){const p=d.regime_share[r][b];if(p==null)continue;g.fillStyle=cols[r];g.fillRect(L+b*bw,y,bw+.5,p*26);y+=p*26;}}
   const series=POLS.map(([k,n,c])=>[k==="ks_refit"?ksBins:d.policies[k].loss_bins,C(c),k]);
   const all=series.flatMap(s=>s[0]).filter(v=>v!=null).sort((a,b)=>a-b),lmin=all[Math.floor(all.length*.01)],lmax=all[Math.floor(all.length*.99)];
@@ -424,11 +427,11 @@ async function drawSplice(){
   const ck=d.checks,ok=v=>v?'<span class="ok">✓</span>':'<span class="bad">✗</span>';
   $("#sp-method").innerHTML=`<b>Method.</b> Real held-out order books, spliced: every snapshot of <b>${d.day_a}</b> received before ${hhmm(d.splice_utc_s)} UTC, then every snapshot of <b>${d.day_b}</b> from the same time of day. Day B's prices are shifted <b>additively</b> by ${d.shift_ticks.toLocaleString()} ticks (${d.shift_usd>=0?"+":"−"}$${Math.abs(d.shift_usd).toLocaleString()}) so the mid is continuous at the splice. Sizes are unchanged. The spliced book then goes through the same committed features, labels and policies (2023 training context). `+
     `Integrity checks: features before the splice equal the unspliced day ${ok(ck.causal_features_pre)}; labels before it equal the unspliced day ${ok(ck.causal_labels_pre)}; labels after it equal day B's own labels on every real move ${ok(ck.labels_shift_invariant_post)} (${ck.n_post_labels_compared.toLocaleString()} steps). Exact decimal ties whose sign comes from floating-point rounding in the committed labeler: ${ck.n_float_noise_ties}, of which ${ck.n_float_noise_ties_flipped} flipped.`;
-  const ks=d.policies.ks_refit;drawDayCanvas($("#sp"),d,ks.alarms.rolling_ks||[],ks.loss_bins,d.splice_utc_s);
+  const ks=d.policies.ks_refit;drawDayCanvas($("#sp"),d,ks.alarm_bins.rolling_ks,ks.loss_bins,d.splice_utc_s);
   const names=Object.fromEntries(POLS.map(([k,n,c])=>[k,[n,c]]));const w=d.window_2h;const order=Object.keys(w).sort((a,b)=>w[a].after_2h-w[b].after_2h);
   $("#sp-loss tbody").innerHTML=order.map((k,i)=>`<tr><td><i class="sw" style="background:${C(names[k][1])}"></i>${k==="ks_refit"?"Textbook KS → refit (α = 1e-3)":names[k][0]}</td><td class="num">${w[k].before_2h.toFixed(4)}</td><td class="num">${w[k].after_2h.toFixed(4)}</td><td>${i===0?'<b class="ok">1 (best)</b>':i+1}</td></tr>`).join("");
   const dl={rolling_ks:"Textbook KS (α = 1e-3) → refit",rolling_ks_calibrated:"Calibrated KS audit (no action)",harm_cusum:"CUSUM on loss → shrink"};
-  $("#sp-det tbody").innerHTML=Object.entries(d.detectors).map(([k,v])=>`<tr><td>${dl[k]}</td><td class="num">${v.before}</td><td class="num">${v.after}</td><td class="num">${v.first_delay_min==null?"never":v.first_delay_min+" min"}</td></tr>`).join("");
+  $("#sp-det tbody").innerHTML=Object.entries(d.detectors).map(([k,v])=>`<tr><td>${dl[k]}</td><td class="num">${v.before}</td><td class="num">${v.after}</td><td class="num">${v.first_bin_after==null?"never":v.first_bin_after===0?"within 10 min":`${v.first_bin_after*10}–${v.first_bin_after*10+10} min`}</td></tr>`).join("");
   const hb=d.gate_heads.before_1h,ha=d.gate_heads.after_1h,pc=a=>a.map(x=>(x*100).toFixed(0)+"%").join(" / ");
   $("#sp-heads").innerHTML=`Regime gate, share of steps on the low / mid / high-vol head: 1 h before the splice ${pc(hb)}; 1 h after ${pc(ha)}. The gate needs no alarm: it switches as soon as its trailing 10-minute volatility crosses the 2023 tercile edges.`;
   // verdict across all splices that are available

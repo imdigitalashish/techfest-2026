@@ -117,7 +117,7 @@ def binned_mean(x: np.ndarray, n_bins: int, bin_steps: int = BIN_S) -> list:
     return out
 
 
-CACHE_SCHEMA = 2
+CACHE_SCHEMA = 3
 
 
 def cache_key(days: list[str], extra: tuple[str, ...] = ()) -> str:
