@@ -117,6 +117,11 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 21:13 IST — P7 demo done (4 demos)
+- **P7 DEMO DONE (Perceptron consensus pick):** smoke 47/47 in my clone (44 s). Astra demo review 7.5/10, all 10 items applied.
+  - Opens on REAL NYC July-4 trips: the best rule and the planner run live on identical demand, next to the committed receipts. Surge window 1.40 vs 39.55 lost; +2.52 pp, 20/20.
+  - Crazy element: the judge drops a surge on real demand, labelled as an intervention. The honest cell where the planner loses is shown.
+- Slot → P8 demo ("ask it again": deterministic engine vs GPT-5.5; Eedi licence check required).
 ### 2026-10-04 20:52 IST — Sweep
 - P9: three demo-driven guard changes (untrusted-text rule, format-insensitive taint, own-record exemption). Each time I verified the committed τ-bench decisions and reasons are identical (991 test / 1,027 dev).
 - P1: three demo pass criteria committed at 20:20:49; the validation runs were committed at 20:45:11. All three pass in 5/5 seeds.
