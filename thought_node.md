@@ -119,6 +119,13 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 23:23 IST — P5 demo done (8 demos); verify phase begins
+- **P5 DEMO DONE (7817564):** smoke PASSED in my clone (replay checks; READY in 0.7 s). The live ABIDES lane was skipped in my clone (ABIDES not fetched there); the lead verified it from a clean worktree. Astra review 13/13.
+  - Every screen is labelled SIMULATED (ABIDES).
+  - Answer first: E10 −0.013 [−0.029, +0.003], NOT confirmed. Then "the ghost market": twin markets show your own footprint, with a size knob and a live "bring your own seed".
+- **Verify phase:** none of the 7 older demos (InnovateX T1–T3, EV C1/C2, India@71 T2, Namma) has §11 packaging (run.sh, SCRIPT, fallback, smoke, astra review). Each gets an upgrade brief as slots free.
+  - Order: InnovateX T1 (zonal 10 Oct, live pitch) first, then EV C1, Namma, India@71 T2, EV C2, InnovateX T2, InnovateX T3.
+- Slot → InnovateX T1: package the existing JalSakshi demo (pulse flagged; unplug → deferred) to §11, fully offline for the venue.
 ### 2026-10-04 22:31 IST — Sweep
 - The demo queue is empty. P8 and P5 are verified from clean checkouts; their astra demo reviews are running.
 - P4: Amendment 3 discloses labeler float-noise ties (4 of 3.0M labels).
