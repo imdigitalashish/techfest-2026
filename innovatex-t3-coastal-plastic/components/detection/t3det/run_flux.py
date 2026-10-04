@@ -47,7 +47,8 @@ def main() -> None:
            "detector_weights": Path(a.weights).name, "tracker": "bytetrack.yaml (ultralytics defaults)",
            "conf": a.conf, "imgsz": a.imgsz,
            "reproduce": f"python -m t3det.synth --out {a.seq} --frames {gt['frames']} --items {gt['n_items']} "
-                        f"--seed {gt['seed']} && python -m t3det.run_flux --weights <best.pt> --seq {a.seq}",
+                        f"--seed {gt['seed']} --speed {' '.join(str(s) for s in gt.get('speed_px_per_frame', [4, 9]))} "
+                        f"&& python -m t3det.run_flux --weights {a.weights} --seq {a.seq}",
            "flux_estimate": json.loads(est.model_dump_json())}
     Path(a.out).write_text(json.dumps(out, indent=1) + "\n")
     print(json.dumps({k: out[k] for k in ("gt_crossings", "items_crossed", "count_error_pct")}))

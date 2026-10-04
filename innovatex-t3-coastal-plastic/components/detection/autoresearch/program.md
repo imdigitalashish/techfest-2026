@@ -24,3 +24,11 @@ budget (training ideas). The shared M5 was swapping during this run (A1 in READM
 5. Training (queued, compute-bound): imgsz 960 training; YOLO11s; mosaic + copy-paste; longer schedule.
 6. Domain ideas for Mumbai (not testable on TUD-GV): black-water/low-contrast photometric augmentation, glare and rain
    synthetic augmentation, a "mat" class for dense accumulation, and flexible film vs bottle sub-classes.
+
+## Status (2026-10-04 07:50 IST)
+No ratchet iteration ran overnight. Every training attempt stalled on the shared M5: 45–47 GB of swap in use, load
+average 80–90, and the YOLO11n trainer could not finish one batch in 11 minutes. One val pass of the frozen evaluator
+was estimated at 5–14 min, so the val passes could not fit before the 08:10 push either. `results.tsv` is therefore only a
+header. Nothing was faked. The harness is complete and was smoke-tested end to end: `eval.py` ran on the Groningen split with
+COCO YOLO11n (mAP50 0.4053, see `results/zeroshot_groningen_eval.json`). Next run, on an idle machine or Azure:
+`bash run_after_train.sh B <best.pt>`.

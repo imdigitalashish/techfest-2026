@@ -1,0 +1,10 @@
+{
+ "what": "Smoke test of the FROZEN autoresearch/eval.py on the Groningen cross-site split with COCO-pretrained YOLO11n (zero-shot, class-aware NMS, any COCO class = litter candidate). Values transcribed verbatim from the run's stdout/stderr (2026-10-04 ~07:41 IST).",
+ "split": "groningen", "n_images": 63, "n_gt": 383,
+ "mAP50": 0.4053, "boot_se": 0.026, "boot_reps": 20,
+ "precision@0.25": 1.0, "recall@0.25": 0.0104,
+ "ms_per_img_median": 3155.7,
+ "config": {"imgsz": 640, "conf": 0.001, "iou": 0.7, "augment": false, "tiles": [1, 1]},
+ "reproduce": "cd innovatex-t3-coastal-plastic/components/detection && python3.11 autoresearch/eval.py --weights ../../.data/detection/weights/yolo11n.pt --split groningen --boot 20",
+ "note": "ms/img measured while the machine was thrashing (swap full, load avg ~85): an upper bound"
+}

@@ -68,7 +68,8 @@ def paste(frame: np.ndarray, crop: np.ndarray, cx: float, cy: float) -> None:
     frame[fy1:fy2, fx1:fx2] = (a * c + (1 - a) * roi).astype(np.uint8)
 
 
-def generate(out: Path, frames: int, items: int, seed: int, fps: float = 5.0) -> dict:
+def generate(out: Path, frames: int, items: int, seed: int, fps: float = 5.0,
+             speed: tuple[float, float] = (4, 9)) -> dict:
     rng = random.Random(seed)
     test = [Path(p) for p in (YOLO / "test.txt").read_text().split()]
     bg = clean_background(rng.choice(test))
@@ -76,10 +77,11 @@ def generate(out: Path, frames: int, items: int, seed: int, fps: float = 5.0) ->
     line_x = w / 2
     objs = []
     for i, crop in enumerate(crops(test, items, rng)):
-        speed = rng.uniform(4, 9)  # px/frame (flow left -> right)
-        t0 = rng.randint(0, max(1, frames - int((w + 100) / speed) - 1))
+        v = rng.uniform(*speed)  # px/frame (flow left -> right)
+        # enter early enough to reach the counting line before the clip ends
+        t0 = rng.randint(0, max(1, frames - int((line_x + crop.shape[1] + 20) / v) - 1))
         objs.append({"id": i, "crop": crop, "t0": t0, "x0": -crop.shape[1], "y": rng.uniform(0.1 * h, 0.9 * h),
-                     "vx": speed, "vy": rng.uniform(-0.6, 0.6), "phase": rng.uniform(0, 6.28)})
+                     "vx": v, "vy": rng.uniform(-0.6, 0.6), "phase": rng.uniform(0, 6.28)})
     (out / "frames").mkdir(parents=True, exist_ok=True)
     crossings = []
     for f in range(frames):
@@ -99,7 +101,7 @@ def generate(out: Path, frames: int, items: int, seed: int, fps: float = 5.0) ->
             if -o["crop"].shape[1] <= x <= w + o["crop"].shape[1]:
                 paste(frame, o["crop"], x, y)
         cv2.imwrite(str(out / "frames" / f"{f:05d}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
-    gt = {"label": "SYNTHETIC", "seed": seed, "fps": fps, "frames": frames, "image_wh": [w, h],
+    gt = {"label": "SYNTHETIC", "seed": seed, "fps": fps, "frames": frames, "image_wh": [w, h], "speed_px_per_frame": list(speed),
           "line": [[line_x, 0], [line_x, h]], "direction": "left_to_right", "n_items": items,
           "gt_crossings": len(crossings), "crossings": crossings,
           "items": [{"id": o["id"], "t0": o["t0"], "vx": round(o["vx"], 2), "crop_wh": list(o["crop"].shape[1::-1])}
@@ -114,8 +116,9 @@ def main() -> None:
     p.add_argument("--frames", type=int, default=300)
     p.add_argument("--items", type=int, default=24)
     p.add_argument("--seed", type=int, default=7)
+    p.add_argument("--speed", type=float, nargs=2, default=[4, 9], help="px/frame range")
     a = p.parse_args()
-    gt = generate(Path(a.out), a.frames, a.items, a.seed)
+    gt = generate(Path(a.out), a.frames, a.items, a.seed, speed=tuple(a.speed))
     print(f"SYNTHETIC sequence: {gt['frames']} frames, {gt['n_items']} items, {gt['gt_crossings']} GT crossings -> {a.out}")
 
 
