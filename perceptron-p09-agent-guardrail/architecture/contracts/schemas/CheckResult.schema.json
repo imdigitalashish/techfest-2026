@@ -1,0 +1,91 @@
+{
+ "$defs": {
+  "CheckStatus": {
+   "enum": [
+    "pass",
+    "fail",
+    "unverifiable",
+    "needs_approval"
+   ],
+   "title": "CheckStatus",
+   "type": "string"
+  },
+  "Evidence": {
+   "properties": {
+    "source": {
+     "$ref": "#/$defs/Trust"
+    },
+    "locator": {
+     "title": "Locator",
+     "type": "string"
+    },
+    "snippet": {
+     "title": "Snippet",
+     "type": "string"
+    }
+   },
+   "required": [
+    "source",
+    "locator",
+    "snippet"
+   ],
+   "title": "Evidence",
+   "type": "object"
+  },
+  "Trust": {
+   "description": "Where a piece of context came from. Intent-bearing arguments may only be grounded in trusted sources.",
+   "enum": [
+    "user",
+    "kb",
+    "tool_data",
+    "untrusted"
+   ],
+   "title": "Trust",
+   "type": "string"
+  }
+ },
+ "properties": {
+  "check_id": {
+   "title": "Check Id",
+   "type": "string"
+  },
+  "arg": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Arg"
+  },
+  "status": {
+   "$ref": "#/$defs/CheckStatus"
+  },
+  "message": {
+   "title": "Message",
+   "type": "string"
+  },
+  "evidence": {
+   "items": {
+    "$ref": "#/$defs/Evidence"
+   },
+   "title": "Evidence",
+   "type": "array"
+  },
+  "tier": {
+   "default": 0,
+   "title": "Tier",
+   "type": "integer"
+  }
+ },
+ "required": [
+  "check_id",
+  "status",
+  "message"
+ ],
+ "title": "CheckResult",
+ "type": "object"
+}

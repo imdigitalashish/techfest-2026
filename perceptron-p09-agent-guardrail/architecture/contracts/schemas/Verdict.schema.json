@@ -1,0 +1,155 @@
+{
+ "$defs": {
+  "CheckResult": {
+   "properties": {
+    "check_id": {
+     "title": "Check Id",
+     "type": "string"
+    },
+    "arg": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Arg"
+    },
+    "status": {
+     "$ref": "#/$defs/CheckStatus"
+    },
+    "message": {
+     "title": "Message",
+     "type": "string"
+    },
+    "evidence": {
+     "items": {
+      "$ref": "#/$defs/Evidence"
+     },
+     "title": "Evidence",
+     "type": "array"
+    },
+    "tier": {
+     "default": 0,
+     "title": "Tier",
+     "type": "integer"
+    }
+   },
+   "required": [
+    "check_id",
+    "status",
+    "message"
+   ],
+   "title": "CheckResult",
+   "type": "object"
+  },
+  "CheckStatus": {
+   "enum": [
+    "pass",
+    "fail",
+    "unverifiable",
+    "needs_approval"
+   ],
+   "title": "CheckStatus",
+   "type": "string"
+  },
+  "Decision": {
+   "enum": [
+    "allow",
+    "block",
+    "escalate"
+   ],
+   "title": "Decision",
+   "type": "string"
+  },
+  "Evidence": {
+   "properties": {
+    "source": {
+     "$ref": "#/$defs/Trust"
+    },
+    "locator": {
+     "title": "Locator",
+     "type": "string"
+    },
+    "snippet": {
+     "title": "Snippet",
+     "type": "string"
+    }
+   },
+   "required": [
+    "source",
+    "locator",
+    "snippet"
+   ],
+   "title": "Evidence",
+   "type": "object"
+  },
+  "Trust": {
+   "description": "Where a piece of context came from. Intent-bearing arguments may only be grounded in trusted sources.",
+   "enum": [
+    "user",
+    "kb",
+    "tool_data",
+    "untrusted"
+   ],
+   "title": "Trust",
+   "type": "string"
+  }
+ },
+ "properties": {
+  "call_id": {
+   "title": "Call Id",
+   "type": "string"
+  },
+  "decision": {
+   "$ref": "#/$defs/Decision"
+  },
+  "risk": {
+   "maximum": 1.0,
+   "minimum": 0.0,
+   "title": "Risk",
+   "type": "number"
+  },
+  "tiers_run": {
+   "items": {
+    "type": "integer"
+   },
+   "title": "Tiers Run",
+   "type": "array"
+  },
+  "checks": {
+   "items": {
+    "$ref": "#/$defs/CheckResult"
+   },
+   "title": "Checks",
+   "type": "array"
+  },
+  "feedback": {
+   "title": "Feedback",
+   "type": "string"
+  },
+  "latency_ms": {
+   "title": "Latency Ms",
+   "type": "number"
+  },
+  "guard": {
+   "title": "Guard",
+   "type": "string"
+  }
+ },
+ "required": [
+  "call_id",
+  "decision",
+  "risk",
+  "tiers_run",
+  "checks",
+  "feedback",
+  "latency_ms",
+  "guard"
+ ],
+ "title": "Verdict",
+ "type": "object"
+}

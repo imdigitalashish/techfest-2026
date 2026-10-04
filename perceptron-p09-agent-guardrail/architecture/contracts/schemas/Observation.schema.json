@@ -1,0 +1,40 @@
+{
+ "$defs": {
+  "Trust": {
+   "description": "Where a piece of context came from. Intent-bearing arguments may only be grounded in trusted sources.",
+   "enum": [
+    "user",
+    "kb",
+    "tool_data",
+    "untrusted"
+   ],
+   "title": "Trust",
+   "type": "string"
+  }
+ },
+ "description": "Result of an earlier tool call in the same episode.",
+ "properties": {
+  "tool": {
+   "title": "Tool",
+   "type": "string"
+  },
+  "args": {
+   "additionalProperties": true,
+   "title": "Args",
+   "type": "object"
+  },
+  "result": {
+   "title": "Result"
+  },
+  "trust": {
+   "$ref": "#/$defs/Trust",
+   "default": "tool_data"
+  }
+ },
+ "required": [
+  "tool",
+  "result"
+ ],
+ "title": "Observation",
+ "type": "object"
+}

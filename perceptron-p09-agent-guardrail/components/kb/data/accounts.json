@@ -1,0 +1,85 @@
+{
+ "_note": "SYNTHETIC reference data for the P9 guardrail demo. Symbols/names are real NSE large caps for realism; every price, limit, account and status here is made up. Instruments marked (fictional) do not exist.",
+ "principals": [
+  {
+   "user_id": "U1",
+   "name": "Priya Sharma"
+  },
+  {
+   "user_id": "U2",
+   "name": "Rohan Mehta"
+  },
+  {
+   "user_id": "U3",
+   "name": "Ananya Iyer"
+  },
+  {
+   "user_id": "U4",
+   "name": "Vikram Rao"
+  }
+ ],
+ "accounts": [
+  {
+   "account_id": "A-1001",
+   "owner_id": "U1",
+   "status": "active",
+   "cash_available": 2500000,
+   "max_order_notional": 2000000,
+   "positions": {
+    "RELIANCE": 300,
+    "INFY": 500
+   }
+  },
+  {
+   "account_id": "A-1002",
+   "owner_id": "U1",
+   "status": "active",
+   "cash_available": 800000,
+   "max_order_notional": 500000,
+   "positions": {
+    "TCS": 50
+   }
+  },
+  {
+   "account_id": "A-2001",
+   "owner_id": "U2",
+   "status": "active",
+   "cash_available": 12000000,
+   "max_order_notional": 10000000,
+   "positions": {
+    "HDFCBANK": 2000,
+    "SBIN": 5000,
+    "ITC": 10000
+   }
+  },
+  {
+   "account_id": "A-3001",
+   "owner_id": "U3",
+   "status": "frozen",
+   "cash_available": 400000,
+   "max_order_notional": 500000,
+   "positions": {}
+  },
+  {
+   "account_id": "A-3002",
+   "owner_id": "U3",
+   "status": "active",
+   "cash_available": 600000,
+   "max_order_notional": 500000,
+   "positions": {
+    "WIPRO": 400
+   }
+  },
+  {
+   "account_id": "A-4001",
+   "owner_id": "U4",
+   "status": "active",
+   "cash_available": 6000000,
+   "max_order_notional": 7500000,
+   "positions": {
+    "LT": 100,
+    "MARUTI": 20
+   }
+  }
+ ]
+}

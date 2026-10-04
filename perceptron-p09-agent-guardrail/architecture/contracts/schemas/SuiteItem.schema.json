@@ -1,0 +1,205 @@
+{
+ "$defs": {
+  "Context": {
+   "properties": {
+    "principal": {
+     "$ref": "#/$defs/Principal"
+    },
+    "user_request": {
+     "title": "User Request",
+     "type": "string"
+    },
+    "observations": {
+     "items": {
+      "$ref": "#/$defs/Observation"
+     },
+     "title": "Observations",
+     "type": "array"
+    },
+    "state": {
+     "$ref": "#/$defs/SessionState"
+    }
+   },
+   "required": [
+    "principal",
+    "user_request"
+   ],
+   "title": "Context",
+   "type": "object"
+  },
+  "Observation": {
+   "description": "Result of an earlier tool call in the same episode.",
+   "properties": {
+    "tool": {
+     "title": "Tool",
+     "type": "string"
+    },
+    "args": {
+     "additionalProperties": true,
+     "title": "Args",
+     "type": "object"
+    },
+    "result": {
+     "title": "Result"
+    },
+    "trust": {
+     "$ref": "#/$defs/Trust",
+     "default": "tool_data"
+    }
+   },
+   "required": [
+    "tool",
+    "result"
+   ],
+   "title": "Observation",
+   "type": "object"
+  },
+  "Principal": {
+   "description": "Who the agent acts for.",
+   "properties": {
+    "user_id": {
+     "title": "User Id",
+     "type": "string"
+    },
+    "name": {
+     "title": "Name",
+     "type": "string"
+    }
+   },
+   "required": [
+    "user_id",
+    "name"
+   ],
+   "title": "Principal",
+   "type": "object"
+  },
+  "SessionState": {
+   "description": "Side effects already committed in this episode (for idempotency / reference checks).",
+   "properties": {
+    "orders": {
+     "items": {
+      "additionalProperties": true,
+      "type": "object"
+     },
+     "title": "Orders",
+     "type": "array"
+    },
+    "transfers": {
+     "items": {
+      "additionalProperties": true,
+      "type": "object"
+     },
+     "title": "Transfers",
+     "type": "array"
+    },
+    "messages": {
+     "items": {
+      "additionalProperties": true,
+      "type": "object"
+     },
+     "title": "Messages",
+     "type": "array"
+    }
+   },
+   "title": "SessionState",
+   "type": "object"
+  },
+  "ToolCall": {
+   "description": "An action the agent proposes. Nothing has executed yet.",
+   "properties": {
+    "call_id": {
+     "title": "Call Id",
+     "type": "string"
+    },
+    "tool": {
+     "title": "Tool",
+     "type": "string"
+    },
+    "args": {
+     "additionalProperties": true,
+     "title": "Args",
+     "type": "object"
+    }
+   },
+   "required": [
+    "call_id",
+    "tool",
+    "args"
+   ],
+   "title": "ToolCall",
+   "type": "object"
+  },
+  "Trust": {
+   "description": "Where a piece of context came from. Intent-bearing arguments may only be grounded in trusted sources.",
+   "enum": [
+    "user",
+    "kb",
+    "tool_data",
+    "untrusted"
+   ],
+   "title": "Trust",
+   "type": "string"
+  }
+ },
+ "description": "One red-team / regression case: a context plus a proposed call with a ground-truth label.",
+ "properties": {
+  "item_id": {
+   "title": "Item Id",
+   "type": "string"
+  },
+  "split": {
+   "enum": [
+    "dev",
+    "test"
+   ],
+   "title": "Split",
+   "type": "string"
+  },
+  "family": {
+   "title": "Family",
+   "type": "string"
+  },
+  "context": {
+   "$ref": "#/$defs/Context"
+  },
+  "call": {
+   "$ref": "#/$defs/ToolCall"
+  },
+  "should_execute": {
+   "title": "Should Execute",
+   "type": "boolean"
+  },
+  "hallucination_class": {
+   "title": "Hallucination Class",
+   "type": "string"
+  },
+  "mutation": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Mutation"
+  },
+  "notes": {
+   "default": "",
+   "title": "Notes",
+   "type": "string"
+  }
+ },
+ "required": [
+  "item_id",
+  "split",
+  "family",
+  "context",
+  "call",
+  "should_execute",
+  "hallucination_class"
+ ],
+ "title": "SuiteItem",
+ "type": "object"
+}

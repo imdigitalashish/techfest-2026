@@ -1,0 +1,252 @@
+{
+ "_note": "SYNTHETIC reference data for the P9 guardrail demo. Symbols/names are real NSE large caps for realism; every price, limit, account and status here is made up. Instruments marked (fictional) do not exist.",
+ "instruments": [
+  {
+   "symbol": "RELIANCE",
+   "name": "Reliance Industries Ltd",
+   "aliases": [
+    "reliance",
+    "reliance industries",
+    "ril"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 2950.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "TCS",
+   "name": "Tata Consultancy Services Ltd",
+   "aliases": [
+    "tcs",
+    "tata consultancy",
+    "tata consultancy services"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 4100.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "INFY",
+   "name": "Infosys Ltd",
+   "aliases": [
+    "infosys",
+    "infy"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 1850.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "WIPRO",
+   "name": "Wipro Ltd",
+   "aliases": [
+    "wipro"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 540.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "HDFCBANK",
+   "name": "HDFC Bank Ltd",
+   "aliases": [
+    "hdfc bank",
+    "hdfcbank"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 1650.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "ICICIBANK",
+   "name": "ICICI Bank Ltd",
+   "aliases": [
+    "icici bank",
+    "icici",
+    "icicibank"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 1250.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "AXISBANK",
+   "name": "Axis Bank Ltd",
+   "aliases": [
+    "axis bank",
+    "axis",
+    "axisbank"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 1150.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "SBIN",
+   "name": "State Bank of India",
+   "aliases": [
+    "sbi",
+    "sbin",
+    "state bank",
+    "state bank of india"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 820.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "ITC",
+   "name": "ITC Ltd",
+   "aliases": [
+    "itc"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 470.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "LT",
+   "name": "Larsen & Toubro Ltd",
+   "aliases": [
+    "l&t",
+    "larsen",
+    "larsen and toubro",
+    "larsen & toubro"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 3600.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "BHARTIARTL",
+   "name": "Bharti Airtel Ltd",
+   "aliases": [
+    "airtel",
+    "bharti airtel",
+    "bhartiartl"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 1600.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "MARUTI",
+   "name": "Maruti Suzuki India Ltd",
+   "aliases": [
+    "maruti",
+    "maruti suzuki"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 12500.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "SUNPHARMA",
+   "name": "Sun Pharmaceutical Industries Ltd",
+   "aliases": [
+    "sun pharma",
+    "sun pharmaceutical",
+    "sunpharma"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 1750.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "ASIANPAINT",
+   "name": "Asian Paints Ltd",
+   "aliases": [
+    "asian paints",
+    "asianpaint"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 2900.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "DECCANAGRO",
+   "name": "Deccan Agro Ltd (fictional)",
+   "aliases": [
+    "deccan agro",
+    "deccanagro"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 95.5,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  },
+  {
+   "symbol": "KONKANSTL",
+   "name": "Konkan Steel Ltd (fictional)",
+   "aliases": [
+    "konkan steel",
+    "konkanstl"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 310.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "suspended"
+  },
+  {
+   "symbol": "ARAVLOG",
+   "name": "Aravalli Logistics Ltd (fictional)",
+   "aliases": [
+    "aravalli logistics",
+    "aravlog",
+    "aravalli"
+   ],
+   "exchange": "NSE",
+   "currency": "INR",
+   "ref_price": 720.0,
+   "tick_size": 0.05,
+   "lot_size": 1,
+   "status": "active"
+  }
+ ]
+}

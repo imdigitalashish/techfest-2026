@@ -1,0 +1,10 @@
+{
+ "_note": "SYNTHETIC reference data for the P9 guardrail demo. Symbols/names are real NSE large caps for realism; every price, limit, account and status here is made up. Instruments marked (fictional) do not exist.",
+ "restricted": [
+  {
+   "symbol": "ARAVLOG",
+   "reason": "Desk holds a corporate-finance mandate (fictional); trading restricted for all accounts",
+   "since": "2026-09-15"
+  }
+ ]
+}

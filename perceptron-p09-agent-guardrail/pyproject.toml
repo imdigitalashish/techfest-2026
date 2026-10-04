@@ -29,7 +29,8 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["components", "eval", "tests"]
+testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-q"
 
 [tool.uv]

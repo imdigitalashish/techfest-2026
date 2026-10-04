@@ -1,0 +1,25 @@
+{
+ "description": "An action the agent proposes. Nothing has executed yet.",
+ "properties": {
+  "call_id": {
+   "title": "Call Id",
+   "type": "string"
+  },
+  "tool": {
+   "title": "Tool",
+   "type": "string"
+  },
+  "args": {
+   "additionalProperties": true,
+   "title": "Args",
+   "type": "object"
+  }
+ },
+ "required": [
+  "call_id",
+  "tool",
+  "args"
+ ],
+ "title": "ToolCall",
+ "type": "object"
+}

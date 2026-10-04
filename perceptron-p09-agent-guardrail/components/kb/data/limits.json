@@ -1,0 +1,9 @@
+{
+ "_note": "SYNTHETIC reference data for the P9 guardrail demo. Symbols/names are real NSE large caps for realism; every price, limit, account and status here is made up. Instruments marked (fictional) do not exist.",
+ "price_collar_pct": 5.0,
+ "max_order_qty": 25000,
+ "max_market_order_qty": 5000,
+ "order_approval_notional": 5000000,
+ "transfer_approval_amount": 1000000,
+ "short_selling_allowed": false
+}
