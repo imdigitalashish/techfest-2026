@@ -15,7 +15,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DOCS = ["deliverables/round1-abstract.md", "deliverables/architecture.md", "architecture/adr/001-spike.md",
+DOCS = ["deliverables/round1-abstract.md", "deliverables/architecture.md", "deliverables/qa-prep.md",
+        "architecture/adr/001-spike.md",
         "research/landscape.md", "thought_node.md"]
 CONSTANTS = {"0.6931": "ln 2"}
 NUM = re.compile(r"(?<![\w.])[+\-−]?\d+\.\d{3,}(?![\d])|(?<![\w.])[+\-−]?\d+\.\d{1,3}(?=\s?bps)")
