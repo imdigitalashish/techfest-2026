@@ -38,3 +38,14 @@ The feedback is advisory and the lead decides (PLAYBOOK §10). Every item below 
 | C7 | minor | ACCEPTED | `calibrate_gate.py` computes a true no-gate baseline; a correction note is added to `gate_calibration.md`; the headline reads the corrected value. |
 | C8 | minor | ACCEPTED (OBD part deferred) | `shapley()` returns a paired environment interval. Adding it to the OBD tables needs a re-run of the pre-registered script, which is deferred to the next OBD run. |
 | C9 | minor | ACCEPTED | The 5-cell × 48-hour distinct-propensity readout is disclosed as a deviation from the registered readout; it does not affect the 20/20 decision. |
+
+## gpt-6-astra re-score of v3 (commit 2371208): 69/100, no blockers
+
+| # | Severity | Decision | What changed (abstract v4) |
+|---|---|---|---|
+| A15 | major | ACCEPTED | The holdout's "near-null" group is renamed a *small scorer-quality-gap configuration* (its effects range up to about 10 points). The committed run is kept as is. A new, separately frozen near-zero-contrast test is planned for the 15 Oct protocol freeze. |
+| A16 | major | ACCEPTED | Confident wrong sign is now reported over effect rows only: 0/4 listed, 0/3 distinct answered effect instances. Value rows show n/a (`eval/apply_gate_obd.py`). |
+| A3 (residual) | major | ACCEPTED | `components/report/verdict.py` takes its primary decision only on the after-period contrast, and only when its gate passes. Otherwise the verdict is "can't tell"; the before-period and Shapley terms are secondary and never replace it. Demo: OBD deploy halves → **cant_tell** (`eval/results/demo_verdicts.md`). |
+| A11 (residual) | major | ACCEPTED | The verdict attaches the MSM curve only as "after-period Hajek-MSM: the interval first includes zero at tested Γ". |
+| A2/A4/A8 (residual wording) | major | ACCEPTED | The judge's safe rewrites are applied: an approximate-target comparison; the gate's design chronology; both row-level and hour-block intervals shown for the flagship case. |
+| A10 (residual) | major | ACCEPTED | The diagram now says "Monte-Carlo reference" and "noisy concurrent-arm reference; policy matching & balance limits disclosed". |

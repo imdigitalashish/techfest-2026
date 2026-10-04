@@ -136,11 +136,12 @@ def test_verdict_paths(sim):
     good["z_mean_w"] = 0.0
     rule = {"tau_ess": 0.05, "tau_r": 0.0, "tau_z": 3.0}
     v = verdict(sh, {"V(after,old)": good, "V(before,new)": good}, rule)
-    assert v.decision == ("worked" if sh.policy.lo > 0 else "hurt" if sh.policy.hi < 0 else "inconclusive")
+    d1 = sh.effect_after
+    assert v.decision == ("worked" if d1.lo > 0 else "hurt" if d1.hi < 0 else "inconclusive")
     bad = dict(good, ess_frac=0.001)
-    assert verdict(sh, {"V(after,old)": bad, "V(before,new)": bad}, rule).decision == "cant_tell"
+    assert verdict(sh, {"V(after,old)": bad, "V(before,new)": good}, rule).decision == "cant_tell"  # never falls back
     v1 = verdict(sh, {"V(after,old)": good, "V(before,new)": bad}, rule)
-    assert v1.diagnostics["decided_on"].startswith("Policy effect in the after period") and "not estimable" in v1.headline
+    assert v1.diagnostics["decided_on"] == "after-period contrast" and "not estimable" in v1.headline
 
 
 def test_shapley_env_interval_and_gate_guards(sim):

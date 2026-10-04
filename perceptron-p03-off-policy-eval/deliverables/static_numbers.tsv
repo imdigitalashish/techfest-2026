@@ -34,3 +34,9 @@ number	source
 28	proposed milestone: submission 28 Oct (abstract plan)
 10	proposed milestone: estimand fixes by 10 Oct (abstract plan); also counts
 2025	year (citations)
+69/100	hostile re-score of abstract v3 (reviews/2026-10-04-abstract-decomposer-gpt-6-astra.md)
+59/100	hostile score pre-fix (same file)
+3.6	memo mean (reviews/scores.json)
+3.6/5	memo mean on the 1–5 scale (reviews/scores.json)
+44	reviews/2026-10-04-code-eval-gpt-6-sol.md: "All 44/44 dynamic numbers in the abstract reproduced exactly"
+71	perceptron-p07-multi-agent-allocation/thought_node.md — hostile score 71/100

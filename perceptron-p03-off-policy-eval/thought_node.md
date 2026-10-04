@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ **RESUMED** 13:05 IST (Supervisor; batch slot freed by P1). Working to the Supervisor's definition of done (13:05).
+- **Phase:** ✅ **Definition of done met** (2026-10-04 14:33 IST). Waiting for the 12 Oct pick; the slot is freed to the Supervisor.
 - **Definition of done (Supervisor 13:05):**
   1. **Real OBD check**, with the analysis pre-registered before results: the BTS time-window slice; a drift test of the deployed BTS's logged propensities; a real before/after with real truth, in both directions.
   2. **Decomposer review fixes:** (a) a feedback/mix-shift knob; (b) the 2×2 Shapley decomposition plus the interaction term; (c) a misspecification test; (d) a drift sweep that shows where naive is right and where it is wrong.
@@ -18,7 +18,7 @@
   4. **Cross-model reviews** as child sessions: gpt-6-astra (max) as hostile judge; gpt-6-sol (max) on code/eval, including reproducing the headline numbers. Recorded in `reviews/` and `reviews/ledger.tsv`.
   5. **Final selection memo** (an honest case versus P7, P9, P1 and P4), thought node current, pushed, then "DONE — slot free".
 - **Rules in force:** child sessions only (at most 2 at a time); never `git stash` or `--autostash`; start heavy jobs only when `kern.memorystatus_level` ≥ 30, under `nice -n 10`, one at a time, pausing below 25; keep network requests small.
-- **Doing (2026-10-04 14:20 IST):** Both reviews are processed (all 23 items accepted, some partly or deferred; `reviews/2026-10-04-dispositions.md`). Abstract v3 is rendered (890 words, 0 untraced numbers). Waiting on gpt-6-astra's re-score of v3, then the final memo and DONE.
+- **Doing (2026-10-04 14:33 IST):** Nothing running. Final abstract v4: 897 words, 0 untraced numbers, `check_docs` PASS, 14 tests pass. Hostile re-score 69/100. Final memo recommends P7 over P3, narrowly.
 - **Next (after DONE; dated):**
   1. By 10 Oct: the 2×2 nuisance-correctness test for the DR mix term (A9); the OBD environment interval (C8) on the next OBD run; a paired DR + ordinary-diagnostics baseline (A12).
   2. 15 Oct: protocol freeze (estimands, gate, metrics).
@@ -87,15 +87,37 @@
 | C12 | EvalHarness | bank × seeds → metrics | obp evaluate | | v0 running | — |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-**v1 — 2026-10-04 07:35 IST** (synthetic-simulator numbers are labelled; evidence: `eval/results/`)
-- **Winnability — 4/5.** The MVP has a crisp, checkable answer: exact ground truth in our simulator, and real ground truth in OBD (BTS on-policy CTR). A rigorous team can show numbers judges cannot argue with. The theme has a single problem. That Optiver judges reward counterfactual rigour is our hypothesis (UNVERIFIED).
-- **Innovation headroom — 4/5.** The spike is a before/after Decomposer plus a Robustness Certificate (CI + MSM bounds + tipping point Γ\* for Δ). The obvious baseline only estimates V(π) with obp. Every piece has prior art (Δ-OPE, MSM, confidence sequences), but our arXiv search found no tool that attributes a policy switch this way. Agentic OPE-code optimisation is already published (GrowthHacker, Nov 2025), so we do not pitch the ratchet as novel.
-- **Feasibility — 5/5.** CPU-only (numpy, scikit-learn). Overnight, under lean mode, we built the simulator, 5 estimators, intervals, MSM bounds and the decomposer. Nothing depends on a GPU or on the 19–25 Nov exam window.
-- **Demo strength — 4/5.** A waterfall chart ("the dashboard said it failed; the season did it; the policy helped") and an interactive Γ slider. Less visually flashy than LLM or agent demos.
-- **Fit with the user's strengths — 3/5.** It leans on statistics and causal inference more than large-scale systems or frontier models. Bridges: full-scale OBD (26M rows), streaming anytime-valid monitoring, and optional evaluation of LLM-generated policies.
-- **Biggest risk:** being read as "a tutorial re-run of obp" or "a rigged simulator". Mitigation: the frozen bank includes cases where naive is right and where OPE fails (the hidden override), plus OBD real truth and a semi-synthetic OBD before/after.
-- **One-line pitch:** "Your dashboard says the new policy failed. We show the season did it, the policy actually helped, and how much hidden confounding it would take to overturn that."
+_**Final for the 12 Oct pick**, rendered from `deliverables/selection-memo.tmpl.md` + `eval/results/headline.json` by `deliverables/render.py`. Every number traces to committed results, to `reviews/scores.json`, or to another project's cited memo (`eval/check_docs.py`). Supersedes v1 (07:35)._
+
+**Scores (1–5), each with its evidence:**
+- **Winnability — 3/5.**
+  - The hostile cross-model judge (gpt-6-astra, max) scored the abstract **59/100** before fixes and **69/100** after them: "borderline, still lean no", with no blockers left (`reviews/`).
+  - Strengths a judge can verify: real data with a concurrent-arm reference, pre-registration, disclosed deviations, and all 44 abstract numbers reproduced by an independent reviewer.
+  - Weakness: the headline real-data improvement is modest, and on the flagship case the gate rightly withholds the decision.
+- **Innovation headroom — 3/5.** This is an integration, not a new estimator: Δ-OPE, Shapley shift attribution, diagnostic protocols and non-stationary OPE are prior art. The defensible additions:
+  - an auditable switch-attribution protocol that says "can't tell";
+  - the finding that the deployed Thompson-sampling policy drifted (median 16-fold) while the standard OBD protocol evaluates one static prior.
+- **Feasibility — 5/5.** Everything runs on the M5 CPU, one command per result; contract tests pass. The full OBD can be read by HTTP range requests (no 413 MB download). Nothing is gated on the user or a GPU, and the 19–25 Nov exams are kept free.
+- **Demo strength — 4/5.**
+  - A waterfall ("the dashboard said −5.6 points; the season did it; the policy added +7.5").
+  - A verdict that can say "can't tell from these logs".
+  - A Γ slider for hidden confounding.
+  - Less visual than the agent or market-simulation demos.
+- **Fit with the user's strengths — 3/5.** Statistics and causal inference more than large-scale systems or frontier models. Bridges: range-read data engineering on the 26M-row OBD, and streaming (anytime-valid) monitoring as next work.
+
+**Overall: 3.6/5** (unweighted mean of the five scores).
+
+**Honest comparison with the finished candidates** (their own final memos, read on main 4 Oct):
+- **P7** (hostile judge 71/100; fit 5) scores slightly higher and fits the user better.
+- **P1** (hostile judge 3.40/5; fit 5) and **P9** (hostile judge 3.10/5, 62/100; fit 5) fit the user better.
+- **P4** (hostile judge 2.65/5 before fixes) is weaker.
+- **P3's edge:** the closest match to its brief (MVP and both stretch goals are working), with real concurrent-arm references and a pre-registered, falsifiable evaluation.
+- **P3's weakness:** lower fit, and a nuanced real-data story. OPE fails when the new policy is greedy, so the tool often abstains.
+- **Recommendation:** **P7 over P3**, narrowly: P7's hostile score is a little higher (71 vs 69) and its fit with the user's strengths is better (5 vs 3). P3 is the credible runner-up. Pick it only if the team values real-data causal evidence over fit.
+
+**Biggest risk:** a judge reads "known parts" and "abstains often" as weak. Mitigation: lead with the real-reference evaluation and with the gate preventing confident wrong answers, then show the protocol finding.
+
+**One-line pitch:** "The dashboard said the new policy lifted clicks 29% more than the concurrent A/B showed. Our tool separates what the policy did from what the week did, and says 'can't tell' when the logs can't support an answer."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -212,3 +234,15 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Pre-registered criteria: met.
 - **Abstract v3** (890 whitespace words; check_docs 0 untraced): separate estimands, approximate-target wording, gate endpoints and abstention on the flagship case, held-out result, explicit units, integration framing (Lee 2026 and OPEN cited after opening their arXiv records), dated milestones.
 - **Re-score of v3 requested** from the same gpt-6-astra session.
+
+### 2026-10-04 14:33 IST — Re-score 69/100; abstract v4; final memo; DONE
+- **gpt-6-astra re-scored v3: 69/100** (3.45/5, up from 59). A1 and A2 are fixed, the original blockers are retired, and there are no new blockers. Two new major issues: A15 ("near-null" was a scorer-quality label) and A16 (the wrong-sign denominator included value rows).
+- **Abstract v4** applies the judge's safe rewrites (897 words, 0 untraced numbers):
+  - an approximate-target OBD comparison (4.936 vs 4.890 per 1,000);
+  - the flagship deploy case shown with row-level and hour-block intervals, and the gate withholding the primary decision;
+  - distinct-instance gate counts (5/8 answered, 4/5 hold the reference, 0/3 confident wrong signs);
+  - the gate's design chronology;
+  - holdout counts (818/1,536 answered; 771/818 vs 1,404/1,536 coverage).
+- **Verdict contract** (): one primary decision on the after-period contrast, otherwise "can't tell"; Shapley is secondary. Demo verdicts re-run: OBD deploy → cant_tell; rollback → hurt (reference inside the interval). The diagram uses "Monte-Carlo reference" and "noisy concurrent-arm reference" wording.
+- **Final selection memo:** win 3, innovation 3, feasibility 5, demo 4, fit 3; mean 3.6. **Recommendation: P7 over P3, narrowly** (P7's hostile score 71 vs 69, fit 5 vs 3); P3 is the credible runner-up. `eval/check_docs.py`: PASS.
+- **Deferred, with dates in Next:** A9 nuisance matrix; C8 OBD environment interval; A12 paired-DR baseline; A15 frozen near-zero test; held-out OBD campaigns.

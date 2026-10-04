@@ -19,8 +19,8 @@ flowchart TB
   end
   REP[Verdict: worked / hurt / can't tell from these logs<br/>waterfall · intervals · diagnostics]
   subgraph EVAL[Evaluation — every number checked against truth]
-    SIM[Simulator, exact truth<br/>drift · mix · feedback · overlap · sparse rewards · noisy propensities · hidden override · misspecification]
-    OBD[Open Bandit Dataset, real truth<br/>concurrent Random & Thompson-sampling arms<br/>pre-registered before/after re-enactments, both directions]
+    SIM[Simulator · Monte-Carlo reference<br/>drift · mix · feedback · overlap · sparse rewards · noisy propensities · hidden override · misspecification]
+    OBD[Open Bandit Dataset · noisy concurrent-arm reference<br/>A/B arms: Random & Thompson sampling<br/>pre-registered re-enactments, both directions<br/>policy matching & balance limits disclosed]
     CHK[Frozen banks · pre-registration · doc-drift check<br/>RMSE · sign · coverage · abstention · confident-wrong count]
   end
   L0 & L1 --> RM & EST
@@ -29,7 +29,7 @@ flowchart TB
   EST --> DEC & GATE & CERT
   GATE --> REP
   DEC & CERT --> REP
-  SIM -. exact counterfactuals .-> CHK
+  SIM -. Monte-Carlo references .-> CHK
   OBD -. concurrent arms .-> CHK
   REP --> CHK
 ```

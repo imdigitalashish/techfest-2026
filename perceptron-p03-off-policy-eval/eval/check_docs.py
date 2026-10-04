@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "deliverables"))
 from render import render  # noqa: E402
 
-NUM = re.compile(r"(?<![\w./])[−+-]?\d[\d,]*(?:\.\d+)?(?:/\d+)?%?")
+NUM = re.compile(r"(?<![\w./])[−+-]?\d[\d,]*(?:\.\d+)?(?:/\d[\d,]*)?%?")
 CHECKED = [ROOT / "deliverables" / "round1-abstract.md"]
 
 

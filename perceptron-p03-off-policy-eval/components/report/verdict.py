@@ -1,15 +1,14 @@
-"""C10 Report: turn a 2x2 Shapley decomposition + overlap-gate diagnostics into a decision a manager can act on.
+"""C10 Report: one primary decision target (review A3, re-score): the after-period policy contrast on observed traffic.
 
-Each off-policy cell is gated on the logs it is estimated from:
-  "V(after,old)"  (after-period logs)  -> needed for effect_after  (environment-first ordering)
-  "V(before,new)" (before-period logs) -> needed for effect_before (policy-first ordering)
-Both pass -> decide on the Shapley policy term (and report the interaction). Only one passes -> decide on that
-ordering's effect and say the interaction is not estimable. Neither -> "cant_tell".
-Decision: the term's 95% interval excludes 0 -> "worked" / "hurt"; otherwise "inconclusive".
+- The primary decision (worked / hurt / inconclusive) is taken ONLY on the after-period contrast D1, and ONLY if the
+  overlap gate passes on the after-period logs behind its off-policy cell V(after, old). Otherwise: "cant_tell".
+- The Shapley attribution (and the before-period contrast it needs) is reported as SECONDARY information when its own
+  cell V(before, new) also passes the gate. It never replaces the primary decision.
+- A sensitivity curve is attached only if it was computed for the same after-period contrast (Hajek-MSM).
 """
 from __future__ import annotations
 
-from architecture.contracts.contracts import Interval, SensitivityCurve, ShapleyDecomposition, Verdict
+from architecture.contracts.contracts import SensitivityCurve, ShapleyDecomposition, Verdict
 from components.report.gate import decide
 
 AFTER, BEFORE = "V(after,old)", "V(before,new)"
@@ -19,32 +18,25 @@ def _f(x: float, scale: float, unit: str) -> str:
     return f"{x * scale:+.2f}{unit}"
 
 
-def _decide(iv: Interval) -> str:
-    return "worked" if iv.lo > 0 else "hurt" if iv.hi < 0 else "inconclusive"
-
-
 def verdict(sh: ShapleyDecomposition, gate_diags: dict[str, dict], rule: dict, scale: float = 100.0,
             unit: str = " points", sensitivity: SensitivityCurve | None = None) -> Verdict:
     why = {c: decide(d, rule)[1] for c, d in gate_diags.items()}
     ok = {c: not r for c, r in why.items()}
-    after_ok, before_ok = ok.get(AFTER, False), ok.get(BEFORE, False)
     fmt = lambda iv: f"{_f(iv.point, scale, unit)} [{_f(iv.lo, scale, unit)}, {_f(iv.hi, scale, unit)}]"
     head = f"Dashboard moved {_f(sh.naive, scale, unit)}. "
-    if after_ok and before_ok:
-        term, label = sh.policy, "Policy (Shapley)"
-        head += (f"{label} {fmt(term)}; environment {_f(sh.env, scale, unit)}; "
-                 f"interaction {fmt(sh.interaction)}.")
-    elif after_ok or before_ok:
-        term = sh.effect_after if after_ok else sh.effect_before
-        label = "Policy effect in the after period" if after_ok else "Policy effect in the before period"
-        failed = BEFORE if after_ok else AFTER
-        head += f"{label} {fmt(term)}; interaction not estimable ({failed}: {', '.join(why[failed])})."
+    if not ok.get(AFTER, False):
+        head += f"Primary (after-period contrast): can't tell from these logs ({AFTER}: {', '.join(why.get(AFTER, ['not gated']))})."
+        if ok.get(BEFORE, False):
+            head += f" Secondary, not a decision: before-period contrast {fmt(sh.effect_before)}."
+        return Verdict(decision="cant_tell", headline=head, shapley=sh, diagnostics={"gate": gate_diags, "rule": rule})
+    d1 = sh.effect_after
+    decision = "worked" if d1.lo > 0 else "hurt" if d1.hi < 0 else "inconclusive"
+    head += f"Primary (after-period contrast): {fmt(d1)}."
+    if ok.get(BEFORE, False):
+        head += f" Secondary: Shapley policy {fmt(sh.policy)}, environment {_f(sh.env, scale, unit)}, interaction {fmt(sh.interaction)}."
     else:
-        reasons = "; ".join(f"{c}: {', '.join(r)}" for c, r in why.items() if r)
-        return Verdict(decision="cant_tell", headline=head + f"Can't tell from these logs ({reasons}).", shapley=sh,
-                       sensitivity=sensitivity, diagnostics={"gate": gate_diags, "rule": rule})
-    decision = _decide(term)
-    if sensitivity is not None and sensitivity.gamma_star is not None and decision != "inconclusive":
-        head += f" Hidden confounding of Γ = {sensitivity.gamma_star:g} would overturn it."
+        head += " Secondary Shapley attribution not estimable (" + ", ".join(why.get(BEFORE, ["not gated"])) + ")."
+    if sensitivity is not None and sensitivity.gamma_star is not None:
+        head += f" After-period Hajek-MSM: the interval first includes zero at tested Γ = {sensitivity.gamma_star:g}."
     return Verdict(decision=decision, headline=head, shapley=sh, sensitivity=sensitivity,
-                   diagnostics={"gate": gate_diags, "rule": rule, "decided_on": label})
+                   diagnostics={"gate": gate_diags, "rule": rule, "decided_on": "after-period contrast"})

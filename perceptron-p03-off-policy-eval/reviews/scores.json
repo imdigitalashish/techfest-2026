@@ -1,0 +1,18 @@
+{
+ "display": {
+  "astra_score": "59",
+  "astra_rescore": "69",
+  "memo_win": "3",
+  "memo_innov": "3",
+  "memo_mean": "3.6",
+  "memo_reco": "**P7 over P3**, narrowly: P7's hostile score is a little higher (71 vs 69) and its fit with the user's strengths is better (5 vs 3). P3 is the credible runner-up. Pick it only if the team values real-data causal evidence over fit."
+ },
+ "source": {
+  "astra_score": "reviews/2026-10-04-abstract-decomposer-gpt-6-astra.md — Verdict: 59/100 (pinned 5ab7b67)",
+  "astra_rescore": "reviews/2026-10-04-abstract-decomposer-gpt-6-astra.md — Re-score of v3: 69/100 (commit 2371208)",
+  "memo_win": "lead decision from the hostile re-score (borderline, lean no)",
+  "memo_innov": "lead decision (integration; judge rated novelty 3)",
+  "memo_mean": "mean of 3, 3, 5, 4, 3",
+  "memo_reco": "lead decision"
+ }
+}

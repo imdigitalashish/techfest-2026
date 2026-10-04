@@ -57,6 +57,7 @@ def main():
 
     def endpoints(est, se, ref, kind):
         e = {"est": est, "se": se, "ref": ref, "ref_in_ci": abs(est - ref) <= Z * se}
+        e["kind"] = kind
         e["confident_wrong_sign"] = (kind == "effect") and ((est - Z * se > 0 > ref) or (est + Z * se < 0 < ref))
         return e
 
@@ -83,17 +84,18 @@ def main():
     for src, name, key, w, r, s1, ep in cases:
         dg = diagnostics(w, r)
         answer, why = decide(dg, rule)
-        out.append(dict(source=src, case=name, unique_key=key, answer=answer, s1_nonrejection=bool(s1),
+        out.append(dict(source=src, case=name, unique_key=key, answer=answer, s1_nonrejection=bool(s1), kind=ep["kind"],
                         ref_in_dr_ci=bool(ep["ref_in_ci"]), confident_wrong_sign=bool(ep["confident_wrong_sign"]),
                         est=ep["est"], se=ep["se"], ref=ep["ref"], ess_abs=dg["ess_frac"] * dg["n"], **dg))
         rows.append(f"| {src} | {name} | {dg['ess_frac']:.4f} | {dg['ess_frac'] * dg['n']:,.0f} | {dg['z_mean_w']:+.1f} | "
                     f"{'answer' if answer else 'ABSTAIN: ' + '; '.join(why)} | {'yes' if s1 else 'NO'} | {'yes' if ep['ref_in_ci'] else 'NO'} | "
-                    f"{'YES' if ep['confident_wrong_sign'] else 'no'} |")
+                    f"{('YES' if ep['confident_wrong_sign'] else 'no') if ep['kind'] == 'effect' else 'n/a (value row)'} |")
     def summ(xs):
         ans = [x for x in xs if x["answer"]]
         abst = [x for x in xs if not x["answer"]]
         return {"listed": len(xs), "answered": len(ans), "answered_s1_nonrejection": sum(x["s1_nonrejection"] for x in ans),
                 "answered_ref_in_ci": sum(x["ref_in_dr_ci"] for x in ans), "answered_confident_wrong_sign": sum(x["confident_wrong_sign"] for x in ans),
+                "answered_effect_rows": sum(x["kind"] == "effect" for x in ans),
                 "abstained": len(abst), "abstained_s1_rejected": sum(not x["s1_nonrejection"] for x in abst),
                 "abstained_ref_in_ci": sum(x["ref_in_dr_ci"] for x in abst),
                 "s1_rejected_total": sum(not x["s1_nonrejection"] for x in xs)}
@@ -111,10 +113,10 @@ def main():
          "Three endpoints, never merged: **S1** = the pre-registered consistency test (CI of estimate − reference contains 0; a non-rejection, not proof of accuracy); "
          "**ref ∈ CI** = the reference point lies inside DR's own 95% interval; **confident wrong sign** = DR's interval excludes 0 on the opposite side of the reference.", "",
          f"**Listed rows ({Rw_['listed']}):** answered {Rw_['answered']} — S1 non-rejections {Rw_['answered_s1_nonrejection']}/{Rw_['answered']}, "
-         f"reference inside DR's CI {Rw_['answered_ref_in_ci']}/{Rw_['answered']}, confident wrong sign {Rw_['answered_confident_wrong_sign']}/{Rw_['answered']}; "
+         f"reference inside DR's CI {Rw_['answered_ref_in_ci']}/{Rw_['answered']}, confident wrong sign {Rw_['answered_confident_wrong_sign']}/{Rw_['answered_effect_rows']} answered effect rows (n/a for value rows); "
          f"abstained {Rw_['abstained']} (of which S1 rejected {Rw_['abstained_s1_rejected']}).",
          f"**Distinct evaluation instances ({U['listed']}; day pairs sharing an after-day counted once):** answered {U['answered']} — "
-         f"S1 {U['answered_s1_nonrejection']}/{U['answered']}, ref ∈ CI {U['answered_ref_in_ci']}/{U['answered']}, confident wrong sign {U['answered_confident_wrong_sign']}/{U['answered']}; "
+         f"S1 {U['answered_s1_nonrejection']}/{U['answered']}, ref ∈ CI {U['answered_ref_in_ci']}/{U['answered']}, confident wrong sign {U['answered_confident_wrong_sign']}/{U['answered_effect_rows']} answered effect instances; "
          f"abstained {U['abstained']}, covering {U['abstained_s1_rejected']} of the {U['s1_rejected_total']} S1 rejections. Instances still share observations.", "",
          "| source | case | ESS/n | ESS (absolute) | mean-weight z | gate | S1 non-rejection | ref ∈ DR CI | confident wrong sign |", "|---|---|---|---|---|---|---|---|---|"] + rows
     (RES / "gate_obd_posthoc.md").write_text("\n".join(L) + "\n")
