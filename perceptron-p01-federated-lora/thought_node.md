@@ -335,3 +335,23 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
   So any live element needs a reduced configuration, validated offline against the committed pattern.
 - Spawned child session **"P1 demo builder"** (autopilot). It has full context plus the Supervisor's suggestion ("unplug the tablet"), the memory and CPU rules, and the wording constraints from both reviews. Phase 1 is a proposal; it waits for lead approval.
+
+### 2026-10-04 20:11 IST — Lead: demo proposal approved ("Pull the plug", live)
+- **Builder's proposal:**
+  - Two federations (the starter and AnchorLoRA) train the real SmolLM2-135M side by side on CPU through the Flower Message API (in-process `LocalGrid`), with paired availability.
+  - The judge unplugs or replugs any device at any round (`kill_node` in both grids). The page shows per-domain Δ-vs-untuned bars, a "reusing last update (age k/4)" badge, and a pre-recorded no-unplug ghost.
+  - Knobs: which device and for how long, plus the seed.
+  - The page opens on the REAL committed 5-seed replay; every number carries a provenance chip.
+- **Live configuration:** the committed one except batch 1×64, eval on 8×64 tokens per domain every round, 6 rounds. Measured at 12.5–16.5 s/round for both federations, about 90 s per run, peak RSS 1.27 GB.
+  - Pilot (seed 0, tablet out rounds 2–4), loss change vs untuned at round 5: the starter's four small domains rose +0.11 to +0.14; AnchorLoRA's all fell.
+  - Validation is pre-registered: P1 (AnchorLoRA's manpages below untuned at every live eval), P2 (the starter's manpages above both untuned and AnchorLoRA at round 6), P3 (the unplug's own effect is larger for the starter). Seeds 0–4; results go to `demo/validation/`.
+- **No components/ changes; no GPU.**
+- **My amendments:**
+  - Bonferroni intervals for per-domain bars; every number from canonical keys;
+  - no claim if P3 fails;
+  - explicit labels: simulated budgets, in-process grid (not an OS-process kill), reduced config, pre-recorded ghosts;
+  - fresh work kept separate from memory reuse;
+  - wording guardrails from the reviews;
+  - headless smoke ≤ 3 min;
+  - matplotlib PNG and in-page RECORDED fallback;
+  - one validation batch at a time.
