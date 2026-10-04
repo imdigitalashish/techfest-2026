@@ -36,3 +36,25 @@
 - Recovery time is right-censored at 120 steps. Report the fraction of shocks recovered within 120 steps alongside the censored mean.
 - Effect sizes in percentage points of served fraction; win counts over 30 seeds.
 - Anything outside this list is labelled *exploratory*.
+
+---
+
+# Addendum A — pre-registration of the H1 replication `phase-v2` (written 2026-10-04 10:27 IST, before phase-v2 starts)
+
+**Why.** The gpt-6-astra review (reviews/2026-10-04-spike-phase-gpt-6-astra.md) noted that phase-v1 was exploratory (legacy planner, seeds 100–109), and that the main pre-registration above fixes L=1, P=10, so it does not confirm the H1 cells.
+
+- **Design:** (L, P) ∈ {1, 2, 4, 8} × {3, 10}; fresh seeds 200–219; 720 steps; scenario `shock`; abandonment-aware LP; highspy backend; H = 6 if L = 1 else L + 6 (same for every arm in a cell). Command: `eval/run_v2_queue.sh` step 1.
+- **Primary H1 family (Holm over the 8 cells):** endpoint = requests lost in the 120 steps after shock onset; contrast = `mpc-cusum-v1` − `mpc-ewma`; paired by seed; two-sided Wilcoxon; 95% paired-bootstrap CI.
+- **Predictions written now:**
+  - **Fewer losses** (negative difference) at (2,3), (4,3), (8,3) and (8,10).
+  - **No benefit** at (1,3), (1,10), (2,10), (4,10). Phase-v1 showed *harm* at (1,10): +8.7 lost per shock, 10/10 seeds. We predict the harm may recur; it is a known failure case to report.
+- **Secondary (Holm within family, exploratory interpretation):**
+  - served-fraction versions of the same contrast;
+  - `oracle` − `mpc-ewma` (perfect-forecast reference);
+  - `mpc-queue` − `mpc-ewma`;
+  - `mpc-myopic` − `mpc-ewma`;
+  - `mpc-ewma` − best rule (best rule chosen per cell by mean, labelled exploratory).
+- **Follow-up sensitivity (exploratory; run after phase-v2 on the same seeds):**
+  - matched-α EWMA (`mpc-ewma@alpha=0.01`, the detector arm's slow α without the detector) — separates "detector" from "slower smoothing";
+  - fixed horizon H = 14 for both arms in every cell (`@horizon=14`) — removes the horizon-grows-with-L confound across cells.
+- **"Null" wording:** without an equivalence margin we will say "no evidence of benefit", never "no effect".
