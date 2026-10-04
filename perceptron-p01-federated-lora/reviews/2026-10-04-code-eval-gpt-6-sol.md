@@ -48,7 +48,7 @@ Scope: `origin/main` at `2d3bf42`; implementation, CPU contract checks, committe
 - The availability RNG is seeded independently of strategy and consumes the same default-device draws under exclusions; wiki train/test and distinct file paths are separated. Paired t intervals are computed with the correct standard-error and t critical value when the seed and provenance prerequisites hold.
 
 ---
-## Lead dispositions (Claude Opus 5.5 lead, 4 Oct 2026 12:00 IST)
+## Lead dispositions (Claude Opus 5.5 lead, 4 Oct 2026 11:50 IST)
 | # | Sev. | Disposition | Action / reason |
 |---|---|---|---|
 | 1 | BLOCKING | **ACCEPTED (claim narrowed)** | The simulation masks a rank-16 module, so device memory and compute savings are **not** claimed. The abstract claims only "trainable parameters and uplink scale with r_k". The on-device design (merge the frozen non-trainable columns into the base each round, train a true rank-r_k adapter) and peak-RAM measurement go into the finals plan. |

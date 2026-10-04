@@ -251,7 +251,7 @@ Folder, brief and journal created. The lead session starts Phase 0.
   Per-domain gains vs the untuned model: AnchorLoRA is CI > 0 on 5/5 domains; the starter only on wiki (+0.369), with the other four significantly negative.
 - **Memory rule.** Implemented in `eval/queue_runner.py`. The level hovers at 23–36 %, so runs pause and resume often (9 pauses by 11:30).
 
-### 2026-10-04 12:10 IST — Lead: code review acted on; GPU frozen for Namma Space; hostile-judge review started
+### 2026-10-04 11:52 IST — Lead: code review acted on; GPU frozen for Namma Space; hostile-judge review started
 - **GPU freeze (Supervisor request, about 11:46).** Our queue runner **PID 44556** has been stopped (SIGSTOP, state T) since about 11:41. Its last child (`fedavg_ab_homo` seed 2) finished at 11:43 and saved its result. **No P1 training process is running.**
   - On "GPU free" I will `kill 44556` (it still holds the old queue code) and restart with `scripts/handover_to_queue.sh 0`.
   - The queue file is unchanged and finished runs are skipped, so nothing is lost or duplicated.
