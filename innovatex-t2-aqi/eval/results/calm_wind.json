@@ -1,0 +1,40 @@
+{
+ "source": "ERA5 via archive-api.open-meteo.com, 28.61N 77.21E, hourly, 2023-10-01..2026-09-30",
+ "n_hours": 26304,
+ "all": {
+  "n": 26304,
+  "share_lt_0_5": 0.0344,
+  "share_lt_1_0": 0.1355,
+  "share_lt_1_5": 0.3127,
+  "median_ms": 1.94
+ },
+ "nov_jan": {
+  "n": 6624,
+  "share_lt_0_5": 0.0402,
+  "share_lt_1_0": 0.1617,
+  "share_lt_1_5": 0.3895,
+  "median_ms": 1.69
+ },
+ "oct_feb": {
+  "n": 10896,
+  "share_lt_0_5": 0.0411,
+  "share_lt_1_0": 0.1532,
+  "share_lt_1_5": 0.3567,
+  "median_ms": 1.81
+ },
+ "mar_sep": {
+  "n": 15408,
+  "share_lt_0_5": 0.0296,
+  "share_lt_1_0": 0.1229,
+  "share_lt_1_5": 0.2815,
+  "median_ms": 2.11
+ },
+ "nov_jan_work_hours_08_20": {
+  "share_lt_0_5": 0.035,
+  "share_lt_1_0": 0.1646
+ },
+ "nov_jan_night_20_08": {
+  "share_lt_0_5": 0.0453,
+  "share_lt_1_0": 0.1588
+ }
+}

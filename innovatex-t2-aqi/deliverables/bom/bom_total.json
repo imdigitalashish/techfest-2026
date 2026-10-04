@@ -1,0 +1,27 @@
+{
+ "kit_total_inr": 60711,
+ "by_subsystem_inr": {
+  "node": 40128,
+  "wind": 14810,
+  "gateway": 3516,
+  "actuator": 2257
+ },
+ "per_node_inr": 10032,
+ "n_nodes": 4,
+ "wind_share_of_total": 0.244,
+ "out_of_stock_items_in_kit": [
+  "Relay"
+ ],
+ "not_included": [
+  "5 V buck converters",
+  "cabling, glands, connectors",
+  "masts and mounting",
+  "radiation shields",
+  "SIM + data plan",
+  "gateway power supply",
+  "installation labour",
+  "reference co-location",
+  "maintenance"
+ ],
+ "note": "Parts as listed on vendor pages, incl. GST, single-unit retail. Not an installed or lifetime cost."
+}

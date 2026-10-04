@@ -1,0 +1,21 @@
+subsystem,item,part_as_listed,qty_per_kit,unit_inr_incl_gst,vendor,stock_seen,url,verified_by_lead_ist
+node,PM sensor,"Sensirion SPS30, Particulate Matter Sensor, PM2.5, Range: 0–1,000 µg/m³",4,3599,robu.in,InStock,https://robu.in/product/sensirion-particulate-matter-sensor-0-to-1000-%c2%b5g-m3-laser-i2c-uart-calibrated-4-5-to-5-5-v-supply/,2026-10-04 15:34
+node,T/RH sensor,Micro SHT30 sensor module + adapter board,4,269,robu.in,InStock,https://robu.in/product/temperature-and-humidity-sensor-2/,2026-10-04 15:34
+node,MCU,ESP32 S3 Devkit (ESP32 S3 WROOM 1 N16R8),4,839,robu.in,InStock,https://robu.in/product/esp32-s3-devkit-esp32-s3-wroom-1-n16r8/,2026-10-04 15:34
+node,LoRa radio,"IndieSemiC ISC-SX1262-B LoRa Module (868/915 MHz listed; IN865 suitability UNVERIFIED)",4,549,robu.in,InStock,https://robu.in/product/indiesemic-isc-sx1262-b-an-advanced-lora-module-v0-1/,2026-10-04 15:34
+node,Solar panel 10 W,Loom 10-Watt Solar Panel (polycrystalline),4,949,amazon.in,In stock,https://www.amazon.in/Loom-Solar-10-Watt-Panel/dp/B07JF2B35T/,2026-10-04 15:35
+node,Battery,Pro-Range IFR 32650 12.8V 12000mAh 4S2P LiFePO4 pack,4,3359,robu.in,InStock,https://robu.in/product/pro-range-ifr-32650-lifepo4-12000mah-12-8v-4s2p-protected-battery-pack-3c/,2026-10-04 15:34
+node,Solar charger,Elejoy CN3791 12V MPPT Solar Charger Module,4,199,robu.in,InStock,https://robu.in/product/cn3791-12v-mppt-solar-charger-module/,2026-10-04 15:34
+node,Enclosure,F1 195*115*75mm IP65 ABS junction box,4,269,robu.in,InStock,https://robu.in/product/f1-19511575mm-ip65-abs-pcb-plastic-junction-box/,2026-10-04 15:34
+wind,Wind speed + direction,XS-WSDS01 Integrated Wind Speed Direction Sensor (RS485 Modbus per listing title),1,14810,amazon.in,not shown,https://www.amazon.in/XS-WSDS01-Integrated-Direction-Anemometer-XS-WSDS01-0%EF%BD%9E5V/dp/B0DMNJGY3Y/,2026-10-04 15:35
+gateway,LTE Cat-1 board,SIM A7670C 4G LTE Development Board with 4G Flex Antenna,1,1859,robu.in,InStock,https://robu.in/product/sim-a7670c-4g-lte-development-board-with-4g-flex-antenna/,2026-10-04 15:34
+gateway,MCU,ESP32 S3 Devkit (ESP32 S3 WROOM 1 N16R8),1,839,robu.in,InStock,https://robu.in/product/esp32-s3-devkit-esp32-s3-wroom-1-n16r8/,2026-10-04 15:34
+gateway,LoRa radio,IndieSemiC ISC-SX1262-B LoRa Module,1,549,robu.in,InStock,https://robu.in/product/indiesemic-isc-sx1262-b-an-advanced-lora-module-v0-1/,2026-10-04 15:34
+gateway,Enclosure,F1 195*115*75mm IP65 ABS junction box,1,269,robu.in,InStock,https://robu.in/product/f1-19511575mm-ip65-abs-pcb-plastic-junction-box/,2026-10-04 15:34
+actuator,Misting kit,"Fieldstar DIY Misting System Kit with Nozzles, Pump 12V, Pipe, Connectors (8 nozzles)",1,1999,amazon.in,In stock,https://www.amazon.in/Misting-System-Kit-Nozzles-Hydroponics/dp/B0F3DKV27D/,2026-10-04 15:35
+actuator,Flow sensor,YF-S201 Water Flow Sensor 1–30 L/min,1,219,robu.in,InStock,https://robu.in/product/yf-s201-water-flow-measurement-sensor-with-1-30liter-min-flow-rate-2/,2026-10-04 15:35
+actuator,Relay,5V 1 Channel Relay Module,1,39,robu.in,OutOfStock,https://robu.in/product/1-channel-isolated-5v-relay-module-opto-coupler-for-arduino-pic-avr-dsp-arm/,2026-10-04 15:35
+actuator_option,Solenoid valve (mains-water variant),12V DC 1/2in Electric Solenoid Water Air Valve (Normally Closed),1,269,robu.in,InStock,https://robu.in/product/dc12v-plastic-electric-12v-water-solenoid-valve-electric-solenoid-valve-magnetic-nc-water-air-inlet-flow-switch-nc-12/,2026-10-04 15:35
+alt_wind,Wind (in-stock alternative),FirstRate FST200-205 Wind Speed & Wind Direction Integrated Sensor (4–20 mA),1,21759,robu.in,InStock,https://robu.in/product/firstrate-fst200-205-wind-speed-wind-direction-integrated-sensor/,2026-10-04 15:34
+alt_solar,Solar panel (alternative),10W 12Volts 36-cell Solar Panel,1,1047,robu.in,OutOfStock,https://robu.in/product/10w-solar-panel-36-cell-solar-plate-high-quality-10-w-10-watts/,2026-10-04 15:34
+alt_pump,Pump (alternative to kit pump),550 Diaphragm Pump 12V Water Pump,1,399,robu.in,InStock,https://robu.in/product/550-diaphragm-pump-12v-water-pump-for-water-spray-fish-tank-reflux-pump/,2026-10-04 15:35
