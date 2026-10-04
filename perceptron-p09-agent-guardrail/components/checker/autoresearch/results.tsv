@@ -1,0 +1,4 @@
+timestamp_ist	commit	hypothesis	metric_dev_score	delta	kept	notes
+2026-10-04T07:01	37a7193	baseline Tier-0 (regex mentions + provenance + pre-trade contracts)	0.9167	0	baseline	dev escalation 0.167 = all 6 order_paraphrase goods; test score 1.000
+2026-10-04T07:47	(uncommitted, reverted logically)	parse quantities written in words (two hundred, a hundred, fifty, lakh)	0.9167	0.0000	no	no scalar change: intent and side still unverifiable on the paraphrase family; code carried into the next attempt
+2026-10-04T07:49	(this commit)	word numbers + exit/entry idioms in side and intent lexicons (want out of, get out of, dump, load up on, get into)	1.0000	+0.0833	yes (IN-SAMPLE)	test score 1.000 -> 1.000 (no regression), p95 2.4 ms dev; "want out of" is copied from the dev template, so this gain is in-sample until an unseen paraphrase family exists

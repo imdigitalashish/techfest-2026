@@ -62,7 +62,7 @@ def metrics(rows: list[dict]) -> dict:
     return {k: (round(v, 4) if isinstance(v, float) else v) for k, v in m.items()}
 
 
-def run(guard_name: str, split: str, limit: int | None = None, every: int = 1) -> dict:
+def run(guard_name: str, split: str, limit: int | None = None, every: int = 1, out_dir: Path = RES) -> dict:
     kb = ReferenceKB()
     guard = make(guard_name, kb)
     items = load(split)[::every]
@@ -76,12 +76,12 @@ def run(guard_name: str, split: str, limit: int | None = None, every: int = 1) -
                      "tiers": v.tiers_run, "feedback": v.feedback[:300]})
         if k % 10 == 0:
             print(f"  [{guard_name}] {k + 1}/{len(items)} {time.time() - t0:.0f}s", file=sys.stderr, flush=True)
-    commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
+    commit = subprocess.run(["git", "describe", "--always", "--dirty"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
     out = {"guard": guard_name, "split": split, "every": every, "suite": str(SUITE.relative_to(ROOT.parent)), "commit": commit,
            "wall_s": round(time.time() - t0, 1), "metrics": metrics(rows), "rows": rows}
-    RES.mkdir(exist_ok=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
     tag = f"__every{every}" if every > 1 else ""
-    (RES / f"{guard_name.replace(':', '_')}__{split}{tag}.json").write_text(json.dumps(out, indent=1))
+    (out_dir / f"{guard_name.replace(':', '_')}__{split}{tag}.json").write_text(json.dumps(out, indent=1))
     return out
 
 

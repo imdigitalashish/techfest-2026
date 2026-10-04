@@ -13,10 +13,10 @@ from typing import Any
 from architecture.contracts.models import Context, Evidence, Trust
 from components.kb.kb import ReferenceKB
 
-BUY_WORDS = r"\b(buy|buying|purchase|add|accumulate|acquire|go long|pick up)\b"
-SELL_WORDS = r"\b(sell|selling|exit|trim|offload|dispose|liquidate|reduce|book profits?)\b"
+BUY_WORDS = r"\b(buy|buying|purchase|add|accumulate|acquire|go long|pick up|load up on|get into)\b"
+SELL_WORDS = r"\b(sell|selling|exit|trim|offload|dispose|liquidate|reduce|book profits?|want out of|get out of|dump|cut my position)\b"
 TOOL_INTENT = {
-    "place_order": r"\b(buy|sell|purchase|order|add|exit|trim|accumulate|acquire|offload|liquidate|reduce)\b",
+    "place_order": r"\b(buy|sell|purchase|order|add|exit|trim|accumulate|acquire|offload|liquidate|reduce|want out of|get out of|dump|load up on|get into)\b",
     "cancel_order": r"\b(cancel|withdraw|pull|kill|revoke)\b",
     "transfer_funds": r"\b(transfer|move|shift|wire|send)\b.*\b(funds?|money|cash|₹|rs\.?|inr|lakh|crore|\d)",
     "send_client_message": r"\b(tell|inform|message|notify|email|let .* know|reply|write to|confirm to)\b",
@@ -28,6 +28,31 @@ _NUM = re.compile(
 _MULT = {"k": 1e3, "lakh": 1e5, "lakhs": 1e5, "lac": 1e5, "l": 1e5, "crore": 1e7, "cr": 1e7}
 ACCOUNT_RE = re.compile(r"\bA-\d{4}\b")
 ORDER_RE = re.compile(r"\bORD-\d+\b")
+_UNITS = {w: i for i, w in enumerate("zero one two three four five six seven eight nine ten eleven twelve thirteen "
+                                     "fourteen fifteen sixteen seventeen eighteen nineteen".split())}
+_TENS = {w: 10 * i for i, w in enumerate("_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()) if w != "_"}
+_SCALE = {"hundred": 100, "thousand": 1000, "lakh": 100000, "crore": 10000000}
+_WORDNUM = re.compile(r"\b(?:a|an|" + "|".join(list(_UNITS) + list(_TENS)) + r")(?:[\s-]+(?:and\s+)?(?:"
+                      + "|".join(list(_UNITS) + list(_TENS) + list(_SCALE)) + r"))*\b", re.I)
+
+
+def _words_value(phrase: str) -> float | None:
+    total, cur, seen = 0, 0, False
+    for w in re.split(r"[\s-]+", phrase.lower()):
+        if w in ("a", "an"):
+            cur, seen = max(cur, 1), True
+        elif w in _UNITS:
+            cur, seen = cur + _UNITS[w], True
+        elif w in _TENS:
+            cur, seen = cur + _TENS[w], True
+        elif w in _SCALE:
+            cur = max(cur, 1) * _SCALE[w]
+            if _SCALE[w] >= 1000:
+                total, cur = total + cur, 0
+        elif w != "and":
+            return None
+    v = total + cur
+    return float(v) if seen and v > 1 else None
 
 
 @dataclass
@@ -81,6 +106,12 @@ def parse_numbers(text: str, protected: list[tuple[int, int]]) -> list[NumberMen
         else:
             kind = "unknown"
         out.append(NumberMention(v, kind, (s, e), text[s:e].strip()))
+    for m in _WORDNUM.finditer(low):
+        v = _words_value(m.group(0))
+        if v is None or any(a <= m.start() < b for a, b in protected):
+            continue
+        kind = "qty" if re.search(r"\bshares?\b", low[m.end():m.end() + 30]) else "unknown"
+        out.append(NumberMention(v, kind, m.span(), text[m.start():m.end()]))
     return out
 
 

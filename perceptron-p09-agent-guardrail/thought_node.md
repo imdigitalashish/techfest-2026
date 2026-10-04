@@ -12,8 +12,16 @@
 ## Now
 - **Phase:** morning package ready (Phases 1, 2, 3-lite, 4 done; Phase 5 scaffolded). Updated 07:35 IST.
 - **Headline:** *Cite-Before-Act*: a guard in the agent's pre-tool hook that checks the provenance of every argument (user words / reference KB / trusted tool data; untrusted text is never a source of intent) plus pre-trade-style contracts (SEC 15c3-5 analogues). The unverifiable residue goes to a risk-routed fast/careful local model whose quoted evidence must verify verbatim, then to a human.
-- **Real numbers** (synthetic suite, held-out test split, 183 calls; `python -m eval.run_eval --guards none,schema,t0 --split test`): Tier 0 catch **100%** (147/147), false-block **0%** (0/36), escalation **0%**, p95 **2.06 ms**. Schema-only catch **0%**; no guard **0%**. Dev: Tier 0 catch 100%, false-block 0%, escalation 16.7% (all from the hard paraphrase family). LLM-judge (Qwen3-1.7B) baseline and fast cascade are running under heavy swap; results go to `eval/results/` when done.
-- **Doing:** lead only (Supervisor lean mode: no sub-agents). LLM-judge 1.7B on a stratified 1/3 test subsample, then cascade:fast on dev (background shell).
+- **Real numbers** (synthetic suite; reproduce commands in `eval/README.md`):
+  - **Held-out test split, 183 calls:** Tier 0 catch **100%** (147/147), false-block **0%** (0/36), escalation **0%**, p95 **2.06 ms**. Schema-only and no-guard: catch **0%**.
+  - **Same 61-call test subsample (every 3rd):**
+    - LLM-as-judge baseline (Qwen3-1.7B, full KB + policy in the prompt): catch **71.1%**, false-block **68.8%** (11/16 good blocked), score **0.024**, p50 15.9 s (under swap). Typical errors: arithmetic ("1844.45 is outside ±5% of 1850"), missed ×10 quantities and duplicates.
+    - Tier 0: catch 100%, false-block 0%, p95 0.90 ms.
+  - **Dev:**
+    - Tier 0: escalation 16.7% (the hard paraphrase family).
+    - Fast cascade (1.7B resolver): catch 100%, false-block 0%. The quote check let **0** bad calls through and turned 8 of 15 bad residue calls from escalate into block. It resolved **0 of 6** good paraphrases, so escalation stayed at 16.7%; p95 27.7 s on residue calls under swap.
+  - **Ratchet iteration 2** (word numbers + exit/entry idioms): dev score 0.917 → **1.000**, test unchanged. **In-sample** (see `components/checker/autoresearch/results.tsv`).
+  - **Not run tonight:** the 8B model (memory pressure).
 - **Next (ordered):** (1) commit LLM baseline numbers + update abstract/memo; (2) τ-bench historical-trajectory replay (real model errors; MIT; ~40 MB); (3) LLM-paraphrased test family; (4) live LangGraph agent + interceptor + self-repair demo; (5) ratchet loop on the mention parser/resolver (`components/checker/autoresearch/`); (6) independent adversarial review of ADR 001 when sub-agents are allowed again; (7) research gaps: AgentHarm, Agent-SafetyBench, BFCL, RTS 6, the Knight Capital order.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section of the abstract (placeholders now).
 - **Risks:** (1) synthetic-suite optimism, since the same author wrote templates and rules → τ-bench replay + paraphrase family; (2) paraphrase brittleness of regex mention parsing → LLM resolver, escalation rate tracked; (3) local LLM latency/memory on a shared Mac (8B not measured tonight); (4) close 2026 work (ActGov, ContrAgent, closed-world resolution) → precise novelty claim (argument-value provenance, three-way verdict, verified-quote residue resolution, frontier evaluation).
@@ -91,6 +99,16 @@ _First version 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
 - **Overall: 4.6/5.**
 
 ## Log
+### 2026-10-04 07:57 IST — LLM baselines, cascade, first ratchet loop
+- **LLM-as-judge (Qwen3-1.7B)**, 61-call test subsample: catch 71.1%, false-block 68.8%, score 0.024. Tier 0 on the same calls: 100% / 0%. The judge fails on arithmetic and state, which is the strongest argument for deterministic numeric checks first.
+- **Fast cascade on dev:**
+  - Quote verification let 0 bad calls through and upgraded 8 of 15 residue escalations to evidence-backed blocks.
+  - The 1.7B resolver resolved 0 of 6 good paraphrases (escalation unchanged at 16.7%).
+  - Lesson: a small model can be trusted to *contradict* with a quote but rarely to *support* a paraphrase. Try the 8B model and an NLI second gate when the machine is idle.
+- **Ratchet (components/checker/autoresearch/):** frozen `eval.py`, `program.md`, `results.tsv`.
+  - Iteration 1 (number words): no scalar change, so not kept on its own.
+  - Iteration 2 (word numbers + exit/entry idioms): dev 0.917 → 1.000, test unchanged. Kept, but flagged IN-SAMPLE, because "want out of" is copied from a dev template. An unseen paraphrase family is needed before any claim.
+
 ### 2026-10-04 07:35 IST — Morning package written (lean mode)
 - **Research.** 9 more agents launched at ~03:00; 6 died on 408s. Survivors wrote `notes/verifier-models.md`, `notes/social-and-incidents.md`, `notes/routing-control-cascades.md` and partial `notes/companies-*.md` + `notes/tool-call-hallucination.md`. Following the Supervisor's 05:51 lean-mode order, the lead captured 27 arXiv abstracts verbatim (`notes/arxiv-abstracts.md`), including 11 papers from Jul–Sep 2026 found by date-sorted arXiv search. Closest: closed-world resolution 2609.19425, ContrAgent 2609.18128, ActGov 2609.24446, "What Can Be Enforced?" 2607.22868, "Stale Does Not Mean Unsafe" 2609.29522. The lead also extracted SEC 15c3-5(c) verbatim (`notes/pretrade-risk-controls.md`) and wrote `research/landscape.md`.
 - **Architecture.** `architecture/components.md` (14 components, contracts, isolated metrics, mermaid); pydantic contracts plus exported JSON Schemas; ADR 001 (six hats, thesis/antithesis/synthesis; the antithesis was written by the lead because no independent agent was allowed; redo it).
