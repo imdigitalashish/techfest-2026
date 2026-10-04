@@ -1,0 +1,4 @@
+# Optional: only for demo/capture_fallback.py and the headless step of demo/smoke.sh (the demo itself needs nothing).
+# python3 -m pip install -r demo/requirements-demo.txt && python3 -m playwright install chromium
+playwright>=1.48
+pillow>=10.0

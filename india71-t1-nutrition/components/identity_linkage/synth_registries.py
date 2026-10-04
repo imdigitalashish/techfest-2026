@@ -234,8 +234,14 @@ def generate_benchmark(n: int = 5000, seed: int = 2026, shared_id_rate: float = 
     return pd.DataFrame(poshan_rows), pd.DataFrame(rch_rows), truth
 
 
-FEMALE_FIRST = [x for x in dict.fromkeys(FIRST_NAMES) if x.lower().endswith(("a", "i", "ya", "ee"))]
+FEMALE_NAMES_OTHER_ENDINGS = {"Yasmin", "Noor", "Rukhsar", "Shabnam", "Parveen", "Hetal", "Kinjal", "Foram", "Rukhsar"}
+MALE_NAMES_FEMININE_ENDINGS = {"Krishna", "Aditya", "Shaurya", "Rudra", "Sai", "Ali", "Mani", "Bala", "Muthu", "Saravanan"}
+FEMALE_FIRST = [x for x in dict.fromkeys(FIRST_NAMES)
+                if (x.lower().endswith(("a", "i", "ya", "ee")) and x not in MALE_NAMES_FEMININE_ENDINGS)
+                or x in FEMALE_NAMES_OTHER_ENDINGS]
 MALE_FIRST = [x for x in dict.fromkeys(FIRST_NAMES) if x not in set(FEMALE_FIRST)]
+COHORT_MOTHERS = FEMALE_FIRST + [x for x in MOTHER_NAMES[len(FIRST_NAMES):]]
+COHORT_FATHERS = MALE_FIRST + [x for x in FATHER_NAMES[len(FIRST_NAMES):]]
 
 
 def identities_for_cohort(children: pd.DataFrame, seed: int = 2026, shared_id_rate: float = 0.35,
@@ -261,7 +267,7 @@ def identities_for_cohort(children: pd.DataFrame, seed: int = 2026, shared_id_ra
     for i, r in enumerate(children.sort_values("child_key").itertuples(index=False)):
         sex = Sex.FEMALE if r.sex == "F" else Sex.MALE
         child = rng.choice(FEMALE_FIRST if sex is Sex.FEMALE else MALE_FIRST)
-        mother, father = rng.choice(MOTHER_NAMES), rng.choice(FATHER_NAMES)
+        mother, father = rng.choice(COHORT_MOTHERS), rng.choice(COHORT_FATHERS)
         village = rng.choice(villages[r.awc_code])
         pt_id, rch_id, uwin_id = f"PT{seed}{i:06d}", f"RCH{seed}{i:06d}", f"UW{seed}{i:06d}"
         in_health = rng.random() < p_health
