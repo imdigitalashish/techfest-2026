@@ -10,26 +10,32 @@
 - _(none)_
 
 ## Now
-- **Phase:** finishing (2026-10-04 19:22 IST). Everything except the demo-review fixes is done, verified and pushed.
-  - The gpt-6-astra demo review (§11.7) is triaged (6/6 accepted).
-  - The [P2 demo builder](ghapp://sessions/931e0d5e-6f6f-4cc3-ac7a-2f28c39c2b5c) is applying the fixes now (T2 caveat at every budget, "logical context state" wording, layout at ~1200 px, a replay-only 3-minute route, refreshed fallback).
-  - Then: lead re-verifies `smoke.sh`, then "DEMO DONE" and "DONE — slot free". Both reviewer sessions are archived.
-- **Delivered:**
-  - **Measured results** ([eval/RESULTS.md](eval/RESULTS.md)): pre-registered T1/T2/S4/T3 plus 5 amendments, exploratory E1–E6, and identity checks.
-  - **Final Round-1 abstract** (884–891 words, every number rendered; [deliverables/round1-abstract.md](deliverables/round1-abstract.md)) and diagram.
-  - **Selection memo v2** (4.2/5 by pre-fixed rules; [deliverables/selection-memo.md](deliverables/selection-memo.md)).
-  - **Demo** ([demo/](demo/)): replay by default, `--live` opt-in, `SCRIPT.md`, `fallback/`, `smoke.sh`. Verified from a clean clone: smoke PASS in 408 s, live engine 20/20 rows identical.
-  - **Reviews:**
-    - gpt-6-sol code/eval/reproduction: 12/12 accepted; 320/320 rows bit-identical.
-    - gpt-6-astra spike: 12/12 accepted.
-    - gpt-6-astra abstract: 70/100, 7/7 accepted.
-  - **VM** `p02-kv-1`: **deallocated** (disk kept for the finals; delete with `eval/azure/run_on_azure.sh delete`).
+- **Phase:** ✅ **DONE** (2026-10-04 19:50 IST). The Supervisor's definition of done (14:36 + 17:28) is met. Slot freed. Idle until the Supervisor or the user resumes P2.
+- **Delivered** (all on `main`; index: [README.md](README.md)):
+  - **Measured results** ([eval/RESULTS.md](eval/RESULTS.md)):
+    - pre-registered T1/T2/S4/T3 with 5 dated amendments, each committed before the outcomes it governs;
+    - exploratory E1–E6;
+    - identity checks;
+    - an Azure reproduction (320/320 rows bit-identical).
+  - **Final Round-1 abstract**, rendered from results with a drift check: [deliverables/round1-abstract.md](deliverables/round1-abstract.md). Plus the diagram.
+  - **Selection memo v2**, 4.2/5 by pre-fixed rules: [deliverables/selection-memo.md](deliverables/selection-memo.md).
+  - **Demo:** [demo/](demo/), replay by default, `--live` opt-in. Lead-verified twice from a clean clone; final `4066d32` passes `smoke.sh` in 281 s, live 20/20 rows.
+  - **Reviews** (all recorded in [reviews/ledger.tsv](reviews/ledger.tsv)):
+    - gpt-6-sol code/eval/reproduction: 12/12 accepted;
+    - gpt-6-astra spike: 12/12 accepted;
+    - gpt-6-astra abstract: 70/100, 7/7 accepted;
+    - gpt-6-astra demo: 6/6 accepted and fixed.
+  - **Housekeeping:** VM `p02-kv-1` deallocated (disk kept for the finals; `eval/azure/run_on_azure.sh delete` removes it). All child sessions archived.
 - **Needs from user:**
   1. Choose P1 or P2 for Perceptron (only one is allowed); register by 15 Oct.
-  2. Teammates' names and skills. The abstract's team line is a placeholder; the astra review scored team fit 2/5.
+  2. Teammates' names and skills. The abstract's team line is a placeholder; the hostile judge scored team fit 2/5.
+- **Next, if P2 is chosen** (finals plan, ADR 001 v3):
+  - precision-first recall, confirmed on fresh seeds with a larger confirmation set;
+  - KVzip baseline; a block-matched scorer control; a common fp16 prefill for the presses;
+  - multi-turn chat; 3B model; GPU latency; MLX port.
 - **Risks:**
   1. Synthetic needles, n=12 per split.
-  2. Not near-lossless at 25%; the precision-first fix is exploratory only.
+  2. Not near-lossless at 25%.
   3. CPU-only timings; the prefill is not memory-bounded.
   4. Novelty is a narrow combination.
 
@@ -254,4 +260,9 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **gpt-6-astra phase 2** (abstract, 70/100): 7 items accepted. Title, post-prefill-state wording, T2 led by E6, chronology wording, grid coverage, PyTorch demo, causal wording.
 - **gpt-6-sol final:** 320/320 rows bit-identical on the VM; 790/790 fields; primary and S7 confirmed. 4 new items accepted: S2 isn't scorer-isolating, T2 truncation, kvpress prefill precision, seed guard.
 - **VM** deallocated at about 19:00 after the reproduction. sol session archived. Temporary clean clone removed.
+
+### 2026-10-04 19:50 IST: DEMO DONE and DONE
+- **Demo-review fixes** (`4066d32`, builder): T2 shows only the E6 caveat at every budget; "logical context state" wording; a compact Full / RoD / best-baseline row; layout and accessibility; a replay-only 3-minute route; a state checker (528 states) in smoke; refreshed fallback.
+- **Lead clean-clone verification of `4066d32`:** `smoke.sh` PASS in 281 s. Replay = committed rows and RESULTS.md, no CDN, page states OK, live compress 44 s, ask 46 s, knob OK, 20/20 committed rows reproduced, unload frees the model. Temporary clone removed; no demo server left running.
+- **Sessions:** the builder and astra are archived (sol earlier). Messages "DEMO DONE" and "DONE — slot free" sent to the Supervisor.
 
