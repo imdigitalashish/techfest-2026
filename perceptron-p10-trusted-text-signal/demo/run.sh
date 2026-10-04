@@ -18,9 +18,13 @@ if ! find_python; then
   if [ -n "$BARE" ]; then
     "$BARE" -m http.server "$PORT" --bind 127.0.0.1 --directory "$DEMO" > /dev/null 2>&1 &
     GAL=$!
-    for _ in $(seq 1 50); do curl -sf -o /dev/null "${URL}static/setup.html" && break; sleep 0.1; done
-    echo "[demo] recorded fallback gallery up in $(perl -e "printf '%.1f', $(now) - $T0") s: ${URL}static/setup.html"
-    open_url "${URL}static/setup.html"
+    for _ in $(seq 1 300); do curl -sf -o /dev/null "${URL}static/setup.html" && break; sleep 0.1; done
+    if curl -sf -o /dev/null "${URL}static/setup.html"; then
+      echo "[demo] recorded fallback gallery up in $(perl -e "printf '%.1f', $(now) - $T0") s: ${URL}static/setup.html"
+      open_url "${URL}static/setup.html"
+    else
+      echo "[demo] recorded gallery did not start; screenshots are in $DEMO/fallback/"
+    fi
   fi
   bash "$DEMO/setup.sh"
   find_python

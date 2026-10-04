@@ -4,6 +4,7 @@ Captured with the Playwright browser on 4 Oct 2026 (re-captured after the gpt-6-
 
 | File | State |
 |---|---|
+| `00-setup-gallery.png` | What `run.sh` shows within 1 s on a fresh clone while the one-time setup runs: these screenshots, labelled RECORDED · NOT LIVE; it switches to the live page by itself |
 | `01-landing.png` | D · 2016-03-28 (selected, 17 real posts), no injection; both pills green (MiniLM scorer, live ACI = committed) |
 | `02-plain-broken.png` | 1 committed-template pump post from a fresh bot (sentiment +0.952, trust 0.101): plain CQR broken, certified GUARANTEED; edge zoom shows the 0.14 pp edge move against a return 0.027 pp inside it |
 | `03-beyond-budget.png` | 6 copies against k = 3: certified badge turns grey (NO GUARANTEE) |

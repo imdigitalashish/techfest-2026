@@ -10,10 +10,9 @@ bash perceptron-p10-trusted-text-signal/demo/smoke.sh   # headless assertions (~
 
 - **Fresh clone, offline, CPU only.** No StockNet fetch is needed: the committed 5.6 MB `bundle/` holds the cal+test feature rows, per-post sentiment/trust scores, the three LightGBM models as text, the sentiment head as JSON, and the showcased days.
 - **Setup (`setup.sh`).** Uses `P10_PYTHON`, else the project `.venv`, else creates `demo/.venv` with `uv` from `requirements.txt` (offline wheel cache first), then pays macOS's one-time first-load scan of the new native libraries. If you skip it, `run.sh` runs it for you, and meanwhile the browser shows the clearly labelled **RECORDED** fallback screenshots (`static/setup.html`, up in about 1 s), switching to the live page by itself.
-- **Timing on this M5 Mac, CPU, measured from a fresh clone.**
-  - One-time setup: 106 s, of which about 15 s is the `uv` install; the rest is the macOS first-load scan.
-  - First run after setup: live first visual in 14.8 s.
-  - Later runs: 3.9 s (6.1 s with the project venv). The MiniLM scorer is ready about 4 s after that.
+- **Timing on this M5 Mac, CPU, measured from fresh clones.**
+  - `run.sh` without setup: the RECORDED gallery is up in 0.8 s. One-time setup takes 106–134 s: about 15 s for the `uv` install, the rest the macOS first-load scan. The page then switches to live by itself; live first visual 9.5–18.7 s after setup.
+  - With `setup.sh` already run: live first visual in 3.9 s (6.1 s with the project venv). The MiniLM scorer is ready about 4 s after that.
 - **Scorer.** The live scorer needs `sentence-transformers/all-MiniLM-L6-v2` in the Hugging Face cache (about 90 MB; one-time `hf download sentence-transformers/all-MiniLM-L6-v2`). Without it the page uses VADER and says **FALLBACK** on screen.
 - **Shared-Mac guards.** Everything runs under `nice -n 10` and waits while `kern.memorystatus_level` < 30. The memory guard runs before any native library loads. `P10_PORT` and `P10_NO_OPEN=1` are honoured.
 
