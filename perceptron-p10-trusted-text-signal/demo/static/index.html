@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Break the band — Perceptron P10</title>
+<link rel="icon" href="data:,">
+<style>
+:root{
+  --bg:#111315; --panel:#171a1d; --panel2:#1d2125; --line:#2b3035; --line2:#3a4046;
+  --text:#ebe8e2; --muted:#a6abaf; --faint:#7b8187;
+  --cert:#45c486; --cert-bg:rgba(69,196,134,.16); --broken:#ff6b5e; --broken-bg:rgba(255,107,94,.16);
+  --inj:#f2b544; --inj-bg:rgba(242,181,68,.14); --none:#8a9096; --none-bg:rgba(138,144,150,.14);
+  --focus:#9cc8ff;
+  --r:8px; --fs:15px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:var(--fs)/1.45 ui-sans-serif,-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.num{font-variant-numeric:tabular-nums}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+a{color:var(--focus)}
+header.top{display:flex;align-items:center;gap:20px;padding:14px 24px;border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:5}
+header.top h1{font-size:22px;margin:0;letter-spacing:-.01em;font-weight:700}
+header.top .sub{color:var(--muted);font-size:14px}
+header.top .spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line2);font-size:13px;color:var(--muted);white-space:nowrap}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--none)}
+.pill.ok .dot{background:var(--cert)} .pill.warn{border-color:var(--inj);color:var(--inj)} .pill.warn .dot{background:var(--inj)}
+main{display:grid;grid-template-columns:400px 1fr;gap:20px;padding:20px 24px 140px;max-width:1680px;margin:0 auto}
+@media (max-width:1100px){main{grid-template-columns:1fr}}
+section.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+section.panel + section.panel{margin-top:16px}
+h2{font-size:16px;margin:0 0 10px;font-weight:650;letter-spacing:-.005em}
+h3{font-size:14px;margin:14px 0 6px;font-weight:600;color:var(--muted)}
+p{margin:6px 0}
+.muted{color:var(--muted)} .faint{color:var(--faint)} .small{font-size:13px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--line2);background:var(--panel2);border-radius:6px;padding:7px 12px;cursor:pointer;transition:background .15s,border-color .15s}
+.btn:hover:not(:disabled){border-color:#56606a;background:#242a2f}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.primary{background:var(--text);color:#141619;border-color:var(--text);font-weight:600}
+.btn.primary:hover:not(:disabled){background:#fff}
+.btn.inj{border-color:var(--inj);color:var(--inj)}
+.btn.inj:hover:not(:disabled){background:var(--inj-bg)}
+.days{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.days button{width:100%;text-align:left;border:1px solid transparent;background:transparent;border-radius:6px;padding:7px 9px;cursor:pointer;display:grid;grid-template-columns:54px 88px 1fr;gap:8px;align-items:baseline}
+.days button:hover{background:var(--panel2)}
+.days button[aria-pressed=true]{border-color:var(--line2);background:var(--panel2)}
+.days .tk{font-weight:650}
+.days .meta{color:var(--muted);font-size:13px}
+textarea{width:100%;min-height:68px;resize:vertical;background:var(--bg);border:1px solid var(--line2);border-radius:6px;padding:8px 10px}
+label.f{display:grid;grid-template-columns:120px 1fr 64px;gap:8px;align-items:center;font-size:14px;margin:6px 0}
+label.f output{text-align:right;color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--inj)}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;margin:6px 0}
+.trustline{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;padding-top:8px;border-top:1px dashed var(--line2)}
+.big{font-size:20px;font-weight:650}
+.posts{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.post{border:1px solid var(--inj);background:var(--inj-bg);border-radius:6px;padding:8px 10px}
+.post .tag{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--inj)}
+.post .txt{margin:4px 0;word-break:break-word}
+.post .ctl{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.post .ctl input[type=range]{flex:1}
+.post .x{border:none;background:none;color:var(--muted);cursor:pointer;padding:2px 6px}
+.budget{display:flex;align-items:center;gap:10px;margin-top:6px}
+.budget .k{font-size:28px;font-weight:700;min-width:28px;text-align:center}
+.stepper{display:flex;gap:4px}
+.stepper button{width:34px;height:34px}
+.count{font-size:14px}
+.count.over{color:var(--inj)}
+.stage-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.stage-head .day{font-size:24px;font-weight:700;letter-spacing:-.01em}
+.sel{display:inline-block;font-size:13px;padding:3px 8px;border-radius:4px;background:var(--panel2);border:1px solid var(--line2);color:var(--muted)}
+.verdicts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 4px}
+@media (max-width:800px){.verdicts{grid-template-columns:1fr}}
+.verdict{border-radius:6px;padding:10px 12px;border:1px solid var(--line2);transition:background .2s,border-color .2s}
+.verdict .h{font-weight:700;font-size:16px}
+.verdict.bad{border-color:var(--broken);background:var(--broken-bg)} .verdict.bad .h{color:var(--broken)}
+.verdict.good{border-color:var(--cert);background:var(--cert-bg)} .verdict.good .h{color:var(--cert)}
+.verdict.none{border-color:var(--none);background:var(--none-bg)} .verdict.none .h{color:#c4c8cc}
+.badge{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.07em;padding:3px 8px;border-radius:4px;vertical-align:2px;margin-left:6px}
+.badge.g{background:var(--cert);color:#0d1f15} .badge.n{background:var(--none);color:#15181a}
+svg text{fill:var(--text);font-size:13px}
+svg .lbl{fill:var(--muted);font-size:12.5px}
+.chartwrap{position:relative}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:1300px){.grid2{grid-template-columns:1fr}}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:13px}
+td.r,th.r{text-align:right}
+.ok{color:var(--cert)} .bad{color:var(--broken)} .warn{color:var(--inj)}
+.chip{display:inline-block;padding:2px 7px;border-radius:4px;background:var(--panel2);border:1px solid var(--line2);font-size:12.5px;margin:2px 4px 2px 0}
+.chip.ok{border-color:var(--cert);color:var(--cert)}
+.real{max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:6px;margin-top:8px}
+.real li{list-style:none;padding:6px 10px;border-bottom:1px solid var(--line);font-size:13.5px;display:grid;grid-template-columns:52px 1fr;gap:8px}
+.real ul{margin:0;padding:0}
+.s{font-weight:650}
+.s.pos{color:#7fd6a8} .s.neg{color:#ff958b} .s.neu{color:var(--muted)}
+.counter{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.counter .c{border:1px solid var(--line2);border-radius:6px;padding:10px 12px}
+.counter .v{font-size:30px;font-weight:750;line-height:1.1}
+.skel{color:transparent!important;background:linear-gradient(90deg,var(--panel2),#252a2f,var(--panel2));background-size:200% 100%;animation:sh 1.2s linear infinite;border-radius:4px}
+@keyframes sh{to{background-position:-200% 0}}
+.err{color:var(--broken);font-size:13.5px}
+footer.honest{position:fixed;left:0;right:0;bottom:0;background:#0c0d0f;border-top:1px solid var(--line2);padding:10px 24px;z-index:6}
+footer.honest .in{max-width:1680px;margin:0 auto;display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr;gap:18px;font-size:13px;color:var(--muted);align-items:start}
+footer.honest b{color:var(--text);font-weight:650}
+footer.honest .lead{font-weight:750;color:var(--text);font-size:14px;max-width:190px}
+@media (max-width:1100px){footer.honest{position:static}footer.honest .in{grid-template-columns:1fr}main{padding-bottom:20px}}
+details summary{cursor:pointer;color:var(--muted);font-size:13.5px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:4px}
+.legend i{display:inline-block;width:16px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Break the band</h1>
+    <div class="sub">Perceptron P10 · you are the manipulator. Write fake posts, inject them into a real stock-day, and try to make the certified interval fail.</div>
+  </div>
+  <div class="spacer"></div>
+  <span class="pill" id="scorerPill"><span class="dot"></span><span id="scorerTxt">scorer warming up…</span></span>
+  <span class="pill" id="aciPill"><span class="dot"></span><span id="aciTxt">live ACI …</span></span>
+</header>
+
+<main>
+  <div>
+    <section class="panel" aria-labelledby="h-day">
+      <h2 id="h-day">1 · Pick a stock-day</h2>
+      <p class="small muted" id="selRule">Loading…</p>
+      <ul class="days" id="dayList"></ul>
+      <div class="row" style="margin-top:8px">
+        <button class="btn" id="randBtn">Random stock-day</button>
+        <span class="small faint">uniform over all <span id="nTest">…</span> test stock-days</span>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-post">
+      <h2 id="h-post">2 · Write a fake post</h2>
+      <label for="postText" class="small muted">Post text (scored live by the deployed text scorer)</label>
+      <textarea id="postText" maxlength="280">$XYZ to the moon!!! strong buy, massive breakout, calls printing #bullish</textarea>
+      <div class="row small" style="margin:4px 0 8px">
+        <button class="btn" data-preset="bull">Bull pump (committed template)</button>
+        <button class="btn" data-preset="bear">Bear raid</button>
+      </div>
+      <h3>Fake account (sets the post's trust)</h3>
+      <label class="f">Followers <input type="range" id="fol" min="0" max="6" step="0.01" value="0"><output id="folO" class="num">0</output></label>
+      <label class="f">Account age <input type="range" id="age" min="0" max="1825" step="1" value="1"><output id="ageO" class="num">1 d</output></label>
+      <label class="f">Cashtags in post <input type="range" id="tags" min="1" max="6" step="1" value="1"><output id="tagsO" class="num">1</output></label>
+      <div class="chk"><input type="checkbox" id="ver"><label for="ver">Verified account</label></div>
+      <div class="row small"><button class="btn" data-acct="bot">Fresh bot</button><button class="btn" data-acct="aged">Bought aged, verified account</button></div>
+      <div class="trustline"><span class="muted small">trust = <code>trust_of(followers, age, verified, cashtags)</code></span><span class="big num" id="trustV">…</span></div>
+      <div class="row" style="margin-top:10px">
+        <label class="small muted" for="copies0">Copies</label>
+        <input type="range" id="copies0" min="1" max="10" value="3" style="flex:1;accent-color:var(--inj)"><output id="copies0O" class="num">3</output>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn inj" id="injectBtn" disabled>Score &amp; inject</button>
+        <span class="small muted" id="scoreMsg"></span>
+      </div>
+      <ul class="posts" id="posts"></ul>
+    </section>
+
+    <section class="panel" aria-labelledby="h-k">
+      <h2 id="h-k">3 · Defender's budget k</h2>
+      <p class="small muted">The certified band is built to survive any <b>k</b> injected posts. The defender sees only the posts as they arrive and never learns which ones are fake.</p>
+      <div class="budget">
+        <div class="stepper"><button class="btn" id="kDown" aria-label="decrease k">−</button><button class="btn" id="kUp" aria-label="increase k">+</button></div>
+        <div class="k num" id="kV">3</div>
+        <div class="count num" id="countV"></div>
+      </div>
+      <p class="small faint" id="kCost"></p>
+    </section>
+  </div>
+
+  <div>
+    <section class="panel" aria-labelledby="h-stage">
+      <div class="stage-head">
+        <div>
+          <div class="day" id="h-stage">…</div>
+          <div class="small muted" id="dayMeta"></div>
+        </div>
+        <div style="text-align:right;max-width:520px"><span class="sel" id="selTag"></span></div>
+      </div>
+      <div class="verdicts" aria-live="polite">
+        <div class="verdict none" id="vPlain"><div class="h">Plain CQR</div><div class="small" id="vPlainT"></div></div>
+        <div class="verdict none" id="vCert"><div class="h">Certified band</div><div class="small" id="vCertT"></div></div>
+      </div>
+      <div class="chartwrap"><svg id="chart" viewBox="0 0 960 212" width="100%" role="img" aria-label="intervals on the return axis"></svg></div>
+      <div class="legend">
+        <span><i style="border:1.5px dashed #9aa1a7"></i>no-injection plain interval</span>
+        <span><i style="background:#cfd3d6"></i>plain CQR after your posts</span>
+        <span><i style="background:var(--cert)"></i>certified band (k)</span>
+        <span><i style="background:var(--text);width:3px"></i>realised next-day return</span>
+      </div>
+      <h3>Edge zoom: where the realised return meets the interval edge</h3>
+      <svg id="zoom" viewBox="0 0 960 152" width="100%" role="img" aria-label="zoom on the interval edge"></svg>
+      <p class="small muted" id="zoomTxt"></p>
+      <details id="realBox"><summary id="realSum">Real posts on this day</summary><div class="real"><ul id="realList"></ul></div></details>
+    </section>
+
+    <div class="grid2" style="margin-top:16px">
+      <section class="panel" aria-labelledby="h-why">
+        <h2 id="h-why">Why it can't break: the deletion box</h2>
+        <p class="small muted">Deleting any ≤ k of the posts we see (which must include all the fakes) keeps each text feature inside its band. Every tree is bounded over the band, so the certified band contains whatever the clean posts would have produced.</p>
+        <svg id="box" viewBox="0 0 560 230" width="100%" role="img" aria-label="deletion box per feature"></svg>
+        <div class="legend"><span><i style="background:rgba(69,196,134,.35)"></i>box for k</span><span><i style="border:2px solid var(--text);border-radius:50%;width:10px;height:10px"></i>clean value</span><span><i style="background:var(--inj);border-radius:50%;width:10px;height:10px"></i>after your posts</span></div>
+      </section>
+      <section class="panel" aria-labelledby="h-flip">
+        <h2 id="h-flip">Which posts could flip this day?</h2>
+        <p class="small muted">The committed grid of tested attacks with ≤ k posts (sentiment −1…+1, trust 0.05…1, mixed signs), each injected into this day's real posts.</p>
+        <div id="flips"></div>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="h-red" style="margin-top:16px">
+      <div class="row" style="justify-content:space-between">
+        <h2 id="h-red" style="margin:0">Let the machine attack it: 2,000 random attacks on this day</h2>
+        <button class="btn primary" id="redBtn">Run red-team</button>
+      </div>
+      <p class="small muted">Random sentiment and trust, half of them at the extremes. One set stays within budget (1…k posts); one goes beyond it (k+1…k+5 posts). This is a sanity check; the proof is the box argument (<code>research/components/robust_conformal.md</code>).</p>
+      <div id="red"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-pop" style="margin-top:16px">
+      <div class="row" style="justify-content:space-between">
+        <h2 id="h-pop" style="margin:0">Replay your attack on every test stock-day</h2>
+        <button class="btn primary" id="popBtn" disabled>Replay on all <span id="nTest2">…</span></button>
+      </div>
+      <p class="small muted">Inject your posts (with their copies) into every stock-day in Jul 2015 – Mar 2016, then recompute everything with the committed code. This is the population rate to set beside the selected day.</p>
+      <div id="pop"></div>
+      <h3>Rolling coverage: ACI over the 189 test days (20-day window)</h3>
+      <svg id="meter" viewBox="0 0 960 220" width="100%" role="img" aria-label="rolling ACI coverage"></svg>
+      <p class="small muted" id="meterTxt"></p>
+    </section>
+  </div>
+</main>
+
+<footer class="honest" aria-label="what this demo does and does not claim">
+  <div class="in">
+    <div class="lead">The product is the guarantee under attack, not alpha.</div>
+    <div id="hon1"></div><div id="hon2"></div><div id="hon3"></div><div id="hon4"></div>
+  </div>
+</footer>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const S = {meta:null, day:null, k:3, posts:[], attack:null, flips:null, shown:null, seed:1, scorer:null, nextId:1};
+const fmt = (x,d=2) => (x>=0?"+":"") + x.toFixed(d);
+const pct = (x,d=1) => (100*x).toFixed(d) + "%";
+const pp = (x,d=2) => x.toFixed(d) + " pp";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtInt = n => n.toLocaleString("en-US");
+
+async function api(path, body){
+  const r = await fetch(path, body===undefined ? {} : {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  const j = await r.json().catch(()=>({error:"bad response"}));
+  if(!r.ok) throw new Error(j.error || ("HTTP " + r.status));
+  return j;
+}
+
+/* ---------- boot ---------- */
+async function boot(){
+  for(;;){
+    try{ const h = await api("/api/health"); setScorer(h.scorer); if(h.engine_ready) break; }catch(e){}
+    await new Promise(r=>setTimeout(r,400));
+  }
+  S.meta = await api("/api/meta");
+  renderMeta();
+  const first = S.meta.showcase_days.find(d=>d.kind==="busy" && d.min_injected_to_flip===1) || S.meta.showcase_days[0];
+  await loadDay({ticker:first.ticker, date:first.date});
+  updateTrust();
+  pollScorer();
+}
+async function pollScorer(){
+  while(!(S.scorer && S.scorer.ready)){
+    try{ setScorer((await api("/api/health")).scorer); }catch(e){}
+    await new Promise(r=>setTimeout(r,800));
+  }
+}
+function setScorer(sc){
+  S.scorer = sc;
+  const p = $("scorerPill");
+  if(!sc || !sc.ready){ $("scorerTxt").textContent = "text scorer warming up (CPU)…"; $("injectBtn").disabled = true; return; }
+  p.className = "pill " + (sc.scorer==="minilm" ? "ok" : "warn");
+  $("scorerTxt").textContent = sc.scorer==="minilm" ? "scorer: MiniLM-L6 + LR (deployed, CPU)" : "scorer: VADER FALLBACK (not the deployed scorer)";
+  $("injectBtn").disabled = false;
+}
+
+function renderMeta(){
+  const m = S.meta, c = m.committed, sc = m.showcase;
+  $("nTest").textContent = fmtInt(m.n_test); $("nTest2").textContent = fmtInt(m.n_test) + " stock-days";
+  $("selRule").innerHTML = `Curated days are <b>selected</b>: a stock-day is “flippable” if some tested attack with ≤ 3 posts makes plain CQR miss. That is <b class="num">${fmtInt(sc.n_flippable)} of ${fmtInt(sc.n_test)} (${pct(sc.frac_flippable)})</b>. On the other ${pct(1-sc.frac_flippable)}, none of the ${c.grid_size} tested attacks flips it. ${fmtInt(sc.n_flippable_silent)} of the ${fmtInt(sc.n_flippable)} are <i>silent</i> stocks with no real posts, where the fakes become the whole signal (exploratory finding).`;
+  const ordered = [...m.showcase_days.filter(d=>d.kind==="busy"), ...m.showcase_days.filter(d=>d.kind!=="busy")];
+  $("dayList").innerHTML = ordered.map(d => `<li><button data-t="${esc(d.ticker)}" data-d="${d.date}" aria-pressed="false"><span class="tk">${esc(d.ticker)}</span><span class="num">${d.date}</span><span class="meta">${d.kind==="silent" ? "silent · 0 real posts" : d.n_real_posts + " real posts"} · flips with ${d.min_injected_to_flip} post${d.min_injected_to_flip>1?"s":""}</span></button></li>`).join("");
+  $("dayList").querySelectorAll("button").forEach(b => b.onclick = () => loadDay({ticker:b.dataset.t, date:b.dataset.d}));
+  const live = m.aci_clean_live.coverage, same = Math.abs(live - c.aci_cov) < 1e-9;
+  $("aciPill").className = "pill " + (same ? "ok" : "warn");
+  $("aciTxt").textContent = `live ACI ${pct(live,2)} ${same ? "= committed ✓" : "≠ committed " + pct(c.aci_cov,2)}`;
+  const wc = c.width_cost;
+  $("kCost").textContent = `Committed price of robustness (clean data): certified width +${pct(wc["1"])} / +${pct(wc["2"])} / +${pct(wc["3"])} / +${pct(wc["5"])} at k = 1 / 2 / 3 / 5.`;
+  const dj = m.djia;
+  $("hon1").innerHTML = `<b>Text adds no measurable forecast value.</b> Pre-registered, unseen DJIA test: Winkler ${dj.winkler_price_only.toFixed(3)} → ${dj.winkler_fusion.toFixed(3)}, p = ${dj.p.toFixed(2)}. A positive control detects +${pct(dj.control_detects,0)}.`;
+  $("hon2").innerHTML = `<b>Typical attacks barely move the forecast.</b> A 3-post pump shifts the median by ${fmt(c.pump_shift_mean,3)} pp on average (p95 ${c.pump_shift_p95.toFixed(3)} pp), against a ${c.sym_cqr_width.toFixed(2)} pp interval.`;
+  $("hon3").innerHTML = `<b>Selected days are the vulnerable ${pct(sc.frac_flippable)}.</b> The worst of ${c.grid_size} tested attacks takes plain CQR from ${pct(c.clean_sym_cqr_cov)} to ${pct(c.oracle_plain_cov)}. Certified cannot fall below ${pct(c.clean_sym_cqr_cov)} within k = 3.`;
+  $("hon4").innerHTML = `<b>Scope.</b> Fixed-offset guarantee for injected posts only (not edits, prices, or poisoned calibration). CR-ACI promises long-run mean daily coverage only, not per-row containment. Source: <code>${c.file}</code>.`;
+  renderMeter(null);
+}
+
+/* ---------- day ---------- */
+async function loadDay(sel){
+  try{
+    S.day = await api("/api/day", sel);
+  }catch(e){ $("dayMeta").innerHTML = `<span class="err">${esc(e.message)}</span>`; return; }
+  document.querySelectorAll("#dayList button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.t===S.day.ticker && b.dataset.d===S.day.date)));
+  const d = S.day, sc = S.meta.showcase;
+  $("h-stage").textContent = `${d.ticker} · ${d.date}`;
+  $("dayMeta").innerHTML = `Posts up to the 16:00 ET close on ${d.date} → forecast of the next session's close-to-close log return. Real posts: <b class="num">${d.n_real_posts}</b>. Realised return: <b class="num">${fmt(d.y)}%</b>.`;
+  $("selTag").innerHTML = d.showcase
+    ? `SELECTED (${d.showcase.kind}) · 1 of ${fmtInt(sc.n_flippable)} flippable stock-days (${pct(sc.frac_flippable)} of ${fmtInt(sc.n_test)})`
+    : `RANDOM stock-day · ${pct(sc.frac_flippable)} of stock-days are flippable by a ≤ 3-post tested attack`;
+  renderReal();
+  S.shown = null; $("red").innerHTML = "";
+  await refresh(true);
+}
+function renderReal(){
+  const d = S.day, sh = d.showcase;
+  if(d.n_real_posts===0){ $("realSum").textContent = "No real posts on this day: silent stock. Your posts are the whole text signal."; $("realList").innerHTML=""; return; }
+  if(sh && sh.posts){
+    $("realSum").textContent = `Real posts on this day (${sh.posts.length}; StockNet, MIT): text, MiniLM sentiment, trust`;
+    $("realList").innerHTML = sh.posts.map(p => `<li><span class="s num ${p.sentiment>0.2?"pos":p.sentiment<-0.2?"neg":"neu"}">${fmt(p.sentiment)}</span><span>${esc(p.text)} <span class="faint">· trust ${p.trust.toFixed(2)}</span></span></li>`).join("");
+  } else {
+    $("realSum").textContent = `Real posts on this day (${d.n_real_posts}): scores only. Texts are bundled only for the showcased days.`;
+    $("realList").innerHTML = d.real_scores.map(p => `<li><span class="s num ${p.sentiment>0.2?"pos":p.sentiment<-0.2?"neg":"neu"}">${fmt(p.sentiment)}</span><span class="faint">trust ${p.trust.toFixed(2)}</span></li>`).join("");
+  }
+}
+
+/* ---------- attack ---------- */
+const postsPayload = () => S.posts.map(p => ({sentiment:p.sentiment, trust:p.trust, copies:p.copies}));
+const nInjected = () => S.posts.reduce((a,p)=>a+p.copies,0);
+let refreshSeq = 0, refreshTimer = null;
+function scheduleRefresh(withFlips){ clearTimeout(refreshTimer); refreshTimer = setTimeout(()=>refresh(withFlips), 90); }
+async function refresh(withFlips){
+  if(!S.day) return;
+  const seq = ++refreshSeq, body = {row:S.day.row, posts:postsPayload(), k:S.k};
+  renderCount();
+  try{
+    const a = await api("/api/attack", body);
+    if(seq!==refreshSeq) return;
+    S.attack = a; renderVerdicts(); animateTo(a); renderBox();
+    if(withFlips){ S.flips = await api("/api/flips", {row:S.day.row, k:S.k}); renderFlips(); }
+  }catch(e){ $("vPlainT").innerHTML = `<span class="err">${esc(e.message)}</span>`; }
+  $("popBtn").disabled = nInjected()===0;
+}
+function renderCount(){
+  const n = nInjected(), el = $("countV");
+  el.className = "count num" + (n > S.k ? " over" : "");
+  el.textContent = n===0 ? "no posts injected yet" : `${n} injected post${n>1?"s":""} · ${n<=S.k ? "within budget" : "BEYOND budget: no guarantee"}`;
+  $("kV").textContent = S.k;
+}
+function renderVerdicts(){
+  const a = S.attack, n = a.n_injected;
+  const vp = $("vPlain"), vc = $("vCert");
+  const edge = Math.min(a.y - a.clean.lo, a.clean.hi - a.y);
+  if(n===0){
+    vp.className = "verdict none";
+    vp.querySelector(".h").textContent = "Plain CQR: no injection";
+    $("vPlainT").innerHTML = a.clean.covers ? `The clean interval covers the realised return, ${pp(edge,3)} inside its edge.` : `The clean interval already misses the realised return (by ${pp(-edge,3)}). Injection is not the cause.`;
+  } else if(a.clean.covers && !a.plain.covers){
+    vp.className = "verdict bad";
+    vp.querySelector(".h").textContent = "Plain CQR broken";
+    $("vPlainT").innerHTML = `Your ${n} fake post${n>1?"s":""} created a miss the clean forecast did not have. The median moved only ${fmt(a.median_shift,3)} pp, but the realised return sat ${pp(edge,3)} inside the edge.`;
+  } else {
+    vp.className = "verdict none";
+    vp.querySelector(".h").textContent = a.plain.covers ? "Plain CQR still covers" : "Plain CQR misses (so did clean)";
+    $("vPlainT").innerHTML = `Median moved ${fmt(a.median_shift,3)} pp. ${a.plain.covers ? "Try the other direction, or more trust." : ""}`;
+  }
+  if(a.within_budget){
+    vc.className = "verdict good";
+    vc.querySelector(".h").innerHTML = `Certified band <span class="badge g">GUARANTEED</span>`;
+    $("vCertT").innerHTML = `It contains the no-injection interval for <i>any</i> ≤ ${a.k} injected post${a.k===1?"":"s"}${a.certified.contains_clean ? " ✓" : ""}, so injection cannot add a miss. Width ${pp(a.certified.hi-a.certified.lo)} vs plain ${pp(a.plain.hi-a.plain.lo)}.`;
+  } else {
+    vc.className = "verdict none";
+    vc.querySelector(".h").innerHTML = `Certified band <span class="badge n">NO GUARANTEE</span>`;
+    $("vCertT").innerHTML = `${n} injected > k = ${a.k}. Right now it ${a.certified.contains_clean ? "still contains" : "<b>no longer contains</b>"} the no-injection interval, and it ${a.certified.covers ? "covers" : "misses"} the realised return. Nothing is promised.`;
+  }
+}
+
+/* ---------- interval chart with tween ---------- */
+let tw = null, raf = null;
+function snapshot(a){ return {cl:a.clean.lo, ch:a.clean.hi, pl:a.plain.lo, ph:a.plain.hi, pm:a.plain.med, cm:a.clean.med, xl:a.certified.lo, xh:a.certified.hi, y:a.y}; }
+function animateTo(a){
+  const to = snapshot(a), from = S.shown && S.shown.y===to.y ? S.shown : to;
+  const t0 = performance.now(), dur = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 220;
+  cancelAnimationFrame(raf);
+  const step = now => {
+    const t = dur ? Math.min(1,(now-t0)/dur) : 1, e = 1 - Math.pow(1-t, 3);
+    const cur = {}; for(const k in to) cur[k] = from[k] + (to[k]-from[k])*e;
+    S.shown = cur; drawChart(cur); drawZoom(cur);
+    if(t<1) raf = requestAnimationFrame(step);
+  };
+  raf = requestAnimationFrame(step);
+}
+function rowsSvg(v, X, W, H0, opts){
+  const a = S.attack, within = a.within_budget, plainMiss = !(v.y>=v.pl && v.y<=v.ph);
+  const plainCol = (a.clean.covers && plainMiss && a.n_injected>0) ? "var(--broken)" : "#cfd3d6";
+  const certCol = within ? "var(--cert)" : "var(--none)";
+  const rows = [
+    {y:H0, lbl:"no injection (plain)", lo:v.cl, hi:v.ch, kind:"ghost", med:v.cm},
+    {y:H0+opts.gap, lbl:`plain CQR + your ${a.n_injected} post${a.n_injected===1?"":"s"}`, lo:v.pl, hi:v.ph, kind:"plain", col:plainCol, med:v.pm},
+    {y:H0+2*opts.gap, lbl:`certified, k = ${a.k}${within?"":" (no guarantee)"}`, lo:v.xl, hi:v.xh, kind:"cert", col:certCol},
+  ];
+  let s = "";
+  for(const r of rows){
+    const x0 = X(r.lo), x1 = X(r.hi), h = opts.bar;
+    if(r.kind==="ghost") s += `<rect x="${x0}" y="${r.y}" width="${Math.max(0,x1-x0)}" height="${h}" fill="none" stroke="#9aa1a7" stroke-width="1.5" stroke-dasharray="5 4" rx="3"/>`;
+    else if(r.kind==="cert" && !within) s += `<rect x="${x0}" y="${r.y}" width="${Math.max(0,x1-x0)}" height="${h}" fill="url(#hatch)" stroke="${r.col}" stroke-width="1.5" rx="3"/>`;
+    else s += `<rect x="${x0}" y="${r.y}" width="${Math.max(0,x1-x0)}" height="${h}" fill="${r.col}" fill-opacity="${r.kind==="cert"?0.85:0.9}" rx="3"/>`;
+    if(r.med!==undefined && opts.medians) s += `<line x1="${X(r.med)}" x2="${X(r.med)}" y1="${r.y-3}" y2="${r.y+h+3}" stroke="#141619" stroke-width="2" opacity="${r.kind==="ghost"?0:0.8}"/>`;
+    if(opts.labels) s += `<text class="lbl" x="${opts.lx}" y="${r.y+h/2+4}">${esc(r.lbl)}</text>`;
+  }
+  return s;
+}
+const defs = `<defs><pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="rgba(138,144,150,.18)"/><line x1="0" y1="0" x2="0" y2="8" stroke="rgba(138,144,150,.6)" stroke-width="2"/></pattern></defs>`;
+function drawChart(v){
+  const W = 960, L = 200, R = 24, top = 26, gap = 50, bar = 26;
+  let lo = Math.min(v.cl, v.pl, v.xl, v.y), hi = Math.max(v.ch, v.ph, v.xh, v.y);
+  const pad = 0.08*(hi-lo); lo -= pad; hi += pad;
+  const X = x => L + (x-lo)/(hi-lo)*(W-L-R);
+  let s = defs;
+  const step = (hi-lo) > 8 ? 2 : 1;
+  for(let t=Math.ceil(lo/step)*step; t<=hi; t+=step){ s += `<line x1="${X(t)}" x2="${X(t)}" y1="${top-8}" y2="${top+2*gap+bar+8}" stroke="var(--line)"/><text class="lbl num" x="${X(t)}" y="${top+2*gap+bar+26}" text-anchor="middle">${t>0?"+":""}${t}%</text>`; }
+  s += `<line x1="${X(v.cl)}" x2="${X(v.cl)}" y1="${top}" y2="${top+2*gap+bar}" stroke="#9aa1a7" stroke-dasharray="2 4"/><line x1="${X(v.ch)}" x2="${X(v.ch)}" y1="${top}" y2="${top+2*gap+bar}" stroke="#9aa1a7" stroke-dasharray="2 4"/>`;
+  s += rowsSvg(v, X, W, top, {gap, bar, labels:true, lx:8, medians:true});
+  s += `<line x1="${X(v.y)}" x2="${X(v.y)}" y1="${top-14}" y2="${top+2*gap+bar+6}" stroke="var(--text)" stroke-width="2.5"/><text x="${X(v.y)}" y="${top-17}" text-anchor="middle" class="num" style="font-weight:650">realised ${fmt(v.y)}%</text>`;
+  $("chart").innerHTML = s;
+}
+function drawZoom(v){
+  const a = S.attack, W = 960, L = 200, R = 24, top = 22, gap = 40, bar = 22;
+  const side = (v.y - v.cl) < (v.ch - v.y) ? "lo" : "hi";
+  const edges = side==="lo" ? [v.cl, v.pl, v.xl] : [v.ch, v.ph, v.xh];
+  let z = Math.max(0.12, 1.35*Math.max(...edges.map(e=>Math.abs(e-v.y)).filter(d=>d<2), 0.05));
+  z = Math.min(z, 2);
+  const lo = v.y - z, hi = v.y + z, X = x => L + (Math.min(Math.max(x,lo-1e3),hi+1e3)-lo)/(hi-lo)*(W-L-R);
+  let s = defs + `<clipPath id="zc"><rect x="${L}" y="0" width="${W-L-R}" height="170"/></clipPath>`;
+  const ticks = niceTicks(lo, hi, 6);
+  for(const t of ticks) s += `<line x1="${X(t)}" x2="${X(t)}" y1="${top-6}" y2="${top+2*gap+bar+6}" stroke="var(--line)"/><text class="lbl num" x="${X(t)}" y="${top+2*gap+bar+22}" text-anchor="middle">${t>0?"+":""}${t.toFixed(Math.abs(hi-lo)<0.6?2:1)}%</text>`;
+  s += `<g clip-path="url(#zc)">` + rowsSvg(v, X, W, top, {gap, bar, labels:false, medians:false}) + `</g>`;
+  const labs = [`clean ${side==="lo"?"lower":"upper"} edge`, "plain edge", "certified edge"];
+  [0,1,2].forEach(i => s += `<text class="lbl" x="8" y="${top+i*gap+bar/2+4}">${labs[i]} <tspan class="num" fill="var(--text)">${edges[i].toFixed(3)}%</tspan></text>`);
+  s += `<line x1="${X(v.y)}" x2="${X(v.y)}" y1="${top-10}" y2="${top+2*gap+bar+4}" stroke="var(--text)" stroke-width="2.5"/>`;
+  $("zoom").innerHTML = s;
+  const dPlain = side==="lo" ? v.y - v.pl : v.ph - v.y, dClean = side==="lo" ? v.y - v.cl : v.ch - v.y, dCert = side==="lo" ? v.y - v.xl : v.xh - v.y;
+  $("zoomTxt").innerHTML = `Window ±${z.toFixed(2)} pp around the realised return. Distance inside each edge: clean <b class="num">${fmt(dClean,3)}</b>, plain <b class="num ${dPlain<0?"bad":""}">${fmt(dPlain,3)}</b>, certified <b class="num">${fmt(dCert,3)}</b> pp (negative = miss). Attacks win by nudging an edge across a return that was already near it, not by swinging the forecast.`;
+}
+function niceTicks(lo, hi, n){
+  const span = hi-lo, raw = span/n, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const st = [1,2,2.5,5,10].map(m=>m*mag).find(s=>span/s<=n) || mag*10;
+  const out = []; for(let t=Math.ceil(lo/st)*st; t<=hi+1e-12; t+=st) out.push(+t.toFixed(6)); return out;
+}
+
+/* ---------- deletion box ---------- */
+function renderBox(){
+  const b = S.attack.box, W = 560, L = 150, R = 16, rowH = 42;
+  let s = "";
+  b.forEach((f,i) => {
+    const vals = [f.lo, f.hi, f.clean, f.attacked];
+    let lo = Math.min(...vals), hi = Math.max(...vals); const pad = Math.max(0.05*(hi-lo), 0.02); lo-=pad; hi+=pad;
+    const X = x => L + (x-lo)/(hi-lo)*(W-L-R), y = 18 + i*rowH;
+    s += `<text class="lbl" x="4" y="${y+5}">${esc(f.label)}</text>`;
+    s += `<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="var(--line2)"/>`;
+    s += `<rect x="${X(f.lo)}" y="${y-9}" width="${Math.max(2,X(f.hi)-X(f.lo))}" height="18" fill="rgba(69,196,134,.30)" stroke="var(--cert)" rx="3"/>`;
+    s += `<circle cx="${X(f.attacked)}" cy="${y}" r="5.5" fill="var(--inj)"/>`;
+    s += `<circle cx="${X(f.clean)}" cy="${y}" r="6.5" fill="none" stroke="var(--text)" stroke-width="2"/>`;
+    s += `<text class="lbl num" x="${X(f.lo)}" y="${y+22}" text-anchor="start">${f.lo.toFixed(3)}</text><text class="lbl num" x="${X(f.hi)}" y="${y+22}" text-anchor="end">${f.hi.toFixed(3)}</text>`;
+  });
+  $("box").innerHTML = s;
+}
+
+/* ---------- flips ---------- */
+function variantText(v){
+  const n = v.n, same = v.sents.every(x=>x===v.sents[0]) && v.trusts.every(x=>x===v.trusts[0]);
+  const sTxt = s => s>0 ? `bullish ${fmt(s,1)}` : s<0 ? `bearish ${fmt(s,1)}` : "neutral 0";
+  return same ? `${n}× ${sTxt(v.sents[0])} @ trust ${v.trusts[0]}` : `${n} posts [${v.sents.map(x=>fmt(x,0)).join(", ")}] @ trust ${v.trusts[0]}`;
+}
+function renderFlips(){
+  const f = S.flips, el = $("flips");
+  if(!f || f.k===0){ el.innerHTML = `<p class="muted small">k = 0: no budget, so the certified band equals plain CQR.</p>`; return; }
+  if(!f.clean_covers){ el.innerHTML = `<p class="small">The clean interval already misses this day's return, so there is nothing for an attacker to flip. Certified CQR promises only to keep the clean interval's hits.</p>`; return; }
+  if(f.n_flipping===0){ el.innerHTML = `<p class="small"><b class="ok">None of the ${f.n_variants} tested attacks</b> with ≤ ${f.k} posts flips plain CQR here. This is the typical day (${pct(1-S.meta.showcase.frac_flippable)} of stock-days at k = 3).</p>`; return; }
+  el.innerHTML = `<p class="small"><b class="bad num">${f.n_flipping} of ${f.n_variants}</b> tested attacks flip plain CQR. The certified band (k = ${f.k}) still contains the clean interval under <b class="ok num">${f.n_flipping_cert_survives} of ${f.n_flipping}</b>.</p>` +
+    `<table><thead><tr><th>attack (scores set directly)</th><th class="r">plain</th><th class="r">certified ⊇ clean</th><th></th></tr></thead><tbody>` +
+    f.flipping.map((v,i) => `<tr><td class="small">${esc(variantText(v))}</td><td class="r bad small">miss</td><td class="r ok small">${v.cert_contains_clean?"yes":"no"}</td><td class="r"><button class="btn small" data-v="${i}">inject</button></td></tr>`).join("") +
+    `</tbody></table>` + (f.n_flipping>f.flipping.length ? `<p class="faint small">… and ${f.n_flipping-f.flipping.length} more.</p>` : "");
+  el.querySelectorAll("button[data-v]").forEach(b => b.onclick = () => {
+    const v = f.flipping[+b.dataset.v];
+    S.posts = v.sents.map((s,j) => ({id:S.nextId++, text:`[grid attack: sentiment ${fmt(s,1)} set directly, not scored from text]`, sentiment:s, trust:v.trusts[j], copies:1, scorer:"grid"}));
+    renderPosts(); scheduleRefresh(false);
+  });
+}
+
+/* ---------- posts ---------- */
+function renderPosts(){
+  $("posts").innerHTML = S.posts.map(p => `<li class="post"><div class="row" style="justify-content:space-between"><span class="tag">INJECTED · SYNTHETIC</span><button class="x" data-del="${p.id}" aria-label="remove post">✕</button></div>
+    <div class="txt">${esc(p.text)}</div>
+    <div class="ctl"><span class="num">sentiment <b style="color:var(--text)">${fmt(p.sentiment,3)}</b></span><span class="num">trust <b style="color:var(--text)">${p.trust.toFixed(3)}</b></span><span class="faint">${p.scorer==="grid"?"grid":p.scorer==="vader"?"VADER fallback":"MiniLM"}</span></div>
+    <div class="ctl"><label for="cp${p.id}">copies</label><input type="range" id="cp${p.id}" min="0" max="10" value="${p.copies}" data-cp="${p.id}"><output class="num">${p.copies}</output></div></li>`).join("");
+  $("posts").querySelectorAll("[data-del]").forEach(b => b.onclick = () => { S.posts = S.posts.filter(p=>p.id!==+b.dataset.del); renderPosts(); scheduleRefresh(false); });
+  $("posts").querySelectorAll("[data-cp]").forEach(r => r.oninput = () => { const p = S.posts.find(p=>p.id===+r.dataset.cp); p.copies = +r.value; r.nextElementSibling.textContent = r.value; scheduleRefresh(false); });
+  renderCount();
+}
+async function inject(){
+  const text = $("postText").value.trim(); if(!text) { $("scoreMsg").textContent = "Write a post first."; return; }
+  $("injectBtn").disabled = true; $("scoreMsg").textContent = "scoring…";
+  try{
+    const [sc, tr] = await Promise.all([api("/api/score", {texts:[text]}), api("/api/trust", acct())]);
+    S.posts.push({id:S.nextId++, text, sentiment:sc.compound[0], trust:tr.trust, copies:+$("copies0").value, scorer:sc.scorer});
+    $("scoreMsg").textContent = `sentiment ${fmt(sc.compound[0],3)} (${sc.scorer==="minilm"?"MiniLM":"VADER fallback"})`;
+    renderPosts(); scheduleRefresh(false);
+  }catch(e){ $("scoreMsg").innerHTML = `<span class="err">${esc(e.message)}</span>`; }
+  $("injectBtn").disabled = false;
+}
+
+/* ---------- account / trust ---------- */
+const acct = () => ({followers: Math.round(Math.pow(10, +$("fol").value)) - 1, age_days:+$("age").value, verified:$("ver").checked, n_cashtags:+$("tags").value});
+let trustTimer = null;
+function updateTrust(){
+  const a = acct();
+  $("folO").textContent = a.followers >= 1000 ? (a.followers/1000).toFixed(a.followers>=1e5?0:1)+"k" : a.followers;
+  $("ageO").textContent = a.age_days >= 365 ? (a.age_days/365).toFixed(1)+" y" : a.age_days+" d";
+  $("tagsO").textContent = a.n_cashtags;
+  clearTimeout(trustTimer);
+  trustTimer = setTimeout(async () => { try{ $("trustV").textContent = (await api("/api/trust", a)).trust.toFixed(3); }catch(e){} }, 60);
+}
+["fol","age","tags","ver"].forEach(id => $(id).addEventListener("input", updateTrust));
+document.querySelectorAll("[data-acct]").forEach(b => b.onclick = () => {
+  const bot = b.dataset.acct==="bot";
+  $("fol").value = bot ? 0 : 4; $("age").value = bot ? 1 : 365; $("ver").checked = !bot; $("tags").value = 1; updateTrust();
+});
+const PRESETS = {bull:"$XYZ to the moon!!! strong buy, massive breakout, calls printing #bullish",
+                 bear:"$XYZ shares plunge after guidance cut and downgrade"};
+// the bull preset is the committed pump template verbatim (so a replay reproduces the committed pump numbers)
+document.querySelectorAll("[data-preset]").forEach(b => b.onclick = () => { const t = PRESETS[b.dataset.preset]; $("postText").value = b.dataset.preset==="bull" ? t : t.replace("$XYZ", "$" + (S.day ? S.day.ticker : "XYZ")); });
+$("copies0").oninput = () => $("copies0O").textContent = $("copies0").value;
+$("injectBtn").onclick = inject;
+$("kDown").onclick = () => { if(S.k>0){ S.k--; scheduleRefresh(true); } };
+$("kUp").onclick = () => { if(S.k<10){ S.k++; scheduleRefresh(true); } };
+$("randBtn").onclick = async () => { try{ const d = await api("/api/random"); await loadDay({row:d.row}); }catch(e){} };
+
+/* ---------- red-team ---------- */
+$("redBtn").onclick = async () => {
+  if(!S.day) return;
+  const btn = $("redBtn"); btn.disabled = true; btn.textContent = "attacking…";
+  $("red").innerHTML = `<div class="counter"><div class="c skel">.</div><div class="c skel">.</div></div>`;
+  try{
+    const r = await api("/api/redteam", {row:S.day.row, k:S.k, n:2000, seed:S.seed++});
+    const blk = (x, title, within) => !x ? `<div class="c"><div class="muted small">${title}</div><p class="small">k = 0: no within-budget attacks.</p></div>` :
+      `<div class="c"><div class="muted small">${title} · ${x.posts_range[0]}–${x.posts_range[1]} posts · seed ${r.seed}</div>
+       <div class="row" style="gap:24px;margin-top:6px">
+         <div><div class="v num bad">${fmtInt(x.plain_broken)}</div><div class="small muted">plain CQR broken<br>(clean covered, attacked misses)</div></div>
+         <div><div class="v num ${x.cert_containment_violations===0?"ok":within?"bad":"warn"}">${fmtInt(x.cert_containment_violations)}</div><div class="small muted">certified ⊉ clean interval<br>${within?"(guarantee says 0)":"(no guarantee here)"}</div></div>
+       </div>
+       <p class="small faint">largest median shift seen: ${x.median_shift_max_abs.toFixed(3)} pp${S.day.y!==undefined && x.cert_missed_y_when_clean_covered ? ` · certified missed y on ${x.cert_missed_y_when_clean_covered}` : ""}</p></div>`;
+    $("red").innerHTML = `<div class="counter">${blk(r.within, "Within budget", true)}${blk(r.beyond, "Beyond budget", false)}</div>`;
+  }catch(e){ $("red").innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+  btn.disabled = false; btn.textContent = "Run red-team again";
+};
+
+/* ---------- population replay + ACI meter ---------- */
+$("popBtn").onclick = async () => {
+  const btn = $("popBtn"); btn.disabled = true; const old = btn.innerHTML; btn.textContent = "replaying on every stock-day…";
+  $("pop").innerHTML = `<p class="skel">computing</p>`;
+  try{
+    const P = await api("/api/population", {posts:postsPayload(), k:S.k});
+    renderPop(P); renderMeter(P);
+  }catch(e){ $("pop").innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+  btn.innerHTML = old; btn.disabled = nInjected()===0;
+};
+function isPump(P){
+  const c = S.meta.committed;
+  return S.k===3 && S.posts.length && nInjected()===3 && S.posts.every(p => p.copies===0 || (Math.abs(p.sentiment-c.pump_sentiment)<1e-9 && Math.abs(p.trust-c.pump_trust)<1e-9));
+}
+function renderPop(P){
+  const c = S.meta.committed, pump = isPump(P);
+  const cm = (live, ref) => pump ? ` <span class="chip ${Math.abs(live-ref)<1e-9?"ok":""}">committed ${pct(ref)}${Math.abs(live-ref)<1e-9?" ✓":""}</span>` : "";
+  $("pop").innerHTML = `<table><thead><tr><th>${fmtInt(P.n_rows)} stock-days · ${P.n_injected} injected post${P.n_injected===1?"":"s"} each · k = ${P.k}</th><th class="r">value</th></tr></thead><tbody>
+    <tr><td>Plain CQR coverage: clean → under your attack</td><td class="r num">${pct(P.clean_plain_coverage)} → <b>${pct(P.plain_coverage)}</b>${cm(P.plain_coverage, c.pump_plain_cov)}</td></tr>
+    <tr><td>Stock-days your attack flipped from hit to miss (plain)</td><td class="r num bad">${fmtInt(P.flipped_by_attack)} <span class="faint">(${pct(P.flipped_by_attack/P.n_rows,2)})</span></td></tr>
+    <tr><td>Certified CQR coverage under your attack</td><td class="r num"><b class="${P.within_budget?"ok":""}">${pct(P.certified_coverage)}</b>${cm(P.certified_coverage, c.pump_cert_cov)}</td></tr>
+    <tr><td>Certified ⊇ clean interval on every stock-day</td><td class="r">${P.certified_contains_clean_all_rows ? `<b class="ok">yes</b>` : `<b class="warn">no (${pct(P.certified_contains_clean_frac,2)})</b>`} ${P.within_budget ? `<span class="faint small">guaranteed</span>` : `<span class="faint small">beyond k: not guaranteed</span>`}</td></tr>
+    <tr><td>Median forecast shift: mean · p95 |shift|</td><td class="r num">${fmt(P.median_shift_mean,3)} · ${P.median_shift_p95_abs.toFixed(3)} pp</td></tr>
+    <tr><td>Mean width: plain → certified</td><td class="r num">${P.plain_width.toFixed(3)} → ${P.certified_width.toFixed(3)} pp</td></tr>
+    <tr><td>ACI (our loop) under attack · CR-ACI under attack</td><td class="r num">${pct(P.aci_plain.coverage)} · <b>${pct(P.cr_aci.coverage)}</b>${pump ? ` <span class="chip ${Math.abs(P.cr_aci.coverage-c.cr_aci_pump_cov)<1e-9 && Math.abs(P.aci_plain.coverage-c.aci_pump_cov)<1e-9 ? "ok" : ""}">committed ${pct(c.aci_pump_cov)} · ${pct(c.cr_aci_pump_cov)}${Math.abs(P.cr_aci.coverage-c.cr_aci_pump_cov)<1e-9?" ✓":""}</span>` : ""}</td></tr>
+  </tbody></table>
+  <p class="small faint">CR-ACI's promise is long-run mean daily coverage. Its clean and attacked runs adapt separately, so no per-row containment is claimed for it.${pump ? " This attack is the committed pump (template sentiment, fresh-account trust, 3 copies), so the committed numbers apply." : ""}</p>`;
+}
+function renderMeter(P){
+  const A = S.meta.aci_clean_live, W = 960, H = 220, L = 46, R = 16, T = 12, B = 30;
+  const lo = 0.70, hi = 1.0, n = A.rolling20.length;
+  const X = i => L + i/(n-1)*(W-L-R), Y = v => T + (hi-Math.max(lo,Math.min(hi,v)))/(hi-lo)*(H-T-B);
+  const path = arr => arr.map((v,i)=>`${i?"L":"M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join("");
+  let s = "";
+  for(const t of [0.7,0.8,0.9,1.0]) s += `<line x1="${L}" x2="${W-R}" y1="${Y(t)}" y2="${Y(t)}" stroke="${t===0.9?"#6f767c":"var(--line)"}" ${t===0.9?'stroke-dasharray="6 4"':""}/><text class="lbl num" x="${L-6}" y="${Y(t)+4}" text-anchor="end">${t*100}%</text>`;
+  s += `<text class="lbl" x="${W-R}" y="${Y(0.9)-6}" text-anchor="end">target 90%</text>`;
+  [0, Math.floor(n/2), n-1].forEach(i => s += `<text class="lbl num" x="${X(i)}" y="${H-8}" text-anchor="${i===0?"start":i===n-1?"end":"middle"}">${A.dates[i]}</text>`);
+  s += `<path d="${path(A.rolling20)}" fill="none" stroke="#dcdfe1" stroke-width="2"/>`;
+  if(P){
+    s += `<path d="${path(P.aci_plain.rolling20)}" fill="none" stroke="var(--broken)" stroke-width="1.6" stroke-dasharray="5 3"/>`;
+    s += `<path d="${path(P.cr_aci.rolling20)}" fill="none" stroke="var(--cert)" stroke-width="2"/>`;
+  }
+  $("meter").innerHTML = s;
+  const c = S.meta.committed, same = Math.abs(A.coverage - c.aci_cov) < 1e-9;
+  $("meterTxt").innerHTML = `<span style="color:#dcdfe1">━</span> ACI on clean data, computed live with <code>aci_from_bounds</code>: <b class="num">${pct(A.coverage,2)}</b> pooled, ${pct(A.mean_day_coverage,2)} mean daily. ${same ? `<span class="ok">Matches the committed ${pct(c.aci_cov,2)} (day-clustered 90% CI ${pct(c.aci_ci90[0])}–${pct(c.aci_ci90[1])}) ✓</span>` : `<span class="warn">differs from committed ${pct(c.aci_cov,2)}</span>`}` +
+    (P ? `<br><span class="bad">┅</span> plain ACI under your attack ${pct(P.aci_plain.coverage,2)} · <span class="ok">━</span> CR-ACI under your attack ${pct(P.cr_aci.coverage,2)} (long-run mean daily coverage; not per-row).` : "");
+}
+
+boot();
+</script>
+</body>
+</html>

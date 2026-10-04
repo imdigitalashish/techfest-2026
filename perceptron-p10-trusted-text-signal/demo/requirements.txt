@@ -1,0 +1,15 @@
+# Pinned to the versions the committed v2 results were produced with (Python 3.11).
+numpy==2.4.6
+pandas==3.0.6
+pyarrow==25.0.1
+scipy==1.17.1
+scikit-learn==1.9.1
+lightgbm==4.7.0
+mapie==1.5.0
+vaderSentiment==3.3.2
+# live MiniLM scorer (optional: without it the demo falls back to VADER, labelled on screen)
+torch==2.14.1
+transformers==5.18.0
+tokenizers==0.23.2
+safetensors==0.8.0
+huggingface-hub==1.33.0
