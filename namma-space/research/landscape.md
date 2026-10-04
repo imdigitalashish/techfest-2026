@@ -1,57 +1,63 @@
-# Landscape v0 — phone capture → navigable 3D indoor twin (4 Oct 2026)
+# Landscape v1 — phone capture → navigable 3D indoor twin (verified, 4 Oct 2026)
 
-> **Read this first (honesty note).** Tonight's research fan-out (10 agents) mostly failed: model-API "408 timed out reading request body" errors caused by network saturation on the shared machine, and Supervisor Lean Mode then banned new agents until 08:30. This v0 therefore separates:
-> - **VERIFIED**: sources opened tonight, listed with how they were opened;
-> - **UNVERIFIED**: the lead's prior knowledge, kept as a map of what to check. Do not cite UNVERIFIED items externally until they are checked.
->
-> Per-topic deep dives: [`datasets.md`](datasets.md) (done, cited). Reconstruction, posing, viewer, navigation, semantics, AR and companies follow after 08:30 with ≤3 agents.
+**How to read this.** This page is the synthesis. Every claim here is verified, with URL and access date, in the linked detail files. Each was checked at its primary source: arXiv abstract/API, CVF, the official GitHub repo (README/LICENSE via the GitHub API), official docs, caniuse/MDN, or company pages.
+- [`sota-reconstruction.md`](sota-reconstruction.md) — posing, feed-forward 3D, splat training, Apple silicon.
+- [`sota-navigation-semantics-ar.md`](sota-navigation-semantics-ar.md) — collision/navigation, POIs/search, AR, web viewers.
+- [`companies.md`](companies.md) — what companies ship today (≈59 primary pages).
+- [`datasets.md`](datasets.md) — datasets and licences.
+- [`sources_verified_2026-10-04.tsv`](sources_verified_2026-10-04.tsv) — GitHub API metadata for 31 repos and 20 product pages.
 
-## 1. What the judges score → what we must show (VERIFIED: `_briefs/namma-space.txt`)
-| Round | Scored on | What we must show |
+Web-search answers were used as leads only. **At least 7 were wrong** (§5).
+
+## 1. What the judges score → what we must show (`_briefs/namma-space.txt`)
+| Round | Scored on | We must show |
 |---|---|---|
-| R1 (31 Oct) | SOP & pipeline soundness · visual quality & fidelity · web-viewer performance · documentation & video | the user's own home as a free-roam WASD web twin, ≤5-page abstract, 3–5 min video, repo with test data |
-| R2 (30 Nov; our target 17 Nov) | spatial indexing & POI tagging · pathfinding accuracy · search UI & transitions · code & repo | click POIs, search, obstacle-aware floor paths in a live web app |
-| Finals (16–17 Dec) | capture 20 · reconstruction 20 · viewer/UX 20 · search & path 20 · pitch & Q&A 20 · AR +10 | capture → deploy a new venue within the Day-1 time limit; live AR arrows for the bonus |
+| R1 · 31 Oct | SOP & pipeline · visual fidelity · viewer performance · docs & video | Our own home as a free-roam WASD link; ≤5-page abstract; 3–5 min video; repo with test data |
+| R2 · 30 Nov (target 17 Nov) | POI tagging & spatial indexing · pathfinding accuracy · search UI & transitions · code | Click/search POIs; obstacle-aware floor routes in a live app |
+| Finals · 16–17 Dec | capture 20 · reconstruction 20 · viewer/UX 20 · search & path 20 · pitch 20 · AR +10 | Capture → deploy a new IIT Bombay venue on Day 1 under a time limit; AR arrows for the bonus |
 
-## 2. Pipeline state of the art (by component)
-| Component | Best existing practice (status) | What we verified tonight |
-|---|---|---|
-| Posing | Incremental SfM (COLMAP) and global SfM (GLOMAP, "Global Structure-from-Motion Revisited", ECCV 2024) — UNVERIFIED tonight. Feed-forward 3D models (DUSt3R/MASt3R, VGGT, MapAnything, Depth Anything 3, π³) are replacing matching for short sequences — UNVERIFIED (speed, licences, Apple-MPS support all unchecked). | **COLMAP 4.2.0** is the current Homebrew stable formula (`brew info colmap`); **pycolmap 4.2.1** installs on macOS arm64 and reads binary models (used in `components/scene_alignment`). Whether GLOMAP's global mapper is merged into COLMAP 4.x is UNVERIFIED. |
-| Splat training | 3D Gaussian Splatting (Kerbl et al., SIGGRAPH 2023) and its many fast, compact and anti-aliased variants; CUDA trainers gsplat / nerfstudio splatfacto — UNVERIFIED tonight. | **Brush v0.3.0** (GitHub release 2025-09-14, macOS arm64 binary) trains on Apple Metal from a COLMAP folder. Its CLI exposes `--total-steps`, `--max-splats`, `--eval-split-every`, `--export-*` (`brush_app --help`). Our run: 15k steps, 2M splats in 36.9 min on the shared M5. The exported PLY header reads "Exported from Brush", "Vertical axis: y", SH degree 3. |
-| Geometry for navigation | 2DGS / PGSR / Gaussian Opacity Fields for surfaces; TSDF fusion; Recast/Detour navmeshes (recast-navigation-js in the browser); Habitat-style navmesh from scanned meshes; Splat-Nav (robot planning in splat maps) — all UNVERIFIED tonight. | Our own baseline: a point/ray/trajectory evidence grid + A* runs in seconds on CPU (`eval/results/`). |
-| Semantics / POIs | Open-vocab 3D (LangSplat, Gaussian Grouping, OpenGaussian), 2D detectors/segmenters lifted to 3D (Grounding DINO, OWLv2, SAM 2/SAM 3), 3D scene graphs (ConceptGraphs, HOV-SG) — UNVERIFIED. | – |
-| Web viewer | three.js-based Spark (World Labs), PlayCanvas engine/SuperSplat with compressed SOG, GaussianSplats3D, Babylon.js; Niantic's SPZ format — UNVERIFIED (versions, LOD/streaming, licences). | – |
-| AR navigation | WebXR immersive-ar on Android Chrome (ARCore); iOS Safari WebXR support for AR is the key unknown; visual relocalisation (hloc, scene-coordinate regression such as ACE, VPS products) — UNVERIFIED. | – |
+## 2. State of the art by component → our choice
+| Component | Verified state of the art (Oct 2026) | We use now | We adopt next | Licence notes |
+|---|---|---|---|---|
+| Posing | Global SfM now lives in COLMAP: the GLOMAP repo is marked deprecated, and pycolmap 4.2 exposes `global_mapping`. Feed-forward 3D models: MapAnything (arXiv 2509.13414, metric, ~2000 views), Depth Anything 3, VGGT / VGGT-Ω (arXiv 2605.15195), π³. None documents Apple-MPS support; the large ones need 7–43 GB on an A100 | COLMAP 4.2 global SfM via pycolmap: 99.6% registered on [public] | MapAnything → COLMAP export → short refine, on an Azure GPU (if quota arrives) | MapAnything Apache-2.0. VGGT default checkpoint non-commercial (a gated commercial one exists). VGGT-Ω FAIR non-commercial |
+| Splat training | Brush (Apache-2.0, Metal/WebGPU): `main` has unreleased Mip-Splatting, fused SSIM+L1, 4× pixel memory, faster sort. gsplat (Apache-2.0, CUDA): exposure from EXIF, appearance/pose optimisation, MCMC strategy. OpenSplat: real Metal support (AGPL-3.0). AnySplat: feed-forward init + post-opt (MIT, CUDA) | Brush v0.3.0 binary | Build Brush from `main` (spike D′). gsplat with exposure compensation on a cloud GPU for indoor lighting | OpenSplat AGPL — avoid shipping |
+| Collision / walkable | PlayCanvas `splat-transform` (MIT, v3.9.0, 2 Oct 2026): floater cluster filter → 5 cm voxels at opacity ≥0.1 → room fill → capsule carve → collision GLB. Recast via `recast-navigation-js` (MIT, WASM). Mesh arms: AGS-Mesh / DN-Splatter (Apache-2.0, smartphone rooms), MeshSplatting (Apache-2.0, CVPR 2026). Research: Splat-Nav (arXiv 2403.02751), Habitat-GS (ECCV 2026), navmesh validation by voxels (arXiv 2605.21397) | Sparse SfM points + ray carving + trajectory → NavGrid → A*. Eval v3: ≈47–50% of routes collision-free (misses thin obstacles) | splat-transform voxels seeded by our trajectory → NavGrid; Recast arm; scored on ARKitScenes real geometry | MILo / 2DGS / GOF / PGSR research-only + CUDA |
+| POIs & search | Lift 2D to 3D without per-scene training: SAM 3 concept prompts (MLX port in `mlx-vlm`), YOLOE (MPS), multi-view vote onto dominant Gaussians. Room naming + OCR with Qwen3-VL via `mlx-vlm`. HOV-SG-style room layer. Per-scene language fields (LangSplat, OpenGaussian) are CUDA-only and slow for Day 1 | Labelled frames → ray-cast placement; lexical search with aliases | SAM 3 / YOLOE + VLM naming + OCR on keyframes; voice tags; text-embedding search | YOLOE AGPL-3.0 (careful); SAM 3 own licence |
+| Web viewer | Spark 2.3.1 (MIT, three.js): reads PLY/SPZ/SPLAT/KSPLAT/SOG, has a `.RAD` LoD tree with `paged: true` HTTP-Range streaming, `minRaycastOpacity` raycasts, `FpsMovement`. PlayCanvas SOG / streamed SOG + SuperSplat walk mode with voxel collision is the strongest alternative. GaussianSplats3D is no longer actively developed. SPZ ≈10× smaller than PLY (Niantic, MIT) | Spark 2.3.1 + `.splat` 32 MB (1M splats); 45 fps static, p95 105 ms walking | `.RAD` paged LoD + SPZ (spike E) | All MIT |
+| AR (bonus) | Android Chrome: WebXR AR module, hit-test, anchors, DOM overlay, raw camera access on by default. **iOS Safari: no WebXR** (caniuse, iOS 26.4–27.2). Hosted 8th Wall shut down on 28 Feb 2026; its MIT engine has no SLAM. ARKit geotracking is outdoor-only. VPS: Immersal (web, iOS + Android), MultiSet (WebXR sample), Niantic Spatial (indoor only for pre-scanned spaces) | – | Android WebXR + server-side hloc (DISK/ALIKED + LightGlue) against our COLMAP model, padded with splat-rendered views; ArUco start pose. Backup: Immersal web VPS | hloc Apache-2.0; SuperPoint licence restrictive → use DISK/ALIKED |
 
-## 3. What companies ship today (UNVERIFIED — product-page check pending)
-| Company / product | What it is believed to ship | Borrow / beat |
-|---|---|---|
-| Matterport (Capture app, Pro cameras) | Indoor digital twins, floor plans, web tours; phone capture | Borrow: tour UX, floor plans. Beat: obstacle-aware routing + AR from phone video alone |
-| Polycam | Phone photogrammetry, LiDAR scans, Gaussian splats, floor plans | Borrow: capture UX. Beat: navigation + search on the twin |
-| Niantic (Scaniverse; VPS) | On-device splat capture; visual positioning | Borrow: SPZ compression, VPS idea for AR |
-| Luma AI | Phone capture → radiance fields/splats, web embeds (product focus may have shifted) | Borrow: capture guidance |
-| World Labs (Marble; Spark renderer) | Generated and captured 3D worlds; open-source web splat renderer | Borrow: Spark as our renderer |
-| Meta (Hyperscape capture) | Room capture → photoreal splat worlds on Quest | Benchmark for visual quality |
-| Apple (RoomPlan, Object Capture, ARKit) | Parametric room layouts with furniture categories (LiDAR); on-device photogrammetry | Borrow: RoomPlan-style semantics when LiDAR is present |
-| Google (Maps indoor Live View, ARCore) | AR walking arrows indoors in selected venues | The UX target for our AR bonus |
-| Indoor wayfinding (Pointr, Mapsted, IndoorAtlas, Immersal, MultiSet) | Indoor positioning and routing on maps prepared by operators | Beat: automatic map + routing from a phone capture |
+## 3. What companies ship today ([`companies.md`](companies.md))
+- **No product ships the whole chain** (phone capture → photoreal twin → automatic walkable map → POI search → obstacle-aware route → AR) behind one zero-install link. Two camps don't meet:
+  - **Capture/twin vendors** stop at viewing, measuring and floor plans: Matterport, Polycam, Niantic Scaniverse, KIRI, Luma, Varjo Teleport, Zillow.
+  - **Wayfinding vendors** route over 2D maps built from floor plans or surveys, not over a capture: Pointr, Mapsted, Mappedin, IndoorAtlas, MapmyIndia, BootWay.
+- **Gaussian splats are standard phone-capture output:** Polycam, Scaniverse (on-device; SPZ/PLY), KIRI (3DGS → mesh), Teleport (cloud, 1M–100M splats). None of the pages opened shows navigation on top of the splats.
+- **Turnarounds vendors state:**
+  - Meta Hyperscape: up to 8 h of cloud processing; sharing removed on 12 May 2026.
+  - Matterport floor plans: 2 business days (6 h Express).
+  - Polycam floor plans / Scaniverse splats: on-device.
+  - **Nobody offers same-day capture → shareable link with routing.**
+- **India:** MapmyIndia (indoor maps from floor plans and surveys) and BootWay (QR-code, no-app wayfinding) verified; no named airport/mall/metro deployment verified. **Juspay:** nothing public on spatial/3D (411 blog URLs, 378 GitHub repos checked).
 
-**Gap no one is believed to close in one zero-install link (to verify):** phone video → photoreal splat twin → automatic walkable map → search → floor paths → AR arrows.
+## 4. Where Namma Space fits
+| | Capture/twin vendors | Wayfinding vendors | **Namma Space** |
+|---|---|---|---|
+| Input | Phone/LiDAR/360 capture | Floor plans + surveys | **Phone video** (+ optional marker) |
+| Output | Photoreal tour / splats / floor plan | 2D map + routes (+ AR via VPS) | **Photoreal splat twin + walkable map + POIs + routes** in one link |
+| Routing around real furniture | ✗ | Over the drawn map only | **From the capture's own geometry** (being hardened for R2) |
+| Turnaround | Minutes (on-device) to days | Weeks (mapping projects) | **Target <90 min capture → link** (spike D′) |
 
-## 4. Datasets (VERIFIED by the datasets agent — see [`datasets.md`](datasets.md))
-- Tonight: Deep Blending *drjohnson* (multi-room house, COLMAP poses) via the HF mirror `nvs-bench/deepblending`. The mirror's "MIT" tag is unsupported; the original licence is non-commercial research use, so we don't host a derived twin publicly.
-- Next: Mip-NeRF 360 *room*; ARKitScenes (phone RGB-D + 3D boxes) for geometry and POI ground truth; ScanNet++ needs an agreement signed by the user (steps in `datasets.md`).
+**Borrow:** SPZ + Spark (MIT); splat-transform's collision pipeline (MIT); Meta's three-step capture guidance for the SOP; BootWay-style QR / our ArUco marker as the AR start pose.
+**Beat:** same-day automatic routing over a photoreal capture, with zero install.
 
-## 5. Innovation room (feeds ADR 001)
-1. **Walkable space from capture evidence:** observation rays carve free space and the walked route proves floor connectivity. Spike A.
-2. **Capture-time semantics:** voice tags + door-sign OCR give names that detectors can't infer. Spike B.
-3. **Day-1 turnaround:** per-clip upload and parallel processing; feed-forward posing once verified.
+## 5. Wrong search leads caught (why we verify)
+1. "MapAnything and Depth Anything 3 have no open release" — **false**; both have Apache-2.0 code on GitHub (`sources_verified` TSV).
+2. "Pi3 / VGGT-Long have no arXiv listing" — **false** per the research files.
+3. Meta Hyperscape "share with up to 8 users" — sharing was **removed on 12 May 2026** (Meta help page).
+4. Indian airports "among the first" indoor-wayfinding deployments — **UNVERIFIED**, no primary source.
+5. Luma "Flythroughs sunset on 1 Jan 2026" — **UNVERIFIED** (third-party blog only).
+6–7. Three more are recorded in [`sota-navigation-semantics-ar.md`](sota-navigation-semantics-ar.md#wrong-leads-caught).
 
-## 6. Sources opened tonight (accessed 2026-10-04)
-- Official statement: `_briefs/namma-space.txt` (Techfest 2026-27, Namma Space).
-- Brush releases (GitHub API `repos/ArthurBrussee/brush/releases`): tags v0.3.0 (2025-09-14), 0.2.0 (2025-01-30); assets include `brush-app-aarch64-apple-darwin.tar.xz`. Brush CLI help and PLY header from the downloaded v0.3.0 binary.
-- Homebrew formula metadata: `brew info colmap` → "colmap: stable 4.2.0 (bottled) — Structure-from-Motion and Multi-View Stereo — https://colmap.github.io/".
-- pycolmap 4.2.1 (installed from PyPI via `uv pip install pycolmap`; version printed by `pycolmap.__version__`).
-- Hugging Face API: `datasets/nvs-bench/deepblending` (file tree: `drjohnson/images`, `drjohnson/sparse/0`; README front-matter `license: mit`).
-- Azure CLI `az vm list-usage` (quotas: 0 for NCASv3_T4 and NDASv4_A100; legacy NC/NV families 18 vCPU).
-- [`datasets.md`](datasets.md): its own source list.
+## 6. Innovation room → ADR 001 v2
+- **Spike D′:** quality-qualified capture → link in under 90 min. Nobody offers it same-day; the levers are verified (Brush `main`, per-clip streaming, on-site QA, feed-forward posing on a GPU).
+- **Spike E:** fidelity-constrained delivery (`.RAD` paged LoD, SPZ, render budget).
+- **R2 baselines:** collision from dense splats (splat-transform) + Recast arm, measured on real geometry; training-free POIs (SAM 3 / YOLOE + VLM + OCR + voice tags).
