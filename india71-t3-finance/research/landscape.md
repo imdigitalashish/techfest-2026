@@ -124,6 +124,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 - **[P20]** DBT Mission / NPCI, "Aadhaar Payments Bridge (APB) System — Standard Operating Procedure", v3.0.2 (Feb 2021), §2 and note (a). https://dbtbharat.gov.in/data/dbt_payments/Standard-Operating-Procedure-of-Aadhaar-Payments-Bridge-(APB).pdf — opened 2026-10-04.
 - **[P21]** iSPIRT, `depa-training` repository (README; GitHub API: 18 stars, pushed 2026-08-12, CC0-1.0). https://github.com/iSPIRT/depa-training — opened 2026-10-04.
 - **[P22]** PIB (Ministry of Home Affairs), "I4C and RBIH Sign MoU to Strengthen AI-Driven Detection of Mule Accounts and Cyber Financial Frauds", 12 May 2026. https://pib.gov.in/PressReleasePage.aspx?PRID=2260277 — opened in a browser 2026-10-04.
+- **[P23]** Digital Personal Data Protection Rules, 2025, G.S.R. 846(E), 13 Nov 2025 — rule 16 ("The provisions of the Act shall not apply to the processing of personal data necessary for research, archiving or statistical purposes if it is carried on in accordance with the standards specified in Second Schedule") and the Second Schedule standards (lawful processing; purpose limitation; minimisation; reasonable efforts for accuracy; retention only while required; reasonable security safeguards; for s.7(b) processing, intimation to the Data Principal). https://www.meity.gov.in/static/uploads/2025/11/53450e6e5dc0bfa85ebd78686cadad39.pdf (linked from PIB PRID 2190655) — opened 2026-10-04.
 - **[P0]** Official problem statement, The India @71/100 Challenge, Techfest 2026-27 — `_briefs/india71.pdf`.
 - **[S]** News coverage seen in search results 2026-10-04, not checked against primaries: The Hindu BusinessLine and Economic Times on RBI FI-Index FY25 = 67.0 (from 64.2) and weights Access 35% / Usage 45% / Quality 20%.
 
@@ -133,7 +134,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 2. ~~FI-Index values~~ (done: [P5], [P6]); still to open: the Aug 2021 methodology release (weights, 97 indicators — currently [S]).
 3. NFHS-5 / NFHS-4: women having a bank or savings account they themselves use (national, state, district) — overnight download was truncated.
 4. ~~RBI circular on inoperative accounts~~ (done: [P8]).
-5. ~~DPDP Act ss. 7, 8, 10, 17; Rules and commencement; Aadhaar Act s. 29; UIDAI ADV~~ (done: [P13]–[P16]); still open: NPCI mapper consent rules; the DPDP Rules' standards for s. 17(2)(b) processing.
+5. ~~DPDP Act ss. 7, 8, 10, 17; Rules and commencement; Aadhaar Act s. 29; UIDAI ADV~~ (done: [P13]–[P16]); NPCI mapper consent (done: [P20]); DPDP Rules' standards for s. 17(2)(b) (done: [P23], rule 16 + Second Schedule).
 6. Done 4 Oct 14:30 IST: AePS [P18], NPCI mapper consent and routing [P20], BC Sakhi [P19], MuleHunter.AI deployment [P22] (bank count still UNVERIFIED), FI-Index weights [P17], DEPA [P21]. Still UNVERIFIED: Hello! UPI (NPCI URLs 404), IPPB figures.
 7. DBT Bharat totals (FY 2024-25, 2025-26) — the dashboard is client-rendered; needs a browser.
 8. Outcomes of the Jul–Sep 2025 saturation campaign (PIB/DFS).
