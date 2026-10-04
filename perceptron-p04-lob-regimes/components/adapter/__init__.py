@@ -11,7 +11,8 @@ Head kinds: static | sgd(lr) | periodic(every, window) | alarm_refit(window, min
 Combiner: single | gate | fixed_share(eta, alpha)
 Detectors: ks (naive) | ksc (calibrated, v1 feature set) | ksc:<set> (calibrated, cfg["ks_sets"][set])
            | ph (Page-Hinkley on loss) | harm (HarmCUSUM: delayed loss in excess of ln 2)
-on_alarm: refit | boost.  Policies with "wf": True are run with per-day walk-forward contexts
+on_alarm: refit | boost | shrink (p -> 0.5 + lam*(p - 0.5) for `steps` steps; with shrink, the harm
+gate monitors the *raw* (unshrunk) model, so abstention lasts as long as the model stays harmful).  Policies with "wf": True are run with per-day walk-forward contexts
 (heads and scalers refit on all days strictly before the evaluated day; see refit_context).
 """
 from __future__ import annotations
@@ -60,6 +61,19 @@ POLICIES.update({
     "static_wf":    dict(norm="static", heads=[("static",)], wf=True),
     "spike_wf":     dict(norm="ewma", heads=_FS + [("coin",)], combine="fixed_share",
                          detectors=["ksc:lean", "harm"], on_alarm=["boost"], wf=True),
+})
+
+# v2 Amendment 1 (post-dev revision, frozen before the holdout run): regime gate + harm-gated abstention;
+# the calibrated KS is kept as a label-free audit signal (it raises alarms but takes no action).
+_GATE = [("regime", 0), ("regime", 1), ("regime", 2)]
+POLICIES.update({
+    "spike_gate":    dict(norm="ewma", heads=_GATE, combine="gate", detectors=["ksc:lean", "harm"],
+                          on_alarm=["shrink"], audit_only=["rolling_ks_calibrated"],
+                          shrink={"lam": 0.5, "steps": 300}, harm={"threshold": 20.0, "cooldown": 60}),
+    "regime_gated_wf": dict(norm="ewma", heads=_GATE, combine="gate", wf=True),
+    "spike_gate_wf": dict(norm="ewma", heads=_GATE, combine="gate", detectors=["ksc:lean", "harm"],
+                          on_alarm=["shrink"], audit_only=["rolling_ks_calibrated"],
+                          shrink={"lam": 0.5, "steps": 300}, harm={"threshold": 20.0, "cooldown": 60}, wf=True),
 })
 
 
@@ -206,9 +220,18 @@ def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
     alarms = []
     w_trace = np.zeros((T // 60 + 1, K))
 
+    shrink_cfg = spec.get("shrink", {"lam": 1.0, "steps": 0})
+    shrink_until = -1
+    p_raw = p.copy()
+    audit_only = set(spec.get("audit_only", []))
+
     def fire(al):
-        nonlocal pending, alarm_step, boost_until
+        nonlocal pending, alarm_step, boost_until, shrink_until
         alarms.append(al)
+        if al.detector in audit_only:
+            return
+        if "shrink" in on_alarm:
+            shrink_until = al.step + shrink_cfg["steps"]
         if "refit" in on_alarm and alarm_heads:
             alarm_step = al.step
             pending = al.step + H + kinds[alarm_heads[0]][2]
@@ -227,6 +250,9 @@ def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
             for k in live:
                 P[t, k] = heads[k].predict(z)
             p[t] = float(w @ P[t]) if combine == "fixed_share" else P[t, 0]
+        p_raw[t] = p[t]
+        if t <= shrink_until:
+            p[t] = 0.5 + shrink_cfg["lam"] * (p[t] - 0.5)
         t1 = perf()
 
         j = t - H
@@ -242,7 +268,7 @@ def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
                 if kind[0] == "sgd":
                     heads[k].sgd_update(Z[j], yj, kind[1], cfg["sgd_l2"], prior)
             if ph is not None or harm is not None:
-                pj = min(max(p[j], 1e-12), 1 - 1e-12)
+                pj = min(max((p_raw if "shrink" in on_alarm else p)[j], 1e-12), 1 - 1e-12)
                 lj = -np.log(pj if yj > 0.5 else 1.0 - pj)
                 for det in (ph, harm):
                     if det is not None:

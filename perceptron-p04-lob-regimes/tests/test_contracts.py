@@ -121,6 +121,14 @@ def test_adapter_never_reads_labels_before_available():
     q2 = run_episode("t2", f, L2, ctx, spec2).p_up
     np.testing.assert_allclose(q1[: s + H + 1], q2[: s + H + 1])
     assert not np.allclose(q1[s + H + 1:], q2[s + H + 1:])
+    # Amendment-1 path: regime gate + harm-gated shrink toward 0.5
+    spec3 = {"norm": "ewma", "heads": [("regime", 0), ("regime", 1), ("regime", 2)], "combine": "gate",
+             "detectors": ["harm"], "on_alarm": ["shrink"], "shrink": {"lam": 0.0, "steps": 50},
+             "harm": {"threshold": 2.0, "cooldown": 10}}
+    r1 = run_episode("t3", f, L1, ctx, spec3)
+    r2 = run_episode("t3", f, L2, ctx, spec3)
+    np.testing.assert_allclose(r1.p_up[: s + H + 1], r2.p_up[: s + H + 1])
+    assert len(r2.alarms) > 0 and np.any(r2.p_up == 0.5)
 
 
 def test_detectors_fire_on_obvious_shift_and_not_on_iid():

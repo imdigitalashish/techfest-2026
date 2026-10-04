@@ -22,7 +22,9 @@ CFG_V2.update({
     # thresholds = 0.999 quantile of the leave-one-train-day-out null (CFG["ksc"]).
     "ks_sets": {"lean": ["spread_ticks", "rv_60s_bps", "ofi1_5s_n", "qi1", "ret_5s_bps"]},
     # Harm gate defaults; threshold and boost length are chosen on dev by the pre-registered rule.
-    "harm": {"k": 0.0, "threshold": 20.0, "min_n": 60, "cooldown": 600},
+    # Amendment 1: H = 10, B = 600 selected on dev by the pre-registered rule (eval/results/v2_dev.md).
+    "harm": {"k": 0.0, "threshold": 10.0, "min_n": 60, "cooldown": 600},
+    "fs_boost_steps": 600,
     "gbdt": {"stride": 4, "max_iter": 200, "learning_rate": 0.05, "max_leaf_nodes": 31, "l2": 1.0},
     "wf_stride": 10,  # = horizon, so walk-forward refits see non-overlapping labels
     "exec_delays_ms": [0, 100],
@@ -32,5 +34,8 @@ CFG_V2.update({
                      "spike", "static_gbdt"],
     "policies_holdout": ["static_snorm", "static_wf", "ks_refit", "ksc_refit", "periodic_refit", "online_sgd",
                          "regime_gated", "fixed_share", "fs_coin", "fs_coin_harm", "spike", "spike_wf",
-                         "static_gbdt", "spike_gbdt"],
+                         "static_gbdt", "spike_gbdt", "spike_gate", "spike_gate_wf", "regime_gated_wf"],
+    # Top-decile rule: tau taken from the dev run of the same (or, for walk-forward variants, the fixed) policy.
+    "tau_alias": {"spike": "spike_H10_B600", "spike_wf": "spike_H10_B600", "spike_gate": "gate_L0.5_H20_B300",
+                  "spike_gate_wf": "gate_L0.5_H20_B300", "regime_gated_wf": "regime_gated", "static_wf": "static_snorm"},
 })

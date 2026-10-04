@@ -126,11 +126,14 @@ def main() -> int:
     MV = np.concatenate([days[d][1].move_bps for d in eval_days])
     LL = {n: np.concatenate([pointwise_logloss(preds[(n, d)], days[d][1].y) for d in eval_days]) for n in specs}
     PP = {n: np.concatenate([preds[(n, d)] for d in eval_days]) for n in specs}
-    refs = [r for r in ("static_snorm", "ks_refit", "static_wf") if r in specs]
+    refs = [r for r in ("static_snorm", "ks_refit", "regime_gated", "static_wf") if r in specs]
     fees = CFG_V2["fees_bps"]
     tau = {}
-    if a.stage == "holdout" and (OUT / "v2_dev.json").exists():
-        tau = json.loads((OUT / "v2_dev.json").read_text()).get("tau_top_decile", {})
+    if a.stage == "holdout":
+        for f_ in ("v2_dev.json", "v2_dev_amend1.json"):
+            if (OUT / f_).exists():
+                tau.update(json.loads((OUT / f_).read_text()).get("tau_top_decile", {}))
+        tau.update({k: tau[v] for k, v in CFG_V2.get("tau_alias", {}).items() if v in tau})
     summary = {}
     for n in specs:
         s = score(PP[n], Y, MV)

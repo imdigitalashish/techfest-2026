@@ -91,4 +91,27 @@ Walk-forward policies (`*_wf`) refit scalers and heads for each evaluated day on
 - No verified scheduled events on holdout days.
 
 ## Amendments
-_(none yet)_
+
+### Amendment 1 — 2026-10-04 ~12:10 IST (after the dev runs; the holdout had not been run or read)
+1. **Selection by the registered rule (§8).** Results in `eval/results/v2_dev.md`. H = 10 and B = 600 had the lowest dev pooled log-loss among the 6 variants (0.6562). They are written into `CFG_V2` and apply to every Fixed-Share + harm policy: `spike`, `spike_wf`, `spike_gbdt`, `fs_coin_harm`.
+2. **What dev showed** (dev only):
+   - Plain volatility-regime gating reached 0.6489, −0.0125 vs static, better on 12/12 days.
+   - The Fixed-Share mixture was weaker (0.6559), and adding the abstain expert made it worse (0.6580).
+   - The textbook KS→refit was worse than static on 12/12 days (+0.0216).
+   - In the FOMC window (2024-05-01) every model was worse than a coin flip (0.6954–0.7396).
+3. **Post-dev revision `spike_gate`, added before the holdout run.** It combines:
+   - the volatility-regime gate (C7);
+   - a harm gate that shrinks p toward 0.5 while the *raw* gated model's CUSUM of (loss − ln 2) is alarmed;
+   - the calibrated lean KS, as audit only (it raises alarms but takes no action).
+
+   Grid (`eval/tuning_v2_amend1.json`, results in `eval/results/v2_dev_amend1.md`): λ ∈ {0, 0.5} × H ∈ {5, 10, 20} × B ∈ {300, 1800}. The §8 rule selected **λ = 0.5, H = 20, B = 300** (dev 0.6492).
+
+   **Stated in advance:** on dev this does *not* beat plain regime gating (0.6492 vs 0.6489). Its dev benefit is confined to the FOMC window, where it scores 0.6988 vs 0.6992 for plain gating, and down to 0.6925 for more aggressive settings at a cost to the average.
+4. **Added holdout hypotheses** (secondary, labelled post-dev; same test, 97.5% day-cluster CI):
+   - **H1b:** `spike_gate` < `static_snorm`.
+   - **H2b:** `spike_gate` < `ks_refit`.
+   - **H3:** `spike_gate` < `regime_gated` (expected null on the dev evidence).
+
+   Also reported: `regime_gated` against all references.
+5. **Holdout policy list** gains `spike_gate`, `spike_gate_wf` and `regime_gated_wf`. Thresholds τ for the top-decile rule come from the dev runs (`tau_alias` in `CFG_V2`). Policies without a dev counterpart (`spike_gbdt`) get no top-decile rule.
+6. **Nothing else changed.** H1 and H2 (the registered `spike`) remain the primary hypotheses.

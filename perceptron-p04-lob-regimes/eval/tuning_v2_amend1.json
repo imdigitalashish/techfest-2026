@@ -1,0 +1,434 @@
+{
+ "gate_L0_H5_B300": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.0,
+   "steps": 300
+  },
+  "harm": {
+   "threshold": 5.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0_H5_B1800": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.0,
+   "steps": 1800
+  },
+  "harm": {
+   "threshold": 5.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0_H10_B300": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.0,
+   "steps": 300
+  },
+  "harm": {
+   "threshold": 10.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0_H10_B1800": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.0,
+   "steps": 1800
+  },
+  "harm": {
+   "threshold": 10.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0_H20_B300": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.0,
+   "steps": 300
+  },
+  "harm": {
+   "threshold": 20.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0_H20_B1800": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.0,
+   "steps": 1800
+  },
+  "harm": {
+   "threshold": 20.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0.5_H5_B300": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.5,
+   "steps": 300
+  },
+  "harm": {
+   "threshold": 5.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0.5_H5_B1800": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.5,
+   "steps": 1800
+  },
+  "harm": {
+   "threshold": 5.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0.5_H10_B300": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.5,
+   "steps": 300
+  },
+  "harm": {
+   "threshold": 10.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0.5_H10_B1800": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.5,
+   "steps": 1800
+  },
+  "harm": {
+   "threshold": 10.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0.5_H20_B300": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.5,
+   "steps": 300
+  },
+  "harm": {
+   "threshold": 20.0,
+   "cooldown": 60
+  }
+ },
+ "gate_L0.5_H20_B1800": {
+  "norm": "ewma",
+  "heads": [
+   [
+    "regime",
+    0
+   ],
+   [
+    "regime",
+    1
+   ],
+   [
+    "regime",
+    2
+   ]
+  ],
+  "combine": "gate",
+  "detectors": [
+   "ksc:lean",
+   "harm"
+  ],
+  "on_alarm": [
+   "shrink"
+  ],
+  "audit_only": [
+   "rolling_ks_calibrated"
+  ],
+  "shrink": {
+   "lam": 0.5,
+   "steps": 1800
+  },
+  "harm": {
+   "threshold": 20.0,
+   "cooldown": 60
+  }
+ }
+}
