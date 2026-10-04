@@ -239,3 +239,10 @@ Added `tests/` (43 pass): DST-safe 16:00 ET alignment, contract rejection, brute
   - The worst of 53 variants per stock-day takes plain CQR from 86.7% to 84.7%, i.e. ~2% of stock-days flip.
   - So a "wildly swinging forecast" would be dishonest. The demo instead shows honestly selected vulnerable days plus the population numbers.
 - The Supervisor's hypothesis is adopted, with that honesty constraint and a "judge as manipulator" framing.
+- **17:45 IST — builder's plan "Break the band" APPROVED.** The manipulator console plus four upgrades:
+  - A: "which posts could flip this", from `oracle_grid`;
+  - B: a live red-team of 2,000 random within-budget attacks, 0 containment violations expected;
+  - C: the judge's attack replayed on all 16,443 stock-days, which lands on committed numbers;
+  - D: deletion-box bars.
+- **Builder's probe:** 327 stock-days (2.0%) are flippable by ≤ 3 posts; 207 of them have zero real posts (exploratory). I required the base rate of silent days to be shown next to it.
+- **My other steers:** a meaningful first visual; k = 0 on the knob; attribution; `smoke.sh` ≤ ~3 min and non-zero on mismatch; the reviewer is the last allowed child.
