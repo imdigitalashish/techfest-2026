@@ -90,8 +90,17 @@ _(pending)_
 **Breakdown point of trimmed mean/median — explicit concept search:** I did not find, in this session's searches, a crisper arXiv title specifically proving a classical "breakdown point = ⌊(n-1)/2⌋ for median, trim fraction α ⇒ breakdown (close to) α for trimmed mean"-style statistics-textbook result as its own paper (this is usually textbook/robust-statistics material, e.g. Huber/Tukey-era results, not an arXiv-era paper) — Yin et al. 2018 is the strongest **modern, ML-context, citable, arXiv-available** primary source found for the quantitative version of this bound applied to high-dimensional learning. Flag: a robust-statistics textbook reference (Huber & Ronchetti, *Robust Statistics*) would be the classical primary source for the pure breakdown-point number but was not opened this session (not an arXiv/web source) — **UNVERIFIED, textbook not opened.**
 
 ### 2.5 Explicit prior-art searches (hit / nothing-found log)
+_Completed by the P10 lead, 4 Oct 2026 ~13:45 IST (gpt-6-astra review item #5). arXiv API (`export.arxiv.org/api/query`), sorted by submission date, newest first, max 6 results per query; titles and abstracts opened via `id_list` for any plausible hit. This is a bounded search, not a systematic review._
 
-_(pending)_
+| Query (arXiv API `search_query`) | Hits | Relevant? |
+|---|---|---|
+| `abs:"conformal prediction" AND abs:adversarial AND abs:"time series"` | 2: arXiv:2609.38196 (CAGE, Sep 2026); arXiv:2205.09095 (Rolling Risk Control) | No. CAGE's "adversarial" is a GAN-style discriminator inside a forecast ensemble. Rolling RC's "adversarially" is about adversarial distribution shift, with a long-run (ACI-type) guarantee and no per-input certification. |
+| `abs:conformal AND abs:sentiment AND abs:stock` | 0 | — |
+| `abs:"robust conformal" AND abs:regression` | 2: RCP1 (arXiv:2506.16553), VRCP (arXiv:2405.18942) | Closest regression prior art (already in §2.1). Threat models are randomized/verified ℓp perturbations of a single input, not a document budget. |
+| `abs:conformal AND abs:injection AND abs:documents` | 6, all off-topic ("conformance" testing, MT metrics, agent guardrails) | No. |
+| `abs:conformal AND abs:multimodal AND abs:robust AND abs:adversarial` | 0 | — |
+
+**Conclusion (hedged):** in these searches and in §2.1–2.4, no conformal method certifies coverage against a budget of *injected documents* feeding a text-and-time-series regressor. P10 therefore claims a specialisation — robust conformal verification applied to document-injection budgets through tractable deletion ranges — not a new robust-coverage principle and not first-in-literature status.
 
 ---
 
