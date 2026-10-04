@@ -148,6 +148,13 @@ def main():
         put("bb_A_block_ref_in", "inside" if b_["halves_A"]["block_ref_in_ci"] else "outside", "obd_block_bootstrap.json halves_A block CI vs reference")
         put("bb_dm_cons", "consistent" if b_["dm_refit"]["consistent"] else "inconsistent", "obd_block_bootstrap.json dm_refit.consistent")
 
+    # ---- review scores + selection-memo scores (lead-recorded in reviews/scores.json, sourced from the review files) ----
+    sc_path = ROOT / "reviews" / "scores.json"
+    if sc_path.exists():
+        sc = json.loads(sc_path.read_text())
+        for k, v in sc["display"].items():
+            put(k, str(v), f"reviews/scores.json ({sc['source'].get(k, 'lead decision')})")
+
     # ---- C6 ratchet ----
     led = pd.read_csv(ROOT / "components" / "delta_estimator" / "autoresearch" / "results.tsv", sep="\t")
     put("ratchet_baseline", f"{led.iloc[0]['metric(nRMSE,dev)']:.3f}", "autoresearch/results.tsv baseline")

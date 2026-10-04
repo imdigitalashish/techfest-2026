@@ -18,11 +18,12 @@
   4. **Cross-model reviews** as child sessions: gpt-6-astra (max) as hostile judge; gpt-6-sol (max) on code/eval, including reproducing the headline numbers. Recorded in `reviews/` and `reviews/ledger.tsv`.
   5. **Final selection memo** (an honest case versus P7, P9, P1 and P4), thought node current, pushed, then "DONE — slot free".
 - **Rules in force:** child sessions only (at most 2 at a time); never `git stash` or `--autostash`; start heavy jobs only when `kern.memorystatus_level` ≥ 30, under `nice -n 10`, one at a time, pausing below 25; keep network requests small.
-- **Doing (13:45 IST):**
-  - Steps 1 and 2 are done, plus an overlap gate, and the abstract has been rendered from results.
-  - Step 4 is running: child sessions "P3 hostile judge (gpt-6-astra, max)" and "P3 code/eval reviewer (gpt-6-sol, max)". Both write only to `reviews/`.
-  - The lead is writing the selection memo, ADR addendum and ledger.
-- **Next:** process both reviews (ACCEPTED/REJECTED in `reviews/ledger.tsv`) → apply fixes → re-render, check_docs PASS → final memo → push → "DONE — slot free".
+- **Doing (2026-10-04 14:20 IST):** Both reviews are processed (all 23 items accepted, some partly or deferred; `reviews/2026-10-04-dispositions.md`). Abstract v3 is rendered (890 words, 0 untraced numbers). Waiting on gpt-6-astra's re-score of v3, then the final memo and DONE.
+- **Next (after DONE; dated):**
+  1. By 10 Oct: the 2×2 nuisance-correctness test for the DR mix term (A9); the OBD environment interval (C8) on the next OBD run; a paired DR + ordinary-diagnostics baseline (A12).
+  2. 15 Oct: protocol freeze (estimands, gate, metrics).
+  3. By 24 Oct: held-out OBD campaigns (Men/Women, unseen).
+  4. 28 Oct: final submission.
 - **Needs from user:** Register by 15 Oct if P3 is chosen. Teammates' names and skills for the team-fit section.
 - **Risks:**
   - On real data the BTS−Random difference may be too small, or IPW too noisy, to be conclusive. We report it either way, as pre-registered.
@@ -63,6 +64,11 @@
   - The OBD check is labelled POST-HOC because its outcomes had been seen.
 - 2026-10-04 13:36 — **Decomposer v1:** a 2×2 Shapley attribution with an interaction term replaces the environment-first ordering as the headline. The mix term gets a doubly robust (density-ratio) option. v0 is kept for the frozen bank.
 - 2026-10-04 — **Identification limit stated:** with policy-induced audience change (feedback), the logs identify the direct effect only. The total effect is reported as not identified.
+- 2026-10-04 14:20 — **After the cross-model reviews** (astra 59/100 pre-fix; sol 44/44 numbers reproduced):
+  - Primary estimand = the after-period contrast on observed traffic; the Shapley attribution is secondary. The ordered mix split is labelled as belonging to the old-policy ordering.
+  - "0.1% accuracy" is withdrawn (approximate target). "Truth" is renamed "concurrent arm difference / reference".
+  - The gate is labelled exploratory, with a pre-registered held-out validation (criteria met).
+  - The novelty claim is reframed as integration.
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
@@ -191,3 +197,18 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Insight: on OBD every 2×2 needs one cell estimated from Thompson-sampling logs, which are greedy and fail the gate. So the Shapley term is never estimable there, while the single-ordering effect from the Random logs is.
 - **Abstract wording fixed before review:** DR's interval in the deploy case (+1.40 ± 0.27 per 1,000) holds the truth, but also still contains the dashboard number (+1.62); the abstract now says so. Framing added: OPE supplies the control arm a difference-in-differences would need.
 - **Added:** `deliverables/evidence-map.md` (criteria → evidence); `eval/demo_verdicts.py` (will run once the reviewer's OBD job finishes; one heavy job at a time). Tests: 13 pass.
+
+### 2026-10-04 14:20 IST — Cross-model reviews processed; fixes applied; abstract v3
+- **gpt-6-astra (hostile, max):** 59/100 (2.95/5), "would not shortlist this version". 14 issues (2 blockers). **gpt-6-sol (code, max):** all 44 abstract numbers reproduced byte-identically; 9 issues (2 blockers). All 23 items were accepted; some are partly done or deferred (`reviews/2026-10-04-dispositions.md`; `reviews/ledger.tsv`).
+- **Fixes:**
+  - Gate endpoints separated: S1 non-rejection vs reference-in-CI vs confident wrong sign; distinct instances counted. The 25 Nov rollback row now shows S1 passing while the CI misses the reference.
+  - "0.1% accuracy" withdrawn.
+  - Raw-label evidence for the balance flag: one category per feature carries a different raw label in each file with matching shares. Left UNRESOLVED; the OBD README calls the data an A/B test.
+  - True ungated baseline. Fixed gate guards (zero rewards, non-finite diagnostics). Hidden-override V(before, new) truth fixed. Shapley environment interval added. DR mix residuals cross-fitted (decomposer review re-run; DR-mix bias −0.02 vs DM +0.57 points).
+  - Hour-block bootstrap and DM refit, both post hoc: block intervals are wider, e.g. ±0.42 vs ±0.27 per 1,000 for the deploy case, and all references stay inside. DM consistency becomes yes once the model is refitted.
+- **Pre-registered held-out gate validation** (commit d9de82e at 14:10:45, before results; 1,536 runs on unseen worlds 101/202 with positive, near-null and harmful effects, 10/40 actions, 5k/20k rows):
+  - The gate answers 53%; coverage among answered 0.943 vs 0.914 ungated; coverage on abstained runs 0.882.
+  - Confident wrong-sign answers: 0 with or without the gate, so the gate's decision benefit is not shown on these worlds.
+  - Pre-registered criteria: met.
+- **Abstract v3** (890 whitespace words; check_docs 0 untraced): separate estimands, approximate-target wording, gate endpoints and abstention on the flagship case, held-out result, explicit units, integration framing (Lee 2026 and OPEN cited after opening their arXiv records), dated milestones.
+- **Re-score of v3 requested** from the same gpt-6-astra session.

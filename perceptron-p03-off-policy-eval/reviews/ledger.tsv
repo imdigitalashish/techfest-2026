@@ -1,1 +1,3 @@
 date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	round1-abstract + decomposer (pinned 5ab7b67)	gpt-6-astra	max	14 (2 blocker, 11 major, 1 minor)	14 (A7/A8/A9/A14 partly; A9 nuisance matrix deferred)	0	hostile score 59/100 (2.95/5) pre-fix; fixes in abstract v3 (2371208); dispositions in reviews/2026-10-04-dispositions.md
+2026-10-04	code + eval + reproduction	gpt-6-sol	max	9 (2 blocker, 4 major, 3 minor)	9 (C8 OBD part deferred)	0	44/44 abstract numbers reproduced byte-identical (+1 recomputed); DM refit and gate guards confirmed
