@@ -39,7 +39,10 @@
 - 2026-10-04 — **Apple-silicon path for Round 1**: Brush v0.3.0 (Metal) for 3DGS and pycolmap 4.2.1 for SfM I/O. Azure GPU quota is 0 for modern families, so CUDA tools wait for the quota ask.
 - 2026-10-04 — **Public E2E scene: Deep Blending *drjohnson*** (HF mirror `nvs-bench/deepblending`). Its original licence is non-commercial research only (see [research/datasets.md](research/datasets.md)), so we don't host a derived twin publicly.
 - 2026-10-04 — **Navigation frame:** aligned, y-up, metres, floor at y = 0; NavGrid with 5 cm cells; agent radius 0.25 m, height 1.70 m, step 0.15 m. Without a marker, scale comes from a camera-height prior (default 1.5 m, labelled ASSUMED).
-- 2026-10-04 — **Spike candidates** (ADR 001 in progress): (A) walkable space from fused capture evidence (sparse points + free-space ray carving + the walked trajectory); (B) capture-time semantic tagging (voice tags + door-sign OCR → POIs). Everything else stays best practice.
+- 2026-10-04 — **Spike candidates superseded:** see the ADR 001 v2 entry below.
+- 2026-10-04 10:30 — **ADR 001 v2: spikes are D′ (quality-qualified capture→twin turnaround) and E (fidelity-constrained first-person delivery).** Walkable space and POIs become honestly measured R2 baselines. Trigger: two independent reviews (rubber-duck; gpt-6-astra max) + leak-free evals v2/v3 showing no evidence-fusion gain.
+- 2026-10-04 — **Path-safety metric = eval v3** (`eval/nav_eval_v3.py`): frozen reference grid, verified-free endpoints, full-polyline swept check, all pairs, Wilson CIs, paired sign tests. v1/v2 numbers are historical only.
+- 2026-10-04 — Search answers are leads only (one claimed MapAnything / Depth Anything 3 were unreleased; GitHub shows Apache-2.0 releases). Every SOTA claim is verified on arXiv/GitHub/project pages.
 - 2026-10-04 — SOP v1.0 published (gate). Novel elements: voice tags, the walked route as walkable evidence, and a camera-height scale fallback.
 
 ## Components
@@ -62,13 +65,13 @@
 
 ## Selection memo
 _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (portfolio prioritisation). Score each 1–5 with one line of evidence._
-- **Winnability: 4/5.** The rubric rewards a complete pipeline. Tonight, photos → 3DGS → alignment → walkable grid → A* ran end-to-end on a public multi-room scene on a laptop GPU (`eval/results/drjohnson_nav.json`). The main threat is teams that wrap commercial apps (Polycam/Luma) for visual polish.
-- **Innovation headroom: 4/5.** Spike A (walkable space from fused capture evidence) vs. the obvious points-only occupancy: held-out camera positions inside the navigable map rose from 0.788 → 0.970 on drjohnson (first run; see Log for caveats). Spike B (voice tags + door-sign OCR → POIs) targets Day-1 annotation time; it is designed but not yet built.
-- **Feasibility by the deadline: 4/5.** No CUDA needed for Round 1: Brush on Metal ran 15k steps in 36.9 min on the shared M5, and the navigation stack runs on CPU (grid 0.2–39 s, A* median 13–41 ms). Round 2 by 17 Nov is realistic; AR is the stretch.
-- **Demo strength: 5/5.** Walk a twin, search "sofa", watch the route bend around furniture; AR arrows on-site for the bonus.
-- **Fit with the user's strengths: 3/5.** Systems and frontier models map onto pipeline orchestration, cloud turnaround and VLM-based POIs/search. 3D vision itself is new territory.
-- **Biggest risk:** visual quality and Day-1 turnaround without a CUDA GPU, and path safety. In run 2, 25% (points only) to 37.5% (with the trajectory prior) of held-out paths pass within 15 cm of the dense 3DGS proxy; the ratchet targets recall at a fixed collision budget.
-- **One-line pitch:** "Walk your space once with a phone and say what's there. Get a link where anyone can walk it, search it and be routed around the sofa — and on-site, follow arrows through the camera."
+- **Winnability: 4/5.** The rubric rewards a complete pipeline. One command now runs from raw photos to a deployable site on a laptop: own SfM 99.6% registered, splats on Metal, alignment, NavGrid, viewer (`components/orchestrator/run_pipeline.py`). The threat is teams wrapping commercial apps (Polycam/Luma) for visual polish.
+- **Innovation headroom: 3/5.** After two independent reviews and a leak-free re-evaluation, the v1 spike (walkable space from capture evidence) showed **no measurable gain**: eval v3, all 406–435 pairs, CFC 0.45–0.50 for every variant; paired sign tests p ≥ 0.06. ADR 001 v2 moves the spikes to **D′ quality-qualified capture→twin turnaround** (on-site QA + streaming; S_T scalar) and **E fidelity-constrained viewer delivery** (S_V scalar). Both are measurable and judge-weighted, but more engineering than novel.
+- **Feasibility by the deadline: 4/5.** No CUDA needed for R1. SfM 6 min + Brush ≈37 min on the shared M5; CPU navigation in seconds. R2 by 17 Nov is realistic; AR is the stretch.
+- **Demo strength: 5/5.** Walk the twin, search "sofa", follow the route; on Day 1, "capture → link in under 90 min" is itself the demo.
+- **Fit with the user's strengths: 3/5.** Systems and frontier models map onto pipeline orchestration, cloud turnaround and VLM-based POIs. 3D vision itself is new territory.
+- **Biggest risk:** (1) R1 depends on the user's own capture (phone unknown; SOP untested in the field). (2) Viewer hitching while walking (p95 105 ms vs a 20 ms budget). (3) Path safety: about half of the routes pass within 0.275 m of dense geometry, because the sparse-point map misses thin obstacles. R2 fix: dense-splat obstacles, judged on a real-geometry scene.
+- **One-line pitch:** "Walk your space once with a phone. Within the hour, anyone can walk it from a link, search it and be routed around the sofa — and on-site, follow arrows through the camera."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -117,3 +120,13 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Own SfM (E2E run, raw drjohnson photos):** global mapper, 262/263 registered (99.6%), 0.661 px, 12,316 points (vs 80,861 in the shipped model); 360 s (SIFT on CPU 219 s · matching 115 s · mapping 23 s · undistortion 3 s). Brush training is running.
 - **Path-safety eval v2** (`eval/nav_eval_v2.py`, `eval/results/drjohnson_nav_v2.json`; buffered hold-out ±2 frames, snap ≤0.25 m, connectors checked, clearance at the 0.25 m agent radius): **all four evidence variants are within noise**. CFC@0.25: A 0.600/0.600/0.600/0.600, B 0.625/0.600/0.650/0.600 (points / +carving / +trajectory / full). Buffered recall 0.85–0.91. Proxy noise floor 15–18%. **Conclusion: the 0.788→0.970 recall gain reported earlier was mostly hold-out leakage through adjacent frames.** The 1st reviewer was right. Spike A has no demonstrated advantage yet → ADR 001 is being revised (waiting for the gpt-6-astra opinion).
 - Added: `README.md` (setup, run, layout, credits), `setup.sh`, `process_capture.sh` (drop-in for the user's capture), `components/orchestrator/deploy_azure.sh`, `test_data/` (fetch script + README), `deliverables/demo-video-script.md`, `requirements.txt` (pinned), POI tool + drjohnson POI spec (7 POIs labelled from evidence frames).
+
+### 2026-10-04 10:40 IST — gpt-6-astra review → eval v3 → ADR 001 v2 (spikes D′ + E); verified SOTA research
+- **gpt-6-astra (max) review** of ADR 001 + eval v2: 9 items, all ACCEPTED (`reviews/2026-10-04-adr001-gpt-6-astra.md`; ledger updated). It found 2 blocking evaluator bugs in v2: the 0.30 m endpoint exclusion swallowed the ≤0.25 m connectors, and the reference grid depended on the candidate's bounds/cell.
+- **eval v3** (`eval/nav_eval_v3.py` + contract test `eval/test_nav_eval_v3.py`: doorway geodesic 3.280 m vs analytic 3.170 m, within the ≤9% grid bound). On drjohnson (shipped poses), all 406 (A) / 435 (B) pairs: **CFC 0.453–0.466 (A), 0.490–0.501 (B)** for every evidence variant; Wilson ±0.05; refusals 0%; collisions ≈50%; stretch vs reference geodesic ≈0.98 (the candidate cuts corners the dense geometry says are within 0.275 m of something). Paired sign tests vs points-only: p ≥ 0.06 everywhere → **no variant differs**. Results: `eval/results/drjohnson_nav_v3.json`.
+- **ADR 001 v2:** spikes = D′ (S_T = mean 𝟙[accepted]·max(0, 1 − T/90 min)) and E (S_V = max(T_visible/5 s, F95/20 ms) at ≤1 dB PSNR loss). Walkable space / POIs → R2 baselines; next baseline = dense-splat obstacles judged on a real-geometry scene (ARKitScenes) to avoid circularity.
+- **Verified SOTA (`research/sota-reconstruction.md`, agent `r-sota-recon`, primary sources):**
+  - Brush's latest release is still v0.3.0, but `main` has unreleased Mip-Splatting, a 4× memory cut and +10–15% speed → build from source.
+  - VGGT-Ω (arXiv 2605.15195) is real, but FAIR non-commercial.
+  - MapAnything (arXiv 2509.13414, Apache-2.0, metric, ~2000 views) is the licence-cleanest feed-forward option; AnySplat (MIT) for feed-forward Gaussians. Neither has confirmed MPS support.
+  - OpenSplat has confirmed Metal (AGPL-3.0).

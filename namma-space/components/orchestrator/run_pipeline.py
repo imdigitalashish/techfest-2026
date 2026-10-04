@@ -12,7 +12,7 @@ unless --force <stage>):
   walkable NavGrid from points + ray carving + trajectory       (components/walkable_space)
   package  pruned aligned .splat + manifest + nav + pois        (components/scene_packager)
   site     viewer + package -> <work>/site/ (static; serve or deploy)
-  evaluate path-safety v2 on held-out frames, posing ATE vs --reference-colmap (optional)
+  evaluate path-safety v3 on held-out frames, posing ATE vs --reference-colmap (optional)
 Writes <work>/report.json and prints the local viewer command.
 """
 import argparse
@@ -181,9 +181,14 @@ def main():
                 "serve": f"cd {paths['site']} && python3 -m http.server 8080  # open http://127.0.0.1:8080/"}
 
     def s_evaluate():
-        from nav_eval_v2 import evaluate, prepare
+        from nav_eval_v2 import prepare
+        from nav_eval_v3 import evaluate_one, reference
         d = prepare(colmap_dir, os.path.join(work, "alignment.json"), report["stages"]["splat"]["ply_path"])
-        res = {"nav_v2": {"A": evaluate(d, offset=0), "B": evaluate(d, offset=4)}, "dense_proxy_splats": int(len(d["dense"]))}
+        ref = reference(d, 0.25)
+        nav = {s: evaluate_one(d, ref, offset=o) for s, o in (("A", 0), ("B", 4))}
+        json.dump(nav, open(os.path.join(work, "nav_eval_v3_outcomes.json"), "w"))
+        res = {"nav_v3": {s: {k: v for k, v in r.items() if k != "outcomes"} for s, r in nav.items()},
+               "dense_proxy_splats": int(len(d["dense"]))}
         if a.reference_colmap:
             res["posing_vs_reference"] = pose_ate(os.path.join(paths["sfm"], "model"), a.reference_colmap,
                                                   os.path.join(work, "frames.json"))
