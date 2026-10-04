@@ -10,19 +10,22 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ ACTIVE (batch slot since 12:52 IST). Closing the Supervisor's definition of done. Updated 2026-10-04 13:21 IST.
-- **Done since resume:**
-  - 09:50 crash diagnosed (root cause undetermined; three causes ruled out).
-  - E8 attribution: E6's effect not reproduced on validation seeds; contrasts unresolved.
-  - E7 realism: impact near-linear, fully transient.
-  - E9 synced calibration: criterion not met.
-  - Both cross-model reviews: gpt-6-sol reproduced H1 bit-for-bit (7/7 issues accepted); gpt-6-astra scored the draft 2.80/5 (16/16 accepted).
-  - Amendment A1 committed before E10 results.
-  - Claims, render and check_docs tooling; abstract and architecture templates.
-- **Doing:** waiting for gpt-6-astra's short re-score of abstract v1.1 (requested to satisfy PLAYBOOK §10: review the final deliverable before DONE). Everything else in the definition of done is complete and green: `eval/check_docs.py` OK, pytest 7/7. Updated 2026-10-04 13:59 IST.
-- **Next:** record the v1.1 score in `reviews/ledger.tsv`; re-render; check; push; message the Supervisor "DONE — slot free".
-- **Needs from user:** register by 15 Oct if P5 is picked at the 12 Oct selection; teammates' names and skills (the abstract has placeholders).
-- **Risks:** (1) sub-tick effects in a simulator with near-linear impact; (2) E10 may not replicate; (3) machine load slows runs.
+- **Phase:** ✅ **Definition of done met (2026-10-04 14:08 IST); batch slot released.** Idle until the Supervisor resumes P5.
+- **Delivered:**
+  - E8, E7, E9, E10, E11 and E12, each pre-registered by commit time.
+  - Final Round-1 abstract v1.1 (`deliverables/round1-abstract.md`, 895 words) and diagram (`deliverables/architecture.md`), both rendered from `eval/claims.py`. `eval/check_docs.py` OK; pytest 7/7.
+  - Cross-model reviews in `reviews/`: gpt-6-astra 2.80 → 3.25 → **3.45/5**; gpt-6-sol reproduced H1 and H2 bit-for-bit; 34 issues, all accepted.
+  - Selection memo (below): **recommend against P5**.
+- **Resume plan (if P5 is picked or resumed):**
+  1. Realism gate: calibrate the rmsc04 agent mix to external, pre-declared targets (square-root exponent, permanent fraction) with held-out checks; MarS as the fallback.
+  2. Diagnose the 13% spread widening under the coupling (try per-message keying).
+  3. A pre-registered total-IS test on untouched seeds.
+  4. The counterfactual-mid estimator: state-dependent kernel; per-seed R².
+  5. Implement the paired candidate-vs-incumbent search; then PPO.
+- **Needs from user:**
+  - Register by 15 Oct only if P5 is picked on 12 Oct (the memo recommends against it).
+  - Teammates' names and skills. Without them, Round 1 must narrow to a solo scope (astra v1.1 note).
+- **Risks:** sub-tick effects; the starter simulator's impact law; a coupling that alters spreads.
 
 ### Phase 0 — what we must be able to show (from the Round-1 rubric)
 - Crux (20%): the agent's own trades move the price it later pays (transient + permanent impact, book resilience, other agents' reactions), so slippage is endogenous; a replay backtest can't see it.
@@ -89,7 +92,7 @@ _v3 (final for the 12 Oct pick unless new evidence arrives). Rendered from `deli
 
 | Criterion | Score | Evidence |
 |---|---|---|
-| Winnability | **2/5** | E6 beat TWAP by 0.034 bps [0.013, 0.056] (n = 200). It did not reproduce on validation seeds (E8: +0.006). The strictly pre-registered replication was **not confirmed** (E10, n = 400: -0.013 [-0.029, +0.003]). Pooled over the fixed-size test blocks (n = 600, descriptive): -0.020 [-0.032, -0.007] bps, i.e. 0.20¢/share. The hostile judge (gpt-6-astra) scored the draft 2.80/5 and the latest final abstract 3.25/5. |
+| Winnability | **2/5** | E6 beat TWAP by 0.034 bps [0.013, 0.056] (n = 200). It did not reproduce on validation seeds (E8: +0.006). The strictly pre-registered replication was **not confirmed** (E10, n = 400: -0.013 [-0.029, +0.003]). Pooled over the fixed-size test blocks (n = 600, descriptive): -0.020 [-0.032, -0.007] bps, i.e. 0.20¢/share. The hostile judge (gpt-6-astra) scored the draft 2.80/5 and the latest final abstract 3.45/5. |
 | Innovation headroom | **3/5** | Common random numbers are classical. Our part is an ABIDES evaluation discipline: synchronised twins (paired dispersion ÷6, CIs 7.7× tighter, but spreads 13% wider under the coupling), a per-seed decomposition, a realism gate, and replication. The counterfactual-mid estimator failed its held-out test (seed-averaged R² 0.15 / -0.02; per seed 0.010 / -0.004). |
 | Feasibility by the deadline | **4/5** | Everything runs on the M5 (CPU only). 4,450 treatment–twin pairs are committed. An independent model (gpt-6-sol) reproduced the headline rows bit-for-bit. What is still needed is research: a realistic-impact market or a better tactic, so the timeline risk sits in science, not engineering. |
 | Demo strength | **3/5** | Twin markets side by side and net-inventory shifts by agent type (value agents' net inventory rises by 102% of our shares) are visual. But the pooled effect is 0.20¢ per share against a 1¢ tick, and the registered impact-vs-size slope is 1.01 [0.55, 1.76] rather than the square-root law's δ ≈ 0.5. |
@@ -286,3 +289,8 @@ Those labels were estimates, 1–7 min ahead of the clock. The other headers are
     - top-of-book wording.
 - `eval/check_docs.py`: 237 claims, 86 placeholders, no drift, no untraced numbers. Pytest 7/7 (includes the docs-drift test).
 - Selection memo (rendered): **recommend against P5** as the single Perceptron pick. Scores: winnability 2, innovation 3, feasibility 4, demo 3, fit 4.
+
+### 2026-10-04 14:08 IST — DONE: definition of done met; slot released
+- gpt-6-astra re-scored the final abstract v1.1 at **3.45/5**, with no remaining blocker or major overclaim (`reviews/2026-10-04-abstract-v1.1-gpt-6-astra.md`, 070287c). Its two disclosed gaps are accepted: one is in the resume plan, the other in *Needs from user*.
+- Final gates: `eval/check_docs.py` OK (237 claims, 86 placeholders); pytest 7/7; no P5 jobs running.
+- Reviewer child sessions are finished and their work is on `main`; they are being archived to free machine resources.
