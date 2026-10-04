@@ -141,3 +141,32 @@ For each misconception, estimate the probability that this student holds it. Rep
 
 ## Deviations
 _(none yet)_
+
+## Addendum A — Part 4 `prob_pack` (registered 2026-10-04 15:29 IST, before any prob_pack API call)
+- **Why:** this is the probability / expected-value domain relevant to Optiver. The question is whether an LLM-only generator would ship wrong answer keys or wrong distractors for misconception-targeted practice problems.
+- **Items:** 60 SYNTHETIC problems from `components/bugs/probability.py` (seed 2026), 12 per misconception. Each misconception has one family:
+  - EQUIPROB → two-dice totals;
+  - INDEP → two draws without replacement;
+  - ADD_PROB → at least one success in k independent attempts;
+  - INVERSE → diagnostic test with a base rate;
+  - JENSEN → expected value of the square of a die.
+  - Keys are exact Fractions (enumeration or closed form). The misconception's answer is given by its executable rule. Several of these misconceptions rest on secondary or unverified sources (see the module docstring and `research/notes/r7-domain-taxonomies.md`).
+- **Task:** given the problem and a one-sentence description of the targeted misconception, the LLM returns the exact correct answer and the answer a student holding the misconception would give (prompt below, verbatim from `eval/run_prob_pack.py`).
+- **Models:** all three, all 60 items, settings as in §2. 4 concurrent requests; started only after parts 1–3 finish.
+- **Scoring:** exact Fraction equality for (a) the key, (b) the misconception answer, (c) both. EXEC is exact by construction, so this measures what an LLM-only generator would get wrong.
+- **H7 (secondary, synthetic):** gap for model m if the 95% CI upper bound of the both-correct rate is < 0.95.
+- **Validity note:** a description can be read differently from our rule. For example, EQUIPROB over the totals 2..2n gives 1/(2n−1). Misconception-answer disagreements are therefore reported per misconception; key accuracy is unambiguous.
+- Invalid/empty responses: same procedure as §4 (one retry with double budget; then scored wrong).
+
+Descriptions used: EQUIPROB: Thinks every possible total is equally likely.; INDEP: Ignores that the first counter is not put back, treating both draws as having the same probability.; ADD_PROB: Adds the probabilities of the separate attempts to get the probability of at least one success.; INVERSE: Confuses P(positive test | has condition) with P(has condition | positive test), so answers with the test's detection rate.; JENSEN: Squares the expected value of the number shown instead of finding the expected value of the square.
+
+P_PROB:
+```
+You are writing the answer key for a probability practice problem that targets a known misconception.
+
+Problem: {stem}
+Misconception: {desc}
+
+Give (1) the exact correct answer and (2) the exact answer that a student holding this misconception would give. Write each as an integer or a fraction a/b in lowest terms.
+Reply with JSON only: {"correct": "...", "misconception_answer": "..."}
+```
