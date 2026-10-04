@@ -1,0 +1,186 @@
+{
+ "n_scenarios": 22,
+ "correct": 22,
+ "allows": 8,
+ "false_allows": 0,
+ "n_mutations": 65,
+ "mutations_detected": 65,
+ "rows": [
+  {
+   "id": "S01",
+   "expected": true,
+   "got": true,
+   "rule_expected": "A1",
+   "rule_got": "A1",
+   "ok": true
+  },
+  {
+   "id": "S02",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D5",
+   "rule_got": "D5",
+   "ok": true
+  },
+  {
+   "id": "S03",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D2",
+   "rule_got": "D2",
+   "ok": true
+  },
+  {
+   "id": "S04",
+   "expected": true,
+   "got": true,
+   "rule_expected": "A2",
+   "rule_got": "A2",
+   "ok": true
+  },
+  {
+   "id": "S05",
+   "expected": false,
+   "got": false,
+   "rule_expected": "DEFAULT_DENY",
+   "rule_got": "DEFAULT_DENY",
+   "ok": true
+  },
+  {
+   "id": "S06",
+   "expected": false,
+   "got": false,
+   "rule_expected": "DEFAULT_DENY",
+   "rule_got": "DEFAULT_DENY",
+   "ok": true
+  },
+  {
+   "id": "S07",
+   "expected": true,
+   "got": true,
+   "rule_expected": "A3",
+   "rule_got": "A3",
+   "ok": true
+  },
+  {
+   "id": "S08",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D3",
+   "rule_got": "D3",
+   "ok": true
+  },
+  {
+   "id": "S09",
+   "expected": true,
+   "got": true,
+   "rule_expected": "A3",
+   "rule_got": "A3",
+   "ok": true
+  },
+  {
+   "id": "S10",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D4",
+   "rule_got": "D4",
+   "ok": true
+  },
+  {
+   "id": "S11",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D4",
+   "rule_got": "D4",
+   "ok": true
+  },
+  {
+   "id": "S12",
+   "expected": true,
+   "got": true,
+   "rule_expected": "A4",
+   "rule_got": "A4",
+   "ok": true
+  },
+  {
+   "id": "S13",
+   "expected": false,
+   "got": false,
+   "rule_expected": "DEFAULT_DENY",
+   "rule_got": "DEFAULT_DENY",
+   "ok": true
+  },
+  {
+   "id": "S14",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D3",
+   "rule_got": "D3",
+   "ok": true
+  },
+  {
+   "id": "S15",
+   "expected": true,
+   "got": true,
+   "rule_expected": "A5",
+   "rule_got": "A5",
+   "ok": true
+  },
+  {
+   "id": "S16",
+   "expected": false,
+   "got": false,
+   "rule_expected": "DEFAULT_DENY",
+   "rule_got": "DEFAULT_DENY",
+   "ok": true
+  },
+  {
+   "id": "S17",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D1",
+   "rule_got": "D1",
+   "ok": true
+  },
+  {
+   "id": "S18",
+   "expected": true,
+   "got": true,
+   "rule_expected": "A3",
+   "rule_got": "A3",
+   "ok": true
+  },
+  {
+   "id": "S19",
+   "expected": true,
+   "got": true,
+   "rule_expected": "A1",
+   "rule_got": "A1",
+   "ok": true
+  },
+  {
+   "id": "S20",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D4",
+   "rule_got": "D4",
+   "ok": true
+  },
+  {
+   "id": "S21",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D1",
+   "rule_got": "D1",
+   "ok": true
+  },
+  {
+   "id": "S22",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D3",
+   "rule_got": "D3",
+   "ok": true
+  }
+ ]
+}

@@ -1,0 +1,27 @@
+{
+  "_doc": "Governance scenarios for C5, derived from the governance matrix in deliverables/round1-proposal.md §4.2 and the verified texts in research/landscape.md. Each row: request + expected decision + expected rule. Written by the lead together with the rules, so a perfect score shows the engine implements the published matrix — it is not independent evidence of legality.",
+  "scenarios": [
+    {"id": "S01", "role": "bank", "purpose": "targeting", "data": ["person_usage_state", "target_list"], "gran": "person", "own": true, "allow": true, "rule": "A1"},
+    {"id": "S02", "role": "bank", "purpose": "targeting", "data": ["target_list"], "gran": "person", "own": false, "allow": false, "rule": "D5"},
+    {"id": "S03", "role": "bank", "purpose": "targeting", "data": ["aadhaar_number", "target_list"], "gran": "person", "own": true, "allow": false, "rule": "D2"},
+    {"id": "S04", "role": "bc", "purpose": "outreach", "data": ["target_list"], "gran": "person", "own": true, "allow": true, "rule": "A2"},
+    {"id": "S05", "role": "bc", "purpose": "outreach", "data": ["account_ledger"], "gran": "account", "own": true, "allow": false, "rule": "DEFAULT_DENY"},
+    {"id": "S06", "role": "bc", "purpose": "targeting", "data": ["target_list"], "gran": "person", "own": true, "allow": false, "rule": "DEFAULT_DENY"},
+    {"id": "S07", "role": "slbc", "purpose": "accountability_statistics", "data": ["aggregate_usage_rates", "gender_gap"], "gran": "district", "own": false, "allow": true, "rule": "A3"},
+    {"id": "S08", "role": "slbc", "purpose": "accountability_statistics", "data": ["person_usage_state"], "gran": "person", "own": false, "allow": false, "rule": "D3"},
+    {"id": "S09", "role": "ldm", "purpose": "accountability_statistics", "data": ["implementer_scores"], "gran": "bc_area", "own": false, "allow": true, "rule": "A3"},
+    {"id": "S10", "role": "dfs", "purpose": "targeting", "data": ["target_list"], "gran": "person", "own": false, "allow": false, "rule": "D4"},
+    {"id": "S11", "role": "state_govt", "purpose": "outreach", "data": ["person_usage_state"], "gran": "person", "own": false, "allow": false, "rule": "D4"},
+    {"id": "S12", "role": "researcher", "purpose": "research", "data": ["aggregate_usage_rates"], "gran": "district", "own": false, "allow": true, "rule": "A4"},
+    {"id": "S13", "role": "researcher", "purpose": "research", "data": ["aggregate_usage_rates"], "gran": "branch", "own": false, "allow": false, "rule": "DEFAULT_DENY"},
+    {"id": "S14", "role": "researcher", "purpose": "research", "data": ["person_usage_state"], "gran": "person", "own": false, "allow": false, "rule": "D3"},
+    {"id": "S15", "role": "public", "purpose": "accountability_statistics", "data": ["aggregate_usage_rates"], "gran": "state", "own": false, "allow": true, "rule": "A5"},
+    {"id": "S16", "role": "public", "purpose": "accountability_statistics", "data": ["aggregate_usage_rates"], "gran": "district", "own": false, "allow": false, "rule": "DEFAULT_DENY"},
+    {"id": "S17", "role": "npci", "purpose": "fraud_prevention", "data": ["biometrics"], "gran": "person", "own": false, "allow": false, "rule": "D1"},
+    {"id": "S18", "role": "rbi", "purpose": "accountability_statistics", "data": ["aggregate_usage_rates", "effect_estimates"], "gran": "national", "own": false, "allow": true, "rule": "A3"},
+    {"id": "S19", "role": "bank", "purpose": "fraud_prevention", "data": ["account_usage_state"], "gran": "account", "own": true, "allow": true, "rule": "A1"},
+    {"id": "S20", "role": "dbt_mission", "purpose": "outreach", "data": ["person_usage_state"], "gran": "person", "own": false, "allow": false, "rule": "D4"},
+    {"id": "S21", "role": "public", "purpose": "accountability_statistics", "data": ["implementer_scores", "biometrics"], "gran": "state", "own": false, "allow": false, "rule": "D1"},
+    {"id": "S22", "role": "slbc", "purpose": "accountability_statistics", "data": ["aggregate_usage_rates"], "gran": "person", "own": false, "allow": false, "rule": "D3"}
+  ]
+}

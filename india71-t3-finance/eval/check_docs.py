@@ -41,6 +41,9 @@ def claims() -> list[str]:
             f"in {sum(1 for x in runs if x['policies']['rule']['normalised'] < 0.1)} of 10 worlds the pilot (about {round(float(np.mean([x['pilot_n'] for x in runs])) / 5, -1):.0f} persons per arm)",
             f"about {round(float(np.mean([x['pilot_n'] for x in runs])) / 5, -1):.0f} persons per arm can pick the wrong arm"]
     assert a["H1_pass"] and a["H2_pass"] and a["gate_pass_count"] == 0, "registered verdicts changed — rewrite the text"
+    pe = j("policy_engine.json")
+    out.append(f"implemented and tested: {pe['correct']}/{pe['n_scenarios']} governance scenarios, {pe['false_allows']} false allows; "
+               f"tampering with the log detected in {pe['mutations_detected']}/{pe['n_mutations']} trials")
     # Spike B (SYNTHETIC), four quarters of data
     sb = j("scorecard_spikeB.json")["runs"]["4"]
     rho = lambda k: float(np.mean([x["spearman_rho"][k] for x in sb]))
