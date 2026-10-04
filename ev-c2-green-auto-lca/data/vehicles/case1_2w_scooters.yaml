@@ -1,0 +1,188 @@
+# Case study 1 — Indian two-wheelers: 110 cc petrol scooter vs 2.9 kWh battery-electric scooter.
+# Functional unit: 1 vehicle-km over the vehicle lifetime. Stage expressions return kg CO2e per vehicle-km.
+# Every parameter is a record id in data/factors/*.yaml (source + locator + quote + pedigree).
+_ice_production: &ice_production "mass * prod_int / life"
+_ev_production: &ev_production "glider * prod_int / life"
+_battery: &battery "kwh * bat_int / life"
+
+scenarios:
+  - id: icct2021_stated
+    label: "Replication A — ICCT 2021 inputs as stated in footnote 9"
+    description: "Re-computes ICCT (Anup & Deo 2021) Table 1 from the footnote inputs. Tests the engine and the source's internal consistency."
+    reference: {source_id: icct-2w-fc-india-2021, file: data/benchmarks/icct_2w_india_2021_table1.yaml, ice: ice_scooter, bev: ev_scooter_2p9kwh}
+    products:
+      - id: ice_scooter
+        label: "Petrol scooter 109.5 cc (ICCT FY2020-21 market average)"
+        powertrain: ICE
+        params:
+          mass: vehicle.2w.scooter_ice.curb_mass_implied.icct2021
+          prod_int: vehicle.2w.production_intensity.icct2021
+          life: vehicle.2w.lifetime_km.icct2021
+          fuel: vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_footnote
+          wtt: fuels.petrol.wtt.in.icct2021
+          ttw: fuels.petrol.ttw.in.icct2021
+        stages:
+          vehicle_production: *ice_production
+          fuel_production_wtt: "fuel / 100 * wtt"
+          tailpipe_ttw: "fuel / 100 * ttw"
+      - id: ev_scooter
+        label: "Electric scooter 2.9 kWh (ICCT)"
+        powertrain: BEV
+        params:
+          glider: vehicle.2w.scooter_ev.glider_mass_implied.icct2021
+          prod_int: vehicle.2w.production_intensity.icct2021
+          life: vehicle.2w.lifetime_km.icct2021
+          kwh: battery.scooter_ev.capacity.icct2021
+          bat_int: battery.li_ion.production_intensity.icct2021
+          elec: vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_footnote
+          grid: energy.electricity.in.icct2021_lifecycle_2021_2032
+        stages:
+          vehicle_production: *ev_production
+          battery_production: *battery
+          electricity_production_wtt: "elec / 100 * grid"
+
+  - id: icct2021_implied
+    label: "Replication B — ICCT 2021 with consumption implied by its Table 1"
+    description: "Same as A but fuel 2.0 L/100 km and electricity 4.13 kWh/100 km, the values Table 1 implies."
+    reference: {source_id: icct-2w-fc-india-2021, file: data/benchmarks/icct_2w_india_2021_table1.yaml, ice: ice_scooter, bev: ev_scooter_2p9kwh}
+    products:
+      - id: ice_scooter
+        label: "Petrol scooter 109.5 cc (ICCT FY2020-21 market average)"
+        powertrain: ICE
+        params:
+          mass: vehicle.2w.scooter_ice.curb_mass_implied.icct2021
+          prod_int: vehicle.2w.production_intensity.icct2021
+          life: vehicle.2w.lifetime_km.icct2021
+          fuel: vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied
+          wtt: fuels.petrol.wtt.in.icct2021
+          ttw: fuels.petrol.ttw.in.icct2021
+        stages:
+          vehicle_production: *ice_production
+          fuel_production_wtt: "fuel / 100 * wtt"
+          tailpipe_ttw: "fuel / 100 * ttw"
+      - id: ev_scooter
+        label: "Electric scooter 2.9 kWh (ICCT)"
+        powertrain: BEV
+        params:
+          glider: vehicle.2w.scooter_ev.glider_mass_implied.icct2021
+          prod_int: vehicle.2w.production_intensity.icct2021
+          life: vehicle.2w.lifetime_km.icct2021
+          kwh: battery.scooter_ev.capacity.icct2021
+          bat_int: battery.li_ion.production_intensity.icct2021
+          elec: vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied
+          grid: energy.electricity.in.icct2021_lifecycle_2021_2032
+        stages:
+          vehicle_production: *ev_production
+          battery_production: *battery
+          electricity_production_wtt: "elec / 100 * grid"
+
+  - id: in2026_cea_average
+    label: "India 2026 — CEA FY2025-26 grid average (static), IPCC petrol"
+    description: "Same vehicles; electricity = CEA v22 weighted-average 0.675 kg CO2/kWh grossed up for 17.63% T&D losses (CO2 only, no upstream); petrol TTW from IPCC 2006 E0 defaults + UNSD density; WTT petrol from ICCT."
+    products:
+      - id: ice_scooter
+        label: "Petrol scooter 110 cc class"
+        powertrain: ICE
+        params:
+          mass: vehicle.2w.scooter_ice.curb_mass_implied.icct2021
+          prod_int: vehicle.2w.production_intensity.icct2021
+          life: vehicle.2w.lifetime_km.icct2021
+          fuel: vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied
+          wtt: fuels.petrol.wtt.in.icct2021
+          dens: fuels.petrol.density.unsd2020
+          ncv: fuels.petrol.ncv.ipcc2006
+          ef: fuels.petrol.co2_per_energy.ipcc2006
+        stages:
+          vehicle_production: *ice_production
+          fuel_production_wtt: "fuel / 100 * wtt"
+          tailpipe_ttw: "fuel / 100 * dens * ncv * ef / 1000"
+      - id: ev_scooter
+        label: "Electric scooter 2.9 kWh"
+        powertrain: BEV
+        params:
+          glider: vehicle.2w.scooter_ev.glider_mass_implied.icct2021
+          prod_int: vehicle.2w.production_intensity.icct2021
+          life: vehicle.2w.lifetime_km.icct2021
+          kwh: battery.scooter_ev.capacity.icct2021
+          bat_int: battery.li_ion.production_intensity.icct2021
+          elec: vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied
+          ef_gen: energy.electricity.in.grid_wavg_generation.fy2025_26
+          td: energy.electricity.in.td_loss_share.fy2023_24
+        stages:
+          vehicle_production: *ev_production
+          battery_production: *battery
+          electricity_production_wtt: "elec / 100 * ef_gen / (1 - td)"
+
+  - id: in2026_cea_operating_margin
+    label: "India 2026 — EV charging at CEA operating margin (fossil-marginal view)"
+    description: "As in2026_cea_average but EV electricity at the CEA FY2025-26 simple operating margin 0.963 kg CO2/kWh (excludes must-run hydro/nuclear/RE) — an upper-bound view for added charging demand."
+    products:
+      - id: ice_scooter
+        label: "Petrol scooter 110 cc class"
+        powertrain: ICE
+        params:
+          mass: vehicle.2w.scooter_ice.curb_mass_implied.icct2021
+          prod_int: vehicle.2w.production_intensity.icct2021
+          life: vehicle.2w.lifetime_km.icct2021
+          fuel: vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied
+          wtt: fuels.petrol.wtt.in.icct2021
+          dens: fuels.petrol.density.unsd2020
+          ncv: fuels.petrol.ncv.ipcc2006
+          ef: fuels.petrol.co2_per_energy.ipcc2006
+        stages:
+          vehicle_production: *ice_production
+          fuel_production_wtt: "fuel / 100 * wtt"
+          tailpipe_ttw: "fuel / 100 * dens * ncv * ef / 1000"
+      - id: ev_scooter
+        label: "Electric scooter 2.9 kWh"
+        powertrain: BEV
+        params:
+          glider: vehicle.2w.scooter_ev.glider_mass_implied.icct2021
+          prod_int: vehicle.2w.production_intensity.icct2021
+          life: vehicle.2w.lifetime_km.icct2021
+          kwh: battery.scooter_ev.capacity.icct2021
+          bat_int: battery.li_ion.production_intensity.icct2021
+          elec: vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied
+          ef_gen: energy.electricity.in.grid_om.fy2025_26
+          td: energy.electricity.in.td_loss_share.fy2023_24
+        stages:
+          vehicle_production: *ev_production
+          battery_production: *battery
+          electricity_production_wtt: "elec / 100 * ef_gen / (1 - td)"
+
+  - id: in2026_cea_build_margin
+    label: "India 2026 — EV charging at CEA build margin (new-capacity view)"
+    description: "As in2026_cea_average but EV electricity at the CEA FY2025-26 build margin 0.446 kg CO2/kWh (most recent 20% of capacity incl. RE) — a view of where the grid is heading."
+    products:
+      - id: ice_scooter
+        label: "Petrol scooter 110 cc class"
+        powertrain: ICE
+        params:
+          mass: vehicle.2w.scooter_ice.curb_mass_implied.icct2021
+          prod_int: vehicle.2w.production_intensity.icct2021
+          life: vehicle.2w.lifetime_km.icct2021
+          fuel: vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied
+          wtt: fuels.petrol.wtt.in.icct2021
+          dens: fuels.petrol.density.unsd2020
+          ncv: fuels.petrol.ncv.ipcc2006
+          ef: fuels.petrol.co2_per_energy.ipcc2006
+        stages:
+          vehicle_production: *ice_production
+          fuel_production_wtt: "fuel / 100 * wtt"
+          tailpipe_ttw: "fuel / 100 * dens * ncv * ef / 1000"
+      - id: ev_scooter
+        label: "Electric scooter 2.9 kWh"
+        powertrain: BEV
+        params:
+          glider: vehicle.2w.scooter_ev.glider_mass_implied.icct2021
+          prod_int: vehicle.2w.production_intensity.icct2021
+          life: vehicle.2w.lifetime_km.icct2021
+          kwh: battery.scooter_ev.capacity.icct2021
+          bat_int: battery.li_ion.production_intensity.icct2021
+          elec: vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied
+          ef_gen: energy.electricity.in.grid_bm.fy2025_26
+          td: energy.electricity.in.td_loss_share.fy2023_24
+        stages:
+          vehicle_production: *ev_production
+          battery_production: *battery
+          electricity_production_wtt: "elec / 100 * ef_gen / (1 - td)"
