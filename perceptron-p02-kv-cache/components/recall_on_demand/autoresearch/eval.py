@@ -1,5 +1,9 @@
 """FROZEN evaluator for C7 Recall-on-Demand — the autoresearch loop must not edit this file.
 
+STATUS (2026-10-04): NOT VALIDATED end to end and NOT used for any reported number. Every measured number comes from
+the PyTorch twin eval/kvbench_torch.py (same weights; logit parity in eval/results/parity_torch*.json). This MLX file is
+the Apple-silicon demo path and predates the frozen RoD config (softmax_lift / content tokens / 4-bit / layer 5).
+
 Prints one scalar line `hit_at_m=<float>` (share of calibration questions whose needle block is among the
 m blocks RoD would re-prefill), then secondary metrics as JSON.
 

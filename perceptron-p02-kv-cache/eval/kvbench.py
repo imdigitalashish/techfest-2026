@@ -1,5 +1,9 @@
 """kvbench v2 — walking skeleton + eval harness for KV-cache compression (MLX; Apple GPU or Linux/macOS CPU).
 
+STATUS (2026-10-04): NOT VALIDATED end to end and NOT used for any reported number. Every measured number comes from
+the PyTorch twin eval/kvbench_torch.py (same weights; logit parity in eval/results/parity_torch*.json). This MLX file is
+the Apple-silicon demo path and predates the frozen RoD config (softmax_lift / content tokens / 4-bit / layer 5).
+
 Protocol (shared-context *multi-query*, query-agnostic): one long context (WikiText-103 text + 4 synthetic needles,
 RULER-style) is prefilled once. Each method builds a *store* from that prefill BEFORE any question is seen. The
 same 4 questions are then answered from the store alone (paired across methods). This is multi-query over one
