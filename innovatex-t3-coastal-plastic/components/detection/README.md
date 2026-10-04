@@ -19,6 +19,18 @@ Reading: the zero-shot model ranks litter-like boxes reasonably (mAP50 ≈ 0.39,
 an operational threshold it finds only 14% of items. That is why the counter misses 75%. **Fine-tuning is required**:
 the training command below is ready; on an idle machine or Azure it takes about 1 h.
 
+## Licences (opened 2026-10-04)
+| Item | Licence | Source opened |
+|---|---|---|
+| `ultralytics` 8.4.12 (training/inference code, ByteTrack implementation) | **AGPL-3.0** | https://github.com/ultralytics/ultralytics/blob/main/LICENSE (GitHub API `repos/ultralytics/ultralytics/license` → `AGPL-3.0`; file header "GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007") |
+| `yolo11n.pt` pretrained weights (ultralytics/assets release v8.3.0) and our fine-tuned `best.pt` derived from them | **AGPL-3.0** | https://github.com/ultralytics/assets/blob/main/LICENSE (GitHub API `repos/ultralytics/assets/license` → `AGPL-3.0`) |
+| TUD-GV floating-litter subset (Jia et al. 2024) | **CC BY 4.0** (cite the paper) | https://zenodo.org/records/13730228 and its metadata https://zenodo.org/api/records/13730228 (`license.id = cc-by-4.0`) |
+| Groningen floating-litter set (Jia et al. 2024) | **CC BY 4.0** | https://zenodo.org/records/13730384 metadata https://zenodo.org/api/records/13730384 (`license.id = cc-by-4.0`) |
+
+AGPL-3.0 is a strong copyleft licence that also covers use over a network. Before anything beyond a research
+prototype (a hosted dashboard serving model output, or a commercial product), check the obligations or swap in a
+permissively licensed detector. Ultralytics' commercial licence terms were not opened here (**UNVERIFIED**).
+
 ## Dataset
 **TUD-GV floating-litter subset** — Jia, de Vries, Kapelan, van Emmerik, Taormina (2024), *Detecting floating litter in
 freshwater bodies with semi-supervised deep learning*, Water Research 266:122405, doi:10.1016/j.watres.2024.122405.

@@ -10,9 +10,12 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+import os
+
 import cv2
 
 from ._contracts import Provenance
+from .detector import model_id_for
 from .flux import SAIGON_VISUAL_COUNT, CountingLine, FluxCounter, count_error_pct
 from .paths import DATA, RESULTS
 
@@ -44,7 +47,7 @@ def main() -> None:
     out = {"label": "SYNTHETIC", "sequence": str(seq.name), "frames": gt["frames"], "fps": gt["fps"],
            "gt_crossings": gt["gt_crossings"], "items_crossed": est.items_crossed,
            "count_error_pct": round(count_error_pct(est.items_crossed, gt["gt_crossings"]), 2),
-           "detector_weights": Path(a.weights).name, "tracker": "bytetrack.yaml (ultralytics defaults)",
+           "detector_model_id": model_id_for(a.weights), "device": os.environ.get("T3DET_DEVICE", "mps"), "tracker": "bytetrack.yaml (ultralytics defaults)",
            "conf": a.conf, "imgsz": a.imgsz,
            "reproduce": f"python -m t3det.synth --out {a.seq} --frames {gt['frames']} --items {gt['n_items']} "
                         f"--seed {gt['seed']} --speed {' '.join(str(s) for s in gt.get('speed_px_per_frame', [4, 9]))} "

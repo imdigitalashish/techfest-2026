@@ -20,10 +20,11 @@ def main() -> None:
     p.add_argument("--weights", required=True)
     p.add_argument("--n", type=int, default=5)
     p.add_argument("--conf", type=float, default=0.25)
+    p.add_argument("--imgsz", type=int, default=640)
     a = p.parse_args()
     test = (YOLO / "test.txt").read_text().split()
     picks = random.Random(SEED).sample(test, a.n)
-    det = Detector(a.weights, conf=a.conf)
+    det = Detector(a.weights, imgsz=a.imgsz, conf=a.conf)
     out_dir = RESULTS / "samples"
     out_dir.mkdir(parents=True, exist_ok=True)
     for old in out_dir.glob("*.jpg"):

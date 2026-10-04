@@ -1,0 +1,99 @@
+[
+ {
+  "frame_id": "tudgv-test/exp14_pic151.jpg",
+  "t": null,
+  "image_wh": [
+   1280,
+   720
+  ],
+  "detections": [],
+  "model_id": "yolo11n.pt#sha256:0ebbc80d4a76 (COCO-pretrained, zero-shot, class-agnostic)",
+  "latency_ms": 201.61
+ },
+ {
+  "frame_id": "tudgv-test/exp14_pic252.jpg",
+  "t": null,
+  "image_wh": [
+   1280,
+   720
+  ],
+  "detections": [
+   {
+    "bbox_xyxy": [
+     171.2,
+     247.6,
+     190.7,
+     270.7
+    ],
+    "label": "litter",
+    "score": 0.3865
+   },
+   {
+    "bbox_xyxy": [
+     597.1,
+     73.2,
+     619.3,
+     110.3
+    ],
+    "label": "litter",
+    "score": 0.3835
+   },
+   {
+    "bbox_xyxy": [
+     434.0,
+     125.1,
+     460.7,
+     148.7
+    ],
+    "label": "litter",
+    "score": 0.2682
+   }
+  ],
+  "model_id": "yolo11n.pt#sha256:0ebbc80d4a76 (COCO-pretrained, zero-shot, class-agnostic)",
+  "latency_ms": 768.72
+ },
+ {
+  "frame_id": "tudgv-test/exp20_pic176.jpg",
+  "t": null,
+  "image_wh": [
+   1280,
+   720
+  ],
+  "detections": [],
+  "model_id": "yolo11n.pt#sha256:0ebbc80d4a76 (COCO-pretrained, zero-shot, class-agnostic)",
+  "latency_ms": 1209.75
+ },
+ {
+  "frame_id": "tudgv-test/exp28_pic64.jpg",
+  "t": null,
+  "image_wh": [
+   1280,
+   720
+  ],
+  "detections": [],
+  "model_id": "yolo11n.pt#sha256:0ebbc80d4a76 (COCO-pretrained, zero-shot, class-agnostic)",
+  "latency_ms": 573.77
+ },
+ {
+  "frame_id": "tudgv-test/exp50_pic250.jpg",
+  "t": null,
+  "image_wh": [
+   1280,
+   720
+  ],
+  "detections": [
+   {
+    "bbox_xyxy": [
+     459.5,
+     416.6,
+     500.4,
+     477.7
+    ],
+    "label": "litter",
+    "score": 0.6918
+   }
+  ],
+  "model_id": "yolo11n.pt#sha256:0ebbc80d4a76 (COCO-pretrained, zero-shot, class-agnostic)",
+  "latency_ms": 1697.08
+ }
+]

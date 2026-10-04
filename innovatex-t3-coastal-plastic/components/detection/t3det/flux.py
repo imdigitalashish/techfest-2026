@@ -6,6 +6,7 @@ configured direction. Items are converted to mass with a MassModel whose provena
 from __future__ import annotations
 
 import math
+import os
 from collections import Counter
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
@@ -78,12 +79,13 @@ SAIGON_VISUAL_COUNT = MassModel(
 
 class FluxCounter:
     def __init__(self, weights: str, line: CountingLine, site_id: str, mass: MassModel, imgsz: int = 640,
-                 conf: float = 0.1, tracker: str = "bytetrack.yaml", direction: int = 0, device: str = "mps"):
+                 conf: float = 0.1, tracker: str = "bytetrack.yaml", direction: int = 0, device: str | None = None):
         from ultralytics import YOLO
 
         self.model = YOLO(weights)
         self.weights, self.line, self.site_id, self.mass = weights, line, site_id, mass
-        self.imgsz, self.conf, self.tracker, self.direction, self.device = imgsz, conf, tracker, direction, device
+        self.imgsz, self.conf, self.tracker, self.direction = imgsz, conf, tracker, direction
+        self.device = device or os.environ.get("T3DET_DEVICE", "mps")
 
     def run(self, frames: Iterable[np.ndarray], t_start: datetime, fps: float, provenance: Provenance,
             on_frame=None) -> FluxEstimate:

@@ -6,6 +6,7 @@ tile_overlap (fraction), tile_plus_full (also run the full frame and merge), mer
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 
 import numpy as np
@@ -30,8 +31,9 @@ def _predict(model, img: np.ndarray, cfg: dict, device: str) -> np.ndarray:
     return np.concatenate([b.xyxy.cpu().numpy(), b.conf.cpu().numpy()[:, None]], 1) if len(b) else np.zeros((0, 5))
 
 
-def predict(model, img: np.ndarray, cfg: dict, device: str = "mps") -> np.ndarray:
+def predict(model, img: np.ndarray, cfg: dict, device: str | None = None) -> np.ndarray:
     """Returns N x 5 array [x1, y1, x2, y2, score] in pixels of `img` (BGR ndarray)."""
+    device = device or os.environ.get("T3DET_DEVICE", "mps")
     cols, rows = cfg["tiles"]
     if cols == 1 and rows == 1:
         return _predict(model, img, cfg, device)

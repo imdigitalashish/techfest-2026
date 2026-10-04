@@ -56,14 +56,36 @@ def test_metrics_json_shape():
     assert "litter" in m["per_class"]
 
 
-def test_flux_output_matches_contract():
-    f = _need(FLUX)
-    est = FluxEstimate.model_validate(f["flux_estimate"])
-    assert f["label"] == "SYNTHETIC" and est.provenance.kind == "synthetic"
-    assert est.items_crossed == f["items_crossed"]
-    lo, hi = est.est_kg_ci90
-    assert lo <= est.est_kg <= hi
-    assert math.isclose(f["count_error_pct"], count_error_pct(f["items_crossed"], f["gt_crossings"]), abs_tol=0.01)
+def test_flux_outputs_match_contract():
+    files = sorted(RESULTS.glob("flux_synthetic*.json"))
+    if not files:
+        pytest.skip("no flux output yet")
+    for fp in files:
+        f = json.loads(fp.read_text())
+        est = FluxEstimate.model_validate(f["flux_estimate"])
+        assert f["label"] == "SYNTHETIC" and est.provenance.kind == "synthetic", fp.name
+        assert est.items_crossed == f["items_crossed"]
+        lo, hi = est.est_kg_ci90
+        assert lo <= est.est_kg <= hi
+        assert math.isclose(f["count_error_pct"], count_error_pct(f["items_crossed"], f["gt_crossings"]), abs_tol=0.01)
+
+
+def test_zero_shot_reference_is_labelled():
+    z = _need(RESULTS / "metrics_zeroshot.json")
+    assert z["label"].startswith("ZERO-SHOT") and "ZERO-SHOT" in z["baseline_kind"]
+    for k in ("mAP50", "mAP50_95", "precision", "recall"):
+        assert 0 <= z[k] <= 1
+
+
+def test_trained_metrics_record_training_run():
+    m = _need(METRICS)
+    if "ZERO-SHOT" in m.get("baseline_kind", ""):
+        pytest.skip("metrics.json still holds the zero-shot reference")
+    tr = m["training"]
+    assert m["device"] in ("mps", "cpu") and tr["device"] == m["device"]
+    assert tr["epochs_completed"] >= 1 and tr["epoch_time_s"]["median"] > 0 and tr["total_wall_clock_s"] > 0
+    assert set(m["other_splits"]) >= {"val", "groningen"}
+    assert m["other_splits"]["groningen"]["n_images"] == len((SPLITS / "groningen.txt").read_text().split())
 
 
 def test_splits_disjoint_and_grouped():

@@ -26,3 +26,22 @@ def _forward_cpu(self, pd_scores, pd_bboxes, anc_points, gt_labels, gt_bboxes, m
 
 def apply() -> None:
     tal.TaskAlignedAssigner._forward = _forward_cpu
+
+
+# NMS time limit: ultralytics' non_max_suppression stops processing the rest of a batch once a wall-clock limit
+# (2 s + 0.05 s/img) is exceeded, leaving those images with no detections. On this shared, loaded machine that would
+# silently lower validation mAP (and make best.pt selection noisy), so the limit is lifted for train/val/eval.
+from ultralytics.utils import nms as _nms  # noqa: E402
+
+_orig_nms = _nms.non_max_suppression
+
+
+def _nms_no_time_limit(*args, **kwargs):
+    if len(args) < 10:
+        kwargs["max_time_img"] = 1e3
+    return _orig_nms(*args, **kwargs)
+
+
+def apply_all() -> None:
+    apply()
+    _nms.non_max_suppression = _nms_no_time_limit

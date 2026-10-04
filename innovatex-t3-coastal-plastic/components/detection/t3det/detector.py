@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import os
 import time
 from datetime import datetime
 from functools import lru_cache
@@ -17,15 +18,23 @@ def file_hash(path: str) -> str:
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()[:12]
 
 
+def model_id_for(weights: str | Path) -> str:
+    """'<run name>/<file>#sha256:<12 hex>' for trained runs, '<file>#sha256:...' otherwise."""
+    w = Path(weights)
+    run = w.parents[1].name if w.parent.name == "weights" else ""
+    return f"{run + '/' if run else ''}{w.name}#sha256:{file_hash(str(w))}"
+
+
 class Detector:
     def __init__(self, weights: str | Path, imgsz: int = 640, conf: float = 0.25, iou: float = 0.7,
-                 device: str = "mps", model_id: str | None = None):
+                 device: str | None = None, model_id: str | None = None):
         from ultralytics import YOLO
 
         self.weights = str(weights)
         self.model = YOLO(self.weights)
-        self.imgsz, self.conf, self.iou, self.device = imgsz, conf, iou, device
-        self.model_id = model_id or f"{Path(self.weights).name}#sha256:{file_hash(self.weights)}"
+        self.imgsz, self.conf, self.iou = imgsz, conf, iou
+        self.device = device or os.environ.get("T3DET_DEVICE", "mps")
+        self.model_id = model_id or model_id_for(self.weights)
 
     def detect(self, image: str | Path | np.ndarray, frame_id: str, t: datetime | None = None) -> FrameDetections:
         t0 = time.perf_counter()
