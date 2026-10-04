@@ -61,3 +61,11 @@
    - Applied post hoc to OBD: no confident wrong answers, at the cost of one unnecessary abstention.
    - This turns the method's main failure mode into a visible, testable feature. It directly answers the brief's "did it work, or did it just look like it did?"
 5. **Kept as is:** the MSM sensitivity layer (C8). In the hidden-override scenario it holds the truth at Γ_true in 10/10 runs and flags fragility (Γ\* = 1.25). Covariate benchmarking of Γ\* remains the next step.
+
+## Addendum v3 — 2026-10-04 14:25 IST: after the independent cross-model reviews
+
+The independent antithesis came from gpt-6-astra (hostile judge, 59/100 before fixes) and gpt-6-sol (code review; 44/44 numbers reproduced). Decisions are in `reviews/2026-10-04-dispositions.md`.
+- **Estimands are separated.** Primary: the after-period policy contrast on observed traffic. Secondary: the 2×2 Shapley attribution. The ordered mix/drift split belongs to the old-policy ordering. The verdict gates every off-policy cell a reported term needs.
+- **The gate is exploratory, not a certificate.** Its design was shaped after seeing the OBD failures. A pre-registered held-out test on unseen simulated worlds met its criteria, but showed only a modest coverage gain (0.914 → 0.943) at about 50% abstention, and no wrong-sign decisions either way. Its decision value on real data is post hoc only.
+- **Novelty is restated as integration.** The parts — Δ-OPE, Shapley attribution of shifts, diagnostic protocols, action-dependent non-stationarity — are prior art. The contribution is the auditable protocol and its evaluation against real concurrent-arm references.
+- **Spike choice unchanged.** C9 + C8/C7 + the C10 gate remain the spikes. The ADR's novelty self-score of 4 is revised to 3 (agreeing with the hostile judge).
