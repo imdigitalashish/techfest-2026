@@ -1,0 +1,39 @@
+{
+ "radius_m": 150,
+ "records": {
+  "osm": 599,
+  "ocm": 1869,
+  "ovt": 1039
+ },
+ "sites_linked": 3336,
+ "national_cells": {
+  "001": 952,
+  "010": 1720,
+  "011": 65,
+  "100": 501,
+  "101": 15,
+  "110": 76,
+  "111": 7
+ },
+ "national_mse": {
+  "n_obs": 3336,
+  "model": "OC+OV+CV",
+  "N_hat": 80832.7,
+  "ci90_lo": 35915.2,
+  "ci90_hi": 171036.3,
+  "n_boot_ok": 300
+ },
+ "official_national_aug2025": 29277,
+ "ieefa_national_jul2026": 52718,
+ "states_evaluated": 17,
+ "states_with_mse": 21,
+ "bias_median_log_ratio_mse": -0.552,
+ "median_abs_log_ratio_mse": 0.844,
+ "bias_median_log_ratio_union": -2.365,
+ "median_abs_log_ratio_union": 2.365,
+ "ci90_coverage_of_official": 0.471,
+ "median_mse_over_official": 0.576,
+ "median_union_over_official": 0.094,
+ "passes_state_check": false,
+ "pass_rule": "median |ln(MSE/official)| < ln 1.25 AND 90% CI covers official in >= 80% of states (states with >= 100 official PCS)"
+}

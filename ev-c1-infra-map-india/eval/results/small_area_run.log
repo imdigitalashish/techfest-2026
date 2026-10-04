@@ -1,0 +1,41 @@
+{
+ "chhattisgarh_validation": {
+  "districts": 28,
+  "official_total_evaluated": 270,
+  "bev_mapped": 218859,
+  "open_sites": 55,
+  "state_model_coef_dec2024_excl_cg": [
+   -0.411,
+   0.461,
+   0.34
+  ],
+  "methods": {
+   "open_share": {
+    "wape": 0.995,
+    "spearman": 0.456
+   },
+   "bev_share": {
+    "wape": 0.54,
+    "spearman": 0.855
+   },
+   "blend_50_50": {
+    "wape": 0.705,
+    "spearman": 0.766
+   },
+   "small_area_model": {
+    "wape": 0.41,
+    "spearman": 0.841
+   }
+  },
+  "small_area_ci90_coverage": 0.821
+ },
+ "state_model_aug2025": {
+  "coef_all_states": [
+   -0.294,
+   0.461,
+   0.324
+  ],
+  "states_in_fit": 36,
+  "loo_median_abs_log_err": 0.515
+ }
+}

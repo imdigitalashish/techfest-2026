@@ -163,3 +163,35 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **2026 nowcast:** YoY scaling, the best in the 2023–25 backtest (state WAPE 0.072, mean national error 3.0%, max 7.7%). **CY2026 ≈ 3.60 million BEV registrations** (methods span 3.56–3.60M) vs 2.36M in CY2025. Files: `eval/results/c9_nowcast_2026.csv`, `c9_nowcast_backtest.csv`, `c9_summary.json`.
 - Also parsed the third official snapshot (PIB 2086533, 20 Dec 2024: 25,202 ✓) and the Chhattisgarh district annex (31 districts, 271 ✓): the first official *district-level* counts, usable to validate district allocation.
 
+### 2026-10-04 13:45 IST — C5 three-source estimate, validated small-area supply, Maharashtra gap map v1
+- **Third source:** Overture Maps places 2026-09-23.1 (CDLA-P-2.0 / Apache-2.0 / CC0; "contains no OpenStreetMap data"). India bbox: 391 rows with category `ev_charging_station`, plus 659 found by a strict EV-name rule (many chargers are miscategorised, e.g. Bolt.Earth as `corporate_or_business_office`) = 1,050. AllThePlaces has no Indian charging-operator spiders.
+- **Multiple-systems estimate** (`components/census_completeness/mse.py`; log-linear Poisson, AIC model choice, bootstrap CI):
+  - 3,507 records → 3,336 sites; very thin overlaps (only 7 sites in all 3 lists).
+  - National: 80,833 sites (90% CI 35,915–171,036) vs official 29,277 (Aug 2025) and IEEFA 52,718 (Jul 2026).
+  - **State validation** (17 states with ≥ 100 official stations): median estimate/official 0.58 (union: 0.094); median |ln ratio| 0.84; 90% CI covers official in 47% of states → **fails** the pass rule (median within 25% and coverage ≥ 80%).
+- **Supervisor 13:25 proposal** (validate the estimate, use it only if it passes, otherwise allocate with intervals, show coverage): agreed with two refinements (replied). Implemented as `components/access_gap/small_area.py`:
+  - ln(official_s) ~ ln(BEV_s) + ln(open_s + 1), fitted across states; allocate the state total; predictive intervals (coefficient bootstrap + multinomial).
+  - **District-level validation on Chhattisgarh** (official district annex, PIB 2086533; 28 districts in 2021 boundaries; RTO→district crosswalk; Σ RTO BEV = state 218,859 exactly):
+
+    | Method | WAPE | Spearman |
+    |---|---|---|
+    | open-share | 0.995 | 0.46 |
+    | 50:50 blend | 0.705 | 0.77 |
+    | BEV-share | 0.540 | 0.855 |
+    | **small-area model** | **0.410** | **0.841** |
+
+    The model's 90% predictive intervals cover 82% of districts. Its state-level leave-one-out median |ln err| is 0.52 (36 states).
+  - Correction: the first MH table used a 50:50 blend that tied 17 data-thin districts at ~571 BEV/station (an artifact). Replaced by the validated model.
+- **Maharashtra district gap** (`components/access_gap/mh_district_gap.py`; geoBoundaries ADM2 2021, LGD-based, 36 districts incl. Palghar, Mumbai City + Suburban merged = 35 units):
+
+  | District | BEV per estimated station (90% range) |
+  |---|---|
+  | **Nagpur** | **574** (423–774); 113,736 BEV, 24% 3W, only 4 open-data sites |
+  | Amravati | 467 |
+  | Nashik | 441 |
+  | Jalgaon | 413 |
+  | Chhatrapati Sambhajinagar | 395 |
+
+  State average 285; 17 of 35 districts have no open-data site. Matching Karnataka's density (152.4) needs +3,641 stations.
+- **Dashboard v1** (`components/dashboard_map/`; `dist/index.html` + `dist/maharashtra.html`): no third-party basemap (boundary compliance); national layers BEV/station and **open/official coverage per state** (Supervisor item 3); district drill-down with ranges and reasons. Checked in Chromium (Playwright, private pages; the shared browser was being navigated by another session): 0 console errors, both layers switch, ranking row → zoom + popup. Screenshots committed. Browser closed.
+

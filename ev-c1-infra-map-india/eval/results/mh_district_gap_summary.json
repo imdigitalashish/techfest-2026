@@ -1,0 +1,58 @@
+{
+ "districts": 35,
+ "districts_without_bev_mapping": [],
+ "official_mh_stations_aug2025": 4155,
+ "small_area_coef_excl_mh": [
+  -0.297,
+  0.463,
+  0.313
+ ],
+ "open_sites_in_mh": 435,
+ "open_sites_unassigned": 0,
+ "districts_with_zero_open_sites": 17,
+ "mh_bev_per_station_avg": 285.2,
+ "karnataka_bev_per_station": 152.4,
+ "mh_need_at_karnataka_density": 7773,
+ "mh_shortfall_vs_karnataka": 3641,
+ "top5_bev_per_station": [
+  [
+   "Nagpur",
+   573.8,
+   "423\u2013774"
+  ],
+  [
+   "Amravati",
+   467.3,
+   "323\u2013723"
+  ],
+  [
+   "Nashik",
+   441.0,
+   "351\u2013566"
+  ],
+  [
+   "Jalgaon",
+   412.5,
+   "294\u2013618"
+  ],
+  [
+   "Chhatrapati Sambhajinagar",
+   394.5,
+   "315\u2013497"
+  ]
+ ],
+ "bottom3_bev_per_station": [
+  [
+   "Washim",
+   128.6
+  ],
+  [
+   "Sindhudurg",
+   127.1
+  ],
+  [
+   "Gadchiroli",
+   110.2
+  ]
+ ]
+}

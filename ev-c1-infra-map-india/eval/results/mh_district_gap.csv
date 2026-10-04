@@ -1,0 +1,36 @@
+district,bev_total,bev_2W,bev_3W,bev_4W,bev_BUS,bev_GOODS,bev_OTHER,bev_2025,n_rtos,share_of_state_bev_pct,bev_2025_share_of_stock_pct,open_sites,est_stations,est_lo,est_hi,bev_per_station,bev_per_station_range,open_coverage,need_at_karnataka_density,shortfall_vs_karnataka,growth_2025_share_pct,gap_score,drivers
+Nagpur,113736,77685,27143,7303,1199,375,31,24050,3,9.6,21.1,4.0,198.2,147.0,269.04999999999995,573.8,423–774,0.02,746.0,548.0,21.1,1.0,574 BEV per station vs state avg 285; 3W-heavy (24% of BEV): depot/swap needs
+Amravati,30377,27598,1855,838,0,86,0,6568,1,2.56,21.6,0.0,65.0,42.0,94.0,467.3,323–723,0.0,199.0,134.0,21.6,0.971,467 BEV per station vs state avg 285; data-thin: no site in any open source (estimate rests on the model)
+Nashik,77534,70199,1382,5322,110,517,4,19679,2,6.54,25.4,5.0,175.8,137.0,221.0,441.0,351–566,0.028,509.0,333.0,25.4,0.943,441 BEV per station vs state avg 285; fast growth (25% of stock registered in 2025)
+Jalgaon,24090,22488,576,936,0,89,1,6008,3,2.03,24.9,0.0,58.4,39.0,82.0,412.5,294–618,0.0,158.0,100.0,24.9,0.914,412 BEV per station vs state avg 285; data-thin: no site in any open source (estimate rests on the model)
+Chhatrapati Sambhajinagar,49741,42325,3937,2937,127,390,25,12091,2,4.2,24.3,3.0,126.1,100.0,158.0,394.5,315–497,0.024,326.0,200.0,24.3,0.886,394 BEV per station vs state avg 285
+Ahilyanagar,55834,52380,944,2102,0,407,1,14821,2,4.71,26.5,6.0,158.5,130.95,187.0,352.3,299–426,0.038,366.0,208.0,26.5,0.857,fast growth (26% of stock registered in 2025)
+Latur,17790,15601,1495,636,0,57,1,4290,2,1.5,24.1,0.0,50.8,34.0,70.0,350.2,254–523,0.0,117.0,66.0,24.1,0.829,data-thin: no site in any open source (estimate rests on the model)
+Nanded,17557,14546,2430,513,0,67,1,4466,1,1.48,25.4,0.0,50.5,34.0,70.04999999999995,347.7,251–516,0.0,115.0,64.0,25.4,0.8,data-thin: no site in any open source (estimate rests on the model); fast growth (25% of stock registered in 2025)
+Solapur,43770,40690,901,1399,20,758,2,11394,2,3.69,26.0,5.0,134.9,109.0,158.0,324.5,277–402,0.037,287.0,152.0,26.0,0.771,fast growth (26% of stock registered in 2025)
+Beed,13966,13080,392,419,40,34,1,3813,2,1.18,27.3,0.0,45.4,31.0,62.0,307.6,225–451,0.0,92.0,47.0,27.3,0.743,data-thin: no site in any open source (estimate rests on the model); fast growth (27% of stock registered in 2025)
+Akola,13198,9867,2756,427,66,82,0,3579,1,1.11,27.1,0.0,44.2,28.0,61.0,298.6,216–471,0.0,87.0,43.0,27.1,0.714,data-thin: no site in any open source (estimate rests on the model); 3W-heavy (21% of BEV): depot/swap needs; fast growth (27% of stock registered in 2025)
+Jalna,12784,11624,660,472,0,27,1,3161,1,1.08,24.7,0.0,43.6,29.0,61.0,293.2,210–441,0.0,84.0,40.0,24.7,0.686,data-thin: no site in any open source (estimate rests on the model)
+Kolhapur,71548,68310,351,2634,69,176,8,15321,2,6.04,21.4,19.0,246.9,218.95,271.0,289.8,264–327,0.077,469.0,222.0,21.4,0.657,near state average
+Yavatmal,12332,10729,1093,360,32,118,0,3163,1,1.04,25.6,0.0,42.8,28.0,60.0,288.1,206–440,0.0,81.0,38.0,25.6,0.629,data-thin: no site in any open source (estimate rests on the model); fast growth (26% of stock registered in 2025)
+Pune,282970,245053,4642,30428,995,1816,36,54939,3,23.88,19.4,248.0,1027.5,786.95,1281.0,275.4,221–360,0.241,1857.0,830.0,19.4,0.6,near state average
+Palghar,23610,20526,898,2076,40,68,2,4118,1,1.99,17.4,3.0,89.3,70.0,107.0,264.4,221–337,0.034,155.0,66.0,17.4,0.571,near state average
+Gondia,10369,8562,1562,217,0,28,0,3101,1,0.87,29.9,0.0,39.5,26.0,55.0,262.5,189–399,0.0,68.0,28.0,29.9,0.543,data-thin: no site in any open source (estimate rests on the model); 3W-heavy (15% of BEV): depot/swap needs; fast growth (30% of stock registered in 2025)
+Buldhana,9811,8687,698,358,19,47,2,2754,2,0.83,28.1,0.0,38.5,26.0,54.0,254.8,182–377,0.0,64.0,26.0,28.1,0.514,data-thin: no site in any open source (estimate rests on the model); fast growth (28% of stock registered in 2025)
+Thane,53409,38544,1749,11149,794,868,305,10312,5,4.51,19.3,21.0,222.2,194.0,245.0,240.4,218–275,0.095,350.0,128.0,19.3,0.486,car-heavy (21% 4W): DC fast-charging needs
+Sangli,33660,31513,219,1346,15,564,3,7319,1,2.84,21.7,10.0,144.5,124.0,164.0,232.9,205–271,0.069,221.0,76.0,21.7,0.457,near state average
+Bhandara,8054,6955,869,203,0,27,0,2259,1,0.68,28.0,0.0,35.2,23.0,49.0,228.8,164–350,0.0,53.0,18.0,28.0,0.429,data-thin: no site in any open source (estimate rests on the model); fast growth (28% of stock registered in 2025)
+Dhule,11642,10942,189,385,0,126,0,2989,1,0.98,25.7,1.0,51.8,37.0,69.0,224.7,169–315,0.019,76.0,24.0,25.7,0.4,fast growth (26% of stock registered in 2025)
+Parbhani,7386,6503,649,192,0,41,1,2008,1,0.62,27.2,0.0,33.8,22.0,48.0,218.5,154–336,0.0,48.0,14.0,27.2,0.371,data-thin: no site in any open source (estimate rests on the model); fast growth (27% of stock registered in 2025)
+Mumbai,78814,41040,1415,33950,1553,723,133,17219,4,6.65,21.8,59.0,364.3,303.0,422.0,216.3,187–260,0.162,517.0,153.0,21.8,0.343,car-heavy (43% 4W): DC fast-charging needs
+Wardha,12809,10501,1953,311,0,43,1,3489,1,1.08,27.2,2.0,61.5,46.0,79.0,208.3,162–278,0.033,84.0,22.0,27.2,0.314,3W-heavy (15% of BEV): depot/swap needs; fast growth (27% of stock registered in 2025)
+Ratnagiri,6729,6282,154,254,24,15,0,1523,2,0.57,22.6,0.0,32.4,21.0,47.0,207.7,143–320,0.0,44.0,12.0,22.6,0.286,data-thin: no site in any open source (estimate rests on the model)
+Dharashiv,5753,5107,335,229,0,82,0,1677,1,0.49,29.2,0.0,30.1,19.0,43.0,191.1,134–303,0.0,38.0,8.0,29.2,0.257,data-thin: no site in any open source (estimate rests on the model); fast growth (29% of stock registered in 2025)
+Satara,29173,26621,338,1207,17,982,8,6808,3,2.46,23.3,21.0,168.0,132.0,200.0,173.6,146–221,0.125,191.0,23.0,23.3,0.229,near state average
+Raigad,25489,20040,815,3664,44,867,59,5197,2,2.15,20.4,18.0,150.8,118.0,179.04999999999995,169.0,142–216,0.119,167.0,16.0,20.4,0.2,near state average
+Hingoli,4274,3934,229,100,0,11,0,1123,1,0.36,26.3,0.0,26.2,16.0,39.0,163.1,110–267,0.0,28.0,2.0,26.3,0.171,data-thin: no site in any open source (estimate rests on the model); fast growth (26% of stock registered in 2025)
+Nandurbar,3722,3487,32,127,0,76,0,792,1,0.31,21.3,0.0,24.6,15.0,36.049999999999955,151.3,103–248,0.0,24.0,-1.0,21.3,0.143,data-thin: no site in any open source (estimate rests on the model)
+Chandrapur,10113,7743,1697,474,35,163,1,2762,1,0.85,27.3,5.0,68.5,49.0,87.04999999999995,147.6,116–206,0.073,66.0,-2.0,27.3,0.114,3W-heavy (17% of BEV): depot/swap needs; fast growth (27% of stock registered in 2025)
+Washim,4127,3631,370,107,0,19,0,1144,1,0.35,27.7,1.0,32.1,20.0,47.0,128.6,88–206,0.031,27.0,-5.0,27.7,0.086,fast growth (28% of stock registered in 2025)
+Sindhudurg,6877,6556,92,211,0,18,0,1963,1,0.58,28.5,4.0,54.1,36.0,72.04999999999995,127.1,95–191,0.074,45.0,-9.0,28.5,0.057,fast growth (28% of stock registered in 2025)
+Gadchiroli,2060,1351,527,84,0,28,70,662,1,0.17,32.1,0.0,18.7,10.0,29.0,110.2,71–206,0.0,14.0,-5.0,32.1,0.029,data-thin: no site in any open source (estimate rests on the model); 3W-heavy (26% of BEV): depot/swap needs; fast growth (32% of stock registered in 2025)

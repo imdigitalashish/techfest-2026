@@ -1,0 +1,32 @@
+rto_code,rto_town,district,method,note
+15,AMBIKAPUR,Surguja,manual,Ambikapur is the Surguja district HQ
+16,BAIKUNTHPUR,Koriya,manual,Baikunthpur is the Koriya (Korea) district HQ
+22,BALODA BAZAR,Baloda Bazar,name_match,
+24,BALOD,Balod,name_match,
+30,BALRAMPUR,Balrampur,name_match,
+25,BEMETARA,Bemetra,name_match,spelling variant in geoBoundaries
+20,BIJAPUR,Bijapur,name_match,
+10,BILASPUR,Bilaspur,name_match,
+18,DANTEWADA,Dakshin Bastar Dantewada,name_match,
+5,DHAMTARI,Dhamtari,name_match,
+7,DURG,Durg,name_match,
+23,GARIYABAND,Gariaband,name_match,spelling variant
+31,GAURELA-PENDRA-MARWAHI,Gaurella Pendra Marwahi,name_match,
+17,JAGDALPUR,Bastar,manual,Jagdalpur is the Bastar district HQ
+11,JANJGIR CHAMPA,Janjgir-Champa,name_match,
+14,JASHPUR,Jashpur,name_match,
+19,KANKER,Uttar Bastar Kanker,name_match,
+9,KAWARDHA,Kabeerdham,manual,Kawardha is the Kabirdham district HQ (kawardha.nic.in)
+27,KONDAGAON,Kondagaon,name_match,
+12,KORBA,Korba,name_match,
+6,MAHASAMUND,Mahasamund,name_match,
+28,MUNGELI,Mungeli,name_match,
+21,NARAYANPUR,Narayanpur,name_match,
+13,RAIGARH,Raigarh,name_match,
+4,RAIPUR,Raipur,name_match,
+8,RAJNANDGAON,Rajnandgaon,name_match,
+26,SUKMA,Sukma,name_match,
+29,SURAJPUR,Surajpur,name_match,
+3,AIG PHQ,,unassigned,police HQ office
+998,RTA TC NAWA RAIPUR,,unassigned,transport commissioner office
+99,STATE TRANSPORT AUTHORITY,,unassigned,state authority
