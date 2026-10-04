@@ -1,0 +1,19 @@
+{
+ "command": "HF_HUB_OFFLINE=1 ~/venv_kvp/bin/python eval/parity_torch.py",
+ "environment": "Azure Standard_D16ds_v5 (Xeon 8370C), venv_kvp: torch 2.10.0+cpu, transformers 5.2.0, kvpress 0.5.5 (the grid environment; MLX not installed there)",
+ "date": "2026-10-04 15:11 IST",
+ "result": {
+  "n_tokens": 75,
+  "fp32_kv": {
+   "max_abs_dlogit": 2e-05,
+   "argmax_equal": true,
+   "top5_overlap": 5
+  },
+  "fp16_kv": {
+   "max_abs_dlogit": 0.01058,
+   "argmax_equal": true,
+   "top5_overlap": 5
+  },
+  "mlx_vs_torch_32tok": "skipped: ModuleNotFoundError: No module named 'mlx'"
+ }
+}

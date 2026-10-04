@@ -24,12 +24,14 @@ case "${1:-}" in
     ssh $OPTS "$H" 'curl -LsSf https://astral.sh/uv/install.sh | sh >/dev/null 2>&1 \
       && ~/.local/bin/uv venv -q --clear --python 3.11 ~/venv \
       && ~/.local/bin/uv pip install -q --python ~/venv/bin/python "mlx[cpu]==0.32.3" "mlx-lm==0.32.0" pyarrow huggingface_hub \
-      && cd p02 && ~/venv/bin/python eval/fetch_haystack.py' ;;
+      && cd p02 && ~/venv/bin/python eval/fetch_haystack.py'
+    scp $OPTS "$ROOT/eval/azure/setup_torch.sh" "$ROOT/eval/azure/setup_kvp.sh" "$H:p02/"
+    ssh $OPTS "$H" 'cd p02 && bash setup_torch.sh && bash setup_kvp.sh' < /dev/null ;;
   run)
     H="azureuser@$(ip)"; shift
     scp $OPTS "$ROOT"/eval/kvbench_torch.py "$ROOT"/eval/parity_torch.py "$H:p02/eval/"
     N=$(echo "$*" | sed -n 's/.*--name \([^ ]*\).*/\1/p'); N=${N:-$(date +%s)}
-    ssh $OPTS "$H" "cd p02 && HF_HUB_OFFLINE=1 nohup ~/venv/bin/python -u eval/kvbench_torch.py $* > run_$N.log 2>&1 < /dev/null &" < /dev/null ;;
+    ssh $OPTS "$H" "cd p02 && HF_HUB_OFFLINE=1 nohup ~/venv_kvp/bin/python -u eval/kvbench_torch.py $* > run_$N.log 2>&1 < /dev/null &" < /dev/null ;;
   status)
     H="azureuser@$(ip)"; ssh $OPTS "$H" 'cd p02 && for f in run_*.log; do echo "== $f"; grep -v clean_up "$f" | tail -3; done; uptime' < /dev/null ;;
   fetch)

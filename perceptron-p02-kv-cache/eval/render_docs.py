@@ -19,7 +19,7 @@ SPLITS = {"T1": "T1_literal_s0", "T2": "T2_paraphrase_s1", "T3": "T3_alias_s2", 
 DOCS = ["eval/RESULTS.md", "deliverables/round1-abstract.md", "thought_node.md", "deliverables/selection-memo.md"]
 QA = ["h2o", "snapkv", "knorm", "kvp_streaming", "kvp_snapkv", "kvp_observed", "kvp_knorm", "kvp_expected", "kvp_tova"]
 NAMES = {"full": "Full cache", "int8": "int8 KV", "int4": "int4 KV", "int2": "int2 KV", "streaming": "StreamingLLM (ours)",
-         "random": "Random (control)", "h2o": "H2O-style (ours)", "snapkv": "SnapKV-style (ours)", "knorm": "K-norm (ours)",
+         "random": "Random (control)", "h2o": "H2O-style (ours)", "snapkv": "SnapKV-variant (ours, +4 sinks)", "knorm": "K-norm (ours)",
          "snapkv_qa": "SnapKV, question-aware (oracle)", "rod": "**RoD (ours)**", "rodlex": "RoD-lexical (control)",
          "kvp_streaming": "kvpress StreamingLLM", "kvp_snapkv": "kvpress SnapKV", "kvp_observed": "kvpress ObservedAttention (H2O)",
          "kvp_knorm": "kvpress Knorm", "kvp_expected": "kvpress ExpectedAttention", "kvp_tova": "kvpress TOVA"}
@@ -124,6 +124,12 @@ def compute():
     if S4 and T1:
         V["S4"] = {f: delta(S4, "rod", T1, "rod", f) for f in (0.1, 0.25, 0.5)}
         V["S4tab"] = table(S4)
+        tS4, tT1 = {r["sample"]: r["T"] for r in S4}, {r["sample"]: r["T"] for r in T1}
+        same = all(tS4[s] == tT1.get(s) for s in tS4)
+        V["S4_pairing"] = f"{len(tS4)} contexts; context lengths identical to T1's: {'yes' if same else 'NO'}"
+    for k, rows in (("T1", T1), ("T2", T2), ("T3", T3)):
+        if rows:
+            V[f"bytecheck_{k}"] = byte_check(rows)
     V["meta"] = {k: (D[k]["meta"] if D[k] else None) for k in SPLITS}
     V["meanT"] = {k: (sum({r["sample"]: r["T"] for r in D[k]["rows"]}.values()) / len({r["sample"] for r in D[k]["rows"]}) if D[k] else None)
                   for k in SPLITS}
@@ -132,6 +138,41 @@ def compute():
 
 def get(tab, m, f):
     return next((t for t in tab or [] if t["m"] == m and abs(t["f"] - f) < 1e-9), None)
+
+
+def rod_budget(T, f, per_tok=32768, nkv=8, hd=64, bits=4, wq=262144, block=64):
+    """Mirror of kvbench_torch.rod_build's budget arithmetic for the frozen config."""
+    import math
+    B = max(4 + 64 + 1, round(f * T))
+    extra = nkv * (hd * bits // 8 + 4) * T + 4 * T + wq
+    B_kv = max(6, B - math.ceil(extra / per_tok))
+    B_res = max(5, B_kv // 2)
+    return {"B": B, "B_res": B_res, "m": (B_kv - B_res) // block, "E": T - B_res}
+
+
+def transient_bytes(T, f, Lq=20, nkv=8, g=4, hd=64, W=64):
+    """Analytic upper bound of RoD's unchunked scoring working set: dense fp32 sketch + fp32 question and window
+    logits and their softmax copies over all evicted keys (the implementation is not streamed)."""
+    E = rod_budget(T, f)["E"]
+    return E * (nkv * hd * 4 + 2 * nkv * g * Lq * 4 + 2 * nkv * g * W * 4)
+
+
+def byte_check(rows):
+    """Count (context, keep) cells where RoD's answer-time bytes exceed any baseline's stored bytes."""
+    st = defaultdict(dict)
+    for r in rows:
+        if r["method"] not in ("full", "int8", "int4", "int2", "snapkv_qa"):
+            key = (r["sample"], round(r["frac"], 4))
+            v = r["answer_time_bytes"] if r["method"] in ("rod", "rodlex") else r["stored_bytes"]
+            st[key][r["method"]] = max(st[key].get(r["method"], 0), v)
+    viol, cells = 0, 0
+    for key, d in st.items():
+        if "rod" in d:
+            base = [v for m, v in d.items() if m not in ("rod", "rodlex")]
+            if base:
+                cells += 1
+                viol += d["rod"] > min(base)
+    return viol, cells
 
 
 def verdicts(V):
@@ -154,6 +195,19 @@ def verdicts(V):
                + ("" if x is None else (" → replicated" if x["lo"] > 0 else " → not replicated")))
     for f, x in (V.get("S4") or {}).items():
         out.append(f"- **S4** (halo 64 − halo 0, RoD, keep {f}, T1): {fmt_d(x)}")
+    if V.get("T1"):
+        for f in (0.1, 0.5):
+            cells = []
+            for b in ["streaming", "snapkv", "h2o", "rodlex", "kvp_expected"]:
+                x = (V.get("S5") or {}).get(f, {}).get(b)
+                cells.append(f"{NAMES[b]} {fmt_d(x)}" if x else f"{NAMES[b]} not run")
+            out.append(f"- **S5** (RoD − baseline, keep {f}, T1): " + "; ".join(cells))
+    for k in ("T1", "T2", "T3"):
+        if V.get(f"bytecheck_{k}"):
+            v, c = V[f"bytecheck_{k}"]
+            out.append(f"- **Byte check {k}**: RoD answer-time bytes > a baseline's stored bytes in {v} of {c} (context, keep) cells")
+    if V.get("S4_pairing"):
+        out.append(f"- **S4 pairing**: {V['S4_pairing']}")
     for f, x in (V.get("S6") or {}).items():
         out.append(f"- **S6** (RoD − RoD-lexical, keep {f}, T3 synonym-aliased keys): {fmt_d(x)}"
                    + ("" if x is None else (" → sketch retrieves by meaning where lexical cannot" if x["lo"] > 0 else " → not shown")))
@@ -171,7 +225,7 @@ def headline(V):
     full, rod, st = get(t, "full", 1.0), get(t, "rod", 0.25), get(t, "streaming", 0.25)
     exp, snap = get(t, "kvp_expected", 0.25), get(t, "kvp_snapkv", 0.25)
     p = V["primary"]
-    return (f"On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct), the full cache recalls {pc(full)} of needles. "
+    return (f"On 12 held-out ~4k-token contexts (48 independent questions asked after compression; Llama-3.2-1B-Instruct), the full cache recalls {pc(full)} of needles. "
             f"At a quarter of the KV memory, StreamingLLM recalls {pc(st)}, kvpress SnapKV {pc(snap)} and kvpress ExpectedAttention "
             f"{pc(exp)}; Recall-on-Demand recalls {pc(rod)} (95% CI {rod['lo']:.0%}–{rod['hi']:.0%}) while *storing* "
             f"{rod['x']:.1f}× less KV than the full cache: a pre-registered gain of {p['d']:+.2f} recall over StreamingLLM "
@@ -215,6 +269,19 @@ def results_md(V):
             parts += [f"## {lab}", "", f"`{m['command']}`", "",
                       f"{m['backend']} · {m['cpu']} · torch {m['torch']} · {m['threads']} threads · wall {m['wall_s']} s · "
                       f"{m['n_contexts']} contexts × {m['needles']} questions · mean context {V['meanT'][sk]:.0f} tokens", "", md_table(V[k]), ""]
+    if V.get("T1"):
+        Ts = sorted({r["sample"]: r["T"] for r in load("T1")["rows"]}.values())
+        Tm = round(sum(Ts) / len(Ts))
+        parts += ["## RoD's transient scoring working set (analytic, T1 mean context)", "",
+                  "| Keep | Recall blocks m | Evicted tokens E | Persistent store MiB | Transient scoring set MiB (unchunked upper bound) |",
+                  "|---|---|---|---|---|"]
+        for f in (0.1, 0.25, 0.5):
+            b, row = rod_budget(Tm, f), get(V["T1"], "rod", f)
+            stored = f"{row['stored']:.1f}" if row else "n/a"
+            parts.append(f"| {f:.2f} | {b['m']} | {b['E']} | {stored} | {transient_bytes(Tm, f) / 2**20:.1f} |")
+        parts += ["", "The scorer materialises a dense fp32 copy of the sketch and fp32 question/window score tensors over all evicted "
+                  "keys. A streamed implementation (online softmax over key chunks; the window term precomputed per key at compression) "
+                  "bounds this to O(chunk). It is reported here so that no peak-memory-equality claim is implied.", ""]
     parts += ["## Memory accounting", "",
               "Stored KV MiB = analytic bytes = layers × kv_heads × kept tokens × head_dim × 2 (K,V) × 2 B (fp16), plus quantisation "
               "scales/biases and, for RoD, the 4-bit sketch, 256 KiB of window queries and int32 token ids. The harness asserts that the "

@@ -1,0 +1,23 @@
+{
+ "vm_size": "Standard_D16ds_v5",
+ "cpu": "Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz",
+ "os": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.35",
+ "model_snapshot": "/home/azureuser/.cache/huggingface/hub/models--mlx-community--Llama-3.2-1B-Instruct-4bit/snapshots/08231374eeacb049a0eade7922910865b8fce912",
+ "sha256": {
+  ".data/llama32_1b_q4deq_fp16.safetensors": "e8f57b3c3a89061ad91b3a6cee8ff6209dc2a07ed20010a1b55d9de7e2ee6baa",
+  ".data/llama32_1b_config.json": "28e16fe03e2bfed3f510220e88ff952b5f686b0e175d42ccca32b00cc847cdd5",
+  ".data/haystack.txt": "5485315b86942b26da1c7d81716600900abf66899230ba5ec41c6bee3e4cf166",
+  "eval/kvbench_torch.py": "d9d01f1870ec90939d3755b51543f2657218bf3bc8ee0aefc511f96781798299",
+  "eval/kvbench_torch_amended.py": "22f88b98b72017d9c2e3219be873b42449ff5679d85e1cad1fc6e611daf3aaae"
+ },
+ "venv_kvp_freeze": [
+  "accelerate==1.15.0",
+  "huggingface-hub==1.33.0",
+  "kvpress==0.5.5",
+  "numpy==2.4.6",
+  "safetensors==0.8.0",
+  "tokenizers==0.22.2",
+  "torch==2.10.0+cpu",
+  "transformers==5.2.0"
+ ]
+}
