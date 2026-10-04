@@ -131,7 +131,20 @@ def build():
     for k in rd.SPLITS:
         if D[k] is not None and (V.get(k) or V.get("S4tab") and k == "S4"):
             runs.append(run_export(k, D[k], V, tok, paras, cache))
+    posthoc = None
+    ph = common.ROOT / "eval" / "results" / "posthoc_T1.json"
+    if ph.exists():  # exploratory (PREREG amendment 3); strings formatted exactly as render_docs renders them
+        P = json.loads(ph.read_text())
+        posthoc = {"label": P["label"], "command": P["command"], "rows": []}
+        for f, x in P["summary"].items():
+            c = {"b": pk(float(f)), "n": x["n"], "m": f"{x['m_mean']:.1f}", "rod": "n/a" if x["rod_T1_acc"] is None else f"{x['rod_T1_acc']:.3f}",
+                 "e2": f"{x['e2_exactkv_acc']:.3f}", "e3": f"{x['e3_oracleblk_acc']:.3f}", "e23": f"{x['e23_both_acc']:.3f}",
+                 "e5": "n/a" if x.get("e5_top2_acc") is None else format(x["e5_top2_acc"], ".3f")}
+            c["md"] = (f"| {float(f):.2f} | {x['n']} | {c['m']} | {x['streamed_equal']}/{x['n']} | {x['t1_recorded_equal']}/{x['n']} | "
+                       f"{c['rod']} | {c['e2']} | {c['e3']} | {c['e23']} | {c['e5']} |")
+            posthoc["rows"].append(c)
     return {"generated_by": "demo/export_replay.py from eval/results/*.rows.jsonl via eval/render_docs.py",
+            "posthoc_T1": posthoc,
             "model": "Llama-3.2-1B-Instruct (mlx-community 4-bit @ 08231374, dequantised; fp32 compute on CPU, fp16 KV)",
             "kv_bytes_per_token": PER_TOK, "block": BLOCK, "n_sink": N_SINK, "names": NAMES, "groups": GROUPS,
             "headline": rd.headline(V), "verdicts": rd.verdicts(V).split("\n"), "runs": runs}, V
@@ -193,6 +206,10 @@ def main():
             row = f"| {rd.NAMES.get(t['m'], t['m'])} | {t['f']:.2f} | {md['acc']} | {md['ci']} | {md['stored']} | {md['x']} | {md['answer']} | {md['s']} | {md['hit']} |"
             if row not in rset:
                 fails.append(f"{r['key']} on-screen strings differ from eval/RESULTS.md: {row[:90]}")
+    for row in (fresh.get("posthoc_T1") or {}).get("rows", []):
+        n_lines += 1
+        if row["md"] not in rset:
+            fails.append(f"post-hoc row not in eval/RESULTS.md: {row['md'][:90]}")
     for f in fails:
         print("FAIL", f)
     if not fails:

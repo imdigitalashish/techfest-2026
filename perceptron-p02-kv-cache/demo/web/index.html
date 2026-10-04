@@ -110,9 +110,8 @@ input[type=range]{width:100%;accent-color:var(--ink)}
 .evid td{font-size:13.5px;padding:3px 6px;border-bottom:1px solid var(--line)}
 .evid td:not(:first-child){text-align:right}
 .empty{color:var(--ink3);font-size:13.5px;padding:22px 4px;text-align:center}
-.anim rect{transition:x .22s ease-out,width .22s ease-out}
 @media (max-width:1100px){.cols,.lcols{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){.anim rect,.prog i{transition:none}}
+@media (prefers-reduced-motion:reduce){.prog i{transition:none}}
 </style>
 </head>
 <body>
@@ -160,6 +159,7 @@ const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`(.+?)`/g
 const NS = "http://www.w3.org/2000/svg";
 function S_(tag, a = {}, txt) { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (txt != null) e.textContent = txt; return e; }
 const MiB = b => (b / 1048576).toFixed(1);
+const size = b => b < 104858 ? `${(b / 1024).toFixed(1)} KiB` : `${MiB(b)} MiB`;
 const pct = x => Math.round(x * 100) + "%";
 const nm = m => (R && R.names[m]) || m;
 const FULLISH = new Set(["full", "int8", "int4", "int2"]);
@@ -246,7 +246,7 @@ function qcard() {
 // spec: [{label, sub, kind: "marks"|"bar"|"blocks"|"heat"|"hatch", ...}]
 function drawTracks(host, T, spec, inspect) {
   const W = Math.max(560, host.clientWidth), LW = 252, RM = 14, X = p => LW + (W - LW - RM) * Math.max(0, Math.min(T, p)) / T;
-  const svg = S_("svg", {class: "anim", role: "img"});
+  const svg = S_("svg", {role: "img"});
   const defs = S_("defs");
   defs.innerHTML = `<pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#eef1f5"/><line x1="0" y1="0" x2="0" y2="5" stroke="#9aa3ad" stroke-width="1.6"/></pattern>`;
   svg.appendChild(defs);
@@ -344,7 +344,8 @@ function board() {
     h += `<tr class="g"><td colspan="6">${esc(g)}</td></tr>`;
     for (const m of present) {
       const t = tab(rn, m, b), r = row(rn, m, b, ST.s, ST.q), cls = m === "rod" ? "rod" : "";
-      if (!t || !r) { h += `<tr class="${cls}"><td class="nm">${esc(nm(m))}</td><td class="na" colspan="5">not run at ${b}% (kvpress presses ran at 10% and 25%)</td></tr>`; continue; }
+      if (!t || !r) { const why = b === "100" ? "not applicable at 100%: every token is kept" : m.startsWith("kvp_") ? `not run at ${b}% (kvpress presses ran at 10% and 25%)` : `not run at ${b}% in this run`;
+        h += `<tr class="${cls}"><td class="nm">${esc(nm(m))}</td><td class="na" colspan="5">${why}</td></tr>`; continue; }
       const w = 100 * r.stored / fb, x = 100 * Math.max(0, r.at - r.stored) / fb;
       const memTxt = r.at !== r.stored ? `${MiB(r.stored)} → ${MiB(r.at)}` : MiB(r.stored);
       const qn = FULLISH.has(m) && m !== "full" && b !== "100" ? ` <span style="color:var(--ink3);font-weight:400">(all tokens, ${pct(r.stored / fb)} memory)</span>` : "";
@@ -432,11 +433,20 @@ function mech() {
       <button class="btn ghost" id="showconf">Show this case at 25%</button>`; })() : "";
   $("#mech").innerHTML = `<h2>Why RoD dips when given more memory <small>${esc(rn.key)} rows</small></h2>
     <table class="mech"><tr><th>budget</th><th>blocks recalled</th><th>asked fact's block recalled</th><th>right, given recalled</th><th>wrong answers naming another fact</th></tr>${rows}</table>
-    <p style="color:var(--ink2);margin:8px 0 0">A bigger budget recalls more blocks and keeps a longer tail. The asked fact is found more often, but look-alike facts enter the view and the 1B model sometimes answers with one of them.</p>${ex}`;
+    <p style="color:var(--ink2);margin:8px 0 0">A bigger budget recalls more blocks and keeps a longer tail. Each recalled block is re-prefilled seeing only the 4 sinks and itself (approximate KV). The asked fact is found more often, but the model more often answers with a look-alike fact's number.</p>${ex}${posthoc(rn)}`;
   const bt = $("#showconf");
   if (bt) bt.onclick = () => { ST.b = "25"; ST.s = c.sample; ST.q = c.q; render(); $("#tracks").scrollIntoView({behavior: "smooth", block: "center"}); };
 }
 
+function posthoc(rn) {
+  const P = R.posthoc_T1;
+  if (!P || rn.key !== "T1") return "";
+  const r = b => P.rows.find(x => x.b === b) || {};
+  return `<p style="color:var(--ink2);margin:12px 0 6px"><b>Exploratory, post hoc</b> (amendment 3; same 48 T1 questions): exact KV for the same recalled blocks (E2), an oracle block choice (E3), or recalling only the top-2 blocks (E5).</p>
+    <table class="mech"><tr><th>budget</th><th>RoD</th><th>E2 exact KV</th><th>E3 oracle block</th><th>E5 top-2 only</th></tr>`
+    + P.rows.map(x => `<tr${x.b === ST.b ? ' style="font-weight:700"' : ""}><td>${x.b}%</td><td>${x.rod}</td><td>${x.e2}</td><td>${x.e3}</td><td>${x.e5}</td></tr>`).join("")
+    + `</table><p style="color:var(--ink2);margin:6px 0 0">At 25%, exact KV for the same blocks gives ${r("25").e2} and recalling only the top-2 blocks gives ${r("25").e5}: the dip comes from many approximately re-prefilled blocks, not from missing the right one.</p>`;
+}
 function prov() {
   const rn = run();
   $("#verdicts ul").innerHTML = R.verdicts.map(v => `<li>${md(v.replace(/^- /, ""))}</li>`).join("");
@@ -498,19 +508,20 @@ function progress(b) {
   $("#lprog").innerHTML = `<div class="prog"><i style="transform:scaleX(${Math.min(0.98, b.elapsed_s / Math.max(1, b.eta_s)).toFixed(3)})"></i></div><div class="kv">${esc(what)} · ${b.elapsed_s.toFixed(0)} s of ~${b.eta_s.toFixed(0)} s</div>`;
 }
 function liveButtons() {
-  const st = (LV.status && LV.status.state) || "offline", ready = st === "ready" && !LV.busy, usable = (st === "ready" || st === "idle") && !LV.busy;
+  const S0 = LV.status || {state: "checking", detail: "checking for the live engine…"};
+  const st = S0.state, ready = st === "ready" && !LV.busy, usable = (st === "ready" || st === "idle") && !LV.busy;
   $("#lc").disabled = !usable; $("#la").disabled = !ready || !LV.lay;
   const eng = {idle: `<b>off</b> · the 1B model loads on your first <i>Compress</i> (~7 s, ~3 GB RAM) <button class="btn ghost" id="lload">Load now</button>`,
-    loading: "<b>loading…</b>", ready: `<b>ready</b> · ${esc(LV.status.weights || "")} <button class="btn ghost" id="lunload">Stop and free memory</button>`,
+    loading: "<b>loading…</b>", ready: `<b>ready</b> · ${esc(S0.weights || "")} <button class="btn ghost" id="lunload">Stop and free memory</button>`,
     off: "<b>off in this session</b> · restart with <code>demo/run.sh --live</code> to plant your own fact", offline: "<b>no live server</b> · start <code>demo/run.sh --live</code>",
-    nodata: `<b>needs a one-time fetch</b> · run <code>demo/fetch.sh</code> (${esc(LV.status.detail)})`, error: `<b class="warn">error</b> · ${esc(LV.status && LV.status.detail)}`}[st] || esc(st);
+    nodata: `<b>needs a one-time fetch</b> · run <code>demo/fetch.sh</code> (${esc(S0.detail)})`, error: `<b class="warn">error</b> · ${esc(S0.detail)}`}[st] || esc(S0.detail || st);
   const el = $("#lengine");
   if (el.dataset.k !== st + LV.busy) { el.dataset.k = st + LV.busy; el.innerHTML = `<span>live engine</span><span>${eng}</span>`;
     const l = $("#lload"), u = $("#lunload");
     if (l) l.onclick = () => withBusy(async () => { await api("/api/load", {}); });
     if (u) u.onclick = () => withBusy(async () => { await api("/api/unload", {}); LV.lay = LV.ans = LV.lastQ = null; }); }
   for (const b of el.querySelectorAll("button")) b.disabled = LV.busy;
-  if (!LV.lay) $("#ltracks").innerHTML = `<p class="empty">${usable ? "Plant a fact and press <b>Compress</b>: the model reads the document once and every method builds its memory before any question exists." : esc((LV.status && LV.status.detail) || "Waiting for the live engine…")}</p>`;
+  if (!LV.lay) $("#ltracks").innerHTML = `<p class="empty">${usable ? "Plant a fact and press <b>Compress</b>: the model reads the document once and every method builds its memory before any question exists." : esc(S0.detail || "Waiting for the live engine…")}</p>`;
 }
 function fillDefaults() {
   const d = LV.status && LV.status.defaults; if (!d || LV.filled) return;
@@ -583,7 +594,7 @@ function liveSummary() {
   const L = LV.lay, r = L.rod;
   $("#lcs").innerHTML = `<span>document</span><b>${L.T.toLocaleString()} tokens, read once in ${L.prefill_s} s</b><span>full KV cache</span><b>${MiB(L.full_bytes)} MiB (32 KiB per token)</b><span>questions seen</span><b>none: every store was built first</b>`;
   $("#lbs").innerHTML = `<span>budget</span><b>${L.B.toLocaleString()} tokens' worth = ${MiB(L.budget_bytes)} MiB</b>`
-    + `<span>RoD keeps</span><b>${r.B_res} resident tokens + sketch ${MiB(r.sketch_bytes)} + window ${MiB(r.window_bytes)} + ids ${MiB(r.ids_bytes)} MiB</b>`
+    + `<span>RoD keeps</span><b>${r.B_res} resident tokens (${size(r.resident_bytes)}) + sketch ${size(r.sketch_bytes)} + window ${size(r.window_bytes)} + ids ${size(r.ids_bytes)}</b>`
     + `<span>RoD may recall</span>${r.m > 0 ? `<b>m = ${r.m} blocks × 64 tokens when a question arrives</b>` : `<b class="warn">budget too small to recall (m = 0): RoD's sketch, ids and window are charged to its own budget</b>`}`;
 }
 function liveTracks() {
