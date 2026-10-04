@@ -37,19 +37,9 @@ def bts_action_dist(n_sim=200_000, len_list=3, seed=12345):
     return counts / counts.sum(0, keepdims=True)
 
 
-def main():
-    rnd = pd.read_csv(D / "random" / "all" / "all.csv", usecols=COLS)
-    bts = pd.read_csv(D / "bts" / "all" / "all.csv", usecols=COLS)
-    pi = bts_action_dist()
-    # Check of the evaluation policy: BTS logs record their own propensities; compare with our Monte Carlo.
-    est_ps = pi[bts.item_id.values, bts.position.values - 1]
-    mae = float(np.abs(est_ps - bts.propensity_score.values).mean())
-    corr = float(np.corrcoef(est_ps, bts.propensity_score.values)[0, 1])
-
-    a, k, r, ps = rnd.item_id.values, rnd.position.values - 1, rnd.click.values.astype(float), rnd.propensity_score.values
+def estimators(pi, a, k, r, ps):
     w = pi[a, k] / ps
-    out = {}
-    out["IPW"] = w * r
+    out = {"IPW": w * r}
     v_sn = (w * r).sum() / w.sum()
     out["SNIPW"] = v_sn + w * (r - v_sn) / w.mean()
     # Cross-fitted DM: CTR per (item, position) shrunk toward the position CTR (m pseudo-impressions).
@@ -68,19 +58,39 @@ def main():
         dm[te] = (pi[:, k[te]] * q[:, k[te]]).sum(0)
     out["DM"] = dm
     out["DR"] = dm + w * (r - qhat_logged)
+    return out, w
 
+
+def main():
+    rnd = pd.read_csv(D / "random" / "all" / "all.csv", usecols=COLS)
+    bts = pd.read_csv(D / "bts" / "all" / "all.csv", usecols=COLS)
+    pi = bts_action_dist()
+    # Check of the evaluation policy: BTS logs record their own propensities; compare with our Monte Carlo.
+    est_ps = pi[bts.item_id.values, bts.position.values - 1]
+    mae = float(np.abs(est_ps - bts.propensity_score.values).mean())
+    corr = float(np.corrcoef(est_ps, bts.propensity_score.values)[0, 1])
+
+    a, k, r, ps = rnd.item_id.values, rnd.position.values - 1, rnd.click.values.astype(float), rnd.propensity_score.values
+    emp = np.zeros_like(pi)
+    np.add.at(emp, (bts.item_id.values, bts.position.values - 1), 1.0)
+    emp /= emp.sum(0, keepdims=True)
+    policies = {"BTS static prior (obp protocol)": pi, "BTS week-average (empirical from BTS logs)": emp}
     truth = wald(bts.click.values.astype(float))
     lines = ["# OBD sample check — Random logs → BTS policy value (REAL data, small sample)", "",
              "Reproduce: `bash eval/fetch_obd_sample.sh && .venv/bin/python eval/run_obd.py` (from `perceptron-p03-off-policy-eval/`).", "",
              f"Rows: Random {len(rnd):,} (clicks {int(r.sum())}), BTS {len(bts):,} (clicks {int(bts.click.sum())}). Campaign: All (80 items, 3 positions).",
              f"Evaluation-policy check: our Monte-Carlo BTS propensities vs the BTS logs' own propensities: MAE {mae:.5f}, correlation {corr:.4f}.",
-             f"Importance weights on Random logs: mean {w.mean():.3f}, max {w.max():.1f}, ESS {w.sum() ** 2 / (w ** 2).sum():.0f} of {len(w):,}.", "",
+             f"Logged BTS propensity quantiles (10/50/90/99%): {np.round(np.quantile(bts.propensity_score, [.1, .5, .9, .99]), 4).tolist()} vs static-prior MC at the same (item, position): {np.round(np.quantile(est_ps, [.1, .5, .9, .99]), 4).tolist()}. "
+             f"Correlation of the empirical BTS (item, position) frequencies with the static-prior MC: {np.corrcoef(emp.ravel(), pi.ravel())[0, 1]:.3f}. "
+             "Reading (our hypothesis, UNVERIFIED against the OBP paper): the deployed BTS updated its posterior during the week, so the static prior only approximates it; the week-average policy is the closer match if CTRs are stable within the week.", "",
              f"**Ground truth (BTS on-policy CTR):** {truth.point:.5f} (95% Wald CI {truth.lo:.5f}–{truth.hi:.5f}).",
              f"No-change baseline (Random's own CTR used as the guess for BTS): {r.mean():.5f}.", "",
-             "| estimator | V̂(BTS) | 95% bootstrap CI | relative error vs on-policy CTR |", "|---|---|---|---|"]
-    for name, phi in out.items():
-        ci = bootstrap(phi, B=2000, seed=1)
-        lines.append(f"| {name} | {ci.point:.5f} | {ci.lo:.5f}–{ci.hi:.5f} | {abs(ci.point - truth.point) / truth.point:.1%} |")
+             "| evaluation policy | estimator | V̂(BTS) | 95% bootstrap CI | relative error vs on-policy CTR | ESS of weights |", "|---|---|---|---|---|---|"]
+    for pname, pmat in policies.items():
+        out, w = estimators(pmat, a, k, r, ps)
+        for name, phi in out.items():
+            ci = bootstrap(phi, B=2000, seed=1)
+            lines.append(f"| {pname} | {name} | {ci.point:.5f} | {ci.lo:.5f}–{ci.hi:.5f} | {abs(ci.point - truth.point) / truth.point:.1%} | {w.sum() ** 2 / (w ** 2).sum():.0f} |")
     lines += ["", "Caveat: with about 40 clicks per 10k rows, the sampling error of both the estimates and the ground truth is large (±15–30%). "
               "Use the full dataset (about 26M rows) for conclusive numbers."]
     md = "\n".join(lines)
