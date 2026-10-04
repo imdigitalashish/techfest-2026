@@ -15,7 +15,7 @@
 - **Doing:**
   - lead: E2E run (Brush training since 10:12, slowed by swap thrashing); abstract v0.9 updated with the review fixes; ⟨pending⟩ slots wait for this run.
   - child sessions (2/2): [companies research](ghapp://sessions/f288d1bd-555c-428d-800f-15071f60f1bc), [SOTA nav/POI/AR/viewer](ghapp://sessions/4eb75b17-eb5d-4b07-9a64-ad9b17993992).
-- **E2E status (12:35):** Brush (PID 67016) has been training for 2 h 20 min, vs 36.9 min for the same job in the baseline. Cause: machine-wide swap is at 21.2 of 21.5 GB and Brush's RSS is 3.6 MB (it was 1.5 GB in the baseline), so the process is thrashing. Contributing: my Playwright viewer tab, left rendering 1M splats on the GPU since 08:49 (now closed), and the nice 10 that Brush inherited from the orchestrator. The inputs are not the cause (262 vs 263 images, same resolution). ETA unknown: Brush writes nothing to disk before step 15000. Decision point 13:15: if there's no export by then, restart without nice at --max-splats 1M.
+- **E2E status (13:16):** run 1 was killed after 3 h 03 min without an export (swap thrashing: swap 23.5 of 24.5 GB, Brush RSS 3.6 MB). Restarted at 13:16 with baseline settings (15k steps, 2M max splats) and no nice, because memory level was 44 (≥40); this rule was agreed with the Supervisor. Cached ingest + posing were reused. ETA ≈13:55–14:10 if the GPU is uncontended.
 - **Next:** fill numbers → reviews → DONE. After DONE, only work that needs the user's capture: process it with `./process_capture.sh`, deploy, measure S_T / S_V.
 - **Needs from user:**
   1. Register by 15 Oct (team ≤4; teammates' names).
