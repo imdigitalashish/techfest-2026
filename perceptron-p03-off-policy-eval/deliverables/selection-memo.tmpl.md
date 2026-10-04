@@ -23,8 +23,8 @@ _**Final for the 12 Oct pick**, rendered from `deliverables/selection-memo.tmpl.
 
 **Honest comparison with the finished candidates** (their own final memos, read on main 4 Oct):
 - **P7** (hostile judge 71/100; fit 5) is stronger on fit and demo.
-- **P1** (3.40/5 hostile judge, 68/100; fit 5) and **P9** (62/100; fit 5) fit the user better.
-- **P4** (2.65/5 before fixes, 53/100) is weaker.
+- **P1** (hostile judge 3.40/5; fit 5) and **P9** (hostile judge 3.10/5, 62/100; fit 5) fit the user better.
+- **P4** (hostile judge 2.65/5 before fixes) is weaker.
 - **P3's edge** is tight alignment with the brief's MVP and both stretch goals, demonstrated on real data with real truth, plus a pre-registered, falsifiable evaluation. Optiver judges may value that most (our hypothesis, UNVERIFIED).
 - **P3's weakness** is lower fit with the user's strengths and a nuanced real-data story (OPE fails when the new policy is greedy, so the product often abstains).
 - **Recommendation:** {{memo_reco}}
