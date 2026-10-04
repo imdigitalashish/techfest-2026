@@ -91,3 +91,18 @@ def test_planner_backends_agree():
         args = (rng.integers(0, 4, 25), rng.integers(0, 2, (8, 25)), rng.integers(0, 4, 25), rng.random((8, 25)))
         pa, pb = a.solve(*args), b.solve(*args)
         assert pa.status == pb.status == "ok" and abs(pa.objective - pb.objective) < 1e-6
+
+
+def test_trust_policies_run_and_bound_trust():
+    tr = build_trace(CFG, 2)
+    meta = dict(_meta(tr), rates=None, hop_steps=1, patience=10)
+    for name in ("mpc-gated@scope=1", "mpc-gated", "mpc-unctrust@kappa=0.5"):
+        core = DispatchCore(tr, n_agents=20, patience=10, init_seed=2)
+        pol = make_policy(name); pol.reset(meta)
+        for _ in range(60):
+            st = core.state()
+            tg = pol.act(st)
+            assert tg.shape == (20,) and ((tg >= 0) & (tg < 25)).all()
+            pol.observe(core.step(tg))
+        if name.startswith("mpc-unctrust"):
+            assert pol.last_trust is not None and ((pol.last_trust >= 0) & (pol.last_trust <= 1)).all()

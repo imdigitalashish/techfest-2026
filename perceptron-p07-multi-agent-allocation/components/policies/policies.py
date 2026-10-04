@@ -155,9 +155,10 @@ class GatedTrustMPC(MPCPolicy):
     to gate trust: zones with an alarm (self or grid neighbour) in the last `window` steps plan on tau_shock x forecast,
     all other zones on tau_quiet x forecast. Parameters are tuned on tuning seeds only (eval/preregistration.md, Add. B)."""
 
-    def __init__(self, tau_shock: float = 0.25, tau_quiet: float = 0.75, window: float = 60, **kw):
+    def __init__(self, tau_shock: float = 0.25, tau_quiet: float = 0.75, window: float = 60, scope: float = 0, **kw):
         super().__init__("ewma", **kw)
         self.tau_shock, self.tau_quiet, self.window = float(tau_shock), float(tau_quiet), int(window)
+        self.city = float(scope) >= 0.5   # scope=1: city-wide regime (any recent alarm lowers trust everywhere)
         self.name = "mpc-gated"
 
     def reset(self, meta):
@@ -172,7 +173,10 @@ class GatedTrustMPC(MPCPolicy):
     def act(self, s: FleetState) -> np.ndarray:
         self.t = s.t
         recent = (s.t - self.last_alarm) <= self.window
-        gate = self.adj[recent].any(0) if recent.any() else recent
+        if self.city:
+            gate = np.full(recent.shape, bool(recent.any()))
+        else:
+            gate = self.adj[recent].any(0) if recent.any() else recent
         trust = np.where(gate, self.tau_shock, self.tau_quiet)
         fc = self.fc.forecast(s.t, self.Hrun)
         plan = self.planner.solve(s.idle_count, s.incoming(self.Hrun)[: self.Hrun], s.queue_len, fc.mean * trust[None, :])
@@ -183,6 +187,40 @@ class GatedTrustMPC(MPCPolicy):
         f = float(self.fc.f(self.t))
         out, _ = self.det.update(self.t, info.arrivals, self.fc.level * f, f)
         self.last_alarm[out.alarm] = self.t
+        self.fc.observe(self.t, info.arrivals)
+
+
+class UncertaintyTrustMPC(MPCPolicy):
+    """Detector-free comparator for Addendum B1(c). Per-zone forecast trust from residual uncertainty:
+    trust_z = m_z^2 / (m_z^2 + kappa * v_z), clipped to [floor, 1], where m_z is the deseasonalised EWMA level and
+    v_z an EWMA (rate beta) of squared deseasonalised one-step residuals (initialised at the Poisson value v = m).
+    For Poisson noise v ~ m, so trust ~ m / (m + kappa): small fractional forecasts in quiet zones are shrunk most,
+    and residual blow-ups (shocks) lower trust where they happen."""
+
+    def __init__(self, kappa: float = 0.5, beta: float = 0.05, floor: float = 0.0, **kw):
+        super().__init__("ewma", **kw)
+        self.kappa, self.beta, self.floor = float(kappa), float(beta), float(floor)
+        self.name = "mpc-unctrust"
+
+    def reset(self, meta):
+        super().reset(meta)
+        self.v = np.maximum(np.asarray(self.fc.level, dtype=float), 1e-6).copy()
+        self.last_trust = None
+
+    def act(self, s: FleetState) -> np.ndarray:
+        self.t = s.t
+        m = np.maximum(self.fc.level, 1e-9)
+        trust = np.clip(m ** 2 / (m ** 2 + self.kappa * self.v), self.floor, 1.0)
+        self.last_trust = trust
+        fc = self.fc.forecast(s.t, self.Hrun)
+        plan = self.planner.solve(s.idle_count, s.incoming(self.Hrun)[: self.Hrun], s.queue_len, fc.mean * trust[None, :])
+        self.solve_ms.append(plan.solve_ms)
+        return flows_to_targets(plan.flows, s)
+
+    def observe(self, info):
+        f = float(self.fc.f(self.t))
+        r = info.arrivals / f - self.fc.level
+        self.v += self.beta * (r ** 2 - self.v)
         self.fc.observe(self.t, info.arrivals)
 
 
@@ -200,6 +238,7 @@ def make_policy(name: str, **kw):
     return {"static": StaticPolicy, "greedy": GreedyPolicy, "reactive": ReactivePolicy,
             "mpc-myopic": lambda **k: MPCPolicy("ewma", myopic=True, **k),
             "mpc-gated": lambda **k: GatedTrustMPC(**k),
+            "mpc-unctrust": lambda **k: UncertaintyTrustMPC(**k),
             "mpc-queue": lambda **k: MPCPolicy("queue", **k),
             "mpc-ewma": lambda **k: MPCPolicy("ewma", **k), "mpc-cusum": lambda **k: MPCPolicy("cusum", **k),
             "mpc-cusum-v1": lambda **k: MPCPolicy("cusum1", **k),
