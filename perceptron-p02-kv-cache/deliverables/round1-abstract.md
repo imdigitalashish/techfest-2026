@@ -29,7 +29,7 @@ Both run today (results below).
 ## Stretch ambitions
 - **Modify a method:** RoD extends StreamingLLM, with its scorer tuned by a keep-only-if-better loop on development seeds.
 - **2+ baselines:** our implementations plus kvpress's StreamingLLM, SnapKV, ObservedAttention (H2O), Knorm, ExpectedAttention and TOVA.
-- **Next:** multi-turn chat, KVzip baseline, 16–32k contexts, memory-bounded prefill.
+- **Next:** precision-first recall (fewer, better blocks), multi-turn chat, KVzip baseline, 16–32k contexts.
 
 ## Novelty / differentiation
 Query-scored key indices (Quest, ArkVale) and token recomputation (CacheBlend, HCache) are known. Offload systems (InfiniGen, ShadowKV, ArkVale) keep evicted KV in host memory, which shrinks GPU memory but not the total stored. We test their combination *without* any backing store of evicted KV: ids plus a one-layer index, recomputing only the blocks the live question selects. We also contribute a stricter evaluation:
@@ -67,6 +67,6 @@ RoD minus a lexical index over the same ids at 25%: +0.04 (-0.04 to +0.12) on li
   | December | Ablations |
 - **Risks and mitigations:**
   - Recomputation adds latency. *Mitigation:* we report it.
-  - Re-prefilled KV is approximate. *Mitigation:* an exact-KV oracle and a halo ablation measure the cost.
+  - Re-prefilled KV is approximate. *Mitigation:* recall fewer blocks, as our diagnostics favour.
   - Literal needles flatter retrieval. *Mitigation:* the aliased split and the lexical control.
   - Only 12 test contexts. *Mitigation:* a larger confirmation set for the finals.

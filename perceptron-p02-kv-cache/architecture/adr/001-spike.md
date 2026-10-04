@@ -105,3 +105,11 @@ Build **C7 Recall-on-Demand** as spike A on top of a StreamingLLM resident cache
 - **v2 heading.** It says 15:25, but its commit `75d1152` is at 15:20 IST.
 - **Wording.** Re-prefill is **position-preserving but approximate**, not "position-faithful". The novelty is the narrow combination stated in the abstract, not "first" or "zero footprint".
 
+
+## Update v3 (2026-10-04 18:32 IST): outcome of the pre-registered evaluation and the design change it implies
+- **Confirmed (pre-registered).** RoD beats StreamingLLM at 25% KV memory on T1 (+0.40) and on T2 (+0.375). It beats every tested query-agnostic baseline, including NVIDIA kvpress's reference presses.
+- **Not shown.** Near-losslessness at 25% (RoD − full = −0.25 on T1). The block scorer beating lexical retrieval on literal needles (+0.04, ns), though it does on paraphrased templates (+0.27). Meaning-based retrieval: aliased keys defeat even the full cache.
+- **Diagnosed (exploratory, T1 contexts).**
+  - Recall falls as the budget grows because RoD recalls more look-alike needle blocks as *approximate* KV.
+  - Exact KV for the same blocks gives 0.90 at 25%. Recalling only the top-2 blocks gives 0.85 at both 25% and 50%. A 64-token recompute halo does not help.
+- **Decision for the finals:** make recall **precision-first** (a small top-k, or a score-margin rule) and keep the token-backed store. Confirm on fresh seeds before claiming it, with a larger confirmation set than 12 contexts.
