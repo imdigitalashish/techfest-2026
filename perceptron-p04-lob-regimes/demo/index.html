@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <link rel="icon" href="data:,">
+<meta name="p4-demo" content="alarm-dial">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>P4 · The alarm that cries wolf — order-book forecasting under regime shifts</title>
 <style>
@@ -31,6 +32,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 .end{font-size:18px;font-weight:700;text-align:center;padding:10px;border:1px dashed var(--acc);border-radius:8px;margin-top:10px}
 footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
 #building{color:var(--acc)}
+.errbox{border:1px solid #ff6b6b;background:#2a1517;color:#ffd6d6;border-radius:8px;padding:10px 14px}
 </style>
 </head>
 <body>
@@ -40,6 +42,7 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
     <span class="chip c-pre1">pre-registered primary</span><span class="chip c-pre2">pre-registered secondary</span><span class="chip c-postdev">post-dev secondary</span><span class="chip c-posthoc">post-hoc exploratory</span><span class="chip c-sweep">post-hoc demo sweep</span><span class="chip c-live">live-computed</span></div>
 </header>
 <main>
+<div id="boot-error" class="errbox" role="alert" hidden></div>
 
 <section id="scoreboard">
   <h2>1 · Held-out scoreboard <span class="chip c-base">committed results</span></h2>
@@ -63,7 +66,7 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
 <section id="replay">
   <h2>2 · Replay a real day <span class="chip c-live">live-computed</span> <span id="building"></span></h2>
   <div class="mut">The committed code (<code>run_episode</code>, context built from the 2023 training days) runs on this machine. Prices are drawn as 10-minute candles; losses as 10-minute bin means. Day choice rule: <span id="rule"></span>.</div>
-  <div class="tabs" id="day-tabs" style="margin-top:8px"></div><div class="mut" id="rp-showing" aria-live="polite"></div>
+  <div class="tabs" id="day-tabs" style="margin-top:8px"></div><div class="mut" id="rp-showing" aria-live="polite"></div><div id="rp-error" class="errbox" role="alert" hidden></div>
   <div class="legend" id="rp-legend"></div>
   <canvas id="rp" height="620"></canvas>
   <table id="rp-totals" style="margin-top:8px"><thead><tr><th>policy (this day)</th><th class="num">log-loss, live</th><th class="num">committed per-day value</th><th>honesty check</th><th class="num">alarms</th></tr></thead><tbody></tbody></table>
@@ -186,7 +189,7 @@ const RP_ERR={};
 async function loadDay(day){const key=day;
   if(RP[key]){if(key===DAY){drawReplay();drawDial();}return;}
   try{const r=await fetch(`.cache/replay_${key}.json`,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);
-    const d=await r.json();if(d.day!==key)throw new Error(`payload day ${d.day} != requested ${key}`);RP[key]=d;delete RP_ERR[key];}
+    const d=await r.json();if(d.day!==key)throw new Error(`payload day ${d.day} != requested ${key}`);if(d.schema!==SCHEMA)throw new Error(`stale cache schema ${d.schema} (expected ${SCHEMA}); rerun demo/run.sh`);RP[key]=d;delete RP_ERR[key];}
   catch(e){RP_ERR[key]=String(e.message||e);}
   if(key===DAY){drawReplay();drawDial();}}
 
@@ -196,6 +199,7 @@ function drawReplay(){
   const cv=$("#rp"),[g,w,h]=ctx2d(cv);const d=dayData(DAY);g.fillStyle=C("--panel");g.fillRect(0,0,w,h);
   const tbl=$("#rp-totals");tbl.dataset.selectedDay=DAY;tbl.dataset.payloadDay=d?d.day:"";tbl.dataset.refDay="";
   $("#rp-showing").textContent=d?`Showing ${d.day}`:"";
+  const er=$("#rp-error");if(!d&&RP_ERR[DAY]){er.hidden=false;er.textContent=`Replay for ${DAY} could not be loaded (${RP_ERR[DAY]}). The committed scoreboard, dial sweep and fee panels below still work. Screenshots of every screen: demo/fallback/. Rebuild: demo/run.sh.`;}else{er.hidden=true;er.textContent="";}
   if(!d){g.font="15px -apple-system,Helvetica,Arial,sans-serif";
     if(RP_ERR[DAY]){g.fillStyle=C("--ks");g.fillText(`Replay for ${DAY} failed: ${RP_ERR[DAY]}`,20,40);g.fillStyle=C("--mut");
       g.fillText("The committed scoreboard, dial sweep and fee panels still work. Screenshots: demo/fallback/. Rebuild: demo/run.sh",20,64);}
@@ -247,7 +251,8 @@ function drawReplay(){
 }
 
 // The replay payload for `day`, or null. A payload whose own day differs from the key is never used.
-function dayData(day){const d=RP[day];return d&&d.day===day?d:null;}
+const SCHEMA=2;
+function dayData(day){const d=RP[day];return d&&d.day===day&&d.schema===SCHEMA?d:null;}
 function stopAlarmCount(st){return st.alarm_bins?st.alarm_bins.reduce((a,b)=>a+b,0):st.alarm_s.length;}
 function committedFor(k,day){
   if(k==="ks_refit"){const s=SW&&SW.stops.find(x=>x.id===STOP);const v=s&&s.per_day[day];return v?v.logloss:null;}
@@ -357,9 +362,11 @@ async function poll(){
   dayTabs();if(!RP[DAY]&&status&&status.days&&status.days[DAY]==="ready")await loadDay(DAY);
   if(!(status&&status.phase==="done"&&RP[DAY]))setTimeout(poll,2000);
 }
+function bootError(msg){const e=$("#boot-error");e.hidden=false;e.innerHTML=`The demo could not start: ${msg}. Screenshots of every screen are in <code>demo/fallback/</code> (open them in story order); to repair, run <code>demo/run.sh</code> from <code>perceptron-p04-lob-regimes/</code>.`;}
 async function boot(){
-  SB=await (await fetch("results/scoreboard.json")).json();
-  try{SW=await (await fetch("results/alarm_dial_sweep.json")).json();for(const st of SW.stops)for(const k of ["vs_static_snorm","vs_regime_gated"])st[k].ci97_5=st[k]["ci97.5"];}catch(e){SW=null;}
+  try{const r=await fetch("results/scoreboard.json");if(!r.ok)throw new Error("results/scoreboard.json: HTTP "+r.status);SB=await r.json();}
+  catch(e){bootError(String(e.message||e));return;}
+  try{const r=await fetch("results/alarm_dial_sweep.json");if(!r.ok)throw new Error("HTTP "+r.status);SW=await r.json();for(const st of SW.stops)for(const k of ["vs_static_snorm","vs_regime_gated"])st[k].ci97_5=st[k]["ci97.5"];}catch(e){SW=null;}
   DAY=SB.replay_days[0].day;drawScoreboard();dayTabs();if(SW)setupDial();drawDial();drawExec();drawReplay();
   window.__firstPaintMs=performance.now()-firstPaint;document.body.dataset.ready="1";
   poll();
@@ -402,7 +409,7 @@ async function spLoad(name){if(!SP[name]){const r=await fetch(".cache/"+name,{ca
 const spName=(dir,hh)=>`splice_${dir}_${String(hh).padStart(2,"0")}.json`;
 async function drawSplice(){
   if(!SPI)return;const dir=SPDIR,hh=SPH,name=spName(dir,hh);let d;
-  try{d=await spLoad(name);if(d.direction!==dir||d.splice_utc_s!==hh*3600)throw new Error(`payload ${d.direction}@${d.splice_utc_s} != requested ${dir}@${hh*3600}`);}
+  try{d=await spLoad(name);if(d.schema!==SCHEMA)throw new Error(`stale cache schema ${d.schema}; rerun demo/run.sh`);if(d.direction!==dir||d.splice_utc_s!==hh*3600)throw new Error(`payload ${d.direction}@${d.splice_utc_s} != requested ${dir}@${hh*3600}`);}
   catch(e){if(spName(SPDIR,SPH)===name)$("#sp-method").innerHTML=`<span class="bad">Splice ${name} unavailable: ${e.message}</span>. Screenshot: <code>demo/fallback/</code>. Rebuild: <code>demo/run.sh</code>.`;return;}
   if(spName(SPDIR,SPH)!==name)return;  // the selection changed while loading: never render a stale splice
   $("#splice").dataset.shown=name;

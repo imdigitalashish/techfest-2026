@@ -23,7 +23,7 @@ import time
 import numpy as np
 
 from build_replay import POLS, _sec, frame_summary
-from common import CACHE, DEMO, H_STEPS_, STEP_S_, mem_level, nice_self, train_context
+from common import CACHE, CACHE_SCHEMA, DEMO, cache_key, cache_valid, H_STEPS_, STEP_S_, mem_level, nice_self, train_context
 from components.contracts import BookDay
 from components.features import TICK_SIZE, build_features
 from components.ingest import load_book_day
@@ -67,6 +67,11 @@ def main() -> int:
     sb = json.loads((DEMO / "results" / "scoreboard.json").read_text())
     held = [r["day"] for r in sb["replay_days"] if r["role"].startswith("held-out")]
     calm, vol = held[0], held[-1]
+    key = cache_key([calm, vol])
+    if "--force" not in sys.argv and cache_valid(CACHE / "splice_index.json", key) and all(
+            cache_valid(CACHE / f"splice_{dr}_{th:02d}.json", key) for dr in ("calm_to_volatile", "volatile_to_calm") for th in TAUS_H):
+        print("splice cache valid; nothing to do")
+        return 0
     ctx, train = train_context()
     del train
     books = {d: load_book_day(d) for d in (calm, vol)}
@@ -118,7 +123,7 @@ def main() -> int:
             h1a = (f.grid_us >= tau) & (f.grid_us < tau + 3600 * 10**6)
             heads = {"before_1h": [float((reg[h1b] == r).mean()) for r in range(3)],
                      "after_1h": [float((reg[h1a] == r).mean()) for r in range(3)]}
-            out.update(status="SEMI-SYNTHETIC", direction=direction, day_a=a, day_b=b, splice_utc_s=tau_s,
+            out.update(schema=CACHE_SCHEMA, cache_key=key, status="SEMI-SYNTHETIC", direction=direction, day_a=a, day_b=b, splice_utc_s=tau_s,
                        shift_ticks=k, shift_usd=round(k * TICK_SIZE[S.symbol], 2), checks=checks, window_2h=win,
                        detectors=det, gate_heads=heads, events=[])
             name = f"splice_{direction}_{th:02d}.json"
@@ -126,7 +131,8 @@ def main() -> int:
             index.append({"file": name, "direction": direction, "hour": th, "checks": checks})
             print(f"{name}: shift {k} ticks, checks {checks}", flush=True)
             del S, f, l
-    (CACHE / "splice_index.json").write_text(json.dumps({"status": "SEMI-SYNTHETIC", "calm": calm, "volatile": vol,
+    (CACHE / "splice_index.json").write_text(json.dumps({"schema": CACHE_SCHEMA, "cache_key": key,
+                                                          "status": "SEMI-SYNTHETIC", "calm": calm, "volatile": vol,
                                                           "taus_h": TAUS_H, "splices": index}))
     print(f"splices done in {time.time() - t0:.0f} s")
     bad = [s["file"] for s in index if not all(v for k_, v in s["checks"].items() if not k_.startswith("n_")) or s["checks"]["n_post_unmatched"] > 1]

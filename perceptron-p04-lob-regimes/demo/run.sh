@@ -54,24 +54,47 @@ SERVER_PID=""
 cleanup() { [[ -n "$SERVER_PID" ]] && kill "$SERVER_PID" 2>/dev/null || true; }
 trap cleanup EXIT INT TERM
 if (( SERVE )); then
-  PORT="${PORT:-$("$PY" -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1])')}"
+  if [[ -n "${PORT:-}" ]]; then
+    if ! "$PY" -c 'import socket,sys;s=socket.socket();s.bind(("127.0.0.1",int(sys.argv[1])))' "$PORT" 2>/dev/null; then
+      echo "[run.sh] ERROR: port $PORT is already in use on 127.0.0.1. Choose another PORT= or omit PORT for a free one."; exit 1
+    fi
+  else
+    PORT=$("$PY" -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1])')
+  fi
   "$PY" -m http.server "$PORT" --bind 127.0.0.1 --directory demo >demo/.cache/server.log 2>&1 &
   SERVER_PID=$!
-  for _ in $(seq 50); do curl -fs "http://127.0.0.1:$PORT/index.html" >/dev/null 2>&1 && break; sleep 0.1; done
   URL="http://127.0.0.1:$PORT/index.html"
-  echo "[run.sh] page live at $URL  ($(( $(date +%s) - T0 )) s after start)"
+  LIVE=0
+  for _ in $(seq 100); do
+    kill -0 "$SERVER_PID" 2>/dev/null || break
+    if curl -fs "$URL" 2>/dev/null | grep -q 'name="p4-demo" content="alarm-dial"'; then LIVE=1; break; fi
+    sleep 0.1
+  done
+  # Our own server process must be alive AND serve this demo's page (marker), or we stop here.
+  if (( ! LIVE )) || ! kill -0 "$SERVER_PID" 2>/dev/null; then
+    echo "[run.sh] ERROR: the demo server (pid $SERVER_PID) did not serve $URL; see demo/.cache/server.log"; exit 1
+  fi
+  echo "[run.sh] page live at $URL  (server pid $SERVER_PID; $(( $(date +%s) - T0 )) s after start)"
   (( OPEN )) && { open "$URL" 2>/dev/null || xdg-open "$URL" 2>/dev/null || true; }
 fi
 
 # 3. Live replay cache (committed code, CPU only, nice'd, <= 3 workers, memory guard inside).
-nice -n 10 "$PY" demo/build_replay.py --workers "${WORKERS:-3}"
-echo "[run.sh] replay cache ready ($(( $(date +%s) - T0 )) s after start)"
+REPLAY_OK=1
+nice -n 10 "$PY" demo/build_replay.py --workers "${WORKERS:-3}" || REPLAY_OK=0
+if (( REPLAY_OK )); then
+  echo "[run.sh] replay cache ready ($(( $(date +%s) - T0 )) s after start)"
+else
+  echo "[run.sh] WARNING: replay build failed; the committed panels still work, screenshots in demo/fallback/"
+  (( SERVE )) || exit 1
+fi
 
 # 4. Act 2, SEMI-SYNTHETIC splice stress test (two real held-out books spliced at known times; ~1.5 min once).
-if [[ ! -f demo/.cache/splice_index.json ]]; then
-  nice -n 10 "$PY" demo/build_splice.py
+if nice -n 10 "$PY" demo/build_splice.py; then
+  echo "[run.sh] splice stress test ready ($(( $(date +%s) - T0 )) s after start)"
+else
+  echo "[run.sh] WARNING: splice build failed; sections 1-4 are unaffected"
+  (( SERVE )) || exit 1
 fi
-echo "[run.sh] splice stress test ready ($(( $(date +%s) - T0 )) s after start)"
 
 if (( SERVE )); then
   echo "[run.sh] serving $URL. Press Ctrl-C to stop."

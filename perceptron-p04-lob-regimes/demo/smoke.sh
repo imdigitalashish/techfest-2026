@@ -18,6 +18,20 @@ for _ in $(seq 50); do curl -fs "http://127.0.0.1:$PORT/index.html" >/dev/null 2
 for u in index.html results/scoreboard.json results/alarm_dial_sweep.json .cache/status.json; do
   curl -fs -o /dev/null "http://127.0.0.1:$PORT/$u" && echo "  ok   GET /$u" || { echo "  FAIL GET /$u"; exit 1; }
 done
+echo "[smoke] run.sh refuses an occupied port and never claims a page it does not serve"
+BUSY=$("$PY" -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1])')
+"$PY" -m http.server "$BUSY" --bind 127.0.0.1 --directory /tmp >/dev/null 2>&1 &
+BP=$!
+for _ in $(seq 50); do curl -s -o /dev/null "http://127.0.0.1:$BUSY/" && break; sleep 0.1; done
+set +e
+OUT=$(PORT="$BUSY" demo/run.sh --no-open 2>&1); RC=$?
+set -e
+kill "$BP" 2>/dev/null || true
+if (( RC != 0 )) && ! grep -q "page live" <<<"$OUT" && grep -q "already in use" <<<"$OUT"; then
+  echo "  ok   occupied port $BUSY -> exit $RC, no 'page live'"
+else
+  echo "  FAIL occupied port $BUSY -> exit $RC; output: $OUT"; exit 1
+fi
 echo "[smoke] assertions"
 "$PY" demo/smoke_check.py
 echo "[smoke] browser stage (headless Chromium)"

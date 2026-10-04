@@ -18,7 +18,7 @@ from datetime import datetime, timezone
 
 import numpy as np
 
-from common import (BIN_S, CACHE, CAL_Q, DEMO, EVAL_RESULTS, POLICIES, binned_mean, calibrated_thresholds,
+from common import (BIN_S, CACHE, CACHE_SCHEMA, cache_key, cache_valid, CAL_Q, DEMO, EVAL_RESULTS, POLICIES, binned_mean, calibrated_thresholds,
                     ks_window_trace, load_day, mem_level, nice_self, pointwise_logloss, run_episode, score,
                     stop_episode, stop_ids, train_context)
 from run_baseline import load_events  # noqa: E402
@@ -87,6 +87,7 @@ def frame_summary(f, l, ctx, com: dict | None = None, day: str | None = None) ->
 def _day(day: str) -> dict:
     ctx, cal, com = _G["ctx"], _G["cal"], _G["committed"]
     t0 = time.time()
+    key = cache_key([day], ("demo/results/alarm_dial_sweep.json",))
     f, l = load_day(day)
     out = frame_summary(f, l, ctx, com, day)
     bins = out.pop("_bins")
@@ -112,7 +113,10 @@ def _day(day: str) -> dict:
     out["events"] = [{"id": e[0], "utc_s": int((e[1] // 10**6) % 86400)} for e in ev]
     out["wall_s"] = round(time.time() - t0, 1)
     out["created_utc"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
-    (CACHE / f"replay_{day}.json").write_text(json.dumps(out))
+    out["schema"], out["cache_key"] = CACHE_SCHEMA, key
+    tmp = CACHE / f"replay_{day}.json.tmp"
+    tmp.write_text(json.dumps(out))
+    tmp.replace(CACHE / f"replay_{day}.json")
     return {"day": day, "wall_s": out["wall_s"]}
 
 
@@ -133,8 +137,12 @@ def main() -> int:
     CACHE.mkdir(exist_ok=True)
     sb = json.loads((DEMO / "results" / "scoreboard.json").read_text())
     days = a.days or [r["day"] for r in sb["replay_days"]]
-    st = {"days": {d: ("ready" if (CACHE / f"replay_{d}.json").exists() and not a.force else "queued") for d in days},
-          "phase": "context"}
+    ok = {d: (not a.force) and cache_valid(CACHE / f"replay_{d}.json", cache_key([d], ("demo/results/alarm_dial_sweep.json",)), day=d)
+          for d in days}
+    st = {"days": {d: ("ready" if ok[d] else "queued") for d in days}, "phase": "context", "schema": CACHE_SCHEMA}
+    stale = [d for d in days if (CACHE / f"replay_{d}.json").exists() and not ok[d]]
+    if stale and not a.force:
+        print(f"cache invalid or stale (schema / code / input hash) for {stale}: rebuilding", flush=True)
     todo = [d for d in days if st["days"][d] == "queued"]
     _status(st)
     if not todo:

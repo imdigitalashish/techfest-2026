@@ -115,3 +115,35 @@ def binned_mean(x: np.ndarray, n_bins: int, bin_steps: int = BIN_S) -> list:
         seg = seg[~np.isnan(seg)]
         out.append(round(float(seg.mean()), 6) if seg.size else None)
     return out
+
+
+CACHE_SCHEMA = 2
+
+
+def cache_key(days: list[str], extra: tuple[str, ...] = ()) -> str:
+    """Identity of a cache artifact: hash of the code that computes it (components/, eval configs and harness,
+    demo builders) and of the inputs (manifest MD5s of the training and replay days, committed result files)."""
+    import csv
+    import hashlib
+    h = hashlib.sha256(f"schema={CACHE_SCHEMA}".encode())
+    files = sorted((ROOT / "components").rglob("*.py")) + [ROOT / "eval" / n for n in
+            ("config.py", "config_v2.py", "run_v2.py", "run_baseline.py")] + \
+        [DEMO / n for n in ("common.py", "build_replay.py", "build_splice.py")] + [ROOT / x for x in extra]
+    for p in files:
+        if p.exists() and "autoresearch" not in p.parts:
+            h.update(p.relative_to(ROOT).as_posix().encode())
+            h.update(p.read_bytes())
+    md5 = {r["day"]: r["md5"] for r in csv.DictReader(open(ROOT / "data" / "manifest.csv")) if r["dtype"] == "book_snapshot_5"}
+    for d in sorted(set(SPLIT_V2["train"]) | set(days)):
+        h.update(f"{d}:{md5.get(d, 'missing')}".encode())
+    return h.hexdigest()[:16]
+
+
+def cache_valid(path: Path, key: str, **expect) -> bool:
+    """A cache file is reused only if it parses, has the current schema and code/input key, and matches `expect`."""
+    import json
+    try:
+        d = json.loads(path.read_text())
+    except Exception:
+        return False
+    return d.get("schema") == CACHE_SCHEMA and d.get("cache_key") == key and all(d.get(k) == v for k, v in expect.items())
