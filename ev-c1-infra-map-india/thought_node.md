@@ -10,11 +10,32 @@
 - _(none)_
 
 ## Now
-- **Phase:** 4–5 — walking skeleton on real data + first ratchet loop done. Morning package delivered (08:13). Lean Mode lifted at 08:30 (≤ 2 concurrent agents; heavy jobs under `nice`).
-- **Plan:** Spike 1 = completeness-aware census (C4 + C5). The first loop shows open data is too sparse for capture–recapture, so we need denser lists; a demand-calibrated fallback is in place. Spike 2 = forecast + requirement (C9 + C11). Demo geography: Maharashtra (35 district units; all 61 RTOs on real data).
-- **Doing:** lead: Maharashtra drill-down. Agents: `fact-checker` (top research claims + novelty search → `research/fact-check.md`); `companies-products` (still running; partial file committed).
-- **Next:** (1) C9 backtest loop (train ≤ 2024 → test 2025, 36 states); (2) a district map for Maharashtra (current boundaries incl. Palghar); (3) third charger source (operator list or UEI) → re-run C5; (4) hand-labelled OSM × OCM pairs → C4 F1; (5) verify MoP 2024 norms and PM E-DRIVE targets at primary sources; (6) independent adversarial review of ADR 001; (7) update the Round-1 drafts with the new numbers.
-- **Needs from user:** Register by 15 Oct and pick one track (after the 12 Oct selection). Team of 2–5: names and skills. Optional: a free Open Charge Map API key (live data beyond the Apr 2026 export).
+- **Phase:** ⏸ **PAUSED** (user decision, Supervisor 09:55 IST: only 3 projects run at a time; EV C2 is the EV pick unless the user overrides). No jobs running, no agents running, all work pushed.
+- **State at pause:**
+  - morning package complete;
+  - real-data walking skeleton (national state map + Maharashtra district demand);
+  - two auto-research loops with ledgers (C5 census, C9 forecast).
+- **Resume point (in order):**
+  1. Fold `research/sota-methods.md` + `research/companies-products.md` into `landscape.md` **after** the fact-check. Only 1 of 11 claims is verified so far (WRI India 34,629 PCS / 5.4M EVs, Nov 2024); `research/fact-check.md` is partial and both agent files are unverified.
+  2. C9: switch to VAHAN Month Wise data for more origins; ensemble pooled-growth + share-logit; nowcast 2026.
+  3. C5: third charger source (operator list or UEI), then multiple-systems estimation; label OSM × OCM pairs for C4 F1.
+  4. Maharashtra district map (current boundaries incl. Palghar); SoI-consistent boundaries + compliant basemap for the government-facing UI.
+  5. Verify MoP 2024 norms and PM E-DRIVE targets at primary sources.
+  6. Independent adversarial review of ADR 001.
+  7. Refresh the Round-1 drafts with the Maharashtra and loop results.
+- **Rebuild everything from scratch** (from `ev-c1-infra-map-india/`, ~1 h, all small downloads):
+  - `uv venv .venv && uv pip install --python .venv/bin/python -r pyproject.toml`
+  - `.venv/bin/python components/vahan_ingest/fetch_vahan.py --national --states --rto-state MH` (cached and resumable)
+  - `.venv/bin/python components/charger_ingest/fetch_osm.py`
+  - `(cd .data && git clone --depth 1 --filter=blob:none --sparse https://github.com/openchargemap/ocm-export.git && cd ocm-export && git sparse-checkout set data/IN)`
+  - `.venv/bin/python components/charger_ingest/fetch_ocm.py`
+  - `sh components/admin_geo/fetch_boundaries.sh`
+  - `python3 components/charger_ingest/fetch_sources.py components/charger_ingest/source_urls.txt && python3 components/charger_ingest/official_pcs.py`
+  - `.venv/bin/python -W ignore eval/baseline_state_gap.py && .venv/bin/python -W ignore eval/mh_district_demand.py`
+  - `.venv/bin/python -W ignore components/census_completeness/census_v0.py`
+  - `.venv/bin/python -W ignore components/dashboard_map/build_map.py`
+  - loops: `components/{census_completeness,adoption_forecast}/autoresearch/eval.py --holdout`
+- **Needs from user:** If EV C1 is wanted instead of C2: register by 15 Oct with the track fixed at registration. Team of 2–5: names and skills. Optional: a free Open Charge Map API key.
 - **Risks:** (1) supply data: open sources ≈ 8% of official → capture–recapture far off until denser lists exist; (2) registrations ≠ on-road stock; (3) VAHAN markup changes (the client now self-discovers ids); (4) operator data terms; (5) boundary/basemap compliance for the government-facing map.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
@@ -127,4 +148,9 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - 8 hypotheses, DEV WAPE: naive 0.281 (baseline) · 1-yr growth 0.783 · damped growth 0.308 · pooled growth 50:50 0.270 · pooled national growth 0.244 · share-logit k = 3 0.847 / damped 0.245 · **share-logit k = 2, pooled 50:50, damped 0.5: 0.178 (kept, −37%)**.
 - **Holdout (2024→2025):** naive 0.150 · pooled national growth 0.101 · share-logit 0.110 (national error +2.0%). Both pooled models beat naive by 27–33%; the DEV winner is not confirmed over pooled growth (0.009 gap, inside noise) → next: monthly data for more origins, then an ensemble.
 - Observation: CY2026 to date (to 4 Oct) = 2,556,580 BEV registrations, already more than all of CY2025 (2,356,971), so adoption is re-accelerating after the 2023–25 slowdown (yearly growth ×3.1 in 2022, then ×1.49, ×1.28, ×1.16).
+
+### 2026-10-04 10:05 IST — Paused (user decision via Supervisor)
+- No background jobs or agents were running (the fact-checker and companies-products agents had already been stopped). Their partial files are committed: `research/fact-check.md` (1 claim verified) and `research/companies-products.md` (85.6 KB, unverified agent output; not cited anywhere yet).
+- Reproducibility fix before pausing: the PIB source fetcher and boundary download are now committed scripts (`components/charger_ingest/fetch_sources.py` + `source_urls.txt`, `components/admin_geo/fetch_boundaries.sh`), so every number in the docs has a committed reproduce command.
+- Resume point and full rebuild commands: see *Now*.
 

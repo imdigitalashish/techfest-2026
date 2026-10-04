@@ -3,7 +3,7 @@
 Sources (opened 2026-10-04):
   PIB 2118894, 04 Apr 2025 — BEE data, PCS installed as on 01 Apr 2025, tier-1/2/3 split (total 26,367).
   PIB 2151390, 01 Aug 2025 — MoP inputs, 29,277 PCS installed across the country, state-wise.
-Usage: python components/charger_ingest/official_pcs.py  (needs .cache/sources/*.html from .cache/fetch_sources.py)
+Usage: python components/charger_ingest/official_pcs.py  (needs .cache/sources/*.html from components/charger_ingest/fetch_sources.py)
 """
 import html as H, os, re
 import pandas as pd

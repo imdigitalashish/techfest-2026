@@ -6,7 +6,7 @@ Joins (1) VAHAN cumulative registrations till today by state x fuel (BEV = ELECT
 Reproduce (from ev-c1-infra-map-india/):
   .venv/bin/python components/vahan_ingest/fetch_vahan.py --national --rto-state MH --states
   .venv/bin/python components/charger_ingest/fetch_osm.py
-  python3 .cache/fetch_sources.py .cache/urls.txt && python3 components/charger_ingest/official_pcs.py
+  python3 components/charger_ingest/fetch_sources.py components/charger_ingest/source_urls.txt && python3 components/charger_ingest/official_pcs.py
   .venv/bin/python -W ignore eval/baseline_state_gap.py
 """
 import json, os, re
