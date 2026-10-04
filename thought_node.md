@@ -64,6 +64,8 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 11:12 IST — EV C2 completed
+Verified on main: methodology + roadmap v1.1 (team details pending); 4 reviews (45 accepted, 0 rejected) + ledger; docs drift check OK; 19/19 tests pass. Headline rendered from the run: e-scooter −38.1% (32.0–43.2); BEV sedan −10.0% (−10.1–25.6), P(lower) 0.81. Marked ✅ Completed. P1 resumed into the free slot.
 ### 2026-10-04 11:08 IST — Sweep
 - India@71 T1 completed and verified (10:50); P9 took the slot.
 - Cross-model reviews are paying off:
