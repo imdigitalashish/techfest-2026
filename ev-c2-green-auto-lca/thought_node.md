@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
+- **Phase:** 1 — SOTA research + data collection (LEAN MODE per Supervisor 05:51: no sub-agents, small requests, push every 30 min).
+- **Plan:** open primary sources myself → cited factor database (YAML) → LCA engine + Monte Carlo → 2W case study (petrol scooter vs e-scooter) validated against published Indian LCAs → static dashboard → landscape, components + contracts, ADR 001, selection memo, Round-1 drafts.
+- **Doing:** lead alone, sequentially (Supervisor lean-mode override of PLAYBOOK §4).
+- **Next:** (1) grid EF (CEA), fuels, battery, materials, 2W specs, benchmarks; (2) engine + eval; (3) docs.
 - **Needs from user:** Register by 15 Oct and pick one track (after the 12 Oct selection). Team of 2–5: names and skills.
-- **Risks:** _(lead fills)_
+- **Risks:** network saturation (408s) — commit early; Indian primary data is sparse for processes (casting/forging) — will mark proxies.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** EV Infra & Green Mobility AI Challenge — Techfest IIT Bombay with the Ministry of Heavy Industries (MHI) and the International Centre for Automotive Technology (ICAT). Prize pool ₹2,00,000; top 3 teams per track.
@@ -57,3 +57,9 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (t
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 02:10 IST — Phase 0 read
+Read PLAYBOOK, seeded brief, official statement (`_briefs/ev-infra.txt`). Brief matches the statement (verified: deliverables, R1/R2 weights, dates, rules incl. "synthetic data must be clearly identified", "judged on intelligence, transparency and defensibility ... rather than access to premium or proprietary datasets"). Wrote `architecture/agent-brief.md` (record schema with source/locator/quote/pedigree per number). Session then died at ~03:04 on a model error (network 408s) before any commit.
+
+### 2026-10-04 05:52 IST — Resumed in LEAN MODE
+Supervisor directive: no sub-agents, small requests, push every 30 min. Committing skeleton now; doing research myself.
