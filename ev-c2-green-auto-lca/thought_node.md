@@ -10,12 +10,13 @@
 - _(none)_
 
 ## Now
-- **Phase:** 1 — SOTA research + data collection (LEAN MODE per Supervisor 05:51: no sub-agents, small requests, push every 30 min).
-- **Plan:** open primary sources myself → cited factor database (YAML) → LCA engine + Monte Carlo → 2W case study (petrol scooter vs e-scooter) validated against published Indian LCAs → static dashboard → landscape, components + contracts, ADR 001, selection memo, Round-1 drafts.
-- **Doing:** lead alone, sequentially (Supervisor lean-mode override of PLAYBOOK §4).
-- **Next:** (1) grid EF (CEA), fuels, battery, materials, 2W specs, benchmarks; (2) engine + eval; (3) docs.
-- **Needs from user:** Register by 15 Oct and pick one track (after the 12 Oct selection). Team of 2–5: names and skills.
-- **Risks:** network saturation (408s) — commit early; Indian primary data is sparse for processes (casting/forging) — will mark proxies.
+- **Phase:** 4 — walking skeleton + eval done for case study 1; morning-package docs landing (LEAN MODE per Supervisor 05:51 — no sub-agents until lifted).
+- **Headline (committed run, `python3 eval/eval.py`, commit a2cfc31, n=10,000, seed 20261004):** engine replicates ICCT 2021 Table 1 (Indian scooters) at **0.06 % MAPE**. India 2026, CEA FY2025-26 average grid: petrol scooter **62.9 g CO2e/km [90 %: 57.6–69.0]**, 2.9 kWh e-scooter **39.7 [36.9–42.8]** → **36.9 % lower [29.2–43.8 %]**, P(EV lower) = 1.0. At CEA operating margin: only **14.0 % [3.3–23.5 %]**; at build margin **55.2 %**. EV grid term is CO2-only (no coal upstream) — a stated lower bound.
+- **Plan:** (1) morning package (landscape ✓, components+contracts ✓, ADR 001 ✓, memo ✓, Round-1 drafts); (2) after lean mode lifts: independent rubber-duck review of ADR + methodology; per-component research; spike A (ingestion) and B (grid service) ratchets; materials layer (steel/aluminium/battery) via ingestion.
+- **Doing:** lead alone, sequentially.
+- **Next:** Round-1 methodology + roadmap drafts → push → state-level grid factors (needs state RE generation) → independent Indian benchmarks (SAE 2026, Energy 2025 — UNVERIFIED leads) → E20 petrol, coal-upstream records.
+- **Needs from user:** Register by 15 Oct and pick one EV track (after the 12 Oct selection). Team of 2–5: names and skills — ideally one teammate with LCA / environmental-engineering background for jury Q&A.
+- **Risks:** jury LCA rigour (ISO 14044 boundaries, allocation, end-of-life method); sparse Indian process data (casting, forging, painting) → explicit proxies + pedigree; only one Indian benchmark so far (which is also an input source — validation is partly circular); network saturation tonight.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** EV Infra & Green Mobility AI Challenge — Techfest IIT Bombay with the Ministry of Heavy Industries (MHI) and the International Centre for Automotive Technology (ICAT). Prize pool ₹2,00,000; top 3 teams per track.
@@ -38,21 +39,35 @@
 - What companies ship: LCA software vendors and automakers' published product-carbon-footprint methods.
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — Every number is a `Record` with source, locator, verbatim quote, pedigree and status; the loader fails closed (`components/lca_engine/greenauto/db.py`). No free constants in product models.
+- 2026-10-04 — Case study 1 = 110 cc petrol scooter vs 2.9 kWh e-scooter (India's fleet is 2W-heavy; ICCT 2021 gives an open, stage-wise Indian benchmark to replicate).
+- 2026-10-04 — Central consumption values = those implied by ICCT Table 1 (2.0 L/100 km, 4.13 kWh/100 km), not its footnote (2.2 / 3.7): they reproduce the published table and are conservative for the EV claim; footnote values kept as a scenario.
+- 2026-10-04 — Grid factor shown three ways (CEA average / operating margin / build margin), never one silent choice.
+- 2026-10-04 — Spikes: A verified-provenance ingestion (C3), B India grid-factor service (C4) — [ADR 001](architecture/adr/001-spike.md).
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| C1 | Source registry + fetchers | SourceSpec → Source + raw file | sources.yaml + fetch_sources.sh | | built | % re-fetchable |
+| C2 | Factor store + validator | YAML → Record | pydantic schema | | built (23 records, 8 sources) | quote-verification rate |
+| C3 | Ingestion / extraction | Document → CandidateRecord | manual transcription | ★A | planned | field F1 vs gold set |
+| C4 | Grid-factor service | GridFactorQuery → GridFactor | CEA v22 national records | ★B | national built | reconstruction / back-test error |
+| C5 | Product-system builder | VehicleSpec → ProductSystem | case1 YAML (5 scenarios) | | built | % params resolved |
+| C6 | Calculation engine | ProductSystem → StageResult | engine.py | | built | replication MAPE (0.06 %) |
+| C7 | Uncertainty / sensitivity / DQI | → UncertaintyResult | pedigree lognormal, paired MC | | built | interval calibration |
+| C8 | Benchmark harness | → EvalReport | eval/eval.py (frozen) | | built | # benchmarks within ±2 % |
+| C9 | Dashboard | EvalReport → HTML | static self-contained HTML | | built | % numbers with provenance |
+| C10 | Exporters | Records → openLCA JSON-LD | — | | planned | round-trip import |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (the team registers for one EV track by 15 Oct). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+_First version 4 Oct 2026 07:40 IST (lead). Final by 12 Oct. Compare with `ev-c1-infra-map-india/thought_node.md` — the team registers ONE EV track by 15 Oct._
+- **Winnability — 4/5.** No open India-specific automotive LCA database or engine found (GitHub search "india life cycle assessment vehicle": no repositories; open engines openLCA/Brightway/carculator are EU-centric — `research/landscape.md`). Our skeleton already replicates the main open Indian 2W benchmark (ICCT 2021) at 0.06 % and exposes an inconsistency in it — the kind of defensibility the statement asks for. Unknown: teams with LCA faculty support.
+- **Innovation headroom — 4/5.** Spike A (documents → verified, pedigree-scored records; fail-closed) and spike B (grid factor by state / period / margin) vs the obvious baseline of static global factors. Grid method alone moves the e-scooter saving 14 → 55 % (committed run).
+- **Feasibility — 4/5.** Public data only; no GPU needed (M5 Mac; Azure OpenAI for extraction). Engine, eval, dashboard exist on day 1. Build windows: 16 Oct–17 Nov and 26 Nov–15 Dec, nothing user-dependent in 19–25 Nov.
+- **Demo strength — 4/5.** Live: ingest a new Indian PDF → a cited record appears with its quote → the scooter result and its data-quality index update; switch charging state / grid method; click any number to see page + quote.
+- **Fit with the user's strengths — 4/5.** Data-system design and frontier-model extraction (Azure) are the core; LCA domain depth is the gap → add an environmental/mechanical teammate.
+- **Biggest risk:** jury Q&A on LCA rigour (ISO 14044 boundaries, allocation, end-of-life method, non-CO2 gases) and scarce Indian process data. Mitigation: methodology document states every boundary; proxies labelled with pedigree; independent rubber-duck "hostile LCA judge" rehearsal.
+- **One-line pitch:** "An open, auditable India automotive LCA database where every number has a page and a quote, an AI pipeline that grows it from Indian public documents, and a grid engine that shows what an EV really saves — by state and by method."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -63,3 +78,9 @@ Read PLAYBOOK, seeded brief, official statement (`_briefs/ev-infra.txt`). Brief 
 
 ### 2026-10-04 05:52 IST — Resumed in LEAN MODE
 Supervisor directive: no sub-agents, small requests, push every 30 min. Committing skeleton now; doing research myself.
+
+### 2026-10-04 07:40 IST — Morning package built (lean mode, lead only)
+- **Data:** opened and transcribed CEA CO2 Baseline v22.0 (Aug 2026: FY2025-26 average 0.675, OM 0.963, BM 0.446 t CO2/MWh; 13-yr series), Lok Sabha USQ 842 (T&D 17.63 % FY2023-24), IPCC 2006 gasoline defaults, UNSD density, ICCT 2021 India 2W briefing (Table 1 + footnote inputs) and fact sheet (Fig. 2 digitized from vector PDF; matches Table 1 to ≤0.03 g/km). 23 records / 8 sources, all with locator + quote or derivation.
+- **Learned:** ICCT footnote inputs don't reproduce its Table 1 (scooter 2.0 vs 2.2 L/100 km; e-scooter 4.13 vs 3.7 kWh/100 km, values look swapped) — saving 48.5 % vs published 38.4 %. Grid method dominates EV results; consumption data dominates parameter variance (65 %). Web-search summaries hallucinated ICCT values (claimed 90–100 g/km for petrol scooters; the source's axis tops at 80) — only opened PDFs used.
+- **Built:** `components/lca_engine` (pydantic record store, pedigree→lognormal, paired MC, elasticity-weighted DQI, variance-share data-gap ranking; 6 contract tests pass), `data/vehicles/case1_2w_scooters.yaml` (5 scenarios), frozen `eval/eval.py` (results in `eval/results/`), static dashboard `deliverables/dashboard/index.html` (verified in browser: values match engine; what-if break-even 1.138 kg CO2/kWh at generation).
+- **Docs:** `research/landscape.md`, `architecture/components.md` + `contracts/contracts.py`, ADR 001, selection memo. Supervisor 07:22 alignment check: agreed with its order; no reply needed.
