@@ -5,7 +5,9 @@ version: "0.2.0"
 #                      PDF page numbers; verified 4 Oct 2026, see research/sources/V2-cmam-timelines.md).
 #   "DESIGN: ..."     = Poshan Setu's own operating rule (not an official norm), chosen to fit inside the official
 #                      cadence (weekly village review p.22, monthly district review p.22, monthly VHSND p.20).
-# Due days are counted from the alert date. A service-readiness gate (ADR 002) runs before any step.
+# Due days are counted from the alert date. Capacity gate: router.mark_undelivered blocks tasks that never reached the
+# worker's delivered list (capacity exception to the LS; no worker clock). Resource gating (missing scale, rations,
+# bed, transport) uses the same `blocked` state; it is designed (ADR 002) but has no data source in the prototype yet.
 assumptions: "Official timelines cite CMAM-2023 page numbers; DESIGN rules are ours and are labelled as such."
 alerts:
   sam:

@@ -75,7 +75,7 @@ flowchart TB
 **4.2 Capacity-capped weekly worklists (spike B).**
 - Children observed as SAM/MAM (WHZ, MUAC at 6–59 months, oedema) go straight to the national protocol pathway [11].
 - Every AWC also gets *K* slots a week, set to its worker's visit capacity, filled with the children closest to the MAM line. An AWW can check that rule herself.
-- In our leakage-free simulation, this rule flagged 43% of new wasting episodes a month or more before onset, against 37% for the programme's "no weight gain in 2 months" rule and 27% for random. Our ML model (38%) did not beat it, and linked health records added no predictive gain. So the rule ships first; a model replaces it only if it does better on pilot data. Linkage is justified by care coordination, not prediction.
+- In our leakage-free simulation, with infants under 6 months routed to the protocol pathway (15% of new episodes), this rule flagged 47% of the remaining new wasting episodes a month or more before onset, against 41% for the programme's "no weight gain in 2 months" rule and 29% for random. Our ML model (43%) did not beat it, and linked health records added no predictive gain. So the rule ships first; a model replaces it only if it does better on pilot data. Linkage is justified by care coordination, not prediction.
 - WHO growth-velocity scores are used only within their published range (to 24 months).
 - **Legal go/no-go:** each identifiable data flow needs a written legal basis that covers consent *and* any restriction or exemption. Without it, deployment is limited to lawfully supplied, non-identifying aggregates.
 
@@ -113,7 +113,7 @@ Every number below comes from a committed run in our repository. **SYNTHETIC row
 | WHO z-scores (real WHO tables) | Max error vs WHO's published tables, 87,408 points at ±4 SD | **0.003 z** |
 | Record linkage (SYNTHETIC, 5,000 children) | F1: shared IDs only / probabilistic / privacy-preserving Bloom filter | **0.51 / 0.94 / 0.97** |
 | Measurement diagnostics (SYNTHETIC, 120 AWCs, 3 seeds) | AUROC: any unreliable AWC / copy-forward AWCs. A tuning change that hit 0.95 failed a different fabrication pattern and was rejected | **1.00 / 0.69** |
-| Weekly worklists (SYNTHETIC, 10,690 new episodes, 5 slots per AWC per month) | Episodes flagged ≥1 month ahead: WHZ rule (95% CI) / ML / programme rule / random | **0.43 (0.42–0.44) / 0.38 / 0.37 / 0.27** |
+| Weekly worklists (SYNTHETIC, 9,107 new episodes in children ≥6 months, 5 slots per AWC per month) | Episodes flagged ≥1 month ahead: WHZ rule (95% CI) / ML / programme rule / random | **0.47 (0.46–0.49) / 0.43 / 0.41 / 0.29** |
 | End-to-end weekly run (SYNTHETIC, 120 AWCs, 5,307 children) | Tasks → worklists; SMS length; escalated after 8 days (70% on time assumed); audit chain | **1,685 → 140; ≤80 chars; 482; verified** |
 | Policy gate / audit log | Red-team cases (spoofed scope, fake consent, employment use) / tampering incl. truncation | **39/39 / 100/100** |
 

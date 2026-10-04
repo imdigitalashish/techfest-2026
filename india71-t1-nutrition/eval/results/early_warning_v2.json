@@ -1,0 +1,83 @@
+{
+ "metric": "rankable_episode_recall_at_5_per_awc_month",
+ "K": 5,
+ "min_age_days": 183,
+ "train_seeds": [
+  21,
+  22
+ ],
+ "test_seeds": [
+  23,
+  24
+ ],
+ "n_train_rows": 170753,
+ "n_pool_rows": 182376,
+ "n_episodes_all": 10690,
+ "n_episodes_rankable": 9107,
+ "infant_pathway_share": 0.1481,
+ "methods": {
+  "random_within_awc": {
+   "episode_recall": 0.2926,
+   "median_lead_months": 2.0,
+   "slot_precision_incident_next_3m": 0.113,
+   "slot_share_truly_wasted_now_missed_by_measurement": 0.0299,
+   "n_episodes": 9107
+  },
+  "rule_no_gain_2m": {
+   "episode_recall": 0.4128,
+   "median_lead_months": 2.0,
+   "slot_precision_incident_next_3m": 0.1765,
+   "slot_share_truly_wasted_now_missed_by_measurement": 0.1058,
+   "n_episodes": 9107
+  },
+  "lowest_observed_whz": {
+   "episode_recall": 0.4733,
+   "median_lead_months": 2.0,
+   "slot_precision_incident_next_3m": 0.2162,
+   "slot_share_truly_wasted_now_missed_by_measurement": 0.1327,
+   "n_episodes": 9107
+  },
+  "logistic_anthro": {
+   "episode_recall": 0.4289,
+   "median_lead_months": 2.0,
+   "slot_precision_incident_next_3m": 0.2173,
+   "slot_share_truly_wasted_now_missed_by_measurement": 0.132,
+   "n_episodes": 9107
+  },
+  "logistic_anthro_plus_linked_health": {
+   "episode_recall": 0.4302,
+   "median_lead_months": 2.0,
+   "slot_precision_incident_next_3m": 0.2188,
+   "slot_share_truly_wasted_now_missed_by_measurement": 0.1316,
+   "n_episodes": 9107
+  }
+ },
+ "bootstrap_95ci": {
+  "logistic_anthro": [
+   0.4164,
+   0.4438
+  ],
+  "logistic_anthro_plus_linked_health": [
+   0.4175,
+   0.4451
+  ],
+  "lowest_observed_whz": [
+   0.4613,
+   0.4887
+  ],
+  "rule_no_gain_2m": [
+   0.4025,
+   0.4273
+  ],
+  "diff_lowest_whz_vs_rule": [
+   0.0509,
+   0.0698
+  ],
+  "diff_full_vs_lowest_whz": [
+   -0.0512,
+   -0.0344
+  ]
+ },
+ "value": 0.4733,
+ "synthetic": true
+}

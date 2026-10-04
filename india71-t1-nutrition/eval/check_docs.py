@@ -26,7 +26,7 @@ def f2(x: float) -> str:
 
 def claims() -> list[tuple[Path, str]]:
     gs, lk, cr, pd_, al = j("growth_standards.json"), j("identity_linkage.json"), j("credibility_engine.json"), j("pipeline_demo.json"), j("audit_ledger.json")
-    pg, ew = j("policy_gate.json"), j("early_warning_v1.json")
+    pg, ew = j("policy_gate.json"), j("early_warning_v2.json")
     m = ew["methods"]
     ci = ew["bootstrap_95ci"]["lowest_observed_whz"]
     rule = m["lowest_observed_whz"]["episode_recall"]
@@ -38,8 +38,9 @@ def claims() -> list[tuple[Path, str]]:
         (PROPOSAL, f"**{f2(cr['auroc_nongood'])} / {f2(cr['auroc_fabricating'])}**"),
         (PROPOSAL, f"**{f2(rule)} ({f2(ci[0])}–{f2(ci[1])}) / {f2(m['logistic_anthro_plus_linked_health']['episode_recall'])} / "
                    f"{f2(m['rule_no_gain_2m']['episode_recall'])} / {f2(m['random_within_awc']['episode_recall'])}**"),
-        (PROPOSAL, f"{m['lowest_observed_whz']['n_episodes']:,} new episodes"),
-        (PROPOSAL, f"{round(100 * rule)}% of new wasting episodes"),
+        (PROPOSAL, f"{ew['n_episodes_rankable']:,} new episodes in children ≥6 months"),
+        (PROPOSAL, f"{round(100 * rule)}% of the remaining new wasting episodes"),
+        (PROPOSAL, f"protocol pathway ({round(100 * ew['infant_pathway_share'])}% of new episodes)"),
         (PROPOSAL, f"against {round(100 * m['rule_no_gain_2m']['episode_recall'])}% for the programme"),
         (PROPOSAL, f"{round(100 * m['random_within_awc']['episode_recall'])}% for random"),
         (PROPOSAL, f"model ({round(100 * m['logistic_anthro_plus_linked_health']['episode_recall'])}%)"),

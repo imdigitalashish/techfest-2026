@@ -73,3 +73,22 @@ def test_escalation_moves_scope_up_the_hierarchy():
     ls = [t for t in t2 if t.status == "open" and t.escalation_level == 2][0]
     assert ls.owner_role.value == "ls" and ls.owner_scope_id == "SEC1"
 
+
+def test_undelivered_tasks_are_blocked_not_overdue():
+    from datetime import date as _d
+    from architecture.contracts.models import Alert, AlertKind, GeoUnit
+    from components.action_router.router import escalate, mark_undelivered, route
+    geo = GeoUnit(state_code="S", district_code="D", project_code="P1", sector_code="SEC1", awc_code="AWC1")
+    alerts = [Alert(alert_id=f"risk_high-E{i}", child_key=f"c{i}", geo=geo, kind=AlertKind.RISK_HIGH, severity=2,
+                    created_on=_d(2026, 1, 1), recommended_action="home visit", synthetic=True) for i in range(3)]
+    tasks = route(alerts, _d(2026, 1, 1))
+    delivered = {tasks[0].task_id}
+    out = mark_undelivered(tasks, delivered, _d(2026, 1, 1), {a.alert_id: a for a in alerts})
+    blocked = [t for t in out if t.status == "blocked"]
+    assert len(blocked) == 2 and all(t.blocked_reason == "capacity" and t.worker_clock_started_on is None for t in blocked)
+    assert all(t.child_clock_started_on == _d(2026, 1, 1) for t in blocked)
+    exc = [t for t in out if t.task_id.startswith("capacity-")]
+    assert len(exc) == 1 and exc[0].owner_role.value == "ls" and exc[0].owner_scope_id == "SEC1"
+    later = escalate(out, _d(2026, 2, 1), {a.alert_id: a for a in alerts})
+    assert [t.status for t in later if t.task_id in {b.task_id for b in blocked}] == ["blocked", "blocked"]
+

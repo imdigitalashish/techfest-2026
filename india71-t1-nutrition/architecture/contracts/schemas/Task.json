@@ -84,7 +84,8 @@
         "open",
         "done",
         "escalated",
-        "closed"
+        "closed",
+        "blocked"
       ],
       "title": "Status",
       "type": "string"
@@ -105,6 +106,48 @@
       },
       "title": "History",
       "type": "array"
+    },
+    "child_clock_started_on": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Child Clock Started On"
+    },
+    "worker_clock_started_on": {
+      "anyOf": [
+        {
+          "format": "date",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Worker Clock Started On"
+    },
+    "blocked_reason": {
+      "anyOf": [
+        {
+          "enum": [
+            "capacity",
+            "resource"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Blocked Reason"
     }
   },
   "required": [

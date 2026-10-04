@@ -22,7 +22,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-CONTRACT_VERSION = "0.2.0"
+CONTRACT_VERSION = "0.3.0"
 
 
 class Strict(BaseModel):
@@ -315,10 +315,16 @@ class Task(Strict):
     owner_scope_id: str  # awc / sector / project / facility code
     action: str
     due_on: date
-    status: Literal["open", "done", "escalated", "closed"]
+    status: Literal["open", "done", "escalated", "closed", "blocked"]
     escalation_level: int = Field(ge=0)
     protocol_ref: str = Field(description="Which protocol step this task implements (citation key)")
     history: list[TaskTransition] = Field(default_factory=list)
+    # Three clocks (ADR 002): the child's clock always runs from the first actionable flag; the worker's clock runs
+    # only while the task is actually on her delivered list with its inputs available; a blocked task carries the
+    # institutional reason instead (capacity = not delivered; resource = missing scale/rations/bed/transport).
+    child_clock_started_on: Optional[date] = None
+    worker_clock_started_on: Optional[date] = None
+    blocked_reason: Optional[Literal["capacity", "resource"]] = None
 
 
 class AccessRequest(Strict):

@@ -30,3 +30,22 @@ The model is significantly worse than the transparent rule: difference −0.054 
 - Proposal v0.3 reports the rule-vs-model result honestly.
 - The v0 evaluator and its numbers (0.33 vs 0.25) are retracted from all deliverables.
 - The pipeline demo uses v1 features (no look-ahead) and the WHZ/MUAC/oedema classification for SAM/MAM routing.
+
+## Addendum (4 Oct 2026, evening): v2 adds the infant gate the design promises
+The gpt-6-astra demo review (M1) found that v1 let infants under 6 months compete for the K slots, although the proposal routes them past the ranking. [`eval_v2.py`](../../components/early_warning/eval_v2.py) keeps v1's protocol, with three changes:
+- the candidate pool and the training rows are restricted to children aged ≥183 days;
+- recall is computed over "rankable" episodes (the child was ≥183 d at the start of the 1–3-month flag window);
+- the share of episodes whose window starts in infancy is reported as the infant pathway.
+
+SYNTHETIC result ([`eval/results/early_warning_v2.json`](../../eval/results/early_warning_v2.json)): 9,107 of 10,690 episodes are rankable (infant pathway 14.8%).
+
+| Ranking | Episode recall | 95% CI (AWC bootstrap) |
+|---|---|---|
+| Random within AWC | 0.293 | |
+| Programme rule: no weight gain in 2 months | 0.413 | 0.403–0.427 |
+| **Lowest current observed WHZ** | **0.473** | 0.461–0.489 |
+| Logistic, anthropometry | 0.429 | 0.416–0.444 |
+| Logistic + linked health | 0.430 | 0.417–0.445 |
+
+Rule minus programme rule: +5.1 to +7.0 pp. Model minus rule: -5.1 to -3.4 pp. **The decision stands:** the transparent rule ships and ML stays gated. v2 is now the headline protocol in the proposal and `eval/check_docs.py`; v1 is kept frozen as history.
+
