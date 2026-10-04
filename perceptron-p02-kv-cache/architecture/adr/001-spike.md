@@ -95,3 +95,13 @@ Build **C7 Recall-on-Demand** as spike A on top of a StreamingLLM resident cache
 
   Baselines include NVIDIA kvpress's reference presses (StreamingLLM, SnapKV, ObservedAttention, Knorm, ExpectedAttention, TOVA), run on CPU.
 - **Novelty claim, narrowed** (prior-art report, `research/components/recall-on-demand-prior-art.md`): to our knowledge, no published KV-recall scheme keeps *no* KV for evicted tokens, only token ids plus a single-layer low-bit key sketch, and recovers by position-faithful re-prefill of the blocks the live question selects. ArkVale's digest mechanism remains UNVERIFIED.
+
+## Corrections (2026-10-04 15:38 IST, from the gpt-6-astra phase-1 review; earlier text kept as written)
+- **v1 Black hat item 6.** "Sub-linear in practice" is wrong. The index is **linear** in T with a small coefficient (288 B/token at 4 bits plus 4 B/token of ids), plus a constant 256 KiB of window queries.
+- **v1 Yellow hat.** "Steady-state footprint is the resident cache only" is wrong. The steady state is resident KV **plus** the index, ids and window queries, and the harness counts all of them.
+- **v2 dev numbers.** These are qualified by the sweep's simplified budget: 2-bit sketch cost, no window-query cost, m = 3 at keep 0.10. Under that budget:
+  - "next-best layer 0.69" refers to `softmax_lift`/content/4-bit; the best other configuration is `max_logit`/all/4-bit/layer 1 at 0.70;
+  - the best 2-bit variant reaches 0.60 at keep 0.10 and 0.84 at keep 0.25.
+- **v2 heading.** It says 15:25, but its commit `75d1152` is at 15:20 IST.
+- **Wording.** Re-prefill is **position-preserving but approximate**, not "position-faithful". The novelty is the narrow combination stated in the abstract, not "first" or "zero footprint".
+

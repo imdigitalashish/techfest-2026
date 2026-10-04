@@ -110,6 +110,12 @@ def compute():
     T1, T2, T3, S4 = (D[k]["rows"] if D[k] else None for k in ("T1", "T2", "T3", "S4"))
     if T1:
         V["primary"] = delta(T1, "rod", T1, "streaming", 0.25)
+        V["S7"] = {f: delta(T1, "rod", T1, "full", f, fB=1.0) for f in (0.1, 0.25, 0.5)}
+        V["drops"] = {(m, f): delta(T1, m, T1, "full", f, fB=1.0) for (m, f) in sorted({(r["method"], r["frac"]) for r in T1})
+                      if m != "full"}
+        V["percontext"] = {"primary": per_context(T1, "rod", "streaming", 0.25, 0.25),
+                           "S7": per_context(T1, "rod", "full", 0.25, 1.0)}
+        V["strict"] = strict_table(T1)
         V["S1"] = {b: delta(T1, "rod", T1, b, 0.25) for b in QA}
         V["S2_T1"] = delta(T1, "rod", T1, "rodlex", 0.25)
         V["S5"] = {f: {b: delta(T1, "rod", T1, b, f) for b in ["streaming", "snapkv", "h2o", "rodlex", "kvp_expected"]} for f in (0.1, 0.5)}
@@ -138,6 +144,28 @@ def compute():
 
 def get(tab, m, f):
     return next((t for t in tab or [] if t["m"] == m and abs(t["f"] - f) < 1e-9), None)
+
+
+def per_context(rows, mA, mB, fA, fB):
+    a, la = per_ctx(rows, mA, fA)
+    b, lb = per_ctx(rows, mB, fB)
+    qa = {(r["sample"], r["q"]): r["correct"] for r in rows if r["method"] == mA and abs(r["frac"] - fA) < 1e-9}
+    qb = {(r["sample"], r["q"]): r["correct"] for r in rows if r["method"] == mB and abs(r["frac"] - fB) < 1e-9}
+    ks = sorted(set(qa) & set(qb))
+    return {"deltas": [round(a[s] - b[s], 3) for s in sorted(set(a) & set(b))],
+            "a_only": sum(qa[k] and not qb[k] for k in ks), "b_only": sum(qb[k] and not qa[k] for k in ks), "n_q": len(ks)}
+
+
+def strict_table(rows):
+    vals = defaultdict(set)
+    for r in rows:
+        vals[r["sample"]].add(r["value"])
+    out = {}
+    for (m, f) in sorted({(r["method"], r["frac"]) for r in rows}):
+        rs = [r for r in rows if r["method"] == m and r["frac"] == f]
+        strict = [r["correct"] and not any(v in r["answer"].replace(",", "") for v in vals[r["sample"]] - {r["value"]}) for r in rs]
+        out[(m, f)] = sum(strict) / len(rs)
+    return out
 
 
 def rod_budget(T, f, per_tok=32768, nkv=8, hd=64, bits=4, wq=262144, block=64):
@@ -180,6 +208,10 @@ def verdicts(V):
     p = V.get("primary")
     out.append(f"- **Primary** (RoD − StreamingLLM, keep 0.25, T1): {fmt_d(p)} → "
                + ("pending" if p is None else ("**SUCCESS** (lower bound > 0)" if p["lo"] > 0 else "**NOT SHOWN** (lower bound ≤ 0)")))
+    for f, x in (V.get("S7") or {}).items():
+        tag = " (confirmatory, margin −0.05)" if f == 0.25 else " (descriptive)"
+        verdict = "" if x is None or f != 0.25 else (" → **non-inferior** (lower bound > −0.05)" if x["lo"] > -0.05 else " → non-inferiority **not shown**")
+        out.append(f"- **S7** (RoD − full cache, keep {f}, T1){tag}: {fmt_d(x)}{verdict}")
     s1 = V.get("S1") or {}
     ok = [b for b, x in s1.items() if x is not None]
     allpos = ok and all(s1[b]["lo"] > 0 for b in ok)
@@ -209,8 +241,9 @@ def verdicts(V):
     if V.get("S4_pairing"):
         out.append(f"- **S4 pairing**: {V['S4_pairing']}")
     for f, x in (V.get("S6") or {}).items():
-        out.append(f"- **S6** (RoD − RoD-lexical, keep {f}, T3 synonym-aliased keys): {fmt_d(x)}"
-                   + ("" if x is None else (" → sketch retrieves by meaning where lexical cannot" if x["lo"] > 0 else " → not shown")))
+        conf = f == 0.1
+        out.append(f"- **S6** (RoD − RoD-lexical, keep {f}, T3 synonym-aliased keys; {'confirmatory' if conf else 'exploratory'}): {fmt_d(x)}"
+                   + ("" if x is None or not conf else (" → the sketch out-retrieves the lexical index on non-shared key words" if x["lo"] > 0 else " → not shown")))
     if V.get("T3"):
         fc = get(V["T3"], "full", 1.0)
         out.append(f"- **T3 ceiling** (full cache): recall {fc['acc']:.3f}" + (" (≥ 0.5: T3 informative)" if fc["acc"] >= 0.5 else " (< 0.5: T3 too hard; S6 inconclusive)"))
@@ -224,12 +257,13 @@ def headline(V):
     pc = lambda x: "n/a" if x is None else f"{x['acc']:.0%}"
     full, rod, st = get(t, "full", 1.0), get(t, "rod", 0.25), get(t, "streaming", 0.25)
     exp, snap = get(t, "kvp_expected", 0.25), get(t, "kvp_snapkv", 0.25)
-    p = V["primary"]
-    return (f"On 12 held-out ~4k-token contexts (48 independent questions asked after compression; Llama-3.2-1B-Instruct), the full cache recalls {pc(full)} of needles. "
-            f"At a quarter of the KV memory, StreamingLLM recalls {pc(st)}, kvpress SnapKV {pc(snap)} and kvpress ExpectedAttention "
-            f"{pc(exp)}; Recall-on-Demand recalls {pc(rod)} (95% CI {rod['lo']:.0%}–{rod['hi']:.0%}) while *storing* "
-            f"{rod['x']:.1f}× less KV than the full cache: a pre-registered gain of {p['d']:+.2f} recall over StreamingLLM "
-            f"(95% CI {p['lo']:+.2f} to {p['hi']:+.2f}).")
+    p, s7 = V["primary"], V["S7"][0.25]
+    ni = "shown" if s7["lo"] > -0.05 else "not shown"
+    return (f"On 12 held-out ~4k-token contexts (48 independent questions; Llama-3.2-1B-Instruct) the full cache recalls {pc(full)}. "
+            f"At 25% of the KV memory, StreamingLLM recalls {pc(st)}, kvpress SnapKV {pc(snap)} and ExpectedAttention {pc(exp)}; "
+            f"RoD recalls {pc(rod)} (95% CI {rod['lo']:.0%}–{rod['hi']:.0%}) while retaining {rod['x']:.1f}× less state than the full cache. "
+            f"Pre-registered: RoD − StreamingLLM {p['d']:+.2f} (95% CI {p['lo']:+.2f} to {p['hi']:+.2f}); RoD − full {s7['d']:+.2f} "
+            f"({s7['lo']:+.2f} to {s7['hi']:+.2f}), non-inferiority at a 5-point margin {ni}.")
 
 
 def caveats(V):
@@ -269,6 +303,31 @@ def results_md(V):
             parts += [f"## {lab}", "", f"`{m['command']}`", "",
                       f"{m['backend']} · {m['cpu']} · torch {m['torch']} · {m['threads']} threads · wall {m['wall_s']} s · "
                       f"{m['n_contexts']} contexts × {m['needles']} questions · mean context {V['meanT'][sk]:.0f} tokens", "", md_table(V[k]), ""]
+    if V.get("T1"):
+        parts += ["## Recall drop vs the full cache (T1, paired by context; MVP)", "",
+                  "| Method | Keep | Recall | Strict recall | Drop vs full (95% CI) |", "|---|---|---|---|---|"]
+        for (m, f), x in sorted(V["drops"].items(), key=lambda kv: (kv[0][1] != 1.0, kv[0][1], list(NAMES).index(kv[0][0]) if kv[0][0] in NAMES else 99)):
+            row = get(V["T1"], m, f)
+            parts.append(f"| {NAMES.get(m, m)} | {f:.2f} | {row['acc']:.3f} | {V['strict'][(m, f)]:.3f} | "
+                         f"{x['d']:+.3f} ({x['lo']:+.2f} to {x['hi']:+.2f}) |")
+        for k, lab in (("primary", "Primary: RoD vs StreamingLLM at keep 0.25"), ("S7", "S7: RoD (keep 0.25) vs full cache")):
+            pc = V["percontext"][k]
+            parts += ["", f"**{lab}: per-context deltas** (12 contexts): {pc['deltas']}; questions where only RoD is right: "
+                      f"{pc['a_only']}, only the comparator: {pc['b_only']} (of {pc['n_q']})."]
+        parts.append("")
+    ph = RES / "posthoc_T1.json"
+    if ph.exists():
+        P = json.loads(ph.read_text())
+        parts += ["## Exploratory post-hoc analyses on T1 contexts (PREREG amendment 3; not confirmatory)", "",
+                  f"`{P['command']}` · streamed vs unchunked max |Δscore| {P['max_abs_score_diff_streamed_vs_unchunked']:.2e} · "
+                  f"streamed transient set ≤ {P['transient_bytes_streamed_chunk256_upper_bound'] / 2**20:.2f} MiB", "",
+                  "| Keep | Questions | Recall blocks m | E1 streamed = unchunked | Unchunked = T1 recorded | RoD (T1) | E2 exact-KV oracle | E3 oracle block | E2+E3 |",
+                  "|---|---|---|---|---|---|---|---|---|"]
+        for f, s in P["summary"].items():
+            rodacc = "n/a" if s["rod_T1_acc"] is None else f"{s['rod_T1_acc']:.3f}"
+            parts.append(f"| {float(f):.2f} | {s['n']} | {s['m_mean']:.1f} | {s['streamed_equal']}/{s['n']} | {s['t1_recorded_equal']}/{s['n']} | "
+                         f"{rodacc} | {s['e2_exactkv_acc']:.3f} | {s['e3_oracleblk_acc']:.3f} | {s['e23_both_acc']:.3f} |")
+        parts.append("")
     if V.get("T1"):
         Ts = sorted({r["sample"]: r["T"] for r in load("T1")["rows"]}.values())
         Tm = round(sum(Ts) / len(Ts))

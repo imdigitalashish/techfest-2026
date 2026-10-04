@@ -1,5 +1,12 @@
 # Prior-art check: Recall-on-Demand (RoD) KV-cache compression
 
+> **Lead correction (2026-10-04 15:38 IST).** This report was written before the RoD design was frozen.
+> - The frozen design uses a **4-bit** sketch of **layer 5**, chosen on dev seeds, not "arbitrarily". It costs 288 B/token plus 256 KiB of window queries.
+> - Absolute "first" and "zero resident bytes" phrasing is withdrawn: the sketch is KV-derived retained state.
+> - ArkVale's mechanism (CPU backup pages, bounding-volume key digests, importance scoring and recall) has since been **verified** from its official NeurIPS abstract by the gpt-6-astra review (`../../reviews/2026-10-04-spike-prereg-gpt-6-astra.md`).
+> - Defensible claim: *token-backed selective recomputation, where a single-layer 4-bit key index chooses blocks whose approximate multilayer KV is rebuilt at original positions, without a backing store of evicted KV*. Its constituents are prior art.
+
+
 All sources opened 2026-10-04 (arXiv API `export.arxiv.org/api/query`, arXiv abstract pages, or GitHub READMEs). OpenReview's HTML and API both returned a bot-verification challenge on every attempt and could not be opened; ArkVale's digest mechanism, relayed below via a search snippet quoting its OpenReview abstract, is marked **UNVERIFIED** on that basis — its title/venue/framing are confirmed separately via its opened GitHub README.
 
 ## Comparison table
