@@ -83,6 +83,11 @@ summary.update({"mh_rtos_listed": int(len(rl)), "mh_rtos_fetched_till_today": in
   "mh_top5_rtos_bev": a.nlargest(5, "bev_total")[["rto_label", "bev_total"]].values.tolist()})
 mhs = st[st.vahan_state.str.upper().str.startswith("MAHARASHTRA")]
 if len(mhs): summary["mh_state_bev_till_today"] = int(mhs.bev_cum.iloc[0]); summary["mh_pcs_pib2151390"] = int(mhs.pcs_total.iloc[0]); summary["mh_bev_per_pcs"] = float(mhs.bev_per_pcs.iloc[0])
+by_year = {y: int(bev(pd.read_csv(f"{RAW}/nat_state_fuel_{y}.csv")).sum()) for y in range(2020, 2027)}
+summary.update({"bev_registrations_by_year": by_year,
+                "bev_share_registered_since_2020_pct": round(100 * sum(by_year.values()) / st.bev_cum.sum(), 1),
+                "bev_share_registered_since_2022_pct": round(100 * sum(v for y, v in by_year.items() if y >= 2022) / st.bev_cum.sum(), 1),
+                "bev_registered_before_2020": int(st.bev_cum.sum() - sum(by_year.values()))})
 json.dump(summary, open(f"{OUT}/baseline_summary.json", "w"), indent=1)
 print(json.dumps(summary, indent=1)[:3000])
 print(st[["vahan_state", "bev_cum", "bev_2025", "pcs_total", "bev_per_pcs", "bev_share_2025_pct"]].head(12).to_string(index=False))

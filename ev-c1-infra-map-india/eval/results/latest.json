@@ -34,6 +34,21 @@
   "text": "236",
   "source": "eval/results/baseline_summary.json"
  },
+ "bev_since_2020_pct": {
+  "value": 95.3,
+  "text": "95.3%",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "bev_since_2022_pct": {
+  "value": 90.8,
+  "text": "90.8%",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "bev_before_2020": {
+  "value": 500459,
+  "text": "500,459",
+  "source": "eval/results/baseline_summary.json"
+ },
  "osm_n": {
   "value": 600,
   "text": "600",

@@ -51,7 +51,19 @@
  ],
  "mh_state_bev_till_today": 1185108,
  "mh_pcs_pib2151390": 4155,
- "mh_bev_per_pcs": 285.2
+ "mh_bev_per_pcs": 285.2,
+ "bev_registrations_by_year": {
+  "2020": 126032,
+  "2021": 341243,
+  "2022": 1059565,
+  "2023": 1582834,
+  "2024": 2026406,
+  "2025": 2356971,
+  "2026": 2556580
+ },
+ "bev_share_registered_since_2020_pct": 95.3,
+ "bev_share_registered_since_2022_pct": 90.8,
+ "bev_registered_before_2020": 500459
 }
    vahan_state  bev_cum  bev_2025  pcs_total  bev_per_pcs  bev_share_2025_pct
     CHANDIGARH    27524      5179         14       1966.0               10.17
