@@ -21,11 +21,15 @@ demo/smoke.sh      # headless, no browser, no GPU, under nice 10; exit 0 = pass 
 - `demo/run.sh --port N --no-browser` picks the port; the next free port is used if N is busy.
 - Without a venv, `SMOKE_REPLAY_ONLY=1 demo/smoke.sh` checks the committed-results part only. The output says that the live path is not checked.
 
-**Time to first visual (measured 4 Oct 2026, 20:53 IST, on this Mac):**
+**Time to first visual (measured 4 Oct 2026, ~20:55 IST, on this Mac, from a clean copy of the committed folder):**
 
-- The server is ready 0.66 s after `demo/run.sh`.
-- The page renders in 0.06 s, with all committed charts drawn (Chromium, 1440×900).
-- The browser launch comes on top of that.
+- The server is ready 0.55 s after `demo/run.sh`.
+- The page renders in 0.06 s, with all committed charts drawn (Playwright Chromium, 1440×900).
+- The browser launch comes on top of that. This needs no venv and no model.
+
+**Fetch, with wheels already in the uv cache and the model already cached:** 2.8 s.
+
+**`demo/smoke.sh` in that clean copy:** PASS in 86 s.
 
 **Live timings, measured the same evening on CPU (nice 10, 4 threads), while other projects shared the machine (load average 3–8):**
 
