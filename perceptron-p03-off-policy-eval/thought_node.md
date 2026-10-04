@@ -256,3 +256,13 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - Read PLAYBOOK §11.
 - **Licence check:** the GitHub repo st-tech/zr-obp is Apache-2.0 (code). The README inside the official dataset zip (read by HTTP range request) says "This dataset is licensed under CC BY 4.0". The zip's VERSION file reads "08/18/2020 Open Bandit Dataset 1.0". So a small aggregated extract can be committed, with attribution and a change notice.
 - Spawned child session **"P3 demo builder"** (plan mode, notify always). Its kickoff has the full context, the crazy-element refinement (an exact real reference line for the α-mixture, plus a day selector), a pre-registration requirement for the knob analysis, the extract design (< 20 MB, a NOTICE file), the §11 deliverables and the honesty rules.
+
+### 2026-10-04 21:03 IST — Demo plan approved
+- **Builder's plan** (approved, with refinements): "the evaluator that says I don't know".
+  - The α-knob runs on BTS logs with exact weights and a real A/B reference line, across 6 periods (W, W1, W2, Nov 24–26).
+  - A Random-logs mirror uses the hourly reconstruction (approximate target).
+  - IPW and SNIPW only; DR is left out because the full BTS action distribution isn't logged.
+  - Extract: about 1 MB, CC BY 4.0, exact propensities, a manifest with checks against committed numbers.
+  - Four panels: REAL ×3 (dashboard vs A/B; when logs can tell; the knob), then SYNTHETIC.
+- **Pre-registered predictions** (from committed numbers, made before any knob computation). The z-test is α-invariant, so the gate refuses at every α>0 on Nov 25 and W1. On Nov 26 the gate answers up to α≈0.39 while IPW's interval misses the reference above α≈0.27 (honest "answered-miss" cells). On W2 the gate is conservative.
+- **Refinements sent:** mirror reference labelled approximate; neutral explanation of z-test refusals; Nov 26 misses made prominent; Panel 1 rendered from headline.json; SCRIPT.md opens on real data; deterministic HTML; report P1–P5 outcomes.
