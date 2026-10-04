@@ -222,6 +222,7 @@ p{margin:.35em 0}
 .hbars .track{height:16px;background:#eef2f8;border-radius:4px;overflow:hidden}
 .hbars .fill{width:100%;height:100%;transform-origin:left center}
 .hbars .v{text-align:right;font-weight:700}
+@media (max-width:1380px){.brand small,nav.tabs .k{display:none}nav.tabs button{padding:18px 10px 15px;font-size:15px}.top .wrap{gap:12px}}
 @media (max-width:1100px){.grid2,.grid3,.panels{grid-template-columns:1fr}.big{grid-template-columns:repeat(2,1fr)}.big>div:nth-child(2){border-right:0}.big>div:nth-child(-n+2){border-bottom:1px solid var(--rule)}}
 @media (max-width:640px){.wrap{padding:0 14px}.q-expr{font-size:30px}.work{grid-template-columns:1fr}.bars{grid-template-columns:96px 1fr 76px}.post{grid-template-columns:110px 1fr 46px}.hbars{grid-template-columns:120px 1fr 56px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -433,7 +434,7 @@ function realRegister() {
       f.id === "all" ? f.label : `${f.label} · ${Real.rows.filter(f.f).length}`)));
   const runs = h("div", {class: "seg", role: "group", "aria-label": "Ask again: committed run"},
     [1, 2, 3].map(r => h("button", {"aria-pressed": String(Real.run === r), onclick: () => {
-      Real.run = r; if (r > 1 && Real.filter === "all") Real.filter = "reasked"; renderReal(); }}, `Run ${r}`)));
+      Real.run = r; if (r > 1) Real.filter = "reasked"; renderReal(); }}, `Run ${r}`)));
   const filt = FILTERS.find(f => f.id === Real.filter).f;
   const groups = [["P", `Positives · ${claim("real.n_pos")} · labelled with one of our five misconceptions`],
                   ["N", `Negatives · ${claim("real.n_neg")} · same topic, other misconceptions`],
@@ -646,13 +647,14 @@ function liveMarkingCol() {
     h("button", {class: "btn ghost", disabled: Live.busy, onclick: askAgain}, "Ask again × 1,000"),
     Live.rerun ? h("span", {class: Live.rerun.identical === Live.rerun.n ? "ok-mark" : "bad-mark"},
       `${num(Live.rerun.identical)}/${num(Live.rerun.n)} identical · median ${Live.rerun.median_ms} ms · ${Live.rerun.total_ms} ms in total`) : null);
-  const timing = h("div", {class: "timing"}, `Engine decision ${c.engine_ms} ms on this machine · LLM calls 0`);
+  const timing = h("div", {class: "timing"}, `Engine decision ${c.engine_ms} ms on this machine (median of ${c.engine_runs} runs) · LLM calls 0`);
   if (c.verdict === "certificate") {
     const certs = c.certificates;
     return h("div", {class: "sheet"}, head, h("div", {class: "verdict cert", style: "margin-top:10px"},
       h("div", {class: "v-title"}, h("span", {class: "stamp"}, "CERTIFICATE"), certs.map(x => x.rules.join(" + ")).join("  or  ")),
       h("p", null, certs.length > 1 ? `${certs.length} explanations reproduce your answer ${c.answer_display} exactly. The next question will tell them apart.`
-        : `${certs[0].rules.map(ruleName).join(" + ")}: this rule reproduces your exact answer, ${c.answer_display}.`),
+        : certs[0].rules.length > 1 ? `${certs[0].rules.map(ruleName).join(" and ")}: together, these rules reproduce your exact answer, ${c.answer_display}.`
+        : `${ruleName(certs[0].rules[0])}: this rule reproduces your exact answer, ${c.answer_display}.`),
       certs.map(x => workCols(x, c.answer_display)), timing, rules, again,
       h("p", {class: "small muted", style: "margin-top:10px"}, "A certificate is evidence, not proof that you hold the misconception: one wrong answer can also be a slip. So the tutor makes a prediction you can check →")));
   }
@@ -760,6 +762,8 @@ const WORK = {
 const SHORT = {"gpt-5.5": "5.5", "gpt-5.4-mini": "5.4-mini", "gpt-4.1-mini": "4.1-mini"};
 function casCell(w = Cas.workload, m = Cas.model, r = Cas.routing) { return gridCell(w, r === "engine" ? "gpt-5.5" : m, r); }
 function costComparable(c) { return c.routing !== "gated"; }
+// On engine-native probability items the engine is exact by construction, so "engine only" is left out of the choice.
+function budgetEligible(c) { return costComparable(c) && !(c.workload === "prob" && c.routing === "engine"); }
 function claimChecks(c) {
   const m = c.model, out = [];
   const add = (label, shown, key) => { if (key in C) out.push({label, shown, want: C[key], ok: shown === C[key], key}); };
@@ -775,7 +779,7 @@ function claimChecks(c) {
   return out;
 }
 function bestUnder(budget) {
-  const cells = D.grid.filter(c => c.workload === Cas.workload && costComparable(c) && c.usd1000 <= budget + 1e-9);
+  const cells = D.grid.filter(c => c.workload === Cas.workload && budgetEligible(c) && c.usd1000 <= budget + 1e-9);
   cells.sort((a, b) => b.ba - a.ba || a.usd1000 - b.usd1000);
   return cells[0] || null;
 }
@@ -878,10 +882,14 @@ function renderCascade() {
   const bestLine = best ? h("p", {class: "verdictline"}, "Best balanced accuracy within budget: ", h("b", null, cellName(best)), ` · ${pct(best.ba)} at ${usd(best.usd1000)} `,
     (best !== c) ? h("button", {class: "btn ghost", style: "padding:4px 10px;font-size:14px", onclick: () => { Cas.model = best.model; Cas.routing = best.routing; renderCascade(); }}, "Use this") : h("span", {class: "ok-mark"}, "(selected)")) : null;
   const label = Cas.workload === "real"
-    ? [tag("real", "REAL"), tag("posthoc", "POST HOC"), tag("replay", "replayed")]
-    : [tag("synth", "SYNTHETIC"), tag("replay", "replayed")];
-  const note = Cas.workload === "real"
-    ? `Post hoc: the cascade (the pre-registered secondary method HYB) was analysed after the items had been seen. The engine certifies only ${claim("casc.real.engine_answers")} of ${claim("casc.real.n")} real items, so the saving is small.`
+    ? [tag("real", "REAL"), Cas.routing === "cascade" ? tag("posthoc", "POST HOC") : tag("replay", "pre-registered"), tag("replay", "replayed")]
+    : [tag("synth", "SYNTHETIC"), tag("posthoc", "routing by construction"), tag("replay", "replayed")];
+  const note = Cas.workload === "real" ? {
+      cascade: `Post hoc: the cascade (the pre-registered secondary method HYB) was analysed after the items had been seen. The engine certifies only ${claim("casc.real.engine_answers")} of ${claim("casc.real.n")} real items, so the saving is small.`,
+      llm: "Pre-registered: each model alone, with a NONE option, one query per item (eval/llm_gap_protocol.md §2.1).",
+      gated: "Pre-registered H2: the engine decides every question it can parse. It removes GPT-4.1-mini's false claims, and gives GPT-5.5 no gain.",
+      engine: `Pre-registered EXEC: the engine alone, with no network. ${c.no_diagnosis} of ${c.n} wrong answers get no diagnosis and would go to a teacher, and none of the ${c.n_neg} negatives gets a false one.`,
+    }[Cas.routing]
     : "Engine-native items (Addendum B): routing and the engine's accuracy are guaranteed by construction (the engine uses each item's own family rule). This shows the accounting, not independent evidence.";
   el.replaceChildren(
     h("div", {class: "sheet"},
@@ -894,7 +902,8 @@ function renderCascade() {
       h("p", {class: "small muted"}, note)),
     h("div", {class: "grid2", style: "margin-top:20px"},
       h("div", {class: "sheet"}, budget, bestLine, budgetInsight(),
-        h("p", {class: "small muted"}, "Hollow dashed points (engine gate) are left out of the budget choice: their cost depends on how this benchmark was built."),
+        h("p", {class: "small muted"}, Cas.workload === "real" ? "Hollow dashed points (engine gate) are left out of the budget choice: their cost depends on how this benchmark was built."
+          : "Engine only is left out of the budget choice here: on engine-native items it is exact by construction."),
         Cas.workload === "real" ? h("p", {class: "small"}, "Per-item replays of the real items are on tab 1.") : null),
       h("div", {class: "sheet"}, scatter(), h("p", {class: "small muted"}, "Ring: your selection · green ring: best within budget · shaded: over budget."))),
     Cas.workload === "prob" ? h("div", {class: "sheet", style: "margin-top:20px"}, probTable()) : "");

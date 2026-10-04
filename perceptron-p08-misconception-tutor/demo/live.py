@@ -190,12 +190,18 @@ def rule_table(toks: Sequence[Token]) -> list[dict]:
     return rows
 
 
+TIMING_RUNS = 25
+
+
 def certify(toks: Sequence[Token], raw: str) -> dict:
-    t0 = time.perf_counter()
-    status, v, sets = _decide(toks, raw)
-    engine_ms = 1e3 * (time.perf_counter() - t0)
+    ts = []
+    for _ in range(TIMING_RUNS):  # one decision is ~0.1 ms, so report the median of a few runs, not one noisy timing
+        t0 = time.perf_counter()
+        status, v, sets = _decide(toks, raw)
+        ts.append(time.perf_counter() - t0)
     out = {"verdict": status, "answer": v, "answer_display": canon_display(v) if v else None, "question": question(toks),
-           "engine_ms": round(engine_ms, 3), "rules": rule_table(toks), "llm_calls": 0}
+           "engine_ms": round(1e3 * statistics.median(ts), 3), "engine_runs": TIMING_RUNS, "rules": rule_table(toks),
+           "llm_calls": 0}
     if status == "certificate":
         out["certificates"] = [marked(toks, s) for s in sets]
         out["ambiguous"] = len(sets) > 1
