@@ -6,10 +6,11 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (08:18 IST, 4 Oct)
-- **Phase:** Morning package delivered — all 20 projects have landscape, components + contracts, ADR, Round-1 draft, eval and a selection memo on `main`. See [MORNING_REPORT.md](MORNING_REPORT.md).
-- **Doing:** Lifting Lean Mode at 08:30 with limits; sending each lead its next concrete step.
-- **Next:** 7 Oct InnovateX theme pick (T1 vs T2) · 10 Oct APCTT data adaptation · 12 Oct picks for Perceptron, EV and India@71.
+## Now (09:55 IST, 4 Oct)
+- **Mode: 3 projects at a time** (user decision, 09:50). Running 20 leads at once saturated the upload link and model calls kept timing out (HTTP 408). Now only 3 leads run; the rest are paused and idle. When an active project completes its definition of done, the next one in the queue starts.
+- **Active:** [namma-space](namma-space/thought_node.md) · [perceptron-p07-multi-agent-allocation](perceptron-p07-multi-agent-allocation/thought_node.md) (Perceptron pick) · [ev-c2-green-auto-lca](ev-c2-green-auto-lca/thought_node.md) (EV pick).
+- **Queue:** 1. InnovateX zonal theme, T1 or T2 (picked by 7 Oct; deck due 9 Oct) → 2. India@71 T1 (proposal due 1 Nov) → 3. APCTT (from 10 Oct data) → 4. P9, then P1 (only if the Perceptron pick changes).
+- **Paused indefinitely:** P2, P3, P4, P5, P6, P8, P10, EV C1, India@71 T2/T3, InnovateX T3. All their work is on `main`.
 
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
@@ -48,6 +49,7 @@
 | [perceptron-p10-trusted-text-signal](perceptron-p10-trusted-text-signal/thought_node.md) | 7/7 | 4.2 | 3 min ago | Real StockNet (87 tickers, 119,641 tweets): MAPIE split CP covers only 81.3% of a 90% target; certified CR-ACI holds 89.5% clean / 89.7% under a k=3 fake-post attack for +0.3% width. Text adds ~no accuracy → sells trust, not alpha. Theme-6 alternative to P9. |
 
 ## Key decisions
+- 2026-10-04 09:50 — **Batch mode (user):** only 3 projects run at a time, with a deadline-aware queue; the rest pause. Replaces Lean Mode for the paused leads.
 - 2026-10-04 — Build all 20 problem statements; submit the strongest per competition within the submission limits.
 - 2026-10-04 — One private monorepo, trunk-based, one folder per project; every session pushes to `main`.
 - 2026-10-04 — No caps on agents or sessions (user directive) — suspended 05:50–08:30 by Lean Mode (network).
@@ -57,6 +59,8 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 09:55 IST — Batch mode
+After Lean Mode lifted at 08:30, sub-agents resumed and HTTP 408 timeouts rose again (6 in 10 min; upload measured ~55 KB/s). User directive: run 3 projects at a time. Active: Namma Space, P7, EV C2, each with a 5-point definition of done. 17 leads told to save, push and go idle. P1 had already cut memory (swap 31.5 → 20.9 GB) and replicated AnchorLoRA on seed 1 (2.66510 vs starter 2.7535).
 ### 2026-10-04 08:18 IST — Morning package complete
 All 20 leads pushed a full package plus selection memo (~220 commits). Final MORNING_REPORT.md published with rankings per competition. Honest self-corrections overnight: P8 (LLM baseline 86% vs 46%), P5 (60-seed gain not significant), P6 (edge not significant). Late recoveries: APCTT, EV C1, Namma Space, India@71 T1/T3, InnovateX T2. Cross-project reuse to relay after 08:30: P5's synchronised-twin RNG (~6× lower counterfactual noise) for P7/P3; EV C2's CEA v22 state-level grid workbook for EV C1.
 ### 2026-10-04 08:00 IST — Sweep
