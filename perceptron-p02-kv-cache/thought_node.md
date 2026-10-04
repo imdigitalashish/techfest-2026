@@ -10,12 +10,15 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 done → 4 (walking skeleton + eval harness) in parallel with 1–3 docs. **LEAN MODE** (Supervisor, 05:49): no sub-agents, small requests, no downloads > 200 MB, push every 30 min.
-- **Plan (to 08:15 push):** MLX harness on the *already-cached* `mlx-community/Llama-3.2-1B-Instruct-4bit` + local WikiText-103 haystack → real numbers for full cache vs StreamingLLM / H2O / SnapKV / K-norm / KV-quant, query-agnostic protocol → landscape.md (primary sources I open myself) → components + contracts → ADR 001 → selection memo → abstract + architecture.md.
-- **Doing:** lead alone (7 research agents launched at 02:10 all died on model-side "408 request body" timeouts; no output survived).
-- **Next:** harness smoke test → baseline grid in background → docs.
+- **Phase:** 1–4 in parallel. Pushed: landscape (cited), components + contracts, harness code, selection memo v1. Writing next: ADR 001, Round-1 abstract, `deliverables/architecture.md`.
+- **Plan:** (1) ADR 001 + abstract + architecture diagram (by 08:30). (2) After 08:30, when lean mode lifts: run the harness (`eval/kvbench.py`, 4k context, 12 contexts × 4 questions) with compute staggered, then commit real numbers. (3) Autoresearch ratchet on C7 (sketch layer, block size, sketch bits) with a frozen eval. (4) Verify prior art for RoD by 12 Oct.
+- **Doing:** lead alone (lean mode). Smoke run of the harness was starved by memory pressure; it will be retried after 08:30.
+- **Next:** ADR 001 → abstract → architecture.md → harness numbers → ratchet.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** (1) Lost 02:10–05:50 to agent failures — research depth is thinner than planned; landscape cites only what I open myself. (2) Shared 24 GB M5 with 19 sibling sessions: GPU/RAM contention can slow runs. (3) Network saturated: no model downloads; model = 4-bit weights (KV itself stays fp16).
+- **Risks:**
+  1. No measured numbers yet: every result claim in the docs is a plan.
+  2. RoD prior art not yet checked.
+  3. Shared machine: heavy runs must be staggered.
 
 ## Phase 0 — what the judges need to see (from `_briefs/perceptron.txt`)
 - **MVP bullets → evidence:** (a) one existing method applied + memory saved vs uncompressed → a table of *retained KV bytes* (counting every index/scale byte) and measured peak memory, per method and ratio; (b) accuracy drop on a small long-context recall task → needle-recall accuracy with 95% Wilson CIs vs the full cache.
@@ -47,21 +50,24 @@
 - What companies ship: long-context serving and prompt-caching designs from frontier labs and inference providers.
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — Model: Llama-3.2-1B-Instruct (MLX 4-bit weights, fp16 KV) on the M5. Primary protocol: query-agnostic, multi-question. Recall task: RULER-style needles in WikiText-103.
+- 2026-10-04 — Spike A = recall-on-demand (C7); spike B candidate = query-agnostic scorer (C3). Rationale: [ADR 001](architecture/adr/001-spike.md).
 
 ## Components
-| # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
-|---|---|---|---|---|---|---|
+See [architecture/components.md](architecture/components.md). C1 workload · C2 prefill engine · C3 scorer (spike B) · C4 budget · C5 selector · C6 KV codec · **C7 recall-on-demand (spike A)** · C8 answerer · C9 memory meter · C10 evaluator. All are baseline-implemented in `eval/kvbench.py`; status: written, not yet measured.
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
+_First version 08:10 IST, 4 Oct; final by 12 Oct. Score 1–5, one line of evidence each._
+- **Winnability — 3/5.** A well-trodden problem: kvpress alone ships 48 press classes ([README, opened](research/raw/src_kvpress_readme.md)), so the "obvious" entry (StreamingLLM/H2O on a 1B model plus a needle chart) will be common. We win only on the spike and on evaluation rigour (query-agnostic multi-question protocol, every byte counted, 95% CIs).
+- **Innovation headroom — 4/5.** The spike is *recall-on-demand* (RoD): eviction becomes a cache *miss*, not data loss. For evicted spans we keep token IDs (4 B/token) plus a 2-bit key sketch of one layer (≈160 B/token, about 0.5% of the 32 KiB/token fp16 KV). The question's own queries pick evicted blocks to re-prefill. It targets the failure SCBench documents: "sub-O(n) memory methods suffer in multi-turn scenarios" ([2412.10319, opened](research/raw/arxiv_abstracts.md)). Prior-art check (ArkVale, Quest, CacheBlend) is pending.
+- **Feasibility by the deadline — 5/5.** Everything runs on the M5 in MLX with a 4-bit 1B model already on disk and local WikiText. The harness is written ([eval/kvbench.py](eval/kvbench.py)). No GPU, data access or user action is needed before the 19–25 Nov exams.
+- **Demo strength — 4/5.** A live laptop chat over a long document with a memory meter: StreamingLLM forgets the needle and RoD recalls it at the same answer-time bytes, plus a recall-vs-bytes Pareto chart.
+- **Fit with the user's strengths — 5/5.** It is a systems problem: a cache hierarchy (resident KV / sketch index / backing store of token IDs, recompute on miss), matching large-scale-systems and frontier-model inference experience.
 - **Biggest risk:**
-- **One-line pitch:**
+  1. Novelty: a close prior art may exist (keep-and-recall designs such as ArkVale; "evict + recompute" papers from 2025–26). Verify by 12 Oct.
+  2. Recompute latency per question.
+  3. No measured numbers yet: tonight's smoke run was starved by machine-wide memory pressure (16% free, ~42 GB swap per the Supervisor). First numbers come after 08:30.
+- **One-line pitch:** "Treat the KV cache as a cache, not a store: keep a 0.5% sketch plus the raw token IDs, and when a question arrives, recompute only the passages it needs. StreamingLLM-level memory, aiming at full-cache recall."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -72,3 +78,13 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - 02:10: launched 6 research agents (eviction papers, quant/low-rank/recompute, companies, social, benchmarks, libraries) + 1 first-principles agent. All failed or vanished with model-side "408 Timed out reading request body" (machine-wide network saturation); no output survived. Lesson: keep requests small; do research myself with compact fetches.
 - Environment: Apple M5, 24 GB, macOS 26.2; project venv `perceptron-p02-kv-cache/.venv` (mlx 0.32.3, mlx-lm 0.32.0; the kvpress/torch install timed out on the network — not retried, per lean mode). Cached model `mlx-community/Llama-3.2-1B-Instruct-4bit` (16 layers, 8 KV heads × 64 dims → 32 KiB fp16 KV per token). Azure: a Visual Studio Enterprise subscription is enabled; GPU quota unknown (not needed tonight).
 - Supervisor 05:49: LEAN MODE — acknowledged; working alone and sequentially.
+
+### 2026-10-04 08:10 IST — Landscape, components, memo pushed; harness written, numbers pending
+- **Harness.** `eval/kvbench.py` (MLX, explicit-cache forward over the frozen 4-bit Llama-3.2-1B):
+  - Protocol: one prefill per context; query-agnostic compression; 4 paired questions per context.
+  - Methods: full, quant8/4/2, streaming, h2o, snapkv, knorm, snapkv_qa (query-aware reference) and rod (spike).
+  - Accounting: every byte counted, Wilson CIs reported.
+  - Smoke run (`--ctx 1024 --n 1`) sat at ~2% CPU for 6+ min while the system had 16% memory free. It is starved, not crashed, and will be retried after 08:30. **No numbers yet; none are claimed.**
+- **Sources.** One background `curl` job fetched all 25 arXiv abstracts (titles verified) plus Anthropic, Gemini and vLLM docs, the gpt-oss config and the kvpress README. Landscape claims are upgraded to [OPENED] where verified; Character.AI and OpenAI stay UNVERIFIED.
+- **Worker report.** The late `res-companies-ship` report survived (`research/raw/companies-ship-today.md`, 53 sources). Headline: no production stack defaults to lossy eviction; kvpress is research tooling.
+- **Pushed so far.** `components.md` with C1–C10 and isolated metrics, `contracts.py`, and selection memo v1.
