@@ -19,11 +19,11 @@
   3. **Numbers rendered from committed results:** `eval/render_docs.py` + `eval/check_docs.py` (drift check); licences recorded in `README.md`.
   4. **Cross-model reviews as child sessions:** gpt-6-astra (max) as hostile judge on deck and pitch; gpt-6-sol (max) on code and eval, reproducing the headline numbers. Recorded in `reviews/` + `reviews/ledger.tsv`.
   5. **Final memo (honest T3 vs T1),** thought node current, all pushed → message "DONE — slot free".
-- **Doing (16:37):**
-  - *T3 detection + flux*: YOLO11n training on the GPU (≤60 min), then test eval.
-  - *T3 hostile judge (astra)*: gpt-6-astra, max effort, reviewing the deck and package.
-  - Twin child is done: angle, entrainment-split and exposure code pushed (13135c3). The lead runs `nice -n 10 python -m twin_sim.analysis` once the lock frees.
-  - Next: when detection finishes, launch *T3 code/eval review (sol)* (gpt-6-sol, max).
+- **Doing (17:12):**
+  - *T3 code/eval review (sol)*: gpt-6-sol, max effort; reproducing the headline numbers, running tests, auditing the doc pipeline.
+  - Lead: the hostile-judge review is fully addressed (deck v3, Q&A 26, card, plan gates, memo v3, ledger).
+  - Children done and idle: twin (ablations, angle, entrainment split), detection (trained baseline), astra (review).
+  - Next: address the sol findings → final rebuild → "DONE — slot free" to the Supervisor.
 - **Rules now:** child sessions only, no `task` sub-agents. No `git stash` / `--autostash`. Timestamps from `TZ=Asia/Kolkata date`.
 - **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments, leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup's 2026 Interceptors cover the big Malad and Trombay creek mouths. NullahNet is the network layer for the rest:
   - pocket-fill sensing;
@@ -210,3 +210,17 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Package v1 built:** deck (10 + 4 backup slides, notes) as PDF and PPTX, Q&A prep (20 questions), one-page presenter card, prototype plan. The flume became a **tow tank**: BOM C ₹4,969.12, with URL and date per row (IndiaMART pages read in a browser, Shopify product data). Node incl. IP66 enclosure ₹83,481.98. `check_docs`: 0 problems.
 - **Licences:** `README.md` (AGPL-3.0 detector stack; CC BY 4.0 data; Open-Meteo, NASA POWER and OSM attribution). Lead fix: Open-Meteo attribution added to the dashboard footer (licence compliance).
 - **Selection memo v2:** honest verdict against switching from T1 (≈3.0 vs 3.4).
+
+### 2026-10-04 16:26–17:12 IST — Hostile review, ablations, trained detector, deck v3
+- **Hostile judge (gpt-6-astra, max):** NOT READY unchanged — 1 blocker, 11 major, 4 minor. It agrees against switching from T1. 15 items accepted and 1 partly accepted; see `reviews/2026-10-04-final-deck-lead-response.md` and `reviews/ledger.tsv`.
+  - Blocker fixed: flood/retention guarantees became intentions plus tests.
+  - Sensing roles fixed: camera = fill, ultrasonic = stage, degraded → unknown.
+  - F23 budget scope corrected; incumbent gap framed as a hypothesis; MRV scoped to the synthetic mixture.
+  - Acceptance gates and the measurement boundary added to the plan.
+- **Twin ablations** (child, 9e65ee1; SIMULATED). Only the full policy vs the fill-fraction rule clears zero (−5.6%); tide timing alone −3.2% [−12.0, +0.6]; forecasts −0.4%; kg ranking −2.0%.
+  - Entrainment split: 51% of escape is the assumed still-water leak, 38% speed-driven; 13.2% of plastic arrives at high speed.
+  - Boom angle (SENSITIVITY): 30° −15.0%, 20° −17.2%; 20° + fuse + pocket −23.4%.
+- **Detector (child, 80ba713):** YOLO11n trained on MPS, 9 epochs, 3,366 s. TUD-GV held-out test mAP50 0.857 (zero-shot 0.394); Groningen cross-site 0.524; the synthetic flux counter over-counts by 33%. GPU released and the Supervisor informed.
+- **Lead re-verified more facts:** F07 (BMC: drains → sea → tide back), F09, F10, F11, F13, F14 (ITOPF PDF), F16 (Pinwheel HTML), F23 (scope error confirmed and fixed), F24.
+- **Deck v3:** concept drawing on slide 3; 10 main + 5 backup slides; `check_docs` 0 problems with 85 result aliases and 35 fact rows. Dashboard bundle rebuilt with the detection metrics.
+- **Lesson:** take every time from `TZ=Asia/Kolkata date`. I quoted "17:08" to the Supervisor without checking the clock, which read 17:04.
