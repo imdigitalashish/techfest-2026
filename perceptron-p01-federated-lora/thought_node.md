@@ -379,3 +379,15 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - `run.sh` gave a first visual in 0.6 s.
   - Browser check at 1440×900: tab 1 opens on the REAL committed 5-seed per-domain bars with Bonferroni whiskers, a paired-CI ledger and file·key provenance on every number. Tab 3's live panel carries the reduced-config, in-process-kill and pre-recorded-ghost labels. Server stopped by PID afterwards.
 - Started child session **"P1 review: demo (gpt-6-astra)"** (max): a hostile judge watching the demo. The builder stays idle for fixes.
+
+### 2026-10-04 21:31 IST — Lead: astra demo review in; all 8 findings accepted; builder fixing
+- **gpt-6-astra (max) demo review:** **7/10** "would this win the room"; 0 BLOCKING, 5 MAJOR, 3 MINOR.
+  - Its own run of smoke passed (83 s), first paint came at 0.08 s, and a six-round live run reproduced all 60 committed validation losses exactly. It found no invented numbers.
+- **The fixes, now with the builder:**
+  - an event-gated stage flow, since wall-clock choreography missed the round-2 unplug;
+  - honest full-system wording instead of "memory absorbs it": 93 % of the seed-0 gap exists with nobody unplugged;
+  - the RECORDED handoff must stop live;
+  - the stage layout must fit 1440×900;
+  - smoke must assert P1–P3 are true, plus a UI self-test;
+  - corrections to a reversed caption formula, the memory-banner text and the header wording.
+- Dispositions appended to the review file; ledger row added; reviewer session archived.

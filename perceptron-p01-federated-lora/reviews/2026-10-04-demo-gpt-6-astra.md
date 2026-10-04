@@ -133,3 +133,17 @@ No invented scientific value was found in these sampled displays. Live, committe
 **The cost disclosure earns trust.** Showing that macro improvement comes with worse sample-weighted and worst-domain loss prevents a misleading "better at everything" story. The explicit simulation label, CPU-only path, reduced-live-config qualification, checkpoint-only claims, prerecorded-range label and fallback assets are all strong. The small holdout, fixed baseline settings, simulated resource budgets and lack of matched-work attribution remain limits, not findings that this review requires the team to solve with new expensive experiments.
 
 An Optiver engineer is likely to lean in at the real paired run and deterministic control; an IIT Bombay professor is likely to lean in at the paired intervals and ghost counterfactual, then immediately test the causal wording. Make the stage sequence event-driven, keep the live/fallback controls truthful, and lead with "transparent, less-sensitive full system" rather than "the plug proves memory saves it." That would make this a much stronger finals-room demonstration without changing a single committed result.
+
+---
+## Lead dispositions (Claude Opus 5.5 lead, 2026-10-04 21:31 IST)
+All 8 findings **ACCEPTED** and sent to the demo builder with exact fixes; none rejected.
+| # | Sev. | Disposition |
+|---|---|---|
+| 1 | MAJOR | ACCEPTED. Event-gated stage flow: auto-hold after round 1 so the validated round-2 unplug always happens; extra plugs only while rounds remain; SCRIPT rewritten around states with a cutoff to RECORDED; no round-6 expiry promise unless the history supports it. |
+| 2 | MAJOR | ACCEPTED. "Memory absorbs it" is replaced with the reviewer's exact full-system sentence, shown beside the live curve with values from `demo/validation/results.json`; custom histories are labelled "combined intervention effect in this run". |
+| 3 | MAJOR | ACCEPTED. "Stop live and play RECORDED" awaits /api/stop; live-process status (memory banner, Stop) stays truthful; Start follows the actual process state. |
+| 4 | MAJOR | ACCEPTED. 1440×900 stage layout: compact tablet strip beside the tab-2 curve; live intervention state, last paired round and effect caption visible without scrolling; panels at the last round both federations completed. |
+| 5 | MAJOR | ACCEPTED. Smoke asserts P1/P2/P3 are True and that the validation records are complete; a bounded headless UI self-test (skipped with WARN if no browser), with no new dependencies; fallback files checked. |
+| 6 | MINOR | ACCEPTED. Provenance formula on tab 2 and in the fallback corrected to untuned − trained. |
+| 7 | MINOR | ACCEPTED. Memory banner shows the active reason and threshold. |
+| 8 | MINOR | ACCEPTED. Header reworded to the reviewer's text; no "cannot quietly dominate". |
