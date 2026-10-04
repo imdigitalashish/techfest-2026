@@ -37,7 +37,7 @@ A YAML list. One record per number. Example (illustrative structure only — the
     note: ""
   source_id: cea-co2-baseline-v20   # key into data/sources/<layer>.yaml
   locator: "User Guide v20.0, Table 4, p. 11"
-  quote: "verbatim snippet (<= 300 chars) that contains the number"
+  quote: "verbatim snippet (<= 300 chars) that contains the number; join non-contiguous fragments with ' ... '"
   accessed: 2026-10-04
   pedigree:                # 1 (best) .. 5 (worst), Weidema & Wesnaes / ecoinvent v3 pedigree matrix, judged for use as an INDIA value
     reliability: 1         # 1 verified measured data .. 5 non-qualified estimate
