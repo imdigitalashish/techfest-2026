@@ -1,0 +1,199 @@
+{
+ "name": "drjohnson_e2e",
+ "input": ".data/deepblending/drjohnson/images (263 photos)",
+ "stages": {
+  "ingest": {
+   "ok": true,
+   "seconds": 9.9,
+   "n_frames": 263,
+   "clips": [
+    {
+     "clip": "photos",
+     "count": 263
+    }
+   ],
+   "warnings": []
+  },
+  "posing": {
+   "ok": true,
+   "seconds": 740.1,
+   "n_frames": 263,
+   "n_registered": 263,
+   "registration_rate": 1.0,
+   "n_points3D": 73820,
+   "mean_reprojection_error_px": 0.9054597609220021,
+   "mapper": "global",
+   "matcher": "exhaustive",
+   "timings_s": {
+    "extract_s": 56.18,
+    "match_s": 646.2,
+    "map_s": 36.37,
+    "undistort_s": 1.36
+   },
+   "ordered_input": false,
+   "pose_sanity": {
+    "outlier_cam_frac": 0.0,
+    "spread_ratio_p75_p50": 1.252,
+    "degenerate": false
+   },
+   "ate_vs_reference": {
+    "n_matched": 263,
+    "ate_rmse_ref_units": 0.0072,
+    "ate_median_ref_units": 0.0026,
+    "ate_rmse_pct_of_extent": 0.0658
+   },
+   "note": "adopted from the exhaustive-matching run (13:46-13:59). The first posing (sequential matching on an unordered photo set) was degenerate: 30/262 outlier cameras, ATE 34% of extent; kept in sfm_sequential_degenerate/"
+  },
+  "splat": {
+   "ok": true,
+   "seconds": 1987.4,
+   "n_splats": 2000000,
+   "train_seconds": 1986.2,
+   "steps": 15000,
+   "peak_memory_gb": 6.94,
+   "ply_mb": 472.0,
+   "accepted": true,
+   "heldout": {
+    "n": 33,
+    "psnr": 29.562417171049976,
+    "ssim": 0.9287311080244137,
+    "split": "every 8th image (Brush eval split)"
+   },
+   "adopted_existing_output": false
+  },
+  "align": {
+   "ok": true,
+   "seconds": 0.4,
+   "scale": 0.871981427450955,
+   "scale_source": "ASSUMED median camera height 1.5 m",
+   "up_colmap": [
+    0.018584402148311613,
+    -0.9968974042503864,
+    0.07648650465037221
+   ],
+   "up_camera_consistency": 0.6940398905934733,
+   "up_refinement_deg": 2.930434232996671,
+   "camera_height_median_m": 1.4999999981089556,
+   "camera_height_p10_p90_m": [
+    0.7308095040997344,
+    1.8349919030476
+   ],
+   "floor_inlier_frac": 0.6099008304442474,
+   "points_below_floor_frac": 0.0011610094332016449,
+   "n_points_used": 62015,
+   "n_cameras": 263,
+   "n_camera_outliers": 0,
+   "n_point_outliers": 66,
+   "runtime_s": 0.01237558398861438,
+   "frame": "y-up, floor y=0, metres (approximate if scale_source is ASSUMED)"
+  },
+  "walkable": {
+   "ok": true,
+   "seconds": 0.8,
+   "area_navigable_m2": 28.662500000000005,
+   "grid": [
+    271,
+    136
+   ],
+   "camera_positions_on_navigable": 0.9505703422053232,
+   "build_s": 0.53
+  },
+  "package": {
+   "ok": true,
+   "seconds": 0.8,
+   "splat": {
+    "url": "scene.splat",
+    "format": "splat",
+    "n_splats": 1000000,
+    "bytes": 32000000,
+    "frame": "aligned"
+   },
+   "spawn": {
+    "position": [
+     -3.032134072810569,
+     1.6,
+     0.00540428211159627
+    ],
+    "yaw_deg": 0.0
+   },
+   "packager": {
+    "input_splats": 2000000,
+    "kept_after_filters": 1762143,
+    "min_opacity": 0.02,
+    "max_scale_m": 1.5,
+    "seconds": 0.69
+   }
+  },
+  "site": {
+   "ok": true,
+   "seconds": 0.1,
+   "site_mb": 45.5
+  },
+  "evaluate": {
+   "ok": true,
+   "seconds": 10.3,
+   "nav_v3": {
+    "A": {
+     "n_heldout": 33,
+     "n_endpoints": 29,
+     "n_pairs": 406,
+     "CFC": 0.46551724137931033,
+     "CFC_wilson95": [
+      0.4175,
+      0.5141
+     ],
+     "CFC_camera_bootstrap95": [
+      0.3152,
+      0.6564
+     ],
+     "refusal_rate": 0.0,
+     "collision_rate": 0.5344827586206896,
+     "stretch_median": 0.9693420265096674,
+     "stretch_p90": 1.0255074899349566,
+     "area_navigable_m2": 29.085000000000004
+    },
+    "B": {
+     "n_heldout": 33,
+     "n_endpoints": 30,
+     "n_pairs": 435,
+     "CFC": 0.5540229885057472,
+     "CFC_wilson95": [
+      0.507,
+      0.6001
+     ],
+     "CFC_camera_bootstrap95": [
+      0.3863,
+      0.7583
+     ],
+     "refusal_rate": 0.0,
+     "collision_rate": 0.4459770114942529,
+     "stretch_median": 0.9647711584467844,
+     "stretch_p90": 1.0183882222692657,
+     "area_navigable_m2": 28.497500000000006
+    }
+   },
+   "dense_proxy_splats": 151527,
+   "posing_vs_reference": {
+    "n_matched": 263,
+    "ate_rmse_ref_units": 0.00723904745052954,
+    "ate_median_ref_units": 0.0025594458658302318,
+    "ate_rmse_pct_of_extent": 0.06579665704497095,
+    "n_ref_images": 263
+   }
+  }
+ },
+ "input_fingerprint": "12915ce120c8b3ef850f7b868d15009855a9b981",
+ "config": {
+  "steps": 15000,
+  "max_splats": 2000000,
+  "package_splats": 1000000,
+  "camera_height_m": null,
+  "mapper": "global"
+ },
+ "history": [
+  "13:59 posing replaced (sequential->exhaustive); downstream stages invalidated; splat retrained at nice 0"
+ ],
+ "total_seconds_this_run": 1999.8,
+ "total_seconds_all_stages": 2749.8,
+ "note": "Own pipeline from raw photos (no shipped poses). Posing adopted from the exhaustive-matching run after the first (sequential) posing was found degenerate; see the history field and the thought-node Log (4 Oct 13:45-14:35). Splat trained at nice 0 with the GPU reserved; machine otherwise shared."
+}

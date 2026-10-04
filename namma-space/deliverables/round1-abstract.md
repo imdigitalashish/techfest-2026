@@ -36,16 +36,18 @@ Fourteen components with typed contracts (`architecture/contracts/contracts.ts`)
 - Every rule maps to a failure mode of SfM, splatting or navigation (SOP §10).
 
 ## 4. Reconstruction pipeline
+Total processing on [public], from raw photos to a deployable site: **45.8 min** on an Apple M5 laptop. Breakdown: ingest 0.2 · posing 12.3 · training 33.1 · alignment, walkable, package, site and evaluation 0.2 min. Reproduce: `./process_capture.sh .data/deepblending/drjohnson/images drjohnson_e2e --reference-colmap .data/deepblending/drjohnson/sparse/0`.
+
 | Stage | Method | **[public]** result (own pipeline, raw photos) |
 |---|---|---|
 | Ingest | ffmpeg keyframes at 4 fps → sharpest of every 2 (variance of Laplacian) → drop frames below 0.3× clip median sharpness | 263 frames, 9.9 s |
 | Posing | COLMAP 4.2 via pycolmap: SIFT (CPU); **exhaustive** matching for photo sets, sequential for video; **global SfM** (the GLOMAP mapper, now in COLMAP) with an incremental fallback; undistortion; a **pose-sanity gate** | **263/263 registered**, 0.91 px. Trajectory error vs the dataset's reference poses: **0.07% of scene size** (RMSE 0.0072 reference units). 12.3 min (matching 10.8 min). *Lesson:* our first run used sequential matching on this unordered photo set. It reported 99.6% registered at 0.66 px, but was degenerate: 30 cameras up to 2 km away, error 34% of scene size, held-out PSNR 18.3 dB. Registration rate and reprojection error don't reveal this, so the pipeline now gates on camera-spread sanity (and on trajectory error when reference poses exist) |
-| 3D Gaussian Splatting | Brush v0.3.0 on Apple Metal, 15k steps, ≤2M splats; held-out every 8th image | ⟨PSNR / SSIM⟩ held-out, ⟨train min⟩, ⟨peak GB⟩ |
-| Alignment | camera-up mean → floor = lowest dense height peak, refined by a plane fit → scale from ArUco marker / camera height → yaw from principal axes | ⟨floor inliers, tilt⟩ (scale ASSUMED on [public]: no marker) |
-| Walkable space | sparse points in the body band 0.15–1.70 m = obstacles; observation rays carve free space; walked trajectory adds connectivity; eroded by 0.25 m agent radius | ⟨navigable m²⟩, ⟨camera positions on navigable⟩ |
-| Packaging | importance pruning (opacity × area) to ≤1M splats → aligned `.splat` (32 B/splat) + manifest + NavGrid + POIs | ⟨MB⟩ |
+| 3D Gaussian Splatting | Brush v0.3.0 on Apple Metal, 15k steps, ≤2M splats; held-out every 8th image | **29.56 dB PSNR / 0.929 SSIM** on 33 held-out views (every 8th photo); 33.1 min; 6.94 GB peak; 2M splats |
+| Alignment | camera-up mean → floor = lowest dense height peak, refined by a plane fit → scale from ArUco marker / camera height → yaw from principal axes | 61% of points on the floor plane; plane fit refines camera-up by 2.9°; camera heights p10–p90 0.73–1.83 m (scale ASSUMED on [public]: no marker) |
+| Walkable space | sparse points in the body band 0.15–1.70 m = obstacles; observation rays carve free space; walked trajectory adds connectivity; eroded by 0.25 m agent radius | 28.7 m² navigable; 95% of camera positions fall on it |
+| Packaging | importance pruning (opacity × area) to ≤1M splats → aligned `.splat` (32 B/splat) + manifest + NavGrid + POIs | 1.0M of 2.0M splats → 32 MB |
 
-Pose accuracy on [public] vs the dataset's reference reconstruction (Sim(3)-aligned camera centres): ⟨ATE in reference units and % of scene extent⟩.
+Pose accuracy on [public] vs the dataset's reference reconstruction (Sim(3)-aligned camera centres): RMSE 0.0072 reference units = **0.07% of the scene extent** (`eval/results/drjohnson_e2e_report.json`).
 
 ## 5. Web viewer (zero install)
 A static page: three.js + Spark (MIT) Gaussian-splat renderer, loaded from CDNs.
