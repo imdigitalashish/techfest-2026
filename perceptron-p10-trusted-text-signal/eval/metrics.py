@@ -61,18 +61,20 @@ def day_block_ci(x: np.ndarray, block: int = 5, b: int = 2000, seed: int = 0) ->
 
 
 def evaluate(iv: pd.DataFrame, truth: pd.DataFrame, alpha: float, groups: dict[str, pd.Series] | None = None) -> dict:
-    """lo > hi is the empty interval (always a miss, width 0); infinite bounds are allowed (v1, 4 Oct 10:00).
-
-    Width statistics are over finite-width rows; `frac_infinite` reports the rest."""
+    """lo > hi is the empty interval: always a miss; its width and Winkler score are undefined, so it is excluded
+    from them and counted in `frac_empty` (v1.1 after review N1). Infinite intervals are counted in `frac_infinite`.
+    Width and Winkler statistics are over finite, non-empty rows."""
     d = iv.merge(truth[["ticker", "trade_date", "y"]], on=["ticker", "trade_date"], how="inner")
     y, lo, hi = d["y"].to_numpy(), d["lo"].to_numpy(), d["hi"].to_numpy()
     d["miss"] = (~((y >= lo) & (y <= hi))).astype(int)
-    w = np.maximum(hi - lo, 0.0)
+    empty = lo > hi  # always a miss; excluded from width/Winkler (undefined), reported as frac_empty (review N1)
+    w = np.where(empty, np.nan, hi - lo)
     fin = np.isfinite(w)
-    lo_w, hi_w = np.where(fin, lo, 0.0), np.where(fin, np.maximum(hi, lo), 0.0)
+    lo_w, hi_w = np.where(fin, lo, 0.0), np.where(fin, hi, 0.0)
     day_cov = 1 - d.groupby("trade_date")["miss"].mean()
     out = {"n": int(len(d)), "coverage": float(1 - d["miss"].mean()), "mean_width": float(np.mean(w[fin])),
-           "median_width": float(np.median(w[fin])), "frac_infinite": float(1 - fin.mean()),
+           "median_width": float(np.median(w[fin])), "frac_infinite": float(np.mean(np.isinf(hi - lo) & ~empty)),
+           "frac_empty": float(empty.mean()),
            "winkler": winkler(y[fin], lo_w[fin], hi_w[fin], alpha),
            "kupiec_p": kupiec_pof(d["miss"].to_numpy(), alpha), "christoffersen_p": christoffersen_ind(d),
            "worst_day_coverage": float(day_cov.min()), "day_coverage_p10": float(day_cov.quantile(0.10)),

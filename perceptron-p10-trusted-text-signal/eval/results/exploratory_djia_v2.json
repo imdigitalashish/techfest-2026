@@ -1,0 +1,63 @@
+{
+  "A_registered_rerun": {
+    "winkler_price_only": 3.523920023730098,
+    "winkler_fusion": 3.520489310062675,
+    "mean_improvement": 0.0034307136674228793,
+    "relative_improvement": 0.000973550376943981,
+    "p_one_sided": 0.4629,
+    "coverage_price_only": 0.9188118811881189,
+    "coverage_fusion": 0.9207920792079208
+  },
+  "B_pre_open_no_gap": {
+    "price_cols": [
+      "r0",
+      "r1",
+      "r2",
+      "r3",
+      "r4",
+      "rv5",
+      "rv20",
+      "pk",
+      "vol_z",
+      "intraday",
+      "rv_oc20",
+      "dow"
+    ],
+    "winkler_price_only": 3.669760122568672,
+    "winkler_fusion": 3.693376500880949,
+    "mean_improvement": -0.02361637831227655,
+    "relative_improvement": -0.006435401095302685,
+    "p_one_sided": 0.7284,
+    "coverage_price_only": 0.906930693069307,
+    "coverage_fusion": 0.904950495049505
+  },
+  "C_positive_control": {
+    "noise_0.5": {
+      "winkler_price_only": 3.523920023730098,
+      "winkler_fusion": 2.943426298941469,
+      "mean_improvement": 0.5804937247886286,
+      "relative_improvement": 0.164729540080246,
+      "p_one_sided": 0.001,
+      "coverage_price_only": 0.9188118811881189,
+      "coverage_fusion": 0.8613861386138614
+    },
+    "noise_1.0": {
+      "winkler_price_only": 3.523920023730098,
+      "winkler_fusion": 3.1341951672669928,
+      "mean_improvement": 0.3897248564631045,
+      "relative_improvement": 0.1105941263816134,
+      "p_one_sided": 0.0189,
+      "coverage_price_only": 0.9188118811881189,
+      "coverage_fusion": 0.897029702970297
+    },
+    "noise_2.0": {
+      "winkler_price_only": 3.523920023730098,
+      "winkler_fusion": 3.3875023783966913,
+      "mean_improvement": 0.13641764533340583,
+      "relative_improvement": 0.03871190163646412,
+      "p_one_sided": 0.1106,
+      "coverage_price_only": 0.9188118811881189,
+      "coverage_fusion": 0.9089108910891089
+    }
+  }
+}

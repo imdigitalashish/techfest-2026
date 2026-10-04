@@ -19,7 +19,9 @@ import pandas as pd
 from components.fusion.lgbm_quantile import TEXT_COLS, QuantileFusion
 
 TRIM = 0.2  # must match components/aggregator/aggregate.py
-EPS = 1e-6
+U = np.finfo(float).eps / 2  # unit round-off, 2**-53
+ABS_EPS = 1e-12  # covers the aggregator's own rounding (pairwise sums; < 1e-14 for n <= MAX_DOCS)
+MAX_DOCS = 1_000_000  # the round-off budget below is derived for n <= MAX_DOCS documents per ticker-day
 
 
 def _trim_sorted(s: np.ndarray) -> float:
@@ -40,16 +42,27 @@ def features_from_docs(s: np.ndarray, w: np.ndarray) -> np.ndarray:
 
 
 def deletion_box(s: np.ndarray, w: np.ndarray, k: int) -> tuple[np.ndarray, np.ndarray]:
-    """Exact per-feature [lo, hi] of TEXT_COLS over all deletions of at most k documents.
+    """Per-feature [lo, hi] of TEXT_COLS containing every deletion of at most k documents.
 
-    mean / trimmed mean are monotone order-statistic functionals -> extremes at the m smallest / largest.
-    std: min-variance m-subset is contiguous in sorted order; max-variance m-subset is a prefix plus
-    a suffix (exchange argument: see research/components/robust_conformal.md).
+    Exact in real arithmetic: mean / trimmed mean are monotone order-statistic functionals (extremes at the m
+    smallest / largest); the min-variance m-subset is contiguous in sorted order and the max-variance m-subset is a
+    prefix plus a suffix (exchange arguments in research/components/robust_conformal.md).
+    Floating point (fix for gpt-6-sol review B2): sums are taken after centring at the median, so clustered values
+    do not cancel, and each bound is widened by a round-off budget from the recursive-summation bound
+    |fl(sum) - sum| <= (n-1) u sum|x_i| (Higham 2002, Thm 4.2 form): every combination uses <= 3 prefix sums, giving
+    |delta var| <= (12 n^2/m + 8) u X^2 with X = max|x_i|, and the same factor times (1 + max|s|) for mean-like
+    features; ABS_EPS covers the aggregator's own (pairwise) rounding. Valid for n <= MAX_DOCS.
     """
     n = len(s)
+    if n > MAX_DOCS:
+        raise ValueError(f"deletion_box: {n} documents exceeds MAX_DOCS={MAX_DOCS} (round-off budget not derived)")
     ss, ws = np.sort(np.asarray(s, float)), np.sort(np.asarray(w, float))
-    cs = np.concatenate([[0.0], np.cumsum(ss)])
-    cq = np.concatenate([[0.0], np.cumsum(ss ** 2)])
+    c = float(ss[n // 2]) if n else 0.0
+    x = ss - c
+    X = float(np.max(np.abs(x))) if n else 0.0
+    S = 1.0 + (float(np.max(np.abs(ss))) if n else 0.0)
+    cs = np.concatenate([[0.0], np.cumsum(x)])
+    cq = np.concatenate([[0.0], np.cumsum(x * x)])
     cw = np.concatenate([[0.0], np.cumsum(ws)])
     lo = np.full(len(TEXT_COLS), np.inf)
     hi = np.full(len(TEXT_COLS), -np.inf)
@@ -58,7 +71,9 @@ def deletion_box(s: np.ndarray, w: np.ndarray, k: int) -> tuple[np.ndarray, np.n
         if m == 0:
             f_lo = f_hi = np.zeros(len(TEXT_COLS))
         else:
-            mean_lo, mean_hi = cs[m] / m, (cs[n] - cs[j]) / m
+            g = (12.0 * n * n / m + 8.0) * U
+            e1 = g * S + ABS_EPS
+            mean_lo, mean_hi = c + cs[m] / m, c + (cs[n] - cs[j]) / m
             trim_lo, trim_hi = _trim_sorted(ss[:m]), _trim_sorted(ss[j:])
             if m > 1:
                 i = np.arange(j + 1)  # contiguous windows (min variance)
@@ -66,15 +81,16 @@ def deletion_box(s: np.ndarray, w: np.ndarray, k: int) -> tuple[np.ndarray, np.n
                 p = np.arange(m + 1)  # prefix + suffix (max variance)
                 s2, q2 = cs[p] + cs[n] - cs[p + j], cq[p] + cq[n] - cq[p + j]
                 v_max = q2 / m - (s2 / m) ** 2
-                std_min, std_max = float(np.sqrt(max(v_min.min(), 0.0))), float(np.sqrt(max(v_max.max(), 0.0)))
+                dv = g * X * X
+                std_min = float(np.sqrt(max(v_min.min() - dv, 0.0))) - ABS_EPS
+                std_max = float(np.sqrt(max(v_max.max(), 0.0) + dv)) + ABS_EPS
             else:
-                std_min = std_max = 0.0
+                std_min, std_max = -ABS_EPS, ABS_EPS
             tr_lo, tr_hi = cw[m] / m, (cw[n] - cw[j]) / m
-            f_lo = np.array([np.log1p(m), mean_lo, trim_lo, std_min, tr_lo])
-            f_hi = np.array([np.log1p(m), mean_hi, trim_hi, std_max, tr_hi])
+            f_lo = np.array([np.log1p(m), mean_lo - e1, trim_lo - e1, std_min, tr_lo - e1])
+            f_hi = np.array([np.log1p(m), mean_hi + e1, trim_hi + e1, std_max, tr_hi + e1])
         lo, hi = np.minimum(lo, f_lo), np.maximum(hi, f_hi)
-    # prefix-sum variances lose ~1e-8 to cancellation; widening keeps the box sound
-    return lo - EPS, hi + EPS
+    return lo, hi
 
 
 def _tree_bounds(node: dict, lo: np.ndarray, hi: np.ndarray, reach: np.ndarray, out_min: np.ndarray, out_max: np.ndarray):

@@ -60,7 +60,9 @@ def template_sentiment(scorer: str) -> float:
     if scorer == "minilm":
         from components.text_scorer.minilm import MiniLMSentimentScorer
         return float(MiniLMSentimentScorer().score(t)["compound"].iloc[0])
-    return float(VaderScorer().score(t)["compound"].iloc[0])
+    if scorer == "vader":
+        return float(VaderScorer().score(t)["compound"].iloc[0])
+    raise NotImplementedError(f"pump-template scoring not implemented for scorer {scorer!r} (review N2)")
 
 
 def main(tag: str = "baseline_v1", suffix: str = "", scorer_name: str = "vader+fin", oracle: bool = True, scorer: str = "vader",
@@ -187,6 +189,19 @@ def main(tag: str = "baseline_v1", suffix: str = "", scorer_name: str = "vader+f
                       "certified_width": ev["mean_width"], "floor_holds": fl})
         if len(worst) == 1:
             worst_bounds = (lb_w, ub_w, np.minimum(pv_.q_lo, pv_.q_hi).to_numpy(), np.maximum(pv_.q_lo, pv_.q_hi).to_numpy())
+    # beyond the certified budget (astra #9): j > K copies of the worst fixed variant's posts; no guarantee applies
+    beyond = []
+    if oracle:
+        w0 = per_variant[0]
+        for j in (4, 6, 10):
+            sv, tv = tuple(np.resize(w0["sents"], j)), tuple(np.resize(w0["trusts"], j))
+            adocs, Xv, tv_ = attacked(sv, tv)
+            ivv, pv_ = sym_cqr_frame(fm, test, X_override=tv_, Q=Q)
+            _, _, ev, fl = certified_under(adocs, Xv, f"certified_k{K}_beyond_{j}", pv_["q_med"])
+            beyond.append({"injected": j, "vanilla_coverage": float(np.mean((y >= ivv["lo"].to_numpy()) & (y <= ivv["hi"].to_numpy()))),
+                           "certified_k3_coverage": ev["coverage"], "certified_k3_width": ev["mean_width"],
+                           "certified_k3_covers_all_clean_covered_rows": fl})
+    res["attack"]["beyond_budget"] = beyond
     res["attack"]["oracle"] = {"skipped": True} if not oracle else {
         "k": K, "grid_size": len(grid), "clean_cqr_coverage": float(base_cov_mask.mean()),
         "vanilla_cqr_oracle_coverage": float(van_ok.mean()),

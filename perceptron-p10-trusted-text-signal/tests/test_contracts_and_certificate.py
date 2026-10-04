@@ -8,7 +8,7 @@ import pytest
 
 from architecture.contracts.contracts import DOCS, ContractError, validate
 from components.align.calendar import assign_trade_date, leakage_count
-from components.robust_conformal.certify import EPS, deletion_box, ensemble_bounds, features_from_docs
+from components.robust_conformal.certify import deletion_box, ensemble_bounds, features_from_docs
 
 
 def _docs(ts_list):
@@ -46,8 +46,8 @@ def test_deletion_box_exact_vs_brute_force(seed):
     lo, hi = deletion_box(s, w, k)
     feats = np.stack([features_from_docs(s[list(keep)], w[list(keep)])
                       for j in range(0, min(k, n) + 1) for keep in itertools.combinations(range(n), n - j)])
-    assert np.all(feats >= lo - 1e-12) and np.all(feats <= hi + 1e-12)  # sound
-    assert np.allclose(feats.min(0), lo + EPS, atol=1e-9) and np.allclose(feats.max(0), hi - EPS, atol=1e-9)  # exact
+    assert np.all(feats >= lo) and np.all(feats <= hi)  # sound, no tolerance
+    assert np.allclose(feats.min(0), lo, atol=1e-9) and np.allclose(feats.max(0), hi, atol=1e-9)  # exact up to round-off margin
 
 
 def test_tree_bounds_are_sound():

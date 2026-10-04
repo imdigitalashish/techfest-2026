@@ -64,9 +64,17 @@ if not o.get("skipped"):
             L.append(f"| worst fixed variant #{i}: sents {w['sents']}, trusts {w['trusts']} | CQR / certified | "
                      f"{pc(w['vanilla_coverage'])} / {pc(w['certified_coverage'])} | {f(w['vanilla_width'])} / {f(w['certified_width'])} | "
                      f"{'yes' if w['floor_holds'] else 'NO'} |")
-        L += ["", f"**Guaranteed floor:** for every attack within the budget, the certified interval covers every row that the clean CQR "
-              f"interval covers, so certified coverage under attack ≥ {pc(o['certified_guaranteed_floor'])} (the clean CQR coverage). "
-              f"The {o['grid_size']}-variant oracle against plain CQR is a search, not a worst-case bound."]
+        L += ["", f"**Guaranteed floor (fixed offset, real arithmetic plus a derived round-off margin):** for every attack within the budget, "
+              f"the certified symmetric-CQR interval covers every row that the clean symmetric-CQR interval covers, so certified coverage under "
+              f"attack ≥ {pc(o['certified_guaranteed_floor'])} on this test set (retrospective, not a future coverage probability). "
+              f"The {o['grid_size']}-variant oracle against plain CQR is a finite score-space search, not a worst-case bound."]
+        bb = r["attack"].get("beyond_budget") or []
+        if bb:
+            L += ["", "Beyond the certified budget (k = 3 certificate, more posts injected; no guarantee applies):", "",
+                  "| Posts injected | Plain CQR coverage | Certified (k = 3) coverage | Certified width | Still ⊇ clean-covered rows? |", "|---|---|---|---|---|"]
+            for b_ in bb:
+                L.append(f"| {b_['injected']} | {pc(b_['vanilla_coverage'])} | {pc(b_['certified_k3_coverage'])} | {f(b_['certified_k3_width'])} | "
+                         f"{'yes' if b_['certified_k3_covers_all_clean_covered_rows'] else 'no'} |")
     else:
         L.append(f"| oracle (worst of {o['n_variants']} variants, knows y) | CQR / certified | {pc(o['vanilla_cqr_adversarial_coverage'])} / "
                  f"{pc(o['certified_adversarial_coverage'])} | — | — |")
@@ -74,6 +82,9 @@ if not o.get("skipped"):
 c = s["cr_aci"]
 st = s.get("aci_stats", {})
 L += ["", "## CR-ACI (certified box + our ACI loop, γ = 0.01)", "",
+      "Per-row containment holds only at a shared offset (the fixed-offset table above). CR-ACI's clean and attacked runs adapt their "
+      "offsets separately and need not be nested (counterexample in `tests/test_review_fixes.py`); ACI's guarantee is long-run *mean daily* "
+      "miscoverage, with worst-case bound (max(α, 1−α) + γ)/(γT) — weak at this horizon.", "",
       "| Run | Coverage | Mean daily cov. [90% CI] | Mean width | Cov. on attacked days | ACI α_t range | days α_t ≤ 0 / ≥ 1 |",
       "|---|---|---|---|---|---|---|"]
 for nm, e in c.items():
@@ -96,6 +107,7 @@ L += ["", "## Soundness checks of the certificate", "",
       "- One seed and one fixed 87-stock universe (StockNet; survivorship). VADER scorer unless stated.",
       "- Adjusted closes are back-adjusted for dividends and splits; we use only return ratios, so levels do not leak, but volume is not split-adjusted.",
       "- The certificate assumes clean calibration data and covers injection of up to k documents; edits of real documents and price manipulation are out of scope.",
+      f"- Empty intervals: {pc(r['ablation']['fusion']['cqr_aci'].get('frac_empty', 0.0))} of fusion ACI rows (empty sets count as misses; width/Winkler exclude them).",
       "- This test period has been looked at several times during development; the untouched-data text-utility test is "
       "`eval/results/text_utility_djia_v1.json` (pre-registered)."]
 Path(f"eval/results/{TAG}.md").write_text("\n".join(L) + "\n")

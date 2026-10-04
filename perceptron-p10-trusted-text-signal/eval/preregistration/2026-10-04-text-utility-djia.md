@@ -42,5 +42,8 @@ Train ≤ 2012-12-31 · calibration 2013-01-01 → 2014-06-30 · test 2014-07-01
 ## Deviations policy
 The result is reported whichever way it comes out. No re-runs with changed features, target, splits or hyperparameters. Any later analysis is labelled exploratory. Bugs found after the run are fixed, documented below, and re-run once, with both runs reported.
 
+## Post-hoc qualification (after the run; hypotheses, code and result unchanged)
+- gpt-6-sol review B3: two price features (gap, |gap|) use the next session's official open, so the registered comparison is *conditional on seeing the open print*. It is not the "tradeable at the open" test the Target section claims. A pre-open variant without those features is reported as **exploratory** in `eval/results/text_utility_djia_v1.md`, together with a positive control.
+
 ## Deviations
 - Header correction only (before the real run): the registration time was first written as an estimate ("~13:20 IST"); the registration commit is `dd8bcd1` at 12:55:28 IST. No change to hypotheses, code or data.
