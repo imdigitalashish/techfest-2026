@@ -10,13 +10,20 @@
 - _(none)_
 
 ## Now
-- **Phase:** DEMO (resumed 2026-10-04 22:22 IST, Supervisor; PLAYBOOK §11). Round-1 package is done (proposal PDF, reviews, memo — see Log 15:20).
-- **Definition of done (§11 + Supervisor 22:21):** `demo/run.sh` one command, offline, first visual ≤ 60 s, CPU only; **opens on REAL data** (state-wise inoperative PMJDY tiles from Lok Sabha USQ 4090, verified FI-Index and AePS facts) and only then a labelled SYNTHETIC one-bank drill-down; baseline side by side; at least one judge knob; every on-screen number from committed results or live committed code; the "crazy" element; `demo/SCRIPT.md` (3-min talk track); `demo/fallback/`; `demo/smoke.sh`; one gpt-6-astra demo review in `reviews/` + `ledger.tsv`; lead verifies from a clean checkout → "DEMO DONE".
-- **Plan:** spawn ONE demo-builder child session → it proposes the crazy element (Supervisor's suggestion: "try to break it" — DP ledger refuses a double-spend, a BC cannot see another bank's customer, the gate refuses the smarter challenger, women's floor as a hard constraint) → I approve → it builds → gpt-6-astra demo review (2nd child) → fixes → clean-checkout verification → DEMO DONE.
-- **Doing:** spawning the builder (plan mode for the approval gate, then autopilot for the build).
-- **Rules:** ≤ 2 child sessions; CPU only; `nice -n 10` + memory guard (start ≥ 30, pause < 25); clock timestamps; no stash.
+- **Phase:** DEMO — **PAUSED 2026-10-04 23:38 IST** (user directive via Supervisor: stop for tonight, resume tomorrow). Demo NOT done; no DEMO DONE sent.
+- **State at pause:**
+  - Round-1 package complete (Log 15:20).
+  - Demo plan approved 22:55 (crazy element: "Try to break Sakriya", a live red-team console against committed C5/C11 code, plus the certification gate and the women's-floor knob).
+  - Builder child session **"T3 demo builder"** pushed `57e4a913`: C7/C8 PROTOTYPES and `demo/live_api.py`, 26/26 tests.
+  - The builder was told to stop after its current atomic step and report its exact resume point (it will be appended to the Log). Its uncommitted work stays in its worktree.
+  - No servers or jobs of mine are running.
+- **Resume point (lead), in order:**
+  1. Read the builder's PAUSED message in the Log. Resume it with a send_session_message ("continue from <next step>"). Its remaining todos follow the plan order: exporter → check-data → server/run.sh → page → smoke → design-finish → fallback-docs → ship.
+  2. On "DEMO BUILT", run `~/.copilot/session-state/12ee30ad-e1eb-49d9-9d01-5ebb9f985431/files/verify_demo_clean.sh`: a clean detached worktree at origin/main, the documented setup, `demo/smoke.sh`, first visual. Check the page visually in the browser (screens 1–4, REAL first, SYNTHETIC/PROTOTYPE/REPLAY labels, the plan corrections 1–6).
+  3. Spawn the gpt-6-astra (max) "judge watching the demo" review as the second child. Record it in `reviews/` + `ledger.tsv` and apply the accepted fixes.
+  4. Message the Supervisor "DEMO DONE".
 - **Needs from user:** unchanged (theme choice by 15 Oct — recommendation T1; if T3: team details, partner bank, field conversations).
-- **Risks:** C7 fraud gate and C8 outreach exist only as designs — the demo must either build labelled prototypes or not show them as working; simulation must never look like field evidence.
+- **Risks:** the builder's uncommitted WIP lives only in its worktree (`.worktrees/imdigitalashish-fictional-pancake`); Playwright may be unavailable for the headless smoke step (planned SKIP; lead verifies visually).
 
 ## Brief → what we must be able to show (Phase 0, 02:55 IST)
 Hard constraints: one theme per team, fixed at registration (15 Oct); team ≤4; Round 1 = ≤6 pages A4, 1-inch margins, Arial ≥11 pt, single PDF `India71_100_[Team ID].pdf` via Google Form by 1 Nov; must be a concrete technical architecture (targeting model / interoperable access layer / governance dashboard), not a financial product; original work. Round 2 (16–18 Dec): 10-min talk + 5-min Q&A.
@@ -180,3 +187,6 @@ Crazy element: **"Try to break Sakriya"**, a live red-team console against the c
 Screens: REAL tile grid first (USQ 4090) → SYNTHETIC registered results plus a women's-floor knob → one person end to end, with C7/C8 as labelled PROTOTYPES → live/replay attacks. Offline page; stdlib backend only for live attacks; replay from file://.
 My corrections: screen-1 headline says "as accounts, not people" instead of "nobody can say whose"; bank-local honesty (registered worlds link across banks, a Phase-2 assumption; the drill-down and funnel are same-bank); RBI's FI-Index dates (53.9 = Mar 2021); no "exactly" without a computed equality; no browser download over 200 MB; ASSUMPTION labels on the C7/C8 values.
 Note: I used plan mode for the approval gate and then switched the builder to autopilot (the Supervisor asked for autopilot; plan mode only enforces the "approve before build" rule).
+
+### 2026-10-04 23:38 IST — PAUSED (user directive)
+Told the demo builder to stop after its current atomic step, push only passing work, stop all servers/browsers/jobs, and report its resume point. On main: `57e4a913` (C7/C8 prototypes + live API, 26/26 tests) and `4acb962f` (C7/C8 marked PROTOTYPE in components.md). Resume point in *Now*.
