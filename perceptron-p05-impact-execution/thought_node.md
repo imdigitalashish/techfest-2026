@@ -12,8 +12,8 @@
 ## Now
 - **Phase:** Morning package delivered (07:45 IST). Phases 1–4 v0 done; Phase 5 (ratchet) is next. Still in Supervisor LEAN MODE.
 - **Plan:** Make the spike real: (1) RNG-synchronised twins (C2) with NSR measured before/after; (2) a ghost-book estimator (C4) scored by RMSE vs the twin; (3) the agent ratchet on val seeds; (4) n = 200 test seeds for the abstract.
-- **Doing:** E6 confirmation (pre-registered H1, 200 fresh test seeds 1060–1259, synced twins, nice 10). Lead alone. From 08:30: up to 2 sub-agents; heavy jobs one at a time under `nice -n 10`.
-- **Next:** (1) E6 → confirm or refute H1. (2) E8 ablation on val seeds 100–199 (synced): TWAP / QP_only / IA_sched_only (legacy feedback) / IA_sched_fixed / TWAP_legacy_fb, to attribute the gain (`eval/policies/e8_ablation.json`). (3) Realism scorecard: a size sweep for the square-root exponent and decay (`eval/realism.py`). (3) The autoresearch ratchet on val seeds with sync (`components/execution_agent/autoresearch/eval.py --rng-sync per_wakeup`). (3) Size sweep (square-root check). (4) Re-verify the UNVERIFIED company sources (LOXM, Aiden, BestEx, Proof, SEC 605) and the classics (Almgren–Chriss, Obizhaeva–Wang, Perold). (5) Independent rubber-duck pass on ADR 001 once sub-agents work again.
+- **Doing:** E8 = autoresearch iteration 1 / attribution ablation on val seeds 100–139 (synced, nice 10). Up to 2 sub-agents; heavy jobs one at a time under `nice -n 10`.
+- **Next:** (1) ~~E6~~ done: H1 confirmed. (2) E8 ablation on val seeds 100–199 (synced): TWAP / QP_only / IA_sched_only (legacy feedback) / IA_sched_fixed / TWAP_legacy_fb, to attribute the gain (`eval/policies/e8_ablation.json`). (3) Realism scorecard: a size sweep for the square-root exponent and decay (`eval/realism.py`). (3) The autoresearch ratchet on val seeds with sync (`components/execution_agent/autoresearch/eval.py --rng-sync per_wakeup`). (3) Size sweep (square-root check). (4) Re-verify the UNVERIFIED company sources (LOXM, Aiden, BestEx, Proof, SEC 605) and the classics (Almgren–Chriss, Obizhaeva–Wang, Perold). (5) Independent rubber-duck pass on ADR 001 once sub-agents work again.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills (the abstract has placeholders).
 - **Risks:** (1) **Twin decorrelation:** naive same-seed twins diverge (Δmid std 33¢ at 20 min vs 3–5¢ mean impact). Impact claims are noise-limited until C2 is fixed. (2) The agent's win so far comes mostly from the touch-limit tactic, not from impact-aware scheduling. Report it honestly; the ratchet must show schedule/feedback value. (3) Machine load (load avg 40–98 tonight) makes sims ~10× slower than idle. (4) ABIDES realism of impact is untested (square-root exponent unknown).
 
@@ -70,13 +70,13 @@
 
 ## Selection memo
 _v1, 4 Oct 07:45 IST (final by 12 Oct). Each item scored 1–5 with one line of evidence._
-- **Winnability: 4/5 (08:30; was 3 at 08:00 on naive twins).** With synchronised twins (E5, 60 held-out seeds) the impact-aware *schedule* beats TWAP on total slippage: ΔIS −0.050 bps [95% CI −0.100, −0.003], with own impact −0.044 [−0.086, −0.002]. Caveats: significant only without a multiple-comparison correction (4 policies), and the policy was singled out after seeing E5. So H1 is **pre-registered** and running on 200 fresh seeds (E6). It sits in Optiver's home domain. Against: "agent beats TWAP in a sim" is crowded (Karpe 2020, Hafsi & Vittori 2024, Olby et al. ICAIF 2025).
+- **Winnability: 4/5 (09:50: pre-registered result confirmed).** On 200 fresh test seeds with synced twins (E6), the propagator-optimised schedule beats TWAP: ΔIS −0.034 bps [95% CI −0.056, −0.013], one-sided p ≈ 0.0006; own impact −0.041 [−0.063, −0.020] (−19%). It sits in Optiver's home domain. Against: "agent beats TWAP in a sim" is crowded (Karpe 2020, Hafsi & Vittori 2024, Olby et al. ICAIF 2025), and our effect is small.
 - **Innovation headroom: 5/5 (was 4).** Evidence since 08:12: synchronised twins cut the own-impact noise ~6× and paired-CI width 7.5× (E4/E5). Spike = synchronised counterfactual twins plus a deployable ghost-book estimator. Evidence of headroom: naive twins decorrelate (std 33¢ vs 3–5¢ signal, E1), and I found no prior work fixing this in tonight's arXiv searches (absence UNVERIFIED beyond those). The twin-exact IS decomposition (drift/own impact/instant) is a crisp evaluation novelty.
 - **Feasibility by the deadline: 5/5.** ABIDES runs on the M5 (0.9 s/day idle) with no GPU. Skeleton, twins, TCA, calibration and 3 policies were built overnight. Week-by-week plan avoids 19–25 Nov.
 - **Demo strength: 4/5.** Side-by-side real book vs ghost book, live IS decomposition bars, "who absorbed our order" chart. Sim-only (no live market), but the judges asked for a simulator.
 - **Fit with the user's strengths: 4/5.** Large-scale simulation (10⁴–10⁵ paired runs), systems engineering, a rigorous eval harness. Frontier models are optional (PPO challenger; MarS on Azure).
-- **Biggest risk:** the effect is small (0.05 bps ≈ 10% of TWAP's 0.52-bps shortfall in this sim) and not yet confirmed on fresh seeds (E6 pending). Its mechanism is unattributed: code review found that the feedback term acts as a constant ~1.2× speed-up, not a brake (E8 will separate the effects). The ABIDES impact realism (square-root exponent) is still untested, so a judge could ask "is the impact physics even right?". Mitigation: the realism scorecard and a size sweep next.
-- **One-line pitch:** *"We run twin markets, one with our order and one without, synchronised so their only difference is our footprint; then we train an execution agent to shrink it. First result: −16% own impact vs TWAP on held-out seeds (confirmation pending)."*
+- **Biggest risk:** the effect is small, ≈10% of TWAP's controllable cost (own impact 0.217 + instant 0.123 = 0.34 bps), and its mechanism is not yet attributed. Code review found that the feedback term acts as a ~1.2× front-loading, not a brake. Hypothesis to test: finishing early beats the delayed amplification of our selling by momentum agents, a feedback loop. E8 and agent ablations will settle it. ABIDES' impact realism (square-root law) is also untested. The ABIDES impact realism (square-root exponent) is still untested, so a judge could ask "is the impact physics even right?". Mitigation: the realism scorecard and a size sweep next.
+- **One-line pitch:** *"We run twin markets, one with our order and one without, synchronised so their only difference is our footprint; then we train an execution agent to shrink it. First result: −19% own impact vs TWAP, pre-registered and confirmed on 200 fresh seeds."*
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -176,3 +176,15 @@ No sub-agents until 08:30; small requests; push at least every 30 min. Proceedin
   - SEC Rule 605: adopted 6 Mar 2024; compliance extended to 1 Aug 2026.
   - `landscape.md` is updated accordingly.
 - `inst_cost` = 0.005 ¢/share² (frozen) is checked by `eval/derive_inst_cost.py`: derived 0.00486 from E1.
+
+### 2026-10-04 09:50 IST — E6: pre-registered H1 **confirmed** on 200 fresh test seeds
+- Command: `.venv/bin/python eval/run_experiment.py --exp E6_confirm_sync --seeds 1060:1260 --qty 4000 --policies eval/policies/confirm.json --workers 9 --rng-sync per_wakeup` (4,453 s, nice 10). Verdict: `eval/results/E6_H1_verdict.md`; summary: `eval/results/E6_confirm_sync_summary.md`.
+- Integrity: 200 seeds, pre-window identical in all runs, all filled.
+- **IA_sched_only vs TWAP:**
+  - ΔIS −0.0340 bps, two-sided 95% CI [−0.0563, −0.0127], one-sided upper bound −0.0160, P(boot ≥ 0) = 0.0006, win rate 52%.
+  - Own impact −0.0414 [−0.0629, −0.0204]: TWAP 0.217 → 0.176 bps (−19%).
+  - Instant ±0.004; drift +0.0075 [−0.0007, +0.0156].
+- IA_full (+ touch-limit): ΔIS −0.015 [−0.044, +0.016]. Instant −0.042 [−0.047, −0.038], but drift +0.026 [+0.018, +0.035]: resting orders lose on timing.
+- VWAP: −0.016 [−0.040, +0.008].
+- The code-review report is saved verbatim at `eval/results/code-review-2026-10-04.md`. It confirms the twins, RNG sync, fills, TCA identity, statistics and leakage, and finds the feedback-reference bug. So the confirmed effect = **propagator-QP schedule + ~1.2× front-loading**, not "braking while displaced".
+- New feedback-loop hypothesis (untested): front-loading wins because momentum agents amplify our selling with a lag (E3: momentum Δpos −1,302 under TWAP, not significant), so finishing earlier trades ahead of it. Test: E8 arms, plus an rmsc04 variant with momentum agents removed.

@@ -20,7 +20,7 @@ Slippage is **endogenous**. When we sell, our child orders consume bids, displac
 
 ## 4. Minimum Viable mapping
 1. *TWAP/VWAP baseline:* **built.** TWAP sends 40 equal market-order slices. VWAP follows a volume curve learned on training seeds only.
-2. *Agent that measurably beats the baseline on slippage:* **built; first evidence.** On 60 held-out seeds with synchronised twins, paired confidence intervals are 7.5× tighter than with naive twins. A propagator-optimised schedule beats TWAP by **0.050 bps [95% CI 0.003, 0.100]** and cuts our own impact 16% (0.273 → 0.230 bps)†. Ablations to attribute the gain are running. A touch-limited variant cuts instantaneous cost 32% but loses it in timing†. A pre-registered confirmation on 200 fresh seeds is running.
+2. *Agent that measurably beats the baseline on slippage:* **built and confirmed.** Synchronised twins make paired CIs 7.5× tighter†. In a pre-registered test on 200 fresh seeds, our propagator-optimised schedule beats TWAP by **0.034 bps [95% CI 0.013, 0.056]** and cuts our own impact 19% (0.217 → 0.176 bps)†. A touch-limited variant cuts instantaneous cost by a third but gives it back in timing†.
 
 ## 5. Stretch ambitions
 - **Counterfactual book:** synchronised twins give the exact "book without our order". The ghost-book estimator reproduces it live, scored by RMSE against the twin.

@@ -136,7 +136,7 @@ class ImpactAwarePolicy(Policy):
 
     ref_mode: "post_trade" (legacy, used in E3-E6) compares the pre-trade own impact with the
     *post*-trade steady state, so at average-rate trading excess = exp(-dt/tau) - 1 (about -0.39 at
-    dt = 30 s, tau = 60 s): the rule acts as a ~1.2x speed-up, not a brake (code review, 4 Oct).
+    dt = 30 s, tau = 60 s): the rule acts as a ~1.2x speed-up, not a brake (code review 4 Oct: eval/results/code-review-2026-10-04.md).
     "pre_trade" compares like with like (steady-state excess = 0).
     """
     name = "IA"
