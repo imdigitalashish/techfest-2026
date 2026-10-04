@@ -28,6 +28,9 @@ def memo_section() -> str:
     return s[a:b]
 
 
+DATES = re.compile(r"\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2}(?::\d{2})?)?|\b\d{1,2}:\d{2}(?::\d{2})?\b")
+
+
 def norm(tok: str) -> str:
     return tok.replace("−", "-").replace(",", "").lstrip("+")
 
@@ -39,6 +42,10 @@ def main() -> int:
     if rendered != committed:
         print("DRIFT: deliverables/round1-abstract.md differs from a fresh render (run deliverables/render.py)")
         ok = False
+    from render import NODE, memo_ready, render_memo_into_node
+    if memo_ready() and render_memo_into_node() != NODE.read_text():
+        print("DRIFT: the selection memo in thought_node.md differs from a fresh render (run deliverables/render.py)")
+        ok = False
     values = {norm(v) for v in json.loads((ROOT / "eval" / "results" / "headline.json").read_text())["display"].values()}
     static = {}
     for line in (ROOT / "deliverables" / "static_numbers.tsv").read_text().splitlines()[1:]:
@@ -47,6 +54,7 @@ def main() -> int:
             static[norm(n)] = src
     texts = [(p.name, p.read_text()) for p in CHECKED] + [("thought_node.md#Selection memo", memo_section())]
     for name, text in texts:
+        text = DATES.sub(" ", text)  # dates and clock times are metadata, not results
         untraced = []
         for tok in NUM.findall(text):
             t = norm(tok)
