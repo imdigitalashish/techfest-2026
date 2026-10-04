@@ -20,12 +20,17 @@ section{background:var(--panel);border:1px solid var(--line);border-radius:10px;
 .c-synth{color:#000;background:#f0b429;border-color:#f0b429}
 table{border-collapse:collapse;width:100%}td,th{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
 th{color:var(--mut);font-weight:600;font-size:12px}td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
-.grid2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px}.grid2>div{min-width:0}main>section{min-width:0}.tscroll{overflow-x:auto}@media(max-width:1100px){.grid2{grid-template-columns:1fr}}
+.grid2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px}.grid2>div{min-width:0}.sbgrid{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}main>section{min-width:0}.tscroll{overflow-x:auto}@media(max-width:1100px){.grid2{grid-template-columns:1fr}}
 .tabs button,.btn{background:#1f2630;color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:5px 10px;margin:0 6px 6px 0;cursor:pointer;font:inherit}
 .tabs button.on,.btn.on{border-color:var(--acc);color:var(--acc)}
 canvas{display:block;width:100%}
 .legend span{margin-right:14px;white-space:nowrap}.sw{display:inline-block;width:12px;height:3px;vertical-align:middle;margin-right:5px}
-.big{font-size:20px;font-weight:700}.verdict{border:1px solid #3a3320;border-radius:8px;padding:8px 12px;margin:8px 0;background:#1b2028}
+.big{font-size:20px;font-weight:700}
+.stage{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:16px;align-items:start}@media(max-width:1100px){.stage{grid-template-columns:minmax(0,1fr)}}
+.stage>*{min-width:0}#dial{background:#12161c;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.small{font-size:12px}.lbl{display:block;margin-top:8px;font-size:13px}
+.hero-n{font-size:40px;font-weight:800;line-height:1.05;color:var(--ks)}.hero-sub{font-size:13px;color:var(--mut)}
+details{margin-top:10px}summary{cursor:pointer;color:var(--acc);font-size:13px}.verdict{border:1px solid #3a3320;border-radius:8px;padding:8px 12px;margin:8px 0;background:#1b2028}
 .mut{color:var(--mut)}.ok{color:#3fd08f}.bad{color:#ff6b6b}
 input[type=range]{width:100%;accent-color:var(--acc)}
 .dialrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.kn{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0}
@@ -48,61 +53,62 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
 <section id="scoreboard">
   <h2>1 · Held-out scoreboard <span class="chip c-base">committed results</span></h2>
   <div class="mut" id="sb-note"></div>
-  <div class="grid2">
+  <div class="grid2 sbgrid">
     <div>
-      <div class="tscroll"><table id="sb-table"><thead><tr><th>policy</th><th>status</th><th class="num">log-loss</th><th class="num">Δ vs static [97.5% CI]</th><th style="width:110px">Δ, lower is better</th><th class="num">days better</th><th class="num">alarms/day</th></tr></thead><tbody></tbody></table></div>
-      <div class="verdict" id="sb-verdict"></div>
+      <div class="tscroll"><table id="sb-table"><thead><tr><th>policy</th><th>status</th><th class="num">log-loss</th><th class="num">Δ vs static [97.5% CI]</th><th style="width:90px">Δ (lower = better)</th><th class="num">days better</th><th class="num">alarms/day</th></tr></thead><tbody></tbody></table></div>
+    </div>
+    <div>
+      <div class="verdict" id="sb-verdict" style="margin-top:0"></div>
       <div class="disclose" id="sb-disclose"></div>
-    </div>
-    <div>
-      <h3>Is it just one better head? <span class="chip c-posthoc">post-hoc exploratory</span></h3>
-      <div class="mut">Each regime head used alone, everywhere, compared with the gate that switches between them on trailing 10-minute volatility.</div>
-      <table id="heads-table"><thead><tr><th>head alone</th><th class="num">Δ vs regime gate [97.5% CI]</th><th class="num">days better than gate</th></tr></thead><tbody></tbody></table>
-      <h3>How often the gate uses each head on held-out days <span class="chip c-posthoc">post-hoc exploratory</span></h3>
-      <canvas id="usage" height="46"></canvas>
-      <div class="mut" id="usage-note"></div>
+      <details id="heads-details"><summary>Is it just one better head? <span class="chip c-posthoc">post-hoc exploratory</span></summary>
+        <div class="mut">Each regime head used alone, everywhere, compared with the gate that switches between them on trailing 10-minute volatility.</div>
+        <table id="heads-table"><thead><tr><th>head alone</th><th class="num">Δ vs regime gate [97.5% CI]</th><th class="num">days better than gate</th></tr></thead><tbody></tbody></table>
+        <h3>How often the gate uses each head on held-out days</h3>
+        <canvas id="usage" height="44"></canvas>
+        <div class="mut" id="usage-note"></div>
+      </details>
     </div>
   </div>
 </section>
 
-<section id="replay">
-  <h2>2 · Replay a real day <span class="chip c-live">live-computed</span> <span id="building"></span></h2>
-  <div class="mut">The committed code (<code>run_episode</code>, context built from the 2023 training days) runs on this machine. Prices are drawn as 10-minute candles; losses as 10-minute bin means. Day choice rule: <span id="rule"></span>.</div>
-  <div class="tabs" id="day-tabs" style="margin-top:8px"></div><div class="mut" id="rp-showing" aria-live="polite"></div><div id="rp-error" class="errbox" role="alert" hidden></div>
-  <div class="legend" id="rp-legend"></div>
-  <canvas id="rp" height="620"></canvas>
-  <table id="rp-totals" style="margin-top:8px"><thead><tr><th>policy (this day)</th><th class="num">log-loss, live</th><th class="num">committed per-day value</th><th>honesty check</th><th class="num">alarms</th></tr></thead><tbody></tbody></table>
-</section>
-
-<section id="dial">
-  <h2>3 · The alarm dial: how sensitive should "detect → retrain" be? <span class="chip c-sweep">post-hoc demo sweep, not pre-registered</span></h2>
-  <div class="mut">The textbook recipe: run a rolling two-sample Kolmogorov–Smirnov test of the last 10 minutes against the 2023 training data. When it rejects at level α, retrain on the post-alarm data. Turn the dial: the replay above and the 22-day held-out panel below are recomputed for that α (each stop was precomputed by the committed code).</div>
-  <div class="dialrow" style="margin-top:10px">
-    <div style="flex:1;min-width:320px">
-      <input type="range" id="dial-range" min="0" max="16" step="1" value="2">
+<section id="stage">
+  <h2>2 · Replay a real day, then turn the alarm dial <span class="chip c-live">live-computed</span> <span class="chip c-sweep">post-hoc demo sweep, not pre-registered</span> <span id="building"></span></h2>
+  <div class="stage">
+    <div id="replay">
+      <div class="tabs" id="day-tabs"></div>
+      <div class="mut small" id="rp-showing" aria-live="polite"></div><div id="rp-error" class="errbox" role="alert" hidden></div>
+      <div class="legend small" id="rp-legend"></div>
+      <canvas id="rp" height="450"></canvas>
+    </div>
+    <aside id="dial">
+      <div class="small mut">Textbook recipe: a rolling Kolmogorov–Smirnov test of the last 10 minutes against 2023; on rejection at level α, refit. Each dial stop was precomputed by the committed code.</div>
+      <label for="dial-range" class="lbl">KS alarm sensitivity α: <b id="dial-value"></b></label>
+      <input type="range" id="dial-range" min="0" max="16" step="1" value="2" aria-label="KS alarm significance level alpha">
       <div class="mut" id="dial-ticks" style="position:relative;height:16px;font-size:11px"></div>
-    </div>
-    <div class="kn"><span class="mut">empirical-null mode:</span><span id="cal-btns"></span></div>
+      <div class="kn small"><span class="mut">empirical null:</span><span id="cal-btns"></span></div>
+      <div id="dial-readout" aria-live="polite"></div>
+      <div class="small" id="stage-check"></div>
+      <h3>22 held-out days: KS → refit at each setting, Δ log-loss vs static</h3>
+      <canvas id="sweep" height="200"></canvas>
+      <div class="legend small"><span><i class="sw" style="background:var(--ks)"></i>KS → refit (97.5% CI)</span><span><i class="sw" style="background:var(--gate)"></i>regime gate</span><span><i class="sw" style="background:var(--enorm)"></i>one EWMA head = off</span></div>
+      <div class="verdict small" id="dial-verdict"></div>
+    </aside>
   </div>
-  <div class="big" id="dial-readout" style="margin-top:6px"></div>
-  <div id="dial-detail" class="mut"></div>
-  <div class="grid2" style="margin-top:8px">
-    <div>
-      <h3>22 held-out days: KS → refit at each setting vs the regime gate</h3>
-      <canvas id="sweep" height="300"></canvas>
-      <div class="legend"><span><i class="sw" style="background:var(--ks)"></i>KS → refit, Δ vs static (97.5% CI band)</span><span><i class="sw" style="background:var(--gate)"></i>regime gate</span><span><i class="sw" style="background:var(--enorm)"></i>one EWMA head (= dial off)</span></div>
+  <details id="details"><summary>Details: all five policies, live-vs-committed checks, every alarm track, and why the test keeps firing</summary>
+    <div class="mut small">Committed code (<code>run_episode</code>, context built from the 2023 training days) runs on this machine. Prices are 10-minute candles; losses are 10-minute bin means; alarms are counts per 10 minutes. Day choice rule: <span id="rule"></span>.</div>
+    <div id="dial-detail" class="mut small"></div>
+    <div class="legend small" id="rp-legend-full"></div>
+    <canvas id="rp-full" height="620"></canvas>
+    <div class="tscroll"><table id="rp-totals" style="margin-top:8px"><thead><tr><th>policy (this day)</th><th class="num">log-loss, live</th><th class="num">committed per-day value</th><th>honesty check</th><th class="num">alarms</th></tr></thead><tbody></tbody></table></div>
+    <div class="grid2" style="margin-top:8px">
+      <div><h3>Why it keeps firing: training-day rejection rate — not a ground-truth false-alarm rate</h3><canvas id="why" height="280"></canvas></div>
+      <div><div class="mut small" id="why-note" style="margin-top:26px"></div><div class="verdict small" id="dial-verdict-full"></div></div>
     </div>
-    <div>
-      <h3>Why it keeps firing: training-day rejection rate — not a ground-truth false-alarm rate</h3>
-      <canvas id="why" height="300"></canvas>
-      <div class="mut" id="why-note"></div>
-    </div>
-  </div>
-  <div class="verdict" id="dial-verdict"></div>
+  </details>
 </section>
 
 <section id="exec">
-  <h2>4 · Can you trade it? <span class="chip c-pre2">pre-registered secondary</span></h2>
+  <h2>3 · Can you trade it? <span class="chip c-pre2">pre-registered secondary</span></h2>
   <div class="mut">Signal = sign(p − 0.5) every second, 10-second hold, pooled over 22 held-out days. Fees: Binance USDⓈ-M official schedule (accessed 2026-10-04).</div>
   <div class="kn" style="margin-top:8px"><span class="mut">fee tier:</span><span id="k-tier"></span><span class="mut" style="margin-left:14px">delay:</span><span id="k-delay"></span><span class="mut" style="margin-left:14px">policy:</span><span id="k-pol"></span></div>
   <div id="exec-prov" style="margin-top:4px"></div>
@@ -111,7 +117,7 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
 </section>
 
 <section id="splice">
-  <h2>5 · Stress test: a changepoint we know the time of <span class="chip c-synth">SEMI-SYNTHETIC</span></h2>
+  <h2>4 · Stress test: a changepoint we know the time of <span class="chip c-synth">SEMI-SYNTHETIC</span></h2>
   <div class="mut" id="sp-method"></div>
   <div class="kn" style="margin-top:8px"><span class="mut">direction:</span><span id="sp-dir"></span><span class="mut" style="margin-left:14px">splice at (UTC):</span><span id="sp-tau"></span></div>
   <canvas id="sp" height="620"></canvas>
@@ -156,7 +162,7 @@ function drawScoreboard(){
     const tr=document.createElement("tr");
     tr.innerHTML=`<td style="min-width:190px"><b style="white-space:nowrap">${r.name}</b><div class="mut" style="font-size:11px">${r.what}</div></td><td>${chip(r.status)}</td><td class="num">${r.logloss.toFixed(4)}</td>`+
       `<td class="num">${v?f4(v.mean)+` [${f4(v.ci97_5[0])}, ${f4(v.ci97_5[1])}]`:"—"}</td><td><canvas height="18" data-ci='${v?JSON.stringify([v.mean,...v.ci97_5]):""}'></canvas></td>`+
-      `<td class="num">${v?v.days_better+"/"+v.n_days:"—"}</td><td class="num">${al}</td>`;
+      `<td class="num">${v?v.days_better+"/"+v.n_days:"—"}</td><td class="small">${al}</td>`;
     tb.appendChild(tr);}
   tb.querySelectorAll("canvas").forEach(cv=>{const [g,w,h]=ctx2d(cv);const X=x=>(x-lo)/(hi-lo)*w;
     g.strokeStyle=C("--line");g.beginPath();g.moveTo(X(0),0);g.lineTo(X(0),h);g.stroke();
@@ -171,8 +177,8 @@ function drawScoreboard(){
   for (const r of rows.filter(r=>r.policy.startsWith("head_")||r.policy==="static_enorm")){const v=r.vs_regime_gated;
     ht.insertAdjacentHTML("beforeend",`<tr><td>${r.name}</td><td class="num">${f4(v.mean)} [${f4(v.ci97_5[0])}, ${f4(v.ci97_5[1])}]</td><td class="num">${v.days_better}/${v.n_days}</td></tr>`);}
   const u=SB.head_usage,[g,w,h]=ctx2d($("#usage"));let x=0;
-  [["low",u.low,"#6cb6ff"],["mid",u.mid,"#f0b429"],["high",u.high,"#ff6b6b"]].forEach(([n,p,c])=>{const ww=p/100*w;g.fillStyle=c;g.fillRect(x,6,ww-2,22);
-    g.fillStyle="#000";g.fillText(`${n}-vol head ${p.toFixed(1)}%`,x+6,21);x+=ww;});
+  [["low",u.low,"#6cb6ff"],["mid",u.mid,"#f0b429"],["high",u.high,"#ff6b6b"]].forEach(([n,p,c])=>{const ww=p/100*w;g.fillStyle=c;g.fillRect(x,2,ww-2,18);
+    g.fillStyle=C("--ink");g.fillText(`${n} ${p.toFixed(1)}%`,x+2,36);x+=ww;});
   $("#usage-note").innerHTML=`Share of 1-s steps on held-out days, from <code>${u.source}</code>. All three heads do real work, and every head used alone is worse than the gate.`;
   $("#rule").textContent=SB.replay_rule;
   const D=SB.disclosure,cg=D.clean21["regime_gated-static_snorm"],ck=D.clean21["spike-static_snorm"];
@@ -185,8 +191,10 @@ function dayTabs(){const t=$("#day-tabs");t.innerHTML="";
   for (const r of SB.replay_days){const b=document.createElement("button");const st=status&&status.days?status.days[r.day]:null;
     b.innerHTML=`${r.day} <span class="mut" style="font-size:11px">${r.role}${st&&st!=="ready"?" · "+st:""}</span>`;
     b.className=r.day===DAY?"on":"";b.onclick=()=>selectDay(r.day);t.appendChild(b);}
-  $("#rp-legend").innerHTML=POLS.map(([k,n,c])=>`<span><i class="sw" style="background:${C(c)}"></i>${n}</span>`).join("")+
-   `<span><i class="sw" style="background:#6cb6ff"></i><i class="sw" style="background:#f0b429"></i><i class="sw" style="background:#ff6b6b"></i>active head: low / mid / high vol</span>`;}
+  const heads=`<span><i class="sw" style="background:#6cb6ff"></i><i class="sw" style="background:#f0b429"></i><i class="sw" style="background:#ff6b6b"></i>gate's active head: low / mid / high vol</span>`;
+  $("#rp-legend").innerHTML=STAGE_POLS.map(([k,n,c])=>`<span><i class="sw" style="background:${C(c)}"></i>${n}</span>`).join("")+heads;
+  $("#rp-legend-full").innerHTML=POLS.map(([k,n,c])=>`<span><i class="sw" style="background:${C(c)}"></i>${n}</span>`).join("")+heads;}
+const STAGE_POLS=[["static_snorm","Static model","--static"],["regime_gated","Regime gate","--gate"],["ks_refit","KS → refit at the dial's α","--ks"]];
 
 function selectDay(day){DAY=day;dayTabs();drawReplay();drawDial();loadDay(day);}
 // Fetch one replay day. The requested key is captured before any await; the payload must carry the same day;
@@ -201,8 +209,9 @@ async function loadDay(day){const key=day;
 
 function hhmm(s){s=((s%86400)+86400)%86400;return String(Math.floor(s/3600)).padStart(2,"0")+":"+String(Math.floor(s%3600/60)).padStart(2,"0");}
 
-function drawReplay(){
-  const cv=$("#rp"),[g,w,h]=ctx2d(cv);const d=dayData(DAY);g.fillStyle=C("--panel");g.fillRect(0,0,w,h);
+function drawReplay(){drawStage();drawReplayFull();}
+function drawReplayFull(){
+  const cv=$("#rp-full"),[g,w,h]=ctx2d(cv);const d=dayData(DAY);g.fillStyle=C("--panel");g.fillRect(0,0,w,h);
   const tbl=$("#rp-totals");tbl.dataset.selectedDay=DAY;tbl.dataset.payloadDay=d?d.day:"";tbl.dataset.refDay="";
   const tie=SB.disclosure.tie_rate_by_day[DAY];
   $("#rp-showing").textContent=d?`Showing ${d.day}.`+(tie!=null?` Log-loss is scored on non-zero 10-s moves; ${(tie*100).toFixed(1)}% of this day's steps are ties (mid unchanged after 10 s) and are excluded.`:""):"";
@@ -211,7 +220,7 @@ function drawReplay(){
     if(RP_ERR[DAY]){g.fillStyle=C("--ks");g.fillText(`Replay for ${DAY} failed: ${RP_ERR[DAY]}`,20,40);g.fillStyle=C("--mut");
       g.fillText("The committed scoreboard, dial sweep and fee panels still work. Screenshots: demo/fallback/. Rebuild: demo/run.sh",20,64);}
     else{g.fillStyle=C("--acc");g.fillText(`Building ${DAY} with the committed code… (the scoreboard and dial sweep are already live)`,20,40);}
-    $("#rp-totals tbody").innerHTML="";return;}
+    $("#rp-totals tbody").innerHTML="";$("#stage-check").innerHTML="";return;}
   const L=64,R=w-14,nb=d.n_bins,X=b=>L+(b+.5)/nb*(R-L),bw=(R-L)/nb;
   const panes=[["price (10-min OHLC)",0,170],["alarms",178,92],["head",278,34],["log-loss (10-min mean)",320,170],["cum. Δ vs static",498,112]];
   panes.forEach(([n,y,hh])=>{g.strokeStyle=C("--line");g.strokeRect(L,y+4,R-L,hh-6);g.save();g.fillStyle=C("--mut");g.translate(14,y+hh/2+g.measureText(n).width/2);g.rotate(-Math.PI/2);g.fillText(n,0,0);g.restore();});
@@ -253,6 +262,40 @@ function drawReplay(){
     const src=k==="ks_refit"?"sweep":"committed";
     const chk=com==null?`<span class="mut">dev day: no held-out value (illustrative)</span>`:(Math.abs(com-p.logloss)<1e-9?`<span class="ok">✓ live = ${src} (|Δ| &lt; 1e-9)</span>`:`<span class="bad">✗ mismatch</span>`);
     tb.insertAdjacentHTML("beforeend",`<tr><td><i class="sw" style="background:${C(c)}"></i>${k==="ks_refit"?"KS → refit at "+stopLabel(STOP):n}</td><td class="num">${p.logloss.toFixed(6)} ${chip("live-computed")}</td><td class="num">${com==null?"—":com.toFixed(6)}</td><td>${chk}</td><td class="num">${nal}</td></tr>`);});
+  const rows=[...tb.querySelectorAll("tr")].map(r=>r.textContent),nOk=rows.filter(r=>r.includes("✓")).length,nBad=rows.filter(r=>r.includes("✗")).length;
+  $("#stage-check").innerHTML=nOk+nBad===0?`<span class="mut">${DAY}: dev day, illustrative; no held-out values to check against.</span>`:
+    (nBad?`<span class="bad">✗ ${nBad} live value(s) differ from the committed results for ${DAY}</span>`:`<span class="ok">✓ live = committed for ${DAY}: ${nOk}/${nOk} policies (|Δ| &lt; 1e-9)</span> <span class="mut">(details below)</span>`);
+}
+
+// Compact stage view: price, the dial's KS alarm counts, the gate's head, and three loss traces.
+function drawStage(){
+  const cv=$("#rp"),[g,w,h]=ctx2d(cv);const d=dayData(DAY);g.fillStyle=C("--panel");g.fillRect(0,0,w,h);
+  if(!d){g.font="15px -apple-system,Helvetica,Arial,sans-serif";
+    if(RP_ERR[DAY]){g.fillStyle=C("--ks");g.fillText(`Replay for ${DAY} unavailable (${RP_ERR[DAY]}).`,20,40);g.fillStyle=C("--mut");g.fillText("Committed panels still work. Screenshots: demo/fallback/",20,64);}
+    else{g.fillStyle=C("--acc");g.fillText(`Building ${DAY} with the committed code…`,20,40);g.fillStyle=C("--mut");g.fillText("The scoreboard and the 22-day dial sweep are already live.",20,64);}
+    return;}
+  const L=56,R=w-10,nb=d.n_bins,X=b=>L+(b+.5)/nb*(R-L),bw=(R-L)/nb,T=s=>L+(s-d.start_utc_s)/(nb*d.bin_s)*(R-L);
+  const P={price:[0,140],al:[146,40],head:[190,20],loss:[214,122],cum:[340,94]};
+  Object.entries({price:"price (10-min)",al:"",head:"",loss:"log-loss",cum:"cum. Δ"}).forEach(([k,n])=>{const [y,hh]=P[k];g.strokeStyle=C("--line");g.strokeRect(L,y+2,R-L,hh-2);
+    g.save();g.fillStyle=C("--mut");g.translate(12,y+hh/2+g.measureText(n).width/2);g.rotate(-Math.PI/2);g.fillText(n,0,0);g.restore();});
+  g.fillStyle=C("--mut");for(let hr=0;hr<=24;hr+=3){const xx=T(hr*3600);if(xx<L-1||xx>R+1)continue;g.fillText(hhmm(hr*3600)+(hr===0?" UTC":""),xx-14,h-3);g.strokeStyle="#20262e";g.beginPath();g.moveTo(xx,2);g.lineTo(xx,h-14);g.stroke();}
+  for(const e of d.events){const xx=T(e.utc_s);g.strokeStyle=C("--acc");g.setLineDash([4,3]);g.beginPath();g.moveTo(xx,2);g.lineTo(xx,h-14);g.stroke();g.setLineDash([]);g.fillStyle=C("--acc");g.fillText(e.id.toUpperCase()+" "+hhmm(e.utc_s)+" UTC",xx+4,14);}
+  const cs=d.candles.filter(Boolean),pmin=Math.min(...cs.map(c=>c[2])),pmax=Math.max(...cs.map(c=>c[1])),Y0=v=>6+(1-(v-pmin)/(pmax-pmin||1))*130;
+  d.candles.forEach((c,b)=>{if(!c)return;const [o,hi,lo,cl]=c,col=cl>=o?"#3fd08f":"#ff6b6b";g.strokeStyle=col;g.fillStyle=col;g.beginPath();g.moveTo(X(b),Y0(hi));g.lineTo(X(b),Y0(lo));g.stroke();g.fillRect(X(b)-bw*.35,Math.min(Y0(o),Y0(cl)),bw*.7,Math.max(1,Math.abs(Y0(o)-Y0(cl))));});
+  g.fillStyle=C("--mut");g.fillText(pmax.toFixed(0),L+4,14);g.fillText(pmin.toFixed(0),L+4,136);
+  const stop=d.stops[STOP],ab=(stop&&stop.alarm_bins)||new Array(nb).fill(0);g.fillStyle=C("--ks");
+  ab.forEach((c,b)=>{if(!c)return;const hh=Math.min(30,10+8*c);g.fillRect(L+b*bw+bw*.15,P.al[0]+P.al[1]-hh,Math.max(1.5,bw*.7),hh);});
+  g.fillStyle=C("--ink");g.font="bold 12px -apple-system,Helvetica,Arial";g.fillText(`${sum(ab)} alarms at ${stopLabel(STOP)}`,L+4,P.al[0]+14);g.font="11px -apple-system,Helvetica,Arial";
+  const cols=["#6cb6ff","#f0b429","#ff6b6b"];for(let b=0;b<nb;b++){let y=P.head[0]+2;for(let r=0;r<3;r++){const p=d.regime_share[r][b];if(p==null)continue;g.fillStyle=cols[r];g.fillRect(L+b*bw,y,bw+.5,p*17);y+=p*17;}}
+  const series=STAGE_POLS.map(([k,n,c])=>[k==="ks_refit"?(stop?stop.loss_bins:d.policies[k].loss_bins):d.policies[k].loss_bins,C(c),k]);
+  const all=series.flatMap(s=>s[0]).filter(v=>v!=null).sort((a,b)=>a-b),lmin=all[Math.floor(all.length*.01)],lmax=all[Math.floor(all.length*.99)];
+  const Y1=v=>P.loss[0]+6+(1-(Math.min(Math.max(v,lmin),lmax)-lmin)/(lmax-lmin||1))*(P.loss[1]-10);
+  series.forEach(([arr,col,k])=>{g.strokeStyle=col;g.lineWidth=k==="static_snorm"?1.2:2;g.beginPath();let on=false;arr.forEach((v,b)=>{if(v==null){on=false;return;}on?g.lineTo(X(b),Y1(v)):g.moveTo(X(b),Y1(v));on=true;});g.stroke();g.lineWidth=1;});
+  const base=d.policies.static_snorm.loss_bins,cum=series.map(([arr,col,k])=>{let c=0;return [arr.map((v,b)=>{if(v!=null&&base[b]!=null)c+=v-base[b];return c;}),col,k];});
+  const cv2=cum.flatMap(s=>s[0]),cmin=Math.min(0,...cv2),cmax=Math.max(0,...cv2),Y2=v=>P.cum[0]+6+(1-(v-cmin)/(cmax-cmin||1))*(P.cum[1]-12);
+  g.strokeStyle="#555";g.beginPath();g.moveTo(L,Y2(0));g.lineTo(R,Y2(0));g.stroke();
+  cum.forEach(([arr,col,k])=>{g.strokeStyle=col;g.lineWidth=k==="static_snorm"?1.2:2;g.beginPath();arr.forEach((v,b)=>b?g.lineTo(X(b),Y2(v)):g.moveTo(X(b),Y2(v)));g.stroke();g.lineWidth=1;});
+  g.fillStyle=C("--mut");g.fillText("cumulative Δ vs static: up = worse, down = better",L+4,P.cum[0]+14);
 }
 
 // The replay payload for `day`, or null. A payload whose own day differs from the key is never used.
@@ -273,22 +316,26 @@ let ORDER=[];
 function stopLabel(id){if(id==="off")return "off (α = 0)";if(id.startsWith("cal_"))return "calibrated q = "+id.slice(4);return "α = 1e-"+id.slice(6);}
 function setupDial(){
   ORDER=SW.stops.filter(s=>s.kind!=="calibrated").map(s=>s.id);const rg=$("#dial-range");rg.max=ORDER.length-1;rg.value=ORDER.indexOf("naive_3");
-  rg.oninput=()=>{STOP=ORDER[+rg.value];calBtns();drawDial();drawReplay();};
-  const tk=$("#dial-ticks");tk.innerHTML="";const lab={"naive_1":"1e-1","naive_3":"1e-3","naive_30":"1e-30","naive_100":"1e-100","naive_300":"1e-300","off":"off"};
+  rg.oninput=()=>setStop(ORDER[+rg.value]);
+  const tk=$("#dial-ticks");tk.innerHTML="";const lab={"naive_1":"1e-1","naive_30":"1e-30","naive_100":"1e-100","off":"off"};
   ORDER.forEach((id,i)=>{if(!lab[id])return;const sp=document.createElement("span");sp.textContent=lab[id];sp.style.position="absolute";
-    sp.style.left=`calc(${i/(ORDER.length-1)*100}% - ${i/(ORDER.length-1)*16}px + 8px)`;sp.style.transform="translateX(-50%)";tk.appendChild(sp);});
+    sp.style.left=`calc(${i/(ORDER.length-1)*100}% - ${i/(ORDER.length-1)*16}px + 8px)`;sp.style.transform="translateX(-50%)";sp.style.whiteSpace="nowrap";tk.appendChild(sp);});
   calBtns();
 }
 function calBtns(){const el=$("#cal-btns");el.innerHTML="";SW.stops.filter(s=>s.kind==="calibrated").forEach(s=>{const b=document.createElement("button");
-  b.className="btn"+(STOP===s.id?" on":"");b.textContent="q = "+s.quantile+(s.quantile===0.999?" (committed ksc_refit)":"");b.onclick=()=>{STOP=s.id;calBtns();drawDial();drawReplay();};el.appendChild(b);});}
+  b.className="btn"+(STOP===s.id?" on":"");b.textContent="q "+s.quantile+(s.quantile===0.999?" (= ksc_refit)":"");b.onclick=()=>setStop(s.id);el.appendChild(b);});}
 
+function setStop(id){STOP=id;const rg=$("#dial-range"),i=ORDER.indexOf(id);if(i>=0)rg.value=i;calBtns();drawDial();drawReplay();}
 function drawDial(){
   if(!SW){$("#dial-readout").textContent="sweep file missing: run demo/build_sweep.py";return;}
   const s=SW.stops.find(x=>x.id===STOP),gate=SW.refs.regime_gated,sep=SW.separation.log10_prob;
   const d=dayData(DAY),ds=d&&d.stops[STOP];
   const v=s.vs_static_snorm,vg=s.vs_regime_gated;
-  $("#dial-readout").innerHTML=`${stopLabel(STOP)}: ${ds?`<span style="color:var(--ks)">${stopAlarmCount(ds)} alarms on ${DAY}</span> ${chip("live-computed")} · `:""}`+
-    `${s.alarms_per_day.toFixed(1)} alarms/day over 22 held-out days ${chip("post-hoc demo sweep")}`;
+  $("#dial-value").textContent=stopLabel(STOP);
+  $("#dial-range").setAttribute("aria-valuetext",`${stopLabel(STOP)}; ${s.alarms_per_day.toFixed(1)} alarms per day over 22 held-out days`);
+  $("#dial-readout").innerHTML=(ds?`<div class="hero-n">${stopAlarmCount(ds)} alarms</div><div class="hero-sub">on ${DAY} at ${stopLabel(STOP)} ${chip("live-computed")}</div>`:
+      `<div class="hero-sub">${DAY}: replay not loaded yet</div>`)+
+    `<div class="hero-sub">${s.alarms_per_day.toFixed(1)} alarms/day over 22 held-out days; Δ vs gate ${f4(vg.mean)}, better on ${vg.days_better}/22 days ${chip("post-hoc demo sweep")}</div>`;
   let det=`22-day KS → refit: Δ vs static ${f4(v.mean)} [${f4(v.ci97_5[0])}, ${f4(v.ci97_5[1])}], better on ${v.days_better}/22 days; vs regime gate ${f4(vg.mean)} [${f4(vg.ci97_5[0])}, ${f4(vg.ci97_5[1])}], better on ${vg.days_better}/22 days.`;
   if(s.kind==="naive"){det+=` On the 2023 training days themselves (each day against the other eleven), this α rejects <b>${(s.null_train_reject_share*100).toFixed(s.null_train_reject_share<0.01?2:1)}%</b> of 10-minute windows (nominal ${s.log10_alpha>=-3?(10**s.log10_alpha*100)+"%":"≈ 0%"}).`;
     if(ds&&ds.window_reject_share!=null)det+=` On ${DAY}, ${(ds.window_reject_share*100).toFixed(1)}% of windows reject ${chip("live-computed")}.`;
@@ -306,17 +353,17 @@ function drawDial(){
   g.strokeStyle="#666";g.beginPath();g.moveTo(L,Y(0));g.lineTo(R,Y(0));g.stroke();g.fillText("static model (0)",R-90,Y(0)-3);
   // separation marker
   const si=ids.findIndex(id=>{const p=SW.stops.find(x=>x.id===id);return p.kind==="naive"&&p.log10_alpha<sep;});
-  if(si>0){const xs=(X(si-1)+X(si))/2;g.fillStyle="rgba(240,180,41,.08)";g.fillRect(xs,T,X(n-2)+(X(n-1)-X(n-2))/2-xs,B-T);g.fillStyle=C("--acc");g.fillText("below exact D=1 prob.",xs+3,T+12);}
+  if(si>0){const xs=(X(si-1)+X(si))/2;g.fillStyle="rgba(240,180,41,.08)";g.fillRect(xs,T,X(n-2)+(X(n-1)-X(n-2))/2-xs,B-T);g.fillStyle=C("--acc");g.textAlign="right";g.fillText("< D=1 prob.",R-3,T+12);g.textAlign="left";}
   g.fillStyle="rgba(255,107,107,.18)";g.beginPath();pts.forEach((p,i)=>i?g.lineTo(X(i),Y(p.vs_static_snorm.ci97_5[1])):g.moveTo(X(i),Y(p.vs_static_snorm.ci97_5[1])));
   for(let i=n-1;i>=0;i--)g.lineTo(X(i),Y(pts[i].vs_static_snorm.ci97_5[0]));g.fill();
   g.strokeStyle=C("--ks");g.lineWidth=2;g.beginPath();pts.forEach((p,i)=>i?g.lineTo(X(i),Y(p.vs_static_snorm.mean)):g.moveTo(X(i),Y(p.vs_static_snorm.mean)));g.stroke();g.lineWidth=1;
-  g.strokeStyle=C("--gate");g.lineWidth=2;g.beginPath();g.moveTo(L,Y(gateD));g.lineTo(R,Y(gateD));g.stroke();g.lineWidth=1;g.fillStyle=C("--gate");g.fillText("regime gate "+f4(gateD),L+4,Y(gateD)+13);
+  g.strokeStyle=C("--gate");g.lineWidth=2;g.beginPath();g.moveTo(L,Y(gateD));g.lineTo(R,Y(gateD));g.stroke();g.lineWidth=1;g.fillStyle=C("--gate");g.fillText("regime gate "+f4(gateD),L+4,Y(gateD)-4);
   g.strokeStyle=C("--enorm");g.setLineDash([5,4]);g.beginPath();g.moveTo(L,Y(enD));g.lineTo(R,Y(enD));g.stroke();g.setLineDash([]);
   const ci=ids.indexOf(STOP);if(ci>=0){g.strokeStyle=C("--acc");g.beginPath();g.moveTo(X(ci),T);g.lineTo(X(ci),B);g.stroke();}
   // alarms/day mini strip
-  g.fillStyle=C("--mut");pts.forEach((p,i)=>{g.fillStyle=p.alarms_per_day>=47.5?C("--ks"):C("--mut");g.fillText(p.alarms_per_day.toFixed(0),X(i)-6,B+14);
+  const keep=new Set(["naive_1","naive_10","naive_30","naive_75","naive_150","naive_300","off"]);g.fillStyle=C("--mut");pts.forEach((p,i)=>{if(w<520&&!keep.has(p.id))return;g.fillStyle=p.alarms_per_day>=47.5?C("--ks"):C("--mut");g.fillText(p.alarms_per_day.toFixed(0),X(i)-6,B+14);
     g.fillStyle=C("--mut");g.fillText(p.kind==="off"?"off":String(p.log10_alpha),X(i)-8,B+28);});
-  g.fillText("alarms/day (red = at the 48/day cooldown cap)  ·  log10 α →",L,B+41);
+  g.fillText("alarms/day (red = at the 48/day cap) · log10 α →",L,B+41);
   if(s.kind==="calibrated"){g.fillStyle=C("--acc");g.fillText(`${stopLabel(STOP)}: Δ ${f4(v.mean)}`,L+4,T+26);g.strokeStyle=C("--acc");g.beginPath();g.moveTo(L,Y(v.mean));g.lineTo(R,Y(v.mean));g.stroke();}
   // why chart: training-days rejection share vs nominal alpha
   const cw=$("#why"),[q,W,H]=ctx2d(cw);const nv=SW.stops.filter(x=>x.kind==="naive");const l=48,r=W-10,t=12,b=H-40;
@@ -343,7 +390,10 @@ function dialVerdict(){
   const off=st.find(s=>s.id==="off"),en=SB.rows.find(r=>r.policy==="static_enorm"),enG=en.vs_regime_gated;
   const offIsEnorm=Object.entries(off.per_day).every(([dd,r])=>Math.abs(r.logloss-en.per_day[dd])<1e-9);
   if(beats.length===0&&anyMean.length===0&&offIsEnorm)txt+=` Turn the dial until it stops crying wolf, and it is just the un-adapted single EWMA head, which the regime gate beats by ${enG.mean.toFixed(4)} on ${enG.n_days-enG.days_better}/${enG.n_days} held-out days ${chip("post-hoc exploratory")}.`;
-  $("#dial-verdict").innerHTML=txt+" "+chip("post-hoc demo sweep");
+  $("#dial-verdict-full").innerHTML=txt+" "+chip("post-hoc demo sweep");
+  const offS=st.find(s=>s.id==="off").vs_regime_gated;
+  $("#dial-verdict").innerHTML=(beats.length===0&&anyMean.length===0?`<b>Across these ${st.length} tested settings, this KS → refit recipe never beats the state gate</b> (0/22 days better at every setting; best = off, ${f4(offS.mean)}).`:
+     `<b>Some settings match or beat the gate</b>; see details.`)+` At α = 1e-30 the 2023 training days themselves (each against the other eleven) reject ${(n30.null_train_reject_share*100).toFixed(0)}% of windows: not i.i.d. draws from one distribution. Detecting covariate change does not mean refitting helps. ${chip("post-hoc demo sweep")}`;
 }
 
 /* ---------- 4. execution ---------- */
@@ -383,6 +433,7 @@ async function boot(){
   poll();
 }
 window.addEventListener("resize",()=>{if(SB){drawScoreboard();drawReplay();drawDial();}if(SPI)drawSplice();});
+document.addEventListener("toggle",e=>{if(SB&&(e.target.id==="details"||e.target.id==="heads-details")){drawScoreboard();drawReplay();drawDial();}},true);
 boot();
 
 /* ---------- 5. semi-synthetic splice (separate from sections 1-4) ---------- */

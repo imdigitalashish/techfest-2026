@@ -48,7 +48,7 @@ def main(url: str) -> int:
 
     def ident(p) -> dict:
         return p.evaluate("""() => { const t = document.querySelector('#rp-totals');
-          const rows = [...document.querySelectorAll('#rp-totals tbody tr')].map(r => r.innerText);
+          const rows = [...document.querySelectorAll('#rp-totals tbody tr')].map(r => r.textContent);
           return {sel: DAY, shownSel: t.dataset.selectedDay, payload: t.dataset.payloadDay, ref: t.dataset.refDay,
                   showing: document.querySelector('#rp-showing').innerText, readout: document.querySelector('#dial-readout').innerText,
                   ok: rows.filter(r => r.includes('✓')).length, bad: rows.filter(r => r.includes('✗')).length,
@@ -83,7 +83,8 @@ def main(url: str) -> int:
         a = ident(p)
         check(a["sel"] == a["shownSel"] == a["payload"] == a["ref"] == calm and a["ok"] == 5 and a["bad"] == 0,
               f"{calm} at 1e-30: selected/payload/reference day agree, 5/5 green checks")
-        check(f"{a['stopAlarms']} alarms on {calm}" in a["readout"], f"dial readout says '{a['stopAlarms']} alarms on {calm}'")
+        check(a["readout"].startswith(f"{a['stopAlarms']} alarms") and f"on {calm}" in a["readout"],
+              f"dial readout says '{a['stopAlarms']} alarms' on {calm}")
         click_day(p, dev)  # cached
         b = ident(p)
         check(b["sel"] == b["shownSel"] == b["payload"] == b["ref"] == dev and b["ok"] == 0 and b["bad"] == 0,
@@ -130,6 +131,8 @@ def main(url: str) -> int:
         p.goto(url)
         wait_day(p, dev)
         p.wait_for_function("() => document.querySelector('#splice').dataset.shown", timeout=20000)
+        p.evaluate("() => { document.querySelector('#details').open = true; document.querySelector('#heads-details').open = true; }")
+        p.wait_for_timeout(300)
         h0 = p.evaluate("() => [...document.querySelectorAll('canvas')].filter(c => c.id).map(c => [c.id, c.getBoundingClientRect().height])")
         for sid in ("naive_30", "off", "naive_3", "naive_100", "naive_1"):
             set_stop(p, sid)
@@ -148,6 +151,27 @@ def main(url: str) -> int:
         check(not bad, f"{len(h0)} canvases keep their logical height" + (f" (changed: {bad})" if bad else ""))
         back = p.evaluate("() => [...document.querySelectorAll('canvas')].filter(c => c.id).every(c => c.height === Math.round(+c.dataset.h * 2))")
         check(back, "backing store height == logical height x 2 for every canvas")
+        ctx.close()
+
+        print("[b8] stage: replay, dial, hero readout and 22-day verdict in one 1440x900 viewport; accessible dial")
+        ctx = br.new_context(viewport={"width": 1440, "height": 900})
+        p = page_with(ctx)
+        p.goto(url)
+        wait_day(p, dev)
+        click_day(p, calm)
+        wait_day(p, calm)
+        set_stop(p, "naive_30")
+        p.evaluate("() => document.querySelector('#stage').scrollIntoView()")
+        r = p.evaluate("""() => { const b = s => document.querySelector(s).getBoundingClientRect();
+            return {top: b('#rp').top, bottom: Math.max(b('#rp').bottom, b('#dial-verdict').bottom), range: b('#dial-range').top,
+                    readout: document.querySelector('#dial-readout').innerText,
+                    aria: document.querySelector('#dial-range').getAttribute('aria-label'),
+                    valuetext: document.querySelector('#dial-range').getAttribute('aria-valuetext')}; }""")
+        check(r["top"] >= 0 and r["bottom"] <= 900 and 0 <= r["range"] <= 900,
+              f"replay canvas, dial and verdict visible together (y {r['top']:.0f}…{r['bottom']:.0f} of 900)")
+        check(r["readout"].startswith("26 alarms") and calm in r["readout"], f"hero readout: {r['readout'].splitlines()[0]!r} on {calm}")
+        check(bool(r["aria"]) and "1e-30" in (r["valuetext"] or ""), f"dial has aria-label and alpha value text ({r['valuetext']!r})")
+        check("live = committed" in p.locator("#stage-check").inner_text(), "stage shows the live = committed check for the held-out day")
         ctx.close()
 
         print("[b5] layout: no horizontal overflow")
