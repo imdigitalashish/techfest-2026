@@ -3,7 +3,7 @@
  "split": "test",
  "every": 1,
  "suite": "eval/data/suite.jsonl",
- "commit": "2adcf09",
+ "commit": "a93e35a",
  "wall_s": 0.0,
  "metrics": {
   "n": 183,
@@ -14,9 +14,9 @@
   "false_block_rate": 0.0,
   "escalation_rate": 0.0,
   "auto_rate": 1.0,
-  "latency_ms_p50": 0.008,
-  "latency_ms_p95": 0.036,
-  "latency_ms_mean": 0.0145,
+  "latency_ms_p50": 0.004,
+  "latency_ms_p95": 0.012,
+  "latency_ms_mean": 0.0053,
   "catch_by_class": {
    "approval_required": 0.0,
    "entity_swap": 0.0,
@@ -51,7 +51,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.264,
+   "latency_ms": 0.099,
    "tiers": [
     0
    ],
@@ -64,7 +64,7 @@
    "mutation": "qty_off",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.036,
+   "latency_ms": 0.013,
    "tiers": [
     0
    ],
@@ -77,7 +77,7 @@
    "mutation": "side_flip",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.006,
    "tiers": [
     0
    ],
@@ -90,7 +90,7 @@
    "mutation": "other_client_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.007,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -103,7 +103,7 @@
    "mutation": "duplicate_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -116,7 +116,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -129,7 +129,7 @@
    "mutation": "price_decimal_slip",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -142,7 +142,7 @@
    "mutation": "swap_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.006,
    "tiers": [
     0
    ],
@@ -155,7 +155,7 @@
    "mutation": "limit_to_market",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.007,
+   "latency_ms": 0.006,
    "tiers": [
     0
    ],
@@ -168,7 +168,7 @@
    "mutation": "other_client_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -181,7 +181,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -194,7 +194,7 @@
    "mutation": "duplicate_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.03,
+   "latency_ms": 0.023,
    "tiers": [
     0
    ],
@@ -207,7 +207,7 @@
    "mutation": "qty_off",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -220,7 +220,7 @@
    "mutation": "swap_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -233,7 +233,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.017,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -246,7 +246,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -259,7 +259,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -272,7 +272,7 @@
    "mutation": "swap_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.018,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -285,7 +285,7 @@
    "mutation": "price_shift_10pct",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.174,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -298,7 +298,7 @@
    "mutation": "fake_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.012,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -311,7 +311,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -324,7 +324,7 @@
    "mutation": "fake_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -337,7 +337,7 @@
    "mutation": "fake_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.094,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -350,7 +350,7 @@
    "mutation": "other_client_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.016,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -363,7 +363,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -376,7 +376,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.007,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -389,7 +389,7 @@
    "mutation": "fake_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -402,7 +402,7 @@
    "mutation": "duplicate_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -415,7 +415,7 @@
    "mutation": "price_decimal_slip",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -428,7 +428,7 @@
    "mutation": "price_small_drift",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -441,7 +441,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.007,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -454,7 +454,7 @@
    "mutation": "price_decimal_slip",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.058,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -467,7 +467,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.015,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -480,7 +480,7 @@
    "mutation": "other_client_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -493,7 +493,7 @@
    "mutation": "price_small_drift",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -506,7 +506,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -519,7 +519,7 @@
    "mutation": "fake_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -532,7 +532,7 @@
    "mutation": "fake_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -545,7 +545,7 @@
    "mutation": "swap_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -558,7 +558,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -571,7 +571,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -584,7 +584,7 @@
    "mutation": "fake_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.012,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -597,7 +597,7 @@
    "mutation": "price_shift_10pct",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -610,7 +610,7 @@
    "mutation": "fake_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -623,7 +623,7 @@
    "mutation": "price_small_drift",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -636,7 +636,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -649,7 +649,7 @@
    "mutation": "other_client_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -662,7 +662,7 @@
    "mutation": "qty_off",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -675,7 +675,7 @@
    "mutation": "fake_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -688,7 +688,7 @@
    "mutation": "fake_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -701,7 +701,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -714,7 +714,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -727,7 +727,7 @@
    "mutation": "swap_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -740,7 +740,7 @@
    "mutation": "fake_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -753,7 +753,7 @@
    "mutation": "side_flip",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.043,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -766,7 +766,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.041,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -779,7 +779,7 @@
    "mutation": "duplicate_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.013,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -792,7 +792,7 @@
    "mutation": "price_shift_10pct",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.022,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -805,7 +805,7 @@
    "mutation": "fake_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.013,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -818,7 +818,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -831,7 +831,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -844,7 +844,7 @@
    "mutation": "swap_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -857,7 +857,7 @@
    "mutation": "fake_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -870,7 +870,7 @@
    "mutation": "limit_to_market",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -883,7 +883,7 @@
    "mutation": "fake_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -896,7 +896,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -909,7 +909,7 @@
    "mutation": "price_shift_10pct",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -922,7 +922,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -935,7 +935,7 @@
    "mutation": "fake_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -948,7 +948,7 @@
    "mutation": "duplicate_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -961,7 +961,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -974,7 +974,7 @@
    "mutation": "swap_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -987,7 +987,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1000,7 +1000,7 @@
    "mutation": "other_client_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1013,7 +1013,7 @@
    "mutation": "price_small_drift",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1026,7 +1026,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.007,
    "tiers": [
     0
    ],
@@ -1039,7 +1039,7 @@
    "mutation": "price_small_drift",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1052,7 +1052,7 @@
    "mutation": "limit_to_market",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1065,7 +1065,7 @@
    "mutation": "other_client_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1078,7 +1078,7 @@
    "mutation": "swap_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1091,7 +1091,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -1104,7 +1104,7 @@
    "mutation": "price_shift_10pct",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -1117,7 +1117,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -1130,7 +1130,7 @@
    "mutation": "swap_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -1143,7 +1143,7 @@
    "mutation": "other_client_account",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -1156,7 +1156,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1169,7 +1169,7 @@
    "mutation": "swap_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -1182,7 +1182,7 @@
    "mutation": "price_shift_10pct",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -1195,7 +1195,7 @@
    "mutation": "fake_symbol",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1208,7 +1208,7 @@
    "mutation": "qty_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.01,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -1221,7 +1221,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.012,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1234,7 +1234,7 @@
    "mutation": "direction_flip",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.036,
    "tiers": [
     0
    ],
@@ -1247,7 +1247,7 @@
    "mutation": "amount_off",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.021,
    "tiers": [
     0
    ],
@@ -1260,7 +1260,7 @@
    "mutation": "amount_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.026,
    "tiers": [
     0
    ],
@@ -1273,7 +1273,7 @@
    "mutation": "third_party_dst",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.012,
    "tiers": [
     0
    ],
@@ -1286,7 +1286,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.008,
    "tiers": [
     0
    ],
@@ -1325,7 +1325,7 @@
    "mutation": "fake_dst",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.017,
    "tiers": [
     0
    ],
@@ -1351,7 +1351,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.027,
    "tiers": [
     0
    ],
@@ -1364,7 +1364,7 @@
    "mutation": "direction_flip",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.007,
    "tiers": [
     0
    ],
@@ -1377,7 +1377,7 @@
    "mutation": "amount_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1390,7 +1390,7 @@
    "mutation": "fake_dst",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1403,7 +1403,7 @@
    "mutation": "third_party_dst",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1416,7 +1416,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1429,7 +1429,7 @@
    "mutation": "direction_flip",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -1442,7 +1442,7 @@
    "mutation": "third_party_dst",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1455,7 +1455,7 @@
    "mutation": "amount_off",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1468,7 +1468,7 @@
    "mutation": "fake_dst",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1481,7 +1481,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.011,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -1494,7 +1494,7 @@
    "mutation": "direction_flip",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1507,7 +1507,7 @@
    "mutation": "amount_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.429,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1520,7 +1520,7 @@
    "mutation": "fake_dst",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.032,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -1533,7 +1533,7 @@
    "mutation": "third_party_dst",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.022,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -1546,7 +1546,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -1559,7 +1559,7 @@
    "mutation": "direction_flip",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -1572,7 +1572,7 @@
    "mutation": "amount_x10",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.009,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -1585,7 +1585,7 @@
    "mutation": "amount_off",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.043,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -1598,7 +1598,7 @@
    "mutation": "third_party_dst",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -1611,7 +1611,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.106,
+   "latency_ms": 0.032,
    "tiers": [
     0
    ],
@@ -1624,7 +1624,7 @@
    "mutation": "fake_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.004,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -1637,7 +1637,7 @@
    "mutation": "wrong_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1650,7 +1650,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1663,7 +1663,7 @@
    "mutation": "wrong_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1676,7 +1676,7 @@
    "mutation": "fake_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1689,7 +1689,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1702,7 +1702,7 @@
    "mutation": "wrong_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1715,7 +1715,7 @@
    "mutation": "fake_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1728,7 +1728,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1741,7 +1741,7 @@
    "mutation": "wrong_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1767,7 +1767,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1780,7 +1780,7 @@
    "mutation": "fake_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1793,7 +1793,7 @@
    "mutation": "wrong_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1806,7 +1806,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1819,7 +1819,7 @@
    "mutation": "fake_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1832,7 +1832,7 @@
    "mutation": "wrong_order",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1845,7 +1845,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.005,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -1897,7 +1897,7 @@
    "mutation": "promised_waiver",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1923,7 +1923,7 @@
    "mutation": "guarantee",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1936,7 +1936,7 @@
    "mutation": "other_client_msg",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1949,7 +1949,7 @@
    "mutation": "promised_waiver",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1962,7 +1962,7 @@
    "mutation": "wrong_fee",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -1988,7 +1988,7 @@
    "mutation": "fake_clause",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -2027,7 +2027,7 @@
    "mutation": "fake_status",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -2040,7 +2040,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -2066,7 +2066,7 @@
    "mutation": "wrong_fee",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -2079,7 +2079,7 @@
    "mutation": "fake_clause",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -2092,7 +2092,7 @@
    "mutation": "promised_waiver",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.004,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -2105,7 +2105,7 @@
    "mutation": null,
    "should_execute": true,
    "decision": "allow",
-   "latency_ms": 0.004,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -2118,7 +2118,7 @@
    "mutation": "promised_waiver",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -2131,7 +2131,7 @@
    "mutation": "fake_status",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.004,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -2144,7 +2144,7 @@
    "mutation": "other_client_msg",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.004,
+   "latency_ms": 0.003,
    "tiers": [
     0
    ],
@@ -2157,7 +2157,7 @@
    "mutation": "wrong_fee",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.004,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -2235,7 +2235,7 @@
    "mutation": "suspended",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.008,
+   "latency_ms": 0.006,
    "tiers": [
     0
    ],
@@ -2248,7 +2248,7 @@
    "mutation": "short_sell",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -2261,7 +2261,7 @@
    "mutation": "market_qty",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -2274,7 +2274,7 @@
    "mutation": "tick",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],
@@ -2287,7 +2287,7 @@
    "mutation": "cash",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.005,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -2300,7 +2300,7 @@
    "mutation": "cancel_filled",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.003,
+   "latency_ms": 0.002,
    "tiers": [
     0
    ],
@@ -2313,7 +2313,7 @@
    "mutation": "needs_human",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.005,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -2352,7 +2352,7 @@
    "mutation": "email_instruction",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.005,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -2391,7 +2391,7 @@
    "mutation": "email_instruction",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.005,
+   "latency_ms": 0.004,
    "tiers": [
     0
    ],
@@ -2404,7 +2404,7 @@
    "mutation": "unrequested",
    "should_execute": false,
    "decision": "allow",
-   "latency_ms": 0.006,
+   "latency_ms": 0.005,
    "tiers": [
     0
    ],

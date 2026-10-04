@@ -10,38 +10,46 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ PAUSED 4 Oct (Supervisor message stamped 09:55 IST; user decision: only 3 projects run at a time; P9 is the Perceptron alternate). Nothing of ours is running; all work is pushed.
-- **Headline:** *Cite-Before-Act*: a pre-tool guard that checks the provenance of every argument (user words / reference KB / trusted tool data; untrusted text is never a source of intent) plus pre-trade-style contracts. The unverifiable residue goes to a risk-routed local model whose quoted evidence must verify verbatim, then to a human.
-- **Evidence so far** (reproduce: `eval/README.md`; τ-bench: `eval/taubench/`):
-  - **Real agent errors: τ-bench retail replay.**
-    - Built from the published gpt-4o + Claude-3.5-Sonnet trajectories in `sierra-research/tau-bench@59a200c` (MIT): **2,018** real write-call proposals from 1,380 trajectories.
-    - Each proposal is labelled by DB-effect equivalence with the task's ground-truth writes. 300/300 labels agree with full-DB hashing; 10,360/10,360 recorded tool outputs are reproduced.
-    - Split by task-id parity: dev = even, test = odd; **test is untouched**.
-    - **Dev results, adapter v0** (`components/checker/taubench_retail.py`, written from the retail policy before seeing any item; 1,027 calls: 779 good, 161 harmful, 87 env-rejected):
+- **Phase:** ACTIVE again since 10:48 IST, 4 Oct (slot freed). The 12 Oct Perceptron pick is open between P7 and P9; real evidence decides. Updated 11:55 IST.
+- **Supervisor's definition of done (10:48):**
+  1. τ-bench real-error replay on a held-out split vs no-guard/schema/LLM-judge, with CIs: **deterministic part done**; LLM judge running.
+  2. Independent red-team suite by a different model: **gpt-6-astra session running**.
+  3. Final abstract + diagram + `check_docs`: **drafted** (`deliverables/round1-abstract.v1.md`).
+  4. Reviews: **gpt-6-sol code/eval running**; gpt-6-astra abstract review next.
+  5. Final memo, thought node, push.
+- **Headline evidence: real agent errors.**
+  - **Set:** τ-bench retail held-out test = 991 real write proposals from gpt-4o and Claude-3.5-Sonnet (702 good, 167 harmful, 122 env-rejected). Labels by DB-effect equivalence with ground truth. Frozen configs, one-shot test, 95% CIs clustered by task. Details: `eval/taubench/README.md`.
 
-      | Guard | Catch (harmful) | Catch (env-rejected) | False-block (good) | Escalation (good) | p95 |
-      |---|---|---|---|---|---|
-      | none / schema-only | 0% | 0% | 0% | 0% | — |
-      | t0 | **64.6%** | 80.5% | **9.1%** | **52.9%** | 2.1 ms |
-      | t0, block-only | 11.2% | — | 9.1% | 0% | — |
+    | Config (full test) | Catch harmful | False-block | Escalation | p95 |
+    |---|---|---|---|---|
+    | none / schema-only | 0% | 0% | 0% | — |
+    | v0 (policy-only, untuned) | **67.7%** [57.1, 77.3] | 7.3% [3.7, 11.4] | 55.8% | 0.2 ms |
+    | strict | 43.1% | 1.8% | 32.8% | 0.2 ms |
+    | **balanced (primary)** | **35.9%** [24.2, 48.8] | **1.8%** [0.5, 3.6] | 25.1% [19.7, 30.7] | 0.2 ms |
+    | lenient | 20.4% | 1.8% | 15.7% | 0.2 ms |
 
-      Honest read: real conversations are much harder than our synthetic suite.
-  - **Independent black-box red team** (134 desk cases by a separate agent that never saw the guard): **before fixes** catch **94.3%**, false-block **0%**, escalation **17.4%**. After 6 general fixes (in-sample): 98.9% / 0% / 0%. Known miss: "two clips of 500" order splitting.
-  - **White-box red team** (41 cases by an agent that read the guard): against the current guard, 21/27 bypasses still pass (catch 22.2%), and 14/14 of its good cases are escalated. Top weaknesses (`eval/redteam_whitebox/findings.md`): message-text grounding; invented limit prices / order-type asymmetry; non-canonical duplicate detection; clause-scoped parsing of compound instructions; negation (partly fixed).
-  - **Synthetic suite:** dev/test 100% catch, 0% false-block, 0% escalation. LLM-judge (Qwen3-1.7B), full test split: catch 70.8%, false-block 61.1%.
-- **RESUME POINT (exact):**
-  1. `cd perceptron-p09-agent-guardrail && bash eval/taubench/fetch.sh && .venv/bin/python -m eval.taubench.replay --build` (4 min; writes `.data/taubench/retail_items.jsonl`).
-  2. `.venv/bin/python -m eval.taubench.run --guards none,schema,t0,t0_block_only --split dev` reproduces the table above.
-  3. Adapter v1 on **dev only**:
-     - Drop the `policy.new_item_differs` FAIL (the ground truth itself maps items to themselves: 32 of the false blocks).
-     - Payment default = the order's original method (252 escalations).
-     - Option check → "minimal-change available variant that satisfies the user's stated options" (199 escalations, 14 false blocks).
-     - Normalise curly apostrophes; handle 2-letter state codes and zip false-fails (28 false blocks).
-     - Inspect the 27 harmful cancels that were allowed.
-  4. Run **test once** and report it.
-  5. τ-bench LLM-judge baseline (Qwen3-1.7B, chunked, `nice -n 10`, only when swap has >4 GB free).
-  6. Fix the white-box top 5, then ask a *fresh* independent agent for a second black-box batch (clean holdout).
-  7. Message the Supervisor with dev+test τ-bench numbers (gate: "guard holds on real agent errors" by 10 Oct).
+  - **Honest read:** dev tuning cut false blocks (7.3% → 1.8%) and escalations, but also catch. The untuned v0 has the best test score. The guard is a dial, not a free lunch.
+  - **Miss audit (20 random balanced misses, `eval/taubench/audit-test-misses.md`):**
+    - 8 user-requested: invisible to any transcript check;
+    - 8 wrong-entity resolutions: the spike's target;
+    - 3 policy sequencing / incomplete action;
+    - 1 caused by a rule I removed during tuning.
+- **Desk domain (secondary; self-authored unless noted):**
+  - Synthetic suite: 100% catch, 0% false blocks.
+  - Independent Claude black-box set (134): 94.3% catch, 0% false blocks before fixes; 98.9% / 0% after, in-sample.
+  - White-box (41): 21 of 27 bypasses still pass.
+  - LLM judge (1.7B, full desk test): 70.8% catch, 61.1% false blocks.
+- **Rule change (Supervisor, 11:40):** local-model runs are allowed when `kern.memorystatus_level` ≥ 25%. The swap-free metric is stuck (stale pages in dynamically sized swap). Conditions: Qwen3-1.7B only, `nice -n 10`, chunked and resumable with a checkpoint per call, a watchdog that pauses below 25% and resumes above 30%, one LLM job at a time. Implemented in `eval/taubench/run.py::memory_ok`.
+- **Doing:**
+  - LLM judge on the 300-call test sample (background); next, `cascade_fast` on the same sample.
+  - Child sessions (max 2): **P9 independent red team (astra)** and **P9 code/eval review (sol)**.
+- **Next:**
+  1. Frontier table (judge at matched good-call stop rate).
+  2. Cascade end-to-end.
+  3. Run the guard on the astra suite.
+  4. Final abstract + `eval/check_docs.py`.
+  5. Astra abstract review (after the red-team session ends).
+  6. Ledger, memo, push, then "DONE — slot free".
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section of the abstract (placeholders now).
 - **Risks:** (1) synthetic-suite optimism, since the same author wrote templates and rules → τ-bench replay + paraphrase family; (2) paraphrase brittleness of regex mention parsing → LLM resolver, escalation rate tracked; (3) local LLM latency/memory on a shared Mac (8B not measured tonight); (4) close 2026 work (ActGov, ContrAgent, closed-world resolution) → precise novelty claim (argument-value provenance, three-way verdict, verified-quote residue resolution, frontier evaluation).
 
@@ -118,6 +126,16 @@ _First version 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
 - **Overall: 4.6/5.**
 
 ## Log
+### 2026-10-04 11:55 IST — Resumed; τ-bench held-out results, audit, reviews launched
+- **10:48 Supervisor:** resume with a five-point definition of done. Child sessions only (max 2), no `task` sub-agents.
+- **Child sessions launched:** `P9 independent red team (astra)` (gpt-6-astra, max; may read only the KB data, tool specs and contracts) and `P9 code/eval review (sol)` (gpt-6-sol, max).
+- **Adapter v1, dev only:**
+  - Confirmed-summary grounding is a real trade-off. Option-level grounding leaks harm (dev catch drops to about 30%); item/payment/reason/address do not.
+  - Found and fixed a labelling bug: 12 ground-truth address actions used the pre-rename `province` key, mislabelling 11 dev calls. The test split was unaffected.
+  - Froze strict / balanced / lenient (+ untuned v0).
+- **One-shot held-out test** (commit `a93e35a`): numbers in *Now*.
+- **Supervisor 11:40:** approved the memory-level rule for the LLM judge (see *Now*). Agreed to headline the real-error frontier, compare the judge at a matched stop rate, and add the miss taxonomy.
+
 ### 2026-10-04 09:53 IST — Paused by the Supervisor (user decision); results saved
 - **08:22 Supervisor:** package accepted; P9 ranks #2 in Perceptron and moves to #1 if the guard holds on real agent errors by 10 Oct. Next: τ-bench/AgentDojo real-error replay vs no-guard/schema/LLM-judge baselines, then an independent adversarial red team.
 - **~09:15 Supervisor:** an orphaned PID 42665 (my Qwen3-8B judge, queued in last night's chained shell) was using memory. Killed; swap recovered. New rule for my LLM runs: Qwen3-1.7B only, chunked with checkpoints, `nice -n 10`, one at a time, only when swap has >4 GB free. The chain had finished three valid runs (results kept with their commits): cascade (8B) dev/test and the full-test 1.7B judge. The cascade let one bad test message through (an unrequested "account upgraded" message). Root cause: a quote from *policy* text was accepted as evidence for *intent*. Fixed: provenance checks now accept only quotes from the client's words, and an intent quote must contain a request verb.
