@@ -6,17 +6,17 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (15:24 IST, 4 Oct)
+## Now (15:32 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - India@71 T3: corrected test C6 v0.3 passed (+0.086 [0.057, 0.115], SYNTHETIC; registered first); proposal v1.1; re-reviews in. Its memo scores T3 3.9 and recommends T1.
-  - P6: 12-day pre-registered walk-forward passed; Amendment 1 sensitivity runs; exploratory LEV ablations.
-  - P2: pre-registered 15:14:58 (frozen best-of-322 config); confirmatory runs on its Azure VM; Amendment 1 (synonym-alias T3) 15:18:09, before any test result.
-  - P8: LLM-gap study on Azure OpenAI.
-  - India@71 T2: resumed 15:23 into Namma's slot.
-- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space.
-- **Queue:** APCTT (when the 10 Oct data lands) → InnovateX T2 → InnovateX T3.
-- **GPU:** free.
+  - P6: 12-day pre-registered walk-forward passed; Amendment 1 sensitivity re-run after an erratum (both runs reported).
+  - P2: confirmatory runs on its Azure VM (now D16ds_v5); sol review in.
+  - P8: LLM-gap study pre-registered 15:21:41.
+  - India@71 T2: interval calibration first.
+  - InnovateX T2: resumed 15:32 as the documented alternative to T1, which is the zonal pick.
+- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3.
+- **Queue:** APCTT (when the 10 Oct data lands) → InnovateX T3.
+- **Azure running now:** P2's VM `p02-kv-1` (Standard_D16ds_v5, centralindia) and P8's pay-per-token OpenAI resource. Nothing else.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -41,6 +41,9 @@
   - Your VM (`com.apple.Virtualization`, up 7 days, 6.2 GB resident + 9.9 GB compressed) is by far the largest user. CapCut (~2.3 GB) and Brave/Chrome (~5 GB) come next.
   - Namma Space's 3D training is spending 79% of its CPU time in the kernel, i.e. thrashing.
   - Quitting the VM (Docker/OrbStack/UTM) and CapCut while the projects run is the single biggest speed-up. I've already closed the projects' leftover browsers and servers.
+- [ ] **India@71 theme pick by 15 Oct (one theme per team):** T1 nutrition (✅, memo 4.2) vs T3 financial inclusion (✅, memo 3.9, which itself recommends T1); T2 learning is still running.
+  - T3's honest finding: its learned targeting beats the transparent rule only on SYNTHETIC data, so the rule ships, as in T1.
+  - If T3 is chosen: team details, a partner bank's financial-inclusion head, and field conversations.
 - [ ] **India@71 T1 (✅ Completed — please review):** team names + Team ID for `India71_100_[TeamID].pdf`; a state/district WCD contact for a pilot data extract; a union/worker-association contact for co-design.
 - [ ] **EV track pick by 15 Oct (one track per team). Both are ✅ Completed — please review.**
   - **C1 (EV Infra Map, `ev-c1-infra-map-india/`):** memo 4.1/5; astra 70/100. A national charger map validated against official state counts, a purged-backtest VAHAN forecast (error 0.177 vs 0.360 naive), and district supply validated on Chhattisgarh.
@@ -100,6 +103,13 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 15:32 IST — India@71 T3 completed
+- **T3 DONE (57dfa7c), verified on main:**
+  - check_pdf PASS (6 pp, Arial ≥ 11 pt, 6/6 fonts embedded); check_docs 28/28; 17 tests.
+  - Reviews: astra 15 + sol 18, plus a verification round each, all decided.
+  - Memo 3.9 vs T1 4.2: it recommends T1.
+- InnovateX T2 resumed into the slot.
+
 ### 2026-10-04 15:24 IST — Namma Space completed
 - **Namma DONE (7be832f), verified on main:** no ⟨⟩ slots; E2E, viewer and degenerate-posing evidence files present.
   - 5 review rows ledgered (astra ADR and R1, sol code, plus sol and astra delta checks).
