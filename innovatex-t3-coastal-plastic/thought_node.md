@@ -130,3 +130,18 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Precision 0.45 at 5% fraud prevalence, so flags trigger review only.
   - Reproduce: `cd innovatex-t3-coastal-plastic/components && python3 -m mrv_ledger.evaluate`.
 - `eval/collect_results.py` → `eval/RESULTS.md` collects every committed metric with its reproduce command.
+
+### 2026-10-04 07:20–07:50 IST — Children report done; verification
+- **Twin (final, main 56654a1).**
+  - Held-out P2 vs P0: median −2.1% escaped (90% interval −12.5% to +1.5%; 28/40 draws better).
+  - P1: +3.1% escaped.
+  - The gain comes mostly from tide-aware timing (−3.7% on the tuning metric); forecast terms add ≤0.5%.
+  - The held-out evaluation was re-run once after a disclosed look-ahead bug (48 h → causal 24 h horizon); see twin.md §4.
+- **Dashboard + evidence ledger (main ce18a5e).**
+  - Evidence: SHA-256 chain over canonical JSON, published anchor, and Ed25519 per-crew signatures, verified in the browser.
+  - Main risk: a +25% bulk-density error raises false flags to 17.8%, so density must be calibrated per site.
+  - The Mithi case is cited from HT and The Hindu (May 2025).
+- **Lead verification.** `python3 -m pytest -q twin_sim/tests mrv_ledger/tests dashboard` → 32 passed (07:35). The desktop screenshot was checked visually: provenance badges, SIMULATED hatching and Marathi/Hindi labels are present.
+- **Research complete:** `mumbai-context.md`, `policy-economics.md` and `recovery-upcycling.md` added; `landscape.md` now lists 109 source URLs collected from the research files.
+  - Still open: scrap, EPR and credit prices; desilting rates; whether drain-recovered plastic earns EPR certificates (NOT FOUND); the minimum-wage source URL; C14 not started.
+- **Contract change queued for Round 2 (not applied tonight, to avoid drift while children finish):** add optional `signature`, `signer_key_id` to `LedgerEntry` and `ledger_anchor` to `DashboardBundle`. These currently live in `dashboard/site/aux.json`.
