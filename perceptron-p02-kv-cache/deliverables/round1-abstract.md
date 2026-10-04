@@ -33,7 +33,7 @@ The obvious entry applies StreamingLLM or H2O and plots a needle chart. We diffe
 2. **Retrieval uses the model's own question-time attention queries,** so it needs no external embedding model.
 3. **The evaluation is query-agnostic and multi-question.** We compress once, then ask several questions, compare methods at *equal answer-time bytes*, and count every byte.
 
-We will state precisely how our design relates to the nearest prior work (ArkVale-style page recall, Quest page digests, CacheBlend selective recompute).
+We will state precisely how our design relates to the nearest prior work (Quest's per-page key digests, ShadowKV's low-rank keys with offloaded values, CacheBlend's KV reuse for retrieved chunks, ArkVale-style page recall).
 
 ## Evaluation plan
 - **Main metric:** recall accuracy vs retained bytes (a Pareto curve per method), 4 questions per context, paired across methods, with confidence intervals on held-out seeds.

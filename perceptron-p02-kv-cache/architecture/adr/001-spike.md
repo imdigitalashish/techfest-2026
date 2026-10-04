@@ -32,7 +32,7 @@
   1. A recomputed block attends only to sinks plus itself, not to its true prefix. Its KV is approximate, which can hurt answers that need cross-block context.
   2. One sketch layer may not localise the needle; retrieval heads may sit in other layers.
   3. Two passes per question add latency.
-  4. Novelty: close relatives may exist. ArkVale-style page recall keeps the evicted KV offloaded; Quest uses page digests; CacheBlend does selective recompute (2405.16444 [OPENED, title]).
+  4. Novelty: close relatives may exist. ArkVale-style page recall (UNVERIFIED) keeps the evicted KV offloaded; Quest tracks per-page min/max keys and loads Top-K pages (2406.10774 [OPENED]); CacheBlend reuses precomputed KV of non-prefix chunks (2405.16444 [OPENED]; its recompute details UNVERIFIED).
   5. NIAH needles are lexically distinctive, so this is easy mode for any retriever.
   6. The sketch is still O(T) bytes (0.5%): sub-linear in practice, but not constant.
 - **Yellow (benefits).**
