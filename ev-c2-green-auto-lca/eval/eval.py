@@ -88,6 +88,11 @@ def main() -> None:
     db = FactorDB.load()
     scenarios = load_scenarios()
     commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
+    # mark the run dirty if any input (code, data, scenarios) differs from HEAD; generated outputs are excluded
+    dirty = subprocess.run(["git", "status", "--porcelain", "--", "components", "data", "eval/eval.py"],
+                           capture_output=True, text=True, cwd=ROOT).stdout.strip()
+    if dirty:
+        commit += "-dirty"
     results = {sid: run_scenario(db, sc, n=N, seed=SEED) for sid, sc in scenarios.items()}
     report = {"harness": "v2", "commit": commit, "n": N, "seed": SEED, "db": db.summary(),
               "verification": {}, "scenarios": {}}
