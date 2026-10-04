@@ -49,3 +49,22 @@ The feedback is advisory and the lead decides (PLAYBOOK §10). Every item below 
 | A11 (residual) | major | ACCEPTED | The verdict attaches the MSM curve only as "after-period Hajek-MSM: the interval first includes zero at tested Γ". |
 | A2/A4/A8 (residual wording) | major | ACCEPTED | The judge's safe rewrites are applied: an approximate-target comparison; the gate's design chronology; both row-level and hour-block intervals shown for the flagship case. |
 | A10 (residual) | major | ACCEPTED | The diagram now says "Monte-Carlo reference" and "noisy concurrent-arm reference; policy matching & balance limits disclosed". |
+
+## gpt-6-astra demo review (pinned f58966c): wow 7, clarity 4, credibility 6, honesty 5 (out of 10)
+
+All 12 items are ACCEPTED; the builder is applying them (demo/ only). No item is rejected, and no threshold or analysis is re-tuned.
+
+| # | Severity | Decision | Fix |
+|---|---|---|---|
+| D1 | blocker | ACCEPTED | The A/B line becomes a "noisy concurrent-A/B reference, not known truth", with its caveats under the chart. The script opens with "we re-enact a switch". "29% above the concurrent A/B point estimate". |
+| D2 | blocker | ACCEPTED | E1 and E2 shown side by side; the Nov 26 cluster-mode E2 rejection is visible. Sheet 1 says "2/2 S1 rejections; 2/3 own-CI misses refused". BTS-primary counts (75/87, 519/606 refused) are shown separately from the Random side. |
+| D3 | major | ACCEPTED | "Before touching OBD" and "never examined before" removed; the chronology is stated as "pre-registered reuse of OBD". |
+| D4 | major | ACCEPTED | "31/33 endpoint-derived checks"; the endpoint formulas are shown; SNIPS is not called new evidence. |
+| D5 | major | ACCEPTED | The 403 refusals are correlated grid locations under a noisy-reference proxy; deployment value is untested. |
+| D6 | major | ACCEPTED | The script is cut to 350–400 spoken words, with a timed rehearsal and named presets. |
+| D7 | major | ACCEPTED | Presets set the full state; the script restores row-level before row-level totals. |
+| D8 | major | ACCEPTED | ESS is called a concentration diagnostic; the 12,500 weight is hypothetical (largest clicked weight about 139); the z-test does not prove cause. |
+| D9 | major | ACCEPTED | "Monte-Carlo reference (200,000 draws)"; the S1 waterfall is labelled as a separate fixed case. |
+| D10 | minor | ACCEPTED | Dynamic readouts get source keys, or the hover claim is narrowed. |
+| D11 | minor | ACCEPTED | Render, same-code replay and independent checks are described separately. |
+| D12 | minor | ACCEPTED | Fallback 08 re-captured through the normal controls; the fallback set matches the script. |
