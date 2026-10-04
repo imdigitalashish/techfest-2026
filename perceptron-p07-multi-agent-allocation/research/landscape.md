@@ -58,6 +58,16 @@ Moving a resource takes time: a vehicle has to drive, a GPU replica has to load 
 | Wilder, Dilkina & Tambe — Decision-focused learning for combinatorial optimisation ([arXiv 1809.05504](https://arxiv.org/abs/1809.05504)) | AAAI 2019, DOI 10.1609/aaai.v33i01.33011658 | the training loss "may easily be misaligned with the end goal, which is to make the best decisions possible" | Motivates tuning forecast *trust* for served fraction, not forecast error (spike A′). |
 | Page — Continuous inspection schemes (CUSUM) | Biometrika 41(1–2):100–115, 1954, DOI 10.1093/biomet/41.1-2.100 (bibliographic record verified via Crossref; full text paywalled, not opened) | — | Origin of the CUSUM used in C4. |
 
+## 3c. Compute-cluster analogue: lead time = cold start (added 2026-10-04 17:50 IST; arXiv abstracts opened via the arXiv API)
+
+| Work | Venue / date | What the abstract says (verbatim fragments) | Mapping to our (L, P) |
+|---|---|---|---|
+| Shahrad et al. — "Serverless in the Wild" ([arXiv 2003.03423](https://arxiv.org/abs/2003.03423)) | arXiv 2020-03 (USENIX ATC 2020 venue UNVERIFIED here) | Characterises "the entire production FaaS workload of Azure Functions": "most functions are invoked very infrequently, but there is an 8-order-of-magnitude range of invocation frequencies"; proposes a policy that "significantly reduces the number of function coldstarts, while spending fewer resources" | L = cold-start delay; keeping warm capacity is pre-positioning supply |
+| Fu et al. — ServerlessLLM ([arXiv 2401.14351](https://arxiv.org/abs/2401.14351)) | arXiv 2024-01 (OSDI 2024 venue UNVERIFIED here) | "fast multi-tier checkpoint loading", "efficient live migration of LLM inference", "startup-time-optimized model scheduling"; "reducing latency by 10 - 200X" vs serverless baselines | Shrinking L itself (faster model load) — the complement of planning over L |
+| Sun et al. — Llumnix ([arXiv 2406.03243](https://arxiv.org/abs/2406.03243)) | arXiv 2024-06 (OSDI 2024 venue UNVERIFIED here) | "runtime rescheduling across multiple model instances" via live migration; "improves tail latencies by an order of magnitude ... up to 36% cost savings" | Reallocation of in-flight load across replicas (our trip/relocation flows) |
+
+**Use in the demo and the abstract:** only as an *analogy* (L = cold start, P = request timeout). We have **no** committed compute-cluster experiment. No absolute cold-start seconds are cited, because these abstracts give relative gains only.
+
 ## 4. Evaluation methodology (what a quant judge will look for)
 - **Agarwal et al. 2021** ([2108.13264](https://arxiv.org/abs/2108.13264), NeurIPS Outstanding Paper): report interval estimates, not point estimates; use performance profiles and the interquartile mean (IQM). Rankings change once uncertainty is accounted for. Library: rliable.
 - **Gorsane et al. 2022** ([2209.10485](https://arxiv.org/abs/2209.10485)): a meta-analysis of 75 cooperative-MARL papers (2016–2022) finds "worrying trends" in evaluation and proposes a standard protocol. *Protocol details not opened — UNVERIFIED.*
@@ -108,7 +118,7 @@ Pure end-to-end RL allocation is not what ships. Learning appears as a value or 
 - We **add what none of them report**: requests lost per shock with confidence intervals over many pre-registered seeds, plus same-planner ablations against a true-rate-forecast reference (a perfect forecast, not an upper bound).
 
 ## 7. Coverage gaps / UNVERIFIED (be honest)
-- **Compute-cluster papers thread failed** (worker died on network errors). These are *not opened tonight, so not cited*: Llumnix, ServerlessLLM, DistServe, Splitwise (and its Azure LLM inference traces), Google Autopilot, Resource Central, "Serverless in the Wild" (Azure Functions trace), DeepRM, Decima, Gavel, Pollux, square-root staffing. Re-run when the network recovers.
+- **Compute-cluster papers: partially closed (17:50 IST).** Serverless in the Wild, ServerlessLLM and Llumnix abstracts are now opened (§3c). Still not opened: DistServe, Splitwise (Azure LLM inference traces), Google Autopilot, Resource Central, DeepRM, Decima, Gavel, Pollux, square-root staffing.
 - **Social signal (X/HN/Reddit) and competitions** (KDD Cup 2020 DiDi dispatch track, Flatland, League of Robot Runners): worker failed; **nothing cited**.
 - **Not opened this session:** India-specific delivery (Swiggy, Zomato), Amazon Robotics DeepFleet, Gorsane protocol internals, TCPD metric formulas.
 - Fleet-papers TL;DR rows come from abstracts and metadata. Full-text details (baselines, horizons, how shocks are evaluated) are **UNVERIFIED** beyond what the abstracts say.
