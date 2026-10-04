@@ -10,7 +10,14 @@
 - _(none)_
 
 ## Now
-- **Phase:** ✅ **Definition of done met (2026-10-04 14:08 IST); batch slot released.** Idle until the Supervisor resumes P5.
+- **Phase:** ▶ **DEMO phase** (Supervisor 21:47 IST, PLAYBOOK §11). Updated 2026-10-04 21:49 IST.
+- **Plan:**
+  1. Spawn one demo-builder child session. It proposes the "crazy" element; the lead approves it before it builds.
+  2. Build to §11: `demo/run.sh`, baseline side by side with a judge knob, SIMULATED labels on every screen, numbers from committed results, `demo/SCRIPT.md`, `demo/fallback/`, `demo/smoke.sh`.
+  3. One gpt-6-astra demo review, recorded in `reviews/`.
+  4. The lead verifies from a clean checkout, then sends "DEMO DONE".
+- **Doing:** spawning the demo builder.
+- **Earlier phase (definition of done, met 14:08):** see the Log.
 - **Delivered:**
   - E8, E7, E9, E10, E11 and E12, each pre-registered by commit time.
   - Final Round-1 abstract v1.1 (`deliverables/round1-abstract.md`, 895 words) and diagram (`deliverables/architecture.md`), both rendered from `eval/claims.py`. `eval/check_docs.py` OK; pytest 7/7.
@@ -294,3 +301,6 @@ Those labels were estimates, 1–7 min ahead of the clock. The other headers are
 - gpt-6-astra re-scored the final abstract v1.1 at **3.45/5**, with no remaining blocker or major overclaim (`reviews/2026-10-04-abstract-v1.1-gpt-6-astra.md`, 070287c). Its two disclosed gaps are accepted: one is in the resume plan, the other in *Needs from user*.
 - Final gates: `eval/check_docs.py` OK (237 claims, 86 placeholders); pytest 7/7; no P5 jobs running.
 - Reviewer child sessions are finished and their work is on `main`; they are being archived to free machine resources.
+
+### 2026-10-04 21:49 IST — Demo phase started (Supervisor 21:47)
+§11 read. Supervisor's suggestion: the "ghost market", same-seed twins with and without our order, with an order-size knob, the naive-vs-synchronised contrast, and an honest E6→E8→E10 ending. **Assumption:** P5 has no real market data, so every screen is labelled SIMULATED (ABIDES). The only real-world anchors are cited literature values (the square-root law, δ ≈ 0.5, from the Tokyo Stock Exchange survey), shown as labelled references, not as our results.
