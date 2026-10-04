@@ -1,0 +1,22 @@
+{
+ "mh_rtos_with_data": 61,
+ "mh_rtos_mapped_to_district": 60,
+ "c1_reconciliation_rel_err": 0.0,
+ "sum_rto_bev": 1185108,
+ "state_table_bev": 1185108,
+ "unassigned_bev (TC office etc.)": 0,
+ "districts": 35,
+ "national_median_bev_per_station": 307.95,
+ "karnataka_bev_per_station": 152.4,
+ "mh_official_stations": 4155,
+ "mh_stations_at_national_median_density": 3848,
+ "mh_stations_at_karnataka_density": 7776,
+ "mh_segment_mix_pct": {
+  "2W": 83.6,
+  "3W": 5.5,
+  "4W": 9.6,
+  "BUS": 0.4,
+  "GOODS": 0.8,
+  "OTHER": 0.1
+ }
+}

@@ -1,0 +1,62 @@
+rto_code,rto_town,district,method,note
+45,AKLUJ,Solapur,manual,town in Solapur district
+44,AMBEJOGAI,Beed,manual,town in Beed district
+27,AMRAWATI,Amravati,name_match,
+42,BARAMATI,Pune,manual,town in Pune district
+23,BEED,Beed,name_match,
+54,BHADGAON,Jalgaon,manual,taluka of Jalgaon district
+36,BHANDARA,Bhandara,name_match,
+28,BULDHANA,Buldhana,name_match,
+52,CHALISGAON,Jalgaon,manual,taluka of Jalgaon district
+20,CHHATRAPATI SAMBHAJINAGAR,Chhatrapati Sambhajinagar,name_match,formerly Aurangabad
+202,CHIPLUN TRACK,Ratnagiri,manual,testing track office in Chiplun
+25,DHARASHIV,Dharashiv,name_match,formerly Osmanabad
+18,DHULE,Dhule,name_match,
+38,HINGOLI,Hingoli,name_match,
+58,MIRA BHAYANDAR,Thane,manual,city in Thane district
+8,RATNAGIRI,Ratnagiri,name_match,
+33,GADCHIROLI,Gadchiroli,name_match,
+35,GONDHIA,Gondia,name_match,spelling variant
+51,ICHALKARANJI,Kolhapur,manual,city in Kolhapur district
+21,JALANA,Jalna,name_match,spelling variant
+5,KALYAN,Thane,manual,city in Thane district
+50,KARAD,Satara,manual,town in Satara district
+56,KHAMGAON,Buldhana,manual,town in Buldhana district
+9,KOLHAPUR,Kolhapur,name_match,
+41,MALEGAON,Nashik,manual,city in Nashik district
+1,MUMBAI (CENTRAL),Mumbai,manual,Mumbai City + Mumbai Suburban merged as one unit
+3,MUMBAI (EAST),Mumbai,manual,Mumbai City + Mumbai Suburban merged as one unit
+2,MUMBAI (WEST),Mumbai,manual,Mumbai City + Mumbai Suburban merged as one unit
+49,NAGPUR (EAST),Nagpur,name_match,
+40,NAGPUR (RURAL),Nagpur,name_match,
+31,NAGPUR (U),Nagpur,name_match,
+26,NANDED,Nanded,name_match,
+39,NANDURBAR,Nandurbar,name_match,
+15,NASHIK,Nashik,name_match,
+46,PANVEL,Raigad,manual,city in Raigad district
+22,PARBHANI,Parbhani,name_match,
+6,PEN (RAIGAD),Raigad,name_match,
+53,PHALTAN,Satara,manual,town in Satara district
+12,PUNE,Pune,name_match,
+16,AHILYANAGAR,Ahilyanagar,name_match,formerly Ahmednagar
+30,AKOLA,Akola,name_match,
+47,BORIVALI,Mumbai,manual,Mumbai Suburban; merged Mumbai unit
+34,CHANDRAPUR,Chandrapur,name_match,
+19,JALGAON,Jalgaon,name_match,
+24,LATUR,Latur,name_match,
+203,MIRA BHAYANDER FITNESS TRACK,Thane,manual,testing track office
+14,PIMPRI CHINCHWAD,Pune,manual,city in Pune district
+11,SATARA,Satara,name_match,
+13,SOLAPUR,Solapur,name_match,
+10,SANGLI,Sangli,name_match,
+7,SINDHUDURG (KUDAL),Sindhudurg,name_match,
+17,SRIRAMPUR,Ahilyanagar,manual,town in Ahilyanagar district
+99,TC OFFICE,,unassigned,Transport Commissioner office; not a district
+4,THANE,Thane,name_match,
+55,UDGIR,Latur,manual,town in Latur district
+57,VAIJAPUR,Chhatrapati Sambhajinagar,manual,taluka of Chhatrapati Sambhajinagar district
+48,VASAI,Palghar,manual,Vasai-Virar; Palghar district since 2014
+43,VASHI (NEW MUMBAI),Thane,manual,Navi Mumbai node in Thane district
+32,WARDHA,Wardha,name_match,
+37,WASHIM,Washim,name_match,
+29,YAWATMAL,Yavatmal,name_match,spelling variant

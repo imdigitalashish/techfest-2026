@@ -15,17 +15,25 @@
  "osm_with_operator_pct": 31.8,
  "osm_with_any_socket_tag_pct": 7.8,
  "mh_rtos_listed": 61,
- "mh_rtos_fetched_till_today": 35,
- "mh_bev_till_today_sum_rtos": 583404,
+ "mh_rtos_fetched_till_today": 61,
+ "mh_bev_till_today_sum_rtos": 1185108,
  "mh_bev_by_segment_till_today": {
-  "2W": 472448,
-  "3W": 44664,
-  "4W": 58155,
-  "BUS": 3263,
-  "GOODS": 4589,
-  "OTHER": 285
+  "2W": 990700,
+  "3W": 65347,
+  "4W": 113370,
+  "BUS": 5199,
+  "GOODS": 9795,
+  "OTHER": 697
  },
  "mh_top5_rtos_bev": [
+  [
+   "PUNE - MH12( 25-JAN-2017 )",
+   177129
+  ],
+  [
+   "RTO PIMPRI CHINCHWAD - MH14( 06-FEB-2017 )",
+   89416
+  ],
   [
    "NAGPUR (EAST) - MH49( 17-APR-2017 )",
    65467
@@ -37,14 +45,6 @@
   [
    "KOLHAPUR - MH9( 02-MAR-2017 )",
    50773
-  ],
-  [
-   "CHHATRAPATI SAMBHAJINAGAR - MH20( 20-OCT-2016 )",
-   43235
-  ],
-  [
-   "AMRAWATI - MH27( 21-JAN-2017 )",
-   30377
   ]
  ],
  "mh_state_bev_till_today": 1185108,

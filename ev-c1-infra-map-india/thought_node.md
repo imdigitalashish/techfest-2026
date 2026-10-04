@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** Morning package pushed (08:05 IST): landscape v1, components + contracts, ADR 001, real-data baseline v0, selection memo v1. Round-1 drafts next. Lean Mode until 08:30.
-- **Plan:** Spike 1 = completeness-aware charger census (C4 + C5); Spike 2 = adoption forecast + requirement sizing (C9 + C11) — see [ADR 001](architecture/adr/001-spike.md). Demo geography: Maharashtra.
-- **Doing:** lead only (no sub-agents). Maharashtra RTO-level VAHAN fetch resuming in the background (34/61 offices done).
-- **Next:** (1) `deliverables/round1-methodology.md` + `round1-roadmap.md`; (2) finish MH RTOs → RTO→district crosswalk; (3) boundaries (Survey of India–consistent) + national map; (4) second charger source (OCM key) → first C4/C5 numbers; (5) C9 backtest (train ≤2024, test 2025) as the first auto-research loop; (6) independent adversarial review of ADR 001 + literature check on capture–recapture for charger data.
-- **Needs from user:** Register by 15 Oct and pick one track (after the 12 Oct selection). Team of 2–5: names and skills. A free Open Charge Map API key (openchargemap.org → My Profile → API keys) to add a second open charger source.
-- **Risks:** (1) open supply data covers ~2% of official stations → completeness estimation may lack source overlap (fallback: calibrate to official state totals); (2) registrations ≠ on-road stock; (3) VAHAN dashboard markup could change (client fails loudly); (4) operator data terms; (5) official counts are 14 months older than VAHAN.
+- **Phase:** 4–5 — walking skeleton on real data + first ratchet loop done. Morning package delivered (08:13). Lean Mode lifted at 08:30 (≤ 2 concurrent agents; heavy jobs under `nice`).
+- **Plan:** Spike 1 = completeness-aware census (C4 + C5). The first loop shows open data is too sparse for capture–recapture, so we need denser lists; a demand-calibrated fallback is in place. Spike 2 = forecast + requirement (C9 + C11). Demo geography: Maharashtra (35 district units; all 61 RTOs on real data).
+- **Doing:** lead: Maharashtra drill-down. Agents: `fact-checker` (top research claims + novelty search → `research/fact-check.md`); `companies-products` (still running; partial file committed).
+- **Next:** (1) C9 backtest loop (train ≤ 2024 → test 2025, 36 states); (2) a district map for Maharashtra (current boundaries incl. Palghar); (3) third charger source (operator list or UEI) → re-run C5; (4) hand-labelled OSM × OCM pairs → C4 F1; (5) verify MoP 2024 norms and PM E-DRIVE targets at primary sources; (6) independent adversarial review of ADR 001; (7) update the Round-1 drafts with the new numbers.
+- **Needs from user:** Register by 15 Oct and pick one track (after the 12 Oct selection). Team of 2–5: names and skills. Optional: a free Open Charge Map API key (live data beyond the Apr 2026 export).
+- **Risks:** (1) supply data: open sources ≈ 8% of official → capture–recapture far off until denser lists exist; (2) registrations ≠ on-road stock; (3) VAHAN markup changes (the client now self-discovers ids); (4) operator data terms; (5) boundary/basemap compliance for the government-facing map.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** EV Infra & Green Mobility AI Challenge — Techfest IIT Bombay with the Ministry of Heavy Industries (MHI) and the International Centre for Automotive Technology (ICAT). Prize pool ₹2,00,000; top 3 teams per track.
@@ -115,4 +115,10 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - `components/dashboard_map/build_map.py` → self-contained `dist/index.html` (0.8 MB, MapLibre). Layers: state choropleth of BEV registrations per official station (all 36 states joined); 2,472 OSM + OCM sites; top-10 underserved ranking. Popups show VAHAN, PIB and open-data numbers, and the footer names every source and as-on date. Rendered in Chromium (Playwright): only console error is a missing favicon. Screenshot: `components/dashboard_map/screenshot-v0.png`.
 - Caveats on the map itself: registrations ≠ stock, a 14-month date gap, segment mix ignored, open data ≈ 8% of official. Boundaries are geoBoundaries (DataMeet/ECI) and *not* Survey of India–certified; the OSM raster basemap uses OSM's international depiction. **For the government-facing finale, switch to SoI-consistent boundaries and a compliant basemap (e.g. Mappls/Bhuvan or no basemap).**
 - Fact-checker agent running on the top research claims (→ `research/fact-check.md`).
+
+### 2026-10-04 09:40 IST — Maharashtra drill-down on real data (all 61 RTOs)
+- All 61 Maharashtra RTOs fetched (Till-Today + CY2025). **C1 reconciliation: Σ RTO BEV = 1,185,108 = state table → error 0.0.**
+- RTO → district crosswalk `components/admin_geo/data/rto_district_MH.csv`: 60/61 mapped to 35 units (Mumbai City + Suburban merged; the TC office has 0 BEV). Method per row (name_match / manual); to verify against the Transport Department's jurisdiction list.
+- **District demand** (`eval/results/mh_district_demand.csv`): Pune 282,970 BEV (30,428 4W), Nagpur 113,736 (27,143 3W), Mumbai 78,814 (33,950 4W — most cars), Nashik 77,534, Kolhapur 71,548. Segment mix: 2W 83.6%, 3W 5.5%, 4W 9.6%, bus 0.4%, goods 0.8%.
+- Benchmark-equivalence requirement (not a demand model): to match the national median density (308 BEV/station) Maharashtra needs 3,848 stations (it has 4,155 official); to match Karnataka (152.4) it needs 7,776 (+3,621). Per-district figures are in the CSV.
 
