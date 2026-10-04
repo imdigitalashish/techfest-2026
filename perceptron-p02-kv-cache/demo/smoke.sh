@@ -2,7 +2,10 @@
 # Headless smoke test for the P2 demo (perceptron-p02-kv-cache/demo/smoke.sh). Exit 0 = every check ran and passed.
 #  1. REPLAY: demo/web/replay.js equals a fresh export of the committed rows; its tables and verdicts equal
 #     eval/RESULTS.md verbatim; every regenerated context matches its rows (export_replay.py --check).
-#  2. PAGE: no external URLs (no CDN), the inline JS and replay.js parse, the server serves both, replay-only refuses live.
+#  2. PAGE: no external URLs (no CDN), the inline JS and replay.js parse, the server serves both, replay-only refuses live;
+#     demo/check_states.js renders every replay state (run x budget x question) and the live evidence table with the
+#     page's own code: T2 shows only the amendment-5/E6 caveat at every budget (never "look-alike"), caveats wherever
+#     RoD beats the full cache, "logical context state" wording, the compact Full / RoD / best-baseline row.
 #  3. LIVE (SMOKE_LIVE=0 skips): plant a fact in a ~3k-token document, compress at 10%, ask. Asserts well-formed answers,
 #     exact byte accounting, the full cache recalls the planted fact, and the X-ray scores pick RoD's recalled blocks
 #     (RoD's own outcome is not asserted). Then re-runs committed T1 context 0 (Full, StreamingLLM, RoD at 10%/25%)
@@ -33,6 +36,9 @@ new Function(h.split("<script>")[1].split("</script>")[0]);
 const r = fs.readFileSync("demo/web/replay.js", "utf8"); new Function(r);
 if (!r.startsWith("window.REPLAY={")) throw new Error("replay.js prefix");' || die "page JS does not parse"
   ok "inline page JS and replay.js parse (node)"
+  node demo/check_states.js || die "page state check (demo/check_states.js)"
+else
+  echo "SKIP  page JS parse and state checks: node not installed"
 fi
 python3 - "$HERE" <<'PY' || die "replay-only server checks"
 import json, re, subprocess, sys, time, urllib.error, urllib.request

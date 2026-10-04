@@ -143,7 +143,17 @@ def build():
             c["md"] = (f"| {float(f):.2f} | {x['n']} | {c['m']} | {x['streamed_equal']}/{x['n']} | {x['t1_recorded_equal']}/{x['n']} | "
                        f"{c['rod']} | {c['e2']} | {c['e3']} | {c['e23']} | {c['e5']} |")
             posthoc["rows"].append(c)
+    e6 = rd.e6_delta() if hasattr(rd, "e6_delta") else None
+    if e6 is not None:  # exploratory (PREREG amendment 5): T2 re-answered with 32-token answers, strict first-number scoring
+        rows6 = [json.loads(l) for l in (common.ROOT / "eval" / "results" / "e6_maxnew32_T2.rows.jsonl").read_text().splitlines() if l.strip()]
+        k = lambda m, f: sum(bool(r["strict"]) for r in rows6 if r["method"] == m and r["frac"] == f)
+        n = lambda m, f: sum(1 for r in rows6 if r["method"] == m and r["frac"] == f)
+        e6 = {"full_k": k("full", 1.0), "rod_k": k("rod", 0.1), "n": n("full", 1.0), "n_rod": n("rod", 0.1), "n_ctx": e6["n"],
+              "d_s": f"{e6['d']:+.2f}", "lo_s": f"{e6['lo']:+.2f}", "hi_s": f"{e6['hi']:+.2f}",
+              "full": round(e6["full"], 4), "rod": round(e6["rod"], 4), "max_new": 32, "scoring": "strict first-number"}
+        assert e6["n"] == e6["n_rod"] and abs(e6["full_k"] / e6["n"] - e6["full"]) < 1e-4 and abs(e6["rod_k"] / e6["n"] - e6["rod"]) < 1e-4, e6
     return {"generated_by": "demo/export_replay.py from eval/results/*.rows.jsonl via eval/render_docs.py",
+            "e6": e6,
             "posthoc_T1": posthoc,
             "model": "Llama-3.2-1B-Instruct (mlx-community 4-bit @ 08231374, dequantised; fp32 compute on CPU, fp16 KV)",
             "kv_bytes_per_token": PER_TOK, "block": BLOCK, "n_sink": N_SINK, "names": NAMES, "groups": GROUPS,
@@ -206,6 +216,15 @@ def main():
             row = f"| {rd.NAMES.get(t['m'], t['m'])} | {t['f']:.2f} | {md['acc']} | {md['ci']} | {md['stored']} | {md['x']} | {md['answer']} | {md['s']} | {md['hit']} |"
             if row not in rset:
                 fails.append(f"{r['key']} on-screen strings differ from eval/RESULTS.md: {row[:90]}")
+    e6 = fresh.get("e6")
+    if e6:  # the E6 figures the page leads T2 with must be the ones render_docs renders
+        frag = f"({e6['d_s']}, 95% CI {e6['lo_s']} to {e6['hi_s']}; exploratory)"
+        if frag not in fresh["headline"]:
+            fails.append(f"E6 paired delta {frag} not in render_docs' headline")
+        e6line = next((v for v in fresh["verdicts"] if v.startswith("- **E6")), "")
+        for m, kk in (("full@1.0", "full_k"), ("rod@0.1", "rod_k")):
+            if f"{m} {e6[kk] / e6['n']:.3f}" not in e6line:
+                fails.append(f"E6 count {m} {e6[kk]}/{e6['n']} disagrees with the E6 verdict line")
     for row in (fresh.get("posthoc_T1") or {}).get("rows", []):
         n_lines += 1
         if row["md"] not in rset:
