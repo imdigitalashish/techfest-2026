@@ -77,8 +77,10 @@ function whatif(reset){
  const r=R[sel.value],ev=bevOf(r),sec=document.getElementById('wisec');
  if(!ev||!ev.params.ef_gen){sec.style.opacity=.45;document.getElementById('whatif').textContent='(What-if available in scenarios that use CEA grid factors.)';document.getElementById('breakeven').textContent='';return}
  sec.style.opacity=1;const ref=r.products[r.reference_product];
- const elec=DB.records[ev.params.elec].value/100,td=Number(document.getElementById('st').value);
- const tdScen=DB.records[ev.params.td].value;
+ const tdScen=DB.records[ev.params.td].value,stSel=document.getElementById('st');
+ if(reset){let o=stSel.querySelector('option[data-scen]');if(!o){o=document.createElement('option');o.dataset.scen='1';stSel.insertBefore(o,stSel.firstChild)}
+  o.value=tdScen;o.textContent=`This scenario's loss setting (${(100*tdScen).toFixed(2)}%)`;stSel.value=String(tdScen)}
+ const elec=DB.records[ev.params.elec].value/100,td=Number(stSel.value);
  // effective factor at generation implied by the scenario's own electricity stage (CO2 or CO2e, whichever it uses)
  const effGen=ev.stages.electricity_production_wtt/1000/elec*(1-tdScen);
  document.getElementById('efb').textContent=ev.params.gwp_ch4?'CO2e incl. CH4/N2O + coal-mine methane':'CO2 only';
