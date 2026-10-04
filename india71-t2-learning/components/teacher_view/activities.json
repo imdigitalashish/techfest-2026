@@ -1,17 +1,17 @@
 {
   "note": "Illustrative activity IDs and names; to be mapped to DIKSHA/state content IDs.",
   "language": {
-    "0": [{"id":"L0_PRINT_RICH","name":"picture talk and print-rich corner"}],
-    "1": [{"id":"L1_LETTER_CARDS","name":"letter-sound cards"},{"id":"L1_AKSHAR_MATCH","name":"match akshar to sound"}],
-    "2": [{"id":"L2_WORD_BUILD","name":"word building with syllable cards"}],
-    "3": [{"id":"L3_READ_PARA","name":"paired paragraph reading"}],
-    "4": [{"id":"L4_STORY_Q","name":"read-aloud + 3 questions"}]
+    "0": [{"id":"L0_PRINT_RICH","name_en":"picture talk and print-rich corner","name_hi":"चित्र चर्चा और प्रिंट कोना"}],
+    "1": [{"id":"L1_LETTER_CARDS","name_en":"letter-sound cards","name_hi":"अक्षर-ध्वनि कार्ड"},{"id":"L1_AKSHAR_MATCH","name_en":"match akshar to sound","name_hi":"अक्षर को ध्वनि से मिलाएँ"}],
+    "2": [{"id":"L2_WORD_BUILD","name_en":"word building with syllable cards","name_hi":"मात्रा कार्ड से शब्द बनाना"}],
+    "3": [{"id":"L3_READ_PARA","name_en":"paired paragraph reading","name_hi":"जोड़ी में अनुच्छेद पढ़ना"}],
+    "4": [{"id":"L4_STORY_Q","name_en":"read-aloud + 3 questions","name_hi":"कहानी पढ़ें + 3 प्रश्न"}]
   },
   "numeracy": {
-    "0": [{"id":"M0_COUNT_OBJECTS","name":"count local objects"}],
-    "1": [{"id":"M1_NUM_CARDS","name":"number cards 1-9"}],
-    "2": [{"id":"M2_NUM_11_99","name":"number cards 11-99"}],
-    "3": [{"id":"M3_SUB_BUNDLES","name":"subtraction with bundles and sticks"}],
-    "4": [{"id":"M4_DIV_SHARE","name":"division by equal sharing"}]
+    "0": [{"id":"M0_COUNT_OBJECTS","name_en":"count local objects","name_hi":"आस-पास की वस्तुएँ गिनना"}],
+    "1": [{"id":"M1_NUM_CARDS","name_en":"number cards 1-9","name_hi":"संख्या कार्ड 1-9"}],
+    "2": [{"id":"M2_NUM_11_99","name_en":"number cards 11-99","name_hi":"संख्या कार्ड 11-99"}],
+    "3": [{"id":"M3_SUB_BUNDLES","name_en":"subtraction with bundles and sticks","name_hi":"गड्डी और तीलियों से घटाव"}],
+    "4": [{"id":"M4_DIV_SHARE","name_en":"division by equal sharing","name_hi":"बराबर बाँटकर भाग"}]
   }
 }

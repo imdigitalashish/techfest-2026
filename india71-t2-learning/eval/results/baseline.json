@@ -1,0 +1,210 @@
+{
+  "synthetic": true,
+  "seeds": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "trust_audit": [
+    {
+      "seed": 1,
+      "budget_frac": 0.05,
+      "raw_block_mae_pp": 4.1916002777,
+      "risk_auc": 0.7553909465,
+      "random_block_mae_pp": 1.8761757029,
+      "random_coverage90": 0.3333333333,
+      "risk_pps_block_mae_pp": 3.0710983131,
+      "risk_pps_coverage90": 0.1666666667
+    },
+    {
+      "seed": 1,
+      "budget_frac": 0.1,
+      "raw_block_mae_pp": 4.1916002777,
+      "risk_auc": 0.7553909465,
+      "random_block_mae_pp": 1.8004266153,
+      "random_coverage90": 0.3333333333,
+      "risk_pps_block_mae_pp": 2.0023734318,
+      "risk_pps_coverage90": 0.3333333333
+    },
+    {
+      "seed": 1,
+      "budget_frac": 0.2,
+      "raw_block_mae_pp": 4.1916002777,
+      "risk_auc": 0.7553909465,
+      "random_block_mae_pp": 2.8256340628,
+      "random_coverage90": 0.1666666667,
+      "risk_pps_block_mae_pp": 2.1960237312,
+      "risk_pps_coverage90": 0.3333333333
+    },
+    {
+      "seed": 2,
+      "budget_frac": 0.05,
+      "raw_block_mae_pp": 3.7335903586,
+      "risk_auc": 0.7838541667,
+      "random_block_mae_pp": 4.5469862825,
+      "random_coverage90": 0.0,
+      "risk_pps_block_mae_pp": 2.8485569796,
+      "risk_pps_coverage90": 0.1666666667
+    },
+    {
+      "seed": 2,
+      "budget_frac": 0.1,
+      "raw_block_mae_pp": 3.7335903586,
+      "risk_auc": 0.7838541667,
+      "random_block_mae_pp": 1.4442085908,
+      "random_coverage90": 0.5,
+      "risk_pps_block_mae_pp": 2.2202687344,
+      "risk_pps_coverage90": 0.5
+    },
+    {
+      "seed": 2,
+      "budget_frac": 0.2,
+      "raw_block_mae_pp": 3.7335903586,
+      "risk_auc": 0.7838541667,
+      "random_block_mae_pp": 1.4901102615,
+      "random_coverage90": 0.5,
+      "risk_pps_block_mae_pp": 2.5039333779,
+      "risk_pps_coverage90": 0.5
+    },
+    {
+      "seed": 3,
+      "budget_frac": 0.05,
+      "raw_block_mae_pp": 3.7691341843,
+      "risk_auc": 0.7537200716,
+      "random_block_mae_pp": 1.2424401758,
+      "random_coverage90": 0.6666666667,
+      "risk_pps_block_mae_pp": 3.2060109973,
+      "risk_pps_coverage90": 0.1666666667
+    },
+    {
+      "seed": 3,
+      "budget_frac": 0.1,
+      "raw_block_mae_pp": 3.7691341843,
+      "risk_auc": 0.7537200716,
+      "random_block_mae_pp": 1.2990307092,
+      "random_coverage90": 0.5,
+      "risk_pps_block_mae_pp": 2.9193453806,
+      "risk_pps_coverage90": 0.1666666667
+    },
+    {
+      "seed": 3,
+      "budget_frac": 0.2,
+      "raw_block_mae_pp": 3.7691341843,
+      "risk_auc": 0.7537200716,
+      "random_block_mae_pp": 3.1473872576,
+      "random_coverage90": 0.0,
+      "risk_pps_block_mae_pp": 1.9007584492,
+      "risk_pps_coverage90": 0.1666666667
+    },
+    {
+      "seed": 4,
+      "budget_frac": 0.05,
+      "raw_block_mae_pp": 4.4393984686,
+      "risk_auc": 0.7679469389,
+      "random_block_mae_pp": 3.6777019482,
+      "random_coverage90": 0.0,
+      "risk_pps_block_mae_pp": 4.3086459902,
+      "risk_pps_coverage90": 0.0
+    },
+    {
+      "seed": 4,
+      "budget_frac": 0.1,
+      "raw_block_mae_pp": 4.4393984686,
+      "risk_auc": 0.7679469389,
+      "random_block_mae_pp": 2.3768196789,
+      "random_coverage90": 0.1666666667,
+      "risk_pps_block_mae_pp": 3.7241858171,
+      "risk_pps_coverage90": 0.1666666667
+    },
+    {
+      "seed": 4,
+      "budget_frac": 0.2,
+      "raw_block_mae_pp": 4.4393984686,
+      "risk_auc": 0.7679469389,
+      "random_block_mae_pp": 3.2036945688,
+      "random_coverage90": 0.0,
+      "risk_pps_block_mae_pp": 3.6334285888,
+      "risk_pps_coverage90": 0.0
+    },
+    {
+      "seed": 5,
+      "budget_frac": 0.05,
+      "raw_block_mae_pp": 4.3280595444,
+      "risk_auc": 0.771427434,
+      "random_block_mae_pp": 2.3784379537,
+      "random_coverage90": 0.1666666667,
+      "risk_pps_block_mae_pp": 1.0441617993,
+      "risk_pps_coverage90": 0.8333333333
+    },
+    {
+      "seed": 5,
+      "budget_frac": 0.1,
+      "raw_block_mae_pp": 4.3280595444,
+      "risk_auc": 0.771427434,
+      "random_block_mae_pp": 1.6824669299,
+      "random_coverage90": 0.3333333333,
+      "risk_pps_block_mae_pp": 0.807267645,
+      "risk_pps_coverage90": 0.8333333333
+    },
+    {
+      "seed": 5,
+      "budget_frac": 0.2,
+      "raw_block_mae_pp": 4.3280595444,
+      "risk_auc": 0.771427434,
+      "random_block_mae_pp": 3.5479319273,
+      "random_coverage90": 0.0,
+      "risk_pps_block_mae_pp": 1.4396809419,
+      "risk_pps_coverage90": 0.5
+    }
+  ],
+  "pipeline": [
+    {
+      "seed": 1,
+      "block_rmse_pp": 10.382666660901029,
+      "coverage90": 0.0,
+      "aggregate_anchor_abs_diff_pp": 0.0,
+      "allocation_raw_children": 448.79999999999995,
+      "allocation_adjusted_children": 447.75,
+      "allocation_oracle_children": 451.3499999999999
+    },
+    {
+      "seed": 2,
+      "block_rmse_pp": 4.2754240510421395,
+      "coverage90": 0.5,
+      "aggregate_anchor_abs_diff_pp": 5.551115123125783e-15,
+      "allocation_raw_children": 445.2,
+      "allocation_adjusted_children": 442.65,
+      "allocation_oracle_children": 448.05
+    },
+    {
+      "seed": 3,
+      "block_rmse_pp": 2.1731608404654175,
+      "coverage90": 0.8333333333333334,
+      "aggregate_anchor_abs_diff_pp": 2.7755575615628914e-15,
+      "allocation_raw_children": 426.59999999999997,
+      "allocation_adjusted_children": 427.79999999999995,
+      "allocation_oracle_children": 430.65
+    },
+    {
+      "seed": 4,
+      "block_rmse_pp": 4.132486887855044,
+      "coverage90": 0.16666666666666666,
+      "aggregate_anchor_abs_diff_pp": 5.551115123125783e-15,
+      "allocation_raw_children": 452.70000000000005,
+      "allocation_adjusted_children": 454.35,
+      "allocation_oracle_children": 454.65000000000003
+    },
+    {
+      "seed": 5,
+      "block_rmse_pp": 1.4582515615353386,
+      "coverage90": 1.0,
+      "aggregate_anchor_abs_diff_pp": 2.7755575615628914e-15,
+      "allocation_raw_children": 432.1499999999999,
+      "allocation_adjusted_children": 433.19999999999993,
+      "allocation_oracle_children": 435.29999999999995
+    }
+  ],
+  "block_mae_pp_at_10pct_budget": 2.334688201769768
+}

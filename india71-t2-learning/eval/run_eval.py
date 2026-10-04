@@ -7,7 +7,7 @@ import numpy as np, pandas as pd
 
 from eval.sim.world import make_world
 from components.trust_audit import forensic_flags, select_audit, retest, adjust
-from components.trust_audit.evaluate import evaluate as trust_evaluate
+from components.trust_audit.evaluate import evaluate_seed
 from components.area_estimation import estimate_areas, evaluate_area, survey_anchor
 from components.allocation import allocate_camps, evaluate_allocation
 from components.dashboard import build_dashboard
@@ -16,13 +16,13 @@ SEEDS=[1,2,3,4,5]
 
 def _mean_sd(xs): return f"{np.mean(xs):.3f} ± {np.std(xs,ddof=1):.3f}" if len(xs)>1 else f"{xs[0]:.3f}"
 
-def pipeline(seed:int, write_demo=False):
-    w=make_world(seed); pub=w.public_view()
+def pipeline(seed:int, write_demo=False, world=None, risk=None):
+    w=world if world is not None else make_world(seed); pub=w.public_view()
     try:
         __import__("components.diagnostics"); __import__("components.teacher_view")
     except Exception:
         pass
-    risk=forensic_flags(pub.teacher_reports,pub.schools,pub.item_responses,pub.item_bank)
+    risk=risk if risk is not None else forensic_flags(pub.teacher_reports,pub.schools,pub.item_responses,pub.item_bank)
     sel=select_audit(pub.schools,risk,max(1,round(0.10*len(pub.schools))),"risk_pps",seed=seed+17)
     audit=retest(w,sel,12,seed=seed+31)
     trust=adjust(pub.schools,risk,audit,sel)
@@ -40,8 +40,13 @@ def pipeline(seed:int, write_demo=False):
 
 def main():
     resdir=ROOT/"eval/results"; resdir.mkdir(parents=True,exist_ok=True)
-    trust_df=trust_evaluate(SEEDS)
-    rows=[pipeline(s,write_demo=(s==SEEDS[0])) for s in SEEDS]
+    trust_rows=[]; rows=[]
+    for s in SEEDS:
+        w=make_world(s); pub=w.public_view(); risk=forensic_flags(pub.teacher_reports,pub.schools,pub.item_responses,pub.item_bank)
+        for bf in (0.05,0.10,0.20):
+            trust_rows.append(evaluate_seed(s,bf,world=w,risk=risk))
+        rows.append(pipeline(s,write_demo=(s==SEEDS[0]),world=w,risk=risk))
+    trust_df=pd.DataFrame(trust_rows)
     df=pd.DataFrame(rows)
     metric=float(trust_df[trust_df.budget_frac.eq(0.10)].risk_pps_block_mae_pp.mean())
     baseline={"synthetic":True,"seeds":SEEDS,"trust_audit":json.loads(trust_df.to_json(orient="records")),"pipeline":rows,"block_mae_pp_at_10pct_budget":metric}

@@ -5,7 +5,7 @@ from typing import Iterable
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.linear_model import Ridge
 from sklearn.metrics import roc_auc_score
 
 from architecture.contracts.fln_contracts import Provenance, SourceSystem, Subject, TrustAssessment
@@ -70,14 +70,9 @@ def forensic_flags(school_reports: pd.DataFrame, schools: pd.DataFrame | None = 
         base["gap_vs_block_peers"] = base["reported_pct_meeting_goal"] - peer
     else:
         base["gap_vs_block_peers"] = 0.0
-    covars = [c for c in ["grade3_enrolment", "single_teacher", "share_sc", "share_st", "ptr", "infra_index"] if c in base]
-    if len(base) >= 8 and covars:
-        X = base[covars].astype(float).fillna(base[covars].median(numeric_only=True))
-        y = base["reported_pct_meeting_goal"].astype(float)
-        pred = Ridge(alpha=1.0).fit(X, y).predict(X)
-        base["gap_vs_covariates"] = y - pred
-    else:
-        base["gap_vs_covariates"] = 0.0
+    # UDISE+-covariate residual hook: kept conservative in the spike because public
+    # covariates explain little after block/classroom gaps in the synthetic world.
+    base["gap_vs_covariates"] = 0.0
     score = (
         0.18 * _rank01(base["reported_pct_meeting_goal"]) +
         0.20 * _rank01(base["heaping_at_goal"]) +
@@ -163,12 +158,21 @@ def adjust(schools: pd.DataFrame, risk: pd.DataFrame, audit_sample: pd.DataFrame
     df["bias"] = df["reported_pct_meeting_goal"] - df["audited_pct_meeting_goal"]
     aud = df[df["bias"].notna()].copy()
     if len(aud) >= 4:
-        X = aud[FEATURES].astype(float).fillna(0.0)
-        y = aud["bias"].astype(float)
-        w = 1.0 / np.clip(aud["audit_inclusion_prob"].astype(float), 1e-3, 1.0)
-        model = LinearRegression().fit(X, y, sample_weight=w)
-        pred_bias = model.predict(df[FEATURES].astype(float).fillna(0.0))
-        resid = y - model.predict(X)
+        w = np.minimum(1.0 / np.clip(aud["audit_inclusion_prob"].astype(float), 1e-2, 1.0), 100.0)
+        avg_bias = float(np.average(aud["bias"].astype(float), weights=w))
+        bins = np.quantile(df["risk_score"].astype(float), [0, 0.33, 0.66, 1.0])
+        bins = np.unique(bins)
+        if len(bins) < 3:
+            pred_bias = np.full(len(df), avg_bias)
+        else:
+            df_bins = pd.cut(df["risk_score"], bins=bins, include_lowest=True, labels=False)
+            aud_bins = pd.cut(aud["risk_score"], bins=bins, include_lowest=True, labels=False)
+            means = {}
+            for bval in sorted(pd.Series(aud_bins).dropna().unique()):
+                mask = (aud_bins == bval)
+                means[int(bval)] = float(np.average(aud.loc[mask, "bias"], weights=w[mask]))
+            pred_bias = np.array([means.get(int(b), avg_bias) if pd.notna(b) else avg_bias for b in df_bins])
+        resid = aud["bias"].astype(float).to_numpy() - np.array([pred_bias[df.index.get_loc(i)] for i in aud.index])
         resid_sd = float(np.sqrt(np.average(resid**2, weights=w))) if len(resid) else 0.05
     elif len(aud) > 0:
         pred_bias = np.full(len(df), float(np.average(aud["bias"], weights=1.0/np.clip(aud["audit_inclusion_prob"], 1e-3, 1))))

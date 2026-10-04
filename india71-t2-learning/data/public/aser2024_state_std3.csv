@@ -1,0 +1,181 @@
+state,school_type,year,indicator,value_pct,source_page
+All India,all,2018,Std III at least subtraction,28.2,19
+All India,all,2022,Std III at least subtraction,25.9,19
+All India,all,2024,Std III at least subtraction,33.7,19
+All India,government,2018,Std III at least subtraction,20.9,19
+All India,government,2022,Std III at least subtraction,20.2,19
+All India,government,2024,Std III at least subtraction,27.6,19
+All India,private,2018,Std III at least subtraction,43.5,19
+All India,private,2022,Std III at least subtraction,43.1,19
+All India,private,2024,Std III at least subtraction,47.5,19
+Andhra Pradesh,government,2018,Std III at least subtraction,34.1,53
+Andhra Pradesh,government,2022,Std III at least subtraction,29.2,53
+Andhra Pradesh,government,2024,Std III at least subtraction,40.9,53
+Arunachal Pradesh,government,2018,Std III at least subtraction,23.5,53
+Arunachal Pradesh,government,2022,Std III at least subtraction,29.4,53
+Arunachal Pradesh,government,2024,Std III at least subtraction,30.2,53
+Assam,government,2018,Std III at least subtraction,23.4,53
+Assam,government,2022,Std III at least subtraction,15.8,53
+Assam,government,2024,Std III at least subtraction,22.3,53
+Bihar,government,2018,Std III at least subtraction,18.0,53
+Bihar,government,2022,Std III at least subtraction,21.2,53
+Bihar,government,2024,Std III at least subtraction,28.2,53
+Chhattisgarh,government,2018,Std III at least subtraction,16.0,53
+Chhattisgarh,government,2022,Std III at least subtraction,16.0,53
+Chhattisgarh,government,2024,Std III at least subtraction,21.9,53
+Gujarat,government,2018,Std III at least subtraction,22.8,53
+Gujarat,government,2022,Std III at least subtraction,22.9,53
+Gujarat,government,2024,Std III at least subtraction,16.5,53
+Haryana,government,2018,Std III at least subtraction,31.6,53
+Haryana,government,2022,Std III at least subtraction,26.1,53
+Haryana,government,2024,Std III at least subtraction,33.1,53
+Himachal Pradesh,government,2018,Std III at least subtraction,42.4,53
+Himachal Pradesh,government,2022,Std III at least subtraction,31.3,53
+Himachal Pradesh,government,2024,Std III at least subtraction,49.5,53
+Jammu and Kashmir,government,2018,Std III at least subtraction,20.2,53
+Jammu and Kashmir,government,2022,Std III at least subtraction,26.1,53
+Jammu and Kashmir,government,2024,Std III at least subtraction,22.7,53
+Jharkhand,government,2018,Std III at least subtraction,14.8,53
+Jharkhand,government,2022,Std III at least subtraction,16.3,53
+Jharkhand,government,2024,Std III at least subtraction,24.6,53
+Karnataka,government,2018,Std III at least subtraction,23.5,53
+Karnataka,government,2022,Std III at least subtraction,19.6,53
+Karnataka,government,2024,Std III at least subtraction,23.9,53
+Kerala,government,2018,Std III at least subtraction,44.3,53
+Kerala,government,2022,Std III at least subtraction,32.7,53
+Kerala,government,2024,Std III at least subtraction,26.9,53
+Madhya Pradesh,government,2018,Std III at least subtraction,8.5,53
+Madhya Pradesh,government,2022,Std III at least subtraction,9.5,53
+Madhya Pradesh,government,2024,Std III at least subtraction,13.0,53
+Maharashtra,government,2018,Std III at least subtraction,28.1,53
+Maharashtra,government,2022,Std III at least subtraction,18.5,53
+Maharashtra,government,2024,Std III at least subtraction,31.6,53
+Meghalaya,government,2018,Std III at least subtraction,14.2,53
+Meghalaya,government,2022,Std III at least subtraction,15.3,53
+Meghalaya,government,2024,Std III at least subtraction,18.9,53
+Mizoram,government,2018,Std III at least subtraction,57.4,53
+Mizoram,government,2022,Std III at least subtraction,35.3,53
+Mizoram,government,2024,Std III at least subtraction,55.3,53
+Nagaland,government,2018,Std III at least subtraction,26.3,53
+Nagaland,government,2022,Std III at least subtraction,27.7,53
+Nagaland,government,2024,Std III at least subtraction,31.4,53
+Odisha,government,2018,Std III at least subtraction,28.1,53
+Odisha,government,2022,Std III at least subtraction,26.8,53
+Odisha,government,2024,Std III at least subtraction,34.6,53
+Punjab,government,2018,Std III at least subtraction,40.5,53
+Punjab,government,2022,Std III at least subtraction,31.1,53
+Punjab,government,2024,Std III at least subtraction,45.8,53
+Rajasthan,government,2018,Std III at least subtraction,8.1,53
+Rajasthan,government,2022,Std III at least subtraction,4.9,53
+Rajasthan,government,2024,Std III at least subtraction,10.4,53
+Sikkim,government,2018,Std III at least subtraction,34.7,53
+Sikkim,government,2022,Std III at least subtraction,36.1,53
+Sikkim,government,2024,Std III at least subtraction,35.1,53
+Tamil Nadu,government,2018,Std III at least subtraction,23.6,53
+Tamil Nadu,government,2022,Std III at least subtraction,9.3,53
+Tamil Nadu,government,2024,Std III at least subtraction,27.6,53
+Telangana,government,2018,Std III at least subtraction,30.6,53
+Telangana,government,2022,Std III at least subtraction,27.2,53
+Telangana,government,2024,Std III at least subtraction,29.1,53
+Tripura,government,2018,Std III at least subtraction,33.1,53
+Tripura,government,2022,Std III at least subtraction,29.0,53
+Tripura,government,2024,Std III at least subtraction,28.0,53
+Uttar Pradesh,government,2018,Std III at least subtraction,11.2,53
+Uttar Pradesh,government,2022,Std III at least subtraction,19.7,53
+Uttar Pradesh,government,2024,Std III at least subtraction,31.6,53
+Uttarakhand,government,2018,Std III at least subtraction,18.5,53
+Uttarakhand,government,2022,Std III at least subtraction,14.4,53
+Uttarakhand,government,2024,Std III at least subtraction,26.7,53
+West Bengal,government,2018,Std III at least subtraction,35.5,53
+West Bengal,government,2022,Std III at least subtraction,32.4,53
+West Bengal,government,2024,Std III at least subtraction,37.5,53
+All India,all,2018,Std III read Std II level text,27.3,19
+All India,all,2022,Std III read Std II level text,20.5,19
+All India,all,2024,Std III read Std II level text,27.1,19
+All India,government,2018,Std III read Std II level text,20.9,19
+All India,government,2022,Std III read Std II level text,16.3,19
+All India,government,2024,Std III read Std II level text,23.4,19
+All India,private,2018,Std III read Std II level text,40.6,19
+All India,private,2022,Std III read Std II level text,33.1,19
+All India,private,2024,Std III read Std II level text,35.5,19
+Andhra Pradesh,government,2018,Std III read Std II level text,22.6,52
+Andhra Pradesh,government,2022,Std III read Std II level text,10.5,52
+Andhra Pradesh,government,2024,Std III read Std II level text,14.7,52
+Arunachal Pradesh,government,2018,Std III read Std II level text,4.8,52
+Arunachal Pradesh,government,2022,Std III read Std II level text,3.5,52
+Arunachal Pradesh,government,2024,Std III read Std II level text,7.2,52
+Assam,government,2018,Std III read Std II level text,14.4,52
+Assam,government,2022,Std III read Std II level text,10.1,52
+Assam,government,2024,Std III read Std II level text,13.2,52
+Bihar,government,2018,Std III read Std II level text,12.3,52
+Bihar,government,2022,Std III read Std II level text,12.9,52
+Bihar,government,2024,Std III read Std II level text,20.1,52
+Chhattisgarh,government,2018,Std III read Std II level text,25.0,52
+Chhattisgarh,government,2022,Std III read Std II level text,20.7,52
+Chhattisgarh,government,2024,Std III read Std II level text,24.5,52
+Gujarat,government,2018,Std III read Std II level text,32.3,52
+Gujarat,government,2022,Std III read Std II level text,23.2,52
+Gujarat,government,2024,Std III read Std II level text,24.7,52
+Haryana,government,2018,Std III read Std II level text,33.5,52
+Haryana,government,2022,Std III read Std II level text,21.2,52
+Haryana,government,2024,Std III read Std II level text,32.1,52
+Himachal Pradesh,government,2018,Std III read Std II level text,47.4,52
+Himachal Pradesh,government,2022,Std III read Std II level text,23.0,52
+Himachal Pradesh,government,2024,Std III read Std II level text,49.7,52
+Jammu and Kashmir,government,2018,Std III read Std II level text,5.4,52
+Jammu and Kashmir,government,2022,Std III read Std II level text,4.3,52
+Jammu and Kashmir,government,2024,Std III read Std II level text,6.7,52
+Jharkhand,government,2018,Std III read Std II level text,11.0,52
+Jharkhand,government,2022,Std III read Std II level text,9.5,52
+Jharkhand,government,2024,Std III read Std II level text,14.1,52
+Karnataka,government,2018,Std III read Std II level text,19.4,52
+Karnataka,government,2022,Std III read Std II level text,7.7,52
+Karnataka,government,2024,Std III read Std II level text,15.4,52
+Kerala,government,2018,Std III read Std II level text,43.4,52
+Kerala,government,2022,Std III read Std II level text,31.6,52
+Kerala,government,2024,Std III read Std II level text,44.4,52
+Madhya Pradesh,government,2018,Std III read Std II level text,10.4,52
+Madhya Pradesh,government,2022,Std III read Std II level text,7.9,52
+Madhya Pradesh,government,2024,Std III read Std II level text,14.8,52
+Maharashtra,government,2018,Std III read Std II level text,44.2,52
+Maharashtra,government,2022,Std III read Std II level text,26.1,52
+Maharashtra,government,2024,Std III read Std II level text,37.0,52
+Meghalaya,government,2018,Std III read Std II level text,19.6,52
+Meghalaya,government,2022,Std III read Std II level text,10.7,52
+Meghalaya,government,2024,Std III read Std II level text,15.6,52
+Mizoram,government,2018,Std III read Std II level text,25.2,52
+Mizoram,government,2022,Std III read Std II level text,13.2,52
+Mizoram,government,2024,Std III read Std II level text,25.0,52
+Nagaland,government,2018,Std III read Std II level text,7.4,52
+Nagaland,government,2022,Std III read Std II level text,9.1,52
+Nagaland,government,2024,Std III read Std II level text,7.1,52
+Odisha,government,2018,Std III read Std II level text,34.9,52
+Odisha,government,2022,Std III read Std II level text,26.7,52
+Odisha,government,2024,Std III read Std II level text,37.7,52
+Punjab,government,2018,Std III read Std II level text,36.4,52
+Punjab,government,2022,Std III read Std II level text,26.3,52
+Punjab,government,2024,Std III read Std II level text,32.6,52
+Rajasthan,government,2018,Std III read Std II level text,10.3,52
+Rajasthan,government,2022,Std III read Std II level text,7.7,52
+Rajasthan,government,2024,Std III read Std II level text,12.1,52
+Sikkim,government,2018,Std III read Std II level text,13.5,52
+Sikkim,government,2022,Std III read Std II level text,14.7,52
+Sikkim,government,2024,Std III read Std II level text,24.7,52
+Tamil Nadu,government,2018,Std III read Std II level text,11.6,52
+Tamil Nadu,government,2022,Std III read Std II level text,4.7,52
+Tamil Nadu,government,2024,Std III read Std II level text,13.2,52
+Telangana,government,2018,Std III read Std II level text,12.6,52
+Telangana,government,2022,Std III read Std II level text,6.3,52
+Telangana,government,2024,Std III read Std II level text,6.8,52
+Tripura,government,2018,Std III read Std II level text,25.3,52
+Tripura,government,2022,Std III read Std II level text,15.3,52
+Tripura,government,2024,Std III read Std II level text,19.5,52
+Uttar Pradesh,government,2018,Std III read Std II level text,12.3,52
+Uttar Pradesh,government,2022,Std III read Std II level text,16.4,52
+Uttar Pradesh,government,2024,Std III read Std II level text,27.9,52
+Uttarakhand,government,2018,Std III read Std II level text,24.7,52
+Uttarakhand,government,2022,Std III read Std II level text,22.1,52
+Uttarakhand,government,2024,Std III read Std II level text,35.6,52
+West Bengal,government,2018,Std III read Std II level text,36.6,52
+West Bengal,government,2022,Std III read Std II level text,32.6,52
+West Bengal,government,2024,Std III read Std II level text,34.0,52

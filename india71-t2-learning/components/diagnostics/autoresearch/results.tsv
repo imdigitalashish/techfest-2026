@@ -1,0 +1,2 @@
+timestamp	commit	hypothesis	metric	delta	kept	notes
+2026-10-04T05:33:31+05:30	no-git	baseline adaptive_test capped at 8 items	c4_level_acc_at_8_items=0.551	0.000	true	Baseline from python3 components/diagnostics/evaluate.py on seeds 101..105; no git run per lead instruction.

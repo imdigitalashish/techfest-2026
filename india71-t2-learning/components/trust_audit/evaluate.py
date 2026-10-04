@@ -38,9 +38,9 @@ def _coverage(world, vals):
     return float(np.mean(rows))
 
 
-def evaluate_seed(seed:int, budget_frac:float=0.10):
-    w=make_world(seed); pub=w.public_view(); n=len(pub.schools); b=max(1, round(n*budget_frac))
-    risk=forensic_flags(pub.teacher_reports, pub.schools, pub.item_responses, pub.item_bank)
+def evaluate_seed(seed:int, budget_frac:float=0.10, world=None, risk=None):
+    w=world if world is not None else make_world(seed); pub=w.public_view(); n=len(pub.schools); b=max(1, round(n*budget_frac))
+    risk=risk if risk is not None else forensic_flags(pub.teacher_reports, pub.schools, pub.item_responses, pub.item_bank)
     raw=risk[["udise_code","reported_pct_meeting_goal"]]
     res={"seed":seed,"budget_frac":budget_frac,"raw_block_mae_pp":_block_mae(w,raw,"reported_pct_meeting_goal"),"risk_auc":detection_auc(risk,w.truth_school)}
     for design in ["random","risk_pps"]:
@@ -56,8 +56,10 @@ def evaluate_seed(seed:int, budget_frac:float=0.10):
 def evaluate(seeds=(1,2,3,4,5), budget_fracs=(0.05,0.10,0.20)):
     rows=[]
     for s in seeds:
+        w=make_world(int(s)); pub=w.public_view()
+        risk=forensic_flags(pub.teacher_reports, pub.schools, pub.item_responses, pub.item_bank)
         for bf in budget_fracs:
-            rows.append(evaluate_seed(int(s), float(bf)))
+            rows.append(evaluate_seed(int(s), float(bf), world=w, risk=risk))
     return pd.DataFrame(rows)
 
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Iterable
 import numpy as np, pandas as pd
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
 from architecture.contracts.fln_contracts import AreaEstimate, AreaLevel, SourceSystem, Subject, TrustAssessment
 
 
@@ -39,7 +39,12 @@ def fay_herriot_benchmark(public_world, school_est: pd.DataFrame, subject="langu
     d=blk.merge(cov,on=["block_lgd","n_children"],how="left")
     X=d[["single_teacher","share_sc","share_st","ptr","infra_index"]].astype(float).fillna(0)
     y=d.estimate.to_numpy(float); V=np.maximum(d.se.to_numpy(float)**2,1e-5)
-    pred=LinearRegression().fit(X,y).predict(X) if len(d)>=3 else np.full(len(d),np.average(y,weights=d.n_children))
+    if len(d) >= 3:
+        mu = X.mean(axis=0); sd = X.std(axis=0).replace(0, 1.0)
+        pred = Ridge(alpha=1.0).fit((X-mu)/sd, y).predict((X-mu)/sd)
+        pred = np.nan_to_num(pred, nan=float(np.average(y, weights=d.n_children)), posinf=float(np.average(y, weights=d.n_children)), neginf=0.0)
+    else:
+        pred=np.full(len(d),np.average(y,weights=d.n_children))
     A=max(0.0, float(np.var(y-pred, ddof=1) - np.mean(V))) if len(d)>2 else 0.0
     gamma=A/(A+V) if A>0 else np.zeros_like(V)
     theta=gamma*y+(1-gamma)*pred

@@ -29,6 +29,16 @@ def decide(req: AccessRequest) -> AccessDecision:
         if req.role in (Role.TEACHER, Role.HEAD_TEACHER) and req.target_level == AreaLevel.SCHOOL and _in_scope(req.actor_scope, req.target_scope):
             return AccessDecision(allowed=True, transform="pseudonymise" if req.resource == "child_diagnosis" else "none", reason="school staff may use own-school child-level remediation data")
         return AccessDecision(allowed=False, transform="suppress", reason="child-level data limited to own school teachers/head teachers")
+    if req.resource == "trust_assessment" and req.target_level == AreaLevel.SCHOOL:
+        if req.role == Role.AUDITOR and req.purpose == "audit":
+            return AccessDecision(allowed=True, transform="none", reason="school-level trust data available to moderation auditors")
+        if req.role == Role.STATE and req.purpose in ("audit", "planning") and _in_scope(req.actor_scope, req.target_scope):
+            return AccessDecision(allowed=True, transform="none", reason="school-level trust data available to the state moderation team")
+        return AccessDecision(
+            allowed=False,
+            transform="suppress",
+            reason="non-punitive moderation: school-level trust data restricted to the moderation team",
+        )
     # Aggregate resources.
     if n is not None and n < 10:
         return AccessDecision(allowed=True, transform="suppress", reason="aggregate cell has fewer than 10 children")

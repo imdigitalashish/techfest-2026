@@ -12,7 +12,7 @@ CASES = [
     ("smc own", "smc", "S1", "area_estimate", "S1|n=40", "school", "planning", True, "aggregate"),
     ("smc other", "smc", "S1", "area_estimate", "S2|n=40", "school", "planning", False, "suppress"),
     ("crc cluster", "crc", "C1", "area_estimate", "C1|n=200", "cluster", "mentoring", True, "aggregate"),
-    ("crc school in cluster", "crc", "C1", "trust_assessment", "C1/S1|n=20", "school", "mentoring", True, "aggregate"),
+    ("crc school trust denied", "crc", "C1", "trust_assessment", "C1/S1|n=20", "school", "mentoring", False, "suppress"),
     ("crc other cluster", "crc", "C1", "area_estimate", "C2|n=200", "cluster", "mentoring", False, "suppress"),
     ("brc block", "brc", "B1", "area_estimate", "B1|n=900", "block", "planning", True, "aggregate"),
     ("brc cluster", "brc", "B1", "area_estimate", "B1/C1|n=90", "cluster", "planning", True, "aggregate"),
@@ -29,6 +29,16 @@ CASES = [
     ("teacher raw denied", "teacher", "S1", "raw_responses", "S1|audit_selected", "school", "audit", False, "suppress"),
     ("low n cluster suppressed", "crc", "C1", "area_estimate", "C1|n=9", "cluster", "planning", True, "suppress"),
     ("low n district suppressed", "deo", "D1", "area_estimate", "D1|n=7", "district", "planning", True, "suppress"),
+    ("auditor school trust audit", "auditor", "AUD", "trust_assessment", "S1|n=25", "school", "audit", True, "none"),
+    ("auditor school trust planning denied", "auditor", "AUD", "trust_assessment", "S1|n=25", "school", "planning", False, "suppress"),
+    ("state school trust planning", "state", "ST", "trust_assessment", "ST/D1/B1/C1/S1|n=25", "school", "planning", True, "none"),
+    ("state school trust audit", "state", "ST", "trust_assessment", "ST/D1/B1/C1/S1|n=25", "school", "audit", True, "none"),
+    ("state school trust research denied", "state", "ST", "trust_assessment", "ST/D1/B1/C1/S1|n=25", "school", "research", False, "suppress"),
+    ("teacher school trust denied", "teacher", "S1", "trust_assessment", "S1|n=25", "school", "planning", False, "suppress"),
+    ("head school trust denied", "head_teacher", "S1", "trust_assessment", "S1|n=25", "school", "planning", False, "suppress"),
+    ("smc school trust denied", "smc", "S1", "trust_assessment", "S1|n=25", "school", "planning", False, "suppress"),
+    ("brc school trust denied", "brc", "B1", "trust_assessment", "B1/C1/S1|n=25", "school", "planning", False, "suppress"),
+    ("deo school trust denied", "deo", "D1", "trust_assessment", "D1/B1/C1/S1|n=25", "school", "planning", False, "suppress"),
 ]
 
 def build_request(case):
@@ -40,3 +50,17 @@ def test_policy_table(case):
     req, exp_allowed, exp_transform = build_request(case)
     got = decide(req)
     assert (got.allowed, got.transform) == (exp_allowed, exp_transform)
+
+
+def test_school_level_trust_denial_reason():
+    req = AccessRequest(
+        role=Role.CRC,
+        actor_scope="C1",
+        resource="trust_assessment",
+        target_scope="C1/S1|n=25",
+        target_level=AreaLevel.SCHOOL,
+        purpose="mentoring",
+    )
+    got = decide(req)
+    assert not got.allowed
+    assert got.reason == "non-punitive moderation: school-level trust data restricted to the moderation team"

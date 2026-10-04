@@ -1,3 +1,8 @@
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
 from components.governance.test_policy import CASES, build_request
 from components.governance import decide
 

@@ -9,7 +9,14 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / ".data" / "raw" / "aser2024_report.txt"
 OUT = ROOT / "data" / "public" / "aser2024_state_std3.csv"
 
-STATE_RE = re.compile(r"^\s*([A-Za-z][A-Za-z &]+(?:Pradesh|Kashmir|Bengal|Nadu)|Andhra Pradesh|Assam|Bihar|Chhattisgarh|Gujarat|Haryana|Jharkhand|Karnataka|Kerala|Maharashtra|Meghalaya|Mizoram|Nagaland|Odisha|Punjab|Rajasthan|Sikkim|Telangana|Tripura|Uttarakhand)\s+(\d+\.\d)\s+(\d+\.\d)\s+(\d+\.\d)\s*$")
+STATE_NAMES = [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+    "Gujarat", "Haryana", "Himachal Pradesh", "Jammu and Kashmir", "Jharkhand",
+    "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Meghalaya",
+    "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim",
+    "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+]
+NUMS_RE = re.compile(r"(\d+\.\d)\s+(\d+\.\d)\s+(\d+\.\d)\s*$")
 YEARS = [2018, 2022, 2024]
 
 
@@ -28,6 +35,14 @@ def find_page(texts: list[str], contains: str) -> tuple[int, str]:
             page_no = int(next(g for g in m.groups() if g)) if m else -1
             return page_no, p
     raise RuntimeError(f"Could not find page containing {contains!r}")
+
+def find_page_all(texts: list[str], *needles: str) -> tuple[int, str]:
+    for p in texts:
+        if all(n in p for n in needles):
+            m = re.search(r"Annual Status of Education Report 2024 \|\s*(\d+)|^(\d+) \| Annual Status of Education Report 2024", p, re.M)
+            page_no = int(next(g for g in m.groups() if g)) if m else -1
+            return page_no, p
+    raise RuntimeError(f"Could not find page containing all {needles!r}")
 
 
 def add_all_india(rows: list[dict], pageno: int, page: str, header: str, indicator: str) -> None:
@@ -57,11 +72,15 @@ def add_state_table(rows: list[dict], pageno: int, page: str, marker: str, indic
     if "State               2018 2022 2024" in table:
         table = table.split("State               2018 2022 2024", 1)[1]
     for line in table.splitlines():
-        m = STATE_RE.match(line)
+        m = NUMS_RE.search(line)
         if not m:
             continue
-        state = clean_state(m.group(1))
-        for year, value in zip(YEARS, m.groups()[1:4]):
+        prefix = line[:m.start()]
+        hits = [(prefix.lower().rfind(st.lower()), st) for st in STATE_NAMES if prefix.lower().rfind(st.lower()) != -1]
+        if not hits:
+            continue
+        state = max(hits, key=lambda x: x[0])[1]
+        for year, value in zip(YEARS, m.groups()):
             rows.append({
                 "state": state,
                 "school_type": "government",
@@ -81,9 +100,9 @@ def main() -> None:
     add_all_india(rows, p18, page18, "Table 1: Reading level by school type: All India", "Std III read Std II level text")
     add_all_india(rows, p18, page18, "Table 2: Arithmetic level by school type: All India", "Std III at least subtraction")
 
-    p52, page52 = find_page(pages, "State-wise table showing\n                                                                                                                                        % of government school\n                                                                                                                                        children in Std III who can read")
+    p52, page52 = find_page_all(pages, "State-wise table showing", "children in Std III who can read Std II level text, 2024")
     add_state_table(rows, p52, page52, "children in Std III who can read", "Std III read Std II level text")
-    p53, page53 = find_page(pages, "State-wise table showing\n                                                                                                                                            % of government school\n                                                                                                                                            children in Std III who can do at")
+    p53, page53 = find_page_all(pages, "State-wise table showing", "children in Std III who can do at least subtraction, 2024")
     add_state_table(rows, p53, page53, "children in Std III who can do at", "Std III at least subtraction")
 
     rows.sort(key=lambda r: (r["indicator"], r["state"] != "All India", r["state"], r["school_type"], int(r["year"])))
