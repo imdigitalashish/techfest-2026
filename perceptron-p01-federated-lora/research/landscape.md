@@ -54,7 +54,12 @@ No literature definition of a scalar "dominance index" was confirmed tonight. Ou
 
 ## 5. Benchmarks and frameworks
 - **FedLLM-Bench** ([2406.04845](https://arxiv.org/abs/2406.04845)): "previous works all rely on arti[ficial]" partitions, so it offers realistic federated LLM datasets (abs). It is a target for the finals evaluation.
-- **Flower** ([2007.14390](https://arxiv.org/abs/2007.14390), the framework paper; PyPI `flwr` 1.39.0 seen 2026-10-04). The FlowerTune LLM leaderboard page failed to load (transport error), so its datasets and baselines are **UNVERIFIED**.
+- **Flower** ([2007.14390](https://arxiv.org/abs/2007.14390), the framework paper). `flwr` 1.39.0 is installed: Message API with `ServerApp`/`ClientApp`/`Grid`/`ArrayRecord`, read from the installed source. The 1.39 simulation runtime defaults to a Ray backend, so our C10 uses an in-process `LocalGrid`.
+- **FlowerTune LLM leaderboard** (details in [`raw/frameworks_benchmarks.md`](raw/frameworks_benchmarks.md), agent-verified):
+  - Four challenges (General NLP, Finance, Medical, Code). The baseline is Mistral-7B + LoRA + FedAvg; the lead confirmed the Mistral-7B baseline and the `flwr new @flwrlabs/flowertune-llm-finance` starter in the [README](https://github.com/adap/flower/tree/main/benchmarks/flowertune-llm).
+  - **Finance** trains on `flwrlabs/fingpt-sentiment-train`; the lead confirmed via the HF API that it is MIT-licensed with 76,772 training examples. Data is split IID across 50 clients, and evaluation is accuracy on FPB / FiQA / TFNS.
+  - Per the agent, the baseline averages 45.27 and a SmolLM2-1.7B-Instruct entry reaches 67.90. Both figures are agent-read, not re-checked by the lead.
+  - **This is our finals benchmark.** It is Optiver-relevant, public and accuracy-scored. We add our heterogeneity (Dirichlet non-IID splits, device budgets, dropouts) and run 0.5B–1.7B models, so we can compare directly against the leaderboard's IID FedAvg setting.
 - **FedScale** ([2105.11367](https://arxiv.org/abs/2105.11367), ICML 2022): system-performance benchmark with device behaviour (title). It is the source for realistic availability traces in the next iteration.
 - PEFT 0.21.2 and torch 2.10 (MPS) run our skeleton today; PyPI also lists torch 2.14.1 and mlx-lm 0.32.0 (seen 2026-10-04).
 

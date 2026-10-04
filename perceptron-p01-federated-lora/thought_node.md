@@ -168,6 +168,8 @@ Folder, brief and journal created. The lead session starts Phase 0.
   | `anchor_full` c0 influence share | 0.204 | 0.224 |
 
   Untuned model: 2.7063. All 5 domains improve over the untuned model on both seeds (`eval/results/v1_summary.md`).
+
+  **Paired 95 % CI** vs the starter (same seed ⇒ same schedule): Δ = −0.079, CI [−0.199, +0.041] at n = 2. Both seeds favour AnchorLoRA (−0.070, −0.088), but **the CI still includes 0, so the result is not yet significant**. Seeds 2–4 are queued; `eval.summarize` now prints this table.
 - **New code (13/13 tests).**
   - `Anchor` options for the ratchet: `tau_from` (actual vs planned), `memory_decay`, `segment_norm` (PreLort-style per-column owners), and √n weights. The default path stays bit-identical to the v1 runs; a test asserts it.
   - `eval.run_matrix --skip-existing`.

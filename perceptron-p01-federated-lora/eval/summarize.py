@@ -66,9 +66,38 @@ def main() -> None:
             doms = by[s][0]["final_per_domain_loss"]
             lines.append(f"| {s} | " + " | ".join(
                 f"{statistics.mean(r['final_per_domain_loss'][d] for r in by[s]):.4f}" for d in doms) + " |")
+        lines += paired_vs_starter(by)
         lines.append("")
     (OUT / f"{args.tag}_summary.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
+
+
+def paired_vs_starter(by: dict, ref: str = "fedavg_ab_homo", metric: str = "final_macro_loss") -> list[str]:
+    """Paired (same seed ⇒ same dropout schedule) difference vs the starter, with a t-based 95 % CI."""
+    from scipy import stats
+
+    if ref not in by:
+        return []
+    base = {r["seed"]: r[metric] for r in by[ref]}
+    out = ["", f"Paired difference in {metric} vs `{ref}` (same seed ⇒ identical device schedule; "
+               "negative = better; 95 % CI from the t distribution, n = shared seeds):", "",
+           "| Strategy | shared seeds | mean Δ | 95 % CI | Δ per seed |", "|---|---|---|---|---|"]
+    for s, rs in by.items():
+        if s == ref:
+            continue
+        d = [(r["seed"], r[metric] - base[r["seed"]]) for r in rs if r["seed"] in base]
+        if not d:
+            continue
+        vals = [v for _, v in d]
+        m = statistics.mean(vals)
+        if len(vals) > 1:
+            h = stats.t.ppf(0.975, len(vals) - 1) * statistics.stdev(vals) / len(vals) ** 0.5
+            ci = f"[{m - h:+.4f}, {m + h:+.4f}]"
+        else:
+            ci = "n = 1 (no CI)"
+        out.append(f"| {s} | {','.join(str(k) for k, _ in d)} | {m:+.4f} | {ci} | "
+                   + ", ".join(f"s{k}: {v:+.4f}" for k, v in d) + " |")
+    return out
 
 
 if __name__ == "__main__":
