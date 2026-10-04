@@ -67,6 +67,18 @@
       "default": false,
       "title": "Own Customers Only",
       "type": "boolean"
+    },
+    "subject_bank_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Subject Bank Id"
     }
   },
   "required": [

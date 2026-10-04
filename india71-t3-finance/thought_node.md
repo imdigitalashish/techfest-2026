@@ -10,9 +10,9 @@
 - _(none)_
 
 ## Now
-- **Phase:** finishing (resumed 13:52). Definition of done items 1–3 and 5 complete; item 4 (cross-model reviews) done, with a short fix-verification pass running. 2026-10-04 15:14 IST.
+- **Phase:** finishing (resumed 13:52). Definition of done items 1–3 and 5 complete; item 4 (cross-model reviews) done, including a fix-verification round. 2026-10-04 15:14 IST.
 - **Done:** final PDF `deliverables/India71_100_[TeamID].pdf` (6 pp, Arial only, ≥ 11 pt, fonts embedded — `deliverables/check_pdf.py` PASS), generated from committed results (`deliverables/render_numbers.py`; `eval/check_docs.py` 28/28); verification pass (AePS, mapper consent/routing, BC Sakhi, MuleHunter, FI-Index weights, DEPA, DPDP Rules r.16, June 2025 BC re-KYC, NSFI 2025-30, P4 URL); C6 pre-registered twice (v0.2 at 14:00; corrected v0.3 at 14:57 after review — H1 +0.086, H2, H3 pass; SYNTHETIC); reviews: gpt-6-astra (15 issues) and gpt-6-sol (18 issues) → all accepted except the PDF rename (`reviews/2026-10-04-decisions.md`, `reviews/ledger.tsv`).
-- **Doing:** fix-verification addenda from both reviewer child sessions (≤ 2); then DONE message to the Supervisor.
+- **Doing:** nothing — DONE sent to the Supervisor; idle until resumed.
 - **Needs from user:** (1) Theme choice by 15 Oct — recommendation **T1** (see memo). (2) If T3: team name/ID (rename the PDF), up to 4 members, a partner bank's FI head, and 3–5 field conversations (BC / BC Sakhi, rural branch manager, Lead District Manager) before 1 Nov.
 - **Risks:** account-level evidence is SYNTHETIC; cross-bank person counts need an identity-translation service nobody has authorised; per-BC task cap not implemented; checkpoint publication is a production requirement, not built.
 
@@ -69,13 +69,13 @@ Context from the statement: PMJDY brought over 56 crore people into the formal s
 | C2 | Usage-state classifier | `AccountMonth` → `AccountUsage` | RBI inoperative rule | — | **built** (behavioural `no_use_24m` vs legal `regulatory_inoperative`, DBT-purpose exemption) | macro-F1 vs truth |
 | C3 | Tokeniser + person linker | accounts + identity ref → `PersonUsage` | NPCI mapper | — | **built** (HMAC, purpose-scoped) | pairwise linkage F1 |
 | C4 | Regulated clean room | encrypted inputs → approved outputs | DEPA / cloud clean rooms (UNVERIFIED) | — | designed | red-team leaks |
-| C5 | Purpose & policy engine + audit | `AccessRequest` → `AccessDecision` | AA consent artefact | — | **built v0.2** (29/29 scenarios, 0 false allows; 89/89 log attacks; basis codes; own-customer scope; decide-and-log) | scenario accuracy |
+| C5 | Purpose & policy engine + audit | `AccessRequest` → `AccessDecision` | AA consent artefact | — | **prototype v0.3** (31/31 scenarios, 0 false allows; 95/95 log attacks; identity registry, basis codes, derived own-customer scope, decide-and-log) | scenario accuracy |
 | C6 | Targeting engine | `PersonUsage` + budget → plan | blanket drives | **A** | **v0.3** (rule default + gated challenger; registered: +0.086 [0.057, 0.115], H1–H3 pass; SYNTHETIC) | share of reference gain |
 | C7 | Fraud & safety gate | plan + risk → allow/verify/hold | bank AML; MuleHunter.AI (UNVERIFIED) | — | designed | mule recall @1% FPR |
 | C8 | Last-mile orchestrator | plan → tasks → events | camps, bulk SMS | — | designed | completions per BC-day |
 | C9 | Outcome & experiment service | events + usage → `EffectEstimate` | before/after counts | — | simulated pilot in C14 | effect RMSE, CI coverage |
 | C10 | Usage scorecard & attribution | persons + effects → `ScorecardRow` | SLBC enrolment tables | **B** | **built v0** (holdout incremental, insufficient-data status, no BC-level release); ρ 0.90 SYNTHETIC, IID stylised | Spearman ρ under gaming |
-| C11 | DP publisher | rows → `DPRelease` | small-cell suppression | — | **built v0.2** (secret noise, validated persistent composed ledger) | MAE at ε = 1 |
+| C11 | DP publisher | rows → `DPRelease` | small-cell suppression | — | **built v0.3** (secret noise; locked, persistent, composed ledger) | MAE at ε = 1 |
 | C12 | Dashboards | releases → views | PMJDY reports | — | designed | data latency |
 | C13 | Public-data gap mapper | public data → gap rows | national averages | — | **partial** (state inoperative data parsed) | coverage |
 | C14 | Simulator (eval only) | config → synthetic world | — | — | **built** | calibration error |
@@ -88,7 +88,7 @@ _Honest case for or against T3 against T1 (✅ completed, 4.2/5, the default pic
   - the NPCI mapper routes DBT to the last-seeded bank;
   - breakdowns are "not centrally maintained".
   But the hostile judge (gpt-6-astra) scored v1.0 at 7/7/6/5/4/5 out of 10 on the six criteria and ranked **T1 higher**. The fixes (bank-local first, explicit legal gates, rights capsule) make v1.1 narrower and safer, but it has not been re-reviewed.
-- **Innovation headroom — 4/5.** Transparent targeting rule with a learned challenger behind a gate; after the code review, a corrected pre-registered test (SYNTHETIC, seeds 20–29) gave challenger − rule = +0.086 (95% CI 0.057–0.115, 9/10 worlds), rule − best-arm-only = +0.16, floors/budgets/holdout held; the gate certified the challenger in 1/10 worlds. Usage accountability resists gaming in a stylised test (ρ 0.90 vs 0.04 for enrolment counts, SYNTHETIC). C5 policy engine: 29/29 governance scenarios, 0 false allows, 89/89 log attacks detected (scenarios written with the rules — fidelity, not legality).
+- **Innovation headroom — 4/5.** Transparent targeting rule with a learned challenger behind a gate; after the code review, a corrected pre-registered test (SYNTHETIC, seeds 20–29) gave challenger − rule = +0.086 (95% CI 0.057–0.115, 9/10 worlds), rule − best-arm-only = +0.16, budgets and holdout held and the floor passed the registered check (a strict re-check found one world one woman short — rounding, fixed); the gate certified the challenger in 1/10 worlds. Usage accountability resists gaming in a stylised test (ρ 0.90 vs 0.04 for enrolment counts, SYNTHETIC). C5 policy engine: 31/31 governance scenarios, 0 false allows, 95/95 log attacks detected — a tested prototype, not an enforcement boundary (scenarios written with the rules: fidelity, not legality).
 - **Feasibility by the deadline — 5/5.** The final-format PDF exists today and its checks pass. Round 1 needs no more user time beyond team details and optional field conversations.
 - **Demo strength at finals — 3/5.**
   - Have: real state-level and Findex analyses, reproducible command-line evaluations, the registered tests.
@@ -160,3 +160,8 @@ The proposal described a purpose/policy engine with a hash-chained audit log tha
 - **Fixes:** C2 behavioural vs legal status; observable proxies with error; PMJDY cohort/calibration; C6 v0.3 (identical plans except whom to upgrade, stratified floors, holdout, same-model gate, cheapest-not-harmful stage 1 after dev showed small-pilot collapses); C11 secret noise + composed persistent ledger; C10 insufficient-data status; C5 v0.2 (basis codes, scope at all granularities, no BC-level tables, decide-and-log, HMAC chain, anchored/unanchored verification); reference allocator replaces "oracle".
 - **Corrected pre-registration** 14:57 IST (`c6_v03.md`, pushed `28c80bb` before the run), seeds 20–29, 50k persons, 30% pilot: H1 +0.086 (0.057–0.115, 9/10), H2 +0.161, H3 pass, gate 1/10, perfect-linkage +0.102 (`c6_v03_results.md`). v0.2 results keep a dated caveat.
 - **Proposal v1.1** (bank-local phase 1, per-flow legal table, two measures not one label, rights capsule, RACI + gates + power calc 6,507/arm, NSFI 2025-30, June 2025 BC re-KYC) generated from committed results; PDF PASS. Verified new sources: RBI/2025-26/51 and /52, NSFI 2025-30, PIB backgrounder URL, UIDAI 7(a)/7(k).
+
+### 15:20–15:29 IST — Fix-verification round; final package
+- **gpt-6-astra re-review:** 11/15 resolved, 4 partial, 0 new blocking; T1 still ranked higher (narrower gap). Partial 5/8/9 fixed in text (rights floor vs targeting objective; annual DP cap; time-bounded, appealable fraud holds).
+- **gpt-6-sol re-review:** reproduced v0.3 seeds 20–22 exactly; found H3 strict-floor shortfall (seed 29, one woman — holdout rounding; every available woman was treated), caller-asserted own-customer scope in C5, and a NEW blocking DP-ledger double-spend across clients. All fixed after the run (not re-run, per registration): holdout rounding + strict `floor_ok`; C5 identity registry (31/31, 95/95; now called a prototype); ledger lock + re-read transaction; gate holdout aligned. Dated note in `c6_v03_results.md`; decisions and ledger updated.
+- **Final:** proposal v1.1 regenerated (28/28 drift checks), PDF PASS (6 pp, Arial only, ≥ 11 pt, embedded), 17/17 tests. Selection memo final: T3 3.9/5 vs T1 4.2 → **recommend T1**.

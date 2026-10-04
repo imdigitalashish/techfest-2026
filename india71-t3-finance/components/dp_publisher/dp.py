@@ -8,6 +8,7 @@ exact counts (code-review issue 2). One ledger must cover every table released o
 """
 from __future__ import annotations
 
+import fcntl
 import json
 import math
 import os
@@ -34,17 +35,32 @@ class Ledger:
             self.spent, self.entries = float(st["spent"]), [tuple(e) for e in st["entries"]]
 
     def charge(self, eps: float, table: str):
+        """Check-and-charge as ONE transaction: with a path, take an exclusive file lock and re-read the persisted state
+        before checking, so two clients on the same ledger cannot both spend the same budget (re-review issue 19)."""
         if not _valid_eps(eps):
             raise ValueError("epsilon must be finite and > 0")
+        if not self.path:
+            self._apply(eps, table)
+            return
+        with open(self.path + ".lock", "a") as lk:
+            fcntl.flock(lk, fcntl.LOCK_EX)
+            try:
+                if os.path.exists(self.path):
+                    st = json.load(open(self.path))
+                    self.spent, self.entries = float(st["spent"]), [tuple(e) for e in st["entries"]]
+                self._apply(eps, table)
+                fd, tmp = tempfile.mkstemp(dir=os.path.dirname(os.path.abspath(self.path)))
+                with os.fdopen(fd, "w") as f:
+                    json.dump({"total": self.total, "spent": self.spent, "entries": self.entries}, f)
+                os.replace(tmp, self.path)
+            finally:
+                fcntl.flock(lk, fcntl.LOCK_UN)
+
+    def _apply(self, eps: float, table: str):
         if self.spent + eps > self.total + 1e-12:
             raise PermissionError(f"privacy budget exhausted: spent {self.spent}, asked {eps}, total {self.total}")
         self.spent += eps
         self.entries.append((table, eps))
-        if self.path:
-            fd, tmp = tempfile.mkstemp(dir=os.path.dirname(os.path.abspath(self.path)))
-            with os.fdopen(fd, "w") as f:
-                json.dump({"total": self.total, "spent": self.spent, "entries": self.entries}, f)
-            os.replace(tmp, self.path)  # atomic
 
 
 def release_rates(counts: pd.DataFrame, eps: float, ledger: Ledger, table: str, min_cell: int = 20,

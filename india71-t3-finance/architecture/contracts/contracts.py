@@ -153,7 +153,8 @@ class AccessRequest(Strict):
     data_elements: list[str]
     granularity: Granularity
     legal_basis: str
-    own_customers_only: bool = False
+    own_customers_only: bool = False  # caller's claim; the engine re-derives it from identity
+    subject_bank_id: Optional[str] = None  # whose customers the data concern (bank/BC requests)
 
 
 class Obligations(Strict):

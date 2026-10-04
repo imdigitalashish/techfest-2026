@@ -1,22 +1,22 @@
 {
- "n_scenarios": 29,
- "correct": 29,
+ "n_scenarios": 31,
+ "correct": 31,
  "allows": 8,
  "false_allows": 0,
- "n_mutations": 89,
- "mutations_detected": 89,
+ "n_mutations": 95,
+ "mutations_detected": 95,
  "by_attack": {
   "flip_decision": [
-   29,
-   29
+   31,
+   31
   ],
   "delete": [
-   29,
-   29
+   31,
+   31
   ],
   "swap_next": [
-   28,
-   28
+   30,
+   30
   ],
   "truncate_tail": [
    1,
@@ -262,6 +262,22 @@
    "got": false,
    "rule_expected": "D7",
    "rule_got": "D7",
+   "ok": true
+  },
+  {
+   "id": "S30",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D8",
+   "rule_got": "D8",
+   "ok": true
+  },
+  {
+   "id": "S31",
+   "expected": false,
+   "got": false,
+   "rule_expected": "D5",
+   "rule_got": "D5",
    "ok": true
   }
  ]

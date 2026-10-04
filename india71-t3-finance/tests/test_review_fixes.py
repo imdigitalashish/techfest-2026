@@ -73,3 +73,20 @@ def test_issue13_small_units_are_flagged_not_nan():
     inc = incremental(df, min_n=10)
     assert inc.loc[2, "status"] == "insufficient_data" and math.isnan(inc.loc[2, "incremental"])
     assert inc.loc[1, "status"] == "ok"
+
+
+def test_reissue19_two_ledger_clients_cannot_double_spend(tmp_path):
+    p = str(tmp_path / "shared.json")
+    a, b = Ledger(1.0, p), Ledger(1.0, p)          # both created before either charges
+    a.charge(0.7, "unit")
+    with pytest.raises(PermissionError):
+        b.charge(0.7, "district")
+
+
+def test_reissue3_strict_floor_has_no_tolerance_and_holdout_rounding_is_safe():
+    female = np.array([True] * 5 + [False] * 4)
+    arms = np.array(["sms_ivr"] * 3 + ["none"] * 2 + ["sms_ivr"] * 4, dtype=object)  # 3 of 7 treated are women
+    assert not pv.floor_ok(arms, female, 5 / 9)    # needs ceil(5/9*7) = 4 women; one short must fail
+    rp = pv.rule_plan(9, ATE, COSTS, 1000, female, 5 / 9, np.random.default_rng(0))
+    assert pv.floor_ok(rp["arms"], female, 5 / 9, ~rp["holdout"])   # women rounded down in the holdout
+    assert female[~rp["holdout"]].mean() >= 5 / 9

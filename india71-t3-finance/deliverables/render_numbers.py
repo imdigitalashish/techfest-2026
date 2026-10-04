@@ -15,8 +15,9 @@ j = lambda f: json.loads((R / f).read_text())
 
 def c5_claim() -> str:
     pe = j("policy_engine.json")
-    return (f"implemented and tested: {pe['correct']}/{pe['n_scenarios']} governance scenarios, {pe['false_allows']} false allows; "
-            f"{pe['mutations_detected']}/{pe['n_mutations']} log-tampering attacks detected, including forged and unanchored entries")
+    return (f"a tested prototype: {pe['correct']}/{pe['n_scenarios']} governance scenarios, {pe['false_allows']} false allows; "
+            f"{pe['mutations_detected']}/{pe['n_mutations']} log-tampering attacks detected; production needs authenticated identity "
+            f"and externally published checkpoints")
 
 
 def gamers() -> tuple[str, str]:
@@ -56,7 +57,8 @@ def c6_section() -> str:
                   f"(mean {h1['mean_diff']:+.2f}, 95% CI {h1['ci95'][0]:.2f}–{h1['ci95'][1]:.2f})")
     h2_txt = (f"; spending the leftover budget beat best-arm-only by {h2['mean_diff']:.2f}" if a["H2_pass"]
               else f"; spending the leftover budget did not reliably beat best-arm-only ({h2['mean_diff']:+.2f})")
-    h3_txt = ("Women's floors, budgets and the holdout held in every world." if a["H3_pass"]
+    h3_txt = ("Budgets and the holdout held in every world, and the women's floor passed the registered check; a reviewer's strict "
+              "re-check found one world one woman short of it (a holdout-rounding flaw, since fixed)." if a["H3_pass"]
               else "**A registered safeguard check failed** (see `eval/preregistration/c6_v03_results.md`).")
     gate_txt = (f"The gate, judging on about {val_n:,} held-out pilot persons, deployed the challenger in {a['gate_pass_count']} of {h1['n']} worlds, "
                 f"so in practice the rule would have run{' everywhere' if a['gate_pass_count'] == 0 else ' elsewhere'}: the challenger's gain needs a larger pilot to be certified.")

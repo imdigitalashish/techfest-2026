@@ -44,3 +44,22 @@ Reviews: [`2026-10-04-proposal-gpt-6-astra.md`](2026-10-04-proposal-gpt-6-astra.
 | 16 | major | C5: legal basis not checked | **ACCEPTED** | Each allow rule lists accepted basis codes; empty (D0) or mismatched (D7) bases denied; scenarios S26–S29. |
 | 17 | major | C5: decisions not obligatorily logged; checkpoint not published | **ACCEPTED (logging)** / **QUALIFIED (publication)** | `PolicyEngine.request` decides and logs in one fail-closed call; external checkpoint publication stated as a production requirement, not claimed. |
 | 18 | major | C5: forged uncheckpointed suffix verifies | **ACCEPTED** | Keyed (HMAC) entries; `verify` reports anchored vs unanchored entries; forged-without-key and keyed-after-checkpoint attacks tested. |
+
+## Fix-verification round — 2026-10-04 15:29 IST
+
+**gpt-6-astra (Addendum v1.1):** 11 resolved, 4 not fully, 0 new blocking; T1 still ranked higher, with a narrower gap.
+| # | Remaining point | Decision | Action |
+|---|---|---|---|
+| 5 | Targeting still optimises a legacy "meaningful use" endpoint | **ACCEPTED** | §4.1: successful, safe access is a rights floor no outreach may worsen; meaningful use is the targeting objective measured beside it; §5 co-primary outcomes. |
+| 8 | Privacy composition across quarters | **ACCEPTED** | Release contract: one cumulative budget across all overlapping tables, capped per year; ledger now transactional (see sol 19). |
+| 9 | Fraud holds lack time-bounded review/appeal | **ACCEPTED** | §4.3: every hold resolved within a fixed service time and appealable via the bank's grievance channel. |
+| 15 | Registration details pending | **ACCEPTED as user action** | Team name/ID and PDF rename under *Needs from user*. |
+
+**gpt-6-sol (Addendum, fix verification):** 2 fixed, 2 not fully, 1 new blocking; all reproductions matched.
+| # | Remaining point | Decision | Action |
+|---|---|---|---|
+| 3 | Seed 29 one woman short of a strict floor; tolerance hid it | **ACCEPTED** | Holdout rounds women down; strict `floor_ok`; regression test; dated note in `c6_v03_results.md`; proposal states H3 with the qualification. |
+| 15 | Caller can still assert own-customer scope | **ACCEPTED** | Identity registry (stand-in for authentication): role must match, own-customer scope derived from subject bank; scenarios S30–S31; C5 now 31/31, 95/95; documents call C5 a prototype, not an enforcement boundary. |
+| 19 (new, blocking) | Two ledger clients double-spend the budget | **ACCEPTED** | Exclusive file lock + re-read inside the check-and-charge transaction; regression test. |
+| minor | Gate validated with 0% holdout vs 10% at deployment | **ACCEPTED** | Gate plan uses the same 10% holdout. |
+| minor | Duplicate contacts still scored by maximum true uplift | **ACCEPTED as limitation** | Perfect-linkage sensitivity reported (+0.102); joint-contact model left as future work. |

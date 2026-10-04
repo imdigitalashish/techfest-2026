@@ -1,5 +1,5 @@
 {
- "_doc": "Governance scenarios for C5, derived from the governance matrix in deliverables/round1-proposal.md \u00a74.2 and the verified texts in research/landscape.md. Each row: request + expected decision + expected rule. Written by the lead together with the rules, so a perfect score shows the engine implements the published matrix \u2014 it is not independent evidence of legality. v0.2 (after code review issues 15-18): every scenario carries the claimed legal-basis code; bank/BC requests outside own customers are denied at any granularity; BC-level tables are never released to forums; missing or mismatched bases are denied.",
+ "_doc": "Governance scenarios for C5, derived from the governance matrix in deliverables/round1-proposal.md \u00a74.2 and the verified texts in research/landscape.md. Each row: request + expected decision + expected rule. Written by the lead together with the rules, so a perfect score shows the engine implements the published matrix \u2014 it is not independent evidence of legality. v0.2 (after code review issues 15-18): every scenario carries the claimed legal-basis code; bank/BC requests outside own customers are denied at any granularity; BC-level tables are never released to forums; missing or mismatched bases are denied. v0.3 (fix verification): a registry stands in for authenticated identity; role must match it and own-customer scope is derived from subject_bank vs the registered bank (S30 spoofed role, S31 false own-customer claim).",
  "scenarios": [
   {
    "id": "S01",
@@ -13,7 +13,9 @@
    "own": true,
    "allow": true,
    "rule": "A1",
-   "basis": "rbi_inoperative_review"
+   "basis": "rbi_inoperative_review",
+   "requester_id": "bank-1",
+   "subject_bank": "PSB_A"
   },
   {
    "id": "S02",
@@ -26,7 +28,9 @@
    "own": false,
    "allow": false,
    "rule": "D5",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "bank-1",
+   "subject_bank": "PVT_E"
   },
   {
    "id": "S03",
@@ -40,7 +44,9 @@
    "own": true,
    "allow": false,
    "rule": "D2",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "bank-1",
+   "subject_bank": "PSB_A"
   },
   {
    "id": "S04",
@@ -53,7 +59,9 @@
    "own": true,
    "allow": true,
    "rule": "A2",
-   "basis": "bank_bc_agreement"
+   "basis": "bank_bc_agreement",
+   "requester_id": "bc-1",
+   "subject_bank": "PSB_A"
   },
   {
    "id": "S05",
@@ -66,7 +74,9 @@
    "own": true,
    "allow": false,
    "rule": "DEFAULT_DENY",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "bc-1",
+   "subject_bank": "PSB_A"
   },
   {
    "id": "S06",
@@ -79,7 +89,9 @@
    "own": true,
    "allow": false,
    "rule": "DEFAULT_DENY",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "bc-1",
+   "subject_bank": "PSB_A"
   },
   {
    "id": "S07",
@@ -93,7 +105,9 @@
    "own": false,
    "allow": true,
    "rule": "A3",
-   "basis": "dpdp_s17_2_b_statistics"
+   "basis": "dpdp_s17_2_b_statistics",
+   "requester_id": "slbc-1",
+   "subject_bank": null
   },
   {
    "id": "S08",
@@ -106,7 +120,9 @@
    "own": false,
    "allow": false,
    "rule": "D3",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "slbc-1",
+   "subject_bank": null
   },
   {
    "id": "S09",
@@ -119,7 +135,9 @@
    "own": false,
    "allow": false,
    "rule": "D6",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "ldm-1",
+   "subject_bank": null
   },
   {
    "id": "S10",
@@ -132,7 +150,9 @@
    "own": false,
    "allow": false,
    "rule": "D4",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "dfs-1",
+   "subject_bank": null
   },
   {
    "id": "S11",
@@ -145,7 +165,9 @@
    "own": false,
    "allow": false,
    "rule": "D4",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "state_govt-1",
+   "subject_bank": null
   },
   {
    "id": "S12",
@@ -158,7 +180,9 @@
    "own": false,
    "allow": true,
    "rule": "A4",
-   "basis": "dpdp_s17_2_b_statistics"
+   "basis": "dpdp_s17_2_b_statistics",
+   "requester_id": "researcher-1",
+   "subject_bank": null
   },
   {
    "id": "S13",
@@ -171,7 +195,9 @@
    "own": false,
    "allow": false,
    "rule": "DEFAULT_DENY",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "researcher-1",
+   "subject_bank": null
   },
   {
    "id": "S14",
@@ -184,7 +210,9 @@
    "own": false,
    "allow": false,
    "rule": "D3",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "researcher-1",
+   "subject_bank": null
   },
   {
    "id": "S15",
@@ -197,7 +225,9 @@
    "own": false,
    "allow": true,
    "rule": "A5",
-   "basis": "dpdp_s17_2_b_statistics"
+   "basis": "dpdp_s17_2_b_statistics",
+   "requester_id": "public-1",
+   "subject_bank": null
   },
   {
    "id": "S16",
@@ -210,7 +240,9 @@
    "own": false,
    "allow": false,
    "rule": "DEFAULT_DENY",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "public-1",
+   "subject_bank": null
   },
   {
    "id": "S17",
@@ -223,7 +255,9 @@
    "own": false,
    "allow": false,
    "rule": "D1",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "npci-1",
+   "subject_bank": null
   },
   {
    "id": "S18",
@@ -237,7 +271,9 @@
    "own": false,
    "allow": true,
    "rule": "A3",
-   "basis": "dpdp_s17_2_b_statistics"
+   "basis": "dpdp_s17_2_b_statistics",
+   "requester_id": "rbi-1",
+   "subject_bank": null
   },
   {
    "id": "S19",
@@ -250,7 +286,9 @@
    "own": true,
    "allow": true,
    "rule": "A1",
-   "basis": "rbi_inoperative_review"
+   "basis": "rbi_inoperative_review",
+   "requester_id": "bank-1",
+   "subject_bank": "PSB_A"
   },
   {
    "id": "S20",
@@ -263,7 +301,9 @@
    "own": false,
    "allow": false,
    "rule": "D4",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "dbt_mission-1",
+   "subject_bank": null
   },
   {
    "id": "S21",
@@ -277,7 +317,9 @@
    "own": false,
    "allow": false,
    "rule": "D1",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "public-1",
+   "subject_bank": null
   },
   {
    "id": "S22",
@@ -290,7 +332,9 @@
    "own": false,
    "allow": false,
    "rule": "D3",
-   "basis": "as_claimed_by_requester"
+   "basis": "as_claimed_by_requester",
+   "requester_id": "slbc-1",
+   "subject_bank": null
   },
   {
    "id": "S23",
@@ -303,7 +347,9 @@
    "own": false,
    "basis": "dpdp_s17_2_b_statistics",
    "allow": true,
-   "rule": "A3"
+   "rule": "A3",
+   "requester_id": "ldm-1",
+   "subject_bank": null
   },
   {
    "id": "S24",
@@ -316,7 +362,9 @@
    "own": false,
    "basis": "rbi_inoperative_review",
    "allow": false,
-   "rule": "D5"
+   "rule": "D5",
+   "requester_id": "bank-1",
+   "subject_bank": "PVT_E"
   },
   {
    "id": "S25",
@@ -329,7 +377,9 @@
    "own": false,
    "basis": "bank_bc_agreement",
    "allow": false,
-   "rule": "D5"
+   "rule": "D5",
+   "requester_id": "bc-1",
+   "subject_bank": "PVT_E"
   },
   {
    "id": "S26",
@@ -342,7 +392,9 @@
    "own": false,
    "basis": "",
    "allow": false,
-   "rule": "D0"
+   "rule": "D0",
+   "requester_id": "public-1",
+   "subject_bank": null
   },
   {
    "id": "S27",
@@ -355,7 +407,9 @@
    "own": false,
    "basis": "customer_consent",
    "allow": false,
-   "rule": "D7"
+   "rule": "D7",
+   "requester_id": "public-1",
+   "subject_bank": null
   },
   {
    "id": "S28",
@@ -368,7 +422,9 @@
    "own": true,
    "basis": "",
    "allow": false,
-   "rule": "D0"
+   "rule": "D0",
+   "requester_id": "bank-1",
+   "subject_bank": "PSB_A"
   },
   {
    "id": "S29",
@@ -381,7 +437,85 @@
    "own": false,
    "basis": "rbi_inoperative_review",
    "allow": false,
-   "rule": "D7"
+   "rule": "D7",
+   "requester_id": "researcher-1",
+   "subject_bank": null
+  },
+  {
+   "id": "S30",
+   "role": "bank",
+   "requester_id": "public-1",
+   "purpose": "targeting",
+   "data": [
+    "target_list"
+   ],
+   "gran": "person",
+   "own": true,
+   "subject_bank": "PSB_A",
+   "basis": "rbi_inoperative_review",
+   "allow": false,
+   "rule": "D8"
+  },
+  {
+   "id": "S31",
+   "role": "bank",
+   "requester_id": "bank-1",
+   "purpose": "targeting",
+   "data": [
+    "target_list"
+   ],
+   "gran": "person",
+   "own": true,
+   "subject_bank": "PVT_E",
+   "basis": "rbi_inoperative_review",
+   "allow": false,
+   "rule": "D5"
   }
- ]
+ ],
+ "registry": {
+  "bank-1": {
+   "role": "bank",
+   "bank_id": "PSB_A"
+  },
+  "bc-1": {
+   "role": "bc",
+   "bank_id": "PSB_A"
+  },
+  "npci-1": {
+   "role": "npci",
+   "bank_id": null
+  },
+  "dbt_mission-1": {
+   "role": "dbt_mission",
+   "bank_id": null
+  },
+  "dfs-1": {
+   "role": "dfs",
+   "bank_id": null
+  },
+  "rbi-1": {
+   "role": "rbi",
+   "bank_id": null
+  },
+  "slbc-1": {
+   "role": "slbc",
+   "bank_id": null
+  },
+  "ldm-1": {
+   "role": "ldm",
+   "bank_id": null
+  },
+  "state_govt-1": {
+   "role": "state_govt",
+   "bank_id": null
+  },
+  "researcher-1": {
+   "role": "researcher",
+   "bank_id": null
+  },
+  "public-1": {
+   "role": "public",
+   "bank_id": null
+  }
+ }
 }

@@ -19,11 +19,13 @@ import contracts as C  # noqa: E402
 from components.policy_engine.engine import AuditLog, PolicyEngine  # noqa: E402
 
 KEY = b"test-only-audit-key"  # production: held in an HSM, never in code
-sc = json.loads((ROOT / "components" / "policy_engine" / "scenarios.json").read_text())["scenarios"]
-eng, rows = PolicyEngine(KEY), []
+spec = json.loads((ROOT / "components" / "policy_engine" / "scenarios.json").read_text())
+sc = spec["scenarios"]
+eng, rows = PolicyEngine(KEY, spec["registry"]), []
 for s in sc:
-    req = {"request_id": s["id"], "requester_role": s["role"], "requester_id": f"{s['role']}-1", "purpose": s["purpose"],
-           "data_elements": s["data"], "granularity": s["gran"], "legal_basis": s["basis"], "own_customers_only": s["own"]}
+    req = {"request_id": s["id"], "requester_role": s["role"], "requester_id": s["requester_id"], "purpose": s["purpose"],
+           "data_elements": s["data"], "granularity": s["gran"], "legal_basis": s["basis"], "own_customers_only": s["own"],
+           "subject_bank_id": s["subject_bank"]}
     C.AccessRequest.model_validate(req)
     dec = eng.request(req)
     C.AccessDecision.model_validate(dec)

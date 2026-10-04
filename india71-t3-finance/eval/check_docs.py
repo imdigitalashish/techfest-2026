@@ -42,7 +42,7 @@ def claims() -> list[str]:
             f"the challenger's margin was {s3['mean_diff']:.2f}",
             f"about {int(round(a['pilot_train_mean'] / 5, -2)):,} pilot persons per arm"]
     if a["H3_pass"]:
-        out.append("Women's floors, budgets and the holdout held in every world.")
+        out.append("Budgets and the holdout held in every world, and the women's floor passed the registered check")
     pe = j("policy_engine.json")
     out.append(f"{pe['correct']}/{pe['n_scenarios']} governance scenarios, {pe['false_allows']} false allows; "
                f"{pe['mutations_detected']}/{pe['n_mutations']} log-tampering attacks detected")

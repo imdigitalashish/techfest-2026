@@ -73,8 +73,10 @@ def rule_plan(n: int, ate: dict, costs: dict, budget: float, female: np.ndarray,
               rng: np.random.Generator, holdout_frac: float = 0.10) -> dict:
     arms = np.full(n, "none", dtype=object)
     holdout = np.zeros(n, dtype=bool)
-    for grp in (np.flatnonzero(female), np.flatnonzero(~female)):  # gender-stratified holdout keeps the eligible mix
-        holdout[rng.permutation(grp)[: int(round(holdout_frac * len(grp)))]] = True
+    # gender-stratified holdout; women rounded DOWN and men UP so the non-holdout women's share is never below the
+    # eligible share (re-review 2026-10-04: rounding left registered seed 29 one woman short of a strict floor)
+    for grp, rnd in ((np.flatnonzero(female), math.floor), (np.flatnonzero(~female), math.ceil)):
+        holdout[rng.permutation(grp)[: int(rnd(holdout_frac * len(grp)))]] = True
     elig = np.flatnonzero(~holdout)
     info = {"stage1": None, "upgrade": None, "k1": 0, "k2": 0}
     s1 = stage1_arm(ate, costs)
@@ -108,20 +110,19 @@ def challenger_plan(rule: dict, U: pd.DataFrame, female: np.ndarray, floor: floa
 
 
 def floor_ok(arms: np.ndarray, female: np.ndarray, floor: float, available: np.ndarray | None = None) -> bool:
-    """Women's floor on the plan: (i) the set receiving any outreach — trivially met if it covers every available
-    (non-holdout) person, else women's share >= min(floor, feasible) within one person; (ii) the upgraded set
-    (arms other than the most common one), same test."""
+    """Women's floor on the plan, strictly: (i) the set receiving any outreach and (ii) the upgraded set (arms other
+    than the most common one) each contain at least ceil(floor * size) women, capped by the women available."""
     avail = np.ones(len(arms), bool) if available is None else np.asarray(available, bool)
     treated = arms != "none"
 
-    def ok(mask) -> bool:
+    def ok(mask) -> bool:  # strict: no one-person tolerance; capped only by the women actually available
         k = int(mask.sum())
         if k == 0:
             return True
-        need = min(math.ceil(floor * k), int((female & avail).sum()))
-        return int(female[mask].sum()) >= need - 1
+        need = min(math.ceil(floor * k - 1e-9), int((female & avail).sum()))
+        return int(female[mask].sum()) >= need
 
-    if treated.any() and not (treated[avail].all() and treated.sum() == avail.sum()) and not ok(treated):
+    if treated.any() and not ok(treated):
         return False
     vals, cnts = np.unique(arms[treated], return_counts=True)
     if len(vals) > 1:
@@ -147,7 +148,7 @@ def fit_and_gate(pilot: pd.DataFrame, costs: dict, bpe: float, seed: int, val_fr
     model = engine.fit(tr, tr["arm"], tr["y"], seed=seed)
     fem = va["female"].to_numpy()
     floor = float(fem.mean())
-    rp = rule_plan(len(va), ate, costs, bpe * len(va), fem, floor, np.random.default_rng(seed + 78), holdout_frac=0.0)
+    rp = rule_plan(len(va), ate, costs, bpe * len(va), fem, floor, np.random.default_rng(seed + 78), holdout_frac=0.10)
     cp = challenger_plan(rp, engine.predict_uplift(model, va), fem, floor)
     prop = pilot["arm"].value_counts(normalize=True).to_dict()
     a_obs, y = va["arm"].to_numpy(), va["y"].to_numpy().astype(float)

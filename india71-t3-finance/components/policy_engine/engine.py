@@ -124,11 +124,23 @@ class AuditLog:
 
 
 class PolicyEngine:
-    def __init__(self, key: bytes):
+    """registry: requester_id -> {"role": ..., "bank_id": ...}. It stands in for authenticated identity: the role must
+    match the registered one, and for banks/BCs "own customers" is derived (subject_bank_id == registered bank_id),
+    never taken from the caller's flag (re-review issue 15). A prototype, not yet a deployable enforcement boundary."""
+
+    def __init__(self, key: bytes, registry: dict | None = None):
         self.log = AuditLog(key)
+        self.registry = registry or {}
 
     def request(self, req: dict) -> dict:
-        dec = _decide(req)
+        reg = self.registry.get(req["requester_id"])
+        if reg is None or reg["role"] != req["requester_role"]:
+            dec = _deny(req, "D8", "Unknown requester or role does not match the registered identity")
+        else:
+            eff = dict(req)
+            if reg["role"] in ("bank", "bc"):
+                eff["own_customers_only"] = req.get("subject_bank_id") is not None and req.get("subject_bank_id") == reg.get("bank_id")
+            dec = _decide(eff)
         try:
             self.log.append(req, dec)
         except Exception:  # fail closed: an unlogged decision is a denial
