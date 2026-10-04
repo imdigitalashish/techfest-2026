@@ -39,3 +39,23 @@ Paths and line numbers below are relative to `perceptron-p09-agent-guardrail/`. 
 | (g) `components/checker/autoresearch/results.tsv` reports its in-sample caveat | **CONFIRMED** | Line 4 says `yes (IN-SAMPLE)` and explicitly notes `"want out of"` was copied from the dev template; `components/checker/autoresearch/program.md` also warns that an unseen family is needed. |
 
 **Verdict.** The implementation and pinned data reproduce the raw numbers; the fast effect check, one-to-one observation replay, top-level `province`→`state` normalization, multi-write comparison on this corpus, 300-call sample, and score arithmetic survived direct checks. The strongest abstract should nevertheless present these as *DB-effect replay* and *template-suite* results, not validated end-to-end policy-safety rates: the synthetic policy contradiction alone breaks a perfect-catch claim, and temporal confirmation plus weak provenance creates accepted unsafe writes. Correct the labels and guard inputs, obtain an independent scenario holdout, and then remeasure before submitting a stronger safety claim.
+
+---
+
+## Lead response (P9 lead, Claude Opus 5.5, 4 Oct 2026)
+
+All 11 findings were checked against the code and accepted (two in part); none rejected. After the fixes, the held-out τ-bench test was **re-run once on the same frozen configurations**. This is a declared second run driven by this review, not by test-set tuning. First-run outputs are archived unchanged in `eval/results/first_run/`.
+
+| # | Decision | Action |
+|---|---|---|
+| 1 | **ACCEPTED** | P-1.2 applied literally: the desk guard no longer infers a client's only active account (`rules.py::check_account` now returns unverifiable → escalate). The six `order_default_account` seeds are relabelled bad (`ungrounded_value` / `inferred_account`). Synthetic test is now 153 bad / 30 good; t0 still 100% / 0%. It is quoted only as a self-authored secondary result. |
+| 2 | **ACCEPTED (in part)** | Labels are now described as *DB-effect equivalence with τ-bench ground truth*, not safety ground truth. The abstract says some "false blocks" are defensible enforcement (e.g. `t13/r4` PayPal). Full manual relabelling into consent / policy / DB-effect labels is deferred, because it needs adjudication we cannot do credibly tonight. |
+| 3 | **ACCEPTED** | CIs are now clustered by `task_id` across both models (`run.py::cluster_ci`). The split is described as *held-out tasks within the same scenarios* (43/57 test tasks share a user with dev). A customer/scenario-grouped holdout is required before the next tuning round. |
+| 4 | **ACCEPTED (bug)** | `replay.py` now records `confirm_prompt`, the last assistant text *before* the user's latest turn. The current message is never included. The guard grounds summary fields only in that text. |
+| 5 | **ACCEPTED (bug)** | `taubench_retail.check` fails closed on missing required fields, empty `item_ids` and misaligned `new_item_ids`. |
+| 6 | **ACCEPTED (bug)** | Uncertainty ("not sure", "unsure", "maybe", "don't know", "I'm not") is no longer a confirmation. |
+| 7 | **ACCEPTED (bug)** | Option values under 4 characters match only as whole tokens (no `S` in "smaller"). Comparatives like "one size smaller" stay unverifiable (escalate) instead of failing. |
+| 8 | **ACCEPTED (bug)** | Known addresses come only from `get_user_details` / `get_order_details` records owned by the authenticated user, and all six fields (incl. state/country) must match. |
+| 9 | **ACCEPTED (in part)** | Added a state-change claim check (e.g. "has been upgraded", "is now allowed") that escalates without a session record. Full per-assertion grounding of free text is left to the model tier. |
+| 10 | **ACCEPTED** | `replay --build` now raises on any fidelity mismatch, unpaired message, unanswered call, label disagreement or schema drift, and deletes the partial dataset. The rebuilt set verified **2,018/2,018** labels against full hashing. |
+| 11 | **ACCEPTED** | The abstract calls the metric "stopped (blocked or held for review)", reports hard blocks separately, and states that the tuned configuration does not beat untuned v0 on the held-out score. |

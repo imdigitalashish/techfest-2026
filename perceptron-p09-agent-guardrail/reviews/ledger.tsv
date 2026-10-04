@@ -1,0 +1,2 @@
+date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	code + eval + headline claims (a93e35a)	gpt-6-sol	max	11	11	0	1 critical (synthetic labels vs P-1.2), 8 major (replay confirm-timing input bug, no retail schema gate, "not sure" = yes, option substring, address scope, label construct, parity split, message provenance), 2 minor; 2 accepted in part; all raw numbers reproduced; held-out test re-run once after fixes; record: reviews/2026-10-04-code-eval-gpt-6-sol.md

@@ -283,7 +283,8 @@ def build(seeds_per_family: int = 6, muts_per_seed: int = 4, seed: int = 7) -> l
         for fam in fams:
             for _ in range(seeds_per_family):
                 ctx, tool, args = g.seed(fam)
-                g.add(split, fam, ctx, tool, args, True, "none")
+                ok = fam != "order_default_account"  # P-1.2: an unstated account may not be inferred (sol review #1)
+                g.add(split, fam, ctx, tool, args, ok, "none" if ok else "ungrounded_value", None if ok else "inferred_account")
                 muts = g.mutations(ctx, tool, args)
                 for cls, op, mctx, margs in g.r.sample(muts, min(muts_per_seed, len(muts))):
                     g.add(split, fam, mctx, tool, margs, False, cls, op)

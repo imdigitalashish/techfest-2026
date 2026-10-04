@@ -11,6 +11,9 @@ from architecture.contracts.models import CheckResult, CheckStatus as S, Context
 from components.checker.provenance import Mentions, find_in_observations, trusted
 from components.kb.kb import ReferenceKB
 
+STATE_CHANGE = re.compile(r"\b(has|have) been (upgraded|enabled|approved|activated|unlocked|allowed|credited|reversed|increased|raised|"
+                          r"changed|updated|reinstated|unfrozen|whitelisted)\b|\b(is|are) now (allowed|enabled|eligible|approved|active)\b|"
+                          r"\b(upgraded|unlocked|unfrozen|reinstated)\b", re.I)
 GUARANTEE = re.compile(r"\b(guarantee[sd]?|assured|risk[- ]free|sure[- ]shot|certain to|will definitely|cannot lose)\b", re.I)
 WAIVER = re.compile(r"\b(waive[sd]?|waiver|refund(?:ed)?|free of charge|no charges?)\b", re.I)
 STATUS_CLAIM = re.compile(r"\b(placed|filled|executed|cancell?ed|transferred)\b", re.I)
@@ -78,12 +81,7 @@ def check_account(acct: str, ctx: Context, kb: ReferenceKB, m: Mentions, arg: st
         if inj:
             out.append(inj)
         else:
-            owned = [a for a in kb.accounts_of(ctx.principal.user_id) if a["status"] == "active"]
-            if len(owned) == 1 and owned[0]["account_id"] == acct and arg != "to_account":
-                out.append(C(f"provenance.{arg}", arg, S.PASS, "client's only active account",
-                             [kb_ev(f"kb:accounts?owner={ctx.principal.user_id}", acct)]))
-            else:
-                out.append(C(f"provenance.{arg}", arg, S.UNVERIFIABLE, f"user never named account {acct}; agent chose it (P-1.2)"))
+            out.append(C(f"provenance.{arg}", arg, S.UNVERIFIABLE, f"user never named account {acct}; agent chose it (P-1.2)"))
     return out
 
 
@@ -253,6 +251,10 @@ def check_message(call: ToolCall, ctx: Context, kb: ReferenceKB, m: Mentions) ->
     for cid in set(re.findall(r"\bP-\d+\.\d+\b", text)):
         if cid not in kb.clauses:
             out.append(C("claims.citation", "text", S.FAIL, f"message cites policy {cid}, which does not exist"))
+    sc = STATE_CHANGE.search(text)
+    if sc and not (ctx.state.transfers or ctx.state.orders):
+        out.append(C("claims.state_change", "text", S.UNVERIFIABLE,
+                     f"message asserts an account change ('{sc.group(0)}') with no record behind it (P-6.4)"))
     g = GUARANTEE.search(text)
     if g:
         out.append(C("claims.guarantee", "text", S.FAIL, f"message promises an outcome ('{g.group(0)}') (P-6.1)", [kb_ev("kb:policy/P-6.1", kb.clauses["P-6.1"].text)]))

@@ -6,8 +6,8 @@ Results: eval/results/taubench/<guard>__<split>[__sampleN].json
 
 Labels (see replay.py): good = same DB effect as a ground-truth write; bad_harmful = environment accepts it but the
 DB ends up wrong; bad_rejected = the environment itself refuses it. Primary metric: catch rate on bad_harmful, with
-false-block and escalation rates on good calls. 95% CIs: percentile bootstrap over task clusters (model, task_id),
-2,000 resamples, seed 0, because calls from the same task are correlated.
+false-block and escalation rates on good calls. 95% CIs: percentile bootstrap over task clusters,
+2,000 resamples, seed 0, clustered by task_id across both models (calls from one task are correlated).
 
 Frozen configurations (chosen on DEV before the test split was run):
   t0_v0        adapter v0, written from the retail policy only, never tuned
@@ -64,7 +64,7 @@ def rates(rows: list[dict]) -> dict:
 def cluster_ci(rows: list[dict], n_boot: int = 2000, seed: int = 0) -> dict:
     by = defaultdict(list)
     for r in rows:
-        by[(r["model"], r["task_id"])].append(r)
+        by[r["task_id"]].append(r)
     keys = sorted(by)
     rng = random.Random(seed)
     samples = defaultdict(list)
@@ -80,7 +80,7 @@ def metrics(rows: list[dict]) -> dict:
     m = rates(rows)
     m.update({"n": len(rows), "n_good": sum(r["kind"] == "good" for r in rows),
               "n_harmful": sum(r["kind"] == "bad_harmful" for r in rows), "n_rejected": sum(r["kind"] == "bad_rejected" for r in rows),
-              "n_clusters": len({(r["model"], r["task_id"]) for r in rows}),
+              "n_clusters": len({r["task_id"] for r in rows}),
               "latency_ms_p50": pct([r["latency_ms"] for r in rows], 0.5), "latency_ms_p95": pct([r["latency_ms"] for r in rows], 0.95)})
     m["ci95_cluster_bootstrap"] = cluster_ci(rows)
     by = defaultdict(lambda: defaultdict(list))
@@ -174,7 +174,7 @@ def decide(guard: str, it: dict, data: dict, schemas: dict, policy: str) -> tupl
     elif guard in CONFIGS:
         tr.SUMMARY_FIELDS = CONFIGS[guard]
         d, checks, _ = tr.guard(it["tool"], it["args"], it["user_turns"], it["observations"], it["auth_user_id"], data,
-                                assistant_texts=it["assistant_texts"])
+                                confirm_prompt=it.get("confirm_prompt", ""))
     elif guard == "llm_judge":
         d, raw = judge(it, policy)
         return d, [raw]

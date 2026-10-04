@@ -145,6 +145,7 @@ class ReplayItem:
     assistant_texts: list[str] = field(default_factory=list)
     observations: list[dict] = field(default_factory=list)
     auth_user_id: str | None = None
+    confirm_prompt: str = ""
 
     @property
     def harmful(self) -> bool:
@@ -187,7 +188,9 @@ def iter_items(models=("gpt-4o", "sonnet-35-new"), split: str = "all", stats: Co
                         print(f"[drift] {model} t{r['task_id']} {g['name']}: {res[:120]}", file=sys.stderr)
             data = mutable_copy(base)
             users: list[str] = []
-            assists: list[str] = []
+            assists: list[str] = []      # all assistant texts strictly before the current message
+            confirm_prompt = ""          # the last assistant text before the user's latest turn (what "yes" answered)
+            last_assist_before_user = ""
             obs: list[dict] = []
             auth = None
             unmatched: list[dict] = []  # our executed calls awaiting their recorded tool message
@@ -195,9 +198,9 @@ def iter_items(models=("gpt-4o", "sonnet-35-new"), split: str = "all", stats: Co
                 role = msg.get("role")
                 if role == "user":
                     users.append(str(msg.get("content") or ""))
+                    confirm_prompt = last_assist_before_user
                 elif role == "assistant":
-                    if msg.get("content") and str(msg.get("content")) != "None":
-                        assists.append(str(msg["content"]))
+                    text = str(msg["content"]) if msg.get("content") and str(msg.get("content")) != "None" else ""
                     for j, (name, args) in enumerate(_calls(msg)):
                         if name in WRITE:
                             res, eff = effect(tools, data, name, args)
@@ -227,7 +230,7 @@ def iter_items(models=("gpt-4o", "sonnet-35-new"), split: str = "all", stats: Co
                                 trial=r["trial"], msg_index=k, split=sp, tool=name, args=args, label_good=match is not None,
                                 env_error=err, matched_gt=match, episode_reward=float(r["reward"]),
                                 in_gt_tools=name in {g["name"] for g in gt_writes}, user_turns=list(users),
-                                assistant_texts=list(assists), auth_user_id=auth,
+                                assistant_texts=list(assists), confirm_prompt=confirm_prompt, auth_user_id=auth,
                                 observations=[{"tool": o["tool"], "args": o["args"], "result": o.get("recorded", o["result"])} for o in obs]), data
                         res = run_tool(tools, data, name, args)  # what actually happened in the trajectory
                         o = {"tool": name, "args": args, "result": res}
@@ -235,6 +238,9 @@ def iter_items(models=("gpt-4o", "sonnet-35-new"), split: str = "all", stats: Co
                         unmatched.append(o)
                         if name in AUTH and not res.startswith("Error"):
                             auth = res.strip()
+                    if text:  # only after this message's own proposals were yielded
+                        assists.append(text)
+                        last_assist_before_user = text
                 elif role == "tool":
                     rec = str(msg.get("content"))
                     o = next((x for x in unmatched if x["tool"] == msg.get("name")), None)
@@ -247,6 +253,7 @@ def iter_items(models=("gpt-4o", "sonnet-35-new"), split: str = "all", stats: Co
                     stats["fidelity_ok" if ok else "fidelity_mismatch"] += 1
                     if not ok and stats["fidelity_mismatch"] <= 3:
                         print(f"[fidelity] {model} t{r['task_id']} {o['tool']}: recorded={rec[:90]!r} ours={o['result'][:90]!r}", file=sys.stderr)
+            stats["fidelity_unanswered_calls"] += len(unmatched)
 
 
 ITEMS = ROOT / ".data" / "taubench" / "retail_items.jsonl"
@@ -294,6 +301,11 @@ def main():
     for k in sorted(c, key=str):
         print(k, c[k])
     print(dict(stats))
+    problems = {k: stats[k] for k in ("fidelity_mismatch", "fidelity_unpaired", "fidelity_unanswered_calls", "verify_DISAGREE", "gt_signature_error") if stats[k]}
+    if problems:
+        if f:
+            ITEMS.unlink()  # never publish a dataset built from a divergent replay
+        raise SystemExit(f"replay check FAILED: {problems}")
 
 
 if __name__ == "__main__":

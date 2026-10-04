@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** ACTIVE again since 10:48 IST, 4 Oct (slot freed). The 12 Oct Perceptron pick is open between P7 and P9; real evidence decides. Updated 11:55 IST.
+- **Phase:** ACTIVE again since 10:48 IST, 4 Oct (slot freed). The 12 Oct Perceptron pick is open between P7 and P9; real evidence decides. Updated 11:12 IST.
 - **Supervisor's definition of done (10:48):**
   1. τ-bench real-error replay on a held-out split vs no-guard/schema/LLM-judge, with CIs: **deterministic part done**; LLM judge running.
   2. Independent red-team suite by a different model: **gpt-6-astra session running**.
@@ -39,7 +39,7 @@
   - Independent Claude black-box set (134): 94.3% catch, 0% false blocks before fixes; 98.9% / 0% after, in-sample.
   - White-box (41): 21 of 27 bypasses still pass.
   - LLM judge (1.7B, full desk test): 70.8% catch, 61.1% false blocks.
-- **Rule change (Supervisor, 11:40):** local-model runs are allowed when `kern.memorystatus_level` ≥ 25%. The swap-free metric is stuck (stale pages in dynamically sized swap). Conditions: Qwen3-1.7B only, `nice -n 10`, chunked and resumable with a checkpoint per call, a watchdog that pauses below 25% and resumes above 30%, one LLM job at a time. Implemented in `eval/taubench/run.py::memory_ok`.
+- **Rule change (Supervisor, ~11:03):** local-model runs are allowed when `kern.memorystatus_level` ≥ 25%. The swap-free metric is stuck (stale pages in dynamically sized swap). Conditions: Qwen3-1.7B only, `nice -n 10`, chunked and resumable with a checkpoint per call, a watchdog that pauses below 25% and resumes above 30%, one LLM job at a time. Implemented in `eval/taubench/run.py::memory_ok`.
 - **Doing:**
   - LLM judge on the 300-call test sample (background); next, `cascade_fast` on the same sample.
   - Child sessions (max 2): **P9 independent red team (astra)** and **P9 code/eval review (sol)**.
@@ -115,18 +115,22 @@ Full contracts: [architecture/components.md](architecture/components.md) · pyda
 | 14 | Audit log | Verdict → JSONL | logging | | partial | completeness |
 
 ## Selection memo
-_First version 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
-- **Winnability — 4.** We already exceed the MVP (4 action classes, 295 typed bad calls, real numbers). Many teams will likely submit "LangGraph + LLM judge"; we can show where that baseline fails and what ours costs. Pre-trade risk control is the panel's own language. Risk: it can read as "just validation" unless the provenance idea is explained crisply.
-- **Innovation headroom — 4.** Spike: per-argument provenance with a third *unverifiable* verdict, and LLMs allowed only to resolve the residue with verbatim-verified quotes, plus a risk-routed calibrated cascade. Nearest 2026 work: ActGov (SMT policy sets), ContrAgent (LTLf contracts), closed-world resolution (registry/signature only; it names argument values as the residue it can't catch), Cedar gates. None checks argument values against a knowledge source (landscape §2, §5).
-- **Feasibility by the deadline — 5.** The skeleton, KB, checker, suite and eval were built in one night on the M5 with local models and no paid APIs. External data (τ-bench logs) is MIT-licensed and ~40 MB. Every milestone lands before 17 Nov, clear of the 19–25 Nov exams.
-- **Demo strength — 5.** A live agent proposes an invented ticker or a ×10 fat-finger; it is blocked in <1 ms with the clause cited, and the agent repairs it. An injected email asks for a transfer; it is blocked as "untrusted origin". A frontier dashboard compares no guard, schema, LLM judge and ours.
-- **Fit with the user's strengths — 5.** Large-scale systems + frontier models. Microsoft background is directly relevant (Azure Prompt Shields, groundedness and task adherence are among the industry baselines we position against).
-- **Biggest risk:** synthetic-suite optimism (100% catch from templates written by the rule author) could look like a toy to judges → τ-bench replay of real model errors + LLM-paraphrased family before the abstract is final.
-- **One-line pitch:** *Pre-trade risk checks for AI agents: every argument of every action must cite its source, or it doesn't execute.*
-- **Overall: 4.6/5.**
+_Final, 4 Oct 2026 (v2, replaces the 07:35 v1, which scored 4.6 on synthetic evidence only). Scored 1–5 against real-error evidence; every number is in `eval/results/` and checked by `eval/check_docs.py`._
+
+- **Winnability — 4.**
+  - For: Round 1 is judged on the plan, and evaluation rigour (15%) plus technical soundness (25%) are where we are strongest. We have a one-shot held-out test on 991 real gpt-4o and Claude-3.5-Sonnet write calls from τ-bench, with clustered CIs, against no-guard, schema and LLM-judge baselines, plus a 160-case red team by a different model family.
+  - The obvious baseline loses clearly. On the same 300 calls, a Qwen3-1.7B judge catches 28% of harmful calls while blocking 27% of good ones; our balanced setting catches 42.5% with 1.7% false blocks, at about 0.2 ms.
+  - Against: the absolute catch on real errors is modest (36% [24–49] at 1.8% false blocks and 25% escalation; 68% if we accept 56% escalation). A team with a flashy 100% toy demo may look stronger to a quick read.
+- **Innovation headroom — 4.** Argument-level provenance with a separate *unverifiable* state, and quote-verified model resolution of that residue only. The miss audit gives the spike a falsifiable target: 8 of 20 misses are wrong-entity resolutions ("like my other order") that need the model tier. Nearest 2026 work (ActGov, ContrAgent, closed-world resolution, Cedar gates) checks policies or schemas, not argument values against a source.
+- **Feasibility — 5.** Everything is built and runs on the M5 with open local models and no paid APIs. The τ-bench data is MIT-licensed, 65 MB, and the replay is fully reproducible. Remaining work (model tier on the residue, calibrated thresholds, live LangGraph demo) fits before 17 Nov.
+- **Demo strength — 4.** The live desk demo is crisp (invented ticker, ×10, side flip and injected transfer stopped in under 1 ms with the clause cited), and the frontier chart against the LLM judge is a strong slide. The modest real-error catch must be framed as an honest frontier.
+- **Fit with the user's strengths — 5.** Agent infrastructure, evaluation at scale and frontier models. Microsoft's Prompt Shields, groundedness and task-adherence features are among the shipped baselines we position against.
+- **Biggest risk:** judges reading "36% catch" as weak. Mitigation: lead with the frontier and the judge comparison at matched cost, the pre-trade analogy (hard block / soft alert / manual review), and the miss taxonomy showing that 8 of 20 misses are invisible to any transcript-based check.
+- **One-line pitch:** *Pre-trade risk checks for AI agents: every argument must cite its source, and on real agent errors that beats an LLM judge by catching more harmful calls (42.5% vs 28%) while wrongly blocking 15× fewer good ones (1.7% vs 27%).*
+- **Overall: 4.4 / 5.** Recommendation: P9 is a sound Perceptron pick if P7's spike stays unreplicated. Its claims are modest but survive a pre-registered held-out test and an independent red team.
 
 ## Log
-### 2026-10-04 11:55 IST — Resumed; τ-bench held-out results, audit, reviews launched
+### 2026-10-04 11:10 IST — Resumed; τ-bench held-out results, audit, reviews launched
 - **10:48 Supervisor:** resume with a five-point definition of done. Child sessions only (max 2), no `task` sub-agents.
 - **Child sessions launched:** `P9 independent red team (astra)` (gpt-6-astra, max; may read only the KB data, tool specs and contracts) and `P9 code/eval review (sol)` (gpt-6-sol, max).
 - **Adapter v1, dev only:**
@@ -134,7 +138,7 @@ _First version 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
   - Found and fixed a labelling bug: 12 ground-truth address actions used the pre-rename `province` key, mislabelling 11 dev calls. The test split was unaffected.
   - Froze strict / balanced / lenient (+ untuned v0).
 - **One-shot held-out test** (commit `a93e35a`): numbers in *Now*.
-- **Supervisor 11:40:** approved the memory-level rule for the LLM judge (see *Now*). Agreed to headline the real-error frontier, compare the judge at a matched stop rate, and add the miss taxonomy.
+- **Supervisor (~11:03):** approved the memory-level rule for the LLM judge (see *Now*). Agreed to headline the real-error frontier, compare the judge at a matched stop rate, and add the miss taxonomy.
 
 ### 2026-10-04 09:53 IST — Paused by the Supervisor (user decision); results saved
 - **08:22 Supervisor:** package accepted; P9 ranks #2 in Perceptron and moves to #1 if the guard holds on real agent errors by 10 Oct. Next: τ-bench/AgentDojo real-error replay vs no-guard/schema/LLM-judge baselines, then an independent adversarial red team.

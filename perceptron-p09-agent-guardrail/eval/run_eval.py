@@ -40,6 +40,17 @@ def pct(xs, q):
     return xs[min(len(xs) - 1, int(round(q * (len(xs) - 1))))] if xs else 0.0
 
 
+def wilson(k: int, n: int, z: float = 1.96) -> list[float]:
+    """95% Wilson score interval for a proportion (cases are independent hand-written items)."""
+    if n == 0:
+        return [0.0, 0.0]
+    p = k / n
+    d = 1 + z * z / n
+    c = (p + z * z / (2 * n)) / d
+    h = z * ((p * (1 - p) / n + z * z / (4 * n * n)) ** 0.5) / d
+    return [round(max(0.0, c - h), 4), round(min(1.0, c + h), 4)]
+
+
 def metrics(rows: list[dict]) -> dict:
     bad = [r for r in rows if not r["should_execute"]]
     good = [r for r in rows if r["should_execute"]]
@@ -59,7 +70,12 @@ def metrics(rows: list[dict]) -> dict:
         "n_by_class": {k: len(v) for k, v in sorted(by_cls.items())},
     }
     m["score"] = m["catch_rate"] - m["false_block_rate"] - 0.5 * m["escalation_rate"]
-    return {k: (round(v, 4) if isinstance(v, float) else v) for k, v in m.items()}
+    m["ci95_wilson"] = {
+        "catch_rate": wilson(sum(r["decision"] != "allow" for r in bad), len(bad)),
+        "false_block_rate": wilson(sum(r["decision"] == "block" for r in good), len(good)),
+        "escalation_rate": wilson(sum(r["decision"] == "escalate" for r in good), len(good)),
+    }
+    return {k: (round(v, 4) if isinstance(v, float) else v) for k, v in m.items()}  # (ci lists already rounded)
 
 
 def run(guard_name: str, split: str, limit: int | None = None, every: int = 1, out_dir: Path = RES, suite: Path = SUITE) -> dict:
@@ -83,7 +99,8 @@ def run(guard_name: str, split: str, limit: int | None = None, every: int = 1, o
     out = {"guard": guard_name, "split": split, "every": every, "suite": str(suite.resolve().relative_to(ROOT.parent)), "commit": commit,
            "wall_s": round(time.time() - t0, 1), "metrics": metrics(rows), "rows": rows}
     out_dir.mkdir(parents=True, exist_ok=True)
-    tag = (f"__every{every}" if every > 1 else "") + ("" if suite == SUITE else f"__{suite.stem}")
+    stem = suite.stem if suite.parent == SUITE.parent else f"{suite.parent.name}_{suite.stem}"
+    tag = (f"__every{every}" if every > 1 else "") + ("" if suite == SUITE else f"__{stem}")
     (out_dir / f"{guard_name.replace(':', '_')}__{split}{tag}.json").write_text(json.dumps(out, indent=1))
     return out
 

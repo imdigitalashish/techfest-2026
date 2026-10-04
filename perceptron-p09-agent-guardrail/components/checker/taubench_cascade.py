@@ -43,7 +43,7 @@ def substantive(quote: str) -> bool:
 def resolve(it: dict, data: dict, transcript: str, chat) -> tuple[Decision, list, int, float]:
     """-> (decision, checks, n_model_calls, model_ms). `chat(system, user) -> (text, ms)`."""
     tr.SUMMARY_FIELDS = {"item", "payment", "reason", "address"}
-    checks = tr.check(it["tool"], it["args"], it["user_turns"], it["observations"], it["auth_user_id"], data, it["assistant_texts"])
+    checks = tr.check(it["tool"], it["args"], it["user_turns"], it["observations"], it["auth_user_id"], data, it.get("confirm_prompt", ""))
     if tr.decide(checks) != Decision.ESCALATE:
         return tr.decide(checks), checks, 0, 0.0
     srcs = sources(transcript)
