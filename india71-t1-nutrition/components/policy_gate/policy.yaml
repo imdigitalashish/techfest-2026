@@ -1,0 +1,167 @@
+version: "0.1.0"
+default:
+  decision: deny
+  transform: none
+  legal_basis: null
+  rationale: "Default deny: no ordered policy rule matched."
+rules:
+  - id: deny-other-purpose
+    roles: [aww, asha, anm, ls, cdpo, mo_phc, dpo, dm, state, public, researcher, system]
+    purposes: [other]
+    data_categories: [identified_child, pseudonymous_child, risk_score, health_record, aggregate]
+    scope: any
+    decision: deny
+    transform: none
+    legal_basis: null
+    rationale: "Purpose OTHER is never a valid processing purpose."
+  - id: deny-health-record-no-consent-or-open-referral
+    roles: [aww, asha, anm, ls, cdpo, mo_phc, dpo, dm, state, public, researcher, system]
+    purposes: [service_delivery, supervision, programme_monitoring, public_reporting, research, model_training]
+    data_categories: [health_record]
+    scope: any
+    requires:
+      consent_artefact_id: missing
+    decision: deny
+    transform: none
+    legal_basis: "DPDP Act 2023 / ABDM consent requirement (VERIFY)"
+    rationale: "Health record access requires consent unless care coordination under an open referral applies."
+  - id: aww-own-awc-service-identified
+    roles: [aww]
+    purposes: [service_delivery]
+    data_categories: [identified_child]
+    scope: contains
+    decision: allow
+    transform: none
+    legal_basis: "DPDP Act 2023 s.7(b) — State benefit/service (VERIFY)"
+    rationale: "AWW may see identified children in her own AWC for direct service delivery."
+  - id: asha-anm-open-task-care-identified
+    roles: [asha, anm]
+    purposes: [care_coordination]
+    data_categories: [identified_child]
+    scope: contains
+    requires:
+      has_open_task: true
+    decision: allow
+    transform: none
+    legal_basis: "DPDP Act 2023 s.7(b) care/referral coordination for State service (VERIFY)"
+    rationale: "ASHA/ANM may see an identified child only when an open referral or joint-visit task exists."
+  - id: mo-open-referral-care-identified
+    roles: [mo_phc]
+    purposes: [care_coordination]
+    data_categories: [identified_child]
+    scope: contains
+    requires:
+      has_open_task: true
+    decision: allow
+    transform: none
+    legal_basis: "DPDP Act 2023 s.7(b) medical referral for State service (VERIFY)"
+    rationale: "MO-PHC may see identified child data for an open referral."
+  - id: health-record-open-referral-care
+    roles: [asha, anm, mo_phc]
+    purposes: [care_coordination]
+    data_categories: [health_record]
+    scope: contains
+    requires:
+      has_open_task: true
+    decision: allow
+    transform: none
+    legal_basis: "DPDP Act 2023 s.7(b) + health referral exception/ABDM workflow note (VERIFY)"
+    rationale: "Health record is allowed for care coordination when an open referral exists."
+  - id: health-record-with-consent
+    roles: [aww, asha, anm, ls, cdpo, mo_phc]
+    purposes: [service_delivery, care_coordination, supervision]
+    data_categories: [health_record]
+    scope: contains
+    requires:
+      consent_artefact_id: present
+    decision: allow
+    transform: none
+    legal_basis: "ABDM consent artefact (HIE-CM) (VERIFY)"
+    rationale: "Consent-gated health record access."
+  - id: ls-sector-supervision-pseudonymous
+    roles: [ls]
+    purposes: [supervision]
+    data_categories: [pseudonymous_child, risk_score]
+    scope: contains
+    decision: allow_transformed
+    transform: pseudonymise
+    legal_basis: "DPDP Act 2023 s.7(b) supportive supervision for State service (VERIFY)"
+    rationale: "LS supervision uses pseudonymous child-level records in sector."
+  - id: ls-escalated-identified
+    roles: [ls]
+    purposes: [supervision, care_coordination]
+    data_categories: [identified_child]
+    scope: contains
+    requires:
+      escalated: true
+    decision: allow
+    transform: none
+    legal_basis: "DPDP Act 2023 s.7(b) escalation handling for State service (VERIFY)"
+    rationale: "LS may see identified details for escalated tasks in her sector."
+  - id: cdpo-project-monitoring-aggregates
+    roles: [cdpo]
+    purposes: [programme_monitoring]
+    data_categories: [aggregate]
+    scope: contains
+    decision: allow_transformed
+    transform: aggregate
+    legal_basis: "DPDP Act 2023 s.7(b) programme administration (VERIFY)"
+    rationale: "CDPO receives project-level aggregates for monitoring."
+  - id: cdpo-escalated-identified
+    roles: [cdpo]
+    purposes: [supervision, care_coordination]
+    data_categories: [identified_child]
+    scope: contains
+    requires:
+      escalated: true
+    decision: allow
+    transform: none
+    legal_basis: "DPDP Act 2023 s.7(b) escalation handling for State service (VERIFY)"
+    rationale: "CDPO may see identified details for escalated tasks in project."
+  - id: district-monitoring-aggregates
+    roles: [dpo, dm]
+    purposes: [programme_monitoring]
+    data_categories: [aggregate]
+    scope: contains
+    decision: allow_transformed
+    transform: suppress_small_cells
+    legal_basis: "DPDP Act 2023 s.7(b) district programme monitoring (VERIFY)"
+    rationale: "District leaders receive aggregate monitoring with small-cell suppression."
+  - id: state-monitoring-aggregates
+    roles: [state]
+    purposes: [programme_monitoring]
+    data_categories: [aggregate]
+    scope: contains
+    decision: allow_transformed
+    transform: suppress_small_cells
+    legal_basis: "DPDP Act 2023 s.7(b) State programme monitoring (VERIFY)"
+    rationale: "State receives aggregate monitoring data."
+  - id: public-reporting-dp-aggregates
+    roles: [public]
+    purposes: [public_reporting]
+    data_categories: [aggregate]
+    scope: any
+    decision: allow_transformed
+    transform: dp_noise
+    legal_basis: "DPDP Act 2023 public transparency / anonymised statistics note (VERIFY)"
+    rationale: "Public outputs are aggregate only and protected with DP noise."
+  - id: researcher-approved-pseudonymous
+    roles: [researcher]
+    purposes: [research]
+    data_categories: [pseudonymous_child, risk_score]
+    scope: contains
+    requires:
+      approval_id: present
+    decision: allow_transformed
+    transform: pseudonymise
+    legal_basis: "DPDP Act 2023 s.17(2)(b) research exemption (VERIFY)"
+    rationale: "Approved research receives pseudonymous child-level data only."
+  - id: model-training-pseudonymous-only
+    roles: [researcher, system]
+    purposes: [model_training]
+    data_categories: [pseudonymous_child, risk_score]
+    scope: contains
+    decision: allow_transformed
+    transform: pseudonymise
+    legal_basis: "DPDP Act 2023 data minimisation / research-model development note (VERIFY)"
+    rationale: "Model training may use only pseudonymous data."
