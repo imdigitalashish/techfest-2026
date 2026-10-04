@@ -26,6 +26,16 @@ PAD = pd.Timedelta(minutes=30)
 USE_WITHIN_FIT = True        # exp1: fit k within each contiguous recession limb (fixed-effects slope)
 USE_RAIN_CONSISTENCY = True  # exp2: implausible only if stage-implied inflow exceeds what rain can explain
 USE_JUMP_TEST = True         # exp3: flag one-minute stage jumps that rain in +-5 min cannot explain
+# Abstention (4 Oct 2026, after the final-deck review D5): never judge an event on missing inputs.
+MIN_RAIN_COVERAGE = 0.9      # share of minutes in [t_start - 1 h, t_end] with a rain observation (zeros count)
+MAX_STAGE_GAP = pd.Timedelta(minutes=60)   # longest allowed gap between stage samples inside an event
+
+
+def _coverage(rain_min: pd.Series, a: pd.Timestamp, b: pd.Timestamp) -> float:
+    if rain_min is None or len(rain_min) == 0:
+        return 0.0
+    expected = int((b - a) / pd.Timedelta(minutes=1)) + 1
+    return float(rain_min.loc[a:b].notna().sum()) / max(expected, 1)
 
 
 def _events(stage: pd.Series) -> list[tuple[pd.Timestamp, pd.Timestamp]]:
@@ -76,7 +86,12 @@ def verify(stage: pd.Series, rain_min: pd.Series, structure: dict) -> list[dict]
         seg = stage.loc[t0:t1]
         if len(seg) < 5:
             continue
-        rain_mm = float(rain_min.loc[t0 - pd.Timedelta(hours=1):t1].sum())
+        rain_mm = float(rain_min.loc[t0 - pd.Timedelta(hours=1):t1].sum()) if len(rain_min) else 0.0
+        defer = None
+        if _coverage(rain_min, t0 - pd.Timedelta(hours=1), t1) < MIN_RAIN_COVERAGE:
+            defer = "insufficient rain data"
+        elif seg.index.to_series().diff().max() > MAX_STAGE_GAP:
+            defer = "stage gap > 60 min"
         k = _fit_k(seg, rain_min, hmax)
         if k is not None:
             k_run = k
@@ -102,7 +117,9 @@ def verify(stage: pd.Series, rain_min: pd.Series, structure: dict) -> list[dict]
             rr = rain_min.reindex(seg.index, fill_value=0).rolling(11, center=True, min_periods=1).sum().to_numpy()[1:]
             cap = 3.0 * structure["runoff_coeff"] * structure["catchment_m2"] * rr / 1000.0 + 0.15
             implausible = bool(np.any(dv > cap))
-        if implausible:
+        if defer is not None:
+            verdict = "deferred"
+        elif implausible:
             verdict = "implausible"
         elif ci is not None and ci < 0.5:
             verdict = "clogged"
@@ -110,9 +127,11 @@ def verify(stage: pd.Series, rain_min: pd.Series, structure: dict) -> list[dict]
             verdict = "verified"
         out.append({"structure_id": structure["structure_id"], "t_start": t0, "t_end": t1, "rain_mm": rain_mm,
                     "inflow_m3": inflow, "recharged_m3": infil, "overflow_m3": overflow, "k_per_h": k_use,
-                    "clogging_index": ci, "verdict": verdict, "max_rise_m": rise})
+                    "clogging_index": ci, "verdict": verdict, "max_rise_m": rise, "detail": defer})
     # rain with no response -> no_inflow events (daily windows with >= 5 mm and no detected event)
-    daily = rain_min.resample("D").sum()
+    if len(rain_min) == 0:
+        return sorted(out, key=lambda e: e["t_start"])
+    daily = rain_min.resample("D").sum(min_count=1)
     for day, mm in daily[daily >= 5.0].items():
         d0, d1 = day, day + pd.Timedelta(days=1, hours=6)
         if not any(e["t_start"] <= d1 and e["t_end"] >= d0 for e in out):
@@ -121,5 +140,6 @@ def verify(stage: pd.Series, rain_min: pd.Series, structure: dict) -> list[dict]
             if rise < H_ON:
                 out.append({"structure_id": structure["structure_id"], "t_start": d0, "t_end": d1,
                             "rain_mm": float(mm), "inflow_m3": 0.0, "recharged_m3": 0.0, "overflow_m3": 0.0,
-                            "k_per_h": None, "clogging_index": None, "verdict": "no_inflow", "max_rise_m": rise})
+                            "k_per_h": None, "clogging_index": None, "verdict": "no_inflow", "max_rise_m": rise,
+                            "detail": None})
     return sorted(out, key=lambda e: e["t_start"])

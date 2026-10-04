@@ -12,7 +12,7 @@ flowchart LR
   end
   C2 -->|UplinkFrame| C3[C3 telemetry-link<br/>LoRaWAN / NB-IoT, store-and-forward]
   C3 -->|UplinkFrame + DeliveryReport| C4[C4 ingest-qc<br/>decode, validate, QC flags]
-  EXT[(India-WRIS DWLR + ERA5/IMD rain)] -->|Series| C4
+  EXT[(India-WRIS DWLR + archive / gauge rain)] -->|Series| C4
   C4 -->|Series + QCReport| C5[C5 recharge-verifier ★]
   REG[(RechargeStructure registry<br/>DJB rebate applications)] --> C5
   C4 -->|Series + QCReport| C6[C6 hydro-twin<br/>Pastas response + WTF recharge]
@@ -22,7 +22,7 @@ flowchart LR
   C7 -->|InspectionTicket| C8[C8 dashboard<br/>operator inbox + citizen view]
   C5 -->|RechargeEvent| C8
   C6 -->|HeadModelFit| C8
-  SIM[C0 twin-simulator<br/>SIMULATED pits on real ERA5 rain] -.->|RawSample truth-labelled| C2
+  SIM[C0 twin-simulator<br/>SIMULATED pits on archive rain] -.->|RawSample truth-labelled| C2
   SIM -.->|ground truth| EV[eval harness]
 ```
 
@@ -30,7 +30,7 @@ flowchart LR
 
 | # | Component | Responsibility (one sentence) | Input → Output (contract) | Calls | Baseline (existing practice) | Isolated scalar metric | SLO |
 |---|---|---|---|---|---|---|---|
-| C0 | **twin-simulator** | Generates truth-labelled pit stage series from real rainfall, with known geometry, clogging and faults | real ERA5 hourly rain + `RechargeStructure` → `RawSample` stream + ground-truth `RechargeEvent`s | — | none (test harness) | mass-balance closure error of the simulator itself (must be < 1e-9 m³) | 1 year × 100 pits < 60 s on M5 |
+| C0 | **twin-simulator** | Generates truth-labelled pit stage series from real rainfall, with known geometry, clogging and faults | Open-Meteo archive hourly rain (default model; frozen fixture) + `RechargeStructure` → `RawSample` stream + ground-truth `RechargeEvent`s | — | none (test harness) | mass-balance closure error of the simulator itself (must be < 1e-9 m³) | 1 year × 100 pits < 60 s on M5 |
 | C1 | **sensor-front-end** | Measures pit water column with a 0–5 m 4–20 mA throw-in probe (DFRobot KIT0139, ±0.5 % FS), with an optional rain gauge, plus a barometer only if the probe is absolute-referenced | physical → `RawSample` (abs_pressure, baro, water_temp) | — | vented transducer or ultrasonic in tank | stage RMSE vs reference dip tape (mm), drift mm/month | ≤ ±15 mm stage (0–3 m FS) |
 | C2 | **edge-firmware** | Samples slowly when dry and in bursts during rain or level rise; packs deltas; keeps a signed, append-only local log | `RawSample` → `UplinkFrame` (+ `EdgeEvent` level_rise / tamper / low_battery) | C3 | fixed-interval logging (e.g. 2 readings/day on CGWA DWLRs) | **mAh/day** at equal event-volume error (vs fixed 15-min sampling) | ≥ 3 yr on primary cell (target, UNVERIFIED) |
 | C3 | **telemetry-link** | Delivers frames from a lid-mounted antenna; buffers and retries until delivered | `UplinkFrame` → `DeliveryReport` | C4 | GPRS/4G modem | % of storm events delivered within 24 h | ≥ 99 % within 24 h |
@@ -57,8 +57,8 @@ flowchart LR
 | `InspectionTicket` | C7 → C8/field | kind, priority, confidence, evidence, recommended_action | — |
 
 ## End-to-end metric
-Over a **simulated fleet of 100 pits driven by real ERA5 Delhi hourly rain (2022–2025)**, with known geometry and injected faults (clogging, blocked inlet, staged "bucket" fakes, sensor dropouts), the share of structures whose **season verdict matches ground truth**, together with the **median event-volume error**. Real-world validation comes in Round 2 on a physical rig: a 200 L drum "pit" with a calibrated drain, plus a metered inflow.
+Over a **simulated fleet of 40 pits per split, driven by Open-Meteo archive hourly rain for Delhi (monsoons 2024 and 2025; default model, not pinned; minute pattern synthetic)**, with known geometry and injected faults (clogging, blocked inlet, staged "bucket" fakes, sensor dropouts), the share of structures whose **season verdict matches ground truth**, together with the **median event-volume error**. Real-world validation comes in Round 2 on a physical rig: a 200 L drum "pit" with a calibrated drain, plus a metered inflow.
 
 ## What is real vs simulated (must be visible in every demo)
-- **Real:** India-WRIS station metadata and DWLR series for Delhi (382 stations / 185 telemetric); ERA5 rain/pressure for Delhi; DJB rule parameters (≥100 m², 10 %/15 % rebate, 1.5× penalty).
+- **Real:** India-WRIS station metadata and DWLR series for Delhi (382 stations / 185 telemetric); Open-Meteo archive rain/pressure for Delhi (reanalysis-based; default model); DJB rule parameters (≥100 m², 10 %/15 % rebate, 1.5× penalty).
 - **Simulated:** every RWH pit node, its stage series, clogging and faults (C0). Labelled `provenance = simulated`.

@@ -10,23 +10,23 @@
 ## Timing (10:00)
 | # | Slide | Time | Key line |
 |---|---|---|---|
-| 1 | Title + team info (official requirement: team name, Team ID, theme, contacts) | 0:00–0:20 | "Delhi pays for rainwater harvesting it cannot check. We measure it." |
-| 2 | A rule Delhi funds but can't verify | 0:20–1:40 | "The verification system doesn't exist yet. We're bidding to be it." |
-| 3 | Why it matters now (CGWB 2025, DJB Phase I, the 733 M L/yr estimate) | 1:40–2:30 | "Make DJB's own estimate auditable." |
-| 4 | Our India-WRIS analysis (REAL) | 2:30–3:15 | "We QC the city's sensors before we believe them." |
-| 5 | JalSakshi: two outputs, four verdicts | 3:15–4:45 | "Drain rate and infiltrated volume ± band. Never 'aquifer recharge'." |
-| 6 | 60-second demo | 4:45–6:00 | "Simulated pit, Delhi's real 2025 rain." |
-| 7 | Honest accuracy | 6:00–7:00 | "13 % on the stress test. 3 % only when our models agree." |
-| 8 | Built for Delhi conditions | 7:00–7:45 | "Only the probe is underground." |
-| 9 | Cost, buyer, rollout | 7:45–8:45 | "First buyer: DJB's 1,000 government-building restorations." |
-| 10 | Impact + ask | 8:45–10:00 | "Measured, not self-declared." |
+| 1 | Title + team info (official requirement: team name, Team ID, theme, contacts) | 0:00–0:20 | "Checking a pit today means an inspector's visit. We propose storm-by-storm evidence." |
+| 2 | A rule Delhi funds, checked by periodic inspection | 0:20–1:40 | "Nothing measures a pit storm by storm. That's the layer we propose, alongside inspection." |
+| 3 | Why it matters now (CGWB 2025, DJB Phase I, the 733 M L/yr estimate) | 1:40–2:30 | "Each structure should report how it performs." |
+| 4 | JalSakshi: status-labelled; drain rate + model-based volume; five verdicts incl. deferred | 2:30–4:00 | "Maintenance screening. Never 'aquifer recharge'." |
+| 5 | 60-second demo (pre-opened) | 4:00–5:15 | "Simulated pit on Delhi's 2025 archive rain; a large pulse flagged; unplug the gauge → deferred." |
+| 6 | Honest accuracy, with denominators | 5:15–6:15 | "13 % on the stress test. 3 % only when our models agree." |
+| 7 | Built for Delhi conditions: status, not promises | 6:15–7:00 | "Only the probe is underground. No battery-life claim." |
+| 8 | Cost, prospective customer, adaptation | 7:00–8:00 | "Prospective pilot customer: DJB's restoration programme. No contact yet." |
+| 9 | Impact, boundaries, ask | 8:00–9:15 | "Measured, not self-declared." |
+| — | Reserve | 9:15–10:00 | handoff and slack |
 
-Backup slides: illegal borewells (why we don't claim detection), the verified BOM, evaluator definitions.
+Backup slides: 0, Delhi DWLR snapshot (REAL); 1, illegal borewells (why we don't claim detection); 2, BOM and price evidence; 3, evaluators, keep rule and chronology; 4, one worked event and the observability table.
 
 ## Must not claim (from both cross-model judges)
-1. That a level sensor measures **aquifer** recharge. We report infiltrated volume ± band and drain rate.
+1. That a level sensor measures **aquifer** recharge. We report the drain rate (clogging) and a model-based infiltrated-volume estimate. A per-event band is PLANNED, not built.
 2. That self-certification or the 1.5× penalty is in force. HT: self-disclosure "is also being planned"; non-compliance "may attract" 1.5×.
-3. That 3.0 % is our accuracy. Lead with **13.1 %** (stress test) and say "10/10 *simulated* fakes".
+3. That 3.0 % is our accuracy. Lead with **13.1 %** (stress test), say "10/10 *large simulated pulses*", and say a 20 L bucket isn't detected.
 4. That piezometers identify illegal borewells or pumps.
 5. Any battery life, volume price or city-wide recharge number. None is measured yet.
 6. That ₹204.46 crore is our market. It's what DJB data (via HT) say was paid in rebates.
@@ -34,3 +34,6 @@ Backup slides: illegal borewells (why we don't claim detection), the verified BO
 
 ## Fill in before 9 Oct (user)
 Team name, Team ID, member names/roles and contact on slide 1; who presents which slides; a rehearsal against the clock (aim for 9:30).
+8. "Pre-registered". Only the v1/v2 keep rules provably preceded their results (git). Say "a written keep rule".
+9. "First buyer", "the verification system doesn't exist", "we built the instrument". Instead say "prospective pilot customer; no contact yet", "nothing measures storm by storm", "we built the software; the instrument is the Round-2 build".
+10. That alerts are immediate. Verdicts are issued when an event closes (hours to days), and maintenance tickets need a 3-storm trend.

@@ -3,33 +3,39 @@
 > **Status:** v2 (final for the zonal; updated 4 Oct 2026 after both zonal-pick reviews: `reviews/2026-10-04-lead-response.md`).
 > **Architecture:** `architecture/components.md` (C0–C8). **Spike rationale:** `architecture/adr/001-spike.md`.
 > **Price rule:** every BOM row carries a vendor URL and an access date. Anything without a price we saw ourselves is marked **UNVERIFIED**.
+> **Status key:** everything in §2 is **PLANNED** hardware. **BUILT** today: the cloud software (C0 simulator, C4 real-data profile, C5 verifier with deferral, C8 offline demo), all tested in **simulation** only. Final-deck review response: `reviews/2026-10-04-final-deck-lead-response.md`.
 
 ## 1. What the prototype must prove (from the reviews)
 
 | Must prove | How | Pass criterion (set before testing) |
 |---|---|---|
 | Clogging is detectable from falling-head recessions | Pour rig with interchangeable drain orifices (clogging levels) | Clogging precision/recall ≥ 0.8 on blind trials |
-| Infiltrated volume per event is within a stated band | Blind weighed-water pours; truth = water poured − water left in the drum − overflow collected | Median absolute error reported with a 90 % band. No target is promised: the rig sets the number |
-| Fakes are flagged | Pours with the rain gauge covered, i.e. no "rain" | ≥ 9/10 flagged "implausible"; honest pours flagged < 10 % |
-| The node survives the field | Bench current draw, outage buffering, recovery | Measured mAh/day (PPK2); zero lost events after a 24 h link outage |
+| The model-based infiltrated-volume estimate is close enough to be useful | Blind weighed-water pours; truth = water poured − water left in the drum − overflow collected | Report the median absolute error and the 90th percentile. No target is promised; the rig sets the number. A per-event uncertainty band is PLANNED, and its coverage is tested on this data |
+| Fakes are flagged | Pours with the rain gauge covered, i.e. no "rain": large fast pours (≥ 100 L) **and** small/slow pours (20 L, 20-min trickle) | Report detection rate by size and rate (a 20 L pour is expected to be missed: below the 2 cm threshold); honest pours flagged < 10 % |
+| The node survives the field | Bench current draw, outage buffering, recovery | Measured mAh/day (PPK2); zero lost events after a 24 h link outage (buffer capacity, overwrite and power-loss rules written down first) |
+| Missing inputs never produce an accusation | Unplug the gauge or cut the stage cable mid-event | Verdict = `deferred` (BUILT in software, 7 unit tests; repeat on hardware) |
+| The duty-cycled schedule doesn't break the numbers | Re-run blind pours with real 15-min dry polling + gauge-interrupt wake-up | Error within 2 points of the continuous-sampling result, or the deck numbers are restated |
 
 ## 2. Architecture
 
 - **In the pit:**
-  - DFRobot KIT0139 4–20 mA throw-in level transmitter (0–5 m, 316L stainless steel, IP68, 5 m cable). It hangs inside a slotted 50 mm PVC stilling tube with a geotextile sock, its tip on a stand 5–10 cm above the floor (the silt line).
+  - DFRobot KIT0139 4–20 mA throw-in level transmitter: 0–5 m; datasheet "Material: 316L stainless steel", IP68; 5 m vented cable. (The reviewer reports DFRobot's tutorial lists a 316L membrane with a 304 casing; not re-verified by us.) It hangs inside a slotted 50 mm PVC stilling tube with a geotextile sock, its tip on a stand 5–10 cm above the floor (the silt line).
+  - **Datum:** stage is measured above the probe tip. The 5–10 cm below the tip is a blind zone, 0.11–0.23 m³ in a 2.25 m² pit (A); the commissioning fill fixes the tip-to-floor offset.
 - **In the lid housing:**
   - MCU + LoRaWAN radio: RAK3172 (STM32WLE5CC, IN865) standalone. An ESP32-C6 dev board is the prototype host if needed.
   - 3.6 V Li-SOCl₂ D-cell.
   - Boost converter (3.6 V → 12 V) switched by a MOSFET, so the probe is powered only while sampling.
   - Flash ring buffer holding a signed, append-only log.
-  - Antenna flush with the lid.
-  - Optional tipping-bucket rain gauge on the roof edge.
+  - Antenna mounted clear of any metal lid (a flush antenna under a steel cover is shielded); site survey first.
+  - **Mandatory** tipping-bucket rain gauge on the roof edge. It wakes the node (interrupt) and is the plausibility check; without it, verdicts defer.
+  - Vent tube terminates in a desiccant chamber inside the lid housing (vented-cable moisture is a known failure mode: Solinst guidance in `research/landscape.md` [S16]).
   - A barometer **only if** the probe turns out to be absolute-referenced. The datasheet doesn't state the reference type; throw-in probes are commonly vented-cable. **Bench check.**
 - **Firmware (C2):**
   - **Dry:** 1 sample every 15 min; uplink every 6–12 h.
   - **Wet:** a gauge tip (interrupt) or a stage rise > 2 cm switches to 1-min sampling until the stage returns to baseline, then sends an event summary plus the compressed series.
   - **Always:** heartbeats and tamper events (stage equal to the floor during rain; lid switch).
-  - **Auto-zero:** the dry-floor reading between storms is the zero.
+  - **Auto-zero: PLANNED, not in reported results.** Two simulated variants were rejected by the keep rule (`results.tsv` v3-c1, v3-c2). A real dry reference needs a defined condition, e.g. no rain for 48 h and a flat stage at the floor.
+  - **Pre-monsoon check:** a metered hose fill before each monsoon. Clogging that develops in the dry season shows up only at the next storm otherwise.
 - **Cloud (C4–C8):** Python services behind the typed contracts in `architecture/contracts/`. The verdict is advisory: **an inspector can override any verdict, and no bill changes automatically.**
 
 ## 3. Bill of materials — per node (prototype, single-unit retail)
@@ -69,7 +75,8 @@
 
 - **Worst-case absolute error per reading:** ±0.5 % × 5 m = **±25 mm**. On a 1.5 × 1.5 m pit (2.25 m², assumed geometry) that is ±0.056 m³.
 - **Event inflow from the stage rise**, worst case with independent errors at both ends: ±2 × 25 mm × 2.25 m² = **±0.11 m³**. That is 2.8 % of a 4.0 m³ event (100 m² roof × 50 mm × runoff 0.8, assumed).
-- **Offset:** auto-zero on the dry floor between storms removes a constant offset. Residual drift and nonlinearity are not in the datasheet, so the rig measures them.
+- **Offset:** the kept verifier does **not** remove a constant offset (auto-zero not adopted). Stage is referenced to the probe tip. Residual drift and nonlinearity are not in the datasheet, so the rig measures them.
+- **Scope of this budget:** it covers the storage term only. It is not the infiltration uncertainty, which also depends on the drain-law fit, overflow and unobserved paths (see the observability table, deck Backup 4).
 - **Simulated effect:** frozen evaluator v3 adds ±25 mm offset, ±10 mm/season drift and 2.1 mm quantisation. Results are in `components/recharge_verifier/autoresearch/results.tsv` and summarised in §8.
 - **ADC (ASSUMPTION):** the converter output span is taken as ≈1.92 V on a 3.3 V, 12-bit ADC, about 2.1 mm/count. Verify on the bench.
 
@@ -108,7 +115,7 @@ E/day = I_sleep·24 h + N_samples·(I_probe·t_on) + N_uplinks·Q_uplink.
 | 10 Oct | team | Delhi zonal pitch (South Asian University) | — |
 | 11–13 Oct | user / hardware teammate | Order rows 1–6, 9, gateway and PPK2 (element14 lead time: 4–6 business days from UK stock) | order receipts |
 | 14–20 Oct | hardware teammate | Build the pour rig. Wire probe → converter → ADC; boost + MOSFET switching | rig photos, first readings |
-| 18–31 Oct | lead + teammate | Firmware: sampling modes, auto-zero, ring buffer, LoRaWAN uplink; cloud ingest of real frames | logs |
+| 18–31 Oct | lead + teammate | Firmware: sampling modes + gauge-interrupt wake-up, ring buffer (capacity/overwrite rules), LoRaWAN uplink; auto-zero candidate; cloud ingest of real frames | logs |
 | 21–31 Oct | hardware teammate | PPK2: settle time, sleep current, mAh/day → power decision (§5) | measured budget |
 | 1–12 Nov | team | **Blind rig trials** (§6) → C5 metrics on real data; rerun all frozen evaluators | results table |
 | 1–16 Nov | user | 1–3 field pits (campus/RWA, with permission): install + metered fill test | site photos, fill-test data |
@@ -119,7 +126,7 @@ E/day = I_sleep·24 h + N_samples·(I_probe·t_on) + N_uplinks·Q_uplink.
 
 ## 8. What exists today (software, runnable offline)
 
-- **C0 simulator:** linear-reservoir pits driven by real ERA5 Delhi rain. Frozen evaluators v1 (same model), v2 (non-linear drains + imperfect gauge) and v3 (v2 + sensor offset/drift/quantisation).
+- **C0 simulator:** linear-reservoir pits driven by Open-Meteo archive rain (reanalysis-based; default model, not pinned); the minute pattern inside each hour is synthetic. The hourly input is frozen in `eval/data/delhi_rain_hourly_openmeteo_default_monsoon2024_2025.csv`. Frozen evaluators v1 (same model), v2 (non-linear drains + imperfect gauge) and v3 (v2 + sensor offset/drift/quantisation).
 - **C5 verifier v1, all on simulated pits:**
   - holdout event MdAPE 3.0 % on the same-model test;
   - **13.1 % on the stress test (v2)**;
@@ -145,3 +152,23 @@ About 4–6 h/week from 11 Oct to 16 Nov, plus finals travel (15–18 Dec).
 4. Few post-monsoon storms: the rig + fill tests carry the evidence.
 5. A pilot site depends on permission.
 6. The ₹204.46 cr rebate figure is secondary-sourced (Hindustan Times citing DJB data).
+
+## 11. Pilot cost (parts only; listings seen 4 Oct 2026) and stated assumptions
+
+| Configuration | Arithmetic | ₹ (parts only) |
+|---|---|---|
+| Base node | rows 1–6 | 11,166.18 |
+| First site: node + rain gauge + shared gateway | 11,166.18 + 3,729.00 + 33,559.00 | 48,454.18 |
+| 3-pit pilot: 3 nodes + 3 gauges + 1 gateway | 3 × 11,166.18 + 3 × 3,729.00 + 33,559.00 | 78,244.54 |
+
+- **Excluded:** tax/shipping adjustments; boost converter, antenna, tube, sock, mounting, potting, cable; installation; backhaul; service.
+- **Labour (ASSUMPTIONS, no ₹ until a provider quotes):** ≈ 1 technician-day per pit to install, and ≈ ½ day per pit for the annual pre-monsoon fill check. DJB's 59 empanelled providers are the natural quote source.
+- **Backhaul (ASSUMPTION):** site Wi-Fi/Ethernet for the gateway.
+- **Price evidence:** the lead saw the listed prices on 4 Oct. An independent re-check the same day was blocked by most vendors (HTTP 403/503), so get quotes before buying.
+
+## 12. Safety and water-quality boundaries (pilot conditions)
+- **Install:** no pit entry. The probe is lowered from the lid by an empanelled installer; low-voltage battery device; lids stay closed and locked; written site permission.
+- **Water quality:** pilot only on permitted roof-runoff structures with existing pretreatment (filter media / first-flush) and a responsible site operator.
+  - The system never recommends recharging runoff it can't vouch for.
+  - An EC channel is a later screening aid. Conductivity alone does not certify safety.
+- **Customer status (4 Oct):** DJB's restoration programme is a *prospective* pilot customer; no contact or permission yet.

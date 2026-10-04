@@ -18,6 +18,19 @@
   "false_implausible_rate": 0.012975778546712802,
   "blocked_recall": 0.8333333333333334,
   "blocked_pits": 6,
+  "counts": {
+    "detected_event_windows": 1469,
+    "scored_windows_true_infil_ge_0.2m3": 952,
+    "honest_event_windows_healthy_or_clogging_pits": 1156,
+    "implausible_among_honest": 15,
+    "deferred_windows": 2,
+    "true_clogged_pits_final_k_lt_0.5": 10,
+    "clog_tp": 9,
+    "clog_fp": 6,
+    "clog_fn": 1,
+    "fakes_caught": 10,
+    "fakes": 10
+  },
   "evaluator": "v3 (v2 + KIT0139-class offset/drift/quantisation)",
-  "runtime_s": 38.4
+  "runtime_s": 16.3
 }

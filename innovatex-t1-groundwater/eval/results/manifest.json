@@ -1,0 +1,177 @@
+{
+  "written_against_commit_parent": "361ce58",
+  "sha256": {
+    "components/recharge_verifier/verifier.py": "1aea42d7be244951a090197bf2e83656d34e581b2b3841b53d54aaea433c09b0",
+    "components/twin_simulator/simulate.py": "6c1af570cba4fe80f58d5a03b7b655a1ec9005a1aade59ffe7319677b6211b30",
+    "components/recharge_verifier/autoresearch/eval.py": "56ed170096f3403ad97883fd3c20b783ace75b12bc1fb14f1a82a54330f1422f",
+    "components/recharge_verifier/autoresearch/eval_v2.py": "2ee435880197f539f0ed290cf3b548f53ab744710d93e12bda61e037e44bbb46",
+    "components/recharge_verifier/autoresearch/eval_v3.py": "73712ae924b3148de2821b281fe95e83c23f85984b5cb291fe153adebfdbad71",
+    "eval/data/delhi_rain_hourly_openmeteo_default_monsoon2024_2025.csv": "b631023677b3996f1f9acd84a9cbb963db6a28f8f0144af4cd99271f43c4196d"
+  },
+  "rain_source": "Open-Meteo historical archive, default model (not pinned), hourly; minute pattern synthetic (seeded Dirichlet)",
+  "scoring_unit": "detected event windows with true infiltration >= 0.2 m3 (a window can contain several storms)",
+  "runs": {
+    "v1_dev": {
+      "file": "eval/results/recharge_v1_dev.json",
+      "split": "dev",
+      "rain_period": [
+        "2025-06-15",
+        "2025-09-30 23:00"
+      ],
+      "event_mdape": 3.902,
+      "event_ape_p90": 16.374,
+      "false_implausible_rate": 0.0,
+      "clogging_precision": 1.0,
+      "clogging_recall": 1.0,
+      "fake_recall": 1.0,
+      "counts": {
+        "detected_event_windows": 2452,
+        "scored_windows_true_infil_ge_0.2m3": 1584,
+        "honest_event_windows_healthy_or_clogging_pits": 2096,
+        "implausible_among_honest": 0,
+        "deferred_windows": 0,
+        "true_clogged_pits_final_k_lt_0.5": 3,
+        "clog_tp": 3,
+        "clog_fp": 0,
+        "clog_fn": 0,
+        "fakes_caught": 10,
+        "fakes": 10
+      }
+    },
+    "v1_holdout": {
+      "file": "eval/results/recharge_v1_holdout.json",
+      "split": "holdout",
+      "rain_period": [
+        "2024-06-15",
+        "2024-09-30 23:00"
+      ],
+      "event_mdape": 2.973,
+      "event_ape_p90": 16.091,
+      "false_implausible_rate": 0.0,
+      "clogging_precision": 0.8333333333333334,
+      "clogging_recall": 1.0,
+      "fake_recall": 1.0,
+      "counts": {
+        "detected_event_windows": 1998,
+        "scored_windows_true_infil_ge_0.2m3": 1369,
+        "honest_event_windows_healthy_or_clogging_pits": 1514,
+        "implausible_among_honest": 0,
+        "deferred_windows": 1,
+        "true_clogged_pits_final_k_lt_0.5": 10,
+        "clog_tp": 10,
+        "clog_fp": 2,
+        "clog_fn": 0,
+        "fakes_caught": 10,
+        "fakes": 10
+      }
+    },
+    "v2_dev": {
+      "file": "eval/results/recharge_v1_evalv2_dev.json",
+      "split": "dev",
+      "rain_period": [
+        "2025-06-15",
+        "2025-09-30 23:00"
+      ],
+      "event_mdape": 13.033,
+      "event_ape_p90": 42.624,
+      "false_implausible_rate": 0.0,
+      "clogging_precision": 0.4,
+      "clogging_recall": 0.6666666666666666,
+      "fake_recall": 1.0,
+      "counts": {
+        "detected_event_windows": 2388,
+        "scored_windows_true_infil_ge_0.2m3": 1617,
+        "honest_event_windows_healthy_or_clogging_pits": 2010,
+        "implausible_among_honest": 0,
+        "deferred_windows": 0,
+        "true_clogged_pits_final_k_lt_0.5": 3,
+        "clog_tp": 2,
+        "clog_fp": 3,
+        "clog_fn": 1,
+        "fakes_caught": 10,
+        "fakes": 10
+      }
+    },
+    "v2_holdout": {
+      "file": "eval/results/recharge_v1_evalv2_holdout.json",
+      "split": "holdout",
+      "rain_period": [
+        "2024-06-15",
+        "2024-09-30 23:00"
+      ],
+      "event_mdape": 13.097,
+      "event_ape_p90": 57.539,
+      "false_implausible_rate": 0.0015,
+      "clogging_precision": 0.6666666666666666,
+      "clogging_recall": 1.0,
+      "fake_recall": 1.0,
+      "counts": {
+        "detected_event_windows": 1764,
+        "scored_windows_true_infil_ge_0.2m3": 1233,
+        "honest_event_windows_healthy_or_clogging_pits": 1291,
+        "implausible_among_honest": 2,
+        "deferred_windows": 0,
+        "true_clogged_pits_final_k_lt_0.5": 10,
+        "clog_tp": 10,
+        "clog_fp": 5,
+        "clog_fn": 0,
+        "fakes_caught": 10,
+        "fakes": 10
+      }
+    },
+    "v3_dev": {
+      "file": "eval/results/recharge_v1_evalv3_dev.json",
+      "split": "dev",
+      "rain_period": [
+        "2025-06-15",
+        "2025-09-30 23:00"
+      ],
+      "event_mdape": 15.991,
+      "event_ape_p90": 48.706,
+      "false_implausible_rate": 0.0032,
+      "clogging_precision": 0.4,
+      "clogging_recall": 0.6666666666666666,
+      "fake_recall": 1.0,
+      "counts": {
+        "detected_event_windows": 2179,
+        "scored_windows_true_infil_ge_0.2m3": 1411,
+        "honest_event_windows_healthy_or_clogging_pits": 1876,
+        "implausible_among_honest": 6,
+        "deferred_windows": 0,
+        "true_clogged_pits_final_k_lt_0.5": 3,
+        "clog_tp": 2,
+        "clog_fp": 3,
+        "clog_fn": 1,
+        "fakes_caught": 10,
+        "fakes": 10
+      }
+    },
+    "v3_holdout": {
+      "file": "eval/results/recharge_v1_evalv3_holdout.json",
+      "split": "holdout",
+      "rain_period": [
+        "2024-06-15",
+        "2024-09-30 23:00"
+      ],
+      "event_mdape": 14.457,
+      "event_ape_p90": 60.687,
+      "false_implausible_rate": 0.013,
+      "clogging_precision": 0.6,
+      "clogging_recall": 0.9,
+      "fake_recall": 1.0,
+      "counts": {
+        "detected_event_windows": 1469,
+        "scored_windows_true_infil_ge_0.2m3": 952,
+        "honest_event_windows_healthy_or_clogging_pits": 1156,
+        "implausible_among_honest": 15,
+        "deferred_windows": 2,
+        "true_clogged_pits_final_k_lt_0.5": 10,
+        "clog_tp": 9,
+        "clog_fp": 6,
+        "clog_fn": 1,
+        "fakes_caught": 10,
+        "fakes": 10
+      }
+    }
+  }
+}

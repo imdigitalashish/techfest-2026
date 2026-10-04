@@ -18,5 +18,18 @@
   "false_implausible_rate": 0.0,
   "blocked_recall": 1.0,
   "blocked_pits": 6,
-  "runtime_s": 21.6
+  "counts": {
+    "detected_event_windows": 1998,
+    "scored_windows_true_infil_ge_0.2m3": 1369,
+    "honest_event_windows_healthy_or_clogging_pits": 1514,
+    "implausible_among_honest": 0,
+    "deferred_windows": 1,
+    "true_clogged_pits_final_k_lt_0.5": 10,
+    "clog_tp": 10,
+    "clog_fp": 2,
+    "clog_fn": 0,
+    "fakes_caught": 10,
+    "fakes": 10
+  },
+  "runtime_s": 5.0
 }

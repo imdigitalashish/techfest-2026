@@ -78,6 +78,12 @@
 - The spike choice stands. The metric is working as intended: it caught an overfit before we adopted it.
 
 ## Consequences
-- The walking skeleton implements C0 (simulator on real ERA5 rain), C5 (verifier baseline) and C4 (QC on real DWLR) first. The autoresearch loop targets C5's event-volume MdAPE with a frozen evaluator.
+- The walking skeleton implements C0 (simulator on Open-Meteo archive rain, default model; originally mislabelled "real ERA5"), C5 (verifier baseline) and C4 (QC on real DWLR) first. The autoresearch loop targets C5's event-volume MdAPE with a frozen evaluator.
 - The Round-2 prototype must include a physical rig with a metered inflow (ground truth) and blind trials.
 - The pitch never claims the must-not-claims above.
+
+## Update (12:30 IST, 4 Oct; final-deck review)
+- C5 now **defers** instead of judging when inputs are missing: rain coverage < 90 %, or a stage gap > 60 min. Contracts v0.3.1; 7 unit tests.
+- Evaluator v3 adds sensor realism: kept v1 scores 14.5 % on holdout.
+- The product boundary is **maintenance screening** (drain rate). Infiltrated volume is a model-based estimate; a per-event band is planned.
+- The spike choice stands.

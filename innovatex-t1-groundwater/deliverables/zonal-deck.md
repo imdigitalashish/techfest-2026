@@ -4,36 +4,37 @@ theme: default
 paginate: true
 size: 16:9
 header: "JalSakshi · InnovateX 2026 · Theme 1 (Underground Water Management) · Delhi zonal"
-footer: "Every number is sourced on its slide · REAL = public data · SIMULATED = labelled simulation"
+footer: "Sources on slides or in notes · (A) = assumption · status labels: BUILT · SIMULATED · PLANNED"
 style: |
-  section { font-size: 24px; }
-  h1 { font-size: 38px; }
-  table { font-size: 19px; }
-  .small { font-size: 16px; color: #555; }
+  section { font-size: 23px; }
+  h1 { font-size: 36px; }
+  table { font-size: 18px; }
+  .small { font-size: 15px; color: #555; }
+  .tag { font-size: 14px; font-weight: 700; padding: 1px 6px; border-radius: 4px; background: #eef2f5; }
 ---
 
 <!-- _class: lead -->
 # JalSakshi
-### Delhi pays for rainwater harvesting it cannot check. We measure it.
+### Per-storm evidence that Delhi's rainwater-harvesting pits still work
 
 **Team:** ‹TEAM NAME› · **Team ID:** ‹ID› · **Theme 1:** IoT-based underground water management
 ‹Member 1 — role› · ‹Member 2 — role› · ‹Member 3 — role› · ‹Member 4 — role› · ‹email / phone›
 
 <!--
-TIME 0:00–0:20 (20 s). LOGISTICS: present from your own laptop, zonal-deck.pdf first, with the demo HTML open in a second tab (offline). Cue card: presenter-card.pdf.
-SAY: "We're ‹team›. Delhi has made rainwater harvesting compulsory for 25 years and paid crores in rebates for it. Nobody can tell you whether those pits work. We built the instrument that can."
+TIME 0:00–0:20 (20 s). LOGISTICS: present from your own laptop, zonal-deck.pdf first, with the demo HTML pre-opened in a second tab (offline). Cue card: presenter-card.pdf.
+SAY: "We're ‹team›. Delhi has made rainwater harvesting compulsory for 25 years and pays rebates for it. Today, checking a pit means an inspector's visit. We propose continuous, storm-by-storm evidence. We've built the software and a simulation; the field instrument is our Round-2 build."
 -->
 
 ---
 
-# A rule Delhi funds, but can't verify
+# A rule Delhi funds, checked by periodic inspection
 
 | What | Status | Source |
 |---|---|---|
 | RWH mandatory for plots ≥ 100 m² | in force **since 2001** | Indian Express (2026) |
 | 10 % water-bill rebate if functional (15 % with recycling) | in force | Hindustan Times, 21 Apr 2026 |
 | ₹204.46 crore rebates paid, 2017–2024 | reported | HT, citing DJB data |
-| Functionality certificate | issued **after inspection** | HT, 21 Apr 2026 |
+| Functionality certificate | issued **after inspection**, periodic renewal | HT, 21 Apr 2026 |
 | Annual owner self-certification | **being planned** | HT, 21 Apr 2026 |
 | 1.5× bill for non-compliance | **"may attract"** | HT, 21 Apr 2026 |
 
@@ -43,9 +44,9 @@ SAY: "We're ‹team›. Delhi has made rainwater harvesting compulsory for 25 ye
 
 <!--
 TIME 0:20–1:40 (80 s).
-SAY: "The rule is 25 years old. The rebate is real money. Checking it today means a person visiting a pit, and the plan is self-declaration."
-LINE TO LAND: "The verification system doesn't exist yet. We're bidding to be it."
-DON'T SAY "never checked" or "self-certification is the rule". HT says it's planned.
+SAY: "The rule is 25 years old and the rebate is real money. Verification today is an inspection visit plus a renewal, and the plan adds owner self-declaration."
+LINE TO LAND: "Nothing measures a pit storm by storm. That's the layer we propose, alongside inspection, not instead of it."
+DON'T SAY "never checked" or "self-certification is the rule". It's planned.
 -->
 
 ---
@@ -54,143 +55,144 @@ DON'T SAY "never checked" or "self-certification is the rule". HT says it's plan
 
 - Delhi extracts **92.1 %** of its annually extractable groundwater. **10 of 34 tehsils** are over-exploited (337.44 km²).
   <span class="small">CGWB, *Dynamic Ground Water Resources of India 2025*, §7.32</span>
-- DJB Phase I: **restore 1,000 non-functional** RWH systems in government buildings and build 500 new ones (target 30 Jun 2026). 7,596 of 9,148 government buildings already have RWH.
+- DJB Phase I planned to **restore 1,000 non-functional** RWH systems in government buildings and build 500 new ones (target was 30 Jun 2026; we found no completion report). 7,596 of 9,148 government buildings have RWH.
   <span class="small">Indian Express (2026)</span>
-- The campaign's recharge potential is **estimated at ≈ 733 million litres a year** (rooftop area × average rainfall). Today nobody can say how much of that reaches the ground.
+- The campaign's recharge potential is **estimated at ≈ 733 million litres a year** (rooftop area × average rainfall). No instrument reports how much the structures actually take in.
   <span class="small">Indian Express (2026); an estimate, not a measurement</span>
 
 <!--
 TIME 1:40–2:30 (50 s).
-SAY: "Not 'Delhi is running dry'. CGWB 2025 says 92 %, and 10 tehsils are still over-exploited. The city is spending on recharge right now. Our job: make that 733-million-litre estimate auditable, one structure at a time."
--->
-
----
-
-# Even the city's own sensors need checking (our analysis, REAL data)
-
-![bg right:44% w:540](figures/dwlr_quality_map.png)
-
-India-WRIS public API, fetched 4 Oct 2026 (483,253 Delhi readings):
-- **185** telemetric piezometers (DWLR), reporting every 6 h
-- only **46** reported anything in 2026
-- **23 %** of readings are exactly 0.000 m; **17 %** of 6-h slots are missing
-- where the data are clean, water levels rose a median **2.5 m** in the 2025 monsoon (79 stations)
-
-<!--
-TIME 2:30–3:15 (45 s). Reproduce: eval/realdata_profile.py
-SAY: "This is our code on public data. The network that should show the aquifer responding is mostly stale or zero. So we QC it before we believe it. And where it's clean, the monsoon visibly recharges the aquifer: worth getting right."
+SAY: "Not 'Delhi is running dry'. CGWB 2025 says 92 %, with 10 tehsils still over-exploited. The city is spending on recharge structures; we want each one to report how it performs after every storm."
 -->
 
 ---
 
 # JalSakshi: one witness per recharge pit
 
-**In the pit:** a 0–5 m stainless steel pressure probe (±0.5 % FS) in a slotted, socked stilling tube
-**In the lid:** MCU + LoRaWAN radio, battery and a signed local log. Optional rain gauge.
-**Sampling:** every 15 min when dry, every 1 min when rain or a rise wakes it
+<span class="tag">IN THE PIT · PLANNED HARDWARE</span> 0–5 m vented stainless steel probe (±0.5 % FS) in a slotted, socked stilling tube, **tip 5–10 cm above the floor** (water below the tip isn't seen)
+<span class="tag">IN THE LID · PLANNED</span> MCU + LoRaWAN radio, signed local log; vent tube ends in a desiccant chamber; antenna clear of any metal cover. **Rain gauge required** (it wakes the node and checks plausibility)
 
-**Two outputs per storm, nothing more:**
-1. **Drain rate** (the storm runs a falling-head test for us) → **clogging index** vs as-built
-2. **Infiltrated volume ± band**: the rise is checked against rain × roof area, overflow is capped at the spill level, and one metered hose fill fixes pit area and drain rate
+<span class="tag">BUILT · SOFTWARE, TESTED IN SIMULATION</span> per storm:
+1. **Drain rate → clogging index** vs commissioning: the core product, **maintenance screening**
+2. **Infiltrated volume: a model-based estimate** (storage + drain law fitted from one metered hose fill). Bypass and water leaving the pit are not observed. A per-event uncertainty band is **PLANNED**, not built.
 
-**Verdict:** verified · clogged · no inflow · implausible (a rise with no rain)
+**Verdicts:** verified · clogged · no inflow · implausible · **deferred** (missing rain or stage data → no judgement)
 → **ranks inspections; an inspector can override; no bill changes automatically**
 
 <!--
-TIME 3:15–4:45 (90 s).
-SAY: "We don't claim aquifer recharge. We measure what the pit does with the water it gets: how fast it drains, and roughly how much soaked in, with an honest band."
-POINT at the four verdicts. "Implausible" is how we catch a bucket poured to fake a storm.
+TIME 2:30–4:00 (90 s).
+SAY: "We don't claim aquifer recharge. We measure how fast a pit drains after each storm, and estimate how much it took in, using a model we calibrate once with a metered fill."
+"If data are missing, it says 'deferred'. It never guesses." (Implemented and unit-tested: components/recharge_verifier/test_verifier.py.)
 -->
 
 ---
 
 # 60-second demo (offline laptop)
 
-**REAL** Delhi DWLR network → **SIMULATED** pit on **REAL** 2025 rain → a verdict per storm → **"Implausible"** and **"Maintenance due"** tickets
+![bg right:54% contain](figures/demo_crop.png)
 
-![w:640](figures/demo_screenshot.png)
+**REAL** Delhi DWLR network → **SIMULATED** pit on **archive** 2025 rain → a verdict when each event **closes** → tickets
+
+- "Implausible" here = a **large injected pulse** (1,200 L in 1 min)
+- A 20 L bucket (~9 mm rise) is below the 2 cm threshold: **not detected**
+- Tickets arrive when an event closes: **hours to days** after onset
+- 🔌 **Unplug rain gauge** → **deferred**, no accusation
 
 <!--
-TIME 4:45–6:00 (75 s).
-DO: open deliverables/demo/jalsakshi-demo.html (works offline), press space, let it run ~45 s, talk over the tickets.
-FALLBACK: this slide's screenshot (same demo, end of season).
-SAY: "Everything you see in the pit is simulated, and labelled so. The rain is Delhi's real 2025 monsoon."
+TIME 4:00–5:15 (75 s). The demo tab is PRE-OPENED; press space. ~45 s at 1×.
+SAY (left panel): "Real data: Delhi's own groundwater monitors. 185 telemetric stations; only 46 reported this year (the latest public reading is 4 June); a quarter of all readings are exactly zero."
+SAY (right): "A simulated pit on Delhi's 2025 monsoon rain. Each event gets a verdict when it closes. Here's a large pulse the rain can't explain: random inspection, not a penalty. At the end, drain rate below half: a maintenance ticket."
+FALLBACK: this slide's image.
 -->
 
 ---
 
-# How good is it? (simulation today; a blind rig test by 1 Dec)
+# How good is it? Simulation today; blind rig tests in November
 
-Simulated pits, real Delhi rain; median error of infiltrated volume per storm.
+<span class="small">40 simulated pits per split · monsoon-2024 holdout · rain: Open-Meteo archive (default model, not pinned); minute pattern synthetic</span>
 
-| Test (frozen; monsoon-2024 holdout) | Median error | 1 storm in 10 is off by more than |
+| Frozen test | Median error | 1 in 10 off by more than |
 |---|---|---|
-| **Stress test:** non-linear drains + imperfect rain gauge | **13.1 %** | 58 % |
-| **+ realistic probe:** ±25 mm offset, drift, quantisation | **14.5 %** | 61 % |
+| **Stress:** non-linear drains + imperfect gauge | **13.1 %** | 58 % |
+| **+ realistic probe:** ±25 mm offset, drift, 2.1 mm steps | **14.5 %** | 61 % |
 | Same drain model as the verifier (best case) | 3.0 % | 16 % |
 
-- Fake pours (no rain to explain them) flagged: **10/10 simulated fakes** in every test. Honest storms wrongly flagged: ≤ 1.3 %.
-- Clogged-pit verdict (end of season): precision 0.60–0.67, recall 0.90–1.0 (stress tests, holdout)
-
-We **rejected** five candidate fixes under a rule set before running them: four helped one test but hurt another, and one didn't help enough.
+- Unit: **event windows** with ≥ 0.2 m³ true infiltration (1,233 on the stress test)
+- **Large injected pulses** (500–2,000 L): **10/10** flagged · honest windows flagged: 2/1,291 (stress), 15/1,156 (probe)
+- Clogging precision / recall: **holdout 0.67 / 1.0** (10 pits) · **dev 0.40 / 0.67** (3 pits)
+- Assumes **1-min sampling** throughout; the duty cycle is untested
 
 <!--
-TIME 6:00–7:00 (60 s).
-SAY: "Lead with the hard number: 13 percent on the stress test, 14.5 with a realistic probe. Three percent only happens when our simulator and verifier agree on the physics, so we don't sell that. The real number comes from a blind weighed-water drum test in November."
-Ledger: components/recharge_verifier/autoresearch/results.tsv
+TIME 5:15–6:15 (60 s).
+SAY: "Lead with the hard number: 13 percent on the stress test, 14.5 with a realistic probe. Three percent only happens when our simulator and verifier share the physics, so we don't sell that. Clogging calls are still noisy, with dev precision 0.4. That's why the blind drum tests come first."
+IF ASKED: five candidate fixes were rejected by a written keep rule (four helped one test but hurt another; one didn't help enough).
+Ledger and denominators: components/recharge_verifier/autoresearch/results.tsv, eval/results/manifest.json
 -->
 
 ---
 
-# Built for Delhi conditions
+# Built for Delhi conditions: status, not promises
 
-- **Underground link:** only the probe is below ground. The antenna sits flush with the lid. A local buffer means no lost events.
-- **Accuracy:** ±25 mm per reading (datasheet) → ±0.11 m³ worst case on a 2.25 m² pit, about 3 % of a 4 m³ storm. A dry-floor auto-zero removes constant offset.
-- **Silt:** probe on a stand above the silt line, inside a socked tube. A floor reading during rain raises a check.
-- **Heat & water:** probe rated −20 to 70 °C, 316L stainless steel, IP68; IP67 enclosure.
-- **Power:** probe switched on only to sample. **Battery life gets measured, not promised.** Settle time decides D-cell vs solar.
-- **Calibration:** one metered hose fill at commissioning, an annual dip check, a re-fill after cleaning.
+- <span class="tag">PLANNED</span> **Underground link:** only the probe is below ground; the antenna sits clear of the metal lid; a site survey picks LoRaWAN or NB-IoT
+- <span class="tag">DATASHEET</span> **Accuracy:** 0.5 % of a 5 m range = ±25 mm per reading → ±0.11 m³ worst case on a 2.25 m² pit (A). The 5–10 cm below the probe tip (0.11–0.23 m³) is not seen
+- <span class="tag">PLANNED</span> **Vent & silt:** vent end kept dry with desiccant; socked tube and stand. Auto-zero was tested in simulation, not adopted
+- <span class="tag">PLANNED TEST</span> **Power & outages:** settle time and sleep current measured in Oct (D-cell vs solar); 24 h outage recovery is an acceptance test. **No battery-life claim**
+- <span class="tag">SAFETY</span> **No pit entry:** probe lowered from the lid by an empanelled installer; low-voltage battery device; lids stay closed; install only with site permission
+- <span class="tag">PLANNED</span> **Before each monsoon:** a metered-fill check, because clogging that develops in the dry season shows up only at the next storm
 
-<span class="small">Probe: DFRobot KIT0139 datasheet (farnell.com/datasheets/3708809.pdf)</span>
-
-<!-- TIME 7:00–7:45 (45 s). -->
+<!-- TIME 6:15–7:00 (45 s). Probe datasheet: farnell.com/datasheets/3708809.pdf. (A) pit geometry 1.5 × 1.5 m is an assumption. -->
 
 ---
 
-# Cost, buyer, rollout
+# Cost, prospective customer, adaptation
 
-- **Node: ₹11,166 in verified retail parts** (probe ₹4,254.51 at element14; LoRa module, host board, Li-SOCl₂ cell, IP67 box; tube/cable/potting not yet priced)
-  vs one CGWA-compliant DWLR (Acorn): **≈ ₹38,000**, logging twice a day
-- **First buyer: DJB's Phase-I restorations of 1,000 government buildings.** DJB has **59 empanelled RWH service providers** who could install it, and is building a compliance-tracking portal our events could feed (Indian Express).
-- **Then:** campuses and RWAs that want proof for the rebate.
-- **Model:** node + annual verification service. Verdicts rank inspections. **₹204 cr is not our market.**
+| Parts only (6 listings, 4 Oct 2026; excl. tax, shipping, mounting, labour, service) | ₹ |
+|---|---|
+| Base node (probe ₹4,254.51 + LoRa module + host board + cell + IP67 box + gland) | **11,166.18** |
+| First site: node + rain gauge + shared gateway | 48,454.18 |
+| 3-pit pilot: 3 nodes + 3 gauges + 1 gateway | 78,244.54 |
 
-<!--
-TIME 7:45–8:45 (60 s).
-DON'T claim volume pricing (not quoted). DON'T say households will rush to buy it.
--->
+- For scale: one packaged CGWA-compliant DWLR (Acorn) lists ≈ ₹38,000 and logs twice a day. Not like-for-like.
+- **Prospective pilot customer:** DJB's Phase-I restoration programme and its 59 empanelled RWH providers (IE). **No contact yet.** Then campuses and RWAs.
+- **Adapting to other cities:** same software; per-site metered-fill calibration and safety check; local radio choice; local rebate rules. The first pilot covers **one structure type** (roof-runoff pit with filter media).
+
+<!-- TIME 7:00–8:00 (60 s). DON'T call ₹204 cr our market. DON'T say "first buyer". -->
 
 ---
 
-# Impact and the ask
+# Impact, boundaries and the ask
 
-- **Audit the campaign's own estimate** (≈ 733 M L/yr) structure by structure, in measured litres
-- **Clogging alerts** send cleaning crews to the pits that stopped working, before the monsoon
-- **Data hygiene:** QC for the city's DWLR stream, so the aquifer response can be checked
+- **Structure-level evidence** against the campaign's ≈ 733 M L/yr *estimate*: drainage and infiltration at structures, **not aquifer recharge**
+- **Clogging alerts** after each observed storm, plus a pre-monsoon fill check, so crews clean the pits that stopped working
+- **Water-quality gate:** pilot only on permitted roof-runoff structures with existing pretreatment and a responsible site operator. We never recommend recharging runoff we can't vouch for.
 - **Roadmap:**
   - Oct: drum pour rig + node
   - Nov: blind weighed-water trials + 1–3 real pits
   - 1 Dec: report + working prototype
-- **Ask:** a pilot partner (DJB zone, campus or RWA), and permission to instrument 3 pits
+- **Ask:** a pilot partner (DJB zone, campus or RWA) and permission to instrument 3 pits
 
 ## Measured, not self-declared.
 
-<!-- TIME 8:45–10:00 (75 s incl. buffer). -->
+<!-- TIME 8:00–9:15 (75 s). RESERVE 9:15–10:00 for handoff and questions. -->
 
 ---
 
 <!-- _class: lead -->
 # Backup slides
+
+---
+
+# Backup 0: Delhi's own sensors, a public-stream snapshot (REAL data)
+
+![bg right:44% w:540](figures/dwlr_quality_map.png)
+
+India-WRIS public API, fetched 4 Oct 2026 (483,253 Delhi readings):
+- **185** telemetric piezometers (DWLR), reporting every 6 h
+- **46** reported in 2026 (latest public reading **4 Jun 2026**)
+- **23 %** of readings are exactly 0.000 m; **17 %** of 6-h slots missing (up to each station's last report)
+- Exploratory: median 2025 monsoon depth change **2.5 m** (79 stations); not attributed to RWH
+
+<!-- Reproduce: eval/realdata_profile.py. Sign convention resolved heuristically per station. -->
 
 ---
 
@@ -202,7 +204,7 @@ DON'T claim volume pricing (not quoted). DON'T say households will rush to buy i
 
 ---
 
-# Backup 2: BOM (verified 4 Oct 2026, single-unit retail)
+# Backup 2: BOM and price evidence (4 Oct 2026)
 
 | Part | Vendor | ₹ |
 |---|---|---|
@@ -212,18 +214,37 @@ DON'T claim volume pricing (not quoted). DON'T say households will rush to buy i
 | Forte ER34615 D Li-SOCl₂ 3.6 V | robu.in | 879.00 |
 | IP67 ABS box 150×100×70 mm | amazon.in | 3,250.87 |
 | PG7 gland | robu.in | 10.00 |
-| **Subtotal** | | **11,166.18** |
-| optional: tipping-bucket rain gauge (DFRobot) | amazon.in | 3,729.00 |
-| shared: LPS8N 8-ch LoRaWAN gateway | amazon.in | 33,559.00 |
+| DFRobot tipping-bucket rain gauge (listed unavailable) | amazon.in | 3,729.00 |
+| shared: LPS8N 8-ch LoRaWAN gateway (IN865 variant unconfirmed) | amazon.in | 33,559.00 |
 
-<span class="small">URLs and access dates: deliverables/prototype-plan.md §3. Not priced: boost converter, antenna, tube, sock, potting, cable.</span>
+<span class="small">Seen by us on 4 Oct 2026 (URLs: prototype-plan.md §3). An independent re-check the same day was blocked by most vendors (HTTP 403/503), so get quotes before buying. Not priced: boost converter, antenna, tube, sock, mounting, potting, cable.</span>
 
 ---
 
-# Backup 3: The evaluators (frozen, pre-registered keep rule)
+# Backup 3: The evaluators and the keep rule
 
-- **v1:** linear-reservoir pits (same model as the verifier) → best case
-- **v2:** drain outflow ∝ h^β, β ~ U(0.5, 1.5); rain gauge × lognormal(0.25)/day; 0–5 min lag
-- **v3:** v2 plus a probe offset of ±25 mm, ±10 mm/season drift, readings floored at 0 m, 2.1 mm quantisation
-- **Fleet:** 40 pits per split (healthy / clogging / blocked / faker); registry ±5–10 % wrong. Dev = monsoon 2025, holdout = monsoon 2024 (real ERA5 rain).
-- **Keep rule:** improve the target by > 0.5 points and worsen no other evaluator by > 10 %; confirm on holdout.
+- **v1:** linear-reservoir pits (same model as the verifier); **v2:** drain ∝ h^β, β ~ U(0.5, 1.5), gauge × lognormal(0.25)/day, 0–5 min lag; **v3:** v2 + probe offset ±25 mm, ±10 mm drift, floor at 0 m, 2.1 mm quantisation
+- **Fleet:** 40 pits per split (healthy / clogging / blocked / faker); registry 5–10 % wrong. Dev = monsoon 2025, holdout = monsoon 2024.
+- **Keep rule:** improve the target by > 0.5 points; worsen no other evaluator by > 10 %; confirm on holdout.
+- **Chronology:** the v1 and v2 rules were committed before their results (git: 08:03 → 08:15, 08:26 → 09:46 IST). The v3 rule was written before its runs (our log) but committed together with them, so it isn't independently provable.
+- **Pre-registered?** Read the holdout numbers as recorded checks, not an untouched prospective test.
+
+---
+
+# Backup 4: One worked event, and what a level sensor can't see
+
+| One event (SIMULATED pit, archive rain) | Value |
+|---|---|
+| Window | 30 Jul 05:53 → 2 Aug 07:01, 2025 |
+| Rain in window × 250 m² roof × 0.75 runoff prior | 52.0 mm → 9.75 m³ (cross-check) |
+| Infiltrated volume, model-based estimate | **9.80 m³** |
+| Simulation truth | 10.38 m³ (−5.6 %; best case, same drain model) |
+| Fleet error, stress test | median 13.1 %, 1 in 10 off by > 58 % (**not** a per-event interval; that is PLANNED) |
+
+| Water path | Seen by stage + rain? |
+|---|---|
+| Water entering the pit | **Yes**: the rise, checked against rain × roof |
+| Inlet bypass / diverted downpipe | **Partly**: under-delivery vs rain × roof, or "no inflow" |
+| Overflow | That it happened (time at spill level): **yes**; how much: **estimated** |
+| Leak or crack out of the pit | **No**: indistinguishable from infiltration → inspection |
+| Water below the probe tip | **No**: a 0.11–0.23 m³ blind zone (A: 2.25 m² pit) |

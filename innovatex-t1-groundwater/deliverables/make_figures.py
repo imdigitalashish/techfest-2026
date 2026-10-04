@@ -44,8 +44,8 @@ def fig_dwlr_quality() -> None:
     cb.set_label("% of readings exactly 0.000 m")
     ax.set_xlabel("longitude")
     ax.set_ylabel("latitude")
-    ax.set_title(f"REAL · India-WRIS, fetched 4 Oct 2026\n{len(st)} of {len(st) + n_bad} telemetric DWLRs mapped · "
-                 f"ringed = reported in 2026 ({int(st.live2026.sum())})", fontsize=10)
+    ax.set_title(f"REAL · India-WRIS · fetched 4 Oct 2026\n{len(st)}/{len(st) + n_bad} DWLRs mapped · "
+                 f"ringed = reported in 2026", fontsize=10, loc="left")
     ax.set_aspect(1 / np.cos(np.deg2rad(28.6)))
     fig.tight_layout()
     fig.savefig(OUT / "dwlr_quality_map.png", dpi=150, bbox_inches="tight")

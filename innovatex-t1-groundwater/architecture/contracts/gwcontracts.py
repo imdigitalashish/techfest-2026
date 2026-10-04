@@ -19,7 +19,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-CONTRACTS_VERSION = "0.3.0"
+CONTRACTS_VERSION = "0.3.1"
 
 
 class _Strict(BaseModel):
@@ -302,6 +302,7 @@ class RechargeEventVerdict(str, Enum):
     clogged = "clogged"              # inflow seen, recession far slower than as-built
     no_inflow = "no_inflow"          # rain fell, no rise (blocked inlet / disconnected)
     implausible = "implausible"      # rise without rain or volume >> catchment x rain (gaming)
+    deferred = "deferred"            # inputs missing (rain coverage < 90 %, stage gap > 60 min): no judgement
 
 
 class RechargeEvent(_Strict):
@@ -316,6 +317,7 @@ class RechargeEvent(_Strict):
     k_per_h: Optional[float] = Field(default=None, ge=0, description="recession constant of the pit")
     clogging_index: Optional[float] = Field(default=None, ge=0, description="k / k_as_built")
     verdict: RechargeEventVerdict
+    detail: Optional[str] = Field(default=None, description="why a verdict was deferred")
 
 
 # ----------------------------------------------------------------------------- operations

@@ -22,3 +22,14 @@ Three hypotheses, each tested as a separate ablation on dev and logged in `autor
 | clogging precision / recall | 1.0 / 1.0 → 1.0 / 1.0 | 0.625 / 1.0 → 0.833 / 1.0 |
 
 **Caveat:** the simulator's linear-reservoir pit matches the verifier's assumption, so these numbers are an upper bound. The physical rig in Round 2 (orifice drain, metered inflow) is the real test. Planned evaluator v2 adds non-linear (orifice, √h) drains and gauge-rain mismatch, so the ratchet can't overfit the model form.
+
+## Current state (4 Oct 2026, 12:30 IST): supersedes the paragraphs above where they differ
+- **Rain provenance:** the "REAL ERA5" labels above are wrong. Rain is from the Open-Meteo archive (default model, not pinned; 8,818 of 11,352 hours identical to `models=era5`). The minute pattern is synthetic. The input is frozen in `eval/data/delhi_rain_hourly_openmeteo_default_monsoon2024_2025.csv`.
+- **Evaluators v2 and v3 exist and are frozen** (the "planned evaluator v2" above is done). Kept v1 verifier, holdout:
+  - v1: 2.973 %
+  - v2 (stress): 13.097 %
+  - v3 (realistic probe): 14.457 %
+
+  Denominators are in `eval/results/*.json` → `counts`; checksums in `eval/results/manifest.json`.
+- **Deferral (new):** a `deferred` verdict when rain coverage is < 90 % or the stage has a gap > 60 min. Tests: `test_verifier.py` (7 passing). All six evaluator re-runs reproduce identical metrics.
+- **Not implemented:** per-event uncertainty band; auto-zero (two candidates rejected); duty-cycled sampling (results assume 1-min sampling).

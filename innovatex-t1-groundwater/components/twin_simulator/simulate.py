@@ -23,6 +23,10 @@ import pandas as pd
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 HOURLY = ROOT / ".data" / "delhi_weather_hourly.csv"
+# Frozen copy of the exact hourly series used by the evaluators/demo (monsoons 2024 and 2025), committed so
+# results are reproducible even if the upstream archive changes. Source: Open-Meteo historical archive, DEFAULT
+# model selection (not pinned) — it is NOT identical to pinned ERA5 (checked 4 Oct 2026; see eval/data/README.md).
+FIXTURE = ROOT / "eval" / "data" / "delhi_rain_hourly_openmeteo_default_monsoon2024_2025.csv"
 
 
 @dataclass
@@ -41,7 +45,8 @@ class PitTruth:
 
 
 def load_rain(start: str, end: str) -> pd.Series:
-    h = pd.read_csv(HOURLY, parse_dates=["datetime_ist"]).set_index("datetime_ist")["precip_mm"]
+    src = HOURLY if HOURLY.exists() else FIXTURE
+    h = pd.read_csv(src, parse_dates=["datetime_ist"]).set_index("datetime_ist")["precip_mm"]
     return h.loc[start:end].fillna(0.0)
 
 

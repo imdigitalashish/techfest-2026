@@ -10,31 +10,31 @@
 - _(none)_
 
 ## Now
-- **Phase:** 6, deliverables. **ACTIVE again since 10:20 IST, 4 Oct: picked as the InnovateX Delhi-zonal theme.** Both cross-model judges (gpt-6-astra max, grok-4.7 xhigh) chose JalSakshi over T2 DustLedger.
-- **Definition of done (Supervisor), by 9 Oct 18:00 IST:**
-  1. Final deck ✅ `deliverables/zonal-deck.md` (slides + notes + timing; team details to fill)
-  2. Q&A ✅ `deliverables/qa-prep.md` (25 questions)
-  3. 60-s offline demo ✅ `deliverables/demo/jalsakshi-demo.html`
-  4. Round-2 plan ✅ `deliverables/prototype-plan.md` (verified BOM ₹11,166.18 per node, exam-aware schedule, hardware-teammate tasks)
-  5. Second hostile cross-model review of the final deck ⏳ (child session, gpt-6-astra max)
-  6. Memo final, journal, push ⏳
-- **Doing:** lead + 1 child session (hostile deck review). No `task` sub-agents. A pre-lean r3 research agent is still running; I can't stop it.
-- **Next:**
-  1. Run the hostile review session.
-  2. Mark ACCEPTED/REJECTED in `reviews/`, update `ledger.tsv`, fix the deck.
-  3. Message the Supervisor "DONE — slot free".
+- **Phase:** 6 — deliverables **complete for the Delhi zonal** (Supervisor's definition of done, 4 Oct 12:45 IST). Next lead work comes after the zonal: the Round-2 build (`deliverables/prototype-plan.md`).
+- **Definition of done (due 9 Oct 18:00 IST):**
+  1. ✅ Final deck: `deliverables/zonal-deck.md` → `zonal-deck.pdf` / `.pptx`. 9 main slides + 5 backups, speaker notes with timing, 9:15 route + 45 s reserve.
+  2. ✅ Q&A: `deliverables/qa-prep.md`, 28 questions.
+  3. ✅ 60-s offline demo: `deliverables/demo/jalsakshi-demo.html`. Real Delhi DWLR + simulated pit; "Unplug rain gauge" → deferred.
+  4. ✅ Round-2 plan: `deliverables/prototype-plan.md`. Verified parts ₹11,166.18/node; first site ₹48,454.18; 3-pit pilot ₹78,244.54; exam-aware schedule; hardware-teammate tasks; safety and water-quality gates.
+  5. ✅ Hostile cross-model review of the final deck: gpt-6-astra (max) child session → READY WITH FIXES. All 28 actionable items accepted (24 done, 4 need the user or the build); D13 was already resolved. Files: `reviews/2026-10-04-final-deck-*.md`; ledger line added.
+  6. ✅ Memo final v3, thought node, pushed.
+
+  Also: presenter cue card `deliverables/presenter-card.pdf` (1 page).
+- **Doing:** nothing running. The child review session is finished; no sub-agents of mine are active. A pre-lean r3 research agent may still be running and can't be stopped by me.
 - **Needs from user:**
-  - (a) **Register for the Delhi zonal by 9 Oct** (South Asian University, 10 Oct), and send the team name, Team ID, members and contacts for slide 1.
-  - (b) **A hardware teammate**: ~4–6 h/week, 11 Oct–16 Nov, for the node, the pour rig and the power measurements (prototype plan §9).
-  - (c) A pilot partner (DJB zone, campus or RWA) and permission to instrument 1–3 pits. A short pilot email or letter would answer the "no committed buyer" attack.
-  - (d) Two short interviews with RWH maintenance officers or empanelled service providers.
-  - (e) After the zonal, approve parts: ≈ ₹11.2k per node + ₹33.6k gateway + ₹14.5k PPK2.
+  - (a) **Register for the Delhi zonal by 9 Oct** (South Asian University, 10 Oct). Fill in team name, Team ID, members, roles and contacts on slide 1 and in Q&A 25.
+  - (b) **A hardware teammate:** ~4–6 h/week, 11 Oct–16 Nov, for the node, the drum pour rig and power measurements (plan §9).
+  - (c) **A timed rehearsal** on the exported PDF from your own laptop (target 9:15).
+  - (d) A pilot partner contact (DJB zone, campus or RWA) and permission for 1–3 pits. A short pilot letter answers the "no buyer" attack.
+  - (e) Supplier quotations before buying (vendor pages blocked independent re-checks).
+  - (f) After the zonal: approve parts, ≈ ₹78k for a 3-pit pilot (parts only) + ₹14.5k PPK2.
 - **Risks:**
-  1. All pit numbers are simulation until the rig exists. The deck leads with 13.1 %.
-  2. Probe settle time decides battery vs solar.
-  3. Buyer unproven: no pilot letter yet.
-  4. ₹204.46 cr is secondary-sourced (HT citing DJB data).
-  5. The C7 ticket rule v0 is a heuristic, not yet validated at fleet level.
+  1. All pit numbers are simulation (lead with 13.1 %; 3.0 % is best case only).
+  2. Results assume 1-min sampling; the duty cycle is untested.
+  3. No buyer contact yet.
+  4. Probe settle time decides battery vs solar.
+  5. ₹204.46 cr is secondary-sourced (HT citing DJB).
+  6. The C7 ticket rule v0 isn't validated at fleet level.
 
 ## Phase 0 — what we must show (from the official statement, `_briefs/innovatex.txt`)
 **Hard constraints.** Team ≤4, students, one theme per team, original work (not patented/published). Round 1 = 10-min in-person pitch at the zonal, nothing submitted online; must cover team info (name, Team ID, theme no., contacts), precise problem, background + why existing solutions fall short, proposed solution + technology + how it works, impact & scalability. Top 5 per zonal advance. Round 2: report + working prototype by 1 Dec (solution description, prototype evidence, cost & market viability, implementation plan, scalability plan, impact assessment); finals 15–18 Dec at IIT Bombay. Only the team leader submits online. Queries only via the portal's Doubt section.
@@ -75,22 +75,14 @@ Full table, contracts and graph: [architecture/components.md](architecture/compo
 | C8 | dashboard | all → HTML | ThingSpeak/Blynk | — | planned | 5-task time |
 
 ## Selection memo
-_FINAL v2, 4 Oct 2026, 11:00 IST. **Outcome: picked for the Delhi zonal** by the Supervisor, after independent cross-model reviews (`reviews/`). Scores are 1–5 with one line of evidence each; mean **3.6/5** (v1's 4.0 was too generous on demo and cost)._
-- **Winnability — 4/5.** It is specific, local and current, and both judges agreed.
-  - Delhi has mandated RWH since 2001 (IE). It paid ₹204.46 cr in rebates in 2017–24 (HT, citing DJB data).
-  - Certificates come only after inspection; self-disclosure is still being planned (HT).
-  - DJB is restoring 1,000 non-functional government systems (IE).
-  - Our India-WRIS analysis adds evidence: 185 telemetric stations, only 46 reporting in 2026, 23 % of readings exactly zero.
-- **Innovation headroom — 4/5.** A per-storm drain-rate/clogging verdict plus infiltrated volume ± band turns the rebate rule into evidence. Today there is inspection, or one CGWA DWLR (Acorn) logging twice a day at ≈ ₹38k. Honest accuracy (simulation): 13.1 % stress, 14.5 % with a realistic probe, 3.0 % best case.
-- **Feasibility by 1 Dec — 4/5.**
-  - One node and a drum pour rig with weighed-water ground truth.
-  - Verified BOM ₹11,166 per node.
-  - The schedule avoids the 19–25 Nov exams.
-  - Needs a hardware teammate.
-- **Demo strength — 3/5 now; 5/5 once the pour rig exists.** Today's demo is an offline replay: real Delhi DWLR data plus a simulated pit with tickets.
-- **Fit with the user's strengths — 3/5.** Data and systems engineering (ingest, QC at scale, contracts, evaluators) fit; frontier models are marginal.
-- **Biggest risk:** no committed buyer yet. Mitigation: target DJB's Phase-I government restorations through its 59 empanelled service providers; verdicts rank inspections; inspectors can override. Second risk: probe power and settle time.
-- **One-line pitch:** *"Delhi pays for rainwater harvesting it cannot check. JalSakshi puts a witness in every recharge pit that turns each storm into a drain-rate and infiltration verdict — measured, not self-declared."*
+_FINAL v3, 4 Oct 2026, 12:45 IST. **Outcome: picked for the Delhi zonal.** Scores are 1–5 with one line of evidence each. Mean **3.4/5**, after the hostile final-deck review (its scores: novelty 3, functionality 2, cost 2, feasibility 2, scalability 2, impact 2, design 3, local bonus 4)._
+- **Winnability — 4/5.** Specific, local and current. Delhi has mandated RWH since 2001 (IE). DJB paid ₹204.46 cr in rebates in 2017–24 (HT, citing DJB data). Certificates come after inspection; self-disclosure is being planned (HT). There is a 1,000-system government restoration drive (IE). Our India-WRIS snapshot adds original evidence. Both pick-judges chose it over AQI.
+- **Innovation headroom — 3/5.** Per-storm drain-rate screening plus a model-based infiltration estimate, wired to the rebate/inspection workflow, with deferral on missing inputs. The physics is familiar; the per-event uncertainty band is not built yet. Honest accuracy (simulation): 13.1 % stress, 14.5 % realistic probe.
+- **Feasibility by 1 Dec — 4/5.** One node and a drum pour rig with weighed truth. Verified parts ≈ ₹11k/node. Schedule avoids the 19–25 Nov exams. Needs a hardware teammate.
+- **Demo strength — 3/5 now, 5/5 with the rig.** The offline replay works and is honest (real DWLR, simulated pit, deferral toggle).
+- **Fit with the user's strengths — 3/5.** Data and systems engineering fit; frontier models are marginal.
+- **Biggest risk:** no buyer contact yet. The answer is a prospective DJB/campus pilot and a pilot letter. Second: field reliability (duty cycle, power, silt) is untested.
+- **One-line pitch:** *"Delhi pays rebates for rainwater-harvesting pits it checks only by occasional inspection. JalSakshi puts a witness in each pit that turns every storm into a drain-rate verdict — measured, not self-declared."*
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -196,3 +188,28 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Fixed two honesty bugs: the ticket text wrongly said "no rain", and noisy tiny-storm clogging alerts were firing.
   - C7 rule v0: volume-weighted clogging index of the last 3 storms ≥ 0.5 m³.
 - **Rewritten:** deck (rebate opening, borewells moved to backup, 13 % first, buyer = DJB restorations, inspector override), `zonal-pitch.md` talk track, `qa-prep.md` (25 questions), `prototype-plan.md` (Round-2 plan), selection memo v2 (3.6/5).
+
+### 2026-10-04 12:45 IST — Final-deck hostile review applied; definition of done met
+- **Review:** gpt-6-astra (max), run as a child session per the Supervisor's rule → **READY WITH FIXES** (5 attacks, 24 flags).
+  - Disposition: `reviews/2026-10-04-final-deck-lead-response.md`; ledger line added.
+  - 28 ACCEPTED, 0 REJECTED, 1 already resolved (D13).
+- **Code:**
+  - C5 now **defers** (rain coverage < 90 % or a stage gap > 60 min) instead of calling "implausible" on missing data. Contracts v0.3.1; `test_verifier.py` has 7 passing tests.
+  - The evaluators report denominators (`counts`). All 6 re-runs reproduce identical metrics: v1 2.973/3.902, v2 13.097/13.033, v3 14.457/15.991 (holdout/dev).
+- **Evidence fixes:**
+  - **Rain provenance:** the "real ERA5" labels were wrong. The data are the Open-Meteo archive default model; vs `models=era5`, 8,818 of 11,352 hours are identical. The hourly input is frozen in `eval/data/`, with sha256 in `eval/results/manifest.json`.
+  - **Chronology:** the v3 keep-rule heading's "10:50" was wrong. The rule was written ~10:31 and committed together with its results, so it is corrected, not backdated. "Pre-registered" is removed from the deck.
+- **Deck v3** (15 slides; all checked as rendered PNGs):
+  - Policy wording is now "checked by periodic inspection; we add per-storm evidence alongside".
+  - Status tags BUILT / SIMULATED / PLANNED on slides 4 and 7.
+  - "Large injected pulse (1,200 L)", and a 20 L bucket is disclosed as undetected.
+  - Ticket timing shown as onset → close → issued.
+  - Denominators on the accuracy slide; dev clogging precision 0.40.
+  - Cost slide: first-site and 3-pit pilot parts totals.
+  - "Prospective pilot customer; no contact yet".
+  - Adaptation line; safety and water-quality gate.
+  - WRIS slide moved to Backup 0; new Backup 4 (worked event + observability table); 9:15 route with reserve.
+- **Demo:** "Unplug rain gauge" toggle (deferred tickets), provenance relabelled, clearer ticket text.
+- **Plan:** status key, datum and blind zone, vent, mandatory gauge, duty-cycle and deferral acceptance tests, §11 pilot cost with assumptions, §12 safety and water-quality boundaries.
+- **Presenter card:** updated (one page).
+- **Housekeeping:** the earlier lead-response line "installed cost includes them" was corrected. Dated current-state notes added to the landscape, verifier README, ADR and components.

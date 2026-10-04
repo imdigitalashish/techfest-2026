@@ -51,6 +51,7 @@ def run(split: str) -> dict:
     fake_hit = fake_n = 0
     honest_events = honest_impl = 0
     blocked_hit = blocked_n = 0
+    deferred_n = detected_n = 0
     for p in fleet:
         obs, truth = sim.simulate_pit(p, rain_m, rng)
         reg = {"structure_id": p.structure_id,
@@ -65,6 +66,8 @@ def run(split: str) -> dict:
         for e in ev:
             if e["verdict"] == "no_inflow":
                 continue
+            detected_n += 1
+            deferred_n += e["verdict"] == "deferred"
             t_inf = float(truth.loc[e["t_start"]:e["t_end"], "infil_m3"].sum())
             covered += t_inf
             tot_pred += e["recharged_m3"]
@@ -100,6 +103,12 @@ def run(split: str) -> dict:
         "fake_recall": fake_hit / fake_n if fake_n else float("nan"), "fakes": fake_n,
         "false_implausible_rate": honest_impl / honest_events if honest_events else float("nan"),
         "blocked_recall": blocked_hit / blocked_n if blocked_n else float("nan"), "blocked_pits": blocked_n,
+        # denominators (reporting only, added 4 Oct 2026 after the final-deck review D16; metrics unchanged)
+        "counts": {k: int(v) for k, v in {"detected_event_windows": detected_n, "scored_windows_true_infil_ge_0.2m3": len(ape),
+                   "honest_event_windows_healthy_or_clogging_pits": honest_events,
+                   "implausible_among_honest": honest_impl, "deferred_windows": deferred_n,
+                   "true_clogged_pits_final_k_lt_0.5": clog_tp + clog_fn, "clog_tp": clog_tp, "clog_fp": clog_fp,
+                   "clog_fn": clog_fn, "fakes_caught": fake_hit, "fakes": fake_n}.items()},
     }
 
 

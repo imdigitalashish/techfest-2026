@@ -47,3 +47,5 @@ Status key: **ACCEPTED** = we change the work; **REJECTED** = we keep it, with a
 | O3 | MS5837 as a 0–3 m sensor; tube/cable/potting excluded | **ACCEPTED** | As G1. The installed cost includes them. |
 | O4 | Memo demo 5/5 without a rig; landscape says BOM unverified; ₹32,428 mis-sum; ₹204 cr via HT | **ACCEPTED** | Memo demo score drops to 3/5 (offline replay only) until a pour rig exists. Landscape BOM status updated. `bom-prices.md` corrected with a note: ₹32,428.67 summed both sensor options and was not a per-node price. ₹204.46 cr is always cited as "HT, citing DJB data". |
 | B items | DustLedger | N/A | T2's lead owns them. |
+
+> **Correction (12:30 IST, 4 Oct):** O3's "The installed cost includes them." was wrong. The ₹11,166.18 figure is a parts subtotal; see `deliverables/prototype-plan.md` §11 and `2026-10-04-final-deck-lead-response.md`.

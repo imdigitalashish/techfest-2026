@@ -5,7 +5,8 @@
         "verified",
         "clogged",
         "no_inflow",
-        "implausible"
+        "implausible",
+        "deferred"
       ],
       "title": "RechargeEventVerdict",
       "type": "string"
@@ -78,6 +79,19 @@
     },
     "verdict": {
       "$ref": "#/$defs/RechargeEventVerdict"
+    },
+    "detail": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "why a verdict was deferred",
+      "title": "Detail"
     }
   },
   "required": [
