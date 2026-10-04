@@ -19,14 +19,11 @@
   - Both cross-model reviews: gpt-6-sol reproduced H1 bit-for-bit (7/7 issues accepted); gpt-6-astra scored the draft 2.80/5 (16/16 accepted).
   - Amendment A1 committed before E10 results.
   - Claims, render and check_docs tooling; abstract and architecture templates.
-- **Doing:** E10 strict replication (n = 400, fresh test seeds 1260–1659) is running, slowly under machine load ~24, at nice 10 with 4 workers.
-- **Next, in order:**
-  1. E10 → `eval/h1_verdict.py --exp E10_replication_test --name H2` and `eval/attribution.py --exp E10_replication_test`.
-  2. E11 (market-law check).
-  3. E12 (fill-time split).
-  4. Render the docs; `check_docs` must pass.
-  5. gpt-6-astra re-scores the final abstract.
-  6. Final memo, then push and send DONE.
+- **Doing:** waiting on two child reviews: gpt-6-astra re-scoring the final abstract, and gpt-6-sol checking the claims tooling and E10 reproduction. No compute is running. Updated 2026-10-04 13:44 IST.
+- **Next:**
+  1. Record both reviews in `reviews/ledger.tsv`.
+  2. Fill `astra_final` and render the memo; `check_docs` and pytest must pass.
+  3. Push and message the Supervisor "DONE — slot free".
 - **Needs from user:** register by 15 Oct if P5 is picked at the 12 Oct selection; teammates' names and skills (the abstract has placeholders).
 - **Risks:** (1) sub-tick effects in a simulator with near-linear impact; (2) E10 may not replicate; (3) machine load slows runs.
 
@@ -240,3 +237,16 @@ Those labels were estimates, 1–7 min ahead of the clock. The other headers are
 - **Amendment A1** (commit 8b85e29, 13:13:18, before E10 results): signed attribution labels with a ±0.02 bps equivalence margin, an interaction rule, and descriptive pools E6∪E10 and E5∪E6∪E10.
 - **E11/E12 pre-registered** (commit 50c5be6). Shell-substitution defects fixed twice (5744e5b and A1's dollar figures); doc text is now written only with quoted heredocs or the edit tools.
 - **Crash root cause:** undetermined. Ruled out: a Python exception, a memory kill (no log entry), tool-shell teardown (plain-`&` sleeps survived 19 min).
+
+### 2026-10-04 13:44 IST — E10/E11/E12 done; final abstract rendered (898 words)
+- **E10** (strict replication, n = 400, fresh seeds 1260–1659): **H2 NOT confirmed.** ΔIS −0.0127 [−0.0283, +0.0027], one-sided upper bound +0.0004.
+  - Under amendment A1, the QP schedule's own-impact effect is detected (−0.0136 [−0.0252, −0.0022]); its IS effect is unresolved.
+  - Front-loading, the interaction and the corrected feedback are negligible (within ±0.02 bps).
+  - Pooled over E6∪E10 (n = 600, descriptive): −0.020 [−0.032, −0.007] bps, ≈ 0.20¢/share.
+  - Synced feedback: value agents absorb 102% of our shares; momentum agents end at +70 [−60, +204]. The naive-twin "momentum amplifies" story vanishes, so the momentum-ablation stretch is deferred.
+- **E11:** the coupling preserves volume and trade counts (±10%) but **widens mean spreads 13%** [2%, 26%]. Return volatility and depth are unresolved. Disclosed in the abstract.
+- **E12:** exact event-level pre-trade identity in 180/180 runs. The touch-cap saving is fill-price improvement (−0.041 [−0.046, −0.036]), not decision-to-fill movement; the delay term is small and adverse.
+- **Deliverables:**
+  - `deliverables/round1-abstract.md` is rendered from its template; MV item 2 says "not yet met on total slippage", per the registered rule.
+  - `deliverables/architecture.md` is rendered and status-tagged.
+  - The selection memo is templated: **recommendation against P5** as the single Perceptron pick (winnability 2/5).
