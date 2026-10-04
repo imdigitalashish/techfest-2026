@@ -75,13 +75,13 @@ class MiniLMSentimentScorer:
             rng = np.random.default_rng(seed)
             flip = rng.random(len(y)) < label_noise
             y[flip] = (y[flip] + rng.integers(1, 3, flip.sum())) % 3
-        X = self.enc.encode(tr["text"].astype(str).tolist())
+        X = self.enc.encode(tr["text"].astype(str).tolist()).astype(np.float64)
         self.clf = LogisticRegression(max_iter=2000, C=4.0, random_state=seed).fit(X, y)
 
     def proba(self, texts: list[str]) -> np.ndarray:
         """Columns: [bearish, bullish, neutral]."""
-        p = self.clf.predict_proba(self.enc.encode(texts))
-        return p[:, np.argsort(self.clf.classes_)]
+        p = self.clf.predict_proba(self.enc.encode(texts).astype(np.float64))
+        return p[:, np.argsort(self.clf.classes_)].astype(np.float64)
 
     def score(self, texts: list[str]) -> pd.DataFrame:
         p = self.proba(texts)

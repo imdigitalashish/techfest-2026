@@ -130,6 +130,6 @@ PREDICTIONS = Contract(
 INTERVALS = Contract(
     "INTERVALS",
     {"ticker": "str", "trade_date": "date", "lo": "float", "hi": "float", "point": "float", "method": "str"},
-    (("lo <= hi", lambda d: bool((d["lo"] <= d["hi"] + 1e-12).all())),),
+    (("no NaN bounds (lo > hi denotes the empty interval; +-inf allowed)", lambda d: bool(d[["lo", "hi"]].notna().all().all())),),
     ("ticker", "trade_date", "method"),
 )

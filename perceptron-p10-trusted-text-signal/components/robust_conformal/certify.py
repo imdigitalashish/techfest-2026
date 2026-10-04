@@ -39,13 +39,6 @@ def features_from_docs(s: np.ndarray, w: np.ndarray) -> np.ndarray:
     return np.array([np.log1p(n), ss.mean(), _trim_sorted(ss), ss.std() if n > 1 else 0.0, np.mean(w)])
 
 
-def _std_from_sums(sm: float, sq: float, m: int) -> float:
-    if m <= 1:
-        return 0.0
-    v = sq / m - (sm / m) ** 2
-    return float(np.sqrt(max(v, 0.0)))
-
-
 def deletion_box(s: np.ndarray, w: np.ndarray, k: int) -> tuple[np.ndarray, np.ndarray]:
     """Exact per-feature [lo, hi] of TEXT_COLS over all deletions of at most k documents.
 
@@ -67,8 +60,15 @@ def deletion_box(s: np.ndarray, w: np.ndarray, k: int) -> tuple[np.ndarray, np.n
         else:
             mean_lo, mean_hi = cs[m] / m, (cs[n] - cs[j]) / m
             trim_lo, trim_hi = _trim_sorted(ss[:m]), _trim_sorted(ss[j:])
-            std_min = min(_std_from_sums(cs[i + m] - cs[i], cq[i + m] - cq[i], m) for i in range(j + 1))
-            std_max = max(_std_from_sums(cs[p] + cs[n] - cs[p + j], cq[p] + cq[n] - cq[p + j], m) for p in range(m + 1))
+            if m > 1:
+                i = np.arange(j + 1)  # contiguous windows (min variance)
+                v_min = (cq[i + m] - cq[i]) / m - ((cs[i + m] - cs[i]) / m) ** 2
+                p = np.arange(m + 1)  # prefix + suffix (max variance)
+                s2, q2 = cs[p] + cs[n] - cs[p + j], cq[p] + cq[n] - cq[p + j]
+                v_max = q2 / m - (s2 / m) ** 2
+                std_min, std_max = float(np.sqrt(max(v_min.min(), 0.0))), float(np.sqrt(max(v_max.max(), 0.0)))
+            else:
+                std_min = std_max = 0.0
             tr_lo, tr_hi = cw[m] / m, (cw[n] - cw[j]) / m
             f_lo = np.array([np.log1p(m), mean_lo, trim_lo, std_min, tr_lo])
             f_hi = np.array([np.log1p(m), mean_hi, trim_hi, std_max, tr_hi])
@@ -84,6 +84,7 @@ def _tree_bounds(node: dict, lo: np.ndarray, hi: np.ndarray, reach: np.ndarray, 
         np.maximum(out_max, np.where(reach, v, -np.inf), out=out_max)
         return
     assert node.get("decision_type", "<=") == "<=", "only numerical splits supported"
+    # inputs are finite (enforced in CertifiedCQR.boxes), so LightGBM's missing-value routing never applies
     f, t = node["split_feature"], node["threshold"]
     left = reach & (lo[:, f] <= t)
     right = reach & (hi[:, f] > t)
@@ -114,6 +115,8 @@ class CertifiedCQR:
         self.text_sel = [TEXT_COLS.index(c) for c in feats]
 
     def boxes(self, X: np.ndarray, docs: list[tuple[np.ndarray, np.ndarray]]) -> tuple[np.ndarray, np.ndarray]:
+        if not np.isfinite(X).all():
+            raise ValueError("certificate requires finite features (no NaN/inf)")
         lo, hi = X.copy(), X.copy()
         if self.text_idx:
             for r, (s, w) in enumerate(docs):

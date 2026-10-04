@@ -48,12 +48,19 @@ def christoffersen_ind(df: pd.DataFrame) -> float:
 
 
 def evaluate(iv: pd.DataFrame, truth: pd.DataFrame, alpha: float, groups: dict[str, pd.Series] | None = None) -> dict:
+    """lo > hi is the empty interval (always a miss, width 0); infinite bounds are allowed (v1, 4 Oct 10:00).
+
+    Width statistics are over finite-width rows; `frac_infinite` reports the rest."""
     d = iv.merge(truth[["ticker", "trade_date", "y"]], on=["ticker", "trade_date"], how="inner")
     y, lo, hi = d["y"].to_numpy(), d["lo"].to_numpy(), d["hi"].to_numpy()
-    d["miss"] = ((y < lo) | (y > hi)).astype(int)
+    d["miss"] = (~((y >= lo) & (y <= hi))).astype(int)
+    w = np.maximum(hi - lo, 0.0)
+    fin = np.isfinite(w)
+    lo_w, hi_w = np.where(fin, lo, 0.0), np.where(fin, np.maximum(hi, lo), 0.0)
     day_cov = 1 - d.groupby("trade_date")["miss"].mean()
-    out = {"n": int(len(d)), "coverage": float(1 - d["miss"].mean()), "mean_width": float(np.mean(hi - lo)),
-           "median_width": float(np.median(hi - lo)), "winkler": winkler(y, lo, hi, alpha),
+    out = {"n": int(len(d)), "coverage": float(1 - d["miss"].mean()), "mean_width": float(np.mean(w[fin])),
+           "median_width": float(np.median(w[fin])), "frac_infinite": float(1 - fin.mean()),
+           "winkler": winkler(y[fin], lo_w[fin], hi_w[fin], alpha),
            "kupiec_p": kupiec_pof(d["miss"].to_numpy(), alpha), "christoffersen_p": christoffersen_ind(d),
            "worst_day_coverage": float(day_cov.min()), "day_coverage_p10": float(day_cov.quantile(0.10))}
     if groups:
@@ -63,5 +70,5 @@ def evaluate(iv: pd.DataFrame, truth: pd.DataFrame, alpha: float, groups: dict[s
             for v in pd.unique(lab[~pd.isna(lab)]):
                 m = lab == v
                 out[f"cov[{gname}={v}]"] = float(1 - d["miss"].to_numpy()[m].mean())
-                out[f"width[{gname}={v}]"] = float(np.mean((hi - lo)[m]))
+                out[f"width[{gname}={v}]"] = float(np.mean(w[m & fin]))
     return out

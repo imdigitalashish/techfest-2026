@@ -10,19 +10,36 @@
 - _(none)_
 
 ## Now
-- **Phase:** morning package delivered (Phases 0–5 v0). Next: re-verify research gaps, FinBERT scorer, edit-budget certificate, FNSPID subset.
-- **Plan:** (1) 4–12 Oct: fill research gaps (social signal, SEBI/SEC, detectors, Kupiec/Christoffersen primaries) + independent rubber-duck review of ADR 001 + final selection memo by 12 Oct; (2) FinBERT/finbert-tone scorers behind the C3 contract; (3) edit-budget (replace ≤k docs) certificate; (4) FNSPID stream-filtered news subset 2018–2023 as the finals test; (5) ratchet loops on CR-ACI width.
-- **Doing:** ratchet batch 1 closed. h1 (drop `sent_std`) passed on validation (−0.6%) but did not transfer to the test period (+0.1% width), so it was reverted and the keep rule tightened to 3 seeds and >1%. h2 and h3 were not kept. Lean mode lifts 08:30 (≤ 3 concurrent sub-agents).
-- **Next:** log ratchet results → rubber-duck review of ADR 001 when agents are allowed again → research gap pass → FinBERT weights (~440 MB) once downloads are allowed.
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section (the abstract has TBD roles). Optional: a Kaggle API token (`~/.kaggle/kaggle.json`) if we want the organisers' "Kaggle news + price" set as an extra baseline.
-- **Risks:** text adds ~no point accuracy (measured: pinball 0.3518 fusion vs 0.3513 price-only) → pitch rests on trust/coverage, not alpha · threat model is injection-only (edits next) · split methods under-cover in the 2015–16 test regime (measured) · pooled Kupiec/Christoffersen p-values are optimistic · ADR 001 antithesis is lead-written (independent review pending) · research notes are partial (agents died on 408s; gaps listed in landscape §7).
+- **Phase:** ⏸ **PAUSED** (user's decision via the Supervisor, 09:55 IST, 4 Oct). Only Namma Space, P7 and EV C2 run; P7 is the Perceptron pick unless the user overrides. No jobs running in this worktree.
+- **Resume point (exact, in order):**
+  1. **Finish the rubber-duck fixes** ([review](research/notes/review-adr001-rubber-duck.md)). Already in code, tested (43 pass) and committed:
+     - context-free trust (`trust_of`);
+     - ACI without clipping (whole line at α_t ≤ 0, empty set at α_t ≥ 1, no endpoint reordering, boundary stats via `stats=`);
+     - INTERVALS contract allows empty (lo > hi); evaluator v1 handles empty/infinite intervals;
+     - vectorised deletion box; MiniLM float64.
+  2. **Still to do in code:**
+     - `eval/run_baselines.py`: pump trust from `trust_of(followers=0, age_days=1, verified=False, n_cashtags=1)` instead of the hand-set 0.05; record ACI `stats`; add a richer plain-CQR oracle grid (j ≤ k × sentiment {−1, −0.5, 0, 0.5, 1} × trust {0.05, 0.5, 1}, plus mixed signs); report the guaranteed floor.
+     - Tests: trust deletion-stability; ACI long-run bound |mean err − α| ≤ (max(α₁, 1−α₁) + γ)/(γT) on an adversarial sequence; ACI boundary cases.
+     - Move the ratchet splits to 2014 only (train Jan–Jun, cal Jul–Sep, val Oct–Dec) and re-baseline `results.tsv`.
+  3. **Rerun** (one job at a time, nice):
+     `cd perceptron-p10-trusted-text-signal && PYTHONPATH=. nice -n 10 .venv/bin/python eval/prepare.py && PYTHONPATH=. nice -n 10 .venv/bin/python eval/run_baselines.py --tag baseline_v1 && PYTHONPATH=. .venv/bin/python eval/report.py baseline_v1`
+     then `... eval/prepare.py --scorer minilm && ... eval/run_baselines.py --tag text_minilm_v1 --scorer minilm && ... eval/report.py text_minilm_v1`. The MiniLM embeddings are cached in `.cache/emb_minilm.npz`; prepare takes ~8 min.
+  4. Update the abstract numbers and Key results from v1.
+  5. Then: text→volatility features and the drop-text utility test (the review's strongest critique) · FinBERT once the network allows (the HF CDN gave ~30 KB/s; 440 MB is not viable on it tonight) · edit-budget certificate · FNSPID post-2016 holdout.
+- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section. Optional: a Kaggle API token (`~/.kaggle/kaggle.json`).
+- **Risks:**
+  - The review's "drop the text" critique is strong: price-only matches fusion (pinball 0.3513 vs 0.3518). The pitch rests on trust and coverage, and needs text-utility evidence.
+  - Threat model is injection-only.
+  - The test period has been looked at twice (baseline + one h1 re-check).
+  - Pooled Kupiec/Christoffersen p-values are optimistic.
 
 ## Key results (committed; reproduce: `bash eval/fetch_data.sh && PYTHONPATH=. .venv/bin/python eval/prepare.py && PYTHONPATH=. .venv/bin/python eval/run_baselines.py`)
 StockNet, 87 tickers, 119,641 tweets, look-ahead leaks 0; test 2015-07-01→2016-03-31 (16,443 ticker-days); α = 0.1. Full table: [`eval/results/baseline_v0.md`](eval/results/baseline_v0.md).
 - Fusion + split CP (MAPIE): coverage 81.3%, high-vol tercile 76.5%, Kupiec p < 0.001 → "present but not meaningful".
 - Fusion + CQR (MAPIE): 86.3%, width 4.71 pp; + ACI: 89.4%, width 5.22 pp.
-- Oracle injection attack, k = 3: plain CQR 86.3% → 84.4%; **certified CQR 88.0%** (width +4.5%). Pump attack: CQR 85.5% vs certified 88.8%.
-- **CR-ACI (spike): 89.5% clean / 89.7% under pump, width 5.23 pp (+0.3% vs plain ACI).**
+- Oracle injection attack (12 variants), k = 3: plain CQR 86.3% → 84.4% (its true worst case may be lower); **certified CQR 88.0%**, guaranteed ≥ 86.3% within budget; width +4.5% (clean). Pump attack: CQR 85.5% / width 4.59 vs certified 88.8% / 5.09.
+- **CR-ACI (spike): 89.5% clean / 89.7% under pump, width 5.23 / 5.25 pp (+0.3% / +0.9% vs plain ACI).** baseline_v0 used the old trust and clipped ACI → reproduce at commit 06e2d81; v1 rerun pending.
+- C3 isolated metric (macro-F1 on 2,388 labelled financial tweets, `components/text_scorer/isolated_results.json`): VADER 0.489 · MiniLM+LR 0.691 · with 20% / 40% flipped training labels 0.662 / 0.606 (noisy-label stretch). End-to-end with MiniLM (`eval/results/text_minilm_v0.md`, old trust): CR-ACI 89.4% / 89.7%, widths 5.24 / 5.28.
 - Soundness: degenerate-box error 0; clean features inside the attacked box on 100% of rows; own CQR = MAPIE symmetric CQR exactly.
 
 ## Phase 0 — what the judges must be able to see (lead, 4 Oct 03:00 IST)
@@ -135,3 +152,10 @@ Added `tests/` (43 pass): DST-safe 16:00 ET alignment, contract rejection, brute
   - Robust-CP prior art also covers poisoning and sparse edits (ICML 2024).
   - Results caveat: the 12-variant oracle is not a worst-case bound for plain CQR. The certified floor (clean CQR coverage) holds for every attack within budget.
 - Added `research/components/robust_conformal.md` (exactness proofs) and `text_scorer.md`, both referenced from code.
+
+### 2026-10-04 08:30–10:05 IST — Lean mode lifted, review, pause
+- Supervisor 08:22: package accepted; next steps were FinBERT, an independent antithesis, and social signal.
+  - **Social signal:** R7 agent wrote `research/notes/R7-social-signal.md`. HN skeptic takes: sentiment may lag price; LLM signals are "weaponisable"; conformal's guarantee rests on exchangeability. Reddit returned 403; `site:x.com` returned nothing.
+  - **FinBERT:** the HF CDN measured ~30 KB/s (curl probe), so 440 MB was not viable. Used MiniLM-L6 (already cached locally) plus a logistic-regression head trained on Twitter Financial News Sentiment (HF zeroshot, MIT): macro-F1 0.691 vs VADER 0.489. Noisy-label stretch: 20% / 40% flipped labels → 0.662 / 0.606.
+  - **Independent antithesis:** the rubber-duck review found 3 blocking issues — trust not deletion-stable, ACI clipping/reordering, the "per-prediction coverage" overclaim — plus evaluation flaws and a strong "drop the text" case. Saved with the lead's synthesis in `research/notes/review-adr001-rubber-duck.md`. Fixed in code: trust, ACI, contract, evaluator v1, vectorised box (43 tests pass). Fixed in the abstract: three overclaims. The rerun is the resume point.
+- Supervisor 09:40: lean mode back on. Supervisor 09:55: **PAUSE** (user's decision). No jobs running; all results saved; exact restart commands are in *Now*.
