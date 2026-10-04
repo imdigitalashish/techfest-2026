@@ -1,5 +1,6 @@
-# Eval results (harness v2, code commit 1325820, n=10000, seed=20261004)
+# Eval results (harness v2, inputs id 83a80a699b, run at commit 0045847, n=10000, seed=20261004)
 
+The inputs id hashes the git trees of components/, data/ and eval/eval.py — stable across rebases.
 Reproduce: `python3 eval/eval.py` from `ev-c2-green-auto-lca/`. Unit: g per vehicle-km (GHG indicator; see gas-basis flags).
 Database: 124 records ({'verified': 104, 'derived': 20}), 19 sources.
 
