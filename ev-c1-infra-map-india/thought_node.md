@@ -93,11 +93,21 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - At ~07:28 the dashboard's JSF auto-ids shifted (state dropdown `j_idt34` → `j_idt37`, Refresh `j_idt65` → `j_idt75`), and the resumed Maharashtra fetch silently got 0 RTOs. The client now discovers widget ids from the page by their labels, and the fetcher never overwrites a good RTO list with an empty one. The Maharashtra fetch resumed (35/61 offices at 08:25).
 - `eval/results/baseline_summary.json` regenerated; it now agrees with the CSV and the memo: 36/36 states matched; 10,550,090 BEV registrations till today; 2,356,971 in CY2025 (8.05%); 29,277 official PCS; 360.4 BEV per PCS; OSM 600 = 2.05% of official, 31.8% with operator, 7.8% with socket tags.
 
-### 2026-10-04 08:55 IST — Second charger source + Spike 1 v0 (real numbers)
+### 2026-10-04 08:45 IST — Second charger source + Spike 1 v0 (real numbers)
 - **Second source without a key:** the Open Charge Map per-POI export is organised by country. A sparse clone of `data/IN` gives **1,872 India POIs** (export commit 2026-04-22). Status ids: 1,836 × 50, 16 × 100, 14 × 30, 5 × 150, 1 × 75 (labels per OCM reference data, UNVERIFIED). All POIs have DataProviderID 1 (OCM contributors). Code: `components/charger_ingest/fetch_ocm.py`.
 - **C4 baseline (mutual nearest neighbour):** OSM 600 × OCM 1,872 → 71/81/83/93/111 matches at 50/100/150/250/500 m. Only 13.3% of the 150 m pairs have name similarity ≥ 60 → a hand-labelled pair set is needed before claiming F1.
 - **C5 baseline (two-source Chapman, per state, scored against held-out official PCS from PIB 2151390):** national union = 2,385 sites = **8.15%** of 29,277. For the 5 states with ≥ 3 matches, median |relative error|: **union 0.901 → Chapman 0.697**. Kerala: Chapman 1,613 ± 204 vs official 1,392 (+16%). Delhi −73%, Karnataka −70%, Maharashtra −83%, Tamil Nadu −45%. Reading: both open sources capture the same "easy" sites (positive dependence, heterogeneous catchability) → next: covariate/stratified estimators, more sources, calibration. Results: `eval/results/census_v0_*`.
 - **Data-quality finding:** 156 OCM POIs have a free-text state that contradicts their coordinates (e.g. an EESL station at Nava Raipur, Chhattisgarh, labelled "Odisha") → C3 must validate by point-in-polygon, never trust text fields.
 - Supervisor tip noted (CEA v22 station-level workbook with a STATE column; T&D losses 17.63% from Lok Sabha USQ 842, both via `ev-c2-green-auto-lca/data/sources/sources.yaml`) → candidate inputs for the grid-context layer (C11).
 - The `sota-methods` research agent finished: `research/sota-methods.md` (21.6 KB, condensed; claims to be fact-checked). Its novelty finding: no published capture–recapture / multiple-systems estimation on EV charger databases, and no EV-charger-specific entity resolution (searched by the agent; spot-check pending).
+
+### 2026-10-04 09:10 IST — First auto-research loop (C5, spike 1): real ledger
+- Set up `components/census_completeness/autoresearch/`: `program.md`, a **frozen** `eval.py` (DEV = 12 states scored leave-one-state-out against official PCS; HOLDOUT = 11 states, lead-only), `results.tsv`. Only `estimator.py` changes.
+- 7 hypotheses (dev median |ln(est/official)|; keep if < best − 0.02):
+  - two-source Chapman r = 150 m: 2.987 (first baseline);
+  - union only: 3.362;
+  - r = 50 m and r = 500 m: 2.987 (no change; most states have < 3 matches);
+  - **calibration on ln(VAHAN BEV registrations) alone: 0.349 → kept, holdout 0.417**;
+  - + ln(union): 0.334; + ln(Chapman): 0.333 (both inside the noise margin → not kept).
+- **Finding (changes the spike):** with today's two sparse open sources (8% of official), capture–recapture is far off (~20× low for the median state), and open-data counts add almost no information beyond EV demand. The census spike therefore needs denser lists (operator feeds, UEI) before multiple-systems estimation can work. Meanwhile a demand-calibrated small-area model (±42% median at state level) is the honest fallback for district-level supply estimates. ADR 001's gate criterion (C5 relative error < 25% for states with ≥ 2 sources) is **not met yet**; revisit after adding a third source.
 
