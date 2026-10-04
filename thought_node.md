@@ -6,17 +6,17 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (15:32 IST, 4 Oct)
+## Now (15:56 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - P6: 12-day pre-registered walk-forward passed; Amendment 1 sensitivity re-run after an erratum (both runs reported).
-  - P2: confirmatory runs on its Azure VM (now D16ds_v5); sol review in.
-  - P8: LLM-gap study pre-registered 15:21:41.
-  - India@71 T2: interval calibration first.
-  - InnovateX T2: resumed 15:32 as the documented alternative to T1, which is the zonal pick.
-- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3.
-- **Queue:** APCTT (when the 10 Oct data lands) → InnovateX T3.
-- **Azure running now:** P2's VM `p02-kv-1` (Standard_D16ds_v5, centralindia) and P8's pay-per-token OpenAI resource. Nothing else.
+  - P2: pre-registered confirmatory grid on its Azure VM (3 amendments, all before any test outcome); both reviews triaged.
+  - P8: no gap vs reasoning LLMs on real data (pre-registered); cascade confirmatory on prob_pack (Addendum B) next.
+  - India@71 T2: pre-registered coverage test passed (0.967 ≥ 0.85; conservative ±6 pp); allocation gain not shown.
+  - InnovateX T2: verified BOM (₹60,711 kit); templated package with check_docs.
+  - InnovateX T3: resumed 15:55 into P6's slot.
+- **Completed — awaiting your review (14):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6.
+- **Queue:** APCTT only, when the 10 Oct data lands.
+- **Azure running now:** P2's VM `p02-kv-1` and P8's pay-per-token OpenAI resource.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -57,7 +57,7 @@
   - one timed rehearsal using `presenter-card.pdf`;
   - a pilot contact or letter (e.g. DJB, as the rainwater-harvesting nodal agency);
   - supplier quotes for the parts in `prototype-plan.md`.
-- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1, P4, P10, P5 and P3 are ✅ Completed and ready for your review; P6 and P2 are still running.
+- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1, P4, P10, P5, P3 and P6 are ✅ Completed and ready for your review; P2 and P8 are still running.
   - **P7 multi-agent allocation:** planning beats the best rule, +3.7 pp under shock and +5.5 pp under shock+drift (30/30 seeds, pre-registered). Its detector spike failed replication. astra hostile score 71/100.
   - **P9 agent guardrail:** on held-out real agent errors, 41% of harmful calls stopped at 2.0% of good calls blocked (30% held for review). astra 62/100; memo 3.8/5.
   - **P1 federated LoRA:** the only method that improves every domain (macro −0.081 vs the starter), at a stated cost on the data-rich domain. astra 68/100 on the draft before its fixes; memo 4.2/5.
@@ -65,6 +65,7 @@
   - **P10 trusted text signal:** prediction intervals that keep their promised coverage on messy, manipulated text (89.47% vs a 90% target). Its pre-registered test found the text adds no forecasting value (p = 0.46), so the pitch is trust and coverage guarantees, not alpha. astra 74/100; memo 3.7/5. P10 itself ranks P7 first and P10 a close second.
   - **P5 impact-aware execution:** its headline failed a strict pre-registered replication on 400 fresh seeds (−0.013 bps, CI [−0.029, +0.003]). The abstract is now honestly about measuring your own market impact. astra 3.45/5; P5 recommends against itself.
   - **P3 off-policy evaluation:** on real Open Bandit data (pre-registered), it shows the deployed policy drifted and that a "did it work" dashboard overstated the effect by 29%. Its overlap gate refuses to answer where the logs can't support one. astra 69/100; memo 3.6/5. P3 recommends P7, narrowly.
+  - **P6 cross-asset stat arb:** its pre-registered 12-day test passed (+$299/day simulated, 12/12), but only about a quarter of the gain survives strict fills, and it's within noise once shared liquidity is removed. astra 62/100. P6 recommends P7 and offers itself as the fallback for the 4/5/6 group.
   - **Note:** P4, P5 and P6 are a "choose exactly one" group, and P4 and P5 both recommend against themselves.
   - The astra scores were given at different stages and the memos are self-scored, so treat them as rough, not a ranking.
   - Whichever you pick: teammates' names for the [TEAM] placeholders, then register by 15 Oct.
@@ -103,6 +104,13 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 15:56 IST — P6 completed
+- **P6 DONE (378ac26), verified on main:** check_docs OK; 7 tests.
+  - Reviews: astra 13 + sol 16 + astra 8, all accepted.
+  - Pre-registered pass (+$299/day, 12/12), but about 1/4 survives strict fills. It recommends P7.
+  - Its short-lived Azure VM (p06vm, rg-p06-statarb) was deleted at 15:16.
+- InnovateX T3 resumed. The queue now holds only APCTT, gated on the 10 Oct data.
+
 ### 2026-10-04 15:32 IST — India@71 T3 completed
 - **T3 DONE (57dfa7c), verified on main:**
   - check_pdf PASS (6 pp, Arial ≥ 11 pt, 6/6 fonts embedded); check_docs 28/28; 17 tests.
