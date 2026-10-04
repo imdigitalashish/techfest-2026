@@ -64,6 +64,8 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 11:17 IST — P7 completed
+Verified on main: abstract v1.2 (~880–900 words, [TEAM] placeholders), architecture, Q&A prep (15), 5 reviews + ledger. Headline numbers match `eval/results` (confirmatory +3.7 pp shock / +5.47 [+5.36, +5.59] shock+drift, 30/30, Holm; NYC replays +2.5 and +1.52 pp). Detector spike failed its pre-registered replication; re-scoped to decision-aware forecast trust (pre-registered test). Marked ✅ Completed. P4 resumed into the free slot.
 ### 2026-10-04 11:12 IST — EV C2 completed
 Verified on main: methodology + roadmap v1.1 (team details pending); 4 reviews (45 accepted, 0 rejected) + ledger; docs drift check OK; 19/19 tests pass. Headline rendered from the run: e-scooter −38.1% (32.0–43.2); BEV sedan −10.0% (−10.1–25.6), P(lower) 0.81. Marked ✅ Completed. P1 resumed into the free slot.
 ### 2026-10-04 11:08 IST — Sweep

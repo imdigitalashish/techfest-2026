@@ -15,25 +15,25 @@ Private monorepo: one folder per problem statement, each run by its own project-
 | Folder | Status | Competition | Problem | Round 1 | Finals (IIT Bombay) |
 |---|---|---|---|---|---|
 | [perceptron-p01-federated-lora](perceptron-p01-federated-lora/thought_node.md) | 🟢 Active | Perceptron (IITB × Optiver) | Cheap fine-tuning across weak, scattered devices | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p02-kv-cache](perceptron-p02-kv-cache/thought_node.md) | ⏳ Queued #9 | Perceptron | Squeezing long-context inference into less memory | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p03-off-policy-eval](perceptron-p03-off-policy-eval/thought_node.md) | ⏳ Queued #5 | Perceptron | Did the policy actually work? (off-policy evaluation) | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p04-lob-regimes](perceptron-p04-lob-regimes/thought_node.md) | ⏳ Queued #2 | Perceptron | Order-book forecasting under regime shifts | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p05-impact-execution](perceptron-p05-impact-execution/thought_node.md) | ⏳ Queued #4 | Perceptron | Market-impact-aware execution | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p06-stat-arb](perceptron-p06-stat-arb/thought_node.md) | ⏳ Queued #8 | Perceptron | Cross-asset statistical arbitrage with latency budgets | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p07-multi-agent-allocation](perceptron-p07-multi-agent-allocation/thought_node.md) | 🟢 Active | Perceptron | Splitting a shared resource when demand keeps changing | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p08-misconception-tutor](perceptron-p08-misconception-tutor/thought_node.md) | ⏳ Queued #10 | Perceptron | A tutor that finds the real reason you're stuck | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p02-kv-cache](perceptron-p02-kv-cache/thought_node.md) | ⏳ Queued #8 | Perceptron | Squeezing long-context inference into less memory | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p03-off-policy-eval](perceptron-p03-off-policy-eval/thought_node.md) | ⏳ Queued #4 | Perceptron | Did the policy actually work? (off-policy evaluation) | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p04-lob-regimes](perceptron-p04-lob-regimes/thought_node.md) | 🟢 Active | Perceptron | Order-book forecasting under regime shifts | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p05-impact-execution](perceptron-p05-impact-execution/thought_node.md) | ⏳ Queued #3 | Perceptron | Market-impact-aware execution | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p06-stat-arb](perceptron-p06-stat-arb/thought_node.md) | ⏳ Queued #7 | Perceptron | Cross-asset statistical arbitrage with latency budgets | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p07-multi-agent-allocation](perceptron-p07-multi-agent-allocation/thought_node.md) | ✅ Completed — ready for your review | Perceptron | Splitting a shared resource when demand keeps changing | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p08-misconception-tutor](perceptron-p08-misconception-tutor/thought_node.md) | ⏳ Queued #9 | Perceptron | A tutor that finds the real reason you're stuck | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p09-agent-guardrail](perceptron-p09-agent-guardrail/thought_node.md) | 🟢 Active | Perceptron | Catching an agent before it acts on a bad idea | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p10-trusted-text-signal](perceptron-p10-trusted-text-signal/thought_node.md) | ⏳ Queued #3 | Perceptron | Trusting a signal extracted from messy, manipulated text | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p10-trusted-text-signal](perceptron-p10-trusted-text-signal/thought_node.md) | ⏳ Queued #2 | Perceptron | Trusting a signal extracted from messy, manipulated text | Abstract · 31 Oct | 15–18 Dec |
 | [apctt-trl-assessor](apctt-trl-assessor/thought_node.md) | ⏳ Queued #1 — starts when the 10 Oct data arrives | AI for Technology Readiness (APCTT, UN ESCAP) | TRL 1–9 from technical documents | Frozen model · 15 Nov | 16–17 Dec |
-| [ev-c1-infra-map-india](ev-c1-infra-map-india/thought_node.md) | ⏳ Queued #6 | EV Infra & Green Mobility (MHI × ICAT) | EV Infra Map India | Methodology + roadmap · 30 Oct | 16–18 Dec |
+| [ev-c1-infra-map-india](ev-c1-infra-map-india/thought_node.md) | ⏳ Queued #5 | EV Infra & Green Mobility (MHI × ICAT) | EV Infra Map India | Methodology + roadmap · 30 Oct | 16–18 Dec |
 | [ev-c2-green-auto-lca](ev-c2-green-auto-lca/thought_node.md) | ✅ Completed — ready for your review | EV Infra & Green Mobility (MHI × ICAT) | Green Auto India (automotive LCA database) | Methodology + roadmap · 30 Oct | 16–18 Dec |
 | [namma-space](namma-space/thought_node.md) | 🟢 Active | Namma Space (Juspay) | Phone capture → 3D indoor twin with search and navigation | 3D web viewer · 31 Oct | 16–17 Dec |
 | [india71-t1-nutrition](india71-t1-nutrition/thought_node.md) | ✅ Completed — ready for your review | India @71/100 | Maternal & early-childhood nutrition | 6-page proposal · 1 Nov | 16–18 Dec |
-| [india71-t2-learning](india71-t2-learning/thought_node.md) | ⏳ Queued #11 | India @71/100 | Foundational learning outcomes | 6-page proposal · 1 Nov | 16–18 Dec |
-| [india71-t3-finance](india71-t3-finance/thought_node.md) | ⏳ Queued #7 | India @71/100 | Financial inclusion & meaningful banking access | 6-page proposal · 1 Nov | 16–18 Dec |
+| [india71-t2-learning](india71-t2-learning/thought_node.md) | ⏳ Queued #10 | India @71/100 | Foundational learning outcomes | 6-page proposal · 1 Nov | 16–18 Dec |
+| [india71-t3-finance](india71-t3-finance/thought_node.md) | ⏳ Queued #6 | India @71/100 | Financial inclusion & meaningful banking access | 6-page proposal · 1 Nov | 16–18 Dec |
 | [innovatex-t1-groundwater](innovatex-t1-groundwater/thought_node.md) | 🟢 Active | InnovateX | IoT underground water management | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
-| [innovatex-t2-aqi](innovatex-t2-aqi/thought_node.md) | ⏳ Queued #12 | InnovateX | Rising AQI in cities | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
-| [innovatex-t3-coastal-plastic](innovatex-t3-coastal-plastic/thought_node.md) | ⏳ Queued #13 | InnovateX | Coastal plastic pollution (Mumbai) | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
+| [innovatex-t2-aqi](innovatex-t2-aqi/thought_node.md) | ⏳ Queued #11 | InnovateX | Rising AQI in cities | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
+| [innovatex-t3-coastal-plastic](innovatex-t3-coastal-plastic/thought_node.md) | ⏳ Queued #12 | InnovateX | Coastal plastic pollution (Mumbai) | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
 
 ## Key dates
 
