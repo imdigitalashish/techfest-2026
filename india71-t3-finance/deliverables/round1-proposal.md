@@ -80,9 +80,17 @@ flowchart LR
 
 **4.5 What the demo already shows.** A working skeleton (Python; 14 components behind typed contracts) runs end to end on a SYNTHETIC district population calibrated to the official 23% inoperative share. On held-out synthetic persons at the same budget, we compare policies by the share of the oracle's achievable incremental usage they capture (0 = random allocation, 1 = perfect knowledge):
 
-{{TARGETING_TABLE}}
+| Policy (same budget: ₹10 per eligible person) | Share of achievable gain captured (mean ± sd, 3 seeds) | Incremental persons in meaningful use (per ~11,600 eligible) | Women's share of those reached |
+|---|---|---|---|
+| Status quo: BC visits to inoperative, then dormant, then DBT pass-through accounts | 0.04 ± 0.00 | 47 | 56% |
+| Highest predicted risk of non-use first (BC visit) | -0.08 ± 0.01 | 18 | 69% |
+| Random persons, random arm | 0.00 ± 0.00 | 38 | 58% |
+| Best average arm from the pilot, given to everyone (IVR/SMS) | 0.38 ± 0.01 | 134 | 58% |
+| Sakriya v0: per-arm uplift model + budgeted allocation, women ≥ their share | 0.34 ± 0.04 | 122 | 68% |
+| Oracle: true uplift + same allocation (upper bound) | 1.00 ± 0.00 | 288 | 72% |
+_SYNTHETIC. 20,000 simulated persons per seed (seeds 0–2); ~11,511 not yet in meaningful use and outside the 20% pilot are eligible; pilot = randomised arms used to train the models. 'Share of achievable gain' = (policy − random) / (oracle − random). The best-average-arm rule spends only about a third of the budget because IVR is cheap. Reproduce: `python eval/targeting_eval.py --seeds 0 1 2 --n 20000` → `eval/results/targeting_baseline.json`._
 
-Interpretation: blanket, dormancy-first outreach captures little of what the budget could achieve, and ranking by "risk of non-use" is worse than random — dormancy is not persuadability. Our first, untuned policy learners capture a substantial share but leave a large gap to the oracle; closing it is the subject of our automated improvement loop. These are simulator results that show the mechanism, not field impact.
+Interpretation: blanket, dormancy-first outreach captures little of what the budget could achieve, and ranking by "risk of non-use" is worse than random — dormancy is not persuadability. In this first version our learned allocation (0.34) does not yet beat the simple best-arm rule (0.38), which also spends only a third of the budget — which is why Sakriya deploys a learned allocation only where it beats simple rules on held-out pilot data. The large gap to the oracle (1.0) is the room our automated improvement loop works on. These are simulator results that show the mechanism, not field impact.
 
 ## 5. Feasibility and implementation roadmap
 

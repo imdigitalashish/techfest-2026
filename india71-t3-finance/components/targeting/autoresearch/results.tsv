@@ -1,0 +1,2 @@
+timestamp	commit	hypothesis	metric	delta	kept	notes
+2026-10-04T07:43+05:30	805f95e	baseline: T-learner (HistGradientBoosting) + Lagrangian budgeted allocation, women floor	0.3396	-	yes	seeds 0-2, n=20000, SYNTHETIC; best-arm rule 0.3835; oracle 1.0; sd 0.04
