@@ -1,1 +1,3 @@
 timestamp	commit	hypothesis	hit_at_m	delta	kept	notes
+2026-10-04 15:11 IST	(uncommitted eval_torch.py)	a-priori config: softmax_sum / all question tokens / 2-bit sketch / layer 8	0.2375	baseline	baseline	dev seeds 100-109, literal+paraphrase, 80 evicted-needle questions, keep 0.10 (m=3); same config hit@m at keep 0.25 = 0.6351
+2026-10-04 15:11 IST	-	sweep 322 variants: scorer {softmax_sum,max_logit,lift_mean,lift_max,softmax_lift} x q-tokens {all,content} x bits {2,4} x layer 0-15 (+ lexical)	0.9500	+0.7125	KEPT	winner softmax_lift/content/4-bit/layer 5 (0.973 at keep 0.25); lexical control 0.9125; best 2-bit 0.60; layer 5 dominates (next best layer 0.69); 322-way selection on 80 q is optimistic -> test seeds 0/1 give the unbiased number

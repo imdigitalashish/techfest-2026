@@ -13,7 +13,9 @@ per-channel keys) | streaming (4 sinks + recent) | random (sinks + recent 64 + r
 attention + recent half) | snapkv (last-64-token observation window, pool 5) | knorm (low key L2 norm) |
 snapkv_qa (ORACLE: selects with the question) | rod (spike: resident streaming KV + packed 2-bit single-layer key
 sketch + int32 ids; question queries pick 64-token blocks to re-prefill) | rodlex (control: same store, no sketch,
-IDF lexical block choice). rod/rodlex KV budgets shrink by their sketch + id bytes (answer-time bytes <= baselines').
+IDF lexical block choice) | kvp_* (NVIDIA kvpress reference presses: StreamingLLM, SnapKV, ObservedAttention ~ H2O,
+Knorm, ExpectedAttention, TOVA; run in a venv with kvpress 0.5.5 / transformers<5.3). rod/rodlex KV budgets shrink by
+every stored extra byte (sketch, window queries, ids), so their answer-time bytes never exceed the baselines'.
 
 Reproduce (on the VM): python eval/kvbench_torch.py --ctx 4096 --n 12 --seed 0 --style literal --name <name>
 """
@@ -158,6 +160,7 @@ def make_sample(tok, paras, ctx_tokens, n_needles, rng, style="literal"):
         out.append((tok.encode(post, add_special_tokens=False), nd))
     ctx_ids = tok.encode(pre, add_special_tokens=False)
     for _, nd in out:
+        nd["n_q_content"] = len(tok.encode(tq.format(k=nd["key"]), add_special_tokens=False))
         pat = tok.encode(nd["value"], add_special_tokens=False)
         nd["pos"] = next((p for p in range(len(ctx_ids) - len(pat) + 1) if ctx_ids[p:p + len(pat)] == pat), -1)
         nd["depth_tok"] = round(nd["pos"] / len(ctx_ids), 3)
@@ -269,44 +272,72 @@ def gather(X, idx):
 
 
 # ---------------- spike: Recall-on-Demand ----------------
-def rod_build(E, Kf, Vf, ctx_ids, B, layer_s, bits, lexical):
+SCORERS = ("softmax_sum", "max_logit", "lift_mean", "lift_max", "softmax_lift")
+
+
+def block_scores(qq, wq, sk, scale, scorer, nkv):
+    """Per-key relevance of evicted keys. qq [1,nh,Lq,hd] question queries; wq [1,nh,W,hd] context-window queries
+    (used by the contrastive lift* scorers to cancel keys that every query attends to); sk [1,nkv,E,hd] -> [E]."""
+    g = qq.shape[1] // nkv
+    lq = torch.matmul((qq * scale).reshape(1, nkv, g, qq.shape[2], -1), sk[:, :, None].transpose(-1, -2)).float()[0]
+    if scorer == "softmax_sum":
+        s = torch.softmax(lq, -1).sum((1, 2))
+    elif scorer == "max_logit":
+        s = lq.amax((1, 2))
+    else:
+        lw = torch.matmul((wq * scale).reshape(1, nkv, g, wq.shape[2], -1), sk[:, :, None].transpose(-1, -2)).float()[0]
+        if scorer == "lift_mean":
+            s = lq.mean((1, 2)) - lw.mean((1, 2))
+        elif scorer == "lift_max":
+            s = lq.amax((1, 2)) - lw.mean((1, 2))
+        else:
+            s = torch.softmax(lq, -1).mean((1, 2)) - torch.softmax(lw, -1).mean((1, 2))
+    return s.max(0).values
+
+
+def rod_build(E, Kf, Vf, ctx_ids, B, cfg, caps):
+    """cfg: dict(layer, bits, scorer, lexical). Store = resident streaming KV + packed sketch (+ window queries for
+    lift scorers) + int32 token ids. Every stored byte is deducted from the KV budget B (tokens x 32 KiB)."""
     T, per_tok = len(ctx_ids), 2 * E.nl * E.nkv * E.hd * 2
-    sk_per_tok = 0 if lexical else E.nkv * (E.hd * bits // 8 + 4)
-    B_kv = max(N_SINK + 2, B - math.ceil((sk_per_tok * T + 4 * T) / per_tok))
+    lexical, layer_s = cfg["lexical"], cfg["layer"]
+    wq = None if lexical or not cfg["scorer"].startswith(("lift", "softmax_lift")) else caps[layer_s].to(KV_DTYPE).contiguous()
+    sk_per_tok = 0 if lexical else E.nkv * (E.hd * cfg["bits"] // 8 + 4)
+    extra = sk_per_tok * T + 4 * T + (nb(wq) if wq is not None else 0)
+    B_kv = max(N_SINK + 2, B - math.ceil(extra / per_tok))
     B_res = max(N_SINK + 1, B_kv // 2)
     idx = stream_idx(T, B_res, E.nkv)
     Kr, Vr = [gather(k, idx) for k in Kf], [gather(v, idx) for v in Vf]
     ev0, ev1 = N_SINK, T - (B_res - N_SINK)
-    sketch = None if lexical else Packed(Kf[layer_s][:, :, ev0:ev1], bits)
+    sketch = None if lexical else Packed(Kf[layer_s][:, :, ev0:ev1], cfg["bits"])
     ids = torch.tensor(ctx_ids, dtype=torch.int32)
-    st = {"Kr": Kr, "Vr": Vr, "sketch": sketch, "ids": ids, "ev0": ev0, "ev1": ev1, "B_res": B_res,
-          "B_rec": B_kv - B_res, "T": T, "lexical": lexical, "layer": layer_s}
-    st["stored_bytes"] = sum(nb(x) for x in Kr + Vr) + (sketch.nbytes if sketch else 0) + nb(ids)
-    st["sketch_bytes"] = sketch.nbytes if sketch else 0
+    st = {"Kr": Kr, "Vr": Vr, "sketch": sketch, "wq": wq, "ids": ids, "ev0": ev0, "ev1": ev1, "B_res": B_res,
+          "B_rec": B_kv - B_res, "T": T, "cfg": cfg}
+    st["sketch_bytes"] = (sketch.nbytes if sketch else 0) + (nb(wq) if wq is not None else 0)
+    st["stored_bytes"] = sum(nb(x) for x in Kr + Vr) + st["sketch_bytes"] + nb(ids)
     return st
 
 
 @torch.inference_mode()
-def rod_answer(E, st, q_ids, halo=0):
-    T, ev0, ev1 = st["T"], st["ev0"], st["ev1"]
+def rod_answer(E, st, q_ids, n_content, halo=0):
+    T, ev0, ev1, cfg = st["T"], st["ev0"], st["ev1"], st["cfg"]
     En = ev1 - ev0
     nblk, m = -(-En // BLOCK), max(0, st["B_rec"] // BLOCK)
+    n_use = n_content if cfg["qsel"] == "content" else len(q_ids)
     if m == 0 or En <= 0:
         order = []
-    elif st["lexical"]:
+    elif cfg["lexical"]:
         ids = st["ids"][ev0:ev1].tolist()
         blocks = [set(ids[i * BLOCK:(i + 1) * BLOCK]) for i in range(nblk)]
         df = Counter(t for b in blocks for t in b)
-        qset = set(q_ids)
+        qset = set(q_ids[:n_use])
         sc = [sum(math.log((nblk + 1) / (df[t] + 1)) for t in qset if t in b) for b in blocks]
         order = sorted(range(nblk), key=lambda i: -sc[i])[:m]
     else:
         _, caps = E.forward(q_ids, T, Cache(st["Kr"], st["Vr"]), capture=len(q_ids))
-        qq, g = caps[st["layer"]], E.nh // E.nkv
-        sk = st["sketch"].dense().to(qq.dtype)
-        rel = torch.matmul((qq * E.scale).reshape(1, E.nkv, g, qq.shape[2], E.hd), sk[:, :, None].transpose(-1, -2)).float()
-        r = torch.softmax(rel, -1).sum((0, 2, 3)).max(0).values
-        rb = F.pad(r, (0, nblk * BLOCK - En)).view(nblk, BLOCK).max(1).values
+        qq = caps[cfg["layer"]][:, :, :n_use].float()
+        wq = st["wq"].float() if st["wq"] is not None else None
+        r = block_scores(qq, wq, st["sketch"].dense().float(), E.scale, cfg["scorer"], E.nkv)
+        rb = F.pad(r, (0, nblk * BLOCK - En), value=float("-inf")).view(nblk, BLOCK).max(1).values
         order = torch.topk(rb, min(m, nblk)).indices.tolist()
     chosen = sorted(order)
     addK, addV = [[] for _ in range(E.nl)], [[] for _ in range(E.nl)]
@@ -323,6 +354,28 @@ def rod_answer(E, st, q_ids, halo=0):
     text = E.answer(aug, T, q_ids)
     rec = sum(nb(x) for l in range(E.nl) for x in addK[l] + addV[l])
     return text, chosen, rec
+
+
+# ---------------- reference baselines: NVIDIA kvpress presses (optional; separate venv, transformers<5.3) ----------------
+KVP = {"kvp_streaming": "StreamingLLMPress", "kvp_snapkv": "SnapKVPress", "kvp_observed": "ObservedAttentionPress",
+       "kvp_knorm": "KnormPress", "kvp_expected": "ExpectedAttentionPress", "kvp_tova": "TOVAPress"}
+
+
+@torch.inference_mode()
+def kvp_store(E, ctx_ids, method, keep_frac):
+    import kvpress
+    press = getattr(kvpress, KVP[method])(compression_ratio=1 - keep_frac)
+    model = E.model
+    impl = "eager" if method == "kvp_observed" else "sdpa"  # ObservedAttentionPress needs attention weights
+    model.config._attn_implementation = impl
+    with press(model):
+        out = model(torch.tensor([ctx_ids]), use_cache=True, logits_to_keep=1)
+    model.config._attn_implementation = "sdpa"
+    pkv = out.past_key_values
+    layers = getattr(pkv, "layers", None)
+    K = [(layers[l].keys if layers is not None else pkv.key_cache[l]).to(KV_DTYPE).contiguous() for l in range(E.nl)]
+    V = [(layers[l].values if layers is not None else pkv.value_cache[l]).to(KV_DTYPE).contiguous() for l in range(E.nl)]
+    return Cache(K, V)
 
 
 # ---------------- statistics ----------------
@@ -369,6 +422,10 @@ def main():
     ap.add_argument("--rod_layer", type=int, default=8)
     ap.add_argument("--rod_bits", type=int, default=2)
     ap.add_argument("--halo", type=int, default=0)
+    ap.add_argument("--rod_scorer", default="softmax_sum", choices=SCORERS)
+    ap.add_argument("--rod_qsel", default="all", choices=["all", "content"])
+    ap.add_argument("--lex_qsel", default="content", choices=["all", "content"])
+    ap.add_argument("--kvp_fracs", default="0.1,0.25", help="keep fractions for kvpress methods")
     ap.add_argument("--threads", type=int, default=torch.get_num_threads())
     ap.add_argument("--name", default=None)
     a = ap.parse_args()
@@ -389,6 +446,7 @@ def main():
     configs = [(m, 1.0) for m in ("full", "int8", "int4", "int2") if m in methods]
     configs += [(m, f) for m in ("streaming", "random", "h2o", "snapkv", "knorm", "snapkv_qa", "rod", "rodlex")
                 if m in methods for f in fracs]
+    configs += [(m, float(f)) for m in KVP if m in methods for f in a.kvp_fracs.split(",")]
     rows, t0 = [], time.time()
     for si in range(a.n):
         ctx_ids, qs = make_sample(tok, paras, a.ctx, a.needles, rng, a.style)
@@ -421,7 +479,11 @@ def main():
                     idxs = [topk_idx(-Kf[l][0].float().norm(dim=-1), B, T) for l in range(E.nl)]
                 store = Cache([gather(Kf[l], idxs[l]) for l in range(E.nl)], [gather(Vf[l], idxs[l]) for l in range(E.nl)])
             elif m in ("rod", "rodlex"):
-                st = rod_build(E, Kf, Vf, ctx_ids, B, a.rod_layer, a.rod_bits, lexical=(m == "rodlex"))
+                cfg = {"layer": a.rod_layer, "bits": a.rod_bits, "scorer": a.rod_scorer, "lexical": m == "rodlex",
+                       "qsel": a.lex_qsel if m == "rodlex" else a.rod_qsel}
+                st = rod_build(E, Kf, Vf, ctx_ids, B, cfg, caps)
+            elif m in KVP:
+                store = kvp_store(E, ctx_ids, m, f)
             build_s = time.time() - tb
             for qi, (q_ids, nd) in enumerate(qs):
                 ta, extra = time.time(), {}
@@ -432,7 +494,7 @@ def main():
                     text, kb = E.answer(sq, T, q_ids), sq.stored_bytes()
                     ab = kb
                 elif st is not None:
-                    text, chosen, rec = rod_answer(E, st, q_ids, halo=a.halo)
+                    text, chosen, rec = rod_answer(E, st, q_ids, nd["n_q_content"], halo=a.halo)
                     kb, ab = st["stored_bytes"], st["stored_bytes"] + rec
                     in_ev = st["ev0"] <= nd["pos"] < st["ev1"]
                     extra = {"recalled_blocks": chosen, "needle_evicted": in_ev, "sketch_bytes": st["sketch_bytes"],
@@ -468,8 +530,9 @@ def main():
                       "n_needle_evicted": ev if m in ("rod", "rodlex") else None})
     deltas = []
     for f in fracs:
-        for A, Bm in (("rod", "streaming"), ("rod", "snapkv"), ("rod", "h2o"), ("rod", "rodlex"),
-                      ("snapkv", "streaming"), ("h2o", "streaming")):
+        for A, Bm in (("rod", "streaming"), ("rod", "snapkv"), ("rod", "h2o"), ("rod", "knorm"), ("rod", "rodlex"),
+                      ("rod", "kvp_streaming"), ("rod", "kvp_snapkv"), ("rod", "kvp_observed"), ("rod", "kvp_knorm"),
+                      ("rod", "kvp_expected"), ("rodlex", "streaming"), ("snapkv", "streaming"), ("h2o", "streaming")):
             if (A, f) in by and (Bm, f) in by:
                 d = [sum(r["correct"] for r in by[(A, f)][s]) / len(by[(A, f)][s]) -
                      sum(r["correct"] for r in by[(Bm, f)][s]) / len(by[(Bm, f)][s]) for s in by[(A, f)] if s in by[(Bm, f)]]
@@ -480,13 +543,15 @@ def main():
     meta = {"name": name, "backend": "torch-cpu", "model": f"{MODEL_ID} (dequantised, fp32 compute)", "model_snapshot": snap,
             "kv_dtype": str(KV_DTYPE), "kv_bytes_per_token": per_tok, "ctx_target": a.ctx, "n_contexts": a.n,
             "needles": a.needles, "seed": a.seed, "style": a.style, "fracs": fracs, "methods": methods,
-            "rod_layer": a.rod_layer, "rod_bits": a.rod_bits, "halo": a.halo, "block": BLOCK, "chat_date": DATE,
+            "rod_layer": a.rod_layer, "rod_bits": a.rod_bits, "rod_scorer": a.rod_scorer, "rod_qsel": a.rod_qsel,
+            "lex_qsel": a.lex_qsel, "kvp_fracs": a.kvp_fracs, "halo": a.halo, "block": BLOCK, "chat_date": DATE,
             "torch": torch.__version__, "threads": a.threads, "cpu": cpu, "machine": platform.platform(),
             "peak_rss_GiB": round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 2**20, 2),
             "wall_s": round(time.time() - t0, 1),
             "command": f"python eval/kvbench_torch.py --ctx {a.ctx} --n {a.n} --needles {a.needles} --seed {a.seed} "
                        f"--fracs {a.fracs} --methods {a.methods} --style {a.style} --rod_layer {a.rod_layer} "
-                       f"--rod_bits {a.rod_bits} --halo {a.halo} --threads {a.threads} --name {name}"}
+                       f"--rod_bits {a.rod_bits} --rod_scorer {a.rod_scorer} --rod_qsel {a.rod_qsel} --lex_qsel {a.lex_qsel} "
+                       f"--kvp_fracs {a.kvp_fracs} --halo {a.halo} --threads {a.threads} --name {name}"}
     (outdir / f"{name}.json").write_text(json.dumps({"meta": meta, "table": table, "paired_deltas": deltas}, indent=1))
     with open(outdir / f"{name}.rows.jsonl", "w") as fh:
         for r in rows:

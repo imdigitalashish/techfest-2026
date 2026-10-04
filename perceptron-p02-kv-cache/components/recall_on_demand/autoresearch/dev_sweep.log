@@ -1,0 +1,49 @@
+literal seed 100 T=4149 elapsed 42s
+literal seed 101 T=4209 elapsed 77s
+literal seed 102 T=4055 elapsed 106s
+literal seed 103 T=4198 elapsed 140s
+literal seed 104 T=4054 elapsed 170s
+literal seed 105 T=4151 elapsed 207s
+literal seed 106 T=4050 elapsed 238s
+literal seed 107 T=4070 elapsed 271s
+literal seed 108 T=4076 elapsed 305s
+literal seed 109 T=4065 elapsed 336s
+paraphrase seed 100 T=4165 elapsed 370s
+paraphrase seed 101 T=4225 elapsed 405s
+paraphrase seed 102 T=4071 elapsed 437s
+paraphrase seed 103 T=4214 elapsed 471s
+paraphrase seed 104 T=4070 elapsed 503s
+paraphrase seed 105 T=4167 elapsed 536s
+paraphrase seed 106 T=4066 elapsed 570s
+paraphrase seed 107 T=4086 elapsed 603s
+paraphrase seed 108 T=4092 elapsed 635s
+paraphrase seed 109 T=4081 elapsed 666s
+--- frac 0.1: top 12
+softmax_lift/content/4/5     hit=0.950 n=80
+softmax_lift/all/4/5         hit=0.938 n=80
+lexical/all                  hit=0.912 n=80
+lexical/content              hit=0.912 n=80
+softmax_sum/content/4/5      hit=0.887 n=80
+softmax_sum/all/4/5          hit=0.850 n=80
+max_logit/content/4/5        hit=0.738 n=80
+lift_max/all/4/5             hit=0.725 n=80
+lift_max/content/4/5         hit=0.725 n=80
+max_logit/all/4/1            hit=0.700 n=80
+max_logit/content/4/1        hit=0.700 n=80
+lift_max/content/4/1         hit=0.700 n=80
+lexical: [('lexical/all', 0.9125), ('lexical/content', 0.9125)]
+--- frac 0.25: top 12
+softmax_sum/all/4/5          hit=0.987 n=74
+softmax_lift/all/4/5         hit=0.987 n=74
+lexical/all                  hit=0.973 n=74
+lexical/content              hit=0.973 n=74
+softmax_sum/content/4/5      hit=0.973 n=74
+softmax_lift/content/4/5     hit=0.973 n=74
+max_logit/content/4/5        hit=0.960 n=74
+max_logit/all/4/1            hit=0.946 n=74
+softmax_lift/all/4/6         hit=0.946 n=74
+max_logit/content/4/1        hit=0.946 n=74
+lift_max/content/4/1         hit=0.946 n=74
+softmax_sum/content/4/6      hit=0.946 n=74
+lexical: [('lexical/all', 0.973), ('lexical/content', 0.973)]
+hit_at_m=0.1500
