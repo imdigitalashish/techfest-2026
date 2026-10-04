@@ -50,7 +50,7 @@
 |---|---|---|---|---|---|---|
 | C1 | Source registry + fetchers | SourceSpec → Source + raw file | sources.yaml + fetch_sources.sh | | built | % re-fetchable |
 | C2 | Factor store + validator | YAML → Record | pydantic schema | | built (23 records, 8 sources) | quote-verification rate |
-| C3 | Ingestion / extraction | Document → CandidateRecord | manual transcription | ★A | planned | field F1 vs gold set |
+| C3 | Ingestion / extraction | Document → CandidateRecord | manual transcription | ★A | verifier built + ratchet 1 (0.6875→1.0, FA 0); extractor planned | field F1 vs gold set |
 | C4 | Grid-factor service | GridFactorQuery → GridFactor | CEA v22 national records | ★B | national built | reconstruction / back-test error |
 | C5 | Product-system builder | VehicleSpec → ProductSystem | case1 YAML (5 scenarios) | | built | % params resolved |
 | C6 | Calculation engine | ProductSystem → StageResult | engine.py | | built | replication MAPE (0.06 %) |
@@ -84,3 +84,8 @@ Supervisor directive: no sub-agents, small requests, push every 30 min. Committi
 - **Learned:** ICCT footnote inputs don't reproduce its Table 1 (scooter 2.0 vs 2.2 L/100 km; e-scooter 4.13 vs 3.7 kWh/100 km, values look swapped) — saving 48.5 % vs published 38.4 %. Grid method dominates EV results; consumption data dominates parameter variance (65 %). Web-search summaries hallucinated ICCT values (claimed 90–100 g/km for petrol scooters; the source's axis tops at 80) — only opened PDFs used.
 - **Built:** `components/lca_engine` (pydantic record store, pedigree→lognormal, paired MC, elasticity-weighted DQI, variance-share data-gap ranking; 6 contract tests pass), `data/vehicles/case1_2w_scooters.yaml` (5 scenarios), frozen `eval/eval.py` (results in `eval/results/`), static dashboard `deliverables/dashboard/index.html` (verified in browser: values match engine; what-if break-even 1.138 kg CO2/kWh at generation).
 - **Docs:** `research/landscape.md`, `architecture/components.md` + `contracts/contracts.py`, ADR 001, selection memo. Supervisor 07:22 alignment check: agreed with its order; no reply needed.
+
+### 2026-10-04 07:50 IST — First autoresearch loop (spike A gate: quote verifier)
+- Frozen `components/ingestion/autoresearch/eval.py`: gold = 16 `verified` records with local PDFs; negatives = the same quotes with one digit changed (32); scalar = found-rate, forced to 0 on any false accept.
+- Ledger (`results.tsv`): baseline v0 0.8125 → re-baseline 0.6875 after a **data fix** (OM/BM quotes did not contain their numbers — the eval caught my own transcription weakness) → v1 fragments-in-order **0.9375** (kept) → v2 600-char window: found 16/16 but **accepted a perturbed number** → scalar 0, reverted → v3 3-line table window **1.0**, FA 0/32 (kept). Overfit risk: only one quote uses the fallback; re-check on held-out records as sources grow.
+- Dashboard rebuilt with updated provenance; tests 6/6; eval unchanged (replication MAPE 0.06 %).
