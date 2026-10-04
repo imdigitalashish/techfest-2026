@@ -18,6 +18,11 @@ resolve_python() {
   uv pip install -q --compile-bytecode --python "$DEMO/.venv/bin/python" --offline -r "$DEMO/requirements.txt" 2>/dev/null \
     || uv pip install -q --compile-bytecode --python "$DEMO/.venv/bin/python" -r "$DEMO/requirements.txt"
   PY="$DEMO/.venv/bin/python"
+  # first load of freshly installed native libraries is slow on macOS (one-time scan); pay it here, once
+  echo "[demo] first load of the new libraries (one-time)…"
+  "$PY" -c "import numpy, pandas, pyarrow, scipy, sklearn, lightgbm, mapie" \
+    && ("$PY" -c "import torch, transformers" >/dev/null 2>&1 || echo "[demo] torch/transformers unavailable: VADER fallback")
+  CREATED=1
 }
 
 # Shared Mac: start heavy steps only when kern.memorystatus_level >= 30 (no-op where sysctl lacks the key).

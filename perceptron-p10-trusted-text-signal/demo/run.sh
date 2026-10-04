@@ -4,9 +4,11 @@
 # Env: P10_PYTHON (interpreter), P10_PORT (default 8710), P10_NO_OPEN=1 (do not open a browser).
 set -euo pipefail
 source "$(dirname "$0")/_env.sh"
-T0=$(now); export P10_T0="$T0"
+TS=$(now); CREATED=0
 resolve_python
+[ "$CREATED" = 1 ] && echo "[demo] one-time setup (venv + first library load) took $(perl -e "printf '%.0f', $(now) - $TS") s"
 wait_for_memory
+T0=$(now); export P10_T0="$T0"
 PORT=$(free_port "${P10_PORT:-8710}")
 URL="http://127.0.0.1:$PORT/"
 cd "$PROJ"
