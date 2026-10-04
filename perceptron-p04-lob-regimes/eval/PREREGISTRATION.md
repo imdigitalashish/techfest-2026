@@ -137,3 +137,8 @@ The holdout run finished at 12:02:51 IST (commit `a9b310b`, clean tree). The cro
    - KS thresholds are empirical marginal quantiles, not daily false-alarm control.
    - The forecast target is P(up | non-zero 10-s move).
 
+### Amendment 3 — 2026-10-04 22:23 IST (disclosure only; no analysis changed)
+**Labeler tie handling.** `components/labeler` marks a tie only when `mid[t+h] == mid[t]` exactly, with mid = 0.5·(bid+ask) in float64. When the same mid comes from a different bid/ask pair (e.g. a symmetric spread change), the two floats can differ by about one ulp. That "move" (|move| < 1e-6 bps) then gets labelled up or down by rounding noise instead of being dropped as a tie.
+
+The demo builder found this while testing the semi-synthetic splice. Measured on all 46 days with the committed code: **4** such labels out of 3,012,921 scored labels (1.3×10⁻⁶), at most 1 per day. They are identical across policies, so paired comparisons are unaffected beyond negligible noise. The committed labeler stays frozen for reproducibility. A future version would compare integer tick prices.
+

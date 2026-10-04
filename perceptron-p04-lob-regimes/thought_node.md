@@ -234,4 +234,7 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Lead viewed the fallback screens: replay with ✓ live=committed; dial at 1e-30; fee knob ending on "not tradable as a taker after fees". All labelled.
   - Spawned the **gpt-6-astra demo review** on `dbc0c68`.
   - Approved builder Act 2 (SEMI-SYNTHETIC splice), time-boxed to ~45 min, as a separate section 5 with sections 1–4 untouched and smoke still passing.
+- 22:23 **Act 2 done** (builder, `e3bd77ee`): section 5, a SEMI-SYNTHETIC splice. The calmest held-out book runs until τ, then the most volatile one takes over with an additive tick shift (2 directions × 5 τ). Smoke asserts causality before τ and label invariance after τ.
+  - Illustrative result: the regime gate (± shrinkage) has the lowest 2-hour post-splice loss in 10/10 splices. Textbook KS fires 12–36 times *before* anything changes. The gate's high-vol share goes from 0% to 66–99% within an hour with no alarm.
+  - The builder's labeler caveat was quantified: 4 of 3.0M scored labels are float-noise pseudo-moves → disclosed as PREREGISTRATION Amendment 3.
 
