@@ -75,18 +75,37 @@ CHROME=""
 for c in "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" "$(command -v google-chrome || true)" "$(command -v chromium || true)"; do
   [ -n "$c" ] && [ -x "$c" ] && CHROME="$c" && break
 done
+chrome_dom() {  # url timeout_ms -> prints the DOM; headless Chrome may not exit by itself, so poll and kill its PID
+  local prof domf cpid
+  prof=$(mktemp -d); domf="$prof/dom.html"
+  "$CHROME" --headless=new --disable-gpu --no-first-run --no-default-browser-check --user-data-dir="$prof" \
+    --timeout="$2" --dump-dom "$1" > "$domf" 2>/dev/null &
+  cpid=$!
+  for _ in $(seq 1 $(( $2 / 500 + 40 ))); do grep -q '</html>' "$domf" 2>/dev/null && break; sleep 0.5; done
+  kill $cpid 2>/dev/null || true
+  cat "$domf"; rm -rf "$prof"
+}
 if [ -n "$CHROME" ]; then
-  # headless Chrome writes the DOM after --timeout but may not exit by itself: poll the dump, then kill that PID
-  PROF=$(mktemp -d); DOMF="$PROF/dom.html"
-  "$CHROME" --headless=new --disable-gpu --no-first-run --no-default-browser-check --user-data-dir="$PROF" \
-    --timeout=12000 --dump-dom "$URL/" > "$DOMF" 2>/dev/null &
-  CPID=$!
-  for _ in $(seq 1 60); do grep -q '</html>' "$DOMF" 2>/dev/null && break; sleep 0.5; done
-  kill $CPID 2>/dev/null || true
-  if grep -q 'GUARANTEED' "$DOMF" && grep -q 'Matches the committed' "$DOMF"; then
-    echo "PASS  page renders in headless Chrome (day loaded, certified badge, ACI meter = committed)"
+  # the page's own #selftest drives the real UI (inject a typed post, grey badge past k, red-team, stale-result
+  # regression) and sets data-status via setAttribute, so the predicate cannot match the page source
+  DOM=$(chrome_dom "$URL/#selftest" 25000)
+  echo "$DOM" | sed -n '/<pre id="selftest"/,/<\/pre>/p' | sed -e 's/<[^>]*>//g' -e 's/^/    /'
+  if echo "$DOM" | grep -q 'id="selftest" data-status="pass"'; then
+    echo "PASS  page self-test in headless Chrome"
   else
-    echo "FAIL  page did not render the expected state"; FAIL=1
+    echo "FAIL  page self-test in headless Chrome"; FAIL=1
+  fi
+  # negative control: the same page served without the backend must NOT pass
+  NPORT=$(free_port 8890)
+  "$PY" -m http.server "$NPORT" --bind 127.0.0.1 --directory "$DEMO/static" > /dev/null 2>&1 &
+  NSRV=$!
+  sleep 1
+  NDOM=$(chrome_dom "http://127.0.0.1:$NPORT/index.html#selftest" 8000)
+  kill $NSRV 2>/dev/null || true
+  if echo "$NDOM" | grep -q 'data-status="pass"'; then
+    echo "FAIL  negative control: page self-test passed with the API unreachable"; FAIL=1
+  else
+    echo "PASS  negative control: with the API unreachable the self-test does not pass"
   fi
 else
   echo "WARN  no Chrome found; page render not checked"

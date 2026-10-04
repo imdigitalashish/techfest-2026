@@ -109,7 +109,16 @@ footer.honest{position:fixed;left:0;right:0;bottom:0;background:#0c0d0f;border-t
 footer.honest .in{max-width:1680px;margin:0 auto;display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr;gap:18px;font-size:13px;color:var(--muted);align-items:start}
 footer.honest b{color:var(--text);font-weight:650}
 footer.honest .lead{font-weight:750;color:var(--text);font-size:14px;max-width:190px}
-@media (max-width:1100px){footer.honest{position:static}footer.honest .in{grid-template-columns:1fr}main{padding-bottom:20px}}
+footer.honest .short, footer.honest .tog{display:none}
+@media (max-width:1100px){
+  footer.honest .in{grid-template-columns:1fr auto;gap:8px}
+  footer.honest .lead{max-width:none}
+  footer.honest .short{display:block;grid-column:1}
+  footer.honest .tog{display:inline-block;grid-column:2;grid-row:1 / span 2;align-self:center}
+  footer.honest:not(.open) .full{display:none}
+  footer.honest .full{grid-column:1 / -1}
+  main{padding-bottom:110px}
+}
 details summary{cursor:pointer;color:var(--muted);font-size:13.5px}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:4px}
 .legend i{display:inline-block;width:16px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
@@ -243,7 +252,9 @@ details summary{cursor:pointer;color:var(--muted);font-size:13.5px}
 <footer class="honest" aria-label="what this demo does and does not claim">
   <div class="in">
     <div class="lead">The product is the guarantee under attack, not alpha.</div>
-    <div id="hon1"></div><div id="hon2"></div><div id="hon3"></div><div id="hon4"></div>
+    <div class="short" id="honShort"></div>
+    <button class="btn tog small" id="honTog" aria-expanded="false">Details</button>
+    <div class="full" id="hon1"></div><div class="full" id="hon2"></div><div class="full" id="hon3"></div><div class="full" id="hon4"></div>
   </div>
 </footer>
 
@@ -305,17 +316,23 @@ function renderMeta(){
   const wc = c.width_cost;
   $("kCost").textContent = `Committed price of robustness (clean data): certified width +${pct(wc["1"])} / +${pct(wc["2"])} / +${pct(wc["3"])} / +${pct(wc["5"])} at k = 1 / 2 / 3 / 5.`;
   const dj = m.djia;
-  $("hon1").innerHTML = `<b>Text adds no measurable forecast value.</b> Pre-registered, unseen DJIA test: Winkler ${dj.winkler_price_only.toFixed(3)} → ${dj.winkler_fusion.toFixed(3)}, p = ${dj.p.toFixed(2)}. A positive control detects +${pct(dj.control_detects,0)}.`;
+  $("hon1").innerHTML = `<b>Text adds no measurable forecast value.</b> Pre-registered, unseen DJIA test: Winkler ${dj.winkler_price_only.toFixed(3)} → ${dj.winkler_fusion.toFixed(3)}, p = ${dj.p.toFixed(2)}. The test's power check (a SYNTHETIC, target-derived exploratory control) detects +${pct(dj.control_detects,0)}. Zero-text alternative, price-only (committed): CQR ${pct(c.price_only_cqr_cov)}, ACI ${pct(c.price_only_aci_cov)} at width ${c.price_only_aci_width.toFixed(2)} pp, versus fusion ACI ${pct(c.aci_cov)} at ${c.aci_width.toFixed(2)} pp.`;
   $("hon2").innerHTML = `<b>Typical attacks barely move the forecast.</b> A 3-post pump shifts the median by ${fmt(c.pump_shift_mean,3)} pp on average (p95 ${c.pump_shift_p95.toFixed(3)} pp), against a ${c.sym_cqr_width.toFixed(2)} pp interval.`;
-  $("hon3").innerHTML = `<b>Selected days are the vulnerable ${pct(sc.frac_flippable)}.</b> The worst of ${c.grid_size} tested attacks takes plain CQR from ${pct(c.clean_sym_cqr_cov)} to ${pct(c.oracle_plain_cov)}. Certified cannot fall below ${pct(c.clean_sym_cqr_cov)} within k = 3.`;
+  $("hon3").innerHTML = `<b>Selected days are the vulnerable ${pct(sc.frac_flippable)}.</b> Plain CQR: ${pct(c.clean_sym_cqr_cov)} clean → ${pct(c.worst_fixed.plain)} under the worst single fixed attack, and ${pct(c.oracle_plain_cov)} for a hindsight oracle that knows the return and picks the worst of ${c.grid_size} attacks per row. Certified, within k = 3: never below this test set's clean ${pct(c.clean_sym_cqr_cov)} (a retrospective floor).`;
   $("hon4").innerHTML = `<b>Scope.</b> Fixed-offset guarantee for injected posts only (not edits, prices, or poisoned calibration). CR-ACI promises long-run mean daily coverage only, not per-row containment. Source: <code>${c.file}</code>.`;
+  $("honShort").textContent = `Selected days = the vulnerable ${pct(sc.frac_flippable)} · text adds no forecast value (p = ${dj.p.toFixed(2)}) · guarantee: ≤ k injected posts, fixed offset · CR-ACI: long-run coverage only`;
   renderMeter(null);
 }
 
 /* ---------- day ---------- */
+let daySeq = 0;
 async function loadDay(sel){
+  const seq = ++daySeq;
+  let d;
   try{
-    S.day = await api("/api/day", sel);
+    d = await api("/api/day", sel);
+    if(seq!==daySeq) return;
+    S.day = d;
   }catch(e){ $("dayMeta").innerHTML = `<span class="err">${esc(e.message)}</span>`; return; }
   document.querySelectorAll("#dayList button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.t===S.day.ticker && b.dataset.d===S.day.date)));
   const d = S.day, sc = S.meta.showcase;
@@ -325,7 +342,8 @@ async function loadDay(sel){
     ? `SELECTED (${d.showcase.kind}) · 1 of ${fmtInt(sc.n_flippable)} flippable stock-days (${pct(sc.frac_flippable)} of ${fmtInt(sc.n_test)})`
     : `RANDOM stock-day · ${pct(sc.frac_flippable)} of stock-days are flippable by a ≤ 3-post tested attack`;
   renderReal();
-  S.shown = null; $("red").innerHTML = "";
+  S.shown = null;
+  invalidate();
   await refresh(true);
 }
 function renderReal(){
@@ -344,7 +362,14 @@ function renderReal(){
 const postsPayload = () => S.posts.map(p => ({sentiment:p.sentiment, trust:p.trust, copies:p.copies}));
 const nInjected = () => S.posts.reduce((a,p)=>a+p.copies,0);
 let refreshSeq = 0, refreshTimer = null;
-function scheduleRefresh(withFlips){ clearTimeout(refreshTimer); refreshTimer = setTimeout(()=>refresh(withFlips), 90); }
+const redKey = () => S.day ? JSON.stringify([S.day.row, S.k]) : "";
+const popKey = () => JSON.stringify([postsPayload().filter(p=>p.copies>0), S.k]);
+// results shown in the red-team / replay panels must belong to the current inputs; otherwise they are cleared
+function invalidate(){
+  if(S.redKey && S.redKey!==redKey()){ S.redKey = null; $("red").innerHTML = `<p class="small faint">Day or k changed since the last red-team. Run it again for this scenario.</p>`; $("redBtn").textContent = "Run red-team"; }
+  if(S.popKey && S.popKey!==popKey()){ S.popKey = null; $("pop").innerHTML = `<p class="small faint">Your posts or k changed since the last replay. Replay again to see this attack's population numbers.</p>`; renderMeter(null); }
+}
+function scheduleRefresh(withFlips){ invalidate(); clearTimeout(refreshTimer); refreshTimer = setTimeout(()=>refresh(withFlips), 90); }
 async function refresh(withFlips){
   if(!S.day) return;
   const seq = ++refreshSeq, body = {row:S.day.row, posts:postsPayload(), k:S.k};
@@ -353,7 +378,11 @@ async function refresh(withFlips){
     const a = await api("/api/attack", body);
     if(seq!==refreshSeq) return;
     S.attack = a; renderVerdicts(); animateTo(a); renderBox();
-    if(withFlips){ S.flips = await api("/api/flips", {row:S.day.row, k:S.k}); renderFlips(); }
+    if(withFlips){
+      const f = await api("/api/flips", {row:body.row, k:body.k});
+      if(seq!==refreshSeq || !S.day || f.row!==S.day.row || f.k!==S.k) return;
+      S.flips = f; renderFlips();
+    }
   }catch(e){ $("vPlainT").innerHTML = `<span class="err">${esc(e.message)}</span>`; }
   $("popBtn").disabled = nInjected()===0;
 }
@@ -558,7 +587,9 @@ $("redBtn").onclick = async () => {
   const btn = $("redBtn"); btn.disabled = true; btn.textContent = "attacking…";
   $("red").innerHTML = `<div class="counter"><div class="c skel">.</div><div class="c skel">.</div></div>`;
   try{
-    const r = await api("/api/redteam", {row:S.day.row, k:S.k, n:2000, seed:S.seed++});
+    const key = redKey(), row = S.day.row, k = S.k;
+    const r = await api("/api/redteam", {row, k, n:2000, seed:S.seed++});
+    if(key!==redKey() || r.row!==row || r.k!==k){ if($("red").querySelector(".skel")) $("red").innerHTML = ""; btn.disabled = false; btn.textContent = "Run red-team"; return; }
     const blk = (x, title, within) => !x ? `<div class="c"><div class="muted small">${title}</div><p class="small">k = 0: no within-budget attacks.</p></div>` :
       `<div class="c"><div class="muted small">${title} · ${x.posts_range[0]}–${x.posts_range[1]} posts · seed ${r.seed}</div>
        <div class="row" style="gap:24px;margin-top:6px">
@@ -566,9 +597,10 @@ $("redBtn").onclick = async () => {
          <div><div class="v num ${x.cert_containment_violations===0?"ok":within?"bad":"warn"}">${fmtInt(x.cert_containment_violations)}</div><div class="small muted">certified ⊉ clean interval<br>${within?"(guarantee says 0)":"(no guarantee here)"}</div></div>
        </div>
        <p class="small faint">largest median shift seen: ${x.median_shift_max_abs.toFixed(3)} pp${S.day.y!==undefined && x.cert_missed_y_when_clean_covered ? ` · certified missed y on ${x.cert_missed_y_when_clean_covered}` : ""}</p></div>`;
-    $("red").innerHTML = `<div class="counter">${blk(r.within, "Within budget", true)}${blk(r.beyond, "Beyond budget", false)}</div>`;
+    $("red").innerHTML = `<p class="small muted">Result for <b>${esc(S.day.ticker)} · ${S.day.date}</b>, k = ${k}.</p><div class="counter">${blk(r.within, "Within budget", true)}${blk(r.beyond, "Beyond budget", false)}</div>`;
+    S.redKey = key;
   }catch(e){ $("red").innerHTML = `<p class="err">${esc(e.message)}</p>`; }
-  btn.disabled = false; btn.textContent = "Run red-team again";
+  btn.disabled = false; btn.textContent = S.redKey ? "Run red-team again" : "Run red-team";
 };
 
 /* ---------- population replay + ACI meter ---------- */
@@ -576,25 +608,28 @@ $("popBtn").onclick = async () => {
   const btn = $("popBtn"); btn.disabled = true; const old = btn.innerHTML; btn.textContent = "replaying on every stock-day…";
   $("pop").innerHTML = `<p class="skel">computing</p>`;
   try{
-    const P = await api("/api/population", {posts:postsPayload(), k:S.k});
-    renderPop(P); renderMeter(P);
+    const sub = {posts:postsPayload().filter(p=>p.copies>0), k:S.k}, key = popKey();
+    const P = await api("/api/population", sub);
+    if(key!==popKey()){ $("pop").innerHTML = ""; btn.innerHTML = old; btn.disabled = nInjected()===0; return; }
+    renderPop(P, sub); renderMeter(P); S.popKey = key;
   }catch(e){ $("pop").innerHTML = `<p class="err">${esc(e.message)}</p>`; }
   btn.innerHTML = old; btn.disabled = nInjected()===0;
 };
-function isPump(P){
-  const c = S.meta.committed;
-  return S.k===3 && S.posts.length && nInjected()===3 && S.posts.every(p => p.copies===0 || (Math.abs(p.sentiment-c.pump_sentiment)<1e-9 && Math.abs(p.trust-c.pump_trust)<1e-9));
+// is the SUBMITTED scenario the committed pump (3 posts, template sentiment, fresh-account trust, k = 3)?
+function isPump(sub){
+  const c = S.meta.committed, n = sub.posts.reduce((a,p)=>a+p.copies,0);
+  return sub.k===3 && n===3 && sub.posts.every(p => Math.abs(p.sentiment-c.pump_sentiment)<1e-9 && Math.abs(p.trust-c.pump_trust)<1e-9);
 }
-function renderPop(P){
-  const c = S.meta.committed, pump = isPump(P);
+function renderPop(P, sub){
+  const c = S.meta.committed, pump = isPump(sub);
   const cm = (live, ref) => pump ? ` <span class="chip ${Math.abs(live-ref)<1e-9?"ok":""}">committed ${pct(ref)}${Math.abs(live-ref)<1e-9?" ✓":""}</span>` : "";
   $("pop").innerHTML = `<table><thead><tr><th>${fmtInt(P.n_rows)} stock-days · ${P.n_injected} injected post${P.n_injected===1?"":"s"} each · k = ${P.k}</th><th class="r">value</th></tr></thead><tbody>
     <tr><td>Plain CQR coverage: clean → under your attack</td><td class="r num">${pct(P.clean_plain_coverage)} → <b>${pct(P.plain_coverage)}</b>${cm(P.plain_coverage, c.pump_plain_cov)}</td></tr>
-    <tr><td>Stock-days your attack flipped from hit to miss (plain)</td><td class="r num bad">${fmtInt(P.flipped_by_attack)} <span class="faint">(${pct(P.flipped_by_attack/P.n_rows,2)})</span></td></tr>
+    <tr><td>Plain: hits lost · misses rescued · net extra misses</td><td class="r num"><span class="bad">${fmtInt(P.flipped_by_attack)}</span> · ${fmtInt(P.rescued_by_attack)} · <b>${fmtInt(P.flipped_by_attack-P.rescued_by_attack)}</b> <span class="faint">(${pct((P.flipped_by_attack-P.rescued_by_attack)/P.n_rows,2)})</span></td></tr>
     <tr><td>Certified CQR coverage under your attack</td><td class="r num"><b class="${P.within_budget?"ok":""}">${pct(P.certified_coverage)}</b>${cm(P.certified_coverage, c.pump_cert_cov)}</td></tr>
     <tr><td>Certified ⊇ clean interval on every stock-day</td><td class="r">${P.certified_contains_clean_all_rows ? `<b class="ok">yes</b>` : `<b class="warn">no (${pct(P.certified_contains_clean_frac,2)})</b>`} ${P.within_budget ? `<span class="faint small">guaranteed</span>` : `<span class="faint small">beyond k: not guaranteed</span>`}</td></tr>
     <tr><td>Median forecast shift: mean · p95 |shift|</td><td class="r num">${fmt(P.median_shift_mean,3)} · ${P.median_shift_p95_abs.toFixed(3)} pp</td></tr>
-    <tr><td>Mean width: plain → certified</td><td class="r num">${P.plain_width.toFixed(3)} → ${P.certified_width.toFixed(3)} pp</td></tr>
+    <tr><td>Mean width under attack: plain → certified (the actual price here)</td><td class="r num">${P.plain_width.toFixed(3)} → ${P.certified_width.toFixed(3)} pp <span class="faint">(+${pct(P.certified_width/P.plain_width-1)})</span></td></tr>
     <tr><td>ACI (our loop) under attack · CR-ACI under attack</td><td class="r num">${pct(P.aci_plain.coverage)} · <b>${pct(P.cr_aci.coverage)}</b>${pump ? ` <span class="chip ${Math.abs(P.cr_aci.coverage-c.cr_aci_pump_cov)<1e-9 && Math.abs(P.aci_plain.coverage-c.aci_pump_cov)<1e-9 ? "ok" : ""}">committed ${pct(c.aci_pump_cov)} · ${pct(c.cr_aci_pump_cov)}${Math.abs(P.cr_aci.coverage-c.cr_aci_pump_cov)<1e-9?" ✓":""}</span>` : ""}</td></tr>
   </tbody></table>
   <p class="small faint">CR-ACI's promise is long-run mean daily coverage. Its clean and attacked runs adapt separately, so no per-row containment is claimed for it.${pump ? " This attack is the committed pump (template sentiment, fresh-account trust, 3 copies), so the committed numbers apply." : ""}</p>`;
@@ -621,7 +656,45 @@ function renderMeter(P){
 
 function sizeChrome(){ const r = document.documentElement.style; r.setProperty('--hdr', document.querySelector('header.top').offsetHeight + 'px'); r.setProperty('--ftr', (getComputedStyle(document.querySelector('footer.honest')).position==='fixed' ? document.querySelector('footer.honest').offsetHeight : 0) + 'px'); }
 addEventListener('resize', sizeChrome); sizeChrome();
-boot();
+$("honTog").onclick = () => { const f = document.querySelector("footer.honest"), o = f.classList.toggle("open"); $("honTog").setAttribute("aria-expanded", String(o)); $("honTog").textContent = o ? "Hide" : "Details"; };
+/* ---------- self-test (index.html#selftest; used by smoke.sh in headless Chrome) ----------
+   Drives the real UI against the live backend and records the outcome on #selftest via setAttribute, so the
+   result cannot be matched from page source. Any boot or API failure leaves it unset or "fail". */
+async function selftest(){
+  const out = [], until = async (f, ms=60000) => { const t = performance.now(); while(!f()){ if(performance.now()-t > ms) throw new Error("timeout"); await new Promise(r=>setTimeout(r,100)); } };
+  const ok = (name, c) => { out.push((c ? "PASS " : "FAIL ") + name); return c; };
+  let all = true;
+  try{
+    await until(() => S.attack && S.scorer && S.scorer.ready);
+    const d0 = S.day;
+    all &= ok("day rendered", $("h-stage").textContent === `${d0.ticker} · ${d0.date}`);
+    all &= ok("live ACI pill = committed", $("aciPill").classList.contains("ok"));
+    all &= ok("interval chart drawn", $("chart").querySelectorAll("rect").length >= 3 && $("meter").querySelectorAll("path").length >= 1);
+    all &= ok("scorer is MiniLM", S.scorer.scorer === "minilm" || location.hash.includes("vader"));
+    document.querySelector('[data-preset="bull"]').click(); document.querySelector('[data-acct="bot"]').click();
+    $("copies0").value = 1;
+    await inject();
+    await until(() => S.attack && S.attack.n_injected === 1);
+    all &= ok("typed post scored and injected", S.posts.length === 1 && Math.abs(S.posts[0].sentiment - S.meta.committed.pump_sentiment) < 1e-4);
+    all &= ok("one fake post breaks plain CQR", $("vPlain").classList.contains("bad"));
+    all &= ok("certified GUARANTEED within budget", $("vCert").classList.contains("good") && S.attack.certified.contains_clean);
+    S.posts[0].copies = 6; renderPosts(); await refresh(false);
+    all &= ok("badge turns grey beyond budget", $("vCert").classList.contains("none") && !!$("vCert").querySelector(".badge.n"));
+    S.posts[0].copies = 1; renderPosts(); await refresh(false);
+    await $("redBtn").onclick();
+    all &= ok("red-team: 0 containment violations within budget", !!S.redKey && $("red").querySelector(".counter .c .v.ok") !== null);
+    // stale-response regression (review M1): start a red-team on this day, switch day before it returns
+    const other = S.meta.showcase_days.find(d => d.ticker !== d0.ticker);
+    const pending = $("redBtn").onclick();
+    await loadDay({ticker: other.ticker, date: other.date});
+    await pending;
+    all &= ok("stale red-team result discarded after day switch", !$("red").textContent.includes(d0.ticker + " · " + d0.date) && $("red").querySelector(".counter") === null);
+  }catch(e){ all = false; out.push("ERROR " + e.message); }
+  const el = document.createElement("pre"); el.id = "selftest"; el.textContent = out.join("\n");
+  el.setAttribute("data-status", all ? "pass" : "fail");
+  document.body.appendChild(el);
+}
+boot().then(() => { if(location.hash.startsWith("#selftest")) selftest(); });
 </script>
 </body>
 </html>

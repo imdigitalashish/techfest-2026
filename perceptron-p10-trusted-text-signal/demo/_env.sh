@@ -7,11 +7,16 @@ now() { perl -MTime::HiRes=time -e 'printf "%.2f\n", time'; }
 
 _has_deps() { "$1" -c "import numpy, pandas, pyarrow, scipy, sklearn, lightgbm, mapie" >/dev/null 2>&1; }
 
-resolve_python() {
-  if [ -n "${P10_PYTHON:-}" ]; then PY="$P10_PYTHON"; return; fi
+find_python() {  # sets PY to a ready interpreter, or returns 1
+  if [ -n "${P10_PYTHON:-}" ]; then PY="$P10_PYTHON"; return 0; fi
   for c in "$PROJ/.venv/bin/python" "$DEMO/.venv/bin/python"; do
-    if [ -x "$c" ] && _has_deps "$c"; then PY="$c"; return; fi
+    if [ -x "$c" ] && _has_deps "$c"; then PY="$c"; return 0; fi
   done
+  return 1
+}
+
+resolve_python() {  # ready interpreter, else one-time setup of demo/.venv (setup.sh runs only this)
+  find_python && return
   command -v uv >/dev/null || { echo "[demo] no usable Python: set P10_PYTHON, or install uv (https://docs.astral.sh/uv/)" >&2; exit 1; }
   echo "[demo] creating $DEMO/.venv with uv (offline wheel cache first)…"
   uv venv -q --python 3.11 "$DEMO/.venv"

@@ -1,7 +1,8 @@
 # SCRIPT — "Break the band" (3 minutes)
 
 Setup, before the judges arrive:
-- Run `bash perceptron-p10-trusted-text-signal/demo/run.sh`. It prints `first visual ready in ~6 s` and opens `http://127.0.0.1:8710/`.
+- Once per machine: `bash perceptron-p10-trusted-text-signal/demo/setup.sh` (about 2 min on a fresh clone).
+- Run `bash perceptron-p10-trusted-text-signal/demo/run.sh`. It prints `live first visual ready in ~4–15 s` and opens `http://127.0.0.1:8710/`.
 - Check the two green pills (top right): **scorer: MiniLM-L6 + LR (deployed, CPU)** and **live ACI 89.50% = committed ✓**. If the scorer pill is amber (VADER fallback), say so out loud.
 - The page opens on **D · 2016-03-28** (17 real posts).
 - If anything fails live, switch to `fallback/` (screenshots 01–08, in this order).
@@ -21,7 +22,7 @@ Setup, before the judges arrive:
 > "One post from a day-old account with zero followers. The median moved 0.004 pp, almost nothing. But the realised return sat 0.027 pp inside the upper edge, and the post pulled that edge down 0.14 pp. The plain interval now misses a return it used to cover. Attacks don't swing the forecast; they nudge an edge across a return that was already close to it."
 
 **1:10 — The certified band does not move off it (25 s).** *Point at the green card and the dashed guide lines.*
-> "The certified band is computed from the posts we observe. We never learn which ones are fake. It is guaranteed to contain the no-injection interval for any 3 injected posts. That is a theorem, not a test. Removing up to k posts keeps every text feature inside this box (*point at 'Why it can't break'*), and we bound every tree in the LightGBM model over the box. It costs +4.8% width at k = 3."
+> "The certified band is computed from the posts we observe. We never learn which ones are fake. It is guaranteed to contain the no-injection interval for any 3 injected posts. That is a theorem, not a test. Removing up to k posts keeps every text feature inside this box (*point at 'Why it can't break'*), and we bound every tree in the LightGBM model over the box. On clean data that costs +4.8% width at k = 3. Under an actual attack the replay below shows the real price: about +10% over the attacked plain interval."
 
 **1:35 — Let the machine try (20 s).** *Scroll to the red-team panel; click **Run red-team**.*
 > "Here 2,000 random attacks are thrown at this day. Within budget, plain CQR breaks about 1,800 times; certified containment violations: **zero**. Beyond budget the counter goes non-zero, which is honest: past k we promise nothing."
@@ -31,7 +32,7 @@ Setup, before the judges arrive:
 *Drag copies back to 3.*
 
 **2:10 — Your attack on every stock-day (30 s).** *Scroll to the replay panel; click **Replay on all 16,443 stock-days**.*
-> "Now the population. The same 3 pump posts go into every stock-day from July 2015 to March 2016, recomputed live with the committed code. Plain CQR falls from 86.7% to **86.4%**; 144 stock-days flip. Certified holds **89.4%** and contains the clean interval on every row. Each green tick means the live number equals our committed result file."
+> "Now the population. The same 3 pump posts go into every stock-day from July 2015 to March 2016, recomputed live with the committed code. Plain CQR falls from 86.7% to **86.4%**: 144 hits lost, 105 misses rescued, so 39 net extra misses. Certified holds **89.4%** and contains the clean interval on every row, at 5.19 pp width versus 4.72 pp for the attacked plain interval, about 10% more. Each green tick means the live number equals our committed result file."
 *Point at the ACI meter.*
 > "This is our adaptive conformal loop, recomputed live: 89.50%, identical to the committed run. Under the attack, CR-ACI holds 89.7%. That is a long-run coverage promise, not a per-row one."
 
@@ -39,7 +40,7 @@ Setup, before the judges arrive:
 > "207 of the 327 vulnerable days are stocks nobody posted about. There, the fake post *is* the signal. The certified band still holds."
 
 **2:55 — Close (5 s).**
-> "Fake text can't buy a miss within the budget you set, and you can check every number here against our committed results."
+> "At a shared conformal offset, injecting at most k posts cannot remove a hit the clean plain interval had. And if text never earns its keep, the price-only model is the zero-exposure option. Its numbers are in the footer."
 
 ---
 
@@ -48,7 +49,7 @@ Numbers to point at, and where they come from:
 | On screen | Value | Source |
 |---|---|---|
 | Live ACI pill / meter | 89.50% | `eval/results/text_minilm_v2.json` → `ablation.fusion.cqr_aci.coverage`, recomputed live |
-| Pump replay: plain → certified | 86.7% → 86.4% / 89.4% | `attack.pump`, recomputed live |
+| Pump replay: plain → certified | 86.7% → 86.4% / 89.4% (144 lost, 105 rescued, 39 net) | `attack.pump`, recomputed live |
 | CR-ACI under pump | 89.7% | `spike.cr_aci.cr_aci_pump`, recomputed live |
 | Flippable days | 327 of 16,443 (2.0%), 207 silent | `demo/bundle/showcase.json` (committed `oracle_grid(3)`; exploratory) |
 | Text value | Winkler 3.524 → 3.520, p = 0.46 | `eval/results/text_utility_djia_v1.json` |
@@ -57,4 +58,6 @@ Numbers to point at, and where they come from:
 Likely judge questions:
 - **"Isn't the selected day cherry-picked?"** Yes. The selection rule and the 2.0% population rate are on screen, and the replay shows the population.
 - **"Why did a *bullish* post lower the upper edge?"** Trust and dispersion are features too. A low-trust post lowers mean trust, and the upper quantile tree reacts. The certificate covers every feature at once.
+- **"Why keep text at all?"** We don't have to. The pre-registered test found no value, and the committed price-only model (footer: CQR 86.8%, ACI 89.5%) is the zero-text-exposure alternative. This component makes an *optional* text channel safe to switch on, if text ever earns admission.
+- **"84.7% vs 85.7%?"** 84.7% is a hindsight oracle that knows the return and picks the worst of 53 attacks per row, so no single executable attack achieves it. The worst single fixed attack gives 85.7%.
 - **"What isn't covered?"** Edits of real posts, price manipulation, poisoned calibration data. The guarantee is fixed-offset certified CQR. CR-ACI only promises long-run mean daily coverage.
