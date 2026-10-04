@@ -40,3 +40,21 @@
 ### https://www.kaggle.com/competitions/optiver-trading-at-the-close  (chars=41, hits=1)
 - Optiver - Trading at the Close | Kaggle
 
+### https://www.math.nyu.edu/faculty/chriss/optliq_f.pdf  (chars=264, hits=0)
+
+### https://papers.ssrn.com/sol3/papers.cfm?abstract_id=686168  (chars=372, hits=0)
+
+### https://www.borealisai.com/research-blogs/  (chars=1010, hits=2)
+- Skip to content Research AI Research Open Source Publications Technical Tutorials Applications Lumina ATOM NOMI Aiden Community Who We Are Partnerships Respect AI Blog Careers Join Us ML Research Internships Let’s SOLVE it Fellowships Technical Co-op Search Page is not found.
+- Research AI Research Open Source Publications Tutorials Applications Lumina ATOM NOMI Aiden Community Who we are RESPECT AI Partnerships News Blog Careers Join Us ML Research Internships Let’s SOLVE it Fellowships Locations © 2026 RBC Borealis Privacy Policy Terms of Use Site map
+
+### https://www.rbccm.com/en/expertise/electronic-trading.page  (chars=9855, hits=36)
+- Watch video Fixed Income Debt Origination Asset-Based Finance Foreign Exchange Commodities Global Equities Canadian Prime Brokerage Global ETF Services Electronic Trading Aiden is RBC’s award-winning, patented electronic trading platform.
+- It uses deep reinforcement learning to learn and adapt to changing market conditions in real time, helping clients achieve improved trading execution quality and insights.
+- AI Trading AI Trading Home Aiden Arrival Aiden VWAP Equities Futures Foreign Exchange Fixed Income Next-generation algorithmic performance Aiden’s AI-based algorithms are designed to manage complex data relationships to reduce slippage against key benchmarks, including VWAP and Arrival Price, while minimizing market impact.
+- Explore Aiden Arrival Explore Aiden VWAP What makes Aiden so powerful?
+- Aiden continuously analyzes hundreds of data inputs and utilizes a robust rewards system to improve upon each action it makes and constantly optimize its performance.
+- Beyond Pre-Set Trading Algorithms WHAT IS AIDEN?
+- Watch now Deep Reinforcement Learning HOW DOES AIDEN WORK?
+- Watch now Aiden anticipates and proactively adapts to dynamic market conditions using a proprietary global framework.
+
