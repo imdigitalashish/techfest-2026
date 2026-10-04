@@ -267,3 +267,12 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
 - `mpc-gated@scope=1` (city-wide regime gate) and `mpc-unctrust` (detector-free uncertainty shrinkage) are implemented and tested (11 tests pass).
 - Preview on seeds 0–9 at L=1, P=10 (`eval/results/trust-designs-tuning-preview`): no adaptive design beats the best fixed trust of 0.5 (best: +0.02 pp, n.s.). Recorded in ADR 001. Grid-wide tuning on seeds 0–49 comes before the B/B1 test.
 - The demo builder is building; no action needed from me until it reports.
+
+### 2026-10-04 18:28 IST — Redirect: open the demo on real data
+- The Supervisor relayed the user's challenge ("will this even win?"): judges discount synthetic demand. **Agreed**, and I redirected the builder:
+  - Default tab = NYC July 3–4 real replay, fast-forwarded to ~21:15 on 4 July, so the 22:00 surge hits in the first minute.
+  - The reactive rule vs the planner, with live window counters beside the committed 20-replicate receipts: 1.40 vs 39.55 lost; +2.52 pp [+2.39, +2.67]; July 10–11 +1.52 pp.
+  - Live click-to-shock on NYC is labelled "real demand + your synthetic surge, live only".
+  - The synthetic city becomes "Stress test (SYNTHETIC)", shown second, and keeps the committed per-seed bridge.
+  - Always visible: "real demand, simulated fleet; cause UNVERIFIED". Cells carry Manhattan zone names from the committed mapping.
+- The builder has committed its engine (2bf74ee) and its live UI, server and run.sh (a47365a).
