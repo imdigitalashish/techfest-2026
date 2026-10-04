@@ -37,7 +37,7 @@ _Sources opened 2026-10-04. Code: [`components/mrv_ledger/`](../../components/mr
 
 ## Review fixes (2026-10-04, 17:30 IST — code review issues 1 and 4)
 - **Shipped threshold equals the quoted one.**
-  - The review cut is now a versioned parameter, `components/mrv_ledger/params.json`: `z_review` 2.1419, calibrated on 20 000 SYNTHETIC honest trips (seed 11) at commit `0a13367`.
+  - The review cut is now a versioned parameter, `components/mrv_ledger/params.json`: `z_review` 2.1419, calibrated on 20 000 SYNTHETIC honest trips (seed 11) at commit `11b8954`.
   - Every default `reconcile()` call and the dashboard build use it.
   - Quoted metrics are unchanged: recall 71.6 % at 4.7 % false flags; precision 44.5 % / 62.9 % at 5 % / 10 % prevalence. The previously shipped prior (z = 1.645) flagged 9.0 % of honest records.
 - **Signer bound to the record.**

@@ -29,12 +29,13 @@
     "max_wet_density_kg_m3": 450.0
    }
   },
-  "code_commit": "0a13367274729c895209e6602eff8c03ab0c1b89",
+  "code_commit": "11b895405ea1220812b9415b7633f1394be0f24f",
   "worktree_clean_at_calibration": true,
   "calibrated_at_ist": "2026-10-04T17:29:05+05:30",
-  "reproduce": "cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate"
+  "reproduce": "cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate",
+  "code_commit_note": "calibrated at local commit 0a13367; rebased onto main as this commit with identical mrv_ledger code"
  },
- "params_json_rewritten_by_this_run": true,
+ "params_json_rewritten_by_this_run": false,
  "reconciliation": {
   "shipped_z_review": 2.1418883002056686,
   "params_source": "innovatex-t3-coastal-plastic/components/mrv_ledger/params.json",
@@ -144,6 +145,6 @@
   },
   "all_detected_with_anchor": true
  },
- "git_sha_at_run": "0a13367",
+ "git_sha_at_run": "6564f17",
  "reproduce": "cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate"
 }

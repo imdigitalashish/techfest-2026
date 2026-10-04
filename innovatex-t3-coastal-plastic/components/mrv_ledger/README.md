@@ -15,9 +15,9 @@ Turns each crew clearance claim into a tamper-evident evidence record, `contract
 
 All parameters in `reconcile.Params` are **ASSUMPTIONS**: wet bulk density 150 kg/m³, moisture 0.40, fill σ 0.03, density σ 25 %, claim σ 10 %. No opened source gave measured values for Mumbai boom catch. They must be calibrated with weighed and volumed samples. The dashboard build recalibrates density per site from the twin (`stored_kg / (fill × capacity)`).
 
-**Shipped threshold.** `params.json` is the versioned review threshold: `z_review` = 2.1419, calibrated on 20 000 SYNTHETIC honest trips (seed 11) at code commit `0a13367`. `evaluate.py` rewrites it only when the calibration changes. Every default call `reconcile(record, capacity)` uses it, including the dashboard build, whose per-site density copies inherit it. Tests check four things: the default loads it, it reproduces from its seed, the default path flags ≤ 5 % of held-out honest trips, and every quoted number below comes from that same path.
+**Shipped threshold.** `params.json` is the versioned review threshold: `z_review` = 2.1419, calibrated on 20 000 SYNTHETIC honest trips (seed 11) at code commit `11b8954`. `evaluate.py` rewrites it only when the calibration changes. Every default call `reconcile(record, capacity)` uses it, including the dashboard build, whose per-site density copies inherit it. Tests check four things: the default loads it, it reproduces from its seed, the default path flags ≤ 5 % of held-out honest trips, and every quoted number below comes from that same path.
 
-## Results (SYNTHETIC data — `nice -n 10 python3 -m mrv_ledger.evaluate`, run at git 0a13367)
+## Results (SYNTHETIC data — `nice -n 10 python3 -m mrv_ledger.evaluate`, run at git 6564f17; MRV code identical to 11b8954)
 The threshold is calibrated on 20 000 separate honest trips, aiming for 4.75 % flags, which is 5 % minus the one-sided 95 % sampling margin. It is then tested on 10 000 honest, 3 000 inflated, 1 000 phantom and 1 000 wetted trips.
 
 | Method | Fraud recall | False flags (honest) | Inflated ×1.2–1.5 / 1.5–2 / 2–3 | Phantom | Wetted | Precision @5 % / 10 % prevalence | AUC |
@@ -25,7 +25,7 @@ The threshold is calibrated on 20 000 separate honest trips, aiming for 4.75 % f
 | **Uncertainty-aware z (proposed)** | **71.6 %** | **4.7 %** | 24.4 / 58.0 / 88.6 % | 100 % | 50.0 % | 44.5 % / 62.9 % | 0.926 |
 | Fixed ratio threshold (baseline) | 67.5 % | 4.8 % | 20.6 / 50.3 / 85.5 % | 100 % | 42.8 % | 42.6 % / 61.0 % | 0.917 |
 | Status quo: claim vs weighbridge slip only | 0 % | 0 % | 0 / 0 / 0 % | 0 % | 0 % | — | — |
-| *Shipped before commit 0a13367: uncalibrated prior z = 1.645* | *78.2 %* | *9.0 %* | — | — | — | *31.3 % / 49.1 %* | — |
+| *Shipped before commit 11b8954: uncalibrated prior z = 1.645* | *78.2 %* | *9.0 %* | — | — | — | *31.3 % / 49.1 %* | — |
 
 The first row is the shipped default path. The review's issue 1 found the old shipped default used the prior 1.645, which flagged 9.0 % of honest records; the quoted 71.6 % described the calibrated rule. That rule now ships, and the quoted metrics did not change.
 

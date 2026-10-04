@@ -17,8 +17,9 @@
    "max_wet_density_kg_m3": 450.0
   }
  },
- "code_commit": "0a13367274729c895209e6602eff8c03ab0c1b89",
+ "code_commit": "11b895405ea1220812b9415b7633f1394be0f24f",
  "worktree_clean_at_calibration": true,
  "calibrated_at_ist": "2026-10-04T17:29:05+05:30",
- "reproduce": "cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate"
+ "reproduce": "cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate",
+ "code_commit_note": "calibrated at local commit 0a13367; rebased onto main as this commit with identical mrv_ledger code"
 }
