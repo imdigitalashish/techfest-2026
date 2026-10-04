@@ -107,3 +107,23 @@ Committed while T1 was still running; no test-split result had been seen. It res
 - **Protocol wording.** Results speak of *independent questions answered after one query-agnostic compression*, not sequential multi-turn chat.
 - **Labels.** Our local `snapkv` is a sink-augmented variant (it pools over all keys and forces 4 sinks plus the window); `kvp_snapkv` is the reference.
 
+### Amendment 3: 2026-10-04 15:35 IST
+Committed while T1 was still running; no test-split outcome had been seen. It responds to the gpt-6-astra phase-1 review (`reviews/2026-10-04-spike-prereg-gpt-6-astra.md`). No change to the primary comparison, seeds, methods or config.
+- **S7: non-inferiority vs the full cache (answers "barely hurting recall").** RoD − full recall at keep 0.25 on T1.
+  - Paired context bootstrap as in the primary.
+  - Margin: **−0.05** (5 points of absolute recall). "Near-lossless at 25% memory" is claimed only if the lower 95% bound > −0.05.
+  - At 0.10 and 0.50 it is descriptive only.
+  - Every method's paired recall drop vs full is reported (the MVP's "accuracy drop").
+- **S6: one confirmatory fraction.** Keep **0.10** is confirmatory: it is the budget where RoD (about 2 blocks) and `rodlex` (about 3 blocks) cannot recall all four needles. Keep 0.25 becomes exploratory.
+- **Small-sample reporting.** For the primary and S7, all 12 per-context paired deltas and the discordant question counts are published. Strict single-value accuracy is reported as a sensitivity check: correct, and naming no other needle's value from the same context.
+- **Exploratory, after T3** (labelled exploratory, never confirmatory). All use T1's seed-0 contexts and the frozen config:
+  - (E1) streamed scorer vs unchunked scorer: identical block choices? (`components/recall_on_demand/verify_streamed.py`);
+  - (E2) exact-KV oracle: the same chosen blocks, but their exact KV gathered from the full prefill (needs a full backing store, so analysis only). This separates approximate re-prefill error from retrieval error;
+  - (E3) oracle-block selection: the needle's block forced, plus the scorer's other picks, re-prefilled. This separates retrieval failure from reconstruction and read-out failure;
+  - (E4, if time) the frozen winner and the lexical control re-scored on dev seeds under the production budget.
+- **Wording commitments.**
+  - "Position-preserving approximate re-prefill", not "faithful".
+  - "Tested query-agnostic eviction policies on a fixed reusable context", not "query-agnostic compression in general".
+  - Memory claims refer to **post-prefill retained state**: our prefill builds the full KV before compressing.
+  - No absolute "first" or "zero footprint" claims; the sketch is KV-derived retained state.
+
