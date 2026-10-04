@@ -1,0 +1,99 @@
+"""Figures for the zonal deck, generated from committed results (no hand-typed numbers).
+Run: cd deliverables/deck && OMP_NUM_THREADS=1 python make_figures.py   → fig_*.png
+"""
+import csv, json, os, sys
+import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+plt.rcParams.update({"font.size": 13, "axes.spines.top": False, "axes.spines.right": False})
+INK, ACCENT, GREY, WARN = "#1f2937", "#0f766e", "#9ca3af", "#b45309"
+
+
+def fig_forecast():
+    r = json.load(open(os.path.join(ROOT, "eval", "results", "forecast_walkforward.json")))
+    pm25 = next(x for x in r["results"] if x["target"] == "pm25")
+    keys = ["persistence", "gbm_logratio_no_future_met", "gbm_logratio_perfect_prog_met", "cams_as_served_reference"]
+    labels = ["Yesterday's value\n(persistence)", "ML (gradient boosting)\n+ today's weather", "ML + tomorrow's\nweather (upper bound)", "Global model\n(CAMS, as served)"]
+    vals = [pm25["models"][k]["all"]["MAE"] for k in keys]
+    fig, ax = plt.subplots(figsize=(10, 5.2))
+    bars = ax.bar(labels, vals, color=[ACCENT, GREY, GREY, WARN])
+    for b, v in zip(bars, vals):
+        ax.text(b.get_x() + b.get_width() / 2, v + 1, f"{v:.1f}", ha="center", fontsize=14, color=INK)
+    ax.set_ylabel("Mean absolute error, µg/m³")
+    ax.set_title(f"Next-day PM2.5 (24-h mean) at 4 Delhi monitors, Nov 2025–Sep 2026 (n={pm25['n_test']})", fontsize=13)
+    fig.text(0.01, 0.01, "Real CPCB/DPCC data (OpenAQ archive) + ERA5. Walk-forward, time-ordered. eval/forecast_walkforward.py", fontsize=9, color=GREY)
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.savefig(os.path.join(HERE, "fig_forecast.png"), dpi=200)
+
+
+def fig_attribution():
+    rows = list(csv.DictReader(open(os.path.join(ROOT, "components", "attribution", "autoresearch", "results.tsv")), delimiter="\t"))
+    v1 = {r["method"]: r for r in rows if r["timestamp_ist"] == "2026-10-04T08:03"}
+    keys = ["pair_fixed", "ring", "ring_selfcal"]
+    labels = ["Fixed upwind/downwind\npair (common practice)", "Wind-resolved ring", "Ring + self-calibration\n(DustLedger)"]
+    mean = [float(v1[k]["test_scalar_MAE"].split("±")[0]) for k in keys]
+    sd = [float(v1[k]["test_scalar_MAE"].split("±")[1]) for k in keys]
+    csi = [float(v1[k]["notes"].split("test ")[1].split(";")[0]) for k in keys]
+    fig, ax = plt.subplots(figsize=(10, 5.2))
+    bars = ax.bar(labels, mean, yerr=sd, capsize=8, color=[GREY, GREY, ACCENT])
+    for b, m, s, c in zip(bars, mean, sd, csi):
+        ax.text(b.get_x() + b.get_width() / 2, m + s + 3, f"{m:.1f} ± {s:.1f}\nevent CSI {c:.2f}", ha="center", fontsize=12, color=INK)
+    ax.set_ylabel("Error in the site's own PM10, µg/m³ (MAE)")
+    ax.set_ylim(0, max(m + s for m, s in zip(mean, sd)) * 1.3)
+    ax.set_title("Isolating one site's dust from Delhi's background — held-out Jan–Sep 2026, 5 simulated sites", fontsize=13)
+    fig.text(0.01, 0.01, "REAL background PM10 (CPCB monitor) + REAL ERA5 wind; SIMULATED site, plumes and sensors. components/attribution/autoresearch/eval.py (v1)", fontsize=9, color=WARN)
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.savefig(os.path.join(HERE, "fig_attribution.png"), dpi=200)
+
+
+def fig_timeseries():
+    sys.path.insert(0, os.path.join(ROOT, "components", "attribution", "autoresearch"))
+    import eval as ev  # the frozen evaluator (load + simulate)
+    import methods
+    df = ev.load()
+    obs, truth = ev.simulate(df, np.random.default_rng(ev.SEED))
+    est_p, _ = methods.pair_fixed(obs, ev.GEOM)
+    est_r, ab = methods.ring_selfcal(obs, ev.GEOM)
+    w = (obs.index >= "2025-11-17") & (obs.index < "2025-11-24")
+    t = obs.index[w]
+    fig, (a1, a2) = plt.subplots(2, 1, figsize=(11, 6.2), sharex=True, gridspec_kw={"height_ratios": [1, 1.4]})
+    a1.plot(t, df["bg"].reindex(obs.index)[w], color=INK, lw=1.4)
+    a1.set_ylabel("Delhi background\nPM10, µg/m³")
+    a1.set_title("One week in Nov 2025: real Delhi background (top) vs a simulated site's own dust (bottom)", fontsize=13)
+    a2.fill_between(t, 0, truth[w], color=ACCENT, alpha=0.25, label="True site contribution (simulated)")
+    a2.plot(t, est_p[w], color=GREY, lw=1.2, label="Fixed pair estimate")
+    a2.plot(t, np.where(ab[w], np.nan, est_r[w]), color=ACCENT, lw=1.6, label="DustLedger estimate")
+    a2.axhline(0, color=GREY, lw=0.6)
+    a2.set_ylabel("Site's own PM10, µg/m³")
+    a2.legend(loc="upper left", fontsize=10, frameon=False)
+    fig.text(0.01, 0.01, "Background = CPCB/DPCC monitor 6929 (real); wind = ERA5 (real); site + sensors SIMULATED (seed 20261004).", fontsize=9, color=WARN)
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    fig.savefig(os.path.join(HERE, "fig_timeseries.png"), dpi=200)
+
+
+def fig_site():
+    fig, ax = plt.subplots(figsize=(7, 6.2))
+    ax.add_patch(plt.Rectangle((-60, -60), 120, 120, fill=False, lw=2, color=INK))
+    ax.text(0, 0, "Construction\nsite", ha="center", va="center", fontsize=14, color=INK)
+    nodes = {"N": (0, 60), "E": (60, 0), "S": (0, -60), "W": (-60, 0)}
+    for n, (x, y) in nodes.items():
+        c = ACCENT if n in ("E", "S") else GREY
+        ax.plot(x, y, "o", ms=16, color=c)
+        ax.text(x * 1.32, y * 1.32, f"node {n}", ha="center", va="center", fontsize=11)
+    ax.annotate("", xy=(-55, 40), xytext=(-125, 110), arrowprops=dict(arrowstyle="-|>", lw=3, color=INK))
+    ax.text(-125, 120, "wind", fontsize=12)
+    ax.add_patch(plt.Polygon([(-20, 20), (130, -70), (70, -130)], color=ACCENT, alpha=0.15))
+    ax.text(95, -110, "site plume", fontsize=11, color=ACCENT)
+    ax.text(-150, -150, "Upwind nodes breathe Delhi.\nDownwind nodes breathe Delhi + the site.\nThe difference is the site's own dust.", fontsize=12, color=INK)
+    ax.set_xlim(-160, 160); ax.set_ylim(-170, 150); ax.set_aspect("equal"); ax.axis("off")
+    fig.tight_layout()
+    fig.savefig(os.path.join(HERE, "fig_site.png"), dpi=200)
+
+
+if __name__ == "__main__":
+    fig_forecast(); fig_attribution(); fig_site(); fig_timeseries()
+    print("figures written")
