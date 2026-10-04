@@ -1,0 +1,45 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>EV Infra Map India — walking skeleton v0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<style>
+ html,body{margin:0;height:100%;font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#1d2433}
+ #map{position:absolute;inset:0 340px 0 0} #side{position:absolute;top:0;right:0;width:340px;bottom:0;overflow:auto;padding:16px 18px;box-sizing:border-box;border-left:1px solid #e3e6ec;background:#fbfcfd}
+ h1{font-size:17px;margin:0 0 4px} .sub{color:#5b6475;font-size:12px;margin-bottom:12px} .legend div{display:flex;align-items:center;gap:8px;font-size:12px;margin:2px 0}
+ .sw{width:18px;height:12px;border-radius:2px;display:inline-block} label{display:block;font-size:13px;margin:4px 0} .note{font-size:11px;color:#5b6475;margin-top:14px;border-top:1px solid #e3e6ec;padding-top:10px}
+ table{border-collapse:collapse;width:100%;font-size:12px} td{padding:2px 4px;border-bottom:1px solid #eef0f4} td.n{text-align:right;font-variant-numeric:tabular-nums}
+ .maplibregl-popup-content{font-size:12px;max-width:280px}
+</style></head><body><div id="map"></div><div id="side">
+<h1>EV Infra Map India <span style="font-weight:400;color:#5b6475">· v0</span></h1>
+<div class="sub">Battery-electric vehicle registrations per official public charging station, by state. Click a state for details.</div>
+<div class="legend" id="legend"></div>
+<label><input type="checkbox" id="tOSM" checked> OpenStreetMap sites <span class="sw" style="background:#0b7a75;border-radius:50%;width:9px;height:9px"></span></label>
+<label><input type="checkbox" id="tOCM" checked> Open Charge Map sites <span class="sw" style="background:#c2410c;border-radius:50%;width:9px;height:9px"></span></label>
+<h1 style="margin-top:14px;font-size:14px">Most underserved (BEV per station)</h1><table id="rank"></table>
+<div class="note"><b>Sources</b> · EV registrations: VAHAN 4 dashboard, "Till Today", fuels ELECTRIC(BOV)+PURE EV, fetched 4 Oct 2026 · Official stations: PIB release 2151390 (MoP inputs, 1 Aug 2025) · Sites: OpenStreetMap via Overpass (4 Oct 2026, © OSM contributors, ODbL) and Open Charge Map export (22 Apr 2026).<br><br>
+<b>Read with care</b> · Registrations are not on-road stock; station counts predate registrations by ~14 months; the ratio ignores the segment mix (e-rickshaws and 2W mostly charge at home/depots). Open data shows only ~8% of official stations.<br><br>
+<b>Boundaries</b> · geoBoundaries IND ADM1 (DataMeet/ECI, CC BY 2.5 IN), simplified, for analysis only — not a Survey of India–certified depiction of India's external boundary.</div></div>
+<script>
+const STATES=__STATES__, SITES=__SITES__;
+const breaks=[150,300,450,700,1000], colors=['#e8f3ee','#bfe0d0','#f6d58e','#f2a65a','#e0683c','#b3261e'];
+const fmt=n=>n==null?'—':Number(n).toLocaleString('en-IN');
+const lg=document.getElementById('legend'); const lab=['< 150','150–300','300–450','450–700','700–1,000','> 1,000'];
+colors.forEach((c,i)=>lg.insertAdjacentHTML('beforeend',`<div><span class="sw" style="background:${c}"></span>${lab[i]} BEV per station</div>`));
+const rk=STATES.features.map(f=>f.properties).filter(p=>p.bev_per_pcs!=null&&p.bev_cum>50000).sort((a,b)=>b.bev_per_pcs-a.bev_per_pcs).slice(0,10);
+document.getElementById('rank').innerHTML='<tr><td><b>State</b></td><td class="n"><b>BEV/stn</b></td><td class="n"><b>Stations</b></td></tr>'+rk.map(p=>`<tr><td>${p.shapeName}</td><td class="n">${fmt(p.bev_per_pcs)}</td><td class="n">${fmt(p.pcs_total)}</td></tr>`).join('');
+const map=new maplibregl.Map({container:'map',center:[80.5,22.5],zoom:3.9,style:{version:8,sources:{osm:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:'© OpenStreetMap contributors'}},layers:[{id:'osm',type:'raster',source:'osm',paint:{'raster-opacity':0.55}}]}});
+map.on('load',()=>{
+ map.addSource('states',{type:'geojson',data:STATES}); map.addSource('sites',{type:'geojson',data:SITES});
+ const step=['step',['coalesce',['get','bev_per_pcs'],-1],'#dddddd',0,colors[0]]; breaks.forEach((b,i)=>step.push(b,colors[i+1]));
+ map.addLayer({id:'fill',type:'fill',source:'states',paint:{'fill-color':step,'fill-opacity':0.72}});
+ map.addLayer({id:'line',type:'line',source:'states',paint:{'line-color':'#4b5563','line-width':0.6}});
+ map.addLayer({id:'osm-pts',type:'circle',source:'sites',filter:['==',['get','src'],'osm'],paint:{'circle-radius':2.6,'circle-color':'#0b7a75','circle-stroke-width':0.4,'circle-stroke-color':'#fff'}});
+ map.addLayer({id:'ocm-pts',type:'circle',source:'sites',filter:['==',['get','src'],'ocm'],paint:{'circle-radius':2.6,'circle-color':'#c2410c','circle-stroke-width':0.4,'circle-stroke-color':'#fff'}});
+ map.on('click','fill',e=>{const p=e.features[0].properties;new maplibregl.Popup().setLngLat(e.lngLat).setHTML(
+  `<b>${p.shapeName}</b><br>BEV registrations (till today): <b>${fmt(p.bev_cum)}</b><br>BEV registered in 2025: ${fmt(p.bev_2025)} (${p.bev_share_2025_pct??'—'}% of all)<br>Official public charging stations: <b>${fmt(p.pcs_total)}</b><br>BEV per station: <b>${fmt(p.bev_per_pcs)}</b><hr style="border:0;border-top:1px solid #eee">Open-data sites: OSM ${fmt(p.n_osm)} · OCM ${fmt(p.n_ocm)} · matched ${fmt(p.matched)}<br>Open-data coverage of official count: ${p.open_coverage_pct??'—'}%`).addTo(map);});
+ map.on('click',['osm-pts','ocm-pts'],e=>{const p=e.features[0].properties;new maplibregl.Popup().setLngLat(e.lngLat).setHTML(`<b>${p.name||'(unnamed)'}</b><br>${p.src.toUpperCase()} · ${p.id}`).addTo(map);});
+ ['fill','osm-pts','ocm-pts'].forEach(l=>{map.on('mouseenter',l,()=>map.getCanvas().style.cursor='pointer');map.on('mouseleave',l,()=>map.getCanvas().style.cursor='');});
+ document.getElementById('tOSM').onchange=e=>map.setLayoutProperty('osm-pts','visibility',e.target.checked?'visible':'none');
+ document.getElementById('tOCM').onchange=e=>map.setLayoutProperty('ocm-pts','visibility',e.target.checked?'visible':'none');
+});
+</script></body></html>
