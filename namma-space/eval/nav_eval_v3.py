@@ -33,7 +33,7 @@ from nav_eval_v2 import prepare  # noqa: E402  (same data loading; v2 scoring is
 from path_planner.planner import GridPlanner, densify  # noqa: E402
 from walkable_space.walkable import build_grid  # noqa: E402
 
-REF_CELL, REF_MIN_SPLATS = 0.05, 3
+REF_CELL, REF_MIN_SPLATS, MAX_EXTENT_M = 0.05, 3, 150.0
 
 
 def wilson(k, n, z=1.96):
@@ -58,6 +58,12 @@ def reference(d, radius):
     X, C = d["dense"], d["C"]
     lo = np.minimum(X[:, [0, 2]].min(0), C[:, [0, 2]].min(0)) - 1.0
     hi = np.maximum(X[:, [0, 2]].max(0), C[:, [0, 2]].max(0)) + 1.0
+    if ((hi - lo) > MAX_EXTENT_M).any():  # outlier splats/cameras: robust bounds, refuse if still implausible
+        lo = np.minimum(np.percentile(X[:, [0, 2]], 1, 0), np.percentile(C[:, [0, 2]], 2, 0)) - 1.0
+        hi = np.maximum(np.percentile(X[:, [0, 2]], 99, 0), np.percentile(C[:, [0, 2]], 98, 0)) + 1.0
+        if ((hi - lo) > MAX_EXTENT_M).any():
+            raise ValueError(f"implausible reference extent {np.round(hi - lo, 1)} m; check posing/alignment")
+        X = X[np.all((X[:, [0, 2]] >= lo) & (X[:, [0, 2]] < hi), axis=1)]
     nx, nz = (int(v) for v in np.ceil((hi - lo) / REF_CELL))
     ij = np.floor((X[:, [0, 2]] - lo) / REF_CELL).astype(int)
     occ = np.zeros((nx, nz), np.int32)

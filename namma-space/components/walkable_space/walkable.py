@@ -20,7 +20,8 @@ from scipy import ndimage
 
 DEFAULTS = dict(cell=0.05, voxel=0.10, agent_radius=0.25, agent_height=1.70, step_height=0.15,
                 floor_tol=0.08, floor_dilate_m=0.30, min_occ_points=2, carve_beta=4.0,
-                traj_radius=0.35, close_m=0.20, traj_override=False, obstacle_inflate_m=0.0)
+                traj_radius=0.35, close_m=0.20, traj_override=False, obstacle_inflate_m=0.0,
+                max_extent_m=150.0, max_ray_m=25.0)
 # traj_override=False kept by ratchet #1 (2026-10-04): trajectory adds connectivity but never erases
 # obstacle evidence. J_A 0.595 -> 0.659, J_B 0.550 -> 0.579 (autoresearch/results.tsv).
 
@@ -37,8 +38,18 @@ def build_grid(points, traj, rays_from=None, rays_to=None, use_carving=True, use
     p.update(params or {})
     t0 = time.perf_counter()
     P, C = np.asarray(points, float), np.asarray(traj, float)
+    robust = False
     lo = np.minimum(np.percentile(P[:, [0, 2]], 1, axis=0), C[:, [0, 2]].min(0)) - 1.0
     hi = np.maximum(np.percentile(P[:, [0, 2]], 99, axis=0), C[:, [0, 2]].max(0)) + 1.0
+    if ((hi - lo) > p["max_extent_m"]).any():
+        # SfM outliers (cameras/points far from the scene) must never size the grid: fall back to robust bounds
+        robust = True
+        lo = np.minimum(np.percentile(P[:, [0, 2]], 2, axis=0), np.percentile(C[:, [0, 2]], 2, axis=0)) - 1.0
+        hi = np.maximum(np.percentile(P[:, [0, 2]], 98, axis=0), np.percentile(C[:, [0, 2]], 98, axis=0)) + 1.0
+        if ((hi - lo) > p["max_extent_m"]).any():
+            raise ValueError(f"implausible indoor extent {np.round(hi - lo, 1)} m (> {p['max_extent_m']} m): "
+                             "check posing (outliers/degenerate SfM) and alignment scale")
+        C = C[np.all((C[:, [0, 2]] >= lo) & (C[:, [0, 2]] <= hi), axis=1)]
     cell, vox = p["cell"], p["voxel"]
     nx, nz = (int(v) for v in np.ceil((hi - lo) / cell))
     ratio = int(round(vox / cell))
@@ -60,6 +71,8 @@ def build_grid(points, traj, rays_from=None, rays_to=None, use_carving=True, use
         A = np.asarray(rays_from, float)
         D = P[np.asarray(rays_to)] - A
         L = np.linalg.norm(D, axis=1)
+        short = L <= (p["max_ray_m"] if robust else np.inf)  # outlier points would explode the sample count
+        A, D, L = A[short], D[short], L[short]
         step = vox * 0.5
         for s in range(0, len(A), 20000):
             a, d, l = A[s:s + 20000], D[s:s + 20000], L[s:s + 20000]

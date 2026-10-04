@@ -79,15 +79,28 @@ def _rot_a_to_b(a, b):
     return np.eye(3) + vx + vx @ vx / (1.0 + c)
 
 
+def inlier_masks(centers, points, k=3.0, pad=1.0):
+    """SfM outliers: cameras farther than k x (75th-percentile distance) from the median camera, and points outside
+    the inlier cameras' box padded by pad x its diagonal. Normal captures keep everything."""
+    d = np.linalg.norm(centers - np.median(centers, axis=0), axis=1)
+    cam_ok = d <= k * max(float(np.percentile(d, 75)), 1e-9)
+    lo, hi = centers[cam_ok].min(0), centers[cam_ok].max(0)
+    m = pad * float(np.linalg.norm(hi - lo)) + 1e-9
+    pt_ok = np.all((points >= lo - m) & (points <= hi + m), axis=1)
+    return cam_ok, pt_ok
+
+
 def estimate_alignment(sc: ColmapScene, camera_height_m: float | None = None,
                        max_err: float = 2.0, min_track: int = 3) -> dict:
     t0 = time.perf_counter()
-    P = sc.points[(sc.point_err < max_err) & (sc.point_track >= min_track)]
-    up0 = _n(sc.ups.mean(axis=0))
-    consistency = float(np.linalg.norm(sc.ups.mean(axis=0)))
-    unit = float(np.median(np.linalg.norm(P - np.median(sc.centers, axis=0), axis=1)))
+    cam_ok, pt_ok = inlier_masks(sc.centers, sc.points)
+    P = sc.points[(sc.point_err < max_err) & (sc.point_track >= min_track) & pt_ok]
+    Cc, Uc = sc.centers[cam_ok], sc.ups[cam_ok]
+    up0 = _n(Uc.mean(axis=0))
+    consistency = float(np.linalg.norm(Uc.mean(axis=0)))
+    unit = float(np.median(np.linalg.norm(P - np.median(Cc, axis=0), axis=1)))
     h = P @ up0
-    hc_med = float(np.median(sc.centers @ up0))
+    hc_med = float(np.median(Cc @ up0))
     below = h < hc_med - 0.15 * unit
     hist, edges = np.histogram(h[below], bins=np.linspace(np.percentile(h, 0.5), hc_med, 120))
     mids = 0.5 * (edges[1:] + edges[:-1])
@@ -107,7 +120,7 @@ def estimate_alignment(sc: ColmapScene, camera_height_m: float | None = None,
             break
         up, floor_h = n, float(c @ n)
         inl = np.abs(P @ up - floor_h) < tol
-    med_above = float(np.median(sc.centers @ up - floor_h))
+    med_above = float(np.median(Cc @ up - floor_h))
     if camera_height_m is not None:
         H, src = float(camera_height_m), "capture.json camera_height_m"
     else:
@@ -119,12 +132,12 @@ def estimate_alignment(sc: ColmapScene, camera_height_m: float | None = None,
     v0 = np.linalg.svd(xz[:: max(1, len(xz) // 20000)], full_matrices=False)[2][0]
     a = np.arctan2(v0[1], v0[0])
     R = np.array([[np.cos(a), 0, np.sin(a)], [0, 1, 0], [-np.sin(a), 0, np.cos(a)]]) @ R_up
-    cm = np.median(sc.centers, axis=0)
+    cm = np.median(Cc, axis=0)
     o = cm - (cm @ up - floor_h) * up
     T = np.eye(4)
     T[:3, :3] = s * R
     T[:3, 3] = -s * R @ o
-    Pa, Ca = apply(T, P), apply(T, sc.centers)
+    Pa, Ca = apply(T, P), apply(T, Cc)
     return {
         "T_aligned_from_colmap": T.tolist(), "scale": s, "scale_source": src,
         "up_colmap": up.tolist(), "up_camera_consistency": consistency,
@@ -134,6 +147,8 @@ def estimate_alignment(sc: ColmapScene, camera_height_m: float | None = None,
         "floor_inlier_frac": float(np.mean(np.abs(Pa[:, 1]) < 0.03)),
         "points_below_floor_frac": float(np.mean(Pa[:, 1] < -0.05)),
         "n_points_used": int(len(P)), "n_cameras": int(len(sc.names)),
+        "n_camera_outliers": int((~cam_ok).sum()), "n_point_outliers": int((~pt_ok).sum()),
+        "ok": bool(np.mean(np.abs(Pa[:, 1]) < 0.03) >= 0.02),  # a floor must exist; else posing/alignment failed
         "runtime_s": time.perf_counter() - t0,
         "frame": "y-up, floor y=0, metres (approximate if scale_source is ASSUMED)",
     }

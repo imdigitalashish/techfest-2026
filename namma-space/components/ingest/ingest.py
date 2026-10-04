@@ -20,7 +20,7 @@ import time
 import cv2
 import numpy as np
 
-VIDEO_EXT = (".mov", ".mp4", ".m4v")
+VIDEO_EXT = (".mov", ".mp4", ".m4v", ".webm", ".mkv", ".ogv", ".ogg", ".avi")
 IMAGE_EXT = (".jpg", ".jpeg", ".png", ".heic")
 
 

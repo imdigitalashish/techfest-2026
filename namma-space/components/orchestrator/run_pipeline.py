@@ -116,7 +116,7 @@ def main():
     from ingest.ingest import ingest
     from posing.sfm import run_sfm
     from scene_alignment.align import estimate_alignment, load_colmap
-    from splat_training.train import train
+    from splat_training.train import finalize, train
     from walkable_space.walkable import build_grid, to_json
 
     def s_ingest():
@@ -124,15 +124,32 @@ def main():
         return {"n_frames": len(r["frames"]), "clips": r["clips"], "warnings": r["warnings"]}
 
     def s_posing():
-        r = run_sfm(paths["frames"], paths["sfm"], mapper=a.mapper)
-        return {k: r[k] for k in ("n_frames", "n_registered", "registration_rate", "n_points3D",
-                                  "mean_reprojection_error_px", "mapper", "matcher", "timings_s")}
+        frames = json.load(open(os.path.join(work, "frames.json")))["frames"]
+        ordered = any(f["clip"] != "photos" for f in frames)  # video frames are ordered; photo sets are not
+        r = run_sfm(paths["frames"], paths["sfm"], mapper=a.mapper, ordered=ordered)
+        res = {k: r[k] for k in ("n_frames", "n_registered", "registration_rate", "n_points3D", "mean_reprojection_error_px",
+                                 "mapper", "matcher", "ordered_input", "pose_sanity", "timings_s")}
+        if a.reference_colmap:  # benchmark gate: trajectory error vs the dataset's reference poses
+            res["ate_vs_reference"] = pose_ate(os.path.join(paths["sfm"], "model"), a.reference_colmap,
+                                               os.path.join(work, "frames.json"))
+        if (r.get("pose_sanity") or {}).get("degenerate"):
+            raise RuntimeError(f"posing looks degenerate {r['pose_sanity']}; re-capture or re-pose before training")
+        return res
 
     colmap_dir = os.path.join(paths["sfm"], "colmap", "sparse", "0")
 
     def s_splat():
-        r = train(os.path.join(paths["sfm"], "colmap"), paths["splat"], a.steps, a.max_splats)
-        return {k: r[k] for k in ("ply_path", "n_splats", "train_seconds", "steps", "peak_memory_gb", "ply_mb", "accepted", "heldout")}
+        data = os.path.join(paths["sfm"], "colmap")
+        log = os.path.join(paths["splat"], "brush.log")
+        done_export = (os.path.exists(os.path.join(paths["splat"], f"splat_{a.steps}.ply")) and os.path.exists(log)
+                       and " real" in open(log).read())
+        if done_export and "splat" not in a.force:
+            print("[splat] adopting a completed Brush export (no retraining)", flush=True)
+            r = finalize(data, paths["splat"], a.steps, a.max_splats, adopted=True)
+        else:
+            r = train(data, paths["splat"], a.steps, a.max_splats)
+        return {k: r[k] for k in ("ply_path", "n_splats", "train_seconds", "steps", "peak_memory_gb", "ply_mb", "accepted",
+                                  "heldout", "adopted_existing_output")}
 
     def s_align():
         sc = load_colmap(colmap_dir)
@@ -146,6 +163,9 @@ def main():
                 marker = {"ok": False, "reason": f"marker step failed: {e}"}
         h = a.camera_height_m or cap.get("camera_height_m")
         al = estimate_alignment(sc, h)
+        if not al["ok"]:
+            raise RuntimeError(f"alignment failed: floor inliers {al['floor_inlier_frac']:.3f} (< 0.02), "
+                               f"{al['n_camera_outliers']} outlier cameras — posing is likely degenerate; re-capture or re-pose")
         if marker and marker.get("ok"):
             T = np.array(al["T_aligned_from_colmap"])
             f = marker["scale"] / al["scale"]

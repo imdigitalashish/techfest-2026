@@ -9,6 +9,11 @@ One phone video of an indoor space should become, automatically and with no 3D m
 - click and search points of interest;
 - follow a walking path that stays on the floor and avoids walls and furniture.
 
+**Links a judge gets:**
+1. **Primary:** our own home, captured with our SOP (required by the brief).
+2. **If the home twin fails our quality gate:** another space we capture ourselves (hostel room, lab), never a dataset.
+3. **Extra, clearly labelled "public dataset — not our capture":** a viewer demo built from a CC BY-SA 4.0 walkthrough video of a public library (`test_data/public_demo/SOURCE.md`).
+
 Round 1 asks for capture → reconstruction → free-roam viewer. We implemented the full chain from day one, because the same geometry drives collisions in the viewer and paths in Round 2.
 
 ## 2. Architecture

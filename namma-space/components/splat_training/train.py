@@ -52,6 +52,30 @@ def eval_renders(export_dir, image_dir):
             "ssim": float(np.mean([r["ssim"] for r in rows])), "per_image": rows}
 
 
+def finalize(data_dir, out, steps, max_splats, eval_every_n=8, adopted=False):
+    """Build the SplatModel record from a finished Brush output dir (also used to adopt a completed run
+    after the orchestrator was killed, so the GPU work is never repeated)."""
+    log = open(os.path.join(out, "brush.log")).read()
+    real = re.search(r"([\d.]+)\s+real", log)
+    peak = re.search(r"(\d+)\s+peak memory footprint", log)
+    ply = os.path.join(out, f"splat_{steps}.ply")
+    if not os.path.exists(ply) or real is None:
+        raise RuntimeError(f"no completed Brush export in {out} (need splat_{steps}.ply and a timed brush.log)")
+    with open(ply, "rb") as f:
+        head = f.read(4096).decode("ascii", "ignore")
+    nsp = int(re.search(r"element vertex (\d+)", head).group(1))
+    ev = eval_renders(out, os.path.join(data_dir, "images"))
+    res = {"ply_path": ply, "frame": "colmap", "n_splats": nsp, "train_seconds": float(real.group(1)),
+           "steps": steps, "max_splats": max_splats, "peak_memory_gb": round(int(peak.group(1)) / 1e9, 2) if peak else None,
+           "ply_mb": round(os.path.getsize(ply) / 1e6, 1),
+           "accepted": ev.get("n", 0) > 0,  # no matched held-out renders = quality unverified = not accepted
+           "heldout": {k: v for k, v in ev.items() if k != "per_image"} | {"split": f"every {eval_every_n}th image (Brush eval split)"},
+           "brush": "v0.3.0 (Metal)", "adopted_existing_output": adopted}
+    with open(os.path.join(out, "splat.json"), "w") as f:
+        json.dump(res | {"heldout_per_image": ev.get("per_image", [])}, f, indent=1)
+    return res
+
+
 def train(data_dir, out, steps=15000, max_splats=2_000_000, eval_every_n=8, seed=42, extra=()):
     os.makedirs(out, exist_ok=True)
     for stale in glob.glob(os.path.join(out, "**", "*.png"), recursive=True) + glob.glob(os.path.join(out, "splat_*.ply")):
@@ -60,30 +84,11 @@ def train(data_dir, out, steps=15000, max_splats=2_000_000, eval_every_n=8, seed
            "--eval-split-every", str(eval_every_n), "--eval-every", str(steps), "--eval-save-to-disk",
            "--export-every", str(steps), "--export-path", out, "--export-name", "splat_{iter}.ply",
            "--seed", str(seed), *extra]
-    t0 = time.perf_counter()
-    p = subprocess.run(cmd, capture_output=True, text=True)
-    wall = time.perf_counter() - t0
-    log = (p.stdout or "") + (p.stderr or "")
-    with open(os.path.join(out, "brush.log"), "w") as f:
-        f.write(log)
-    peak = re.search(r"(\d+)\s+peak memory footprint", log)
-    plys = sorted(glob.glob(os.path.join(out, "splat_*.ply")))
-    if p.returncode != 0 or not plys:
+    with open(os.path.join(out, "brush.log"), "w") as logf:  # stream to disk; never buffer the child's output in RAM
+        p = subprocess.run(cmd, stdout=logf, stderr=subprocess.STDOUT)
+    if p.returncode != 0 or not os.path.exists(os.path.join(out, f"splat_{steps}.ply")):
         raise RuntimeError(f"Brush failed (exit {p.returncode}); see {out}/brush.log")
-    ply = plys[-1]
-    with open(ply, "rb") as f:
-        head = f.read(4096).decode("ascii", "ignore")
-    nsp = int(re.search(r"element vertex (\d+)", head).group(1))
-    ev = eval_renders(out, os.path.join(data_dir, "images"))
-    res = {"ply_path": ply, "frame": "colmap", "n_splats": nsp, "train_seconds": round(wall, 1),
-           "steps": steps, "max_splats": max_splats, "peak_memory_gb": round(int(peak.group(1)) / 1e9, 2) if peak else None,
-           "ply_mb": round(os.path.getsize(ply) / 1e6, 1),
-           "accepted": ev.get("n", 0) > 0,  # no matched held-out renders = quality unverified = not accepted
-           "heldout": {k: v for k, v in ev.items() if k != "per_image"} | {"split": f"every {eval_every_n}th image (Brush eval split)"},
-           "brush": "v0.3.0 (Metal)"}
-    with open(os.path.join(out, "splat.json"), "w") as f:
-        json.dump(res | {"heldout_per_image": ev.get("per_image", [])}, f, indent=1)
-    return res
+    return finalize(data_dir, out, steps, max_splats, eval_every_n)
 
 
 if __name__ == "__main__":
