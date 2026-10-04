@@ -1,0 +1,220 @@
+{
+  "commit": "a2cfc31",
+  "n": 10000,
+  "seed": 20261004,
+  "db": {
+    "records": 23,
+    "sources": 8,
+    "by_status": {
+      "verified": 16,
+      "derived": 7
+    },
+    "by_layer": {
+      "energy": 7,
+      "fuels": 6,
+      "vehicle": 4,
+      "battery": 2,
+      "use": 4
+    }
+  },
+  "replication": {
+    "icct2021_implied": {
+      "vehicles": {
+        "ice_scooter": {
+          "ours": 60.902,
+          "published": 60.9,
+          "pct_error": 0.0,
+          "stage_abs_error_g_per_km": {
+            "vehicle_production": 0.002,
+            "fuel_production_wtt": 0.0,
+            "tailpipe_ttw": 0.0
+          },
+          "published_inside_our_90pct": true
+        },
+        "ev_scooter": {
+          "ours": 37.544,
+          "published": 37.5,
+          "pct_error": 0.12,
+          "stage_abs_error_g_per_km": {
+            "vehicle_production": -0.001,
+            "battery_production": -0.032,
+            "electricity_production_wtt": -0.023
+          },
+          "published_inside_our_90pct": true
+        }
+      },
+      "mape_pct": 0.06,
+      "reduction": {
+        "ours": 0.3835,
+        "published": 0.384,
+        "abs_error_pp": -0.05
+      }
+    },
+    "icct2021_stated": {
+      "vehicles": {
+        "ice_scooter": {
+          "ours": 66.522,
+          "published": 60.9,
+          "pct_error": 9.23,
+          "stage_abs_error_g_per_km": {
+            "vehicle_production": 0.002,
+            "fuel_production_wtt": 1.28,
+            "tailpipe_ttw": 4.34
+          },
+          "published_inside_our_90pct": false
+        },
+        "ev_scooter": {
+          "ours": 34.246,
+          "published": 37.5,
+          "pct_error": -8.68,
+          "stage_abs_error_g_per_km": {
+            "vehicle_production": -0.001,
+            "battery_production": -0.032,
+            "electricity_production_wtt": -3.321
+          },
+          "published_inside_our_90pct": false
+        }
+      },
+      "mape_pct": 8.955,
+      "reduction": {
+        "ours": 0.4852,
+        "published": 0.384,
+        "abs_error_pp": 10.12
+      }
+    }
+  },
+  "india_2026": {
+    "in2026_cea_average": {
+      "label": "India 2026 \u2014 CEA FY2025-26 grid average (static), IPCC petrol",
+      "ice_total": 62.95,
+      "ice_90pct": [
+        57.59,
+        68.99
+      ],
+      "bev_total": 39.71,
+      "bev_90pct": [
+        36.9,
+        42.84
+      ],
+      "reduction_central": 0.3692,
+      "reduction_90pct": [
+        0.2918,
+        0.4381
+      ],
+      "p_bev_lower": 1.0,
+      "dqi_ice": 2.2,
+      "dqi_bev": 1.62,
+      "top_variance_drivers_of_reduction": [
+        [
+          "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied",
+          0.349
+        ],
+        [
+          "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied",
+          0.299
+        ],
+        [
+          "fuels.petrol.density.unsd2020",
+          0.167
+        ],
+        [
+          "energy.electricity.in.grid_wavg_generation.fy2025_26",
+          0.085
+        ],
+        [
+          "fuels.petrol.co2_per_energy.ipcc2006",
+          0.041
+        ]
+      ]
+    },
+    "in2026_cea_operating_margin": {
+      "label": "India 2026 \u2014 EV charging at CEA operating margin (fossil-marginal view)",
+      "ice_total": 62.95,
+      "ice_90pct": [
+        57.59,
+        68.99
+      ],
+      "bev_total": 54.15,
+      "bev_90pct": [
+        50.18,
+        58.54
+      ],
+      "reduction_central": 0.1398,
+      "reduction_90pct": [
+        0.0327,
+        0.2353
+      ],
+      "p_bev_lower": 0.984,
+      "dqi_ice": 2.2,
+      "dqi_bev": 1.58,
+      "top_variance_drivers_of_reduction": [
+        [
+          "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied",
+          0.338
+        ],
+        [
+          "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied",
+          0.318
+        ],
+        [
+          "fuels.petrol.density.unsd2020",
+          0.162
+        ],
+        [
+          "energy.electricity.in.grid_om.fy2025_26",
+          0.091
+        ],
+        [
+          "fuels.petrol.co2_per_energy.ipcc2006",
+          0.04
+        ]
+      ]
+    },
+    "in2026_cea_build_margin": {
+      "label": "India 2026 \u2014 EV charging at CEA build margin (new-capacity view)",
+      "ice_total": 62.95,
+      "ice_90pct": [
+        57.59,
+        68.99
+      ],
+      "bev_total": 28.23,
+      "bev_90pct": [
+        26.3,
+        30.4
+      ],
+      "reduction_central": 0.5516,
+      "reduction_90pct": [
+        0.4976,
+        0.5997
+      ],
+      "p_bev_lower": 1.0,
+      "dqi_ice": 2.2,
+      "dqi_bev": 1.66,
+      "top_variance_drivers_of_reduction": [
+        [
+          "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied",
+          0.362
+        ],
+        [
+          "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied",
+          0.267
+        ],
+        [
+          "fuels.petrol.density.unsd2020",
+          0.172
+        ],
+        [
+          "energy.electricity.in.grid_bm.fy2025_26",
+          0.076
+        ],
+        [
+          "fuels.petrol.co2_per_energy.ipcc2006",
+          0.043
+        ]
+      ]
+    }
+  },
+  "headline": {
+    "replication_mape_pct": 0.06
+  }
+}
