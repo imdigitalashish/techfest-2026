@@ -24,6 +24,16 @@ Inputs and outputs use `architecture/contracts/models.py` without modification:
 - `identities_for_cohort(children, ...)` gives `cohort_simulator` children Poshan Tracker and health-side identity records with the same name/DOB noise helpers, so a child's measurements and health events can be joined only through linkage (used by `demo/export.py`).
 - Tests: `test_linkage.py` pins the default output's SHA-256 and checks both knobs.
 
+### Department boundary (`pprl.py`)
+
+`link.py` takes both sides' plaintext records in one process. `pprl.py` makes the boundary explicit and testable:
+
+- `encode_department(records_df, secret_key)` runs inside each department and emits only `source`, `record_id`, `clk` (1,000-bit Bloom filter, hex), keyed-HMAC `block_tokens` (village × birth-year band, mother-name phonetic code), keyed-HMAC `id_tokens` (shared programme IDs), a keyed-HMAC `sex_token` and `synthetic`. No name, DOB, village or sex in plaintext.
+- `match_encoded(enc_a, enc_b, threshold)` accepts exactly those columns (fails closed otherwise) and reproduces `link_pprl_bloom` decision for decision: same ID step, blocking, Dice score with sex penalty, greedy assignment and thresholds. Only an ID-joined pair's `child_key` differs (derived from the ID token).
+- `accept_at(decisions, t)` relabels a `clerical_low` run as if matched at threshold `t` (the assignment doesn't depend on it), for precision-matched comparisons.
+- `test_pprl.py`: identical F1/precision/recall to `eval/results/identity_linkage.json`; identical decisions to `link_pprl_bloom` across knob settings; only allowed columns and no plaintext in the encoded frames; record IDs treated as opaque labels; `accept_at` equals a re-run.
+- The matcher still learns which records share a token, and Bloom filters are attackable (frequency and pattern mining). The secret key must be withheld from the matcher; hardening is a pilot item.
+
 ## Run
 
 From the project root:
