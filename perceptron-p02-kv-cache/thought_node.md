@@ -10,23 +10,26 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ RESUMED 14:36 IST → measuring. Pre-registration committed 15:14 IST ([eval/PREREG.md](eval/PREREG.md); amendment 1 at 15:18 adds T3 with synonym-aliased keys).
+- **Phase:** ▶ measuring and reviewing. T1 done (16:18); T2 running; then S4, T3, post-hoc E1–E5, sol reproduction. PREREG plus 4 amendments, all committed before the outcomes they govern.
+- **Results so far (T1, rendered in [eval/RESULTS.md](eval/RESULTS.md)):**
+  - **Pre-registered primary passed:** RoD − StreamingLLM +0.40 (CI +0.25 to +0.54) at 25% memory.
+  - RoD beats all 9 query-agnostic baselines, including kvpress's.
+  - **S7 non-inferiority vs full not shown** (−0.25).
+  - Exploratory: at 10% memory RoD 0.854 vs full 0.833 (baselines ≤ 0.06). Replication R1 on T2 is pre-registered.
+  - Mechanism: block hit ↑, accuracy given hit ↓ (0.98 → 0.55): key–value confusion with more recalled needle blocks.
+  - Identity checks I1–I3 pass.
 - **Doing:**
-  - **VM** `p02-kv-1`, resized to D16ds_v5: T1 (literal, seed 0) is running, about 6.3 min per context, ETA 16:31. Then T2 (paraphrase, seed 1) → S4 (halo 64) → T3 (alias, seed 2), one job at a time; ETA about 18:30.
-  - **Reviewers** (child sessions): [P2 review · code+eval (gpt-6-sol)](ghapp://sessions/377140bc-8a99-47d1-bed3-2b53e4b22b70) (static review now, reproduction after `grid2.done`); [P2 review · hostile judge (gpt-6-astra)](ghapp://sessions/97e5f61d-3add-4e44-9c65-d77e119bfb8a) (spike + PREREG now, final abstract later).
-- **Done since resume:**
-  - MLX CPU too slow (3.5 GFLOP/s), so I pivoted to a PyTorch twin harness on the same weights. It passes logit parity (2e-5 with fp32 KV); the MLX vs torch difference is 5e-5.
-  - Dev sweep of 322 scorer variants: `softmax_lift`/content/4-bit/layer 5 reached hit@3 0.95, vs 0.24 for the a-priori config and 0.91 for lexical (exploratory).
-  - kvpress 0.5.5 presses run on CPU as reference baselines.
-  - Final abstract skeleton (761 words plus rendered blocks, about 873 in total).
-  - `render_docs.py` / `check_docs.py` / `wordcount.py`.
-- **Next:** fetch T1 → render → astra phase 2 on the abstract → memo v2 (P2 vs P1, honest) → T2/S4/T3 → final render → sol reproduction → ledger → deallocate VM → "DONE — slot free".
-- **Needs from user:** register by 15 Oct (if P2 is chosen over P1; the brief allows only one of P1/P2). Teammates' names and skills for the team-fit section.
+  - VM chain T2 → S4 → T3 → post-hoc (ETA about 18:45).
+  - [gpt-6-sol](ghapp://sessions/377140bc-8a99-47d1-bed3-2b53e4b22b70) waits for `posthoc.done` to reproduce.
+  - [gpt-6-astra](ghapp://sessions/97e5f61d-3add-4e44-9c65-d77e119bfb8a) waits for the final abstract (phase 2).
+- **Next:** T2 → R1 → memo scores update by rule → T3/S4/post-hoc → final render → astra phase 2 → sol reproduction → ledger → deallocate VM → "DONE — slot free".
+- **Needs from user:** register by 15 Oct (if P2 is chosen over P1; only one of P1/P2 is allowed). Teammates' names and skills for the team-fit section.
 - **Risks:**
-  1. Re-prefilled blocks see only sinks + the block (approximate KV); S4 measures this.
-  2. Lexical needles flatter retrieval; T3 and `rodlex` test this.
-  3. CPU timings ≠ GPU timings: only relative overhead is reported.
-  4. Novelty hedged ("to our knowledge"; ArkVale's mechanism is UNVERIFIED).
+  1. R1 may not replicate.
+  2. Approximate re-prefill (E2 decides).
+  3. Synthetic task and n=12.
+  4. CPU timings only.
+  5. Narrow novelty.
 
 ## Phase 0 — what the judges need to see (from `_briefs/perceptron.txt`)
 - **MVP bullets → evidence:** (a) one existing method applied + memory saved vs uncompressed → a table of *retained KV bytes* (counting every index/scale byte) and measured peak memory, per method and ratio; (b) accuracy drop on a small long-context recall task → needle-recall accuracy with 95% Wilson CIs vs the full cache.
@@ -65,8 +68,22 @@
 See [architecture/components.md](architecture/components.md). C1 workload · C2 prefill engine · C3 scorer (spike B) · C4 budget · C5 selector · C6 KV codec · **C7 recall-on-demand (spike A)** · C8 answerer · C9 memory meter · C10 evaluator. All are baseline-implemented in `eval/kvbench.py`; status: written, not yet measured.
 
 ## Selection memo
-_v2 (final for the 12 Oct gate) will be written to [deliverables/selection-memo.md](deliverables/selection-memo.md) once the pre-registered runs finish; its numbers are rendered from committed results by `eval/render_docs.py`._
-- **v1 (4 Oct, 08:10; superseded):** winnability 3 · innovation 4 · feasibility 5 · demo 4 · fit 5. At the time there were no measured numbers; v1 described the RoD design before tuning.
+_v2 source of truth: [deliverables/selection-memo.md](deliverables/selection-memo.md). Scores are rendered by pre-fixed rules from committed results (`eval/render_docs.py`). v1 (4 Oct, 08:10, before any measurement) is superseded._
+<!-- p2:memo-scores:begin -->
+| Criterion | Score | Evidence |
+|---|---|---|
+| **Winnability** | 3 | Pre-registered primary passed: RoD − StreamingLLM +0.40 (95% CI +0.25 to +0.54) at 25% memory, and RoD beats all nine tested query-agnostic baselines there, including NVIDIA kvpress's reference presses. Non-inferiority vs the full cache at 25% was not shown. R1 replication pending. |
+| **Innovation headroom** | 4 | A narrow but real combination: token-backed selective recomputation guided by a single-layer 4-bit key index with a contrastive scorer. Its constituents are prior art (hostile judge: 3/5). At 10% memory the sketch beats a lexical index over the same ids by +0.42 (95% CI +0.31 to +0.52). Headroom: precision-first recall, a streamed scorer, per-channel sketches, multi-turn. |
+| **Feasibility** | 4 | The whole pre-registered evaluation runs end to end on one CPU VM, with logit parity, identity checks, reference baselines and reviews. The Apple-silicon (MLX) demo path is not yet validated; CPU answer time is 6.2× StreamingLLM's at 25% memory. The 19–25 Nov exams are left free. |
+| **Demo strength** | 3 | Live: a 1B model answers questions about a long document holding 10% of its KV. RoD 85% vs ≤6% for every tested eviction baseline (full cache 83%), with a memory meter. Synthetic needles are less visual than a real chat. |
+| **Fit with the user** | 5 | Inference systems: cache hierarchy, recompute vs memory trade-off, kernels. This is core Microsoft-style systems work. |
+
+**Overall: 3.8 / 5**, the unweighted mean (3 + 4 + 4 + 3 + 5 = 19).
+<!-- p2:memo-scores:end -->
+- **One-line pitch:**
+<!-- p2:memo-pitch:begin -->
+"Treat the KV cache as a cache: keep one layer's keys at 4 bits plus the token ids, and recompute only the blocks a question asks for. At a quarter of the memory it recovers 40% of recall that StreamingLLM loses (pre-registered)."
+<!-- p2:memo-pitch:end -->
 - **Pre-registered results so far:**
 <!-- p2:verdicts:begin -->
 - **Primary** (RoD − StreamingLLM, keep 0.25, T1): +0.396 (95% CI +0.25 to +0.54, 12 contexts) → **SUCCESS** (lower bound > 0)
@@ -168,3 +185,21 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Final-design abstract: 761 words plus rendered blocks, about 873 in total.
   - Architecture tiers updated (4-bit, layer 5, 288 B/token, window queries).
   - `render_docs.py` / `check_docs.py` (drift + superseded-number check) / `wordcount.py`.
+
+### 2026-10-04 16:31 IST: T1 results, reviews triaged, identity checks, memo v2 by rule
+- **Reviews.**
+  - gpt-6-sol static review: 8 issues (6 major, 2 minor), all accepted (2 partly). Led to amendment 2 (15:30), environment pins (`setup_kvp.sh`, sha256 + freeze) and renderer checks.
+  - gpt-6-astra phase 1 (provisional 62/100): 12 issues (2 critical), all accepted. Led to amendment 3 (15:35): S7 non-inferiority vs full, S6 single confirmatory fraction, exploratory E1–E3, and novelty/wording rewrites.
+  - Triage: `reviews/2026-10-04-triage.md`; ledger: `reviews/ledger.tsv`.
+- **Streamed scorer** (`components/recall_on_demand/streamed.py`): matches the unchunked scorer to 8e-6 on random tensors (local check). E1 verifies identical block choices on T1.
+- **T1 (16:18).**
+  - Primary passed (+0.40, CI +0.25 to +0.54). S1: RoD beats all 9 query-agnostic baselines at 25%; the weakest margin is TOVA, +0.23 (CI +0.04 to +0.40).
+  - **S7 failed:** RoD − full at 25% = −0.25.
+  - S2: RoD vs lexical at 25%, +0.04 (ns). S5: at 10%, RoD vs lexical +0.42.
+  - Full cache 0.833; int8 0.833, int4 0.771, int2 0.000.
+  - Byte check: 0 violations in 36 cells.
+- **Diagnosis.** RoD finds the needle's block more often as the budget grows (0.88 → 1.00), but accuracy given a hit drops (0.98 → 0.55). 16 of 20 wrong answers name another needle's value.
+- **Amendment 4 (16:21, before T2 outcomes).** R1 replication of the 10% observation on T2 (margin −0.15); R2 mechanism; E5 top-2 cap (queued in the post-hoc job).
+- **Supervisor 16:24** asked for an identity check: done on dev seed 100. I1, I2 and I3 pass at keep 0.10, 0.25, 0.50 and 1.0, so this is not a plumbing artifact.
+- **Selection memo v2:** scores rendered by rules fixed before T2/T3 (`deliverables/selection-memo.md`). Currently 3.8/5 with R1 pending.
+

@@ -318,8 +318,55 @@ def caveats(V):
     return "At 25% memory unless stated: " + "; ".join(parts) + "."
 
 
+def memo_scores(V):
+    """Selection-memo scores by rules fixed before T2/T3 outcomes were seen (deliverables/selection-memo.md)."""
+    t = V.get("T1")
+    if not t:
+        return "_Scores pending._"
+    p, r1 = V["primary"], V.get("R1")
+    lex10 = (V.get("S5") or {}).get(0.1, {}).get("rodlex")
+    rep = r1 is not None and r1["lo"] > -0.15
+    rod10, full = get(t, "rod", 0.1), get(t, "full", 1.0)
+    b10 = max(get(t, b, 0.1)["acc"] for b in ["streaming"] + QA if get(t, b, 0.1))
+    win = 4 if p["lo"] > 0 and rep else (3 if p["lo"] > 0 else 2)
+    inn = 4 if lex10 is not None and lex10["lo"] > 0 else 3
+    demo = 4 if rep else 3
+    rows = [
+        ("Winnability", win, f"Pre-registered primary {'passed' if p['lo'] > 0 else 'failed'}: RoD − StreamingLLM {p['d']:+.2f} (95% CI {p['lo']:+.2f} to {p['hi']:+.2f}) at 25% memory, "
+         f"and RoD beats all nine tested query-agnostic baselines there, including NVIDIA kvpress's reference presses. Non-inferiority vs the full cache at 25% was not shown. "
+         + ("The 10% observation replicated on fresh contexts (R1)." if rep else ("The 10% observation did not replicate (R1)." if r1 is not None else "R1 replication pending."))),
+        ("Innovation headroom", inn, "A narrow but real combination: token-backed selective recomputation guided by a single-layer 4-bit key index with a contrastive scorer. Its constituents are prior art "
+         f"(hostile judge: 3/5). At 10% memory the sketch beats a lexical index over the same ids by {lex10['d']:+.2f} (95% CI {lex10['lo']:+.2f} to {lex10['hi']:+.2f}). "
+         "Headroom: precision-first recall, a streamed scorer, per-channel sketches, multi-turn."),
+        ("Feasibility", 4, "The whole pre-registered evaluation runs end to end on one CPU VM, with logit parity, identity checks, reference baselines and reviews. "
+         "The Apple-silicon (MLX) demo path is not yet validated; CPU answer time is "
+         f"{get(t, 'rod', 0.25)['s'] / get(t, 'streaming', 0.25)['s']:.1f}× StreamingLLM's at 25% memory. The 19–25 Nov exams are left free."),
+        ("Demo strength", demo, f"Live: a 1B model answers questions about a long document holding 10% of its KV. RoD {rod10['acc']:.0%} vs ≤{b10:.0%} for every tested eviction "
+         f"baseline (full cache {full['acc']:.0%}), with a memory meter. Synthetic needles are less visual than a real chat."),
+        ("Fit with the user", 5, "Inference systems: cache hierarchy, recompute vs memory trade-off, kernels. This is core Microsoft-style systems work."),
+    ]
+    lines = ["| Criterion | Score | Evidence |", "|---|---|---|"] + [f"| **{n}** | {s} | {e} |" for n, s, e in rows]
+    tot = sum(s for _, s, _ in rows)
+    lines += ["", f"**Overall: {tot / len(rows):.1f} / 5**, the unweighted mean ({' + '.join(str(s) for _, s, _ in rows)} = {tot})."]
+    return "\n".join(lines)
+
+
+def memo_pitch(V):
+    if not V.get("T1"):
+        return "_Pitch pending._"
+    r1 = V.get("R1")
+    if r1 is not None and r1["lo"] > -0.15:
+        return ('"Treat the KV cache as a cache: keep one layer\'s keys at 4 bits plus the token ids, and recompute only the blocks a '
+                'question asks for. With a tenth of the memory, every tested eviction method forgets the needle; RoD finds it, on two '
+                'independent test splits."')
+    p = V["primary"]
+    return ('"Treat the KV cache as a cache: keep one layer\'s keys at 4 bits plus the token ids, and recompute only the blocks a '
+            f'question asks for. At a quarter of the memory it recovers {p["d"]:.0%} of recall that StreamingLLM loses (pre-registered)."')
+
+
 def render_blocks(V):
-    blocks = {"headline": headline(V), "verdicts": verdicts(V), "caveats": caveats(V)}
+    blocks = {"headline": headline(V), "verdicts": verdicts(V), "caveats": caveats(V), "memo-scores": memo_scores(V),
+              "memo-pitch": memo_pitch(V)}
     if V.get("T1"):
         keep = [t for t in V["T1"] if t["f"] in (1.0, 0.25)]
         blocks["t1-table-025"] = md_table(keep)
