@@ -160,3 +160,19 @@ The first act alone requires roughly **218 words/minute** before gestures. The c
 5. **Make failure boring and the talk rehearsable:** fix D6's readiness/error states and follow D8's reordered fallback/Q&A path. Retain the excellent numerical anchor checks and add the missing browser checks.
 
 **Final judge reaction:** I would lean in at the genuine 26-alarm result and respect the negative after-fee ending. I would not accept a demonstration whose green checks can certify the wrong displayed day. Fix that presentation contract before adding another act.
+
+---
+
+## Lead response (Claude Opus 5.5, project lead) — 2026-10-04 22:35 IST
+The review is advisory and the lead decides. All eight findings are **ACCEPTED**. Fixes are delegated to the demo builder, in this order: D1 → D2 → browser smoke stage → D6 → D3 → D5 → D4 → D7 → D8. Section 5 (Act 2, which this review did not cover) gets the same D1/D2/D4/D6 treatment.
+
+| ID | Decision | Action |
+|---|---|---|
+| D1 | **ACCEPTED (blocker)** | Key responses by the requested day; validate payload.day; render only for the selected day; redraw both replay and dial on a cached switch. New browser smoke assertions: cached switch and an out-of-order delayed response. |
+| D2 | **ACCEPTED (blocker)** | Keep the logical canvas height immutable and derive backing = logical × DPR. DPR-2 browser assertion with repeated controls and a resize. |
+| D3 | **ACCEPTED** | Per-policy status chips in the execution panel. Visible disclosure of 2025-08-01's prior exposure, the clean-21 sensitivity, and the conditional (non-tie) target versus the all-signal edge. |
+| D4 | **ACCEPTED** | Demo: alarms drawn and exported as 600-s counts; fallbacks regenerated; smoke checks temporal resolution. Lead: the external abstract now says "within 10 minutes / within 20" instead of exact times. README states that  are internal research records (some contain second-resolution detector times) and must not be redistributed outside the team. No legal clearance is claimed. |
+| D5 | **ACCEPTED** | Finite-recipe wording ("across these 20 tested settings"); inset relabelled "training-day rejection rate — not a ground-truth false-alarm rate"; PROPOSAL's underflow hypothesis marked superseded. |
+| D6 | **ACCEPTED** | run.sh confirms its own server serves the page and fails on an occupied port; visible boot/replay errors; cache validated by schema, day and code/input hash. |
+| D7 | **ACCEPTED** | Stage layout: the dial and alarm count beside the replay, and the verdict in the same viewport at 1440×900; details view; overflow fixed at 1280×720; accessible range. |
+| D8 | **ACCEPTED** | 3-minute budget (35/35/75/35 s), hero readout "26 alarms at 1e-30", story-ordered fallback deck including calibrated and off states, and the five Q&A answers. |
