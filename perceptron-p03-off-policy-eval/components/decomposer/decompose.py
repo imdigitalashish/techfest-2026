@@ -39,13 +39,20 @@ def _density_ratio(X_before: np.ndarray, X_after: np.ndarray, n_folds: int = 2, 
     return rho
 
 
-def v_mix_old(before: BanditLog, after: BanditLog, pi_old_after: ActionDist, method: str = "DM") -> float:
+def v_mix_old(before: BanditLog, after: BanditLog, pi_old_after: ActionDist, method: str = "DM",
+              n_folds: int = 2, seed: int = 0) -> float:
+    """Requires the before logger to be pi_old itself (on-policy); otherwise an action ratio is needed (review A9)."""
     qb = RewardModel(before.n_actions).fit(before.X, before.A, before.R)
     plug_in = float((pi_old_after.probs * qb.predict(after.X)).sum(1).mean())
     if method == "DM":
         return plug_in
     rho = _density_ratio(before.X, after.X)
-    resid = before.R - qb.predict(before.X)[np.arange(len(before.A)), before.A]
+    folds = np.random.default_rng(seed + 1).integers(0, n_folds, len(before.A))
+    resid = np.zeros(len(before.A))
+    for f in range(n_folds):  # cross-fitted residuals (review A9)
+        tr, te = folds != f, folds == f
+        q_f = RewardModel(before.n_actions).fit(before.X[tr], before.A[tr], before.R[tr])
+        resid[te] = before.R[te] - q_f.predict(before.X[te])[np.arange(te.sum()), before.A[te]]
     return plug_in + float((rho * resid).mean())
 
 
@@ -75,12 +82,17 @@ def shapley(before: BanditLog, after: BanditLog, pi_new_before: ActionDist, pi_o
     """OPE fills V(before, new) from the before logs and V(after, old) from the after logs (independent samples)."""
     q_before = q_before if q_before is not None else crossfit_q(before)
     q_after = q_after if q_after is not None else crossfit_q(after)
-    phi_b = estimate(estimator, before, pi_new_before, q_before).influence - before.R  # V(b,new) - V(b,old), same rows
-    phi_a = after.R - estimate(estimator, after, pi_old_after, q_after).influence  # V(a,new) - V(a,old), same rows
+    v_bn = estimate(estimator, before, pi_new_before, q_before).influence  # per-row terms of V(b,new)
+    v_ao = estimate(estimator, after, pi_old_after, q_after).influence  # per-row terms of V(a,old)
+    phi_b = v_bn - before.R  # V(b,new) - V(b,old), same rows
+    phi_a = after.R - v_ao  # V(a,new) - V(a,old), same rows
+    env_a, env_b = 0.5 * (after.R + v_ao), 0.5 * (before.R + v_bn)  # env = mean(env_a) - mean(env_b) (review C8)
+    env_se = float(np.sqrt(env_a.var(ddof=1) / len(env_a) + env_b.var(ddof=1) / len(env_b)))
     eb, sb = float(phi_b.mean()), float(phi_b.std(ddof=1) / np.sqrt(len(phi_b)))
     ea, sa = float(phi_a.mean()), float(phi_a.std(ddof=1) / np.sqrt(len(phi_a)))
     naive = float(after.R.mean() - before.R.mean())
     pol, pol_se = 0.5 * (eb + ea), 0.5 * float(np.hypot(sb, sa))
     return ShapleyDecomposition(naive=naive, policy=_iv(pol, pol_se, "wald-shapley"), env=naive - pol,
+                                env_ci=_iv(naive - pol, env_se, "wald-paired"),
                                 interaction=_iv(ea - eb, float(np.hypot(sb, sa)), "wald"),
                                 effect_after=_iv(ea, sa, "wald"), effect_before=_iv(eb, sb, "wald"))

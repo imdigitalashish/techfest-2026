@@ -56,3 +56,5 @@ Grid (feasible rules first):
 | 0.002 | 200 | 0.16 | 0.948 | 0.90 | 0.0 |
 | 0.005 | 50 | 0.37 | 0.952 | 0.88 | 0.0 |
 | 0.005 | 200 | 0.16 | 0.948 | 0.90 | 0.0 |
+
+**Correction (review C7, 2026-10-04):** the "Without the gate" line above was computed with the mean-weight z filter still on (693 of 720 runs). The true no-gate baseline on all 720 runs has coverage 0.917, worst configuration 0.65 and 0 confident wrong-sign answers (`gate_calibration_runs.csv`; `eval/calibrate_gate.py` now computes it directly). The chosen rule is unchanged: no calibration run has zero rewards or a non-finite diagnostic, so the new fixed guards (review C5) do not alter it.

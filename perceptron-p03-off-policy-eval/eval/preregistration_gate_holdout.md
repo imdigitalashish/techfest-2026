@@ -1,0 +1,23 @@
+# Pre-registration — held-out validation of the overlap gate (reviews A4, A5, A10)
+
+- **Registered:** 2026-10-04 14:10:45 IST (`TZ=Asia/Kolkata date`, just before the commit that adds this file), before the first run of `eval/validate_gate_holdout.py`.
+- **Frozen rule under test:** `eval/gate_rule.json` (ESS/n ≥ 0.05; |mean-weight z| ≤ 3; the reward floor of 0 is inactive) plus the fixed guards added after review C5 (abstain on zero informative rewards or a non-finite diagnostic). Nothing is re-tuned on these runs.
+- **Held-out settings** (never used in calibration):
+  - World seeds 101 and 202 (calibration used 7).
+  - Effects: positive (new/old scorer quality 0.7/0.3), near-null (0.45/0.40) and harmful (0.3/0.8).
+  - Overlap: ε ∈ {0.1, 0.02} and temperature ∈ {1, 4}.
+  - Rewards: offset ∈ {0, −4}.
+  - Rows per period ∈ {5,000, 20,000}; actions ∈ {10, 40}.
+  - Drift −0.5 logit. 192 configurations × 8 seeds = 1,536 runs.
+- **Estimand and estimator:** the after-period policy effect V(after, new) − V(after, old); DR with a cross-fitted logistic reward model; 95% Wald interval. The reference is the Monte-Carlo population value (200,000 draws), not an exact integral.
+- **Endpoints:**
+  - answer rate;
+  - interval coverage among answered runs, among abstained runs, and without the gate;
+  - confident wrong-sign answers (interval excludes 0 on the side opposite the reference), answered vs ungated;
+  - all of the above by effect type, sample size and action count.
+- **Pre-registered success criteria:**
+  - (i) pooled coverage among answered runs ≥ 0.90;
+  - (ii) coverage among answered runs ≥ 0.85 for every effect type with ≥ 50 answered runs;
+  - (iii) the confident wrong-sign rate among answered runs ≤ the ungated rate.
+  - All results are reported whether or not the criteria are met.
+- **What would change our claims:** if (i)–(iii) fail, the abstract may not call the gate validated. It must then report the held-out numbers as they are.

@@ -74,7 +74,8 @@ def main():
     grid = pd.DataFrame([evaluate(df, te, tr) for te in TAU_ESS for tr in TAU_R])
     ok = grid[(grid.pooled_cov >= 0.93) & ((grid.worst_cfg_cov >= 0.85) | grid.worst_cfg_cov.isna())]
     best = ok.sort_values(["answer_rate", "tau_ess", "tau_r"], ascending=[False, True, True]).iloc[0]
-    ungated = evaluate(df, 0.0, 0)
+    ungated = dict(answer_rate=1.0, pooled_cov=float(df.covered.mean()),  # true no-gate baseline (review C7)
+                   worst_cfg_cov=float(df.groupby("config").covered.mean().min()), confident_wrong=int(df.wrong_sign_confident.sum()))
     rule = {"tau_ess": float(best.tau_ess), "tau_r": float(best.tau_r), "tau_z": TAU_Z,
             "calibrated_at": dt.datetime.now(dt.timezone(dt.timedelta(hours=5, minutes=30))).strftime("%Y-%m-%d %H:%M:%S IST"),
             "calibration": "simulator only (eval/calibrate_gate.py); never fitted to OBD",

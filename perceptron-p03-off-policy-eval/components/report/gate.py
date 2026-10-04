@@ -37,12 +37,17 @@ def load_rule(path: Path = RULE) -> dict:
 
 
 def decide(diag: dict, rule: dict) -> tuple[bool, list[str]]:
-    """Returns (answer?, reasons for abstaining)."""
+    """Returns (answer?, reasons for abstaining). Fixed safety guards (not calibrated; review C5): abstain when no
+    reward carries information (effective rewards = 0) or when any diagnostic is not finite."""
     reasons = []
+    if not all(np.isfinite([diag["ess_frac"], diag["ess_r"], diag["z_mean_w"]])):
+        reasons.append("non-finite diagnostic")
+    if diag["ess_r"] <= 0:
+        reasons.append("no informative rewards")
     if diag["ess_frac"] < rule["tau_ess"]:
         reasons.append(f"ESS/n {diag['ess_frac']:.4f} < {rule['tau_ess']}")
     if diag["ess_r"] < rule["tau_r"]:
         reasons.append(f"effective rewards {diag['ess_r']:.0f} < {rule['tau_r']}")
-    if abs(diag["z_mean_w"]) > rule["tau_z"]:
+    if np.isfinite(diag["z_mean_w"]) and abs(diag["z_mean_w"]) > rule["tau_z"]:
         reasons.append(f"|mean-weight z| {abs(diag['z_mean_w']):.1f} > {rule['tau_z']}")
     return (not reasons), reasons

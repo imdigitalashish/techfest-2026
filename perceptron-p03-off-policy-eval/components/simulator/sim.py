@@ -103,7 +103,7 @@ def ground_truth(world: World, n_mc: int = 400_000) -> GroundTruth:
     ratio = odds(p_act) / odds(p_nom)
     return GroundTruth(
         v_before_old=v(world.policy(Xb, "old"), qb),
-        v_before_new=v(world.policy(Xb, "new"), qb),
+        v_before_new=v(world.deployed(Xb, ub, "new"), qb),  # the new policy as it would actually run (incl. any override); review C6
         v_after_old=v(world.policy(Xa, "old"), qa),
         v_after_new=v(p_act, qa),
         v_mix_old=v(world.policy(Xa, "old"), q_mix),

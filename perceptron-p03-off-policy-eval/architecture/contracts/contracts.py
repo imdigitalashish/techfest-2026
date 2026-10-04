@@ -140,6 +140,7 @@ class ShapleyDecomposition(_M):
     naive: float
     policy: Interval  # Shapley: 0.5 * (effect_before + effect_after)
     env: float  # naive - policy
+    env_ci: Optional[Interval] = None  # paired per-period terms (review C8)
     interaction: Interval  # effect_after - effect_before
     effect_after: Interval  # environment-first ordering (the v0 decomposer's policy term)
     effect_before: Interval  # policy-first ordering

@@ -141,3 +141,15 @@ def test_verdict_paths(sim):
     assert verdict(sh, {"V(after,old)": bad, "V(before,new)": bad}, rule).decision == "cant_tell"
     v1 = verdict(sh, {"V(after,old)": good, "V(before,new)": bad}, rule)
     assert v1.diagnostics["decided_on"].startswith("Policy effect in the after period") and "not estimable" in v1.headline
+
+
+def test_shapley_env_interval_and_gate_guards(sim):
+    from components.decomposer.decompose import shapley
+    from components.report.gate import decide, diagnostics
+    w = sim.world
+    sh = shapley(sim.before, sim.after, ActionDist(probs=w.policy(sim.before.X, "new"), policy="new"),
+                 ActionDist(probs=w.policy(sim.after.X, "old"), policy="old"))
+    assert sh.env_ci is not None and sh.env_ci.point == pytest.approx(sh.env)
+    rule = {"tau_ess": 0.05, "tau_r": 0.0, "tau_z": 3.0}
+    ok, why = decide(diagnostics(np.array([0.5, 1.5] * 50), np.zeros(100)), rule)  # review C5 counterexample
+    assert not ok and "no informative rewards" in why
