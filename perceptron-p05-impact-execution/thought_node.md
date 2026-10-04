@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 done → 1 (research) + 4 (skeleton), in Supervisor LEAN MODE (05:51 IST): no sub-agents, small requests, no downloads > 200 MB.
-- **Plan:** Morning package in the order a→g: thought node → `research/landscape.md` → `architecture/components.md` + contracts → ADR 001 → selection memo → `deliverables/round1-abstract.md` + `deliverables/architecture.md` → ABIDES skeleton + paired-seed eval (TWAP/VWAP vs impact-aware agent), if the Python env installs.
-- **Doing:** Lead alone, sequentially.
-- **Next:** Install the minimal ABIDES runtime (numpy/pandas/scipy plus a local `pomegranate` shim), then write the landscape from primary sources while sims run.
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** (1) Network saturation: all 6 research sub-agents died at 0 turns with 408s and the first pip install timed out. (2) ABIDES pins 2021-era deps (numpy 1.22, pandas 1.2.4, pomegranate 0.14.5, gym 0.18, ray 1.7), so installing on Python 3.11/arm64 is risky; mitigation: skip gym/ray, shim pomegranate. (3) RL agents that "beat TWAP" often win only by capturing the spread, which Optiver judges will spot. So we report the decomposition: spread vs impact vs timing.
+- **Phase:** Morning package delivered (07:45 IST). Phases 1–4 v0 done; Phase 5 (ratchet) is next. Still in Supervisor LEAN MODE.
+- **Plan:** Make the spike real: (1) RNG-synchronised twins (C2) with NSR measured before/after; (2) a ghost-book estimator (C4) scored by RMSE vs the twin; (3) the agent ratchet on val seeds; (4) n = 200 test seeds for the abstract.
+- **Doing:** E3 held-out test (60 seeds × TWAP/VWAP/IA + 2 ablations) is running in the background. Lead alone.
+- **Next:** (1) Finalise E3 → `eval/results/E3_test.csv` + `_summary.md` and refresh the abstract numbers. (2) Implement `rng_sync="per_wakeup"`. (3) Size sweep (square-root check). (4) Re-verify the UNVERIFIED company sources (LOXM, Aiden, BestEx, Proof, SEC 605) and the classics (Almgren–Chriss, Obizhaeva–Wang, Perold). (5) Independent rubber-duck pass on ADR 001 once sub-agents work again.
+- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills (the abstract has placeholders).
+- **Risks:** (1) **Twin decorrelation:** naive same-seed twins diverge (Δmid std 33¢ at 20 min vs 3–5¢ mean impact). Impact claims are noise-limited until C2 is fixed. (2) The agent's win so far comes mostly from the touch-limit tactic, not from impact-aware scheduling. Report it honestly; the ratchet must show schedule/feedback value. (3) Machine load (load avg 40–98 tonight) makes sims ~10× slower than idle. (4) ABIDES realism of impact is untested (square-root exponent unknown).
 
 ### Phase 0 — what we must be able to show (from the Round-1 rubric)
 - Crux (20%): the agent's own trades move the price it later pays (transient + permanent impact, book resilience, other agents' reactions), so slippage is endogenous; a replay backtest can't see it.
@@ -47,21 +47,36 @@
 - What practitioners ship: execution-algo research from brokers and trading firms (public papers and talks).
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04: **Simulator = ABIDES rmsc04** (`jpmorganchase/abides-jpmc-public` @ f9cbe51), run on Python 3.11 + numpy 2.2 + pandas 2.3 with a 40-line `pomegranate` shim (same mixture, the agent's own RNG). No gym/ray. Assumption: shim draws are not bit-identical to pomegranate 0.14.5; the distribution is the same.
+- 2026-10-04: **Task:** SELL 4,000 shares, 09:35–09:55, 40×30-s slots, forced completion; ≈12% of window volume. Metric = IS bps vs the arrival mid; paired vs TWAP with a bootstrap CI. Seeds: train 0–99 / val 100–199 / test 1000–1199.
+- 2026-10-04: **Counterfactual twins:** the null twin appends a zero-quantity copy of our agent, so the latency model and all background RNG streams are identical (verified bit-identical pre-trade, 80/80).
+- 2026-10-04: **Spike = synchronised twins (C2) + ghost-book impact model (C4)**. See [ADR 001](architecture/adr/001-spike.md). MV agent = propagator-QP + own-impact feedback + touch-limit tactic.
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| C1 | sim_env | WorldSpec → WorldResult | ABIDES rmsc04 | | ✅ | realism scorecard (δ, decay) |
+| C2 | twin_runner | TwinSpec → TwinPair | naive same-seed twins | ★ | ✅ naive; sync next | NSR = std/\|mean\| of Δmid(T1) |
+| C3 | market_state | BookSnapshot+fills → Features | L1 quotes | | partial | R² → next-slot cost |
+| C4 | impact_model | Features+fills → ImpactEstimate | exp. propagator | ★ | ✅ v0 (OOS R² < 0) | ghost-book RMSE vs twin |
+| C5 | scheduler | ParentOrder+ImpactParams → Schedule | TWAP/VWAP/AC | | ✅ | model cost; ΔIS |
+| C6 | child_order_tactics | SlotTarget+book → ChildOrder[] | market order | | ✅ | instant cost bps |
+| C7 | execution_agent | PolicySpec → fills | ABIDES-Gym env | | ✅ | completion 100% |
+| C8 | tca | TwinPair → EpisodeMetrics | Perold IS | | ✅ | identity error = 0 |
+| C9 | eval_harness | ExperimentSpec → CSV/summary | unpaired mean | | ✅ v0 | CI half-width |
+| C10 | feedback_attribution | TwinPair → Attribution | none | | ✅ v0 | conservation residual |
+| C11 | learner | results.tsv → PolicySpec | grid | | ⏳ | val ΔIS |
+| C12 | demo_ui | results → app | — | | ⏳ | — |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+_v1, 4 Oct 07:45 IST (final by 12 Oct). Each item scored 1–5 with one line of evidence._
+- **Winnability: 4/5.** The MV is already met in a preliminary held-out test. The impact-aware agent beats TWAP by **−0.60 bps [95% CI −1.12, −0.10]**, winning on 67% of 18 seeds (E3, in progress). It sits in Optiver's home domain (judges are market makers). Against: "agent beats TWAP in a sim" is crowded (Karpe 2020, Hafsi & Vittori 2024, Olby et al. ICAIF 2025).
+- **Innovation headroom: 4/5.** Spike = synchronised counterfactual twins plus a deployable ghost-book estimator. Evidence of headroom: naive twins decorrelate (std 33¢ vs 3–5¢ signal, E1), and I found no prior work fixing this in tonight's arXiv searches (absence UNVERIFIED beyond those). The twin-exact IS decomposition (drift/own impact/instant) is a crisp evaluation novelty.
+- **Feasibility by the deadline: 5/5.** ABIDES runs on the M5 (0.9 s/day idle) with no GPU. Skeleton, twins, TCA, calibration and 3 policies were built overnight. Week-by-week plan avoids 19–25 Nov.
+- **Demo strength: 4/5.** Side-by-side real book vs ghost book, live IS decomposition bars, "who absorbed our order" chart. Sim-only (no live market), but the judges asked for a simulator.
+- **Fit with the user's strengths: 4/5.** Large-scale simulation (10⁴–10⁵ paired runs), systems engineering, a rigorous eval harness. Frontier models are optional (PPO challenger; MarS on Azure).
+- **Biggest risk:** the measured gain comes mostly from the touch-limit tactic (−0.62 bps alone), not from impact-aware scheduling, and impact claims are noise-limited until twins are synchronised. A judge could call it "spread/book-walking avoidance". Mitigation: decomposition + ablations + sync.
+- **One-line pitch:** *"We run twin markets, one with our order and one without, to measure our own footprint exactly, then train an execution agent to shrink it: −0.6 bps vs TWAP on held-out seeds (preliminary)."*
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -75,3 +90,25 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
 ### 2026-10-04 05:51 IST — Supervisor: LEAN MODE
 No sub-agents until 08:30; small requests; push at least every 30 min. Proceeding sequentially in the order a→g.
+
+### 2026-10-04 07:45 IST — Morning package (lean mode, solo)
+- **Built** (`components/`, `eval/`, `tests/`): ABIDES adapter + pomegranate shim (`sim_env`), counterfactual twins (`sim_env/twins.py`), ABIDES `ExecutionAgent` + pure policies TWAP/VWAP/PROBE/IA (`execution_agent`), TCA with an exact twin decomposition (`tca`), exponential propagator fit (`impact_model`), experiment runner, calibration and a paired-CI summariser (`eval/`). Unit tests: 4 passed (`.venv/bin/python -m pytest -q tests`).
+- **Env:** `.venv` = `python3.11 -m venv --system-site-packages` (numpy 2.2.6, pandas 2.3.3, scipy 1.17, pydantic 2.12); `scripts/fetch_abides.sh` pins ABIDES f9cbe51.
+- **E1 calibration (train seeds 0–39; TWAP + PROBE; SELL 4,000):** `.venv/bin/python eval/run_experiment.py --exp E1_calib_train --seeds 0:40 --qty 4000 --policies eval/policies/calib.json --workers 8`, then `.venv/bin/python eval/calibrate.py --exp E1_calib_train`.
+  - Twins are bit-identical pre-trade in 80/80 runs.
+  - Mean Δmid(own impact) is +1.5¢ @60 s and +3.2¢ @300 s, but its std is 4.7 / 8.5 / 33 / 64¢ at 60 s / 5 / 20 / 30 min (decorrelation).
+  - Kernel fit: τ = 60 s, g_tr = 0.0059¢/sh, g_perm = 0.0022¢/sh; OOS R² < 0 on 20 held-out train seeds.
+  - TWAP IS −0.09 bps (drift −0.32, own +0.12, instant +0.11); E1 is for calibration, not claims.
+- **E3 test (seeds 1000–1059, in progress):** `.venv/bin/python eval/run_experiment.py --exp E3_test --seeds 1000:1060 --qty 4000 --policies eval/policies/test.json --workers 9`. Preliminary summary on the 18 finished seeds: `.venv/bin/python eval/summarize.py --exp E3_test --from-pkl`.
+
+  | policy | IS bps | paired ΔIS vs TWAP | win |
+  |---|---|---|---|
+  | TWAP | 1.376 | — | — |
+  | VWAP | 1.035 | −0.34 [−0.83, +0.11] | 67% |
+  | IA_full | 0.778 | **−0.60 [−1.12, −0.10]** | 67% |
+  | IA_sched_only | 0.952 | −0.42 [−0.89, +0.10] | 72% |
+  | TWAP_touch_limit | 0.757 | −0.62 [−1.11, −0.14] | 78% |
+
+  Twin-measured own impact (approx.): TWAP 0.71 bps vs touch-limit 0.12 bps and IA 0.15 bps.
+- **Docs:** `research/landscape.md` (≈33 arXiv abstracts opened via the API plus 5 web sources; companies I couldn't open are marked UNVERIFIED), `research/components/innovation-candidates.md`, `architecture/components.md` + `architecture/contracts/contracts.py`, `architecture/adr/001-spike.md`, `deliverables/round1-abstract.md` (899 words incl. headings), `deliverables/architecture.md`.
+- **Assumptions:** ABIDES ExchangeAgent writes `./log/<dir>`; we give each run a unique dir (a parallel-run race crashed E3 once; fixed). `log/` is gitignored.

@@ -1,0 +1,18 @@
+# Per-component research: state of the art and innovation room (v0, 4 Oct 2026)
+
+> Lean-mode version: one file instead of one per component (Supervisor rule, 05:51 IST). Sources are those opened in [`../landscape.md`](../landscape.md); arXiv ids refer to abstracts opened on 2026-10-04. Scores are 1–5 for impact on judged criteria · novelty · feasibility · measurability · demo.
+
+| Component | Best existing practice (source) | Innovation room | Candidate | Score | Decision |
+|---|---|---|---|---|---|
+| C1 sim_env | ABIDES rmsc04 (1904.12066, 2110.14771); MarS generative sim (2409.07486); queue-reactive models (2511.15262) | Realism of *impact* is rarely checked: does the sim reproduce the square-root law (2411.13965) and the mechanisms behind it (2607.04280)? | Realism scorecard: δ from a size sweep, decay ratio, spread/depth/volume | 4·3·5·5·3 = 20 | Best practice + scorecard |
+| C2 twin_runner ★ | Same-seed paired runs: common random numbers (standard simulation practice). Balch et al. replay vs interactive (1906.12010) | **Measured tonight: naive twins decorrelate (Δmid std 33¢ at 20 min vs a 3–5¢ mean)**. No paper found that quantifies or fixes this for LOB ABMs (searched arXiv tonight; UNVERIFIED beyond that) | Per-agent, per-wake-up RNG re-keying; antithetic twins; control variates (twin drift) | 5·5·4·5·5 = 24 | **Spike** |
+| C3 market_state | LOB features: depth, imbalance, spread (1812.06600, 2511.15262 state = time, inventory, price, depth) | Add the agent's *own estimated impact* as a state feature | Î(t) feature from C4 | 3·3·5·4·2 = 17 | Best practice |
+| C4 impact_model ★ | Propagator (cond-mat/0307332), transient impact OW (2501.09638), general decay kernels (2410.13493) | Fit the kernel on **twin-differenced** paths (drift removed) and validate it as a ghost book against ground truth | Exponential propagator v0 → nonparametric kernel → small sequence model; RMSE vs the twin | 5·4·4·5·5 = 23 | **Spike** |
+| C5 scheduler | TWAP/VWAP; Almgren–Chriss frontier (used by 2510.22206); quality-diversity schedules (2601.22113) | Optimal schedule under the *fitted* kernel (QP); regime-conditional schedules | Propagator QP (built) + feedback on Î(t) | 4·3·5·4·3 = 19 | Built (MV agent) |
+| C6 child_order_tactics | Market orders; passive/limit impact (2607.28323) | Tonight's ablation: touch-limited orders cut twin-measured own impact 0.71 → ~0.12 bps (prelim, n = 18) | Touch cap + passive posting + catch-up; queue-aware posting | 4·2·5·5·3 = 19 | Built; tune via ratchet |
+| C7 execution_agent | ABIDES-Gym execution env (parent 1,000 shares, 10 min, 60-s steps, BUY by default; read in code) | Completion guarantees + decision-grid determinism | Our agent (built) | — | Best practice |
+| C8 tca | Implementation shortfall (Perold 1988, **UNVERIFIED**, not opened); impact-vs-risk split (2510.22206) | **Exact per-seed split**: drift / own impact / instantaneous via twins | Built; unit-tested identity | 4·4·5·5·4 = 22 | Best practice + twist |
+| C9 eval_harness | Mean over seeds | Paired bootstrap CIs, CVaR, disjoint seed splits, NSR | Built v0 | 4·2·5·5·2 = 18 | Best practice |
+| C10 feedback_attribution | Adaptive-MM effects (2511.02016); learned collusion between execution agents (2610.00619) | Δposition by agent type (who absorbs or amplifies); MM response; impulse response; adaptive-MM ablation | Built v0 (Δpos) | 4·4·4·4·4 = 20 | Stretch goal 2 |
+| C11 learner | DDQN/PPO/DDPG/actor-critic (1812.06600, 2411.06389, 2410.13493, 2606.08379); MAP-Elites (2601.22113) | A ratchet against a *paired, low-variance* evaluator | Optuna/CEM over IA params, then PPO | 3·2·4·5·3 = 17 | After the spike |
+| C12 demo_ui | — | Live "real book vs ghost book" view | Streamlit/Plotly | 3·3·4·1·5 | Finals |
