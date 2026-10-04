@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
-- **Needs from user:** Register by 15 Oct and pick one track (after the 12 Oct selection). Team of 2–5: names and skills.
-- **Risks:** _(lead fills)_
+- **Phase:** 1–4 in parallel, LEAN MODE (Supervisor 05:49: no sub-agents, small requests, push every 30 min).
+- **Plan:** real-data walking skeleton (VAHAN + OSM chargers + boundaries) for the national view and one demo state, **Maharashtra**; landscape → components + contracts → ADR 001 → selection memo → Round-1 drafts.
+- **Doing (lead, sequential):** VAHAN plain-HTTP client works (no browser): JSF partial-AJAX + Excel export, validated on the CY2025 State × Fuel table. Next: national pulls, OSM charger pull, docs.
+- **Next:** (1) push skeleton code; (2) research/landscape.md; (3) architecture/components.md + contracts; (4) ADR 001; (5) selection memo; (6) deliverables/round1-*.md; (7) gap analysis numbers + map.
+- **Needs from user:** Register by 15 Oct and pick one track (after the 12 Oct selection). Team of 2–5: names and skills. An Open Charge Map API key (free signup) would add a third charger source; meanwhile OSM is the open source.
+- **Risks:** (1) VAHAN registrations ≠ on-road stock (no deregistration feed); (2) open charger data is incomplete vs official counts → we measure and publish completeness per state; (3) RTO → district crosswalk is manual; (4) tonight's network saturation (most sub-agents died on model 408s).
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** EV Infra & Green Mobility AI Challenge — Techfest IIT Bombay with the Ministry of Heavy Industries (MHI) and the International Centre for Automotive Technology (ICAT). Prize pool ₹2,00,000; top 3 teams per track.
@@ -56,3 +56,12 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (t
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 05:55 IST — Phase 0–1 under network saturation
+- Phase 0 done: brief, judging weights and deliverables read from `_briefs/ev-infra.txt`.
+- Launched 9 research sub-agents (methods, India data/policy, companies, social, OSS/data, India EV parameters, benchmarks, policy norms); 7 died on model-side "408 Timed out reading request body" (portfolio-wide network saturation). Two original agents are still running; told them to wrap up.
+- **VAHAN spike succeeded.** The public dashboard (`vahan4dashboard/.../reportview.xhtml`) lists "All Vahan4 Running States (36/36)" and "All Vahan4 Running Office (1468/1469)". Plain HTTP replay of the JSF/PrimeFaces AJAX (state → RTO cascade, axis selection, Refresh `j_idt65`, export `groupingTable:xls`) returns full pivot tables as .xlsx. Validated: CY2025 State × Fuel, 36 rows; Andaman row sums to its TOTAL (9,658). EV fuel labels: `ELECTRIC(BOV)`, `PURE EV` (+ `PLUG-IN HYBRID EV`, `STRONG HYBRID EV`). Code: `components/vahan_ingest/vahan_client.py`.
+- Open Charge Map API returns 403 without a key → use OSM `amenity=charging_station` (Overpass) as the open charger source tonight.
+- Decision (assumption, reversible): demo geography = **Maharashtra** (largest e-4W market, Mumbai–Pune–Nashik corridors, state EV Policy 2025); pipeline stays state-agnostic.
+- Switched to LEAN MODE per Supervisor.
+

@@ -1,0 +1,12 @@
+[project]
+name = "ev-infra-map-india"
+version = "0.1.0"
+description = "EV Infra Map India — Techfest 2026 (MHI x ICAT) Challenge 1"
+requires-python = ">=3.11"
+dependencies = [
+  "requests>=2.32", "pandas>=2.2", "openpyxl>=3.1", "pyarrow>=17", "numpy>=1.26",
+  "shapely>=2.0", "geopandas>=1.0", "pyproj>=3.6", "h3>=4.1", "rapidfuzz>=3.9",
+  "scikit-learn>=1.5", "scipy>=1.13", "duckdb>=1.1", "pydantic>=2.8", "pytest>=8.3",
+]
+[tool.uv]
+package = false
