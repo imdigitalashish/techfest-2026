@@ -243,6 +243,6 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - distinct-instance gate counts (5/8 answered, 4/5 hold the reference, 0/3 confident wrong signs);
   - the gate's design chronology;
   - holdout counts (818/1,536 answered; 771/818 vs 1,404/1,536 coverage).
-- **Verdict contract** (): one primary decision on the after-period contrast, otherwise "can't tell"; Shapley is secondary. Demo verdicts re-run: OBD deploy → cant_tell; rollback → hurt (reference inside the interval). The diagram uses "Monte-Carlo reference" and "noisy concurrent-arm reference" wording.
+- **Verdict contract** (`components/report/verdict.py`): one primary decision on the after-period contrast, otherwise "can't tell"; Shapley is secondary. Demo verdicts re-run: OBD deploy → cant_tell; rollback → hurt (reference inside the interval). The diagram uses "Monte-Carlo reference" and "noisy concurrent-arm reference" wording.
 - **Final selection memo:** win 3, innovation 3, feasibility 5, demo 4, fit 3; mean 3.6. **Recommendation: P7 over P3, narrowly** (P7's hostile score 71 vs 69, fit 5 vs 3); P3 is the credible runner-up. `eval/check_docs.py`: PASS.
 - **Deferred, with dates in Next:** A9 nuisance matrix; C8 OBD environment interval; A12 paired-DR baseline; A15 frozen near-zero test; held-out OBD campaigns.
