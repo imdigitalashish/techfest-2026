@@ -10,16 +10,13 @@
 - _(none)_
 
 ## Now
-- **Phase:** **PAUSED 09:55 IST, 4 Oct** by the user's decision (Supervisor): only three projects run at a time; India@71 pick is T1 unless the user overrides. Morning package complete and pushed; Phases 1–5 done in lean form.
-- **State at pause:** proposal v0.3 (`deliverables/round1-proposal.md`, ~2,560 words; v0.2 rendered to 5 A4 pages at Arial 11 pt — the committed PDF may predate the legal paragraph, see resume step 1); spike A (C6) ratchet at 0.3349 (best-arm rule 0.3655, oracle 1.0; SYNTHETIC); spike B (C10/C11) ρ 0.90 (SYNTHETIC); law verified (DPDP, Aadhaar s.29, UIDAI ADV); 5 contract tests pass. **No background jobs running; nothing to restart.**
-- **Resume point (in order):**
-  1. Re-render and check the page limit: `.venv/bin/python deliverables/render_html.py`, print `.cache/proposal.html` to A4 PDF (1-inch margins, Playwright `page.pdf`), confirm ≤ 6 pages and all text ≥ 11 pt, copy to `deliverables/India71_100_DRAFT.pdf`.
-  2. Verify the remaining UNVERIFIED facts (`research/landscape.md` §7): AePS volumes, NPCI mapper consent, Hello! UPI, BC Sakhi numbers (npci.org.in and pib.gov.in block automated fetchers — use the browser), current MuleHunter.AI bank count, FI-Index weights (Aug 2021 methodology release), DEPA clean-room repos; RCT effect sizes to replace simulator ASSUMPTIONs.
-  3. C6 ratchet, backlog item 7 (two-stage policy: who by uplift, which by segment effect per rupee): edit `components/targeting/engine.py`, run `nice -n 10 .venv/bin/python components/targeting/autoresearch/eval.py` (5–13 min under load), log in `results.tsv`.
-  4. Spike B: BC-level small-cell DP test (hundreds of persons per cell) and contract tests for C10/C11.
-  5. Independent rubber-duck review of ADR 001 and the proposal; selection memo v2 by 12 Oct if T3 is reconsidered.
-- **Needs from user:** (1) Confirm the India@71 theme choice (Supervisor: T1 unless overridden) before registration closes on 15 Oct. (2) If T3 is chosen: teammates (≤ 4) and 3–5 short conversations with a BC agent / BC Sakhi, a rural branch manager or a Lead District Manager before 1 Nov.
-- **Risks (if resumed):** account-level results are SYNTHETIC; our learned targeting does not yet beat the simple best-arm rule; several ecosystem facts are still UNVERIFIED (resume step 2).
+- **Phase:** RESUMED 2026-10-04 13:53 IST (Supervisor; batch slot). Finishing T3 to its definition of done. T1 is ✅ completed and the default India@71 pick; this project must make an honest case for or against T3.
+- **Definition of done (Supervisor, 13:52):** (1) final proposal PDF `deliverables/India71_100_[TeamID].pdf` — ≤ 6 A4 pages, all text ≥ 11 pt, fonts embedded; (2) verify the remaining UNVERIFIED facts at primary sources (browser where fetchers are blocked); (3) evidence honesty — beat the best-arm rule in a **pre-registered** test or ship the transparent rule with the model as a gated challenger; every SYNTHETIC result labelled; numbers rendered from committed results with a doc-drift check (`eval/check_docs.py`); (4) cross-model reviews as child sessions (gpt-6-astra max: hostile judge on the proposal; gpt-6-sol max: code + eval incl. reproducing headline numbers) → `reviews/` + `reviews/ledger.tsv`; (5) final selection memo; push; message "DONE — slot free".
+- **Plan (in order):** pre-register C6 v0.2 (transparent rule + gated challenger) test on fresh seeds → run (nice, one heavy job) → `eval/check_docs.py` → browser verification pass → proposal v1.0 + PDF → child-session reviews (≤ 2 at a time) → apply accepted fixes → final memo → DONE.
+- **Doing:** this plan; no child sessions yet.
+- **Rules in force:** child sessions only (no `task`), ≤ 2 at a time; no `git stash`/`--autostash` (push helper fixed); clock timestamps; heavy jobs `nice -n 10`, one at a time, only when `kern.memorystatus_level` ≥ 30; no GPU; small requests.
+- **Needs from user:** (1) Theme choice by 15 Oct (Supervisor default: T1). (2) If T3: team name/ID, up to 4 members, and 3–5 short field conversations (BC agent / BC Sakhi, rural branch manager, Lead District Manager) before 1 Nov.
+- **Risks:** account-level results are SYNTHETIC; learned targeting currently trails the best-arm rule (0.33 vs 0.37); NPCI/PIB block automated fetchers.
 
 ## Brief → what we must be able to show (Phase 0, 02:55 IST)
 Hard constraints: one theme per team, fixed at registration (15 Oct); team ≤4; Round 1 = ≤6 pages A4, 1-inch margins, Arial ≥11 pt, single PDF `India71_100_[Team ID].pdf` via Google Form by 1 Nov; must be a concrete technical architecture (targeting model / interoperable access layer / governance dashboard), not a financial product; original work. Round 2 (16–18 Dec): 10-min talk + 5-min Q&A.
@@ -135,3 +132,6 @@ Opened RBI press releases 2025-2026/759 (22 Jul 2025: FI-Index 67.0 for March 20
 - **Law verified** by agent v2 at primary sources (`research/verification-law.md`): DPDP Act ss. 7(b), 8(7), 10, 17(2)(b); commencement G.S.R. 843(E) (substantive provisions ~May 2027); Rules notified 14 Nov 2025; Aadhaar Act s. 29; UIDAI Circular 14 of 2025 (Aadhaar Data Vault + Reference Key). Folded into landscape, proposal §4.2 and `deliverables/architecture.md` (legal-anchor table).
 - **Hygiene:** a 09:15 local commit had swept in the law agent's scratch files (`._scratch_*`, incl. a 6 MB PDF) via `git add -A`; caught before push, removed from the unpushed commit, and `india71-t3-finance/.gitignore` now ignores `._scratch*`.
 - **09:55 — paused** on the user's decision (Supervisor message). Resume point recorded in *Now*.
+
+### 2026-10-04 13:53 IST — Resumed (Supervisor message)
+Batch slot freed; resumed with a five-point definition of done (see *Now*). Removed `--autostash` from my push helper (PLAYBOOK §6 now bans stash).
