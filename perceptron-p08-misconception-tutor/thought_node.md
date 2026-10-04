@@ -11,29 +11,25 @@
 - 2026-10-04 09:55 (Supervisor): **PAUSE** (user's decision; only Namma Space, P7 and EV C2 run; P7 is the Perceptron pick unless the user overrides). → Paused at 10:00 IST. No jobs were running.
 
 ## Now
-- **Phase:** ✅ **Done for this batch (17:16 IST, 4 Oct)**: definition of done met; "DONE — slot free" sent to the Supervisor.
-- **Plan / result:**
-  - Pre-registered LLM-gap tests (`eval/llm_gap_protocol.md`): no gap was detected against the reasoning models; gaps were detected only against gpt-4.1-mini.
-  - The pitch is re-framed as an **exact-first cascade** with no accuracy claim.
-  - Deliverables are rendered from results: `deliverables/round1-abstract.md` (829 words), `architecture.md` and `selection-memo.md`. `check_docs` is OK and its self-test passes.
-  - Reviews by gpt-6-astra and gpt-6-sol are triaged in `reviews/`.
-- **Doing:** nothing; no background jobs. The two reviewer child sessions are idle; they have commits, so they are not archived.
-- **Next (only if P8 is picked at the 12 Oct gate):**
-  1. Fill [TEAM] (names, skills, owners).
-  2. Pilot protocol and consent (randomised vs a GPT-5.5 tutor).
-  3. A non-generator-native cascade workload.
-  4. Rule-precedence wording in the tracing prompt; parser segment-disambiguation sensitivity.
-  5. Real option-level tracing.
-  6. Web UI and teacher view.
+- **Phase:** 6 — **DEMO** (Supervisor, 21:12 IST, 4 Oct). Bar: PLAYBOOK §11 (`demo/run.sh`, first visual ≤60 s, real data first, baseline side by side, a judge knob, every number from committed results, `SCRIPT.md`, `fallback/`, `smoke.sh`, one gpt-6-astra demo review). Earlier batch DONE at 17:16 (selection memo: against P8).
+- **Data-licence finding (21:15):** Kaggle Eedi 2024 rules (opened 2026-10-04 via browser):
+  - data use is CC BY-NC 4.0, non-commercial only;
+  - §7.B: participants agree "not to transmit, duplicate, publish, redistribute or otherwise provide or make available the Competition Data to any party not participating in the Competition".
+- **Demo data policy** (follows from the above):
+  - no Eedi item text in any committed file, screenshot or recording;
+  - only derived per-item outcomes (item ids, codes, flags) and aggregates are committed;
+  - item text is shown only when it has been fetched locally into the gitignored `.data/`;
+  - names are shown only from the CC BY 4.0 Eedi Misconceptions Graph (1,757 of the 2,587 Kaggle names appear there verbatim), otherwise our own descriptions.
+  - Audit: no item text is committed today (the regexes in parser code only). `EEDI_LINKS` cites 6 short Kaggle-only label names; that is noted as a residual compliance item.
+- **Doing:** spawning one demo-builder child session (plan mode: it proposes the crazy element, I approve, it builds). Later: one gpt-6-astra demo review (≤2 children at a time).
+- **Rules:** CPU only; `nice -n 10` + memory guard; no new API spend; no `git stash`; timestamps from `TZ=Asia/Kolkata date`.
 - **Needs from user:**
-  - Decide the Perceptron pick at the 12 Oct gate (P8 memo recommends **against**).
-  - If P8 is picked: register by 15 Oct; teammates' names, skills and owners; a Kaggle login to verify the Eedi mirror; ~30 consenting learners in November.
-  - Azure OpenAI resource group `rg-tf26-p08` (gpt-4.1-mini, gpt-5.4-mini, gpt-5.5) is pay-per-token. Delete with `az group delete -n rg-tf26-p08` if P8 is dropped.
+  - Perceptron pick at the 12 Oct gate (P8 memo: against).
+  - If P8 is picked: register by 15 Oct; teammates; a Kaggle login (accept the rules) to fetch the official Eedi data, which is also needed to show item text at the finals; ~30 pilot learners.
+  - Azure `rg-tf26-p08`: delete if P8 is dropped.
 - **Risks:**
-  1. No accuracy edge over frontier LLMs.
-  2. Learning evidence needs a pilot that overlaps the exams.
-  3. Executable coverage on real items is low (26/304).
-  4. Eedi data comes via a mirror; revision and hashes are pinned.
+  1. The demo must not leak Eedi text (fallback recordings especially).
+  2. No accuracy edge; the demo's honest crazy element is determinism + certificates + cost knob, not accuracy.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
