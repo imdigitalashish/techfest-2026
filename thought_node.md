@@ -6,17 +6,17 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (14:20 IST, 4 Oct)
+## Now (14:36 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - Namma Space: Brush run 3 (verified poses) has held the GPU since 14:00; ETA ≈14:25.
-  - P3: held-out gate validation passed (pre-registered 14:10:45 → results 14:17:14; answers 53% of 1,536 unseen runs); reviews applied.
-  - EV C1: Round-1 methodology and roadmap v2; astra review in, sol review running; suggested a criteria→evidence map.
-  - India@71 T3: proposal v1.0 PDF (6 pp, Arial ≥ 11 pt, fonts embedded). ADR 002 ships the transparent rule, with the challenger gated until real pilot data (it won only on SYNTHETIC data). Legal citations being verified (DPDP Rules 2025).
-  - P6: walk-forward extension under a memory-guarded runner.
-- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5.
-- **Queue:** APCTT (when the 10 Oct data lands) → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
-- **Memory:** level 26–33%. The pressure is your VM (~16 GB incl. compressed) plus Namma's Brush (4.5 GB); project Python processes are small.
+  - Namma Space: Brush run 3 (verified poses) running since 14:00, slowed by memory pressure; GPU held.
+  - EV C1: Round-1 docs v2; reviews being triaged.
+  - India@71 T3: proposal PDF v1.0 (6 pp); policy engine 22/22; reviews running.
+  - P6: 12-day walk-forward pre-registered 14:24 (5 already-seen days disclosed; unseen-7 subset); compiled LEV in Numba; reviews running.
+  - P2: resumed 14:36 into P3's slot. It runs on its own Azure CPU VM (Standard_D8ds_v5), away from the local GPU and memory pressure.
+- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3.
+- **Queue:** APCTT (when the 10 Oct data lands) → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
+- **Memory:** level 21–25%. Your VM (~16 GB incl. compressed) plus Namma's Brush (5.6 GB) dominate; project Python processes are small.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -44,13 +44,14 @@
   - one timed rehearsal using `presenter-card.pdf`;
   - a pilot contact or letter (e.g. DJB, as the rainwater-harvesting nodal agency);
   - supplier quotes for the parts in `prototype-plan.md`.
-- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1, P4, P10 and P5 are ✅ Completed and ready for your review; P3 and P6 are still running.
+- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1, P4, P10, P5 and P3 are ✅ Completed and ready for your review; P6 and P2 are still running.
   - **P7 multi-agent allocation:** planning beats the best rule, +3.7 pp under shock and +5.5 pp under shock+drift (30/30 seeds, pre-registered). Its detector spike failed replication. astra hostile score 71/100.
   - **P9 agent guardrail:** on held-out real agent errors, 41% of harmful calls stopped at 2.0% of good calls blocked (30% held for review). astra 62/100; memo 3.8/5.
   - **P1 federated LoRA:** the only method that improves every domain (macro −0.081 vs the starter), at a stated cost on the data-rich domain. astra 68/100 on the draft before its fixes; memo 4.2/5.
   - **P4 order-book regimes:** the most rigorous (sol reproduced it exactly), but the gain is small (−0.0099 log-loss) and not tradable after fees. astra 53/100 before fixes; memo 3.4/5. P4 itself recommends P7 or P9.
   - **P10 trusted text signal:** prediction intervals that keep their promised coverage on messy, manipulated text (89.47% vs a 90% target). Its pre-registered test found the text adds no forecasting value (p = 0.46), so the pitch is trust and coverage guarantees, not alpha. astra 74/100; memo 3.7/5. P10 itself ranks P7 first and P10 a close second.
   - **P5 impact-aware execution:** its headline failed a strict pre-registered replication on 400 fresh seeds (−0.013 bps, CI [−0.029, +0.003]). The abstract is now honestly about measuring your own market impact. astra 3.45/5; P5 recommends against itself.
+  - **P3 off-policy evaluation:** on real Open Bandit data (pre-registered), it shows the deployed policy drifted and that a "did it work" dashboard overstated the effect by 29%. Its overlap gate refuses to answer where the logs can't support one. astra 69/100; memo 3.6/5. P3 recommends P7, narrowly.
   - **Note:** P4, P5 and P6 are a "choose exactly one" group, and P4 and P5 both recommend against themselves.
   - The astra scores were given at different stages and the memos are self-scored, so treat them as rough, not a ranking.
   - Whichever you pick: teammates' names for the [TEAM] placeholders, then register by 15 Oct.
@@ -89,6 +90,12 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 14:36 IST — P3 completed
+- **P3 DONE (563f013), verified on main:** check_docs PASS (0 untraced numbers); 14 tests.
+  - Reviews: astra 59 → 69/100, sol reproduced all 44 abstract numbers; 25 items accepted. Memo 3.6/5; recommends P7 narrowly.
+- P2 resumed into the slot, on its Azure CPU VM.
+- Verified P6's 12-day pre-registration: code frozen 14:24:02, registered 14:24:44, prior looks disclosed, and no committed result before registration includes May 2026.
+
 ### 2026-10-04 14:20 IST — Sweep
 - Pre-registration order verified on main:
   - India@71 T3 C6 v0.2: registered 14:00:34 → run 14:03:13 (SYNTHETIC, fresh seeds 10–19).
