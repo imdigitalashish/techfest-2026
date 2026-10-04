@@ -49,3 +49,26 @@ A planner needs: demand (how many EVs of each segment need public energy, where)
 - C2 must ingest ≥ 2 independent sources with stable ids: OSM (done), Open Charge Map (needs a free API key, under *Needs from user*), and ≥ 1 operator or UEI feed where terms allow.
 - Every `GapRecord` carries `coverage_adjusted_sites`; the dashboard shows coverage beside every supply figure.
 - The eval harness holds out official state totals and never trains on them.
+
+---
+
+## Addendum — 4 Oct 2026, 14:30 IST: what the spikes showed, and the revised decision
+**Status:** accepted (supersedes the "Decision" section above where they conflict). Evidence: committed runs, rendered from `eval/results/latest.json`.
+
+**Spike 1 (census completeness) — the gate criterion is not met:**
+- **Setup:** three open lists (OSM, OCM, Overture; built without OSM) link into <!--n:linked_sites-->3,336<!--/n--> sites, <!--n:open_coverage_pct-->11.4%<!--/n--> of the official count, with only <!--n:sites_in_all3-->7<!--/n--> sites in all three.
+- **Estimate:** the log-linear multiple-systems estimate is <!--n:mse_nat-->80,833<!--/n--> nationally (90% CI <!--n:mse_nat_lo-->35,915<!--/n-->–<!--n:mse_nat_hi-->171,036<!--/n-->).
+- **Validation:** against held-out official state counts, the median ratio is <!--n:mse_median_ratio-->0.58<!--/n--> (raw union <!--n:union_median_ratio-->0.094<!--/n-->) and the CI covers the official count in <!--n:mse_ci_coverage-->47%<!--/n--> of states. It **fails** the pass rule.
+- **Why (first principles):** capture–recapture needs lists that are independent *and* that overlap enough. Here every list over-captures the same easy, branded, urban sites (positive dependence plus heterogeneous catchability), and overlaps are tiny.
+- **Adversarial check, done by the data rather than by an agent:** the antithesis held ("overlap may simply not be enough to be stable").
+
+**What replaced it for districts (the synthesis's fallback, now validated):** the small-area allocation of official state totals (BEV<sup>b</sup>·(open+1)<sup>c</sup>, b and c fitted across states).
+- On Chhattisgarh's official district counts, WAPE was <!--n:cg_wape_small_area_model-->0.41<!--/n-->, against BEV-share <!--n:cg_wape_bev_share-->0.54<!--/n--> and open-share <!--n:cg_wape_open_share-->0.99<!--/n-->.
+- Its 90% predictive intervals covered <!--n:cg_ci_coverage-->82%<!--/n--> of districts.
+
+**Spike 2 (forecast):** monthly backtest; the pooled EV-share logit trend has held-out WAPE <!--n:c9_hold_logit-->0.157<!--/n--> vs naive <!--n:c9_hold_naive-->0.223<!--/n-->. The ensemble did not help (<!--n:c9_hold_ensemble-->0.161<!--/n-->).
+
+**Revised decision:**
+1. **Spike 1 is reframed** from "estimate the true total" to "*measure and map coverage*, and estimate district supply by validated small-area allocation". Capture–recapture stays in the pipeline as an *audit* that is re-run whenever a denser list arrives (BEE database, operator feeds, UEI). It is never used for planning numbers unless it passes the state check.
+2. **Spike 2 continues** with segment-aware demand and the energy/norm requirement module (methodology §2.6).
+3. **Next independent review:** a cross-model hostile-judge review of this ADR and the Round-1 documents (PLAYBOOK §10), logged in `reviews/ledger.tsv`.

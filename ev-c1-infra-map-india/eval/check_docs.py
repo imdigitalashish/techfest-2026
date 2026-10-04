@@ -50,12 +50,16 @@ def main() -> int:
             if "UNVERIFIED" in line or line.lstrip().startswith(("|---", "#")):
                 continue
             stripped = MARK.sub(" ", line)
+            stripped = re.sub(r"`[^`]*`", " ", stripped)  # code spans hold parameters, not claims
             stripped = re.sub(r"https?://\S+", " ", stripped)
             stripped = re.sub(r"\b(?:PIB|PRID|No\.|IS|Clause|clause)\s*[\d/.-]+", " ", stripped)
             for m in NUM.finditer(stripped):
                 tok = m.group(1).strip()
                 before = stripped[max(0, m.start() - 12):m.start()]
-                if IGNORE.match(tok) or re.search(r"(≥|≤|<|>|~|target|Python|ODbL|CC BY|BY-SA|CDLA-P-|Apache-|maplibre-gl@|v)\s*$", before):
+                after = stripped[m.end():m.end() + 14]
+                if re.match(r"\s*(CI|confidence|predictive|interval|range)", after):
+                    continue  # interval levels
+                if IGNORE.match(tok) or re.search(r"(≥|≤|<|>|~|§|target|Python|ODbL|CC BY|BY-SA|CDLA-P-|Permissive-|Apache-|maplibre-gl@|within|places|\d-|v)\s*$", before):
                     continue  # years/dates, targets and thresholds, software/licence versions
                 if tok in verified or tok.replace(" ", "") in verified:
                     continue

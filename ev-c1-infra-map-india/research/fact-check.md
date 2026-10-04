@@ -26,9 +26,9 @@ Every row was opened by the lead on 2026-10-04 with [`tools/verify.py`](tools/ve
 | P5 | PM E-DRIVE charger targets: 22,100 fast chargers (e-4W), 1,800 (e-bus), 48,400 (e-2W/3W) | **VERIFIED** (the total 72,300 is our own sum; the release does not state it) | "₹2,000 crore outlay for installing 22,100 fast chargers (e-4Ws), 1,800 for e-buses, and 48,400 for e-2Ws/3Ws in high EV penetration cities and highways" | https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=2060774 (01 Oct 2024) |
 | P6 | NITI Aayog (via MHI): no consensus on chargers per EV | **VERIFIED** | "there is no global consensus on number of charging points required for a certain number of EVs" | PIB 2086533 |
 
-| V1 | VAHAN 4 dashboard coverage | **VERIFIED** (re-opened 4 Oct 2026, 14:00 IST) | dropdown labels "All Vahan4 Running States (36/36)" and "All Vahan4 Running Office (1468/1469)" | https://vahan.parivahan.gov.in/vahan4dashboard/vahan/view/reportview.xhtml |
+| V1 | VAHAN 4 dashboard coverage | **VERIFIED** (re-opened 4 Oct 2026, 14:00 IST) | dropdown labels "All Vahan4 Running States (36/36)" and "All Vahan4 Running Office (1468/1469)", i.e. 1,468 of 1,469 offices | https://vahan.parivahan.gov.in/vahan4dashboard/vahan/view/reportview.xhtml |
 
-Earlier lead-verified numbers (in `landscape.md`): PIB 2118894 (BEE, 26,367 as on 1 Apr 2025) · PIB 2151390 (MoP, 29,277, 1 Aug 2025) · Statiq and Jio-bp home-page claims · VAHAN dashboard coverage.
+Earlier lead-verified numbers (in `landscape.md`): PIB 2118894 (BEE, 26,367 as on 1 Apr 2025) · PIB 2151390 (MoP, 29,277, 1 Aug 2025) · Statiq home page ("10000+ EV Chargers Installed", "1014+ Cities Across India") and Jio-bp home page ("2,000+ mobility stations across India") · VAHAN dashboard coverage.
 
 **Official-count timeline (all lead-verified):** 12,146 (Feb 2024, government data via IEEFA) → 25,202 (PIB, 20 Dec 2024) → 26,367 (BEE, 1 Apr 2025) → 29,277 (PIB, 1 Aug 2025) → 52,718 (IEEFA, Jul 2026). The units and definitions are not identical across sources.
 
