@@ -1,2 +1,4 @@
 date	artifact	model	effort	issues	accepted	rejected	note
 2026-10-04	spike/ADR/pre-registration	gpt-6-astra	max	13	13	0	53/100 plan score; 3 blockers → metric renamed, Amendment 1 (strict fills, markouts, collisions), 5-inspected-days framing; 5 accepted only partly (see dispositions)
+2026-10-04	code/eval/reproducibility	gpt-6-sol	max	16	16	0	reproduced all 91 primary fields + raw Feb rebuild; found post-end quote reuse (erratum, 0 rows) and corrected my bit-identical claim (6.8e-13)
+2026-10-04	final Round-1 abstract	gpt-6-astra	max	8	8	0	62/100 (up from 53); A01 sensitivity-not-bound, A02 paper trading planned, A03-A06 wording fixed, A08 architecture regenerated, A07 team = user input

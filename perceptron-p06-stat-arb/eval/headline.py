@@ -122,7 +122,7 @@ def build() -> dict[str, str]:
         h[f"{key}_mean"], h[f"{key}_tci"], h[f"{key}_pos"] = usd(x["mean_usd_per_day"]), ci(*x["t_ci95"]), str(x["days_positive"])
     v1 = w["V1_strict"]["registered"]["lev - threshold_pair"]["mean_usd_per_day"]
     h["v1_share"] = f"{v1 / c['mean_usd_per_day']:.0%}"
-    h["sens_decision"] = (f"the registered rule passes, but the gain shrinks to {h['v1_share']} of its frozen-simulator value" if sen["decision"] == "robust"
+    h["sens_decision"] = ("the registered rule passes, but only about a quarter of the frozen gain remains" if sen["decision"] == "robust"
                           else "the gain does not survive the stricter models, so the headline depends on optimistic fills or basis marking")
     for key, world, comp in (("x_gbm", "V0_frozen", "lev - gbm_clf"), ("x_noL", "V0_frozen", "lev - lev_noL"), ("x_ridge", "V0_frozen", "lev - ridge"),
                              ("x_gbm_v2", "V2_strict_mo1", "lev - gbm_clf"), ("x_noL_v2", "V2_strict_mo1", "lev - lev_noL")):
@@ -130,7 +130,11 @@ def build() -> dict[str, str]:
         h[f"{key}_mean"], h[f"{key}_tci"], h[f"{key}_pos"] = usd(x["mean_usd_per_day"]), ci(*x["t_ci95"]), str(x["days_positive"])
     sig = [w["V2_strict_mo1"]["exploratory"][k]["t_ci95"][0] > 0 for k in ("lev - gbm_clf", "lev - lev_noL")]
     h["x_v2_sig"] = "both significant" if all(sig) else "neither significant" if not any(sig) else "only one significant"
-    h["collide_lev"] = f"{sen['collisions']['V2_strict_mo1']['lev']:.0%}"
+    raw = sen["per_day_raw"]["V2_strict_mo1"]
+    n_sel = sum(raw[d]["lev"]["n"] for d in raw)
+    n_flag = sum(raw[d]["lev"]["flagged_share"] * raw[d]["lev"]["n"] for d in raw)
+    h["collide_lev"] = f"{n_flag / n_sel:.0%}"                     # pooled share of selected intents (review P6-A05)
+    h["v2_share"] = f"{w['V2_strict_mo1']['registered']['lev - threshold_pair']['mean_usd_per_day'] / c['mean_usd_per_day']:.0%}"
     s3 = sen["collision_dropped"]["V2_strict_mo1"]["registered"]["lev - threshold_pair"]
     h["s3_mean"], h["s3_tci"] = usd(s3["mean_usd_per_day"]), ci(*s3["t_ci95"])
     v4 = w["V4_transfer"]["registered"]["lev - threshold_pair"]["t_ci95"]
@@ -138,12 +142,16 @@ def build() -> dict[str, str]:
                       else "keeps an advantage over the threshold under strict fills" if v4[0] > 0
                       else "is worse than the threshold under strict fills")
 
+    lc = {r["leg"]: r for r in json.load(open(R + "live_cadence.json"))["legs"]}
+    h["live_bnf_ms"] = f"{lc['binance-futures:BTCUSDT']['median_gap_ms']:.0f}"
+    okx = [lc[k]["median_gap_ms"] for k in ("okx:BTC-USDT-SWAP", "okx:BTC-USDT")]
+    h["live_okx_lo"], h["live_okx_hi"] = f"{min(okx):.0f}", f"{max(okx):.0f}"
     cad = {r["leg"]: r for r in json.load(open(R + "update_cadence.json"))["legs"]}
     h["cad_bnf_ms"] = f"{cad['binance-futures_BTCUSDT']['median_gap_ms']:.0f}"
     h["cad_grid_ms"] = f"{cad['okex_BTC-USDT']['median_gap_ms']:.0f}"
     h["cad_cb_ms"] = f"{cad['coinbase_BTC-USD']['median_gap_ms']:.1f}"
     h["_sources"] = ("baseline_0901_to_1001 · falsification_walkforward_12d_prereg · sensitivity_amendment1 · falsification_clockskew · "
-                     "decay_report · latency_budget · decision_timing · live_latency · update_cadence")
+                     "decay_report · latency_budget · decision_timing · live_latency · update_cadence · live_cadence")
     return h
 
 

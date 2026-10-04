@@ -311,3 +311,5 @@ Weibull shape ρ = 0.431 (ρ < 1 ⇒ decreasing hazard: young crosses die fastes
 | f5 | 50 | 59 | 0.468 | 0.536 | 0.545 | 47.716 | 44.197 | 42.770 |
 
 Runtime 319 s. Commit `4d21a39`. Command: `python -m eval.run_baseline --train 2026-09-01 --test 2026-10-01 --legs binance_BTCUSDT,binance-futures_BTCUSDT,coinbase_BTC-USD,okex_BTC-USDT,okex-swap_BTC-USDT-SWAP,bybit_BTCUSDT,kraken_BTC-USD,bitstamp_BTCUSD,deribit_BTC-PERPETUAL --tiers f0,f1,f2,f5 --out eval/results/baseline_0901_to_1001`
+
+**Naming note (review P6-C13, 2026-10-04).** The row labelled `oracle` is the naive policy at zero latency, not a hindsight-optimal or size-aware upper bound. "Capture" ratios are relative to that reference, which is why selective policies can exceed 1.

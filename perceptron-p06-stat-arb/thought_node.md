@@ -12,25 +12,24 @@
 - 2026-10-04 08:22 (Supervisor, by message): "Package accepted. Lean limits from 08:30: ≤2 concurrent sub-agents/child sessions; no downloads over 1 GB without a stated reason; heavy jobs one at a time under `nice -n 10`. Next: run ADR 001's falsification tests (clock skew; whether LEV beats the tuned threshold beyond noise on more held-out days). If it still doesn't separate, say so in the memo." → acting (see Now/Log).
 
 ## Now
-- **Phase:** ▶ RESUMED 14:13. Definition-of-done items 1–3 and 5 complete at 15:39 IST. Item 4 (cross-model reviews) is in its final round: `gpt-6-astra` TASK 2 (final abstract) and the `gpt-6-sol` review file.
-- **Definition of done (Supervisor 14:11):**
-  1. Walk-forward: May (5 test days), then ≥ 12 held-out days, with the final test pre-registered (committed before the run). Report LEV − tuned threshold with its CI, and say so if it is within noise.
-  2. Decay: survival curves per pair with CIs, plus a simulated end-to-end latency budget. Measure the compiled (Numba) decision step at p50/p99 against the ≤ 10 µs target.
-  3. Final Round-1 abstract (600–900 words) with numbers rendered from committed results, a doc-drift check (`eval/check_docs.py`), and the diagram.
-  4. Cross-model reviews as child sessions (§10): `gpt-6-astra` max as hostile judge on the abstract and spike; `gpt-6-sol` max on code/eval, reproducing the headline numbers. Record them in `reviews/` and `reviews/ledger.tsv`.
-  5. Final selection memo, thought node current, everything pushed, then message the Supervisor "DONE — slot free". Paper trading and the Azure-vantage latency test are stretch only.
-- **Plan / order:**
-  - (a) Download 2025-10…2026-04 first-of-month days for 5 BTC legs, sequentially and alone (~0.85 GB).
-  - (b) Meanwhile: May cells + 5-test-day walk-forward (CPU, niced).
-  - (c) Compiled LEV + timing, decay-with-CI report, latency budget.
-  - (d) Freeze code, pre-register, run the 12-day test.
-  - (e) Render the abstract and run the drift check.
-  - (f) Reviews (≤ 2 child sessions).
-  - (g) Memo, then DONE.
-- **Doing (15:39):** waiting on the reviewer child sessions ([hostile judge](ghapp://sessions/6eed2e99-3ec9-4dca-82f3-e4f5a67e9995), [code & repro](ghapp://sessions/0c269353-f371-42e6-8d58-817560ebc903)); then dispositions + `reviews/ledger.tsv` → DONE to the Supervisor. Azure VM `rg-p06-statarb` deleted (`az group exists` → false).
-- **Machine rules:** heavy jobs `nice -n 10`, one at a time, only when `kern.memorystatus_level` ≥ 30. CPU only until ~14:30 (Namma holds the GPU). Poll long jobs at ≥ 10-minute intervals. No `git stash`/`--autostash`.
-- **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills for the abstract's [TEAM] lines.
-- **Risks:** (a) LEV's uplift over the tuned threshold may stay within noise even at 12 days. (b) Survival-EV fails receive-time replay, so it stays the report and a feature, not the rule. (c) Tardis binance-spot quotes are ~100 ms granular. (d) Fees are only partly verified, so headline results use uniform fee levels. (e) 5 of the 12 final test days were already seen in exploratory runs; the pre-registration reports the 7 unseen days separately.
+- **Phase:** ✅ **DONE** (15:52 IST, 4 Oct). All five definition-of-done items from the Supervisor's 14:11 message are met; "DONE — slot free" sent. The project is idle until the 12 Oct selection or new Inbox items.
+- **State:** final selection memo below — **keep P7, with P6 as the Theme 3 fallback**.
+  - Pre-registered result: LEV − tuned threshold +$299/day, t-CI [+$130, +$468].
+  - Registered stricter simulators: +$73 and +$70/day (about a quarter remains); within noise once shared-liquidity collisions are dropped.
+  - Final abstract scored 62/100 by `gpt-6-astra` (P7: 71/100). `check_docs` passes (897 words). Every headline number was reproduced by `gpt-6-sol`.
+- **If P6 is picked on 12 Oct, next:**
+  1. Fill the [TEAM] lines.
+  2. Rerun the benchmark on our own finer-cadence recordings (`eval/results/live_cadence.md`).
+  3. Build a streaming detector open signal and the paper trader.
+  4. Pre-register a fresh confirmatory test on new first-of-month days, with a stated minimum worthwhile effect.
+  5. Model inventory limits and deeper-book fills.
+- **Needs from user:**
+  - register by 15 Oct, after the 12 Oct selection;
+  - teammates' names, skills, motivation and ownership for the abstract's [TEAM] lines; the review scores team fit 1/5 without them.
+- **Risks:**
+  - Public replay cannot pin down LEV's value: simulated fills are optimistic or pessimistic by construction, and publication cadence hides sub-cadence dynamics.
+  - The live path needs a streaming detector.
+  - Fees are only partly verified, so results use uniform fee levels.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -74,7 +73,7 @@
 - 2026-10-04 — Headline P&L uses uniform taker-fee levels (0/1/2/5 bps per leg), not unverified venue tiers; official tiers are cited only where `research/notes/fees.md` verified them.
 
 - 2026-10-04 — **Final evaluation stance:** the pre-registered walk-forward is primary (+$299/day, [+$130, +$468]). Amendment 1's stricter simulators are reported beside it: +$70/day under strict fills and a 1 s markout; +$40/day after dropping shared-liquidity collisions. The frozen metric is renamed *basis-adjusted simulated execution surplus*. See the ADR 001 status.
-- 2026-10-04 — Amendment 1 run 1 went to my own short-lived Azure D16s_v5 (Japan East), because the shared Mac sat at load average 73. Data md5 was verified and the VM deleted. The corrected run 2 ran on the Mac; the registered quantities are bit-identical across the two machines.
+- 2026-10-04 — Amendment 1 run 1 went to my own short-lived Azure D16s_v5 (Japan East), because the shared Mac sat at load average 73. Data md5 was verified and the VM deleted. The corrected run 2 ran on the Mac; the registered quantities agree across the two machines to within 7e-13 (floating-point round-off).
 - 2026-10-04 — **Selection recommendation: keep P7, with P6 as the Theme 3 fallback** (see memo).
 
 ## Components
@@ -99,13 +98,13 @@ _Final version, 2026-10-04 15:39 IST. Scores are 1–5, each with evidence. Ever
 
 - **Winnability — 3.** For:
   - pre-registered evidence on real exchange ticks;
-  - independent reproduction twice: all comparison fields by the `gpt-6-sol` reviewer, and the registered decision quantities bit-identical on Azure x86 and the Mac;
+  - independent reproduction twice: all comparison fields by the `gpt-6-sol` reviewer, and the registered decision quantities equal to within 7e-13 on Azure x86 and the Mac;
   - published negative results and stated observability limits.
 
-  Against: the hostile-judge plan score was 53/100 before the final results, and the headline weakens under scrutiny (below).
+  Against: the hostile judge scored the final abstract 62/100, up from 53/100 for the plan (P7's final abstract scored 71/100), and the headline weakens under scrutiny (below).
 - **Innovation headroom — 2.**
   - With the frozen simulator, LEV beat a tuned per-pair threshold in 12/12 months: +$299/day, t-CI [+$130, +$468]. In the 7 never-inspected months it was 7/7.
-  - Under the registered stricter simulator (next-quote fills plus a 1 s markout), it is +$70/day, t-CI [+$0.2, +$140] — 24% of the frozen gain.
+  - Under the registered stricter simulators it is +$73/day with next-quote fills (24% of the frozen gain) and +$70/day, t-CI [+$0.2, +$140], adding a 1 s markout (23%).
   - Dropping intents that reuse displayed liquidity leaves +$40/day, t-CI [−$12, +$92], within noise.
   - A LEV trained on optimistic fills has no established advantage over the threshold under strict fills (−$7.8/day).
   - The latency input mattered under optimistic fills (+$477/day) but much less under strict ones (+$40/day; with the GBM-classifier comparison, neither significant).
@@ -201,3 +200,21 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Decay with publication-time bounds** (Supervisor 14:41): median 90.5 ms (hour-block CI 84.0–100.0), bounded to 11.3–147.1 ms. Monthly 5-market medians range 26–68 ms.
 - **Reaction time:** compiled decision step 6.1 µs at p50, 41.5 µs at p99; detector 87 ns per event.
 - **Deliverables:** abstract and architecture page rendered from `headline.json`; `eval/check_docs.py` passes. **Memo final: keep P7, with P6 as the Theme 3 fallback** (Supervisor 15:29 asked for an explicit comparison with P7).
+
+### 2026-10-04 15:40–15:52 IST — Final review round, corrections, DONE (lead)
+- **`gpt-6-sol` final review** (16 items, all accepted). It reproduced the 91 primary fields and the Feb raw rebuild byte-identically; `headline.json` regenerates identically; `check_docs` passes.
+  - It corrected my "bit-identical" cross-platform claim: the figures agree to within 6.8e-13, not bit for bit. Fixed in the thought node and provenance note.
+  - Scope notes appended: `falsification_clockskew.md` (skew = rephased market, P6-C06) and `baseline_0901_to_1001.md` ("oracle" = naive at zero latency, P6-C13).
+  - `decay_report` now fails loudly on missing days (P6-C11).
+- **`gpt-6-astra` final abstract review: 62/100** (up from 53; 8 items, all accepted). Wording fixes:
+  - sensitivity range, not bound;
+  - next-quote fills are a stress scenario;
+  - paper trading is planned;
+  - legacy top-decile claim removed;
+  - uncalibrated laptop latency removed;
+  - pooled collision share 22%;
+  - exact clipping statement.
+
+  The architecture page was regenerated to match the evaluated system.
+- **New evidence for the finals fix** (`eval/results/live_cadence.md`): our recorder's channels publish Binance perpetual every 2 ms (median) versus 26 ms in the Tardis samples, and OKX every 20–30 ms versus 100 ms. Coinbase's live `ticker` is coarser than Tardis level-2 quotes.
+- **Records:** `reviews/2026-10-04-dispositions.md` (37 items: 13 + 16 + 8) and `reviews/ledger.tsv` (3 lines). The abstract, at 897 words, passes `check_docs`.

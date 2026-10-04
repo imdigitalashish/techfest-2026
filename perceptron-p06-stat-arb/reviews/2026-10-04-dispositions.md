@@ -20,18 +20,40 @@ Feedback is advisory and the lead decides. Each item is marked ACCEPTED or REJEC
 | P6-12 | major | ACCEPTED | Novelty is reframed as "a falsification-first decision benchmark on public data, not a new learner". |
 | P6-13 | minor | ACCEPTED | Team skills and ownership are a user input; they stay `[TEAM]` and are listed under *Needs from user*. Nothing is fabricated. |
 
-## `gpt-6-sol` (max): code, reproducibility, eval — items from its messages (labels are mine; reconciled with its review file's IDs when that lands)
+## `gpt-6-sol` (max): code, reproducibility, eval — [`2026-10-04-code-eval-gpt-6-sol.md`](2026-10-04-code-eval-gpt-6-sol.md)
 
-| Item | Disposition | Reason / action |
-|---|---|---|
-| A1: concurrent intents can consume the same displayed liquidity | ACCEPTED | Amendment 1 S3 flags collisions and reports totals with them dropped. The frozen primary keeps its registered semantics, and the limitation is stated. |
-| A2: an arrival long after the last quote still fills (stale quote) | ACCEPTED | S1 fills at the next published quote with a 1 s staleness cap. |
-| A3: `size = 0` becomes a 0.05 BTC intent | ACCEPTED | S1 does not send size-0 intents. The frozen primary is unchanged, as registered. |
-| A4: outcome labelled `both` with a zero-size leg | ACCEPTED | S1 labels outcomes from filled quantities. |
-| A5: `breakeven()` claimed the "largest" profitable latency but reported the first crossing | ACCEPTED | It is now defined as the first crossing, with `*` marking non-monotone series (`eval/latency_budget.py`). |
-| A6: `check_docs` did not verify `headline.json` against its sources | ACCEPTED | `check_docs` now rebuilds the headline from the result files and fails on any difference. |
-| A7: lev.py and ADR said survival is an LEV feature | ACCEPTED | Corrected in `components/decision/lev.py`, the ADR status and the abstract. |
-| B1: `strict.py` reused the last quote for markouts and unwinds past the end of the data | ACCEPTED | Erratum registered at 15:19 before the corrected run. Such rows are censored for every policy; 0 rows were affected on all 13 days. |
-| B2: collision rule should be greedy (retain later rows) | WITHDRAWN by the reviewer (no change) | The implemented rule matches the registered definition (flags against earlier selected intents, no reallocation). |
-| B3: "does not transfer" overstates V4 | ACCEPTED | The wording is now "has no established advantage over the threshold under strict fills", with the CI, set automatically from the interval. |
-| R: reproduction of the 12-day primary (91 fields) and a raw rebuild of Feb | — | Matches; recorded in the thought node log. |
+Reproduction: all 91 comparison and subset fields of the pre-registered 12-day result match. The February raw rebuild is byte-identical. `eval.headline` regenerates `headline.json` identically, `check_docs` passes, and Amendment 1 V1/V2 are confirmed. Its message also corrected one of my claims: cross-platform figures agree to within 6.8e-13, not bit-for-bit, and the wording is fixed in the thought node and provenance note.
+
+| ID | Severity | Disposition | Reason / action |
+|---|---|---|---|
+| P6-C01 | blocker | ACCEPTED | Shared displayed liquidity is not decremented. Amendment 1 S3 flags collisions and reports totals with them dropped (within noise); the limitation is stated in the abstract and memo. |
+| P6-C02 | major | ACCEPTED | `size = 0` becomes a 0.05 BTC intent in the frozen simulator. S1 does not send size-0 intents; the frozen primary is unchanged, as registered. |
+| P6-C03 | major | ACCEPTED | `LegBook.at` returns the last quote indefinitely. S1 uses the next quote with a 1 s staleness cap. |
+| P6-C04 | major | ACCEPTED | The outcome label used price booleans. S1 labels outcomes from filled quantities, which also affects λ for survival EV. |
+| P6-C05 | major | ACCEPTED | The detector emits episodes at close (batch replay), so there is no streaming open signal yet. The live path is described as planned in the abstract and architecture page; the compiled step is quoted as in-kernel decision timing only. |
+| P6-C06 | major | ACCEPTED | The skew variants shift the truth too, so they test a rephased market, not observer clock error. A scope note is appended to `falsification_clockskew.md`; only the receive-time replay is causal, and no clock-robustness claim remains in the abstract. |
+| P6-C07 | major | ACCEPTED (fixed) | Break-even is now the first crossing, with `*` marking non-monotone series. |
+| P6-C08 | major | ACCEPTED | The day score is a sum over six mutually exclusive counterfactual scenarios, and is described that way in the abstract. |
+| P6-C09 | major | ACCEPTED (fixed) | `check_docs` rebuilds `headline.json` from the result files and fails on any difference. |
+| P6-C10 | major | ACCEPTED (fixed) | `lev.py` and the ADR no longer claim survival features. |
+| P6-C11 | minor | ACCEPTED (fixed) | `decay_report` now raises on a missing day or a cache without `t_start_us`. No reported result was affected: all 13 days were present. |
+| P6-C12 | minor | ACCEPTED | Detector time is a day-long amortised average, and is labelled "amortised"; no detector p99 is claimed. |
+| P6-C13 | minor | ACCEPTED | "oracle" means naive at zero latency; a naming note is appended to `baseline_0901_to_1001.md`. |
+| P6-C14 | minor | ACCEPTED | Relative uplift over a negative base (threshold − naive) is meaningless. The headline quotes relative uplift only for LEV − threshold, where the base is positive. |
+| P6-C15 | blocker | ACCEPTED | The basis-adjusted mark credits unrealised surplus. It is renamed "simulated execution surplus"; markouts are in Amendment 1 S2; no claim of earned P&L. |
+| P6-C16 | major | ACCEPTED (fixed) | Post-end markout and unwind reuse: erratum registered before the corrected run, 0 rows affected. |
+
+## `gpt-6-astra` (max): final abstract — [`2026-10-04-abstract-gpt-6-astra.md`](2026-10-04-abstract-gpt-6-astra.md)
+
+Score 62/100 (3.10/5), up from 53/100.
+
+| ID | Severity | Disposition | Reason / action |
+|---|---|---|---|
+| P6-A01 | blocker | ACCEPTED | Reworded to "observed median … illustrative 11.3–147.1 ms sensitivity range, not a bound on executable lifetime". Next-quote fills are a "stress scenario". The finals fix is now finer channels (our recorder: `eval/results/live_cadence.md`), not proximity. |
+| P6-A02 | major | ACCEPTED | Paper trading is "planned"; the abstract says replay and latency-budget analysis run and live recording works. Simulated fills are not claimed to validate fillability. |
+| P6-A03 | major | ACCEPTED | The legacy top-decile LEV example is removed. The ranking sentence is labelled with one test day, nine markets, 1 bp fees and one-way latency. |
+| P6-A04 | major | ACCEPTED | The uncalibrated laptop latency range is removed from the abstract and the architecture page. |
+| P6-A05 | minor | ACCEPTED | Collision share is now pooled over selected intents (22%); the retained share is given for both worlds (V1 24%, V2 23%). |
+| P6-A06 | minor | ACCEPTED | "A regressor trained on execution-surplus labels clipped to ±30 bp". |
+| P6-A07 | major | ACCEPTED (needs user) | Team skills, motivation and ownership must come from the user; nothing is fabricated. Listed under *Needs from user*. |
+| P6-A08 | major | ACCEPTED | The architecture page is regenerated: published-quote fills, the clipped-label ranker, survival as report and baseline, future work marked, sensitivity results in the table. |

@@ -70,7 +70,7 @@
  "v4_tci": "[−$148, +$132]",
  "v4_pos": "6",
  "v1_share": "24%",
- "sens_decision": "the registered rule passes, but the gain shrinks to 24% of its frozen-simulator value",
+ "sens_decision": "the registered rule passes, but only about a quarter of the frozen gain remains",
  "x_gbm_mean": "+$98",
  "x_gbm_tci": "[+$48, +$148]",
  "x_gbm_pos": "12",
@@ -87,12 +87,16 @@
  "x_noL_v2_tci": "[−$16, +$96]",
  "x_noL_v2_pos": "10",
  "x_v2_sig": "neither significant",
- "collide_lev": "18%",
+ "collide_lev": "22%",
+ "v2_share": "23%",
  "s3_mean": "+$40",
  "s3_tci": "[−$12, +$92]",
  "v4_phrase": "has no established advantage over the threshold under strict fills",
+ "live_bnf_ms": "2",
+ "live_okx_lo": "20",
+ "live_okx_hi": "30",
  "cad_bnf_ms": "26",
  "cad_grid_ms": "100",
  "cad_cb_ms": "3.3",
- "_sources": "baseline_0901_to_1001 · falsification_walkforward_12d_prereg · sensitivity_amendment1 · falsification_clockskew · decay_report · latency_budget · decision_timing · live_latency · update_cadence"
+ "_sources": "baseline_0901_to_1001 · falsification_walkforward_12d_prereg · sensitivity_amendment1 · falsification_clockskew · decay_report · latency_budget · decision_timing · live_latency · update_cadence · live_cadence"
 }

@@ -149,10 +149,10 @@ def part_b(days: list[str]) -> list[dict]:
     for d in days:
         p = f".cache/falsification/opp_{d}_exch.parquet"
         if not os.path.exists(p):
-            continue
+            raise FileNotFoundError(f"{p}: run eval.falsification for {d} first (review P6-C11: never omit a requested day)")
         o = pl.read_parquet(p)
-        if "t_start_us" not in o.columns:   # older cache files: rebuild hour from opp_id order is impossible → skip CI
-            o = o.with_columns(pl.lit(0, dtype=pl.Int64).alias("t_start_us"))
+        if "t_start_us" not in o.columns:
+            raise ValueError(f"{p} predates t_start_us; rebuild it with eval.falsification.cached_cells (review P6-C11)")
         o = o.with_columns(pl.col("pair").str.split(" > ").alias("_p")).with_columns(
             pl.col("_p").list.get(0).str.split(":").list.first().is_in(list(PERP)).alias("_sp"),
             pl.col("_p").list.get(1).str.split(":").list.first().is_in(list(PERP)).alias("_bp"))

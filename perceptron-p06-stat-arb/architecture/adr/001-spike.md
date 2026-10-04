@@ -51,3 +51,9 @@ The brief asks us to "identify and rank cross-asset mispricings in near real tim
 - **Test 2, ablation:** under the frozen simulator, the latency input matters (LEV − no-latency-input LEV +$477/day). Under strict fills with markouts it adds +$40/day, and LEV − GBM classifier is −$0.3/day (neither significant).
 - **Survival:** it stays the MVP decay report, with publication-time bounds, and a baseline. As a decision rule, survival EV trails the threshold (−$77/day). Residual-survival features were never part of LEV; that remains future work.
 - **Decision:** keep LEV as the spike for any finals build, but present it as a *benchmark of what latency-aware ranking is worth and where public data stops resolving it*, not as a validated edge. The next real test needs tick-by-tick capture near the exchanges and live paper fills.
+- **Scope corrections from the final reviews** (see `reviews/2026-10-04-dispositions.md`):
+  - next-quote fills are a *stress scenario*, not an adverse bound;
+  - the publication-interval range is a *sensitivity range*, not a bound on executable lifetime (P6-A01);
+  - the ±5 ms skew variants test a rephased market, so only the receive-time replay is causal (P6-C06);
+  - the detector is a batch replay that emits episodes at close, so a live path needs a streaming open signal (P6-C05);
+  - cross-platform agreement is within 6.8e-13, not bit-for-bit.

@@ -1,0 +1,98 @@
+{
+ "legs": [
+  {
+   "leg": "binance-futures:BTCUSDT",
+   "rows": 1424023,
+   "median_gap_ms": 2.0,
+   "p10_gap_ms": 1.0,
+   "share_below_10ms": 0.697925460191831
+  },
+  {
+   "leg": "binance-futures:ETHUSDT",
+   "rows": 1063371,
+   "median_gap_ms": 3.0,
+   "p10_gap_ms": 1.0,
+   "share_below_10ms": 0.6491693859670795
+  },
+  {
+   "leg": "bybit:BTCUSDT",
+   "rows": 81015,
+   "median_gap_ms": 50.0,
+   "p10_gap_ms": 10.0,
+   "share_below_10ms": 0.09502295956154644
+  },
+  {
+   "leg": "bybit:ETHUSDT",
+   "rows": 113820,
+   "median_gap_ms": 41.0,
+   "p10_gap_ms": 10.0,
+   "share_below_10ms": 0.06109861530891966
+  },
+  {
+   "leg": "coinbase:BTC-USD",
+   "rows": 31291,
+   "median_gap_ms": 327.451,
+   "p10_gap_ms": 24.5233,
+   "share_below_10ms": 0.06111997313407774
+  },
+  {
+   "leg": "coinbase:ETH-USD",
+   "rows": 11972,
+   "median_gap_ms": 845.41,
+   "p10_gap_ms": 5.552200000000003,
+   "share_below_10ms": 0.11706297360857068
+  },
+  {
+   "leg": "coinbase:USDT-USD",
+   "rows": 2925,
+   "median_gap_ms": 2064.036,
+   "p10_gap_ms": 47.313,
+   "share_below_10ms": 0.08528620822128313
+  },
+  {
+   "leg": "deribit:BTC-PERPETUAL",
+   "rows": 51772,
+   "median_gap_ms": 44.0,
+   "p10_gap_ms": 10.0,
+   "share_below_10ms": 0.05735868011282408
+  },
+  {
+   "leg": "kraken:BTC/USD",
+   "rows": 156755,
+   "median_gap_ms": 3.2595,
+   "p10_gap_ms": 0.097,
+   "share_below_10ms": 0.5786011245798754
+  },
+  {
+   "leg": "kraken:USDT/USD",
+   "rows": 5424,
+   "median_gap_ms": 326.944,
+   "p10_gap_ms": 0.15,
+   "share_below_10ms": 0.32418952618453867
+  },
+  {
+   "leg": "okx:BTC-USDT",
+   "rows": 43019,
+   "median_gap_ms": 30.0,
+   "p10_gap_ms": 10.0,
+   "share_below_10ms": 0.0
+  },
+  {
+   "leg": "okx:BTC-USDT-SWAP",
+   "rows": 230183,
+   "median_gap_ms": 20.0,
+   "p10_gap_ms": 10.0,
+   "share_below_10ms": 0.0
+  },
+  {
+   "leg": "okx:ETH-USDT-SWAP",
+   "rows": 244815,
+   "median_gap_ms": 20.0,
+   "p10_gap_ms": 10.0,
+   "share_below_10ms": 0.0
+  }
+ ],
+ "span_h": 3.197851265277778,
+ "commit": "1e3aa26",
+ "command": ".venv/bin/python -m eval.live_cadence"
+}
