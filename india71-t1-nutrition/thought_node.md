@@ -85,6 +85,7 @@ Context from the statement: Poshan Tracker already tracks growth-monitoring and 
 - **Demo strength at finals — 4/5.** Live pipeline: WHO-validated z-scores → credibility map → weekly worklist → escalation → audit trail. Weakness: synthetic data unless a state shares an extract.
 - **Fit with the user's strengths — 4/5.** Large-scale data systems, privacy engineering and ML; Microsoft/Azure experience is relevant to the government-cloud deployment story.
 - **Biggest risk:** judges discount synthetic validation, or see credibility scoring as surveillance of AWWs. Mitigation: re-measurement protocol as ground truth; supportive-supervision framing; real-data pilot plan.
+- **Overall: 4.2/5** (mean of the five scores above; evidence-backed, build already runs).
 - **One-line pitch:** "India's child-growth data says 5% of children are wasted; the national survey says 19%. Poshan Setu tells each district which numbers to trust and which children to see this week, without a single new app."
 
 ## Log
