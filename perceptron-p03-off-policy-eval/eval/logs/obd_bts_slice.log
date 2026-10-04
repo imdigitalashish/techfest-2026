@@ -1,0 +1,25 @@
+      4.2/203.6 MB compressed read, 253,110 rows
+      8.4/203.6 MB compressed read, 505,371 rows
+     12.6/203.6 MB compressed read, 761,121 rows
+     16.8/203.6 MB compressed read, 1,017,425 rows
+     21.0/203.6 MB compressed read, 1,278,289 rows
+     25.2/203.6 MB compressed read, 1,537,641 rows
+     29.4/203.6 MB compressed read, 1,786,978 rows
+     33.6/203.6 MB compressed read, 2,035,116 rows
+     37.7/203.6 MB compressed read, 2,285,451 rows
+     41.9/203.6 MB compressed read, 2,538,898 rows
+     46.1/203.6 MB compressed read, 2,796,294 rows
+     50.3/203.6 MB compressed read, 3,058,658 rows
+     54.5/203.6 MB compressed read, 3,307,087 rows
+     58.7/203.6 MB compressed read, 3,557,047 rows
+     62.9/203.6 MB compressed read, 3,809,505 rows
+     67.1/203.6 MB compressed read, 4,062,742 rows
+     71.3/203.6 MB compressed read, 4,316,932 rows
+     75.5/203.6 MB compressed read, 4,575,952 rows
+     79.7/203.6 MB compressed read, 4,826,529 rows
+     83.9/203.6 MB compressed read, 5,076,120 rows
+     88.1/203.6 MB compressed read, 5,330,073 rows
+     92.3/203.6 MB compressed read, 5,585,016 rows
+     96.5/203.6 MB compressed read, 5,841,031 rows
+    100.0/203.6 MB compressed read, 6,058,425 rows
+{'member': 'open_bandit_dataset/bts/all/all.csv', 'rows': 6058425, 'complete': False, 'compressed_read': 100000000, 'compressed_total': 203592547, 'out': '/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-effective-funicular/perceptron-p03-off-policy-eval/.data/obd_slice/bts/all/all.npz', 'ts_sorted': True}
