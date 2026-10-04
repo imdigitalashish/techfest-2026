@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Did the policy actually work? — P3 live demo on real A/B data</title>
+<link rel="icon" href="data:,">
+<!--
+DIRECTION CONTRACT (impeccable, new-work)
+THESIS: The demo is a worked computation on an engineering pad, checked line by line against a real A/B test; the evaluator's refusals are entered in the same ink. Refuses the dark KPI-dashboard default.
+OWN-WORLD: Pale-green computation-pad paper with a faint grid, graphite ink, red checking pencil, ochre for greedy logs, blue ink for exploration logs, rubber stamps (REAL / SYNTHETIC / POST-HOC / PRE-REGISTERED), ruled title blocks with "Checked by", DIN lettering, boxed answers, a slide-rule cursor.
+STORY: The judge sees the dashboard number taken apart (sheet 1), sees when logs can answer (2), drags the cursor and watches estimate, interval, effective rows and verdict move against the real check (3), then the simulator (4). Every number shows its source.
+FIRST VIEWPORT: Title block; headline "+1.62 vs +1.26"; the worked arithmetic with boxed results beside a to-scale waterfall; the CAN'T TELL stamp.
+FORM: Lab notebook (#7 of 7), staged as an engineering computation pad with a slide-rule cursor; seed 100dee6a.
+-->
+<style>
+:root {
+  --paper: #edf3e6; --paper-hi: #f6f9f2; --grid: rgba(44, 92, 58, .075); --rule: #4c6d55; --rule-soft: #a9bfa9;
+  --ink: #17201a; --ink-2: #33403a; --ink-3: #56645b;
+  --sb: #b56a00; --sb-ink: #8a4e00; --sr: #1d4fa0; --red: #c8102e; --ok: #1f6b3b; --hatch: #7f8a82;
+  --st-real: #1f6b3b; --st-syn: #6a2c91; --st-post: #a8461a; --st-pre: #173a7a;
+  --din: "DIN Alternate", "DIN Condensed", Bahnschrift, "D-DIN", "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; color: var(--ink); font: 18px/1.45 var(--sans);
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  -webkit-font-smoothing: antialiased;
+}
+.sheet { max-width: 1760px; margin: 0 auto; padding: 22px 136px 56px 40px; min-height: 100vh; border-bottom: 2px dashed var(--rule-soft); position: relative; }
+.sheet:last-of-type { border-bottom: 0; }
+
+/* title block */
+.tb { display: grid; grid-template-columns: minmax(280px, 2.2fr) 0.6fr minmax(260px, 2.4fr) 1.3fr auto; border: 2px solid var(--rule); background: rgba(255, 255, 255, .38); }
+.tb > div { padding: 7px 12px 8px; border-left: 1px solid var(--rule); min-width: 0; }
+.tb > div:first-child { border-left: 0; }
+.tb i { display: block; font: 600 12px/1.2 var(--sans); font-style: normal; color: var(--rule); text-transform: uppercase; letter-spacing: .07em; }
+.tb b { display: block; font: 700 17px/1.25 var(--din); color: var(--ink); }
+.tb .proj b { font-size: 21px; }
+.tb .proj span { display: block; font-size: 13px; color: var(--ink-3); }
+.tb .stampcell { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 6px 14px; }
+
+h1 { font: 700 clamp(30px, 3vw, 52px)/1.12 var(--din); letter-spacing: -.005em; margin: 20px 0 10px; max-width: 36ch; text-wrap: balance; }
+h1 .ln { display: block; }
+h1 .nw { white-space: nowrap; }
+h1 .ans { font-size: 1em; border-width: 3px; padding: 0 .14em; line-height: 1.02; margin: 2px 0; }
+h2 { font: 700 23px/1.2 var(--din); margin: 34px 0 10px; }
+h3 { font: 700 19px/1.25 var(--din); margin: 0 0 8px; }
+.lede { max-width: 82ch; color: var(--ink-2); margin: 0 0 18px; font-size: 19px; }
+.unit { font-size: 15px; color: var(--ink-3); }
+p { margin: 0 0 10px; }
+
+/* numbers with sources */
+.n { border-bottom: 1px dotted rgba(23, 32, 26, .45); cursor: help; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.n:focus-visible { outline: 2px solid var(--sr); outline-offset: 2px; }
+.ans { display: inline-block; border: 2.5px solid currentColor; padding: 0 .3em; font: 700 1.28em/1.15 var(--din); background: rgba(255, 255, 255, .55); border-bottom-width: 2.5px; }
+.stamp { display: inline-block; font: 700 14px/1 var(--din); letter-spacing: .1em; text-transform: uppercase; padding: 6px 9px 5px; border: 2.5px solid currentColor; border-radius: 4px;
+  box-shadow: inset 0 0 0 2px var(--paper-hi), inset 0 0 0 3.5px currentColor; transform: rotate(-2deg); background: rgba(255, 255, 255, .25); white-space: nowrap; }
+.stamp-real { color: var(--st-real); } .stamp-syn { color: var(--st-syn); } .stamp-post { color: var(--st-post); } .stamp-pre { color: var(--st-pre); }
+.stamp small { display: block; font: 600 11px/1.2 var(--mono); letter-spacing: 0; text-transform: none; margin-top: 3px; }
+.stamp-cant { color: var(--ink); font-size: clamp(20px, 2vw, 30px); padding: 9px 14px 8px; transform: rotate(-3deg); }
+
+/* sheet index tabs */
+nav.index { position: fixed; right: 0; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 6px; z-index: 20; }
+nav.index a { display: block; width: 112px; padding: 9px 10px 9px 14px; background: var(--paper-hi); border: 2px solid var(--rule); border-right: 0; border-radius: 8px 0 0 8px;
+  color: var(--ink); text-decoration: none; font: 700 15px/1.15 var(--din); box-shadow: -2px 2px 4px rgba(23, 32, 26, .12); transition: transform .18s cubic-bezier(.16, 1, .3, 1); }
+nav.index a span { display: block; font: 600 12.5px/1.2 var(--sans); color: var(--ink-3); margin-top: 2px; }
+nav.index a[aria-current="true"] { transform: translateX(-14px); background: var(--ink); color: var(--paper-hi); }
+nav.index a[aria-current="true"] span { color: var(--rule-soft); }
+nav.index a:focus-visible { outline: 3px solid var(--sr); }
+
+/* sheet 1 */
+.s1 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 36px; align-items: start; }
+.calc { display: grid; grid-template-columns: max-content 1fr; column-gap: 18px; row-gap: 0; border-top: 2px solid var(--rule); }
+.calc > div { padding: 12px 0 11px; border-bottom: 1px solid var(--rule-soft); }
+.calc .lab { font: 700 18px/1.3 var(--din); padding-top: 15px; }
+.calc .lab span { display: block; font: 500 13px/1.3 var(--sans); color: var(--ink-3); }
+.calc .expr { font-size: 16px; color: var(--ink-2); }
+.calc .arith { display: block; margin-top: 4px; font: 500 19px/1.6 var(--mono); color: var(--ink); }
+.calc .arith .ans { font-size: 26px; vertical-align: -2px; margin-left: 4px; }
+.calc .note { display: block; font-size: 15px; color: var(--ink-3); margin-top: 2px; }
+.calc .hl { background: linear-gradient(transparent 62%, rgba(181, 106, 0, .22) 62%); }
+.wfwrap { border: 2px solid var(--rule); background: rgba(255, 255, 255, .35); padding: 10px 12px 4px; }
+.wfwrap figcaption { font-size: 14px; color: var(--ink-3); margin-top: 4px; }
+svg { display: block; width: 100%; height: auto; overflow: visible; }
+svg text { font-family: var(--sans); fill: var(--ink); }
+svg .tick { font-size: 15px; fill: var(--ink-3); font-variant-numeric: tabular-nums; }
+#knob .tick, #strip .tick { font-size: 16.5px; }
+#sweep .tick { font-size: 19px; }
+svg .gridln { stroke: var(--rule-soft); stroke-width: 1; stroke-dasharray: 2 4; }
+svg .axis { stroke: var(--ink); stroke-width: 1.5; }
+svg .barval { font: 700 20px var(--din); }
+svg .barlab { font: 700 16px var(--din); }
+svg .barsub { font-size: 13px; fill: var(--ink-3); }
+svg .connector { stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 3 3; }
+svg .drbox { fill: none; stroke: var(--sb); stroke-width: 3; stroke-dasharray: 8 5; }
+svg .drlab { font: 700 15px var(--din); fill: var(--sb-ink); }
+svg .truthln { stroke: var(--ink); stroke-width: 3; stroke-dasharray: 7 4; }
+.verdict { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; margin: 26px 0 6px; padding: 18px 20px; border: 2px solid var(--ink); background: rgba(255, 255, 255, .45); }
+.verdict p { margin: 0 0 6px; max-width: 78ch; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 18px; }
+.two > div { border-top: 2px solid var(--rule); padding-top: 10px; }
+.track { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 6px 0 0; padding: 0; list-style: none; font-size: 17px; }
+.track b { font: 700 24px var(--din); margin-right: 6px; }
+.fine { font-size: 15px; color: var(--ink-3); max-width: 90ch; }
+
+/* sheet 2 */
+.s2 { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 36px; align-items: start; }
+svg.forest .refband { fill: rgba(23, 32, 26, .1); }
+svg.forest .refline { stroke: var(--ink); stroke-width: 3; }
+svg.forest .reflab { font: 700 15px var(--din); }
+svg.forest .grp { font: 600 13px var(--sans); fill: var(--rule); text-transform: uppercase; letter-spacing: .06em; }
+svg.forest .rowlab { font: 700 16px var(--din); }
+svg.forest .rowval { font: 500 15px var(--mono); fill: var(--ink-2); }
+svg.forest .sep { stroke: var(--rule-soft); stroke-width: 1; }
+svg.forest .redcircle { fill: none; stroke: var(--red); stroke-width: 2.2; }
+svg.forest .refit { stroke: var(--red); stroke-width: 2; stroke-dasharray: 5 4; }
+.facts { border-top: 2px solid var(--rule); }
+.facts > div { padding: 12px 0; border-bottom: 1px solid var(--rule-soft); }
+.big { font: 700 clamp(34px, 3.4vw, 56px)/1 var(--din); }
+.vs { font: 700 22px var(--din); color: var(--ink-3); margin: 0 10px; }
+
+/* sheet 3 */
+.controls { display: flex; flex-wrap: wrap; align-items: end; gap: 14px 26px; margin: 4px 0 14px; }
+.ctl label, .ctl .ctl-l { display: block; font: 600 12px/1.2 var(--sans); text-transform: uppercase; letter-spacing: .07em; color: var(--rule); margin-bottom: 5px; }
+.seg { display: inline-flex; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; background: var(--paper-hi); }
+.seg button { font: 700 15px/1 var(--din); padding: 9px 12px; border: 0; border-left: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; }
+.seg button:first-child { border-left: 0; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper-hi); }
+.seg button:hover:not([aria-pressed="true"]) { background: rgba(23, 32, 26, .08); }
+.seg button:focus-visible { outline: 3px solid var(--sr); outline-offset: -3px; }
+.seg button.sb[aria-pressed="true"] { background: var(--sb-ink); }
+.seg button.sr[aria-pressed="true"] { background: var(--sr); }
+.alpha { flex: 1 1 420px; min-width: 320px; }
+.alpha .val { font: 700 24px var(--din); margin-left: 10px; }
+.alpha-head { margin-bottom: 2px; }
+.alpha .mix { font-size: 15px; color: var(--ink-3); margin-left: 8px; }
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 44px; background: transparent; cursor: ew-resize; margin: 0; }
+input[type=range]::-webkit-slider-runnable-track { height: 14px; border: 2px solid var(--ink); border-radius: 2px;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 1.5px, transparent 1.5px 10%), linear-gradient(var(--paper-hi), var(--paper-hi)); }
+input[type=range]::-moz-range-track { height: 10px; border: 2px solid var(--ink); border-radius: 2px;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 1.5px, transparent 1.5px 10%), linear-gradient(var(--paper-hi), var(--paper-hi)); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 40px; margin-top: -15px; border: 2px solid var(--ink); border-radius: 3px;
+  background: linear-gradient(90deg, rgba(246, 249, 242, .65) 0 11px, var(--red) 11px 13px, rgba(246, 249, 242, .65) 13px); box-shadow: 0 2px 5px rgba(23, 32, 26, .3); }
+input[type=range]::-moz-range-thumb { width: 22px; height: 36px; border: 2px solid var(--ink); border-radius: 3px;
+  background: linear-gradient(90deg, rgba(246, 249, 242, .65) 0 9px, var(--red) 9px 11px, rgba(246, 249, 242, .65) 11px); box-shadow: 0 2px 5px rgba(23, 32, 26, .3); }
+input[type=range]:focus-visible { outline: 3px solid var(--sr); outline-offset: 4px; }
+.s3 { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(330px, 1fr); gap: 26px; align-items: start; }
+.chart { border: 2px solid var(--rule); background: rgba(255, 255, 255, .42); padding: 10px 14px 6px 6px; }
+#knob text.lbl { font: 700 17px var(--din); }
+#knob text.lbl-s { font-size: 15px; fill: var(--ink-3); }
+#knob .refline { stroke: var(--ink); stroke-width: 3.2; }
+svg text.halo { paint-order: stroke; stroke: #f6f9f2; stroke-width: 5px; stroke-linejoin: round; }
+#knob .refband { fill: rgba(23, 32, 26, .09); }
+#knob .thr { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 6 4; }
+#knob .cursor-glass { fill: rgba(246, 249, 242, .5); stroke: var(--ink); stroke-width: 1; }
+#knob .cursor-line, #strip .cursor-line { stroke: var(--red); stroke-width: 2; }
+.readout { border: 2px solid var(--ink); background: var(--paper-hi); }
+.readout .row { padding: 10px 14px; border-bottom: 1px solid var(--rule-soft); }
+.readout .row:last-child { border-bottom: 0; }
+.readout .head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.readout .head b { font: 700 20px var(--din); }
+.readout .tag { font: 600 12px var(--sans); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-3); }
+.readout .sb b.src { color: var(--sb-ink); } .readout .sr b.src { color: var(--sr); }
+.readout .kv { display: grid; grid-template-columns: 112px 1fr; gap: 3px 10px; font-size: 16px; margin-top: 6px; }
+.readout .kv dt { color: var(--ink-3); font-size: 14px; padding-top: 2px; }
+.readout .kv dd { margin: 0; font: 500 16px/1.35 var(--mono); }
+.readout .verdict-cell { margin-top: 8px; min-height: 46px; display: flex; align-items: center; gap: 12px; }
+.readout .ok { color: var(--ok); font-weight: 700; } .readout .bad { color: var(--red); font-weight: 700; }
+.readout .why { font-size: 14px; color: var(--ink-2); }
+.thump { animation: thump .22s cubic-bezier(.16, 1, .3, 1); }
+@keyframes thump { from { transform: rotate(-3deg) scale(1.55); opacity: 0; filter: blur(1.5px); } to { transform: rotate(-3deg) scale(1); opacity: 1; filter: blur(0); } }
+@media (prefers-reduced-motion: reduce) { .thump { animation: none; } }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; color: var(--ink-2); margin: 6px 0 0 8px; }
+.legend i { display: inline-block; width: 18px; height: 12px; vertical-align: -1px; margin-right: 6px; border: 1px solid var(--ink-3); }
+.legend i.ln-ref, .legend i.ln-sb, .legend i.ln-sr, .legend i.ln-miss { height: 4px; border: 0; vertical-align: 4px; width: 26px; }
+.ln-ref { background: var(--ink); } .ln-sb { background: var(--sb); } .ln-sr { background: var(--sr); } .ln-miss { background: var(--red); height: 6px !important; }
+.sw-ok { background: #8fbf96; } .sw-miss { background: var(--red); } .sw-unn { background: repeating-linear-gradient(45deg, #c9d1ca 0 3px, #f2f5ef 3px 6px); } .sw-jus { background: #59645c; }
+.under { display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(330px, 1fr); gap: 26px; margin-top: 18px; align-items: start; }
+.box { border-top: 2px solid var(--rule); padding-top: 10px; }
+.pred { width: 100%; border-collapse: collapse; font-size: 15px; }
+.pred td, .pred th { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+.pred th { font: 600 12px var(--sans); text-transform: uppercase; letter-spacing: .06em; color: var(--rule); }
+.hit { color: var(--ok); font-weight: 700; } .miss { color: var(--red); font-weight: 700; }
+.keys { font-size: 14px; color: var(--ink-3); margin-top: 10px; }
+kbd { font: 600 12.5px var(--mono); border: 1.5px solid var(--ink-3); border-bottom-width: 2.5px; border-radius: 4px; padding: 0 5px; background: var(--paper-hi); color: var(--ink); }
+
+/* sheet 4 */
+.s4 { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 36px; align-items: start; }
+#sweep .l-truth { stroke: var(--ink); stroke-width: 3; stroke-dasharray: 8 5; fill: none; }
+#sweep .l-naive { stroke: var(--red); stroke-width: 3; fill: none; }
+#sweep .l-dr { stroke: var(--ok); stroke-width: 3.4; fill: none; }
+#sweep text.lbl { font: 700 20px var(--din); }
+.dslider { margin: 8px 0 4px; }
+footer { max-width: 1760px; margin: 0 auto; padding: 18px 136px 40px 40px; font-size: 14px; color: var(--ink-3); }
+footer p { max-width: 120ch; }
+#tip { position: fixed; z-index: 50; max-width: 520px; background: var(--ink); color: var(--paper-hi); font: 13px/1.4 var(--mono); padding: 8px 10px; border-radius: 3px; pointer-events: none; opacity: 0; transition: opacity .12s; box-shadow: 0 4px 12px rgba(23, 32, 26, .3); }
+#tip.on { opacity: 1; }
+@media (max-width: 1180px) {
+  .s1, .s2, .s3, .s4, .under, .two { grid-template-columns: 1fr; }
+  .tb { grid-template-columns: 1fr 1fr; }
+  .tb > div { border-left: 0; border-top: 1px solid var(--rule); }
+  .sheet, footer { padding-right: 24px; padding-left: 20px; }
+  nav.index { top: auto; bottom: 0; right: 0; left: 0; transform: none; flex-direction: row; justify-content: center; background: var(--paper); border-top: 2px solid var(--rule); padding: 4px; }
+  nav.index a, nav.index a[aria-current="true"] { width: auto; transform: none; border: 2px solid var(--rule); border-radius: 6px; box-shadow: none; padding: 5px 10px; }
+  body { padding-bottom: 64px; }
+}
+@media (max-width: 640px) { .chart { overflow-x: auto; } #knob, #strip, #sweep { min-width: 760px; } .stamp-cant { white-space: normal; } body { font-size: 16px; } .calc { grid-template-columns: 1fr; } .calc .lab { padding-bottom: 0; border-bottom: 0 !important; } .verdict { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<nav class="index" aria-label="Sheets">
+  <a href="#sheet1" data-sheet="1">1<span>Dashboard</span></a>
+  <a href="#sheet2" data-sheet="2">2<span>Logs can tell</span></a>
+  <a href="#sheet3" data-sheet="3">3<span>The knob</span></a>
+  <a href="#sheet4" data-sheet="4">4<span>Simulator</span></a>
+</nav>
+<main>
+<!-- ============================================================== SHEET 1 · REAL -->
+<section class="sheet" id="sheet1" aria-labelledby="h1-1">
+  <header class="tb">
+    <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
+    <div><i>Sheet</i><b>1 / 4</b></div>
+    <div><i>Data</i><b>Open Bandit Dataset · ZOZOTOWN fashion A/B test · 24–27 Nov 2019 · {{S1_hours}} h</b></div>
+    <div><i>Checked by</i><b>the concurrent A/B arms</b></div>
+    <div class="stampcell">{{STAMP_REAL}}</div>
+  </header>
+  <h1 id="h1-1"><span class="ln">The dashboard said <span class="nw">{{S1_naive}}.</span></span><span class="ln">The A/B test says <span class="nw">{{S1_ref}}.</span></span></h1>
+  <p class="lede">A policy switch, re-enacted on real traffic: the uniform-random policy's logs for the first {{S1_half}} hours, the Thompson-sampling policy's (BTS) for the next {{S1_half}}. Both arms really ran the whole time ({{S1_n_random}} and {{S1_n_bts}} impressions), so the second half carries a real A/B check. <span class="unit">Units: clicks per 1,000 impressions.</span></p>
+  <div class="s1">
+    <div class="calc" role="table" aria-label="Worked calculation">
+      <div class="lab" role="rowheader">Dashboard<span>after − before</span></div>
+      <div role="cell"><span class="expr">BTS, last {{S1_half}} h − Random, first {{S1_half}} h</span>
+        <span class="arith">{{S1_B2}} − {{S1_R1}} = {{S1_naive}} <span class="unit">{{S1_naive_hw}}</span></span></div>
+      <div class="lab" role="rowheader">A/B check<span>same hours</span></div>
+      <div role="cell"><span class="expr">BTS, last {{S1_half}} h − Random, last {{S1_half}} h</span>
+        <span class="arith">{{S1_B2}} − {{S1_R2}} = {{S1_ref}} <span class="unit">{{S1_ref_hw}}</span></span></div>
+      <div class="lab" role="rowheader">The week<span>not the policy</span></div>
+      <div role="cell"><span class="expr">Random, last {{S1_half}} h − Random, first {{S1_half}} h</span>
+        <span class="arith">{{S1_R2}} − {{S1_R1}} = <span class="hl">{{S1_env}}</span></span>
+        <span class="note">The old policy's own click rate rose {{S1_env_pct}} with no switch at all. The dashboard books that as the new policy's: it overstates the policy by {{S1_overstate}}.</span></div>
+      <div class="lab" role="rowheader">Logs only<span>no A/B needed</span></div>
+      <div role="cell"><span class="expr">BTS, last {{S1_half}} h − doubly robust estimate of "Random, last {{S1_half}} h" from the BTS logs</span>
+        <span class="arith">{{S1_B2}} − {{S1_dr_vhat}} = {{S1_dr}}</span>
+        <span class="note">95% interval {{S1_dr_ci}} (row-level) · {{S1_dr_block}} (hour-block bootstrap, post hoc). Both hold the A/B check, and also the dashboard number.</span></div>
+    </div>
+    <figure class="wfwrap" style="margin:0">
+      {{S1_WATERFALL}}
+      <figcaption>Drawn to scale from the A/B arms (all four cells observed). The orange dashed box is what the logs alone say the policy did.</figcaption>
+    </figure>
+  </div>
+  <div class="verdict">
+    <span class="stamp stamp-cant">Can't tell from these logs</span>
+    <div>
+      <p><b>Our evaluator refuses this one.</b> To score "Random during the last {{S1_half}} h" it must reweight the BTS logs, and BTS almost never shows what Random would. The {{S1_n_after}} BTS impressions are worth {{S1_ess_abs}} uniform-random ones for this question (ESS/n {{S1_ess_pct2}}, below the frozen {{RULE_ESS}} floor). A single click logged at propensity {{S1_min_ps}} counts {{S1_max_w}} times.</p>
+      <p class="fine">{{STAMP_POST}} The overlap gate (ESS/n ≥ {{RULE_ESS}}, mean-weight |z| ≤ {{RULE_Z}}) was calibrated on the simulator only and frozen before it touched OBD, but it was designed after we had seen these OBD failures, so every OBD verdict on this sheet is post hoc.</p>
+    </div>
+  </div>
+  <div class="two">
+    <div>
+      <h3>Was refusing right?</h3>
+      <p>Here, no: the interval held the A/B check, so this refusal cost an answer. On the pre-registered whole-day pair 25 → 26 Nov, the same estimate failed: DR {{S1_f_dr_plain}} ({{S1_f_ci}}) against a check of {{S1_f_ref_plain}}, with the dashboard at {{S1_f_naive}}. The gate refused that one too (ESS/n {{S1_f_ess}}).</p>
+    </div>
+    <div>
+      <h3>Track record on real cases <span class="stamp stamp-post" style="font-size:11px;margin-left:6px">post hoc</span></h3>
+      <ul class="track">
+        <li><b>{{S1_t_answered}}</b>answered</li>
+        <li><b>{{S1_t_refin}}</b>interval held the check</li>
+        <li><b>{{S1_t_refused}}</b>failures refused</li>
+        <li><b>{{S1_t_wrong}}</b>confidently wrong sign</li>
+      </ul>
+      <p class="fine">{{S1_t_listed}} distinct instances from the 84 h (they share observations). Reverse switch, BTS → Random: dashboard {{S1_b_naive}} vs check {{S1_b_ref}} (the naive number is right); DR {{S1_b_dr}} ({{S1_b_ci}}), answered at ESS/n {{S1_b_ess}}: "hurt".</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== SHEET 2 · REAL -->
+<section class="sheet" id="sheet2" aria-labelledby="h1-2">
+  <header class="tb">
+    <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
+    <div><i>Sheet</i><b>2 / 4</b></div>
+    <div><i>Data</i><b>Random arm's {{S2_n}} impressions → value of BTS, same 84 h</b></div>
+    <div><i>Checked by</i><b>the BTS arm's own click rate</b></div>
+    <div class="stampcell">{{STAMP_REAL}}</div>
+  </header>
+  <h1 id="h1-2">When the logs can tell: <span class="nw">{{S2_dr}} <span class="vs">vs</span> {{S2_truth}}</span></h1>
+  <p class="lede">Uniform-random logs cover every item at every position, so they can score the Thompson-sampling policy. The gate answers (ESS/n {{S2_ess_pct}}, mean-weight z {{S2_z}}). Doubly robust lands {{S2_dr_relerr}} from what the BTS arm actually earned, {{S2_truth_plain}} {{S2_truth_hw}}.</p>
+  <div class="s2">
+    <figure class="wfwrap" style="margin:0">{{S2_FOREST}}
+      <figcaption>Estimates with 95% intervals; grey band: the BTS arm's click rate ± 95%. Red rings: the interval misses the check.</figcaption></figure>
+    <div class="facts">
+      <div><h3>An approximate target, said plainly</h3><p>BTS kept learning: {{S2_a1_cells}} of its busiest item-position cells moved their propensity at least 1.5× within the 84 h (median {{S2_a1_med}}×). So we score an hourly reconstruction of it. The standard OBD protocol scores one static prior (the top block), which is a different policy.</p></div>
+      <div><h3>The direct method looked overconfident</h3><p>DM's interval (SE {{S2_dm_se_old}} per 1,000) misses the check. Refitting its model inside the bootstrap gives SE {{S2_dm_se}} per 1,000, and DM becomes consistent (dashed red, post hoc).</p></div>
+      <div><h3>Same evaluator, opposite logs</h3><p>Sheet 1 asked BTS logs about Random: overlap {{S1_ess_pct}}, refused. Here Random logs answer about BTS: overlap {{S2_ess_pct}}, answered, within {{S2_dr_relerr}}. Which logs you kept decides which questions you can ever answer. Sheet 3 makes that a knob.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================== SHEET 3 · REAL · PRE-REGISTERED -->
+<section class="sheet" id="sheet3" aria-labelledby="h1-3">
+  <header class="tb">
+    <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
+    <div><i>Sheet</i><b>3 / 4</b></div>
+    <div><i>Data</i><b>Vendored extract, {{EXTRACT_MB}} MB · BTS and Random arms · {{K_PERIODS}} periods × {{K_GRID}} α</b></div>
+    <div><i>Checked by</i><b>a straight line between the two arms</b></div>
+    <div class="stampcell">{{STAMP_REAL}}<span class="stamp stamp-pre">Pre-registered<small>{{PREREG_TIME}} · {{PREREG_COMMIT}}</small></span></div>
+  </header>
+  <h1 id="h1-3">Turn the knob: how far can a new policy stray before the logs can't tell?</h1>
+  <p class="lede">Candidate policy π<sub>α</sub> = (1 − α) × BTS + α × uniform random. Its true value is a straight line between the two A/B arms, a real check at every α. From BTS logs the importance weights are exact: (1 − α) + α / (80 × logged propensity). IPS always prints a number. Our evaluator prints it only when the frozen gate passes.</p>
+  <div class="controls">
+    <div class="ctl alpha"><div class="alpha-head"><span class="ctl-l" style="display:inline">Cursor</span><span class="val" id="alpha-val">α = 0.25</span><span class="mix" id="alpha-mix"></span></div>
+      <input type="range" id="alpha" min="0" max="100" step="1" value="25" aria-label="alpha: share of uniform random in the candidate policy" aria-describedby="alpha-mix"></div>
+    <div class="ctl"><span class="ctl-l">Period</span><div class="seg" id="periods" role="group" aria-label="Period"></div></div>
+    <div class="ctl"><span class="ctl-l">Estimator</span><div class="seg" id="est" role="group" aria-label="Estimator"><button data-v="IPW">IPS</button><button data-v="SNIPW">SNIPS</button></div></div>
+    <div class="ctl"><span class="ctl-l">Interval</span><div class="seg" id="iv" role="group" aria-label="Interval"><button data-v="row">row-level</button><button data-v="cluster">hour-cluster</button></div></div>
+    <div class="ctl"><span class="ctl-l">Logs</span><div class="seg" id="srcs" role="group" aria-label="Log sources"><button class="sb" data-v="SB">BTS logs</button><button class="sr" data-v="SR">Random logs</button></div></div>
+  </div>
+  <div class="s3">
+    <div class="chart"><svg id="knob" viewBox="0 0 1000 556" role="img" aria-label="Value of the candidate policy against alpha, with the A/B check line, both estimators' intervals, effective sample size and the gate's verdict"></svg>
+      <div class="legend"><span><i class="ln-ref"></i>A/B check (line between the arms)</span><span><i class="ln-sb"></i>estimate from BTS logs</span><span><i class="ln-sr"></i>estimate from Random logs</span><span><i class="ln-miss"></i>answered, check outside</span></div>
+      <div class="legend"><span><i class="sw-ok"></i>answers · check inside</span><span><i class="sw-miss"></i>answers · check outside</span><span><i class="sw-unn"></i>can't tell · check was inside</span><span><i class="sw-jus"></i>can't tell · check outside</span></div></div>
+    <div class="readout" id="readout" aria-live="polite"></div>
+  </div>
+  <div class="under">
+    <div class="box"><h2 style="margin-top:0">Every period, every α: pre-registered, nothing hidden</h2>
+      <div class="chart"><svg id="strip" viewBox="0 0 1000 300" role="img" aria-label="Verdict and check status for all 12 series at all 101 values of alpha"></svg></div>
+      <p class="fine" id="totals"></p></div>
+    <div class="box"><h2 style="margin-top:0">Predicted before computing</h2><div id="preds"></div>
+      <p class="keys"><kbd>←</kbd><kbd>→</kbd> move α (<kbd>Shift</kbd> ×5) · <kbd>[</kbd><kbd>]</kbd> period · <kbd>i</kbd> estimator · <kbd>c</kbd> interval · <kbd>1</kbd>–<kbd>4</kbd> sheets · hover any number for its source</p></div>
+  </div>
+</section>
+
+<!-- ============================================================== SHEET 4 · SYNTHETIC -->
+<section class="sheet" id="sheet4" aria-labelledby="h1-4">
+  <header class="tb">
+    <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
+    <div><i>Sheet</i><b>4 / 4</b></div>
+    <div><i>Data</i><b>Simulator with known counterfactuals · 10,000 logged rounds per period</b></div>
+    <div><i>Checked by</i><b>exact ground truth (Monte Carlo)</b></div>
+    <div class="stampcell"><span class="stamp stamp-syn">Synthetic</span></div>
+  </header>
+  <h1 id="h1-4">Stress test: a season can flip the dashboard's sign</h1>
+  <p class="lede">This is the simulator, where the truth is known exactly. A seasonal drop makes the dashboard read {{S4_NAIVE}} points while the switch really added {{S4_POLICY_TRUE}}. DR recovers {{S4_POLICY}}; the naive number has the wrong sign in {{S4_WRONG}} seeds. Drag the drift to see where naive is right and where it lies.</p>
+  <div class="s4">
+    <div><div class="chart">
+      <div class="ctl dslider"><label for="drift">Response drift (logit) <span class="val" id="drift-val" style="font:700 20px var(--din)"></span></label>
+        <input type="range" id="drift" min="0" max="12" step="1" value="2"></div>
+      <svg id="sweep" viewBox="0 0 1000 400" role="img" aria-label="Truth, naive and DR estimates of the policy effect across 13 drift levels"></svg></div>
+      <div class="readout" id="sweep-read" style="margin-top:14px" aria-live="polite"></div></div>
+    <figure class="wfwrap" style="margin:0"><h3>Scenario S1: what the dashboard number is made of</h3>{{S4_WATERFALL}}
+      <figcaption>Change in click-through rate, percentage points. {{S4_SEEDS}} seeds.</figcaption></figure>
+  </div>
+</section>
+</main>
+<footer>
+  <p><b>Provenance.</b> Hover any dotted number for its source file and key. Every number comes from a committed result or is computed from one by committed code: <code>demo/build.py</code> (this page) and <code>demo/knob.py</code> (sheet 3, pre-registered in <code>demo/preregistration_knob.md</code>). The knob values are recomputed from the vendored extract by <code>demo/smoke.sh</code>. Inputs (sha256 prefixes): {{DIGESTS}}.</p>
+  <p><b>Data.</b> Open Bandit Dataset © ZOZO, Inc., licensed CC BY 4.0 (creativecommons.org/licenses/by/4.0). Saito, Aihara, Matsutani, Narita, "A Large-scale Open Dataset for Bandit Algorithms", arXiv:2008.07146. This page uses an aggregated extract (campaign All, 24–27 Nov 2019; counts per hour, item, position, propensity, click); see <code>demo/data/NOTICE.md</code>. The "A/B check" is the concurrent arm difference, not ground truth: arm balance by user is unresolved (a raw-label artefact).</p>
+</footer>
+<div id="tip" role="tooltip"></div>
+<script id="data" type="application/json">{{DATA_JSON}}</script>
+<script>
+(() => {
+'use strict';
+const D = JSON.parse(document.getElementById('data').textContent);
+const K = D.knob;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const M = '\u2212';
+const fx = (x, d = 3, plus = false) => { if (!Number.isFinite(x)) return '—'; const r = Math.abs(x).toFixed(d); if (Number(r) === 0) return r; return (x < 0 ? M : (plus ? '+' : '')) + r; };
+const grp = x => Math.round(x).toLocaleString('en-US');
+const pc = x => (x < 0.01 ? (100 * x).toFixed(2) : (100 * x).toFixed(1)) + '%';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const Z = 1.959963984540054;
+const TAU = K.rule.tau_ess;
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- tooltips ---------- */
+const tip = $('#tip');
+function showTip(el) { tip.textContent = 'source: ' + el.dataset.src; const r = el.getBoundingClientRect(); tip.classList.add('on');
+  const w = tip.offsetWidth; tip.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.left)) + 'px';
+  tip.style.top = (r.bottom + 8 + tip.offsetHeight > window.innerHeight ? r.top - tip.offsetHeight - 8 : r.bottom + 8) + 'px'; }
+document.addEventListener('mouseover', e => { const el = e.target.closest('[data-src]'); if (el) showTip(el); });
+document.addEventListener('mouseout', e => { if (e.target.closest('[data-src]')) tip.classList.remove('on'); });
+document.addEventListener('focusin', e => { const el = e.target.closest('[data-src]'); if (el) showTip(el); });
+document.addEventListener('focusout', () => tip.classList.remove('on'));
+
+/* ---------- sheet index ---------- */
+const tabs = $$('nav.index a');
+const sheets = $$('.sheet');
+let activeSheet = 1;
+const io = new IntersectionObserver(ents => { ents.forEach(en => { if (en.isIntersecting) { activeSheet = Number(en.target.id.slice(5));
+  tabs.forEach(t => t.setAttribute('aria-current', String(Number(t.dataset.sheet) === activeSheet))); } }); }, {rootMargin: '-45% 0px -50% 0px'});
+sheets.forEach(s => io.observe(s));
+const goSheet = n => document.getElementById('sheet' + n).scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
+
+/* ---------- sheet 3: the knob ---------- */
+const PERIODS = K.periods;
+const st = {a: 25, p: 'W2', e: 'IPW', iv: 'row', show: {SB: true, SR: true}};
+const SRC = {SB: {name: 'BTS logs', sub: 'greedy · exact weights', col: 'var(--sb)', ink: 'var(--sb-ink)'},
+             SR: {name: 'Random logs', sub: 'exploration · approximate target', col: 'var(--sr)', ink: 'var(--sr)'}};
+const ser = (p, s) => K.series[p + '·' + s];
+const bit = (b, k) => (b >> k) & 1;
+const E1 = (b, e, iv) => bit(b, (e === 'IPW' ? 1 : 5) + (iv === 'row' ? 0 : 1));
+const E2 = (b, e, iv) => bit(b, (e === 'IPW' ? 3 : 7) + (iv === 'row' ? 0 : 1));
+const lamOf = (s, i) => (s === 'SB' ? i / 100 : 1 - i / 100);
+const X0 = 92, X1 = 980, xa = i => X0 + (X1 - X0) * i / 100;
+const MT = 16, MB = 300, ET = 330, EB = 436, ST = 456, SH = 20;
+let yr = [0, 1];
+const ym = v => MB - (MB - MT) * (v - yr[0]) / (yr[1] - yr[0]);
+const ye = v => EB - (EB - ET) * (Math.log10(Math.max(v, 1e-4)) + 4) / 4;
+function seVals(f, e, iv) { return iv === 'row' ? f[e].s : f[e].sc; }
+function rangeFor(p) {
+  let lo = Infinity, hi = -Infinity;
+  for (const s of ['SB', 'SR']) { if (!st.show[s]) continue; const f = ser(p, s).f;
+    for (const e of ['IPW', 'SNIPW']) { const se = seVals(f, e, st.iv); for (let i = 0; i <= 100; i++) { lo = Math.min(lo, f[e].v[i] - Z * se[i]); hi = Math.max(hi, f[e].v[i] + Z * se[i]); } } }
+  const f = ser(p, 'SB').f, sr = st.iv === 'row' ? f.sref : f.srefc;
+  for (let i = 0; i <= 100; i++) { lo = Math.min(lo, f.ref[i] - Z * sr[i]); hi = Math.max(hi, f.ref[i] + Z * sr[i]); }
+  const pad = 0.04 * (hi - lo); return [lo - pad, hi + pad];
+}
+function niceTicks(lo, hi) { const span = hi - lo; const step = span > 3 ? 1 : span > 1.6 ? 0.5 : 0.25; const out = []; for (let t = Math.ceil(lo / step) * step; t <= hi + 1e-9; t += step) out.push(+t.toFixed(2)); return out; }
+function poly(top, bot) { return top.map(p => p.join(',')).join(' ') + ' ' + bot.slice().reverse().map(p => p.join(',')).join(' '); }
+function segments(bits) { const segs = []; let cur = null;
+  for (let i = 0; i <= 100; i++) { const a = bits[i] & 1; if (!cur || cur.a !== a) { if (cur) cur.idx.push(i); cur = {a, idx: [i]}; segs.push(cur); } else cur.idx.push(i); }
+  return segs; }
+function cellState(b, e, iv) { const a = b & 1, ok = E1(b, e, iv); return a ? (ok ? 'ok' : 'miss') : (ok ? 'unn' : 'jus'); }
+const FILL = {ok: '#8fbf96', miss: 'var(--red)', unn: 'url(#hatchL)', jus: '#59645c'};
+
+function drawKnob() {
+  const svg = $('#knob'); yr = rangeFor(st.p);
+  const fB = ser(st.p, 'SB').f;
+  let h = `<defs><pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="9" height="9" fill="rgba(127,138,130,.10)"/><line x1="0" y1="0" x2="0" y2="9" stroke="#7f8a82" stroke-width="2.2"/></pattern>
+    <pattern id="hatchL" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#f2f5ef"/><line x1="0" y1="0" x2="0" y2="6" stroke="#c3ccc4" stroke-width="3"/></pattern></defs>`;
+  for (const t of niceTicks(yr[0], yr[1])) h += `<line x1="${X0}" x2="${X1}" y1="${ym(t)}" y2="${ym(t)}" class="gridln" stroke="#a9bfa9" stroke-dasharray="2 4"/><text x="${X0 - 10}" y="${ym(t) + 5}" class="tick" text-anchor="end">${t.toFixed(2)}</text>`;
+  h += `<text x="${X0 - 64}" y="${(MT + MB) / 2}" class="lbl-s" transform="rotate(-90 ${X0 - 64} ${(MT + MB) / 2})" text-anchor="middle">clicks per 1,000</text>`;
+  const sref = st.iv === 'row' ? fB.sref : fB.srefc;
+  const rTop = [], rBot = [], rLine = [];
+  for (let i = 0; i <= 100; i++) { rTop.push([xa(i), ym(fB.ref[i] + Z * sref[i])]); rBot.push([xa(i), ym(fB.ref[i] - Z * sref[i])]); rLine.push([xa(i), ym(fB.ref[i])]); }
+  h += `<polygon points="${poly(rTop, rBot)}" class="refband"/>`;
+  let lines = '';
+  for (const s of ['SR', 'SB']) { if (!st.show[s]) continue; const f = ser(st.p, s).f; const v = f[st.e].v, se = seVals(f, st.e, st.iv);
+    for (const sg of segments(f.bits)) { const top = sg.idx.map(i => [xa(i), ym(v[i] + Z * se[i])]), bot = sg.idx.map(i => [xa(i), ym(v[i] - Z * se[i])]);
+      const line = sg.idx.map(i => [xa(i), ym(v[i])].join(',')).join(' ');
+      if (sg.a) { h += `<polygon points="${poly(top, bot)}" fill="${SRC[s].col}" opacity=".2"/>`; lines += `<polyline points="${line}" fill="none" stroke="${SRC[s].col}" stroke-width="3.2" stroke-linejoin="round"/>`; }
+      else { h += `<polygon points="${poly(top, bot)}" fill="url(#hatch)" opacity=".85"/>`; lines += `<polyline points="${line}" fill="none" stroke="#7f8a82" stroke-width="2.4" stroke-dasharray="7 5"/>`; } }
+    let run = [];
+    const flush = () => { if (run.length) lines += `<polyline points="${run.join(' ')}" fill="none" stroke="var(--red)" stroke-width="7" stroke-linecap="round" opacity=".85"><title>answered, but the A/B check is outside the interval</title></polyline>`; run = []; };
+    for (let i = 0; i <= 100; i++) { if ((f.bits[i] & 1) && !E1(f.bits[i], st.e, st.iv)) run.push([xa(i), ym(v[i])].join(',')); else flush(); } flush(); }
+  h += `<polyline points="${rLine.map(p => p.join(',')).join(' ')}" class="refline" fill="none"/>` + lines;
+
+  // ESS panel
+  h += `<line x1="${X0}" x2="${X1}" y1="${EB}" y2="${EB}" class="axis" stroke="#17201a"/>`;
+  for (const [t, lab] of [[1, '100%'], [0.1, '10%'], [0.01, '1%'], [0.001, '0.1%']]) h += `<line x1="${X0}" x2="${X1}" y1="${ye(t)}" y2="${ye(t)}" stroke="#a9bfa9" stroke-dasharray="2 4"/><text x="${X0 - 10}" y="${ye(t) + 5}" class="tick" text-anchor="end">${lab}</text>`;
+  h += `<line x1="${X0}" x2="${X1}" y1="${ye(TAU)}" y2="${ye(TAU)}" class="thr"/><text x="${X0 + 8}" y="${ye(TAU) + 19}" class="lbl-s halo">gate floor: ESS/n ${(100 * TAU).toFixed(0)}% (frozen)</text>`;
+  h += `<text x="${X0 - 64}" y="${(ET + EB) / 2}" class="lbl-s" transform="rotate(-90 ${X0 - 64} ${(ET + EB) / 2})" text-anchor="middle">ESS / n</text>`;
+  for (const s of ['SR', 'SB']) { if (!st.show[s]) continue; const S = ser(st.p, s); const f = S.f;
+    h += `<polyline points="${f.ess.map((v, i) => [xa(i), ye(v)].join(',')).join(' ')}" fill="none" stroke="${SRC[s].col}" stroke-width="3"/>`;
+    const pr = K.pred[st.p + '·' + s]; const fa = S.summary.first_abstain;
+    if (pr && pr.gate_alpha != null) { const px = xa(Math.round(pr.gate_alpha * 100)); h += `<path d="M${px - 8},${ye(TAU) + 18} l8,-13 l8,13 z" fill="none" stroke="${SRC[s].col}" stroke-width="2"><title>pre-registered prediction: first can't-tell at α ${pr.gate_alpha.toFixed(2)}</title></path>`; }
+    if (fa != null) { const px = xa(Math.round(fa * 100)); h += `<path d="M${px - 7},${ye(TAU) - 4} l7,-12 l7,12 z" fill="${SRC[s].col}"><title>observed: first can't-tell at α ${fa.toFixed(2)}</title></path>`; } }
+  // mini strip for the selected period
+  ['SB', 'SR'].forEach((s, r) => { const f = ser(st.p, s).f; const y = ST + r * (SH + 5); const cw = (X1 - X0) / 101;
+    h += `<text x="${X0 - 10}" y="${y + 15}" class="tick" text-anchor="end">${s === 'SB' ? 'BTS' : 'Random'}</text>`;
+    for (let i = 0; i <= 100; i++) h += `<rect x="${X0 + i * cw}" y="${y}" width="${cw + .4}" height="${SH}" fill="${FILL[cellState(f.bits[i], st.e, st.iv)]}"/>`;
+    h += `<rect x="${X0}" y="${y}" width="${X1 - X0}" height="${SH}" fill="none" stroke="#17201a" stroke-width="1"/>`; });
+  for (const [t, lab] of [[0, '0'], [25, '0.25'], [50, '0.5'], [75, '0.75'], [100, '1']]) h += `<text x="${xa(t)}" y="${ST + 2 * SH + 28}" class="tick" text-anchor="middle">${lab}</text>`;
+  h += `<text x="${X0}" y="${ST + 2 * SH + 50}" class="lbl" font-size="14">← BTS as deployed</text><text x="${X1}" y="${ST + 2 * SH + 50}" class="lbl" font-size="14" text-anchor="end">uniform random →</text>`;
+  h += `<text x="${(X0 + X1) / 2}" y="${ST + 2 * SH + 50}" class="lbl-s" text-anchor="middle">α = share of uniform random in the candidate</text>`;
+  h += `<g id="cur"><rect class="cursor-glass" x="-13" y="${MT - 8}" width="26" height="${ST + 2 * SH + 5 - MT + 16}" rx="3"/><line class="cursor-line" x1="0" x2="0" y1="${MT - 8}" y2="${ST + 2 * SH + 13}"/></g><g id="dots"></g>`;
+  svg.innerHTML = h;
+}
+
+const lastAns = {SB: null, SR: null};
+function readoutSource(s, i) {
+  const S = ser(st.p, s), f = S.f, b = f.bits[i], v = f[st.e].v[i], se = seVals(f, st.e, st.iv)[i];
+  const lo = v - Z * se, hi = v + Z * se, a = b & 1, inside = E1(b, st.e, st.iv), miss = st.iv === 'row' ? f[st.e].m[i] : f[st.e].mc[i];
+  const lam = lamOf(s, i), ess = f.ess[i], maxw = (1 - lam) + lam * S.max_x;
+  const estName = st.e === 'IPW' ? 'IPS' : 'SNIPS';
+  const ours = a ? `<span class="ok">✓ answers</span> <span style="font:500 16px var(--mono)">${fx(v)} (${fx(lo)} … ${fx(hi)})</span>`
+                 : `<span class="stamp stamp-cant" data-k="${s}" style="font-size:17px;padding:6px 9px 5px">Can't tell</span><span class="why">${esc(f.why[i].replace(/\|mean-weight z\|/g, 'mean-weight |z|'))}</span>`;
+  const check = inside ? `<span class="ok">inside ✓</span>` : `<span class="bad">outside by ${fx(miss)}</span>`;
+  return `<div class="row ${s.toLowerCase()}"><div class="head"><b class="src">${SRC[s].name}</b><span class="tag">${SRC[s].sub}</span></div>
+    <dl class="kv"><dt>${estName} says</dt><dd>${fx(v)} <span style="color:var(--ink-3)">(${fx(lo)} … ${fx(hi)})</span></dd>
+    <dt>check is</dt><dd>${check}</dd>
+    <dt>overlap</dt><dd>ESS/n ${pc(ess)}: ${grp(S.n)} logged rows are worth ${grp(ess * S.n)} rows logged by the candidate itself</dd>
+    <dt>weights</dt><dd>max ${maxw >= 100 ? grp(maxw) : maxw.toFixed(2)} · mean-weight z ${fx(f.z[i], 2, true)}</dd></dl>
+    <div class="verdict-cell"><span class="tag" style="min-width:94px">our evaluator</span>${ours}</div></div>`;
+}
+function drawCursor(fromMove) {
+  const i = st.a; $('#alpha').value = i; $('#alpha-val').textContent = 'α = ' + (i / 100).toFixed(2);
+  $('#alpha-mix').textContent = `= ${100 - i}% BTS + ${i}% uniform`;
+  const cur = $('#cur'); if (cur) cur.setAttribute('transform', `translate(${xa(i)},0)`);
+  const fB = ser(st.p, 'SB').f; const sref = (st.iv === 'row' ? fB.sref : fB.srefc)[i];
+  let dots = `<circle cx="${xa(i)}" cy="${ym(fB.ref[i])}" r="6.5" fill="#17201a" stroke="#f6f9f2" stroke-width="2"/>`;
+  for (const s of ['SR', 'SB']) if (st.show[s]) { const f = ser(st.p, s).f; dots += `<circle cx="${xa(i)}" cy="${ym(f[st.e].v[i])}" r="6.5" fill="${SRC[s].col}" stroke="#f6f9f2" stroke-width="2"/>`; }
+  $('#dots').innerHTML = dots;
+  const per = PERIODS.find(p => p.id === st.p);
+  let h = `<div class="row"><div class="head"><b>α = ${(i / 100).toFixed(2)}</b><span class="tag">${esc(per.label)}</span></div>
+    <dl class="kv"><dt>A/B check</dt><dd><b>${fx(fB.ref[i])}</b> <span style="color:var(--ink-3)">± ${fx(Z * sref)}</span></dd></dl></div>`;
+  for (const s of ['SB', 'SR']) if (st.show[s]) h += readoutSource(s, i);
+  $('#readout').innerHTML = h;
+  for (const s of ['SB', 'SR']) { const a = ser(st.p, s).f.bits[i] & 1; const el = $(`#readout .stamp[data-k="${s}"]`);
+    if (fromMove && el && lastAns[s] === 1 && a === 0 && !reduce) el.classList.add('thump'); lastAns[s] = a; }
+  $$('#strip .cursor-line').forEach(l => { const x0 = Number(l.dataset.x0), x = x0 + (X1 - x0) * i / 100; l.setAttribute('x1', x); l.setAttribute('x2', x); });
+  writeHash();
+}
+function drawStrip() {
+  const svg = $('#strip'); const rows = []; PERIODS.forEach(p => ['SB', 'SR'].forEach(s => rows.push([p, s])));
+  const SX0 = 150, xs = i => SX0 + (X1 - SX0) * i / 100, RH = 19, top = 10, cw = (X1 - SX0) / 101; let h = '';
+  rows.forEach(([p, s], r) => { const y = top + r * RH + (r >> 1) * 4; const f = ser(p.id, s).f; const sel = p.id === st.p;
+    h += `<g class="srow" data-p="${p.id}" style="cursor:pointer"><text x="${SX0 - 10}" y="${y + 13}" class="tick" text-anchor="end" style="${sel ? 'font-weight:700;fill:#17201a' : ''}">${p.id === 'W' ? 'W 84h' : p.id.replace('D', 'Nov ')} · ${s === 'SB' ? 'BTS' : 'Random'}</text>`;
+    for (let i = 0; i <= 100; i++) h += `<rect x="${SX0 + i * cw}" y="${y}" width="${cw + .4}" height="${RH - 3}" fill="${FILL[cellState(f.bits[i], st.e, st.iv)]}"/>`;
+    h += `<rect x="${SX0}" y="${y}" width="${X1 - SX0}" height="${RH - 3}" fill="none" stroke="${sel ? '#17201a' : '#a9bfa9'}" stroke-width="${sel ? 2.4 : 1}"/></g>`; });
+  const bottom = top + rows.length * RH + 6 * 4;
+  for (const [t, lab] of [[0, '0'], [25, '0.25'], [50, '0.5'], [75, '0.75'], [100, '1']]) h += `<text x="${xs(t)}" y="${bottom + 16}" class="tick" text-anchor="middle">${lab}</text>`;
+  h += `<text x="${SX0 - 10}" y="${bottom + 16}" class="tick" text-anchor="end">α</text><line class="cursor-line" data-x0="${SX0}" x1="${xs(st.a)}" x2="${xs(st.a)}" y1="${top - 6}" y2="${bottom}"/>`;
+  svg.setAttribute('viewBox', `0 0 1000 ${bottom + 24}`); svg.innerHTML = h;
+  $$('#strip .srow').forEach(g => g.addEventListener('click', () => { st.p = g.dataset.p; full(); }));
+  const T = K.totals[`${st.e}_${st.iv}_E1`], T2 = K.totals[`${st.e}_cluster_E1`];
+  const W = K.where.filter(w => st.e === 'IPW' && st.iv === 'row');
+  const where = W.map(w => `${esc(w.label.split(' · ')[0])}, ${w.source === 'SB' ? 'BTS' : 'Random'} logs, α ${w.from.toFixed(2)}–${w.to.toFixed(2)}, worst ${w.max_miss.toFixed(3)} per 1,000 beyond the interval`).join('; ');
+  $('#totals').innerHTML = `${st.e === 'IPW' ? 'IPS' : 'SNIPS'}, ${st.iv === 'row' ? 'row-level' : 'hour-cluster'} intervals, 12 series × 101 α: <b>${T.answered_hold}</b> answered with the check inside · <b>${T.answered_miss}</b> answered with the check outside${where ? ' (' + where + ')' : ''} · <b>${T.unnecessary_abstention}</b> refused although the check was inside · <b>${T.justified_abstention}</b> refused with the check outside.` +
+    (st.iv === 'row' ? ` With hour-cluster intervals: ${T2.answered_miss} answered with the check outside.` : '') + ` Reproduction ${K.repro[0]}/${K.repro[1]} · closed forms vs gate.py ${K.xcheck[0]}/${K.xcheck[1]}.`;
+}
+function drawPreds() {
+  const items = []; ['SB', 'SR'].forEach(s => { const pr = K.pred[st.p + '·' + s]; if (!pr) return;
+    for (const [k, v] of Object.entries(pr.items)) if (v && v.grade) items.push([s, k, v]); });
+  const name = {gate: 'gate', E1_IPW: 'IPS: check inside', E2_IPW: 'IPS: S1 test', all: 'all'};
+  let h = `<table class="pred"><thead><tr><th>Logs</th><th>Item</th><th>Predicted</th><th>Observed</th><th></th></tr></thead><tbody>`;
+  for (const [s, k, v] of items) { const hit = v.grade === 'hit', na = v.grade === 'n/a';
+    h += `<tr><td>${s === 'SB' ? 'BTS' : 'Random'}</td><td>${name[k] || k}</td><td>${esc(v.predicted).replace(/alpha/g, 'α')}</td><td>${esc(v.result === true ? 'yes' : v.result).replace(/alpha/g, 'α')}</td><td class="${na ? '' : hit ? 'hit' : 'miss'}">${na ? '—' : hit ? '✓' : '✗'}</td></tr>`; }
+  h += `</tbody></table><p class="fine" style="margin-top:8px">All periods: <b>${K.hits}/${K.total}</b> predictions hit. Misses: ${K.misses.map(esc).join(' · ').replace(/alpha/g, 'α')}. Predictions came from committed α-endpoints alone (<code>demo/prereg_predictions.py</code>). By algebra IPS's error is exactly α × its error at α = 1, and the gate's mean-weight z does not change with α, so much of this is foreseeable. The new evidence is SNIPS, hour-cluster intervals, Nov 24, W, and the exact crossings.</p>`;
+  $('#preds').innerHTML = h;
+}
+function buildControls() {
+  $('#periods').innerHTML = PERIODS.map(p => `<button data-v="${p.id}" title="${esc(p.label)}">${p.id === 'W' ? 'W 84h' : p.id.startsWith('D') ? p.id.replace('D', 'Nov ') : p.id}</button>`).join('');
+  const sync = () => { $$('#periods button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === st.p)));
+    $$('#est button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === st.e)));
+    $$('#iv button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === st.iv)));
+    $$('#srcs button').forEach(b => b.setAttribute('aria-pressed', String(st.show[b.dataset.v]))); };
+  $('#periods').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { st.p = b.dataset.v; full(); } });
+  $('#est').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { st.e = b.dataset.v; full(); } });
+  $('#iv').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { st.iv = b.dataset.v; full(); } });
+  $('#srcs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { const v = b.dataset.v; const o = v === 'SB' ? 'SR' : 'SB'; st.show[v] = !st.show[v]; if (!st.show[v] && !st.show[o]) st.show[o] = true; full(); } });
+  $('#alpha').addEventListener('input', e => { st.a = Number(e.target.value); drawCursor(true); });
+  buildControls.sync = sync;
+}
+function full() { buildControls.sync(); drawKnob(); drawStrip(); drawPreds(); lastAns.SB = lastAns.SR = null; drawCursor(false); }
+function writeHash() { const h = `#s3:a=${st.a},p=${st.p},e=${st.e},iv=${st.iv},src=${['SB', 'SR'].filter(s => st.show[s]).join('+')}`; if (activeSheet === 3 && location.hash !== h) history.replaceState(null, '', h); }
+function readHash() { const m = location.hash.match(/^#s3:(.*)$/); if (!m) return false; const kv = Object.fromEntries(m[1].split(',').map(x => x.split('=')));
+  if (kv.a != null && /^\d+$/.test(kv.a)) st.a = Math.min(100, Math.max(0, Number(kv.a)));
+  if (kv.p && PERIODS.some(p => p.id === kv.p)) st.p = kv.p; if (kv.e === 'IPW' || kv.e === 'SNIPW') st.e = kv.e; if (kv.iv === 'row' || kv.iv === 'cluster') st.iv = kv.iv;
+  if (kv.src) { st.show.SB = kv.src.includes('SB'); st.show.SR = kv.src.includes('SR'); if (!st.show.SB && !st.show.SR) st.show.SB = st.show.SR = true; }
+  return true; }
+
+/* ---------- sheet 4: drift sweep (SYNTHETIC) ---------- */
+const SW = D.sweep;
+function drawSweep() {
+  const svg = $('#sweep'); const L = 92, R = 970, T = 22, B = 330; const xs = d => L + (R - L) * (d + 1.5) / 3;
+  const lo = -18, hi = 36; const ys = v => B - (B - T) * (v - lo) / (hi - lo);
+  let h = '';
+  for (let t = -15; t <= 35; t += 5) h += `<line x1="${L}" x2="${R}" y1="${ys(t)}" y2="${ys(t)}" stroke="${t === 0 ? '#17201a' : '#a9bfa9'}" stroke-width="${t === 0 ? 1.5 : 1}" ${t === 0 ? '' : 'stroke-dasharray="2 4"'}/><text x="${L - 10}" y="${ys(t) + 5}" class="tick" text-anchor="end">${t > 0 ? '+' : t < 0 ? M : ''}${Math.abs(t)}</text>`;
+  const wrong = SW.filter(p => p.naive_ok < 0.5); if (wrong.length) { const x0 = xs(wrong[0].drift) - 14, x1 = xs(wrong[wrong.length - 1].drift) + 14;
+    h += `<rect x="${x0}" y="${T}" width="${x1 - x0}" height="${B - T}" fill="rgba(200,16,46,.07)"/><text x="${(x0 + x1) / 2}" y="${T + 18}" class="lbl" text-anchor="middle" fill="var(--red)" style="fill:var(--red)">dashboard has the wrong sign</text>`; }
+  const pl = k => SW.map(p => [xs(p.drift), ys(p[k])].join(',')).join(' ');
+  h += `<polyline points="${pl('naive')}" class="l-naive"/><polyline points="${pl('dr')}" class="l-dr"/><polyline points="${pl('truth')}" class="l-truth"/>`;
+  SW.forEach(p => { h += `<circle cx="${xs(p.drift)}" cy="${ys(p.naive)}" r="4" fill="var(--red)"/><circle cx="${xs(p.drift)}" cy="${ys(p.dr)}" r="4.5" fill="var(--ok)"/>`; });
+  const last = SW[SW.length - 1];
+  h += `<text x="${xs(last.drift) - 6}" y="${ys(last.naive) - 10}" class="lbl" text-anchor="end" style="fill:var(--red)">dashboard (naive)</text><text x="${xs(last.drift) - 6}" y="${ys(last.dr) + 26}" class="lbl" text-anchor="end" style="fill:var(--ok)">DR ≈ truth (dashed)</text>`;
+  for (const d of [-1.5, -1, -0.5, 0, 0.5, 1, 1.5]) h += `<text x="${xs(d)}" y="${B + 22}" class="tick" text-anchor="middle">${d > 0 ? '+' : d < 0 ? M : ''}${Math.abs(d).toFixed(1)}</text>`;
+  h += `<text x="${(L + R) / 2}" y="${B + 50}" text-anchor="middle" style="font-size:18px;fill:var(--ink-3)">response drift between the periods (logit) · y: policy effect, percentage points</text>`;
+  h += `<g id="sw-cur"><line x1="0" x2="0" y1="${T - 6}" y2="${B + 6}" stroke="var(--red)" stroke-width="2"/></g>`;
+  svg.innerHTML = h; svg._xs = xs;
+}
+function drawSweepCursor() {
+  const i = Number($('#drift').value), p = SW[i]; const xs = $('#sweep')._xs; $('#sw-cur').setAttribute('transform', `translate(${xs(p.drift)},0)`);
+  $('#drift-val').textContent = (p.drift > 0 ? '+' : p.drift < 0 ? M : '') + Math.abs(p.drift).toFixed(2);
+  const ok = Math.round(100 * p.naive_ok);
+  $('#sweep-read').innerHTML = `<div class="row"><div class="head"><b>Drift ${(p.drift > 0 ? '+' : p.drift < 0 ? M : '') + Math.abs(p.drift).toFixed(2)}</b><span class="tag">${p.seeds} seeds · <span class="stamp stamp-syn" style="font-size:10px;padding:3px 5px 2px">synthetic</span></span></div>
+    <dl class="kv"><dt>truth</dt><dd><b>${fx(p.truth, 2, true)}</b> points</dd>
+    <dt>dashboard</dt><dd class="${ok < 50 ? 'bad' : ''}">${fx(p.naive, 2, true)} · right sign in ${ok}% of seeds · RMSE ${p.naive_rmse.toFixed(2)}</dd>
+    <dt>DR</dt><dd>${fx(p.dr, 2, true)} · RMSE ${p.dr_rmse.toFixed(2)} · 95% coverage ${p.dr_cover.toFixed(2)}</dd></dl>
+    <p class="fine" style="margin:8px 0 0">source: ${esc(p.src)}</p></div>`;
+}
+$('#drift').addEventListener('input', drawSweepCursor);
+
+/* ---------- keys ---------- */
+document.addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const t = e.target; if (t.matches && t.matches('input[type=range]') && (e.key.startsWith('Arrow') || e.key === 'Home' || e.key === 'End')) return;
+  const P = PERIODS.map(p => p.id);
+  if (/^[1-4]$/.test(e.key)) { goSheet(Number(e.key)); e.preventDefault(); }
+  else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { if (activeSheet === 4) { const d = $('#drift'); d.value = Math.max(0, Math.min(12, Number(d.value) + (e.key === 'ArrowRight' ? 1 : -1))); drawSweepCursor(); }
+    else { st.a = Math.max(0, Math.min(100, st.a + (e.key === 'ArrowRight' ? 1 : -1) * (e.shiftKey ? 5 : 1))); drawCursor(true); } e.preventDefault(); }
+  else if (e.key === ']' || e.key === '[') { st.p = P[(P.indexOf(st.p) + (e.key === ']' ? 1 : P.length - 1)) % P.length]; full(); e.preventDefault(); }
+  else if (e.key === 'i') { st.e = st.e === 'IPW' ? 'SNIPW' : 'IPW'; full(); }
+  else if (e.key === 'c') { st.iv = st.iv === 'row' ? 'cluster' : 'row'; full(); }
+});
+
+buildControls();
+const fromHash = readHash();
+full(); drawSweep(); drawSweepCursor();
+if (fromHash) { activeSheet = 3; setTimeout(() => document.getElementById('sheet3').scrollIntoView({block: 'start', behavior: 'instant'}), 0); }
+else if (/^#sheet[1-4]$/.test(location.hash)) setTimeout(() => document.getElementById(location.hash.slice(1)).scrollIntoView({block: 'start', behavior: 'instant'}), 0);
+window.__P3 = {st, full, drawCursor, goSheet};
+})();
+</script>
+</body>
+</html>
