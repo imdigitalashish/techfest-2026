@@ -10,15 +10,21 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED by the user's decision (Supervisor, 09:55 IST, 4 Oct).** Only 3 projects run at a time; P7 is the current Perceptron pick unless the user overrides. Morning package delivered. Pre-registered H1 confirmed (E6). No jobs running; everything is pushed.
-- **Resume point:** start with step (1). Heavy jobs one at a time under `nice -n 10`, run from `perceptron-p05-impact-execution/`.
-  1. **Ratchet iteration 1 / E8 attribution ablation** (val seeds 100–139, synced). It crashed at ~09:50 with 8× `BrokenPipeError` in pool workers, probably killed under memory/CPU pressure; cause not yet diagnosed. Before rerunning, try `--workers 4`. Restart: `nice -n 10 .venv/bin/python components/execution_agent/autoresearch/eval.py eval/policies/e8_ablation.json --seeds 100:140 --workers 4 > /tmp/p5_ar1.out`. Then append one ledger row per candidate to `components/execution_agent/autoresearch/results.tsv` (keep rule in `program.md`). Arms: QP_only / IA_sched_only (legacy feedback) / IA_sched_fixed (`ref_mode=pre_trade`) / TWAP_legacy_fb vs TWAP.
-  2. **E9 synced calibration (C4 metric):** `nice -n 10 .venv/bin/python eval/run_experiment.py --exp E9_calib_sync --seeds 0:40 --qty 4000 --policies eval/policies/calib.json --workers 4 --rng-sync per_wakeup && .venv/bin/python eval/calibrate.py --exp E9_calib_sync --out calibration_sync.json`. Compare OOS R² with E1 (naive: < 0).
-  3. **E7 realism scorecard:** `for q in 1000 2000 4000 8000 16000; do nice -n 10 .venv/bin/python eval/run_experiment.py --exp E7_size_q$q --seeds 100:130 --qty $q --policies eval/policies/twap_only.json --workers 4 --rng-sync per_wakeup; done && .venv/bin/python eval/realism.py --qs 1000 2000 4000 8000 16000`. Fitted δ vs 0.5.
-  4. Feedback-loop test: an rmsc04 variant with `num_momentum_agents=0` (does front-loading's advantage vanish?).
-  5. An independent rubber-duck pass on ADR 001; per-component files from `research/components/innovation-candidates.md`.
+- **Phase:** ▶ **ACTIVE again (resumed 12:52 IST, 4 Oct; batch slot, PLAYBOOK §0).** Finishing to the Supervisor's definition of done, then messaging "DONE — slot free".
+- **Plan / definition of done:**
+  1. E8 attribution ablation (QP schedule vs front-loading), after diagnosing the 09:50 crash.
+  2. E7 realism scorecard (δ vs 0.5) and E9 synced calibration. All pre-registered in `eval/preregistration.md` before running.
+  3. Final Round-1 abstract rendered from committed results, `eval/check_docs.py` drift check, architecture diagram.
+  4. Cross-model reviews as child sessions: gpt-6-astra (max) as hostile judge on the abstract and H1; gpt-6-sol (max) on code, eval and reproduction. Recorded in `reviews/`.
+  5. Final selection memo; push; DONE.
+- **Doing:** lead runs E8 → E7 → E9 one at a time (`nice -n 10`, `--workers 4`, only if `kern.memorystatus_level` ≥ 30; pause below 25). Child sessions: ≤ 2 at a time; no `task` sub-agents.
+- **Next:** E8 → E7 → E9 → claims/render/check_docs → reviews → memo → DONE. Stretch: feedback-loop test with `num_momentum_agents=0`.
 - **Needs from user:** Register by 15 Oct if P5 is chosen at the 12 Oct selection. Teammates' names and skills (the abstract has placeholders).
-- **Risks:** (1) The effect is small (−0.034 bps ≈ 10% of TWAP's controllable cost) and its mechanism is unattributed (QP schedule vs ~1.2× front-loading); E8 resolves it. (2) ABIDES impact realism (square-root law) is untested; E7 resolves it. (3) "Beats TWAP in a sim" is crowded prior art; our differentiator is the synchronised-twin instrument (7.5× tighter CIs) plus pre-registration.
+- **Risks:**
+  1. Effect size is small (−0.034 bps ≈ 10% of TWAP's controllable cost) and unattributed (E8 settles it).
+  2. ABIDES impact realism is untested (E7).
+  3. Uplink saturated: keep requests small; poll long jobs at ≥ 10-min intervals.
+  4. Shared machine: memory level ~32 at resume.
 
 ### Phase 0 — what we must be able to show (from the Round-1 rubric)
 - Crux (20%): the agent's own trades move the price it later pays (transient + permanent impact, book resilience, other agents' reactions), so slippage is endogenous; a replay backtest can't see it.
@@ -195,3 +201,12 @@ No sub-agents until 08:30; small requests; push at least every 30 min. Proceedin
 ### 2026-10-04 09:58 IST — Paused (user's decision via Supervisor, 09:55)
 - Ratchet iteration 1 (`components/execution_agent/autoresearch/eval.py`, frozen 09:55 before first use; synced twins; val seeds 100–139) **crashed**: 8× `BrokenPipeError` in multiprocessing workers, no results. `results.tsv` therefore has no rows yet. The exact restart commands (with `--workers 4`) are in *Now → Resume point*.
 - Supervisor 09:40 (lean mode again) and 09:55 (pause) handled: no sub-agents were running (code review and source verification had finished; both outputs are saved). No background jobs remain. Everything is committed and pushed.
+
+### 2026-10-04 13:00 IST — Resumed (Supervisor 12:52); 09:50 crash diagnosed; E7/E8/E9 pre-registered
+- Supervisor resume message handled (definition of done, rules and machine limits are in *Now*). New PLAYBOOK rules read: §4 (child sessions only, ≤ 2), §6 (never `git stash` / `--autostash`), §10 (cross-model reviews + `reviews/ledger.tsv`).
+- **Crash diagnosis** (ratchet iteration 1, 09:44–09:51):
+  - The parent died **without a Python traceback** (`/tmp/p5_ar1.err` has 8 tracebacks, all `BrokenPipeError` from 4 pool workers failing to send results back). The output file is empty, so the parent was killed by a signal, not by an exception.
+  - The system log for 09:43–09:53 shows no memory (jetsam) kill of any python process, and ~8 GB still available, so memory pressure is unlikely.
+  - Likely cause: the parent was launched as a plain `&` child of a tool shell that was later torn down. E4–E6 were launched as `( … &)` orphans or with the tool's async mode, and all survived. A diagnostic pair of `sleep 1800` jobs (plain vs subshell) is running to test this.
+  - Remedy either way: run via the tool's attached async mode with `--workers 4` under nice 10, through `run_experiment.py`, which writes per-seed pickles incrementally (the frozen ratchet `eval.py` prints only at the end).
+- Pre-registered E8 (attribution: QP main effect, front-loading main effect, interaction, corrected-feedback increment; val seeds 100–199), E7 (δ vs 0.5 with a seed-bootstrap CI; decision rule) and E9 (synced kernel OOS R² > 0) in `eval/preregistration.md`. Committed before any run.
