@@ -290,7 +290,7 @@ def knob_data(kr):
     series = {}
     for key, s in kr["series"].items():
         rows = s["rows"]
-        f = {"ess": [r6(r["ess_frac"]) for r in rows], "z": [round(r["z"], 3) for r in rows],
+        f = {"ess": [r6(r["ess_frac"]) for r in rows], "essn": [round(r["ess"]) for r in rows], "z": [round(r["z"], 3) for r in rows],
              "ref": [r6(1000 * r["ref"]) for r in rows], "sref": [r6(1000 * r["se_ref"]) for r in rows], "srefc": [r6(1000 * r["se_ref_cl"]) for r in rows],
              "why": ["; ".join(r["why"]) for r in rows]}
         bits = []

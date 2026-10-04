@@ -37,9 +37,15 @@ body {
 .sheet:last-of-type { border-bottom: 0; }
 
 /* title block */
-.tb { display: grid; grid-template-columns: minmax(280px, 2.2fr) 0.6fr minmax(260px, 2.4fr) 1.3fr auto; border: 2px solid var(--rule); background: rgba(255, 255, 255, .38); }
+/* title block: one row when wide; stamps get their own row below 1500 px; 2 columns below 1180 px; 1 below 640 px */
+.tb { display: grid; grid-template-columns: minmax(250px, 2.1fr) minmax(72px, .55fr) minmax(240px, 2.4fr) minmax(180px, 1.35fr) auto;
+  grid-template-areas: "proj sheet data check stamp"; border: 2px solid var(--rule); background: rgba(255, 255, 255, .38); }
 .tb > div { padding: 7px 12px 8px; border-left: 1px solid var(--rule); min-width: 0; }
-.tb > div:first-child { border-left: 0; }
+.tb .proj { grid-area: proj; border-left: 0; } .tb .c-sheet { grid-area: sheet; } .tb .c-data { grid-area: data; } .tb .c-check { grid-area: check; } .tb .stampcell { grid-area: stamp; }
+@media (max-width: 1500px) {
+  .tb { grid-template-columns: minmax(230px, 2fr) minmax(72px, .5fr) minmax(220px, 2.3fr) minmax(180px, 1.4fr); grid-template-areas: "proj sheet data check" "stamp stamp stamp stamp"; }
+  .tb .stampcell { border-left: 0; border-top: 1px solid var(--rule); }
+}
 .tb i { display: block; font: 600 12px/1.2 var(--sans); font-style: normal; color: var(--rule); text-transform: uppercase; letter-spacing: .07em; }
 .tb b { display: block; font: 700 17px/1.25 var(--din); color: var(--ink); }
 .tb .proj b { font-size: 21px; }
@@ -127,7 +133,7 @@ svg.forest .refit { stroke: var(--red); stroke-width: 2; stroke-dasharray: 5 4; 
 .vs { font: 700 22px var(--din); color: var(--ink-3); margin: 0 10px; }
 
 /* sheet 3 */
-.controls { display: flex; flex-wrap: wrap; align-items: end; gap: 14px 26px; margin: 4px 0 14px; }
+.controls { display: flex; flex-wrap: wrap; align-items: end; gap: 14px 26px; margin: 4px 0 14px; scroll-margin-top: 10px; }
 .ctl label, .ctl .ctl-l { display: block; font: 600 12px/1.2 var(--sans); text-transform: uppercase; letter-spacing: .07em; color: var(--rule); margin-bottom: 5px; }
 .seg { display: inline-flex; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; background: var(--paper-hi); }
 .seg button { font: 700 15px/1 var(--din); padding: 9px 12px; border: 0; border-left: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; }
@@ -172,8 +178,14 @@ svg text.halo { paint-order: stroke; stroke: #f6f9f2; stroke-width: 5px; stroke-
 .readout .kv dt { color: var(--ink-3); font-size: 14px; padding-top: 2px; }
 .readout .kv dd { margin: 0; font: 500 16px/1.35 var(--mono); }
 .readout .verdict-cell { margin-top: 8px; min-height: 46px; display: flex; align-items: center; gap: 12px; }
-.readout .ok { color: var(--ok); font-weight: 700; } .readout .bad { color: var(--red); font-weight: 700; }
+.readout .ok { color: var(--ok); font-weight: 700; white-space: nowrap; } .readout .bad { color: var(--red); font-weight: 700; }
 .readout .why { font-size: 14px; color: var(--ink-2); }
+@media (max-width: 1500px) {
+  .s3 { grid-template-columns: minmax(0, 1.6fr) minmax(330px, 1fr); }
+  .readout .row { padding: 7px 12px; } .readout .head b { font-size: 18px; }
+  .readout .kv { grid-template-columns: 92px 1fr; gap: 1px 8px; margin-top: 3px; } .readout .kv dt { font-size: 13px; } .readout .kv dd { font-size: 14.5px; line-height: 1.3; }
+  .readout .verdict-cell { margin-top: 4px; min-height: 38px; }
+}
 .thump { animation: thump .22s cubic-bezier(.16, 1, .3, 1); }
 @keyframes thump { from { transform: rotate(-3deg) scale(1.55); opacity: 0; filter: blur(1.5px); } to { transform: rotate(-3deg) scale(1); opacity: 1; filter: blur(0); } }
 @media (prefers-reduced-motion: reduce) { .thump { animation: none; } }
@@ -204,14 +216,17 @@ footer p { max-width: 120ch; }
 #tip.on { opacity: 1; }
 @media (max-width: 1180px) {
   .s1, .s2, .s3, .s4, .under, .two { grid-template-columns: 1fr; }
-  .tb { grid-template-columns: 1fr 1fr; }
+  .tb { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "proj sheet" "data check" "stamp stamp"; }
   .tb > div { border-left: 0; border-top: 1px solid var(--rule); }
+  .tb .proj, .tb .c-sheet { border-top: 0; } .tb .c-sheet, .tb .c-check { border-left: 1px solid var(--rule); }
   .sheet, footer { padding-right: 24px; padding-left: 20px; }
   nav.index { top: auto; bottom: 0; right: 0; left: 0; transform: none; flex-direction: row; justify-content: center; background: var(--paper); border-top: 2px solid var(--rule); padding: 4px; }
   nav.index a, nav.index a[aria-current="true"] { width: auto; transform: none; border: 2px solid var(--rule); border-radius: 6px; box-shadow: none; padding: 5px 10px; }
   body { padding-bottom: 64px; }
 }
-@media (max-width: 640px) { .chart { overflow-x: auto; } #knob, #strip, #sweep { min-width: 760px; } .stamp-cant { white-space: normal; } body { font-size: 16px; } .calc { grid-template-columns: 1fr; } .calc .lab { padding-bottom: 0; border-bottom: 0 !important; } .verdict { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .tb { grid-template-columns: minmax(0, 1fr); grid-template-areas: "proj" "sheet" "data" "check" "stamp"; }
+  .tb .c-sheet, .tb .c-check { border-left: 0; } .tb .c-sheet { border-top: 1px solid var(--rule); }
+  .chart { overflow-x: auto; } #knob, #strip, #sweep { min-width: 760px; } .stamp-cant { white-space: normal; } body { font-size: 16px; } .calc { grid-template-columns: 1fr; } .calc .lab { padding-bottom: 0; border-bottom: 0 !important; } .verdict { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -226,9 +241,9 @@ footer p { max-width: 120ch; }
 <section class="sheet" id="sheet1" aria-labelledby="h1-1">
   <header class="tb">
     <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
-    <div><i>Sheet</i><b>1 / 4</b></div>
-    <div><i>Data</i><b>Open Bandit Dataset · ZOZOTOWN fashion A/B test · 24–27 Nov 2019 · {{S1_hours}} h</b></div>
-    <div><i>Checked by</i><b>the concurrent A/B arms</b></div>
+    <div class="c-sheet"><i>Sheet</i><b>1 / 4</b></div>
+    <div class="c-data"><i>Data</i><b>Open Bandit Dataset · ZOZOTOWN fashion A/B test · 24–27 Nov 2019 · {{S1_hours}} h</b></div>
+    <div class="c-check"><i>Checked by</i><b>the concurrent A/B arms</b></div>
     <div class="stampcell">{{STAMP_REAL}}</div>
   </header>
   <h1 id="h1-1"><span class="ln">The dashboard said <span class="nw">{{S1_naive}}.</span></span><span class="ln">The A/B test says <span class="nw">{{S1_ref}}.</span></span></h1>
@@ -284,9 +299,9 @@ footer p { max-width: 120ch; }
 <section class="sheet" id="sheet2" aria-labelledby="h1-2">
   <header class="tb">
     <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
-    <div><i>Sheet</i><b>2 / 4</b></div>
-    <div><i>Data</i><b>Random arm's {{S2_n}} impressions → value of BTS, same 84 h</b></div>
-    <div><i>Checked by</i><b>the BTS arm's own click rate</b></div>
+    <div class="c-sheet"><i>Sheet</i><b>2 / 4</b></div>
+    <div class="c-data"><i>Data</i><b>Random arm's {{S2_n}} impressions → value of BTS, same 84 h</b></div>
+    <div class="c-check"><i>Checked by</i><b>the BTS arm's own click rate</b></div>
     <div class="stampcell">{{STAMP_REAL}}</div>
   </header>
   <h1 id="h1-2">When the logs can tell: <span class="nw">{{S2_dr}} <span class="vs">vs</span> {{S2_truth}}</span></h1>
@@ -306,9 +321,9 @@ footer p { max-width: 120ch; }
 <section class="sheet" id="sheet3" aria-labelledby="h1-3">
   <header class="tb">
     <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
-    <div><i>Sheet</i><b>3 / 4</b></div>
-    <div><i>Data</i><b>Vendored extract, {{EXTRACT_MB}} MB · BTS and Random arms · {{K_PERIODS}} periods × {{K_GRID}} α</b></div>
-    <div><i>Checked by</i><b>a straight line between the two arms</b></div>
+    <div class="c-sheet"><i>Sheet</i><b>3 / 4</b></div>
+    <div class="c-data"><i>Data</i><b>Vendored extract, {{EXTRACT_MB}} MB · BTS and Random arms · {{K_PERIODS}} periods × {{K_GRID}} α</b></div>
+    <div class="c-check"><i>Checked by</i><b>a straight line between the two arms</b></div>
     <div class="stampcell">{{STAMP_REAL}}<span class="stamp stamp-pre">Pre-registered<small>{{PREREG_TIME}} · {{PREREG_COMMIT}}</small></span></div>
   </header>
   <h1 id="h1-3">Turn the knob: how far can a new policy stray before the logs can't tell?</h1>
@@ -340,9 +355,9 @@ footer p { max-width: 120ch; }
 <section class="sheet" id="sheet4" aria-labelledby="h1-4">
   <header class="tb">
     <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
-    <div><i>Sheet</i><b>4 / 4</b></div>
-    <div><i>Data</i><b>Simulator with known counterfactuals · 10,000 logged rounds per period</b></div>
-    <div><i>Checked by</i><b>exact ground truth (Monte Carlo)</b></div>
+    <div class="c-sheet"><i>Sheet</i><b>4 / 4</b></div>
+    <div class="c-data"><i>Data</i><b>Simulator with known counterfactuals · 10,000 logged rounds per period</b></div>
+    <div class="c-check"><i>Checked by</i><b>exact ground truth (Monte Carlo)</b></div>
     <div class="stampcell"><span class="stamp stamp-syn">Synthetic</span></div>
   </header>
   <h1 id="h1-4">Stress test: a season can flip the dashboard's sign</h1>
@@ -397,7 +412,10 @@ let activeSheet = 1;
 const io = new IntersectionObserver(ents => { ents.forEach(en => { if (en.isIntersecting) { activeSheet = Number(en.target.id.slice(5));
   tabs.forEach(t => t.setAttribute('aria-current', String(Number(t.dataset.sheet) === activeSheet))); } }); }, {rootMargin: '-45% 0px -50% 0px'});
 sheets.forEach(s => io.observe(s));
-const goSheet = n => document.getElementById('sheet' + n).scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
+/* pressing 3 (or its tab) again while on sheet 3 brings the knob controls and chart into view: needed on 720p projectors */
+const goSheet = n => { const knob = n === 3 && activeSheet === 3 && document.getElementById('sheet3').getBoundingClientRect().top > -40;
+  (knob ? document.querySelector('#sheet3 .controls') : document.getElementById('sheet' + n)).scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'}); };
+tabs.forEach(t => t.addEventListener('click', e => { e.preventDefault(); goSheet(Number(t.dataset.sheet)); }));
 
 /* ---------- sheet 3: the knob ---------- */
 const PERIODS = K.periods;
@@ -487,7 +505,7 @@ function readoutSource(s, i) {
   return `<div class="row ${s.toLowerCase()}"><div class="head"><b class="src">${SRC[s].name}</b><span class="tag">${SRC[s].sub}</span></div>
     <dl class="kv"><dt>${estName} says</dt><dd>${fx(v)} <span style="color:var(--ink-3)">(${fx(lo)} … ${fx(hi)})</span></dd>
     <dt>check is</dt><dd>${check}</dd>
-    <dt>overlap</dt><dd>ESS/n ${pc(ess)}: ${grp(S.n)} logged rows are worth ${grp(ess * S.n)} rows logged by the candidate itself</dd>
+    <dt>overlap</dt><dd>ESS/n ${pc(ess)}: ${grp(S.n)} rows ≈ ${grp(f.essn[i])} rows from the candidate itself</dd>
     <dt>weights</dt><dd>max ${maxw >= 100 ? grp(maxw) : maxw.toFixed(2)} · mean-weight z ${fx(f.z[i], 2, true)}</dd></dl>
     <div class="verdict-cell"><span class="tag" style="min-width:94px">our evaluator</span>${ours}</div></div>`;
 }

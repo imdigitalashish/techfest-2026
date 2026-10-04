@@ -5,7 +5,7 @@
 - Start the demo with `demo/run.sh`. It opens `demo/index.html` offline.
 - Set full screen and 100% zoom at 1920×1080; use 90% at 1280×720.
 - Keys:
-  - <kbd>1</kbd>–<kbd>4</kbd> switch sheets.
+  - <kbd>1</kbd>–<kbd>4</kbd> switch sheets. On sheet 3, press <kbd>3</kbd> again to bring the knob controls and chart into view; this is needed on a 1280×720 projector.
   - <kbd>←</kbd>/<kbd>→</kbd> move α by 0.01; hold <kbd>Shift</kbd> for 0.05.
   - <kbd>[</kbd>/<kbd>]</kbd> change period.
   - <kbd>i</kbd> switches IPS/SNIPS; <kbd>c</kbd> switches row-level/hour-cluster.
@@ -19,7 +19,7 @@ Units are clicks per 1,000 impressions throughout (percentage points on sheet 4)
 | 0:00 | Sheet 1, top (`01_…`) | "Real data: ZOZOTOWN's Open Bandit A/B test. A team switched recommendation policy. The dashboard said **+1.62**. But both policies were running side by side the whole time, so we have a real A/B check: **+1.26**." | headline boxes |
 | 0:20 | — | "The old policy's own click rate rose **11%** with no switch at all. The dashboard booked the week as the policy, so it overstates the policy by **29%**. From the logs alone, with no A/B test, doubly robust OPE says **+1.40**, interval **+1.13 … +1.67**. That interval holds the check." | "The week" and "Logs only" rows; waterfall |
 | 0:40 | Scroll to the stamp (`02_…`) | "And yet our evaluator refuses to sign off: **can't tell from these logs**. The 2,769,425 BTS impressions are worth only **25,395** random ones for this question, and one click counts **12,500** times. Honestly, here the refusal cost us an answer. But on 26 Nov the same estimate failed, **+1.48** against a check of **+1.06**, and it refused that too. Track record: **5/8** answered, **4/5** held the check, **2/2** failures refused. This gate was designed after we saw these failures, so it is *post hoc* on these cases. So we pre-registered a fresh test." | CAN'T TELL stamp; POST HOC stamp; track record |
-| 1:00 | <kbd>3</kbd> (`04_…`) | "Registered tonight at **21:07:33 IST**, before computing anything. The candidate mixes the deployed sampler with uniform random. Its true value is a straight line between the two A/B arms, so we have a real check at every α." | PRE-REGISTERED stamp; black line |
+| 1:00 | <kbd>3</kbd>, then <kbd>3</kbd> again to show the knob (`04_…`) | "Registered tonight at **21:07:33 IST**, before computing anything. The candidate mixes the deployed sampler with uniform random. Its true value is a straight line between the two A/B arms, so we have a real check at every α." | PRE-REGISTERED stamp; black line |
 | 1:15 | Drag α from 0 to 0.42 | "Orange is IPS from the BTS logs: tight, and on the line. Watch the effective rows fall, from 2.77 million to **138,643**." | orange band; readout "overlap" |
 | 1:30 | One more step, to 0.43 (`05_…`) | "There. ESS/n crosses the frozen 5% floor, and the stamp lands: **can't tell**. We predicted **0.43** from one committed number before we computed this. IPS still prints **4.295** with a tidy interval. Ours says it can't tell." | stamp; hollow vs filled triangles |
 | 1:45 | — | "Blue asks the same question from the **Random** arm's logs, nine times fewer rows. It answers at every α, and IPS holds the check at every α on all six periods. Which logs you keep decides which questions you can ever answer." | blue band; Random rows of the strip |

@@ -15,7 +15,7 @@ perceptron-p03-off-policy-eval/demo/smoke.sh    # headless checks; exits 0 on PA
 - **No `.data` and no network** are needed. Everything comes from committed files.
 - `P3_NO_OPEN=1` skips opening a browser.
 - **Keys:**
-  - <kbd>1</kbd>–<kbd>4</kbd> switch sheets.
+  - <kbd>1</kbd>–<kbd>4</kbd> switch sheets. On sheet 3, a second <kbd>3</kbd> (or its tab) brings the knob into view; a third goes back to the sheet's top.
   - <kbd>←</kbd>/<kbd>→</kbd> move α (<kbd>Shift</kbd> moves by 0.05).
   - <kbd>[</kbd>/<kbd>]</kbd> change period.
   - <kbd>i</kbd> switches IPS/SNIPS; <kbd>c</kbd> switches row-level/hour-cluster intervals.
