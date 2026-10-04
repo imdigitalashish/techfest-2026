@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import time
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import numpy as np
@@ -29,6 +29,7 @@ from components.frontline_worklist import render
 from components.policy_gate import gate
 
 K = 5  # home-visit capacity per AWC per week for risk alerts (assumption)
+P_DONE_ON_TIME = 0.7  # ASSUMPTION for the escalation demo: share of tasks completed by their due date
 OUT = Path(__file__).parent / "results" / "pipeline_demo.json"
 
 
@@ -84,6 +85,18 @@ def main() -> dict:
     for tk in tasks:
         ledger.append("system:action_router", "task_created", tk.task_id)
     worklists = render.build_worklists(tasks, refs, {"default": 10, "aww": 10, "ls": 15}, today)
+
+    # escalation pass one week later: tasks not done by their due date move up the protocol ladder
+    rng = np.random.default_rng(71)
+    by_id = {a.alert_id: a for a in alerts}
+    done_ids = {t.task_id for t in tasks if rng.random() < P_DONE_ON_TIME}
+    tasks_w1 = [router.close(t, "done", t.due_on) if t.task_id in done_ids else t for t in tasks]
+    later = today + timedelta(days=8)
+    tasks_w2 = router.escalate(tasks_w1, later, by_id)
+    new_tasks = [t for t in tasks_w2 if t.escalation_level > 0 and t.status == "open"]
+    for t in new_tasks:
+        ledger.append("system:action_router", "task_escalated", t.task_id)
+    escalated_by_role = dict(Counter(t.owner_role.value for t in new_tasks))
     sms = [s for w in worklists for s in render.to_sms(w)]
 
     # purpose-bound access: the AWW reads her own list; a DPO tries to read named children (must be denied)
@@ -127,6 +140,8 @@ def main() -> dict:
         "risk_alerts_on_children_already_wasted_but_measured_normal_pct": round(100 * float((flagged.true_wlz < -2).mean()), 1),
         "true_sam_now": int(len(sam_truth)),
         "access_decisions": decisions,
+        "escalation_after_8_days": {"assumed_on_time_completion": P_DONE_ON_TIME, "escalated_tasks": len(new_tasks),
+                                    "new_owner_roles": escalated_by_role},
         "audit_entries": len(ledger.entries) if hasattr(ledger, "entries") else None,
         "audit_chain_verified": bool(ok),
         "synthetic": True,

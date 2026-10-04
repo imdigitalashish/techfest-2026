@@ -26,7 +26,16 @@
     "aww/identified_child/service_delivery: deny",
     "public/aggregate/public_reporting: allow_transformed"
   ],
-  "audit_entries": 1689,
+  "escalation_after_8_days": {
+    "assumed_on_time_completion": 0.7,
+    "escalated_tasks": 482,
+    "new_owner_roles": {
+      "aww": 263,
+      "mo_phc": 46,
+      "asha": 173
+    }
+  },
+  "audit_entries": 2171,
   "audit_chain_verified": true,
   "synthetic": true
 }

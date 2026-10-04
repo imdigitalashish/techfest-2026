@@ -48,11 +48,11 @@ Poshan Setu **reuses the growth records the system already collects**. Each week
 
 ```mermaid
 flowchart TB
-  S["Poshan Tracker · RCH / U-WIN · ABDM<br/>existing records"]
-  V["Identity vault: private linkage →<br/>pseudonymous child_key; WHO z-scores"]
+  S["Existing records:<br/>Poshan Tracker, RCH/U-WIN, ABDM"]
+  V["Identity vault: private linkage<br/>to a pseudonymous child_key;<br/>WHO z-scores"]
   D["★ Measurement diagnostics<br/>AWC × device × month"]
-  E["★ Weekly ranked worklist:<br/>top-k per AWC (transparent rule)"]
-  R["Action router: owner, due date,<br/>escalation, three clocks"]
+  E["★ Weekly ranked worklist:<br/>top-k per AWC<br/>(transparent rule)"]
+  R["Action router: owner,<br/>due date, escalation,<br/>three clocks"]
   G["Policy gate<br/>+ audit log"]
   W["Weekly worklists<br/>in existing apps / SMS"]
   A["Review dashboards<br/>suppressed / DP aggregates"]
@@ -114,7 +114,7 @@ Every number below comes from a committed run in our repository. **SYNTHETIC row
 | Record linkage (SYNTHETIC, 5,000 children) | F1: shared IDs only / probabilistic / privacy-preserving Bloom filter | **0.51 / 0.94 / 0.97** |
 | Measurement diagnostics (SYNTHETIC, 120 AWCs, 3 seeds) | AUROC: any unreliable AWC / copy-forward AWCs. A tuning change that hit 0.95 failed a different fabrication pattern and was rejected | **1.00 / 0.69** |
 | Weekly worklists (SYNTHETIC, 10,690 new episodes, 5 slots per AWC per month) | Episodes flagged ≥1 month ahead: WHZ rule (95% CI) / ML / programme rule / random | **0.43 (0.42–0.44) / 0.38 / 0.37 / 0.27** |
-| End-to-end weekly run (SYNTHETIC, 120 AWCs, 5,307 children) | Tasks → worklists; SMS length; audit chain | **1,685 → 140; ≤80 chars; verified** |
+| End-to-end weekly run (SYNTHETIC, 120 AWCs, 5,307 children) | Tasks → worklists; SMS length; escalated after 8 days (70% on time assumed); audit chain | **1,685 → 140; ≤80 chars; 482; verified** |
 | Policy gate / audit log | Red-team cases (spoofed scope, fake consent, employment use) / tampering incl. truncation | **39/39 / 100/100** |
 
 ## 6. Feasibility and implementation roadmap

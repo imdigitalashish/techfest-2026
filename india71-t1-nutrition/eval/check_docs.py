@@ -44,7 +44,9 @@ def claims() -> list[tuple[Path, str]]:
         (PROPOSAL, f"{round(100 * m['random_within_awc']['episode_recall'])}% for random"),
         (PROPOSAL, f"model ({round(100 * m['logistic_anthro_plus_linked_health']['episode_recall'])}%)"),
         (PROPOSAL, f"{pd_['awcs']} AWCs, {pd_['children_measured_this_month']:,} children"),
-        (PROPOSAL, f"**{pd_['tasks']:,} → {pd_['worklists']}; ≤{pd_['sms_max_chars']} chars; {'verified' if pd_['audit_chain_verified'] else 'FAILED'}**"),
+        (PROPOSAL, f"**{pd_['tasks']:,} → {pd_['worklists']}; ≤{pd_['sms_max_chars']} chars; "
+                   f"{pd_['escalation_after_8_days']['escalated_tasks']}; {'verified' if pd_['audit_chain_verified'] else 'FAILED'}**"),
+        (PROPOSAL, f"({round(100 * pd_['escalation_after_8_days']['assumed_on_time_completion'])}% on time assumed)"),
         (PROPOSAL, f"**{pg['n_cases'] - pg['false_allows'] if pg['pass_rate'] == 1.0 else 'X'}/{pg['n_cases']} / "
                    f"{round(al['tamper_detection_rate'] * al['n_mutations'])}/{al['n_mutations']}**"),
         (COMPONENTS, f"**{rule:.3f}**"),

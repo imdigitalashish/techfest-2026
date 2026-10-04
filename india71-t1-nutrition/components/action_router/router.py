@@ -71,19 +71,21 @@ def route(alerts: list[Alert], today: date) -> list[Task]:
     return tasks
 
 
-def escalate(tasks: list[Task], today: date) -> list[Task]:
+def escalate(tasks: list[Task], today: date, alerts: dict[str, Alert] | None = None) -> list[Task]:
+    """Move overdue open tasks to the next protocol step. Pass `alerts` (alert_id -> Alert) so the next owner's
+    scope is derived from the alert's geography (e.g. AWC -> sector for the Lady Supervisor)."""
     out: list[Task] = []
-    task_by_alert = {t.alert_id: t for t in tasks}
     for task in tasks:
         if task.status != "open" or task.due_on >= today:
             out.append(task)
             continue
-        # If the alert kind is not available from task id, infer by matching action in protocol.
-        ladder = None
-        for steps in _PROTOCOL["alerts"].values():
-            if any(s["action"] == task.action and int(s["level"]) == task.escalation_level for s in steps):
-                ladder = steps
-                break
+        alert = (alerts or {}).get(task.alert_id)
+        ladder = _PROTOCOL["alerts"].get(alert.kind.value if alert else _kind(task))
+        if ladder is None:
+            for steps in _PROTOCOL["alerts"].values():
+                if any(s["action"] == task.action and int(s["level"]) == task.escalation_level for s in steps):
+                    ladder = steps
+                    break
         if ladder is None:
             out.append(task)
             continue
@@ -98,9 +100,8 @@ def escalate(tasks: list[Task], today: date) -> list[Task]:
         )
         out.append(escalated_task)
         if next_step is not None:
-            # Preserve alert id; owner scope cannot be recomputed without alert geo, so inherit until routed from source systems.
             role = Role(next_step["owner_role"])
-            owner_scope = task.owner_scope_id if role == task.owner_role else task.owner_scope_id
+            owner_scope = _owner_scope(alert, role) if alert is not None else task.owner_scope_id
             out.append(
                 Task(
                     task_id=f"{task.alert_id}:L{next_level}",

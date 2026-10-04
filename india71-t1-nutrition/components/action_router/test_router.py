@@ -56,3 +56,20 @@ def test_simulation_metric():
     assert result["label"].startswith("SIMULATION")
     assert result["protocol_ladder_weekly"]["pct_done_within_sla"] >= result["status_quo_monthly"]["pct_done_within_sla"]
     assert result["metric_pct_within_sla"] == result["protocol_ladder_weekly"]["pct_done_within_sla"]
+
+
+def test_escalation_moves_scope_up_the_hierarchy():
+    from datetime import date as _d
+    from architecture.contracts.models import Alert, AlertKind, GeoUnit
+    from components.action_router.router import escalate, route
+    geo = GeoUnit(state_code="S", district_code="D", project_code="P1", sector_code="SEC1", awc_code="AWC1")
+    alert = Alert(alert_id="sam-E1", child_key="c1", geo=geo, kind=AlertKind.SAM, severity=4,
+                  created_on=_d(2026, 1, 1), recommended_action="protocol", synthetic=True)
+    t0 = route([alert], _d(2026, 1, 1))
+    t1 = escalate(t0, _d(2026, 1, 4), {alert.alert_id: alert})  # AWW step due in 2 days -> overdue
+    new = [t for t in t1 if t.status == "open"][0]
+    assert new.owner_role.value == "mo_phc" and new.owner_scope_id == "P1" and new.escalation_level == 1
+    t2 = escalate(t1, _d(2026, 1, 20), {alert.alert_id: alert})
+    ls = [t for t in t2 if t.status == "open" and t.escalation_level == 2][0]
+    assert ls.owner_role.value == "ls" and ls.owner_scope_id == "SEC1"
+

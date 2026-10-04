@@ -20,9 +20,9 @@ flowchart TB
   end
   subgraph ANALYTICS["Analytics plane (pseudonymous)"]
     Z["WHO z-scores + velocity"]
-    CRED["Credibility engine ★<br/>record + AWC level"]
-    EW["Early warning ★<br/>90-day risk, reason codes,<br/>capacity-capped"]
-    ROUTE["Action router<br/>owner · due date · escalation"]
+    CRED["Measurement diagnostics ★<br/>record + AWC × device × month<br/>(never per worker)"]
+    EW["Weekly ranked worklist ★<br/>top-K per AWC, transparent<br/>lowest-WHZ rule (ADR 003)"]
+    ROUTE["Action router<br/>owner · due date · escalation<br/>three clocks (ADR 002)"]
     AGG["Aggregate publisher<br/>suppression / DP · credibility-adjusted"]
   end
   subgraph GOV["Governance services"]
@@ -58,18 +58,20 @@ sequenceDiagram
   participant CDPO as CDPO + MO-PHC
   participant DM as DPO / DM review
   PT->>PS: measurement delta (child ref, weight, length, date)
-  PS->>PS: z-scores · plausibility · AWC credibility · 90-day risk
-  alt low data credibility
-    PS->>LS: DATA_RECHECK task: re-measure 10 random children within 14 days
-  else child in top-k risk for this AWC
-    PS->>AWW: worklist item + reasons (Hindi/English), due in 7 days
-    PS->>ASHA: joint visit if illness or low birth weight is linked
+  PS->>PS: z-scores · plausibility · AWC × device diagnostics · WHZ/MUAC/oedema status · weekly ranking
+  alt measurement diagnostics flag the AWC
+    PS->>LS: equipment calibration + stock check (14 days), then re-measure a sample (DESIGN, ADR 002)
+  else observed SAM
+    PS->>AWW: share SAM list with ASHA/ANM within 2 days (CMAM 2023 p.20)
+    PS->>ASHA: medical appraisal by ANM/MO within 3–5 days of appetite test (CMAM 2023 p.8)
+  else child in this AWC's top-K
+    PS->>AWW: worklist item + reason (Hindi/English), due in 7 days (DESIGN)
     AWW-->>PS: visit done / outcome (existing home-visit module)
   end
-  Note over PS: SLA clock per task; every access and action → audit ledger
-  PS->>LS: overdue → escalation level 1
-  PS->>CDPO: still overdue / SAM not appraised → level 2
-  PS->>DM: monthly district review: SLA breaches, credibility map, suppressed aggregates
+  Note over PS: child clock always runs; missing inputs start a separate resource clock; every access and action → audit ledger
+  PS->>LS: overdue → weekly village/ward review (CMAM 2023 p.22)
+  PS->>CDPO: SAM not appraised → CDPO + MO-PHC (DESIGN day-14 trigger)
+  PS->>DM: monthly district review, especially SAM (CMAM 2023 p.22): delays, input gaps, suppressed aggregates
 ```
 
 ## 3. Who sees what (policy gate, default deny)
@@ -88,4 +90,5 @@ Legal basis per rule is cited in `components/policy_gate/policy.yaml` (v0.2.0), 
 ## 4. Deployment sketch
 - **Runs inside the state data centre or MeghRaj government cloud:** batch jobs (nightly ingest and linkage; weekly scoring and routing), a small Postgres for tasks and the audit log, and an object store for pseudonymous extracts.
 - **Integration surfaces:** Poshan Tracker bulk export / API (to be agreed with NeGD/MWCD), RCH/U-WIN state extracts, ABDM HIU registration for consented FHIR pulls, and SMS/IVR gateway fallback for worklists.
-- **Explicitly avoided:** no new frontline app, no new biometric step, no raw Aadhaar in the analytics plane.
+- **Explicitly avoided:** no new frontline app, no new biometric step, no raw Aadhaar in the analytics plane, no worker-level scores, no employment use (policy deny `employment_action`).
+- **Legal anchors (verified):** NFSA 2013 s.6 (State identifies malnourished children through the anganwadi); DPDP Act 2023 s.7(c), s.8(3), s.9 + Rules 2025 r.12 / Fourth Schedule (in force 13 May 2027, G.S.R. 843(E)); ABDM consent artefacts (purpose + duration per share).

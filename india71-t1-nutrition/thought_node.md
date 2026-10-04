@@ -10,22 +10,31 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED at 09:55 IST, 4 Oct** (Supervisor: only 3 projects run at a time; India@71 is queued after the InnovateX zonal deck). The morning package is complete and pushed; this project is in Phase 5–6.
-- **Resume point** (do in order):
-  1. `git fetch origin && git rebase origin/main`; read the Inbox.
-  2. Check `research/sources/V2-cmam-timelines.md`, written by the CMAM verification agent that was still running at pause. Fold verified timelines into `components/action_router/protocol.yaml` (remove its 22 VERIFY tags or change the timelines) and into proposal §4.4.
-  3. Re-render the proposal (`.cache/proposal_preview.html` → Playwright PDF; the snippet is in Log 08:05) and check it is still ≤6 A4 pages after the 09:50 legal paragraph. It was 6 pages before that addition, so trim §2/§3 if needed.
-  4. Spike A evaluator v2 (ADR 002 consequences): PPV of flagged AWCs at a fixed re-measurement budget, false-positive rate in remote AWCs, robustness across `holdout_check.py` worlds. Then continue the ratchet. Ledger: `components/credibility_engine/autoresearch/results.tsv`.
-  5. Early-warning evaluator v1 (episodes with a real decline) + velocity-z feature.
-  6. Verify ABDM consent-artefact fields and NFSA 2013 s.5(2) at primary sources (India Code was timing out).
-  7. Re-run failed research threads one at a time: DQ methods, deployed-global, NFHS-5 subgroup tables.
-- **No background jobs running** (nothing to restart). Reproduce any result with the commands in `eval/results/*.json` docstrings: `.venv/bin/python -m components.<name>.eval`, `-m eval.run_pipeline`, `-m components.action_router.sim`, `-m components.credibility_engine.autoresearch.holdout_check`.
-- **Needs from user:** (a) register by 15 Oct for one India@71 theme (after the 12 Oct memo); (b) teammates (≤4): names, skills, contacts; (c) any state WCD / district contact for a read-only pilot extract; (d) later, an introduction to an Anganwadi workers' union or worker-rights NGO for co-design (ADR 002 prerequisite).
+- **Phase:** ✅ Round-1 package complete (11:00 IST, 4 Oct). Supervisor definition of done met (see Log 11:00). Slot freed.
+- **Deliverables:**
+  - [`deliverables/India71_100_[TeamID].pdf`](deliverables/): 6 A4 pages, 1-inch margins, Arial ≥11 pt; source `round1-proposal.md` v0.3.
+  - [`deliverables/architecture.md`](deliverables/architecture.md).
+  - Selection memo final (below).
+  - Reviews in [`reviews/`](reviews/).
+  - Demo: `eval/run_pipeline.py` (SYNTHETIC).
+- **Next (after the 12 Oct selection, if this theme is picked):**
+  1. Fill the team header and Team ID; re-render (`deliverables/build_pdf.py` + Chromium print) and re-run `eval/check_docs.py`.
+  2. Optionally, a cross-model re-review of v0.3 via a session (v0.3 hasn't been re-reviewed; it applies the v0.2 review).
+  3. Spike A evaluator v2 (audit PPV at fixed re-measurement budget; remote-AWC false-positive rate) + ratchet.
+  4. Spike B ratchet against `eval_v1` (the model must beat the lowest-WHZ rule); repeated-alert burden metric.
+  5. Implement the three-clock fields in the `Task` contract (currently design only).
+  6. Finals deck and demo script (16–18 Dec).
+- **Needs from user:**
+  - (a) Register by 15 Oct for one India@71 theme. This memo recommends T1 at 4.2/5; compare with the T2 and T3 memos.
+  - (b) Teammates (≤4): names, institution, contacts, for the PDF header.
+  - (c) Any state WCD department or district contact for a read-only pilot extract.
+  - (d) An introduction to an Anganwadi workers' union or worker-rights NGO for co-design (a pilot prerequisite under ADR 002).
 - **Risks:**
   1. All model metrics are SYNTHETIC.
-  2. DPDP operative rules (incl. the Rule 12 child exemptions) commence only on 13 May 2027, and whether the Act's ss.4–17 are in force is UNVERIFIED. The legal go/no-go gate (ADR 002) stays.
+  2. The children's-data regime commences 13 May 2027, so pilot timing straddles it; the legal go/no-go gate stays.
   3. Worker and union acceptance.
-  4. Proposal page budget (6/6).
+  4. The ML worklist model loses to the transparent rule (handled: rule ships, ML gated).
+  5. Page budget: 6/6, with about 200 words of slack on page 6.
 
 ## Phase 0 — what the judges must be able to see (from `_briefs/india71.txt`)
 | Criterion (official) | What we must show | Evidence we will produce |
@@ -73,6 +82,7 @@ Context from the statement: Poshan Tracker already tracks growth-monitoring and 
 - 2026-10-04 — Measurable gap = survey-vs-admin divergence on wasting (NFHS-5 19.3% vs Poshan Tracker 5.46%, June 2025) and the unknown share of under-detection behind it. [landscape §1](research/landscape.md)
 - 2026-10-04 — Spikes: **A credibility engine** + **B capacity-constrained early warning**; rest best practice. [ADR 001](architecture/adr/001-spike.md)
 - 2026-10-04 — Demo on WHO tables (real) + SYNTHETIC cohort calibrated to ki-consortium parameters; every artefact carries `synthetic=True`.
+- 2026-10-04 — **ADR 003:** spike B ships a transparent lowest-WHZ ranking; ML is gated on beating it prospectively (leakage-free eval: 0.429 vs 0.384). [ADR 003](architecture/adr/003-transparent-ranking-first.md)
 - 2026-10-04 — **ADR 002:**
   - spike A is measurement-system diagnostics per AWC × device × month: no worker scores, support before scrutiny, random plus targeted re-measurement;
   - employment use denied in code (contract v0.2.0) and in the data-sharing agreement;
@@ -90,21 +100,25 @@ Context from the statement: Poshan Tracker already tracks growth-monitoring and 
 | C3 | growth_standards | MeasurementEvent → AnthroZ | WHO Anthro | | built | max error 0.003 z on 87,408 WHO table points |
 | C4 | credibility_engine → measurement diagnostics (ADR 002) | events+z → RecordQuality, AWC×device×month diagnostics | SMART / WHO-UNICEF survey checks | **A** | built; ratchet started | AUROC fabricating 0.694±0.041, any non-good 1.0 — SYNTHETIC; iteration 1 (0.950) rejected by anti-gaming holdout |
 | C5 | early_warning → weekly ranked worklist (ADR 003) | z, velocity, observed status → ranked top-K per AWC | 2-month no-gain rule | **B** | v1 eval (leakage-free) | episode recall@5: transparent lowest-WHZ rule **0.429** (CI 0.420–0.443) > logistic 0.384 ≈ +health 0.384 > no-gain rule 0.365 > random 0.269 — SYNTHETIC; v0 (0.33/0.25) retracted |
-| C6 | action_router | RiskScore/Alert → Task | monthly review | | built | ops SIMULATION: 83.6% within SLA (ladder, alerts ≤ capacity) vs 15.6% (monthly review); 14.9% when alerts exceed capacity |
+| C6 | action_router | Alert → Task (+ escalation) | monthly review | | built; protocol v0.2.0 (CMAM 2023 verified) | demo: 482 escalated after 8 days (70% on time assumed); ops SIMULATION 83.6% vs 15.6% within SLA |
 | C7 | frontline_worklist | Task → Worklist | PT home-visit scheduler | | built | payload bytes, % SMS ≤160 |
 | C8 | aggregate_publisher | events → AggregateCell | static dashboards | | contract | relative error at ε |
-| C9 | policy_gate | AccessRequest → AccessDecision | RBAC | | built; legal citations verified (v0.2.0) | 31/31 red-team (incl. employment-use denial), 0 false allows |
-| C10 | audit_ledger | event → AuditEntry | DB audit | | built | tamper detection 100/100 |
+| C9 | policy_gate | AccessRequest → AccessDecision | RBAC | | built; verified legal basis (v0.2.0); hardened | 39/39 red-team (incl. spoofed scope, fake consent, employment use), 0 false allows |
+| C10 | audit_ledger | event → AuditEntry | DB audit | | built + checkpoint | tamper detection 100/100; truncation detected with checkpoint |
 
-## Selection memo (v1, 4 Oct 2026 — final by 12 Oct)
-- **Winnability — 4/5.** Few student teams will bring a verified admin-vs-survey gap (5.46% vs 19.3% wasting) *plus* a working, tested architecture. The judging rubric rewards evidence and ecosystem analysis, which we have with primary citations.
-- **Innovation headroom — 4/5.** The credibility engine (AWC-level trust scores from routine data, used to correct prevalence and target re-measurement) has no deployed Indian equivalent we could find. Capacity-capped, reason-coded early warning on linked ICDS + health data is rare in the literature ([L6](research/sources/L6-ews-models.md)).
-- **Feasibility by the deadline — 5/5.** Core components already run and are tested. The proposal (≤6 pages) is due 1 Nov, before the 19–25 Nov exams; finals prep is light.
-- **Demo strength at finals — 4/5.** Live pipeline: WHO-validated z-scores → credibility map → weekly worklist → escalation → audit trail. Weakness: synthetic data unless a state shares an extract.
-- **Fit with the user's strengths — 4/5.** Large-scale data systems, privacy engineering and ML; Microsoft/Azure experience is relevant to the government-cloud deployment story.
-- **Biggest risk:** judges discount synthetic validation, or see credibility scoring as surveillance of AWWs. Mitigation: re-measurement protocol as ground truth; supportive-supervision framing; real-data pilot plan.
-- **Overall: 4.2/5** (mean of the five scores above; evidence-backed, build already runs).
-- **One-line pitch:** "India's child-growth data says 5% of children are wasted; the national survey says 19%. Poshan Setu tells each district which numbers to trust and which children to see this week, without a single new app."
+## Selection memo (FINAL, 4 Oct 2026 11:00 IST; theme decision 12 Oct, registration by 15 Oct)
+- **Winnability — 4/5.** The evidence is unusually strong, with every core number and legal anchor verified at primary sources:
+  - Poshan Tracker 5.46% wasting (June 2025, Rajya Sabha USQ 477) against NFHS-5 19.3% (PIB 1988614);
+  - NFSA 2013 s.6, DPDP Act s.7(c)/s.8(3)/s.9 + Rules 2025 Fourth Schedule (commencement G.S.R. 843(E));
+  - CMAM Protocol 2023 timelines.
+  Two independent cross-model reviews were run and their fixes applied.
+- **Innovation headroom — 4/5.** Measurement-system diagnostics per AWC × device × month: support before scrutiny, no worker scores, the s.8(3) accuracy duty made operational. Capacity-capped weekly worklists with a three-clock escalation tied to verified protocol steps. Purpose-bound policy-as-code (39/39 red-team). Privacy-preserving ICDS↔health linkage (SYNTHETIC F1 0.97).
+- **Feasibility by the deadline — 5/5.** The proposal PDF is done (6 pages) on 4 Oct; due 1 Nov, well before the 19–25 Nov exams. Finals need only a deck and the demo, which already runs end to end in seconds.
+- **Demo strength at finals — 4/5.** WHO-validated z-scores (real tables, 0.003 z) → diagnostics → ranked worklists (SMS ≤80 chars) → escalation (482 after 8 days) → verified audit chain. The honest twist that judges will remember: once leakage was removed, a transparent WHZ rule (43%) beat our ML model (38%), so the explainable rule ships. Weakness: synthetic data only.
+- **Fit with the user's strengths — 4/5.** Large-scale data systems, privacy engineering, applied ML, and government-cloud deployment (Microsoft/Azure experience).
+- **Biggest risk:** judges discount synthetic evaluation, or read diagnostics as surveillance of AWWs. Mitigated by ADR 002 (no worker scores, equipment first, appeal, employment-use deny), the honest evaluation story, and a pilot whose first study is blinded re-measurement.
+- **Overall: 4.2/5.** Recommend T1 unless the T2/T3 memos are clearly stronger.
+- **One-line pitch:** "Poshan Tracker says 5% of children are wasted; the national survey says 19%. Poshan Setu shows each district which measurements to trust and which children to see this week, through the apps workers already use, with every access lawful and logged."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -174,4 +188,23 @@ Against our `protocol.yaml` assumptions:
 - NRC: discharge at 15% weight gain; stay 10–15 days; follow-up at 2 weeks, then monthly.
 
 Apply at resume step 2.
+
+### 2026-10-04 10:08–11:00 IST — resumed; definition of done completed
+- **Legal layer verified at primary texts:**
+  - CMAM Protocol 2023 (wcd.gov.in, 24 pp): 2-day SAM list sharing p.20; 3–5-day medical appraisal p.8; fortnightly MAM visits p.11; monthly district review p.22. `protocol.yaml` v0.2.0 cites pages; our own rules are labelled DESIGN.
+  - NFSA 2013 **s.6** (Gazette copy; secondary sources wrongly say s.5(2)).
+  - ABDM HIP/HIU Guidelines 24 Oct 2022 p.19 (consent artefact = purpose + duration) and p.5 (RCH as HIP).
+  - DPDP commencement G.S.R. 843(E): ss.3–17 from 13 May 2027.
+  - 0 "(VERIFY)" left in code, docs or deliverables. Notes in [`research/sources/V3-lead-verified-nfsa-abdm-cmam.md`](research/sources/V3-lead-verified-nfsa-abdm-cmam.md).
+- **Cross-model reviews** (sub-agents launched before the 10:15 sessions directive; recorded in [`reviews/`](reviews/), ledger.tsv):
+  - GPT-6 Sol code review: 14 issues, all accepted. Policy-gate bypasses fixed (39/39), ledger truncation checkpoint, MUAC rule, demo classification, no-look-ahead test, `fetch_who.py`, `requirements.txt`.
+  - GPT-6 Astra proposal review: 17 issues, 16 accepted; 1 rejected (inventing a pilot costing).
+- **Biggest finding.** The v0 early-warning eval had look-ahead and an oracle pool. The leakage-free `eval_v1.py` (episode recall, AWC bootstrap, SYNTHETIC) gives:
+  - transparent lowest-WHZ rule **0.429** (0.420–0.443) beats the logistic model **0.384**;
+  - linked health adds nothing;
+  - programme rule 0.365, random 0.269.
+  → [ADR 003](architecture/adr/003-transparent-ranking-first.md): the rule ships, ML is gated. v0 numbers retracted everywhere.
+- **Supervisor alignment (10:38): agreed.** v0.3 reports v1 as a strength. Added `eval/check_docs.py` (17 quoted numbers checked against `eval/results`, also a pytest).
+- **Demo now covers the whole chain:** z-scores → diagnostics → ranking → tasks → worklists → **escalation** (fixed a scope bug: escalated tasks now go to the sector/project owner; 482 escalated after 8 days at an assumed 70% on time) → audit (2,171 entries, verified). SYNTHETIC; runs in about 4 s.
+- **Proposal v0.3 → PDF:** `India71_100_[TeamID].pdf`, 6 A4 pages, 1-inch margins, Arial (body 11 pt, diagram 11.25 pt unscaled), all 6 required sections + architecture diagram. 29 tests pass.
 

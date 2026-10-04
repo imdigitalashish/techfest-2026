@@ -42,7 +42,7 @@ MERMAID_JS = """
 <script>
   mermaid.initialize({ startOnLoad: false, theme: 'neutral',
     themeVariables: { fontFamily: 'Arial, Helvetica, sans-serif', fontSize: '15px' },
-    flowchart: { htmlLabels: true, nodeSpacing: 16, rankSpacing: 24, padding: 6, useMaxWidth: true } });
+    flowchart: { htmlLabels: true, nodeSpacing: 16, rankSpacing: 24, padding: 6, useMaxWidth: true, wrappingWidth: 260 } });
   window.addEventListener('load', async () => {
     const pres = document.querySelectorAll('pre.mermaid');
     for (let i = 0; i < pres.length; i++) {
