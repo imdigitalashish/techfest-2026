@@ -2,7 +2,7 @@
 # P6 demo: one command. Starts the live backend (committed code, 127.0.0.1 only) and opens the page.
 # Without the venv it opens the same page OFFLINE (precomputed grid), so the first visual never waits for Numba.
 # One-time setup from a fresh clone (from perceptron-p06-stat-arb/):
-#   uv venv .venv --python 3.11 && uv pip install --python .venv/bin/python -r requirements.lock
+#   uv venv .venv --python 3.11 && uv pip install --python .venv/bin/python -r requirements.lock --compile-bytecode
 # Usage: perceptron-p06-stat-arb/demo/run.sh [--no-browser]    (PORT=8766 by default)
 set -u
 cd "$(dirname "$0")/.." || exit 2

@@ -3,8 +3,9 @@
 **Setup (once, from a fresh clone)**
 ```bash
 cd perceptron-p06-stat-arb
-uv venv .venv --python 3.11 && uv pip install --python .venv/bin/python -r requirements.lock
+uv venv .venv --python 3.11 && uv pip install --python .venv/bin/python -r requirements.lock --compile-bytecode
 ```
+`--compile-bytecode` is optional; it moves Python's first-use compilation into setup (7 s here).
 
 **Run:** `demo/run.sh` starts the backend on 127.0.0.1 and opens the browser.
 - The page opens in the **stage view**: three steps, each fitting one 1440×900 screen.
@@ -15,10 +16,11 @@ uv venv .venv --python 3.11 && uv pip install --python .venv/bin/python -r requi
 - It includes a headless-Chrome run of the race and of a killed backend.
 - It reports SKIP if no Chrome or Chromium is installed.
 
-**Timings measured on this shared Mac:**
-- *Fresh clone, brand-new venv:* page served 6.3 s after `run.sh` started; LIVE at 48.9 s, because Python compiles numpy, polars, scikit-learn and numba on first use.
-- *Warm venv:* page 0.5 s; LIVE in 4–14 s, depending on load.
-- Adding `--compile-bytecode` to `uv pip install` moves the first-use compilation into setup.
+**Timings measured on this shared Mac (fresh clone):**
+- The first visual is immediate: the page renders from the exported assets in OFFLINE mode and upgrades itself to LIVE.
+- With `--compile-bytecode` (load average 5–7): page served 2.1 s after `run.sh` started; LIVE at 44.4 s.
+- Without it (load average 9): page 6.5 s; LIVE at 128.7 s, while Python compiled numpy, polars, scikit-learn and numba and loaded the native libraries for the first time.
+- After one run (warm venv): page 0.3–0.5 s; LIVE in 4–14 s, depending on load. That is why step 1 below is to run `demo/smoke.sh` once.
 
 ## Before going on stage
 1. Run `demo/smoke.sh` once. It checks everything and warms the bytecode.
