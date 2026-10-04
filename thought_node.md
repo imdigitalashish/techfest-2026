@@ -24,6 +24,7 @@
 - [ ] **If P8 is chosen:** its stretch goal needs a ~30-learner pilot in November.
 
 - [ ] **Mac memory (08:50):** swap is ~97% full (34.6 of 35.8 GB). Your own VM (`com.apple.Virtualization`, ~16 GB incl. compressed) and CapCut are the largest non-project users. Pausing them while the projects run, or approving Azure compute for heavy jobs, would stop the slowdowns. I've asked P1 and P9 to shrink their jobs.
+- [ ] **India@71 T1 (✅ Completed — please review):** team names + Team ID for `India71_100_[TeamID].pdf`; a state/district WCD contact for a pilot data extract; a union/worker-association contact for co-design.
 ## Portfolio (08:18 IST) — package = landscape, components, contracts, ADR, deliverables, eval, memo
 | Project | Package | Memo (self-score) | Last push | Note |
 |---|---|---|---|---|
@@ -59,6 +60,8 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 10:50 IST — India@71 T1 completed
+Verified on main: 6-page A4 Arial PDF, citations verified at primary sources, GPT-6 Sol (14/14 accepted) + GPT-6 Astra (16/1) reviews, leakage-free eval (transparent WHZ rule 43% > ML 38%, ADR 003), check_docs 17/17. Marked ✅ Completed in README. P9 resumed into the free slot (APCTT waits for 10 Oct data).
 ### 2026-10-04 09:55 IST — Batch mode
 After Lean Mode lifted at 08:30, sub-agents resumed and HTTP 408 timeouts rose again (6 in 10 min; upload measured ~55 KB/s). User directive: run 3 projects at a time. Active: Namma Space, P7, EV C2, each with a 5-point definition of done. 17 leads told to save, push and go idle. P1 had already cut memory (swap 31.5 → 20.9 GB) and replicated AnchorLoRA on seed 1 (2.66510 vs starter 2.7535).
 ### 2026-10-04 08:18 IST — Morning package complete
