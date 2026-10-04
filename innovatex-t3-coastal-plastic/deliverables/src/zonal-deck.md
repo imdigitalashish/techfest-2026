@@ -73,7 +73,7 @@ DON'T SAY "pickers never collect film". The source says companies disregard low-
 
 | Who | What they do | Scale (source) |
 |---|---|---|
-| **BMC** | Steel-net trash booms with conveyors at nullah mouths, cleared daily by contractors | {{f:F12|9}} booms, growing to {{f:F12|23}}; {{f:F12|≈ ₹1 crore}} each; {{f:F12|1.5 t/day}} dry, {{f:F12|2.5–3 t/day}} monsoon per boom (HT, May 2025) |
+| **BMC** | Steel-net trash booms with conveyors at nullah mouths (since {{f:F13|July 2022}}, on NGT directions), cleared daily by contractors | {{f:F12|9}} booms, growing to {{f:F12|23}}; {{f:F12|≈ ₹1 crore}} each; {{f:F12|1.5 t/day}} dry, {{f:F12|2.5–3 t/day}} monsoon per boom (HT, May 2025) |
 | | Two-year operations and maintenance contract | {{f:F13|₹14.5 crore}} for six rivers and nullahs (FPJ, 30 Jul 2026) |
 | **The Ocean Cleanup + Plastic Fischer** | Interceptors at Malad and Trombay creeks, MCGM permits, MPCB MoU | {{f:F02|61 to 92 tonnes}} a year expected from the first systems ≈ {{f:D01|1.2–1.8 %}} of the estimated leak |
 | **Plastic Fischer** (elsewhere) | Low-tech TrashBooms; kilograms verified by third-party software | {{f:F16|3.2 million kg}}, {{f:F16|71}} booms, {{f:F16|8}} sites in India and Indonesia |
@@ -195,7 +195,7 @@ DON'T SAY a payback period as fact. It depends on the effect size, which the pil
 # Who pays, the pilot we ask for, and the road to December
 
 - **Who pays:** BMC already funds booms and drains (budget {{f:F23|₹80,952.56 crore}} for 2026-27; roads and storm-water drains take more than half). Producers under EPR: Category II covers {{f:F22|"carry bags, plastic sachet or pouches"}}; low-value film can go to cement-kiln co-processing. *Whether drain-recovered plastic earns EPR certificates is not settled in the rules: we treat it as upside.* Verified-kilogram credits already sell (Plastic Fischer).
-- **Hook:** BMC's flood plan adds {{f:F24|8 to 10 feet}} mesh screens and water-level sensors at {{f:F24|seven}} pilot sites. NullahNet is the measurement and dispatch layer for exactly such assets.
+- **Hook:** BMC's {{f:F24|₹13,000 crore}} flood plan (work from October 2026) adds {{f:F24|8 to 10 feet}} mesh screens and expands water-level sensors from {{f:F24|seven}} pilot sites. NullahNet is the measurement and dispatch layer for exactly such assets.
 - **Pilot ask:** 2–3 small outfalls in one ward (one gated, one open), away from the Interceptor sites.
 - **Roadmap:** Oct, reversed-flow flume + fuse tests → Nov, edge node on the flume (before exams) → 1 Dec, report + working prototype → Dec, live flume + dashboard demo.
 
