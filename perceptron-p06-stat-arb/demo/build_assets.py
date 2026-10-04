@@ -28,6 +28,7 @@ Outputs go to demo/assets/:
 """
 from __future__ import annotations
 
+import gzip
 import hashlib
 import json
 import os
@@ -199,6 +200,24 @@ def agg(rows: pl.DataFrame, mask: np.ndarray) -> dict:
             "n_both": int((ch["outcome"] == "both").sum()) if ch.height else 0}
 
 
+def bits(a: np.ndarray) -> str:
+    """0/1 acts as a string; '' when nothing is selected (most human-speed thresholds sit out)."""
+    return "" if not np.any(a) else "".join("1" if x else "0" for x in a)
+
+
+def save_npz(path: str, **arrays) -> None:
+    """np.savez_compressed with fixed zip timestamps, so identical inputs give identical bytes."""
+    import io
+    import zipfile
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for k, v in arrays.items():
+            buf = io.BytesIO()
+            np.lib.format.write_array(buf, np.asanyarray(v), allow_pickle=False)
+            zi = zipfile.ZipInfo(f"{k}.npy", date_time=(1980, 1, 1, 0, 0, 0))
+            zi.compress_type = zipfile.ZIP_DEFLATED
+            zf.writestr(zi, buf.getvalue())
+
+
 def window_rule(opp: pl.DataFrame) -> tuple[int, int]:
     """Densest 15 minutes by detected-episode count, windows starting on whole UTC minutes; ties -> earliest."""
     ts = np.sort(opp["t_start_us"].to_numpy())
@@ -254,6 +273,8 @@ def committed_numbers() -> dict:
 def main() -> None:
     t_all = time.time()
     os.makedirs(OUT, exist_ok=True)
+    for f in os.listdir(OUT):                      # OUT holds generated files only
+        os.remove(os.path.join(OUT, f))
 
     # ---------------------------------------------------------------- training day: labels, cache checks, fits
     q, legs, opp, books = day(TRAIN)
@@ -306,13 +327,14 @@ def main() -> None:
                 oc[idx] = [OC[o] for o in wr["outcome"].to_list()]
                 pnl[idx] = wr["pnl_usd"].to_numpy()
                 thr[idx] = acts["thr"][wmask]
-            rec = {"oc": oc.tolist(), "pnl": [round(float(x), 6) for x in pnl], "thr": thr.tolist()}
+            pnl_c = np.round(pnl * 100).astype(np.int64)
+            rec = {"oc": "".join("-" if x < 0 else str(int(x)) for x in oc), "pnl_c": pnl_c.tolist(), "thr": bits(thr)}
             if "lev" in acts:
                 if idx.size:
                     lev[idx] = acts["lev"][wmask]
-                rec["lev"] = lev.tolist()
+                rec["lev"] = bits(lev)
             rec["tot"] = {p: agg(wr, m[wmask]) for p, m in acts.items()}
-            max_dev = max(max_dev, abs(sum(rec["pnl"]) - float(wr["pnl_usd"].sum())))
+            max_dev = max(max_dev, abs(float(pnl_c.sum()) / 100 - float(wr["pnl_usd"].sum())))
             grid_window[key] = rec
         regf = registered(reg)
         if sim == "frozen":
@@ -344,16 +366,16 @@ def main() -> None:
     cand_cols = list(dict.fromkeys(cand_cols))
 
     # ---------------------------------------------------------------- exports
-    np.savez_compressed(f"{OUT}/window_books.npz", legs=np.array(legs), w0=np.int64(w0), w1=np.int64(w1),
+    save_npz(f"{OUT}/window_books.npz", legs=np.array(legs), w0=np.int64(w0), w1=np.int64(w1),
                         **{f"{k}__{i}": v for i, l in enumerate(legs) for k, v in
                            (("ts", wbooks[l].ts), ("bid", wbooks[l].bid), ("ask", wbooks[l].ask), ("bsz", wbooks[l].bsz), ("asz", wbooks[l].asz))})
     models = {}
     for sim in SIMS:
         m = pols[sim]["lev"]["m"]
-        with open(f"{OUT}/lev_{sim}.pkl", "wb") as fh:
-            pickle.dump(m, fh, protocol=5)
+        with open(f"{OUT}/lev_{sim}.pkl.gz", "wb") as fh, gzip.GzipFile(filename="", mode="wb", fileobj=fh, mtime=0) as gz:
+            pickle.dump(m, gz, protocol=5)
         a = flatten(m)
-        np.savez_compressed(f"{OUT}/lev_{sim}.npz", **{k: np.asarray(v) for k, v in a.items()})
+        save_npz(f"{OUT}/lev_{sim}.npz", **{k: np.asarray(v) for k, v in a.items()})
         models[sim] = {"n_trees": a["n_trees"], "n_nodes": a["n_nodes"], "train_rows": train_counts[sim], "features": R.LEARN_X,
                        "trained_on": f"{TRAIN} registered cells (fee {FEES} × δ {REG_DELTAS} ms), {'frozen' if sim == 'frozen' else 'strict V1'} labels"}
     thresholds = {sim: [[k[0], k[1], k[2], k[3], (None if not np.isfinite(v) else float(v))] for k, v in sorted(pols[sim]["thr"]["th"].items())]
@@ -363,11 +385,16 @@ def main() -> None:
     for i, l in enumerate(legs):
         g = sl.filter(pl.col("leg") == l).sort("ts_exch_us", maintain_order=True)
         bid, ask, ts = g["bid_px"].to_numpy(), g["ask_px"].to_numpy(), g["ts_exch_us"].to_numpy()
-        ch = np.ones(ts.size, bool)
-        ch[1:] = (bid[1:] != bid[:-1]) | (ask[1:] != ask[:-1])
-        tsr = ts[ch] - w0
-        disp[l] = {"t_us_delta": np.diff(tsr, prepend=0).tolist(), "bid_c_delta": cents_delta(bid[ch]), "ask_c_delta": cents_delta(ask[ch]),
-                   "n_raw": int(ts.size)}
+        chg = np.ones(ts.size, bool)
+        chg[1:] = (bid[1:] != bid[:-1]) | (ask[1:] != ask[:-1])
+        idx = np.flatnonzero(chg)
+        ms = (ts[idx] - s0) // 1000
+        keep = np.ones(idx.size, bool)
+        keep[:-1] = ms[1:] != ms[:-1]            # last price change within each millisecond (display only)
+        sel = idx[keep]
+        tsr = ts[sel] - w0
+        disp[l] = {"t_us_delta": np.diff(tsr, prepend=0).tolist(), "bid_c_delta": cents_delta(bid[sel]), "ask_c_delta": cents_delta(ask[sel]),
+                   "n_raw": int(ts.size), "n_shown": int(sel.size)}
     leg_idx = {l: i for i, l in enumerate(legs)}
     episodes = {"t_us": (ep["t_start_us"] - w0).to_list(), "dur_us": ep["duration_us"].to_list(), "s": ep["s"].to_list(),
                 "b": ep["b"].to_list(), "edge0": [round(x, 4) for x in ep["edge0_bps"].to_list()], "cens": ep["censored"].to_list(),
@@ -388,8 +415,9 @@ def main() -> None:
                  "stale_cap_us": STALE_CAP_US, "markouts_s": list(MARKOUTS), "models": models, "oc_codes": OC,
                  "leg_index": leg_idx},
         "quotes": disp, "episodes": episodes, "cands": cand_out, "grid_window": grid_window, "grid_day": day_grid, "km": km,
-        "thresholds": thresholds, "committed": committed_numbers(), "checks": CHECKS,
+        "committed": committed_numbers(), "checks": CHECKS,
     }
+    json.dump(thresholds, open(f"{OUT}/thresholds.json", "w"), separators=(",", ":"), allow_nan=False)
     with open(f"{OUT}/data.js", "w") as fh:
         fh.write("window.P6_DATA=")
         json.dump(data, fh, separators=(",", ":"), allow_nan=False)
