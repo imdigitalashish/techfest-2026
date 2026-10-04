@@ -10,7 +10,10 @@
 - _(none)_
 
 ## Now
-- **Phase:** ✅ definition of done met except the last review (2026-10-04 19:05 IST). Waiting only for the gpt-6-astra demo review (§11.7); after that comes triage, then "DEMO DONE" and "DONE — slot free" to the Supervisor.
+- **Phase:** finishing (2026-10-04 19:22 IST). Everything except the demo-review fixes is done, verified and pushed.
+  - The gpt-6-astra demo review (§11.7) is triaged (6/6 accepted).
+  - The [P2 demo builder](ghapp://sessions/931e0d5e-6f6f-4cc3-ac7a-2f28c39c2b5c) is applying the fixes now (T2 caveat at every budget, "logical context state" wording, layout at ~1200 px, a replay-only 3-minute route, refreshed fallback).
+  - Then: lead re-verifies `smoke.sh`, then "DEMO DONE" and "DONE — slot free". Both reviewer sessions are archived.
 - **Delivered:**
   - **Measured results** ([eval/RESULTS.md](eval/RESULTS.md)): pre-registered T1/T2/S4/T3 plus 5 amendments, exploratory E1–E6, and identity checks.
   - **Final Round-1 abstract** (884–891 words, every number rendered; [deliverables/round1-abstract.md](deliverables/round1-abstract.md)) and diagram.
