@@ -1,0 +1,89 @@
+{
+ "pooled": {
+  "runs": 1536,
+  "answer_rate": 0.5325520833333334,
+  "coverage_answered": 0.9425427872860636,
+  "confident_wrong_answered": 0,
+  "answered": 818,
+  "coverage_ungated": 0.9140625,
+  "confident_wrong_ungated": 0,
+  "coverage_abstained": 0.8816155988857939
+ },
+ "by_effect": {
+  "harmful": {
+   "runs": 512,
+   "answer_rate": 0.515625,
+   "coverage_answered": 0.9583333333333334,
+   "confident_wrong_answered": 0,
+   "answered": 264,
+   "coverage_ungated": 0.9140625,
+   "confident_wrong_ungated": 0,
+   "coverage_abstained": 0.8669354838709677
+  },
+  "near_null": {
+   "runs": 512,
+   "answer_rate": 0.54296875,
+   "coverage_answered": 0.935251798561151,
+   "confident_wrong_answered": 0,
+   "answered": 278,
+   "coverage_ungated": 0.919921875,
+   "confident_wrong_ungated": 0,
+   "coverage_abstained": 0.9017094017094017
+  },
+  "positive": {
+   "runs": 512,
+   "answer_rate": 0.5390625,
+   "coverage_answered": 0.9347826086956522,
+   "confident_wrong_answered": 0,
+   "answered": 276,
+   "coverage_ungated": 0.908203125,
+   "confident_wrong_ungated": 0,
+   "coverage_abstained": 0.8771186440677966
+  }
+ },
+ "by_n": {
+  "5000": {
+   "runs": 768,
+   "answer_rate": 0.5416666666666666,
+   "coverage_answered": 0.9375,
+   "confident_wrong_answered": 0,
+   "answered": 416,
+   "coverage_ungated": 0.9140625,
+   "confident_wrong_ungated": 0,
+   "coverage_abstained": 0.8863636363636364
+  },
+  "20000": {
+   "runs": 768,
+   "answer_rate": 0.5234375,
+   "coverage_answered": 0.9477611940298507,
+   "confident_wrong_answered": 0,
+   "answered": 402,
+   "coverage_ungated": 0.9140625,
+   "confident_wrong_ungated": 0,
+   "coverage_abstained": 0.8770491803278688
+  }
+ },
+ "by_K": {
+  "10": {
+   "runs": 768,
+   "answer_rate": 0.5651041666666666,
+   "coverage_answered": 0.9354838709677419,
+   "confident_wrong_answered": 0,
+   "answered": 434,
+   "coverage_ungated": 0.921875,
+   "confident_wrong_ungated": 0,
+   "coverage_abstained": 0.9041916167664671
+  },
+  "40": {
+   "runs": 768,
+   "answer_rate": 0.5,
+   "coverage_answered": 0.9505208333333334,
+   "confident_wrong_answered": 0,
+   "answered": 384,
+   "coverage_ungated": 0.90625,
+   "confident_wrong_ungated": 0,
+   "coverage_abstained": 0.8619791666666666
+  }
+ },
+ "preregistered_criteria_met": true
+}

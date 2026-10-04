@@ -111,13 +111,38 @@ def main():
     put("gate_tau_ess", f"{100 * g['tau_ess']:.0f}%", "gate_rule.json tau_ess")
     put("gate_sim_answer", f"{100 * g['answer_rate']:.0f}%", "gate_rule.json answer_rate")
     put("gate_sim_cov", f"{g['pooled_coverage_answered']:.2f}", "gate_rule.json pooled_coverage_answered")
-    put("gate_sim_ungated_worst", f"{g['ungated']['worst_cfg_cov']:.2f}", "gate_rule.json ungated.worst_cfg_cov")
     put("gate_sim_configs", "36", "eval/calibrate_gate.py CONFIGS (3 x 2 x 3 x 2)")
+    cal = pd.read_csv(RES / "gate_calibration_runs.csv")  # true no-gate baseline (review C7)
+    put("gate_sim_ungated_cov", f"{cal.covered.mean():.2f}", "gate_calibration_runs.csv all 720 runs coverage")
+    put("gate_sim_ungated_worst", f"{cal.groupby('config').covered.mean().min():.2f}", "gate_calibration_runs.csv worst config coverage, no gate")
     go = json.loads((RES / "gate_obd_posthoc.json").read_text())["summary"]
-    put("gate_obd_answered", f"{go['answered']}/{go['cases']}", "gate_obd_posthoc.json answered/cases")
-    put("gate_obd_wrong", str(go["answered_wrong"]), "gate_obd_posthoc.json answered_wrong")
-    put("gate_obd_caught", f"{go['failures_abstained']}/{go['failures_total']}", "gate_obd_posthoc.json failures abstained/total")
-    put("gate_obd_cost", str(go["abstained_but_right"]), "gate_obd_posthoc.json abstained_but_right")
+    rw, un = go["rows"], go["unique_instances"]
+    put("gate_obd_rows", str(rw["listed"]), "gate_obd_posthoc.json rows.listed")
+    put("gate_obd_answered", f"{rw['answered']}/{rw['listed']}", "gate_obd_posthoc.json rows answered/listed")
+    put("gate_obd_ref_in_ci", f"{rw['answered_ref_in_ci']}/{rw['answered']}", "gate_obd_posthoc.json rows answered_ref_in_ci/answered")
+    put("gate_obd_wrongsign", f"{rw['answered_confident_wrong_sign']}/{rw['answered']}", "gate_obd_posthoc.json rows answered_confident_wrong_sign/answered")
+    put("gate_obd_unique", str(un["listed"]), "gate_obd_posthoc.json unique_instances.listed")
+    put("gate_obd_u_answered", f"{un['answered']}/{un['listed']}", "gate_obd_posthoc.json unique answered/listed")
+    put("gate_obd_u_ref_in_ci", f"{un['answered_ref_in_ci']}/{un['answered']}", "gate_obd_posthoc.json unique answered_ref_in_ci/answered")
+    put("gate_obd_u_s1rej_abst", f"{un['abstained_s1_rejected']}/{un['s1_rejected_total']}", "gate_obd_posthoc.json unique S1 rejections abstained/total")
+    ho = RES / "gate_holdout.json"
+    if ho.exists():
+        h = json.loads(ho.read_text())
+        P = h["pooled"]
+        put("ho_runs", f"{P['runs']:,}", "gate_holdout.json pooled.runs")
+        put("ho_answer", f"{100 * P['answer_rate']:.0f}%", "gate_holdout.json pooled.answer_rate")
+        put("ho_cov_ans", f"{P['coverage_answered']:.2f}", "gate_holdout.json pooled.coverage_answered")
+        put("ho_cov_ungated", f"{P['coverage_ungated']:.2f}", "gate_holdout.json pooled.coverage_ungated")
+        put("ho_wrong_ans", f"{P['confident_wrong_answered']}/{P['answered']:,}", "gate_holdout.json pooled confident wrong answered")
+        put("ho_wrong_ungated", f"{P['confident_wrong_ungated']}/{P['runs']:,}", "gate_holdout.json pooled confident wrong ungated")
+        put("ho_criteria", "met" if h["preregistered_criteria_met"] else "not met", "gate_holdout.json preregistered_criteria_met")
+    bb = RES / "obd_block_bootstrap.json"
+    if bb.exists():
+        b_ = json.loads(bb.read_text())
+        put("bb_A_hw_iid", f"{1000 * b_['halves_A']['iid_hw']:.2f}", "obd_block_bootstrap.json halves_A iid half-width ×1000")
+        put("bb_A_hw_block", f"{1000 * b_['halves_A']['block_hw']:.2f}", "obd_block_bootstrap.json halves_A hour-block half-width ×1000")
+        put("bb_A_block_ref_in", "inside" if b_["halves_A"]["block_ref_in_ci"] else "outside", "obd_block_bootstrap.json halves_A block CI vs reference")
+        put("bb_dm_cons", "consistent" if b_["dm_refit"]["consistent"] else "inconsistent", "obd_block_bootstrap.json dm_refit.consistent")
 
     # ---- C6 ratchet ----
     led = pd.read_csv(ROOT / "components" / "delta_estimator" / "autoresearch" / "results.tsv", sep="\t")
