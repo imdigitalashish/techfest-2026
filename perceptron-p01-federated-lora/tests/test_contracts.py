@@ -130,3 +130,59 @@ def test_default_coefficients_match_scalar_path():
     ref = g["B"][k].new_zeros(D_OUT, R) + sum((1.0 * tau * w) * (p[c][k] * (1.0 / m[c]["steps_done"]))
                                               for c in sorted(p))
     assert torch.equal(g["B"][k], ref)
+
+
+def test_flexlora_is_exact_in_product_space_and_redistributes_by_svd():
+    from components.aggregator import FlexLoRA
+
+    s = FlexLoRA()
+    g = s.init_global(_init())
+    payloads, metas = {}, {}
+    for i, r in enumerate([8, 4, 2]):
+        view = s.client_view(g, r)
+        assert all(float(B.abs().sum()) == 0 for _, B in view.values())          # round 0: B = 0
+        after = _fake_train(view, r, True, seed=200 + i)
+        payloads[f"c{i}"], nbytes = s.payload(view, after, r)
+        assert nbytes == sum(4 * r * (D_IN + D_OUT) for _ in view)               # only r_k rows/cols travel
+        metas[f"c{i}"] = dict(n_examples=[400, 100, 100][i], planned_steps=1, steps_done=1)
+    g, rep = s.aggregate(g, payloads, metas, 0)
+    assert rep["aggregation_error"] < 1e-5
+    k = next(iter(g["W"]))
+    w = {"c0": 400 / 600, "c1": 100 / 600, "c2": 100 / 600}
+    ref = sum(w[c] * payloads[c][k][1] @ payloads[c][k][0] for c in w)        # W_g = Σ n_i B_i A_i / Σ n_i
+    assert torch.allclose(g["W"][k], ref, atol=1e-5)
+    A, B = s.client_view(g, 3)[k]                                              # B = U Σ (first r), A = Vᵀ (first r)
+    U, S, Vh = torch.linalg.svd(ref, full_matrices=False)
+    assert torch.allclose(B[:, :3] @ A[:3], (U[:, :3] * S[:3]) @ Vh[:3], atol=1e-4)
+    assert float(A[3:].abs().sum()) == 0 and float(B[:, 3:].abs().sum()) == 0
+    assert 0.0 <= rep["truncation_error"] <= 1.0
+    assert abs(sum(rep["norm_share"].values()) - 1.0) < 1e-6
+
+
+def test_ffa_lora_is_frozen_A_homogeneous_rank_fedavg():
+    s = make_strategy("ffa_lora")
+    assert isinstance(s, Anchor) and s.homogeneous_rank == 8 and s.weighting == "n"
+    assert s.normalize == "none" and not s.memory and not s.accept_partial and s.clip_kappa is None
+    assert s.rank_for(2) == 8 and s.rank_for(16) == 8 and s.train_A is False
+
+
+def test_fedavg_slicing_is_bit_identical_to_full_width():
+    s = FedAvgAB()
+    g = s.init_global(_init())
+    pay_sliced, pay_full, metas = {}, {}, {}
+    for i, r in enumerate([8, 4, 2]):
+        view = s.client_view(g, r)
+        after = _fake_train(view, r, True, seed=300 + i)
+        pay_sliced[f"c{i}"], _ = s.payload(view, after, r)
+        pay_full[f"c{i}"] = {k: (A.clone(), B.clone()) for k, (A, B) in after.items()}
+        metas[f"c{i}"] = dict(n_examples=100 * (i + 1), planned_steps=1, steps_done=1)
+    g1, _ = s.aggregate(s.init_global(_init()), pay_sliced, metas, 0)
+    g2, _ = s.aggregate(s.init_global(_init()), pay_full, metas, 0)
+    for k in g1["layers"]:
+        assert torch.equal(g1["layers"][k][0], g2["layers"][k][0]) and torch.equal(g1["layers"][k][1], g2["layers"][k][1])
+
+
+def test_norm_share_is_bounded_and_projection_share_can_exceed_one():
+    _, rep = _round(FedAvgAB(), ranks=[8, 4, 2, 1], n=[800, 100, 100, 100])
+    assert all(0.0 <= v <= 1.0 for v in rep["norm_share"].values())
+    assert abs(sum(rep["norm_share"].values()) - 1.0) < 1e-6

@@ -32,6 +32,23 @@ def git_commit() -> str:
         return "unknown"
 
 
+def code_provenance() -> dict:
+    """sha1 over every .py file under components/ and eval/ (what actually ran), plus whether any differs from HEAD."""
+    import hashlib
+
+    h = hashlib.sha1()
+    files = sorted(p for d in ("components", "eval") for p in (ROOT / d).rglob("*.py") if "__pycache__" not in p.parts)
+    for p in files:
+        h.update(str(p.relative_to(ROOT)).encode())
+        h.update(p.read_bytes())
+    try:
+        dirty = bool(subprocess.check_output(["git", "status", "--porcelain", "--", "components", "eval/run_matrix.py"],
+                                             cwd=ROOT, text=True).strip())
+    except Exception:
+        dirty = True
+    return {"code_sha": h.hexdigest()[:12], "dirty": dirty}
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", default="clean", choices=["clean", "dropout"])
@@ -60,7 +77,8 @@ def main() -> None:
         return
     cfg0 = ExperimentConfig(scenario=args.scenario, rounds=args.rounds, exclude=tuple(args.exclude))
     lm, data = load_world(cfg0)
-    env = {"commit": git_commit(), "torch": torch.__version__, "device": str(lm.device), "machine": platform.machine()}
+    env = {"commit": git_commit(), **code_provenance(), "torch": torch.__version__, "device": str(lm.device),
+           "machine": platform.machine()}
     for seed, strat in todo:
         if True:
             cfg = ExperimentConfig(strategy=strat, scenario=args.scenario, seed=seed, rounds=args.rounds,

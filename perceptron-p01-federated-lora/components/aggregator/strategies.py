@@ -12,6 +12,10 @@ Spike (working name "AnchorLoRA")
              MIFA-style memory of absent devices, and acceptance of partial work.
              Prior-art status of each ingredient: see research/components/aggregator.md.
 
+Published baselines
+  FFA-LoRA   (ICLR 2024) freeze the random A, FedAvg(n_k) over B, homogeneous rank: `Anchor(homogeneous_rank=8)`.
+  FlexLoRA   (arXiv 2402.11505) heterogeneous ranks; n_k-weighted full-size product average + SVD redistribution.
+
 Strategies work on plain dicts of tensors (no model), so they are unit-testable on random tensors.
 """
 from __future__ import annotations
@@ -25,31 +29,55 @@ import torch
 LayerState = dict[str, tuple[torch.Tensor, torch.Tensor]]
 
 
-def product_space_report(old: LayerState, new: LayerState, cids: list[str],
-                         contrib: Callable[[str, str], torch.Tensor]) -> tuple[dict[str, float], float, float]:
-    """Influence shares in ΔW space, computed layer by layer.
+def product_space_report(layers, delta: Callable[[str], torch.Tensor], cids: list[str],
+                         contrib: Callable[[str, str], torch.Tensor]) -> dict:
+    """Per-device influence on the applied update, in ΔW = B·A space, computed layer by layer.
 
-    P = ΔW_new − ΔW_old is the global update actually applied; c_k = contrib(k, layer) is what the
-    strategy meant to add for device k. Returns ({k: <c_k, P> / ||P||²}, ||P − Σ_k c_k|| / ||Σ_k c_k||, ||P||).
+    P = delta(layer) is the global update actually applied; c_k = contrib(k, layer) is what the strategy meant to
+    add for device k. Returns influence_share {k: <c_k, P> / ||P||²} (projection; can exceed 1 or go negative
+    when contributions cancel), norm_share {k: ||c_k|| / Σ_j ||c_j||} (bounded in [0, 1]), aggregation_error
+    ||P − Σ_k c_k|| / ||Σ_k c_k|| (0 when aggregation is exact) and update_norm ||P||.
     """
     dots = {c: 0.0 for c in cids}
+    sq = {c: 0.0 for c in cids}
     pp = err = cc = 0.0
-    for name, (A0, B0) in old.items():
-        A1, B1 = new[name]
-        P = B1 @ A1 - B0 @ A0
+    for name in layers:
+        P = delta(name)
         S = torch.zeros_like(P)
-        dvec = []
+        dvec, nvec = [], []
         for c in cids:
             C = contrib(c, name)
             dvec.append((C * P).sum())
+            nvec.append((C * C).sum())
             S += C
-        vals = torch.stack([(P * P).sum(), ((P - S) ** 2).sum(), (S * S).sum()] + dvec).tolist()
+        vals = torch.stack([(P * P).sum(), ((P - S) ** 2).sum(), (S * S).sum()] + dvec + nvec).tolist()
         pp, err, cc = pp + vals[0], err + vals[1], cc + vals[2]
-        for c, v in zip(cids, vals[3:]):
-            dots[c] += v
-    shares = {c: (d / pp if pp > 0 else 0.0) for c, d in dots.items()}
-    rel = math.sqrt(err) / math.sqrt(cc) if cc > 0 else 0.0
-    return shares, rel, math.sqrt(pp)
+        for i, c in enumerate(cids):
+            dots[c] += vals[3 + i]
+            sq[c] += vals[3 + len(cids) + i]
+    norms = {c: math.sqrt(v) for c, v in sq.items()}
+    tot = sum(norms.values())
+    return dict(influence_share={c: (d / pp if pp > 0 else 0.0) for c, d in dots.items()},
+                norm_share={c: (v / tot if tot > 0 else 0.0) for c, v in norms.items()},
+                aggregation_error=math.sqrt(err) / math.sqrt(cc) if cc > 0 else 0.0,
+                update_norm=math.sqrt(pp))
+
+
+EMPTY_REPORT = dict(reporters=[], used_memory_for=[], weights={}, influence_share={}, norm_share={},
+                    aggregation_error=0.0, update_norm=0.0)
+
+
+def _pad_pair(pair: tuple[torch.Tensor, torch.Tensor], ref: tuple[torch.Tensor, torch.Tensor]):
+    """Zero-pad a sliced (A_k [r_k, d_in], B_k [d_out, r_k]) to the global (r_max) shapes of `ref`."""
+    a, b = pair
+    A_ref, B_ref = ref
+    if a.shape == A_ref.shape:
+        return a, b
+    A = torch.zeros_like(A_ref)
+    B = torch.zeros_like(B_ref)
+    A[: a.shape[0]] = a.to(A.device)
+    B[:, : b.shape[1]] = b.to(B.device)
+    return A, B
 
 
 def _weights(cids: list[str], n: dict[str, int], scheme: str) -> dict[str, float]:
@@ -89,27 +117,27 @@ class FedAvgAB:
         return view
 
     def payload(self, view: LayerState, after: LayerState, rank: int) -> tuple[dict, int]:
-        nbytes = sum(4 * rank * (A.shape[1] + B.shape[0]) for A, B in after.values())
-        return {k: (A.clone(), B.clone()) for k, (A, B) in after.items()}, nbytes
+        # only the device's r_k rows of A and r_k columns of B travel; the server zero-pads (HetLoRA-style)
+        out = {k: (A[:rank].contiguous(), B[:, :rank].contiguous()) for k, (A, B) in after.items()}
+        return out, sum(4 * (a.numel() + b.numel()) for a, b in out.values())
 
     def aggregate(self, g: dict, payloads: dict[str, dict], metas: dict[str, dict], t: int):
         cids = sorted(payloads)
         old = g["layers"]
         if not cids:
-            return g, dict(reporters=[], used_memory_for=[], weights={}, influence_share={},
-                           aggregation_error=0.0, update_norm=0.0)
+            return g, dict(EMPTY_REPORT)
+        padded = {c: {k: _pad_pair(payloads[c][k], old[k]) for k in old} for c in cids}
         w = _weights(cids, {c: metas[c]["n_examples"] for c in cids}, self.weighting)
         new = {}
         for k in old:
-            new[k] = (sum(w[c] * payloads[c][k][0] for c in cids), sum(w[c] * payloads[c][k][1] for c in cids))
+            new[k] = (sum(w[c] * padded[c][k][0] for c in cids), sum(w[c] * padded[c][k][1] for c in cids))
 
         def contrib(c: str, k: str) -> torch.Tensor:
-            A_c, B_c = payloads[c][k]
+            A_c, B_c = padded[c][k]
             return w[c] * (B_c @ A_c - old[k][1] @ old[k][0])
 
-        shares, err, norm = product_space_report(old, new, cids, contrib)
-        return {"layers": new}, dict(reporters=cids, used_memory_for=[], weights=w, influence_share=shares,
-                                     aggregation_error=err, update_norm=norm)
+        rep = product_space_report(old, lambda k: new[k][1] @ new[k][0] - old[k][1] @ old[k][0], cids, contrib)
+        return {"layers": new}, dict(reporters=cids, used_memory_for=[], weights=w, **rep)
 
     def eval_view(self, g: dict) -> LayerState:
         return g["layers"]
@@ -188,8 +216,7 @@ class Anchor:
             active = dirs
         cids = sorted(active)
         if not cids:
-            return g, dict(reporters=[], used_memory_for=[], weights={}, influence_share={},
-                           aggregation_error=0.0, update_norm=0.0)
+            return g, dict(EMPTY_REPORT)
         oldB = {k: v.clone() for k, v in g["B"].items()}
         w = _weights(cids, g["n"], self.weighting)
         if self.memory and self.memory_decay is not None:
@@ -222,17 +249,88 @@ class Anchor:
         def contrib(c: str, k: str) -> torch.Tensor:
             return scale(c, active[c][k]) @ g["A"][k]
 
-        shares, err, norm = product_space_report(old, new, cids, contrib)
-        return g, dict(reporters=sorted(dirs), used_memory_for=used_memory, weights=w, influence_share=shares,
-                       aggregation_error=err, update_norm=norm)
+        rep = product_space_report(g["A"], lambda k: (g["B"][k] - oldB[k]) @ g["A"][k], cids, contrib)
+        return g, dict(reporters=sorted(dirs), used_memory_for=used_memory, weights=w, **rep)
 
     def eval_view(self, g: dict) -> LayerState:
         return {k: (g["A"][k], g["B"][k]) for k in g["A"]}
 
 
+@dataclass
+class FlexLoRA:
+    """FlexLoRA (Bai et al., arXiv 2402.11505), implemented from its §3 equations (read 2026-10-04):
+    clients train both LoRA factors at their own rank r_i; the server forms the full-size weighted average
+    W_g = Σ n_i s B_i A_i / Σ n_i, takes SVD(W_g) = U Σ Vᵀ and sends client i  B_i = U[:, :r_i] Σ[:r_i, :r_i] / s,
+    A_i = V[:r_i, :]ᵀ. The PEFT scale s = α / r_max is identical for every device here, so we work in B·A units.
+    Our choices (not from the paper): round 0 uses the standard LoRA init (B = 0, A random truncated to r_i);
+    devices cut off by the deadline are dropped (as in the starter); the evaluated global model is the rank-r_max
+    truncation of W_g (our PEFT model holds rank-r_max adapters); its relative truncation error is reported.
+    """
+    name: str = "flexlora"
+    weighting: str = "n"
+    train_A: bool = True
+    accept_partial: bool = False
+    homogeneous_rank: int | None = None
+
+    def rank_for(self, device_rank: int) -> int:
+        return self.homogeneous_rank or device_rank
+
+    def init_global(self, init: LayerState) -> dict:
+        return {"init": {k: (A.detach().cpu().clone(), B.detach().cpu().clone()) for k, (A, B) in init.items()},
+                "W": None, "svd": None, "r_max": next(iter(init.values()))[0].shape[0]}
+
+    def _factor(self, g: dict, k: str, rank: int) -> tuple[torch.Tensor, torch.Tensor]:
+        A0, B0 = g["init"][k]
+        A, B = torch.zeros_like(A0), torch.zeros_like(B0)
+        if g["W"] is None:  # round 0: standard LoRA init
+            A[:rank] = A0[:rank]
+            return A, B
+        U, S, Vh = g["svd"][k]
+        r = min(rank, S.shape[0])
+        B[:, :r] = U[:, :r] * S[:r]
+        A[:r] = Vh[:r]
+        return A, B
+
+    def client_view(self, g: dict, rank: int) -> LayerState:
+        return {k: self._factor(g, k, rank) for k in g["init"]}
+
+    def payload(self, view: LayerState, after: LayerState, rank: int) -> tuple[dict, int]:
+        out = {k: (A[:rank].detach().cpu().contiguous(), B[:, :rank].detach().cpu().contiguous())
+               for k, (A, B) in after.items()}
+        return out, sum(4 * (a.numel() + b.numel()) for a, b in out.values())
+
+    def aggregate(self, g: dict, payloads: dict[str, dict], metas: dict[str, dict], t: int):
+        cids = sorted(payloads)
+        if not cids:
+            return g, dict(EMPTY_REPORT)
+        layers = list(g["init"])
+        old = g["W"] or {k: torch.zeros(g["init"][k][1].shape[0], g["init"][k][0].shape[1]) for k in layers}
+        w = _weights(cids, {c: metas[c]["n_examples"] for c in cids}, self.weighting)
+        prod = {c: {k: payloads[c][k][1] @ payloads[c][k][0] for k in layers} for c in cids}
+        new = {k: sum(w[c] * prod[c][k] for c in cids) for k in layers}
+
+        def contrib(c: str, k: str) -> torch.Tensor:
+            return w[c] * (prod[c][k] - old[k])
+
+        rep = product_space_report(layers, lambda k: new[k] - old[k], cids, contrib)
+        g["W"] = new
+        g["svd"] = {k: torch.linalg.svd(new[k], full_matrices=False) for k in layers}
+        tail = sum(float((S[g["r_max"]:] ** 2).sum()) for _, S, _ in g["svd"].values())
+        tot = sum(float((S ** 2).sum()) for _, S, _ in g["svd"].values())
+        rep["truncation_error"] = math.sqrt(tail / tot) if tot > 0 else 0.0
+        return g, dict(reporters=cids, used_memory_for=[], weights=w, **rep)
+
+    def eval_view(self, g: dict) -> LayerState:
+        return self.client_view(g, g["r_max"])
+
+
 STRATEGIES: dict[str, Callable[[], object]] = {
     # literal starter baseline: PEFT LoRA r=8 on every device + FedAvg(n_k) over A and B; late devices dropped
     "fedavg_ab_homo": lambda: FedAvgAB(name="fedavg_ab_homo", homogeneous_rank=8),
+    # published: FFA-LoRA (ICLR 2024, arXiv 2403.12313) — freeze the random A, FedAvg(n_k) over B, homogeneous r=8
+    "ffa_lora": lambda: Anchor(name="ffa_lora", homogeneous_rank=8),
+    # published: FlexLoRA (arXiv 2402.11505) — heterogeneous ranks, n_k-weighted product average + SVD split
+    "flexlora": lambda: FlexLoRA(name="flexlora"),
     # heterogeneous ranks with HetLoRA-style zero-padding, still naive averaging
     "fedavg_ab_het": lambda: FedAvgAB(name="fedavg_ab_het"),
     # ablation: exact anchor space alone (n_k weights, no normalisation, no memory, late devices dropped)
@@ -257,7 +355,7 @@ STRATEGIES: dict[str, Callable[[], object]] = {
                                          clip_kappa=2.0, memory=True, memory_max_age=4, accept_partial=True),
 }
 
-BASE_STRATEGIES = ["fedavg_ab_homo", "fedavg_ab_het", "anchor_naive", "anchor_full"]
+BASE_STRATEGIES = ["fedavg_ab_homo", "ffa_lora", "flexlora", "anchor_full"]
 
 
 def make_strategy(name: str):

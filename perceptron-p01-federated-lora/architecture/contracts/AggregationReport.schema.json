@@ -34,8 +34,16 @@
       "additionalProperties": {
         "type": "number"
       },
-      "description": "s_k = <c_k, P> / ||P||^2 in product (\u0394W) space; sums to 1 when aggregation is exact",
+      "description": "s_k = <c_k, P> / ||P||^2 in product (\u0394W) space; sums to 1 when aggregation is exact; unbounded when contributions cancel",
       "title": "Influence Share",
+      "type": "object"
+    },
+    "norm_share": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "||c_k|| / \u03a3_j ||c_j|| in \u0394W space; bounded in [0, 1]",
+      "title": "Norm Share",
       "type": "object"
     },
     "aggregation_error": {
@@ -46,6 +54,19 @@
     "update_norm": {
       "title": "Update Norm",
       "type": "number"
+    },
+    "truncation_error": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "FlexLoRA only: relative Frobenius norm of the global \u0394W discarded by the rank-r_max evaluation view",
+      "title": "Truncation Error"
     }
   },
   "required": [

@@ -52,13 +52,19 @@
       "type": "number"
     },
     "dominance_c0": {
-      "description": "mean influence share of the data-rich device c0",
+      "description": "mean influence share (projection) of the data-rich device c0",
       "title": "Dominance C0",
       "type": "number"
     },
     "dominance_max": {
       "description": "mean over rounds of max_k influence share",
       "title": "Dominance Max",
+      "type": "number"
+    },
+    "dominance_c0_norm": {
+      "default": 0.0,
+      "description": "mean bounded norm share of c0 (fair share = 1/K)",
+      "title": "Dominance C0 Norm",
       "type": "number"
     },
     "weak_gain": {
@@ -69,6 +75,19 @@
     "aggregation_error": {
       "title": "Aggregation Error",
       "type": "number"
+    },
+    "truncation_error": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "FlexLoRA: mean truncation error of the eval view",
+      "title": "Truncation Error"
     },
     "upload_mb": {
       "additionalProperties": {

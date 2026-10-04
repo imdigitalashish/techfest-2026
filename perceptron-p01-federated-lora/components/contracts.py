@@ -65,10 +65,15 @@ class AggregationReport(BaseModel):
     used_memory_for: list[str] = Field(default_factory=list)
     weights: dict[str, float]
     influence_share: dict[str, float] = Field(
-        description="s_k = <c_k, P> / ||P||^2 in product (ΔW) space; sums to 1 when aggregation is exact"
+        description="s_k = <c_k, P> / ||P||^2 in product (ΔW) space; sums to 1 when aggregation is exact; "
+                    "unbounded when contributions cancel"
     )
+    norm_share: dict[str, float] = Field(default_factory=dict,
+                                         description="||c_k|| / Σ_j ||c_j|| in ΔW space; bounded in [0, 1]")
     aggregation_error: float = Field(description="||P - Σ c_k|| / ||Σ c_k||; 0 for exact aggregation")
     update_norm: float
+    truncation_error: float | None = Field(None, description="FlexLoRA only: relative Frobenius norm of the "
+                                                             "global ΔW discarded by the rank-r_max evaluation view")
 
 
 class EvalReport(BaseModel):
@@ -95,10 +100,12 @@ class RunSummary(BaseModel):
     final_per_domain_loss: dict[str, float]
     mean_macro_loss: float = Field(description="mean macro loss over evaluated rounds (area under the curve)")
     max_spike: float = Field(description="largest increase in macro loss between consecutive evaluations")
-    dominance_c0: float = Field(description="mean influence share of the data-rich device c0")
+    dominance_c0: float = Field(description="mean influence share (projection) of the data-rich device c0")
     dominance_max: float = Field(description="mean over rounds of max_k influence share")
+    dominance_c0_norm: float = Field(0.0, description="mean bounded norm share of c0 (fair share = 1/K)")
     weak_gain: float = Field(description="mean loss reduction vs base on the weak devices' domains")
     aggregation_error: float
+    truncation_error: float | None = Field(None, description="FlexLoRA: mean truncation error of the eval view")
     upload_mb: dict[str, float]
     wall_s: float
 

@@ -113,6 +113,9 @@ def run_experiment(cfg: ExperimentConfig, lm, data, log=print) -> tuple[dict, li
     final = evals[-1]["per_domain_loss"]
     macros = [e["macro_loss"] for e in evals]
     shares = [r["aggregation"]["influence_share"] for r in rounds_log if r["aggregation"]["influence_share"]]
+    nshares = [r["aggregation"]["norm_share"] for r in rounds_log if r["aggregation"]["norm_share"]]
+    truncs = [r["aggregation"]["truncation_error"] for r in rounds_log
+              if r["aggregation"].get("truncation_error") is not None]
     weak_domains = [p.domain for p in DEFAULT_PROFILES if p.client_id in WEAK_CLIENTS]
     summary = RunSummary(
         strategy=cfg.strategy, scenario=cfg.scenario, seed=cfg.seed, rounds=cfg.rounds,
@@ -124,8 +127,10 @@ def run_experiment(cfg: ExperimentConfig, lm, data, log=print) -> tuple[dict, li
         max_spike=max([0.0] + [b - a for a, b in zip(macros, macros[1:])]),
         dominance_c0=sum(s.get("c0", 0.0) for s in shares) / max(1, len(shares)),
         dominance_max=sum(max(s.values()) for s in shares) / max(1, len(shares)),
+        dominance_c0_norm=sum(s.get("c0", 0.0) for s in nshares) / max(1, len(nshares)),
         weak_gain=sum(base[d] - final[d] for d in weak_domains) / len(weak_domains),
         aggregation_error=sum(r["aggregation"]["aggregation_error"] for r in rounds_log) / len(rounds_log),
+        truncation_error=(sum(truncs) / len(truncs)) if truncs else None,
         upload_mb={c: b / 1e6 for c, b in upload.items()},
         wall_s=time.time() - t_start,
     ).model_dump()

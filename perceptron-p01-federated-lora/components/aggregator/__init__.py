@@ -3,6 +3,7 @@ from .strategies import (  # noqa: F401
     STRATEGIES,
     Anchor,
     FedAvgAB,
+    FlexLoRA,
     make_strategy,
     product_space_report,
 )
