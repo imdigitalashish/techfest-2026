@@ -80,12 +80,16 @@ def main():
     rp = os.path.join(work, "report.json")
     report = json.load(open(rp)) if os.path.exists(rp) else {"name": a.name, "input": os.path.abspath(a.input), "stages": {}}
     files = sorted(os.path.join(dp, f) for dp, _, fs in os.walk(a.input) for f in fs)
-    fp = hashlib.sha1("".join(f"{os.path.relpath(f, a.input)}:{os.path.getsize(f)}:{int(os.path.getmtime(f))};"
-                              for f in files).encode()).hexdigest()
-    if report.get("input_fingerprint") not in (None, fp):
-        print("input changed since the cached run -> all stages re-run", flush=True)
+    cfg = {k: getattr(a, k) for k in ("steps", "max_splats", "package_splats", "camera_height_m", "mapper")}
+    listing = "".join(f"{os.path.relpath(f, a.input)}:{os.path.getsize(f)}:{int(os.path.getmtime(f))};" for f in files)
+    fp = hashlib.sha1((listing + json.dumps(cfg, sort_keys=True)).encode()).hexdigest()
+    old = report.get("input_fingerprint")
+    legacy_ok = "config" not in report and old == hashlib.sha1(listing.encode()).hexdigest()  # pre-config format
+    if old not in (None, fp) and not legacy_ok:
+        print("input or pipeline flags changed since the cached run -> all stages re-run", flush=True)
         report["stages"] = {}
     report["input_fingerprint"] = fp
+    report["config"] = cfg
     cap_path = os.path.join(a.input, "capture.json")
     cap = json.load(open(cap_path)) if os.path.exists(cap_path) else {}
     paths = {"frames": os.path.join(work, "frames"), "sfm": os.path.join(work, "sfm"), "splat": os.path.join(work, "splat"),
@@ -128,7 +132,7 @@ def main():
 
     def s_splat():
         r = train(os.path.join(paths["sfm"], "colmap"), paths["splat"], a.steps, a.max_splats)
-        return {k: r[k] for k in ("ply_path", "n_splats", "train_seconds", "steps", "peak_memory_gb", "ply_mb", "heldout")}
+        return {k: r[k] for k in ("ply_path", "n_splats", "train_seconds", "steps", "peak_memory_gb", "ply_mb", "accepted", "heldout")}
 
     def s_align():
         sc = load_colmap(colmap_dir)

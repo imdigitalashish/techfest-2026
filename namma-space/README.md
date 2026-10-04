@@ -30,7 +30,7 @@ cd .data/work/home/site && python3 -m http.server 8080    # open http://127.0.0.
 | walkable | NavGrid: sparse points + free-space ray carving + walked trajectory | NumPy/SciPy |
 | package | aligned, pruned `.splat` + `manifest.json` + `nav.json` + `pois.json` | NumPy |
 | site | static viewer + scene | three.js + Spark (MIT) |
-| evaluate | path safety v2, posing accuracy vs a reference | `eval/nav_eval_v2.py` |
+| evaluate | path safety v3 (frozen reference, camera-bootstrap CIs), posing accuracy vs a reference | `eval/nav_eval_v3.py` |
 
 Each stage is timed and cached in `.data/work/<name>/report.json`; re-runs resume.
 

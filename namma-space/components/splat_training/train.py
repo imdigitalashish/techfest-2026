@@ -78,6 +78,7 @@ def train(data_dir, out, steps=15000, max_splats=2_000_000, eval_every_n=8, seed
     res = {"ply_path": ply, "frame": "colmap", "n_splats": nsp, "train_seconds": round(wall, 1),
            "steps": steps, "max_splats": max_splats, "peak_memory_gb": round(int(peak.group(1)) / 1e9, 2) if peak else None,
            "ply_mb": round(os.path.getsize(ply) / 1e6, 1),
+           "accepted": ev.get("n", 0) > 0,  # no matched held-out renders = quality unverified = not accepted
            "heldout": {k: v for k, v in ev.items() if k != "per_image"} | {"split": f"every {eval_every_n}th image (Brush eval split)"},
            "brush": "v0.3.0 (Metal)"}
     with open(os.path.join(out, "splat.json"), "w") as f:

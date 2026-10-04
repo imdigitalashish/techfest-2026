@@ -2,3 +2,4 @@ date	artifact	model	effort	issues	accepted	rejected	note
 2026-10-04	ADR 001 spike choice	rubber-duck (harness default)	default	10	9 (+1 partly)	0	found metric leakage, the J cliff, and the traj_override bug; strong on eval correctness
 2026-10-04	ADR 001 + nav eval v2	gpt-6-astra	max	9	9	0	found 2 blocking evaluator bugs (endpoint exclusion vs connectors; candidate-dependent reference grid) + rigorous re-scoring with urgency weights; strongest methodology review so far
 2026-10-04	pipeline + eval v3 code	gpt-6-sol	max	18	17 (+1 partly rejected)	1 partly (B4 auto-walk)	strongest on code-level correctness: quantisation margins, corner-cutting, stale caches, dependence in stats; caught unbacked headline numbers
+2026-10-04	Round-1 deliverable package	gpt-6-astra	max	~30 (4 criteria x3, compliance 11, claims 16, SOP 6)	all	0	harsh but fair scores 5/2/4/4; best at compliance + claims consistency; highest-leverage: owned capture by 7 Oct, exported-asset fidelity, cold-load

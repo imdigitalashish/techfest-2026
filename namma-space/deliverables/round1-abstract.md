@@ -1,7 +1,7 @@
 # Namma Space — Technical Abstract (Round 1)
 **Phone capture → navigable, photoreal 3D web twin** · Techfest 2026 × Juspay · DRAFT v0.9 (4 Oct 2026)
 
-> Every number in this document comes from a committed run with a reproduce command (repository `namma-space/`). **[public]** = Deep Blending *drjohnson* (a multi-room house, 263 photos; non-commercial research licence; used for evaluation only). **[home]** = our own capture, added after recording. ⟨…⟩ = value pending from the run in progress.
+> Every measured number cites a committed result file. **[public]** = Deep Blending *drjohnson* (a multi-room house, 263 photos; non-commercial research licence; used for evaluation only). **[home]** = our own capture, added after recording. ⟨…⟩ = pending. The pipeline is implemented end-to-end; validation on our own home is pending.
 
 ## 1. Goal
 One phone video of an indoor space should become, automatically and with no 3D modelling, a link that anyone can open to:
@@ -9,7 +9,7 @@ One phone video of an indoor space should become, automatically and with no 3D m
 - click and search points of interest;
 - follow a walking path that stays on the floor and avoids walls and furniture.
 
-Round 1 asks for capture → reconstruction → free-roam viewer. We built the full chain end-to-end from day one, because the same geometry drives collisions in the viewer and paths in Round 2.
+Round 1 asks for capture → reconstruction → free-roam viewer. We implemented the full chain from day one, because the same geometry drives collisions in the viewer and paths in Round 2.
 
 ## 2. Architecture
 Fourteen components with typed contracts (`architecture/contracts/contracts.ts`), each with its own scalar metric, so any one can be replaced or auto-tuned in isolation:
@@ -40,11 +40,11 @@ Fourteen components with typed contracts (`architecture/contracts/contracts.ts`)
 | Walkable space | sparse points in the body band 0.15–1.70 m = obstacles; observation rays carve free space; walked trajectory adds connectivity; eroded by 0.25 m agent radius | ⟨navigable m²⟩, ⟨camera positions on navigable⟩ |
 | Packaging | importance pruning (opacity × area) to ≤1M splats → aligned `.splat` (32 B/splat) + manifest + NavGrid + POIs | ⟨MB⟩ |
 
-Pose accuracy on [public] vs the dataset's reference reconstruction (Sim(3)-aligned camera centres): ⟨ATE⟩.
+Pose accuracy on [public] vs the dataset's reference reconstruction (Sim(3)-aligned camera centres): ⟨ATE in reference units and % of scene extent⟩.
 
 ## 5. Web viewer (zero install)
 A static page: three.js + Spark (MIT) Gaussian-splat renderer, loaded from CDNs.
-- **Movement:** PointerLock WASD + mouse-look at a 1.6 m eye height, with smoothed acceleration. Every step is checked against the walkable map and slides along walls, so you can't walk through walls or furniture.
+- **Movement:** PointerLock WASD + mouse-look at a 1.6 m eye height, with smoothed acceleration. Movement is constrained to the walkable map: sub-stepped, sliding along walls. How complete that map's obstacles are is limited (§6).
 - **Minimap:** click it to route anywhere.
 - **POIs:** labels; search by name or alias (e.g. "fireplace", "bookcase"), which plans a route and can auto-walk it.
 - **Tagging:** press `P` to tag a POI where you stand.
@@ -59,15 +59,15 @@ A static page: three.js + Spark (MIT) Gaussian-splat renderer, loaded from CDNs.
 Frozen protocol for the next measurement: cold cache, throttled network, scripted walk — ⟨S_V⟩. **[home]:** public URL and the same measurements.
 
 ## 6. Navigation and search (Round-2 preview, measured honestly)
-- **Planner:** 8-connected A* with a clearance penalty, then line-of-sight string pulling. Contract test: the route must use the doorway and never touch the wall. An identical JavaScript port runs in the browser: an 8–11 m route in 82–94 ms.
-- **POIs:** labelled from evidence frames, placed by casting a ray from the chosen pixel into the reconstruction, with an approach point snapped onto the walkable map. 7 POIs on [public].
+- **Planner:** 8-connected A* with a clearance penalty, then line-of-sight string pulling. Contract test: the route must use the doorway and never touch the wall. A JavaScript port of the same algorithm runs in the browser (8–11 m route in 82–94 ms); its clearance field is approximated, and cross-language equivalence tests are pending.
+- **POIs:** 7 POI label specs on [public], each tied to an evidence frame, placed by casting a ray from the chosen pixel into the reconstruction, with an approach point snapped onto the walkable map.
 - **Path-safety evaluation v3** (`eval/nav_eval_v3.py`), built after two independent reviews caught leakage in our first metric:
   - endpoints are held-out camera positions moved (≤0.5 m) to verified-free cells; 29/33 and 30/33 cameras qualify;
   - **all pairs among those endpoints** are tested;
   - the whole route, including connectors, is checked against a frozen dense-geometry reference (3DGS splats) at a 0.25 m body radius plus a quantisation margin;
   - uncertainty comes from a camera-level bootstrap (pairs share endpoints, so pair-level intervals are too narrow).
-- **Result:** ⟨CFC⟩ of routes are fully collision-free under this strict reference (camera-bootstrap 95% CI ⟨…⟩). Every eligible pair gets a route. Adding free-space carving or the walked trajectory shows **no evidence of a difference** — which is not proof of equivalence. The sparse SfM points miss thin obstacles such as chair legs.
-- **Limitation:** the reference comes from the same photos (SfM and splat use all images), so this is a same-scene consistency check, not ground truth.
+- **Result** (shipped-pose [public] benchmark, `eval/results/drjohnson_nav_v3.json`): **44–49%** of routes are fully collision-free under this strict reference (camera-bootstrap 95% CI ≈30–69%), for every map variant. Every eligible pair gets a route. Adding free-space carving or the walked trajectory shows **no evidence of a difference** — which is not proof of equivalence. The disagreement is consistent with missing thin-obstacle geometry, such as chair legs, in the sparse SfM points.
+- **Limitation:** SfM uses all images. Splat training holds out every 8th image for appearance metrics; the navigation hold-out also removes ±2 neighbouring frames from map building. The reference comes from the same photos, so this is a same-scene consistency check, not ground truth.
 - **Round-2 plan:**
   - obstacles from the dense splats (PlayCanvas `splat-transform`'s collision pipeline, MIT), with a mesh → Recast navmesh comparison arm;
   - an independent real-geometry benchmark (ARKitScenes laser-scanned meshes);
@@ -75,24 +75,24 @@ Frozen protocol for the next measurement: cold cache, throttled network, scripte
 
 ## 7. Where we innovate (ADR 001 v2)
 After two independent reviews (including GPT-6 Astra as a hostile methodologist), we put the innovation where the marks are:
-- **D′ — quality-qualified turnaround:** maximise 𝟙[accepted] · (1 − T/90 min). T counts capture → deployed link, including retries; a twin is accepted only if every room is present, scale error is ≤3% and held-out PSNR meets a frozen threshold. Levers: on-site QA that says which room to re-shoot before you leave, per-clip streaming, frame selection, faster training.
+- **D′ — quality-qualified turnaround:** maximise the mean over trials of 𝟙[accepted] · max(0, 1 − T/90 min). T counts capture → deployed link, including retries; a twin is accepted only if every room is present, scale error is ≤3% and held-out PSNR meets a frozen threshold. Levers: on-site QA that says which room to re-shoot before you leave, per-clip streaming, frame selection, faster training.
 - **E — fidelity-constrained delivery:** minimise max(T_visible / 5 s, p95 frame time / 20 ms) on a frozen cold-cache walkthrough, with ≤1 dB PSNR loss. Levers: importance pruning, SPZ compression, progressive loading, render budget.
 
 Both run as auto-research "ratchets": an agent edits the component, a frozen evaluator scores it, and only gains beyond noise are kept.
 
 ## 8. State of the art and positioning (verified 4 Oct 2026; details in `research/`)
 - **Posing:** global SfM is now part of COLMAP — the standalone GLOMAP repo is marked deprecated, and pycolmap 4.2 exposes `global_mapping`. Feed-forward models such as MapAnything (Apache-2.0, metric) and VGGT-Ω (non-commercial) are the speed frontier. They sit behind our posing contract as drop-in candidates once Apple-silicon support is verified.
-- **Splatting:** Brush (Apache-2.0) trains on Apple Metal; its unreleased main branch adds Mip-Splatting and a 4× memory reduction.
+- **Splatting:** Brush (Apache-2.0) trains on Apple Metal; its unreleased main branch adds Mip-Splatting and a 4× pixel-buffer memory reduction.
 - **Viewers:** Spark (MIT, three.js) reads PLY/SPZ/SPLAT/KSPLAT/SOG.
 - **Navigation in splat twins:** Splat-Nav (robot planning in Gaussian-splat maps), Habitat-GS (ECCV 2026) and MeshSplatting (meshes with walkable scenes) are the closest research.
-- **Products:** ⟨summary from `research/companies.md`⟩.
-- **Our gap:** phone video → photoreal twin → walkable map + search + routing (+ AR) in one zero-install link, produced in under an hour.
+- **Products:** across ≈59 vendor pages we found **no product** that ships phone capture → photoreal twin → walkable map → search → obstacle-aware route in one zero-install link. Capture vendors stop at viewing, measuring and floor plans; wayfinding vendors route over 2D floor-plan maps (`research/companies.md`). This is evidence of absence in what we checked, not proof that none exists.
+- **Our target:** that whole chain in one link, produced in under 90 minutes from capture (spike D′).
 
 ## 9. Evaluation discipline
 - Fixed seeds and splits (every 8th frame held out, buffered).
 - Committed result files, and one command per number.
 - Contract tests per component.
-- Every headline claim reviewed by an independent model before submission (`reviews/ledger.tsv`).
+- Headline claims are reviewed by independent models of other families before submission (three reviews so far; `reviews/ledger.tsv`).
 
 ## 10. Credits and licences
 COLMAP / pycolmap (BSD) · Brush (Apache-2.0) · three.js (MIT) · Spark (MIT) · NumPy / SciPy (BSD) · OpenCV incl. ArUco (Apache-2.0) · ffmpeg (LGPL/GPL, CLI) · Deep Blending dataset (Hedman et al. 2018; non-commercial research use, evaluation only, not hosted).

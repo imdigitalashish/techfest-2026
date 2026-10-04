@@ -2,7 +2,7 @@
 
 **Who:** anyone with a smartphone. **Time:** ~15–20 min for a 2–3 room home (prep 5 min + ~2 min per room + 3 min checks; estimate, not yet measured). **Output:** one or more videos + a filled `capture.json`, which our pipeline turns into a walkable 3D web twin with POIs and paths.
 
-> Status: v1.1, 4 Oct 2026 (v1.1: one lens for all clips — code-review finding H7). Rules come from what our pipeline needs: camera posing (COLMAP global SfM), 3D Gaussian Splatting, and floor/obstacle extraction for navigation. Each rule has a *why*. The cross-check against official capture guides is in `research/capture-best-practices.md` (pending); see `research/companies.md` for vendor guidance found so far.
+> Status: v1.1, 4 Oct 2026 (v1.1: one lens for all clips; voice/OCR features marked as planned — review findings H7, H8). Rules come from what our pipeline needs: camera posing (COLMAP global SfM), 3D Gaussian Splatting, and floor/obstacle extraction for navigation. Each rule has a *why*. The cross-check against official capture guides is in `research/capture-best-practices.md` (pending); see `research/companies.md` for vendor guidance found so far.
 
 ## The 5 rules that matter most
 1. **Sharp frames.** Walk slowly (about half your normal pace) and turn slowly (a full turn takes at least 12 s). Blurry frames are the main cause of failed reconstructions.
@@ -29,7 +29,7 @@
 | Stabilisation | Standard (avoid "Action mode" / "Cinematic") | Standard | Action and Cinematic modes crop and warp frames |
 | Exposure/focus | Long-press the screen on a mid-brightness wall → **AE/AF LOCK** | Lock AE/AF (Pro mode: shutter ≥1/120 s, ISO auto) | Brightness that changes between frames creates "floaters" and colour seams |
 | Orientation | **Landscape**; never rotate the phone mid-clip | Landscape | Constant image size and intrinsics |
-| Audio | **On** | On | We transcribe your voice tags into POIs (§4) |
+| Audio | **On** | On | Voice tags (§4) are recorded now; automatic POIs from them are planned for Round 2 (today POIs are tagged in the viewer) |
 
 *Pro option (best quality):* the free **Blackmagic Camera** app (iOS/Android) can lock shutter (1/120–1/250 s), ISO and white balance. Use it if you are comfortable with it.
 
@@ -51,11 +51,11 @@ Hold the phone at chest height in landscape. Keep it upright (don't roll it side
 1. **Enter:** walk through the doorway at half speed, pause 1 s, and say the room name aloud: *"Living room"* (voice tag).
 2. **Loop 1 — inward:** walk around the room about 1 m from the walls, pointing the phone at the centre of the room. Do a full loop.
 3. **Loop 2 — outward and down:** walk the loop again (opposite direction is fine), now pointing at the walls and furniture and **tilted 20–40° down**, so that floor edges, furniture legs, the bottoms of door frames and the floor around obstacles are visible.
-4. **Corners and features:** at each corner and each important object, slow down and sweep across it while still moving sideways. Say what it is: *"Fridge"*, *"Three-seater sofa"*, *"Study table"* (voice tags become searchable POIs).
+4. **Corners and features:** at each corner and each important object, slow down and sweep across it while still moving sideways. Say what it is: *"Fridge"*, *"Three-seater sofa"*, *"Study table"* (recorded for automatic POI extraction, planned for Round 2).
 5. **Route pass:** walk the main routes through the room (door → each seat/bed/table → next door) with the phone tilted ~30° down. These walks tell the planner where people actually walk.
 6. **Exit:** walk out through the doorway at half speed, pause 1 s on the other side, and say the next room's name.
 
-**C. Corridors / hallways:** walk down the middle facing forwards, then come back facing the other way. Pause at each door and say its label (*"Bedroom 2"*, *"Meeting Room 4"*). Point at any door sign or room number for 2 s; we read signs with OCR.
+**C. Corridors / hallways:** walk down the middle facing forwards, then come back facing the other way. Pause at each door and say its label (*"Bedroom 2"*, *"Meeting Room 4"*). Point at any door sign or room number for 2 s (sign reading by OCR is planned for Round 2).
 
 **D. End:** finish back at the marker (or the starting corner) and film it for 5 s. Closing the loop lets the reconstruction correct drift.
 
@@ -117,5 +117,5 @@ Same paths as §4. Take one photo every half step (~30–40 cm), with each photo
 | Floor visible, tilted pass | The floor plane, gravity alignment and obstacle footprints for the navmesh all come from floor observations |
 | Walk real routes | The camera trajectory is evidence of free, walkable space (used by our walkable-space component) |
 | Marker or camera height | Reconstructions from images alone have unknown scale; navigation needs metres (agent radius, eye height, walking speed) |
-| Voice tags and sign close-ups | They give automatic POI names and positions: speech/OCR timestamps → camera pose at that moment |
+| Voice tags and sign close-ups | Planned (Round 2): speech/OCR timestamps → camera pose at that moment → automatic POI names and positions. Recorded now so the same capture can be reprocessed |
 | Doors open, mirrors covered | Closed doors read as walls; mirrors read as fake rooms |

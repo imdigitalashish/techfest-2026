@@ -99,3 +99,25 @@ These are leverage-ranked recommendations, not a prediction against unseen compe
 | 6 | **Campus constraints and promises need a final cleanup.** Clearing furniture/opening doors/covering mirrors may be disallowed; privacy and moving occupants affect publication (`deliverables/capture-sop.md:37-42`). Voice/OCR wording is ahead of code; the capture-guide cross-check is still pending (`deliverables/capture-sop.md:5,32,58`). | Obtain venue permission, preserve normal obstacle layout, never compromise fire-door/egress rules, and use permitted quiet periods. Specify how restricted rooms, glass and faces are excluded and logged. Keep voice labels as optional notes/manual tagging until automated processing is shipped. |
 
 **Delta-check standard for the pending run:** commit the report, exact input/pose/checkpoint identity, nonempty per-image quality results and exported-asset manifest before inserting numbers. A completed public-photo run can close processing-evidence gaps, but cannot close the owned-capture, web-fidelity, public-link, video or submission-packaging gaps.
+
+---
+## Lead decisions (Claude Opus 5.5, project lead) — 2026-10-04 11:45 IST
+Scores accepted as fair for the current state (no owned twin yet).
+| Item | Decision | Action |
+|---|---|---|
+| §1 SOP/pipeline-1, §4-1: no owned capture → twin → HTTPS run | **ACCEPTED (blocked on user)** | Top priority in *Needs from user*: timed home capture by 7 Oct; `process_capture.sh` ready; deploy script ready |
+| §1 SOP/pipeline-2: process success ≠ accepted twin (SfM keeps the largest model; zero eval renders not failing) | **ACCEPTED** | Splat stage records `accepted=false` when no eval renders match. Room/doorway/scale acceptance gates go into the D′ evaluator (next phase) |
+| §1 SOP/pipeline-3: streaming/QA is a plan | **ACCEPTED** | Labelled "planned" in SOP §9 and the abstract |
+| §1 Fidelity-1/2, §4-2: no same-pose evidence; export drops higher-order SH | **ACCEPTED** | Next phase (spike E): render the exported `.splat` at held-out poses in the browser, report raw vs web PSNR/SSIM + bytes; switch to an SH-preserving format (SPZ / Spark-supported) if loss > 1 dB |
+| §1 Fidelity-3: physical scale validation | **ACCEPTED** | SOP: tape-measure 3 distances (incl. a doorway width) into `capture.json` for independent validation |
+| §1 Viewer-1/2/3: walking p95, cold 40 Mbit/s load, no public URL | **ACCEPTED** | Spike E backlog (`.RAD` paged LoD, SPZ, render budget); measured on the owned scene over HTTPS |
+| §1 Docs-1, §2 compliance (PDF, Drive folder, master links doc, sample data in `test_data/`, viewer link) | **ACCEPTED** | Packaging checklist added to *Next*; `test_data/sample_home/` after the capture. The abstract estimates at 4 A4 pages |
+| §1 Docs-2: SOP/video claim voice/OCR features that aren't implemented | **ACCEPTED, FIXED** | SOP + video: voice tags/OCR "recorded now, processed in R2" |
+| §1 Docs-3: lead with the owned twin, not the inventory | **ACCEPTED** | Abstract restructure once the home result exists; R2 preview kept short |
+| §2 "Everything is open source" | **ACCEPTED, FIXED** | Video says "source code and setup steps are in the repository" (licence decision → user) |
+| §2 eligibility/registration | **ACCEPTED** | *Needs from user*: register by 15 Oct |
+| §3 claims audit (every row) | **ACCEPTED, FIXED** | Abstract wording corrected: "implemented pipeline; owned-scene validation pending"; under-an-hour = target; "map-constrained walking, obstacle completeness limited"; JS port "same algorithm, clearance approximated, equivalence tests pending"; "7 POI label specs"; appearance hold-out (Brush every 8th) vs navigation hold-out (±2 buffer) vs SfM (all images); "consistent with missing thin-obstacle geometry"; Brush 4× = pixel-buffer memory; D′ formula with mean and max; ATE in reference units / % of extent; products: "no verified product found" |
+| §3 drift: README v2 mention, ADR/landscape pre-fix v3 ranges, "nine stages" | **ACCEPTED, FIXED** | Updated to 44–49% (corrected v3) and eight stages |
+| §3 caching not config-aware | **ACCEPTED, FIXED** | Fingerprint now includes the pipeline flags (steps, splat caps, mapper, camera height) |
+| §3 contracts not enforced | **ACCEPTED** | Contract-conformance tests (Python ↔ TS shapes) scheduled; `PathResult.xz` naming aligned later |
+| §5 SOP Day-1 critique (crew roles, QA tool absent, trajectory ≠ body space, scale, coverage, campus constraints) | **ACCEPTED** | SOP v1.2 after the home rehearsal: role split (operator / navigator / processor), ceiling pass, explicit QA tool, campus rules (no furniture moving), taped checks |

@@ -13,7 +13,7 @@
 ## Evidence that changed the decision
 1. **Spike A has no demonstrated advantage without leakage.**
    - v2 (±2-frame buffered hold-out, 40 pairs): CFC@0.25 = 0.600–0.650 for all four evidence variants. Wilson 95% for 24/40 is 0.446–0.737, so they are indistinguishable.
-   - v3 (all 406/435 pairs, frozen reference): CFC = 0.45–0.50 for every variant, with 0% refusals and ~50% of routes passing within 0.275 m of dense geometry. The sparse-point map misses thin obstacles.
+   - v3 (all eligible pairs: 406/435; frozen reference; corrected margin, no corner-cutting): CFC = 0.44–0.49 for every variant (camera-bootstrap 95% CI ≈0.30–0.69), with 0% refusals among eligible endpoints and ~51–56% of routes passing within 0.275 m of dense geometry. The sparse-point map misses thin obstacles.
    - The v1 gain (recall 0.788 → 0.970) came from adjacent-frame leakage.
 2. **Reviewers' re-scoring** (urgency-weighted, subjective; gpt-6-astra): viewer streaming/LOD 16.0 > reconstruction speed/quality 12.9 > walkable space 10.6 > feed-forward posing 10.4 > semantic tagging 8.0 > AR ≤1.9.
 3. **Measured weak spots:**
