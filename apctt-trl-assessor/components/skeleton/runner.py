@@ -34,11 +34,25 @@ def assess(path: Path, model: ordinal.Model, rule: str, schema: dict) -> dict:
     return a
 
 
+def network_off() -> None:
+    """Fail loudly if anything tries to use the network (offline guarantee for the dry run)."""
+    import socket
+
+    def _blocked(*_a, **_k):
+        raise RuntimeError("network access attempted while --offline")
+
+    socket.socket.connect = _blocked  # type: ignore[method-assign]
+    socket.create_connection = _blocked  # type: ignore[assignment]
+    socket.getaddrinfo = _blocked  # type: ignore[assignment]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp"); ap.add_argument("--out"); ap.add_argument("--rule", default="median")
-    ap.add_argument("--train", action="store_true"); ap.add_argument("--model", default=str(ordinal.DEFAULT_MODEL))
+    ap.add_argument("--train", action="store_true"); ap.add_argument("--offline", action="store_true"); ap.add_argument("--model", default=str(ordinal.DEFAULT_MODEL))
     a = ap.parse_args()
+    if a.offline:
+        network_off()
     if a.train:
         t0 = time.time(); out = ordinal.train(out=Path(a.model)); print(f"trained -> {out} in {time.time()-t0:.1f}s")
         if not a.inp:

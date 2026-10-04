@@ -9,7 +9,9 @@ import re
 from functools import lru_cache
 from pathlib import Path
 
-RUBRIC = Path(__file__).resolve().parents[2] / "architecture" / "contracts" / "rubric_eu_nasa_v0.json"
+from .paths import resource
+
+RUBRIC = resource("rubric.json", "architecture/contracts/rubric_eu_nasa_v0.json")
 SENT = re.compile(r"[^.!?]+(?:[.!?]+|$)")
 
 

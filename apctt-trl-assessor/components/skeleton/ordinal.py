@@ -15,7 +15,9 @@ import numpy as np
 K = 9
 TOK = re.compile(r"[a-z][a-z0-9\-]{1,30}")
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MODEL = ROOT / ".data" / "models" / "thr_ridge_v0_trl_current.npz"
+from .paths import resource  # noqa: E402
+
+DEFAULT_MODEL = resource("model.npz", ".data/models/thr_ridge_v0_trl_current.npz")
 
 
 def featurize(texts, D):

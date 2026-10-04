@@ -7,7 +7,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-CONTRACTS = Path(__file__).resolve().parents[2] / "architecture" / "contracts" / "contracts.schema.json"
+from .paths import resource
+
+CONTRACTS = resource("contracts.schema.json", "architecture/contracts/contracts.schema.json")
 _TYPES = {"object": dict, "array": list, "string": str, "boolean": bool, "null": type(None)}
 
 
