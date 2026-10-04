@@ -12,8 +12,8 @@
 ## Now
 - **Phase:** Morning package delivered (07:45 IST). Phases 1–4 v0 done; Phase 5 (ratchet) is next. Still in Supervisor LEAN MODE.
 - **Plan:** Make the spike real: (1) RNG-synchronised twins (C2) with NSR measured before/after; (2) a ghost-book estimator (C4) scored by RMSE vs the twin; (3) the agent ratchet on val seeds; (4) n = 200 test seeds for the abstract.
-- **Doing:** E3 done (60 test seeds). E4 running: naive vs RNG-synchronised twins (TWAP, val seeds 100–129) to measure NSR. Lead alone.
-- **Next:** (1) E4 → `eval/nsr.py E4_nsr_naive E4_nsr_sync`: does synchronisation cut the NSR? (2) If yes, rerun E3 with synced twins and n = 200. (3) Size sweep (square-root check). (4) Re-verify the UNVERIFIED company sources (LOXM, Aiden, BestEx, Proof, SEC 605) and the classics (Almgren–Chriss, Obizhaeva–Wang, Perold). (5) Independent rubber-duck pass on ADR 001 once sub-agents work again.
+- **Doing:** E5 is running: the same fixed policies on the same 60 test seeds with **synchronised** twins (no tuning, so the test set stays clean). Lead alone.
+- **Next:** (1) E5 summary → does the agent now beat TWAP significantly on total IS? (2) n = 200 with sync. (3) The autoresearch ratchet on val seeds with sync (`components/execution_agent/autoresearch/eval.py --rng-sync per_wakeup`). (3) Size sweep (square-root check). (4) Re-verify the UNVERIFIED company sources (LOXM, Aiden, BestEx, Proof, SEC 605) and the classics (Almgren–Chriss, Obizhaeva–Wang, Perold). (5) Independent rubber-duck pass on ADR 001 once sub-agents work again.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills (the abstract has placeholders).
 - **Risks:** (1) **Twin decorrelation:** naive same-seed twins diverge (Δmid std 33¢ at 20 min vs 3–5¢ mean impact). Impact claims are noise-limited until C2 is fixed. (2) The agent's win so far comes mostly from the touch-limit tactic, not from impact-aware scheduling. Report it honestly; the ratchet must show schedule/feedback value. (3) Machine load (load avg 40–98 tonight) makes sims ~10× slower than idle. (4) ABIDES realism of impact is untested (square-root exponent unknown).
 
@@ -126,3 +126,23 @@ No sub-agents until 08:30; small requests; push at least every 30 min. Proceedin
 - **Feedback (stretch 2, v0):** value agents absorb our selling, +5,314 shares [+3,502, +7,134] under TWAP. Momentum agents *tend* to amplify it (−1,302 [−3,185, +636] under TWAP vs −81 under touch-limit), but that is **not significant**.
 - **Correction:** the 07:45 entry and the first Supervisor message quoted −0.60 bps [−1.12, −0.10] on 18 seeds. With 60 seeds that effect is not significant. Abstract and memo are updated, and the Supervisor is told.
 - Started E4: naive vs `per_wakeup` twins (TWAP, val 100–129) → NSR. The sanity check passed on seed 5: synced null is bit-identical to itself, pre-trade identical to the treatment, and fill 4,000.
+
+### 2026-10-04 08:12 IST — Spike C2 works: synchronised twins cut own-impact noise ~6× (variance ~35×)
+- E4: TWAP, val seeds 100–129. Commands:
+  - `.venv/bin/python eval/run_experiment.py --exp E4_nsr_naive --seeds 100:130 --qty 4000 --policies eval/policies/twap_only.json --workers 5 --rng-sync naive`
+  - the same with `--exp E4_nsr_sync --rng-sync per_wakeup`
+  - then `.venv/bin/python eval/nsr.py E4_nsr_naive E4_nsr_sync` → `eval/results/nsr_E4_nsr_naive_vs_E4_nsr_sync.md`.
+- Twin gap Δmid (¢), mean / std, naive → synced:
+
+  | time | naive | synced |
+  |---|---|---|
+  | 300 s | +3.03 / 6.34 | +0.93 / 4.87 |
+  | 600 s | +0.00 / 14.29 | +2.30 / 4.13 |
+  | 1,200 s | +4.83 / 22.94 | +3.67 / 5.29 |
+  | 1,800 s | −7.25 / 46.37 | −2.08 / 16.26 |
+
+  At 60 s the synced std is *higher* (4.77 vs 2.83); unexplained so far, to investigate.
+- **NSR at the end of execution (1,200 s): 4.7 → 1.4.** Own-impact term in IS: std **0.971 → 0.164 bps** (≈5.9× smaller, ≈35× less variance).
+- Instant cost (0.130 vs 0.129 bps) and window volume (34.4k vs 33.9k) are unchanged. That is a first check that re-keying doesn't change the market's marginal behaviour; the full realism scorecard is still to do.
+- Pre-window identical in 30/30 (naive) and 30/30 (synced).
+- Started E5: `.venv/bin/python eval/run_experiment.py --exp E5_test_sync --seeds 1000:1060 --qty 4000 --policies eval/policies/test.json --workers 9 --rng-sync per_wakeup`.

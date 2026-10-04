@@ -1,6 +1,6 @@
 # ADR 001: Spike choice. Synchronised counterfactual twins (C2) feeding a deployable own-impact model (C4)
 
-- **Status:** accepted (first version, 4 Oct 2026, 07:35 IST). Review on 12 Oct with the selection memo.
+- **Status:** accepted (first version, 4 Oct 2026, 07:35 IST). **First evidence, 08:12 IST:** synchronised twins cut the own-impact term's per-seed std from 0.971 to 0.164 bps, and NSR at T1 from 4.7 to 1.4 (E4, 30 val seeds; `eval/results/nsr_E4_nsr_naive_vs_E4_nsr_sync.md`). Review on 12 Oct with the selection memo.
 - **Deciders:** P5 lead (solo, lean mode; the adversarial pass was done by the lead, not an independent agent. **To redo with an independent rubber-duck agent once sub-agents work again.**)
 
 ## Context
