@@ -52,3 +52,23 @@ Spike = **C6 aggregator (AnchorLoRA)**, with the claim scoped to: *exact rank-he
 ## Consequences
 - The frozen evaluator (`components/aggregator/autoresearch/eval.py`) uses the dropout scenario and the macro loss. Contract tests guard exactness.
 - The abstract must not claim the frozen-A/nested-rank trick as novel (prior-art search inconclusive, see `research/landscape.md` §2). It claims the integration and the evaluation.
+
+## Update — 4 Oct 2026, 11:35 IST: independent review, prior art, decision narrowed
+**Prior art found after the first version:**
+- **CF-LoRA** ([2609.36986](https://arxiv.org/abs/2609.36986), 29 Sep 2026) learns a globally shared A, freezes it, and aggregates B exactly within client clusters.
+- **PreLort** ([2606.15963](https://arxiv.org/abs/2606.15963), Jun 2026) uses prefix-nested heterogeneous ranks with per-segment averaging of trained factors.
+
+Each covers one half of our "frozen shared A + nested ranks" design. Neither combines them, and neither targets dropout or dominance. Full comparison: [`research/novelty.md`](../../research/novelty.md).
+
+**Independent review (rubber-duck, 09:50 IST)** — dispositions:
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | Upload bytes were counted for r_k columns, but full-width tensors were passed | **ACCEPTED, fixed:** every strategy now uploads only its r_k slice and the server zero-pads. A unit test shows this is bit-identical; the v2 rerun of anchor_full seed 0 reproduces v1 exactly. |
+| 2 | FedNova-style rescaling uses *planned* steps, which can amplify a short partial update | **ACCEPTED as an experiment:** `anchor_full_tauact` (actual steps) and `anchor_full_nonorm` (no normalisation) run on 5 seeds in v2. The claim depends on the result. |
+| 3 | Memory reapplies a stale direction for up to 4 rounds | **ACCEPTED:** credited vs actual work is reported (`eval/dropout_analysis.py`); decayed memory is tested in `anchor_full_decay`. |
+| 4 | The projection influence share is unbounded near cancellation | **ACCEPTED:** a bounded norm share ‖c_k‖/Σ‖c_j‖ is now logged every round and reported beside it. Leave-one-out stays *planned*. |
+| 5 | Seeds 0–1 came from different commits | **ACCEPTED:** all final numbers come from tag `v2`, one code hash per run (`env.code_sha`, `env.dirty`). The v1 → v2 bit-identical rerun is also a determinism check. |
+| 6 | The abstract over-claims ("harmed", "exactly", "can't derail", audit already built) | **ACCEPTED:** reworded in abstract v2. |
+| 7 | Exact aggregation ≠ fair or useful aggregation; ownership of high columns by high-rank devices | **PARTLY ACCEPTED:** PreLort-style per-column averaging inside the anchor space (`anchor_full_seg`) is tested. Rotating masks are deferred to the finals plan. |
+
+**Decision (narrowed).** We keep the aggregator as the spike. The claim is now exactly the sentence in `research/novelty.md`: an evaluated *combination* (seed-frozen shared A + prefix-nested device ranks → exact mixed-rank aggregation), plus partial-participation handling, macro weighting and influence instrumentation. It is not a new primitive. The published baselines in the final evaluation are FFA-LoRA (ICLR 2024) and FlexLoRA (arXiv 2402.11505), implemented from their papers, alongside HetLoRA-style padding and the starter.
