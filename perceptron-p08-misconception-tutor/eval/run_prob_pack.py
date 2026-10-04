@@ -23,7 +23,7 @@ from fractions import Fraction
 import numpy as np
 
 from components.bugs.probability import CODES, DESCRIPTIONS, build, canon
-from eval.run_llm_gaps import MODELS, PRICE_SOURCE, RES, ci, load_store, parse_json, r4, save_store, sha, usage_summary
+from eval.run_llm_gaps import MODELS, PRICE_SOURCE, RES, ci, cost_of, load_store, parse_json, r4, save_store, sha, usage_summary
 
 P_PROB = """You are writing the answer key for a probability practice problem that targets a known misconception.
 
@@ -67,14 +67,15 @@ def query_timed(rows: list[dict], model: str, store: dict, offline: bool) -> lis
     from components import llm
 
     cfg = MODELS[model]
+    if offline:
+        missing = [it["item_id"] for it in rows if (model, it["item_id"], sha(it["prompt"])) not in store]
+        if missing:
+            raise RuntimeError(f"offline: {len(missing)} responses missing for {model}, e.g. {missing[:3]}")
 
     def one(it):
         k = (model, it["item_id"], sha(it["prompt"]))
         if k in store:
             return store[k]
-        if offline:
-            return {"model": model, "item_id": it["item_id"], "prompt_sha256": k[2], "content": "", "usage": None,
-                    "latency_s": None, "error": "missing in committed responses", "attempts": 0}
         budget, rec = cfg["max_tokens"], None
         for attempt in (1, 2):
             try:
@@ -144,7 +145,8 @@ def task_diag(models, offline, dry, limit) -> dict:
         t0 = time.perf_counter()
         eng.append(x["code"] if x["answer"] == x["bug"] else None)  # None = abstain
         t.append(time.perf_counter() - t0)
-    res = {"part": "prob_pack", "task": "diag", "label": "CONFIRMATORY (Addendum B); SYNTHETIC engine-native items",
+    res = {"part": "prob_pack", "task": "diag",
+           "label": "Addendum B; SYNTHETIC engine-native items. H8 is guaranteed by construction (the engine uses the item's own family rule): an accounting demonstration of routing, not independent evidence",
            "protocol": "eval/llm_gap_protocol.md (Addendum B)", "n_items": len(items),
            "engine_coverage": r4(np.mean([e is not None for e in eng])),
            "engine_latency_ms_median": r4(1e3 * statistics.median(t)), "methods": {}, "usage": {}, "invalid": {}, "decisions": {}}
@@ -161,7 +163,7 @@ def task_diag(models, offline, dry, limit) -> dict:
     for m in ([] if dry else models):
         sub = items[:limit] if limit else items
         out = {r["item_id"]: r for r in query_timed(sub, m, store, offline)}
-        llm_pred, inv, lat = [], 0, []
+        llm_pred, inv = [], 0
         for x in items:
             r = out.get(x["item_id"])
             d = parse_json(r["content"]) if r else None
@@ -169,13 +171,17 @@ def task_diag(models, offline, dry, limit) -> dict:
             ok = code in CODES or code == "NONE"
             inv += r is not None and not ok
             llm_pred.append(code if ok else "NONE")
-            if r and r.get("latency_s") is not None:
-                lat.append(r["latency_s"])
         casc = [e if e is not None else lp for e, lp in zip(eng, llm_pred)]
         u = usage_summary(list(out.values()), m)
-        cost_call = u["cost_usd_estimate"] / max(1, u["calls"])
         frac_llm = 1 - res["engine_coverage"]
-        lat_med = statistics.median(lat) if lat else None
+        # cost and latency of the items the cascade actually routes (fix after the 4 Oct reviews; previously
+        # an all-item average was multiplied by the routed fraction, which under-stated routed cost)
+        n_all = len(items)
+        cost_all = sum(cost_of(out[x["item_id"]].get("usage"), m) for x in items if x["item_id"] in out)
+        cost_routed = sum(cost_of(out[x["item_id"]].get("usage"), m) for x, e in zip(items, eng) if e is None and x["item_id"] in out)
+        lat_all = [out[x["item_id"]]["latency_s"] for x in items if out.get(x["item_id"], {}).get("latency_s") is not None]
+        lat_casc = [(out[x["item_id"]]["latency_s"] if e is None else res["engine_latency_ms_median"] / 1e3)
+                    for x, e in zip(items, eng) if out.get(x["item_id"], {}).get("latency_s") is not None]
         res["methods"][f"LLM:{m}"] = score(llm_pred)
         res["methods"][f"CASCADE:{m}"] = score(casc)
         res["usage"][m] = u
@@ -186,9 +192,12 @@ def task_diag(models, offline, dry, limit) -> dict:
             "H8b_llm_calls_per_1000_cascade": r4(1000 * frac_llm), "H8b_le_550": bool(1000 * frac_llm <= 550),
             "H8_confirmed": bool(s_c["acc_all"] >= s_l["acc_all"] and 1000 * frac_llm <= 550),
             "llm_errors_on_bug_items_removed": r4(1 - s_l["acc_bug"]),
-            "cost_usd_per_1000_llm_only": r4(1000 * cost_call), "cost_usd_per_1000_cascade": r4(1000 * cost_call * frac_llm),
-            "latency_s_median_llm_call": r4(lat_med) if lat_med is not None else None,
-            "latency_s_per_diagnosis_cascade": r4(frac_llm * lat_med) if lat_med is not None else None,
+            "cost_usd_per_1000_llm_only": r4(1000 * cost_all / n_all), "cost_usd_per_1000_cascade": r4(1000 * cost_routed / n_all),
+            "cost_saving_share": r4(1 - cost_routed / cost_all) if cost_all else None,
+            "latency_s_median_llm_call": r4(statistics.median(lat_all)) if lat_all else None,
+            "latency_s_mean_llm_only": r4(statistics.mean(lat_all)) if lat_all else None,
+            "latency_s_mean_cascade": r4(statistics.mean(lat_casc)) if lat_casc else None,
+            "latency_s_median_cascade": r4(statistics.median(lat_casc)) if lat_casc else None,
         }
     if not dry and not offline:
         save_store("prob_diag", store)

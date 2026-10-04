@@ -1,0 +1,326 @@
+{
+ "label": "POST HOC analyses requested by the 4 Oct reviews; no registered decision is changed",
+ "command": "python -m eval.analyze_gaps",
+ "exact_cis": {
+  "real.EXEC.fcr_N": {
+   "k": 0,
+   "n": 152,
+   "p": 0.0,
+   "exact_ci95": [
+    0.0,
+    0.024
+   ]
+  },
+  "real.EXEC.acc_P": {
+   "k": 25,
+   "n": 131,
+   "p": 0.1908,
+   "exact_ci95": [
+    0.1275,
+    0.2687
+   ]
+  },
+  "real.LLM:gpt-4.1-mini.fcr_N": {
+   "k": 24,
+   "n": 152,
+   "p": 0.1579,
+   "exact_ci95": [
+    0.1039,
+    0.2258
+   ]
+  },
+  "real.LLM:gpt-4.1-mini.acc_P": {
+   "k": 73,
+   "n": 131,
+   "p": 0.5573,
+   "exact_ci95": [
+    0.4679,
+    0.6439
+   ]
+  },
+  "real.LLM:gpt-5.4-mini.fcr_N": {
+   "k": 0,
+   "n": 152,
+   "p": 0.0,
+   "exact_ci95": [
+    0.0,
+    0.024
+   ]
+  },
+  "real.LLM:gpt-5.4-mini.acc_P": {
+   "k": 91,
+   "n": 131,
+   "p": 0.6947,
+   "exact_ci95": [
+    0.6082,
+    0.7721
+   ]
+  },
+  "real.LLM:gpt-5.5.fcr_N": {
+   "k": 0,
+   "n": 152,
+   "p": 0.0,
+   "exact_ci95": [
+    0.0,
+    0.024
+   ]
+  },
+  "real.LLM:gpt-5.5.acc_P": {
+   "k": 104,
+   "n": 131,
+   "p": 0.7939,
+   "exact_ci95": [
+    0.7145,
+    0.8596
+   ]
+  },
+  "inv.LLM:gpt-4.1-mini.L3": {
+   "k": 7,
+   "n": 60,
+   "p": 0.1167,
+   "exact_ci95": [
+    0.0482,
+    0.2257
+   ]
+  },
+  "inv.LLM:gpt-5.4-mini.L3": {
+   "k": 57,
+   "n": 60,
+   "p": 0.95,
+   "exact_ci95": [
+    0.8608,
+    0.9896
+   ]
+  },
+  "inv.LLM:gpt-5.5.L3": {
+   "k": 60,
+   "n": 60,
+   "p": 1.0,
+   "exact_ci95": [
+    0.9404,
+    1.0
+   ]
+  },
+  "prob.LLM:gpt-4.1-mini.both": {
+   "k": 22,
+   "n": 60,
+   "p": 0.3667,
+   "exact_ci95": [
+    0.2459,
+    0.501
+   ]
+  },
+  "prob.LLM:gpt-4.1-mini.key": {
+   "k": 24,
+   "n": 60,
+   "p": 0.4,
+   "exact_ci95": [
+    0.2756,
+    0.5346
+   ]
+  },
+  "prob.LLM:gpt-5.4-mini.both": {
+   "k": 58,
+   "n": 60,
+   "p": 0.9667,
+   "exact_ci95": [
+    0.8847,
+    0.9959
+   ]
+  },
+  "prob.LLM:gpt-5.4-mini.key": {
+   "k": 58,
+   "n": 60,
+   "p": 0.9667,
+   "exact_ci95": [
+    0.8847,
+    0.9959
+   ]
+  },
+  "prob.LLM:gpt-5.5.both": {
+   "k": 60,
+   "n": 60,
+   "p": 1.0,
+   "exact_ci95": [
+    0.9404,
+    1.0
+   ]
+  },
+  "prob.LLM:gpt-5.5.key": {
+   "k": 60,
+   "n": 60,
+   "p": 1.0,
+   "exact_ci95": [
+    0.9404,
+    1.0
+   ]
+  }
+ },
+ "routed_cascade": {
+  "prob_diag.gpt-4.1-mini": {
+   "label": "engine-native items; routing and accuracy guaranteed by construction (see protocol Clarifications)",
+   "n_items": 120,
+   "routed": 60,
+   "llm_calls_per_1000_cascade": 500.0,
+   "cost_usd_per_1000_llm_only": 0.1191,
+   "cost_usd_per_1000_cascade": 0.0595,
+   "cost_saving_share": 0.5008,
+   "latency_s_mean_llm_only": 1.7611,
+   "latency_s_median_llm_only": 1.667,
+   "latency_s_mean_cascade": 0.8968,
+   "latency_s_median_cascade": 0.624,
+   "engine_hit_latency_ms_median": 0.0003
+  },
+  "prob_diag.gpt-5.4-mini": {
+   "label": "engine-native items; routing and accuracy guaranteed by construction (see protocol Clarifications)",
+   "n_items": 120,
+   "routed": 60,
+   "llm_calls_per_1000_cascade": 500.0,
+   "cost_usd_per_1000_llm_only": 2.4547,
+   "cost_usd_per_1000_cascade": 2.1252,
+   "cost_saving_share": 0.1342,
+   "latency_s_mean_llm_only": 4.15,
+   "latency_s_median_llm_only": 2.739,
+   "latency_s_mean_cascade": 3.0084,
+   "latency_s_median_cascade": 0.912,
+   "engine_hit_latency_ms_median": 0.0003
+  },
+  "prob_diag.gpt-5.5": {
+   "label": "engine-native items; routing and accuracy guaranteed by construction (see protocol Clarifications)",
+   "n_items": 120,
+   "routed": 60,
+   "llm_calls_per_1000_cascade": 500.0,
+   "cost_usd_per_1000_llm_only": 7.3168,
+   "cost_usd_per_1000_cascade": 5.0832,
+   "cost_saving_share": 0.3053,
+   "latency_s_mean_llm_only": 4.1682,
+   "latency_s_median_llm_only": 3.5245,
+   "latency_s_mean_cascade": 2.6775,
+   "latency_s_median_cascade": 1.5735,
+   "engine_hit_latency_ms_median": 0.0003
+  },
+  "real.gpt-4.1-mini": {
+   "label": "POST HOC; latency not measured per item in the main run",
+   "n_items": 304,
+   "engine_answers": 26,
+   "cost_usd_per_1000_llm_only": 0.1417,
+   "cost_usd_per_1000_cascade": 0.1301,
+   "cost_saving_share": 0.0816
+  },
+  "real.gpt-5.4-mini": {
+   "label": "POST HOC; latency not measured per item in the main run",
+   "n_items": 304,
+   "engine_answers": 26,
+   "cost_usd_per_1000_llm_only": 1.3011,
+   "cost_usd_per_1000_cascade": 1.2505,
+   "cost_saving_share": 0.0389
+  },
+  "real.gpt-5.5": {
+   "label": "POST HOC; latency not measured per item in the main run",
+   "n_items": 304,
+   "engine_answers": 26,
+   "cost_usd_per_1000_llm_only": 6.5022,
+   "cost_usd_per_1000_cascade": 6.1015,
+   "cost_saving_share": 0.0616
+  }
+ },
+ "clustered_real": {
+  "n_clusters": 173,
+  "n_items": 304,
+  "gpt-4.1-mini": {
+   "H1_cluster_ci": [
+    0.0927,
+    0.2357
+   ],
+   "H2_cluster_ci": [
+    0.0475,
+    0.1216
+   ],
+   "hyb_vs_llm_positives": {
+    "wins": 4,
+    "losses": 0,
+    "exact_sign_test_p": 0.125
+   }
+  },
+  "gpt-5.4-mini": {
+   "H1_cluster_ci": [
+    0.0,
+    0.0
+   ],
+   "H2_cluster_ci": [
+    -0.0181,
+    0.0083
+   ],
+   "hyb_vs_llm_positives": {
+    "wins": 1,
+    "losses": 0,
+    "exact_sign_test_p": 1.0
+   }
+  },
+  "gpt-5.5": {
+   "H1_cluster_ci": [
+    0.0,
+    0.0
+   ],
+   "H2_cluster_ci": [
+    -0.0202,
+    0.0
+   ],
+   "hyb_vs_llm_positives": {
+    "wins": 0,
+    "losses": 0,
+    "exact_sign_test_p": 1.0
+   }
+  }
+ },
+ "tracing_sensitivity": {
+  "excluded_learners": 7,
+  "kept": 93,
+  "TRACER": 0.6452,
+  "gpt-4.1-mini": {
+   "n": 93,
+   "tracer": 0.6452,
+   "llm": 0.1398,
+   "diff_ci": [
+    0.3978,
+    0.6129
+   ]
+  },
+  "gpt-5.4-mini": {
+   "n": 93,
+   "tracer": 0.6452,
+   "llm": 0.6667,
+   "diff_ci": [
+    -0.0753,
+    0.0323
+   ]
+  },
+  "gpt-5.5": {
+   "n": 46,
+   "tracer": 0.6739,
+   "llm": 0.6087,
+   "diff_ci": [
+    -0.0652,
+    0.2174
+   ]
+  }
+ },
+ "engine_determinism": {
+  "n_items": 304,
+  "passes": 2,
+  "identical_outputs": 304,
+  "latency_ms_median": 0.0561,
+  "latency_ms_p90": 0.0983
+ },
+ "retries": {
+  "inversion.gpt-5.4-mini": {
+   "items_with_retry": 13,
+   "unrecorded_cost_upper_bound_usd": 0.4706
+  },
+  "tracing.gpt-5.4-mini": {
+   "items_with_retry": 1,
+   "unrecorded_cost_upper_bound_usd": 0.0364
+  },
+  "total_unrecorded_upper_bound_usd": 0.507
+ }
+}

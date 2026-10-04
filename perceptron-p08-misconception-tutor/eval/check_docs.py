@@ -1,39 +1,26 @@
-"""Doc-drift check: numbers in deliverables must come from committed results.
+"""Doc-drift check: numbers in deliverables must come from committed results (hardened after the 4 Oct review).
 
-Run: .venv/bin/python -m eval.check_docs        (exit 1 on drift)
-1. Strict scan: every decimal number (e.g. 86.0, 0.326) in the checked documents must be rendered from a
-   committed result (eval/numbers.allowed) or be a listed design constant.
-2. Required claims: each named headline claim (eval/numbers.claims) listed for a document must appear in it
-   verbatim, so a re-run that changes a headline number breaks the check until the document is updated.
+Run: .venv/bin/python -m eval.check_docs            (exit 1 on any problem)
+     .venv/bin/python -m eval.check_docs --selftest (proves the check catches a falsified number)
+1. Committed inputs: eval/results/ must have no uncommitted changes, so documents reflect committed results.
+2. Fresh render: every rendered artefact (deliverables/*.md and the thought-node selection memo) must equal a
+   fresh render of its template, so a hand edit or a stale number fails, even if the wrong number exists elsewhere.
+3. Placeholders: every {{claim}} in a template must resolve to a committed result.
+4. Strict scan: every decimal number in a rendered artefact must be one of the rendered claim values or a listed
+   design constant (not merely any number found somewhere in the results).
 """
 from __future__ import annotations
 
 import pathlib
 import re
+import subprocess
 import sys
 
-from eval.numbers import allowed, claims
+from eval import render_docs
+from eval.numbers import claims
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-
-# (path, start marker, end marker): only the slice between the markers is scanned (None = whole file)
-DOCS = [
-    ("deliverables/round1-abstract.md", None, None),
-    ("deliverables/architecture.md", None, None),
-    ("thought_node.md", "## Selection memo", "## Log"),
-]
-REQUIRED = {
-    "deliverables/round1-abstract.md": [
-        "real.p_eval", "real.n_pos", "real.n_neg", "real.gpt-5.5.accP", "real.gpt-5.5.fcr", "real.exec_accP", "real.exec_fcr",
-        "real.gpt-4.1-mini.fcr", "inv.gpt-5.5.L3", "inv.gpt-4.1-mini.L3", "trace.tracer_exact", "trace.gpt-5.4-mini.exact",
-        "prob.gen.gpt-5.5.both", "prob.gen.gpt-4.1-mini.both", "cons.engine_ms", "diag.gpt-5.5.cost1000_llm",
-        "diag.gpt-5.5.cost1000_cascade", "cons.gpt-5.5.latency", "cons.gpt-5.5.disagree", "cons.n", "casc.real.engine_answers",
-        "casc.real.n", "sim.ours_left", "sim.random_left", "open.map25_knn",
-    ],
-    "deliverables/architecture.md": ["real.gpt-5.5.fcr", "cons.engine_ms", "real.n_pos", "real.n_neg"],
-    "thought_node.md": ["real.exec_fcr", "real.gpt-5.5.fcr", "real.gpt-5.5.accP", "real.exec_accP", "total.spend"],
-}
-DESIGN_CONSTANTS = {"0.75", "0.5", "2.0"}  # remediation threshold, decision threshold, contract/schema versions
+DESIGN_CONSTANTS = {"0.75", "0.5", "2.0"}  # remediation threshold, decision threshold, schema versions
 IGNORE = [r"(?i)gpt-[\d.]+(-mini)?", r"Opus \d+\.\d+", r"Python \d+\.\d+", r"CC BY(-NC)? \d\.\d", r"v\d+(\.\d+)+",
           r"\d+\.\d+\.\d+", r"\b20\d\d-\d\d-\d\d\b", r"\d+:\d+"]
 NUM = re.compile(r"(?<![\w.])\d+\.\d+(?![\w.])")
@@ -45,34 +32,50 @@ def scan(text: str) -> list[str]:
     return NUM.findall(text)
 
 
-def main() -> int:
+def check(cl: dict, files: dict[pathlib.Path, str] | None = None) -> list[str]:
+    problems = []
+    out, missing = render_docs.outputs(cl)
+    problems += [f"NO-RESULT placeholder {k}" for k in missing]
+    ok_vals = DESIGN_CONSTANTS | {n for v in cl.values() for n in NUM.findall(v.replace("$", " "))}
+    for path, expected in out.items():
+        rel = path.relative_to(ROOT)
+        actual = (files or {}).get(path, path.read_text() if path.exists() else None)
+        if actual != expected:
+            problems.append(f"STALE {rel}: differs from a fresh render of its template")
+        region = expected
+        if path.name == "thought_node.md":
+            i, j = expected.find(render_docs.MEMO_START), expected.find(render_docs.MEMO_END)
+            region = expected[i:j]
+        problems += [f"UNSOURCED {rel}: {n}" for n in sorted(set(scan(region))) if n not in ok_vals]
+    return problems
+
+
+def committed_inputs() -> list[str]:
+    r = subprocess.run(["git", "status", "--porcelain", "--", "eval/results"], cwd=ROOT, capture_output=True, text=True)
+    return [f"UNCOMMITTED {line.strip()}" for line in r.stdout.splitlines() if line.strip()]
+
+
+def selftest() -> int:
     cl = claims()
-    ok_vals = allowed() | DESIGN_CONSTANTS | {n for v in cl.values() for n in NUM.findall(v.replace("$", " "))}
-    failures = 0
-    for path, start, end in DOCS:
-        p = ROOT / path
-        if not p.exists():
-            print(f"MISSING  {path}")
-            failures += 1
-            continue
-        text = p.read_text()
-        if start:
-            i = text.find(start)
-            j = text.find(end, i + 1) if end else -1
-            text = text[i: j if j > 0 else None] if i >= 0 else ""
-        bad = sorted({n for n in scan(text) if n not in ok_vals})
-        for n in bad:
-            print(f"UNSOURCED {path}: {n}")
-        failures += len(bad)
-        for name in REQUIRED.get(path, []):
-            if name not in cl:
-                print(f"NO-RESULT {path}: claim {name} has no committed result")
-                failures += 1
-            elif cl[name] not in text:
-                print(f"DRIFT     {path}: claim {name} = {cl[name]} not found")
-                failures += 1
-    print(f"check_docs: {'OK' if failures == 0 else 'FAIL'} ({failures} problems; {len(ok_vals)} allowed values, {len(cl)} claims)")
-    return 1 if failures else 0
+    out, _ = render_docs.outputs(cl)
+    abstract = ROOT / "deliverables" / "round1-abstract.md"
+    target = cl["diag.gpt-5.5.cost1000_cascade"]
+    falsified = out[abstract].replace(target, cl["diag.gpt-5.5.cost1000_llm"], 1)  # the reviewer's "$7.32 -> $7.32" edit
+    caught = any("STALE" in p for p in check(cl, {abstract: falsified}))
+    print(f"selftest: falsified '{target}' -> '{cl['diag.gpt-5.5.cost1000_llm']}' in the abstract: {'CAUGHT' if caught else 'MISSED'}")
+    return 0 if caught else 1
+
+
+def main(argv=None) -> int:
+    args = argv if argv is not None else sys.argv[1:]
+    if "--selftest" in args:
+        return selftest()
+    cl = claims()
+    problems = committed_inputs() + check(cl)
+    for p in problems:
+        print(p)
+    print(f"check_docs: {'OK' if not problems else 'FAIL'} ({len(problems)} problems; {len(cl)} claims)")
+    return 1 if problems else 0
 
 
 if __name__ == "__main__":

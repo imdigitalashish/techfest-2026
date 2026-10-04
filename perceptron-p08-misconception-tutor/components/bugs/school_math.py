@@ -303,6 +303,59 @@ def parse_dsl(s: str) -> list[Token]:
     return toks
 
 
+_BRACKETED_FRAC = re.compile(r"\(\s*(\d+)\s*/\s*(\d+)\s*\)")
+
+
+def parse_display(s: str) -> list[Token]:
+    """Parse the LLM-prompt display (eval/run_llm_gaps.show_llm), where positive fraction literals are written in
+    brackets, e.g. (1/4). A bracketed simple fraction is a literal, as in the prompts' rule wording ("fractions written
+    in the question"). parse_dsl (used on Eedi text, registered 4 Oct) is unchanged."""
+    out: list[Token] = []
+    pos = 0
+    for m in _BRACKETED_FRAC.finditer(s):
+        out += _parse_fragment(s[pos:m.start()])
+        n, d = int(m.group(1)), int(m.group(2))
+        out.append(Num(Fraction(n, d), (n, d)))
+        pos = m.end()
+    if s[pos:].strip():
+        out += _parse_fragment(s[pos:])
+    return out
+
+
+def _parse_fragment(s: str) -> list[Token]:
+    s = s.strip()
+    if not s:
+        return []
+    toks: list[Token] = []
+    pos = 0
+    while pos < len(s):
+        m = _TOK.match(s, pos)
+        if not m or m.end() == pos:
+            if s[pos:].strip() == "":
+                break
+            raise SyntaxError(f"cannot parse near {s[pos:pos + 12]!r}")
+        pos = m.end()
+        if m.group("neg"):
+            v = m.group("negv")
+            if "/" in v:
+                n, d = (int(x) for x in v.split("/"))
+                toks.append(Num(-Fraction(n, d), (n, d)))
+            else:
+                toks.append(Num(-Fraction(int(v))))
+        elif m.group("frac"):
+            n, d = (int(x) for x in m.group("frac").split("/"))
+            toks.append(Num(Fraction(n, d), (n, d)))
+        elif m.group("int"):
+            toks.append(Num(Fraction(int(m.group("int")))))
+        elif m.group("sq"):
+            toks.append("^2")
+        elif m.group("op"):
+            toks.append(_OPMAP[m.group("op")])
+        else:
+            toks.append(m.group("par"))
+    return toks
+
+
 def predictions(toks: Sequence[Token]) -> dict[str, Optional[Fraction]]:
     """Single-bug predicted answers; None where the bug does not change the answer."""
     key = evaluate(toks)

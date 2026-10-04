@@ -152,8 +152,13 @@ def claims() -> dict:
             c[f"diag.{k}.llm_slip_fa"] = pct(pdg["methods"][f"LLM:{k}"]["false_attribution_slip"]) + "%"
             c[f"diag.{k}.cost1000_llm"] = f"${d['cost_usd_per_1000_llm_only']:.2f}"
             c[f"diag.{k}.cost1000_cascade"] = f"${d['cost_usd_per_1000_cascade']:.2f}"
+            if d.get("cost_saving_share") is not None:
+                c[f"diag.{k}.saving"] = pct(d["cost_saving_share"]) + "%"
             if d.get("latency_s_median_llm_call") is not None:
                 c[f"diag.{k}.latency_llm"] = f"{d['latency_s_median_llm_call']:.1f} s"
+            if d.get("latency_s_mean_llm_only") is not None:
+                c[f"diag.{k}.lat_mean_llm"] = f"{d['latency_s_mean_llm_only']:.1f} s"
+                c[f"diag.{k}.lat_mean_cascade"] = f"{d['latency_s_mean_cascade']:.1f} s"
     cons = _load("llm_consistency.json")
     if cons.get("models"):
         for k, v in cons["models"].items():
@@ -171,8 +176,31 @@ def claims() -> dict:
             c[f"casc.real.{k}.ba"] = pct(v["cascade"]["ba"]) + "%"
             c[f"casc.real.{k}.cost1000_llm"] = f"${v['cost_usd_per_1000_llm_only']:.2f}"
             c[f"casc.real.{k}.cost1000_cascade"] = f"${v['cost_usd_per_1000_cascade']:.2f}"
+            if v.get("cost_saving_share") is not None:
+                c[f"casc.real.{k}.saving"] = pct(v["cost_saving_share"]) + "%"
     if r.get("counts"):
         c["real.p_eval"] = str(r["counts"]["P_evaluable"])
+    if inv.get("ops_per_level"):
+        lo, mean, hi = inv["ops_per_level"]["L3"]
+        c["inv.L3.ops"] = f"{lo}–{hi}"
+        c["inv.L3.ops_mean"] = f"{mean:.1f}"
+    if s:
+        pess = s["settings"]["pessimistic (named feedback no better: 0.10/0.10)"]
+        c["sim.pess_random_left"] = pct(pess["random+generic"]["remaining"][-1][0]) + "%"
+    ph = _load("llm_gaps_posthoc.json")
+    if ph:
+        e = ph["exact_cis"]
+        for name, key in (("real.gpt-5.5.fcr_hi", "real.LLM:gpt-5.5.fcr_N"), ("real.exec.fcr_hi", "real.EXEC.fcr_N"),
+                          ("real.gpt-5.4-mini.fcr_hi", "real.LLM:gpt-5.4-mini.fcr_N")):
+            c[name] = pct(e[key]["exact_ci95"][1]) + "%"
+        c["prob.gpt-5.5.both_lo"] = pct(e["prob.LLM:gpt-5.5.both"]["exact_ci95"][0]) + "%"
+        c["inv.gpt-5.5.L3_lo"] = pct(e["inv.LLM:gpt-5.5.L3"]["exact_ci95"][0]) + "%"
+        ed = ph["engine_determinism"]
+        c["ph.engine_ms"] = f"{ed['latency_ms_median']:.2f} ms"
+        c["ph.engine_identical"] = f"{ed['identical_outputs']}/{ed['n_items']}"
+        c["ph.retry_upper"] = f"${ph['retries']['total_unrecorded_upper_bound_usd']:.2f}"
+        c["ph.clusters"] = str(ph["clustered_real"]["n_clusters"])
+        c["ph.trace_excluded"] = str(ph["tracing_sensitivity"]["excluded_learners"])
     spend = [_load(n).get("total_cost_usd_estimate", 0) for n in
              ("llm_gaps_real_negatives.json", "llm_gaps_inversion.json", "llm_gaps_tracing.json",
               "llm_gaps_prob_pack.json", "llm_gaps_prob_diag.json", "llm_consistency.json")]

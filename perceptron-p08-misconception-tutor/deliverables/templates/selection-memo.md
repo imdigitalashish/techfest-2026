@@ -1,0 +1,15 @@
+_Final, 4 Oct 2026, after the pre-registered LLM-gap tests and two cross-model reviews ([responses](reviews/2026-10-04-responses.md)). Evidence: `eval/llm_gap_protocol.md`; results in `eval/results/`. Retained-response API spend was {{total.spend}}, plus at most {{ph.retry_upper}} for discarded retry attempts. This section is rendered from `deliverables/templates/selection-memo.md`._
+- **Verdict: against picking P8** as the team's one Perceptron problem, unless the user specifically wants Theme 5 *and* the team can run the pilot in November. This is a strategic judgement from the missing demonstrated differentiation; the H1–H7 results alone do not compel it (astra review).
+- **Winnability: 2/5.** On real Eedi data the obvious baseline, a frontier LLM, showed no weakness that our engine fixes. GPT-5.5 diagnosed {{real.gpt-5.5.accP}} of {{real.n_pos}} positives with 0 false claims on {{real.n_neg}} same-domain negatives (exact 95% upper bound {{real.gpt-5.5.fcr_hi}}); our engine diagnosed {{real.exec_accP}}, also with 0. The astra judge scored the pre-revision abstract 62/100.
+- **Innovation headroom: 2/5.**
+  - Pre-registered gaps (H1–H7) were detected only against GPT-4.1-mini: false claims {{real.gpt-4.1-mini.fcr}}, inversion {{inv.gpt-4.1-mini.L3}}, probability answers {{prob.gen.gpt-4.1-mini.both}}.
+  - None was detected against the reasoning models: GPT-5.5 inversion {{inv.gpt-5.5.L3}}, probability answers {{prob.gen.gpt-5.5.both}}; tracer {{trace.tracer_exact}} vs GPT-5.4-mini {{trace.gpt-5.4-mini.exact}}.
+  - The cascade saves money only where the engine explains answers:
+    - probability items: {{diag.gpt-5.5.cost1000_llm}} → {{diag.gpt-5.5.cost1000_cascade}} per 1,000;
+    - real Eedi items (post hoc): {{casc.real.gpt-5.5.cost1000_llm}} → {{casc.real.gpt-5.5.cost1000_cascade}}.
+  - Executable misconceptions are prior art (MalruleLib, ACL 2026).
+- **Feasibility: 5/5** for the arithmetic MVP: 12 components with contract tests, offline-reproducible results, CPU only.
+- **Demo strength: 4/5.** An instant, deterministic certificate (median {{ph.engine_ms}}), verified practice and a teacher view make a clear demo. The honest answer to "why not GPT-5.5?" weakens it.
+- **Fit with the user's strengths: 3/5.** Evaluation rigour, LLM pipelines and Azure fit well; there is little large-scale-systems depth.
+- **Biggest risk:** there is no accuracy edge. The one result judges would weigh heavily, learning gains against a GPT-5.5 tutor, needs a November pilot that overlaps the exams.
+- **One-line pitch (if picked):** *Name the rule, check it, verify the practice — an exact-first cascade that answers what it can certify instantly and for free, and hands the rest to a frontier LLM.*

@@ -1,7 +1,7 @@
 {
  "part": "prob_pack",
  "task": "diag",
- "label": "CONFIRMATORY (Addendum B); SYNTHETIC engine-native items",
+ "label": "Addendum B; SYNTHETIC engine-native items. H8 is guaranteed by construction (the engine uses the item's own family rule): an accounting demonstration of routing, not independent evidence",
  "protocol": "eval/llm_gap_protocol.md (Addendum B)",
  "n_items": 120,
  "engine_coverage": 0.5,
@@ -74,6 +74,7 @@
  "usage": {
   "gpt-4.1-mini": {
    "calls": 120,
+   "requests": 120,
    "errors": 0,
    "prompt_tokens": 32048,
    "completion_tokens": 921,
@@ -82,6 +83,7 @@
   },
   "gpt-5.4-mini": {
    "calls": 120,
+   "requests": 120,
    "errors": 0,
    "prompt_tokens": 31928,
    "completion_tokens": 60137,
@@ -90,6 +92,7 @@
   },
   "gpt-5.5": {
    "calls": 120,
+   "requests": 120,
    "errors": 0,
    "prompt_tokens": 31928,
    "completion_tokens": 23946,
@@ -109,10 +112,13 @@
    "H8b_le_550": true,
    "H8_confirmed": true,
    "llm_errors_on_bug_items_removed": 0.0,
-   "cost_usd_per_1000_llm_only": 0.1192,
-   "cost_usd_per_1000_cascade": 0.0596,
+   "cost_usd_per_1000_llm_only": 0.1191,
+   "cost_usd_per_1000_cascade": 0.0595,
+   "cost_saving_share": 0.5008,
    "latency_s_median_llm_call": 1.667,
-   "latency_s_per_diagnosis_cascade": 0.8335
+   "latency_s_mean_llm_only": 1.7611,
+   "latency_s_mean_cascade": 0.8968,
+   "latency_s_median_cascade": 0.624
   },
   "gpt-5.4-mini": {
    "H8a_cascade_acc_all_ge_llm": true,
@@ -120,10 +126,13 @@
    "H8b_le_550": true,
    "H8_confirmed": true,
    "llm_errors_on_bug_items_removed": 0.0167,
-   "cost_usd_per_1000_llm_only": 2.455,
-   "cost_usd_per_1000_cascade": 1.2275,
+   "cost_usd_per_1000_llm_only": 2.4547,
+   "cost_usd_per_1000_cascade": 2.1252,
+   "cost_saving_share": 0.1342,
    "latency_s_median_llm_call": 2.739,
-   "latency_s_per_diagnosis_cascade": 1.3695
+   "latency_s_mean_llm_only": 4.15,
+   "latency_s_mean_cascade": 3.0084,
+   "latency_s_median_cascade": 0.912
   },
   "gpt-5.5": {
    "H8a_cascade_acc_all_ge_llm": true,
@@ -131,13 +140,16 @@
    "H8b_le_550": true,
    "H8_confirmed": true,
    "llm_errors_on_bug_items_removed": 0.0,
-   "cost_usd_per_1000_llm_only": 7.3167,
-   "cost_usd_per_1000_cascade": 3.6583,
+   "cost_usd_per_1000_llm_only": 7.3168,
+   "cost_usd_per_1000_cascade": 5.0832,
+   "cost_saving_share": 0.3053,
    "latency_s_median_llm_call": 3.5245,
-   "latency_s_per_diagnosis_cascade": 1.7623
+   "latency_s_mean_llm_only": 4.1682,
+   "latency_s_mean_cascade": 2.6775,
+   "latency_s_median_cascade": 1.5735
   }
  },
  "price_source": "Azure Retail Prices API, serviceName 'Foundry Models', swedencentral, Global meters (gpt 4.1 mini Inp/Outp glbl; 5.4 mini Inp/Opt Gl; 5.5 ShortCo inp/opt Gl), accessed 2026-10-04. Reasoning tokens are assumed to be billed as output tokens (assumption).",
- "command": "python -m eval.run_prob_pack --task diag",
+ "command": "python -m eval.run_prob_pack --task diag --offline",
  "total_cost_usd_estimate": 1.1869
 }

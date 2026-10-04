@@ -32,7 +32,7 @@ import pandas as pd
 
 from architecture.contracts import Response
 from components.bugs.eedi_parse import executable_match
-from components.bugs.school_math import CODES, EEDI_LINKS, Num, SchoolMathBugs, canon, decode, safe_eval, show
+from components.bugs.school_math import CODES, EEDI_LINKS, Num, SchoolMathBugs, canon, decode, encode, safe_eval, show
 from components.generator import item_bank
 from components.learner_model import SetBayesTracer
 from components.simulator import sample_population
@@ -158,31 +158,49 @@ def save_store(part: str, store: dict) -> None:
     (RES / f"llm_gaps_{part}_responses.jsonl").write_text("".join(json.dumps(r, sort_keys=True) + "\n" for r in rows))
 
 
-def query(items: list[dict], model: str, store: dict, offline: bool) -> list[dict]:
+def _add_usage(total: dict | None, u: dict | None) -> dict | None:
+    if not u:
+        return total
+    total = dict(total or {})
+    for key in ("prompt_tokens", "completion_tokens", "total_tokens"):
+        total[key] = total.get(key, 0) + (u.get(key) or 0)
+    rt = (u.get("completion_tokens_details") or {}).get("reasoning_tokens", 0)
+    det = dict(total.get("completion_tokens_details") or {})
+    det["reasoning_tokens"] = det.get("reasoning_tokens", 0) + rt
+    total["completion_tokens_details"] = det
+    return total
+
+
+def query(items: list[dict], model: str, store: dict, offline: bool, valid=None) -> list[dict]:
+    """valid(content) -> bool decides whether to retry (default: non-empty). Usage is summed over all attempts
+    (fix after the 4 Oct review; responses stored before the fix kept only the final attempt's usage)."""
     from components import llm
 
     cfg = MODELS[model]
+    valid = valid or (lambda c: bool(c.strip()))
+    if offline:
+        missing = [it["item_id"] for it in items if (model, it["item_id"], sha(it["prompt"])) not in store]
+        if missing:
+            raise RuntimeError(f"offline: {len(missing)} responses missing for {model}, e.g. {missing[:3]}")
 
     def one(it):
         k = (model, it["item_id"], sha(it["prompt"]))
         if k in store:
             return store[k]
-        if offline:
-            return {"model": model, "item_id": it["item_id"], "prompt_sha256": k[2], "content": "", "usage": None,
-                    "finish_reason": "missing_offline", "error": "missing in committed responses", "attempts": 0}
-        budget, rec = cfg["max_tokens"], None
-        for attempt in (1, 2):  # protocol §4: one retry with double budget if the visible answer is empty
+        budget, rec, usage = cfg["max_tokens"], None, None
+        for attempt in (1, 2):  # protocol §4: one retry with double budget if the answer is unusable
             try:
                 r = llm.chat_full([{"role": "user", "content": it["prompt"]}], model=f"openai/{model}", json_mode=True,
                                   max_tokens=budget, reasoning_effort=cfg["effort"])
-                rec = {"content": r["content"], "usage": r["usage"], "finish_reason": r["finish_reason"], "error": None}
+                usage = _add_usage(usage, r["usage"])
+                rec = {"content": r["content"], "finish_reason": r["finish_reason"], "error": None}
             except Exception as exc:  # recorded, scored as invalid
-                rec = {"content": "", "usage": None, "finish_reason": "error", "error": f"{type(exc).__name__}: {str(exc)[:160]}"}
+                rec = {"content": "", "finish_reason": "error", "error": f"{type(exc).__name__}: {str(exc)[:160]}"}
             rec["attempts"] = attempt
-            if rec["content"].strip():
+            if valid(rec["content"]):
                 break
             budget *= 2
-        out = {"model": model, "item_id": it["item_id"], "prompt_sha256": k[2], **rec}
+        out = {"model": model, "item_id": it["item_id"], "prompt_sha256": k[2], "usage": usage, **rec}
         store[k] = out
         return out
 
@@ -190,12 +208,20 @@ def query(items: list[dict], model: str, store: dict, offline: bool) -> list[dic
         return list(ex.map(one, items))
 
 
+def cost_of(u: dict | None, model: str) -> float:
+    if not u:
+        return 0.0
+    pin, pout = MODELS[model]["price"]
+    return (u.get("prompt_tokens", 0) or 0) / 1e6 * pin + (u.get("completion_tokens", 0) or 0) / 1e6 * pout
+
+
 def usage_summary(rows: list[dict], model: str) -> dict:
     pin, pout = MODELS[model]["price"]
     pt = sum((r.get("usage") or {}).get("prompt_tokens", 0) for r in rows)
     ct = sum((r.get("usage") or {}).get("completion_tokens", 0) for r in rows)
     rt = sum(((r.get("usage") or {}).get("completion_tokens_details") or {}).get("reasoning_tokens", 0) for r in rows)
-    return {"calls": len(rows), "errors": sum(1 for r in rows if r.get("error")), "prompt_tokens": pt,
+    return {"calls": len(rows), "requests": sum(r.get("attempts", 1) or 1 for r in rows),
+            "errors": sum(1 for r in rows if r.get("error")), "prompt_tokens": pt,
             "completion_tokens": ct, "reasoning_tokens": rt, "cost_usd_estimate": round(pt / 1e6 * pin + ct / 1e6 * pout, 4)}
 
 
@@ -434,6 +460,7 @@ def build_inversion(seed: int = 2026) -> list[dict]:
                     truth = T0
                 expr = show_llm(toks)
                 items.append({"item_id": f"inv-{lv}-{cond}-{got:02d}", "level": lv, "cond": cond, "expr": expr,
+                              "tokens": encode(toks),
                               "n_ops": sum(1 for t in toks if t in ("+", "-", "*", "/")),
                               "key": canon(key), "answer": canon(y), "truth": sorted(truth),
                               "vals": {"+".join(sorted(T)): (canon(v) if v is not None else None) for T, v in vals.items() if len(T) <= 2},

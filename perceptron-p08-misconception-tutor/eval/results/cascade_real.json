@@ -21,10 +21,11 @@
     "fcr_N": 0.1579,
     "ba": 0.7149
    },
-   "cost_usd_per_1000_llm_only": 0.1418,
-   "cost_usd_per_1000_cascade": 0.1297,
-   "latency_s_per_diagnosis_llm_only": 1.621,
-   "latency_s_per_diagnosis_cascade": 1.4825
+   "cost_usd_per_1000_llm_only": 0.1417,
+   "cost_usd_per_1000_cascade": 0.1301,
+   "cost_saving_share": 0.0816,
+   "latency_s_median_llm_call": 1.621,
+   "latency_note": "per-item latency was not recorded in the main run; median call latency is from the 40-item consistency subset"
   },
   "gpt-5.4-mini": {
    "llm_only": {
@@ -37,10 +38,11 @@
     "fcr_N": 0.0,
     "ba": 0.8511
    },
-   "cost_usd_per_1000_llm_only": 1.301,
-   "cost_usd_per_1000_cascade": 1.1897,
-   "latency_s_per_diagnosis_llm_only": 2.464,
-   "latency_s_per_diagnosis_cascade": 2.2534
+   "cost_usd_per_1000_llm_only": 1.3011,
+   "cost_usd_per_1000_cascade": 1.2505,
+   "cost_saving_share": 0.0389,
+   "latency_s_median_llm_call": 2.464,
+   "latency_note": "per-item latency was not recorded in the main run; median call latency is from the 40-item consistency subset"
   },
   "gpt-5.5": {
    "llm_only": {
@@ -53,10 +55,11 @@
     "fcr_N": 0.0,
     "ba": 0.8969
    },
-   "cost_usd_per_1000_llm_only": 6.5023,
-   "cost_usd_per_1000_cascade": 5.9462,
-   "latency_s_per_diagnosis_llm_only": 3.088,
-   "latency_s_per_diagnosis_cascade": 2.824
+   "cost_usd_per_1000_llm_only": 6.5022,
+   "cost_usd_per_1000_cascade": 6.1015,
+   "cost_saving_share": 0.0616,
+   "latency_s_median_llm_call": 3.088,
+   "latency_note": "per-item latency was not recorded in the main run; median call latency is from the 40-item consistency subset"
   }
  },
  "command": "python -m eval.run_cascade --task cascade_real"

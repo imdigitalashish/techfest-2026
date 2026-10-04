@@ -76,6 +76,14 @@ def _request(body: dict, model: str) -> requests.Response:
                          headers={"Authorization": f"Bearer {_github_token()}", "Content-Type": "application/json"})
 
 
+def _provenance(model: str) -> dict:
+    """Non-secret request provenance stored with each cached response (never the key)."""
+    if backend() == "azure":
+        return {"endpoint": os.environ["AZURE_OPENAI_ENDPOINT"].rstrip("/"),
+                "api_version": AZURE_API_VERSION_REASONING if is_reasoning(model) else AZURE_API_VERSION}
+    return {"endpoint": GITHUB_ENDPOINT, "api_version": None}
+
+
 def _body(messages, model, temperature, max_tokens, json_mode, seed, reasoning_effort) -> dict:
     if is_reasoning(model):
         body = {"model": model, "messages": messages, "max_completion_tokens": max_tokens}
@@ -98,7 +106,9 @@ def chat_full(messages: list[dict], model: str = "openai/gpt-4.1-mini", temperat
     path = CACHE / f"{key}.json"
     if use_cache and path.exists():
         d = json.loads(path.read_text())
-        return {"content": d["content"], "usage": d.get("usage"), "finish_reason": d.get("finish_reason"), "cached": True}
+        prov = _provenance(model)
+        if all(d.get(k) in (None, prov[k]) for k in prov):  # records written before provenance existed are accepted
+            return {"content": d["content"], "usage": d.get("usage"), "finish_reason": d.get("finish_reason"), "cached": True}
     waited = 0.0
     t0 = time.perf_counter()
     for attempt in range(8):
@@ -124,7 +134,7 @@ def chat_full(messages: list[dict], model: str = "openai/gpt-4.1-mini", temperat
             continue
         content = content or ""
         usage = {k: v for k, v in (j.get("usage") or {}).items() if k != "latency_checkpoint"}
-        rec = {"backend": backend(), "model": model, "content": content, "usage": usage,
+        rec = {"backend": backend(), "model": model, "content": content, "usage": usage, **_provenance(model),
                "finish_reason": choice.get("finish_reason"), "ts": datetime.now(timezone.utc).isoformat()}
         latency = round(time.perf_counter() - t0 - waited, 3)
         if use_cache:

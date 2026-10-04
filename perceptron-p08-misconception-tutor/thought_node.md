@@ -84,21 +84,23 @@
 | C12 | Open-set retrieval | text → ranked ids | BM25 / Eedi winners | — | baseline | MAP@25 0.326 (kNN, 904 held-out pairs) |
 
 ## Selection memo
-_Final, 4 Oct 2026 (after the pre-registered LLM-gap tests: `eval/llm_gap_protocol.md`; results in `eval/results/llm_gaps_*.json`, `llm_consistency.json`, `cascade_real.json`; total API spend $19.75). Scores are 1–5 with one line of evidence each._
-- **Verdict: against picking P8** as the team's one Perceptron problem, unless the user specifically wants Theme 5 *and* the team can run a real-learner pilot in November.
-- **Winnability: 2/5.** The obvious baseline, a frontier LLM, is as accurate and as safe as our engine on real data. GPT-5.5 diagnosed 79.4% of 131 real positives with 0.0% false claims on 152 same-domain negatives; our engine diagnosed 19.1% with 0.0%. Judges will ask "why not just GPT-5.5?".
+<!-- MEMO_START: rendered from deliverables/templates/selection-memo.md by `python -m eval.render_docs` -->
+_Final, 4 Oct 2026, after the pre-registered LLM-gap tests and two cross-model reviews ([responses](reviews/2026-10-04-responses.md)). Evidence: `eval/llm_gap_protocol.md`; results in `eval/results/`. Retained-response API spend was $19.75, plus at most $0.51 for discarded retry attempts. This section is rendered from `deliverables/templates/selection-memo.md`._
+- **Verdict: against picking P8** as the team's one Perceptron problem, unless the user specifically wants Theme 5 *and* the team can run the pilot in November. This is a strategic judgement from the missing demonstrated differentiation; the H1–H7 results alone do not compel it (astra review).
+- **Winnability: 2/5.** On real Eedi data the obvious baseline, a frontier LLM, showed no weakness that our engine fixes. GPT-5.5 diagnosed 79.4% of 131 positives with 0 false claims on 152 same-domain negatives (exact 95% upper bound 2.4%); our engine diagnosed 19.1%, also with 0. The astra judge scored the pre-revision abstract 62/100.
 - **Innovation headroom: 2/5.**
-  - Every pre-registered gap (H1–H7) holds only against gpt-4.1-mini: false claims 15.8%, deep inversion 11.7%, probability keys 36.7% exact. Reasoning models close every one: GPT-5.5 inversion 100.0%, keys 100.0%. Our tracer reached 64.0% vs GPT-5.4-mini's 66.0%, not significantly different.
-  - What remains is the exact-first cascade:
-    - It halves LLM calls and cost on engine-native items ($7.32 → $3.66 per 1,000), but only 26 of 304 real Eedi items are engine-explainable ($6.50 → $5.95).
-    - Determinism: GPT-5.5 changed 2 of 40 repeated diagnoses.
-    - Latency: 0.11 ms vs 3.1 s.
-  - That is engineering value with modest novelty; executable misconceptions are prior art (MalruleLib, ACL 2026).
-- **Feasibility: 5/5.** Built and evaluated: 12 components, contract tests, offline-reproducible results, CPU only.
-- **Demo strength: 4/5.** An instant, exact "this is the rule you used", plus verified practice and a teacher heat-map, makes a clear demo. The honest answer to "why not GPT-5.5?" weakens it.
-- **Fit with the user's strengths: 3/5.** LLM evaluation rigour and Azure fit well; there is little large-scale-systems depth.
-- **Biggest risk:** there is no accuracy edge over frontier LLMs. The only result a judge would weigh heavily, real learning gains, needs a November pilot that overlaps the exams.
-- **One-line pitch (if picked):** *Name the rule, prove it, verify the practice — an exact-first cascade that answers what it can prove instantly and for free, and hands the rest to a frontier LLM.*
+  - Pre-registered gaps (H1–H7) were detected only against GPT-4.1-mini: false claims 15.8%, inversion 11.7%, probability answers 36.7%.
+  - None was detected against the reasoning models: GPT-5.5 inversion 100.0%, probability answers 100.0%; tracer 64.0% vs GPT-5.4-mini 66.0%.
+  - The cascade saves money only where the engine explains answers:
+    - probability items: $7.32 → $5.08 per 1,000;
+    - real Eedi items (post hoc): $6.50 → $6.10.
+  - Executable misconceptions are prior art (MalruleLib, ACL 2026).
+- **Feasibility: 5/5** for the arithmetic MVP: 12 components with contract tests, offline-reproducible results, CPU only.
+- **Demo strength: 4/5.** An instant, deterministic certificate (median 0.06 ms), verified practice and a teacher view make a clear demo. The honest answer to "why not GPT-5.5?" weakens it.
+- **Fit with the user's strengths: 3/5.** Evaluation rigour, LLM pipelines and Azure fit well; there is little large-scale-systems depth.
+- **Biggest risk:** there is no accuracy edge. The one result judges would weigh heavily, learning gains against a GPT-5.5 tutor, needs a November pilot that overlaps the exams.
+- **One-line pitch (if picked):** *Name the rule, check it, verify the practice — an exact-first cascade that answers what it can certify instantly and for free, and hands the rest to a frontier LLM.*
+<!-- MEMO_END -->
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
