@@ -32,3 +32,6 @@
 - The estimator is renamed "counterfactual-mid estimator (prototype)". Under the SELL convention, no-order mid = observed mid + Î.
 - E7: impact is near-linear in size and fully transient in rmsc04 (resolved-size slope 0.87 [0.57, 1.35]). A propagator with ≈0 permanent part fits that physics; the open problem is per-episode noise and state dependence.
 - E11 tests whether the coupling preserves market statistics (pre-registered).
+- **E11 (pre-registered):** under the coupling, volume (0.98×) and trade count (0.99×) stay within ±10%, but the mean spread is **1.13× [1.02, 1.26]** wider. Return volatility, autocorrelation and depth are unresolved at n = 60. The coupling therefore changes microstructure somewhat. Next: diagnose market-maker wake-up timing; try per-message keying.
+- **E12:** exact event-level pre-trade identity holds in 180/180 runs (stronger than the 1-s sampled check).
+- **E10:** synced twins estimate inventory redistribution precisely. Value agents absorb 102% of our shares, and momentum agents end at +70 [−60, +204], whereas the naive-twin estimate (E3) suggested −1,302 [−3,185, +636]. This shows what the instrument is for.
