@@ -10,10 +10,15 @@
 - _(none)_
 
 ## Now
-- **Phase:** 1–4 in parallel. Pushed: landscape (cited), components + contracts, ADR 001, selection memo v1, Round-1 abstract (833 words), architecture diagram, harness code. **Missing: measured numbers.**
-- **Plan:** (1) ADR 001 + abstract + architecture diagram (by 08:30). (2) After 08:30, when lean mode lifts: run the harness (`eval/kvbench.py`, 4k context, 12 contexts × 4 questions) with compute staggered, then commit real numbers. (3) Autoresearch ratchet on C7 (sketch layer, block size, sketch bits) with a frozen eval. (4) Verify prior art for RoD by 12 Oct.
-- **Doing:** lead alone (lean mode). Smoke run of the harness was starved by memory pressure; it will be retried after 08:30.
-- **Next:** ADR 001 → abstract → architecture.md → harness numbers → ratchet.
+- **Phase:** Morning package delivered (08:23) **except measured numbers**. Pushed: landscape (cited), per-component scan, components + contracts, ADR 001, selection memo v1, Round-1 abstract (843 words), architecture diagram, harness code, autoresearch scaffold for C7.
+- **Plan (after 08:30, lean limits: ≤ 3 sub-agents, staggered compute):**
+  1. Smoke result → fix any bug.
+  2. Small real grid: `--ctx 2048 --n 6`, then `--ctx 4096 --n 12`, run one at a time.
+  3. C7 frozen eval: layer sweep as the first ratchet iterations.
+  4. Prior-art pass for RoD (ArkVale, InfiniGen, OmniKV, RetroInfer, 2025–26 evict-and-recompute).
+  5. `rubber-duck` review of ADR 001 and the abstract.
+- **Doing:** smoke run in progress (shell `smoke2`).
+- **Next:** steps 1–5 above, in order.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
 - **Risks:**
   1. No measured numbers yet: every result claim in the docs is a plan.
