@@ -120,6 +120,10 @@ def g_e8(c):
 
 def g_e7(c):
     j = _json("realism_scorecard.json")
+    ph = j["post_hoc"]
+    c["e7_delta_resolved"] = f"{ph['delta_resolved']:.2f}"
+    r = [x for x in ph["doubling_ratios"] if x is not None]
+    c["e7_doubling_min"], c["e7_doubling_max"] = f"{min(r):.1f}", f"{max(r):.1f}"
     c["e7_n"] = f"{j['n_seeds']}"
     c["e7_delta"] = "n/a" if j["delta"] is None else f"{j['delta']:.2f}"
     lo, hi = j["delta_ci95"] or (float("nan"), float("nan"))
@@ -136,11 +140,53 @@ def g_e9(c):
     o, k = j["kernel_oos_second_half"], j["kernel"]
     c["e9_r2_twap"], c["e9_r2_probe"] = f"{o['twap']['r2_mean_path']:.2f}", f"{o['probe']['r2_mean_path']:.2f}"
     c["e9_tau"] = f"{k['tau_s']:.0f}"
+    c["e9_rmse"] = f"{np.mean([o['twap']['rmse_per_seed_cents'], o['probe']['rmse_per_seed_cents']]):.1f}"
+    nn = _json("calibration.json")["kernel_oos_second_half"]
+    c["e1_rmse"] = f"{np.mean([nn['twap']['rmse_per_seed_cents'], nn['probe']['rmse_per_seed_cents']]):.1f}"
     n = _json("calibration.json")["kernel_oos_second_half"]
     c["e1_r2_twap"], c["e1_r2_probe"] = f"{n['twap']['r2_mean_path']:.1f}", f"{n['probe']['r2_mean_path']:.1f}"
 
 
-GROUPS = [g_h1, g_ci_tightening, g_noise, g_integrity, g_facts, g_speed, g_e8, g_e7, g_e9]
+def g_e10(c):
+    df = _csv("E10_replication_test.csv")
+    m, lo, hi, P = _paired(df, "IA_sched_only", "TWAP", "is_bps")
+    d = np.sort((P["IA_sched_only"] - P["TWAP"]).values)
+    bm = np.random.RandomState(0).choice(d, size=(10000, len(d))).mean(1)
+    up = float(np.percentile(bm, 95))
+    c["e10_n"] = f"{df.seed.nunique()}"
+    c["e10_dis"], c["e10_lo"], c["e10_hi"], c["e10_up95"] = f"{m:+.3f}", f"{lo:+.3f}", f"{hi:+.3f}", f"{up:+.3f}"
+    c["e10_h2"] = "confirmed" if up < 0 else "not confirmed"
+    j = _json("E10_replication_test_attribution.json")
+    k = j["contrasts"]
+    c["e10_attr_is"], c["e10_attr_own"] = j["attribution_is"], j["attribution_own"]
+    for key, name in [("A_qp_main", "A"), ("B_frontload_main", "B"), ("D_fixed_feedback", "D")]:
+        t = k[key]["is_bps"]
+        c[f"e10_{name}"], c[f"e10_{name}_lo"], c[f"e10_{name}_hi"] = f"{t[0]:+.3f}", f"{t[1]:+.3f}", f"{t[2]:+.3f}"
+    for arm in ["QP_only", "IA_sched_fixed", "TWAP_legacy_fb"]:
+        t = j["arms"][arm]["d_is_bps_vs_TWAP"]
+        c[f"e10_{arm}"], c[f"e10_{arm}_lo"], c[f"e10_{arm}_hi"] = f"{t[0]:+.3f}", f"{t[1]:+.3f}", f"{t[2]:+.3f}"
+    # pooled over all synced test seeds (E5 u E6 u E10): descriptive, not pre-registered
+    pool = []
+    for f in ["E5_test_sync.csv", "E6_confirm_sync.csv", "E10_replication_test.csv"]:
+        x = _csv(f)
+        Q = x.pivot(index="seed", columns="label", values="is_bps")
+        pool.append((Q["IA_sched_only"] - Q["TWAP"]).rename(f))
+    pd_ = pd.concat(pool).sort_index()
+    assert pd_.index.is_unique, "pooled seeds must be disjoint"
+    pm, plo, phi = float(pd_.mean()), *_ci(pd_.values)
+    c["pool_n"], c["pool_dis"], c["pool_lo"], c["pool_hi"] = f"{len(pd_)}", f"{pm:+.3f}", f"{plo:+.3f}", f"{phi:+.3f}"
+    # feedback attribution: who ends up holding our shares (TWAP arm, end-of-day position vs null twin)
+    tw = df[df.label == "TWAP"].sort_values("seed")
+    q = float(tw.qty.iloc[0])
+    for col, name in [("dpos_ValueAgent", "value"), ("dpos_MomentumAgent", "momentum"),
+                      ("dpos_AdaptiveMarketMakerAgent", "mm"), ("dpos_NoiseAgent", "noise")]:
+        v = tw[col].values.astype(float)
+        vlo, vhi = _ci(v)
+        c[f"fb_{name}"], c[f"fb_{name}_lo"], c[f"fb_{name}_hi"] = f"{v.mean():+,.0f}", f"{vlo:+,.0f}", f"{vhi:+,.0f}"
+        c[f"fb_{name}_pct"] = f"{100 * v.mean() / q:.0f}"
+
+
+GROUPS = [g_h1, g_ci_tightening, g_noise, g_integrity, g_facts, g_speed, g_e8, g_e7, g_e9, g_e10]
 
 
 def compute(strict=False):

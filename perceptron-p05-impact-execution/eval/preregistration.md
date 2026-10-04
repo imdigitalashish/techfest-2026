@@ -89,3 +89,18 @@ On fresh test seeds 1060–1259 (n = 200) with synced twins, IA_sched_only has m
   - The abstract reports H2's result whichever way it goes.
   - If H2 fails, the abstract must not claim that the agent beats TWAP on total slippage. It will instead report the pooled estimate over all synced test seeds (E5 ∪ E6 ∪ E10; descriptive, not confirmatory) and the robust components.
 - **Command:** `nice -n 10 .venv/bin/python eval/run_experiment.py --exp E10_replication_test --seeds 1260:1660 --qty 4000 --policies eval/policies/e8_ablation.json --workers 4 --rng-sync per_wakeup`.
+
+---
+
+## Timestamp correction (appended 2026-10-04 13:07:19 IST; nothing above is edited)
+The clock times written in this file were the lead's estimates, not readings of the clock, and several run ahead of the commits that contain them (flagged by the Supervisor). The authoritative times are git commit times (`TZ=Asia/Kolkata git log`) and the first per-seed output file of each run (`.data/runs/<exp>/seed_*.pkl`, file mtime). From now on every time is taken from `TZ=Asia/Kolkata date`.
+
+| Entry | Label used above | Authoritative time (IST) | Run start (first seed on disk) | Registration before run start? |
+|---|---|---|---|---|
+| H1 (E6) registration | "08:30" | commit 6f6fb23, **08:26:53** | E6 launched ≈ 08:24; first seed 08:25:21 | **No.** Committed ≈ 3 min after launch and 1.5 min after the first seed was written. The lead read no E6 output before the run finished (≈ 09:40), and the arms were fixed at launch (`confirm.json`). Classification: **registered after launch, before inspection**, so weaker than strict pre-registration. |
+| E8, E7, E9 registrations | "13:00" | commit 416aaa2, **12:53:49** | E8 12:54:31 · E7 13:01:37 · E9 13:04:03 | Yes |
+| E8 outcome | "13:10" | commit 892b97e, **13:01:50** | — | — |
+| E10 registration | "13:12" | commit 892b97e, **13:01:50** | E10 13:05:11 | Yes |
+| E7 and E9 outcomes | "13:20", "13:21" | commit fe782e1, **13:05:17** | — | — |
+
+**Consequence for claims:** E10 (H2) is the strictly pre-registered confirmatory test of the schedule effect. H1/E6 is reported as "registered before inspection", not as strictly pre-registered.

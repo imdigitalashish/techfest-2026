@@ -210,3 +210,19 @@ No sub-agents until 08:30; small requests; push at least every 30 min. Proceedin
   - Likely cause: the parent was launched as a plain `&` child of a tool shell that was later torn down. E4–E6 were launched as `( … &)` orphans or with the tool's async mode, and all survived. A diagnostic pair of `sleep 1800` jobs (plain vs subshell) is running to test this.
   - Remedy either way: run via the tool's attached async mode with `--workers 4` under nice 10, through `run_experiment.py`, which writes per-seed pickles incrementally (the frozen ratchet `eval.py` prints only at the end).
 - Pre-registered E8 (attribution: QP main effect, front-loading main effect, interaction, corrected-feedback increment; val seeds 100–199), E7 (δ vs 0.5 with a seed-bootstrap CI; decision rule) and E9 (synced kernel OOS R² > 0) in `eval/preregistration.md`. Committed before any run.
+
+### 2026-10-04 13:07:19 IST — Timestamp correction (Supervisor 13:06)
+The Supervisor spotted journal and registration times running ahead of git. Audit of every Log header against the commit that first contains it:
+
+| Header label | Commit time |
+|---|---|
+| 07:45 | 07:42:37 |
+| 08:12 | 08:11:15 |
+| 08:30 | 08:26:53 |
+| 09:50 | 09:43:35 |
+| 09:58 | 09:52:27 |
+| 13:00 | 12:53:49 |
+
+Those labels were estimates, 1–7 min ahead of the clock. The other headers are earlier than their commits, as they should be.
+
+**H1 caveat found during the audit:** the H1 registration was committed at 08:26:53, ≈ 3 min after E6 launched, and the first E6 seed file was written at 08:25:21. No E6 output was read before the run finished, but H1 is now classified as "registered after launch, before inspection". E10 (registered 13:01:50, first seed 13:05:11) is the strict confirmatory test. Correction table:  (end). From now on every time comes from Sun Oct  4 13:07:19 IST 2026.
