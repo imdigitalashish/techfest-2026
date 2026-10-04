@@ -10,28 +10,26 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED** (user's decision via the Supervisor, 09:55 IST, 4 Oct). Only Namma Space, P7 and EV C2 run; P7 is the Perceptron pick unless the user overrides. No jobs running in this worktree.
-- **Resume point (exact, in order):**
-  1. **Finish the rubber-duck fixes** ([review](research/notes/review-adr001-rubber-duck.md)). Already in code, tested (43 pass) and committed:
-     - context-free trust (`trust_of`);
-     - ACI without clipping (whole line at α_t ≤ 0, empty set at α_t ≥ 1, no endpoint reordering, boundary stats via `stats=`);
-     - INTERVALS contract allows empty (lo > hi); evaluator v1 handles empty/infinite intervals;
-     - vectorised deletion box; MiniLM float64.
-  2. **Still to do in code:**
-     - `eval/run_baselines.py`: pump trust from `trust_of(followers=0, age_days=1, verified=False, n_cashtags=1)` instead of the hand-set 0.05; record ACI `stats`; add a richer plain-CQR oracle grid (j ≤ k × sentiment {−1, −0.5, 0, 0.5, 1} × trust {0.05, 0.5, 1}, plus mixed signs); report the guaranteed floor.
-     - Tests: trust deletion-stability; ACI long-run bound |mean err − α| ≤ (max(α₁, 1−α₁) + γ)/(γT) on an adversarial sequence; ACI boundary cases.
-     - Move the ratchet splits to 2014 only (train Jan–Jun, cal Jul–Sep, val Oct–Dec) and re-baseline `results.tsv`.
-  3. **Rerun** (one job at a time, nice):
-     `cd perceptron-p10-trusted-text-signal && PYTHONPATH=. nice -n 10 .venv/bin/python eval/prepare.py && PYTHONPATH=. nice -n 10 .venv/bin/python eval/run_baselines.py --tag baseline_v1 && PYTHONPATH=. .venv/bin/python eval/report.py baseline_v1`
-     then `... eval/prepare.py --scorer minilm && ... eval/run_baselines.py --tag text_minilm_v1 --scorer minilm && ... eval/report.py text_minilm_v1`. The MiniLM embeddings are cached in `.cache/emb_minilm.npz`; prepare takes ~8 min.
-  4. Update the abstract numbers and Key results from v1.
-  5. Then: text→volatility features and the drop-text utility test (the review's strongest critique) · FinBERT once the network allows (the HF CDN gave ~30 KB/s; 440 MB is not viable on it tonight) · edit-budget certificate · FNSPID post-2016 holdout.
+- **Phase:** ▶ RESUMED 12:45 IST, 4 Oct (batch slot). Goal: finish to the Supervisor's definition of done, then send "DONE — slot free". The 12 Oct Perceptron pick is open between P7 (done), P9, P1 and P4; P10 enters late, so the memo must make an honest case for or against it.
+- **Plan (definition of done, in order):**
+  1. Finish the rubber-duck fixes with tests:
+     - pump trust from `trust_of`; record ACI `stats`; richer plain-CQR oracle grid plus the guaranteed floor;
+     - tests for trust deletion-stability, the ACI long-run bound and ACI boundary cases;
+     - move the ratchet splits to 2014 only and re-baseline `results.tsv`.
+  2. v1 reruns (`baseline_v1`, `text_minilm_v1`), committed with their commands.
+  3. Answer "drop the text": pre-register a text-utility test and commit it *before* running, on data not yet looked at (candidate: the organisers' Kaggle "Daily News for Stock Market Prediction", DJIA 2008–2016, via a verified mirror). Then either show where text adds value or reframe the pitch around trust and coverage.
+  4. Final Round-1 abstract rendered from committed results, a doc-drift check script, and the architecture diagram.
+  5. Cross-model reviews as child sessions (PLAYBOOK §10, at most 2 at a time): `gpt-6-astra` (max) as hostile judge on the abstract and spike; `gpt-6-sol` (max) on code and eval, including reproducing the headline numbers. Record them in `reviews/` and `ledger.tsv`.
+  6. Final selection memo, thought node current, everything pushed, then message the Supervisor.
+- **Doing:** step 1 (code + tests, light work first).
+- **Machine rules:** start heavy jobs only when `sysctl -n kern.memorystatus_level` ≥ 30 (pause below 25); always `nice -n 10`, one job at a time; CPU only; small requests; poll long jobs at ≥ 10-minute intervals; no FinBERT download (MiniLM is cached).
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section. Optional: a Kaggle API token (`~/.kaggle/kaggle.json`).
 - **Risks:**
-  - The review's "drop the text" critique is strong: price-only matches fusion (pinball 0.3513 vs 0.3518). The pitch rests on trust and coverage, and needs text-utility evidence.
+  - The "drop the text" critique: price-only matches fusion (pinball 0.3513 vs 0.3518). The pitch must not rest on alpha.
   - Threat model is injection-only.
-  - The test period has been looked at twice (baseline + one h1 re-check).
+  - The StockNet test period has been looked at several times, so the text-utility test needs unseen data.
   - Pooled Kupiec/Christoffersen p-values are optimistic.
+  - Memory and uplink constraints slow the reruns.
 
 ## Key results (committed; reproduce: `bash eval/fetch_data.sh && PYTHONPATH=. .venv/bin/python eval/prepare.py && PYTHONPATH=. .venv/bin/python eval/run_baselines.py`)
 StockNet, 87 tickers, 119,641 tweets, look-ahead leaks 0; test 2015-07-01→2016-03-31 (16,443 ticker-days); α = 0.1. Full table: [`eval/results/baseline_v0.md`](eval/results/baseline_v0.md).
