@@ -112,3 +112,29 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - 09:48 Started `data/fetch_batches.sh` (new; round-robin across years, 5 files per batch). Throughput was ~0.1 MB/s per stream. 2024-01-01 finished (22.8 MB; MD5 in `data/manifest.csv`); 2023-01-01 and 2025-01-01 were partial (deleted).
 - 09:52 Verified at the official endpoint https://fapi.binance.com/fapi/v1/exchangeInfo (accessed 2026-10-04, serverTime 1790941589240): BTCUSDT is a PERPETUAL with PRICE_FILTER tickSize 0.10, LOT_SIZE stepSize 0.001 and MIN_NOTIONAL 50. This matches `TICK_SIZE` in `components/contracts.py`. At BTC ≈ 30–100k USDT, one tick is ≈ 0.01–0.03 bps, so the spread is negligible next to fees. The fee schedule is the deciding cost; it is still UNVERIFIED.
 - 09:55 **PAUSE** from the Supervisor (only 3 projects run at a time; P7 is the Perceptron pick unless the user overrides). Stopped the download job (PIDs 30598, 30636). No jobs are running. The resume point is in *Now*.
+
+### 2026-10-04 11:16–12:00 IST — Resumed (slot freed by P7): data ×5, fees verified, pre-registered v2, dev results, Amendment 1
+- **Supervisor (11:16)** resumed P4. Definition of done: ≥24 days; held-out evaluation with paired bootstrap CIs and an edge-vs-fees number; the spike vs textbook KS→retrain and static under a pre-registered protocol; final abstract with a number check; astra and sol cross-model reviews; final memo. Rules: child sessions only (≤2), `nice`, one heavy job at a time.
+- **Data:** all 46 free Tardis days (first of each month, 2023-01…2026-10) downloaded in batches of 5 at ~1 MB/s. ~1.1 GB total; reason: exhaustive coverage avoids day selection. MD5s in `data/manifest.csv`.
+- **Supervisor (11:30) suggested stratified day selection.** Answered with evidence: the free tier only has first-of-month days, so there is nothing to stratify from; using all of them is selection-free.
+- **Fees verified at the primary source:** binance.com/en/fee/futureFee (rendered in a browser, Trading → USDⓈ-M Futures, accessed 2026-10-04). Regular User USDT maker/taker 0.0200%/0.0500%; VIP 9 0.0000%/0.0170%. Tick size 0.10 (exchangeInfo, verified earlier).
+- **Code:**
+  - Exact fast KS statistic and SciPy-identical asymptotic p-value, unit-tested against `scipy.stats.ks_2samp` on 200 random cases including ties.
+  - `HarmCUSUM`: CUSUM of (delayed loss − ln 2).
+  - Abstain (coin) and GBDT experts; walk-forward contexts.
+  - Shrink action.
+  - Day-cluster paired bootstrap.
+  - Execution-aware edge: taker at +0/+100 ms, maker upper bound, net of official fees, break-even fee.
+  - `eval/run_v2.py`, `eval/check_numbers.py`, `eval/plot_day.py`.
+  - Tests: 8 pass, with the label-availability test extended to the coin, harm and shrink paths.
+- **Pre-registration** `eval/PREREGISTRATION.md` committed (`d9ad7a9`) before any v2 number existed: split 2023 train / 2024 dev / 2025-01…2026-10 holdout; H1, H2; 97.5% day-cluster CI; the dev tuning rule.
+- **Dev (2024) results** (`eval/results/v2_dev.md`):
+  - Textbook KS→refit is worse than static on 12/12 days (+0.0216).
+  - Regime gating is the best adapter (−0.0125, 12/12); static GBDT −0.0111.
+  - The registered Fixed-Share spike gains only −0.003 to −0.005: the abstain expert dilutes it and the α boost on harm alarms is inert.
+  - All models are worse than a coin flip in the FOMC 2024-05-01 window.
+  - Edge: gross ~0.33 bps per signal vs a ~0.02 bps spread; break-even fee ~0.14–0.16 bps per side, against 5.0 (Regular taker) or 1.7 (VIP 9 taker), so not tradable as a taker.
+- **Amendment 1** (`a9b310b`, before the holdout):
+  - The registered spike gets H=10, B=600 (by the rule).
+  - Post-dev revision `spike_gate` (regime gate + harm-gated shrink): λ=0.5, H=20, B=300 by the same rule. Stated in advance: on dev it does *not* beat plain gating (0.6492 vs 0.6489); harm abstention helps only inside the event window.
+- **Holdout run launched 11:58 IST**, single run: `nice -n 10 python eval/run_v2.py --stage holdout --tag v2_holdout --workers 3`.
