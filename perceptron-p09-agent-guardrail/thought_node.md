@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** morning package ready (Phases 1, 2, 3-lite, 4 done; Phase 5 scaffolded). Updated 07:35 IST.
+- **Phase:** morning package complete (Phases 1, 2, 3-lite, 4 done; Phase 5 first loop run). Updated 08:05 IST. MVP demo: `python -m eval.demo_mvp`.
 - **Headline:** *Cite-Before-Act*: a guard in the agent's pre-tool hook that checks the provenance of every argument (user words / reference KB / trusted tool data; untrusted text is never a source of intent) plus pre-trade-style contracts (SEC 15c3-5 analogues). The unverifiable residue goes to a risk-routed fast/careful local model whose quoted evidence must verify verbatim, then to a human.
 - **Real numbers** (synthetic suite; reproduce commands in `eval/README.md`):
   - **Held-out test split, 183 calls:** Tier 0 catch **100%** (147/147), false-block **0%** (0/36), escalation **0%**, p95 **0.6–4.7 ms** across runs (loaded machine; committed run 0.64 ms). Schema-only and no-guard: catch **0%**.
@@ -99,6 +99,16 @@ _First version 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
 - **Overall: 4.6/5.**
 
 ## Log
+### 2026-10-04 08:05 IST — MVP demo committed; morning package complete
+- `python -m eval.demo_mvp` (deterministic, no model) runs six scripted proposals for one client against DeskSim. Real output is in `deliverables/mvp-demo-output.txt`:
+  - The faithful order executes.
+  - Invented ticker `INFOSYS`, ×10 quantity and buy→sell flip → **BLOCK**, with evidence spans and policy clauses.
+  - A limit price the user never gave → **ESCALATE** (unverifiable).
+  - A transfer injected via email → **BLOCK** ("appears only in untrusted content", third-party account).
+  - This covers both MVP bullets.
+- Re-ran the deterministic evals on a clean commit (2adcf09). Docs now report Tier-0 p95 as 0.6–4.7 ms across runs (loaded machine), not a single number.
+- Abstract: the live LangGraph episode is marked "by 25 Oct" (not built yet).
+
 ### 2026-10-04 07:57 IST — LLM baselines, cascade, first ratchet loop
 - **LLM-as-judge (Qwen3-1.7B)**, 61-call test subsample: catch 71.1%, false-block 68.8%, score 0.024. Tier 0 on the same calls: 100% / 0%. The judge fails on arithmetic and state, which is the strongest argument for deterministic numeric checks first.
 - **Fast cascade on dev:**

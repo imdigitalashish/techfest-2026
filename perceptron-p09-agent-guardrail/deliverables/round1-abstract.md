@@ -26,7 +26,7 @@ A guard sits in the agent's pre-tool hook (a LangGraph node before `ToolNode`, o
 
 ## Minimum Viable mapping
 - *A checker that verifies ≥1 action class against a source:* we cover four classes (orders, fund transfers, cancellations, client messages), all checked against the reference KB. This runs today.
-- *Catching ≥1 deliberately bad action:* a red-team suite of 295 bad calls in 11 classes (fabricated entity, entity swap, numeric drift, side flip, duplicate, injection, unrequested action, hallucinated policy claim, policy violation and more), plus a live LangGraph episode where an invented ticker is blocked and the agent corrects itself.
+- *Catching ≥1 deliberately bad action:* a red-team suite of 295 bad calls in 11 classes (fabricated entity, entity swap, numeric drift, side flip, duplicate, injection, unrequested action, hallucinated policy claim, policy violation and more), plus (by 25 Oct) a live LangGraph episode where an invented ticker is blocked and the agent repairs it.
 
 ## Stretch ambitions
 1. **Risk-based fast/careful routing (above).** Thresholds will be set with conformal risk control / Learn-then-Test so the miss rate is bounded at a stated α.
