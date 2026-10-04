@@ -11,7 +11,7 @@ When a question arrives, its own attention queries pick which evicted 64-token b
 
 **Headline** (rendered from committed results by `eval/render_docs.py`):
 <!-- p2:headline:begin -->
-On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. At 25% of the KV memory, ten query-agnostic baselines recall 0%–35% and RoD 58%: +0.40 over StreamingLLM (95% CI +0.25 to +0.54; pre-registered), yet 0.25 below the full cache. At 10% memory RoD recalls 85% (baselines ≤6%); on fresh paraphrased contexts it recalls 69% vs the full cache's 46% (+0.23, 95% CI +0.10 to +0.38), but 12 of the full cache's 26 misses are answers cut off by our 10-token limit (with 32 tokens and first-number scoring: full 67%, RoD 75%; exploratory).
+On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. Keeping 25% of the KV state (logical bytes retained after prefill, not peak RAM), ten tested eviction baselines recall 0%–35% and RoD 58%: +0.40 over StreamingLLM (95% CI +0.25 to +0.54; pre-registered), yet 0.25 below the full cache. At 10% RoD recalls 85% (baselines ≤6%); on fresh paraphrased contexts, with answers allowed 32 tokens, it recalls 75% vs the full cache's 67% (+0.08, 95% CI -0.02 to +0.23; exploratory), so superiority is not established.
 <!-- p2:headline:end -->
 
 | What | Where |

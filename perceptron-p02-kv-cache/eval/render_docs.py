@@ -148,6 +148,25 @@ def get(tab, m, f):
     return next((t for t in tab or [] if t["m"] == m and abs(t["f"] - f) < 1e-9), None)
 
 
+def e6_delta():
+    """Paired context-bootstrap CI of RoD@0.10 - full on T2 with max_new=32 (strict first-number scoring), from E6 rows."""
+    p = RES / "e6_maxnew32_T2.rows.jsonl"
+    if not p.exists():
+        return None
+    rows = [json.loads(l) for l in p.read_text().splitlines() if l.strip()]
+
+    def acc(m, f):
+        out = {}
+        for s in sorted({r["sample"] for r in rows}):
+            rs = [r for r in rows if r["method"] == m and r["frac"] == f and r["sample"] == s]
+            out[s] = sum(r["strict"] for r in rs) / len(rs)
+        return out
+    a, b = acc("rod", 0.1), acc("full", 1.0)
+    d = [a[s] - b[s] for s in sorted(a)]
+    lo, hi = boot_delta(d)
+    return {"d": sum(d) / len(d), "lo": lo, "hi": hi, "n": len(d), "rod": sum(a.values()) / len(a), "full": sum(b.values()) / len(b)}
+
+
 def trunc_stats(rows, m, f):
     """Wrong answers of method m at keep f: how many contain no 7-digit number and look cut off (>= 30 chars)."""
     rs = [r for r in rows if r["method"] == m and abs(r["frac"] - f) < 1e-9 and not r["correct"]]
@@ -256,7 +275,7 @@ def verdicts(V):
     if V.get("T2"):
         tr, trr = trunc_stats(load("T2")["rows"], "full", 1.0), trunc_stats(load("T2")["rows"], "rod", 0.1)
         out.append(f"- **R1 caveat (amendment 5):** of the full cache's {tr['wrong']} wrong T2 answers, {tr['no_number']} contain no 7-digit number "
-                   f"({tr['cut']} cut off by the 10-token limit); RoD at 0.10: {trr['no_number']} of {trr['wrong']} ({trr['cut']} cut off). "
+                   f"({tr['cut']} look cut off by the 10-token limit: ≥ 30 characters without a 7-digit number, a heuristic, not recorded finish reasons); RoD at 0.10: {trr['no_number']} of {trr['wrong']} ({trr['cut']} look cut off). "
                    "'RoD exceeds full on T2' is confounded by answer truncation.")
     e6 = RES / "e6_maxnew32_T2.json"
     if e6.exists():
@@ -304,23 +323,15 @@ def headline(V):
     base25 = [get(t, b, 0.25)["acc"] for b in ["streaming"] + QA if get(t, b, 0.25)]
     base10 = [get(t, b, 0.1)["acc"] for b in ["streaming"] + QA if get(t, b, 0.1)]
     p, s7 = V["primary"], V["S7"][0.25]
-    s = (f"On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct) the full cache recalls {pc(full)}. At 25% of the KV "
-         f"memory, ten query-agnostic baselines recall {min(base25):.0%}–{max(base25):.0%} and RoD {pc(rod)}: {p['d']:+.2f} over StreamingLLM "
-         f"(95% CI {p['lo']:+.2f} to {p['hi']:+.2f}; pre-registered), yet {abs(s7['d']):.2f} below the full cache. At 10% memory RoD recalls "
-         f"{pc(rod10)} (baselines ≤{max(base10):.0%})")
-    r1, t2 = V.get("R1"), V.get("T2")
-    if r1 is not None and t2:
-        tr = trunc_stats(load("T2")["rows"], "full", 1.0)
-        s += (f"; on fresh paraphrased contexts it recalls {pc(get(t2, 'rod', 0.1))} vs the full cache's {pc(get(t2, 'full', 1.0))} "
-              f"({r1['d']:+.2f}, 95% CI {r1['lo']:+.2f} to {r1['hi']:+.2f}), but {tr['cut']} of the full cache's {tr['wrong']} misses are "
-              f"answers cut off by our 10-token limit")
-        e6 = RES / "e6_maxnew32_T2.json"
-        if e6.exists():
-            S = json.loads(e6.read_text())["summary"]
-            s += (f" (with 32 tokens and first-number scoring: full {S['full@1.0']['strict']:.0%}, RoD {S['rod@0.1']['strict']:.0%}; "
-                  f"exploratory)")
+    s = (f"On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct) the full cache recalls {pc(full)}. Keeping 25% of the "
+         f"KV state (logical bytes retained after prefill, not peak RAM), ten tested eviction baselines recall {min(base25):.0%}–{max(base25):.0%} "
+         f"and RoD {pc(rod)}: {p['d']:+.2f} over StreamingLLM (95% CI {p['lo']:+.2f} to {p['hi']:+.2f}; pre-registered), yet "
+         f"{abs(s7['d']):.2f} below the full cache. At 10% RoD recalls {pc(rod10)} (baselines ≤{max(base10):.0%})")
+    e6 = e6_delta()
+    if e6 is not None:
+        s += (f"; on fresh paraphrased contexts, with answers allowed 32 tokens, it recalls {e6['rod']:.0%} vs the full cache's "
+              f"{e6['full']:.0%} ({e6['d']:+.2f}, 95% CI {e6['lo']:+.2f} to {e6['hi']:+.2f}; exploratory), so superiority is not established")
     return s + "."
-
 
 def block_hit(rows, m, f):
     ev = [r for r in rows if r["method"] == m and abs(r["frac"] - f) < 1e-9 and r.get("needle_evicted")]
@@ -341,7 +352,7 @@ def caveats(V):
     if ph.exists():
         S = json.loads(ph.read_text())["summary"]["0.25"]
         mech_s += (f"; exact KV for the same blocks gives {S['e2_exactkv_acc']:.0%} and recalling only the top-2 blocks "
-                   f"{S['e5_top2_acc']:.0%} (exploratory), so approximately recomputed extra blocks cause the loss")
+                   f"{S['e5_top2_acc']:.0%} (exploratory), implicating approximate multi-block re-prefill")
     parts.append(mech_s)
     if V.get("T3"):
         r3 = load("T3")["rows"]
