@@ -1,38 +1,48 @@
-# ADR 001 — Spike components: (A) verified-provenance ingestion, (B) India grid-factor service
+# ADR 001 — Spike components (v2): (A) evidence-anchored ingestion + (D) one Indian material/component route comparison; national grid as a bounded foundation
 
-- **Status:** accepted (first version, 4 Oct 2026, lead). Revisit at the 12 Oct selection gate.
-- **Context:** Round 2 rewards technical robustness (25 %), data quality & integration (20 %), usability (20 %), innovation (15 %), scalability (10 %). The statement asks for a *database architecture and data-collection framework demonstrating how additional datasets can be incorporated* and judges "intelligence, transparency, and defensibility". Tonight's evidence (`eval/results/summary.md`, commit a2cfc31):
-  - Engine replicates ICCT 2021 Table 1 to **0.06 % MAPE** — the calculation itself is not the hard part.
-  - For the e-scooter, **grid electricity is 34 of 40 g CO2e/km**, and the *method* of the grid factor moves the EV saving from **14 %** (CEA operating margin) to **36.9 %** (average) to **55 %** (build margin).
-  - ICCT's published inputs do not reproduce its own table (saving 48.5 % vs 38.4 %): provenance, not arithmetic, is where credibility breaks.
-- **Process caveat:** lean mode (Supervisor 05:51) forbade sub-agents, so the antithesis below was written by the lead, not an independent adversarial agent. An independent `rubber-duck` + `First Prinicipals Agent` review is queued for when lean mode lifts.
+- **Status:** accepted v2, 4 Oct 2026 10:35 IST (lead), superseding v1 (07:44 IST). Revisit at the 12 Oct selection gate.
+- **Why v2:** an independent hostile-LCA-jury review (`deliverables/jury-review-hostile-lca.md`) and a cross-model ADR review by gpt-6-astra (`reviews/2026-10-04-adr001-gpt-6-astra.md`) both found that v1 over-weighted the grid service and over-claimed novelty and verification strength. Decisions per item are recorded in the review file.
 
-## Candidates scored (1–5)
-| Candidate | Impact on judged criteria | Novelty vs SOTA | Feasibility by 16 Dec | Measurability | Demoability | Total |
+## Context (committed run, `eval/results/summary.md`)
+<!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `83a80a699b-dirty`).<!-- headline:end -->
+- Arithmetic implementation verification against the same source that supplies most inputs: ICCT 2021 two-wheeler table 0.06 %, India sedans 1.0 %. This verifies arithmetic, not accuracy.
+- **Contribution:** grid electricity is the largest stage of every EV result. **Between-method scenarios:** the grid-accounting choice (CEA average vs operating vs build margin) moves the e-scooter saving from 16 % to 56 % and flips the sedan sign. **Within-method parameter uncertainty** is smaller and is driven by real-world consumption. These are three different statements. We no longer say "grid method dominates" without saying which one we mean.
+- Independent Indian car studies (TERI 2026, IIT Guwahati 2025, IIT Kanpur 2023) bracket our petrol and BEV sedans but not our CNG or diesel. That makes Indian vehicle, material and consumption data the open question, not grid arithmetic.
+
+## Candidates (scored by the lead after both reviews; 1 weak … 5 strong)
+| Candidate | Impact R1/R2 | Novelty | Feasibility (2-person core, exams 19–25 Nov) | Measurability | Demoability | Decision |
 |---|---|---|---|---|---|---|
-| **A. Verified-provenance ingestion (C3):** LLM/rule extraction of factors from Indian PDFs/XLSX (CEA, BRSR, EPDs, ministry reports) → candidate records with locator + verbatim quote, auto-verified against the document, pedigree-scored | 5 (is the "data-collection framework"; data quality 20 %, scalability 10 %) | 4 (open LCA tools import curated databases; none extract-and-verify Indian public disclosures) | 4 (PDFs on disk; Azure OpenAI available) | 5 (field-level F1 vs gold set; quote-found rate) | 5 (drop a PDF → new cited record → result updates) | **23** |
-| **B. India grid-factor service (C4):** cited EF by region (national → state), period (FY → lifetime average, prospective), method (average / OM / BM / CM), delivery (busbar / meter), gas basis | 5 (dominant term of every EV result) | 4 (state- and margin-resolved Indian factors are not in open vehicle-LCA tools; carculator/premise are European/IAM-based) | 3 (state RE generation + inter-state flows needed; prospective needs CEA NEP) | 4 (reconstruct CEA national values from station data; back-test FY2025-26 from data to FY2024-25) | 5 (India map: same scooter, different state) | **21** |
-| C. Calibrated pedigree uncertainty + data-gap ranking (C7) | 4 | 3 (pedigree MC is standard) | 4 | 3 (needs ≥5 independent benchmarks) | 4 | 18 |
-| D. BOM-based vehicle model with Indian steel/aluminium routes (C5) | 4 | 2 | 3 | 3 | 3 | 15 |
-| E. LLM chat "LCA copilot" over the DB | 3 | 2 | 5 | 2 | 4 | 16 |
+| **A. Evidence-anchored ingestion** — extractor proposes records from Indian public documents; fail-closed checks: quote presence (number-boundary aware), value-in-own-quote, then field/unit/year/locator binding; human approval; measured reviewer effort | 4/5 | 3 | 3 | 4 | 5 | **Spike** |
+| **D. One Indian material/component route comparison** — e.g. a steel part via BF-BOF vs coal-DRI-EAF vs scrap-EAF, or aluminium primary (coal captive power) vs recycled; battery cell origin vs Indian pack assembly; behind a source-availability gate (corporate BRSR ratios are not product LCI) | 5/5 | 3 | 3 | 4 | 5 | **Spike** (if the 4–7 Oct data gate passes) |
+| B. Grid-factor service | 3/3 | 2 | 3 (national) / 2 (state, prospective) | 3 | 4 | **Bounded foundation:** harmonized national attributional factor (CO2e, partial upstream, built) + margins as labelled sensitivities. State and prospective factors are deferred until independently testable (rolling-origin back-tests vs persistence; consumption-based state accounting). |
+| C. Harmonization + honest uncertainty | 4/4 | 2 | 3 | 3 | 3 | **Mandatory practice, not a spike:** gas-basis flags, honoured source ranges, paired MC, screening-only wording; no calibration claim until independent benchmarks exist |
+| E. LLM chat copilot | 2/2 | 1 | 5 | 2 | 4 | Rejected — little judging value for its reliability burden |
 
-## Six Thinking Hats
-- **White (facts):** CEA v22 gives station-level CO2 and generation with STATE for FY2017-18..2025-26 (unit rows sum to 1,424.19 BU, matching Annexure-I); RE is national only. T&D 17.63 % (2023-24), state-wise annex exists. ICCT's 2021 India LCA is the only open 2W benchmark opened so far.
-- **Red (gut / judges):** ICAT/MHI officials will love "every number has a page and a quote" and "your state's grid changes the answer". A chat bot would worry them.
-- **Black (risks):** A — LLM hallucinated numbers (mitigated: never `verified` without quote-in-document match; humans approve). B — state factors ignore inter-state trade (must label "generation-based"; consumption-based needs flow data); prospective factors are projections, not facts. Both — scope creep before the 30 Oct Round 1.
-- **Yellow (benefits):** A is literally the scalability answer (how ICAT, suppliers and researchers add data). B moves the headline number more than anything else and is India-specific by construction.
-- **Green (alternatives):** hourly/seasonal charging factors (solar-hour charging) via CEA/Grid-India data; BRSR-based supplier-specific factors for steel/aluminium; a public "submit a dataset" pull-request flow with automatic checks.
-- **Blue (decision):** Spike A + B; C stays best practice inside the engine (built); D phased in on top of A (material factors come through the ingestion pipeline); E rejected.
+## Six Thinking Hats (v2)
+- **White:** the verifier checks quote presence and, since v5, the value-in-quote. It did not bind values to table headers, units or pages, and `0.675` used to match inside `10.675` (fixed in v5). Negative tests are synthetic and clustered. Zero observed false accepts in 208 means a ~1.4 % one-sided 95 % bound (rule of three), not zero.
+- **Red:** the MHI/ICAT jury cares about manufacturers' choices ("which steel, which cell origin"). A route comparison with Indian sources lands harder than a state map.
+- **Black:** D may fail its data gate (route-level Indian data can be thin or only corporate-level). A may look like "PDF search". Both risk numbers that look auditable but are not comparable — the biggest risk per the astra review.
+- **Yellow:** A is the scalability answer (how ICAT and suppliers add data). D directly serves OEM and supplier decisions. B (national, harmonized) keeps every EV result honest.
+- **Green:** reviewer-minutes per accepted record as A's product metric; a deliberate "rejected incompatible factor" moment in the demo; BRSR-to-LCI qualification rules as a reusable artefact.
+- **Blue:** A + D as spikes; B national foundation; C mandatory; E rejected. Gate D on 7 Oct; fallback = harmonized national B plus one Indian-route material record set (no invented supplier detail).
 
 ## Thesis → antithesis → synthesis
-- **Thesis:** The bottleneck for an Indian automotive LCA database is not computation but trustworthy, maintainable Indian data; a pipeline that turns public Indian documents into verified, pedigree-scored records, plus a grid service for the dominant EV term, wins on defensibility and scalability.
-- **Antithesis (lead-written):** Judges may want breadth — many materials, processes, vehicles — not a pipeline; LLM extraction can look like a gimmick; state grid factors without trade flows can mislead; and a 0.06 % replication of one study proves arithmetic, not truth.
-- **Synthesis:** Use A to *produce* breadth (materials, processes, ELV) visibly during the build — the demo shows both the database (coverage table by layer) and the pipeline that fills it, with a fail-closed verifier. Ship B with explicit method labels and always show the three CEA margins side by side. Validate against more than one independent Indian study before claiming accuracy.
+- **Thesis (lead, v1):** trustworthy Indian data is the bottleneck. Ingestion with provenance plus a grid service for the dominant EV term wins.
+- **Antitheses (independent):**
+  - *Hostile jury (rubber-duck):* non-harmonized gas bases; undefined boundary, functional unit, allocation and EOL; circular validation; overclaimed metrics; "state" map is not a state mix.
+  - *gpt-6-astra:* text presence ≠ verified factor; ratchet overfit; B's metrics don't validate geography; novelty overstated (carculator/premise handle India regions; LLM LCI extraction exists — Kumar et al. 2025, *ES&T*; Tang et al. 2026); manufacturing decisions undervalued.
+- **Synthesis (v2):** keep A, but make it *semantic qualification with measured reviewer effort*, not quote search. Promote D so the database demonstrates a manufacturer-relevant Indian route choice end to end. Shrink B to a harmonized national foundation with labelled sensitivities. Make harmonization and honest uncertainty non-negotiable. Claim novelty narrowly: an openly auditable Indian corpus with machine-checked evidence anchoring, compatibility checks and measured curation effort — not "first-ever extraction or prospective India LCA".
 
 ## First principles
-An LCA result is Σ (activity amount × emission factor). For Indian vehicles the amounts (km, kWh/km, L/km, kg of material) and the factors (grid, steel, battery) are each uncertain, but **the result is only as credible as its least-traceable large term**. Tonight's numbers say the largest term is grid electricity (EV) / fuel (ICE), and the largest parameter uncertainty is real-world consumption. So: make the large terms India-specific and auditable first (B, plus on-road consumption data), and make adding *any* new term cheap and verifiable (A).
+An LCA result is Σ (activity amount × emission factor). A comparison is only as credible as its least-comparable large term. The large terms today are grid electricity (EV), fuel (ICE) and, as Indian vehicle data replace European proxies, materials. A makes adding any term cheap and checkable. D proves the database can answer a manufacturing question with Indian evidence. B keeps the largest term consistent.
 
 ## Consequences
-- C3 and C4 get autoresearch ratchets (frozen `eval.py` per spike): C3 → field-level F1 on a gold set of hand-verified records; C4 → national-reconstruction error and FY back-test error.
-- Other components stay best practice (pydantic store, parameterised engine, pedigree Monte Carlo, static dashboard → API).
-- Round-1 methodology and roadmap present A and B as the innovation; Round-2 demo: ingest a new Indian document live, then switch the scooter's charging state.
+- **Metrics:**
+  - *A:* document-macro F1 and complete-record precision/recall on a frozen document-level dev/test split (unseen publishers); abstention rate; reviewer minutes per usable record; harder negatives (wrong field, neighbouring cell, unit, year, scope). "Zero observed false accepts" stays a regression requirement, not a guarantee.
+  - *D:* reproduction of the source's route intensities (accounting test), then decision robustness, i.e. P(route X < route Y) under paired uncertainty.
+  - *B:* national reconstruction as an accounting test only; prospective claims need rolling-origin back-tests vs persistence (MAE, signed bias).
+- **Two-week plan (Round 1 due 30 Oct):**
+  - 4–7 Oct: freeze one decision, functional unit, boundary and characterisation; run D's data gate.
+  - 8–12 Oct: annotate a diverse document set with reserved unseen documents; benchmark extraction vs manual and rule baselines; dimensional tests for the grid upstream (done for the CO2e adder: the ratio form avoids the `/1000` slip in the research note).
+  - 13–18 Oct: one complete source-to-comparison chain including a deliberately rejected incompatible factor; independent technical review.
+- Round-1 documents distinguish demonstrated capability (4 Oct) from December commitments. Integration checkpoint before 19 Nov; feature freeze early December for offline rehearsals.

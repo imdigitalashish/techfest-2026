@@ -45,3 +45,8 @@ Use BUR-4 India coal-mine factors before IPCC global defaults. For an inventory-
 - No measured all-India kg coal/kWh series was opened; the CEA value recorded is only a default assumption.
 - No gas upstream supply methane factor and no coal rail-transport factor were opened; `other_upstream_fuel_chain_co2e_per_kwh` remains missing.
 - No published India grid life-cycle CO2e cross-check was opened; leave any such benchmark UNVERIFIED until sourced.
+
+## Erratum and implementation note (lead, 4 Oct 2026, after the gpt-6-astra ADR review)
+- The "stationary_nonco2_co2e_per_kwh" formula above has a dimensional slip: TJ/kWh x kg gas/TJ x kg CO2e/kg gas is already kg CO2e/kWh, so the extra `/1000` would suppress the term 1000-fold. It was **not** used. The committed implementation (`data/vehicles/*.yaml` CO2e scenarios and `components/lca_engine/greenauto/grid.py`) applies a dimensionless ratio, CEA CO2 x (CH4_kg/TJ x GWP_CH4 + N2O_kg/TJ x GWP_N2O) / (CO2_kg/TJ), with Indian coal at 95.8 g CO2/MJ NCV (CEA Appendix B). A unit test pins the result: 0.6933 kg CO2e/kWh at busbar.
+- The 0.666 kg coal/kWh above is a GROSS-generation default. The implementation uses the CEA default NET heat rate 2,717 kcal/kWh / GCV 3,755 kcal/kg = 0.724 kg coal per net kWh of coal generation, times the coal+lignite share of total net generation (0.672).
+- Not yet handled: imported coal (CEA 89.5 g CO2/MJ NCV) vs domestic, lignite-specific factors, mining energy use, coal rail transport, gas supply chain and infrastructure.

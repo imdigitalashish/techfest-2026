@@ -52,7 +52,7 @@ scenarios:
 
   - id: in2026_cea_average
     kind: sensitivity
-    label: "Sensitivity — CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): lower bound for the EV"
+    label: "Sensitivity — CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): understates grid emissions, so an upper bound on the EV saving"
     description: "Illustrative 2026-grid case using legacy ICCT 2021 vehicle assumptions. Electricity = CEA v22 FY2025-26 weighted average (CO2 only, busbar) grossed up for all-India T&D losses 17.63 % (FY2023-24). Petrol WTT/TTW = ICCT India gasoline blend (AR5 GWP100). Consumption = uniform over the two values ICCT supports. Battery = 68 kg CO2e/kWh (ICCT, China/India, AR5 GWP100). Maintenance included. NOT harmonized: grid is CO2-only (no CH4/N2O, no upstream) and the 2W production factor is on ICCT's 20-year-methane basis."
     products:
       - id: ice_scooter
@@ -93,8 +93,8 @@ scenarios:
   - id: in2026_cea_operating_margin
     base: in2026_avg_co2e
     kind: sensitivity
-    label: "Sensitivity — EV charging at CEA operating margin, CO2e (fossil-dominated proxy, upper bound)"
-    description: "Decision sensitivity, not a consequential LCA: EV electricity at the CEA FY2025-26 simple operating margin 0.963 kg CO2/kWh (excludes must-run hydro/nuclear/RE). An upper-bound proxy for added charging demand; a real marginal factor needs charging-time profiles and dispatch modelling."
+    label: "Sensitivity — EV charging at CEA operating margin, CO2e (fossil-dominated proxy; not a guaranteed upper bound)"
+    description: "Decision sensitivity, not a consequential LCA: EV electricity at the CEA FY2025-26 simple operating margin 0.963 kg CO2/kWh (excludes must-run hydro/nuclear/RE). A fossil-dominated proxy for added charging demand (not a guaranteed upper bound); a real marginal factor needs charging-time profiles and dispatch modelling."
     overrides:
       ev_scooter: {params: {ef_gen: energy.electricity.in.grid_om.fy2025_26, coal_sh: energy.electricity.in.coal_lignite_share_fossil_generation.fy2025_26}}
 
@@ -119,8 +119,8 @@ scenarios:
   - id: in2026_avg_co2e
     base: in2026_cea_average
     kind: decision
-    label: "India 2026-grid, attributional — CEA FY2025-26 average on CO2e (AR6 GWP100), partial upstream (legacy 2021 ICCT vehicle data)"
-    description: "Central decision case. Electricity = CEA v22 FY2025-26 average CO2 + combustion CH4/N2O (IPCC 2006 Tier 1) + coal-mine methane (India BUR-4 factors, CEA default heat rate, coal+lignite share 0.672), all at AR6 GWP100, grossed up for 17.63 % T&D losses. Still excludes mining energy, coal rail transport, gas supply chain and infrastructure. Petrol = ICCT India blend (AR5 GWP100). 2W production factor is on ICCT's 20-year-methane basis (flagged)."
+    label: "India 2026-grid, attributional — CEA FY2025-26 average on CO2e (AR5 GWP100, matching ICCT inputs), partial upstream (legacy 2021 ICCT vehicle data)"
+    description: "Central decision case. Electricity = CEA v22 FY2025-26 average CO2 + combustion CH4/N2O (IPCC 2006 Tier 1) + coal-mine methane (India BUR-4 factors, CEA default heat rate, coal+lignite share 0.672), all at AR5 GWP100 (ICCT inputs are AR5; AR6 changes the grid factor by <0.01 %), grossed up for 17.63 % T&D losses. Still excludes mining energy, coal rail transport, gas supply chain and infrastructure. Petrol = ICCT India blend (AR5 GWP100). 2W production factor is on ICCT's 20-year-methane basis (flagged)."
     overrides:
       ev_scooter:
         params:
@@ -132,6 +132,6 @@ scenarios:
           gcv: energy.upstream.coal_power.gcv.coal.cea_v22_default
           cmm: energy.upstream.coal_mining.ch4_weighted.in.bur4_2020
           dens: energy.upstream.coal_mining.ch4_density.ipcc2006
-          gwp_ch4: method.gwp100.ch4_fossil.ipcc_ar6
-          gwp_n2o: method.gwp100.n2o.ipcc_ar6
+          gwp_ch4: method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5
+          gwp_n2o: method.gwp100.n2o.no_ccfb.ipcc_ar5
         stages: {electricity_production_wtt: "elec / 100 * (ef_gen * (1 + (ch4c * gwp_ch4 + n2oc * gwp_n2o) / (co2c * 1000)) + coal_sh * hr / gcv * cmm / 1000 * dens * gwp_ch4) / (1 - td)"}

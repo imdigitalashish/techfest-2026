@@ -10,13 +10,13 @@
 - _(none)_
 
 ## Now
-- **Phase:** 4 — walking skeleton + eval done for case study 1; morning-package docs landing (LEAN MODE per Supervisor 05:51 — no sub-agents until lifted).
-- **Headline (committed run, `python3 eval/eval.py`, commit a2cfc31, n=10,000, seed 20261004):** engine replicates ICCT 2021 Table 1 (Indian scooters) at **0.06 % MAPE**. India 2026, CEA FY2025-26 average grid: petrol scooter **62.9 g CO2e/km [90 %: 57.6–69.0]**, 2.9 kWh e-scooter **39.7 [36.9–42.8]** → **36.9 % lower [29.2–43.8 %]**, P(EV lower) = 1.0. At CEA operating margin: only **14.0 % [3.3–23.5 %]**; at build margin **55.2 %**. EV grid term is CO2-only (no coal upstream) — a stated lower bound.
-- **Plan:** morning package ✓ (landscape, components + contracts, per-component notes, ADR 001, selection memo v1, Round-1 methodology + roadmap drafts, engine + eval + dashboard, ratchet 1). Next phase: data breadth + spikes A/B per `deliverables/round1-roadmap.md`.
-- **Doing:** lead alone (lean mode until the Supervisor lifts it).
-- **Next:** (1) independent rubber-duck review of ADR 001 + methodology (when sub-agents are allowed); (2) spike B: state RE generation → state generation mixes, lifetime-average/prospective factors, back-test metric; (3) spike A: extractor on CEA/BRSR documents + gold set ≥ 100; (4) data: coal-mine methane upstream, E20 petrol, Indian steel/aluminium routes, battery cell origin, Indian on-road 2W consumption; (5) open the UNVERIFIED leads (SAE 2026-26-0235/0239, Energy 2025) as independent benchmarks.
-- **Needs from user:** Register by 15 Oct and pick one EV track (after the 12 Oct selection). Team of 2–5: names and skills — ideally one teammate with LCA / environmental-engineering background for jury Q&A.
-- **Risks:** jury LCA rigour (ISO 14044 boundaries, allocation, end-of-life method); sparse Indian process data (casting, forging, painting) → explicit proxies + pedigree; only one Indian benchmark so far (which is also an input source — validation is partly circular); network saturation tonight.
+- **Phase:** 3–4 done for Round 1 — two case studies with uncertainty, ADR v2 (spikes A + D, national grid as foundation), Round-1 methodology + roadmap v1.0, three independent reviews processed. Active batch (Supervisor 09:55); delegation only via child sessions (≤ 2).
+- **Headline (rendered from `eval/results/latest.json`):** <!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `83a80a699b-dirty`).<!-- headline:end -->
+- **Plan:** cross-model review of the final Round-1 documents (gpt-6-astra session) → apply → DONE to Supervisor. Then 4–7 Oct: spike-D data gate (Indian steel/aluminium routes, battery cell origin) and decision freeze.
+- **Doing:** lead; reviewer sessions: engine/claims (gpt-6-sol, done), Round-1 docs (gpt-6-astra, next).
+- **Next:** D data gate memo (7 Oct) → gold set with unseen-publisher split (8–12 Oct) → one full source-to-comparison chain + independent technical review (13–18 Oct) → Round 1 submission by the team leader (≤ 30 Oct).
+- **Needs from user:** register by 15 Oct (EV track fixed at registration; this project is the current EV pick); team of 2–5 — ideally an environmental/mechanical teammate for LCA Q&A; team name, Team ID, institution and contacts for the Round-1 header; access to ISO 14040/14044 text (IIT Delhi library or BIS) for the methodology's ISO references.
+- **Risks:** auditable-looking but non-comparable numbers (mitigated by harmonization flags, boundary matrix, rejected-factor demo); D's data gate; jury LCA rigour; exam window 19–25 Nov.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** EV Infra & Green Mobility AI Challenge — Techfest IIT Bombay with the Ministry of Heavy Industries (MHI) and the International Centre for Automotive Technology (ICAT). Prize pool ₹2,00,000; top 3 teams per track.
@@ -45,14 +45,20 @@
 - 2026-10-04 — Grid factor shown three ways (CEA average / operating margin / build margin), never one silent choice.
 - 2026-10-04 — Spikes: A verified-provenance ingestion (C3), B India grid-factor service (C4) — [ADR 001](architecture/adr/001-spike.md).
 
+- 2026-10-04 — Central case = CEA FY2025-26 average grid on CO2e (combustion CH4/N2O + India BUR-4 coal-mine methane, partial upstream), AR5 GWP100 to match ICCT inputs; CO2-only, operating margin and build margin are labelled sensitivities (CO2-only = upper bound on the EV saving).
+- 2026-10-04 — Consumption values ICCT's sources disagree on enter decision scenarios as uniform source-ambiguity ranges, not as reverse-engineered single values.
+- 2026-10-04 — Replication against ICCT is called arithmetic implementation verification; independent Indian car LCAs (TERI 2026, IITG 2025, IITK 2023) are a plausibility band, not validation.
+- 2026-10-04 — ADR 001 v2: spikes A (evidence-anchored ingestion with semantic checks) + D (one Indian material/component route comparison, gated 4–7 Oct); B national grid foundation; C harmonization + honest uncertainty mandatory — [ADR](architecture/adr/001-spike.md), [astra review](reviews/2026-10-04-adr001-gpt-6-astra.md).
+- 2026-10-04 — Documents render results from one run; `eval/check_docs.py` (in the test suite) fails on drift.
+
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
 | C1 | Source registry + fetchers | SourceSpec → Source + raw file | sources.yaml + fetch_sources.sh | | built | % re-fetchable |
 | C2 | Factor store + validator | YAML → Record | pydantic schema | | built (23 records, 8 sources) | quote-verification rate |
-| C3 | Ingestion / extraction | Document → CandidateRecord | manual transcription | ★A | verifier built + ratchet 1 (0.6875→1.0, FA 0); extractor planned | field F1 vs gold set |
-| C4 | Grid-factor service | GridFactorQuery → GridFactor | CEA v22 national records | ★B | baseline built: national margins + 35 state T&D (`greenauto/grid.py`, 4 tests) | reconstruction / back-test error |
-| C5 | Product-system builder | VehicleSpec → ProductSystem | case1 YAML (5 scenarios) | | built | % params resolved |
+| C3 | Ingestion / extraction | Document → CandidateRecord | manual transcription | ★A | verifier v5 (boundary-aware) + value-in-quote check built; extractor planned | doc-level F1, complete-record precision, reviewer minutes |
+| C4 | Grid-factor service | GridFactorQuery → GridFactor | CEA v22 national records | foundation (was ★B) | national CO2 / CO2e (AR5|AR6), margins, state loss adjustment | accounting reconciliation; back-tests before any prospective claim |
+| C5 | Product-system builder (+ ★D route comparison) | VehicleSpec → ProductSystem | 2 cases, 15 scenarios, inheritance | ★D | built; D gated 4–7 Oct | % params resolved; D: source-intensity reproduction |
 | C6 | Calculation engine | ProductSystem → StageResult | engine.py | | built | replication MAPE (0.06 %) |
 | C7 | Uncertainty / sensitivity / DQI | → UncertaintyResult | pedigree lognormal, paired MC | | built | interval calibration |
 | C8 | Benchmark harness | → EvalReport | eval/eval.py (frozen) | | built | # benchmarks within ±2 % |
@@ -60,14 +66,14 @@
 | C10 | Exporters | Records → openLCA JSON-LD | — | | planned | round-trip import |
 
 ## Selection memo
-_First version 4 Oct 2026 07:40 IST (lead). Final by 12 Oct. Compare with `ev-c1-infra-map-india/thought_node.md` — the team registers ONE EV track by 15 Oct._
-- **Winnability — 4/5.** No open India-specific automotive LCA database or engine found (GitHub search "india life cycle assessment vehicle": no repositories; open engines openLCA/Brightway/carculator are EU-centric — `research/landscape.md`). Our skeleton already replicates the main open Indian 2W benchmark (ICCT 2021) at 0.06 % and exposes an inconsistency in it — the kind of defensibility the statement asks for. Unknown: teams with LCA faculty support.
-- **Innovation headroom — 4/5.** Spike A (documents → verified, pedigree-scored records; fail-closed) and spike B (grid factor by state / period / margin) vs the obvious baseline of static global factors. Grid method alone moves the e-scooter saving 14 → 55 % (committed run).
-- **Feasibility — 4/5.** Public data only; no GPU needed (M5 Mac; Azure OpenAI for extraction). Engine, eval, dashboard exist on day 1. Build windows: 16 Oct–17 Nov and 26 Nov–15 Dec, nothing user-dependent in 19–25 Nov.
-- **Demo strength — 4/5.** Live: ingest a new Indian PDF → a cited record appears with its quote → the scooter result and its data-quality index update; switch charging state / grid method; click any number to see page + quote.
-- **Fit with the user's strengths — 4/5.** Data-system design and frontier-model extraction (Azure) are the core; LCA domain depth is the gap → add an environmental/mechanical teammate.
-- **Biggest risk:** jury Q&A on LCA rigour (ISO 14044 boundaries, allocation, end-of-life method, non-CO2 gases) and scarce Indian process data. Mitigation: methodology document states every boundary; proxies labelled with pedigree; independent rubber-duck "hostile LCA judge" rehearsal.
-- **One-line pitch:** "An open, auditable India automotive LCA database where every number has a page and a quote, an AI pipeline that grows it from Indian public documents, and a grid engine that shows what an EV really saves — by state and by method."
+_Final for the morning-after review, 4 Oct 2026 (lead); confirm at the 12 Oct gate. EV C2 is the current EV pick (Supervisor, 09:55) unless the user overrides._
+- **Winnability — 4/5.** The engine reproduces the two open ICCT Indian LCAs to 0.06 % and 1.0 % (arithmetic verification) and sits inside the range of three independent Indian car LCAs for petrol and BEV. Each number traces to a page and a quote, checked automatically. We are not first: TERI (2026) rates 59 vehicles using a commercial teardown database (A2MAC1). Our edge is openness and auditability on public data, which is exactly what the statement rewards.
+- **Innovation headroom — 3.5/5.** After the reviews we claim novelty narrowly: evidence-anchored ingestion with semantic checks and measured curation effort (A), plus an Indian material/component route comparison (D). LLM LCI extraction exists (Kumar et al. 2025; Tang et al. 2026), and premise maps India.
+- **Feasibility — 4/5.** Public data, no GPU; skeleton, two cases, eval, dashboard and drift-checked docs exist on day 1; D has a fallback.
+- **Demo strength — 4/5.** Switch the grid method or state and watch the scooter or car result move. Click any number to see its page and quote. Ingest a document and watch a factor get rejected for incompatibility. The case results are judge-relevant: the 2W saving is robust, while the sedan result depends on vehicle efficiency and grid method.
+- **Fit with the user's strengths — 4/5.** Data systems + frontier-model extraction; LCA domain depth needs a teammate.
+- **Biggest risk:** auditable-looking but non-comparable numbers (gas basis, boundary, allocation) under jury Q&A. Mitigated by harmonization flags, the boundary matrix, three reviews, and an independent technical review planned 13–18 Oct.
+- **One-line pitch:** "An open India automotive LCA database where every number carries its page and quote, machine-checked; it shows which Indian data decide a vehicle or material choice, and grows from Indian public documents with measured reviewer effort."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -95,3 +101,21 @@ Supervisor directive: no sub-agents, small requests, push every 30 min. Committi
 - `greenauto/grid.py`: GridFactorQuery → GridFactor with record ids + derivation. Logic: CEA says India runs one integrated grid (since Dec 2013), so the generation mix is national; the state part is T&D loss. Meter factors range **0.754 (Goa) – 1.300 kg CO2/kWh (J&K + Ladakh, 48 % losses incl. commercial)**; refuses CO2e until coal-upstream data exist. 10/10 tests pass.
 - Dashboard: charging-state selector in the what-if (verified in browser: All India 36.9 % saving = engine; Goa 41.2 %).
 - DB now 58 records (51 verified, 7 derived), 8 sources.
+
+### 2026-10-04 09:45–10:40 IST — Active batch: second case study, three independent reviews, CO2e central case
+- **Inbox/Supervisor:** 09:40 resume (lean); 09:55 active batch (EV C2 = current EV pick; ≤ 2 sub-agents); 10:08 cross-model reviews; 10:15 sessions-only delegation. All followed. The ADR reviewer was started via `task` just before the sessions directive and allowed to finish.
+- **Case study 2 (cars):** ICCT 2021 India sedans (petrol/diesel/CNG/BEV) reproduced at 1.0 % (arithmetic verification). Fact-sheet Figure 1 digitized (stage totals within 0.2 g/km of the quoted totals).
+- **Reviews:**
+  - Hostile LCA jury (rubber-duck): 15/15 accepted.
+  - gpt-6-astra on ADR 001: 8/8 accepted → ADR v2 (A + D spikes, B national foundation), verifier v5 + value-in-quote check.
+  - gpt-6-sol on engine, eval and claims (child session): 8/8 accepted, all 5 claims confirmed, clean checkout reproduced.
+- **Data:**
+  - India grid CO2e via a data agent: 31 upstream records (IPCC CH4/N2O, BUR-4 coal-mine methane, Coal Directory shares, AR5/AR6 GWPs) + 5 composition records → 0.693 kg CO2e/kWh busbar, 0.842 at the meter.
+  - Three independent Indian car LCAs via a benchmarks agent: TERI 2026, IITG 2025, IITK 2023; 42 quotes verified. No open independent 2W study found.
+- **Learned:**
+  - The verifier's fuzzy fallback overfit: it failed held-out data (accepted perturbed numbers), so it was removed.
+  - `0.675` matched inside `10.675` until v5.
+  - AR5 and AR6 must not be pooled as "harmonized".
+  - The e-Verito-class BEV sedan is not clearly better than petrol on today's average grid (10.0 %, interval spans 0); the 2W saving is robust (38.1 %).
+  - Ledger and journal timestamps typed by hand were partly wrong; corrected from git commit times. Times now come only from `date`/git.
+- **Docs:** methodology + roadmap v1.0, landscape, ADR v2, memo final; result blocks rendered from `latest.json`; `check_docs.py` in the tests.

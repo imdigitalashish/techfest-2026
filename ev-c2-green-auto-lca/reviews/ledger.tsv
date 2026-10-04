@@ -1,1 +1,4 @@
 date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	Round-1 drafts v0.1 + engine v1 (hostile LCA jury)	rubber-duck (harness default)	default	15	15	0	one accepted in part (MC correlations, basic factors pending); record: reviews/2026-10-04-hostile-lca-jury-rubber-duck.md
+2026-10-04	ADR 001 v1 (spike choice)	gpt-6-astra	max	8	8	0	led to ADR v2 (A + D spikes, B national foundation), verifier v5 + value check; record: reviews/2026-10-04-adr001-gpt-6-astra.md
+2026-10-04	engine + eval + headline claims (fa316b6)	gpt-6-sol	max	8	8	0	1 critical (AR5+AR6 passed as harmonized), 4 major, 3 minor; all 5 claims CONFIRMED as arithmetic; clean checkout reproduced; record: reviews/2026-10-04-engine-eval-claims-gpt-6-sol.md

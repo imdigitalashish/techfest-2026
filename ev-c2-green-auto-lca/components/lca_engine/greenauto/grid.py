@@ -67,13 +67,16 @@ def grid_factor(db: FactorDB, q: GridFactorQuery) -> GridFactor:
     if q.gas_basis == "CO2e":
         if q.method == "build_margin":
             raise NotImplementedError("CO2e build margin needs the BM fuel mix (incl. RE) — data gap")
-        v = {k: float(db[r].value) for k, r in CO2E_RECORDS.items()}
+        recs = dict(CO2E_RECORDS)
+        if q.gwp == "AR5":
+            recs.update(gwp_ch4="method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5", gwp_n2o="method.gwp100.n2o.no_ccfb.ipcc_ar5")
+        v = {k: float(db[r].value) for k, r in recs.items()}
         share = float(db[COAL_SHARE[q.method]].value)
         nonco2 = (v["ch4c"] * v["gwp_ch4"] + v["n2oc"] * v["gwp_n2o"]) / (v["co2c"] * 1000)
         cmm = share * v["hr"] / v["gcv"] * v["cmm"] / 1000 * v["dens"] * v["gwp_ch4"]
         ef = ef * (1 + nonco2) + cmm
-        extra_ids = list(CO2E_RECORDS.values()) + [COAL_SHARE[q.method]]
-    basis = "CO2e AR6 GWP100, partial upstream" if q.gas_basis == "CO2e" else "CO2 only"
+        extra_ids = list(recs.values()) + [COAL_SHARE[q.method]]
+    basis = f"CO2e {q.gwp} GWP100, partial upstream" if q.gas_basis == "CO2e" else "CO2 only"
     if q.delivery == "busbar":
         return GridFactor(value=ef, unit=f"kg {q.gas_basis}/kWh", query=q, record_ids=[ef_id] + extra_ids,
                           derivation=f"{ef_id} at busbar ({basis})")

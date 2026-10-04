@@ -86,7 +86,7 @@ scenarios:
   - id: car_in2026_cea_average
     base: car_icct2021_replication
     kind: sensitivity
-    label: "Sensitivity — CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): lower bound for the BEV"
+    label: "Sensitivity — CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): understates grid emissions, so an upper bound on the BEV saving"
     description: "Illustrative 2026-grid case using legacy ICCT 2021 sedan assumptions (e-Verito-class BEV). Electricity = CEA v22 FY2025-26 weighted average (CO2 only, busbar) / (1 - 17.63 % T&D). Fuels = ICCT India blends (AR5 GWP100). NOT harmonized: grid is CO2-only (no CH4/N2O, no upstream); vehicle factors are European proxies."
     overrides:
       bev:
@@ -112,7 +112,7 @@ scenarios:
   - id: car_in2026_avg_co2e
     base: car_in2026_cea_average
     kind: decision
-    label: "India 2026-grid, attributional — CEA FY2025-26 average on CO2e (AR6 GWP100), partial upstream (legacy 2021 ICCT sedan data)"
+    label: "India 2026-grid, attributional — CEA FY2025-26 average on CO2e (AR5 GWP100, matching ICCT inputs), partial upstream (legacy 2021 ICCT sedan data)"
     description: "Central decision case for sedans: as case 1's CO2e grid; fuels and vehicle factors from ICCT (2021, AR5 GWP100). Excludes mining energy, coal transport, gas supply chain, infrastructure. BEV = e-Verito-class (19.2 kWh/100 km at the plug)."
     overrides:
       bev:
@@ -125,6 +125,6 @@ scenarios:
           gcv: energy.upstream.coal_power.gcv.coal.cea_v22_default
           cmm: energy.upstream.coal_mining.ch4_weighted.in.bur4_2020
           dens: energy.upstream.coal_mining.ch4_density.ipcc2006
-          gwp_ch4: method.gwp100.ch4_fossil.ipcc_ar6
-          gwp_n2o: method.gwp100.n2o.ipcc_ar6
+          gwp_ch4: method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5
+          gwp_n2o: method.gwp100.n2o.no_ccfb.ipcc_ar5
         stages: {electricity_production_wtt: "elec / 100 * (ef_gen * (1 + (ch4c * gwp_ch4 + n2oc * gwp_n2o) / (co2c * 1000)) + coal_sh * hr / gcv * cmm / 1000 * dens * gwp_ch4) / (1 - td)"}

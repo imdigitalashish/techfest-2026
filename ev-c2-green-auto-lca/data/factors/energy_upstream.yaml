@@ -35,7 +35,7 @@
   accessed: 2026-10-04
   pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
   status: verified
-  notes: "Native-gas factor, not CO2e. Apply an N2O GWP100 record separately."
+  notes: "value-not-in-quote: the PDF text layer renders 1.5 as '1. 5' (IPCC 2006 Vol. 2 Table 2.2). Native-gas factor, not CO2e. Apply an N2O GWP100 record separately."
 - id: energy.upstream.stationary_combustion.natural_gas.ch4.ipcc2006.energy_industries
   layer: energy
   name: Natural gas stationary-combustion CH4 emission factor, energy industries (IPCC Tier 1 default)

@@ -40,3 +40,14 @@ def test_co2e_adds_partial_upstream(db):
     assert 0.675 == co2 < co2e < 0.675 * 1.06      # combustion CH4/N2O + coal-mine CH4 add a few per cent
     with pytest.raises(NotImplementedError):
         grid_factor(db, GridFactorQuery(gas_basis="CO2e", method="build_margin"))
+
+
+def test_co2e_adder_dimensional_hand_check(db):
+    # hand computation with the cited inputs (kg CO2e per kWh at busbar)
+    nonco2_ratio = (1.0 * 29.8 + 1.5 * 273.0) / (95.8 * 1000)            # (kg CO2e/TJ) / (kg CO2/TJ)
+    coal_kg_per_kwh = 0.6720 * 2717 / 3755                                # share x kcal/kWh / kcal/kg
+    cmm = coal_kg_per_kwh * 1.565 / 1000 * 0.67 * 29.8                    # kg coal x m3/t /1000 x kg/m3 x GWP
+    expected = 0.675 * (1 + nonco2_ratio) + cmm
+    got = grid_factor(db, GridFactorQuery(gas_basis="CO2e", delivery="busbar")).value
+    assert got == pytest.approx(expected, rel=1e-9)
+    assert got == pytest.approx(0.6933, abs=5e-4)

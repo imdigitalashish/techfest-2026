@@ -48,6 +48,7 @@ class GridFactorQuery(BaseModel):
     method: Literal["average", "operating_margin", "build_margin", "combined_margin", "prospective"] = "average"
     delivery: Literal["busbar", "consumer_meter"] = "consumer_meter"
     gas_basis: Literal["CO2", "CO2e"] = "CO2"
+    gwp: Literal["AR6", "AR5"] = "AR6"         # characterisation set for the CO2e adders
 
 
 class GridFactor(BaseModel):
@@ -98,18 +99,28 @@ class UncertaintyResult(BaseModel):
     total: Interval
     stages: dict[str, Interval]
     elasticity: dict[str, float]               # record id -> d ln(total) / d ln(value)
-    dqi: float = Field(ge=1, le=5)             # elasticity-weighted mean pedigree score
-    india_weighted_share: float = Field(ge=0, le=1)
-    variance_share: dict[str, float]           # record id -> share of rank-variance (data-gap ranking)
+    dq_score: float = Field(ge=1, le=5)        # elasticity-weighted mean pedigree score (screening indicator)
+    dq_dims: dict[str, float]                  # the same, per pedigree dimension
+    india_footprint_share: float = Field(ge=0, le=1)   # share of the total from stages whose EFs are all Indian
+    gas_basis_shares: dict[str, float]         # share of the total by gas-basis family
+    importance: dict[str, float]               # normalized squared Spearman rank correlation (screening, not variance)
 
 
 class Comparison(BaseModel):
-    ice: str
-    bev: str
+    vs: str                                    # reference product id
     reduction_central: float
     reduction_mc: Interval
-    p_bev_lower: float = Field(ge=0, le=1)
-    variance_share_of_reduction: dict[str, float]
+    p_lower: float = Field(ge=0, le=1)
+    importance: dict[str, float]
+
+
+class ScenarioResult(BaseModel):
+    scenario: str
+    kind: Literal["replication", "decision", "sensitivity"]
+    harmonized: bool                           # all emission factors in one gas-basis family
+    gas_basis_families: list[str]
+    reference_product: str
+    comparisons: dict[str, Comparison]
 
 
 # --- C8 Benchmark harness -----------------------------------------------------------------------------

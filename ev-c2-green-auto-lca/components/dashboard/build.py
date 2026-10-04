@@ -34,7 +34,7 @@ code{font-size:12px;background:#f1f3ef;padding:1px 4px;border-radius:4px}footer{
 <section><h2>Comparison with the reference vehicle (paired Monte Carlo)</h2><div class="row" id="cards"></div></section>
 <section id="wisec"><h2>What-if: grid emission factor for charging</h2>
 <p class="muted">National generation factor with a state T&amp;D-loss adjustment (India runs one integrated grid; state losses FY2023-24 from Lok Sabha USQ 842 include commercial losses — this is not a state generation mix). CEA FY2025-26 at generation: build margin 0.446 · average 0.675 · operating margin 0.963 kg CO<sub>2</sub>/kWh (CO<sub>2</sub> only).</p>
-Charging state: <select id="st"></select><br><input type="range" id="ef" min="0" max="1.4" step="0.001" style="width:60%"> <b id="efv"></b> kg CO<sub>2</sub>/kWh at generation
+Charging state: <select id="st"></select><br><input type="range" id="ef" min="0" max="1.4" step="0.001" style="width:60%"> <b id="efv"></b> kg/kWh at generation, effective (same gas basis as the scenario: <span id="efb"></span>)
 <p id="whatif" class="big"></p><p id="breakeven" class="muted"></p></section>
 <section><h2>Which inputs drive the EV-vs-ICE difference (screening)</h2><div id="gaps"></div>
 <p class="muted">Normalized squared Spearman rank correlation between each input and the difference — a screening measure of where better Indian data would help most, not a variance decomposition. Parameter uncertainty only; scenario choices (average vs margin grid) are shown as separate scenarios.</p></section>
@@ -65,7 +65,7 @@ function draw(){
  const step=maxv/5;for(let t=0;t<=maxv+1e-9;t+=step){h+=`<text x="${sx(t)}" y="${H-4}" font-size="11" fill="#777">${fmt(t,0)}</text>`}
  svg.innerHTML=h;
  const ref=r.products[r.reference_product];
- document.getElementById('cards').innerHTML=Object.entries(r.comparisons).map(([pid,c])=>{const p=r.products[pid];return `<div class="card"><div class="muted">${p.label} vs ${ref.label}</div><div class="big">${c.reduction_central>=0?fmt(100*c.reduction_central)+"% lower":fmt(-100*c.reduction_central)+"% higher"}</div><div class="muted">90% interval ${fmt(100*c.reduction_mc.p05)} to ${fmt(100*c.reduction_mc.p95)}% · P(lower) ${fmt(100*c.p_lower,0)}%</div><div class="muted">pedigree score ${fmt(p.dq_score,2)} (1 best…5 worst) · India-specific share ${fmt(100*p.india_weighted_share,0)}%</div></div>`}).join('')+`<div class="card"><div class="muted">Reference: ${ref.label}</div><div class="big">${fmt(ref.total)} g/km</div><div class="muted">90% interval ${fmt(ref.mc_total.p05)}–${fmt(ref.mc_total.p95)} · n=${r.n_iterations}, seed ${r.seed}</div><div class="muted">pedigree score ${fmt(ref.dq_score,2)} · India-specific share ${fmt(100*ref.india_weighted_share,0)}%</div></div>`;
+ document.getElementById('cards').innerHTML=Object.entries(r.comparisons).map(([pid,c])=>{const p=r.products[pid];return `<div class="card"><div class="muted">${p.label} vs ${ref.label}</div><div class="big">${c.reduction_central>=0?fmt(100*c.reduction_central)+"% lower":fmt(-100*c.reduction_central)+"% higher"}</div><div class="muted">90% interval ${fmt(100*c.reduction_mc.p05)} to ${fmt(100*c.reduction_mc.p95)}% · P(lower) ${fmt(100*c.p_lower,0)}%</div><div class="muted">pedigree score ${fmt(p.dq_score,2)} (1 best…5 worst) · India-specific emission factors: ${fmt(100*p.india_footprint_share,0)}% of footprint</div></div>`}).join('')+`<div class="card"><div class="muted">Reference: ${ref.label}</div><div class="big">${fmt(ref.total)} g/km</div><div class="muted">90% interval ${fmt(ref.mc_total.p05)}–${fmt(ref.mc_total.p95)} · n=${r.n_iterations}, seed ${r.seed}</div><div class="muted">pedigree score ${fmt(ref.dq_score,2)} · India-specific emission factors: ${fmt(100*ref.india_footprint_share,0)}% of footprint</div></div>`;
  const imp=r.comparison?r.comparison.importance:(Object.values(r.comparisons)[0]||{}).importance||{};
  document.getElementById('gaps').innerHTML=Object.entries(imp).slice(0,7).map(([k,v])=>`<div style="display:flex;align-items:center;gap:8px;margin:3px 0"><div style="width:${Math.round(420*v)}px;height:14px;background:#14532d"></div><span class="muted">${fmt(100*v)}%</span> <code>${k}</code> <span class="muted">${DB.records[k]?DB.records[k].name:''}</span></div>`).join('');
  const used={};prods.forEach(([pid,p])=>Object.entries(p.params).forEach(([n,rid])=>{(used[rid]=used[rid]||[]).push(p.powertrain+':'+n)}));
@@ -78,7 +78,11 @@ function whatif(reset){
  if(!ev||!ev.params.ef_gen){sec.style.opacity=.45;document.getElementById('whatif').textContent='(What-if available in scenarios that use CEA grid factors.)';document.getElementById('breakeven').textContent='';return}
  sec.style.opacity=1;const ref=r.products[r.reference_product];
  const elec=DB.records[ev.params.elec].value/100,td=Number(document.getElementById('st').value);
- const slider=document.getElementById('ef');if(reset){slider.value=DB.records[ev.params.ef_gen].value}
+ const tdScen=DB.records[ev.params.td].value;
+ // effective factor at generation implied by the scenario's own electricity stage (CO2 or CO2e, whichever it uses)
+ const effGen=ev.stages.electricity_production_wtt/1000/elec*(1-tdScen);
+ document.getElementById('efb').textContent=ev.params.gwp_ch4?'CO2e incl. CH4/N2O + coal-mine methane':'CO2 only';
+ const slider=document.getElementById('ef');if(reset){slider.value=effGen.toFixed(3)}
  const g=Number(slider.value);document.getElementById('efv').textContent=fmt(g,3);
  const other=ev.total-ev.stages.electricity_production_wtt,evt=other+1000*elec*g/(1-td);
  document.getElementById('whatif').textContent=`EV ${fmt(evt)} vs ${ref.label} ${fmt(ref.total)} g/km → ${evt<=ref.total?fmt(100*(1-evt/ref.total))+'% lower':fmt(100*(evt/ref.total-1))+'% higher'} (meter factor ${fmt(g/(1-td),3)} kg CO2/kWh)`;

@@ -158,3 +158,18 @@ python3 components/ingestion/autoresearch/eval.py
 ```
 
 **Outcome:** 14/14 engine tests passed; evaluation printed `{"verification_mape_pct_2w": 0.06, "verification_mape_pct_car": 0.999}`; dashboard built as a self-contained 326 KB page and rendered in a browser without a JS exception (the browser requested a missing favicon, HTTP 404, with no app impact). Summary comparison after removing only the first commit-provenance line had **no diff**. The committed line names `c86cef7`, while the regenerated line names the clean checkout's `fa316b6`; `latest.json` and the dashboard footer differ only in that commit string. All 18 registered raw files downloaded; PDF quote-verifier evaluation returned **scalar 1.0**, **104/104** positive quotes found and **0/208** digit-perturbed negatives accepted (`false_accept_rate: 0.0`). This confirms reproducibility on this host with installed Python packages and `pdftotext`; it does not independently validate physical LCA accuracy or guarantee that future downloads are byte-identical. The temporary checkout was removed after this review.
+
+## Lead decisions (4 Oct 2026, 10:40 IST)
+| # | Decision | Reason / action |
+|---|---|---|
+| 1 | **ACCEPTED** (critical) | AR5 and AR6 are now separate gas-basis families (`GWP100-AR5`, `GWP100-AR6`). The CO2e grid adders in both case studies use AR5 GWPs (CH4-fossil 30, N2O 265; records from IPCC AR5 WG1 Ch. 8), matching ICCT's AR5 vehicle and fuel factors, so the car case is harmonized on AR5 GWP100. The 2W case stays flagged. The grid service gets a `gwp` option (AR6 default); AR5 vs AR6 changes the grid factor by < 0.01 %. Regression test added. |
+| 2 | **ACCEPTED** | The what-if slider is seeded with the scenario's own effective factor (CO2e when the scenario is CO2e) and labels its gas basis, so the default view equals the card. Checked in a browser after the rebuild. |
+| 3 | **ACCEPTED** | `load_scenarios` drops inherited parameters no stage uses (the car BEV no longer carries ICCT's lifetime `grid`). Test added. |
+| 4 | **ACCEPTED** | Replaced by `india_footprint_share`: the share of the total from stages whose dominant emission factor is Indian (BEV sedan 0.81). The dashboard label says "India-specific emission factors: x % of footprint". Test added. |
+| 5 | **ACCEPTED** | The methodology, roadmap, ADR and thought node were rewritten to the CO2e central case. Results blocks are rendered from `latest.json`, and `eval/check_docs.py` (in the test suite) fails on stale numbers or on prose that lacks the current headline. |
+| 6 | **ACCEPTED** | `range95`/`lognormal` with value strictly inside the bounds now use a two-piece lognormal: median = published value, 2.5th/97.5th percentiles = stated bounds (IPCC NCV test reproduces 42.5/44.8 within 0.5 %). |
+| 7 | **ACCEPTED** | Spearman uses average ranks (`scipy.stats.rankdata`); a constant input gives 0.0. Test added. |
+| 8 | **ACCEPTED** | `architecture/contracts/contracts.py` updated to the v2 names (`dq_score`, `dq_dims`, `india_footprint_share`, `gas_basis_shares`, `importance`, `Comparison.vs/p_lower`, `ScenarioResult.harmonized`). |
+| Claims a–e | Verdicts accepted | (a) and (b) are reported as model arithmetic, with the car interval spanning no saving stated explicitly; (c) is reported as arithmetic verification; (d) is worded without blame; (e) is labelled partial CO2e. |
+
+Accepted 8, rejected 0.

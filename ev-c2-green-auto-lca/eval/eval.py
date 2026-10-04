@@ -72,7 +72,7 @@ def independent_crosscheck(res: dict) -> dict:
 def summarise(r: dict) -> dict:
     prods = {pid: {"label": p["label"], "total": round(p["total"], 2),
                    "p05": round(p["mc_total"]["p05"], 2), "p95": round(p["mc_total"]["p95"], 2),
-                   "dq_score": round(p["dq_score"], 2), "india_weighted_share": round(p["india_weighted_share"], 2),
+                   "dq_score": round(p["dq_score"], 2), "india_footprint_share": round(p["india_footprint_share"], 2),
                    "gas_basis_shares": {k: round(v, 3) for k, v in p["gas_basis_shares"].items()}}
              for pid, p in r["products"].items()}
     comps = {pid: {"vs": c["vs"], "reduction_central": round(c["reduction_central"], 4),

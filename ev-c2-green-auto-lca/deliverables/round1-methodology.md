@@ -1,57 +1,104 @@
-# Round 1 — Methodology document (DRAFT v0.1, 4 Oct 2026)
+# Round 1 — Methodology document · v1.0 (4 Oct 2026)
 
-**Track:** EV Infra & Green Mobility AI Challenge — Challenge 2: *Green Auto India* (India-specific automotive LCA database).
-**Team:** _name, Team ID, institution, contacts — to be filled after registration (by 15 Oct)._
-**Status of numbers:** every figure below comes from a committed run (`python3 eval/eval.py`, commit a2cfc31, n = 10,000 Monte Carlo draws, seed 20261004) or from a source we opened (listed in §9). Preliminary; not an ISO 14044 critical-reviewed study.
+**EV Infra & Green Mobility AI Challenge (Techfest 2026, IIT Bombay × MHI × ICAT) — Challenge 2: *Green Auto India***
+**Team name:** _[to fill]_ · **Team ID:** _[from techfest.org registration]_ · **Institution:** _[to fill]_ · **Team leader (submits):** _[name, email, phone]_ · **Members (2–5):** _[names, programme, role]_
+
+> <!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `83a80a699b-dirty`).<!-- headline:end -->
+>
+> Every number below comes from a committed run — `python3 eval/eval.py` in `ev-c2-green-auto-lca/` (harness v2, inputs id `83a80a699b`, n = 10,000 paired Monte Carlo draws, seed 20261004; tables in `eval/results/summary.md`) — or from a source we opened and quote verbatim (§12). Results are **screening-level**: they are not ISO 14044-conformant comparative assertions, and any public comparative claim will first go through independent critical review.
 
 ## 1. Problem understanding
-Automotive LCAs used for Indian decisions still lean on international inventories that do not reflect India's grid, materials, supply chains, driving or recycling. Two facts from our first week show why this matters:
-1. **The grid factor decides the EV answer.** For a 2.9 kWh electric scooter, electricity is 34 of 40 g CO2e/km in our India-2026 run. Using the Central Electricity Authority's FY2025-26 *average* grid factor (0.675 t CO2/MWh) the e-scooter emits **36.9 % less** than a 110 cc petrol scooter; using CEA's *operating margin* (0.963) only **14.0 %**; using the *build margin* (0.446) **55.2 %**. Which factor is right depends on the decision being made — a database must make that choice explicit.
-2. **Published numbers are hard to audit.** The open reference for Indian two-wheelers (ICCT, 2021) reports a 38.4 % saving for e-scooters, but its stated inputs reproduce 48.5 %; its table implies 2.0 L/100 km and 4.13 kWh/100 km where the text says 2.2 and 3.7. Without number-level provenance, such gaps go unnoticed.
+India's vehicle LCAs mostly borrow international inventories, but in India the answer depends on Indian facts. Our first two case studies show three things:
+1. **Grid electricity is the largest stage of every EV result (contribution), and the grid-accounting method (a scenario choice) moves the answer more than parameter uncertainty within any one method.** On the Central Electricity Authority's FY2025-26 *average* grid (0.675 t CO2/MWh at the busbar; 0.842 kg CO2e/kWh at the meter once combustion CH4/N2O, coal-mine methane and 17.63 % T&D losses are added), a 2.9 kWh e-scooter emits **38.1 % (32.0 to 43.2)** less than a 110 cc petrol scooter (90 % interval in brackets). The same e-scooter saves only **16.2 %** if charging is attributed to CEA's *operating margin*, and **56.4 %** at its *build margin*. For an e-Verito-class electric sedan (19.2 kWh/100 km) the average-grid saving is just **10.0 % (-10.1 to 25.6)**, and at the operating margin it emits **20.5 % more** than petrol.
+2. **Published numbers are hard to audit.** Re-computing ICCT's (2021) Indian two-wheeler LCA, its Table 1 stage values are consistent with about 2.0 L/100 km and 4.13 kWh/100 km, whereas its footnote states 2.2 and 3.7. This is a documentation gap, not evidence that ICCT's conclusion is wrong: rounding, a motorcycle/scooter label swap, charging losses or other unstated adjustments may explain part of it. We report both readings, carry the spread as uncertainty, and will ask the authors.
+3. **Independent Indian studies disagree in informative ways.** Our ICCT-based CNG sedan (224 g CO2e/km) sits above the two CNG cars in TERI's 2026 rating study (168 and 209 g/km). India-specific inputs (CNG consumption, methane slip, vehicle mass) move such conclusions.
 
-**Users and decisions.** MHI and ICAT (technology evaluation, scheme design such as PM E-DRIVE, homologation-adjacent sustainability work), OEMs and suppliers (product carbon footprints, material and process choices, ESG/BRSR reporting), researchers (reproducible inventories) and policymakers (fleet-level scenarios).
+An Indian LCA database therefore has to do more than store more numbers. It must make every number auditable, show which Indian inputs drive a decision, and keep method choices (grid accounting, end of life, gas basis) explicit.
 
-## 2. Goal and scope (ISO 14040/14044 structure)
-- **Goal:** a transparent, extensible India-specific database and engine that estimates life-cycle impacts of vehicles, components and materials, and compares technologies and manufacturing choices.
-- **Functional units:** 1 vehicle-km over the vehicle lifetime (vehicle comparisons); 1 kg of material or 1 unit of component (material/component comparisons); 1 kWh of battery capacity.
-- **System boundary (cradle-to-grave):** raw materials → material production → component manufacturing → assembly → logistics → use (fuel/electricity production, tailpipe, maintenance) → end of life (reuse, recycling, recovery, disposal). Capital goods included where the source includes them; stated per record.
-- **Impact categories:** climate change (GWP100, IPCC AR6 factors as the target basis; records state their own gas basis) first; then particulate matter, acidification, resource use and water via published characterisation factors as the database grows.
-- **Modelling choices (explicit, switchable):** attributional by default; consequential-style sensitivity via CEA operating/build margins; end-of-life cut-off by default with avoided-burden as sensitivity; static (FY) and lifetime-average grid factors.
+## 2. Users and decisions
+| User | Decision | What the system gives |
+|---|---|---|
+| MHI / ICAT | Technology evaluation, scheme design (e.g. PM E-DRIVE), test and standards work | Comparisons with uncertainty and P(better); grid-method and state sensitivities; data-gap ranking to commission studies |
+| OEMs and suppliers | Product carbon footprints, material and process choices, BRSR/ESG | Cited Indian factors, a contribution template, declared-unit results for materials and components |
+| Researchers | Reproducible inventories | Versioned open data, page-and-quote provenance, scripts, a verification harness |
+| Policymakers | Fleet and grid scenarios | Average vs margin vs prospective grid views, labelled as such |
 
-## 3. Database architecture and data-collection framework
-- **Unit of data = a cited record.** Each number stores: value, unit, quantity type, gas basis, boundary, geography (IN or IN-state), reference year, technology, source, **locator** (page/table/cell), **verbatim quote**, access date, **pedigree scores** (reliability, completeness, temporal, geographical, technological; 1–5), status (`verified` / `derived` with formula / `assumption` / `synthetic` / `UNVERIFIED`). The loader fails closed: a `verified` record without a quote or a `derived` record without a formula is rejected.
-- **Layers:** materials · components · manufacturing processes · energy (grid, fuels) · logistics · use phase · end of life · battery · vehicle templates · method (characterisation, pedigree factors).
-- **Storage and versioning:** human-readable YAML in git (every change reviewed and diffable), validated by pydantic schemas; exports to CSV and openLCA JSON-LD (planned) so existing tools can consume it.
-- **How new datasets plug in (data-collection framework):** (1) register the source and a fetch script; (2) extract candidate records — manually or with the AI-assisted extractor (spike A) that must return the page and a verbatim quote, which a verifier checks against the document text; (3) review and pedigree-score; (4) merge — contract tests and the benchmark harness run automatically. Suppliers and ICAT can submit records through the same template.
+## 3. Goal and scope (ISO 14040/14044 structure)
+- **Goal:** an open, extensible India-specific inventory and engine that estimates life-cycle GHG (later more categories) of vehicles, components and materials, and compares technologies and manufacturing choices, at screening level now and review-ready later.
+- **Functional units and reference flows:**
+  - *Vehicle comparisons:* 1 vehicle-km of passenger transport by vehicles of the same segment and service, over the same lifetime. **Case 1:** 110 cc petrol scooter vs 2.9 kWh e-scooter, 120,000 km, 1–2 riders, no battery replacement (the ICCT assumption, stated as a limitation). **Case 2:** sedan-segment car (segment-average mass 998 kg) — petrol, diesel, CNG and battery-electric — 165,000 km over 15 years, no battery replacement. Reference flows: one vehicle (glider + powertrain + battery) per lifetime, fuel in L or kg per km, and electricity in kWh per km **at the plug** (charging losses included).
+  - *Materials and components:* **declared units** (1 kg of material at the factory gate; 1 component), not functional units, because function depends on the application.
+  - *Batteries:* 1 kWh of nominal capacity for cradle-to-gate declared results. Battery comparisons will use lifetime delivered energy (kWh throughput) as the functional unit.
+- **System boundary.** The matrix below is generated from the scenario files; "excluded" items are reported, never silently dropped.
 
-## 4. Calculation engine
-- **Product systems** are parameterised: each parameter points to a record id (no free constants), and each life-cycle stage is an expression (e.g. electricity stage = kWh/km × grid factor ÷ (1 − T&D loss)). The engine returns stage-wise results per functional unit.
-- **Uncertainty:** each record becomes a lognormal distribution — from the source's stated range when given (e.g. IPCC 95 % intervals), otherwise from its pedigree scores using the ecoinvent/Weidema uncertainty factors (as implemented in Brightway's `pedigree_matrix`). Monte Carlo is **paired**: a record shared by two vehicles is sampled once per draw, so comparisons are not inflated by independent noise.
-- **Interpretation outputs:** 90 % intervals, probability that one option beats another, elasticity of the result to every record, an elasticity-weighted **data-quality index** (1 best … 5 worst), the India-specific share of the result, and a **data-gap ranking** (share of variance per record) that tells ICAT which Indian dataset to collect next.
-
-## 5. Validation
-- **Replication:** re-compute published Indian LCAs from their stated inputs. First result: ICCT (2021) Table 1 reproduced at **0.06 % mean absolute error** (petrol scooter 60.90 vs 60.9 g CO2e/km; e-scooter 37.54 vs 37.5) using the inputs the table implies; the inputs as printed give 8.96 % error — reported, not hidden.
-- **Cross-checks:** the same study's figure (digitized from the PDF's vector drawing) matches the table to ≤ 0.03 g/km.
-- **Planned:** independent Indian studies (2025–26 peer-reviewed and SAE papers), held-out benchmarks to calibrate the uncertainty intervals, internal consistency checks (CEA station data reproduce CEA national totals — conventional generation 1,424.19 BU matched exactly).
-
-## 6. Innovation
-- **A. Verified-provenance ingestion:** an AI-assisted pipeline that turns Indian public documents (CEA, ministry reports, SEBI BRSR disclosures, EPDs) into records with page + quote, automatically checked against the document — the scalable way to grow a national database without losing auditability. Measured by field-level accuracy against a hand-verified gold set.
-- **B. India grid-factor service:** emission factors by region (national → state), period (financial year → vehicle-lifetime average, prospective), method (average / operating margin / build margin) and delivery point (busbar / consumer meter), each with its derivation. Measured by reconstructing CEA's published national values from station data and back-testing year-ahead estimates.
-- Plus: number-level provenance in the dashboard, paired uncertainty, and data-gap ranking.
-
-## 7. Preliminary case study — petrol vs electric scooter (India, 2026)
-| Scenario (grid factor for charging) | Petrol scooter g CO2e/km [90 %] | E-scooter g CO2e/km [90 %] | EV saving [90 %] |
+| Stage | Case 1 (2W) | Case 2 (cars) | Status |
 |---|---|---|---|
-| CEA FY2025-26 average | 62.95 [57.59–68.99] | 39.71 [36.90–42.84] | 36.9 % [29.2–43.8 %] |
-| CEA operating margin | 62.95 [57.59–68.99] | 54.15 [50.18–58.54] | 14.0 % [3.3–23.5 %] |
-| CEA build margin | 62.95 [57.59–68.99] | 28.23 [26.30–30.40] | 55.2 % [49.8–60.0 %] |
+| Materials + vehicle manufacture (glider, powertrain) | ✔ (mass × factor) | ✔ (mass × factor) | European proxy factors (ICCT/Ricardo) — Indian route data planned |
+| Vehicle end of life / recycling | ✔ inside the production factor (hybrid cut-off / avoided burden, as in source) | ✔ same | Flagged `eol_included`, so no second EOL stage can be added |
+| Traction battery manufacture | ✔ | ✔ | 68 kg CO2e/kWh (China/India, NMC622) |
+| Battery replacement, second life, recycling | ✘ | ✘ | Excluded — planned (§5) |
+| Fuel production (WTT) | ✔ ICCT India blend | ✔ | Includes ethanol share and inherited allocation |
+| Electricity generation + T&D | ✔ CEA CO2 + CH4/N2O + coal-mine CH4, ÷ (1 − T&D) | ✔ | Partial upstream: mining energy, coal rail transport, gas supply chain and plant/grid infrastructure excluded |
+| Tailpipe (TTW), incl. CNG methane slip | ✔ | ✔ | |
+| Maintenance (tyres, fluids, after-treatment) | ✔ | ✔ | Digitized from ICCT; small |
+| Charging equipment, roads, logistics to market | ✘ | ✘ | Excluded at screening level; logistics layer planned |
 
-Inputs: CEA CO2 Baseline v22.0; T&D losses 17.63 % (FY2023-24, Lok Sabha USQ 842); IPCC 2006 petrol defaults + UNSD density; ICCT (2021) vehicle and battery factors, lifetime and consumption. **Caveats:** the grid term is CO2-only (no coal-mining methane or plant construction yet), so EV values are a lower bound; petrol is modelled as E0 for tailpipe CO2 although India now blends ethanol; vehicle and battery factors are 2021 global values. Parameter uncertainty is driven mostly by real-world fuel and electricity consumption (≈ 65 % of variance) — Indian on-road data is the most valuable next dataset.
+  **Cut-off rule (proposed):** a process may be excluded only if it is estimated, and documented, at < 1 % of the total and is not decision-relevant between the compared options. The cumulative exclusions must stay below 5 %. Exclusions are listed per result.
+- **Modelling approach:** attributional by default (CEA weighted-average grid). CEA operating and build margins are reported as **decision sensitivities**, not as a consequential LCA. A consequential model would need charging-time profiles and marginal dispatch and capacity data.
+- **Impact assessment and gas basis:** climate change, GWP100. Central results use IPCC AR5 values (CH4-fossil 30, N2O 265) because ICCT's vehicle and fuel factors exist only as AR5 CO2e aggregates; AR6 values (29.8, 273) change the grid factor by < 0.01 %. Moving everything to AR6 requires elementary-flow inventories (roadmap). Every record declares its gas basis (CO2-only, AR5/AR6 GWP100, 20-year methane, unspecified). The engine flags every result whose inputs mix bases. Today the **car case is harmonized** on AR5 GWP100. The **two-wheeler case is not yet harmonized**, because ICCT's 2W production factor uses a 20-year methane horizon; the dashboard labels it a partial indicator. Other impact categories (PM2.5, acidification, resource use) follow once the GHG core is reviewed.
 
-## 8. Limitations (stated up front)
-Scope for the prototype: two-wheelers first (then 3W, cars, buses); GHG first. Indian process-level data (casting, forging, painting) is sparse — proxies will be labelled with pedigree scores. State-level grid factors from station data are generation-based and ignore inter-state trade unless flow data are added. Prospective factors are scenarios, not forecasts.
+## 4. Allocation policy (multi-output processes)
+Hierarchy we apply to new data: (1) avoid allocation by subdivision or system expansion where the co-product system is known (e.g. refinery units, CHP with known heat use); (2) physical causality (mass or energy, by the dominant function); (3) economic allocation, stating the price year, with mass and energy as sensitivities. Every record carries an `allocation` field. Secondary aggregate factors keep the source's choice and are marked `inherited-unspecified` when the source does not state it (today: petrol, diesel and CNG WTT, and battery factors), so reviewers can see where allocation is not under our control. For refinery products, molasses ethanol, steel slag and by-product gases, and CHP, the database will hold process-level records with co-products before any allocation (roadmap stage 4).
 
-## 9. Sources, tools and disclosures
-- **Data (opened):** CEA CO2 Baseline Database v22.0 user guide and workbook (2026); Lok Sabha Unstarred Q. 842 (4 Dec 2025); IPCC 2006 Guidelines Vol. 2 Ch. 1; UN Statistics Division Energy Statistics Yearbook 2020 Table II; ICCT Briefing "Fuel consumption standards for the new two-wheeler fleet in India" (Anup & Deo, 2021); ICCT Fact Sheet "Life-cycle GHG emissions of combustion engine and electric passenger cars and two-wheelers in India" (Bieker, 2021); Brightway `pedigree_matrix`.
-- **Software:** Python, pydantic, NumPy, PyYAML, pdfplumber, pdftotext; openLCA/Brightway as reference engines. No synthetic data used so far; any synthetic data will be labelled.
-- **AI tools:** GitHub Copilot (coding agent) assisted with code and drafting; planned use of large language models (Azure OpenAI) inside the extraction pipeline, always with quote verification and human review.
+## 5. End of life
+Three switchable models, never mixed in one result: **cut-off / recycled content** (default; burdens of recycled input, no credit), **avoided burden** (credits for recycling at end of life), and the **EU PEF Circular Footprint Formula** (sensitivity, to align with export-market reporting). The fields are: collection rate, route (formal or informal), process yield, the secondary-material quality ratio, credits and burdens, and second-life allocation for batteries. Current vehicle factors already embed ICCT/Ricardo's hybrid approach and carry `eol_included: true`, so the engine will not add a second EOL stage to them. India-specific data to collect: Vehicle Scrapping Policy registered facilities, battery-waste rules and recycler disclosures, and informal-sector recovery shares.
+
+## 6. Database architecture and data-collection framework
+- **Unit of data — a cited record:** value, unit, quantity type, gas basis, boundary, geography (IN or IN-state), reference year, technology, source, **locator** (page/table/cell), **verbatim quote**, access date, **pedigree scores** with scorer and rationale, allocation, `eol_included`, and status (`verified` / `derived` with formula / `assumption` / `synthetic` / `UNVERIFIED`). The loader fails closed: a `verified` record needs a quote, a `derived` record needs a formula, and unknown gas bases or allocation labels are rejected.
+- **Today:** 124 records (104 verified, 20 derived) from 19 opened sources, covering energy (73, incl. 35 state T&D-loss records and 31 upstream-grid records), fuels (13), use phase (17), vehicles (10), batteries (4) and method factors (7). Plus 6 benchmark studies.
+- **Storage:** human-readable YAML in git (reviewable diffs, versioned releases), pydantic schemas, and a registry-driven fetcher that re-downloads all 18 raw public files. Planned: a process/exchange layer (one process, many flows, co-products) that exports to openLCA JSON-LD.
+- **How a new dataset plugs in:** (1) register the source and its URL; (2) propose candidate records with page and quote, manually or with the AI-assisted extractor (§9); (3) the **quote verifier** checks every quote against the document text, failing closed; (4) review and pedigree-score; (5) merge — contract tests and the verification harness run automatically. ICAT, OEMs and suppliers use the same template.
+
+## 7. Calculation engine and uncertainty
+- **Product systems** are parameterised: every parameter is a record id (no free constants). Each life-cycle stage is an expression, e.g. electricity = kWh/km × CO2e factor ÷ (1 − T&D loss). Scenarios inherit from a base and override only what changes, so each sensitivity is a one-line difference.
+- **Uncertainty:** stated source ranges are used as given (95 % ranges as lognormal, bounds as triangular around the published value, source ambiguity as uniform — e.g. ICCT's 2.0–2.2 L/100 km). Otherwise a pedigree-matrix lognormal is used (ecoinvent/Weidema factors as in Brightway's `pedigree_matrix`; single scorer today, a second reviewer planned). Characterisation factors (GWP) are fixed. Monte Carlo is **paired**: shared records are sampled once per draw, so comparisons report P(option A < option B) without inflated noise. Correlation groups (e.g. one real-world uplift factor shared by all ICE consumption values) are planned.
+- **Interpretation outputs:** 90 % intervals; P(lower); elasticities; an elasticity-weighted **pedigree screening score** (1 best … 5 worst), not a validated data-quality rating; the India-specific share of the result; and a **screening importance** (normalized squared Spearman rank correlation, not a variance decomposition) that ranks which Indian data to collect next.
+
+## 8. Verification and validation
+- **Arithmetic implementation verification** (not validation, since the same source supplies inputs and targets): ICCT (2021) 2W Table 1 reproduced at **0.06 % mean absolute error**; ICCT (2021) India sedans at **1.0 %** (petrol −0.8 %, diesel −2.3 %, CNG −0.9 %, BEV +0.1 %). The footnote-as-printed variant gives 8.96 %, which is the documentation gap in §1.
+- **Independent plausibility band (not validation):** three non-ICCT Indian car LCAs — TERI (2026, 59 vehicles, 150,000 km), IIT Guwahati thesis (2025, 160,000 km), IIT Kanpur report (2023, 200,000 km). Our central petrol sedan (226 g/km) and BEV sedan (204 g/km) fall inside their ranges (184–247 and 156–265 g/km). CNG (224 vs 168–209) and diesel (239 vs one SUV at 272) do not, so we treat these as findings to explain, not to tune away.
+- **Planned:** held-out Indian benchmarks for interval coverage (we found no open independent 2W study yet), an openLCA/Brightway cross-check of one case, and dimensional (unit) analysis.
+
+## 9. Innovation (spikes) — honest status
+Chosen after two independent reviews (`reviews/`): **A + D are the spikes**, the national grid (B) is a bounded foundation, and harmonization plus honest uncertainty (C) are mandatory practice.
+- **A. Evidence-anchored ingestion.** An extractor (to build) proposes records from Indian public documents (CEA, ministry and Parliament answers, SEBI BRSR, EPDs) with page/cell coordinates and quotes. Fail-closed checks (built):
+  - quote presence: every fragment verbatim and in order, and a number may not match inside a larger one;
+  - value-in-quote: the stored value must appear in its own quote (101/102 records, 1 waived with reason).
+  Records move through states: source-anchored → semantically checked → reviewer-approved. The checks found 104/104 quotes with 0 observed false accepts in 208 synthetic digit-perturbed negatives. By the rule of three, the false-accept rate could still be up to about 1.4 % (95 % bound); zero accepts is not a guarantee. The ratchet ledger keeps a rejected variant that overfit and failed on held-out records. The innovation we claim is semantic qualification and measured curation effort (reviewer minutes per usable record), not extraction itself — LLM-based LCI extraction already exists (Kumar et al., 2025, *Environ. Sci. Technol.*; Tang et al., 2026).
+- **D. One Indian material/component route comparison** (behind a 4–7 Oct source-availability gate). Example: a steel part via BF-BOF vs coal-based DRI-EAF vs scrap-EAF, or primary aluminium (captive coal power) vs recycled, or battery cell origin vs Indian pack assembly — built end to end from Indian public sources, with the boundary checks that stop corporate intensity ratios being used as product inventories.
+- **B (foundation). National grid factor** — built: CEA average as the attributional central value; operating and build margins as labelled sensitivities; CO2, or partial-upstream CO2e at AR5 or AR6 GWP100; busbar or meter. The state view is a national generation factor with a state T&D-loss adjustment (0.754–1.30 kg CO2/kWh at the meter), not a state generation mix. State consumption-based and prospective factors are deferred until they can be back-tested.
+
+## 10. Preliminary results (committed run; g CO2e per vehicle-km; 90 % intervals)
+<!-- results-table:begin -->
+<!-- results-table:end -->
+
+**Reading:** for two-wheelers, the EV advantage is robust to parameter uncertainty and to grid method (always lower). For cars, the answer depends on the vehicle's efficiency and on the grid method: the 2021-era e-Verito-class BEV is not clearly better on today's average grid. The input that matters most is **real-world BEV consumption** (64 % of the screening importance), followed by petrol consumption (25 %). Indian on-road energy-use data is the highest-value next dataset. **Caveats:** legacy 2021 vehicle data (an illustrative "2026-grid" case, not a 2026 fleet claim); partial grid upstream; European production proxies; no battery replacement or second life.
+
+## 11. Limitations (stated up front)
+- Prototype scope: 2W and cars first (3W and buses next); GHG first.
+- Indian process-level data (casting, forging, painting) is sparse; proxies carry pedigree scores and labels.
+- The grid CO2e excludes mining energy, coal transport, gas supply and infrastructure.
+- The state view is loss-adjusted national generation, not a state mix.
+- Pedigree scores have one scorer; correlations beyond shared records are not yet modelled.
+- No independent open 2W benchmark has been found yet.
+- Prospective grid factors will be scenarios, not forecasts.
+
+## 12. Sources, tools and disclosures
+**Data (opened; full registry with URLs, locators and quotes in `data/sources/*.yaml`):**
+- **Grid, losses and coal:** CEA CO2 Baseline Database v22.0 (user guide and workbook, 2026); Lok Sabha Unstarred Q. 842 (4 Dec 2025, T&D losses); Ministry of Coal / Coal Directory of India 2024-25 (mine-type shares); India's Fourth Biennial Update Report (MoEFCC, 2024; coal-mine methane factors).
+- **IPCC and statistics:** IPCC 2006 Guidelines Vol. 2 Ch. 1, 2 and 4; IPCC AR6 WG1 Ch. 7 (GWP100); IPCC AR5 WG1 Ch. 8; UN Statistics Division Energy Statistics Yearbook 2020, Table II.
+- **ICCT:** Anup & Deo (2021) "Fuel consumption standards for the new two-wheeler fleet in India"; Bieker (2021) India fact sheet; Bieker (2021) "A global comparison of the life-cycle GHG emissions of combustion engine and electric passenger cars".
+- **Independent Indian studies:** TERI (2026) "Life Cycle Assessment Based Rating Framework for Four-Wheeler Passenger Vehicles"; IIT Guwahati PhD thesis (2025); IIT Kanpur report (2023).
+- **Method:** Brightway `pedigree_matrix`.
+
+**Software:** Python, pydantic, NumPy, PyYAML, openpyxl, pdfplumber/pdftotext; openLCA and Brightway as reference engines. **Synthetic data:** none. Assumed ranges are labelled `assumption` or noted in the record. **AI tools:** GitHub Copilot coding agents (Claude Opus 5.5; reviewers on GPT-6 models) assisted with code, data transcription (every quote machine-verified) and drafting. Planned LLM use inside the extractor always passes the quote verifier and human review.

@@ -1,7 +1,7 @@
 {
   "harness": "v2",
-  "commit": "0045847",
-  "inputs_id": "83a80a699b",
+  "commit": "d151db6-dirty",
+  "inputs_id": "83a80a699b-dirty",
   "n": 10000,
   "seed": 20261004,
   "db": {
@@ -130,7 +130,7 @@
           "p05": 55.83,
           "p95": 66.53,
           "dq_score": 1.92,
-          "india_weighted_share": 0.96,
+          "india_footprint_share": 0.92,
           "gas_basis_shares": {
             "GWP20(CH4)": 1.0
           }
@@ -141,7 +141,7 @@
           "p05": 34.51,
           "p95": 40.97,
           "dq_score": 1.95,
-          "india_weighted_share": 0.93,
+          "india_footprint_share": 0.84,
           "gas_basis_shares": {
             "GWP20(CH4)": 1.0
           }
@@ -192,7 +192,7 @@
           "p05": 60.93,
           "p95": 72.7,
           "dq_score": 1.92,
-          "india_weighted_share": 0.97,
+          "india_footprint_share": 0.93,
           "gas_basis_shares": {
             "GWP20(CH4)": 1.0
           }
@@ -203,7 +203,7 @@
           "p05": 31.51,
           "p95": 37.33,
           "dq_score": 1.96,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.83,
           "gas_basis_shares": {
             "GWP20(CH4)": 1.0
           }
@@ -240,13 +240,13 @@
       }
     },
     "in2026_cea_average": {
-      "label": "Sensitivity \u2014 CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): lower bound for the EV",
+      "label": "Sensitivity \u2014 CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): understates grid emissions, so an upper bound on the EV saving",
       "case": "2W \u2014 petrol vs electric scooter",
       "kind": "sensitivity",
       "harmonized": false,
       "gas_basis_families": [
         "CO2-only",
-        "GWP100",
+        "GWP100-AR5",
         "GWP20(CH4)",
         "unspecified"
       ],
@@ -257,11 +257,11 @@
           "p05": 59.96,
           "p95": 68.86,
           "dq_score": 2.1,
-          "india_weighted_share": 0.96,
+          "india_footprint_share": 0.93,
           "gas_basis_shares": {
             "GWP20(CH4)": 0.073,
             "unspecified": 0.016,
-            "GWP100": 0.911
+            "GWP100-AR5": 0.911
           }
         },
         "ev_scooter": {
@@ -270,10 +270,10 @@
           "p05": 36.74,
           "p95": 41.26,
           "dq_score": 1.78,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.85,
           "gas_basis_shares": {
             "GWP20(CH4)": 0.108,
-            "GWP100": 0.042,
+            "GWP100-AR5": 0.042,
             "unspecified": 0.026,
             "CO2-only": 0.824
           }
@@ -310,12 +310,12 @@
       }
     },
     "in2026_cea_operating_margin": {
-      "label": "Sensitivity \u2014 EV charging at CEA operating margin, CO2e (fossil-dominated proxy, upper bound)",
+      "label": "Sensitivity \u2014 EV charging at CEA operating margin, CO2e (fossil-dominated proxy; not a guaranteed upper bound)",
       "case": "2W \u2014 petrol vs electric scooter",
       "kind": "sensitivity",
       "harmonized": false,
       "gas_basis_families": [
-        "GWP100",
+        "GWP100-AR5",
         "GWP20(CH4)",
         "unspecified"
       ],
@@ -326,23 +326,23 @@
           "p05": 60.06,
           "p95": 68.97,
           "dq_score": 2.1,
-          "india_weighted_share": 0.96,
+          "india_footprint_share": 0.93,
           "gas_basis_shares": {
             "GWP20(CH4)": 0.073,
             "unspecified": 0.016,
-            "GWP100": 0.911
+            "GWP100-AR5": 0.911
           }
         },
         "ev_scooter": {
           "label": "Electric scooter 2.9 kWh",
           "total": 53.88,
           "p05": 50.96,
-          "p95": 57.54,
-          "dq_score": 1.75,
-          "india_weighted_share": 0.95,
+          "p95": 57.55,
+          "dq_score": 1.76,
+          "india_footprint_share": 0.89,
           "gas_basis_shares": {
             "GWP20(CH4)": 0.078,
-            "GWP100": 0.903,
+            "GWP100-AR5": 0.904,
             "unspecified": 0.019
           }
         }
@@ -384,7 +384,7 @@
       "harmonized": false,
       "gas_basis_families": [
         "CO2-only",
-        "GWP100",
+        "GWP100-AR5",
         "GWP20(CH4)",
         "unspecified"
       ],
@@ -395,11 +395,11 @@
           "p05": 59.96,
           "p95": 68.86,
           "dq_score": 2.1,
-          "india_weighted_share": 0.96,
+          "india_footprint_share": 0.93,
           "gas_basis_shares": {
             "GWP20(CH4)": 0.073,
             "unspecified": 0.016,
-            "GWP100": 0.911
+            "GWP100-AR5": 0.911
           }
         },
         "ev_scooter": {
@@ -408,10 +408,10 @@
           "p05": 26.48,
           "p95": 29.71,
           "dq_score": 1.82,
-          "india_weighted_share": 0.9,
+          "india_footprint_share": 0.79,
           "gas_basis_shares": {
             "GWP20(CH4)": 0.15,
-            "GWP100": 0.059,
+            "GWP100-AR5": 0.059,
             "unspecified": 0.036,
             "CO2-only": 0.756
           }
@@ -454,7 +454,7 @@
       "harmonized": false,
       "gas_basis_families": [
         "CO2-only",
-        "GWP100",
+        "GWP100-AR5",
         "GWP20(CH4)",
         "unspecified"
       ],
@@ -463,26 +463,26 @@
           "label": "Petrol scooter 110 cc class",
           "total": 66.86,
           "p05": 62.35,
-          "p95": 71.82,
+          "p95": 71.87,
           "dq_score": 2.31,
-          "india_weighted_share": 0.36,
+          "india_footprint_share": 0.22,
           "gas_basis_shares": {
             "GWP20(CH4)": 0.07,
             "unspecified": 0.015,
-            "GWP100": 0.201,
+            "GWP100-AR5": 0.201,
             "CO2-only": 0.714
           }
         },
         "ev_scooter": {
           "label": "Electric scooter 2.9 kWh",
           "total": 39.79,
-          "p05": 37.69,
-          "p95": 42.42,
+          "p05": 37.71,
+          "p95": 42.37,
           "dq_score": 1.78,
-          "india_weighted_share": 0.93,
+          "india_footprint_share": 0.85,
           "gas_basis_shares": {
             "GWP20(CH4)": 0.106,
-            "GWP100": 0.869,
+            "GWP100-AR5": 0.869,
             "unspecified": 0.025
           }
         }
@@ -492,38 +492,38 @@
           "vs": "ice_scooter",
           "reduction_central": 0.4048,
           "reduction_90pct": [
-            0.3455,
-            0.4552
+            0.3451,
+            0.4548
           ],
           "p_lower": 1.0,
           "top_importance": [
             [
               "fuels.petrol.density.unsd2020",
-              0.258
+              0.271
             ],
             [
               "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity",
-              0.237
+              0.229
             ],
             [
               "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity",
-              0.217
+              0.22
             ],
             [
               "energy.electricity.in.grid_wavg_generation.fy2025_26",
-              0.112
+              0.128
             ]
           ]
         }
       }
     },
     "in2026_avg_co2e": {
-      "label": "India 2026-grid, attributional \u2014 CEA FY2025-26 average on CO2e (AR6 GWP100), partial upstream (legacy 2021 ICCT vehicle data)",
+      "label": "India 2026-grid, attributional \u2014 CEA FY2025-26 average on CO2e (AR5 GWP100, matching ICCT inputs), partial upstream (legacy 2021 ICCT vehicle data)",
       "case": "2W \u2014 petrol vs electric scooter",
       "kind": "decision",
       "harmonized": false,
       "gas_basis_families": [
-        "GWP100",
+        "GWP100-AR5",
         "GWP20(CH4)",
         "unspecified"
       ],
@@ -534,11 +534,11 @@
           "p05": 60.06,
           "p95": 68.97,
           "dq_score": 2.1,
-          "india_weighted_share": 0.96,
+          "india_footprint_share": 0.93,
           "gas_basis_shares": {
             "GWP20(CH4)": 0.073,
             "unspecified": 0.016,
-            "GWP100": 0.911
+            "GWP100-AR5": 0.911
           }
         },
         "ev_scooter": {
@@ -547,10 +547,10 @@
           "p05": 37.7,
           "p95": 42.45,
           "dq_score": 1.78,
-          "india_weighted_share": 0.93,
+          "india_footprint_share": 0.85,
           "gas_basis_shares": {
             "GWP20(CH4)": 0.106,
-            "GWP100": 0.869,
+            "GWP100-AR5": 0.869,
             "unspecified": 0.025
           }
         }
@@ -560,8 +560,8 @@
           "vs": "ice_scooter",
           "reduction_central": 0.381,
           "reduction_90pct": [
-            0.3199,
-            0.4316
+            0.3198,
+            0.4317
           ],
           "p_lower": 1.0,
           "top_importance": [
@@ -591,7 +591,7 @@
       "kind": "replication",
       "harmonized": true,
       "gas_basis_families": [
-        "GWP100"
+        "GWP100-AR5"
       ],
       "products": {
         "petrol": {
@@ -600,9 +600,9 @@
           "p05": 202.18,
           "p95": 254.11,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.86,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "diesel": {
@@ -611,9 +611,9 @@
           "p05": 214.21,
           "p95": 269.13,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.87,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "cng": {
@@ -622,9 +622,9 @@
           "p05": 210.16,
           "p95": 269.07,
           "dq_score": 2.22,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.85,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "bev": {
@@ -633,9 +633,9 @@
           "p05": 158.21,
           "p95": 218.95,
           "dq_score": 2.23,
-          "india_weighted_share": 0.9,
+          "india_footprint_share": 0.8,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         }
       },
@@ -651,7 +651,7 @@
           "top_importance": [
             [
               "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.397
+              0.398
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
@@ -729,7 +729,7 @@
       "kind": "replication",
       "harmonized": true,
       "gas_basis_families": [
-        "GWP100"
+        "GWP100-AR5"
       ],
       "products": {
         "petrol": {
@@ -738,9 +738,9 @@
           "p05": 202.18,
           "p95": 254.11,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.86,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "diesel": {
@@ -749,9 +749,9 @@
           "p05": 214.21,
           "p95": 269.13,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.87,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "cng": {
@@ -760,9 +760,9 @@
           "p05": 210.16,
           "p95": 269.07,
           "dq_score": 2.22,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.85,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "bev": {
@@ -771,9 +771,9 @@
           "p05": 129.15,
           "p95": 175.42,
           "dq_score": 2.24,
-          "india_weighted_share": 0.87,
+          "india_footprint_share": 0.75,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         }
       },
@@ -789,7 +789,7 @@
           "top_importance": [
             [
               "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.397
+              0.398
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
@@ -862,57 +862,57 @@
       }
     },
     "car_in2026_cea_average": {
-      "label": "Sensitivity \u2014 CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): lower bound for the BEV",
+      "label": "Sensitivity \u2014 CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): understates grid emissions, so an upper bound on the BEV saving",
       "case": "Car \u2014 sedan: petrol vs diesel vs CNG vs electric",
       "kind": "sensitivity",
       "harmonized": false,
       "gas_basis_families": [
         "CO2-only",
-        "GWP100"
+        "GWP100-AR5"
       ],
       "products": {
         "petrol": {
           "label": "Petrol sedan (6.8 L/100 km real-world)",
           "total": 226.17,
-          "p05": 202.06,
-          "p95": 253.96,
+          "p05": 202.38,
+          "p95": 254.05,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.86,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "diesel": {
           "label": "Diesel sedan (6.0 L/100 km real-world)",
           "total": 239.45,
-          "p05": 214.46,
-          "p95": 268.76,
+          "p05": 214.37,
+          "p95": 268.59,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.87,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "cng": {
           "label": "CNG sedan (5.0 kg/100 km real-world)",
           "total": 224.07,
-          "p05": 211.01,
-          "p95": 268.71,
+          "p05": 210.79,
+          "p95": 269.44,
           "dq_score": 2.22,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.85,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "bev": {
           "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
           "total": 199.25,
-          "p05": 170.49,
-          "p95": 234.57,
+          "p05": 170.42,
+          "p95": 234.47,
           "dq_score": 1.9,
-          "india_weighted_share": 0.91,
+          "india_footprint_share": 0.81,
           "gas_basis_shares": {
-            "GWP100": 0.21,
+            "GWP100-AR5": 0.21,
             "CO2-only": 0.79
           }
         }
@@ -922,26 +922,26 @@
           "vs": "petrol",
           "reduction_central": -0.0587,
           "reduction_90pct": [
-            -0.2411,
-            0.0979
+            -0.2361,
+            0.0984
           ],
-          "p_lower": 0.2743,
+          "p_lower": 0.2822,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.403
+              0.391
             ],
             [
               "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.393
-            ],
-            [
-              "fuels.gasoline.in.ttw.icct2021_car",
-              0.088
+              0.388
             ],
             [
               "fuels.diesel.in.ttw.icct2021_car",
-              0.08
+              0.094
+            ],
+            [
+              "fuels.gasoline.in.ttw.icct2021_car",
+              0.09
             ]
           ]
         },
@@ -949,26 +949,26 @@
           "vs": "petrol",
           "reduction_central": 0.0093,
           "reduction_90pct": [
-            -0.2379,
-            0.1057
+            -0.2389,
+            0.11
           ],
-          "p_lower": 0.3044,
+          "p_lower": 0.3117,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.377
+              0.373
             ],
             [
               "use.car.sedan.cng.kg_per_100km.icct2021",
-              0.338
+              0.332
             ],
             [
               "use.car.cng.methane_slip.icct2021",
-              0.113
+              0.125
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.073
+              0.075
             ]
           ]
         },
@@ -976,26 +976,26 @@
           "vs": "petrol",
           "reduction_central": 0.1191,
           "reduction_90pct": [
-            -0.0725,
-            0.274
+            -0.0744,
+            0.2747
           ],
-          "p_lower": 0.8587,
+          "p_lower": 0.8613,
           "top_importance": [
             [
               "use.car.sedan.bev.kwh_per_100km.icct2021",
-              0.635
+              0.621
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.253
+              0.265
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.064
+              0.06
             ],
             [
               "energy.electricity.in.grid_wavg_generation.fy2025_26",
-              0.024
+              0.03
             ]
           ]
         }
@@ -1007,51 +1007,51 @@
       "kind": "sensitivity",
       "harmonized": true,
       "gas_basis_families": [
-        "GWP100"
+        "GWP100-AR5"
       ],
       "products": {
         "petrol": {
           "label": "Petrol sedan (6.8 L/100 km real-world)",
           "total": 226.17,
-          "p05": 202.2,
-          "p95": 253.89,
+          "p05": 202.64,
+          "p95": 253.82,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.86,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "diesel": {
           "label": "Diesel sedan (6.0 L/100 km real-world)",
           "total": 239.45,
-          "p05": 214.3,
-          "p95": 268.33,
+          "p05": 214.36,
+          "p95": 268.96,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.87,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "cng": {
           "label": "CNG sedan (5.0 kg/100 km real-world)",
           "total": 224.07,
-          "p05": 211.04,
-          "p95": 268.78,
+          "p05": 210.63,
+          "p95": 268.71,
           "dq_score": 2.22,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.85,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "bev": {
           "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
           "total": 272.57,
-          "p05": 232.2,
-          "p95": 325.39,
+          "p05": 231.38,
+          "p95": 326.42,
           "dq_score": 1.86,
-          "india_weighted_share": 0.93,
+          "india_footprint_share": 0.86,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         }
       },
@@ -1060,26 +1060,26 @@
           "vs": "petrol",
           "reduction_central": -0.0587,
           "reduction_90pct": [
-            -0.2375,
-            0.0992
+            -0.2405,
+            0.0971
           ],
-          "p_lower": 0.2772,
+          "p_lower": 0.2817,
           "top_importance": [
             [
-              "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.403
+              "use.car.sedan.diesel.l_per_100km.icct2021",
+              0.388
             ],
             [
-              "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.389
+              "use.car.sedan.gasoline.l_per_100km.icct2021",
+              0.382
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.089
+              0.1
             ],
             [
               "fuels.diesel.in.ttw.icct2021_car",
-              0.083
+              0.097
             ]
           ]
         },
@@ -1087,53 +1087,53 @@
           "vs": "petrol",
           "reduction_central": 0.0093,
           "reduction_90pct": [
-            -0.2361,
-            0.1067
+            -0.2407,
+            0.1101
           ],
-          "p_lower": 0.3146,
+          "p_lower": 0.3057,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.376
+              0.359
             ],
             [
               "use.car.sedan.cng.kg_per_100km.icct2021",
-              0.336
+              0.33
             ],
             [
               "use.car.cng.methane_slip.icct2021",
-              0.121
+              0.115
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.079
+              0.09
             ]
           ]
         },
         "bev": {
           "vs": "petrol",
-          "reduction_central": -0.2051,
+          "reduction_central": -0.2052,
           "reduction_90pct": [
-            -0.4868,
-            0.0114
+            -0.4867,
+            0.0112
           ],
-          "p_lower": 0.06,
+          "p_lower": 0.0609,
           "top_importance": [
             [
               "use.car.sedan.bev.kwh_per_100km.icct2021",
-              0.668
+              0.664
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.231
+              0.232
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.056
+              0.06
             ],
             [
               "energy.electricity.in.grid_om.fy2025_26",
-              0.023
+              0.025
             ]
           ]
         }
@@ -1146,51 +1146,51 @@
       "harmonized": false,
       "gas_basis_families": [
         "CO2-only",
-        "GWP100"
+        "GWP100-AR5"
       ],
       "products": {
         "petrol": {
           "label": "Petrol sedan (6.8 L/100 km real-world)",
           "total": 226.17,
-          "p05": 202.06,
-          "p95": 253.96,
+          "p05": 202.38,
+          "p95": 254.05,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.86,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "diesel": {
           "label": "Diesel sedan (6.0 L/100 km real-world)",
           "total": 239.45,
-          "p05": 214.46,
-          "p95": 268.76,
+          "p05": 214.37,
+          "p95": 268.59,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.87,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "cng": {
           "label": "CNG sedan (5.0 kg/100 km real-world)",
           "total": 224.07,
-          "p05": 211.01,
-          "p95": 268.71,
+          "p05": 210.79,
+          "p95": 269.44,
           "dq_score": 2.22,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.85,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "bev": {
           "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
           "total": 145.87,
-          "p05": 126.41,
-          "p95": 169.74,
+          "p05": 126.43,
+          "p95": 169.58,
           "dq_score": 1.94,
-          "india_weighted_share": 0.88,
+          "india_footprint_share": 0.74,
           "gas_basis_shares": {
-            "GWP100": 0.287,
+            "GWP100-AR5": 0.287,
             "CO2-only": 0.713
           }
         }
@@ -1200,26 +1200,26 @@
           "vs": "petrol",
           "reduction_central": -0.0587,
           "reduction_90pct": [
-            -0.2411,
-            0.0979
+            -0.2361,
+            0.0984
           ],
-          "p_lower": 0.2743,
+          "p_lower": 0.2822,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.403
+              0.391
             ],
             [
               "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.393
-            ],
-            [
-              "fuels.gasoline.in.ttw.icct2021_car",
-              0.088
+              0.388
             ],
             [
               "fuels.diesel.in.ttw.icct2021_car",
-              0.08
+              0.094
+            ],
+            [
+              "fuels.gasoline.in.ttw.icct2021_car",
+              0.09
             ]
           ]
         },
@@ -1227,26 +1227,26 @@
           "vs": "petrol",
           "reduction_central": 0.0093,
           "reduction_90pct": [
-            -0.2379,
-            0.1057
+            -0.2389,
+            0.11
           ],
-          "p_lower": 0.3044,
+          "p_lower": 0.3117,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.377
+              0.373
             ],
             [
               "use.car.sedan.cng.kg_per_100km.icct2021",
-              0.338
+              0.332
             ],
             [
               "use.car.cng.methane_slip.icct2021",
-              0.113
+              0.125
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.073
+              0.075
             ]
           ]
         },
@@ -1254,82 +1254,82 @@
           "vs": "petrol",
           "reduction_central": 0.3551,
           "reduction_90pct": [
-            0.2236,
-            0.4626
+            0.2222,
+            0.463
           ],
-          "p_lower": 0.9999,
+          "p_lower": 1.0,
           "top_importance": [
             [
               "use.car.sedan.bev.kwh_per_100km.icct2021",
-              0.58
+              0.568
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.287
+              0.297
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.071
+              0.067
             ],
             [
               "energy.electricity.in.grid_bm.fy2025_26",
-              0.022
+              0.028
             ]
           ]
         }
       }
     },
     "car_in2026_avg_co2e": {
-      "label": "India 2026-grid, attributional \u2014 CEA FY2025-26 average on CO2e (AR6 GWP100), partial upstream (legacy 2021 ICCT sedan data)",
+      "label": "India 2026-grid, attributional \u2014 CEA FY2025-26 average on CO2e (AR5 GWP100, matching ICCT inputs), partial upstream (legacy 2021 ICCT sedan data)",
       "case": "Car \u2014 sedan: petrol vs diesel vs CNG vs electric",
       "kind": "decision",
       "harmonized": true,
       "gas_basis_families": [
-        "GWP100"
+        "GWP100-AR5"
       ],
       "products": {
         "petrol": {
           "label": "Petrol sedan (6.8 L/100 km real-world)",
           "total": 226.17,
-          "p05": 202.2,
-          "p95": 253.89,
+          "p05": 202.64,
+          "p95": 253.82,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.86,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "diesel": {
           "label": "Diesel sedan (6.0 L/100 km real-world)",
           "total": 239.45,
-          "p05": 214.3,
-          "p95": 268.33,
+          "p05": 214.36,
+          "p95": 268.96,
           "dq_score": 2.06,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.87,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "cng": {
           "label": "CNG sedan (5.0 kg/100 km real-world)",
           "total": 224.07,
-          "p05": 211.04,
-          "p95": 268.78,
+          "p05": 210.63,
+          "p95": 268.71,
           "dq_score": 2.22,
-          "india_weighted_share": 0.92,
+          "india_footprint_share": 0.85,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         },
         "bev": {
           "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
           "total": 203.51,
-          "p05": 175.23,
-          "p95": 240.93,
+          "p05": 174.45,
+          "p95": 241.63,
           "dq_score": 1.89,
-          "india_weighted_share": 0.91,
+          "india_footprint_share": 0.81,
           "gas_basis_shares": {
-            "GWP100": 1.0
+            "GWP100-AR5": 1.0
           }
         }
       },
@@ -1338,26 +1338,26 @@
           "vs": "petrol",
           "reduction_central": -0.0587,
           "reduction_90pct": [
-            -0.2375,
-            0.0992
+            -0.2405,
+            0.0971
           ],
-          "p_lower": 0.2772,
+          "p_lower": 0.2817,
           "top_importance": [
             [
-              "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.403
+              "use.car.sedan.diesel.l_per_100km.icct2021",
+              0.388
             ],
             [
-              "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.389
+              "use.car.sedan.gasoline.l_per_100km.icct2021",
+              0.382
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.089
+              0.1
             ],
             [
               "fuels.diesel.in.ttw.icct2021_car",
-              0.083
+              0.097
             ]
           ]
         },
@@ -1365,26 +1365,26 @@
           "vs": "petrol",
           "reduction_central": 0.0093,
           "reduction_90pct": [
-            -0.2361,
-            0.1067
+            -0.2407,
+            0.1101
           ],
-          "p_lower": 0.3146,
+          "p_lower": 0.3057,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.376
+              0.359
             ],
             [
               "use.car.sedan.cng.kg_per_100km.icct2021",
-              0.336
+              0.33
             ],
             [
               "use.car.cng.methane_slip.icct2021",
-              0.121
+              0.115
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.079
+              0.09
             ]
           ]
         },
@@ -1392,14 +1392,14 @@
           "vs": "petrol",
           "reduction_central": 0.1002,
           "reduction_90pct": [
-            -0.1021,
-            0.2558
+            -0.1011,
+            0.2555
           ],
-          "p_lower": 0.8058,
+          "p_lower": 0.8078,
           "top_importance": [
             [
               "use.car.sedan.bev.kwh_per_100km.icct2021",
-              0.638
+              0.636
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
@@ -1407,11 +1407,11 @@
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.061
+              0.065
             ],
             [
               "energy.electricity.in.grid_wavg_generation.fy2025_26",
-              0.022
+              0.024
             ]
           ]
         }
@@ -1425,8 +1425,8 @@
       "petrol": {
         "ours": 226.2,
         "ours_90pct": [
-          202.2,
-          253.9
+          202.6,
+          253.8
         ],
         "independent_range": [
           183.6,
@@ -1471,8 +1471,8 @@
       "diesel": {
         "ours": 239.5,
         "ours_90pct": [
-          214.3,
-          268.3
+          214.4,
+          269.0
         ],
         "independent_range": [
           271.5,
@@ -1492,8 +1492,8 @@
       "cng": {
         "ours": 224.1,
         "ours_90pct": [
-          211.0,
-          268.8
+          210.6,
+          268.7
         ],
         "independent_range": [
           167.9,
@@ -1518,8 +1518,8 @@
       "bev": {
         "ours": 203.5,
         "ours_90pct": [
-          175.2,
-          240.9
+          174.5,
+          241.6
         ],
         "independent_range": [
           156.0,

@@ -82,3 +82,35 @@ def test_gas_basis_flags(db):
     scs = load_scenarios()
     assert run_scenario(db, scs["car_icct2021_replication"], n=100)["harmonized"] is True
     assert run_scenario(db, scs["in2026_cea_average"], n=100)["harmonized"] is False
+
+
+def test_verified_values_appear_in_their_quotes():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("value_check", Path(__file__).resolve().parents[2] / "ingestion" / "value_check.py")
+    vc = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(vc)
+    n, bad, waived = vc.check()
+    assert n > 50 and bad == [], bad
+
+
+def test_docs_do_not_drift_from_results():
+    import subprocess, sys as _s
+    root = Path(__file__).resolve().parents[3]
+    r = subprocess.run([_s.executable, str(root / "eval" / "check_docs.py")], capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout
+
+
+def test_gpt6sol_regressions(db):
+    import numpy as np
+    from greenauto.engine import spearman
+    scs = load_scenarios()
+    car = run_scenario(db, scs["car_in2026_avg_co2e"], n=200)
+    assert car["harmonized"] is True and car["gas_basis_families"] == ["GWP100-AR5"]       # finding 1
+    assert run_scenario(db, scs["in2026_avg_co2e"], n=200)["harmonized"] is False
+    bev = next(p for p in scs["car_in2026_avg_co2e"].products if p.id == "bev")
+    assert "grid" not in bev.params                                                       # finding 3
+    assert 0.75 < car["products"]["bev"]["india_footprint_share"] < 0.9                    # finding 4
+    x = db["fuels.petrol.ncv.ipcc2006"].sample(200000, np.random.default_rng(1))          # finding 6
+    assert np.percentile(x, 2.5) == pytest.approx(42.5, rel=0.005)
+    assert np.percentile(x, 97.5) == pytest.approx(44.8, rel=0.005)
+    assert spearman(np.ones(8), np.arange(8)) == 0.0                                      # finding 7

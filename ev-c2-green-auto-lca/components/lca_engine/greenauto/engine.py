@@ -85,6 +85,9 @@ def load_scenarios(path: Path | None = None) -> dict[str, Scenario]:
     out: dict[str, Scenario] = {}
     for sid in raw:
         s = _resolve(raw, sid)
+        for p in s["products"]:   # drop inherited parameters no stage uses any more (provenance + importance hygiene)
+            used = {n.id for e in p["stages"].values() for n in ast.walk(ast.parse(e, mode="eval")) if isinstance(n, ast.Name)}
+            p["params"] = {k: v for k, v in p["params"].items() if k in used}
         prods = [Product(**p) for p in s["products"]]
         out[sid] = Scenario(sid, s["label"], s.get("description", ""), prods, s.get("case", ""),
                             s.get("kind", "decision"), s.get("reference", {}))
@@ -104,11 +107,12 @@ def check_scenario(db: FactorDB, sc: Scenario) -> list[str]:
 
 
 def _ranks(x: np.ndarray) -> np.ndarray:
-    return np.argsort(np.argsort(x)).astype(float)
+    from scipy.stats import rankdata
+    return rankdata(x).astype(float)          # average ranks for ties; constant input -> zero variance
 
 
 def spearman(x: np.ndarray, y: np.ndarray) -> float:
-    rx, ry = _ranks(x), _ranks(y)
+    rx, ry = _ranks(np.asarray(x)), _ranks(np.asarray(y))
     rx -= rx.mean()
     ry -= ry.mean()
     den = np.sqrt((rx ** 2).sum() * (ry ** 2).sum())
@@ -137,6 +141,19 @@ def gas_basis_shares(db: FactorDB, p: Product, stages_c: dict[str, float]) -> di
         fam = fams.pop() if len(fams) == 1 else ("mixed" if fams else "none")
         shares[fam] = shares.get(fam, 0.0) + v / total
     return shares
+
+
+def india_footprint_share(db: FactorDB, p: Product, stages_c: dict[str, float], elast: dict[str, float]) -> float:
+    """Share of the central total coming from stages whose DOMINANT emission factor (largest |elasticity| among the
+    stage's emission-factor records) is Indian (geography IN*). Small global defaults inside a stage (e.g. IPCC CH4/N2O
+    adders on the CEA grid factor) do not flip the stage."""
+    total = sum(stages_c.values()) or 1.0
+    india = 0.0
+    for st, v in stages_c.items():
+        efs = [rid for rid in p.stage_params(st) if db[rid].quantity == "emission_factor"]
+        if efs and db[max(efs, key=lambda r: abs(elast.get(r, 0.0)))].geography.startswith("IN"):
+            india += v
+    return india / total
 
 
 def run_scenario(db: FactorDB, sc: Scenario, n: int = 10000, seed: int = 20261004) -> dict[str, Any]:
@@ -175,7 +192,7 @@ def run_scenario(db: FactorDB, sc: Scenario, n: int = 10000, seed: int = 2026100
             "mc_stages": {k: _stats(v) for k, v in stages_mc.items()},
             "params": dict(p.params), "elasticity": elast,
             "dq_score": sum(dq_dims.values()) / len(dq_dims), "dq_dims": dq_dims,
-            "india_weighted_share": sum(w[rid] for rid in w if db[rid].pedigree.geographical == 1) / wsum,
+            "india_footprint_share": india_footprint_share(db, p, stages_c, elast),
             "gas_basis_shares": gshares,
             "importance": _importance(smp, total_mc, sorted(set(p.params.values()))),
         }

@@ -27,7 +27,7 @@ BASIC_UNCERTAINTY = 1.05
 # Gas-basis vocabulary -> family used to check that a total is characterised on one basis.
 GAS_BASIS_FAMILY = {
     "CO2": "CO2-only",
-    "CO2e-AR6-GWP100": "GWP100", "CO2e-AR5-GWP100": "GWP100", "CO2e-GWP100": "GWP100",
+    "CO2e-AR6-GWP100": "GWP100-AR6", "CO2e-AR5-GWP100": "GWP100-AR5", "CO2e-GWP100": "GWP100-AR-unspecified",
     "CO2e-CH4-GWP20": "GWP20(CH4)",
     "CO2e-unspecified": "unspecified",
     "n/a": None,
@@ -143,6 +143,11 @@ class Record(BaseModel):
             return rng.triangular(u.low, v, u.high, n)
         if u.distribution == "normal" and u.low is not None and u.high is not None:
             return rng.normal(v, (u.high - u.low) / (2 * 1.96), n)
+        if u.distribution in ("range95", "lognormal") and u.low and u.high and u.low < v < u.high:
+            # two-piece lognormal: median = published value, 2.5th/97.5th percentiles = stated low/high exactly
+            z = rng.normal(0.0, 1.0, n)
+            s_lo, s_hi = math.log(v / u.low) / 1.96, math.log(u.high / v) / 1.96
+            return v * np.exp(np.where(z < 0, z * s_lo, z * s_hi))
         return v * np.exp(rng.normal(0.0, self.log_sigma(), n))
 
 
