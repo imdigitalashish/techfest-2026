@@ -62,7 +62,7 @@ Prices as shown on the retailer's product data on 2026-10-04; GST inclusion is n
 | Backhaul (images + telemetry) | Waveshare SIM7600E-H 4G HAT for Raspberry Pi, LTE Cat-4, GNSS | 1 | 9,149.99 | 9,149.99 | https://thinkrobotics.com/products/sim7600e-h-4g-hat-for-raspberry-pi-lte-cat-4-4g-3g-2g-gnss |
 | Water/boom-fill level | DFRobot A02YYUW waterproof ultrasonic distance sensor, 3–450 cm (retailer title) | 1 | 2,259.00 | 2,259.00 | https://robocraze.com/products/dfrobot-a02yyuw-waterproof-ultrasonic-distance-sensor |
 | Solar | Loom Solar Mono PERC half-cut 55 Wp 12 V panel (x2 = 110 Wp for profile P1) | 2 | 2,200.00 | 4,400.00 | https://www.loomsolar.com/products/loom-solar-panel-55-watt-mono-crystalline |
-| Storage battery | CAML 12.8 V 100 Ah (1.28 kWh) LiFePO4 — smallest 12.8 V LiFePO4 found on an opened Indian page; ~6.7 days of P1 autonomy | 1 | 34,500.00 | 34,500.00 | https://www.loomsolar.com/products/caml-10012-low-voltage-lithium-battery |
+| Storage battery | CAML 12.8 V 100 Ah (1.28 kWh) LiFePO4 — smallest 12.8 V LiFePO4 found on an opened Indian page; ~5.3 days of P1 autonomy at 80% DoD (1,280 × 0.8 / 192) | 1 | 34,500.00 | 34,500.00 | https://www.loomsolar.com/products/caml-10012-low-voltage-lithium-battery |
 | Charge controller | 20A Digital PWM Solar Controller with LCD + USB (LiFePO4 profile support UNVERIFIED) | 1 | 339.00 | 339.00 | https://robocraze.com/products/20a-digital-pwm-solar-controller-with-lcd-and-usb-output-port |
 | 12 V → 5 V | SmartElex TPS5430 buck module 5 V 3 A (below the official 5 V/5 A, 27 W PSU rating — bench-test; upgrade if brown-outs) | 1 | 335.00 | 335.00 | https://robocraze.com/products/smartelex-tps5430-buck-module-5v-3a-dc-dc-converter |
 | **Subtotal (priced items)** | | | | **82,281.98** | |
