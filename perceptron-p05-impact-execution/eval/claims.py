@@ -122,6 +122,8 @@ def g_e7(c):
     j = _json("realism_scorecard.json")
     ph = j["post_hoc"]
     c["e7_delta_resolved"] = f"{ph['delta_resolved']:.2f}"
+    c["e7_delta_resolved_lo"], c["e7_delta_resolved_hi"] = f"{ph['delta_resolved_ci95'][0]:.2f}", f"{ph['delta_resolved_ci95'][1]:.2f}"
+    c["e7_valid_pct"] = f"{100 * j['boot_valid_frac']:.0f}"
     r = [x for x in ph["doubling_ratios"] if x is not None]
     c["e7_doubling_min"], c["e7_doubling_max"] = f"{min(r):.1f}", f"{max(r):.1f}"
     c["e7_n"] = f"{j['n_seeds']}"
@@ -141,10 +143,11 @@ def g_e9(c):
     c["e9_r2_twap"], c["e9_r2_probe"] = f"{o['twap']['r2_mean_path']:.2f}", f"{o['probe']['r2_mean_path']:.2f}"
     c["e9_tau"] = f"{k['tau_s']:.0f}"
     c["e9_rmse"] = f"{np.mean([o['twap']['rmse_per_seed_cents'], o['probe']['rmse_per_seed_cents']]):.1f}"
-    nn = _json("calibration.json")["kernel_oos_second_half"]
+    nn = _json("calibration_e1_numeric_split.json")["kernel_oos_second_half"]
     c["e1_rmse"] = f"{np.mean([nn['twap']['rmse_per_seed_cents'], nn['probe']['rmse_per_seed_cents']]):.1f}"
-    n = _json("calibration.json")["kernel_oos_second_half"]
+    n = _json("calibration_e1_numeric_split.json")["kernel_oos_second_half"]  # same registered split as E9
     c["e1_r2_twap"], c["e1_r2_probe"] = f"{n['twap']['r2_mean_path']:.1f}", f"{n['probe']['r2_mean_path']:.1f}"
+    assert j["fit_seeds"] == list(range(0, 20)) and j["oos_seeds"] == list(range(20, 40)), "E9 must use the registered split"
 
 
 def g_e10(c):

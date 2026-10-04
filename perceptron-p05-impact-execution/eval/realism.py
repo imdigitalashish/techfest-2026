@@ -75,6 +75,9 @@ def main():
         note="not pre-registered; added after seeing E7",
         resolved_sizes=[a.qs[i] for i in resolved],
         delta_resolved=slope(np.log(part[resolved]), np.log(m[resolved])) if len(resolved) >= 2 else None,
+        delta_resolved_ci95=(lambda ds: [float(np.percentile(ds, 2.5)), float(np.percentile(ds, 97.5))] if len(ds) else None)(
+            np.array([slope(np.log(part[resolved]), np.log(bm[resolved, b])) for b in range(a.boot) if (bm[resolved, b] > 0).all()])),
+        delta_resolved_valid_frac=float(np.mean([(bm[resolved, b] > 0).all() for b in range(a.boot)])),
         doubling_ratios=[float(m[i + 1] / m[i]) if m[i] > 0 else None for i in range(len(a.qs) - 1)],
         sqrt_law_doubling_ratio=float(np.sqrt(2)),
         post_gap_mean_cents=[float(post[i].mean()) for i in range(len(a.qs))],
@@ -99,7 +102,8 @@ def main():
     dres = "n/a" if ph["delta_resolved"] is None else f"{ph['delta_resolved']:.2f}"
     lines += ["", "**Post hoc (not pre-registered).** The rule above is lenient: it accepts any CI overlapping [0.3, 0.7]. "
               f"Impact ratio per size doubling: {dr} (square-root law: ×{ph['sqrt_law_doubling_ratio']:.2f}; linear: ×2). "
-              f"Slope over the sizes whose peak CI excludes 0 ({ph['resolved_sizes']}): δ = {dres}. "
+              f"Slope over the sizes whose peak CI excludes 0 ({ph['resolved_sizes']}): δ = {dres}, 95% CI "
+              f"[{ph['delta_resolved_ci95'][0]:.2f}, {ph['delta_resolved_ci95'][1]:.2f}] ({ph['delta_resolved_valid_frac']:.0%} of draws valid). "
               f"Twin gap 10 min after completion, ¢ (mean [95% CI]): {pg}."]
     open(os.path.join(ROOT, "eval", "results", "realism_scorecard.md"), "w").write("\n".join(lines) + "\n")
     print("\n".join(lines))

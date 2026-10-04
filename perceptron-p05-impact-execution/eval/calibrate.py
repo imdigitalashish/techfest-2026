@@ -14,7 +14,9 @@ START_S = 0.0  # grid is seconds since 09:35:00
 
 def load(exp):
     out = []
-    for f in sorted(glob.glob(os.path.join(ROOT, ".data", "runs", exp, "seed_*.pkl"))):
+    files = glob.glob(os.path.join(ROOT, ".data", "runs", exp, "seed_*.pkl"))
+    # numeric seed order (review sol #1: lexicographic order put seeds 20-26 into the "first half")
+    for f in sorted(files, key=lambda x: int(os.path.basename(x)[5:-4])):
         out.append(pickle.load(open(f, "rb")))
     return out
 
@@ -44,8 +46,10 @@ def main():
     half = len(raws) // 2
     fit = fit_exp_propagator(eps_probe[:half] + eps_twap[:half])
     oos = dict(probe=r2_on(eps_probe[half:], fit, 1200), twap=r2_on(eps_twap[half:], fit, 1200))
-    cal = dict(source_exp=a.exp, n_seeds=len(raws), vwap_cum_profile=[float(x) for x in cum],
-               mean_slot_volume=[float(x) for x in prof], kernel=fit, kernel_fit_seeds="first half (train)",
+    seeds = [int(r["seed"]) for r in raws]
+    cal = dict(source_exp=a.exp, n_seeds=len(raws), fit_seeds=seeds[:half], oos_seeds=seeds[half:],
+               vwap_cum_profile=[float(x) for x in cum],
+               mean_slot_volume=[float(x) for x in prof], kernel=fit, kernel_fit_seeds="first half in numeric seed order",
                kernel_oos_second_half=oos, inst_cost_cents_per_share2=0.005,
                inst_cost_note="slope from PROBE vs TWAP instant-cost gap in E1 (0.130 vs 0.114 bps at ~100-share mean child)")
     out = os.path.join(ROOT, "eval", "results", a.out)

@@ -1,4 +1,5 @@
-"""FROZEN evaluator for the execution-agent ratchet (frozen 4 Oct 2026 09:55 IST, before first use).
+"""FROZEN evaluator for the execution-agent ratchet (v1 frozen 4 Oct 2026 ~09:44 IST, never completed a run;
+v2 re-frozen 4 Oct 2026 after review sol #6: bootstrap over seed-sorted results. Mean unchanged).
 
 For each candidate: the mean paired ΔIS (bps) vs TWAP on VALIDATION seeds with synchronised
 twins (lower is better). Line format per candidate:
@@ -40,6 +41,7 @@ def main():
     by = {}
     for r in rows:
         by.setdefault(r["seed"], {})[r["label"]] = r
+    by = {k: by[k] for k in sorted(by)}  # v2 (review sol #6): seed-sorted, so the CI doesn't depend on worker order
     for c in cands:
         L = c["label"]
         d = np.array([v[L]["is_bps"] - v["TWAP"]["is_bps"] for v in by.values()])

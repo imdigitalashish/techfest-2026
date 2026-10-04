@@ -98,8 +98,10 @@ class ProbePolicy(Policy):
 def propagator_qp_schedule(n: int, dt_s: float, inst_cost: float, g_tr: float, tau_s: float) -> np.ndarray:
     """Optimal slice fractions under a transient-impact (propagator) model.
 
-    Expected cost of slices x (shares, sum Q) = sum_j x_j^2 * inst_cost
+    Expected cost of slices x (shares, sum Q) = sum_j x_j^2 * (inst_cost + g_tr/2)
         + sum_{i<j} x_j x_i g_tr exp(-(t_j - t_i)/tau)    (discrete propagator cost)
+    The g_tr/2 diagonal term is the self-impact of each block: a block walking a linear book
+    pays, on average, half of its own end-impact (docstring fixed after review sol #4).
     The permanent part adds a constant (sum x fixed), so it doesn't change the optimum.
     Minimise x^T A x subject to 1^T x = 1 and x >= 0 (active-set clipping).
     """

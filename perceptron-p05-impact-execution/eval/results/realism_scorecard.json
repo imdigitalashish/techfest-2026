@@ -70,6 +70,11 @@
    16000
   ],
   "delta_resolved": 0.8740354203107458,
+  "delta_resolved_ci95": [
+   0.5689790898400389,
+   1.3479462995277702
+  ],
+  "delta_resolved_valid_frac": 0.9998,
   "doubling_ratios": [
    2.0,
    2.3404255319148937,

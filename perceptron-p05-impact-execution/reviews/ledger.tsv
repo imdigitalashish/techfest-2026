@@ -1,0 +1,2 @@
+date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	code+eval+reproduction (E6 H1, pipeline)	gpt-6-sol	max	7	7	0	Reproduction matched 12/12 rows; 3 major (calibration split order, passive-fill TCA label, E7 bootstrap conditioning) + 4 minor; all accepted, fixes in this commit or after E10
