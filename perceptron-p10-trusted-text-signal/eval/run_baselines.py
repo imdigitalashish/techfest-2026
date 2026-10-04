@@ -9,6 +9,7 @@ Writes eval/results/baseline_v0.json and eval/results/baseline_v0.md.
 """
 from __future__ import annotations
 
+import argparse
 import json
 import time
 from pathlib import Path
@@ -49,17 +50,17 @@ def sym_cqr_frame(model, test, X_override=None, method="cqr_sym", Q=None):
     return _frame(test, p["q_lo"] - Q, p["q_hi"] + Q, p["q_med"], method), p
 
 
-def main():
+def main(tag: str = "baseline_v0", suffix: str = "", scorer_name: str = "vader+fin", oracle: bool = True):
     t0 = time.time()
     OUT.mkdir(parents=True, exist_ok=True)
-    panel = pd.read_parquet(".cache/panel.parquet")
-    docs = pd.read_parquet(".cache/docs_scored.parquet")
+    panel = pd.read_parquet(f".cache/panel{suffix}.parquet")
+    docs = pd.read_parquet(f".cache/docs_scored{suffix}.parquet")
     train, cal, test = split(panel)
     G = groups_for(panel, train)
     res = {"meta": {"alpha": ALPHA, "seed": SEED, "train": [str(train.trade_date.min().date()), TRAIN_END],
                     "cal": [str(cal.trade_date.min().date()), CAL_END], "test": [str(test.trade_date.min().date()), TEST_END],
                     "n_train": len(train), "n_cal": len(cal), "n_test": len(test), "tickers": int(panel.ticker.nunique()),
-                    "text_scorer": "vader+fin (FinBERT pending)"}, "ablation": {}, "spike": {}, "attack": {}}
+                    "text_scorer": scorer_name}, "ablation": {}, "spike": {}, "attack": {}}
     models = {}
     for name, cols in FEATURE_SETS.items():
         m = QuantileFusion(cols, ALPHA, SEED).fit(train)
@@ -134,7 +135,7 @@ def main():
     # oracle adversary over all variants within budget K
     van_ok = np.ones(len(test), bool)
     cert_ok = np.ones(len(test), bool)
-    for v in oracle_variants(K):
+    for v in (oracle_variants(K) if oracle else []):
         Xv = X.copy()
         Xv[:, ti] = attacked_text_features(test_docs, v)
         tv = test.copy()
@@ -144,7 +145,7 @@ def main():
         adocs = [inject(s, w, v[0], v[1], v[2]) for s, w in test_docs]
         lo, hi = cc.intervals(Xv, adocs)
         cert_ok &= (y >= lo) & (y <= hi)
-    res["attack"]["oracle"] = {"k": K, "n_variants": len(oracle_variants(K)),
+    res["attack"]["oracle"] = {"skipped": True} if not oracle else {"k": K, "n_variants": len(oracle_variants(K)),
                                "clean_cqr_coverage": float(base_cov_mask.mean()),
                                "vanilla_cqr_adversarial_coverage": float(van_ok.mean()),
                                "certified_adversarial_coverage": float(cert_ok.mean()),
@@ -172,11 +173,17 @@ def main():
         res["spike"]["cr_aci"][nm] = evaluate(_frame(test, lo, hi, pv["q_med"], nm), test, ALPHA, G)
         print(nm, round(res["spike"]["cr_aci"][nm]["coverage"], 4), round(res["spike"]["cr_aci"][nm]["mean_width"], 3), flush=True)
     res["meta"]["runtime_s"] = round(time.time() - t0, 1)
-    (OUT / "baseline_v0.json").write_text(json.dumps(res, indent=2))
+    (OUT / f"{tag}.json").write_text(json.dumps(res, indent=2))
     print(json.dumps(res["attack"]["oracle"], indent=2))
     print(json.dumps({k: v for k, v in res["spike"].items() if not isinstance(v, dict)}, indent=2))
     print("runtime", res["meta"]["runtime_s"])
 
 
 if __name__ == "__main__":
-    main()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--tag", default="baseline_v0")
+    ap.add_argument("--scorer", choices=["vader", "finbert"], default="vader")
+    ap.add_argument("--no-oracle", action="store_true")
+    a = ap.parse_args()
+    sfx = "" if a.scorer == "vader" else f"_{a.scorer}"
+    main(a.tag, sfx, {"vader": "vader+fin", "finbert": "ProsusAI/finbert"}[a.scorer], not a.no_oracle)
