@@ -18,6 +18,12 @@ Protocol: [`eval/PREREGISTRATION.md`](../../eval/PREREGISTRATION.md), including 
   - vs KS→refit: −0.0361 [−0.0404, −0.0326], 22/22 (H2b supported);
   - vs plain regime gating: +0.0006 [+0.0003, +0.0009], better on only 4/22 days. H3 is not supported: this is a **measured average worsening**, and plain gating is the stronger average forecaster. λ = 0.5 is confidence shrinkage, not abstention; under sign trading it leaves the trade direction unchanged.
 - **Post-hoc ablation (review A9, exploratory; `eval/results/v2_holdout_posthoc_ablation.md`).** Regime heads vs a single head on the *same* EWMA features: −0.0083 [−0.0118, −0.0059], 22/22 days. EWMA normalisation alone gives −0.0016 (CI spans 0). So the gain really comes from the regime heads.
+- **Is it switching, or just one better head?** (post-hoc, exploratory, 2026-10-04 evening; `eval/results/v2_holdout_posthoc_heads.md`, `eval/results/head_usage.md`.) Each head alone on the 22 held-out days, compared with the gate:
+  - high-vol head alone: +0.0141 [+0.0065, +0.0237], better on 1/22 days;
+  - mid-vol head alone: +0.0138;
+  - low-vol head alone: +0.0526.
+
+  On held-out days the gate selects the low/mid/high heads 20.7% / 33.2% / 46.0% of the time, with large day-to-day swings. The gain therefore comes from switching between heads, not from one better model.
 - **Disclosure (review A1/S1).** One holdout day (2025-08-01) was seen in the v1 run. Excluding it changes no conclusion (`eval/results/v2_holdout_sensitivity.md`).
 - **The "GBDT ≈ regime heads" antithesis was tested.** Static GBDT reaches −0.0052 vs static, but plain regime gating beats it on 21/22 days (Δ GBDT − gate = +0.0047 [+0.0024, +0.0076]).
 - **Daily retraining is not the answer.** Walk-forward static gives −0.0009 [−0.0029, +0.0012]. The gain comes from *conditioning on the volatility regime*, not from refreshing a stale model.

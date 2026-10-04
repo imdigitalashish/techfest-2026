@@ -1,0 +1,5 @@
+{
+ "head_lo_only":  {"norm": "ewma", "heads": [["regime", 0]]},
+ "head_mid_only": {"norm": "ewma", "heads": [["regime", 1]]},
+ "head_hi_only":  {"norm": "ewma", "heads": [["regime", 2]]}
+}
