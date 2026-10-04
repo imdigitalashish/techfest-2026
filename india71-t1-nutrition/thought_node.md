@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** 🎬 DEMO PHASE (Supervisor slot from 17:59 IST, 4 Oct; PLAYBOOK §11). Demo built and verified from a clean clone (19:25); gpt-6-astra judge review running. The Round-1 package is complete (11:00). Now building the winning demo via one child session (the demo builder), then a gpt-6-astra "judge watching the demo" review. Started 2026-10-04 18:04 IST.
+- **Phase:** 🎬 DEMO PHASE (Supervisor slot from 17:59 IST, 4 Oct; PLAYBOOK §11). Demo built and verified from a clean clone (19:25). The gpt-6-astra judge review (19:53) found 2 blocking + 6 major + 4 minor issues; all 12 accepted. Lead fixes are pushed (eval_v2 infant gate, router capacity gate); the builder fix round is in progress. The Round-1 package is complete (11:00). Now building the winning demo via one child session (the demo builder), then a gpt-6-astra "judge watching the demo" review. Started 2026-10-04 18:04 IST.
 - **Deliverables:**
   - [`deliverables/India71_100_[TeamID].pdf`](deliverables/): 6 A4 pages, 1-inch margins, Arial ≥11 pt; source `round1-proposal.md` v0.3.
   - [`deliverables/architecture.md`](deliverables/architecture.md).
@@ -253,4 +253,14 @@ Apply at resume step 2.
   - `demo/run.sh` exit 0 in 1.2 s; first visual **0.15 s** (Playwright, file://).
   - pytest passes (1 skip: WHO SD validation tables aren't in a fresh clone); `eval/check_docs` 19/19.
 - **Seen by eye:** screens 1, 3 and 7 are honest and clearly labelled. Cosmetic: "India" label overlaps "Maharashtra" on the scatter; the ledger table header overlaps a row. Batched with the review findings.
+
+### 2026-10-04 19:59 IST — demo review (gpt-6-astra) processed; fix round
+- **Review** (b9270bf): would lean in, but not finals-ready as narrated/projected.
+  - Blocking: encoded-only departmental privacy asserted but not demonstrated; 6/7 screens overflow 1280×720.
+  - Major: infants still ranked; undelivered overflow treated as worker-overdue; recurrence narrated as first onset; F1 hides 366 false links; script/SMS state; replayed decisions implied live.
+  - **All 12 accepted.** Decisions: [reviews/2026-10-04-demo-gpt-6-astra.decisions.md](reviews/2026-10-04-demo-gpt-6-astra.decisions.md); ledger.tsv line added.
+- **Lead fixes (915afb2):**
+  - `eval_v2.py` adds the infant gate (the proposal's promise). SYNTHETIC: transparent WHZ rule **0.473** (CI 0.461–0.489) vs programme rule **0.413** (diff +5.1 to +7.0 pp); ML+health 0.430; random 0.293; infant pathway 14.8% of 10,690 episodes. Promoted to the headline (proposal §4.2/§5, components C5, ADR 003 addendum, check_docs 20/20); v1 kept as history.
+  - Task contract v0.3.0 (`blocked`, three-clock fields) + `router.mark_undelivered` capacity gate, tested.
+- **Builder fix round:** B1 department-side PPRL encoding (`pprl.py`, no plaintext reaches the matcher, identical F1); B2 1280×720 layout; M3–M6; N1–N4; re-export on eval_v2 + capacity gate.
 
