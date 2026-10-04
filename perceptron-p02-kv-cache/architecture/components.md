@@ -9,7 +9,7 @@ Every component has one job, typed I/O (see [`contracts/contracts.py`](contracts
 | C3 | **Importance scorer** | `FullCache` (+ optional question queries) → `Scores [L][nkv,T]` | SnapKV window, H2O accumulated attention, K-norm | **Spike B** (later) | **Needle-token retention@budget**: share of needle tokens kept at a fixed budget. No generation needed. |
 | C4 | **Budget allocator** | `T, keep_frac, Scores` → per-layer/head budgets | Uniform (PyramidKV / Ada-KV are candidates) | — | Same retention@budget at a fixed total byte budget |
 | C5 | **Selector** | `Scores, budget` → `Index [L][nkv,B]` (sinks + recent always kept) | `topk_idx`, `stream_idx` | — | Unit tests (sinks/recent always present, sorted, no duplicates) · µs per call |
-| C6 | **KV codec / store** | `K,V` → packed tensors + `bytes` | fp16 · group-64 int8/int4/int2 (`qdq`, KIVI-style per-token) | Spike candidate ("demote, don't delete") | Attention-output relative error per stored byte |
+| C6 | **KV codec / store** | `K,V` → packed tensors + `bytes` | fp16 · group-64 int8/int4/int2 (`Packed`, per-token for K and V — not KIVI's per-channel keys) | Spike candidate ("demote, don't delete") | Attention-output relative error per stored byte |
 | C7 | **Recall-on-demand** | `CompressedCache, Sketch, token_ids, question` → `RecalledBlocks` (re-prefilled KV) | — (ours) | **Spike A** | **Needle-block hit rate@m**: does a chosen block contain the needle? Plus recompute ms per block. |
 | C8 | **Answerer** | `cache, question_ids` → `answer text` | Greedy decode, max 8 new tokens | — | n/a (frozen model) |
 | C9 | **Memory meter** | any cache → `MemoryReport` (KV + scales + sketch + ids) | `nbytes` sum + `mx.get_peak_memory()` | — | Exact agreement with the analytic formula (fp16: 32 KiB/token) |

@@ -19,7 +19,7 @@ When a question arrives, we run it against the resident cache, take its *own* at
 Tools: Apple MLX on an M5 laptop, with our own explicit-cache forward pass over frozen `Llama-3.2-1B-Instruct` weights (a 3B model and Qwen2.5 as second models), and NVIDIA kvpress as a reference implementation of the baselines. The data are RULER-style multi-key needle tasks built from WikiText-103 text, plus LongBench-style QA.
 
 ## Minimum Viable mapping
-1. *Apply an existing technique and measure memory savings:* StreamingLLM, H2O, SnapKV and 2/4/8-bit KIVI-style quantisation run in one harness. "Memory" counts every retained byte (KV, quantisation scales, indices, sketches, token IDs) plus measured peak memory, against the uncompressed baseline.
+1. *Apply an existing technique and measure memory savings:* StreamingLLM, H2O, SnapKV and 2/4/8-bit per-token group quantisation (KIVI's per-channel key scheme as a stretch baseline) run in one harness. "Memory" counts every retained byte (KV, quantisation scales, indices, sketches, token IDs) plus measured peak memory, against the uncompressed baseline.
 2. *Show the accuracy drop on a small long-context recall task:* recall accuracy with 95% Wilson intervals at 2×, 4× and 10× compression, for 4k–16k contexts and needle depths from 5% to 95%.
 
 ## Stretch ambitions

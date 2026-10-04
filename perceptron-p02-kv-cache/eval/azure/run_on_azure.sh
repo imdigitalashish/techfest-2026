@@ -20,8 +20,9 @@ case "${1:-}" in
     H="azureuser@$(ip)"
     ssh $OPTS "$H" 'mkdir -p p02/eval p02/.data'
     scp $OPTS "$ROOT/eval/kvbench.py" "$ROOT/eval/fetch_haystack.py" "$H:p02/eval/"
-    ssh $OPTS "$H" 'sudo apt-get update -qq && sudo apt-get install -y -qq python3-venv >/dev/null \
-      && python3 -m venv ~/venv && ~/venv/bin/pip -q install "mlx[cpu]==0.32.3" "mlx-lm==0.32.0" pyarrow huggingface_hub \
+    ssh $OPTS "$H" 'curl -LsSf https://astral.sh/uv/install.sh | sh >/dev/null 2>&1 \
+      && ~/.local/bin/uv venv -q --clear --python 3.11 ~/venv \
+      && ~/.local/bin/uv pip install -q --python ~/venv/bin/python "mlx[cpu]==0.32.3" "mlx-lm==0.32.0" pyarrow huggingface_hub \
       && cd p02 && ~/venv/bin/python eval/fetch_haystack.py' ;;
   run)
     H="azureuser@$(ip)"; shift

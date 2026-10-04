@@ -10,20 +10,26 @@
 - _(none)_
 
 ## Now
-- **Phase:** Morning package delivered (08:23) **except measured numbers**. Pushed: landscape (cited), per-component scan, components + contracts, ADR 001, selection memo v1, Round-1 abstract (843 words), architecture diagram, harness code, autoresearch scaffold for C7.
-- **Plan (after 08:30, lean limits: ≤ 3 sub-agents, staggered compute):**
-  1. Smoke result → fix any bug.
-  2. Small real grid: `--ctx 2048 --n 6`, then `--ctx 4096 --n 12`, run one at a time.
-  3. C7 frozen eval: layer sweep as the first ratchet iterations.
-  4. Prior-art pass for RoD (ArkVale, InfiniGen, OmniKV, RetroInfer, 2025–26 evict-and-recompute).
-  5. `rubber-duck` review of ADR 001 and the abstract.
-- **Doing:** smoke run in progress (shell `smoke2`).
-- **Next:** steps 1–5 above, in order.
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
+- **Phase:** ⏸ **PAUSED** (Supervisor 09:55, user's decision: only 3 projects run at once; P7 is the Perceptron pick unless the user overrides). Nothing is running locally or on Azure.
+- **Delivered:** landscape (cited), per-component scan, RoD prior-art report, components + contracts, ADR 001, selection memo v1, Round-1 abstract (843 words), architecture diagram, harness v2, Azure runner, C7 autoresearch scaffold.
+- **Not done (be honest):** **no measured numbers.** `eval/kvbench.py` v2 and `components/recall_on_demand/autoresearch/eval.py` have **never executed end to end**. Local runs starved (GPU 67% busy from other sessions, 35.7 GB swap); the Azure probe was stopped at pause.
+- **Resume point (in order):**
+  1. **Start the VM.** `az vm start -g p02-kvcache-rg -n p02-kv-1`.
+     - It is a Standard_D8ds_v5 in centralindia: 8 vCPU (Xeon 8370C), 32 GiB, now *deallocated*.
+     - The disk keeps a uv Python 3.11 venv (mlx[cpu] 0.32.3, mlx-lm 0.32.0) and `~/p02/.data/haystack.txt`, which is identical to the local one (3,521 paragraphs, 2,289,620 chars).
+     - SSH key: `.data/azure_p02` (gitignored). If it is lost, reset it with `az vm user update`.
+  2. **Speed probe:** 4-bit vs dequantised forward over 1,024 tokens on the CPU. It hadn't finished after 5 min; the model download may have been part of that. If 4-bit is slow, add a `--dequant` flag. Check first that `mlx_lm.utils.dequantize_model` exists (UNVERIFIED).
+  3. **Smoke run:** `eval/azure/run_on_azure.sh run "--ctx 1024 --n 1 --needles 2 --fracs 0.25 --name smoke_az"`, then `status`, then `fetch`. Fix bugs.
+  4. **Grid, one job at a time:** `--ctx 4096 --n 12 --seed 0 --style literal`, then `--style paraphrase`, then `--halo 64` (re-prefill context ablation).
+  5. **C7 ratchet:** `components/recall_on_demand/autoresearch/eval.py --layer {2,4,8,12,15}`, logged to `results.tsv`.
+  6. **Update the abstract, ADR and memo with measured numbers.** Apply the remaining hostile-review fixes (Log 10:05). Message the Supervisor with memo v2.
+  7. **Cleanup:** `eval/azure/run_on_azure.sh delete` removes the resource group.
+- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section (the hostile review scored team fit 1/5 without them).
 - **Risks:**
-  1. No measured numbers yet: every result claim in the docs is a plan.
-  2. RoD prior art not yet checked.
-  3. Shared machine: heavy runs must be staggered.
+  1. No numbers, so the project ranks low in selection.
+  2. Re-prefilled blocks see only sinks + the block, so their KV is approximate. The halo ablation is pending.
+  3. Lexical needles flatter retrieval. The `rodlex` control and paraphrase style are in v2; key aliasing is not yet.
+  4. Novelty is plausible but not airtight: ArkVale's digest mechanism is UNVERIFIED, and SpeCache's sketch scope is unconfirmed.
 
 ## Phase 0 — what the judges need to see (from `_briefs/perceptron.txt`)
 - **MVP bullets → evidence:** (a) one existing method applied + memory saved vs uncompressed → a table of *retained KV bytes* (counting every index/scale byte) and measured peak memory, per method and ratio; (b) accuracy drop on a small long-context recall task → needle-recall accuracy with 95% Wilson CIs vs the full cache.
@@ -98,3 +104,35 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Pushed.** `architecture/adr/001-spike.md` (scores, six hats, self-adversarial thesis/antithesis/synthesis, gates for 12 Oct); `deliverables/round1-abstract.md` (833 words, all 8 sections; no result claims); `deliverables/architecture.md` (mermaid diagram + tier byte table).
 - **Harness diagnosis.** The pipeline is not hung, just starved: Metal init 7.8 s, `import mlx_lm` 56 s, model load 91 s (663 MiB active), first 6-token forward done at 140 s. The cause is machine-wide swap. The smoke run (`--ctx 1024 --n 1 --needles 2`) is running in the background; the real grid waits until compute is staggered after 08:30.
 - **Gate.** Selection memo v1 written; Supervisor notified.
+
+### 2026-10-04 10:05 IST — Hostile review, prior art, harness v2, Azure; then PAUSED
+- **Supervisor messages.**
+  - 08:22: package accepted, ranked 7th for lack of numbers.
+  - 09:40: lean mode back on.
+  - 09:55: **PAUSE** (user's decision). Acknowledged; idle after this push.
+- **Local compute is unusable tonight.** The MLX GPU smoke run blocked in `Event::wait` (Metal) for 25+ min, with the GPU 67% busy from other sessions and swap at 35.7/48 GB. The CPU run under `nice -n 10` got about 10% CPU at load average 51. Both were killed. **No numbers exist.**
+- **Azure.** Quota check: 20 vCPU per region in centralindia and eastus (Dv5/Ev5); no GPU quota. Created `p02-kv-1` (D8ds_v5) through `eval/azure/run_on_azure.sh`, with a project-local SSH key that is gitignored.
+  - Ubuntu 22.04's Python 3.10 has no mlx-lm 0.32.0 wheel, so setup now uses a uv Python 3.11 venv.
+  - Setup works and the haystack is identical to the local one.
+  - The CPU speed probe was stopped at pause. The VM is **deallocated**, with its disk kept.
+- **Hostile-judge review** (rubber-duck, 10 issues; abstract scored **54/100**: understanding 4, soundness 2, innovation 3, clarity 4, evaluation 2, team 1). Fixed in harness v2 (`eval/kvbench.py`, untested):
+  - (1) RoD answers from a persistent store (resident KV + *packed* sketch + int32 ids), never from the full cache.
+  - (2) Quantised methods keep packed arrays.
+  - (4) The RoD KV budget is reduced by the sketch + id bytes, so answer-time bytes ≤ baselines'; `snapkv_qa` is labelled an oracle.
+  - (5) Honest method names, plus `random` and `rodlex` (IDF lexical block retrieval) controls.
+  - (6) The protocol is renamed "shared-context multi-query" (not multi-turn).
+  - (7) Added a `--style paraphrase` needle variant.
+  - (8) Context-clustered bootstrap CIs and paired deltas.
+  - (9) Realised token depth is recorded.
+  - (10) One store at a time.
+
+  Still open:
+  - True multi-turn evaluation.
+  - Key aliasing (fully non-literal needles).
+  - Quest/page-digest baseline.
+  - Engine logit-parity test.
+  - Halo ablation (flag exists).
+  - Team names.
+
+  Docs: "KIVI-style" corrected to "per-token group quantisation" in the abstract, `components.md` and the component scan.
+- **Prior art** (research agent; `research/components/recall-on-demand-prior-art.md`, 19 papers opened). No paper found combines all three of: zero KV kept for evicted tokens, a single-layer 2-bit sketch used only to score, and re-prefill of flagged blocks at original positions. Recall elsewhere means fetching offloaded KV (ArkVale, InfiniGen, ShadowKV, RetroInfer, SpeCache…). Recompute from tokens appears in CacheBlend (RAG fusion) and as a costly baseline in HCache. Gaps: ArkVale's digest mechanism is UNVERIFIED (OpenReview blocked); SpeCache's sketch scope is unconfirmed. The novelty claim stays hedged: "to our knowledge".
