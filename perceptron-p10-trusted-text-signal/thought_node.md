@@ -21,7 +21,7 @@
   4. Final Round-1 abstract rendered from committed results, a doc-drift check script, and the architecture diagram.
   5. Cross-model reviews as child sessions (PLAYBOOK §10, at most 2 at a time): `gpt-6-astra` (max) as hostile judge on the abstract and spike; `gpt-6-sol` (max) on code and eval, including reproducing the headline numbers. Record them in `reviews/` and `ledger.tsv`.
   6. Final selection memo, thought node current, everything pushed, then message the Supervisor.
-- **Doing:** steps 1–5 done and pushed. Both cross-model reviews are in and all 18 items are accepted and fixed (v2). Final confirmation is running in the same two child sessions: astra re-scores the final abstract, sol verifies the fixes and reproduces one v2 run. Then step 6 (final memo, push, DONE).
+- **Doing:** definition of done met, everything pushed. Only gpt-6-sol's verification of the v2 fixes, with a reproduction of `text_minilm_v2`, is still open; its file is recorded on arrival. Then "DONE — slot free" to the Supervisor.
 - **Machine rules:** start heavy jobs only when `sysctl -n kern.memorystatus_level` ≥ 30 (pause below 25); always `nice -n 10`, one job at a time; CPU only; small requests; poll long jobs at ≥ 10-minute intervals; no FinBERT download (MiniLM is cached).
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section. Optional: a Kaggle API token (`~/.kaggle/kaggle.json`).
 - **Risks:**
@@ -203,3 +203,25 @@ Added `tests/` (43 pass): DST-safe 16:00 ET alignment, contract rejection, brute
 - **Reframed the pitch** around trust and coverage guarantees plus a text gate.
 - **Final abstract:** rendered from committed JSONs (813 words, tables included); `check_drift.py` passes. Architecture diagram, ADR 001 and components.md updated.
 - **Step 5:** launched cross-model reviewers as child sessions: gpt-6-astra (max) as hostile judge on abstract and spike; gpt-6-sol (max) on code and eval plus reproduction.
+
+### 2026-10-04 13:10–13:55 IST — Cross-model reviews, v2 fixes, final abstract and memo
+- **gpt-6-astra** (hostile judge, max) on the near-final abstract and spike: 3.20/5 (64/100), 5 blocking issues.
+- **gpt-6-sol** (code/eval, max): all 8 requested headline numbers, and every non-timing leaf of the three headline JSONs, reproduced exactly. 3 blocking findings:
+  - B1: per-row containment does not survive separately adapted ACI runs;
+  - B2: a 50,003-post constant-sentiment day escapes the fixed-ε box;
+  - B3: the DJIA "tradeable at the open" claim conflicts with the gap features.
+  - Plus 2 non-blocking (N1 empty-interval scoring, N2 FinBERT pump dispatch).
+- **All 18 items accepted, none rejected** (decisions under each review; `reviews/ledger.tsv`). Fixes:
+  - derived round-off margin, centred sums and a document cap in `deletion_box`;
+  - fixed-offset-only containment wording, with a non-nesting test;
+  - empty intervals excluded from width/Winkler and counted;
+  - explicit scorer dispatch;
+  - beyond-budget attacks;
+  - DJIA qualified as conditional on the open, with exploratory pre-open (null) and positive-control (power) runs;
+  - abstract wording (leakage, novelty, admission rule, milestones incl. 15 Oct / 30 Oct, no invented teammates);
+  - 1/m in the variance proof;
+  - price-only is no longer called k = ∞.
+  - Tests: 70.
+- **v2 reruns** (`baseline_v2`, `text_minilm_v2`): headline numbers unchanged at reported precision; v1→v2 deltas committed (no-text days got tighter because v1's margin straddled thresholds at 0). Ratchet re-baselined (SCORE 4.566). Prior-art search log completed (R2 §2.5).
+- **Final abstract:** v2, 890 words, rendered and drift-checked. astra re-score **3.70/5 (74/100)**: 0 former blockers left; 1 new wording blocker, fixed.
+- **Final selection memo:** P7 first, P10 a close second (best hostile abstract score among the memos read, but a weaker finals story), and the Theme-6 pick over P9.
