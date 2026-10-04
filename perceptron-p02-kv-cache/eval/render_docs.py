@@ -287,35 +287,35 @@ def headline(V):
     base25 = [get(t, b, 0.25)["acc"] for b in ["streaming"] + QA if get(t, b, 0.25)]
     base10 = [get(t, b, 0.1)["acc"] for b in ["streaming"] + QA if get(t, b, 0.1)]
     p, s7 = V["primary"], V["S7"][0.25]
-    r1 = V.get("R1")
-    rep = ("replication on fresh contexts pending" if r1 is None else
-           f"on fresh contexts RoD − full is {r1['d']:+.2f} (95% CI {r1['lo']:+.2f} to {r1['hi']:+.2f}), "
-           + ("replicating it within the pre-set 15-point margin" if r1["lo"] > -0.15 else "not replicating it"))
-    return (f"On 12 held-out ~4k-token contexts (48 independent questions; Llama-3.2-1B-Instruct) the full cache recalls {pc(full)}. "
-            f"At 25% of the KV memory the ten tested query-agnostic baselines recall {min(base25):.0%}–{max(base25):.0%} and RoD {pc(rod)}: "
-            f"the pre-registered gain over StreamingLLM is {p['d']:+.2f} (95% CI {p['lo']:+.2f} to {p['hi']:+.2f}), but RoD − full is "
-            f"{s7['d']:+.2f} ({s7['lo']:+.2f} to {s7['hi']:+.2f}), so it is not near-lossless there. Exploratory: at 10% memory RoD recalls "
-            f"{pc(rod10)} vs ≤{max(base10):.0%} for the baselines; {rep}.")
+    s = (f"On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct) the full cache recalls {pc(full)}. At 25% of the KV "
+         f"memory, ten query-agnostic baselines recall {min(base25):.0%}–{max(base25):.0%} and RoD {pc(rod)}: {p['d']:+.2f} over StreamingLLM "
+         f"(95% CI {p['lo']:+.2f} to {p['hi']:+.2f}; pre-registered), yet {abs(s7['d']):.2f} below the full cache. At 10% memory RoD recalls "
+         f"{pc(rod10)} (baselines ≤{max(base10):.0%})")
+    r1, t2 = V.get("R1"), V.get("T2")
+    if r1 is not None and t2:
+        s += (f"; on fresh contexts with paraphrased templates it recalls {pc(get(t2, 'rod', 0.1))} vs the full cache's "
+              f"{pc(get(t2, 'full', 1.0))} ({r1['d']:+.2f}, 95% CI {r1['lo']:+.2f} to {r1['hi']:+.2f}), consistent with fewer recalled "
+              f"blocks also hiding look-alike records")
+    return s + "."
 
 
 def caveats(V):
     if not V.get("T1"):
         return "_Controls pending._"
-    sh = lambda x: "pending" if x is None else f"{x['d']:+.2f} (95% CI {x['lo']:+.2f} to {x['hi']:+.2f})"
+    sh = lambda x: "pending" if x is None else f"{x['d']:+.2f} ({x['lo']:+.2f} to {x['hi']:+.2f})"
     rod, st = get(V["T1"], "rod", 0.25), get(V["T1"], "streaming", 0.25)
     mm = mech(load("T1")["rows"], "rod")
-    parts = [f"RoD minus a lexical index over the same ids, {sh(V.get('S2_T1'))}",
-             f"RoD finds the needle's block {mm[0.25]['hit_rate']:.0%} of the time, but accuracy given a hit falls from "
-             f"{mm[0.1]['acc_given_hit']:.0%} (2 recalled blocks, at 10%) to {mm[0.25]['acc_given_hit']:.0%}, mostly by naming another needle's value"]
-    if V.get("T2"):
-        parts.append(f"paraphrased templates, RoD minus StreamingLLM {sh(V.get('S3'))}")
+    parts = [f"RoD minus a lexical index over the same ids at 25%: {sh(V.get('S2_T1'))} on literal needles"
+             + (f", {sh(V.get('S2_T2'))} on paraphrased ones" if V.get("T2") else ""),
+             f"accuracy given a recalled needle falls from {mm[0.1]['acc_given_hit']:.0%} at 10% to {mm[0.25]['acc_given_hit']:.0%} at 25% "
+             f"memory, mostly by naming another needle's value"]
     if V.get("T3"):
         fc = get(V["T3"], "full", 1.0)
-        parts.append(f"synonym-aliased keys at 10% memory (full-cache ceiling {fc['acc']:.0%}), RoD minus lexical {sh((V.get('S6') or {}).get(0.1))}")
+        parts.append(f"with synonym-aliased keys (full cache {fc['acc']:.0%}) RoD minus lexical at 10% is {sh((V.get('S6') or {}).get(0.1))}")
     if V.get("S4"):
-        parts.append(f"64 tokens of recompute context, {sh(V['S4'].get(0.25))}")
-    parts.append(f"CPU time per answer {rod['s'] / st['s']:.1f}× StreamingLLM's")
-    return "At 25% memory unless stated: " + "; ".join(parts) + "."
+        parts.append(f"64 tokens of recompute context change RoD's recall by {sh(V['S4'].get(0.25))}")
+    parts.append(f"CPU answer time {rod['s'] / st['s']:.1f}× StreamingLLM's")
+    return "; ".join(parts) + "."
 
 
 def memo_scores(V):

@@ -3,7 +3,7 @@
 **Title:** *Recall-on-Demand: treating the KV cache as a cache, so that eviction stops causing forgetting*
 
 ## Problem & theme chosen
-Theme 1 (Efficient AI at Scale), Problem 2: *Squeezing Long-Context Inference into Less Memory*. Llama-3.2-1B keeps 32 KiB of key/value (KV) cache per token, so a 32k-token chat holds 1 GiB of cache, more than its 4-bit weights. This limit decides whether long-context assistants can run on laptops and phones.
+Theme 1 (Efficient AI at Scale), Problem 2: *Squeezing Long-Context Inference into Less Memory*. Llama-3.2-1B keeps 32 KiB of key/value (KV) cache per token: a 32k-token chat holds 1 GiB, more than its 4-bit weights. That decides whether long-context assistants fit on laptops and phones.
 
 ## Understanding of the challenge
 Shrinking the cache is easy; shrinking it *without forgetting* is hard. Eviction methods (StreamingLLM, H2O, SnapKV) must choose what to delete **before the question exists**, and a deleted token is gone for good. Later questions target content nobody scored highly at compression time; SCBench reports such methods "suffer in multi-turn scenarios". Quantisation never deletes, but its saving is bounded by bit-width. Query-aware selection (Quest) keeps the full cache resident. The crux: high compression **and** robustness to questions that arrive after compression.
@@ -18,7 +18,7 @@ A question's *own* layer-5 queries score evicted 64-token blocks against the ind
 
 - **Model:** frozen Llama-3.2-1B-Instruct (Qwen2.5-3B next).
 - **Data:** RULER-style needles in WikiText-103 with literal, paraphrased and synonym-aliased keys.
-- **Tools:** PyTorch, Apple MLX (laptop demo), and NVIDIA kvpress for the published baselines.
+- **Tools:** PyTorch, Apple MLX (demo), NVIDIA kvpress (published baselines).
 
 ## Minimum Viable mapping
 1. **Existing techniques with measured memory savings:** StreamingLLM, H2O, SnapKV, K-norm and int8/4/2 KV in one harness. Every retained byte after prefill (KV, scales, index, ids) is counted and checked against the retained tensors.
@@ -29,7 +29,7 @@ Both run today (results below).
 ## Stretch ambitions
 - **Modify a method:** RoD extends StreamingLLM; its scorer is tuned by an automated keep-only-if-better loop on development seeds.
 - **2+ baselines:** our implementations plus kvpress's StreamingLLM, SnapKV, ObservedAttention (H2O), Knorm, ExpectedAttention and TOVA.
-- **Next:** sequential multi-turn chat, KVzip as a baseline, 16–32k contexts, memory-bounded prefill, and a laptop demo with a memory meter.
+- **Next:** multi-turn chat, KVzip baseline, 16–32k contexts, memory-bounded prefill.
 
 ## Novelty / differentiation
 Query-scored key indices (Quest, ArkVale) and token recomputation (CacheBlend, HCache) are known. Offload systems (InfiniGen, ShadowKV, ArkVale) keep evicted KV in host memory, which shrinks GPU memory but not the total stored. We test their combination *without* any backing store of evicted KV: ids plus a one-layer index, recomputing only the blocks the live question selects. We also contribute a stricter evaluation:
@@ -44,17 +44,17 @@ Query-scored key indices (Quest, ArkVale) and token recomputation (CacheBlend, H
   - every tested query-agnostic baseline;
   - paraphrased and aliased splits, and a recompute-context ablation.
 - **Unit of analysis:** 12 held-out contexts, with context-clustered bootstrap CIs. Scorer tuning used only development seeds (an exploratory best of 322 variants).
-- **Metrics:** recall, retained and answer-time bytes, compression, needle-block hit rate and latency overhead.
+- **Metrics:** recall, retained bytes, needle-block hit rate, latency.
 - **Preliminary results:** <!-- p2:headline:begin -->
-On 12 held-out ~4k-token contexts (48 independent questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. At 25% of the KV memory the ten tested query-agnostic baselines recall 0%–35% and RoD 58%: the pre-registered gain over StreamingLLM is +0.40 (95% CI +0.25 to +0.54), but RoD − full is -0.25 (-0.42 to -0.08), so it is not near-lossless there. Exploratory: at 10% memory RoD recalls 85% vs ≤6% for the baselines; on fresh contexts RoD − full is +0.23 (95% CI +0.10 to +0.38), replicating it within the pre-set 15-point margin.
+On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. At 25% of the KV memory, ten query-agnostic baselines recall 0%–35% and RoD 58%: +0.40 over StreamingLLM (95% CI +0.25 to +0.54; pre-registered), yet 0.25 below the full cache. At 10% memory RoD recalls 85% (baselines ≤6%); on fresh contexts with paraphrased templates it recalls 69% vs the full cache's 46% (+0.23, 95% CI +0.10 to +0.38), consistent with fewer recalled blocks also hiding look-alike records.
 <!-- p2:headline:end -->
 - **Controls:** <!-- p2:caveats:begin -->
-At 25% memory unless stated: RoD minus a lexical index over the same ids, +0.04 (95% CI -0.04 to +0.12); RoD finds the needle's block 100% of the time, but accuracy given a hit falls from 98% (2 recalled blocks, at 10%) to 55%, mostly by naming another needle's value; paraphrased templates, RoD minus StreamingLLM +0.38 (95% CI +0.23 to +0.54); CPU time per answer 6.2× StreamingLLM's.
+RoD minus a lexical index over the same ids at 25%: +0.04 (-0.04 to +0.12) on literal needles, +0.27 (+0.10 to +0.44) on paraphrased ones; accuracy given a recalled needle falls from 98% at 10% to 55% at 25% memory, mostly by naming another needle's value; CPU answer time 6.2× StreamingLLM's.
 <!-- p2:caveats:end -->
 
 ## Feasibility and risks
 - **Team:** three students [names to be added]: systems/inference (RoD store, demo), ML (attention scoring, quantisation), evaluation (benchmarks, statistics).
-- **Feasibility:** a CPU prototype already runs the full pre-registered evaluation.
+- **Feasibility:** a CPU prototype already runs the pre-registered evaluation.
 - **Milestones:**
 
   | Weeks | Milestone |
