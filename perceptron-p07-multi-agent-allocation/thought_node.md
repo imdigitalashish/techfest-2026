@@ -10,25 +10,21 @@
 - _(none)_
 
 ## Now
-_Updated 2026-10-04 11:30 IST._
-- **Phase:** active-batch DoD **complete**; "DONE — slot free" sent to the Supervisor.
-- **State:**
-  - MVP plus both stretch goals done with held-out CIs: the pre-registered mvp-v2, week, month.
-  - Spike tested end-to-end: the pre-registered replication **failed** and is reported. The spike was re-scoped to decision-aware forecast trust (Addendum B + B1 pre-registered).
-  - NYC real-trace replay over two periods.
-  - Final abstract v1.2 (881 words) and architecture diagram.
-  - 5 reviews recorded (`reviews/ledger.tsv`): hostile 48 → 71/100; all headline numbers independently reproduced.
-- **Next (October, after the 12 Oct pick):**
-  1. Implement the Addendum B/B1 gate designs, tune on seeds 0–49, freeze, then run seeds 300–329.
-  2. Mechanism test for "a better forecast hurts" (two-zone deterministic deadline; τ=0 matching; tie-break).
-  3. Re-run the failed research threads: compute-cluster autoscaling papers, social/competitions.
-  4. RL comparator (TorchRL MAPPO).
-  5. Click-to-shock demo dashboard before 17 Nov.
+_Updated 2026-10-04 17:30 IST._
+- **Phase:** winning demo (PLAYBOOK §11; Supervisor, 17:28). The Round-1 DoD is complete (11:30).
+- **Doing:**
+  - Child session [P7 demo builder](ghapp://sessions/244315d0-41b1-4804-89fd-4975e72ceaa5), in plan mode. It proposes the "crazy" element first, I approve, then it builds `demo/` (run.sh, SCRIPT.md, fallback/, smoke.sh).
+  - Starting hypothesis: "Break it yourself" — click-to-shock on a live city; rule vs planner side by side on identical demand; lead-time / patience / forecast-trust knobs; the live run bridged to the committed 20-seed (L,P) result; NYC July-4 replay; honest panel.
+- **Next:**
+  1. Approve or redirect the builder's plan.
+  2. When built, spawn the gpt-6-astra "judge watching the demo" review (≤ 2 child sessions).
+  3. Verify `demo/run.sh` and `demo/smoke.sh` from a fresh clone.
+  4. Message "DEMO DONE".
+  - October (after the 12 Oct pick): run the Addendum B/B1 trust test (seeds 300–329); mechanism test; RL comparator.
 - **Needs from user:** register by 15 Oct; teammates' names and skills (`[TEAM-1..3]` in the abstract).
 - **Risks:**
-  - The spike is a plan until Addendum B runs.
-  - LP limitations: τ=0 matching approximation; solver tie-breaks (backend recorded).
-  - Real replay retains synthetic travel, matching and patience.
+  - A live single run can contradict the 30-seed mean. Mitigation: label "live, 1 run" and show the committed CI beside it.
+  - Never claim pre-positioning before an unforecastable shock.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -245,3 +241,9 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
 - **Second NYC period** (July 10–11): +1.52 pp [+1.43, +1.59], 20/20 (`eval/results/nyc-v2b`).
 - **Abstract v1.2:** 881 words. Q&A prep updated.
 - DoD items 1–6 complete; DONE message sent to the Supervisor.
+
+### 2026-10-04 17:30 IST — Demo phase start; git and timestamp hygiene
+- **Supervisor directive (17:28):** winning demo per PLAYBOOK §11. Spawned one child session, *P7 demo builder* (plan mode, notify once), with a full kickoff: committed evidence, code APIs, honesty corrections, the §11 bar, rules.
+- **New PLAYBOOK §6 rules acknowledged:** never `git stash`/`--autostash` (I had used `--autostash` in my push loop until now; from now on I commit before rebasing). Timestamps come from the clock.
+- **Pre-registration times:** all four stated times were 2–11 minutes later than their commits. I appended a dated correction to `eval/preregistration.md` without editing the registered text. The order is verified for every registration: main prereg committed 10:10:38, mvp-v2 started 10:11:01; Addendum A 10:25:33, phase-v2 started 10:32:25; B (10:59:23) and B1 (11:14:31) have no test runs yet (max seed used = 229).
+- **Memory guard** (as I interpret it): start heavy jobs only when `memory_pressure` reports free ≥ 30%. It was 32% at 17:28.
