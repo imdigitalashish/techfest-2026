@@ -353,6 +353,15 @@ STRATEGIES: dict[str, Callable[[], object]] = {
     # attribution ablation (ADR 001 review 09:50): no step normalisation at all
     "anchor_full_nonorm": lambda: Anchor(name="anchor_full_nonorm", normalize="none", weighting="uniform",
                                          clip_kappa=2.0, memory=True, memory_max_age=4, accept_partial=True),
+    # leave-one-mechanism-out ablations (each removes exactly one ingredient of anchor_full)
+    "anchor_full_nopartial": lambda: Anchor(name="anchor_full_nopartial", normalize="nova", weighting="uniform",
+                                            clip_kappa=2.0, memory=True, memory_max_age=4, accept_partial=False),
+    "anchor_full_nomem": lambda: Anchor(name="anchor_full_nomem", normalize="nova", weighting="uniform",
+                                        clip_kappa=2.0, memory=False, accept_partial=True),
+    "anchor_full_noclip": lambda: Anchor(name="anchor_full_noclip", normalize="nova", weighting="uniform",
+                                         clip_kappa=None, memory=True, memory_max_age=4, accept_partial=True),
+    "anchor_full_nweights": lambda: Anchor(name="anchor_full_nweights", normalize="nova", weighting="n",
+                                           clip_kappa=2.0, memory=True, memory_max_age=4, accept_partial=True),
 }
 
 BASE_STRATEGIES = ["fedavg_ab_homo", "ffa_lora", "flexlora", "anchor_full"]

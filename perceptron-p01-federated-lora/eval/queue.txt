@@ -57,6 +57,27 @@ v2 clean anchor_full 4
 v2 clean fedavg_ab_homo 4
 v2 clean ffa_lora 4
 v2 clean flexlora 4
+# P3b: leave-one-mechanism-out ablations (dropout, 5 seeds) — run if time allows before DONE
+v2 dropout anchor_full_nopartial 0
+v2 dropout anchor_full_nomem 0
+v2 dropout anchor_full_noclip 0
+v2 dropout anchor_full_nweights 0
+v2 dropout anchor_full_nopartial 1
+v2 dropout anchor_full_nomem 1
+v2 dropout anchor_full_noclip 1
+v2 dropout anchor_full_nweights 1
+v2 dropout anchor_full_nopartial 2
+v2 dropout anchor_full_nomem 2
+v2 dropout anchor_full_noclip 2
+v2 dropout anchor_full_nweights 2
+v2 dropout anchor_full_nopartial 3
+v2 dropout anchor_full_nomem 3
+v2 dropout anchor_full_noclip 3
+v2 dropout anchor_full_nweights 3
+v2 dropout anchor_full_nopartial 4
+v2 dropout anchor_full_nomem 4
+v2 dropout anchor_full_noclip 4
+v2 dropout anchor_full_nweights 4
 # P4: ablation ladder (dropout)
 v2 dropout fedavg_ab_het 0
 v2 dropout anchor_naive 0

@@ -57,8 +57,9 @@ def main() -> None:
     except KeyError as e:
         sys.exit(f"missing result key: {e}")
     Path(args.out).write_text(out)
-    body = out.split("### Problem", 1)[-1].split("\n---\n")[0]
-    print(f"rendered {args.out}: body words = {len(('### Problem' + body).split())}")
+    body = "### Problem" + out.split("### Problem", 1)[-1].split("\n---\n")[0]
+    words = [w for w in body.split() if any(ch.isalnum() for ch in w)]  # markdown pipes/bullets are not words
+    print(f"rendered {args.out}: body words = {len(words)} (target 600–900)")
 
 
 if __name__ == "__main__":
