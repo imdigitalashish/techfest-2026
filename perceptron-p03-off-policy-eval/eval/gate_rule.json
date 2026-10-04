@@ -1,0 +1,18 @@
+{
+ "tau_ess": 0.05,
+ "tau_r": 0.0,
+ "tau_z": 3.0,
+ "calibrated_at": "2026-10-04 13:39:26 IST",
+ "calibration": "simulator only (eval/calibrate_gate.py); never fitted to OBD",
+ "answer_rate": 0.4708333333333333,
+ "pooled_coverage_answered": 0.9616519174041298,
+ "confident_wrong_answered": 0,
+ "ungated": {
+  "tau_ess": 0.0,
+  "tau_r": 0,
+  "answer_rate": 0.9625,
+  "pooled_cov": 0.9191919191919192,
+  "worst_cfg_cov": 0.65,
+  "confident_wrong": 0
+ }
+}
