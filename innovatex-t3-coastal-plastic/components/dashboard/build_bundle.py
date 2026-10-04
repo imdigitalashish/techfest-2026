@@ -10,6 +10,7 @@ Reproduce: python3 innovatex-t3-coastal-plastic/components/dashboard/build_bundl
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import math
 import random
@@ -60,7 +61,7 @@ def flatten(d: dict, prefix: str = "") -> dict[str, float | str]:
     return out
 
 
-def trim(part: dict, past_h: int, ahead_h: int = 48, tel_per_site: int = 24) -> dict:
+def trim(part: dict, past_h: int, ahead_h: int = 48, tel_per_site: int = 24, plans_kept: int = 3) -> dict:
     """Keep a dashboard-sized window around 'now' (latest forecast issue time, else series end)."""
     issued = [_dt(f["issued_at"]) for f in part.get("forecasts", [])]
     ends = [_dt(s["t"][-1]) for s in part.get("forcing", []) if s.get("t")]
@@ -75,6 +76,13 @@ def trim(part: dict, past_h: int, ahead_h: int = 48, tel_per_site: int = 24) -> 
             for f, v in list(s.items()):
                 if isinstance(v, list) and len(v) == n:
                     s[f] = [v[i] for i in idx]
+    latest: dict = {}
+    for f in part.get("forecasts", []):
+        k = (f["site_id"], f["horizon_h"])
+        if k not in latest or _dt(f["issued_at"]) > _dt(latest[k]["issued_at"]):
+            latest[k] = f
+    part["forecasts"] = list(latest.values())
+    part["plans"] = sorted(part.get("plans", []), key=lambda p: _dt(p["issued_at"]))[-plans_kept:]
     tel = sorted(part.get("telemetry", []), key=lambda m: _dt(m["t"]))
     keep = {}
     for m in tel:
@@ -165,11 +173,13 @@ def git_sha() -> str:
         return "unknown"
 
 
-def build(mock: bool = False, out_site: Path = HERE / "site", past_h: int = 144, now: datetime | None = None) -> dict:
+def build(mock: bool = False, out_site: Path = HERE / "site", past_h: int = 144, now: datetime | None = None,
+          ledger_days: int = 30) -> dict:
     use_twin = TWIN.exists() and not mock
-    part = json.loads(TWIN.read_text()) if use_twin else mock_inputs.make_bundle_part(now=now)
-    part = trim({k: part.get(k, []) if k != "metrics" else part.get(k, {}) for k in PART_KEYS}, past_h)
-    entries, aux = build_ledger(part)
+    raw = json.loads(TWIN.read_text()) if use_twin else mock_inputs.make_bundle_part(now=now)
+    raw = {k: raw.get(k, []) if k != "metrics" else raw.get(k, {}) for k in PART_KEYS}
+    entries, aux = build_ledger(trim(copy.deepcopy(raw), ledger_days * 24))
+    part = trim(raw, past_h)
     assert chain.verify(entries, aux["anchor"]).ok
     metrics = {k: flatten(v) for k, v in (part.get("metrics") or {}).items()}
     if (DET / "metrics.json").exists():

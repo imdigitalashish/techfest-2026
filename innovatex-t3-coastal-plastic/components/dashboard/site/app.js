@@ -3,7 +3,7 @@
   var I18N = {
     title: { en: 'Nullah outfall plastic interception — operations', mr: 'नाला मुखावरील प्लास्टिक अडवणूक — कामकाज', hi: 'नाला निकास पर प्लास्टिक अवरोधन — संचालन' },
     map: { en: 'Outfall sites', mr: 'नाला मुख ठिकाणे', hi: 'निकास स्थल' },
-    risk: { en: 'Overflow risk, next 24 h', mr: 'ओव्हरफ्लोचा धोका, पुढील २४ तास', hi: 'ओवरफ्लो जोखिम, अगले २४ घंटे' },
+    risk: { en: 'Overflow risk', mr: 'ओव्हरफ्लोचा धोका', hi: 'ओवरफ्लो जोखिम' },
     rain_tide: { en: 'Rain and tide', mr: 'पाऊस आणि भरती-ओहोटी', hi: 'बारिश और ज्वार-भाटा' },
     fill: { en: 'Boom fill and escape', mr: 'बूम भराव आणि गळती', hi: 'बूम भराव और रिसाव' },
     forecast: { en: 'Forecast', mr: 'अंदाज', hi: 'पूर्वानुमान' },
@@ -39,7 +39,11 @@
   function riskClass(p) { return p == null ? '' : p < 0.3 ? 'risk-low' : p < 0.6 ? 'risk-med' : 'risk-high'; }
   function riskColor(p) { return p == null ? '#6b7280' : p < 0.3 ? '#1d7445' : p < 0.6 ? '#b06a00' : '#b0261d'; }
   function bySite(list, id) { return (list || []).filter(function (x) { return x.site_id === id; }); }
-  function forecast(id, h) { return bySite(S.bundle.forecasts, id).filter(function (f) { return f.horizon_h === h; }).sort(function (a, b) { return a.issued_at < b.issued_at ? 1 : -1; })[0]; }
+  function fcs(id) {
+    var by = {}; bySite(S.bundle.forecasts, id).forEach(function (f) { var o = by[f.horizon_h]; if (!o || f.issued_at > o.issued_at) by[f.horizon_h] = f; });
+    return Object.keys(by).map(function (k) { return by[k]; }).sort(function (a, b) { return a.horizon_h - b.horizon_h; });
+  }
+  function forecast(id) { return fcs(id)[0]; }
 
   /* ---------------------------------------------------------------- i18n -- */
   function applyLang(l2) {
@@ -119,10 +123,10 @@
 
   /* --------------------------------------------------------------- sites -- */
   function renderSites() {
-    var sites = S.bundle.sites.slice().sort(function (a, b) { var fa = forecast(a.site_id, 24), fb = forecast(b.site_id, 24); return (fb ? fb.p_overflow : -1) - (fa ? fa.p_overflow : -1); });
+    var sites = S.bundle.sites.slice().sort(function (a, b) { var fa = forecast(a.site_id), fb = forecast(b.site_id); return (fb ? fb.p_overflow : -1) - (fa ? fa.p_overflow : -1); });
     $('#sitelist').innerHTML = sites.map(function (s) {
-      var f = forecast(s.site_id, 24), p = f ? f.p_overflow : null;
-      return '<li tabindex="0" data-site="' + esc(s.site_id) + '"><span class="nm">' + esc(s.name) + '</span><span class="wb">' + esc(s.waterbody) + ' · ' + esc(s.outfall_type.replace('_', ' ')) + '</span><span class="pv ' + riskClass(p) + '"><span class="dot"></span><strong>' + pct(p) + '</strong></span></li>';
+      var f = forecast(s.site_id), p = f ? f.p_overflow : null;
+      return '<li tabindex="0" data-site="' + esc(s.site_id) + '"><span class="nm">' + esc(s.name) + '</span><span class="wb">' + esc(s.waterbody) + ' · ' + esc(s.outfall_type.replace('_', ' ')) + '</span><span class="pv ' + riskClass(p) + '"><span class="dot"></span><strong>' + pct(p) + '</strong>' + (f ? '<br><span class="wb">next ' + f.horizon_h + ' h</span>' : '') + '</span></li>';
     }).join('');
     $('#sitelist').querySelectorAll('li').forEach(function (li) {
       li.addEventListener('click', function () { select(li.dataset.site, true); });
@@ -135,9 +139,9 @@
     tiles.addTo(S.map);
     var pts = [];
     S.bundle.sites.forEach(function (s) {
-      var f = forecast(s.site_id, 24), p = f ? f.p_overflow : null;
+      var f = forecast(s.site_id), p = f ? f.p_overflow : null;
       var mk = L.circleMarker([s.lat, s.lon], { radius: 10, color: '#15191d', weight: 1.5, fillColor: riskColor(p), fillOpacity: 0.9 }).addTo(S.map);
-      mk.bindTooltip(esc(s.name) + ' · ' + pct(p) + ' risk (24 h)');
+      mk.bindTooltip(esc(s.name) + ' · ' + pct(p) + ' overflow risk' + (f ? ' (' + f.horizon_h + ' h)' : ''));
       mk.on('click', function () { select(s.site_id, false); });
       S.markers[s.site_id] = mk; pts.push([s.lat, s.lon]);
     });
@@ -157,8 +161,8 @@
     var s = S.bundle.sites.filter(function (x) { return x.site_id === S.site; })[0]; if (!s) return;
     $('#sitename').textContent = s.name;
     $('#sitesub').textContent = [s.waterbody, s.outfall_type.replace('_', ' '), 'boom ' + num(s.boom_length_m, 0) + ' m / ' + num(s.boom_capacity_m3, 1) + ' m³', 'channel ' + num(s.channel_width_m, 0) + ' m', s.tidal ? 'tidal' : 'non-tidal'].join(' · ');
-    var f24 = forecast(s.site_id, 24), f48 = forecast(s.site_id, 48);
-    $('#riskbox').innerHTML = f24 ? '<div class="big ' + riskClass(f24.p_overflow) + '">' + pct(f24.p_overflow) + '</div><div class="lbl">overflow risk, next 24 h</div>' + (f48 ? '<div class="lbl">48 h: <strong class="' + riskClass(f48.p_overflow) + '">' + pct(f48.p_overflow) + '</strong></div>' : '') + '<div>' + badge(f24.provenance.kind) + '</div>' : '<div class="lbl">No forecast</div>';
+    var all = fcs(s.site_id), f24 = all[0], f48 = all[1];
+    $('#riskbox').innerHTML = f24 ? '<div class="big ' + riskClass(f24.p_overflow) + '">' + pct(f24.p_overflow) + '</div><div class="lbl">overflow risk, next ' + f24.horizon_h + ' h</div>' + (f48 ? '<div class="lbl">' + f48.horizon_h + ' h: <strong class="' + riskClass(f48.p_overflow) + '">' + pct(f48.p_overflow) + '</strong></div>' : '') + '<div>' + badge(f24.provenance.kind) + '</div>' : '<div class="lbl">No forecast</div>';
     var now = f24 ? f24.issued_at : null;
     var fo = bySite(S.bundle.forcing, s.site_id)[0];
     if (fo) {
@@ -175,7 +179,7 @@
         { values: esc_kg, type: 'bar', axis: 'right', color: '#b0261d', label: 'Escaped', unit: 'kg/h', opacity: 0.55 },
         { values: it.fill_fraction.map(function (v) { return v * 100; }), type: 'line', axis: 'left', color: '#553b9b', label: 'Boom fill', unit: '%', min: 0, max: 100 }] });
     } else { $('#chart-inter').innerHTML = '<p class="empty">No interceptor series for this site yet (C4).</p>'; $('#interprov').innerHTML = ''; }
-    $('#forecast').innerHTML = [f24, f48].filter(Boolean).map(function (f) {
+    $('#forecast').innerHTML = all.map(function (f) {
       var dr = Object.keys(f.drivers || {}).map(function (k) { return '<dt>' + esc(k.replace(/_/g, ' ')) + '</dt><dd>' + num(f.drivers[k], 1) + '</dd>'; }).join('');
       return '<dl class="kv"><dt>Next ' + f.horizon_h + ' h · issued ' + esc(hm(f.issued_at)) + ' IST</dt><dd class="' + riskClass(f.p_overflow) + '">' + pct(f.p_overflow) + '</dd><dt>expected arrival</dt><dd>' + num(f.expected_arrival_kg, 0) + ' kg</dd><dt>peak fill</dt><dd>' + pct(f.expected_fill_fraction) + '</dd>' + dr + '</dl>';
     }).join('<hr>') || '<p class="empty">No forecast for this site (C9).</p>';
@@ -189,8 +193,13 @@
 
   /* ---------------------------------------------------------------- plan -- */
   function renderPlan() {
-    var p = (S.bundle.plans || []).slice().sort(function (a, b) { return a.issued_at < b.issued_at ? 1 : -1; })[0];
-    if (!p) { $('#planmeta').textContent = 'No dispatch plan in this bundle (C10).'; return; }
+    var ps = (S.bundle.plans || []).slice().sort(function (a, b) { return a.issued_at < b.issued_at ? 1 : -1; });
+    if (!ps.length) { $('#planmeta').textContent = 'No dispatch plan in this bundle (C10).'; return; }
+    var day = ps.filter(function (x) { return x.issued_at === ps[0].issued_at; }).sort(function (a, b) { return a.policy_id < b.policy_id ? 1 : -1; });
+    if (!S.policy || !day.some(function (x) { return x.policy_id === S.policy; })) S.policy = day[0].policy_id;
+    var p = day.filter(function (x) { return x.policy_id === S.policy; })[0];
+    $('#policytabs').innerHTML = day.length > 1 ? day.map(function (x) { return '<button type="button" aria-pressed="' + (x.policy_id === S.policy) + '" data-pol="' + esc(x.policy_id) + '">Policy ' + esc(x.policy_id) + (x.policy_id === 'P0' ? ' (reference)' : '') + '</button>'; }).join('') : '';
+    $('#policytabs').querySelectorAll('button').forEach(function (b) { b.addEventListener('click', function () { S.policy = b.dataset.pol; renderPlan(); }); });
     var names = {}; S.bundle.sites.forEach(function (s) { names[s.site_id] = s.name; });
     $('#planmeta').innerHTML = esc(p.plan_id) + ' · policy ' + esc(p.policy_id) + ' · issued ' + esc(ist(p.issued_at)) + Object.keys(p.objective || {}).map(function (k) { return ' · ' + esc(k.replace(/_/g, ' ')) + ' ' + num(p.objective[k], 0); }).join('');
     $('#plantable tbody').innerHTML = p.assignments.map(function (a) {
@@ -293,13 +302,14 @@
     var d;
     try { d = await load(); } catch (e) { $('#meta').textContent = 'Could not load dashboard_bundle.json. Run build_bundle.py, then serve this folder: python3 -m http.server'; return; }
     S.bundle = d.bundle; S.aux = d.aux; S.entries = S.bundle.ledger.slice(); S.original = S.entries;
-    $('#meta').textContent = 'Generated ' + ist(S.bundle.generated_at) + ' · git ' + S.bundle.git_sha + ' · schema ' + S.bundle.schema_version + ' · all times IST';
+    var f0 = (S.bundle.forcing || [])[0], win = f0 && f0.t.length ? 'data window ' + fDT.format(new Date(f0.t[0])) + ' → ' + fDT.format(new Date(f0.t[f0.t.length - 1])) + ' · ' : '';
+    $('#meta').textContent = win + 'built ' + ist(S.bundle.generated_at) + ' · git ' + S.bundle.git_sha + ' · schema ' + S.bundle.schema_version + ' · all times IST';
     var mock = (S.bundle.disclaimers || []).filter(function (x) { return /^SYNTHETIC MOCK/.test(x); })[0];
     if (mock) { $('#mockstrip').hidden = false; $('#mockstrip').textContent = mock; }
     $('#disclaimers').innerHTML = (S.bundle.disclaimers || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('');
     $('#via').textContent = 'Loaded from ' + d.via + (S.aux.inputs ? ' · inputs: twin = ' + S.aux.inputs.twin + ' · reproduce: ' + S.aux.inputs.reproduce : '');
     renderSites(); renderPlan(); renderLedger(null); renderDetection(); renderMetrics();
-    var top = S.bundle.sites.slice().sort(function (a, b) { var fa = forecast(a.site_id, 24), fb = forecast(b.site_id, 24); return (fb ? fb.p_overflow : -1) - (fa ? fa.p_overflow : -1); })[0];
+    var top = S.bundle.sites.slice().sort(function (a, b) { var fa = forecast(a.site_id), fb = forecast(b.site_id); return (fb ? fb.p_overflow : -1) - (fa ? fa.p_overflow : -1); })[0];
     if (top) select(top.site_id, false);
     $('#verify').addEventListener('click', verify);
     $('#tamper').addEventListener('click', tamper);
