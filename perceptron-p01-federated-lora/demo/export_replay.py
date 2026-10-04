@@ -69,9 +69,9 @@ def validation() -> dict | None:
         if not g.exists():
             continue
         G = json.loads(g.read_text())
-        gd = {"file": rel(g), "untuned": {d: _r(v) for d, v in G["untuned"].items()}}
-        for rec in G["records"]:
-            gd.setdefault(rec["fed"], {})[str(rec["round"])] = {d: _r(v) for d, v in rec["delta"].items()}
+        gd = {"file": rel(g), "untuned": G["untuned"]}
+        for rec in G["records"]:  # full precision: the page checks live == ghost bit for bit
+            gd.setdefault(rec["fed"], {})[str(rec["round"])] = rec["delta"]
         ghosts[str(seed)] = gd
     for row in res.get("rows", []):
         row.pop("curves", None)  # the band and the ghosts carry the curves the page draws

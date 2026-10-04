@@ -497,8 +497,17 @@
       for (const d of DOMS) { const dd = Math.abs(r.delta[d] - gh[f][String(r.round)][d]); maxd = Math.max(maxd || 0, dd); n += 1; }
     }
     const src = $('#curve-src');
+    let effect = '';
+    const lastR = Math.max(0, ...Object.keys(st.recs.anchor_full).map(Number));
+    if (gh && tabletOut.length && lastR >= tabletOut[0] && st.recs.fedavg_ab_homo[lastR] && gh.anchor_full && gh.anchor_full[String(lastR)]) {
+      const eff = (f) => st.recs[f][lastR].delta.manpages - gh[f][String(lastR)].manpages;
+      const p3 = VAL && VAL.results && VAL.results.verdict && VAL.results.verdict.P3;
+      effect = `The unplug's own effect on man pages at round ${lastR} (this run − ghost; positive = worse): Starter ${fmt(eff('fedavg_ab_homo'))}, AnchorLoRA ${fmt(eff('anchor_full'))}.`
+        + (p3 ? ' Pre-registered check P3 (round 6, tablet out from round 2): larger for the starter in all 5 validation seeds. ' : ' ');
+    }
     src.replaceChildren(
       n ? `Before the first unplug this run matches its ghost: max |live − ghost| = ${maxd === 0 ? '0 (bit-identical)' : maxd.toExponential(1)} over ${n} values. ` : '',
+      effect,
       gh ? h('span', {}, 'Ghost: ', h('code', {}, gh.file), '. ') : 'No ghost for this seed yet. ',
       VAL ? h('span', {}, 'Band: ', h('code', {}, VAL.file), '. ') : '',
       `Values: man-page loss of the untuned model minus the current model's, on 8 held-out blocks × 64 tokens.`);
@@ -644,6 +653,7 @@
     history.replaceState(null, '', `#${name}`);
   }
   for (const t of TABS) $(`#tab-${t}`).addEventListener('click', () => show(t));
+  window.addEventListener('hashchange', () => { const n = location.hash.slice(1); if (TABS.includes(n)) show(n); });
   document.addEventListener('keydown', (e) => {
     if (e.target && (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT')) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
