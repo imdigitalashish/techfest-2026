@@ -35,3 +35,8 @@ The brief asks us to "identify and rank cross-asset mispricings in near real tim
 1. **Walk-forward superiority:** on ≥ 12 disjoint days, the paired-bootstrap lower bound of (LEV − tuned pair×latency threshold) P&L is > 0.
 2. **Incremental-information ablation:** removing/permuting the survival or LEV score among matched events (edge, pair, age, spread, volatility) degrades out-of-sample P&L and ranking.
 3. **Causal replay robustness:** re-running with receive-time decisions, ±5 ms clock-offset perturbations and partial fills does not reverse the half-life ordering or the policy uplift.
+
+## Status update — 2026-10-04 10:00 IST
+- **Test 3:** passed for LEV (uplift positive in all 5 clock variants; half-life rank ρ ≥ 0.984). Survival-EV as a decision rule fails receive-time replay, which confirms the synthesis: survival is the report and a feature, LEV is the rule. Partial fills beyond top-of-book remain untested. See [results](../../eval/results/falsification_clockskew.md).
+- **Test 1:** inconclusive at n = 4 days: 4/4 positive, mean +$248/day, but the t-CI includes 0. Needs ≥ 12 days. See [results](../../eval/results/falsification_walkforward.md).
+- **Test 2:** partial. Full-feature LEV beats edge-only LEV on 4/4 days, with the same significance caveat. Matched-event permutation is not yet run.
