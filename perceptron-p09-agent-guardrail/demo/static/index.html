@@ -454,7 +454,7 @@ async function sendTicket() {
 
 /* ---------- 3: operating point ---------- */
 const KNOB = ["none", "t0_v0", "t0_strict", "t0_balanced", "t0_lenient", "cascade_aoai"];
-const LABEL = {none: [14, -8, "start"], t0_v0: [14, -8, "start"], t0_strict: [14, -10, "start"], t0_balanced: [-14, -10, "end"],
+const LABEL = {none: [12, -16, "start"], t0_v0: [-12, -8, "end"], t0_strict: [14, -10, "start"], t0_balanced: [-14, -10, "end"],
                t0_lenient: [14, 5, "start"], cascade_aoai: [-14, 5, "end"]};
 function act3Init() {
   $("#knob").innerHTML = KNOB.map(c => `<button data-c="${c}" aria-pressed="${c === config}">${esc(CFG[c].name)}<small>${esc(CFG[c].sub || "")}</small></button>`).join("");
@@ -479,7 +479,7 @@ function drawChart(sel) {
   let d = "", py = null;
   for (const p of cv) { d += (d ? ` L${X(p.good_stop)} ${Y(py)} L` : "M") + `${X(p.good_stop)} ${Y(p.catch_harmful)}`; py = p.catch_harmful; }
   s += `<path d="${d}" fill="none" stroke="#3d5a80" stroke-width="2.5" stroke-dasharray="6 4"/>`;
-  s += `<text x="${X(.97)}" y="${Y(.66)}" text-anchor="end" font-size="12.5" fill="#3d5a80">gpt-4.1-mini judge, every risk threshold</text>`;
+  s += `<text x="${X(.97)}" y="${Y(.80)}" text-anchor="end" font-size="12.5" fill="#3d5a80">gpt-4.1-mini judge, every risk threshold</text>`;
   const j = point("llm_judge_aoai");
   s += `<rect x="${X(j.x) - 6}" y="${Y(j.y) - 6}" width="12" height="12" fill="#3d5a80" transform="rotate(45 ${X(j.x)} ${Y(j.y)})"/><text x="${X(j.x) + 12}" y="${Y(j.y) + 18}" font-size="12" fill="#3d5a80">judge's own verdicts</text>`;
   for (const c of KNOB) {

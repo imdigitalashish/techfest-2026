@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cite-Before-Act: setting up (recorded screenshots)</title>
+<link rel="icon" href="data:,">
+<style>
+:root{--paper:#f5f3ec;--sheet:#fffdf7;--ink:#1c1e23;--ink3:#62656e;--rule:#d9d5c8;--hold:#8a5200;--hold-bg:#fbf0dc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+header{position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--rule);padding:14px 24px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+h1{font:600 24px/1.2 "Iowan Old Style","Charter",Georgia,serif;margin:0}
+.tag{border:1px solid var(--hold);color:var(--hold);background:var(--hold-bg);border-radius:3px;padding:4px 8px;font-size:11px;font-weight:700;letter-spacing:.08em}
+.st{color:var(--ink3);margin-left:auto}
+main{max-width:1500px;margin:0 auto;padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(560px,1fr));gap:20px}
+figure{margin:0;background:var(--sheet);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+img{display:block;width:100%;height:auto;border-bottom:1px solid var(--rule)}
+figcaption{padding:10px 14px;color:var(--ink3)}
+figcaption b{color:var(--ink)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Cite-Before-Act</h1>
+  <span class="tag">RECORDED SCREENSHOTS · NOT LIVE</span>
+  <span class="st" id="st">One-time setup is running. This page switches to the live demo by itself.</span>
+</header>
+<main>
+  <figure><img src="../fallback/01-real-hero-earbuds.png" alt=""><figcaption><b>A real harmful write</b> (gpt-4o, τ-bench): Tier 0 holds it because the user never asked for IPX7; the gpt-4.1-mini judge allows it at risk 0.</figcaption></figure>
+  <figure><img src="../fallback/04-hijack-refund-to-strangers-gift-card.png" alt=""><figcaption><b>Hijack:</b> a ticket redirects the refund to a stranger's gift card. Blocked; the real call with the same ticket is allowed.</figcaption></figure>
+  <figure><img src="../fallback/05-hijack-no-id-held.png" alt=""><figcaption><b>The limit, shown:</b> "the credit card" without an id is not tainted. The call is only held by payment provenance.</figcaption></figure>
+  <figure><img src="../fallback/07-hijack-cancel-another-order.png" alt=""><figcaption><b>Hijack:</b> a ticket asks to cancel another of the user's orders. Blocked.</figcaption></figure>
+  <figure><img src="../fallback/09-knob-strict.png" alt=""><figcaption><b>The knob:</b> strict, live on 300 real calls, 300/300 identical to the committed file, against the judge's whole curve.</figcaption></figure>
+  <figure><img src="../fallback/10-knob-cascade.png" alt=""><figcaption><b>Cascade (replayed):</b> fewer holds, but 4 harmful holds released.</figcaption></figure>
+  <figure><img src="../fallback/11-desk-synthetic.png" alt=""><figcaption><b>SYNTHETIC desk:</b> invented ticker, ×10, side flip, an unstated price, an injected ₹4,75,000 transfer.</figcaption></figure>
+  <figure><img src="../fallback/12-what-this-does-not-show.png" alt=""><figcaption><b>What this does not show:</b> the caveats behind every number.</figcaption></figure>
+</main>
+<script>
+// same origin: this static server answers 404 for /api/health; the live server answers {"ready": true}
+(async function poll() {
+  for (;;) {
+    try {
+      const r = await fetch("/api/health", {cache: "no-store"});
+      if (r.ok) { const h = await r.json(); if (h.ready) { location.replace("/"); return; } }
+    } catch (e) {}
+    await new Promise(r => setTimeout(r, 1000));
+  }
+})();
+</script>
+</body>
+</html>
