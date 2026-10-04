@@ -12,7 +12,7 @@ flowchart TB
     N["Nowcaster<br/>observed arrivals per zone"]
     CD["Change detector<br/>two-sided Poisson CUSUM per zone<br/>regime state: alarm, onset, post-change rate"]
     F["Forecaster<br/>learned time-of-day profile x per-zone level (EWMA)"]
-    TG["Trust gate (spike)<br/>planner sees trust_z x forecast_z<br/>trust from calibrated uncertainty + regime state<br/>tuned for served fraction, not forecast error"]
+    TG["Trust gate (spike)<br/>planner sees trust x forecast<br/>tested: one global trust (exploratory sweep)<br/>planned: trust from calibrated uncertainty + regime state<br/>tuned for served fraction, not forecast error"]
     P["MPC planner<br/>time-expanded LP over H = L + 6 steps:<br/>hop flows (arrive after L) · service flows via OD matrix<br/>backlog with fluid abandonment (1/P per step)<br/>HiGHS, warm-started each step"]
     C["Coordinator<br/>zone flows to per-unit move orders"]
     N --> F --> TG --> P --> C
