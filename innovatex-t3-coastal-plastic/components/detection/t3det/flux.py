@@ -27,16 +27,30 @@ class CountingLine:
         v = (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1)
         return 0 if v == 0 else (1 if v > 0 else -1)
 
+    def direction_for_flow(self, flow: tuple[float, float]) -> int:
+        """Counter direction (+1/-1) for items moving along `flow`: the side of the line they cross INTO."""
+        mx, my = (self.p1[0] + self.p2[0]) / 2, (self.p1[1] + self.p2[1]) / 2
+        s = self.side(mx + flow[0], my + flow[1])
+        if s == 0:
+            raise ValueError(f"flow {flow} is parallel to the counting line")
+        return s
+
+
+# Flow direction names used by the SYNTHETIC ground truth (image coordinates: x right, y down).
+FLOW_VECTORS = {"left_to_right": (1.0, 0.0), "right_to_left": (-1.0, 0.0),
+                "top_to_bottom": (0.0, 1.0), "bottom_to_top": (0.0, -1.0)}
+
 
 @dataclass
 class LineCrossingCounter:
     line: CountingLine
-    direction: int = 0  # 0 = either way; +1 / -1 = only crossings from side -d to side +d
+    direction: int = 0  # 0 = either way (diagnostic only); +1 / -1 = only crossings INTO side +1 / -1
     last_side: dict[int, int] = field(default_factory=dict)
     counted: set[int] = field(default_factory=set)
     by_label: Counter = field(default_factory=Counter)
+    events: list[dict] = field(default_factory=list)
 
-    def update(self, track_id: int, cx: float, cy: float, label: str = "litter") -> bool:
+    def update(self, track_id: int, cx: float, cy: float, label: str = "litter", t: float | None = None) -> bool:
         s = self.line.side(cx, cy)
         prev = self.last_side.get(track_id)
         if s != 0:
@@ -47,6 +61,7 @@ class LineCrossingCounter:
             return False
         self.counted.add(track_id)
         self.by_label[label] += 1
+        self.events.append({"track_id": track_id, "t": t, "x": round(cx, 1), "y": round(cy, 1), "label": label})
         return True
 
     @property
@@ -90,15 +105,20 @@ class FluxCounter:
     def run(self, frames: Iterable[np.ndarray], t_start: datetime, fps: float, provenance: Provenance,
             on_frame=None) -> FluxEstimate:
         counter = LineCrossingCounter(self.line, self.direction)
+        self.last_counter = counter
+        # ultralytics binds `persist` once, at the first track() call (register_tracker); persist=False there re-creates
+        # ByteTrack on EVERY later call, so IDs restart each frame. Always persist; reset explicitly per clip instead.
+        for trk in getattr(getattr(self.model, "predictor", None), "trackers", None) or []:
+            trk.reset()
         n_frames = 0
         for i, frame in enumerate(frames):
-            r = self.model.track(frame, persist=i > 0, tracker=self.tracker, conf=self.conf, imgsz=self.imgsz,
+            r = self.model.track(frame, persist=True, tracker=self.tracker, conf=self.conf, imgsz=self.imgsz,
                                  device=self.device, verbose=False)[0]
             n_frames += 1
             if r.boxes.id is not None:
                 for (x1, y1, x2, y2), tid, c in zip(r.boxes.xyxy.tolist(), r.boxes.id.int().tolist(),
                                                     r.boxes.cls.int().tolist()):
-                    counter.update(tid, (x1 + x2) / 2, (y1 + y2) / 2, r.names[c])
+                    counter.update(tid, (x1 + x2) / 2, (y1 + y2) / 2, r.names[c], t=i)
             if on_frame:
                 on_frame(i, r, counter)
         minutes = n_frames / fps / 60
@@ -107,8 +127,9 @@ class FluxCounter:
             site_id=self.site_id, t_start=t_start, t_end=t_start + timedelta(seconds=n_frames / fps),
             items_crossed=counter.count, items_per_min=round(counter.count / minutes, 3) if minutes else 0.0,
             by_label=dict(counter.by_label), est_kg=round(est, 4), est_kg_ci90=(round(ci[0], 4), round(ci[1], 4)),
-            method=(f"YOLO detector + ByteTrack (ultralytics, conf>={self.conf}) + line-crossing count, one count per "
-                    f"track id; mass = items x {self.mass.mean_g} g/item (sd {self.mass.sd_g} g; {self.mass.kind}: "
+            method=(f"YOLO detector + ByteTrack (ultralytics, persistent across frames, conf>={self.conf}) + "
+                    f"line-crossing count, one count per track id, direction "
+                    f"{'either (diagnostic)' if not self.direction else f'into side {self.direction:+d} only'}; mass = items x {self.mass.mean_g} g/item (sd {self.mass.sd_g} g; {self.mass.kind}: "
                     f"{self.mass.source}); CI90 = n*mean +/- 1.645*sd*sqrt(n)"),
             provenance=provenance)
 

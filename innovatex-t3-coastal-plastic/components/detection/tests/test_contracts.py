@@ -11,7 +11,8 @@ from pathlib import Path
 import pytest
 
 from t3det._contracts import FluxEstimate, FrameDetections, Provenance
-from t3det.flux import SAIGON_VISUAL_COUNT, CountingLine, LineCrossingCounter, MassModel, count_error_pct
+from t3det.flux import (FLOW_VECTORS, SAIGON_VISUAL_COUNT, CountingLine, FluxCounter, LineCrossingCounter,
+                        MassModel, count_error_pct)
 from t3det.paths import RESULTS, SPLITS
 
 METRICS = RESULTS / "metrics.json"
@@ -127,3 +128,92 @@ def test_flux_estimate_constructs():
                        by_label={"litter": 3}, est_kg=0.057, est_kg_ci90=(0.0, 0.16), method="test",
                        provenance=Provenance(kind="synthetic", source="test"))
     assert est.items_crossed == 3
+
+
+def test_counter_direction_matches_ground_truth():
+    """Fails if the counter and the SYNTHETIC ground truth count different crossing directions (review finding #3)."""
+    from t3det import synth
+    from t3det.run_flux import counter_direction
+
+    gt = {"line": [[640.0, 0.0], [640.0, 720.0]], "direction": synth.GT_DIRECTION,
+          "flow_vector": list(FLOW_VECTORS[synth.GT_DIRECTION])}
+    line = CountingLine(*map(tuple, gt["line"]))
+    for xs in (list(range(600, 700, 8)), list(range(700, 600, -8))):  # with the flow, then against it
+        truth = sum(synth.gt_crossed(a, b, 640.0) for a, b in zip(xs, xs[1:]))
+        c = LineCrossingCounter(line, counter_direction(gt))
+        for x in xs:
+            c.update(1, x, 360.0)
+        assert c.count == truth, (xs[0], c.count, truth)
+    both = LineCrossingCounter(line, 0)  # the pre-fix setting disagrees with the ground truth against the flow
+    for x in range(700, 600, -8):
+        both.update(1, x, 360.0)
+    assert both.count == 1
+
+
+def test_flux_results_count_the_ground_truth_direction():
+    files = sorted(RESULTS.glob("flux_synthetic*.json"))
+    if not files:
+        pytest.skip("no flux output yet")
+    from t3det.run_flux import counter_direction
+
+    for fp in files:
+        f = json.loads(fp.read_text())
+        cd = f["counter_direction"]
+        expect = counter_direction({"line": cd["line"], "direction": cd["gt_direction"], "flow_vector": cd["flow_vector"]})
+        assert cd["direction_sign"] == expect != 0, fp.name
+        assert "either" not in f["flux_estimate"]["method"], fp.name
+        h = f["headline"]
+        assert h["matched"] + h["false"] == h["predicted"] and h["matched"] + h["missed"] == h["gt_crossings"]
+        assert h["false"] == h["false_duplicate"] + h["false_spurious"]
+        assert sum(r["gt_crossings"] for r in f["per_sequence"]) == h["gt_crossings"]
+        assert math.isclose(h["signed_count_error_pct"],
+                            100 * (h["predicted"] - h["gt_crossings"]) / h["gt_crossings"], abs_tol=0.01)
+        assert "DIAGNOSTIC" in f["diagnostics"]["both_directions_same_tracks"]["label"]
+
+
+def test_tracker_persists_across_frames_and_resets_per_clip():
+    """ultralytics binds `persist` at the first track() call; persist=False there re-creates ByteTrack every frame."""
+    import torch
+
+    class Boxes:
+        def __init__(self, x):
+            self.xyxy = torch.tensor([[x - 5.0, 95.0, x + 5.0, 105.0]])
+            self.id = torch.tensor([7.0])
+            self.cls = torch.tensor([0.0])
+
+    class Res:
+        names = {0: "litter"}
+
+        def __init__(self, x):
+            self.boxes = Boxes(x)
+
+    class Trk:
+        resets = 0
+
+        def reset(self):
+            Trk.resets += 1
+
+    class Model:
+        def __init__(self):
+            self.persist, self.predictor = [], type("P", (), {"trackers": [Trk()]})()
+
+        def track(self, frame, **kw):
+            self.persist.append(kw["persist"])
+            return [Res(frame)]
+
+    fc = FluxCounter.__new__(FluxCounter)
+    fc.model, fc.line, fc.site_id, fc.mass = Model(), CountingLine((100, 0), (100, 200)), "t", SAIGON_VISUAL_COUNT
+    fc.imgsz, fc.conf, fc.tracker, fc.direction, fc.device = 640, 0.1, "bytetrack.yaml", -1, "cpu"
+    est = fc.run([80, 90, 110, 120], datetime(2026, 10, 4, tzinfo=timezone.utc), fps=5.0,
+                 provenance=Provenance(kind="synthetic", source="test"))
+    assert fc.model.persist == [True] * 4 and Trk.resets == 1 and est.items_crossed == 1
+    assert fc.last_counter.events[0]["t"] == 2
+
+
+def test_crossing_matching():
+    from t3det.run_flux import match
+
+    gt = [{"frame": 10, "y": 100.0, "h": 40}, {"frame": 30, "y": 300.0, "h": 20}]
+    pred = [{"t": 11, "y": 105.0}, {"t": 12, "y": 110.0}, {"t": 80, "y": 500.0}]
+    m = match(pred, gt, tol_frames=5)
+    assert (m["matched"], m["false_duplicate"], m["false_spurious"], m["missed"]) == (1, 1, 1, 1)

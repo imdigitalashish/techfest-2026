@@ -1,37 +1,681 @@
 {
  "label": "SYNTHETIC",
+ "what": "C6 count accuracy on SYNTHETIC clips: real TUD-GV test-split litter crops drift left to right over an inpainted TUD-GV water frame, with exact ground-truth line crossings",
+ "detector": "trained baseline",
+ "detector_model_id": "baseline_yolo11n_640/best.pt#sha256:a5157292e2c0",
+ "device": "cpu",
+ "imgsz": 640,
+ "conf": 0.1,
+ "tracker": "ByteTrack (ultralytics bytetrack.yaml defaults), persistent across frames, reset per clip",
+ "counter_direction": {
+  "line": [
+   [
+    640.0,
+    0
+   ],
+   [
+    640.0,
+    720
+   ]
+  ],
+  "gt_direction": "left_to_right",
+  "flow_vector": [
+   1.0,
+   0.0
+  ],
+  "direction_sign": -1,
+  "rule": "derived from the ground truth via CountingLine.direction_for_flow, so the counter counts exactly the crossings the ground truth counts"
+ },
+ "matching": {
+  "tolerance_s": 1.0,
+  "tolerance_frames": 5.0,
+  "y_gate": "|dy| <= max(16 px, 0.5 x item height)",
+  "assignment": "one-to-one, Hungarian (scipy linear_sum_assignment) minimising |dt|/tol + |dy|/gate over admissible pairs",
+  "false_duplicate": "an admissible GT crossing exists but is already matched",
+  "false_spurious": "no GT crossing within the tolerance"
+ },
+ "headline": {
+  "sequences": 10,
+  "gt_crossings": 132,
+  "predicted": 153,
+  "matched": 128,
+  "false": 25,
+  "false_duplicate": 23,
+  "false_spurious": 2,
+  "missed": 4,
+  "duplicates_on_multi_box_crops": 5,
+  "crossing_precision": 0.8366,
+  "crossing_recall": 0.9697,
+  "signed_count_error_pct": 15.91,
+  "signed_count_error_ci95_pct": [
+   6.06,
+   28.03
+  ],
+  "ci_method": "percentile bootstrap over 10 sequences, 2000 resamples, seed 0",
+  "abs_count_error_pct": 15.91
+ },
+ "sensitivity_pooled": {
+  "0.4s": {
+   "matched": 128,
+   "false": 25,
+   "missed": 4
+  },
+  "1.0s": {
+   "matched": 128,
+   "false": 25,
+   "missed": 4
+  },
+  "2.0s": {
+   "matched": 128,
+   "false": 25,
+   "missed": 4
+  }
+ },
+ "diagnostics": {
+  "both_directions_same_tracks": {
+   "label": "DIAGNOSTIC - counts crossings in either direction; the ground truth counts left-to-right only",
+   "predicted": 153,
+   "matched": 128,
+   "false": 25,
+   "missed": 4,
+   "signed_count_error_pct": 15.91,
+   "signed_count_error_ci95_pct": [
+    6.06,
+    28.03
+   ],
+   "ci_method": "percentile bootstrap over 10 sequences, 2000 resamples, seed 0"
+  },
+  "legacy_overnight_config": {
+   "label": "DIAGNOSTIC - configuration published before the fix (tracker re-initialised every frame by persist=False on the first call; both directions counted). Not a valid C6 result.",
+   "sequence": "seq02",
+   "gt_crossings": 12,
+   "predicted": 16,
+   "unique_track_ids": 17,
+   "matched": 6,
+   "false": 10,
+   "missed": 6
+  }
+ },
  "sequence": "seq02",
  "frames": 120,
  "fps": 5.0,
  "gt_crossings": 12,
- "items_crossed": 16,
- "count_error_pct": 33.33,
- "detector_model_id": "baseline_yolo11n_640/best.pt#sha256:a5157292e2c0",
- "device": "mps",
- "tracker": "bytetrack.yaml (ultralytics defaults)",
- "conf": 0.1,
- "imgsz": 640,
- "reproduce": "python -m t3det.synth --out ../../.data/detection/synth/seq02 --frames 120 --items 12 --seed 11 --speed 6.0 12.0 && python -m t3det.run_flux --weights ../../.data/detection/runs/baseline_yolo11n_640/weights/best.pt --seq ../../.data/detection/synth/seq02",
+ "items_crossed": 13,
+ "count_error_pct": 8.33,
+ "signed_count_error_pct": 8.33,
+ "matched": 11,
+ "false": 2,
+ "missed": 1,
+ "per_sequence": [
+  {
+   "sequence": "seq01",
+   "seed": 7,
+   "frames": 300,
+   "gt_crossings": 24,
+   "predicted": 27,
+   "matched": 23,
+   "false": 4,
+   "false_duplicate": 3,
+   "false_spurious": 1,
+   "missed": 1,
+   "signed_count_error_pct": 12.5,
+   "duplicates_on_multi_box_crops": 2,
+   "unique_track_ids": 58,
+   "both_directions": {
+    "predicted": 27,
+    "matched": 23,
+    "false": 4,
+    "missed": 1
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 23,
+     "false": 4,
+     "missed": 1
+    },
+    "1.0s": {
+     "matched": 23,
+     "false": 4,
+     "missed": 1
+    },
+    "2.0s": {
+     "matched": 23,
+     "false": 4,
+     "missed": 1
+    }
+   },
+   "missed_item_crop_h": [
+    35
+   ],
+   "matched_item_crop_h": [
+    28,
+    31,
+    34,
+    34,
+    36,
+    36,
+    41,
+    42,
+    42,
+    43,
+    48,
+    50,
+    50,
+    51,
+    52,
+    60,
+    63,
+    64,
+    67,
+    67,
+    67,
+    94,
+    94
+   ]
+  },
+  {
+   "sequence": "seq02",
+   "seed": 11,
+   "frames": 120,
+   "gt_crossings": 12,
+   "predicted": 13,
+   "matched": 11,
+   "false": 2,
+   "false_duplicate": 2,
+   "false_spurious": 0,
+   "missed": 1,
+   "signed_count_error_pct": 8.33,
+   "duplicates_on_multi_box_crops": 0,
+   "unique_track_ids": 29,
+   "both_directions": {
+    "predicted": 13,
+    "matched": 11,
+    "false": 2,
+    "missed": 1
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 11,
+     "false": 2,
+     "missed": 1
+    },
+    "1.0s": {
+     "matched": 11,
+     "false": 2,
+     "missed": 1
+    },
+    "2.0s": {
+     "matched": 11,
+     "false": 2,
+     "missed": 1
+    }
+   },
+   "missed_item_crop_h": [
+    36
+   ],
+   "matched_item_crop_h": [
+    42,
+    44,
+    46,
+    49,
+    50,
+    52,
+    58,
+    62,
+    64,
+    65,
+    93
+   ]
+  },
+  {
+   "sequence": "seq21",
+   "seed": 21,
+   "frames": 200,
+   "gt_crossings": 12,
+   "predicted": 11,
+   "matched": 11,
+   "false": 0,
+   "false_duplicate": 0,
+   "false_spurious": 0,
+   "missed": 1,
+   "signed_count_error_pct": -8.33,
+   "duplicates_on_multi_box_crops": 0,
+   "unique_track_ids": 24,
+   "both_directions": {
+    "predicted": 11,
+    "matched": 11,
+    "false": 0,
+    "missed": 1
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 11,
+     "false": 0,
+     "missed": 1
+    },
+    "1.0s": {
+     "matched": 11,
+     "false": 0,
+     "missed": 1
+    },
+    "2.0s": {
+     "matched": 11,
+     "false": 0,
+     "missed": 1
+    }
+   },
+   "missed_item_crop_h": [
+    31
+   ],
+   "matched_item_crop_h": [
+    30,
+    36,
+    37,
+    44,
+    48,
+    52,
+    61,
+    79,
+    90,
+    99,
+    122
+   ]
+  },
+  {
+   "sequence": "seq22",
+   "seed": 22,
+   "frames": 200,
+   "gt_crossings": 12,
+   "predicted": 11,
+   "matched": 11,
+   "false": 0,
+   "false_duplicate": 0,
+   "false_spurious": 0,
+   "missed": 1,
+   "signed_count_error_pct": -8.33,
+   "duplicates_on_multi_box_crops": 0,
+   "unique_track_ids": 15,
+   "both_directions": {
+    "predicted": 11,
+    "matched": 11,
+    "false": 0,
+    "missed": 1
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 11,
+     "false": 0,
+     "missed": 1
+    },
+    "1.0s": {
+     "matched": 11,
+     "false": 0,
+     "missed": 1
+    },
+    "2.0s": {
+     "matched": 11,
+     "false": 0,
+     "missed": 1
+    }
+   },
+   "missed_item_crop_h": [
+    28
+   ],
+   "matched_item_crop_h": [
+    36,
+    38,
+    38,
+    40,
+    43,
+    43,
+    58,
+    63,
+    64,
+    66,
+    71
+   ]
+  },
+  {
+   "sequence": "seq23",
+   "seed": 23,
+   "frames": 200,
+   "gt_crossings": 12,
+   "predicted": 17,
+   "matched": 12,
+   "false": 5,
+   "false_duplicate": 5,
+   "false_spurious": 0,
+   "missed": 0,
+   "signed_count_error_pct": 41.67,
+   "duplicates_on_multi_box_crops": 0,
+   "unique_track_ids": 38,
+   "both_directions": {
+    "predicted": 17,
+    "matched": 12,
+    "false": 5,
+    "missed": 0
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 12,
+     "false": 5,
+     "missed": 0
+    },
+    "1.0s": {
+     "matched": 12,
+     "false": 5,
+     "missed": 0
+    },
+    "2.0s": {
+     "matched": 12,
+     "false": 5,
+     "missed": 0
+    }
+   },
+   "missed_item_crop_h": [],
+   "matched_item_crop_h": [
+    31,
+    33,
+    36,
+    53,
+    56,
+    58,
+    63,
+    69,
+    71,
+    77,
+    92,
+    92
+   ]
+  },
+  {
+   "sequence": "seq24",
+   "seed": 24,
+   "frames": 200,
+   "gt_crossings": 12,
+   "predicted": 13,
+   "matched": 12,
+   "false": 1,
+   "false_duplicate": 1,
+   "false_spurious": 0,
+   "missed": 0,
+   "signed_count_error_pct": 8.33,
+   "duplicates_on_multi_box_crops": 0,
+   "unique_track_ids": 20,
+   "both_directions": {
+    "predicted": 13,
+    "matched": 12,
+    "false": 1,
+    "missed": 0
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 12,
+     "false": 1,
+     "missed": 0
+    },
+    "1.0s": {
+     "matched": 12,
+     "false": 1,
+     "missed": 0
+    },
+    "2.0s": {
+     "matched": 12,
+     "false": 1,
+     "missed": 0
+    }
+   },
+   "missed_item_crop_h": [],
+   "matched_item_crop_h": [
+    31,
+    33,
+    38,
+    40,
+    42,
+    43,
+    45,
+    46,
+    49,
+    50,
+    52,
+    74
+   ]
+  },
+  {
+   "sequence": "seq25",
+   "seed": 25,
+   "frames": 200,
+   "gt_crossings": 12,
+   "predicted": 14,
+   "matched": 12,
+   "false": 2,
+   "false_duplicate": 1,
+   "false_spurious": 1,
+   "missed": 0,
+   "signed_count_error_pct": 16.67,
+   "duplicates_on_multi_box_crops": 0,
+   "unique_track_ids": 19,
+   "both_directions": {
+    "predicted": 14,
+    "matched": 12,
+    "false": 2,
+    "missed": 0
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 12,
+     "false": 2,
+     "missed": 0
+    },
+    "1.0s": {
+     "matched": 12,
+     "false": 2,
+     "missed": 0
+    },
+    "2.0s": {
+     "matched": 12,
+     "false": 2,
+     "missed": 0
+    }
+   },
+   "missed_item_crop_h": [],
+   "matched_item_crop_h": [
+    34,
+    36,
+    37,
+    42,
+    46,
+    48,
+    51,
+    52,
+    59,
+    62,
+    75,
+    93
+   ]
+  },
+  {
+   "sequence": "seq26",
+   "seed": 26,
+   "frames": 200,
+   "gt_crossings": 12,
+   "predicted": 14,
+   "matched": 12,
+   "false": 2,
+   "false_duplicate": 2,
+   "false_spurious": 0,
+   "missed": 0,
+   "signed_count_error_pct": 16.67,
+   "duplicates_on_multi_box_crops": 0,
+   "unique_track_ids": 23,
+   "both_directions": {
+    "predicted": 14,
+    "matched": 12,
+    "false": 2,
+    "missed": 0
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 12,
+     "false": 2,
+     "missed": 0
+    },
+    "1.0s": {
+     "matched": 12,
+     "false": 2,
+     "missed": 0
+    },
+    "2.0s": {
+     "matched": 12,
+     "false": 2,
+     "missed": 0
+    }
+   },
+   "missed_item_crop_h": [],
+   "matched_item_crop_h": [
+    35,
+    37,
+    38,
+    38,
+    41,
+    46,
+    46,
+    50,
+    52,
+    67,
+    86,
+    90
+   ]
+  },
+  {
+   "sequence": "seq27",
+   "seed": 27,
+   "frames": 200,
+   "gt_crossings": 12,
+   "predicted": 19,
+   "matched": 12,
+   "false": 7,
+   "false_duplicate": 7,
+   "false_spurious": 0,
+   "missed": 0,
+   "signed_count_error_pct": 58.33,
+   "duplicates_on_multi_box_crops": 2,
+   "unique_track_ids": 38,
+   "both_directions": {
+    "predicted": 19,
+    "matched": 12,
+    "false": 7,
+    "missed": 0
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 12,
+     "false": 7,
+     "missed": 0
+    },
+    "1.0s": {
+     "matched": 12,
+     "false": 7,
+     "missed": 0
+    },
+    "2.0s": {
+     "matched": 12,
+     "false": 7,
+     "missed": 0
+    }
+   },
+   "missed_item_crop_h": [],
+   "matched_item_crop_h": [
+    29,
+    37,
+    46,
+    47,
+    51,
+    55,
+    57,
+    84,
+    86,
+    90,
+    94,
+    94
+   ]
+  },
+  {
+   "sequence": "seq28",
+   "seed": 28,
+   "frames": 200,
+   "gt_crossings": 12,
+   "predicted": 14,
+   "matched": 12,
+   "false": 2,
+   "false_duplicate": 2,
+   "false_spurious": 0,
+   "missed": 0,
+   "signed_count_error_pct": 16.67,
+   "duplicates_on_multi_box_crops": 1,
+   "unique_track_ids": 26,
+   "both_directions": {
+    "predicted": 14,
+    "matched": 12,
+    "false": 2,
+    "missed": 0
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 12,
+     "false": 2,
+     "missed": 0
+    },
+    "1.0s": {
+     "matched": 12,
+     "false": 2,
+     "missed": 0
+    },
+    "2.0s": {
+     "matched": 12,
+     "false": 2,
+     "missed": 0
+    }
+   },
+   "missed_item_crop_h": [],
+   "matched_item_crop_h": [
+    40,
+    44,
+    45,
+    47,
+    47,
+    51,
+    51,
+    53,
+    55,
+    55,
+    65,
+    101
+   ]
+  }
+ ],
  "flux_estimate": {
-  "site_id": "SYNTHETIC-seq01",
+  "site_id": "SYNTHETIC-seq02",
   "t_start": "2026-10-04T00:00:00Z",
   "t_end": "2026-10-04T00:00:24Z",
-  "items_crossed": 16,
-  "items_per_min": 40.0,
+  "items_crossed": 13,
+  "items_per_min": 32.5,
   "by_label": {
-   "litter": 16
+   "litter": 13
   },
-  "est_kg": 0.304,
+  "est_kg": 0.247,
   "est_kg_ci90": [
-   0.0605,
-   0.5475
+   0.0275,
+   0.4665
   ],
-  "method": "YOLO detector + ByteTrack (ultralytics, conf>=0.1) + line-crossing count, one count per track id; mass = items x 19.0 g/item (sd 37.0 g; assumption: van Emmerik et al. 2019 Sci Rep (Saigon), PMC6753078: 1.9e-2 kg per visually counted item, sd 3.7e-2; transfer to Mumbai assumed); CI90 = n*mean +/- 1.645*sd*sqrt(n)",
+  "method": "YOLO detector + ByteTrack (ultralytics, persistent across frames, conf>=0.1) + line-crossing count, one count per track id, direction into side -1 only; mass = items x 19.0 g/item (sd 37.0 g; assumption: van Emmerik et al. 2019 Sci Rep (Saigon), PMC6753078: 1.9e-2 kg per visually counted item, sd 3.7e-2; transfer to Mumbai assumed); CI90 = n*mean +/- 1.645*sd*sqrt(n)",
   "provenance": {
    "kind": "synthetic",
    "source": "component:detection/t3det.synth seed=11",
-   "retrieved_at": "2026-10-04T11:31:01.042373Z",
+   "retrieved_at": "2026-10-04T12:13:49.769968Z",
    "notes": "SYNTHETIC: real TUD-GV test-split litter crops pasted on an inpainted TUD-GV water frame; mass factor is an ASSUMPTION transferred from the Saigon River (van Emmerik et al. 2019)"
   }
- }
+ },
+ "evaluated_at": "2026-10-04T17:44:58+05:30",
+ "reproduce": "cd innovatex-t3-coastal-plastic/components/detection && T3DET_DEVICE=cpu nice -n 10 python3.11 -m t3det.run_flux --weights ../../.data/detection/runs/baseline_yolo11n_640/weights/best.pt --sequences all --imgsz 640 --conf 0.1 --legacy-diagnostic   (sequences are regenerated deterministically by t3det.synth from SUITE in t3det/run_flux.py)"
 }

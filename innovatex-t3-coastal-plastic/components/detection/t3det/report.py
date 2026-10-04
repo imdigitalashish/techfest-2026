@@ -43,13 +43,34 @@ def render() -> str:
             out += ["", f"Same metric code as the zero-shot reference (frozen matcher, test): trained mAP50 "
                     f"**{fz['trained']['mAP50']}** (boot SE {fz['trained']['boot_se']}, R@0.25 {fz['trained']['recall@0.25']}) "
                     f"vs zero-shot {fz['zero_shot']['mAP50']} (R@0.25 {fz['zero_shot']['recall@0.25']})."]
-    out += ["", "| C6 flux (**SYNTHETIC**, ByteTrack + line) | Detector | GT crossings | Counted | Count error |", "|---|---|---|---|---|"]
-    for name, det in (("flux_synthetic.json", "trained" if trained else "zero-shot"),
-                      ("flux_synthetic_seq01.json", "trained"), ("flux_synthetic_zeroshot.json", "zero-shot")):
-        f = _j(name)
-        if f:
-            out.append(f"| {f['sequence']} ({f['frames']} frames) `results/{name}` | {det} | {f['gt_crossings']} | "
-                       f"{f['items_crossed']} | {f['count_error_pct']}% |")
+    f = _j("flux_synthetic.json")
+    if f and "headline" in f:
+        mt = f["matching"]
+        out += ["", f"**C6 flux counter, SYNTHETIC clips.** The counting direction comes from the ground truth "
+                f"({f['counter_direction']['gt_direction'].replace('_', ' ')}). Predicted crossings are matched one-to-one to "
+                f"ground-truth crossings within ±{mt['tolerance_s']} s and {mt['y_gate']}. False crossings are split "
+                f"into duplicate (the item was already counted) and spurious (nothing nearby).", "",
+                "| Detector | Clips | GT crossings | Counted | Matched | False (dup / spurious) | Missed | Signed count error [95% CI] |",
+                "|---|---|---|---|---|---|---|---|"]
+        for name, det in (("flux_synthetic.json", "trained"), ("flux_synthetic_zeroshot.json", "zero-shot")):
+            g = _j(name)
+            if not g or "headline" not in g:
+                continue
+            h, ci = g["headline"], g["headline"].get("signed_count_error_ci95_pct")
+            out.append(f"| {det} (`results/{name}`) | {h['sequences']} | {h['gt_crossings']} | {h['predicted']} | "
+                       f"{h['matched']} | {h['false']} ({h['false_duplicate']} / {h['false_spurious']}) | {h['missed']} | "
+                       f"{h['signed_count_error_pct']:+.1f}%"
+                       + (f" [{ci[0]:+.1f}, {ci[1]:+.1f}]" if ci else " (1 clip, no CI)") + " |")
+        d = f["diagnostics"]
+        bd = d["both_directions_same_tracks"]
+        out += ["", f"Diagnostics on the same tracks: counting **both directions** gives {bd['predicted']} vs "
+                f"{f['headline']['gt_crossings']} ({bd['signed_count_error_pct']:+.1f}%)."]
+        if "legacy_overnight_config" in d:
+            lg = d["legacy_overnight_config"]
+            out[-1] += (f" The **pre-fix configuration** (tracker re-created every frame, both directions) on "
+                        f"{lg['sequence']} gives {lg['predicted']} vs {lg['gt_crossings']} with "
+                        f"{lg['unique_track_ids']} distinct track IDs (matched {lg['matched']}, false {lg['false']}, "
+                        f"missed {lg['missed']}).")
     if z:
         out += ["", f"**Zero-shot reference** (`results/metrics_zeroshot.json`, COCO-pretrained YOLO11n, not trained on "
                 f"TUD-GV, frozen matcher): test mAP50 {z['mAP50']}, mAP50-95 {z['mAP50_95']}, P {z['precision']} / "

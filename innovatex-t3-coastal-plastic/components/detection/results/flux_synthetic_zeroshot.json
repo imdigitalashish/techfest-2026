@@ -1,39 +1,170 @@
 {
  "label": "SYNTHETIC",
+ "what": "C6 count accuracy on SYNTHETIC clips: real TUD-GV test-split litter crops drift left to right over an inpainted TUD-GV water frame, with exact ground-truth line crossings",
  "detector": "ZERO-SHOT COCO-pretrained YOLO11n (not trained on TUD-GV)",
+ "detector_model_id": "detection/yolo11n.pt#sha256:0ebbc80d4a76",
+ "device": "cpu",
+ "imgsz": 640,
+ "conf": 0.1,
+ "tracker": "ByteTrack (ultralytics bytetrack.yaml defaults), persistent across frames, reset per clip",
+ "counter_direction": {
+  "line": [
+   [
+    640.0,
+    0
+   ],
+   [
+    640.0,
+    720
+   ]
+  ],
+  "gt_direction": "left_to_right",
+  "flow_vector": [
+   1.0,
+   0.0
+  ],
+  "direction_sign": -1,
+  "rule": "derived from the ground truth via CountingLine.direction_for_flow, so the counter counts exactly the crossings the ground truth counts"
+ },
+ "matching": {
+  "tolerance_s": 1.0,
+  "tolerance_frames": 5.0,
+  "y_gate": "|dy| <= max(16 px, 0.5 x item height)",
+  "assignment": "one-to-one, Hungarian (scipy linear_sum_assignment) minimising |dt|/tol + |dy|/gate over admissible pairs",
+  "false_duplicate": "an admissible GT crossing exists but is already matched",
+  "false_spurious": "no GT crossing within the tolerance"
+ },
+ "headline": {
+  "sequences": 1,
+  "gt_crossings": 12,
+  "predicted": 0,
+  "matched": 0,
+  "false": 0,
+  "false_duplicate": 0,
+  "false_spurious": 0,
+  "missed": 12,
+  "duplicates_on_multi_box_crops": 0,
+  "crossing_precision": 0.0,
+  "crossing_recall": 0.0,
+  "signed_count_error_pct": -100.0,
+  "signed_count_error_ci95_pct": null,
+  "ci_method": "not computed (fewer than 3 sequences)",
+  "abs_count_error_pct": 100.0
+ },
+ "sensitivity_pooled": {
+  "0.4s": {
+   "matched": 0,
+   "false": 0,
+   "missed": 12
+  },
+  "1.0s": {
+   "matched": 0,
+   "false": 0,
+   "missed": 12
+  },
+  "2.0s": {
+   "matched": 0,
+   "false": 0,
+   "missed": 12
+  }
+ },
+ "diagnostics": {
+  "both_directions_same_tracks": {
+   "label": "DIAGNOSTIC - counts crossings in either direction; the ground truth counts left-to-right only",
+   "predicted": 0,
+   "matched": 0,
+   "false": 0,
+   "missed": 12,
+   "signed_count_error_pct": -100.0,
+   "signed_count_error_ci95_pct": null,
+   "ci_method": "not computed (fewer than 3 sequences)"
+  }
+ },
  "sequence": "seq02",
  "frames": 120,
  "fps": 5.0,
  "gt_crossings": 12,
- "items_crossed": 3,
- "count_error_pct": 75.0,
- "detector_weights": "yolo11n.pt",
- "tracker": "bytetrack.yaml (ultralytics defaults)",
- "conf": 0.1,
- "imgsz": 640,
- "reproduce": "python -m t3det.synth --out ../../.data/detection/synth/seq02 --frames 120 --items 12 --seed 11 --speed 6.0 12.0 && python -m t3det.run_flux --weights ../../.data/detection/weights/yolo11n.pt --seq ../../.data/detection/synth/seq02",
+ "items_crossed": 0,
+ "count_error_pct": 100.0,
+ "signed_count_error_pct": -100.0,
+ "matched": 0,
+ "false": 0,
+ "missed": 12,
+ "per_sequence": [
+  {
+   "sequence": "seq02",
+   "seed": 11,
+   "frames": 120,
+   "gt_crossings": 12,
+   "predicted": 0,
+   "matched": 0,
+   "false": 0,
+   "false_duplicate": 0,
+   "false_spurious": 0,
+   "missed": 12,
+   "signed_count_error_pct": -100.0,
+   "duplicates_on_multi_box_crops": 0,
+   "unique_track_ids": 2,
+   "both_directions": {
+    "predicted": 0,
+    "matched": 0,
+    "false": 0,
+    "missed": 12
+   },
+   "sensitivity": {
+    "0.4s": {
+     "matched": 0,
+     "false": 0,
+     "missed": 12
+    },
+    "1.0s": {
+     "matched": 0,
+     "false": 0,
+     "missed": 12
+    },
+    "2.0s": {
+     "matched": 0,
+     "false": 0,
+     "missed": 12
+    }
+   },
+   "missed_item_crop_h": [
+    36,
+    42,
+    44,
+    46,
+    49,
+    50,
+    52,
+    58,
+    62,
+    64,
+    65,
+    93
+   ],
+   "matched_item_crop_h": []
+  }
+ ],
  "flux_estimate": {
-  "site_id": "SYNTHETIC-seq01",
+  "site_id": "SYNTHETIC-seq02",
   "t_start": "2026-10-04T00:00:00Z",
   "t_end": "2026-10-04T00:00:24Z",
-  "items_crossed": 3,
-  "items_per_min": 7.5,
-  "by_label": {
-   "traffic light": 1,
-   "bird": 1,
-   "kite": 1
-  },
-  "est_kg": 0.057,
+  "items_crossed": 0,
+  "items_per_min": 0.0,
+  "by_label": {},
+  "est_kg": 0.0,
   "est_kg_ci90": [
    0.0,
-   0.1624
+   0.0
   ],
-  "method": "YOLO detector + ByteTrack (ultralytics, conf>=0.1) + line-crossing count, one count per track id; mass = items x 19.0 g/item (sd 37.0 g; assumption: van Emmerik et al. 2019 Sci Rep (Saigon), PMC6753078: 1.9e-2 kg per visually counted item, sd 3.7e-2; transfer to Mumbai assumed); CI90 = n*mean +/- 1.645*sd*sqrt(n)",
+  "method": "YOLO detector + ByteTrack (ultralytics, persistent across frames, conf>=0.1) + line-crossing count, one count per track id, direction into side -1 only; mass = items x 19.0 g/item (sd 37.0 g; assumption: van Emmerik et al. 2019 Sci Rep (Saigon), PMC6753078: 1.9e-2 kg per visually counted item, sd 3.7e-2; transfer to Mumbai assumed); CI90 = n*mean +/- 1.645*sd*sqrt(n)",
   "provenance": {
    "kind": "synthetic",
    "source": "component:detection/t3det.synth seed=11",
-   "retrieved_at": "2026-10-04T02:24:00.379100Z",
+   "retrieved_at": "2026-10-04T12:15:04.550088Z",
    "notes": "SYNTHETIC: real TUD-GV test-split litter crops pasted on an inpainted TUD-GV water frame; mass factor is an ASSUMPTION transferred from the Saigon River (van Emmerik et al. 2019)"
   }
- }
+ },
+ "evaluated_at": "2026-10-04T17:45:08+05:30",
+ "reproduce": "cd innovatex-t3-coastal-plastic/components/detection && T3DET_DEVICE=cpu nice -n 10 python3.11 -m t3det.run_flux --weights ../../.data/detection/weights/yolo11n.pt --sequences seq02 --imgsz 640 --conf 0.1 --detector-kind \"ZERO-SHOT COCO-pretrained YOLO11n (not trained on TUD-GV)\" --out results/flux_synthetic_zeroshot.json   (sequences are regenerated deterministically by t3det.synth from SUITE in t3det/run_flux.py)"
 }

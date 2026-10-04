@@ -22,11 +22,14 @@ Latency, end-to-end `predict()` at batch 1 on mps: median 71.38 ms/img, p90 145.
 
 Same metric code as the zero-shot reference (frozen matcher, test): trained mAP50 **0.8559** (boot SE 0.0112, R@0.25 0.8571) vs zero-shot 0.3935 (R@0.25 0.1398).
 
-| C6 flux (**SYNTHETIC**, ByteTrack + line) | Detector | GT crossings | Counted | Count error |
-|---|---|---|---|---|
-| seq02 (120 frames) `results/flux_synthetic.json` | trained | 12 | 16 | 33.33% |
-| seq01 (300 frames) `results/flux_synthetic_seq01.json` | trained | 24 | 28 | 16.67% |
-| seq02 (120 frames) `results/flux_synthetic_zeroshot.json` | zero-shot | 12 | 3 | 75.0% |
+**C6 flux counter, SYNTHETIC clips.** The counting direction comes from the ground truth (left to right). Predicted crossings are matched one-to-one to ground-truth crossings within ±1.0 s and |dy| <= max(16 px, 0.5 x item height). False crossings are split into duplicate (the item was already counted) and spurious (nothing nearby).
+
+| Detector | Clips | GT crossings | Counted | Matched | False (dup / spurious) | Missed | Signed count error [95% CI] |
+|---|---|---|---|---|---|---|---|
+| trained (`results/flux_synthetic.json`) | 10 | 132 | 153 | 128 | 25 (23 / 2) | 4 | +15.9% [+6.1, +28.0] |
+| zero-shot (`results/flux_synthetic_zeroshot.json`) | 1 | 12 | 0 | 0 | 0 (0 / 0) | 12 | -100.0% (1 clip, no CI) |
+
+Diagnostics on the same tracks: counting **both directions** gives 153 vs 132 (+15.9%). The **pre-fix configuration** (tracker re-created every frame, both directions) on seq02 gives 16 vs 12 with 17 distinct track IDs (matched 6, false 10, missed 6).
 
 **Zero-shot reference** (`results/metrics_zeroshot.json`, COCO-pretrained YOLO11n, not trained on TUD-GV, frozen matcher): test mAP50 0.3935, mAP50-95 0.2091, P 0.7562 / R 0.1398 at score ≥ 0.25.
 <!-- RESULTS:END -->
@@ -36,9 +39,21 @@ Reading (4 Oct, 17:05 IST):
   and recall at score ≥ 0.25 from 0.14 to 0.86.
 - **Cross-site drop.** On Groningen (another canal and camera, never trained on), mAP50 is 0.524 and recall 0.449.
   Domain shift is the main risk for Mumbai nullahs, so a small local labelled set is needed (research note §2).
-- **C6 now over-counts** (16 vs 12 and 28 vs 24; pooled 44 vs 36 = +22%), where the zero-shot detector under-counted (3 vs 12).
-  The cause is not diagnosed yet (**UNVERIFIED**: likely track fragmentation near the line, where one item gets two
-  IDs). Next C6 step: a hysteresis band around the line and a minimum track length.
+- **C6 flux (corrected 4 Oct, 17:45 IST; review finding #3 plus a second bug found while fixing it).** The trained
+  detector with persistent ByteTrack counts 153 crossings against 132 true ones over 10 SYNTHETIC clips. 128 are
+  matched, 25 false and 4 missed: signed count error **+15.9% [95% CI +6.1, +28.0]**, crossing recall 0.97,
+  precision 0.84. 23 of the 25 false crossings are *duplicates* of an item that was already counted; only 5 of those
+  come from crops that contain other litter. The clips produce 1.3–3.2 track IDs per item, which points to track
+  fragmentation near the line (the exact mechanism is **UNVERIFIED**). The 4 missed items are small (crop height
+  28–36 px vs a median of 50 px for matched ones). Matching results are identical at ±0.4, ±1 and ±2 s.
+  Next C6 step: suppress a second count within the matching gate of an earlier count, or require a minimum track
+  length. Tune either on new seeds, not on these clips.
+- **The published 33% (16 vs 12) was an artefact.** The tracker was re-created on every frame (A8): IDs restarted
+  each frame, so the "crossings" were rank-ID flips. Re-running that configuration on the same, byte-identical
+  clip reproduces 16 vs 12, with 17 distinct IDs and only 6 of the 16 matching a real crossing. Counting both
+  directions on the *fixed* tracks gives the same 153, so on these clips the direction mismatch the review flagged
+  adds no error. The fix is kept and guarded by `test_counter_direction_matches_ground_truth`. The zero-shot "3 of
+  12" was produced by the same bug; with persistent tracking the zero-shot detector counts 0 of 12.
 - **Recipe, as run:** 9 epochs in the 0.9 h budget (ultralytics re-planned epochs and the LR schedule). Because re-planned
   totals stayed below 10 epochs, `close_mosaic=10` never fired (the log has no "Closing dataloader mosaic"), so mosaic was
   on throughout. The memory guard paused training for about 210 s.
@@ -116,13 +131,24 @@ Weights are never committed.
 | `tests/test_contracts.py` | pydantic contract tests for every output file + flux logic tests |
 
 ## C6 flux counter
-Per frame, ultralytics `model.track(..., tracker="bytetrack.yaml", persist=True)`; a track is counted once, when its
-box centre changes side of the counting line (optional direction filter). Mass = items × **19 g/item** (sd 37 g) with
-CI90 = n·μ ± 1.645·σ·√n. Factor: van Emmerik et al. 2019, Sci. Rep. (Saigon River), PMC6753078 (opened 2026-10-04):
-"each visually counted particle equals on average 1.9 × 10⁻² kg (σ = 3.7 × 10⁻² kg)" of plastic in the upper 0.5 m.
-Net-sampled items alone average 1.0 × 10⁻² kg (σ 3.3 × 10⁻², N = 3057). **ASSUMPTION:** this Saigon factor is transferred
-to Mumbai nullahs. Evaluation is on a **SYNTHETIC** sequence: real litter crops from the held-out test split drift
-left→right across a real TUD-GV water frame (litter inpainted out), with exact ground-truth crossings; metric = count error %.
+Per frame, ultralytics `model.track(..., tracker="bytetrack.yaml", persist=True)`. The tracker persists across
+frames and is reset at the start of each clip (A8). A track is counted once, when its box centre crosses the counting
+line **in the counted direction**. In the evaluation that direction is derived from the ground truth
+(`gt.json` `flow_vector` → `CountingLine.direction_for_flow`), so the counter and the truth count the same crossings.
+
+Mass = items × **19 g/item** (sd 37 g), with CI90 = n·μ ± 1.645·σ·√n. Source: van Emmerik et al. 2019, Sci. Rep.
+(Saigon River), PMC6753078 (opened 2026-10-04): "each visually counted particle equals on average 1.9 × 10⁻² kg
+(σ = 3.7 × 10⁻² kg)" of plastic in the upper 0.5 m. Net-sampled items alone average 1.0 × 10⁻² kg (σ 3.3 × 10⁻²,
+N = 3057). **ASSUMPTION:** this Saigon factor is transferred to Mumbai nullahs.
+
+**Evaluation (SYNTHETIC, `t3det/run_flux.py`).** 10 clips (`SUITE`: seq01, seq02 and seeds 21–28; 132 true
+crossings). Real litter crops from the held-out test split drift left→right across a real TUD-GV water frame (litter
+inpainted out), with exact ground-truth crossings. Predicted crossings are matched one-to-one to true crossings
+(Hungarian assignment). A pair is admissible when |Δt| ≤ 1.0 s (5 frames at 5 fps) and |Δy| ≤ max(16 px, half the
+item's height) at the line. Reported: matched, false (duplicate or spurious), missed, and the signed count error, with
+a 95% percentile-bootstrap interval over clips. Diagnostics, both run on the same tracks and labelled: counting both
+directions, and the pre-fix configuration. At real tidal outfalls items move both ways, so deployments should report
+downstream, upstream and net counts separately.
 
 ## Assumptions and caveats
 - **A1 Compute and machine rules.** The M5 (24 GB) is shared by about 20 sessions. Overnight it was thrashing (swap
@@ -144,4 +170,12 @@ left→right across a real TUD-GV water frame (litter inpainted out), with exact
   remaining images with no detections. On a loaded machine that would silently lower validation mAP, so
   `mps_patch.apply_all()` lifts the limit for training-time validation and evaluation. Batch-1 prediction (zero-shot,
   flux) is unaffected: the check runs after the image's output is stored.
+- **A8 Tracker persistence (bug, fixed 4 Oct 17:40 IST).** ultralytics binds `persist` once, at the first `track()`
+  call (`register_tracker(self, persist)`, then `on_predict_start` re-creates trackers unless `persist`). The counter
+  passed `persist=i > 0`, so ByteTrack was rebuilt on every frame and IDs restarted each frame (`BYTETracker.__init__`
+  calls `reset_id()`). Every flux number published before 17:45 IST on 4 Oct is invalid: the zero-shot 3/12 and the
+  trained 16/12 and 28/24. Now `persist=True` always, with an explicit reset per clip; guarded by
+  `test_tracker_persists_across_frames_and_resets_per_clip`.
+- **A9 Flux matching tolerance** (±1.0 s, |Δy| ≤ max(16 px, h/2)) is our choice. Results are identical at ±0.4 s
+  and ±2 s (`sensitivity_pooled` in `results/flux_synthetic.json`).
 - **A6 Ratchet noise floor**: keep only if Δ val mAP50 > max(0.01, bootstrap SE) (see `autoresearch/program.md`).

@@ -15,6 +15,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from .flux import FLOW_VECTORS
 from .paths import DATA, YOLO
 
 
@@ -37,20 +38,33 @@ def clean_background(img_path: Path) -> np.ndarray:
     return cv2.inpaint(img, mask, 7, cv2.INPAINT_TELEA)
 
 
-def crops(test_paths: list[Path], n: int, rng: random.Random) -> list[np.ndarray]:
+def crops(test_paths: list[Path], n: int, rng: random.Random) -> tuple[list[np.ndarray], list[dict]]:
+    """n random GT-box crops from the test split + provenance (source frame, box, other GT box centres inside)."""
     pool = []
     for p in test_paths:
         img = cv2.imread(str(p))
         h, w = img.shape[:2]
-        for x1, y1, x2, y2 in _boxes(p.parent.parent / "labels" / (p.stem + ".txt"), w, h):
+        boxes = _boxes(p.parent.parent / "labels" / (p.stem + ".txt"), w, h)
+        for x1, y1, x2, y2 in boxes:
             if (x2 - x1) >= 12 and (y2 - y1) >= 12:
-                pool.append((p, (x1, y1, x2, y2)))
+                others = sum(1 for b in boxes if b != (x1, y1, x2, y2)
+                             and x1 <= (b[0] + b[2]) / 2 <= x2 and y1 <= (b[1] + b[3]) / 2 <= y2)
+                pool.append((p, (x1, y1, x2, y2), others))
     pick = rng.sample(pool, n)
-    out = []
-    for p, (x1, y1, x2, y2) in pick:
+    out, meta = [], []
+    for p, (x1, y1, x2, y2), others in pick:
         img = cv2.imread(str(p))
         out.append(img[y1:y2, x1:x2].copy())
-    return out
+        meta.append({"source": p.name, "box_xyxy": [x1, y1, x2, y2], "other_gt_boxes_in_crop": others})
+    return out, meta
+
+
+GT_DIRECTION = "left_to_right"  # items drift +x; the counter's direction is derived from this (run_flux)
+
+
+def gt_crossed(x_prev: float, x: float, line_x: float) -> bool:
+    """Ground-truth crossing predicate: centre moves from left of the line onto or past it (left to right)."""
+    return x_prev < line_x <= x
 
 
 def paste(frame: np.ndarray, crop: np.ndarray, cx: float, cy: float) -> None:
@@ -76,7 +90,8 @@ def generate(out: Path, frames: int, items: int, seed: int, fps: float = 5.0,
     h, w = bg.shape[:2]
     line_x = w / 2
     objs = []
-    for i, crop in enumerate(crops(test, items, rng)):
+    crop_list, crop_meta = crops(test, items, rng)
+    for i, crop in enumerate(crop_list):
         v = rng.uniform(*speed)  # px/frame (flow left -> right)
         # enter early enough to reach the counting line before the clip ends
         t0 = rng.randint(0, max(1, frames - int((line_x + crop.shape[1] + 20) / v) - 1))
@@ -96,16 +111,20 @@ def generate(out: Path, frames: int, items: int, seed: int, fps: float = 5.0,
             x = o["x0"] + o["vx"] * k
             y = o["y"] + o["vy"] * k + 3 * np.sin(o["phase"] + k / 6)
             xp = o["x0"] + o["vx"] * (k - 1)
-            if k >= 1 and xp < line_x <= x and o["id"] not in {c["id"] for c in crossings}:
-                crossings.append({"id": o["id"], "frame": f})
+            if k >= 1 and gt_crossed(xp, x, line_x) and o["id"] not in {c["id"] for c in crossings}:
+                ch, cw = o["crop"].shape[:2]
+                crossings.append({"id": o["id"], "frame": f, "x": round(float(x), 1), "y": round(float(y), 1),
+                                  "w": cw, "h": ch})
             if -o["crop"].shape[1] <= x <= w + o["crop"].shape[1]:
                 paste(frame, o["crop"], x, y)
         cv2.imwrite(str(out / "frames" / f"{f:05d}.jpg"), frame, [cv2.IMWRITE_JPEG_QUALITY, 90])
     gt = {"label": "SYNTHETIC", "seed": seed, "fps": fps, "frames": frames, "image_wh": [w, h], "speed_px_per_frame": list(speed),
-          "line": [[line_x, 0], [line_x, h]], "direction": "left_to_right", "n_items": items,
-          "gt_crossings": len(crossings), "crossings": crossings,
-          "items": [{"id": o["id"], "t0": o["t0"], "vx": round(o["vx"], 2), "crop_wh": list(o["crop"].shape[1::-1])}
-                    for o in objs]}
+          "line": [[line_x, 0], [line_x, h]], "direction": GT_DIRECTION, "flow_vector": list(FLOW_VECTORS[GT_DIRECTION]),
+          "gt_definition": "an item is counted once, in the first frame its centre moves from x < line_x to x >= line_x "
+                           "(left to right)",
+          "n_items": items, "gt_crossings": len(crossings), "crossings": crossings,
+          "items": [{"id": o["id"], "t0": o["t0"], "vx": round(o["vx"], 2), "crop_wh": list(o["crop"].shape[1::-1]),
+                     **crop_meta[o["id"]]} for o in objs]}
     (out / "gt.json").write_text(json.dumps(gt, indent=1))
     return gt
 
