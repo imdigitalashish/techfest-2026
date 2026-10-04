@@ -120,3 +120,31 @@ The clock times written in this file were the lead's estimates, not readings of 
    - E6 ∪ E10, the two fixed-n confirmatory blocks with no discovery data.
    - The registered E5 ∪ E6 ∪ E10.
    E8 (validation) is always reported separately, never dropped.
+
+---
+
+## E11: Does RNG synchronisation preserve market statistics? (registered 2026-10-04 13:14:45 IST; review astra #3)
+- **Design:** null worlds only (null agent appended, no orders), native (`naive`) vs synchronised (`per_wakeup`), validation seeds 100–159 (n = 60 per engine). Because re-keying changes every later draw, the two engines' worlds are treated as independent samples.
+- **Statistics per world, computed over 09:35–09:55:**
+  1. std of 1-min mid log-returns (bps);
+  2. lag-1 autocorrelation of 10-s mid returns;
+  3. mean quoted spread (¢);
+  4. mean touch depth (shares, average of both sides);
+  5. traded volume (shares);
+  6. number of trades.
+- **Comparison:** for 1 and 3–6, the ratio of means (synced / native) with a 95% CI from independent bootstrap resampling of seeds in each arm (10k, RandomState(0)); for 2, the difference of means.
+- **Labels:**
+  - "preserved (±10%)" if the ratio CI lies within [0.9, 1.1] (for 2: the difference CI within ±0.05);
+  - "differs" if the CI excludes 1 (for 2: 0);
+  - "unresolved" otherwise.
+- **Command:** `nice -n 10 .venv/bin/python eval/market_laws.py --seeds 100:160 --workers 4` → `eval/results/E11_market_laws.md/.json`.
+
+## E12: Fill-time split of the decision-time cost term (registered 2026-10-04 13:14:45 IST; reviews sol #2, astra #5)
+- **Design:** arms TWAP, IA_full and TWAP_touch_limit (`eval/policies/test.json`), fresh test seeds 1660–1719 (n = 60), synced twins, the standard task.
+- **New TCA terms:**
+  - delay = s·(m(t_d) − m(t_f⁻));
+  - at_fill = s·(m(t_f⁻) − p);
+  - here m(t_f⁻) is the treatment mid strictly before the fill, so delay + at_fill = the decision-time "instant" term exactly.
+- **Report** (descriptive, no directional hypothesis): mean delay and at_fill for each arm; paired Δ vs TWAP with 95% CIs; the identity residual.
+- **Integrity:** also report the new exact pre-trade check (event-level book arrays equal before 09:35, and equal arrival mids).
+- **Command:** `nice -n 10 .venv/bin/python eval/run_experiment.py --exp E12_filltime_test --seeds 1660:1720 --qty 4000 --policies eval/policies/test_touch.json --workers 4 --rng-sync per_wakeup` (test_touch.json = the TWAP, IA_full and TWAP_touch_limit entries of test.json).

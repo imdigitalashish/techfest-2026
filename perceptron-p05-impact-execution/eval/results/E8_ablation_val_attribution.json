@@ -211,6 +211,29 @@
    ]
   }
  },
+ "a1_margin_bps": 0.02,
+ "a1_labels": {
+  "A_qp_main": {
+   "is_bps": "unresolved",
+   "own_impact_bps": "unresolved"
+  },
+  "B_frontload_main": {
+   "is_bps": "unresolved",
+   "own_impact_bps": "unresolved"
+  },
+  "C_interaction": {
+   "is_bps": "unresolved",
+   "own_impact_bps": "unresolved"
+  },
+  "D_fixed_feedback": {
+   "is_bps": "unresolved",
+   "own_impact_bps": "unresolved"
+  }
+ },
+ "a1_interaction_detected": {
+  "is_bps": false,
+  "own_impact_bps": false
+ },
  "attribution_is": "unattributed at this n",
  "attribution_own": "unattributed at this n"
 }

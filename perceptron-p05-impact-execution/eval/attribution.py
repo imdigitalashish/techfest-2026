@@ -50,6 +50,13 @@ def main():
         for k, v in con.items():
             out["contrasts"].setdefault(k, {})[m] = [float(v.values.mean()), *ci(v.values)]
     c = out["contrasts"]
+    # Amendment A1 (eval/preregistration.md): signed labels with a +/-0.02 bps equivalence margin
+    MARGIN = 0.02
+    lab = lambda t: ("detected (" + ("−" if t[0] < 0 else "+") + ")") if (t[1] > 0 or t[2] < 0) else (
+        "negligible" if (t[1] >= -MARGIN and t[2] <= MARGIN) else "unresolved")
+    out["a1_margin_bps"] = MARGIN
+    out["a1_labels"] = {k: {m: lab(c[k][m]) for m in ("is_bps", "own_impact_bps")} for k in c}
+    out["a1_interaction_detected"] = {m: lab(c["C_interaction"][m]).startswith("detected") for m in ("is_bps", "own_impact_bps")}
     out["attribution_is"] = verdict(c["A_qp_main"]["is_bps"], c["B_frontload_main"]["is_bps"])
     out["attribution_own"] = verdict(c["A_qp_main"]["own_impact_bps"], c["B_frontload_main"]["own_impact_bps"])
     json.dump(out, open(os.path.join(ROOT, "eval", "results", f"{a.exp}_attribution.json"), "w"), indent=1)
@@ -64,7 +71,13 @@ def main():
     L += ["", "| contrast | IS | own impact | instant | drift |", "|---|---|---|---|---|"]
     for k in c:
         L.append(f"| {k} | " + " | ".join(f(c[k][m]) for m in METRICS) + " |")
-    L += ["", f"**Attribution (pre-registered rule): IS → {out['attribution_is']}; own impact → {out['attribution_own']}.**"]
+    L += ["", "**Amendment A1 labels** (signed; 'negligible' = CI within ±0.02 bps):", "",
+          "| contrast | IS | own impact |", "|---|---|---|"]
+    for k in c:
+        L.append(f"| {k} | {out['a1_labels'][k]['is_bps']} | {out['a1_labels'][k]['own_impact_bps']} |")
+    if any(out["a1_interaction_detected"].values()):
+        L += ["", "Interaction detected: main effects are not interpreted alone (A1 rule 3)."]
+    L += ["", f"Legacy classifier (pre-A1; not used in deliverables): IS → {out['attribution_is']}; own impact → {out['attribution_own']}."]
     open(os.path.join(ROOT, "eval", "results", f"{a.exp}_attribution.md"), "w").write("\n".join(L) + "\n")
     print("\n".join(L))
 

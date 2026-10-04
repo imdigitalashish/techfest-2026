@@ -16,4 +16,13 @@ n = 100 validation seeds (100–199), synced twins. Integrity: pre-window identi
 | C_interaction | +0.0194 [-0.0175, +0.0548] | +0.0167 [-0.0179, +0.0497] | +0.0021 [-0.0070, +0.0110] | +0.0006 [-0.0000, +0.0016] |
 | D_fixed_feedback | -0.0122 [-0.0388, +0.0116] | -0.0123 [-0.0354, +0.0092] | -0.0027 [-0.0110, +0.0046] | +0.0028 [-0.0003, +0.0077] |
 
-**Attribution (pre-registered rule): IS → unattributed at this n; own impact → unattributed at this n.**
+**Amendment A1 labels** (signed; 'negligible' = CI within ±0.02 bps):
+
+| contrast | IS | own impact |
+|---|---|---|
+| A_qp_main | unresolved | unresolved |
+| B_frontload_main | unresolved | unresolved |
+| C_interaction | unresolved | unresolved |
+| D_fixed_feedback | unresolved | unresolved |
+
+Legacy classifier (pre-A1; not used in deliverables): IS → unattributed at this n; own impact → unattributed at this n.
