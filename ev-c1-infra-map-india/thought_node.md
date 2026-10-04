@@ -10,18 +10,21 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ **RESUMED 13:05 IST** (batch slot; Supervisor). Goal: the definition of done below, then message "DONE — slot free". EV C2 is ✅ and the default EV pick, so the final memo must argue C1 for or against honestly.
-- **Definition of done (Supervisor 13:05):**
-  1. Facts: finish the fact-check (only 1 of 11 claims verified); verify the MoP 2024 norms and PM E-DRIVE targets at primary sources; every Round-1 number verified or marked UNVERIFIED.
-  2. Analysis: C9 on VAHAN month-wise data (ensemble + 2026 nowcast with backtest error); C5 with a third source + a multiple-systems estimate with CI; a Maharashtra district gap map on current boundaries (incl. Palghar), SoI-consistent for anything government-facing.
-  3. Round-1 methodology + roadmap final: numbers rendered from committed results, a doc-drift check (`eval/check_docs.py`), dashboard checked in a browser.
-  4. Cross-model reviews (child sessions): gpt-6-astra max (hostile judge: ADR 001 + Round-1 docs); gpt-6-sol max (code + eval, reproduce headline numbers) → `reviews/` + `ledger.tsv`.
-  5. Final memo, journal current, pushed.
-- **Doing (lead):** step 1, facts (curl + local extraction, small requests).
-- **Next:** month-wise VAHAN fetch → C9 · third charger source (Overture places / AllThePlaces, open licences) → C5 multiple-systems estimate · MH districts incl. Palghar → gap map · render/check docs · reviewers (≤ 2 child sessions) · memo.
-- **Rules in force:** child sessions only (≤ 2); never `git stash` or `--autostash`; heavy jobs under `nice -n 10`, one at a time, only when `kern.memorystatus_level` ≥ 30; small requests.
-- **Needs from user:** If EV C1 is preferred over C2: register by 15 Oct (track fixed at registration). Team of 2–5: names and skills. Optional: a free Open Charge Map API key.
-- **Risks:** (1) supply data: open sources ≈ 8% of official → capture–recapture biased low; (2) registrations ≠ on-road stock; (3) VAHAN markup changes (client self-discovers ids); (4) operator data terms; (5) boundary/basemap compliance; (6) saturated uplink (408s).
+- **Phase:** ▶ RESUMED (13:05) — definition of done items 1–3 complete and pushed. Item 4 in progress: two cross-model reviews running as child sessions. Then triage, then item 5 (final memo) → "DONE — slot free".
+- **Doing:**
+  - [EV C1 code+eval review (gpt-6-sol, max)](ghapp://sessions/2e1afeef-1c2d-42e1-9965-c8bb3303da70): reproduces `eval/run_all.sh` from a copy of the cached data; reviews code and evals.
+  - [EV C1 hostile judge (gpt-6-astra, max)](ghapp://sessions/3a2611bb-08aa-44b9-92dd-893f78fe5562): ADR 001 + Round-1 docs.
+  - Lead: waiting for both, then triage → `reviews/ledger.tsv`, fixes, re-render, final memo.
+- **Done since resume:**
+  - **Facts:** fact-check of 11 claims + MoP/PM E-DRIVE norms verified at primary sources.
+  - **C9:** month-wise VAHAN, forecast ratchet, 2026 nowcast with backtest.
+  - **C5:** Overture as third source; capture–recapture (fails state validation, reported as such).
+  - **Supply:** validated small-area allocation (Chhattisgarh district truth).
+  - **Maharashtra:** district gap on LGD-based boundaries incl. Palghar; dashboard v1 checked in a browser.
+  - **Docs:** Round-1 docs v2 with numbers rendered from runs; drift/unverified-number check passes.
+- **Rules in force:** child sessions only (≤ 2); never stash or autostash; heavy jobs under `nice -n 10` with memory ≥ 30.
+- **Needs from user:** If EV C1 is preferred over C2: register by 15 Oct (track fixed at registration). Team of 2–5: names and skills. Optional: request access to BEE's national charging-station database through MHI/ICAT (MoP 2024 clause 13); a free Open Charge Map API key.
+- **Risks:** (1) supply data: open sources see <!--n:open_coverage_pct-->11.4%<!--/n--> of official stations, and capture–recapture fails validation → district supply rests on a model validated in one state; (2) registrations ≠ on-road stock; (3) a probably crowded track (UNVERIFIED: no registration statistics); (4) VAHAN markup changes (client self-discovers ids); (5) boundary compliance.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** EV Infra & Green Mobility AI Challenge — Techfest IIT Bombay with the Ministry of Heavy Industries (MHI) and the International Centre for Automotive Technology (ICAT). Prize pool ₹2,00,000; top 3 teams per track.
@@ -47,24 +50,29 @@
 - 2026-10-04 — VAHAN via plain-HTTP replay of the public dashboard (no browser, no third-party mirror).
 - 2026-10-04 — Canonical supply unit = *site* with connector list; official PIB state totals are held-out ground truth, never training data.
 - 2026-10-04 — [ADR 001](architecture/adr/001-spike.md): Spike 1 completeness-aware census (C4+C5); Spike 2 forecast + requirement (C9+C11).
+- 2026-10-04 13:30 — C9 v2: monthly frozen eval; pooled EV-share logit trend selected (held-out WAPE <!--n:c9_hold_logit-->0.157<!--/n--> vs naive <!--n:c9_hold_naive-->0.223<!--/n-->); YoY nowcast for 2026.
+- 2026-10-04 13:45 — Third charger list = Overture places (category + strict EV-name rule); AllThePlaces has no Indian charging-operator spiders.
+- 2026-10-04 13:45 — Capture–recapture **fails** the pre-registered state check → used as a coverage audit only; district supply = small-area allocation validated on Chhattisgarh (Supervisor 13:25 proposal, refined). [ADR 001 addendum](architecture/adr/001-spike.md).
+- 2026-10-04 13:50 — Government-facing maps draw no third-party basemap; boundaries are LGD-aligned (geoBoundaries ADM2 2021) and labelled as not SoI-certified.
+- 2026-10-04 14:00 — Documents render run-derived numbers from `eval/results/latest.json`; `eval/check_docs.py` fails on drift or on any unverified number in the Round-1 docs.
 
 ## Components
-| # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
+| # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric (latest) |
 |---|---|---|---|---|---|---|
-| C1 | vahan_ingest | dashboard → RegistrationRecord | manual Excel export | | **real data** | Σ RTO vs state reconciliation error |
-| C2 | charger_ingest | sources → ChargerRecord | per-source scrapers | | OSM + official totals | schema-valid share; freshness |
-| C3 | charger_normalize | ChargerRecord → canonical | rule tables | | taxonomy drafted | field accuracy on labelled sample |
-| C4 | charger_resolve | ChargerRecord[] → Site[] | distance + name match | ★ | planned | pairwise F1 |
-| C5 | census_completeness | Site[] → CompletenessEstimate | raw counts | ★ | ground truth on disk | rel. error vs held-out official totals |
-| C6 | admin_geo | boundaries → AdminUnit, RTO↔district | Census-2011 shapes | | MH RTO list | % RTOs mapped |
-| C7 | ev_stock | registrations → StockEstimate | cumulative regs | | baseline | holdout error |
-| C8 | demand_model | stock → DemandEstimate | EVs-per-charger ratio | | planned | rank corr. vs observed sites |
-| C9 | adoption_forecast | series → future stock | CAGR | ★2 | data on disk | backtest sMAPE |
-| C10 | access_gap | sites + demand → GapRecord | EVs per charger | | **v0 real (state)** | backtest AUC |
-| C11 | requirement_siting | gaps → Recommendation | norm-based counts | ★2 | planned (spopt) | demand covered per charger |
+| C1 | vahan_ingest | dashboard → RegistrationRecord | manual Excel export | | **real**: national monthly + RTO (MH, CG), fuel filter | Σ RTO vs state = <!--n:mh_reconciliation_err-->0.0<!--/n--> |
+| C2 | charger_ingest | sources → ChargerRecord | per-source scrapers | | **real**: OSM, OCM export, Overture, 3 PIB snapshots | records per source |
+| C3 | charger_normalize | ChargerRecord → canonical | rule tables | | point-in-polygon state; taxonomy drafted | field accuracy (pending labels) |
+| C4 | charger_resolve | ChargerRecord[] → Site[] | distance + name | ★ | **real** v1: mutual-NN 150 m → <!--n:linked_sites-->3,336<!--/n--> sites | pairwise F1 (pending labels) |
+| C5 | census_completeness | Site[] → coverage / estimate | raw counts | ★ | **real**: 3-source MSE **fails** validation → audit | median ratio <!--n:mse_median_ratio-->0.58<!--/n-->, CI coverage <!--n:mse_ci_coverage-->47%<!--/n--> |
+| C6 | admin_geo | boundaries, RTO↔district | Census-2011 shapes | | **real**: ADM1 + ADM2 2021 (LGD), MH + CG crosswalks | % RTOs mapped (MH 60/61, CG 28/31) |
+| C7 | ev_stock | registrations → stock | cumulative regs | | baseline | holdout error (pending) |
+| C8 | demand_model | stock → public kWh | EVs-per-charger | | designed (§2.6) | rank corr. (pending) |
+| C9 | adoption_forecast | monthly series → forecast, nowcast | naive | ★2 | **real** v2 | held-out WAPE <!--n:c9_hold_logit-->0.157<!--/n--> |
+| C10 | access_gap | sites + demand → GapRecord | EVs per charger | | **real**: state + MH districts (small-area) | CG district WAPE <!--n:cg_wape_small_area_model-->0.41<!--/n--> |
+| C11 | requirement_siting | gaps → Recommendation | norm counts | ★2 | benchmark only; full module Round 2 | demand covered per charger (pending) |
 | C12 | platform_api | outputs → API | static CSV | | planned | p95 latency |
-| C13 | dashboard_map | API → map UI | static choropleth | | planned | planner task time |
-| C14 | eval | all → metrics | — | | v0 | — |
+| C13 | dashboard_map | data → map UI | static choropleth | | **real** v1 (national + MH), browser-checked | planner task time (pending) |
+| C14 | eval | all → metrics | — | | **real**: run_all + frozen evals + doc checks | — |
 
 ## Selection memo
 _v1, 4 Oct 08:05 IST — final by 12 Oct. Scores 1–5 with one line of evidence each. Overall **4.2 / 5**._
