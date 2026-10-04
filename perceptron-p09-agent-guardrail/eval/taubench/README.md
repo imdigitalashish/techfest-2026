@@ -15,6 +15,7 @@ export AZURE_OPENAI_ENDPOINT=... AZURE_OPENAI_DEPLOYMENT=gpt-4.1-mini AZURE_OPEN
 .venv/bin/python -m eval.taubench.run --guards llm_judge_aoai,cascade_aoai --split test --sample 300
 .venv/bin/python -m eval.taubench.frontier                    # matched comparison table (both judges)
 .venv/bin/python -m eval.taubench.cost                        # $ per guarded call (Azure Retail Prices API)
+.venv/bin/python -m eval.taubench.latency                     # Tier-0 latency: per-call median of 7 repeats, CPU + wall
 ```
 
 ## Baselines and cascades on the 300-call sample
@@ -56,6 +57,9 @@ Checks on the labels:
   - `llm_judge`: rows from `361ce58`; its original CI used (model, task) clusters.
   - `cascade_fast`: `74d2128`.
   - `llm_judge_aoai` and `cascade_aoai`: code as committed in `4566887`.
+
+## Latency
+The `latency_ms` recorded by `run.py` is single-shot wall-clock time, which swings with machine load (load average about 10 on this shared Mac). Latency claims therefore come from `latency.py`: each of the 991 test calls is timed 7 times, the per-call median is taken, and p50/p95 are reported across calls (CPU and wall), together with the load average (`latency__test.json`).
 
 ## What it does not measure
 - **Labels are not safety.** *good* means ground-truth-equivalent DB effect; *harmful* means accepted but non-equivalent. Neither is adjudicated consent, policy compliance or real-world harm (gpt-6-sol #2, gpt-6-astra A).

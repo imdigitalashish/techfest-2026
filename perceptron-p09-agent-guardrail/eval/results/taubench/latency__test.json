@@ -1,0 +1,30 @@
+{
+ "method": "per-call median over 7 repeats; p50/p95 across calls; CPU = time.process_time_ns",
+ "load_average_1m_5m_15m": [
+  9.71,
+  8.94,
+  9.85
+ ],
+ "n_calls": 991,
+ "code_sha256": "06e9f81c5a5cc408",
+ "configs": {
+  "t0_strict": {
+   "cpu_ms_p50": 0.261,
+   "cpu_ms_p95": 0.467,
+   "wall_ms_p50": 0.268,
+   "wall_ms_p95": 0.503
+  },
+  "t0_balanced": {
+   "cpu_ms_p50": 0.259,
+   "cpu_ms_p95": 0.483,
+   "wall_ms_p50": 0.266,
+   "wall_ms_p95": 0.513
+  },
+  "t0_lenient": {
+   "cpu_ms_p50": 0.269,
+   "cpu_ms_p95": 0.495,
+   "wall_ms_p50": 0.274,
+   "wall_ms_p95": 0.546
+  }
+ }
+}

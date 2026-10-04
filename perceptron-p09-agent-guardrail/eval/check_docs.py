@@ -54,6 +54,7 @@ def claims() -> list[tuple[Path, str]]:
     cost, fr = j(T / "cost__test__sample300.json"), j(T / "frontier__test__sample300.json")
     astra, synth = counts(R / "t0__test__astra_redteam.json"), counts(R / "t0__test.json")
     readme = ROOT / "eval" / "taubench" / "README.md"
+    lat = j(T / "latency__test.json")
     audit = (ROOT / "eval" / "taubench" / "audit-test-misses.md").read_text()
     n_user = len(re.findall(r"\| A user-requested \|", audit))
     entity_ids = [m.strip() for m in re.findall(r"\| \d+ \| ([^|]+) \| B wrong entity \|", audit)]
@@ -86,7 +87,7 @@ def claims() -> list[tuple[Path, str]]:
         (ABSTRACT, f"**{bal['stop']}/{bal['bad']}** harmful-labelled stops (**{pc(bal['stop'], bal['bad'])}; 95% CI "
                    f"{ci(bal['m']['ci95_cluster_bootstrap']['catch_harmful'])}**), comprising **{bal['hard']} blocks/{bal['stop'] - bal['hard']} holds**"),
         (ABSTRACT, f"**{bal['fb']}/{bal['good']} blocked ({pc(bal['fb'], bal['good'], 1)})**, **{bal['hold']}/{bal['good']} held ({pc(bal['hold'], bal['good'])})**"),
-        (ABSTRACT, "In-process retail p95: **under 1 ms**"),
+        (ABSTRACT, f"In-process retail p95: **{lat['configs']['t0_balanced']['wall_ms_p95']:.1f} ms** (median of 7 runs per call)"),
         (ABSTRACT, "It does not beat the untuned checker's score"),
         (ABSTRACT, f"gpt-4.1-mini stopped {j4['stop']}/{j4['bad']} harmful calls, or {j_thr}/{j4['bad']} at a test-selected threshold, "
                    f"versus strict Tier 0's {st['stop']}/{st['bad']}. Each stopped {st['good_stop']}/{st['good']} good calls."),
@@ -107,8 +108,8 @@ def claims() -> list[tuple[Path, str]]:
         (readme, "**task_id** clusters across both models"),
     ]
     assert synth["fb"] == 0
-    for g in ("t0_v0", "t0_strict", "t0_balanced", "t0_lenient"):
-        assert j(T / f"{g}__test.json")["metrics"]["latency_ms_p95"] < 1.0, f"{g} p95 is not under 1 ms"
+    for g, v in lat["configs"].items():  # latency claims come from the repeat-timed benchmark, not single-shot eval runs
+        assert v["wall_ms_p95"] < 1.0 and v["cpu_ms_p95"] < 1.0, f"{g} benchmark p95 is not under 1 ms"
     stale = ["was run once on the frozen configs", "(model, task_id) clusters, 2,000 resamples"]
     for s_ in stale:
         assert s_ not in readme.read_text(), f"stale protocol text in README: {s_!r}"
