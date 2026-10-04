@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** ✅ Round-1 package complete (11:00 IST, 4 Oct). Supervisor definition of done met (see Log 11:00). Slot freed.
+- **Phase:** 🎬 DEMO PHASE (Supervisor slot from 17:59 IST, 4 Oct; PLAYBOOK §11). The Round-1 package is complete (11:00). Now building the winning demo via one child session (the demo builder), then a gpt-6-astra "judge watching the demo" review. Started 2026-10-04 18:04 IST.
 - **Deliverables:**
   - [`deliverables/India71_100_[TeamID].pdf`](deliverables/): 6 A4 pages, 1-inch margins, Arial ≥11 pt; source `round1-proposal.md` v0.3.
   - [`deliverables/architecture.md`](deliverables/architecture.md).
@@ -207,4 +207,11 @@ Apply at resume step 2.
 - **Supervisor alignment (10:38): agreed.** v0.3 reports v1 as a strength. Added `eval/check_docs.py` (17 quoted numbers checked against `eval/results`, also a pytest).
 - **Demo now covers the whole chain:** z-scores → diagnostics → ranking → tasks → worklists → **escalation** (fixed a scope bug: escalated tasks now go to the sector/project owner; 482 escalated after 8 days at an assumed 70% on time) → audit (2,171 entries, verified). SYNTHETIC; runs in about 4 s.
 - **Proposal v0.3 → PDF:** `India71_100_[TeamID].pdf`, 6 A4 pages, 1-inch margins, Arial (body 11 pt, diagram 11.25 pt unscaled), all 6 required sections + architecture diagram. 29 tests pass.
+
+### 2026-10-04 18:04 IST — demo phase started (PLAYBOOK §11)
+- Read §11 (winning demo bar) and §6. **No `git stash` or `--autostash` from now on:** I had used `--autostash` in rebases earlier today; from now on I commit before every rebase.
+- Vendored the 6 WHO LMS tables into `components/growth_standards/tables/` (524 KB, SHA-256 identical to the pins in `fetch_who.py`, NOTICE with provenance and GPL-3.0 licence). `who.py` now prefers the committed copy, so the demo runs offline from a clean clone.
+- Moved two stray untracked PDFs from the worktree root into `.data/raw/misc/`.
+- IIPS NFHS-5 fact-sheet URLs return 404 (site reorganised). The NFHS-5 state values on disk come from pratapvardhan/NFHS-5 (CC-BY-4.0; Harvard Dataverse DOI 10.7910/DVN/42WNZF), to be cross-checked against a primary source before any on-screen use.
+- Next: spawn the demo builder; approve its "crazy" element; review; verify from a clean checkout; DEMO DONE.
 

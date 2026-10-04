@@ -19,7 +19,8 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
-TABLE_DIR = ROOT / ".data" / "raw" / "who_gs"
+VENDORED_DIR = Path(__file__).resolve().parent / "tables"  # committed copy (see tables/NOTICE.md) for offline use
+TABLE_DIR = VENDORED_DIR if (VENDORED_DIR / "weianthro.txt").exists() else ROOT / ".data" / "raw" / "who_gs"
 MAX_AGE_DAYS = 1856
 AGE_LIMIT_MONTHS = 60.0
 DAYS_PER_MONTH = 365.25 / 12
