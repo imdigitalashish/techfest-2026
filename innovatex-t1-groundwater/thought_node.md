@@ -12,7 +12,7 @@
 ## Now
 - **Phase:** 6 — deliverables **complete for the Delhi zonal** (Supervisor's definition of done, 4 Oct 12:45 IST). Next lead work comes after the zonal: the Round-2 build (`deliverables/prototype-plan.md`).
 - **⏸ PAUSED 2026-10-04 23:39 IST (user directive, via Supervisor 23:36): resume tomorrow.** The demo upgrade to PLAYBOOK §11 is in progress and **not verified**. No "DEMO DONE" sent.
-  - **The child session "Demo builder · JalSakshi"** is told to stop after its current atomic step, push only finished passing work, leave WIP uncommitted in its worktree (`.worktrees/imdigitalashish-verbose-invention`), stop its jobs, and reply with its resume point. Its reply goes in the Log.
+  - **The child session "Demo builder · JalSakshi" stopped at 23:40** with nothing pushed, nothing uncommitted, and no jobs running (its worktree is `.worktrees/imdigitalashish-verbose-invention`, which has only the gitignored `.venv`). Its resume point is in the Log (23:40).
   - **Resume point (lead), in order:**
     1. Read the builder's reply; message it to resume (it has the full brief plus my 23:27 "size × WHEN" addition).
     2. When it reports done, run `/tmp/t1_verify_clean.sh` (recreate if /tmp was cleared). It does: clean worktree of origin/main → `demo/run.sh` timed → `demo/smoke.sh`. Cross-check scenario outcomes against the reference table in the 23:27 Log entry.
@@ -249,3 +249,12 @@ Folder, brief and journal created. The lead session starts Phase 0.
 ### 2026-10-04 23:39 IST — PAUSE (user directive)
 - Supervisor: stop for tonight.
 - Told the builder to stop after its current atomic step and push only passing work. My session has no servers or jobs running. Resume point is under *Now*.
+
+### 2026-10-04 23:41 IST — Builder paused (its report)
+- **Pushed:** nothing. **Uncommitted:** nothing. **Running:** nothing.
+- **Done:** read the brief and the size × WHEN addition, §11, slide 5, the pitch, Q&A, card and reviews, and the verifier, simulator and tests. Built the venv. `test_verifier.py` gives 7 passed. The sha256 of `verifier.py`, `simulate.py` and the rain fixture match `eval/results/manifest.json`.
+- **Builder resume point:**
+  1. Use committed code to pick the quiet, draining and storm instants.
+  2. Write `demo/build_demo.py`. Its grid is 20, 100, 500 and 1,200 L plus a 500 L 30-min trickle, × quiet, draining and storm, × gauge on and off.
+  3. Then: template, `run.sh`, `smoke.sh`, `SCRIPT.md`, `README`, `fallback/`.
+- **Fixed now** (the builder flagged it): `deliverables/qa-prep.md` Q3 still said "the rain (ERA5)". It's now relabelled as the Open-Meteo archive (reanalysis-based, default model) with a synthetic minute pattern.

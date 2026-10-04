@@ -28,7 +28,7 @@
    - Git shows the rules for the first two rounds were committed before their results (08:03 → 08:15, 08:26 → 09:46). The third rule was committed together with its results, so we don't call it pre-registered.
    - Real evidence will be blind weighed-water trials on a drum rig by 1 Dec.
 3. **"What's actually real here?"**
-   - **Real:** the Delhi groundwater data (India-WRIS, 185 telemetric stations, 483k readings), the rain (ERA5) and the software.
+   - **Real:** the Delhi groundwater data (India-WRIS, 185 telemetric stations, 483k readings) and the software. The rain is a public archive (Open-Meteo, reanalysis-based, default model; not a gauge on site), and the minute pattern is synthetic.
    - **Simulated:** every pit. Ten caught fakes means ten *simulated* fakes.
 4. **"Can an owner cheat?"**
    - **Yes, a bypass during real rain can fool it.**
