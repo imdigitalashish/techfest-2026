@@ -22,13 +22,13 @@ Our framing: answer Q2 with Q1 tools. Use OPE to build the counterfactual "the o
 | DR | DM plus an IPW correction on the residual | Unbiased if either the propensities or q̂ is correct ("doubly robust") | both | Dudík, Langford, Li, ICML 2011, arXiv:1103.4601 | `DoublyRobust` |
 | Switch-DR | IPW where weights are small, DM where they are large | Trades bias for variance with a threshold τ | both | Wang, Agarwal, Dudík, ICML 2017, arXiv:1612.01205 | `SwitchDoublyRobust` |
 | DRos | Shrinks the weights optimistically | Minimax-motivated shrinkage | both | Su, Dimakopoulou, Krishnamurthy, Dudík, ICML 2020, arXiv:1907.09623 | `DoublyRobustWithShrinkage` |
-| MRDR | Fits q̂ to minimise the DR variance | Lower variance than DR | both | Farajtabar, Chow, Ghavamzadeh 2018, arXiv:1802.03493 | `DoublyRobust` variant (MRDR in README) |
-| Sub-Gaussian IPW/DR | Power-mean weight correction | Sub-Gaussian tails | both | NeurIPS 2021 (linked from obp README) | `SubGaussian...` |
+| MRDR | Learns DR's reward model for DR itself. The abstract notes prior DR work improved the IS part and said "not much on how to learn the model" | Targets lower DR variance | both | Farajtabar, Chow, Ghavamzadeh 2018, arXiv:1802.03493 | listed in the obp README |
+| Sub-Gaussian IPW/DR | Corrected importance weights with sub-Gaussian concentration (mechanism details **UNVERIFIED** tonight; paper not opened) | — | both | NeurIPS 2021 (linked from the obp README) | listed in the obp README |
 | MIPS / OffCEM | Weight on action *embeddings* or clusters, not actions | Big variance cut for large action spaces | embeddings | Saito & Joachims, ICML 2022, arXiv:2202.06317; Saito, Ren, Joachims, ICML 2023, arXiv:2305.08062 | MIPS in obp |
 | Cascade-DR | DR for rankings under a cascade click model | Ranking-specific | both | Kiyohara et al., WSDM 2022, arXiv:2202.01562 | `Cascade-DR` |
-| Logarithmic smoothing | Pessimistic, log-smoothed weights with PAC-Bayes bounds | Biased downward on purpose; tight bounds | propensities | Sakhi, Aouali, Alquier et al., NeurIPS 2024 spotlight, arXiv:2405.14335 | — |
-| Optimal baseline corrections | Variance-optimal additive control variate | Unbiased, lower variance than SNIPS | propensities | Gupta, Jeunen, Oosterhuis et al. 2024, arXiv:2405.05736 | — |
-| **Δ-OPE** | Estimate V(π₁) − V(π₀) *jointly*, sharing the variance reduction between the pair | Less variance on the *difference* than two separate estimates | propensities | Jeunen & Ustimenko, RecSys 2024 short paper, arXiv:2405.10024 | — |
+| Logarithmic smoothing | Pessimism: build upper bounds on worst-case performance; the LS estimator "logarithmically smooths large importance weights" | Biased on purpose; tightest bound in its class | propensities | Sakhi, Aouali, Alquier et al., NeurIPS 2024 spotlight, arXiv:2405.14335 | — |
+| Baseline corrections (unified) | Additive control variates (baselines, DR) and multiplicative ones (self-normalisation) unified as "an equivalent baseline correction" | Variance reduction | propensities | Gupta, Jeunen, Oosterhuis et al. 2024, arXiv:2405.05736 | — |
+| **Δ-OPE** | "The difference between policy values can often be estimated with significantly reduced variance, if said policies have positive covariance" | Less variance on the *difference* | propensities | Jeunen & Ustimenko, RecSys 2024 short paper, arXiv:2405.10024 | — |
 
 The list of estimators obp implements is taken from the obp README (opened via the GitHub API): DM, IPW, SNIPW, DR, Switch, MRDR, DRos, Sub-Gaussian IPW/DR, Cascade-DR, and kernelised IPW/SNIPW/DR.
 
@@ -40,7 +40,7 @@ The list of estimators obp implements is taken from the obp README (opened via t
 |---|---|---|
 | Wald CI from the influence function | Asymptotic; under-covers when weights are heavy-tailed or the effective sample is small | standard; see Taufiq thesis below |
 | Bootstrap (percentile) | Asymptotic; implemented in obp's `estimate_interval` | obp README |
-| Empirical likelihood | Asymptotic, but finite-sample-friendly in experiments; uses the bounded mean of the weights | Karampatziakis, Langford, Mineiro, NeurIPS 2020, arXiv:1906.03323 |
+| Empirical likelihood | Estimator and CI posed "as simple convex optimization problems" | Karampatziakis, Langford, Mineiro, NeurIPS 2020, arXiv:1906.03323 |
 | Off-policy confidence sequences | **Anytime-valid**: holds at every sample size, so you may peek as logs arrive | Karampatziakis, Mineiro, Ramdas 2021, arXiv:2102.09540 |
 | Anytime-valid off-policy inference (betting) | Anytime-valid confidence sequences for contextual bandits, including adaptively collected data | Waudby-Smith, Wu, Ramdas, Karampatziakis, Mineiro 2022, arXiv:2210.10768 |
 | Bayesian inference via empirical likelihood | Posterior for the policy value | Ouyang, Gong, Bondell, accepted at JMLR, arXiv:2602.10608 (Feb 2026) |
@@ -56,8 +56,8 @@ Taufiq's PhD thesis, *Uncertainty Quantification and Causal Considerations for O
 
 | Approach | Parameter | What it bounds | Source |
 |---|---|---|---|
-| Marginal sensitivity model (MSM) for IPW | Γ ≥ 1: the true propensity odds may differ from the estimated odds by at most a factor Γ | The policy value, via a linear-fractional programme over weights | Kallus & Zhou, *Confounding-Robust Policy Improvement*, 2018, arXiv:1805.08593 |
-| Percentile bootstrap for IPW sensitivity | Γ | A CI that is valid under the MSM, combining sampling and confounding | Zhao, Small, Bhattacharya 2017, arXiv:1711.11286 |
+| Confounding-robust policy improvement | An uncertainty set around the nominal propensities (MSM-type, Γ) | Worst-case policy value and regret, which "may not be point-identifiable" under confounding | Kallus & Zhou 2018, arXiv:1805.08593 |
+| Marginal sensitivity model + percentile bootstrap for IPW | Γ: "a natural extension of Rosenbaum's sensitivity model" | An interval valid under the MSM, combining sampling and confounding | Zhao, Small, Bhattacharya 2017, arXiv:1711.11286 |
 | Sharp bounds via quantile balancing | Γ | Sharp (tightest) MSM bounds | Dorn & Guo, JASA 2022 (per the arXiv comment), arXiv:2102.04543 |
 | Efficient and sharp off-policy learning under confounding | Γ-type sensitivity | A semiparametrically efficient estimator of the sharp bound, without unstable minimax | Hess, Frauen, Melnychuk et al. 2025, arXiv:2502.13022 |
 | Human–AI teams | MSM | Confounding-robust policy improvement when humans override | Gao & Yin, arXiv:2310.08824 (comment: AAAI 25) |
