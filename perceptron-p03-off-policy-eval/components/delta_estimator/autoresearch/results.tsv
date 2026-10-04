@@ -1,0 +1,2 @@
+timestamp	commit	hypothesis	metric(nRMSE,dev)	delta	kept	notes
+2026-10-04T07:53+05:30	(scaffold commit)	baseline: doubly robust (DR), cross-fitted logistic reward model	0.21823	—	baseline	min_coverage 0.83 at 12 seeds (binomial SE about 0.06); per-scenario nRMSE: drift_masks 0.1015, drift_fakes 0.0851, low_overlap 0.1518, small_effect 0.5346
