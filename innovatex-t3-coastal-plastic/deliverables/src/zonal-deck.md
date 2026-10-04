@@ -226,9 +226,11 @@ Use if asked "show us the software". Walk: morning brief → first dispatch → 
 
 # Backup · Limits we state up front
 
+<style scoped>section { font-size: 18px; } table { font-size: 16px; }</style>
+
 | Claim we do **not** make | Why |
 |---|---|
-| Tonnes diverted per year | The twin's absolute kilograms rest on assumed load and capture curves |
+| Tonnes diverted per year | The twin's absolute kilograms rest on assumed load and capture curves; per-boom tonnes in our Q&A are illustrative arithmetic |
 | The pocket keeps its catch | A SENSITIVITY until the tow tank measures retention under reversal |
 | The boom cannot raise flood levels | The fail-open section's opening head, delay, fouling and reset are untested |
 | The camera counts all plastic | Night, rain, glare and submerged film; fill is "unknown" when the camera is degraded |

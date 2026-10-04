@@ -40,8 +40,8 @@ def _flatten(d: dict, prefix: str = "") -> list[tuple[str, object]]:
 
 def render() -> str:
     """The full RESULTS.md text (its 'Generated ...' line carries the time and commit)."""
-    files = sorted(f for f in ROOT.glob("components/*/results/*.json")
-                   if f.stat().st_size < 200_000 and '"reproduce"' in f.read_text())
+    files = sorted(f for f in [*ROOT.glob("components/*/results/*.json"), ROOT / "eval" / "impact_estimate.json"]
+                   if f.exists() and f.stat().st_size < 200_000 and '"reproduce"' in f.read_text())
     ist = dt.timezone(dt.timedelta(hours=5, minutes=30))
     lines = [
         "# Results — every number with its reproduce command",
@@ -55,7 +55,7 @@ def render() -> str:
     if not files:
         lines.append("_No component has committed metrics yet._")
     for f in files:
-        comp = f"{f.parent.parent.name} — {f.name}"
+        comp = f"{f.parent.parent.name} — {f.name}" if f.parent.name == "results" else f"{f.parent.name} — {f.name}"
         try:
             data = json.loads(f.read_text())
         except Exception as e:  # keep going; report the broken file

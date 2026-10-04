@@ -115,13 +115,13 @@ Design month is July, Mumbai's darkest: 3.79 kWh/m²/day of insolation vs 7.09 i
 | 15–18 Dec | Finals: live tow-tank flume + dashboard | team |
 
 ## 7. What is real, what is simulated (status 4 Oct)
-- **Real:** hourly ERA5 rain; archived JMA forecasts; tide fitted to Open-Meteo Marine sea level (RMSE 0.08 m at the Mithi); public detection data.
+- **Real:** hourly ERA5 rain; archived JMA forecasts; tide fitted to Open-Meteo Marine sea level (RMSE 0.07 m at the Mithi); public detection data.
 - **SIMULATED:** every boom state and escaped kilogram at Mumbai sites. Held-out 2024–25, paired over 40 draws:
-  - full policy vs fill-fraction-ranked rule: −5.6% escaped (central 90% scenario range −15.8% to −0.3%);
-  - vs an assumed fixed roster: −2.1% (range −12.5% to +1.5%), small and uncertain.
-- **SENSITIVITY:** fuse alone −0.1%; one-way pocket halving re-float −5.0%.
+  - full policy vs fill-fraction-ranked rule: −5.2% escaped (central 90% scenario range −15.9% to −0.8%);
+  - vs an assumed fixed roster: −1.9% (range −12.5% to +1.3%), small and uncertain.
+- **SENSITIVITY:** fuse alone −0.1%; one-way pocket halving re-float −5.1%.
 - **SYNTHETIC:** evidence-record tests catch inflated claims at 71.6% with 4.7% false flags; tamper detection 100%.
-- **BUILT detector:** YOLO11n trained on public floating-litter images (TUD-GV): on 254 held-out test images, mAP50 0.857 (off-the-shelf: 0.394), precision 0.845, recall 0.784. At another site's camera (Groningen, 63 images) mAP50 falls to 0.524: it does not yet transfer, and Mumbai nullah film is untested.
+- **BUILT detector:** YOLO11n trained on public floating-litter images (TUD-GV): on 254 held-out test images, mAP50 0.857, precision 0.845, recall 0.784 (Ultralytics evaluator). Scored with one shared matcher, the trained model reaches mAP50 0.856 against 0.394 off the shelf. At another site's camera (Groningen, 63 images) mAP50 falls to 0.524: it does not yet transfer, and Mumbai nullah film is untested.
 - Reproduce commands: [`../eval/RESULTS.md`](../eval/RESULTS.md).
 
 ## 8. Field pilot (conditional: permission, safety plan, site survey)

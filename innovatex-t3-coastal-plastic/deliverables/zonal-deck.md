@@ -93,8 +93,8 @@ DON'T SAY "the booms have no sensors" or "nobody does this". Say "we found no pu
 <style scoped>section { font-size: 19px; }</style>
 
 Twin of four Mumbai outfalls: real rain, forecasts and tide; *assumed* plastic and boom behaviour; held-out 2024–25; 40 parameter settings.
-- **92.5%** of escape passes under or through the boom (central 90% scenario range 64.6%–100.0%); overflow 5.9%; flood release 0.7%
-- But 51% of escape is a still-water leak we *assumed*; 38% is speed-driven; only 13.2% of plastic arrives at high speed
+- **93.1%** of escape passes under or through the boom (central 90% scenario range 65.7%–100.0%); overflow 5.5%; flood release 0.5%
+- But 51% of escape is a still-water leak we *assumed*; 40% is speed-driven; only 14.1% of plastic arrives at high speed
 - Oil-boom guidance, as an analogy: booms leak above about 0.35 m/s across the boom
 
 **Measure first:** a real boom's still-water leak, then capture vs speed, angle and retention (tow tank).
@@ -115,9 +115,9 @@ DON'T SAY "booms fail because they're square to the flow" as a finding. It is a 
 ![bg right:50% fit](figures/fig_levers.png)
 
 Held-out 2024–25; equal crew-hours (2 crews x 8 h/day, all runs); paired over 40 parameter settings of one model.
-- **Full policy** (rank by kg at risk; time to tide and forecast) vs **fill-fraction rule:** escaped **−5.6%** (central 90% scenario range −15.8% to −0.3%); lower in 39 of 40 settings
-- vs **an assumed fixed roster** (not BMC's real one): −2.1% (range −12.5% to +1.5%): small, uncertain
-- Alone: tide timing −3.2% (range −12.0% to +0.6%), forecasts −0.4%, kg ranking −2.0%. None clears zero alone
+- **Full policy** (rank by kg at risk; time to tide and forecast) vs **fill-fraction rule:** escaped **−5.2%** (central 90% scenario range −15.9% to −0.8%); lower in 39 of 40 settings
+- vs **an assumed fixed roster** (not BMC's real one): −1.9% (range −12.5% to +1.3%): small, uncertain
+- Alone: tide timing −3.6% (range −15.1% to +0.5%), forecasts −0.7%, kg ranking −2.1%. None clears zero alone
 
 <!--
 TIME 4:20–5:30 (70 s).
@@ -130,27 +130,28 @@ Decisions use only forecasts archived before the fact. DON'T SAY "tide timing sa
 
 # Evidence 2 · Retrofit levers <span class="tag">SENSITIVITY</span>
 
-<style scoped>section { font-size: 21px; }</style>
+<style scoped>section { font-size: 20px; }</style>
 
 What-if runs in the same twin (full policy; each row relative to today's boom with the same dispatch):
 - **Fail-open section alone:** −0.1%. Its job is flood safety, not capture, and that safety is unproven until we measure opening head, delay and reset.
-- **One-way pocket**, assuming it halves the catch lifted out by the flood tide: −5.0% (range −9.9% to −1.4%); assuming a fifth: −9.4%.
-- **Angling the boom** (this follows from the capture curve we assumed, so it is not a confirmation): 45° −10.4%, 30° −15.0%, 20° −17.2% vs square-on. At 20° the boom is 2.9× the channel width.
-- 20° + fail-open section + pocket (halving re-float): −23.4% vs today's boom.
+- **One-way pocket**, assuming it halves the catch lifted out by the flood tide: −5.1% (range −9.6% to −1.5%); assuming a fifth: −9.3%.
+- **Angling the boom** (this follows from the capture curve we assumed, so it is not a confirmation): 45° −10.5%, 30° −15.3%, 20° −17.8% vs square-on. At 20° the boom is 2.9× the channel width.
+- 20° + fail-open section + pocket (halving re-float): −23.9% vs today's boom.
 - Retention and capture-vs-speed are **assumptions** the tow tank must measure. Rows are separate what-ifs: don't add them up.
+- At one BMC boom collecting 2.5–3 t/day in the monsoon, that combination would mean a median 86–104 t less escaping per monsoon; timing the crews alone, 7.0–8.5 t with a range that includes no gain (ILLUSTRATIVE ESTIMATE: a reported catch times these ratios).
 
 <!--
 TIME 5:30–6:25 (55 s).
 SAY: "These are what-ifs, not evidence. The fail-open section barely changes capture; it's there for flood safety, which we still have to measure. A pocket and an angled boom help in the model, but only because of curves we assumed. A 20-degree boom is about three times as long as the channel is wide, so it may not fit every nullah. The tow tank decides."
 LINE TO LAND: "We only claim what the tow tank shows."
-DON'T SAY the pocket "cuts escape" as a fact. Say "if it retains half, the model says −5.0%".
+DON'T SAY the pocket "cuts escape" as a fact. Say "if it retains half, the model says −5.1%".
 -->
 
 ---
 
 # Evidence 3 · Sensing and records
 
-**Detector** <span class="tag">BUILT</span>: YOLO11n trained on public floating-litter images (TUD-GV): on 254 held-out test images, mAP50 0.857 (off-the-shelf: 0.394), precision 0.845, recall 0.784. At another site's camera (Groningen, 63 images) mAP50 falls to 0.524: it does not yet transfer, and Mumbai nullah film is untested. Public river-litter images are not Mumbai nullah film; we treat detection as an aid, not proof.
+**Detector** <span class="tag">BUILT</span>: YOLO11n trained on public floating-litter images (TUD-GV): on 254 held-out test images, mAP50 0.857, precision 0.845, recall 0.784 (Ultralytics evaluator). Scored with one shared matcher, the trained model reaches mAP50 0.856 against 0.394 off the shelf. At another site's camera (Groningen, 63 images) mAP50 falls to 0.524: it does not yet transfer, and Mumbai nullah film is untested. Public river-litter images are not Mumbai nullah film; we treat detection as an aid, not proof.
 
 **What measures fill:** the camera sees the mat area in the pocket; an ultrasonic sensor over open water gives water level. If the camera is degraded (night, rain, glare), fill is reported **unknown** and crews follow the roster.
 
@@ -204,17 +205,17 @@ RESERVE 45 s for overrun.
 
 ![h:400](../components/dashboard/screenshot-desktop.jpg)
 
-<span class="small">Real rain (ERA5) and tide (harmonic fit) with provenance badges; boom fill and escape hatched SIMULATED; Marathi and Hindi labels; runs offline except map tiles.</span>
+<span class="small">The dashboard opens on today's actions: crews to send (each with a crew message ready to copy), uncovered sites to watch, and claims to check, each with a "Why?". Real rain (ERA5) and tide (harmonic fit); boom fill and escape hatched SIMULATED; claims SYNTHETIC. It replays the wettest 2025 week day by day and runs offline except map tiles.</span>
 
 <!--
-Use if asked "show us the software". Walk: map → a site → rain + tide → fill and escape (SIMULATED) → tomorrow's plan → ledger tab with signature check → tamper demo.
+Use if asked "show us the software". Walk: morning brief → first dispatch → "Why?" (inputs, what the fill-threshold rule and the roster would do, simulation evidence) → Copy crew message → the site's rain, tide and fill chart → claims that need checking → Tamper demo → ‹ › to another replay day.
 -->
 
 ---
 
 # Backup · How the twin works and what it leaves out
 
-- **Inputs (real):** hourly ERA5 rain; JMA day-ahead forecasts as archived (the value issued 24 h before); tide from a UTide fit to Open-Meteo Marine model sea level. Fit RMSE 0.08 m at the Mithi is an in-sample residual against model data (fit window through Sep 2025), not gauge validation.
+- **Inputs (real):** hourly ERA5 rain; JMA day-ahead forecasts as archived (the value issued 24 h before); tide from a UTide fit to Open-Meteo Marine model sea level. Fit RMSE 0.07 m at the Mithi is an in-sample residual against model data (fit window through Sep 2025), not gauge validation.
 - **Process (assumed):** litter builds between storms and washes off with rain; capture falls with flow speed; pockets overflow; the flood tide lifts part of the catch; crews clear.
 - **Uncertainty:** the main process parameters are drawn across ranges in 40 settings; site geometry, crew rules and some structures are fixed. Policy tuning used 2019–2023 only.
 - **Circularity:** escaped kilograms come from the same assumed model the policies act on. Results guide experiments; they are not field evidence.
@@ -226,13 +227,15 @@ Use if asked "show us the software". Walk: map → a site → rain + tide → fi
 
 # Backup · Limits we state up front
 
+<style scoped>section { font-size: 18px; } table { font-size: 16px; }</style>
+
 | Claim we do **not** make | Why |
 |---|---|
-| Tonnes diverted per year | The twin's absolute kilograms rest on assumed load and capture curves |
+| Tonnes diverted per year | The twin's absolute kilograms rest on assumed load and capture curves; per-boom tonnes in our Q&A are illustrative arithmetic |
 | The pocket keeps its catch | A SENSITIVITY until the tow tank measures retention under reversal |
 | The boom cannot raise flood levels | The fail-open section's opening head, delay, fouling and reset are untested |
 | The camera counts all plastic | Night, rain, glare and submerged film; fill is "unknown" when the camera is degraded |
-| Item counts are accurate | On SYNTHETIC drifting-item video, the line-crossing counter over-counts by 33% (cause not yet diagnosed); counts are not used for kilograms |
+| Item counts are accurate | On SYNTHETIC drifting-item video (10 clips, 132 crossings), the line-crossing counter over-counts by +15.9% (95% confidence interval +6.1% to +28.0%), mostly by counting one item twice (23 of 25 extra counts); counts are not used for kilograms |
 | Records stop fraud | Hashes make edits detectable; they cannot make inputs true; flags trigger review |
 | Drain plastic earns EPR certificates | Not found in the rules; upside only |
 

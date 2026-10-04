@@ -16,8 +16,8 @@ Status: complete as an **alternative** to the team's chosen Delhi-zonal theme (T
 **Headline numbers (each bound to its source):**
 - 5 million kg a year leaks from the metro region (The Ocean Cleanup survey, 2026).
 - BMC is growing its boom network from 9 to 23 booms at ≈ ₹1 crore each.
-- In our twin (SIMULATED, assumed capture curve), 92.5% of escaped plastic passes under or through the boom.
-- Full dispatch policy vs a fill-fraction rule: −5.6% escaped plastic, lower in 39 of 40 parameter settings of one model (SIMULATED).
+- In our twin (SIMULATED, assumed capture curve), 93.1% of escaped plastic passes under or through the boom.
+- Full dispatch policy vs a fill-fraction rule: −5.2% escaped plastic, lower in 39 of 40 parameter settings of one model (SIMULATED).
 - One sensor node: ₹83,481.98 in listed parts with enclosure (installation and servicing extra).
 
 **How the package is built (no hand-typed numbers):**

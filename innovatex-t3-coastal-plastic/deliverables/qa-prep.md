@@ -28,15 +28,15 @@
 - One earlier run had a look-ahead bug in a 48-hour horizon. We fixed it, re-ran once, and disclosed both runs.
 
 **4. "Why is your dispatch gain against today's schedule so small?"**
-- Because it is small, and we say so: −2.1% escaped vs an *assumed* fixed roster, central 90% scenario range −12.5% to +1.5% (SIMULATED).
-- The robust comparison is our full policy against a fill-fraction-ranked rule: −5.6%, lower in 39 of 40 settings.
-- That comparison bundles three changes. Separated in the model: tide timing alone −3.2% (range −12.0% to +0.6%), forecasts −0.4%, ranking by kilograms −2.0%. None clears zero on its own; only the full combination does.
+- Because it is small, and we say so: −1.9% escaped vs an *assumed* fixed roster, central 90% scenario range −12.5% to +1.3% (SIMULATED).
+- The robust comparison is our full policy against a fill-fraction-ranked rule: −5.2%, lower in 39 of 40 settings.
+- That comparison bundles three changes. Separated in the model: tide timing alone −3.6% (range −15.1% to +0.5%), forecasts −0.7%, ranking by kilograms −2.1%. None clears zero on its own; only the full combination does.
 
 **5. "So what *is* the big lever?"**
-- In our model, capture losses: 92.5% of escaped plastic passes under or through the boom; overflow is 5.9%.
-- But 51% of all escape is a still-water leak we *assumed*, only 38% is driven by flow speed, and just 13.2% of arriving plastic comes at high speed. So the first measurement is a real boom's leak.
+- In our model, capture losses: 93.1% of escaped plastic passes under or through the boom; overflow is 5.5%.
+- But 51% of all escape is a still-water leak we *assumed*, only 40% is driven by flow speed, and just 14.1% of arriving plastic comes at high speed. So the first measurement is a real boom's leak.
 - That pattern comes from a capture curve we assumed, informed by oil-boom guidance (about 0.35 m/s across the boom).
-- Then angle and pocket retention. Under the assumed curves, a 30° boom gives −15.0% and a pocket that halves re-floating gives −5.0% (SENSITIVITY: these follow from our assumptions; they are not confirmations).
+- Then angle and pocket retention. Under the assumed curves, a 30° boom gives −15.3% and a pocket that halves re-floating gives −5.1% (SENSITIVITY: these follow from our assumptions; they are not confirmations).
 
 ## B. Flood safety and hardware
 
@@ -45,6 +45,7 @@
 - The fail-open section is *intended* to swing open before the boom backs water up beyond a set head.
 - We will measure its opening head, delay, residual obstruction and reset after jams in the tow tank (test T3), and only then state an operating envelope.
 - In the twin it changes capture by just −0.1%; it is a safety feature, not a capture feature.
+- The twin does not model street flooding. Its nearest measures (SIMULATED): hours with debris spilling over a full boom, 88.0 site-hours under our policy vs 70.5 under the fill-fraction rule and 87.0 under the roster, so our policy does not reduce them; and hours with water above a boom's bypass level, 10 site-hours, set by tide and flow and the same under every policy. We make no flood-reduction claim.
 
 **7. "What happens at peak rain plus high tide? Does the release dump everything?"**
 - We don't know yet; that's a test, not an answer.
@@ -65,7 +66,7 @@
 **10. "Can a camera see plastic at night, in rain, in black nullah water?"**
 - Not reliably.
 - Fill comes from the camera's view of the mat area in the pocket. When the camera is degraded, fill is reported "unknown" and crews follow the roster.
-- Detector status: YOLO11n trained on public floating-litter images (TUD-GV): on 254 held-out test images, mAP50 0.857 (off-the-shelf: 0.394), precision 0.845, recall 0.784. At another site's camera (Groningen, 63 images) mAP50 falls to 0.524: it does not yet transfer, and Mumbai nullah film is untested.
+- Detector status: YOLO11n trained on public floating-litter images (TUD-GV): on 254 held-out test images, mAP50 0.857, precision 0.845, recall 0.784 (Ultralytics evaluator). Scored with one shared matcher, the trained model reaches mAP50 0.856 against 0.394 off the shelf. At another site's camera (Groningen, 63 images) mAP50 falls to 0.524: it does not yet transfer, and Mumbai nullah film is untested.
 
 **11. "Show an empty pocket at high tide and a full pocket at low tide. What does your range sensor see?"**
 - The ultrasonic sensor sits over open water and measures water level (stage), not fill. A single downward range over a pocket would confuse tide, mat thickness and patchy cover.
@@ -101,7 +102,7 @@
 - We do not claim a payback. The pilot must measure the extra verified dry kilograms per rupee against a stated baseline.
 
 **17. "Why does this beat a cheap kilogram-ranked roster or an extra clearance visit?"**
-- In our model, a cheap kilogram-ranked sensor rule gets part of the way: −2.0% vs the fill-fraction rule. Our full policy vs that kilogram-ranked rule is −2.7%, with a range (−12.6% to +1.2%) that crosses zero. So a simple kg-ranked rule may be enough; the field pilot should test it first.
+- In our model, a cheap kilogram-ranked sensor rule gets part of the way: −2.1% vs the fill-fraction rule. Our full policy vs that kilogram-ranked rule is −2.8%, with a range (−12.5% to +0.9%) that crosses zero. So a simple kg-ranked rule may be enough; the field pilot should test it first.
 - An extra visit costs crew-hours. Our comparisons hold crew-hours equal.
 
 **18. "Who takes the wet film, who pays to prepare and transport it, and what proves final disposal?"**
@@ -147,5 +148,12 @@
 - Mostly. The detector stack (Ultralytics YOLO) is AGPL-3.0, so serving a modified version over a network obliges publishing its source. We would publish ours or swap to a permissively licensed detector.
 - Our data is CC BY 4.0 or ODbL, with attribution shown in the dashboard. Details are in the project README.
 
+**27. "How many tonnes would this keep out of the sea?"**
+- We have measured none. This is the arithmetic the pilot would test, labelled ILLUSTRATIVE ESTIMATE (`eval/impact_estimate.py`).
+- A BMC boom reportedly collects 2.5–3 t/day in the monsoon, mixed garbage rather than only plastic. If that is the 45.8% our twin says a boom retains under today's assumed roster, about 3.0–3.5 t a day gets past each boom.
+- Timing the crews alone: a median 7.0–8.5 t less escaping per boom over a 122-day monsoon, and the range includes no gain (SIMULATED ratio).
+- Angled boom, fail-open section and pocket together: a median 86–104 t per boom per monsoon, range 20–238 t (SENSITIVITY ratio from assumed capture curves).
+- Every factor except the reported catch is assumed. The tow tank and one surveyed site exist to replace them.
+
 ## Don't say
-**Don't say:** "tamper-proof" · "blockchain" · "can't flood" · "zero leakage" · "verified plastic kilograms" without "against our evidence rules" · any absolute tonnes from the twin · "our trap is new" · "the booms have no sensors" (say "we found no public evidence") · "39 of 40 seasons" (say "parameter settings") · anything implying guilt in the Mithi investigation.
+**Don't say:** "tamper-proof" · "blockchain" · "can't flood" · "zero leakage" · "verified plastic kilograms" without "against our evidence rules" · any absolute tonnes from the twin · the illustrative per-boom tonnes as results (say "illustrative arithmetic") · "our trap is new" · "the booms have no sensors" (say "we found no public evidence") · "39 of 40 seasons" (say "parameter settings") · anything implying guilt in the Mithi investigation.
