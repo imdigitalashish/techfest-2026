@@ -14,6 +14,13 @@ The Minimum Viable bar asks for a short-horizon direction/spread forecaster plus
 
 The question is which one or two components should carry the innovation.
 
+### First calibration attempt (run 2026-10-04 07:49, `python eval/run_baseline.py --policies static_snorm ks_refit ksc_refit regime_gated fixed_share fs_ksc_boost --tag calibrated_ks`)
+- The empirical-null KS (0.999 quantile of leave-one-train-day-out windowed statistics) cut alarms from 48 to 37–39 per dev day and to 15–47 per holdout day. That is better, but nowhere near quiet.
+- The remaining alarms come almost entirely from **activity-level features** (`log_msgs_10s`, `log_depth5`), whose levels drift from month to month. Two training days cannot span that.
+- Refitting on these alarms still hurts (`ksc_refit`: +0.0175 [+0.0132, +0.0220] dev, +0.0152 [+0.0113, +0.0196] holdout).
+- Using them only to boost Fixed-Share switching is neutral (`fs_ksc_boost` −0.0066 vs `fixed_share` −0.0070 on holdout).
+- **Implication:** calibration alone is not the spike. The spike is calibration **plus** monitoring the *invariant / normalised* representation **plus** the harm gate. Those are ratchet ideas 2–5 in [`program.md`](../../components/shift_detector/autoresearch/program.md).
+
 ## Candidates (scored 1–5)
 
 | Candidate | Impact on judged criteria | Novelty vs SOTA | Feasible by 15 Dec | Measurable (scalar) | Demoable | Total |

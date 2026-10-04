@@ -33,7 +33,7 @@
 - **State of the art:** KS/KSWIN, ADWIN, Page-Hinkley/CUSUM, BOCPD (and its robust version), e-detectors with ARL guarantees, conformal test martingales (2026 optimal constructions), harmful-shift tracking (Podkopaev & Ramdas).
 - **Baseline:** Bonferroni rolling KS (48 alarms/day — saturated) and Page-Hinkley on log-loss.
 - **Candidates:**
-  1. **Empirical-null calibration** (leave-one-train-day-out windowed KS statistics) — implemented; results in [`../../eval/results/calibrated_ks.md`](../../eval/results/calibrated_ks.md).
+  1. **Empirical-null calibration** (leave-one-train-day-out windowed KS statistics) — implemented; results in [`../../eval/results/calibrated_ks.md`](../../eval/results/calibrated_ks.md). First result: alarms fall only from 48 to 37–39 per dev day, still driven by message-rate and depth levels → next, monitor normalised features.
   2. **Harm gate:** a CUSUM/e-detector on ℓ(deployed) − ℓ(static).
   3. **Calendar-aware prior:** BOCPD hazard raised around scheduled releases.
   4. **One projection test** instead of 7 per-feature tests (Failing Loudly).

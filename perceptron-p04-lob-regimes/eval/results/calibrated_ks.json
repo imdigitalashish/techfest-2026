@@ -1,0 +1,6355 @@
+{
+ "meta": {
+  "created_utc": "2026-10-04T02:13:48+00:00",
+  "commit": "a97aa4b",
+  "machine": "arm64 macOS-26.2-arm64-arm-64bit",
+  "python": "3.11.14",
+  "split": {
+   "train": [
+    "2023-02-01",
+    "2023-08-01"
+   ],
+   "dev": [
+    "2023-09-01",
+    "2023-11-01",
+    "2023-12-01"
+   ],
+   "holdout": [
+    "2024-05-01",
+    "2024-11-01",
+    "2025-08-01"
+   ]
+  },
+  "step_s": 1.0,
+  "h_steps": 10,
+  "cfg": {
+   "C": 1.0,
+   "ewma_halflife_steps": 1800,
+   "sgd_l2": 0.001,
+   "refit_lam": 50.0,
+   "fs_eta": 1.0,
+   "fs_alpha": 0.001,
+   "fs_alpha_boost": 0.05,
+   "fs_boost_steps": 120,
+   "ks_features": [
+    "spread_ticks",
+    "log_depth5",
+    "rv_60s_bps",
+    "log_msgs_10s",
+    "ofi1_5s_n",
+    "qi1",
+    "ret_5s_bps"
+   ],
+   "ks_subsample": 10,
+   "ks": {
+    "window": 600,
+    "subsample": 10,
+    "stride": 30,
+    "alpha": 0.001,
+    "persist": 3,
+    "cooldown": 1800
+   },
+   "ph": {
+    "delta": 0.005,
+    "threshold": 25.0,
+    "min_n": 300
+   },
+   "ksc": {
+    "stride": 60,
+    "quantile": 0.999
+   }
+  },
+  "runtime_s": 2688.6,
+  "command": "python eval/run_baseline.py --policies static_snorm ks_refit ksc_refit regime_gated fixed_share fs_ksc_boost --tag calibrated_ks"
+ },
+ "insample_static": {
+  "2023-02-01": {
+   "n": 71711,
+   "logloss": 0.6464850462126364,
+   "acc": 0.6349653470178913,
+   "brier": 0.22719106107526854,
+   "auc": 0.6778506118164298,
+   "base_rate": 0.4898830026076892,
+   "edge_bps": 0.4442124743664457
+  },
+  "2023-08-01": {
+   "n": 58248,
+   "logloss": 0.6100869219440256,
+   "acc": 0.682341024584535,
+   "brier": 0.21014354030958904,
+   "auc": 0.7336335718334641,
+   "base_rate": 0.49720162065650325,
+   "edge_bps": 0.3841633756432231
+  }
+ },
+ "summary": {
+  "dev": {
+   "static_snorm": {
+    "n": 199126,
+    "logloss": 0.647343299520405,
+    "acc": 0.6306911201952533,
+    "brier": 0.22769483071224292,
+    "auc": 0.6738578319466227,
+    "base_rate": 0.4920854132559284,
+    "edge_bps": 0.3846207486215989,
+    "dlogloss_vs_static": {
+     "mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "n_alarms": 0
+   },
+   "ks_refit": {
+    "n": 199126,
+    "logloss": 0.664070760122996,
+    "acc": 0.6089912919458031,
+    "brier": 0.23435556486178807,
+    "auc": 0.6556650206150679,
+    "base_rate": 0.4920854132559284,
+    "edge_bps": 0.30190004991862657,
+    "dlogloss_vs_static": {
+     "mean": 0.01672746060259089,
+     "ci95": [
+      0.011496252435582032,
+      0.021969280932130433
+     ]
+    },
+    "n_alarms": 144
+   },
+   "ksc_refit": {
+    "n": 199126,
+    "logloss": 0.6648424130233295,
+    "acc": 0.6116227915992889,
+    "brier": 0.2345508663394523,
+    "auc": 0.6581266204953654,
+    "base_rate": 0.4920854132559284,
+    "edge_bps": 0.3228943082316608,
+    "dlogloss_vs_static": {
+     "mean": 0.017499113502924286,
+     "ci95": [
+      0.01317924024629648,
+      0.02200786090374545
+     ]
+    },
+    "n_alarms": 113
+   },
+   "regime_gated": {
+    "n": 199126,
+    "logloss": 0.6340493988946312,
+    "acc": 0.6314042365135643,
+    "brier": 0.22230455109289973,
+    "auc": 0.6871873599246561,
+    "base_rate": 0.4920854132559284,
+    "edge_bps": 0.3930673203548144,
+    "dlogloss_vs_static": {
+     "mean": -0.013293900625773847,
+     "ci95": [
+      -0.0155548922168369,
+      -0.011349157606946316
+     ]
+    },
+    "n_alarms": 0
+   },
+   "fixed_share": {
+    "n": 199126,
+    "logloss": 0.6412259568597488,
+    "acc": 0.6272812189267097,
+    "brier": 0.22521517000641902,
+    "auc": 0.6797621764700024,
+    "base_rate": 0.4920854132559284,
+    "edge_bps": 0.35702638825952554,
+    "dlogloss_vs_static": {
+     "mean": -0.00611734266065618,
+     "ci95": [
+      -0.008634239890669868,
+      -0.003811419932348606
+     ]
+    },
+    "n_alarms": 0
+   },
+   "fs_ksc_boost": {
+    "n": 199126,
+    "logloss": 0.6409703083408019,
+    "acc": 0.627753281841648,
+    "brier": 0.22511004842100332,
+    "auc": 0.6801650107033166,
+    "base_rate": 0.4920854132559284,
+    "edge_bps": 0.357158046210811,
+    "dlogloss_vs_static": {
+     "mean": -0.006372991179603091,
+     "ci95": [
+      -0.008942443546731245,
+      -0.0041043487587066755
+     ]
+    },
+    "n_alarms": 113
+   }
+  },
+  "holdout": {
+   "static_snorm": {
+    "n": 235029,
+    "logloss": 0.6807581551708891,
+    "acc": 0.5871615843151271,
+    "brier": 0.24335477802788905,
+    "auc": 0.6180102146819583,
+    "base_rate": 0.4992405192550706,
+    "edge_bps": 0.41197370223539964,
+    "dlogloss_vs_static": {
+     "mean": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "n_alarms": 0
+   },
+   "ks_refit": {
+    "n": 235029,
+    "logloss": 0.7009705701170386,
+    "acc": 0.5622880580694297,
+    "brier": 0.25111104913623866,
+    "auc": 0.5894293366520758,
+    "base_rate": 0.4992405192550706,
+    "edge_bps": 0.2625481029446878,
+    "dlogloss_vs_static": {
+     "mean": 0.020212414946149167,
+     "ci95": [
+      0.01569950813562792,
+      0.02473206124486392
+     ]
+    },
+    "n_alarms": 144
+   },
+   "ksc_refit": {
+    "n": 235029,
+    "logloss": 0.69597633060416,
+    "acc": 0.5653344906373257,
+    "brier": 0.24912267673461644,
+    "auc": 0.5945275344435965,
+    "base_rate": 0.4992405192550706,
+    "edge_bps": 0.2779142484840842,
+    "dlogloss_vs_static": {
+     "mean": 0.015218175433270741,
+     "ci95": [
+      0.011333142307108015,
+      0.019597926643496848
+     ]
+    },
+    "n_alarms": 93
+   },
+   "regime_gated": {
+    "n": 235029,
+    "logloss": 0.6675728698335791,
+    "acc": 0.5873700692254998,
+    "brier": 0.23761162215569623,
+    "auc": 0.6246735846394671,
+    "base_rate": 0.4992405192550706,
+    "edge_bps": 0.41982562318063404,
+    "dlogloss_vs_static": {
+     "mean": -0.013185285337310101,
+     "ci95": [
+      -0.014766614588568504,
+      -0.011469183685034183
+     ]
+    },
+    "n_alarms": 0
+   },
+   "fixed_share": {
+    "n": 235029,
+    "logloss": 0.6737931766827395,
+    "acc": 0.5834131107225066,
+    "brier": 0.24008317558364994,
+    "auc": 0.6197045000491023,
+    "base_rate": 0.4992405192550706,
+    "edge_bps": 0.38680028828062096,
+    "dlogloss_vs_static": {
+     "mean": -0.006964978488149643,
+     "ci95": [
+      -0.00874169922079486,
+      -0.005078368549006218
+     ]
+    },
+    "n_alarms": 0
+   },
+   "fs_ksc_boost": {
+    "n": 235029,
+    "logloss": 0.6741204237957178,
+    "acc": 0.5834982066042914,
+    "brier": 0.24021849762540762,
+    "auc": 0.6194691178573053,
+    "base_rate": 0.4992405192550706,
+    "edge_bps": 0.38900314417658777,
+    "dlogloss_vs_static": {
+     "mean": -0.006637731375171291,
+     "ci95": [
+      -0.008434494308493823,
+      -0.004721629962875818
+     ]
+    },
+    "n_alarms": 93
+   }
+  }
+ },
+ "per_day": {
+  "static_snorm": {
+   "2023-09-01": {
+    "n": 59082,
+    "logloss": 0.6213203535028272,
+    "acc": 0.6631292102501608,
+    "brier": 0.21551745579584908,
+    "auc": 0.7160230276118154,
+    "base_rate": 0.47782742628888664,
+    "edge_bps": 0.43250999845362587,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 5.958,
+     "p99_us": 213.12582000000018,
+     "p999_us": 5190.186516000246,
+     "max_us": 378576.458
+    },
+    "latency_step": {
+     "p50_us": 7.083,
+     "p99_us": 256.125,
+     "p999_us": 6228.250734000339,
+     "max_us": 429131.167
+    },
+    "wall_s": 6.3627400398254395
+   },
+   "2023-11-01": {
+    "n": 67951,
+    "logloss": 0.6428148732953439,
+    "acc": 0.6358552486350458,
+    "brier": 0.22554903652610606,
+    "auc": 0.6821404451332862,
+    "base_rate": 0.497196509249312,
+    "edge_bps": 0.4328857814169886,
+    "event_window": {
+     "n": 5113,
+     "logloss": 0.7193655994531889,
+     "acc": 0.5454723254449443,
+     "brier": 0.26138577810037994,
+     "auc": 0.5529068471031486,
+     "base_rate": 0.5354977508312145,
+     "edge_bps": 0.29229753145333126
+    },
+    "alarms": [],
+    "detection": {
+     "n_alarms": 0,
+     "n_false": 0,
+     "n_events": 1,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 5.875,
+     "p99_us": 136.16825999999995,
+     "p999_us": 2285.9090000005513,
+     "max_us": 148830.167
+    },
+    "latency_step": {
+     "p50_us": 7.0,
+     "p99_us": 178.60022999999939,
+     "p999_us": 3479.036177000297,
+     "max_us": 149754.375
+    },
+    "wall_s": 4.495997905731201
+   },
+   "2023-12-01": {
+    "n": 72093,
+    "logloss": 0.6729380006291071,
+    "acc": 0.5992398707225389,
+    "brier": 0.23969700187383355,
+    "auc": 0.6316609475032341,
+    "base_rate": 0.49895274159765857,
+    "edge_bps": 0.2998822871613279,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 5.916,
+     "p99_us": 201.4112399999986,
+     "p999_us": 6776.505849000759,
+     "max_us": 375504.417
+    },
+    "latency_step": {
+     "p50_us": 7.041,
+     "p99_us": 248.58674999999985,
+     "p999_us": 8092.25972900168,
+     "max_us": 375534.209
+    },
+    "wall_s": 11.302574872970581
+   },
+   "2024-05-01": {
+    "n": 83205,
+    "logloss": 0.7082474658878026,
+    "acc": 0.5550027041644132,
+    "brier": 0.25617367923662177,
+    "auc": 0.5711721392301241,
+    "base_rate": 0.49840754762333994,
+    "edge_bps": 0.384628098937935,
+    "event_window": {
+     "n": 5381,
+     "logloss": 0.7328852092316533,
+     "acc": 0.5311280431146627,
+     "brier": 0.26737679161241573,
+     "auc": 0.5332554097481852,
+     "base_rate": 0.5056680914328192,
+     "edge_bps": 0.3316400677581264
+    },
+    "alarms": [],
+    "detection": {
+     "n_alarms": 0,
+     "n_false": 0,
+     "n_events": 1,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 5.959,
+     "p99_us": 198.7256600000034,
+     "p999_us": 8685.228500001956,
+     "max_us": 382514.958
+    },
+    "latency_step": {
+     "p50_us": 7.166,
+     "p99_us": 254.62916000000084,
+     "p999_us": 10388.515984002246,
+     "max_us": 406341.583
+    },
+    "wall_s": 10.766886949539185
+   },
+   "2024-11-01": {
+    "n": 75182,
+    "logloss": 0.6679508042178903,
+    "acc": 0.6004362746402064,
+    "brier": 0.2373866087330114,
+    "auc": 0.6384252621356413,
+    "base_rate": 0.5037908009895986,
+    "edge_bps": 0.4042384565205458,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 5.75,
+     "p99_us": 136.708,
+     "p999_us": 4896.2933840021,
+     "max_us": 318088.25
+    },
+    "latency_step": {
+     "p50_us": 6.875,
+     "p99_us": 177.41766999999913,
+     "p999_us": 6338.363942001758,
+     "max_us": 318779.75
+    },
+    "wall_s": 7.617555141448975
+   },
+   "2025-08-01": {
+    "n": 76642,
+    "logloss": 0.6634782585234581,
+    "acc": 0.6090524777537121,
+    "brier": 0.23529264797980678,
+    "auc": 0.6478917296519995,
+    "base_rate": 0.49568121917486496,
+    "edge_bps": 0.44924885379328794,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 5.708,
+     "p99_us": 105.62584000000017,
+     "p999_us": 4944.535452000166,
+     "max_us": 600728.25
+    },
+    "latency_step": {
+     "p50_us": 6.792,
+     "p99_us": 138.33302,
+     "p999_us": 5875.750766000122,
+     "max_us": 600961.75
+    },
+    "wall_s": 8.297067880630493
+   }
+  },
+  "ks_refit": {
+   "2023-09-01": {
+    "n": 59082,
+    "logloss": 0.6328861992871692,
+    "acc": 0.6359297247892759,
+    "brier": 0.22105486564671803,
+    "auc": 0.6963526264522857,
+    "base_rate": 0.47782742628888664,
+    "edge_bps": 0.3418298117567351,
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:02",
+      "detector": "rolling_ks",
+      "stat": 5.170843836065097e-72,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:02",
+      "detector": "rolling_ks",
+      "stat": 9.169797246505322e-71,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:02",
+      "detector": "rolling_ks",
+      "stat": 4.255080922647732e-77,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.6323575009793533e-93,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:02",
+      "detector": "rolling_ks",
+      "stat": 3.3921148246585066e-92,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.2491862833084658e-73,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.2699148944483435e-84,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:02",
+      "detector": "rolling_ks",
+      "stat": 3.0240258381357077e-95,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.1937943658282718e-90,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.8687850375875203e-102,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.1064279160083035e-85,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.7674549123723543e-85,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.6323575009793533e-93,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24060,
+      "utc": "06:51:02",
+      "detector": "rolling_ks",
+      "stat": 6.716716317500226e-99,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 25860,
+      "utc": "07:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.1937943658282718e-90,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27660,
+      "utc": "07:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.1064279160083035e-85,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29460,
+      "utc": "08:21:02",
+      "detector": "rolling_ks",
+      "stat": 3.3921148246585066e-92,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31260,
+      "utc": "08:51:02",
+      "detector": "rolling_ks",
+      "stat": 9.169797246505322e-71,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33060,
+      "utc": "09:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.0060292284609824e-69,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34860,
+      "utc": "09:51:02",
+      "detector": "rolling_ks",
+      "stat": 7.369826816459332e-80,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36660,
+      "utc": "10:21:02",
+      "detector": "rolling_ks",
+      "stat": 4.582383609917971e-127,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 38460,
+      "utc": "10:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.057665113551109e-82,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40260,
+      "utc": "11:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.8687850375875203e-102,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42060,
+      "utc": "11:51:02",
+      "detector": "rolling_ks",
+      "stat": 3.504261021322535e-62,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 43860,
+      "utc": "12:21:02",
+      "detector": "rolling_ks",
+      "stat": 4.969637540600332e-53,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 45660,
+      "utc": "12:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.3664163024052326e-54,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 47460,
+      "utc": "13:21:02",
+      "detector": "rolling_ks",
+      "stat": 9.569833529997953e-70,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 49260,
+      "utc": "13:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.395966371241086e-47,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 51060,
+      "utc": "14:21:02",
+      "detector": "rolling_ks",
+      "stat": 8.890997374684336e-56,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 52860,
+      "utc": "14:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.395966371241086e-47,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 54660,
+      "utc": "15:21:02",
+      "detector": "rolling_ks",
+      "stat": 5.06917998412557e-50,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 56460,
+      "utc": "15:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.308931219707115e-54,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 58260,
+      "utc": "16:21:02",
+      "detector": "rolling_ks",
+      "stat": 5.0798737283139584e-61,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 60060,
+      "utc": "16:51:02",
+      "detector": "rolling_ks",
+      "stat": 4.969637540600332e-53,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 61860,
+      "utc": "17:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.1380386041722944e-64,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 63660,
+      "utc": "17:51:02",
+      "detector": "rolling_ks",
+      "stat": 4.79592530201232e-67,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 65460,
+      "utc": "18:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.8929379532865432e-59,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 67260,
+      "utc": "18:51:02",
+      "detector": "rolling_ks",
+      "stat": 3.706722329779358e-59,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 69060,
+      "utc": "19:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.0060292284609824e-69,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 70860,
+      "utc": "19:51:02",
+      "detector": "rolling_ks",
+      "stat": 3.45381501799275e-95,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72660,
+      "utc": "20:21:02",
+      "detector": "rolling_ks",
+      "stat": 5.0798737283139584e-61,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74460,
+      "utc": "20:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.4329932694071426e-65,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 76260,
+      "utc": "21:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.8602993557122788e-78,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78060,
+      "utc": "21:51:02",
+      "detector": "rolling_ks",
+      "stat": 7.704861581963023e-77,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 79860,
+      "utc": "22:21:02",
+      "detector": "rolling_ks",
+      "stat": 4.95316177036687e-93,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81660,
+      "utc": "22:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.6982162211937136e-134,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83460,
+      "utc": "23:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.268730214930224e-72,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85260,
+      "utc": "23:51:02",
+      "detector": "rolling_ks",
+      "stat": 3.3921148246585066e-92,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 48,
+     "n_false": 48,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 5.792,
+     "p99_us": 1379.8175000000138,
+     "p999_us": 43304.33475000474,
+     "max_us": 681266.292
+    },
+    "latency_step": {
+     "p50_us": 7.125,
+     "p99_us": 232246.29500000092,
+     "p999_us": 757178.4790480103,
+     "max_us": 2374718.0
+    },
+    "wall_s": 604.8965108394623
+   },
+   "2023-11-01": {
+    "n": 67951,
+    "logloss": 0.6611762246865817,
+    "acc": 0.6174154905740902,
+    "brier": 0.2320154627815524,
+    "auc": 0.6668023026040817,
+    "base_rate": 0.497196509249312,
+    "edge_bps": 0.3282972845285841,
+    "event_window": {
+     "n": 5113,
+     "logloss": 0.7564314217837738,
+     "acc": 0.5085077254058282,
+     "brier": 0.27475902180574935,
+     "auc": 0.5128044288954673,
+     "base_rate": 0.5354977508312145,
+     "edge_bps": 0.03590168607780876
+    },
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:03",
+      "detector": "rolling_ks",
+      "stat": 3.711707389001979e-64,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:03",
+      "detector": "rolling_ks",
+      "stat": 2.1622454416059055e-68,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:03",
+      "detector": "rolling_ks",
+      "stat": 9.704951717622162e-64,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.5359752786006582e-80,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:03",
+      "detector": "rolling_ks",
+      "stat": 8.583474987997425e-113,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:03",
+      "detector": "rolling_ks",
+      "stat": 3.564808327820564e-64,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.6004548888111474e-66,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:03",
+      "detector": "rolling_ks",
+      "stat": 6.0086807340173616e-108,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.9012080204176836e-121,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:03",
+      "detector": "rolling_ks",
+      "stat": 3.45381501799275e-95,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:03",
+      "detector": "rolling_ks",
+      "stat": 7.369826816459332e-80,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:03",
+      "detector": "rolling_ks",
+      "stat": 5.399403116676611e-65,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:03",
+      "detector": "rolling_ks",
+      "stat": 3.3921148246585066e-92,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24060,
+      "utc": "06:51:03",
+      "detector": "rolling_ks",
+      "stat": 8.823955111582086e-89,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 25860,
+      "utc": "07:21:03",
+      "detector": "rolling_ks",
+      "stat": 8.823955111582086e-89,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27660,
+      "utc": "07:51:03",
+      "detector": "rolling_ks",
+      "stat": 6.471306927091883e-76,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29460,
+      "utc": "08:21:03",
+      "detector": "rolling_ks",
+      "stat": 6.716716317500226e-99,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31260,
+      "utc": "08:51:03",
+      "detector": "rolling_ks",
+      "stat": 2.1420658111909933e-106,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33060,
+      "utc": "09:21:03",
+      "detector": "rolling_ks",
+      "stat": 8.583474987997425e-113,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34860,
+      "utc": "09:51:03",
+      "detector": "rolling_ks",
+      "stat": 4.1715257543554214e-104,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36660,
+      "utc": "10:21:03",
+      "detector": "rolling_ks",
+      "stat": 5.3014040266368504e-110,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 38460,
+      "utc": "10:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.6004548888111474e-66,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40260,
+      "utc": "11:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.1240271249597057e-73,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42060,
+      "utc": "11:51:03",
+      "detector": "rolling_ks",
+      "stat": 6.0086807340173616e-108,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 43860,
+      "utc": "12:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.8687850375875203e-102,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 45660,
+      "utc": "12:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.8832807176482127e-48,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 47460,
+      "utc": "13:21:03",
+      "detector": "rolling_ks",
+      "stat": 5.395966371241086e-47,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 49260,
+      "utc": "13:51:03",
+      "detector": "rolling_ks",
+      "stat": 3.5271095456064897e-66,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 51060,
+      "utc": "14:21:03",
+      "detector": "rolling_ks",
+      "stat": 2.3664163024052326e-54,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 52860,
+      "utc": "14:51:03",
+      "detector": "rolling_ks",
+      "stat": 2.906898014423747e-45,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 54660,
+      "utc": "15:21:03",
+      "detector": "rolling_ks",
+      "stat": 5.205653313073916e-57,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 56460,
+      "utc": "15:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.1240271249597057e-73,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 58260,
+      "utc": "16:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.308931219707115e-54,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 60060,
+      "utc": "16:51:03",
+      "detector": "rolling_ks",
+      "stat": 9.704951717622162e-64,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 61860,
+      "utc": "17:21:03",
+      "detector": "rolling_ks",
+      "stat": 6.091591788262338e-70,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 63660,
+      "utc": "17:51:03",
+      "detector": "rolling_ks",
+      "stat": 4.1874411515373134e-68,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 65460,
+      "utc": "18:21:03",
+      "detector": "rolling_ks",
+      "stat": 2.4069557469123428e-62,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 67260,
+      "utc": "18:51:03",
+      "detector": "rolling_ks",
+      "stat": 6.103882605280981e-54,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 69060,
+      "utc": "19:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.5095109626164491e-55,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 70860,
+      "utc": "19:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.538893363508004e-61,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72660,
+      "utc": "20:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.538893363508004e-61,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74460,
+      "utc": "20:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.4437741660807063e-59,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 76260,
+      "utc": "21:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.2787688750175957e-67,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 78060,
+      "utc": "21:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.8832807176482127e-48,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 79860,
+      "utc": "22:21:03",
+      "detector": "rolling_ks",
+      "stat": 5.06917998412557e-50,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81660,
+      "utc": "22:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.8929379532865432e-59,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83460,
+      "utc": "23:21:03",
+      "detector": "rolling_ks",
+      "stat": 8.890997374684336e-56,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85260,
+      "utc": "23:51:03",
+      "detector": "rolling_ks",
+      "stat": 4.873441735413582e-69,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 48,
+     "n_false": 47,
+     "n_events": 1,
+     "n_detected": 1,
+     "delays_s": [
+      1263.0
+     ]
+    },
+    "latency_pred": {
+     "p50_us": 5.833,
+     "p99_us": 1166.4682399999979,
+     "p999_us": 37388.977000000916,
+     "max_us": 570426.917
+    },
+    "latency_step": {
+     "p50_us": 7.166,
+     "p99_us": 225646.60520999954,
+     "p999_us": 744281.617125046,
+     "max_us": 2592849.75
+    },
+    "wall_s": 593.7465777397156
+   },
+   "2023-12-01": {
+    "n": 72093,
+    "logloss": 0.6923555145477267,
+    "acc": 0.5789743803143163,
+    "brier": 0.24746147233517482,
+    "auc": 0.6070002074630769,
+    "base_rate": 0.49895274159765857,
+    "edge_bps": 0.24429600128838025,
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.2699148944483435e-84,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:03",
+      "detector": "rolling_ks",
+      "stat": 4.1715257543554214e-104,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.474696575902133e-60,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:03",
+      "detector": "rolling_ks",
+      "stat": 2.4069557469123428e-62,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:03",
+      "detector": "rolling_ks",
+      "stat": 2.7674549123723543e-85,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:03",
+      "detector": "rolling_ks",
+      "stat": 5.205653313073916e-57,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:03",
+      "detector": "rolling_ks",
+      "stat": 9.169797246505322e-71,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:03",
+      "detector": "rolling_ks",
+      "stat": 7.369826816459332e-80,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:03",
+      "detector": "rolling_ks",
+      "stat": 2.3943379884389008e-57,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.8929379532865432e-59,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:03",
+      "detector": "rolling_ks",
+      "stat": 2.6612555624672914e-67,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.382318949525869e-123,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:03",
+      "detector": "rolling_ks",
+      "stat": 5.3014040266368504e-110,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24060,
+      "utc": "06:51:03",
+      "detector": "rolling_ks",
+      "stat": 3.3921148246585066e-92,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 25860,
+      "utc": "07:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.5095109626164491e-55,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27660,
+      "utc": "07:51:03",
+      "detector": "rolling_ks",
+      "stat": 5.0798737283139584e-61,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29460,
+      "utc": "08:21:03",
+      "detector": "rolling_ks",
+      "stat": 4.481775502121773e-63,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31260,
+      "utc": "08:51:03",
+      "detector": "rolling_ks",
+      "stat": 4.1874411515373134e-68,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33060,
+      "utc": "09:21:03",
+      "detector": "rolling_ks",
+      "stat": 2.906898014423747e-45,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34860,
+      "utc": "09:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.1222749221418406e-51,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36660,
+      "utc": "10:21:03",
+      "detector": "rolling_ks",
+      "stat": 4.969637540600332e-53,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 38460,
+      "utc": "10:51:03",
+      "detector": "rolling_ks",
+      "stat": 4.1874411515373134e-68,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40260,
+      "utc": "11:21:03",
+      "detector": "rolling_ks",
+      "stat": 2.6612555624672914e-67,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42060,
+      "utc": "11:51:03",
+      "detector": "rolling_ks",
+      "stat": 4.1874411515373134e-68,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 43860,
+      "utc": "12:21:03",
+      "detector": "rolling_ks",
+      "stat": 2.267932477834593e-58,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 45660,
+      "utc": "12:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.8832807176482127e-48,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 47460,
+      "utc": "13:21:03",
+      "detector": "rolling_ks",
+      "stat": 9.704951717622162e-64,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 49260,
+      "utc": "13:51:03",
+      "detector": "rolling_ks",
+      "stat": 3.193614023354296e-50,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 51060,
+      "utc": "14:21:03",
+      "detector": "rolling_ks",
+      "stat": 2.267932477834593e-58,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 52860,
+      "utc": "14:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.5095109626164491e-55,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 54660,
+      "utc": "15:21:03",
+      "detector": "rolling_ks",
+      "stat": 1.8602993557122788e-78,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 56460,
+      "utc": "15:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.6004548888111474e-66,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 58260,
+      "utc": "16:21:03",
+      "detector": "rolling_ks",
+      "stat": 5.395966371241086e-47,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 60060,
+      "utc": "16:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.202227344497179e-54,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 61860,
+      "utc": "17:21:03",
+      "detector": "rolling_ks",
+      "stat": 2.267932477834593e-58,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 63660,
+      "utc": "17:51:03",
+      "detector": "rolling_ks",
+      "stat": 4.470178467069033e-75,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 65460,
+      "utc": "18:21:03",
+      "detector": "rolling_ks",
+      "stat": 4.638519401941963e-51,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 67260,
+      "utc": "18:51:03",
+      "detector": "rolling_ks",
+      "stat": 4.255080922647732e-77,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 69060,
+      "utc": "19:21:03",
+      "detector": "rolling_ks",
+      "stat": 7.690113793098281e-63,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 70860,
+      "utc": "19:51:03",
+      "detector": "rolling_ks",
+      "stat": 9.569833529997953e-70,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72660,
+      "utc": "20:21:03",
+      "detector": "rolling_ks",
+      "stat": 3.3921148246585066e-92,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74460,
+      "utc": "20:51:03",
+      "detector": "rolling_ks",
+      "stat": 4.470178467069033e-75,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 76260,
+      "utc": "21:21:03",
+      "detector": "rolling_ks",
+      "stat": 6.716716317500226e-99,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78060,
+      "utc": "21:51:03",
+      "detector": "rolling_ks",
+      "stat": 3.3921148246585066e-92,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 79860,
+      "utc": "22:21:03",
+      "detector": "rolling_ks",
+      "stat": 9.749336996988365e-92,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81660,
+      "utc": "22:51:03",
+      "detector": "rolling_ks",
+      "stat": 6.716716317500226e-99,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83460,
+      "utc": "23:21:03",
+      "detector": "rolling_ks",
+      "stat": 6.0086807340173616e-108,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85260,
+      "utc": "23:51:03",
+      "detector": "rolling_ks",
+      "stat": 1.1937943658282718e-90,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 48,
+     "n_false": 48,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 5.875,
+     "p99_us": 1358.9469999999988,
+     "p999_us": 37416.9498750011,
+     "max_us": 849860.833
+    },
+    "latency_step": {
+     "p50_us": 7.25,
+     "p99_us": 229290.3989799997,
+     "p999_us": 781812.0459220168,
+     "max_us": 2510855.166
+    },
+    "wall_s": 635.7294521331787
+   },
+   "2024-05-01": {
+    "n": 83205,
+    "logloss": 0.7164243472132064,
+    "acc": 0.5302926506820503,
+    "brier": 0.25939561161863606,
+    "auc": 0.5426386230319917,
+    "base_rate": 0.49840754762333994,
+    "edge_bps": 0.2216212290560092,
+    "event_window": {
+     "n": 5381,
+     "logloss": 0.7369371726908388,
+     "acc": 0.5136591711577774,
+     "brier": 0.26724305356552064,
+     "auc": 0.5100437145786185,
+     "base_rate": 0.5056680914328192,
+     "edge_bps": 0.2161049218048218
+    },
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:02",
+      "detector": "rolling_ks",
+      "stat": 7.942672070391977e-62,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:02",
+      "detector": "rolling_ks",
+      "stat": 4.581230175805544e-78,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.6727364034575402e-66,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:02",
+      "detector": "rolling_ks",
+      "stat": 9.931718190594548e-98,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:02",
+      "detector": "rolling_ks",
+      "stat": 9.075608303303625e-83,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:02",
+      "detector": "rolling_ks",
+      "stat": 8.714097955985422e-69,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:02",
+      "detector": "rolling_ks",
+      "stat": 3.510394396851068e-80,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.8929379532865432e-59,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:02",
+      "detector": "rolling_ks",
+      "stat": 3.651740695963254e-87,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.732419325809114e-71,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.6004548888111474e-66,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.742143873259269e-67,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.3223304671599415e-83,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24060,
+      "utc": "06:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.0798737283139584e-61,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 25860,
+      "utc": "07:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.0553168732856054e-97,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 27660,
+      "utc": "07:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.1829630831851143e-95,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 29460,
+      "utc": "08:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.3519456112409967e-84,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 31260,
+      "utc": "08:51:02",
+      "detector": "rolling_ks",
+      "stat": 4.546581020922894e-77,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 33060,
+      "utc": "09:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.2571257063597774e-74,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 34860,
+      "utc": "09:51:02",
+      "detector": "rolling_ks",
+      "stat": 9.102906433761527e-70,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 36660,
+      "utc": "10:21:02",
+      "detector": "rolling_ks",
+      "stat": 5.282989275225327e-62,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 38460,
+      "utc": "10:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.0238609257806375e-67,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 40260,
+      "utc": "11:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.138593466563153e-78,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 42060,
+      "utc": "11:51:02",
+      "detector": "rolling_ks",
+      "stat": 4.4651009579706226e-73,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 43860,
+      "utc": "12:21:02",
+      "detector": "rolling_ks",
+      "stat": 9.314778157746942e-63,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 45660,
+      "utc": "12:51:02",
+      "detector": "rolling_ks",
+      "stat": 3.0786157935895195e-83,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 47460,
+      "utc": "13:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.3036732673983964e-55,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 49260,
+      "utc": "13:51:02",
+      "detector": "rolling_ks",
+      "stat": 7.922027894486894e-74,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 51060,
+      "utc": "14:21:02",
+      "detector": "rolling_ks",
+      "stat": 3.811846231943411e-68,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 52860,
+      "utc": "14:51:02",
+      "detector": "rolling_ks",
+      "stat": 4.820024457738729e-68,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 54660,
+      "utc": "15:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.7581921647540222e-60,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 56460,
+      "utc": "15:51:02",
+      "detector": "rolling_ks",
+      "stat": 7.083915616592552e-83,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 58260,
+      "utc": "16:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.5228805141722102e-73,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 60060,
+      "utc": "16:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.2257396018193482e-69,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 61860,
+      "utc": "17:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.485724038344093e-66,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 63660,
+      "utc": "17:51:02",
+      "detector": "rolling_ks",
+      "stat": 7.953197626740812e-89,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 65460,
+      "utc": "18:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.7547827133314863e-85,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 67260,
+      "utc": "18:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.1829630831851143e-95,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 69060,
+      "utc": "19:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.0130286038901107e-88,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 70860,
+      "utc": "19:51:02",
+      "detector": "rolling_ks",
+      "stat": 9.022891783371665e-81,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 72660,
+      "utc": "20:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.069952732587532e-82,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 74460,
+      "utc": "20:51:02",
+      "detector": "rolling_ks",
+      "stat": 4.3495741117653073e-85,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 76260,
+      "utc": "21:21:02",
+      "detector": "rolling_ks",
+      "stat": 4.07469865856441e-80,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 78060,
+      "utc": "21:51:02",
+      "detector": "rolling_ks",
+      "stat": 4.91856469594103e-58,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 79860,
+      "utc": "22:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.1150965858562999e-83,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 81660,
+      "utc": "22:51:02",
+      "detector": "rolling_ks",
+      "stat": 8.585075814069239e-79,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 83460,
+      "utc": "23:21:02",
+      "detector": "rolling_ks",
+      "stat": 3.640343162623101e-83,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 85260,
+      "utc": "23:51:02",
+      "detector": "rolling_ks",
+      "stat": 3.566632647111744e-58,
+      "feature": "log_depth5"
+     }
+    ],
+    "detection": {
+     "n_alarms": 48,
+     "n_false": 47,
+     "n_events": 1,
+     "n_detected": 1,
+     "delays_s": [
+      1262.0
+     ]
+    },
+    "latency_pred": {
+     "p50_us": 5.917,
+     "p99_us": 1178.7716600000044,
+     "p999_us": 42335.188516003356,
+     "max_us": 891219.292
+    },
+    "latency_step": {
+     "p50_us": 7.333,
+     "p99_us": 242725.51782000097,
+     "p999_us": 840123.3985160014,
+     "max_us": 2319785.333
+    },
+    "wall_s": 609.2189190387726
+   },
+   "2024-11-01": {
+    "n": 75182,
+    "logloss": 0.700230452556676,
+    "acc": 0.5706153068553643,
+    "brier": 0.2500135639672603,
+    "auc": 0.6016828916772645,
+    "base_rate": 0.5037908009895986,
+    "edge_bps": 0.22126829854532448,
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:01",
+      "detector": "rolling_ks",
+      "stat": 1.281066307183702e-86,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:01",
+      "detector": "rolling_ks",
+      "stat": 9.569833529997953e-70,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:01",
+      "detector": "rolling_ks",
+      "stat": 5.388053832059799e-87,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:01",
+      "detector": "rolling_ks",
+      "stat": 5.395966371241086e-47,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:01",
+      "detector": "rolling_ks",
+      "stat": 5.347703171953376e-59,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:01",
+      "detector": "rolling_ks",
+      "stat": 5.205653313073916e-57,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:01",
+      "detector": "rolling_ks",
+      "stat": 2.1622454416059055e-68,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:01",
+      "detector": "rolling_ks",
+      "stat": 4.470178467069033e-75,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:01",
+      "detector": "rolling_ks",
+      "stat": 2.7674549123723543e-85,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:01",
+      "detector": "rolling_ks",
+      "stat": 7.369826816459332e-80,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:01",
+      "detector": "rolling_ks",
+      "stat": 5.388053832059799e-87,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:01",
+      "detector": "rolling_ks",
+      "stat": 1.6323575009793533e-93,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:01",
+      "detector": "rolling_ks",
+      "stat": 2.4329932694071426e-65,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24060,
+      "utc": "06:51:01",
+      "detector": "rolling_ks",
+      "stat": 1.5359752786006582e-80,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 25860,
+      "utc": "07:21:01",
+      "detector": "rolling_ks",
+      "stat": 1.1222749221418406e-51,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27660,
+      "utc": "07:51:01",
+      "detector": "rolling_ks",
+      "stat": 1.1240271249597057e-73,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29460,
+      "utc": "08:21:01",
+      "detector": "rolling_ks",
+      "stat": 1.8929379532865432e-59,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31260,
+      "utc": "08:51:01",
+      "detector": "rolling_ks",
+      "stat": 3.3921148246585066e-92,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33060,
+      "utc": "09:21:01",
+      "detector": "rolling_ks",
+      "stat": 5.388053832059799e-87,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34860,
+      "utc": "09:51:01",
+      "detector": "rolling_ks",
+      "stat": 2.7674549123723543e-85,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36660,
+      "utc": "10:21:01",
+      "detector": "rolling_ks",
+      "stat": 8.890997374684336e-56,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 38460,
+      "utc": "10:51:01",
+      "detector": "rolling_ks",
+      "stat": 2.267932477834593e-58,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40260,
+      "utc": "11:21:01",
+      "detector": "rolling_ks",
+      "stat": 2.267932477834593e-58,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42060,
+      "utc": "11:51:01",
+      "detector": "rolling_ks",
+      "stat": 5.170843836065097e-72,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 43860,
+      "utc": "12:21:01",
+      "detector": "rolling_ks",
+      "stat": 2.268730214930224e-72,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 45660,
+      "utc": "12:51:01",
+      "detector": "rolling_ks",
+      "stat": 4.969637540600332e-53,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 47460,
+      "utc": "13:21:01",
+      "detector": "rolling_ks",
+      "stat": 1.6004548888111474e-66,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 49260,
+      "utc": "13:51:01",
+      "detector": "rolling_ks",
+      "stat": 1.2356344135116318e-64,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 51060,
+      "utc": "14:21:01",
+      "detector": "rolling_ks",
+      "stat": 5.06917998412557e-50,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 52860,
+      "utc": "14:51:01",
+      "detector": "rolling_ks",
+      "stat": 3.550697939380318e-63,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 54660,
+      "utc": "15:21:01",
+      "detector": "rolling_ks",
+      "stat": 2.500674948711737e-52,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 56460,
+      "utc": "15:51:01",
+      "detector": "rolling_ks",
+      "stat": 1.2624883044088818e-73,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 58260,
+      "utc": "16:21:01",
+      "detector": "rolling_ks",
+      "stat": 1.2354002373898826e-61,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 60060,
+      "utc": "16:51:01",
+      "detector": "rolling_ks",
+      "stat": 4.683149527887102e-55,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 61860,
+      "utc": "17:21:01",
+      "detector": "rolling_ks",
+      "stat": 2.551802345277831e-55,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 63660,
+      "utc": "17:51:01",
+      "detector": "rolling_ks",
+      "stat": 1.308931219707115e-54,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 65460,
+      "utc": "18:21:01",
+      "detector": "rolling_ks",
+      "stat": 4.969637540600332e-53,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 67260,
+      "utc": "18:51:01",
+      "detector": "rolling_ks",
+      "stat": 1.308931219707115e-54,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 69060,
+      "utc": "19:21:01",
+      "detector": "rolling_ks",
+      "stat": 1.1222749221418406e-51,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 70860,
+      "utc": "19:51:01",
+      "detector": "rolling_ks",
+      "stat": 6.0538121795115506e-52,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72660,
+      "utc": "20:21:01",
+      "detector": "rolling_ks",
+      "stat": 2.1622454416059055e-68,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74460,
+      "utc": "20:51:01",
+      "detector": "rolling_ks",
+      "stat": 4.255080922647732e-77,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 76260,
+      "utc": "21:21:01",
+      "detector": "rolling_ks",
+      "stat": 3.3921148246585066e-92,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78060,
+      "utc": "21:51:01",
+      "detector": "rolling_ks",
+      "stat": 9.569833529997953e-70,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 79860,
+      "utc": "22:21:01",
+      "detector": "rolling_ks",
+      "stat": 2.7674549123723543e-85,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81660,
+      "utc": "22:51:01",
+      "detector": "rolling_ks",
+      "stat": 2.7674549123723543e-85,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83460,
+      "utc": "23:21:01",
+      "detector": "rolling_ks",
+      "stat": 9.169797246505322e-71,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85260,
+      "utc": "23:51:01",
+      "detector": "rolling_ks",
+      "stat": 6.716716317500226e-99,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 48,
+     "n_false": 48,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 5.917,
+     "p99_us": 1375.9449999999633,
+     "p999_us": 35754.45455800175,
+     "max_us": 513087.125
+    },
+    "latency_step": {
+     "p50_us": 7.292,
+     "p99_us": 246325.11624999825,
+     "p999_us": 832309.7971340272,
+     "max_us": 2464590.042
+    },
+    "wall_s": 610.4274749755859
+   },
+   "2025-08-01": {
+    "n": 76642,
+    "logloss": 0.6849194753535469,
+    "acc": 0.5888546749823856,
+    "brier": 0.24319364234396104,
+    "auc": 0.6231901293654052,
+    "base_rate": 0.49568121917486496,
+    "edge_bps": 0.3474730631004826,
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.906898014423747e-45,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.906898014423747e-45,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:02",
+      "detector": "rolling_ks",
+      "stat": 5.395966371241086e-47,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.500674948711737e-52,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:02",
+      "detector": "rolling_ks",
+      "stat": 4.969637540600332e-53,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.267932477834593e-58,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.0236354629745591e-81,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.205653313073916e-57,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.267932477834593e-58,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.268730214930224e-72,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:02",
+      "detector": "rolling_ks",
+      "stat": 8.890997374684336e-56,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.205653313073916e-57,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.267932477834593e-58,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24060,
+      "utc": "06:51:02",
+      "detector": "rolling_ks",
+      "stat": 2.500674948711737e-52,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 25860,
+      "utc": "07:21:02",
+      "detector": "rolling_ks",
+      "stat": 4.638519401941963e-51,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27660,
+      "utc": "07:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.205653313073916e-57,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29460,
+      "utc": "08:21:02",
+      "detector": "rolling_ks",
+      "stat": 3.7908826664818027e-47,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31260,
+      "utc": "08:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.8832807176482127e-48,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33060,
+      "utc": "09:21:02",
+      "detector": "rolling_ks",
+      "stat": 5.205653313073916e-57,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34860,
+      "utc": "09:51:02",
+      "detector": "rolling_ks",
+      "stat": 8.890997374684336e-56,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36660,
+      "utc": "10:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.1240271249597057e-73,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 38460,
+      "utc": "10:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.8929379532865432e-59,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40260,
+      "utc": "11:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.0395311559413401e-53,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42060,
+      "utc": "11:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.8929379532865432e-59,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 43860,
+      "utc": "12:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.3664163024052326e-54,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 45660,
+      "utc": "12:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.1222749221418406e-51,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 47460,
+      "utc": "13:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.1222749221418406e-51,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 49260,
+      "utc": "13:51:02",
+      "detector": "rolling_ks",
+      "stat": 4.436893333784194e-52,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 51060,
+      "utc": "14:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.1968496944766434e-52,
+      "feature": "rv_60s_bps"
+     },
+     {
+      "step": 52860,
+      "utc": "14:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.395966371241086e-47,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 54660,
+      "utc": "15:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.906898014423747e-45,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 56460,
+      "utc": "15:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.8832807176482127e-48,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 58260,
+      "utc": "16:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.308931219707115e-54,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 60060,
+      "utc": "16:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.06917998412557e-50,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 61860,
+      "utc": "17:21:02",
+      "detector": "rolling_ks",
+      "stat": 5.06917998412557e-50,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 63660,
+      "utc": "17:51:02",
+      "detector": "rolling_ks",
+      "stat": 7.111353931117487e-50,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 65460,
+      "utc": "18:21:02",
+      "detector": "rolling_ks",
+      "stat": 2.906898014423747e-45,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 67260,
+      "utc": "18:51:02",
+      "detector": "rolling_ks",
+      "stat": 8.890997374684336e-56,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 69060,
+      "utc": "19:21:02",
+      "detector": "rolling_ks",
+      "stat": 5.06917998412557e-50,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 70860,
+      "utc": "19:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.8832807176482127e-48,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72660,
+      "utc": "20:21:02",
+      "detector": "rolling_ks",
+      "stat": 3.7908826664818027e-47,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74460,
+      "utc": "20:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.06917998412557e-50,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 76260,
+      "utc": "21:21:02",
+      "detector": "rolling_ks",
+      "stat": 6.66096666568997e-57,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78060,
+      "utc": "21:51:02",
+      "detector": "rolling_ks",
+      "stat": 9.569833529997953e-70,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 79860,
+      "utc": "22:21:02",
+      "detector": "rolling_ks",
+      "stat": 8.890997374684336e-56,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81660,
+      "utc": "22:51:02",
+      "detector": "rolling_ks",
+      "stat": 5.395966371241086e-47,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83460,
+      "utc": "23:21:02",
+      "detector": "rolling_ks",
+      "stat": 1.8832807176482127e-48,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85260,
+      "utc": "23:51:02",
+      "detector": "rolling_ks",
+      "stat": 1.6004548888111474e-66,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 48,
+     "n_false": 48,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 5.833,
+     "p99_us": 1412.2516600000004,
+     "p999_us": 49837.15153200114,
+     "max_us": 582660.0
+    },
+    "latency_step": {
+     "p50_us": 7.208,
+     "p99_us": 255141.07400000066,
+     "p999_us": 827887.0604520122,
+     "max_us": 2113649.0
+    },
+    "wall_s": 643.205803155899
+   }
+  },
+  "ksc_refit": {
+   "2023-09-01": {
+    "n": 59082,
+    "logloss": 0.6330455648593254,
+    "acc": 0.6511797163264615,
+    "brier": 0.22003228880610864,
+    "auc": 0.7054332687412548,
+    "base_rate": 0.47782742628888664,
+    "edge_bps": 0.39543638015767174,
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0277742224497632,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.040253423780878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0673236912837578,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0313579930884422,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.054780494048381,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0693075643158838,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0637399206450786,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0762831178804555,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0560604121336232,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0558684244208372,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0673236912837578,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24060,
+      "utc": "06:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0730833226673493,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 25860,
+      "utc": "07:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0637399206450786,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27660,
+      "utc": "07:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0560604121336232,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29460,
+      "utc": "08:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31260,
+      "utc": "08:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33060,
+      "utc": "09:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213106361192883,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34860,
+      "utc": "09:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0460770510687316,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36660,
+      "utc": "10:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0896582618712403,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 38460,
+      "utc": "10:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0509407397926531,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40260,
+      "utc": "11:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0762831178804555,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42240,
+      "utc": "11:54:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.00300780750032,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 46050,
+      "utc": "12:57:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0396134647382567,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 47850,
+      "utc": "13:27:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.040253423780878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 66090,
+      "utc": "18:31:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 68550,
+      "utc": "19:12:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0072315371816203,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 70350,
+      "utc": "19:42:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0321259439395878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72570,
+      "utc": "20:19:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74460,
+      "utc": "20:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0072315371816203,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 76260,
+      "utc": "21:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0431972353769359,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78060,
+      "utc": "21:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0396774606425188,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 79860,
+      "utc": "22:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0667477281453985,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81660,
+      "utc": "22:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0917701267118904,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83460,
+      "utc": "23:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.028734161013695,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85260,
+      "utc": "23:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 37,
+     "n_false": 37,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 5.917,
+     "p99_us": 1869.2525000000005,
+     "p999_us": 55533.0815160035,
+     "max_us": 615773.708
+    },
+    "latency_step": {
+     "p50_us": 7.25,
+     "p99_us": 272959.43416000134,
+     "p999_us": 874188.1665640057,
+     "max_us": 4046381.083
+    },
+    "wall_s": 678.6856310367584
+   },
+   "2023-11-01": {
+    "n": 67951,
+    "logloss": 0.6592234341598098,
+    "acc": 0.6155612132271784,
+    "brier": 0.23172684673436503,
+    "auc": 0.6660913841240919,
+    "base_rate": 0.497196509249312,
+    "edge_bps": 0.34693022762022335,
+    "event_window": {
+     "n": 5113,
+     "logloss": 0.7723108295266792,
+     "acc": 0.4834734989243106,
+     "brier": 0.281422054702949,
+     "auc": 0.49470823882203685,
+     "base_rate": 0.5354977508312145,
+     "edge_bps": -0.1689651029338183
+    },
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.00300780750032,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0172788941507742,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0474209650582362,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.083450659157814,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.003071803404582,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0804428516574938,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0876103929348522,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0692435684116217,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0460770510687316,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0060156150006399,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24060,
+      "utc": "06:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0611800844745936,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 25860,
+      "utc": "07:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0611800844745936,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27660,
+      "utc": "07:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0375655958018686,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29460,
+      "utc": "08:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0730833226673493,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31260,
+      "utc": "08:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0793549212850377,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33060,
+      "utc": "09:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.083450659157814,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34860,
+      "utc": "09:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0776270318699603,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36660,
+      "utc": "10:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0817867656469986,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 38460,
+      "utc": "10:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40260,
+      "utc": "11:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0321259439395878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42060,
+      "utc": "11:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0804428516574938,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 43860,
+      "utc": "12:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0762831178804555,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 48120,
+      "utc": "13:32:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0488261292119758,
+      "feature": "ret_5s_bps"
+     },
+     {
+      "step": 51720,
+      "utc": "14:32:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0072315371816203,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 54990,
+      "utc": "15:26:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 56790,
+      "utc": "15:56:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0104313323947267,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 60120,
+      "utc": "16:52:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 61920,
+      "utc": "17:22:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0219505951619097,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 63720,
+      "utc": "17:52:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0163829514911045,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 65640,
+      "utc": "18:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0072315371816203,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 69300,
+      "utc": "19:25:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72210,
+      "utc": "20:13:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 75180,
+      "utc": "21:03:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0033356996638707,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 78420,
+      "utc": "21:57:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.028734161013695,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81810,
+      "utc": "22:53:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 84360,
+      "utc": "23:36:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0277742224497632,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 39,
+     "n_false": 38,
+     "n_events": 1,
+     "n_detected": 1,
+     "delays_s": [
+      1443.0
+     ]
+    },
+    "latency_pred": {
+     "p50_us": 5.834,
+     "p99_us": 3111.9194799999755,
+     "p999_us": 77678.14487500953,
+     "max_us": 621373.209
+    },
+    "latency_step": {
+     "p50_us": 7.208,
+     "p99_us": 279688.87173999933,
+     "p999_us": 965745.8438490374,
+     "max_us": 3426100.25
+    },
+    "wall_s": 680.3271188735962
+   },
+   "2023-12-01": {
+    "n": 72093,
+    "logloss": 0.6961968665206275,
+    "acc": 0.5754927662879892,
+    "brier": 0.24911097001124144,
+    "auc": 0.6042768557241907,
+    "base_rate": 0.49895274159765857,
+    "edge_bps": 0.24078931257459585,
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.054780494048381,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0776270318699603,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6870,
+      "utc": "02:04:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 8670,
+      "utc": "02:34:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0558684244208372,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 10470,
+      "utc": "03:04:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0138231153206194,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 12270,
+      "utc": "03:34:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 14070,
+      "utc": "04:04:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0431972353769359,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16950,
+      "utc": "04:52:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18750,
+      "utc": "05:22:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.040253423780878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20550,
+      "utc": "05:52:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0884423396902598,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22350,
+      "utc": "06:22:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0762831178804555,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24150,
+      "utc": "06:52:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.034749776014335,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 28230,
+      "utc": "08:00:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0163829514911045,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 30120,
+      "utc": "08:32:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.028734161013695,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31920,
+      "utc": "09:02:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0530526046333035,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 37410,
+      "utc": "10:33:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 39810,
+      "utc": "11:13:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 41610,
+      "utc": "11:43:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 43530,
+      "utc": "12:15:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0163829514911045,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 46980,
+      "utc": "13:13:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 48780,
+      "utc": "13:43:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0313579930884422,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 53130,
+      "utc": "14:55:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0104313323947267,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 54930,
+      "utc": "15:25:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.028734161013695,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 56730,
+      "utc": "15:55:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 63240,
+      "utc": "17:44:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.028734161013695,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 65040,
+      "utc": "18:14:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0277742224497632,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 66870,
+      "utc": "18:44:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0036477665429413,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 69240,
+      "utc": "19:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0163829514911045,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 71040,
+      "utc": "19:54:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0530526046333035,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72840,
+      "utc": "20:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74640,
+      "utc": "20:54:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0375655958018686,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 76440,
+      "utc": "21:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78240,
+      "utc": "21:54:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0558684244208372,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 80040,
+      "utc": "22:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.093626007935492,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81840,
+      "utc": "22:54:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0776270318699603,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83640,
+      "utc": "23:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0804428516574938,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85440,
+      "utc": "23:54:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0637399206450786,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 37,
+     "n_false": 37,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 5.792,
+     "p99_us": 2196.0767399999954,
+     "p999_us": 42933.409474000604,
+     "max_us": 782922.916
+    },
+    "latency_step": {
+     "p50_us": 7.167,
+     "p99_us": 290577.9599899998,
+     "p999_us": 974896.2403230332,
+     "max_us": 4041404.75
+    },
+    "wall_s": 699.9461612701416
+   },
+   "2024-05-01": {
+    "n": 83205,
+    "logloss": 0.7139773003732784,
+    "acc": 0.5304488912925905,
+    "brier": 0.25816912887811033,
+    "auc": 0.5432232659537948,
+    "base_rate": 0.49840754762333994,
+    "edge_bps": 0.1666697203124573,
+    "event_window": {
+     "n": 5381,
+     "logloss": 0.7466603211515039,
+     "acc": 0.4934027132503252,
+     "brier": 0.27248939263816985,
+     "auc": 0.5028704617110583,
+     "base_rate": 0.5056680914328192,
+     "edge_bps": -0.17474212793922414
+    },
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0352585027285663,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.085508593565269,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.053052633038115,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1162984370222406,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0951054278895198,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.060650126878147,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0900404319961652,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0240621960169403,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1026362770467446,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0540523032802243,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.05465210542549,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0958385194004001,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 24570,
+      "utc": "06:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0815765572796383,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 26370,
+      "utc": "07:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1200305392594494,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 28170,
+      "utc": "07:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1226963265717413,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 29970,
+      "utc": "08:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.066514858965189,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 31770,
+      "utc": "08:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0597171013188447,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 33570,
+      "utc": "09:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0881077361947535,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 35370,
+      "utc": "09:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0559183543988286,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 37170,
+      "utc": "10:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.038524092186124,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 38970,
+      "utc": "10:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0617830864858708,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 40770,
+      "utc": "11:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0952387172551346,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 42570,
+      "utc": "11:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0703802505680124,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 44370,
+      "utc": "12:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0526527649412711,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 46680,
+      "utc": "13:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0390572496485821,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 48480,
+      "utc": "13:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0335923856583837,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 50280,
+      "utc": "14:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0923729958944206,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 52080,
+      "utc": "14:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0749120889989086,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 53880,
+      "utc": "15:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0749787336817158,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 55680,
+      "utc": "15:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0792439933813829,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 57480,
+      "utc": "16:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.087507934049488,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 59280,
+      "utc": "16:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0931727320881082,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 61080,
+      "utc": "17:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1106336389836202,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 62880,
+      "utc": "17:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0974379917877752,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 64680,
+      "utc": "18:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0939058235989885,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 66480,
+      "utc": "18:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.106968181429219,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 68280,
+      "utc": "19:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1087009431822086,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 70080,
+      "utc": "19:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.078377612504888,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 71880,
+      "utc": "20:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.098037793933041,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 73680,
+      "utc": "20:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1022364089499006,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 75480,
+      "utc": "21:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0591839438563864,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 77280,
+      "utc": "21:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0225293683123724,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 79080,
+      "utc": "22:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0679143973041423,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 80880,
+      "utc": "22:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0592505885391936,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 82680,
+      "utc": "23:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.083709187129472,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 84480,
+      "utc": "23:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0299935727867897,
+      "feature": "log_depth5"
+     }
+    ],
+    "detection": {
+     "n_alarms": 47,
+     "n_false": 46,
+     "n_events": 1,
+     "n_detected": 1,
+     "delays_s": [
+      482.0
+     ]
+    },
+    "latency_pred": {
+     "p50_us": 5.834,
+     "p99_us": 1506.380000000001,
+     "p999_us": 83446.68975000111,
+     "max_us": 550567.708
+    },
+    "latency_step": {
+     "p50_us": 7.209,
+     "p99_us": 288144.85718000034,
+     "p999_us": 991380.4109680105,
+     "max_us": 3793811.292
+    },
+    "wall_s": 696.114804983139
+   },
+   "2024-11-01": {
+    "n": 75182,
+    "logloss": 0.6960055006746924,
+    "acc": 0.5771195232901493,
+    "brier": 0.2482462036398339,
+    "auc": 0.6085729057141585,
+    "base_rate": 0.5037908009895986,
+    "edge_bps": 0.3054405159877219,
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0579802892614871,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0585562523998464,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 10770,
+      "utc": "03:09:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 12570,
+      "utc": "03:39:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0248944067579673,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 14370,
+      "utc": "04:09:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.003071803404582,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16170,
+      "utc": "04:39:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0793549212850377,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 17970,
+      "utc": "05:09:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 19770,
+      "utc": "05:39:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0667477281453985,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 21570,
+      "utc": "06:09:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 23370,
+      "utc": "06:39:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0313579930884422,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 26190,
+      "utc": "07:26:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0060156150006399,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27990,
+      "utc": "07:56:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0460770510687316,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29880,
+      "utc": "08:28:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0431972353769359,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31680,
+      "utc": "08:58:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0454370920261102,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33480,
+      "utc": "09:28:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0611800844745936,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 35280,
+      "utc": "09:58:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0474209650582362,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 39180,
+      "utc": "11:03:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 41010,
+      "utc": "11:33:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42960,
+      "utc": "12:06:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0321259439395878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 47250,
+      "utc": "13:17:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 66360,
+      "utc": "18:36:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0104313323947267,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 70800,
+      "utc": "19:50:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72600,
+      "utc": "20:20:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0172788941507742,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74400,
+      "utc": "20:50:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0454370920261102,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 76200,
+      "utc": "21:20:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78000,
+      "utc": "21:50:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 79800,
+      "utc": "22:20:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0558684244208372,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81600,
+      "utc": "22:50:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0558684244208372,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83400,
+      "utc": "23:20:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85200,
+      "utc": "23:50:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0730833226673493,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 31,
+     "n_false": 31,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 5.834,
+     "p99_us": 2709.310409999968,
+     "p999_us": 54195.84962501238,
+     "max_us": 708347.375
+    },
+    "latency_step": {
+     "p50_us": 7.25,
+     "p99_us": 282047.223829999,
+     "p999_us": 963878.4052680191,
+     "max_us": 4427107.083
+    },
+    "wall_s": 683.3081910610199
+   },
+   "2025-08-01": {
+    "n": 76642,
+    "logloss": 0.6764052892184671,
+    "acc": 0.5916468776910833,
+    "brier": 0.2401613363417839,
+    "auc": 0.6304345860609135,
+    "base_rate": 0.49568121917486496,
+    "edge_bps": 0.37168295393359924,
+    "alarms": [
+     {
+      "step": 2550,
+      "utc": "00:52:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0402327103413704,
+      "feature": "ofi1_5s_n"
+     },
+     {
+      "step": 9870,
+      "utc": "02:54:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.003071803404582,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11670,
+      "utc": "03:24:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0321259439395878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13800,
+      "utc": "04:00:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16350,
+      "utc": "04:42:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 19260,
+      "utc": "05:31:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 21060,
+      "utc": "06:01:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34530,
+      "utc": "09:45:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0072315371816203,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36330,
+      "utc": "10:15:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0138231153206194,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40590,
+      "utc": "11:26:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 49200,
+      "utc": "13:50:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1174754903868656,
+      "feature": "ofi1_5s_n"
+     },
+     {
+      "step": 76830,
+      "utc": "21:30:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78630,
+      "utc": "22:00:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 82050,
+      "utc": "22:57:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0056016188793186,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 85200,
+      "utc": "23:50:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 15,
+     "n_false": 15,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 5.916,
+     "p99_us": 3242.880500000035,
+     "p999_us": 75282.6492660074,
+     "max_us": 572368.334
+    },
+    "latency_step": {
+     "p50_us": 7.291,
+     "p99_us": 282865.45218000055,
+     "p999_us": 994546.7195160099,
+     "max_us": 4349955.292
+    },
+    "wall_s": 695.9490671157837
+   }
+  },
+  "regime_gated": {
+   "2023-09-01": {
+    "n": 59082,
+    "logloss": 0.6030233827704381,
+    "acc": 0.6636369791137741,
+    "brier": 0.20860639589105318,
+    "auc": 0.731858533045594,
+    "base_rate": 0.47782742628888664,
+    "edge_bps": 0.4368855304753301,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 7.542,
+     "p99_us": 313.2448200000073,
+     "p999_us": 16111.188500001028,
+     "max_us": 624714.0
+    },
+    "latency_step": {
+     "p50_us": 8.709,
+     "p99_us": 406.6316800000014,
+     "p999_us": 18761.01871800078,
+     "max_us": 625913.75
+    },
+    "wall_s": 50.2984938621521
+   },
+   "2023-11-01": {
+    "n": 67951,
+    "logloss": 0.6271993934500434,
+    "acc": 0.6371944489411487,
+    "brier": 0.21913640285438535,
+    "auc": 0.6979703522220353,
+    "base_rate": 0.497196509249312,
+    "edge_bps": 0.4461847880962888,
+    "event_window": {
+     "n": 5113,
+     "logloss": 0.6940751436830997,
+     "acc": 0.5433209466066888,
+     "brier": 0.25033120961377936,
+     "auc": 0.5528708623274768,
+     "base_rate": 0.5354977508312145,
+     "edge_bps": 0.25967780936233575
+    },
+    "alarms": [],
+    "detection": {
+     "n_alarms": 0,
+     "n_false": 0,
+     "n_events": 1,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 7.416,
+     "p99_us": 395.634269999998,
+     "p999_us": 19749.0716510009,
+     "max_us": 527672.916
+    },
+    "latency_step": {
+     "p50_us": 8.583,
+     "p99_us": 494.88375999999965,
+     "p999_us": 21018.94157300184,
+     "max_us": 527729.416
+    },
+    "wall_s": 14.75820803642273
+   },
+   "2023-12-01": {
+    "n": 72093,
+    "logloss": 0.6659324361467192,
+    "acc": 0.5995311611390842,
+    "brier": 0.2365166555495152,
+    "auc": 0.635912355933834,
+    "base_rate": 0.49895274159765857,
+    "edge_bps": 0.3070915315703104,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 5.625,
+     "p99_us": 268.34550999999954,
+     "p999_us": 20718.79419800776,
+     "max_us": 512386.667
+    },
+    "latency_step": {
+     "p50_us": 7.208,
+     "p99_us": 359.2937399999983,
+     "p999_us": 24086.326677005247,
+     "max_us": 512726.625
+    },
+    "wall_s": 16.052172899246216
+   },
+   "2024-05-01": {
+    "n": 83205,
+    "logloss": 0.6869921771643983,
+    "acc": 0.5547623339943513,
+    "brier": 0.24689008343971808,
+    "auc": 0.5731266757723507,
+    "base_rate": 0.49840754762333994,
+    "edge_bps": 0.3941154724544529,
+    "event_window": {
+     "n": 5381,
+     "logloss": 0.701024002743864,
+     "acc": 0.5248095149600446,
+     "brier": 0.2537239041457981,
+     "auc": 0.530096603139602,
+     "base_rate": 0.5056680914328192,
+     "edge_bps": 0.2698129783582795
+    },
+    "alarms": [],
+    "detection": {
+     "n_alarms": 0,
+     "n_false": 0,
+     "n_events": 1,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 4.417,
+     "p99_us": 262.2908200000083,
+     "p999_us": 14709.576702001157,
+     "max_us": 417938.458
+    },
+    "latency_step": {
+     "p50_us": 5.333,
+     "p99_us": 362.5105000000107,
+     "p999_us": 19451.81576600312,
+     "max_us": 449396.667
+    },
+    "wall_s": 15.57350778579712
+   },
+   "2024-11-01": {
+    "n": 75182,
+    "logloss": 0.6595551894600475,
+    "acc": 0.6001835545742332,
+    "brier": 0.23373147771682426,
+    "auc": 0.6449018231294068,
+    "base_rate": 0.5037908009895986,
+    "edge_bps": 0.40953775502138434,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 7.333,
+     "p99_us": 374.8550899999885,
+     "p999_us": 16643.74713400279,
+     "max_us": 517786.25
+    },
+    "latency_step": {
+     "p50_us": 8.583,
+     "p99_us": 466.09898999999217,
+     "p999_us": 22820.65356701013,
+     "max_us": 517897.0
+    },
+    "wall_s": 61.27344989776611
+   },
+   "2025-08-01": {
+    "n": 76642,
+    "logloss": 0.6543555970507974,
+    "acc": 0.6102006732600924,
+    "brier": 0.2313448578236881,
+    "auc": 0.6543525563803414,
+    "base_rate": 0.49568121917486496,
+    "edge_bps": 0.4578292712472374,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 7.459,
+     "p99_us": 424.08732000000066,
+     "p999_us": 18207.35096800267,
+     "max_us": 791977.416
+    },
+    "latency_step": {
+     "p50_us": 8.75,
+     "p99_us": 523.3858400000022,
+     "p999_us": 23002.143766003785,
+     "max_us": 845703.916
+    },
+    "wall_s": 20.902197122573853
+   }
+  },
+  "fixed_share": {
+   "2023-09-01": {
+    "n": 59082,
+    "logloss": 0.6076211590350425,
+    "acc": 0.6609796553941979,
+    "brier": 0.21053182045147611,
+    "auc": 0.7251242323966834,
+    "base_rate": 0.47782742628888664,
+    "edge_bps": 0.4051966987389459,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 37.5,
+     "p99_us": 4095.7455200000077,
+     "p999_us": 111891.14950000576,
+     "max_us": 726074.75
+    },
+    "latency_step": {
+     "p50_us": 43.334,
+     "p99_us": 7600.2393400000155,
+     "p999_us": 190768.16200000796,
+     "max_us": 758636.625
+    },
+    "wall_s": 78.72144412994385
+   },
+   "2023-11-01": {
+    "n": 67951,
+    "logloss": 0.6354477084370391,
+    "acc": 0.6342953010257392,
+    "brier": 0.2223089373290745,
+    "auc": 0.6905336030510172,
+    "base_rate": 0.497196509249312,
+    "edge_bps": 0.39981868752631133,
+    "event_window": {
+     "n": 5113,
+     "logloss": 0.7024939634017637,
+     "acc": 0.5394093487189517,
+     "brier": 0.2537739216965544,
+     "auc": 0.5434183999077313,
+     "base_rate": 0.5354977508312145,
+     "edge_bps": 0.16710127713922643
+    },
+    "alarms": [],
+    "detection": {
+     "n_alarms": 0,
+     "n_false": 0,
+     "n_events": 1,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 37.75,
+     "p99_us": 3800.8837299999996,
+     "p999_us": 129832.23747400673,
+     "max_us": 692045.417
+    },
+    "latency_step": {
+     "p50_us": 64.209,
+     "p99_us": 8432.084499999988,
+     "p999_us": 223762.72044801182,
+     "max_us": 763353.459
+    },
+    "wall_s": 89.6879370212555
+   },
+   "2023-12-01": {
+    "n": 72093,
+    "logloss": 0.6742121888607873,
+    "acc": 0.5930534171140055,
+    "brier": 0.23998779807104897,
+    "auc": 0.6261528815443552,
+    "base_rate": 0.49895274159765857,
+    "edge_bps": 0.2772158961004743,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 37.333,
+     "p99_us": 3715.2137699999967,
+     "p999_us": 151929.74782801417,
+     "max_us": 714479.625
+    },
+    "latency_step": {
+     "p50_us": 63.916,
+     "p99_us": 7707.843239999998,
+     "p999_us": 241150.536052045,
+     "max_us": 905589.458
+    },
+    "wall_s": 87.94559001922607
+   },
+   "2024-05-01": {
+    "n": 83205,
+    "logloss": 0.6924815571738984,
+    "acc": 0.5492338200829278,
+    "brier": 0.24918330669811894,
+    "auc": 0.5669881686293943,
+    "base_rate": 0.49840754762333994,
+    "edge_bps": 0.3424770067448838,
+    "event_window": {
+     "n": 5381,
+     "logloss": 0.7060114827742672,
+     "acc": 0.5093848727002416,
+     "brier": 0.2560925877599792,
+     "auc": 0.5105826860425595,
+     "base_rate": 0.5056680914328192,
+     "edge_bps": 0.0722394018115323
+    },
+    "alarms": [],
+    "detection": {
+     "n_alarms": 0,
+     "n_false": 0,
+     "n_events": 1,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 38.042,
+     "p99_us": 4287.01200000002,
+     "p999_us": 157375.10926603663,
+     "max_us": 901566.167
+    },
+    "latency_step": {
+     "p50_us": 65.958,
+     "p99_us": 10172.589160000018,
+     "p999_us": 304536.44553200895,
+     "max_us": 1425479.917
+    },
+    "wall_s": 110.89435601234436
+   },
+   "2024-11-01": {
+    "n": 75182,
+    "logloss": 0.6663037123461201,
+    "acc": 0.5958607113404805,
+    "brier": 0.2364189382195091,
+    "auc": 0.6383218171340015,
+    "base_rate": 0.5037908009895986,
+    "edge_bps": 0.38606586481774724,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 38.5,
+     "p99_us": 5041.481329999988,
+     "p999_us": 169079.48900900653,
+     "max_us": 892912.875
+    },
+    "latency_step": {
+     "p50_us": 65.791,
+     "p99_us": 9816.501419999824,
+     "p999_us": 313058.3106340203,
+     "max_us": 1015799.375
+    },
+    "wall_s": 115.94989204406738
+   },
+   "2025-08-01": {
+    "n": 76642,
+    "logloss": 0.6608512676640401,
+    "acc": 0.6083087602098066,
+    "brier": 0.23379821804250345,
+    "auc": 0.6500192626005465,
+    "base_rate": 0.49568121917486496,
+    "edge_bps": 0.4356394895666883,
+    "alarms": [],
+    "detection": {},
+    "latency_pred": {
+     "p50_us": 38.083,
+     "p99_us": 4586.87668,
+     "p999_us": 163463.98250000592,
+     "max_us": 760824.709
+    },
+    "latency_step": {
+     "p50_us": 65.625,
+     "p99_us": 10379.710500000052,
+     "p999_us": 292016.21246800653,
+     "max_us": 1164044.083
+    },
+    "wall_s": 113.56009078025818
+   }
+  },
+  "fs_ksc_boost": {
+   "2023-09-01": {
+    "n": 59082,
+    "logloss": 0.6072565032123092,
+    "acc": 0.6609796553941979,
+    "brier": 0.21040613098191538,
+    "auc": 0.7254195015250743,
+    "base_rate": 0.47782742628888664,
+    "edge_bps": 0.4048531219112322,
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0277742224497632,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.040253423780878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0673236912837578,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0313579930884422,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.054780494048381,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0693075643158838,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0637399206450786,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0762831178804555,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0560604121336232,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0558684244208372,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0673236912837578,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24060,
+      "utc": "06:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0730833226673493,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 25860,
+      "utc": "07:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0637399206450786,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27660,
+      "utc": "07:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0560604121336232,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29460,
+      "utc": "08:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31260,
+      "utc": "08:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33060,
+      "utc": "09:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213106361192883,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34860,
+      "utc": "09:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0460770510687316,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36660,
+      "utc": "10:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0896582618712403,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 38460,
+      "utc": "10:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0509407397926531,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40260,
+      "utc": "11:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0762831178804555,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42240,
+      "utc": "11:54:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.00300780750032,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 46050,
+      "utc": "12:57:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0396134647382567,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 47850,
+      "utc": "13:27:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.040253423780878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 66090,
+      "utc": "18:31:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 68550,
+      "utc": "19:12:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0072315371816203,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 70350,
+      "utc": "19:42:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0321259439395878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72570,
+      "utc": "20:19:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74460,
+      "utc": "20:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0072315371816203,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 76260,
+      "utc": "21:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0431972353769359,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78060,
+      "utc": "21:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0396774606425188,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 79860,
+      "utc": "22:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0667477281453985,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81660,
+      "utc": "22:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0917701267118904,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83460,
+      "utc": "23:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.028734161013695,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85260,
+      "utc": "23:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 37,
+     "n_false": 37,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 36.833,
+     "p99_us": 7608.546000000001,
+     "p999_us": 157872.80470200576,
+     "max_us": 598956.167
+    },
+    "latency_step": {
+     "p50_us": 62.208,
+     "p99_us": 327011.63300000026,
+     "p999_us": 1064917.4375160043,
+     "max_us": 4744532.583
+    },
+    "wall_s": 835.4792237281799
+   },
+   "2023-11-01": {
+    "n": 67951,
+    "logloss": 0.6351035697284398,
+    "acc": 0.6349575429353504,
+    "brier": 0.22215833802659393,
+    "auc": 0.6911420939358388,
+    "base_rate": 0.497196509249312,
+    "edge_bps": 0.3988740394714998,
+    "event_window": {
+     "n": 5113,
+     "logloss": 0.7015135874029483,
+     "acc": 0.5398005085077254,
+     "brier": 0.2533148154624761,
+     "auc": 0.5458462957979315,
+     "base_rate": 0.5354977508312145,
+     "edge_bps": 0.17672737706571534
+    },
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.00300780750032,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0172788941507742,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0474209650582362,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.083450659157814,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.003071803404582,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0804428516574938,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0876103929348522,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0692435684116217,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0460770510687316,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0060156150006399,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24060,
+      "utc": "06:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0611800844745936,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 25860,
+      "utc": "07:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0611800844745936,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27660,
+      "utc": "07:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0375655958018686,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29460,
+      "utc": "08:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0730833226673493,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31260,
+      "utc": "08:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0793549212850377,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33060,
+      "utc": "09:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.083450659157814,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34860,
+      "utc": "09:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0776270318699603,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36660,
+      "utc": "10:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0817867656469986,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 38460,
+      "utc": "10:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40260,
+      "utc": "11:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0321259439395878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42060,
+      "utc": "11:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0804428516574938,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 43860,
+      "utc": "12:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0762831178804555,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 48120,
+      "utc": "13:32:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0488261292119758,
+      "feature": "ret_5s_bps"
+     },
+     {
+      "step": 51720,
+      "utc": "14:32:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0072315371816203,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 54990,
+      "utc": "15:26:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 56790,
+      "utc": "15:56:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0104313323947267,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 60120,
+      "utc": "16:52:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 61920,
+      "utc": "17:22:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0219505951619097,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 63720,
+      "utc": "17:52:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0163829514911045,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 65640,
+      "utc": "18:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0072315371816203,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 69300,
+      "utc": "19:25:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72210,
+      "utc": "20:13:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 75180,
+      "utc": "21:03:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0033356996638707,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 78420,
+      "utc": "21:57:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.028734161013695,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81810,
+      "utc": "22:53:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 84360,
+      "utc": "23:36:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0277742224497632,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 39,
+     "n_false": 38,
+     "n_events": 1,
+     "n_detected": 1,
+     "delays_s": [
+      1443.0
+     ]
+    },
+    "latency_pred": {
+     "p50_us": 36.958,
+     "p99_us": 8609.215519999932,
+     "p999_us": 176160.74850001786,
+     "max_us": 757670.958
+    },
+    "latency_step": {
+     "p50_us": 63.458,
+     "p99_us": 298224.53426999983,
+     "p999_us": 1052531.9788490583,
+     "max_us": 4443573.75
+    },
+    "wall_s": 800.5293302536011
+   },
+   "2023-12-01": {
+    "n": 72093,
+    "logloss": 0.6741292806411673,
+    "acc": 0.5937330947526112,
+    "brier": 0.23994239723637648,
+    "auc": 0.6265733820474774,
+    "base_rate": 0.49895274159765857,
+    "edge_bps": 0.27875148911664993,
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.054780494048381,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0776270318699603,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 6870,
+      "utc": "02:04:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 8670,
+      "utc": "02:34:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0558684244208372,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 10470,
+      "utc": "03:04:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0138231153206194,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 12270,
+      "utc": "03:34:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 14070,
+      "utc": "04:04:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0431972353769359,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16950,
+      "utc": "04:52:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 18750,
+      "utc": "05:22:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.040253423780878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20550,
+      "utc": "05:52:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0884423396902598,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 22350,
+      "utc": "06:22:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0762831178804555,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 24150,
+      "utc": "06:52:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.034749776014335,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 28230,
+      "utc": "08:00:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0163829514911045,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 30120,
+      "utc": "08:32:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.028734161013695,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31920,
+      "utc": "09:02:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0530526046333035,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 37410,
+      "utc": "10:33:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 39810,
+      "utc": "11:13:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 41610,
+      "utc": "11:43:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 43530,
+      "utc": "12:15:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0163829514911045,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 46980,
+      "utc": "13:13:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 48780,
+      "utc": "13:43:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0313579930884422,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 53130,
+      "utc": "14:55:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0104313323947267,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 54930,
+      "utc": "15:25:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.028734161013695,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 56730,
+      "utc": "15:55:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 63240,
+      "utc": "17:44:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.028734161013695,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 65040,
+      "utc": "18:14:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0277742224497632,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 66870,
+      "utc": "18:44:33",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0036477665429413,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 69240,
+      "utc": "19:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0163829514911045,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 71040,
+      "utc": "19:54:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0530526046333035,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72840,
+      "utc": "20:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74640,
+      "utc": "20:54:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0375655958018686,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 76440,
+      "utc": "21:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78240,
+      "utc": "21:54:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0558684244208372,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 80040,
+      "utc": "22:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.093626007935492,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81840,
+      "utc": "22:54:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0776270318699603,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83640,
+      "utc": "23:24:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0804428516574938,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85440,
+      "utc": "23:54:03",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0637399206450786,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 37,
+     "n_false": 37,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 37.458,
+     "p99_us": 8012.439999999988,
+     "p999_us": 172373.3906250058,
+     "max_us": 686491.75
+    },
+    "latency_step": {
+     "p50_us": 64.416,
+     "p99_us": 303691.5974899997,
+     "p999_us": 1017167.9687970815,
+     "max_us": 4472886.917
+    },
+    "wall_s": 801.5085229873657
+   },
+   "2024-05-01": {
+    "n": 83205,
+    "logloss": 0.692822161158796,
+    "acc": 0.5501111712036536,
+    "brier": 0.24932323936797135,
+    "auc": 0.5674847907738518,
+    "base_rate": 0.49840754762333994,
+    "edge_bps": 0.34996433733590737,
+    "event_window": {
+     "n": 5381,
+     "logloss": 0.7049288735860743,
+     "acc": 0.5132874930310352,
+     "brier": 0.2555308210772958,
+     "auc": 0.5158888124390358,
+     "base_rate": 0.5056680914328192,
+     "edge_bps": 0.09391960606116286
+    },
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0352585027285663,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.085508593565269,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.053052633038115,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 6060,
+      "utc": "01:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1162984370222406,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 7860,
+      "utc": "02:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0951054278895198,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 9660,
+      "utc": "02:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.060650126878147,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 11460,
+      "utc": "03:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0900404319961652,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 13260,
+      "utc": "03:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0240621960169403,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 15060,
+      "utc": "04:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1026362770467446,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 16860,
+      "utc": "04:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0540523032802243,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 18660,
+      "utc": "05:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 20460,
+      "utc": "05:51:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.05465210542549,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 22260,
+      "utc": "06:21:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0958385194004001,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 24570,
+      "utc": "06:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0815765572796383,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 26370,
+      "utc": "07:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1200305392594494,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 28170,
+      "utc": "07:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1226963265717413,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 29970,
+      "utc": "08:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.066514858965189,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 31770,
+      "utc": "08:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0597171013188447,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 33570,
+      "utc": "09:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0881077361947535,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 35370,
+      "utc": "09:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0559183543988286,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 37170,
+      "utc": "10:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.038524092186124,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 38970,
+      "utc": "10:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0617830864858708,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 40770,
+      "utc": "11:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0952387172551346,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 42570,
+      "utc": "11:59:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0703802505680124,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 44370,
+      "utc": "12:29:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0526527649412711,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 46680,
+      "utc": "13:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0390572496485821,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 48480,
+      "utc": "13:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0335923856583837,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 50280,
+      "utc": "14:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0923729958944206,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 52080,
+      "utc": "14:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0749120889989086,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 53880,
+      "utc": "15:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0749787336817158,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 55680,
+      "utc": "15:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0792439933813829,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 57480,
+      "utc": "16:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.087507934049488,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 59280,
+      "utc": "16:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0931727320881082,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 61080,
+      "utc": "17:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1106336389836202,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 62880,
+      "utc": "17:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0974379917877752,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 64680,
+      "utc": "18:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0939058235989885,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 66480,
+      "utc": "18:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.106968181429219,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 68280,
+      "utc": "19:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1087009431822086,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 70080,
+      "utc": "19:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.078377612504888,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 71880,
+      "utc": "20:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.098037793933041,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 73680,
+      "utc": "20:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1022364089499006,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 75480,
+      "utc": "21:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0591839438563864,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 77280,
+      "utc": "21:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0225293683123724,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 79080,
+      "utc": "22:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0679143973041423,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 80880,
+      "utc": "22:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0592505885391936,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 82680,
+      "utc": "23:08:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.083709187129472,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 84480,
+      "utc": "23:38:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0299935727867897,
+      "feature": "log_depth5"
+     }
+    ],
+    "detection": {
+     "n_alarms": 47,
+     "n_false": 46,
+     "n_events": 1,
+     "n_detected": 1,
+     "delays_s": [
+      482.0
+     ]
+    },
+    "latency_pred": {
+     "p50_us": 37.375,
+     "p99_us": 8140.892160000037,
+     "p999_us": 181801.28821800408,
+     "max_us": 770429.625
+    },
+    "latency_step": {
+     "p50_us": 65.625,
+     "p99_us": 297398.9828200002,
+     "p999_us": 951872.9457020119,
+     "max_us": 7683956.459
+    },
+    "wall_s": 778.2638280391693
+   },
+   "2024-11-01": {
+    "n": 75182,
+    "logloss": 0.6668064754898769,
+    "acc": 0.5952754648719109,
+    "brier": 0.2366235694634224,
+    "auc": 0.6376623580793997,
+    "base_rate": 0.5037908009895986,
+    "edge_bps": 0.3855694331981401,
+    "alarms": [
+     {
+      "step": 660,
+      "utc": "00:21:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0579802892614871,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 2460,
+      "utc": "00:51:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 4260,
+      "utc": "01:21:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0585562523998464,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 10770,
+      "utc": "03:09:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 12570,
+      "utc": "03:39:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0248944067579673,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 14370,
+      "utc": "04:09:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.003071803404582,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16170,
+      "utc": "04:39:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0793549212850377,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 17970,
+      "utc": "05:09:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 19770,
+      "utc": "05:39:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0667477281453985,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 21570,
+      "utc": "06:09:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 23370,
+      "utc": "06:39:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0313579930884422,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 26190,
+      "utc": "07:26:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0060156150006399,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 27990,
+      "utc": "07:56:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0460770510687316,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 29880,
+      "utc": "08:28:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0431972353769359,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 31680,
+      "utc": "08:58:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0454370920261102,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 33480,
+      "utc": "09:28:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0611800844745936,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 35280,
+      "utc": "09:58:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0474209650582362,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 39180,
+      "utc": "11:03:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 41010,
+      "utc": "11:33:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 42960,
+      "utc": "12:06:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0321259439395878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 47250,
+      "utc": "13:17:31",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 66360,
+      "utc": "18:36:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0104313323947267,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 70800,
+      "utc": "19:50:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 72600,
+      "utc": "20:20:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0172788941507742,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 74400,
+      "utc": "20:50:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0454370920261102,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 76200,
+      "utc": "21:20:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0657237936772046,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78000,
+      "utc": "21:50:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 79800,
+      "utc": "22:20:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0558684244208372,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 81600,
+      "utc": "22:50:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0558684244208372,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 83400,
+      "utc": "23:20:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0243184436196082,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 85200,
+      "utc": "23:50:01",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0730833226673493,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 31,
+     "n_false": 31,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 37.917,
+     "p99_us": 7637.955329999981,
+     "p999_us": 169147.95375001282,
+     "max_us": 713583.125
+    },
+    "latency_step": {
+     "p50_us": 65.417,
+     "p99_us": 294368.51282999833,
+     "p999_us": 963253.6313660019,
+     "max_us": 3119178.25
+    },
+    "wall_s": 752.1240520477295
+   },
+   "2025-08-01": {
+    "n": 76642,
+    "logloss": 0.6609918416114692,
+    "acc": 0.6081913311239269,
+    "brier": 0.23386054575025247,
+    "auc": 0.6497976715278564,
+    "base_rate": 0.49568121917486496,
+    "edge_bps": 0.43475321831296826,
+    "alarms": [
+     {
+      "step": 2550,
+      "utc": "00:52:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0402327103413704,
+      "feature": "ofi1_5s_n"
+     },
+     {
+      "step": 9870,
+      "utc": "02:54:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.003071803404582,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 11670,
+      "utc": "03:24:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0321259439395878,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 13800,
+      "utc": "04:00:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 16350,
+      "utc": "04:42:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 19260,
+      "utc": "05:31:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 21060,
+      "utc": "06:01:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0213746320235504,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 34530,
+      "utc": "09:45:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0072315371816203,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 36330,
+      "utc": "10:15:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0138231153206194,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 40590,
+      "utc": "11:26:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 49200,
+      "utc": "13:50:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.1174754903868656,
+      "feature": "ofi1_5s_n"
+     },
+     {
+      "step": 76830,
+      "utc": "21:30:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 78630,
+      "utc": "22:00:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0014719057980288,
+      "feature": "log_msgs_10s"
+     },
+     {
+      "step": 82050,
+      "utc": "22:57:32",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0056016188793186,
+      "feature": "log_depth5"
+     },
+     {
+      "step": 85200,
+      "utc": "23:50:02",
+      "detector": "rolling_ks_calibrated",
+      "stat": 1.0112632791501344,
+      "feature": "log_msgs_10s"
+     }
+    ],
+    "detection": {
+     "n_alarms": 15,
+     "n_false": 15,
+     "n_events": 0,
+     "n_detected": 0,
+     "delays_s": []
+    },
+    "latency_pred": {
+     "p50_us": 37.083,
+     "p99_us": 7610.726160000063,
+     "p999_us": 163083.88770200463,
+     "max_us": 707839.0
+    },
+    "latency_step": {
+     "p50_us": 64.875,
+     "p99_us": 285609.9903200003,
+     "p999_us": 917467.2865320117,
+     "max_us": 3669154.542
+    },
+    "wall_s": 727.5800380706787
+   }
+  }
+ }
+}
