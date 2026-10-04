@@ -535,8 +535,170 @@
   "status": "post-hoc exploratory",
   "source": "eval/results/head_usage.md"
  },
+ "disclosure": {
+  "exposed_days": [
+   "2025-08-01"
+  ],
+  "clean21": {
+   "spike-static_snorm": {
+    "mean": -0.0008742072640546922,
+    "ci97_5": [
+     -0.004493530341506241,
+     0.002095429361361218
+    ],
+    "days_better": 9,
+    "n_days": 21,
+    "role": "H1"
+   },
+   "spike-ks_refit": {
+    "mean": -0.027955446673377574,
+    "ci97_5": [
+     -0.0319611399564524,
+     -0.024466429412041333
+    ],
+    "days_better": 21,
+    "n_days": 21,
+    "role": "H2"
+   },
+   "spike_gate-static_snorm": {
+    "mean": -0.00927397725425266,
+    "ci97_5": [
+     -0.013164602005589169,
+     -0.006109576752695773
+    ],
+    "days_better": 21,
+    "n_days": 21,
+    "role": "H1b"
+   },
+   "spike_gate-ks_refit": {
+    "mean": -0.03635521666357554,
+    "ci97_5": [
+     -0.040783241341665055,
+     -0.032630826010677974
+    ],
+    "days_better": 21,
+    "n_days": 21,
+    "role": "H2b"
+   },
+   "spike_gate-regime_gated": {
+    "mean": 0.0005966173165433871,
+    "ci97_5": [
+     0.00031109147438607105,
+     0.0009627955472082666
+    ],
+    "days_better": 4,
+    "n_days": 21,
+    "role": "H3"
+   },
+   "regime_gated-static_snorm": {
+    "mean": -0.009870594570796047,
+    "ci97_5": [
+     -0.013951384624508343,
+     -0.006653204895474376
+    ],
+    "days_better": 21,
+    "n_days": 21,
+    "role": "secondary"
+   },
+   "static_gbdt-static_snorm": {
+    "mean": -0.005331280319974558,
+    "ci97_5": [
+     -0.009737094212521261,
+     -0.001770852197209493
+    ],
+    "days_better": 15,
+    "n_days": 21,
+    "role": "secondary"
+   },
+   "static_wf-static_snorm": {
+    "mean": -0.0007697286092036503,
+    "ci97_5": [
+     -0.0028035997742493967,
+     0.001615329773432632
+    ],
+    "days_better": 11,
+    "n_days": 21,
+    "role": "secondary"
+   },
+   "regime_gated-static_enorm": {
+    "mean": -0.008253694227531678,
+    "ci97_5": [
+     -0.012093794545998605,
+     -0.005670352111450285
+    ],
+    "days_better": 21,
+    "n_days": 21,
+    "role": "post-hoc ablation"
+   },
+   "static_enorm-static_snorm": {
+    "mean": -0.00161690034326437,
+    "ci97_5": [
+     -0.004660736003410852,
+     0.0010197194845699064
+    ],
+    "days_better": 12,
+    "n_days": 21,
+    "role": "post-hoc ablation"
+   },
+   "spike_gate-static_enorm": {
+    "mean": -0.00765707691098829,
+    "ci97_5": [
+     -0.011295854002557181,
+     -0.005209321709269409
+    ],
+    "days_better": 21,
+    "n_days": 21,
+    "role": "post-hoc ablation"
+   }
+  },
+  "source": "eval/results/v2_holdout_sensitivity.json (post-hoc exploratory; eval/PREREGISTRATION.md Amendment 2)",
+  "scoring": "Log-loss scores P(up | the 10-s mid move is non-zero): steps whose mid is unchanged after 10 s (ties) are excluded from the loss. The trading edge includes every signal, ties included.",
+  "tie_rate_by_day": {
+   "2024-01-01": 0.20710031585449715,
+   "2024-02-01": 0.1252578701383466,
+   "2024-03-01": 0.061469247893332093,
+   "2024-04-01": 0.09506049092053427,
+   "2024-05-01": 0.03023345260434271,
+   "2024-06-01": 0.5297614191307591,
+   "2024-07-01": 0.1712607373046306,
+   "2024-08-01": 0.07064184897259874,
+   "2024-09-01": 0.13219268289840208,
+   "2024-10-01": 0.14810195923029407,
+   "2024-11-01": 0.12375291375291375,
+   "2024-12-01": 0.28940896747048334,
+   "2025-01-01": 0.27726430377976435,
+   "2025-02-01": 0.25959510017599274,
+   "2025-03-01": 0.12232077296938193,
+   "2025-04-01": 0.12497814659844521,
+   "2025-05-01": 0.26664646441100714,
+   "2025-06-01": 0.3982563899346146,
+   "2025-07-01": 0.34575757575757576,
+   "2025-08-01": 0.10672618561987902,
+   "2025-09-01": 0.15114219114219113,
+   "2025-10-01": 0.25385780885780884,
+   "2025-11-01": 0.47527360458746604,
+   "2025-12-01": 0.05195925312944358,
+   "2026-01-01": 0.5749018053823471,
+   "2026-02-01": 0.07255329316192496,
+   "2026-03-01": 0.08065456071237091,
+   "2026-04-01": 0.10542080910033916,
+   "2026-05-01": 0.2846386946386946,
+   "2026-06-01": 0.15279898367113837,
+   "2026-07-01": 0.11132867132867133,
+   "2026-08-01": 0.6802410284502151,
+   "2026-09-01": 0.19975524475524475,
+   "2026-10-01": 0.21188811188811188
+  }
+ },
  "edge": {
   "status": "pre-registered secondary",
+  "policy_status": {
+   "static_snorm": "baseline",
+   "ks_refit": "pre-registered secondary",
+   "regime_gated": "pre-registered secondary",
+   "static_enorm": "post-hoc exploratory",
+   "spike_gate": "post-dev secondary"
+  },
   "source": "eval/results/v2_holdout.json, v2_holdout_posthoc_ablation.json",
   "fees_bps": {
    "regular": {

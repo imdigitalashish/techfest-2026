@@ -29,6 +29,9 @@ ROWS = [  # (policy, source file, display name, what it is, status of its Δ vs 
     ("regime_gated", "v2_holdout", "Regime gate", "3 volatility-regime heads, gate on trailing 10-min vol", PRE2),
 ]
 EDGE_POLICIES = ["static_snorm", "ks_refit", "static_enorm", "regime_gated", "spike_gate"]
+# Provenance of each POLICY/RESULT shown in the execution panel (the edge METRIC itself is pre-registered secondary).
+POLICY_STATUS = {"static_snorm": "baseline", "ks_refit": PRE2, "regime_gated": PRE2,
+                 "static_enorm": "post-hoc exploratory", "spike_gate": POSTDEV}
 
 
 def _dc(s: dict, ref: str) -> dict | None:
@@ -54,6 +57,17 @@ def main() -> None:
                   (ER / "head_usage.md").read_text())
     usage = {"low": float(m.group(1)), "mid": float(m.group(2)), "high": float(m.group(3)),
              "status": POSTHOC, "source": "eval/results/head_usage.md"}
+    sens = json.loads((ER / "v2_holdout_sensitivity.json").read_text())
+    clean = {f"{r['policy']}-{r['ref']}": {"mean": r["clean21"]["mean"], "ci97_5": r["clean21"]["ci97.5"],
+                                           "days_better": r["clean21"]["days_better"], "n_days": r["clean21"]["n_days"],
+                                           "role": r["hypothesis"]}
+             for r in sens["rows"]}
+    disclosure = {"exposed_days": sens["exposed_days"], "clean21": clean,
+                  "source": "eval/results/v2_holdout_sensitivity.json (post-hoc exploratory; eval/PREREGISTRATION.md Amendment 2)",
+                  "scoring": "Log-loss scores P(up | the 10-s mid move is non-zero): steps whose mid is unchanged after "
+                             "10 s (ties) are excluded from the loss. The trading edge includes every signal, ties included.",
+                  "tie_rate_by_day": {d: r["tie_rate"] for src in ("v2_dev", "v2_holdout")
+                                      for d, r in json.loads((ER / f"{src}.json").read_text())["regime_by_day"].items()}}
     edge = {}
     for pol in EDGE_POLICIES:
         src = "v2_holdout" if pol in J["v2_holdout"]["summary"] else "v2_holdout_posthoc_ablation"
@@ -68,7 +82,8 @@ def main() -> None:
     out = {"status_note": "Committed held-out results (22 first-of-month days 2025-01 … 2026-10; trained on 2023, "
                           "tuned on 2024). Δ = per-step log-loss difference, paired day-cluster bootstrap 97.5% CI.",
            "rows": rows, "h2": {"spike_vs_ks_refit": h2, "status": PRE1}, "head_usage": usage,
-           "edge": {"status": PRE2, "source": "eval/results/v2_holdout.json, v2_holdout_posthoc_ablation.json",
+           "disclosure": disclosure,
+           "edge": {"status": PRE2, "policy_status": POLICY_STATUS, "source": "eval/results/v2_holdout.json, v2_holdout_posthoc_ablation.json",
                     "fees_bps": J["v2_holdout"]["meta"]["cfg"]["fees_bps"], "policies": edge},
            "regime_by_day": {d: regime[d]["rv_600s_bps_mean"] for d in by_rv},
            "replay_days": replay,

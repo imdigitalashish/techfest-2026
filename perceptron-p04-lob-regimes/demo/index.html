@@ -32,6 +32,7 @@ input[type=range]{width:100%;accent-color:var(--acc)}
 .end{font-size:18px;font-weight:700;text-align:center;padding:10px;border:1px dashed var(--acc);border-radius:8px;margin-top:10px}
 footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
 #building{color:var(--acc)}
+.disclose{font-size:12px;color:var(--mut);border:1px dashed var(--line);border-radius:8px;padding:6px 10px;margin-top:6px}
 .errbox{border:1px solid #ff6b6b;background:#2a1517;color:#ffd6d6;border-radius:8px;padding:10px 14px}
 </style>
 </head>
@@ -51,6 +52,7 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
     <div>
       <div class="tscroll"><table id="sb-table"><thead><tr><th>policy</th><th>status</th><th class="num">log-loss</th><th class="num">Δ vs static [97.5% CI]</th><th style="width:110px">Δ, lower is better</th><th class="num">days better</th><th class="num">alarms/day</th></tr></thead><tbody></tbody></table></div>
       <div class="verdict" id="sb-verdict"></div>
+      <div class="disclose" id="sb-disclose"></div>
     </div>
     <div>
       <h3>Is it just one better head? <span class="chip c-posthoc">post-hoc exploratory</span></h3>
@@ -103,6 +105,7 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
   <h2>4 · Can you trade it? <span class="chip c-pre2">pre-registered secondary</span></h2>
   <div class="mut">Signal = sign(p − 0.5) every second, 10-second hold, pooled over 22 held-out days. Fees: Binance USDⓈ-M official schedule (accessed 2026-10-04).</div>
   <div class="kn" style="margin-top:8px"><span class="mut">fee tier:</span><span id="k-tier"></span><span class="mut" style="margin-left:14px">delay:</span><span id="k-delay"></span><span class="mut" style="margin-left:14px">policy:</span><span id="k-pol"></span></div>
+  <div id="exec-prov" style="margin-top:4px"></div>
   <table id="exec-table" style="margin-top:6px"><tbody></tbody></table>
   <div class="end" id="exec-end">Not tradable as a taker after fees.</div>
 </section>
@@ -172,6 +175,9 @@ function drawScoreboard(){
     g.fillStyle="#000";g.fillText(`${n}-vol head ${p.toFixed(1)}%`,x+6,21);x+=ww;});
   $("#usage-note").innerHTML=`Share of 1-s steps on held-out days, from <code>${u.source}</code>. All three heads do real work, and every head used alone is worse than the gate.`;
   $("#rule").textContent=SB.replay_rule;
+  const D=SB.disclosure,cg=D.clean21["regime_gated-static_snorm"],ck=D.clean21["spike-static_snorm"];
+  $("#sb-disclose").innerHTML=`<b>Disclosures.</b> One held-out day, ${D.exposed_days.join(", ")}, was already evaluated in an earlier (v1) run. Excluding it changes no conclusion: regime gate vs static on the 21 clean days is ${f4(cg.mean)} [${f4(cg.ci97_5[0])}, ${f4(cg.ci97_5[1])}], better on ${cg.days_better}/${cg.n_days}; H1 is still not supported (${f4(ck.mean)} [${f4(ck.ci97_5[0])}, ${f4(ck.ci97_5[1])}]) ${chip("post-hoc exploratory")}. `+
+    `${D.scoring}`;
 }
 
 /* ---------- 2. replay ---------- */
@@ -198,7 +204,8 @@ function hhmm(s){s=((s%86400)+86400)%86400;return String(Math.floor(s/3600)).pad
 function drawReplay(){
   const cv=$("#rp"),[g,w,h]=ctx2d(cv);const d=dayData(DAY);g.fillStyle=C("--panel");g.fillRect(0,0,w,h);
   const tbl=$("#rp-totals");tbl.dataset.selectedDay=DAY;tbl.dataset.payloadDay=d?d.day:"";tbl.dataset.refDay="";
-  $("#rp-showing").textContent=d?`Showing ${d.day}`:"";
+  const tie=SB.disclosure.tie_rate_by_day[DAY];
+  $("#rp-showing").textContent=d?`Showing ${d.day}.`+(tie!=null?` Log-loss is scored on non-zero 10-s moves; ${(tie*100).toFixed(1)}% of this day's steps are ties (mid unchanged after 10 s) and are excluded.`:""):"";
   const er=$("#rp-error");if(!d&&RP_ERR[DAY]){er.hidden=false;er.textContent=`Replay for ${DAY} could not be loaded (${RP_ERR[DAY]}). The committed scoreboard, dial sweep and fee panels below still work. Screenshots of every screen: demo/fallback/. Rebuild: demo/run.sh.`;}else{er.hidden=true;er.textContent="";}
   if(!d){g.font="15px -apple-system,Helvetica,Arial,sans-serif";
     if(RP_ERR[DAY]){g.fillStyle=C("--ks");g.fillText(`Replay for ${DAY} failed: ${RP_ERR[DAY]}`,20,40);g.fillStyle=C("--mut");
@@ -345,6 +352,7 @@ function drawExec(){
   const names={static_snorm:"Static",ks_refit:"KS → refit",static_enorm:"One EWMA head",regime_gated:"Regime gate",spike_gate:"Gate + shrinkage"};
   knob($("#k-pol"),Object.keys(SB.edge.policies).map(k=>[k,names[k]||k]),()=>EPOL,v=>EPOL=v);
   const e=SB.edge.policies[EPOL][DELAY],fz=SB.edge.fees_bps[TIER],tb=$("#exec-table tbody");
+  $("#exec-prov").innerHTML=`metric ${chip(SB.edge.status)} · this policy's result ${chip(SB.edge.policy_status[EPOL])}`;
   const row=(a,b,c="")=>`<tr><td>${a}</td><td class="num">${b}</td><td class="mut">${c}</td></tr>`;
   tb.innerHTML=row("gross edge, mid to mid",(e.gross_mid_bps>=0?"+":"")+e.gross_mid_bps.toFixed(3)+" bps")+
     row("taker edge before fees (cross the spread both legs)",(e.taker_bps>=0?"+":"")+e.taker_bps.toFixed(3)+" bps",`mean spread ${e.spread_bps.toFixed(3)} bps`)+

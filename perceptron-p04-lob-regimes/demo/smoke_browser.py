@@ -160,6 +160,22 @@ def main(url: str) -> int:
             check(sw[0] <= sw[1], f"{w}x{h}: page width {sw[0]} <= viewport {sw[1]}")
             ctx.close()
 
+        print("[b7] provenance follows the selected policy; disclosures visible")
+        ctx = br.new_context(viewport={"width": 1440, "height": 900})
+        p = page_with(ctx)
+        p.goto(url)
+        p.wait_for_selector("body[data-ready='1']", timeout=10000)
+        for name, want in (("One EWMA head", "post-hoc exploratory"), ("Gate + shrinkage", "post-dev secondary"),
+                           ("Regime gate", "pre-registered secondary"), ("Static", "baseline")):
+            p.locator("#k-pol button", has_text=name).first.click()
+            prov = p.locator("#exec-prov").inner_text()
+            check(want in prov and "metric" in prov, f"fee panel, {name}: policy chip '{want}'")
+        dis = p.locator("#sb-disclose").inner_text()
+        check("2025-08-01" in dis and "21 clean days" in dis and "ties" in dis, "disclosure: prior exposure, clean-21, tie scoring")
+        wait_day(p, dev)
+        check("ties" in p.locator("#rp-showing").inner_text(), "replay states the tie rate of the shown day")
+        ctx.close()
+
         print("[b6] failure states are visible and committed panels survive")
         ctx = br.new_context(viewport={"width": 1440, "height": 900})
         ctx.route("**/.cache/replay_*.json", lambda r: r.fulfill(status=404, body="missing"))
