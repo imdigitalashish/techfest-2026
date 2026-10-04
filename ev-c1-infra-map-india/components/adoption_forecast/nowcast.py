@@ -20,6 +20,10 @@ def P(y, m): return pd.Period(f"{y}-{m:02d}", "M")
 def ytd(y, upto=9): return bev.loc[:, P(y, 1):P(y, upto)].sum(1)
 def annual(y): return bev.loc[:, P(y, 1):P(y, 12)].sum(1)
 def nowcast(y, method, w_state=0.5):
+    """Full-year estimate = YTD actuals + a non-negative remaining-year increment (review 2026-10-04: never below YTD)."""
+    full = _full(y, method, w_state)
+    return ytd(y) + (full - ytd(y)).clip(lower=0)
+def _full(y, method, w_state=0.5):
     if method == "seasonal":
         fs = [(annual(t) - ytd(t)) / annual(t).replace(0, np.nan) for t in (y - 3, y - 2, y - 1)]
         fn = np.mean([(annual(t).sum() - ytd(t).sum()) / annual(t).sum() for t in (y - 3, y - 2, y - 1)])
@@ -35,19 +39,25 @@ rows = []
 for m in ("seasonal", "yoy", "ensemble"):
     for y in (2023, 2024, 2025):
         f, a = nowcast(y, m), annual(y)
+        assert (f >= ytd(y) - 1e-9).all(), "nowcast below year-to-date actuals"
+        q4f, q4a = f - ytd(y), a - ytd(y)  # remaining-year (Oct-Dec) increment: the part actually forecast
         rows.append({"method": m, "year": y, "wape": round(float((f - a).abs().sum() / a.sum()), 4),
-                     "national_err": round(float(f.sum() / a.sum() - 1), 4), "nowcast_national": int(f.sum()), "actual_national": int(a.sum())})
+                     "national_err": round(float(f.sum() / a.sum() - 1), 4), "q4_national_err": round(float(q4f.sum() / q4a.sum() - 1), 4),
+                     "nowcast_national": int(f.sum()), "actual_national": int(a.sum())})
 bt = pd.DataFrame(rows)
 summ = bt.groupby("method").agg(mean_wape=("wape", "mean"), mean_abs_nat_err=("national_err", lambda s: float(np.mean(np.abs(s)))),
-                                 max_abs_nat_err=("national_err", lambda s: float(np.max(np.abs(s))))).round(4)
+                                 max_abs_nat_err=("national_err", lambda s: float(np.max(np.abs(s)))),
+                                 mean_abs_q4_err=("q4_national_err", lambda s: float(np.mean(np.abs(s))))).round(4)
 best = summ.mean_wape.idxmin()
-now = pd.DataFrame({m: nowcast(2026, m) for m in ("seasonal", "yoy", "ensemble")}).round(0)
+now = pd.DataFrame({m: nowcast(2026, m) for m in ("seasonal", "yoy", "ensemble")})
+assert (now.ge(ytd(2026), axis=0)).all().all(), "2026 nowcast below YTD"
+now = now.round(0)
 now["ytd_jan_sep_2026"] = ytd(2026); now["actual_2025"] = annual(2025)
 now = now.sort_values("ensemble", ascending=False)
 os.makedirs(f"{R}/eval/results", exist_ok=True)
 now.to_csv(f"{R}/eval/results/c9_nowcast_2026.csv", index_label="state")
 bt.to_csv(f"{R}/eval/results/c9_nowcast_backtest.csv", index=False)
-# 12-month forecast: DEV/HOLDOUT for the main candidates (frozen eval functions)
+# 12-month forecast: DEV/HOLDOUT for the main candidates (frozen eval functions; v2 split kept for history, v3 purged split)
 allv = E.load_monthly("all")
 cands = {"naive12": {"method": "naive12"}, "pooled_growth_nat_0.5": {"method": "pooled_growth", "w": 0.0, "phi": 0.5},
          "share_logit_k2_0.5": {"method": "share_logit", "k": 2, "w": 0.5, "phi": 0.5},
@@ -55,7 +65,12 @@ cands = {"naive12": {"method": "naive12"}, "pooled_growth_nat_0.5": {"method": "
                                                               {"method": "share_logit", "k": 2, "w": 0.5, "phi": 0.5}]}}
 fc = {k: {"dev_wape": round(float(np.mean([E.score(bev, allv, o, p)[0] for o in E.DEV])), 4),
           "holdout_wape": round(float(np.mean([E.score(bev, allv, o, p)[0] for o in E.HOLD])), 4)} for k, p in cands.items()}
+import eval_monthly_v3 as E3  # noqa: E402
+fc3 = {k: {"dev_wape": round(float(np.mean([E3.score(bev, allv, o, p)[0] for o in E3.DEV])), 4),
+           "holdout_wape_retrospective": round(float(np.mean([E3.score(bev, allv, o, p)[0] for o in E3.HOLD])), 4)} for k, p in cands.items()}
 s = {"nowcast_backtest_by_method": summ.to_dict(orient="index"), "nowcast_best_method": best,
+     "nowcast_backtest_note": "the three backtest years were also used to choose the method (selection-period errors)",
+     "forecast_12m_v3_purged": fc3,
      "nowcast_2026_national": {m: int(now[m].sum()) for m in ("seasonal", "yoy", "ensemble")},
      "ytd_jan_sep_2026_national": int(ytd(2026).sum()), "actual_2025_national": int(annual(2025).sum()),
      "forecast_12m_dev_holdout": fc, "forecast_12m_selected": "share_logit_k2_0.5"}

@@ -1,0 +1,10 @@
+timestamp	commit	hypothesis	metric_dev_wape_12m	delta_vs_best	kept	notes
+2026-10-04T14:13:29	22b6d45	baseline: naive12 (next 12 months = last 12 months)	0.3598		yes	dev_national_err_mean=-0.355
+2026-10-04T14:13:31	22b6d45	pooled growth, national only, damped 0.5	0.2306	-0.1292	yes	dev_national_err_mean=+0.152
+2026-10-04T14:13:32	22b6d45	pooled growth, 50:50 state/national, damped 0.5	0.2625	+0.0319	no	dev_national_err_mean=+0.204
+2026-10-04T14:13:33	22b6d45	pooled growth, national only, undamped	0.6703	+0.4397	no	dev_national_err_mean=+0.659
+2026-10-04T14:13:35	22b6d45	EV-share logit trend k=2, pooled 50:50, damped 0.5	0.1772	-0.0534	yes	dev_national_err_mean=+0.073
+2026-10-04T14:13:37	22b6d45	EV-share logit trend k=2, pooled 50:50, undamped	0.6371	+0.4599	no	dev_national_err_mean=+0.631
+2026-10-04T14:13:39	22b6d45	EV-share logit trend k=3, pooled 50:50, damped 0.5	0.2889	+0.1117	no	dev_national_err_mean=+0.110
+2026-10-04T14:13:41	22b6d45	ensemble: pooled growth (nat, 0.5) + share-logit (k2, 50:50, 0.5)	0.2004	+0.0232	no	dev_national_err_mean=+0.113
+2026-10-04T14:13:44	22b6d45	ensemble: pooled growth (nat, 1.0) + share-logit (k2, 50:50, 1.0)	0.6506	+0.4734	no	dev_national_err_mean=+0.645
