@@ -52,3 +52,33 @@ def test_grid_ef_matches_cea_table_s(db):
     assert db["energy.electricity.in.grid_wavg_generation.fy2025_26"].value == 0.675
     derived = db["energy.electricity.in.grid_wavg_at_plug.fy2025_26"].value
     assert derived == pytest.approx(0.675 / (1 - 0.1763), abs=1e-4)
+
+
+def test_car_verification_within_2p5_percent(db):
+    res = run_scenario(db, load_scenarios()["car_icct2021_replication"], n=300)
+    published = {"petrol": 228, "diesel": 245, "cng": 226, "bev": 185}
+    for pid, pub in published.items():
+        assert abs(res["products"][pid]["total"] - pub) / pub < 0.025
+
+
+def test_scenario_inheritance_applies_overrides(db):
+    scs = load_scenarios()
+    base, om = scs["in2026_cea_average"], scs["in2026_cea_operating_margin"]
+    ev_b = next(p for p in base.products if p.id == "ev_scooter")
+    ev_o = next(p for p in om.products if p.id == "ev_scooter")
+    assert ev_b.params["ef_gen"].endswith("grid_wavg_generation.fy2025_26")
+    assert ev_o.params["ef_gen"].endswith("grid_om.fy2025_26")
+    assert ev_b.params["elec"] == ev_o.params["elec"]
+
+
+def test_uniform_ranges_are_honoured(db):
+    import numpy as np
+    rec = db["use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity"]
+    x = rec.sample(2000, np.random.default_rng(0))
+    assert x.min() >= 3.7 and x.max() <= 4.13
+
+
+def test_gas_basis_flags(db):
+    scs = load_scenarios()
+    assert run_scenario(db, scs["car_icct2021_replication"], n=100)["harmonized"] is True
+    assert run_scenario(db, scs["in2026_cea_average"], n=100)["harmonized"] is False

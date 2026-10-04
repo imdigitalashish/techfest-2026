@@ -81,7 +81,7 @@
   value: 0.64
   unit: kg CO2e/L
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-CH4-GWP20
   boundary: "Well-to-tank: crude extraction, transport, refining, distribution; ethanol production share."
   geography: IN
   reference_year: "2021-2032 average"
@@ -94,13 +94,15 @@
   pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
   status: verified
   notes: "Fact sheet states methane at 20-year GWP. Model-based secondary value; primary refinery data (IOCL/BPCL/HPCL BRSR) is a data gap."
+  allocation: inherited-unspecified
+
 - id: fuels.petrol.ttw.in.icct2021
   layer: fuels
   name: Petrol tank-to-wheel GHG per litre, India 2021-2032 blend path (ICCT)
   value: 2.17
   unit: kg CO2e/L
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-CH4-GWP20
   boundary: "Tank-to-wheel, fossil share of the ethanol-blended fuel."
   geography: IN
   reference_year: "2021-2032 average"

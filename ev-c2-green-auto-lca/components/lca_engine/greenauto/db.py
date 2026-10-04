@@ -24,12 +24,26 @@ PEDIGREE_V1 = {
 BASIC_UNCERTAINTY = 1.05
 
 
+# Gas-basis vocabulary -> family used to check that a total is characterised on one basis.
+GAS_BASIS_FAMILY = {
+    "CO2": "CO2-only",
+    "CO2e-AR6-GWP100": "GWP100", "CO2e-AR5-GWP100": "GWP100", "CO2e-GWP100": "GWP100",
+    "CO2e-CH4-GWP20": "GWP20(CH4)",
+    "CO2e-unspecified": "unspecified",
+    "n/a": None,
+}
+ALLOCATION = ("n/a", "inherited-unspecified", "mass", "energy", "economic", "system-expansion", "cut-off",
+              "avoided-burden", "hybrid-cut-off-avoided-burden")
+
+
 class Pedigree(BaseModel):
     reliability: int = Field(ge=1, le=5)
     completeness: int = Field(ge=1, le=5)
     temporal: int = Field(ge=1, le=5)
     geographical: int = Field(ge=1, le=5)
     technological: int = Field(ge=1, le=5)
+    scored_by: str = "lead agent, 2026-10-04 (single scorer, unreviewed)"
+    rationale: str = ""
 
     def sigma(self, basic: float = BASIC_UNCERTAINTY) -> float:
         """Lognormal sigma (of ln X): sqrt(sum ln(U_i)^2)/2, U_i incl. basic factor (pedigree_matrix pm.py)."""
@@ -68,6 +82,22 @@ class Record(BaseModel):
     status: Literal["verified", "derived", "assumption", "synthetic", "UNVERIFIED"]
     derivation: str = ""
     notes: str = ""
+    allocation: str = "n/a"            # how the source handled multi-output processes (see ALLOCATION)
+    eol_included: Optional[bool] = None  # True if the factor already contains end-of-life/recycling (no extra EOL stage)
+
+    @field_validator("gas_basis")
+    @classmethod
+    def _gas_basis(cls, v: str) -> str:
+        if v not in GAS_BASIS_FAMILY:
+            raise ValueError(f"unknown gas_basis {v!r}; allowed: {sorted(GAS_BASIS_FAMILY)}")
+        return v
+
+    @field_validator("allocation")
+    @classmethod
+    def _allocation(cls, v: str) -> str:
+        if v not in ALLOCATION:
+            raise ValueError(f"unknown allocation {v!r}; allowed: {ALLOCATION}")
+        return v
 
     @field_validator("id")
     @classmethod
@@ -88,11 +118,28 @@ class Record(BaseModel):
     def is_scalar(self) -> bool:
         return isinstance(self.value, (int, float))
 
+    @property
+    def gas_family(self) -> Optional[str]:
+        return GAS_BASIS_FAMILY[self.gas_basis]
+
     def log_sigma(self) -> float:
         u = self.uncertainty
-        if u.distribution == "range95" and u.low and u.high:
+        if u.distribution in ("range95", "lognormal") and u.low and u.high:
             return math.log(u.high / u.low) / (2 * 1.96)
         return self.pedigree.sigma()
+
+    def sample(self, n: int, rng) -> "Any":
+        """Draw n samples. Stated source ranges are honoured; otherwise a lognormal around the published value
+        (taken as the median) with sigma from the pedigree scores."""
+        import numpy as np
+        v, u = float(self.value), self.uncertainty
+        if u.distribution in ("uniform", "range") and u.low is not None and u.high is not None:
+            return rng.uniform(u.low, u.high, n)
+        if u.distribution == "triangular" and u.low is not None and u.high is not None:
+            return rng.triangular(u.low, v, u.high, n)
+        if u.distribution == "normal" and u.low is not None and u.high is not None:
+            return rng.normal(v, (u.high - u.low) / (2 * 1.96), n)
+        return v * np.exp(rng.normal(0.0, self.log_sigma(), n))
 
 
 class Source(BaseModel):
@@ -141,5 +188,8 @@ class FactorDB:
         for r in self.records.values():
             by_status[r.status] = by_status.get(r.status, 0) + 1
             by_layer[r.layer] = by_layer.get(r.layer, 0) + 1
+        by_gas: dict[str, int] = {}
+        for r in self.records.values():
+            by_gas[r.gas_basis] = by_gas.get(r.gas_basis, 0) + 1
         return {"records": len(self.records), "sources": len(self.sources), "by_status": by_status,
-                "by_layer": by_layer}
+                "by_layer": by_layer, "by_gas_basis": by_gas}

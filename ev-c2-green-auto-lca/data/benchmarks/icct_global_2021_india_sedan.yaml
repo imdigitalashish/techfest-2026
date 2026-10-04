@@ -1,0 +1,25 @@
+# Published India sedan life-cycle GHG results (ICCT 2021) — targets for Verification C/D.
+# Totals: quoted from the white paper text (opened). Stage values: companion fact sheet Figure 1, digitized
+# (data/benchmarks/icct_india_factsheet_2021_fig1_sedan.yaml). GWP: AR5 GWP100 (CH4 = 30, N2O = 265).
+study:
+  id: icct-global-lca-2021-india-sedan
+  source_id: icct-global-lca-2021
+  locator: "India chapter, pp. 45-46"
+  functional_unit: 1 vehicle-km
+  unit: g CO2e/km
+  boundary: "Vehicle production + recycling (hybrid cut-off/avoided burden), battery production, maintenance, fuel/electricity production (WTT, electricity incl. T&D and IPCC life-cycle technology factors), tailpipe (TTW)."
+  geography: IN
+  registration_year: "2021"
+  lifetime_km: 165000
+  gwp: "AR5 GWP100 (20-year methane view reported separately)"
+results:
+  - {vehicle: gasoline, total: 228, quote: "228 g CO2 eq./km for sedan"}
+  - {vehicle: diesel, total: 245, quote: "245 g CO2 eq./km for sedan"}
+  - {vehicle: cng, total: 226, quote: "226 g CO2 eq./km for sedan"}
+  - {vehicle: bev_steps, total: 185, quote: "150–185 g CO2 eq./km for the sedan segment", note: "upper end = IEA STEPS grid"}
+  - {vehicle: bev_sds, total: 150, quote: "150–185 g CO2 eq./km for the sedan segment", note: "lower end = IEA SDS grid"}
+reconciliation_notes:
+  - "Digitized stages reproduce the quoted totals within 0.2 g/km (petrol 227.9, diesel 244.9, CNG 225.9, BEV 184.9)."
+  - "Petrol: digitized WTT 43.98 and TTW 147.92 g/km both imply ~6.87 L/100 km vs 6.8 tabulated (Table A.8) — consistent with rounding of an MIDC x 1.34 value."
+  - "Diesel: digitized TTW 159.92 g/km implies 6.22 L/100 km while WTT 46.98 implies 6.02 L/100 km (tabulated 6.0) — not reconcilable from the tabulated factors alone; ~2 % residual."
+  - "Hatchback BEV: Appendix A.2 text gives 21.2 kWh for the Tata Tigor but 16.6 kWh/100 km is reproduced only with the 21.5 kWh stated in Table 2.4's footnote (21.5/(212 x 0.7) x 1.15 = 16.66)."

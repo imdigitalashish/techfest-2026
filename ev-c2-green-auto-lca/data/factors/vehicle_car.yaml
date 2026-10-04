@@ -24,7 +24,7 @@
   value: 5.2
   unit: kg CO2e/kg
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "Production + recycling (time-sensitive hybrid of cut-off and avoided burden, Ricardo AEA), excl. battery; t CO2e per t vehicle."
   geography: EU
   reference_year: "2019"
@@ -36,13 +36,16 @@
   pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 4, technological: 2}
   status: verified
   notes: "European proxy (no India value): India steel/aluminium routes and a coal-heavy grid likely make Indian production more GHG-intensive — data gap."
+  allocation: hybrid-cut-off-avoided-burden
+  eol_included: true
+
 - id: vehicle.car.production_intensity.diesel.icct2021
   layer: vehicle
   name: Glider + powertrain production and recycling GHG per tonne of vehicle — diesel ICEV
   value: 5.2
   unit: kg CO2e/kg
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "As gasoline record."
   geography: EU
   reference_year: "2019"
@@ -53,13 +56,16 @@
   accessed: 2026-10-04
   pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 4, technological: 2}
   status: verified
+  allocation: hybrid-cut-off-avoided-burden
+  eol_included: true
+
 - id: vehicle.car.production_intensity.cng.icct2021
   layer: vehicle
   name: Glider + powertrain production and recycling GHG per tonne of vehicle — CNG ICEV
   value: 5.5
   unit: kg CO2e/kg
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "As gasoline record (includes the CNG tank)."
   geography: EU
   reference_year: "2019"
@@ -70,13 +76,16 @@
   accessed: 2026-10-04
   pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 4, technological: 2}
   status: verified
+  allocation: hybrid-cut-off-avoided-burden
+  eol_included: true
+
 - id: vehicle.car.production_intensity.bev_wo_battery.icct2021
   layer: vehicle
   name: Glider + powertrain production and recycling GHG per tonne of vehicle — BEV without battery
   value: 4.7
   unit: kg CO2e/kg
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "As gasoline record; traction battery accounted separately."
   geography: EU
   reference_year: "2019"
@@ -87,13 +96,16 @@
   accessed: 2026-10-04
   pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 4, technological: 2}
   status: verified
+  allocation: hybrid-cut-off-avoided-burden
+  eol_included: true
+
 - id: battery.li_ion.production_intensity.in.icct2021_car
   layer: battery
   name: Li-ion (NMC622-graphite) battery production GHG used for cars in India (China factor)
   value: 68
   unit: kg CO2e/kWh
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "Cradle-to-gate battery pack (GREET 2020, regionally adjusted); no second life or recycling."
   geography: CN
   reference_year: "2021"
@@ -105,6 +117,9 @@
   pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 3, technological: 3}
   status: verified
   notes: "Indian e-car packs increasingly LFP (e.g. Tata) — LFP values in Table 2.3 are lower; chemistry share is a data gap."
+  allocation: inherited-unspecified
+  eol_included: false
+
 - id: battery.car.sedan.capacity.icct2021
   layer: battery
   name: Battery capacity of the representative Indian BEV sedan (Mahindra e-Verito, total capacity)
@@ -216,7 +231,7 @@
   value: 0.64
   unit: kg CO2e/L
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "Well-to-tank incl. ethanol production and ILUC per ICCT Tables A.15-A.17."
   geography: IN
   reference_year: "2021-2036 lifetime average"
@@ -227,13 +242,15 @@
   accessed: 2026-10-04
   pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
   status: verified
+  allocation: inherited-unspecified
+
 - id: fuels.gasoline.in.ttw.icct2021_car
   layer: fuels
   name: Gasoline blend tank-to-wheel GHG, India, lifetime of 2021 cars
   value: 2.15
   unit: kg CO2e/L
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "Tank-to-wheel; biogenic CO2 of ethanol share excluded."
   geography: IN
   reference_year: "2021-2036 lifetime average"
@@ -250,7 +267,7 @@
   value: 0.78
   unit: kg CO2e/L
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "Well-to-tank incl. biodiesel/HVO share 0% -> 5%."
   geography: IN
   reference_year: "2021-2036 lifetime average"
@@ -261,13 +278,15 @@
   accessed: 2026-10-04
   pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
   status: verified
+  allocation: inherited-unspecified
+
 - id: fuels.diesel.in.ttw.icct2021_car
   layer: fuels
   name: Diesel blend tank-to-wheel GHG, India, lifetime of 2021 cars
   value: 2.57
   unit: kg CO2e/L
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "Tank-to-wheel."
   geography: IN
   reference_year: "2021-2036 lifetime average"
@@ -284,7 +303,7 @@
   value: 0.92
   unit: kg CO2e/kg
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "Well-to-tank incl. methane leakage at 100-year GWP (the 20-year view is reported separately by ICCT); biomethane 0% -> 10%."
   geography: IN
   reference_year: "2021-2036 lifetime average"
@@ -295,13 +314,15 @@
   accessed: 2026-10-04
   pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
   status: verified
+  allocation: inherited-unspecified
+
 - id: fuels.natural_gas.in.ttw.icct2021_car
   layer: fuels
   name: Natural gas (CNG) tank-to-wheel GHG per kg, India, lifetime of 2021 cars
   value: 2.76
   unit: kg CO2e/kg
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "Tank-to-wheel."
   geography: IN
   reference_year: "2021-2036 lifetime average"
@@ -318,7 +339,7 @@
   value: 0.746
   unit: kg CO2e/kWh
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "Life-cycle (IPCC technology factors) incl. T&D losses, averaged over the vehicle lifetime with falling annual mileage."
   geography: IN
   reference_year: "2021-2036 average"
@@ -335,7 +356,7 @@
   value: 0.561
   unit: kg CO2e/kWh
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "As STEPS record, Sustainable Development Scenario."
   geography: IN
   reference_year: "2021-2036 average"
@@ -352,7 +373,7 @@
   value: 0.0050
   unit: kg CO2e/km
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "In-service replacement of consumables (ICCT Table 2.1 scope)."
   geography: IN
   reference_year: "2021"
@@ -369,7 +390,7 @@
   value: 0.0070
   unit: kg CO2e/km
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "As gasoline record."
   geography: IN
   reference_year: "2021"
@@ -386,7 +407,7 @@
   value: 0.0050
   unit: kg CO2e/km
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "As gasoline record."
   geography: IN
   reference_year: "2021"
@@ -403,7 +424,7 @@
   value: 0.0040
   unit: kg CO2e/km
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-AR5-GWP100
   boundary: "As gasoline record (fewer consumables)."
   geography: IN
   reference_year: "2021"
@@ -414,3 +435,39 @@
   pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 3, technological: 2}
   status: derived
   derivation: "Maintenance segment of the BEV bar, digitized: 4.0 g/km"
+- id: use.car.cng.methane_slip.icct2021
+  layer: use
+  name: Tailpipe methane slip of CNG cars (Euro 6 level assumed by ICCT for India)
+  value: 60
+  unit: mg CH4/km
+  quantity: other
+  gas_basis: n/a
+  boundary: "Unburnt methane from the CNG engine; India-specific measurement not available (ICCT notes Chinese CNG cars ~1,000 mg/km)."
+  geography: EU
+  reference_year: "2021"
+  technology: CNG car (Euro 6)
+  uncertainty: {distribution: uniform, low: 60, high: 1000, note: "Upper end = the China value ICCT cites; Indian fleet value unknown."}
+  source_id: icct-global-lca-2021
+  locator: "India chapter, p. 45"
+  quote: "vehicles in India are as low as was found for Euro 6 cars in Europe, at 60 mg CH4/km"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 4, temporal: 3, geographical: 4, technological: 2}
+  status: verified
+- id: method.gwp100.ch4.ar5.icct2021
+  layer: method
+  name: GWP100 of methane used by ICCT (IPCC AR5, 2013)
+  value: 30
+  unit: g CO2e/g CH4
+  quantity: other
+  gas_basis: n/a
+  boundary: "100-year global warming potential (AR5 value incl. for fossil methane as used by ICCT)."
+  geography: GLO
+  reference_year: "2013"
+  technology: characterisation factor
+  source_id: icct-global-lca-2021
+  locator: "Section 2.6, p. 12"
+  quote: "their 100-year GWP, 1 g CH4 = 30 g CO2 eq. for methane and 1 g N2O = 265 g CO2 eq. for"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 3, geographical: 1, technological: 1}
+  status: verified
+  notes: "Secondary citation of IPCC AR5; replace with the IPCC AR6 primary value (CH4 fossil 29.8 per AR6 WG1 Table 7.15 — to be opened) when harmonising to AR6."

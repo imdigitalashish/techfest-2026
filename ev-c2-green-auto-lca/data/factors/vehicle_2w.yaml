@@ -6,7 +6,7 @@
   value: 5.2
   unit: kg CO2e/kg
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-CH4-GWP20
   boundary: "Cradle-to-gate vehicle manufacture incl. recycling, per kg vehicle; battery separate."
   geography: GLO
   reference_year: "2021"
@@ -19,13 +19,16 @@
   pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 3, technological: 2}
   status: verified
   notes: "Aggregate factor — the planned bill-of-materials route (Indian steel/aluminium/plastics x process energy x CEA grid) replaces it."
+  allocation: inherited-unspecified
+  eol_included: true
+
 - id: battery.li_ion.production_intensity.icct2021
   layer: battery
   name: Li-ion traction battery production GHG intensity per kWh capacity
   value: 69
   unit: kg CO2e/kWh
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-CH4-GWP20
   boundary: "Cradle-to-gate battery pack production."
   geography: GLO
   reference_year: "2021"
@@ -38,6 +41,9 @@
   pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 4, technological: 3}
   status: verified
   notes: "Indian e-2W packs are largely assembled in India from imported cells; cell-origin grid and chemistry (LFP vs NMC) matter — data gap."
+  allocation: inherited-unspecified
+  eol_included: false
+
 - id: vehicle.2w.lifetime_km.icct2021
   layer: vehicle
   name: Two-wheeler lifetime mileage (ICCT India 2W LCA)
@@ -139,7 +145,7 @@
   value: 0.767
   unit: kg CO2e/kWh
   quantity: emission_factor
-  gas_basis: CO2e-unspecified
+  gas_basis: CO2e-CH4-GWP20
   boundary: "Life-cycle (IPCC technology factors) incl. T&D losses; lifetime-average of projected mix."
   geography: IN
   reference_year: "2021-2032 average"
@@ -242,3 +248,39 @@
   pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 3, technological: 2}
   status: derived
   derivation: "Maintenance segment of the 2021 electric scooter bar, digitized: 1.0 g/km (data/benchmarks/icct_india_factsheet_2021_fig2.yaml)"
+- id: use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity
+  layer: use
+  name: Petrol scooter fuel consumption — source ambiguity range (ICCT footnote 2.2 vs Table-1-consistent 2.0)
+  value: 2.1
+  unit: L/100km
+  quantity: consumption
+  gas_basis: n/a
+  boundary: "As used by ICCT (2021); real-world vs type-approval basis not stated."
+  geography: IN
+  reference_year: "FY2020-21"
+  technology: 109.5 cc petrol scooter
+  uncertainty: {distribution: uniform, low: 2.0, high: 2.2, note: "Uniform over the two values the source supports; neither is measured Indian on-road data."}
+  source_id: icct-2w-fc-india-2021
+  locator: "footnote 9 and Table 1, p. 3"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 1, technological: 1, rationale: "Model input of a 2021 policy briefing; not a measurement"}
+  status: derived
+  derivation: "midpoint of vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_footnote (2.2) and vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied (2.0)"
+- id: use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity
+  layer: use
+  name: Electric scooter electricity consumption at the plug — source ambiguity range (ICCT footnote 3.7 vs Table-1-consistent 4.13)
+  value: 3.915
+  unit: kWh/100km
+  quantity: consumption
+  gas_basis: n/a
+  boundary: "At the meter (ICCT's grid factor includes T&D losses; charging losses assumed included)."
+  geography: IN
+  reference_year: "FY2020-21"
+  technology: 2.9 kWh electric scooter
+  uncertainty: {distribution: uniform, low: 3.7, high: 4.13, note: "Uniform over the two values the source supports; neither is measured Indian on-road data."}
+  source_id: icct-2w-fc-india-2021
+  locator: "footnote 9 and Table 1, p. 3"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 1, technological: 2, rationale: "Model input of a 2021 policy briefing; not a measurement"}
+  status: derived
+  derivation: "midpoint of vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_footnote (3.7) and vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied (4.13)"

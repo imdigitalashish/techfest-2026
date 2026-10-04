@@ -1,0 +1,110 @@
+# Case study 2 — Indian sedan cars: petrol vs diesel vs CNG vs battery-electric.
+# Functional unit: 1 vehicle-km of passenger-car transport by a sedan-segment car (segment-average mass 998 kg) over a
+# 165,000 km lifetime (15 years); same lifetime for all powertrains; no battery replacement (ICCT assumption).
+# Stage expressions return kg per vehicle-km. Inputs: ICCT (2021) white paper India chapter + Appendix (AR5 GWP100).
+case: "Car — sedan: petrol vs diesel vs CNG vs electric"
+scenarios:
+  - id: car_icct2021_replication
+    kind: replication
+    label: "Verification C — ICCT (2021) India sedans, STEPS lifetime grid (inputs as tabulated)"
+    description: "Arithmetic implementation check against ICCT's published India sedan totals (petrol 228, diesel 245, CNG 226, BEV 185 g CO2e/km under IEA STEPS). Same source supplies inputs and targets, so this verifies arithmetic, not accuracy."
+    reference: {file: data/benchmarks/icct_global_2021_india_sedan.yaml, total_key: total, map: {petrol: gasoline, diesel: diesel, cng: cng, bev: bev_steps}}
+    products:
+      - id: petrol
+        label: "Petrol sedan (6.8 L/100 km real-world)"
+        powertrain: ICE
+        params: &petrol_params
+          mass: vehicle.car.sedan.mass.in.fy2019_20
+          prod_int: vehicle.car.production_intensity.gasoline.icct2021
+          life: vehicle.car.lifetime_km.in.icct2021
+          fuel: use.car.sedan.gasoline.l_per_100km.icct2021
+          wtt: fuels.gasoline.in.wtt.icct2021_car
+          ttw: fuels.gasoline.in.ttw.icct2021_car
+          maint: use.car.sedan.maintenance.gasoline.icct2021
+        stages: &ice_stages
+          vehicle_production: "mass * prod_int / life"
+          maintenance: "maint"
+          fuel_production_wtt: "fuel / 100 * wtt"
+          tailpipe_ttw: "fuel / 100 * ttw"
+      - id: diesel
+        label: "Diesel sedan (6.0 L/100 km real-world)"
+        powertrain: ICE
+        params:
+          mass: vehicle.car.sedan.mass.in.fy2019_20
+          prod_int: vehicle.car.production_intensity.diesel.icct2021
+          life: vehicle.car.lifetime_km.in.icct2021
+          fuel: use.car.sedan.diesel.l_per_100km.icct2021
+          wtt: fuels.diesel.in.wtt.icct2021_car
+          ttw: fuels.diesel.in.ttw.icct2021_car
+          maint: use.car.sedan.maintenance.diesel.icct2021
+        stages: *ice_stages
+      - id: cng
+        label: "CNG sedan (5.0 kg/100 km real-world)"
+        powertrain: CNG
+        params:
+          mass: vehicle.car.sedan.mass.in.fy2019_20
+          prod_int: vehicle.car.production_intensity.cng.icct2021
+          life: vehicle.car.lifetime_km.in.icct2021
+          fuel: use.car.sedan.cng.kg_per_100km.icct2021
+          wtt: fuels.natural_gas.in.wtt.icct2021_car
+          ttw: fuels.natural_gas.in.ttw.icct2021_car
+          maint: use.car.sedan.maintenance.cng.icct2021
+          slip: use.car.cng.methane_slip.icct2021
+          gwp_ch4: method.gwp100.ch4.ar5.icct2021
+        stages:
+          vehicle_production: "mass * prod_int / life"
+          maintenance: "maint"
+          fuel_production_wtt: "fuel / 100 * wtt"
+          tailpipe_ttw: "fuel / 100 * ttw + slip * gwp_ch4 / 1e6"
+      - id: bev
+        label: "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)"
+        powertrain: BEV
+        params:
+          mass: vehicle.car.sedan.mass.in.fy2019_20
+          prod_int: vehicle.car.production_intensity.bev_wo_battery.icct2021
+          life: vehicle.car.lifetime_km.in.icct2021
+          kwh: battery.car.sedan.capacity.icct2021
+          bat_int: battery.li_ion.production_intensity.in.icct2021_car
+          elec: use.car.sedan.bev.kwh_per_100km.icct2021
+          grid: energy.electricity.in.icct2021_car_lifetime_steps
+          maint: use.car.sedan.maintenance.bev.icct2021
+        stages:
+          vehicle_production: "mass * prod_int / life"
+          battery_production: "kwh * bat_int / life"
+          maintenance: "maint"
+          electricity_production_wtt: "elec / 100 * grid"
+
+  - id: car_icct2021_sds
+    base: car_icct2021_replication
+    kind: replication
+    label: "Verification D — ICCT (2021) India sedans, SDS lifetime grid"
+    description: "As Verification C with ICCT's Sustainable Development Scenario grid (561 g CO2e/kWh); published BEV sedan 150 g CO2e/km."
+    reference: {file: data/benchmarks/icct_global_2021_india_sedan.yaml, total_key: total, map: {petrol: gasoline, diesel: diesel, cng: cng, bev: bev_sds}}
+    overrides:
+      bev: {params: {grid: energy.electricity.in.icct2021_car_lifetime_sds}}
+
+  - id: car_in2026_cea_average
+    base: car_icct2021_replication
+    kind: decision
+    label: "India 2026-grid, attributional — CEA FY2025-26 average (legacy 2021 ICCT vehicle data)"
+    description: "Illustrative 2026-grid case using legacy ICCT 2021 sedan assumptions (e-Verito-class BEV). Electricity = CEA v22 FY2025-26 weighted average (CO2 only, busbar) / (1 - 17.63 % T&D). Fuels = ICCT India blends (AR5 GWP100). NOT harmonized: grid is CO2-only (no CH4/N2O, no upstream); vehicle factors are European proxies."
+    overrides:
+      bev:
+        params: {ef_gen: energy.electricity.in.grid_wavg_generation.fy2025_26, td: energy.electricity.in.td_loss_share.fy2023_24}
+        stages: {electricity_production_wtt: "elec / 100 * ef_gen / (1 - td)"}
+
+  - id: car_in2026_cea_operating_margin
+    base: car_in2026_cea_average
+    kind: sensitivity
+    label: "Sensitivity — BEV charging at CEA operating margin (fossil-dominated proxy)"
+    description: "Decision sensitivity, not a consequential LCA (see case 1)."
+    overrides:
+      bev: {params: {ef_gen: energy.electricity.in.grid_om.fy2025_26}}
+
+  - id: car_in2026_cea_build_margin
+    base: car_in2026_cea_average
+    kind: sensitivity
+    label: "Sensitivity — BEV charging at CEA build margin (recent-capacity proxy)"
+    description: "Decision sensitivity (see case 1)."
+    overrides:
+      bev: {params: {ef_gen: energy.electricity.in.grid_bm.fy2025_26}}
