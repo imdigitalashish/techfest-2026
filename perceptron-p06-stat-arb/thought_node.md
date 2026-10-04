@@ -18,7 +18,7 @@
   - smoke **31/31** (headless browser included);
   - first visual **0.7 s**, LIVE **9.3 s**; fresh-venv worst case about 2–7 s page, 44–129 s LIVE, per SCRIPT.md, with the page usable offline meanwhile;
   - crazy element: **Race the machine**, plus the latency knob, fee switch and frozen/strict toggle;
-  - `gpt-6-astra` demo judge: 53→ initial wow 3 · clarity 2 · honesty 3 · robustness 3 · fit 5; after fixes wow 4 · clarity 3 · honesty 4 · robustness 4 · fit 5. The residual D04 and D11 are fixed and smoke-guarded.
+  - `gpt-6-astra` demo judge: initial wow 3 · clarity 2 · honesty 3 · robustness 3 · fit 5; after fixes wow 4 · clarity 3 · honesty 4 · robustness 4 · fit 5. The residual D04 and D11 are fixed and smoke-guarded.
 - **If P6 is picked on 12 Oct, next:**
   1. Fill the [TEAM] lines.
   2. Rerun the benchmark on our own finer-cadence recordings.
