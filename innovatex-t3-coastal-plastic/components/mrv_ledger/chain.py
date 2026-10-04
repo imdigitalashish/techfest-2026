@@ -95,8 +95,13 @@ def sign_entry(entry: LedgerEntry, signer_id: str, key: Ed25519PrivateKey) -> di
             "signature_hex": key.sign(entry.hash.encode()).hex()}
 
 
-def verify_signatures(entries: list[LedgerEntry], signatures: list[dict], trusted_keys: dict[str, str]) -> VerifyResult:
-    """trusted_keys: signer_id -> public key hex, distributed out of band (key registry)."""
+def verify_signatures(entries: list[LedgerEntry], signatures: list[dict], trusted_keys: dict[str, str],
+                      delegations: Optional[dict[str, list[str]]] = None) -> VerifyResult:
+    """trusted_keys: signer_id -> public key hex, distributed out of band (key registry).
+    delegations: crew_id -> signer_ids allowed to sign that crew's records (e.g. a supervisor's device when the
+    crew device fails); distributed with the key registry. Without an entry, only the record's own crew may sign.
+    A signature counts only if its signer is the record's crew (or a delegate) and it covers this entry's hash."""
+    delegations = delegations or {}
     problems: list[str] = []
     by_seq = {s["seq"]: s for s in signatures}
     for e in entries:
@@ -107,6 +112,13 @@ def verify_signatures(entries: list[LedgerEntry], signatures: list[dict], truste
         pub = trusted_keys.get(s["signer_id"])
         if pub is None or pub != s["public_key_hex"]:
             problems.append(f"seq {e.seq}: signer {s['signer_id']} not in the key registry")
+            continue
+        crew = e.record.crew_id
+        if s["signer_id"] != crew and s["signer_id"] not in delegations.get(crew, []):
+            problems.append(f"seq {e.seq}: signer {s['signer_id']} is not crew {crew} and holds no delegation")
+            continue
+        if s.get("hash") != e.hash:
+            problems.append(f"seq {e.seq}: signature is for a different hash")
             continue
         try:
             Ed25519PublicKey.from_public_bytes(bytes.fromhex(pub)).verify(bytes.fromhex(s["signature_hex"]), e.hash.encode())

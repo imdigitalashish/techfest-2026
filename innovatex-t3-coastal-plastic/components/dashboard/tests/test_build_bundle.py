@@ -8,6 +8,7 @@ import pytest
 
 import build_bundle
 from mrv_ledger import chain
+from mrv_ledger import reconcile as rc
 from mrv_ledger._contracts import DashboardBundle
 
 JS = Path(build_bundle.HERE) / "site" / "ledger_verify.js"
@@ -29,7 +30,12 @@ def test_bundle_validates_and_files_written(built):
     aux = json.loads((out / "aux.json").read_text())
     assert chain.verify(b.ledger, aux["anchor"]).ok
     keys = aux["key_registry"]
-    assert chain.verify_signatures(b.ledger, aux["signatures"], keys).ok
+    assert chain.verify_signatures(b.ledger, aux["signatures"], keys, aux["delegations"]).ok
+    # every reconciliation in the bundle used the calibrated threshold shipped in mrv_ledger/params.json
+    assert aux["reconcile_z_review"] == [rc.DEFAULT.z_review]
+    assert aux["reconcile_params_source"].endswith("components/mrv_ledger/params.json")
+    assert all(f"review>{rc.DEFAULT.z_review:.3f}," in " ".join(e.reconciliation.reasons)
+               for e in b.ledger if e.record.pre_fill_fraction is not None)
 
 
 def test_mock_is_labelled_synthetic_everywhere(built):

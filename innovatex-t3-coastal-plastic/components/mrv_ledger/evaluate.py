@@ -1,6 +1,9 @@
 """Isolated metric for C11 on SYNTHETIC trips + tamper campaign. Writes results/metrics.json and eval_detail.json.
 
-Reproduce: cd innovatex-t3-coastal-plastic/components && python3 -m mrv_ledger.evaluate
+Calibrates the shipped review threshold and persists it in params.json (rewritten only when it changes), then
+scores the shipped default path reconcile(record, capacity) on a separate held-out set.
+
+Reproduce: cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate
 """
 from __future__ import annotations
 
@@ -9,17 +12,22 @@ import math
 import random
 import subprocess
 from dataclasses import replace
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from . import chain
-from .reconcile import DEFAULT, Params, reconcile, z_score
+from . import reconcile as rc
+from .reconcile import Params, reconcile, z_score
 from .synth import Trip, make_trips
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "results"
-REPRODUCE = "cd innovatex-t3-coastal-plastic/components && python3 -m mrv_ledger.evaluate"
+REPRODUCE = "cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate"
 TARGET_FPR = 0.05
 OFF = 1e9
+N_CAL, SEED_CAL, SEED_TEST, SEED_SENS = 20000, 11, 12, 13
+TEST_COUNTS = {"honest": 10000, "inflated": 3000, "phantom": 1000, "wetted": 1000}
 
 
 def _scores(trips: list[Trip], p: Params):
@@ -63,17 +71,58 @@ def _precision(prev: float, tpr: float, fpr: float) -> float:
     return prev * tpr / d if d else 0.0
 
 
-def evaluate_reconciliation(p: Params = DEFAULT, n_cal: int = 20000, seed_cal: int = 11, seed_test: int = 12) -> dict:
-    cal = make_trips({"honest": n_cal}, seed=seed_cal, p=p)
+def calibrate(p: Params, n_cal: int = N_CAL, seed: int = SEED_CAL) -> dict:
+    """Review threshold such that rule flags + (z > threshold) hit <= 5% of separate honest trips, aiming below 5%
+    by the one-sided 95% sampling margin of the calibration set. z_score ignores p.z_*, so the result does not
+    depend on the value currently shipped."""
+    cal = make_trips({"honest": n_cal}, seed=seed, p=p)
     z_c, r_c, rule_c = _scores(cal, p)
-    # conservative calibration: aim below 5% by the one-sided 95% sampling margin of the calibration set
-    cal_target = TARGET_FPR - 1.645 * math.sqrt(TARGET_FPR * (1 - TARGET_FPR) / n_cal)
-    z_thr = _threshold(z_c, rule_c, cal_target)
-    r_thr = _threshold(r_c, [False] * len(r_c), cal_target)
-    test = make_trips({"honest": 10000, "inflated": 3000, "phantom": 1000, "wetted": 1000}, seed=seed_test, p=p)
-    z_t, r_t, rule_t = _scores(test, p)
-    flag_prop = [a or z > z_thr for z, a in zip(z_t, rule_t)]
-    flag_base = [r > r_thr for r in r_t]
+    target = TARGET_FPR - 1.645 * math.sqrt(TARGET_FPR * (1 - TARGET_FPR) / n_cal)
+    z_thr = _threshold(z_c, rule_c, target)
+    if not math.isfinite(z_thr) or z_thr > p.z_reject:
+        raise ValueError(f"calibrated z_review {z_thr} is not finite or exceeds z_reject {p.z_reject}")
+    return {"z_review": z_thr, "ratio_threshold_baseline": _threshold(r_c, [False] * len(r_c), target),
+            "calibration_target_fpr": target, "n_cal": n_cal, "seed_cal": seed}
+
+
+def _git(*args: str) -> str:
+    try:
+        return subprocess.run(["git", *args], capture_output=True, text=True, cwd=HERE, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown"
+
+
+def persist_params(cal: dict, p: Params, worktree_clean, path: Path = rc.PARAMS_FILE) -> bool:
+    """Write params.json when the calibrated value or its inputs change; otherwise keep it (and its commit)."""
+    calib = {"target_false_flag_rate": TARGET_FPR, "calibration_target_fpr": cal["calibration_target_fpr"],
+             "n_cal": cal["n_cal"], "seed_cal": cal["seed_cal"],
+             "data": "SYNTHETIC honest trips from mrv_ledger.synth.make_trips",
+             "model_params": {k: v for k, v in p.as_dict().items() if k != "z_review"}}
+    if path.exists():
+        old = json.loads(path.read_text())
+        if old.get("z_review") == cal["z_review"] and old.get("calibration") == calib:
+            return False
+    doc = {"z_review": cal["z_review"],
+           "meaning": "reconcile() flags 'review' when z > z_review (z_reject stays the N(0,1) 1% ASSUMPTION)",
+           "calibration": calib,
+           "code_commit": _git("rev-parse", "HEAD"),
+           "worktree_clean_at_calibration": worktree_clean,
+           "calibrated_at_ist": datetime.now(ZoneInfo("Asia/Kolkata")).isoformat(timespec="seconds"),
+           "reproduce": REPRODUCE}
+    path.write_text(json.dumps(doc, indent=1) + "\n")
+    return True
+
+
+def evaluate_reconciliation(cal: dict) -> tuple[dict, list[Trip]]:
+    """Held-out SYNTHETIC test of the SHIPPED path: reconcile(record, capacity) with no params argument."""
+    p = rc.DEFAULT
+    test = make_trips(TEST_COUNTS, seed=SEED_TEST, p=p)
+    z_t, r_t, _ = _scores(test, p)
+    shipped = [rc.reconcile(t.record, t.capacity_m3).flag for t in test]
+    flag_prop = [f != "ok" for f in shipped]
+    prior = replace(p, z_review=Params().z_review)
+    flag_prior = [rc.reconcile(t.record, t.capacity_m3, prior).flag != "ok" for t in test]
+    flag_base = [r > cal["ratio_threshold_baseline"] for r in r_t]
     flag_quo = [t.record.weighbridge_wet_kg is not None and t.record.claimed_wet_kg > 1.02 * t.record.weighbridge_wet_kg
                 for t in test]
     honest = [i for i, t in enumerate(test) if t.kind == "honest"]
@@ -82,9 +131,12 @@ def evaluate_reconciliation(p: Params = DEFAULT, n_cal: int = 20000, seed_cal: i
     def rate(flags, idx):
         return sum(flags[i] for i in idx) / len(idx) if idx else float("nan")
 
-    out = {"calibration_target_fpr": round(cal_target, 4), "z_threshold_review": round(z_thr, 4), "ratio_threshold_baseline": round(r_thr, 4), "methods": {}}
-    for name, flags, score in (("proposed_z", flag_prop, z_t), ("baseline_ratio", flag_base, r_t),
-                               ("status_quo_slip_check", flag_quo, None)):
+    out = {"shipped_z_review": p.z_review, "params_source": str(rc.PARAMS_FILE.relative_to(HERE.parents[2])),
+           "calibration_target_fpr": round(cal["calibration_target_fpr"], 4),
+           "ratio_threshold_baseline": round(cal["ratio_threshold_baseline"], 4),
+           "honest_reject_rate_at_z_reject": round(rate([f == "reject" for f in shipped], honest), 4), "methods": {}}
+    for name, flags, score in (("proposed_z", flag_prop, z_t), ("uncalibrated_prior_z1.645", flag_prior, None),
+                               ("baseline_ratio", flag_base, r_t), ("status_quo_slip_check", flag_quo, None)):
         tpr, fpr = rate(flags, fraud), rate(flags, honest)
         m = {"recall_all_fraud": tpr, "false_flag_rate_honest": fpr,
              "precision_at_5pct_prevalence": _precision(0.05, tpr, fpr),
@@ -97,16 +149,15 @@ def evaluate_reconciliation(p: Params = DEFAULT, n_cal: int = 20000, seed_cal: i
         if score is not None:
             m["auc"] = _auc([score[i] for i in fraud], [score[i] for i in honest])
         out["methods"][name] = {k: round(v, 4) for k, v in m.items()}
-    # sensitivity: nominal density wrong by -20% / +25% (honest trips only, same thresholds)
+    # sensitivity: nominal density wrong by -20% / +25% (honest trips only, shipped default path)
     sens = {}
     for bias in (0.8, 1.25):
-        hon = make_trips({"honest": 2000}, seed=13, p=p, density_bias=bias)
-        z_h, _, rule_h = _scores(hon, p)
+        hon = make_trips({"honest": 2000}, seed=SEED_SENS, p=p, density_bias=bias)
         sens[f"false_flag_rate_if_true_density_x{bias}"] = round(
-            sum(a or z > z_thr for z, a in zip(z_h, rule_h)) / len(z_h), 4)
+            sum(rc.reconcile(t.record, t.capacity_m3).flag != "ok" for t in hon) / len(hon), 4)
     out["sensitivity"] = sens
     out["n_test"] = {k: sum(t.kind == k for t in test) for k in ("honest", "inflated", "phantom", "wetted")}
-    return out, test, z_thr
+    return out, test
 
 
 # ------------------------------------------------------------------ tampering ----
@@ -126,11 +177,11 @@ def _mutations(e):
     ]
 
 
-def tamper_campaign(trips: list[Trip], p: Params, n_entries: int = 300, trials: int = 200, seed: int = 21) -> dict:
+def tamper_campaign(trips: list[Trip], n_entries: int = 300, trials: int = 200, seed: int = 21) -> dict:
     rng = random.Random(seed)
     entries = []
     for t in trips[:n_entries]:
-        chain.append(entries, t.record, reconcile(t.record, t.capacity_m3, p))
+        chain.append(entries, t.record, rc.reconcile(t.record, t.capacity_m3))
     published = chain.anchor(entries)
     keys = {f"SYN-crew-{i}": chain.demo_key(f"SYN-crew-{i}") for i in range(1, 6)}
     registry = {k: chain.public_hex(v) for k, v in keys.items()}
@@ -177,25 +228,43 @@ def tamper_campaign(trips: list[Trip], p: Params, n_entries: int = 300, trials: 
         res[kind] = {"trials": trials, "detected_with_anchor": with_anchor / trials, "detected_chain_only": without / trials}
     es = rewrite(entries, rng.randrange(len(entries)))
     res["rewrite_suffix"]["detected_by_signatures"] = float(not chain.verify_signatures(es, sigs, registry).ok)
+    # insider: one registered crew device rewrites its own record j, re-hashes the suffix and re-signs all of it
+    det_sig = det_anchor = 0
+    for _ in range(trials):
+        j = rng.randrange(len(entries))
+        insider = entries[j].record.crew_id
+        es = rewrite(entries, j)
+        new = [s for s in sigs if s["seq"] < j] + [chain.sign_entry(e, insider, keys[insider]) for e in es[j:]]
+        det_sig += not chain.verify_signatures(es, new, registry).ok
+        det_anchor += not chain.verify(es, published).ok
+    res["insider_resign_suffix"] = {"trials": trials, "detected_with_anchor": det_anchor / trials,
+                                    "detected_by_signatures": det_sig / trials,
+                                    "note": "signatures miss it only if every rewritten record is the insider's own"}
     res["all_detected_with_anchor"] = all(v["detected_with_anchor"] == 1.0 for k, v in res.items() if isinstance(v, dict))
     return res
 
 
 def main() -> dict:
     OUT.mkdir(exist_ok=True)
-    rec, test, z_thr = evaluate_reconciliation()
-    tam = tamper_campaign(test, replace(DEFAULT, z_review=z_thr))
-    try:
-        sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=HERE).stdout.strip()
-    except OSError:
-        sha = "unknown"
+    status = _git("status", "--porcelain", "--", ".")
+    clean = None if status == "unknown" else status == ""
+    cal = calibrate(rc.DEFAULT)
+    written = persist_params(cal, rc.DEFAULT, clean)
+    if written:
+        rc.reload_default()
+    if rc.DEFAULT_SOURCE != str(rc.PARAMS_FILE) or rc.DEFAULT.z_review != cal["z_review"]:
+        raise RuntimeError("the shipped reconcile.DEFAULT does not carry the calibrated z_review")
+    rec, test = evaluate_reconciliation(cal)
+    tam = tamper_campaign(test)
     detail = {"data": "SYNTHETIC (mrv_ledger/synth.py); parameters are ASSUMPTIONS (reconcile.Params)",
-              "params": DEFAULT.as_dict(), "reconciliation": rec, "tamper": tam, "git_sha_at_run": sha,
-              "reproduce": REPRODUCE}
+              "params": rc.DEFAULT.as_dict(), "params_json": json.loads(rc.PARAMS_FILE.read_text()),
+              "params_json_rewritten_by_this_run": written, "reconciliation": rec, "tamper": tam,
+              "git_sha_at_run": _git("rev-parse", "--short", "HEAD"), "reproduce": REPRODUCE}
     (OUT / "eval_detail.json").write_text(json.dumps(detail, indent=1))
     prop, base = rec["methods"]["proposed_z"], rec["methods"]["baseline_ratio"]
     flat = {
         "data": "SYNTHETIC",
+        "z_review_shipped": rc.DEFAULT.z_review,
         "recall_fraud_at_5pct_false_flags": prop["recall_all_fraud"],
         "false_flag_rate_test": prop["false_flag_rate_honest"],
         "recall_inflated_x1.2-3": prop["recall_inflated"],
@@ -207,6 +276,7 @@ def main() -> dict:
         "baseline_ratio_recall_at_5pct": base["recall_all_fraud"],
         "status_quo_slip_check_recall": rec["methods"]["status_quo_slip_check"]["recall_all_fraud"],
         "tamper_detection_rate_with_anchor": min(v["detected_with_anchor"] for v in tam.values() if isinstance(v, dict)),
+        "insider_resign_detected_by_signatures": tam["insider_resign_suffix"]["detected_by_signatures"],
         "reproduce": REPRODUCE,
     }
     (OUT / "metrics.json").write_text(json.dumps(flat, indent=1))

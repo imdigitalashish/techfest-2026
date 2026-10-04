@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import dataclasses
 import json
 import math
 import random
@@ -30,7 +31,7 @@ for p in (COMPONENTS, HERE):
 import mock_inputs  # noqa: E402
 from mrv_ledger import chain  # noqa: E402
 from mrv_ledger._contracts import ClearanceRecord, DashboardBundle, InterceptorSeries  # noqa: E402
-from mrv_ledger.reconcile import DEFAULT, reconcile  # noqa: E402
+from mrv_ledger import reconcile as rc  # noqa: E402
 from mrv_ledger.synth import _h, twin_clearance_events  # noqa: E402
 
 TWIN = COMPONENTS / "twin_sim" / "results" / "bundle_part.json"
@@ -107,7 +108,8 @@ def build_ledger(part: dict, seed: int = 2026, fraud_share: float = 0.2) -> tupl
         if cap <= 0:
             continue
         rho = implied_wet_density(s, cap)
-        params[s.site_id] = DEFAULT if rho is None else DEFAULT.__class__(**{**DEFAULT.as_dict(), "wet_bulk_density_kg_m3": rho})
+        # site density from the twin; z_review stays the calibrated value shipped in mrv_ledger/params.json
+        params[s.site_id] = rc.DEFAULT if rho is None else dataclasses.replace(rc.DEFAULT, wet_bulk_density_kg_m3=rho)
         events += twin_clearance_events(s, cap)
     events.sort(key=lambda e: e["t_start"])
     entries, truth = [], []
@@ -131,12 +133,16 @@ def build_ledger(part: dict, seed: int = 2026, fraud_share: float = 0.2) -> tupl
                               post_fill_fraction=round(meas[1], 3),
                               photo_sha256=[_h(f"synthetic-photo-{n}-{j}") for j in range(2)],
                               gps_track_sha256=_h(f"synthetic-gps-{n}"))
-        e = chain.append(entries, rec, reconcile(rec, ev["capacity_m3"], p, inflow_wet_kg=ev["inflow_wet_kg"]))
+        e = chain.append(entries, rec, rc.reconcile(rec, ev["capacity_m3"], p, inflow_wet_kg=ev["inflow_wet_kg"]))
         truth.append({"seq": e.seq, "kind": kind, "factor": round(factor, 2), "true_wet_kg": round(true_kg, 1)})
     keys = {c: chain.demo_key(c) for c in crews}
     aux = {"anchor": chain.anchor(entries),
            "signatures": [chain.sign_entry(e, e.record.crew_id, keys[e.record.crew_id]) for e in entries],
            "key_registry": {c: chain.public_hex(k) for c, k in keys.items()},
+           "delegations": {},  # crew_id -> signer_ids allowed to sign for that crew; none in the demo
+           "reconcile_z_review": sorted({q.z_review for q in params.values()}) or [rc.DEFAULT.z_review],
+           "reconcile_params_source": str(Path(rc.DEFAULT_SOURCE).relative_to(COMPONENTS.parent.parent))
+           if rc.DEFAULT_SOURCE == str(rc.PARAMS_FILE) else rc.DEFAULT_SOURCE,
            "synthetic_truth": truth,
            "density_calibration_kg_m3": {k: round(v.wet_bulk_density_kg_m3, 1) for k, v in params.items()},
            "notes": "Claims are SYNTHETIC (honest, inflated x1.2-3, phantom) on top of twin clearance events. "
@@ -189,6 +195,7 @@ def build(mock: bool = False, out_site: Path = HERE / "site", past_h: int = 144,
     entries, aux = build_ledger(trim(copy.deepcopy(raw), ledger_days * 24))
     part = trim(raw, past_h)
     assert chain.verify(entries, aux["anchor"]).ok
+    assert chain.verify_signatures(entries, aux["signatures"], aux["key_registry"], aux["delegations"]).ok
     metrics = {k: flatten(v) for k, v in (part.get("metrics") or {}).items()}
     det = detection_metrics_file()
     if det is not None:

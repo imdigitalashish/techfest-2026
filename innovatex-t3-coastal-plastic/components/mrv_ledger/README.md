@@ -41,8 +41,8 @@ python3 -m mrv_ledger.evaluate                 # metrics (≈2 min)
 python3 -m pytest mrv_ledger/tests -q          # 19 tests incl. Python↔JS hash parity (needs node)
 ```
 ```python
-from mrv_ledger import append, reconcile, verify, anchor
-entries = []; append(entries, record, reconcile(record, boom_capacity_m3=12.0))
+from mrv_ledger import append, reconcile_claim, verify, anchor
+entries = []; append(entries, record, reconcile_claim(record, boom_capacity_m3=12.0))  # shipped params.json threshold
 verify(entries, expected_anchor=published).ok
 ```
 

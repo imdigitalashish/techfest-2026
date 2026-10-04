@@ -112,3 +112,74 @@ def test_reconcile_flags():
     assert r.flag == "review" and any("cannot reconcile" in x for x in r.reasons)
     assert reconcile(no_fill, honest.capacity_m3, twin_cleared_wet_kg=honest.true_wet_kg).sensor_estimated_kg > 0
     assert DEFAULT.dry_density_kg_m3 == pytest.approx(DEFAULT.wet_bulk_density_kg_m3 * (1 - DEFAULT.moisture_fraction))
+
+
+# ------------------------------------------------- signer binding (review issue 4) ----
+def _keys(entries):
+    keys = {c: chain.demo_key(c) for c in sorted({e.record.crew_id for e in entries})}
+    return keys, {c: chain.public_hex(k) for c, k in keys.items()}
+
+
+def test_cross_crew_resign_is_rejected_unless_delegated(ledger):
+    keys, reg = _keys(ledger)
+    e = ledger[0]
+    other = next(c for c in keys if c != e.record.crew_id)
+    sig = chain.sign_entry(e, other, keys[other])  # valid Ed25519 from a registered device, but not this record's crew
+    r = chain.verify_signatures([e], [sig], {other: reg[other]})
+    assert not r.ok and "holds no delegation" in r.problems[0]
+    assert chain.verify_signatures([e], [sig], reg, delegations={e.record.crew_id: [other]}).ok
+
+
+def test_signature_for_another_hash_is_rejected(ledger):
+    keys, reg = _keys(ledger)
+    e, f = ledger[0], ledger[1]
+    crew = e.record.crew_id
+    own = chain.sign_entry(e, crew, keys[crew])
+    foreign = chain.sign_entry(e.model_copy(update={"hash": f.hash}), crew, keys[crew])  # signs f.hash at e's seq
+    assert chain.verify_signatures([e], [own], reg).ok
+    for s in (dict(own, hash=f.hash), foreign, dict(foreign, hash=e.hash)):
+        assert not chain.verify_signatures([e], [s], reg).ok
+
+
+def test_insider_resign_is_caught_by_other_crews_or_the_anchor(ledger):
+    keys, reg = _keys(ledger)
+    sigs = [chain.sign_entry(e, e.record.crew_id, keys[e.record.crew_id]) for e in ledger]
+    published = chain.anchor(ledger)
+
+    def resign_from(j):
+        es = ledger[:j]
+        for e in ledger[j:]:
+            rec = e.record.model_copy(update={"claimed_wet_kg": e.record.claimed_wet_kg * 2}) if e.seq == j else e.record
+            chain.append(es, rec, e.reconciliation)
+        insider = ledger[j].record.crew_id
+        return es, sigs[:j] + [chain.sign_entry(e, insider, keys[insider]) for e in es[j:]]
+
+    es, new = resign_from(10)  # the re-signed suffix holds other crews' records
+    assert chain.verify(es).ok and not chain.verify_signatures(es, new, reg).ok
+    es, new = resign_from(len(ledger) - 1)  # only the insider's own newest record: signatures cannot tell
+    assert chain.verify_signatures(es, new, reg).ok and not chain.verify(es, published).ok
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_browser_signature_checks_match_python(ledger, tmp_path):
+    keys, reg = _keys(ledger)
+    good = [chain.sign_entry(e, e.record.crew_id, keys[e.record.crew_id]) for e in ledger]
+    e0 = ledger[0]
+    other = next(c for c in keys if c != e0.record.crew_id)
+    data = {"entries": [json.loads(e.model_dump_json()) for e in ledger], "reg": reg, "good": good,
+            "cross": [chain.sign_entry(e0, other, keys[other])] + good[1:],
+            "wrong": [dict(good[0], hash=ledger[1].hash)] + good[1:], "deleg": {e0.record.crew_id: [other]}}
+    (tmp_path / "s.json").write_text(json.dumps(data))
+    script = f"""
+const L = require({json.dumps(str(JS))}); const d = require({json.dumps(str(tmp_path / 's.json'))});
+(async () => {{
+  const r = (s, g) => L.verifySignatures(d.entries, s, d.reg, g);
+  console.log(JSON.stringify({{good: await r(d.good), cross: await r(d.cross), wrong: await r(d.wrong),
+    deleg: await r(d.cross, d.deleg), legacy: await L.verifySignatures(d.entries, d.good, d.reg)}}));
+}})();"""
+    out = json.loads(subprocess.run(["node", "-e", script], capture_output=True, text=True, check=True).stdout)
+    if not out["good"].get("supported"):
+        pytest.skip("this node's WebCrypto lacks Ed25519")
+    assert out["good"]["ok"] and out["legacy"]["ok"] and out["deleg"]["ok"]
+    assert out["cross"]["badSeqs"] == [0] and "no delegation" in out["cross"]["problems"][0]
+    assert out["wrong"]["badSeqs"] == [0] and "different hash" in out["wrong"]["problems"][0]

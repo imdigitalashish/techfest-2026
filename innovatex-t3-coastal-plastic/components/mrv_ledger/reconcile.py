@@ -11,8 +11,11 @@ A fixed ratio threshold (the naive baseline) ignores that small clearances have 
 """
 from __future__ import annotations
 
+import json
 import math
-from dataclasses import asdict, dataclass
+import warnings
+from dataclasses import asdict, dataclass, replace
+from pathlib import Path
 from typing import Optional
 
 from ._contracts import ClearanceRecord, Reconciliation
@@ -27,36 +30,70 @@ class Params:
     sigma_fill_abs: float = 0.03            # ASSUMPTION: 1-sigma error of one fill-fraction reading
     sigma_density_rel: float = 0.25         # ASSUMPTION: trip-to-trip bulk-density variation
     sigma_claim_rel: float = 0.10           # ASSUMPTION: honest reporting / scale noise
-    z_review: float = 1.645                 # one-sided 5% under N(0,1); evaluate.py checks realised rate
-    z_reject: float = 2.326                 # one-sided 1%
+    z_review: float = 1.645                 # N(0,1) one-sided 5% PRIOR only; DEFAULT ships the calibrated params.json value
+    z_reject: float = 2.326                 # one-sided 1% under N(0,1); ASSUMPTION, not calibrated
     max_wet_density_kg_m3: float = 450.0    # ASSUMPTION: above this a load is mostly water/silt
 
     @property
     def dry_density_kg_m3(self) -> float:
         return self.wet_bulk_density_kg_m3 * (1.0 - self.moisture_fraction)
 
+    def __post_init__(self):
+        if self.z_review > self.z_reject:
+            raise ValueError(f"z_review {self.z_review} > z_reject {self.z_reject}: the review band would be empty")
+
     def as_dict(self) -> dict:
         return asdict(self)
 
 
-DEFAULT = Params()
+# The shipped review threshold is a versioned parameter: evaluate.py calibrates it on SYNTHETIC honest trips
+# (seed, sample size and code commit recorded in params.json) and every default reconcile() call uses it.
+PARAMS_FILE = Path(__file__).resolve().parent / "params.json"
 
 
-def sensor_dry_kg(pre_fill: float, post_fill: float, boom_capacity_m3: float, p: Params = DEFAULT) -> float:
+def load_default(path: Path = PARAMS_FILE) -> tuple[Params, str]:
+    if not path.exists():
+        warnings.warn(f"{path.name} missing: reconcile() falls back to the UNCALIBRATED N(0,1) prior; "
+                      "run `python3 -m mrv_ledger.evaluate`", RuntimeWarning, stacklevel=2)
+        return Params(), "uncalibrated-prior"
+    d = json.loads(path.read_text())
+    p = replace(Params(), z_review=float(d["z_review"]))
+    rest = {k: v for k, v in p.as_dict().items() if k != "z_review"}
+    if d.get("calibration", {}).get("model_params") != rest:
+        warnings.warn(f"{path.name} was calibrated with other model parameters; rerun mrv_ledger.evaluate",
+                      RuntimeWarning, stacklevel=2)
+    return p, str(path)
+
+
+DEFAULT, DEFAULT_SOURCE = load_default()
+
+
+def reload_default() -> Params:
+    """Re-read params.json (evaluate.py calls this after re-calibrating in the same process)."""
+    global DEFAULT, DEFAULT_SOURCE
+    DEFAULT, DEFAULT_SOURCE = load_default()
+    return DEFAULT
+
+
+def sensor_dry_kg(pre_fill: float, post_fill: float, boom_capacity_m3: float, p: Optional[Params] = None) -> float:
+    p = DEFAULT if p is None else p
     return max(0.0, pre_fill - post_fill) * boom_capacity_m3 * p.dry_density_kg_m3
 
 
-def z_score(claimed_dry: float, sensor_dry: float, boom_capacity_m3: float, p: Params = DEFAULT) -> float:
+def z_score(claimed_dry: float, sensor_dry: float, boom_capacity_m3: float, p: Optional[Params] = None) -> float:
+    p = DEFAULT if p is None else p
     fill_term = boom_capacity_m3 * p.dry_density_kg_m3 * p.sigma_fill_abs * math.sqrt(2.0)
     s = max(sensor_dry, 0.0)
     sigma = math.sqrt(fill_term**2 + (s * p.sigma_density_rel) ** 2 + (s * p.sigma_claim_rel) ** 2)
     return (claimed_dry - s) / max(sigma, 1e-9)
 
 
-def reconcile(record: ClearanceRecord, boom_capacity_m3: float, p: Params = DEFAULT,
+def reconcile(record: ClearanceRecord, boom_capacity_m3: float, p: Optional[Params] = None,
               twin_cleared_wet_kg: Optional[float] = None, inflow_wet_kg: Optional[float] = None) -> Reconciliation:
-    """inflow_wet_kg: plastic that reached the boom during the clearance window (C6 flux counter, or the
+    """p=None uses the shipped DEFAULT (calibrated z_review from params.json), looked up at call time.
+    inflow_wet_kg: plastic that reached the boom during the clearance window (C6 flux counter, or the
     twin's captured - refloated). Removed mass = fill drop + inflow, so without it long clearances look inflated."""
+    p = DEFAULT if p is None else p
     claimed_dry = record.claimed_wet_kg * (1.0 - p.moisture_fraction)
     reasons = ["basis=dry-equivalent kg (volume x ASSUMPTION density/moisture)"]
     if record.pre_fill_fraction is not None and record.post_fill_fraction is not None:
@@ -79,7 +116,7 @@ def reconcile(record: ClearanceRecord, boom_capacity_m3: float, p: Params = DEFA
     z = z_score(claimed_dry, sensor, boom_capacity_m3, p)
     ratio = claimed_dry / max(sensor, 1.0)
     flag = "reject" if z > p.z_reject else "review" if z > p.z_review else "ok"
-    reasons.append(f"z={z:.2f} (review>{p.z_review}, reject>{p.z_reject})")
+    reasons.append(f"z={z:.2f} (review>{p.z_review:.3f}, reject>{p.z_reject:.3f})")
     if z < -p.z_reject:
         reasons.append("claim far below sensor estimate: check sensor or unreported removal")
     if record.weighbridge_wet_kg is not None:

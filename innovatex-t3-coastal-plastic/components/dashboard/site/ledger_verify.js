@@ -89,21 +89,28 @@
 
   function hexToBytes(h) { var o = new Uint8Array(h.length / 2); for (var i = 0; i < o.length; i++) o[i] = parseInt(h.substr(2 * i, 2), 16); return o; }
 
-  /* Ed25519 via WebCrypto where the browser supports it; otherwise {supported:false}. */
-  async function verifySignatures(entries, sigs, registry) {
+  /* Ed25519 via WebCrypto where the browser supports it; otherwise {supported:false}.
+   * Mirrors chain.verify_signatures: a signature counts only if its signer is the record's crew (or listed for
+   * that crew in the optional delegations table {crew_id: [signer_id, ...]}) and it covers this entry's hash. */
+  async function verifySignatures(entries, sigs, registry, delegations) {
     if (!hasSubtle()) return { supported: false };
+    delegations = delegations || {};
     var bySeq = {}; sigs.forEach(function (s) { bySeq[s.seq] = s; });
-    var bad = [];
+    var bad = [], problems = [];
+    function fail(seq, why) { bad.push(seq); problems.push('seq ' + seq + ': ' + why); }
     try {
       for (var i = 0; i < entries.length; i++) {
-        var e = entries[i], s = bySeq[e.seq];
-        if (!s || registry[s.signer_id] !== s.public_key_hex) { bad.push(e.seq); continue; }
+        var e = entries[i], s = bySeq[e.seq], crew = e.record && e.record.crew_id;
+        if (!s) { fail(e.seq, 'unsigned'); continue; }
+        if (registry[s.signer_id] !== s.public_key_hex) { fail(e.seq, 'signer ' + s.signer_id + ' not in the key registry'); continue; }
+        if (s.signer_id !== crew && (delegations[crew] || []).indexOf(s.signer_id) < 0) { fail(e.seq, 'signer ' + s.signer_id + ' is not crew ' + crew + ' and holds no delegation'); continue; }
+        if (s.hash !== e.hash) { fail(e.seq, 'signature is for a different hash'); continue; }
         var key = await crypto.subtle.importKey('raw', hexToBytes(s.public_key_hex), { name: 'Ed25519' }, false, ['verify']);
         var ok = await crypto.subtle.verify({ name: 'Ed25519' }, key, hexToBytes(s.signature_hex), new TextEncoder().encode(e.hash));
-        if (!ok) bad.push(e.seq);
+        if (!ok) fail(e.seq, 'bad signature');
       }
     } catch (err) { return { supported: false, error: String(err) }; }
-    return { supported: true, ok: bad.length === 0, badSeqs: bad, checked: entries.length };
+    return { supported: true, ok: bad.length === 0, badSeqs: bad, problems: problems, checked: entries.length };
   }
 
   var api = { GENESIS: GENESIS, canonicalize: canonicalize, sha256Hex: sha256Hex, sha256HexSync: sha256HexSync,
