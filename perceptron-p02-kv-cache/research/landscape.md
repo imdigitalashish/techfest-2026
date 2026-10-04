@@ -58,6 +58,19 @@ Mechanism details beyond the abstracts remain UNVERIFIED.
 
 **Reading.** I found no evidence (and know of none) that a major provider ships lossy token *eviction* (H2O or SnapKV style) for general chat. Production cuts KV with architecture (GQA, MLA, sliding windows), quantisation (FP8/int8) and lossless reuse (paging, prefix caching, offload). Eviction stays a research and on-device topic. That is our opening: make eviction **safe for recall**, using the production ingredients of *quantisation* (a 4-bit single-layer key sketch) and *recompute on miss* (prefix reuse in reverse).
 
+**Added from the companies worker report** ([`raw/companies-ship-today.md`](raw/companies-ship-today.md); a research worker opened its 53 sources on 2026-10-04 and I have not re-opened them, so treat these as **worker-verified, lead-UNVERIFIED**):
+- **Character.AI (2024):** stacks MQA, 1-in-6 global attention layers, cross-layer KV tying and int8 KV for a stated ">20X" KV reduction.
+- **Apple's on-device model:** block 2 fully reuses block 1's KV cache, a disclosed 37.5% KV saving.
+- **Hybrid attention:** Kimi Linear and the Qwen3-Next → Qwen3.5+ line converge on about 3:1 linear-to-full attention, while MiniMax-M2 (2026) reversed its hybrid back to full attention.
+- **DeepSeek Sparse Attention (V3.2):** a *compute* saving (top-k = 2048 indexer); the full KV stays resident.
+- **NVIDIA NVFP4 KV:** "up to 50%" less memory than FP8 with "<1% accuracy loss".
+- **vLLM blog:** a 128K needle test fell from 91% (BF16) to 13% under naive FP8 KV before a fix. Quantised KV needs validation on recall, which is exactly what our harness measures.
+- **Caching discounts:** context-caching read discounts have converged near 90% (OpenAI, Anthropic, Gemini).
+
+**Where we borrow and where we beat it:**
+- *Borrowed:* production's two dominant moves, low-bit KV (our 4-bit sketch) and lossless reuse (RoD recomputes from the token stream, prefix caching in reverse).
+- *Beaten on its own terms:* unlike lossy eviction in research tooling (kvpress), RoD never makes eviction irreversible. Unlike offload (Dynamo/LMCache-style tiers), the evicted tier holds token ids, not KV.
+
 ## 4. Evaluation landscape (UNVERIFIED unless tagged)
 - **RULER** (2404.06654): synthetic NIAH variants (single, multi-key, multi-value, multi-query), variable tracking, aggregation and QA at chosen lengths. Our harness generates RULER-style multi-needle tasks over WikiText-103 text **[OPENED: our code]**.
 - **SCBench** (2412.10319): shared-context multi-turn evaluation. It motivates our *query-agnostic* protocol (compress once, then ask 4 questions).
