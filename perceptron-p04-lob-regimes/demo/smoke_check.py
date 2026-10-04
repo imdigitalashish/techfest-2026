@@ -166,6 +166,19 @@ def main() -> int:
     for needle in ('id="splice"', "SEMI-SYNTHETIC", "additively"):
         check(needle in html_text(), f"index.html contains {needle!r}")
 
+    print("[7] fallback deck = the talk-track story order (capture_fallback.py)")
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("cf", DEMO / "capture_fallback.py")
+    cf = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cf)
+    deck = [x[0] for x in cf.DECK]
+    have = sorted(p.name for p in (DEMO / "fallback").glob("*.png"))
+    check(have == sorted(deck), f"fallback/ holds exactly the {len(deck)} deck images")
+    script = (DEMO / "SCRIPT.md").read_text()
+    main_deck = [n for n in deck if n[0].isdigit()]
+    pos = [script.find(n.split("_")[0] + "_") for n in main_deck]
+    check(all(p_ >= 0 for p_ in pos) and pos == sorted(pos), "SCRIPT.md cites the main deck in story order")
+
     print("[5] page references every panel and data file")
     html = (DEMO / "index.html").read_text()
     for needle in ('id="scoreboard"', 'id="replay"', 'id="dial"', 'id="exec"', 'id="sweep"', 'id="why"', 'id="rp"',

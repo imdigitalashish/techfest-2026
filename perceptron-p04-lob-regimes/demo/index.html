@@ -361,7 +361,7 @@ function drawDial(){
   g.strokeStyle=C("--enorm");g.setLineDash([5,4]);g.beginPath();g.moveTo(L,Y(enD));g.lineTo(R,Y(enD));g.stroke();g.setLineDash([]);
   const ci=ids.indexOf(STOP);if(ci>=0){g.strokeStyle=C("--acc");g.beginPath();g.moveTo(X(ci),T);g.lineTo(X(ci),B);g.stroke();}
   // alarms/day mini strip
-  const keep=new Set(["naive_1","naive_10","naive_30","naive_75","naive_150","naive_300","off"]);g.fillStyle=C("--mut");pts.forEach((p,i)=>{if(w<520&&!keep.has(p.id))return;g.fillStyle=p.alarms_per_day>=47.5?C("--ks"):C("--mut");g.fillText(p.alarms_per_day.toFixed(0),X(i)-6,B+14);
+  const keep=new Set(["naive_1","naive_10","naive_30","naive_75","naive_150","off"]);g.fillStyle=C("--mut");pts.forEach((p,i)=>{if(w<520&&!keep.has(p.id))return;g.fillStyle=p.alarms_per_day>=47.5?C("--ks"):C("--mut");g.fillText(p.alarms_per_day.toFixed(0),X(i)-6,B+14);
     g.fillStyle=C("--mut");g.fillText(p.kind==="off"?"off":String(p.log10_alpha),X(i)-8,B+28);});
   g.fillText("alarms/day (red = at the 48/day cap) · log10 α →",L,B+41);
   if(s.kind==="calibrated"){g.fillStyle=C("--acc");g.fillText(`${stopLabel(STOP)}: Δ ${f4(v.mean)}`,L+4,T+26);g.strokeStyle=C("--acc");g.beginPath();g.moveTo(L,Y(v.mean));g.lineTo(R,Y(v.mean));g.stroke();}
@@ -376,7 +376,7 @@ function drawDial(){
   const nt=SW.null_train;
   $("#why-note").innerHTML=`${nt.n_windows.toLocaleString()} leave-one-day-out windows on the 12 training days, each compared with the other 11 days (same construction as the calibrated null). `+
     `Median Bonferroni p-value: <b>10^${nt.median_log10_pbon.toFixed(1)}</b>. Windows with complete separation (D = 1): <b>${(nt.share_D1*100).toFixed(1)}%</b>; on the held-out days: ${SW.holdout_windows.n_D1} of ${SW.holdout_windows.n.toLocaleString()}. `+
-    `Exact i.i.d. probability of D = 1 (m = ${SW.separation.m}, n = ${SW.separation.n_ref.toLocaleString()}): 10^${sep.toFixed(1)}. So these windows are not i.i.d. draws from one distribution: days differ, and overlapping 1-second windows are autocorrelated. The rejection rate measures that, not a verified false-alarm rate. ${chip("post-hoc demo sweep")}`;
+    `Exact i.i.d. probability of D = 1 (m = ${SW.separation.m}, n = ${SW.separation.n_ref.toLocaleString()}): 10^${sep.toFixed(1)}. So these windows are not i.i.d. draws from one distribution: days differ, and consecutive 10-minute windows (tested every 30 s) overlap by 95%. The rejection rate measures that, not a verified false-alarm rate. ${chip("post-hoc demo sweep")}`;
   dialVerdict();
 }
 function dialVerdict(){
