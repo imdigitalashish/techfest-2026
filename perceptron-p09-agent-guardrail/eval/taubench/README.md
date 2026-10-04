@@ -45,10 +45,20 @@ Checks on the labels:
   - no-op item mappings are not failed (τ-bench ground truth contains them);
   - the agent's confirmation summary plus the user's explicit "yes" may ground selected fields.
 - **Frozen configurations** (chosen on dev before test was run): `t0_strict` (no summary grounding), `t0_balanced` (summary may ground item, payment, reason and address; best dev score, **primary**), `t0_lenient` (also item options).
-- **Test** was run once on the frozen configs (commit `a93e35a`). After that, only the LLM baselines and the error audit were added.
-- **CIs:** 95% percentile bootstrap over (model, task_id) clusters, 2,000 resamples, because calls from the same task are correlated.
+- **Test history:** the frozen configs were first run on test at commit `a93e35a`; those first-run outputs are in `eval/results/first_run/` and in git history. After the gpt-6-sol code review, six bugs were fixed at `74d2128`: confirmation timing, the retail schema gate, uncertainty-as-yes, option substring matching, address scope, and fail-closed replay. Test was then **re-run once** on the same configuration definitions. The corrections used test examples, so all post-review test numbers are **exploratory**, not a pristine holdout. The LLM baselines, cascades and miss audit were added afterwards.
+- **CIs:** 95% percentile bootstrap over **task_id** clusters across both models and all trials, 2,000 resamples, seed 0. They resample tasks, not independent customers. The odd/even split shares users and orders across halves (43/57 test tasks share a user with dev), so this is a within-scenario check. A scenario-grouped holdout is the next step.
 - **Catch** = blocked *or* escalated. Escalation is reported separately as a cost on good calls.
 
+## Provenance of committed results
+- Every result file records `code_sha256`, a content hash of the guard and eval code from `eval/provenance.py`, alongside the git commit.
+- Deterministic guards were re-run on a clean tree before submission.
+- LLM rows (`llm_judge`, `llm_judge_aoai`, `cascade_fast`, `cascade_aoai`) are not regenerated. Their metrics and CIs are recomputed from the stored rows (`run.py --recompute`, logged in each file's `metrics_recomputed`):
+  - `llm_judge`: rows from `361ce58`; its original CI used (model, task) clusters.
+  - `cascade_fast`: `74d2128`.
+  - `llm_judge_aoai` and `cascade_aoai`: code as committed in `4566887`.
+
 ## What it does not measure
+- **Labels are not safety.** *good* means ground-truth-equivalent DB effect; *harmful* means accepted but non-equivalent. Neither is adjudicated consent, policy compliance or real-world harm (gpt-6-sol #2, gpt-6-astra A).
+- **Information is unequal.** Judges see a truncated transcript (700 characters per tool output, last 7,000 characters overall). Tier 0 reads complete stored turns and database records.
 - A transcript-based guard cannot know the simulated user's hidden instruction. The audit (`audit-test-misses.md`) found 8 of 20 misses explicitly requested by the simulated user.
 - The 300-call sample is stratified (40% good, 40% harmful, 20% rejected). Its rates are per-stratum, not population mixtures.

@@ -264,7 +264,9 @@ def run(guard: str, split: str, n_sample: int | None = None) -> dict:
         from components.checker import aoai
         usage = dict(aoai.USAGE, deployment=__import__("os").environ.get("AZURE_OPENAI_DEPLOYMENT", "gpt-4.1-mini"),
                      api_version=aoai.API_VERSION, note="usage counts only calls made in this process (not resumed rows)")
+    from eval.provenance import code_sha256
     out = {"guard": guard, "split": split, "sample": n_sample, "commit": head + ("-dirty" if dirty else ""), "api_usage": usage,
+           "code_sha256": code_sha256(),
            "wall_s": round(time.time() - t0, 1),
            "source": "sierra-research/tau-bench@59a200c historical_trajectories (gpt-4o, sonnet-35-new; retail)",
            "metrics": metrics(rows), "rows": rows}
@@ -273,12 +275,30 @@ def run(guard: str, split: str, n_sample: int | None = None) -> dict:
     return out
 
 
+def recompute(path: Path) -> dict:
+    """Recompute metrics (incl. CIs) from a result file's stored rows; never re-generates any decision."""
+    d = json.loads(path.read_text())
+    old = d["metrics"]
+    d["metrics"] = metrics(d["rows"])
+    head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
+    d.setdefault("metrics_recomputed", []).append({"at_commit": head, "reason": "CI clustering by task_id (astra review B)",
+                                                   "previous_catch_ci": old.get("ci95_cluster_bootstrap", {}).get("catch_harmful")})
+    path.write_text(json.dumps(d, indent=1))
+    return d
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
+    ap.add_argument("--recompute", nargs="*", help="result files to recompute metrics for, from stored rows only")
     ap.add_argument("--guards", default="none,schema,t0_v0,t0_strict,t0_balanced,t0_lenient")
     ap.add_argument("--split", default="dev", choices=["dev", "test", "all"])
     ap.add_argument("--sample", type=int, default=None, help="stratified sample size (seed 0)")
     a = ap.parse_args()
+    if a.recompute:
+        for f in a.recompute:
+            m = recompute(Path(f))["metrics"]
+            print(f"recomputed {f}: clusters={m['n_clusters']} catch_ci={m['ci95_cluster_bootstrap']['catch_harmful']}")
+        raise SystemExit(0)
     for g in a.guards.split(","):
         o = run(g, a.split, a.sample)
         m, ci = o["metrics"], o["metrics"]["ci95_cluster_bootstrap"]

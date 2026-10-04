@@ -10,12 +10,12 @@ flowchart TB
   hook --> t0
 
   subgraph guard [Guard — runs before execution]
-    t0["Tier 0 · deterministic, ~0.2 ms<br/>• provenance of each argument<br/>• pre-trade contracts: collar, size, cash, short-sale,<br/>  restricted list, duplicates, ownership, approvals"]
+    t0["Tier 0 · deterministic, sub-ms in-process<br/>• provenance of each argument<br/>• pre-trade contracts: collar, size, cash, short-sale,<br/>  restricted list, duplicates, ownership, approvals"]
     kb[("Reference data<br/>instruments · accounts · orders<br/>limits · restricted list · numbered policy")] --> t0
     t0 -- "unverifiable residue only" --> route{"Risk router<br/>reversibility × value at stake"}
-    route -- "low risk" --> fast["Tier 1 · Qwen3-1.7B"]
-    route -- "high risk" --> careful["Tier 2 · Qwen3-8B"]
-    fast --> qv["Quote verifier<br/>quote must match user words / tool data verbatim;<br/>a bare 'yes' never counts"]
+    route -- "low risk" --> fast["Tier 1 · local Qwen3"]
+    route -- "high risk" --> careful["Tier 2 · gpt-4.1-mini"]
+    fast --> qv["Quote check<br/>quote must occur in user words / tool data;<br/>a bare 'yes' never counts (occurrence ≠ entailment)"]
     careful --> qv
   end
 
@@ -31,12 +31,12 @@ flowchart TB
 ```mermaid
 flowchart LR
   subgraph eval [Evaluation]
-    tb["τ-bench replay<br/>2,018 real write calls (gpt-4o, Claude-3.5-Sonnet)<br/>labels: DB effect vs ground truth<br/>dev/test split by task"] --> m
+    tb["τ-bench replay<br/>2,018 historical write calls (gpt-4o, Claude-3.5-Sonnet)<br/>labels: DB effect vs ground truth (not safety)<br/>dev/test split by task id"] --> m
     rt["Independent red team<br/>160 cases by a different model family"] --> m
     sy["Synthetic mutation suite<br/>(self-authored, secondary)"] --> m
     m["Metrics · catch on harmful calls · false-block and escalation on good calls<br/>· latency p50/p95 · 95% CIs clustered by task"]
-    m --> base["Baselines: no guard · schema-only · LLM judge (same transcript)"]
+    m --> base["Baselines: no guard · schema-only · LLM judges (gpt-4.1-mini, Qwen3-1.7B)"]
   end
 ```
 
-**Operating points** (like a desk's hard blocks vs soft alerts vs manual review): `v0` (catch first), `strict`, `balanced` (primary) and `lenient` (fewest escalations) trade harmful-call catch against human load on good calls. All four were chosen on dev and tested once on held-out tasks.
+**Operating points** (like a desk's hard blocks vs soft alerts vs manual review): `v0` (catch first), `strict`, `balanced` (primary) and `lenient` (fewest escalations) trade harmful-call catch against human load on good calls. All four were chosen on dev. The held-out-task test was re-run once after a code review fixed six bugs, so the current numbers are exploratory (see `eval/taubench/README.md`).
