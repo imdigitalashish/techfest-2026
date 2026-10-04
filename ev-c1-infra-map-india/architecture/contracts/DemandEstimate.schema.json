@@ -1,0 +1,47 @@
+{
+ "properties": {
+  "unit_id": {
+   "title": "Unit Id",
+   "type": "string"
+  },
+  "segment": {
+   "enum": [
+    "2W",
+    "3W",
+    "4W",
+    "BUS",
+    "GOODS",
+    "OTHER"
+   ],
+   "title": "Segment",
+   "type": "string"
+  },
+  "year": {
+   "title": "Year",
+   "type": "integer"
+  },
+  "public_kwh_per_day": {
+   "title": "Public Kwh Per Day",
+   "type": "number"
+  },
+  "public_sessions_per_day": {
+   "title": "Public Sessions Per Day",
+   "type": "number"
+  },
+  "assumptions_ref": {
+   "description": "id of the parameter set (research/india-ev-parameters)",
+   "title": "Assumptions Ref",
+   "type": "string"
+  }
+ },
+ "required": [
+  "unit_id",
+  "segment",
+  "year",
+  "public_kwh_per_day",
+  "public_sessions_per_day",
+  "assumptions_ref"
+ ],
+ "title": "DemandEstimate",
+ "type": "object"
+}

@@ -1,0 +1,61 @@
+{
+ "properties": {
+  "unit_id": {
+   "description": "LGD code where available",
+   "title": "Unit Id",
+   "type": "string"
+  },
+  "level": {
+   "enum": [
+    "country",
+    "state",
+    "district",
+    "rto",
+    "h3"
+   ],
+   "title": "Level",
+   "type": "string"
+  },
+  "name": {
+   "title": "Name",
+   "type": "string"
+  },
+  "parent_id": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Parent Id"
+  },
+  "population": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Population"
+  },
+  "geometry_ref": {
+   "description": "path#feature-id of the boundary (GeoParquet)",
+   "title": "Geometry Ref",
+   "type": "string"
+  }
+ },
+ "required": [
+  "unit_id",
+  "level",
+  "name",
+  "geometry_ref"
+ ],
+ "title": "AdminUnit",
+ "type": "object"
+}

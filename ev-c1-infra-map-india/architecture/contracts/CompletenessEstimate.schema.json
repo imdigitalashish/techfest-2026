@@ -1,0 +1,71 @@
+{
+ "properties": {
+  "region_id": {
+   "title": "Region Id",
+   "type": "string"
+  },
+  "observed_sites": {
+   "minimum": 0,
+   "title": "Observed Sites",
+   "type": "integer"
+  },
+  "estimated_total": {
+   "title": "Estimated Total",
+   "type": "number"
+  },
+  "ci90": {
+   "maxItems": 2,
+   "minItems": 2,
+   "prefixItems": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "number"
+    }
+   ],
+   "title": "Ci90",
+   "type": "array"
+  },
+  "coverage": {
+   "description": "observed / estimated_total",
+   "maximum": 1,
+   "minimum": 0,
+   "title": "Coverage",
+   "type": "number"
+  },
+  "method": {
+   "enum": [
+    "lincoln_petersen",
+    "chapman",
+    "loglinear_mse",
+    "official_benchmark"
+   ],
+   "title": "Method",
+   "type": "string"
+  },
+  "benchmark_total": {
+   "anyOf": [
+    {
+     "type": "integer"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "description": "official count for validation, e.g. PIB 2151390",
+   "title": "Benchmark Total"
+  }
+ },
+ "required": [
+  "region_id",
+  "observed_sites",
+  "estimated_total",
+  "ci90",
+  "coverage",
+  "method"
+ ],
+ "title": "CompletenessEstimate",
+ "type": "object"
+}

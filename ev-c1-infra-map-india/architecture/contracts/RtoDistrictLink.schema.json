@@ -1,0 +1,64 @@
+{
+ "properties": {
+  "state_code": {
+   "title": "State Code",
+   "type": "string"
+  },
+  "rto_code": {
+   "title": "Rto Code",
+   "type": "string"
+  },
+  "rto_label": {
+   "title": "Rto Label",
+   "type": "string"
+  },
+  "district_lgd": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "District Lgd"
+  },
+  "district_name": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "District Name"
+  },
+  "weight": {
+   "default": 1.0,
+   "maximum": 1,
+   "minimum": 0,
+   "title": "Weight",
+   "type": "number"
+  },
+  "method": {
+   "enum": [
+    "name_match",
+    "manual",
+    "office_geocode"
+   ],
+   "title": "Method",
+   "type": "string"
+  }
+ },
+ "required": [
+  "state_code",
+  "rto_code",
+  "rto_label",
+  "district_lgd",
+  "district_name",
+  "method"
+ ],
+ "title": "RtoDistrictLink",
+ "type": "object"
+}

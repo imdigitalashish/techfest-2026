@@ -115,23 +115,32 @@ class Vahan:
 def parse_export(xlsx: bytes) -> pd.DataFrame:
     """Parse a VAHAN 'reportTable.xlsx' export into a wide frame: [row_label, <x cols>..., TOTAL]."""
     raw = pd.read_excel(io.BytesIO(xlsx), header=None, dtype=str)
-    hdr_i = next(i for i in range(len(raw)) if str(raw.iat[i, 0]).strip() == "S No")
-    title = str(raw.iat[0, 0]).strip()
-    labels = [str(v).strip() for v in raw.iloc[hdr_i + 1].tolist()]
-    cols = []
+    clean = lambda v: re.sub(r"\s+", " ", str(v).replace("\xa0", " ")).strip()  # noqa: E731
+    hdr_i = next(i for i in range(len(raw)) if clean(raw.iat[i, 0]) == "S No")
+    title = clean(raw.iat[0, 0])
+    # The x-axis labels sit on the first row below the header that has values in the data columns.
+    lab_i = next(i for i in range(hdr_i + 1, len(raw))
+                 if any(clean(v) not in ("nan", "") for v in raw.iloc[i, 2:-1].tolist()))
+    labels = [clean(v) for v in raw.iloc[lab_i].tolist()]
+    cols, seen = [], set()
     for j in range(raw.shape[1]):
-        top = str(raw.iat[hdr_i, j]).strip()
+        top = clean(raw.iat[hdr_i, j])
         if j == 0:
-            cols.append("s_no")
+            name = "s_no"
         elif j == 1:
-            cols.append("row_label")
+            name = "row_label"
         elif top.upper() == "TOTAL":
-            cols.append("TOTAL")
+            name = "TOTAL"
         else:
-            cols.append(labels[j] if labels[j] not in ("nan", "") else top)
-    body = raw.iloc[hdr_i + 2:].copy()
+            name = labels[j] if labels[j] not in ("nan", "") else top
+        while name in seen:
+            name += "_dup"
+        seen.add(name)
+        cols.append(name)
+    body = raw.iloc[lab_i + 1:].copy()
     body.columns = cols
-    body = body[body["s_no"].astype(str).str.strip().str.match(r"^\d+$")]
+    body = body[body["s_no"].map(clean).str.match(r"^\d+$")]
+    body["row_label"] = body["row_label"].map(clean)
     for c in cols[2:]:
         body[c] = pd.to_numeric(body[c].astype(str).str.replace(",", "").str.strip(), errors="coerce").fillna(0).astype("int64")
     body = body.drop(columns=["s_no"]).reset_index(drop=True)

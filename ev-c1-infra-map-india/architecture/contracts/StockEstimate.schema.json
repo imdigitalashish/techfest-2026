@@ -1,0 +1,64 @@
+{
+ "properties": {
+  "unit_id": {
+   "title": "Unit Id",
+   "type": "string"
+  },
+  "segment": {
+   "enum": [
+    "2W",
+    "3W",
+    "4W",
+    "BUS",
+    "GOODS",
+    "OTHER"
+   ],
+   "title": "Segment",
+   "type": "string"
+  },
+  "year": {
+   "title": "Year",
+   "type": "integer"
+  },
+  "registrations_cum": {
+   "title": "Registrations Cum",
+   "type": "integer"
+  },
+  "stock_est": {
+   "description": "on-road stock after survival curve",
+   "title": "Stock Est",
+   "type": "number"
+  },
+  "ci90": {
+   "anyOf": [
+    {
+     "maxItems": 2,
+     "minItems": 2,
+     "prefixItems": [
+      {
+       "type": "number"
+      },
+      {
+       "type": "number"
+      }
+     ],
+     "type": "array"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Ci90"
+  }
+ },
+ "required": [
+  "unit_id",
+  "segment",
+  "year",
+  "registrations_cum",
+  "stock_est"
+ ],
+ "title": "StockEstimate",
+ "type": "object"
+}

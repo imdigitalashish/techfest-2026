@@ -1,0 +1,63 @@
+{
+ "properties": {
+  "unit_id": {
+   "title": "Unit Id",
+   "type": "string"
+  },
+  "year": {
+   "title": "Year",
+   "type": "integer"
+  },
+  "scenario": {
+   "enum": [
+    "bau",
+    "policy_target",
+    "high"
+   ],
+   "title": "Scenario",
+   "type": "string"
+  },
+  "chargers_needed": {
+   "additionalProperties": {
+    "type": "integer"
+   },
+   "description": "by charger class, e.g. {'LEV_AC':..,'AC_7kW':..,'DC_60kW':..}",
+   "title": "Chargers Needed",
+   "type": "object"
+  },
+  "candidate_sites": {
+   "description": "[{lat,lon,kind,score,grid_ok}]",
+   "items": {
+    "additionalProperties": true,
+    "type": "object"
+   },
+   "title": "Candidate Sites",
+   "type": "array"
+  },
+  "coverage_gain": {
+   "anyOf": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Coverage Gain"
+  },
+  "rationale": {
+   "title": "Rationale",
+   "type": "string"
+  }
+ },
+ "required": [
+  "unit_id",
+  "year",
+  "scenario",
+  "chargers_needed",
+  "rationale"
+ ],
+ "title": "Recommendation",
+ "type": "object"
+}

@@ -1,0 +1,118 @@
+{
+ "$defs": {
+  "Provenance": {
+   "properties": {
+    "source": {
+     "description": "connector id, e.g. osm, ocm, cpo:<name>, official:pib2151390",
+     "title": "Source",
+     "type": "string"
+    },
+    "source_id": {
+     "title": "Source Id",
+     "type": "string"
+    },
+    "license": {
+     "title": "License",
+     "type": "string"
+    },
+    "fetched_at": {
+     "format": "date-time",
+     "title": "Fetched At",
+     "type": "string"
+    },
+    "url": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Url"
+    }
+   },
+   "required": [
+    "source",
+    "source_id",
+    "license",
+    "fetched_at"
+   ],
+   "title": "Provenance",
+   "type": "object"
+  }
+ },
+ "description": "One cell of a VAHAN pivot: registrations for (geography, vehicle class, fuel, period).",
+ "properties": {
+  "state_code": {
+   "description": "VAHAN state code, e.g. MH; '-1' = all India",
+   "title": "State Code",
+   "type": "string"
+  },
+  "rto_code": {
+   "description": "VAHAN office code; '-1' = all offices in state",
+   "title": "Rto Code",
+   "type": "string"
+  },
+  "rto_label": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Rto Label"
+  },
+  "vehicle_class": {
+   "description": "VAHAN vehicle class label, e.g. 'M-CYCLE/SCOOTER', 'E-RICKSHAW(P)'",
+   "title": "Vehicle Class",
+   "type": "string"
+  },
+  "segment": {
+   "enum": [
+    "2W",
+    "3W",
+    "4W",
+    "BUS",
+    "GOODS",
+    "OTHER"
+   ],
+   "title": "Segment",
+   "type": "string"
+  },
+  "fuel": {
+   "description": "VAHAN fuel label; BEV = 'ELECTRIC(BOV)' or 'PURE EV'",
+   "title": "Fuel",
+   "type": "string"
+  },
+  "period": {
+   "description": "'A' = till today, 'YYYY' = calendar year, 'YYYY-MM' = month",
+   "title": "Period",
+   "type": "string"
+  },
+  "count": {
+   "minimum": 0,
+   "title": "Count",
+   "type": "integer"
+  },
+  "provenance": {
+   "$ref": "#/$defs/Provenance"
+  }
+ },
+ "required": [
+  "state_code",
+  "rto_code",
+  "vehicle_class",
+  "segment",
+  "fuel",
+  "period",
+  "count",
+  "provenance"
+ ],
+ "title": "RegistrationRecord",
+ "type": "object"
+}

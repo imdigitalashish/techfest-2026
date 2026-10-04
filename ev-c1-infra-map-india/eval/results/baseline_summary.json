@@ -1,0 +1,56 @@
+{
+ "vahan_states": 70,
+ "states_matched_to_pib": 68,
+ "unmatched_vahan_states": [
+  "UT OF DNH AND DD",
+  "UTTAR PRADESH"
+ ],
+ "india_bev_registrations_till_today": 19256550,
+ "india_all_registrations_till_today": 847059424,
+ "india_bev_registrations_cy2025": 4308250,
+ "india_bev_share_cy2025_pct": 7.91,
+ "official_pcs_sum_pib2151390": 58554,
+ "national_bev_per_official_pcs": 328.9,
+ "median_state_bev_per_pcs": 307.95,
+ "osm_charging_features_india": 600,
+ "osm_base_timestamp": "2026-10-04T00:26:35Z",
+ "osm_coverage_vs_official_pct": 1.02,
+ "osm_with_operator_pct": 31.8,
+ "osm_with_any_socket_tag_pct": 7.8,
+ "mh_rtos_listed": 61,
+ "mh_rtos_fetched_till_today": 34,
+ "mh_bev_till_today_sum_rtos": 566035,
+ "mh_bev_by_segment_till_today": {
+  "2W": 459819,
+  "3W": 44074,
+  "4W": 54888,
+  "BUS": 3238,
+  "GOODS": 3734,
+  "OTHER": 282
+ },
+ "mh_top5_rtos_bev": [
+  [
+   "NAGPUR (EAST) - MH49( 17-APR-2017 )",
+   65467
+  ],
+  [
+   "NASHIK - MH15( 05-JAN-2017 )",
+   59554
+  ],
+  [
+   "KOLHAPUR - MH9( 02-MAR-2017 )",
+   50773
+  ],
+  [
+   "CHHATRAPATI SAMBHAJINAGAR - MH20( 20-OCT-2016 )",
+   43235
+  ],
+  [
+   "AMRAWATI - MH27( 21-JAN-2017 )",
+   30377
+  ]
+ ],
+ "mh_state_bev_till_today": 1185108,
+ "mh_pcs_pib2151390": 4155,
+ "mh_bev_per_pcs": 285.2
+}

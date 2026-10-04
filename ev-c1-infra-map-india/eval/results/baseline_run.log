@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/eval/baseline_state_gap.py", line 58, in <module>
+    rl = pd.read_csv(f"{RAW}/rto_list_MH.csv"); rows = []
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 872, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 300, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1643, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1925, in _make_engine
+    return mapping[engine](f, **self.options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/.venv/lib/python3.12/site-packages/pandas/io/parsers/c_parser_wrapper.py", line 95, in __init__
+    self._reader = parsers.TextReader(src, **kwds)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/parsers.pyx", line 575, in pandas._libs.parsers.TextReader.__cinit__
+pandas.errors.EmptyDataError: No columns to parse from file

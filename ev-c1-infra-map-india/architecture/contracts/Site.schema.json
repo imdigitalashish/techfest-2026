@@ -1,0 +1,177 @@
+{
+ "$defs": {
+  "Connector": {
+   "properties": {
+    "type": {
+     "$ref": "#/$defs/ConnectorType"
+    },
+    "count": {
+     "default": 1,
+     "minimum": 1,
+     "title": "Count",
+     "type": "integer"
+    },
+    "power_kw": {
+     "anyOf": [
+      {
+       "exclusiveMinimum": 0,
+       "maximum": 1000,
+       "type": "number"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Power Kw"
+    }
+   },
+   "required": [
+    "type"
+   ],
+   "title": "Connector",
+   "type": "object"
+  },
+  "ConnectorType": {
+   "enum": [
+    "CCS2",
+    "TYPE2",
+    "CHADEMO",
+    "GBT_DC",
+    "BHARAT_AC001",
+    "BHARAT_DC001",
+    "LECCS",
+    "IND_15A",
+    "DOMESTIC",
+    "OTHER"
+   ],
+   "title": "ConnectorType",
+   "type": "string"
+  },
+  "Provenance": {
+   "properties": {
+    "source": {
+     "description": "connector id, e.g. osm, ocm, cpo:<name>, official:pib2151390",
+     "title": "Source",
+     "type": "string"
+    },
+    "source_id": {
+     "title": "Source Id",
+     "type": "string"
+    },
+    "license": {
+     "title": "License",
+     "type": "string"
+    },
+    "fetched_at": {
+     "format": "date-time",
+     "title": "Fetched At",
+     "type": "string"
+    },
+    "url": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Url"
+    }
+   },
+   "required": [
+    "source",
+    "source_id",
+    "license",
+    "fetched_at"
+   ],
+   "title": "Provenance",
+   "type": "object"
+  }
+ },
+ "description": "A resolved physical charging site (output of C4): one or more ChargerRecords from >=1 sources.",
+ "properties": {
+  "site_id": {
+   "title": "Site Id",
+   "type": "string"
+  },
+  "lat": {
+   "title": "Lat",
+   "type": "number"
+  },
+  "lon": {
+   "title": "Lon",
+   "type": "number"
+  },
+  "operator_canonical": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Operator Canonical"
+  },
+  "connectors": {
+   "default": [],
+   "items": {
+    "$ref": "#/$defs/Connector"
+   },
+   "title": "Connectors",
+   "type": "array"
+  },
+  "max_power_kw": {
+   "anyOf": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Max Power Kw"
+  },
+  "n_sources": {
+   "minimum": 1,
+   "title": "N Sources",
+   "type": "integer"
+  },
+  "members": {
+   "items": {
+    "$ref": "#/$defs/Provenance"
+   },
+   "title": "Members",
+   "type": "array"
+  },
+  "match_confidence": {
+   "maximum": 1,
+   "minimum": 0,
+   "title": "Match Confidence",
+   "type": "number"
+  },
+  "admin": {
+   "additionalProperties": {
+    "type": "string"
+   },
+   "description": "{'state_lgd':..,'district_lgd':..,'h3_r8':..}",
+   "title": "Admin",
+   "type": "object"
+  }
+ },
+ "required": [
+  "site_id",
+  "lat",
+  "lon",
+  "n_sources",
+  "members",
+  "match_confidence"
+ ],
+ "title": "Site",
+ "type": "object"
+}

@@ -1,0 +1,111 @@
+{
+ "properties": {
+  "unit_id": {
+   "title": "Unit Id",
+   "type": "string"
+  },
+  "level": {
+   "enum": [
+    "state",
+    "district",
+    "h3",
+    "corridor_segment"
+   ],
+   "title": "Level",
+   "type": "string"
+  },
+  "ev_stock": {
+   "title": "Ev Stock",
+   "type": "number"
+  },
+  "public_sites": {
+   "title": "Public Sites",
+   "type": "number"
+  },
+  "public_kw": {
+   "anyOf": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Public Kw"
+  },
+  "coverage_adjusted_sites": {
+   "anyOf": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "description": "sites / completeness coverage",
+   "title": "Coverage Adjusted Sites"
+  },
+  "evs_per_site": {
+   "anyOf": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Evs Per Site"
+  },
+  "access_index_e2sfca": {
+   "anyOf": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Access Index E2Sfca"
+  },
+  "norm_shortfall": {
+   "anyOf": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "description": "sites missing vs a policy norm (e.g. MoP 2024 spacing)",
+   "title": "Norm Shortfall"
+  },
+  "gap_score": {
+   "maximum": 1,
+   "minimum": 0,
+   "title": "Gap Score",
+   "type": "number"
+  },
+  "drivers": {
+   "description": "human-readable reasons, ranked",
+   "items": {
+    "type": "string"
+   },
+   "title": "Drivers",
+   "type": "array"
+  }
+ },
+ "required": [
+  "unit_id",
+  "level",
+  "ev_stock",
+  "public_sites",
+  "gap_score"
+ ],
+ "title": "GapRecord",
+ "type": "object"
+}
