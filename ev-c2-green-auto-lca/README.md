@@ -10,7 +10,7 @@ python3 data/fetch/fetch_sources.py                 # optional: re-download ever
 python3 components/ingestion/autoresearch/eval.py   # spike-A quote verifier metric (needs the raw files)
 python3 components/ingestion/value_check.py         # every verified value appears in its own quote
 ```
-<!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `e8a4f972e7`).<!-- headline:end -->
+<!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `d337af61e1`).<!-- headline:end -->
 
 Results tables in the documents are rendered from `eval/results/latest.json`; `eval/check_docs.py` (part of the tests) fails if any document drifts from the run. Reviews and lead decisions: [`reviews/`](reviews/).
 

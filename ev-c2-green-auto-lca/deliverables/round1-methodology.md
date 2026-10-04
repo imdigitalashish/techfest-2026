@@ -3,7 +3,7 @@
 **EV Infra & Green Mobility AI Challenge (Techfest 2026, IIT Bombay × MHI × ICAT) — Challenge 2: *Green Auto India***
 **Team name:** _[to fill]_ · **Team ID:** _[from techfest.org registration]_ · **Institution:** _[to fill]_ · **Team leader (submits):** _[name, email, phone]_ · **Members (2–5):** _[names, programme, role]_
 
-> <!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `e8a4f972e7`).<!-- headline:end -->
+> <!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `d337af61e1`).<!-- headline:end -->
 >
 > Every number below comes from a committed run — `python3 eval/eval.py` in `ev-c2-green-auto-lca/` (harness v2, inputs id `83a80a699b`, n = 10,000 paired Monte Carlo draws, seed 20261004; tables in `eval/results/summary.md`) — or from a source we opened and quote verbatim (§12). Results are **screening-level**: they are not ISO 14044-conformant comparative assertions, and any public comparative claim will first go through independent critical review.
 

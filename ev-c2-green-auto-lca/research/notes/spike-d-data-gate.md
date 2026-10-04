@@ -1,10 +1,13 @@
-# Spike D — data gate (opened 4 Oct 2026; decision due 7 Oct)
+# Spike D — data gate (opened 4 Oct 2026; PARKED until the project is reactivated after the user's review — batch mode)
 
 **Question:** can we build one Indian material/component route comparison end to end from public, product-relevant
 Indian data — without using corporate intensity ratios as product inventories?
 
 ## Opened so far
-- **Ministry of Steel, Taxonomy for Green Steel for India** (Gazette notification, 23 Dec 2024; `data/sources/sources_materials.yaml`):
+- **Ministry of Steel, Taxonomy for Green Steel for India** (`data/sources/sources_materials.yaml`):
+  - released 12 Dec 2024 (per steel.gov.in);
+  - notification dated 23 Dec 2024, published in Gazette of India Extraordinary No. 342 of 24 Dec 2024 (ID CG-DL-E-26122024-259635);
+  - both dates checked on 4 Oct, after the Supervisor queried a different gazette ID.
   - green steel < 2.2 t CO2e per tonne of finished steel; five-star < 1.6; four-star 1.6–2.0; three-star 2.0–2.2;
   - scope = scope 1 + 2 + limited scope 3 up to finished steel (agglomeration, beneficiation, purchased intermediates; excludes mining, downstream, transport);
   - NISST is the MRV and certification agency, using BEE's CCTS procedure (July 2024);

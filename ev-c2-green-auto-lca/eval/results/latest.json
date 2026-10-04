@@ -1,7 +1,7 @@
 {
   "harness": "v2",
-  "commit": "4cc7966",
-  "inputs_id": "e8a4f972e7",
+  "commit": "5040fae",
+  "inputs_id": "d337af61e1",
   "n": 10000,
   "seed": 20261004,
   "db": {

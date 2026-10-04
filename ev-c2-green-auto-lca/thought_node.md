@@ -11,10 +11,10 @@
 
 ## Now
 - **Phase:** 3–4 done for Round 1 — two case studies with uncertainty, ADR v2 (spikes A + D, national grid as foundation), Round-1 methodology + roadmap v1.0, three independent reviews processed. Active batch (Supervisor 09:55); delegation only via child sessions (≤ 2).
-- **Headline (rendered from `eval/results/latest.json`):** <!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `e8a4f972e7`).<!-- headline:end -->
-- **Plan:** cross-model review of the final Round-1 documents (gpt-6-astra session) → apply → DONE to Supervisor. Then 4–7 Oct: spike-D data gate (Indian steel/aluminium routes, battery cell origin) and decision freeze.
+- **Headline (rendered from `eval/results/latest.json`):** <!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `d337af61e1`).<!-- headline:end -->
+- **Plan:** cross-model review of the final Round-1 documents (gpt-6-astra session) → apply → DONE to Supervisor → **pause** (batch mode) while the user reviews. Spike-D data gate and gold set resume on reactivation (roadmap stage 1a/1b; no Round-1 dependency).
 - **Doing:** lead; reviewer sessions: engine/claims (gpt-6-sol, done), Round-1 docs (gpt-6-astra, next).
-- **Next:** D data gate memo (7 Oct) → gold set with unseen-publisher split (8–12 Oct) → one full source-to-comparison chain + independent technical review (13–18 Oct) → Round 1 submission by the team leader (≤ 30 Oct).
+- **Next (after reactivation):** D data gate memo (started: Green Steel Taxonomy records) → gold set with unseen-publisher split → one full source-to-comparison chain + independent technical review → Round 1 submission by the team leader (≤ 30 Oct).
 - **Needs from user:** register by 15 Oct (EV track fixed at registration; this project is the current EV pick); team of 2–5 — ideally an environmental/mechanical teammate for LCA Q&A; team name, Team ID, institution and contacts for the Round-1 header; access to ISO 14040/14044 text (IIT Delhi library or BIS) for the methodology's ISO references.
 - **Risks:** auditable-looking but non-comparable numbers (mitigated by harmonization flags, boundary matrix, rejected-factor demo); D's data gate; jury LCA rigour; exam window 19–25 Nov.
 

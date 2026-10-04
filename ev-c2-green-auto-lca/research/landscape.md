@@ -46,7 +46,7 @@ Automotive LCAs used in India mostly borrow European/global inventories (the off
 Leads found but **not opened** (UNVERIFIED): SAE paper 2026-26-0235 "Evaluating the Environmental Footprint of Electric Vehicles: A Life Cycle Assessment Approach — Sustainable Mobility India"; SAE 2026-26-0239 "Circularity and LCA: Enhancing Sustainability in the Indian Electric Vehicle Sector"; *Energy* (Elsevier, 2025) S0360544225015531 "Impact of electrification on two-wheelers in India…" (ScienceDirect blocked the fetch); CEEW "Auto net zero studies" press release (18 Jul 2025).
 
 ## 5. What this means for our design
-<!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `e8a4f972e7`).<!-- headline:end -->
+<!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `d337af61e1`).<!-- headline:end -->
 
 1. **Three different statements about the grid:**
    - *Contribution:* electricity is the largest stage of every EV result.
