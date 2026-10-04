@@ -51,3 +51,63 @@
 11:41:17    DONE anchor_full dropout s2: macro 2.7063→2.6646 worst=3.5121 dom_c0=0.222 err=0.000 wall=155s
 11:41:17 END ('v2', 'dropout', 'anchor_full', 2) rc=0 wall=160s
 11:41:17 START ('v2', 'dropout', 'fedavg_ab_homo', 2)
+12:31:44 queue runner up (pid 78322), memory level 36%
+12:31:44 START ('v2', 'dropout', 'ffa_lora', 2, ())
+12:32:14 PAUSE pid 78328: memory level 24% < 25%
+12:32:34 RESUME pid 78328: memory level 32% > 30%
+12:32:54 PAUSE pid 78328: memory level 24% < 25%
+12:33:04 RESUME pid 78328: memory level 34% > 30%
+12:34:05 PAUSE pid 78328: memory level 24% < 25%
+12:34:35 RESUME pid 78328: memory level 34% > 30%
+12:34:45    DONE ffa_lora dropout s2: macro 2.7063→2.7138 worst=3.3973 dom_c0=0.992 err=0.000 alpha=32 wall=175s
+12:34:45 END ('v2', 'dropout', 'ffa_lora', 2, ()) rc=0 wall=180s
+12:34:45 START ('v2', 'dropout', 'flexlora', 2, ())
+12:34:55 PAUSE pid 82838: memory level 23% < 25%
+12:35:05 RESUME pid 82838: memory level 31% > 30%
+12:37:25 PAUSE pid 82838: memory level 24% < 25%
+12:37:45 RESUME pid 82838: memory level 33% > 30%
+12:37:55    DONE flexlora dropout s2: macro 2.7063→2.7520 worst=3.4582 dom_c0=0.953 err=0.000 alpha=32 wall=177s
+12:37:55 END ('v2', 'dropout', 'flexlora', 2, ()) rc=0 wall=191s
+12:37:55 START ('v2', 'dropout', 'anchor_full', 3, ())
+12:38:06 PAUSE pid 85199: memory level 23% < 25%
+12:38:16 RESUME pid 85199: memory level 35% > 30%
+12:38:46 PAUSE pid 85199: memory level 23% < 25%
+12:38:56 RESUME pid 85199: memory level 31% > 30%
+12:39:06 PAUSE pid 85199: memory level 23% < 25%
+12:39:16 RESUME pid 85199: memory level 31% > 30%
+12:39:36 PAUSE pid 85199: memory level 23% < 25%
+12:39:46 RESUME pid 85199: memory level 31% > 30%
+12:40:06 PAUSE pid 85199: memory level 23% < 25%
+12:40:16 RESUME pid 85199: memory level 31% > 30%
+12:40:26 PAUSE pid 85199: memory level 23% < 25%
+12:40:36 RESUME pid 85199: memory level 32% > 30%
+12:40:57 PAUSE pid 85199: memory level 22% < 25%
+12:41:07 RESUME pid 85199: memory level 32% > 30%
+12:41:17 PAUSE pid 85199: memory level 24% < 25%
+12:41:27 RESUME pid 85199: memory level 34% > 30%
+12:41:47    DONE anchor_full dropout s3: macro 2.7063→2.6648 worst=3.5064 dom_c0=0.229 err=0.000 alpha=32 wall=222s
+12:41:47 END ('v2', 'dropout', 'anchor_full', 3, ()) rc=0 wall=231s
+12:41:47 START ('v2', 'dropout', 'fedavg_ab_homo', 3, ())
+12:42:07 PAUSE pid 87140: memory level 24% < 25%
+12:42:17 RESUME pid 87140: memory level 33% > 30%
+12:44:07    DONE fedavg_ab_homo dropout s3: macro 2.7063→2.7384 worst=3.4448 dom_c0=1.022 err=0.059 alpha=32 wall=134s
+12:44:07 END ('v2', 'dropout', 'fedavg_ab_homo', 3, ()) rc=0 wall=140s
+12:44:07 START ('v2', 'dropout', 'ffa_lora', 3, ())
+12:46:07    DONE ffa_lora dropout s3: macro 2.7063→2.7152 worst=3.3878 dom_c0=0.994 err=0.000 alpha=32 wall=108s
+12:46:07 END ('v2', 'dropout', 'ffa_lora', 3, ()) rc=0 wall=120s
+12:46:07 START ('v2', 'dropout', 'flexlora', 3, ())
+12:48:18    DONE flexlora dropout s3: macro 2.7063→2.7505 worst=3.4503 dom_c0=0.943 err=0.000 alpha=32 wall=123s
+12:48:18 END ('v2', 'dropout', 'flexlora', 3, ()) rc=0 wall=130s
+12:48:18 START ('v2', 'dropout', 'anchor_full', 4, ())
+12:50:28    DONE anchor_full dropout s4: macro 2.7063→2.6666 worst=3.5172 dom_c0=0.197 err=0.000 alpha=32 wall=117s
+12:50:28 END ('v2', 'dropout', 'anchor_full', 4, ()) rc=0 wall=130s
+12:50:28 START ('v2', 'dropout', 'fedavg_ab_homo', 4, ())
+12:52:48    DONE fedavg_ab_homo dropout s4: macro 2.7063→2.7525 worst=3.4807 dom_c0=1.019 err=0.059 alpha=32 wall=124s
+12:52:48 END ('v2', 'dropout', 'fedavg_ab_homo', 4, ()) rc=0 wall=140s
+12:52:48 START ('v2', 'dropout', 'ffa_lora', 4, ())
+12:54:48    DONE ffa_lora dropout s4: macro 2.7063→2.7123 worst=3.3949 dom_c0=0.992 err=0.000 alpha=32 wall=114s
+12:54:48 END ('v2', 'dropout', 'ffa_lora', 4, ()) rc=0 wall=120s
+12:54:48 START ('v2', 'dropout', 'flexlora', 4, ())
+12:57:29    DONE flexlora dropout s4: macro 2.7063→2.7471 worst=3.4424 dom_c0=0.948 err=0.000 alpha=32 wall=145s
+12:57:29 END ('v2', 'dropout', 'flexlora', 4, ()) rc=0 wall=160s
+12:57:29 queue empty: exiting

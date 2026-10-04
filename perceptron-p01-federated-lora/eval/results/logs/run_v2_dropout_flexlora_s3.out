@@ -1,0 +1,5 @@
+[flexlora|dropout|s3] r03 macro=2.7088 worst=3.3657 share_c0=1.00 err=0.000 reporters=c0,c1,c3
+[flexlora|dropout|s3] r06 macro=2.7388 worst=3.4019 share_c0=0.96 err=0.000 reporters=c0,c2,c3
+[flexlora|dropout|s3] r09 macro=2.7671 worst=3.4761 share_c0=0.99 err=0.000 reporters=c0,c2
+[flexlora|dropout|s3] r12 macro=2.7505 worst=3.4503 share_c0=0.79 err=0.000 reporters=c0,c1,c2,c3,c4
+DONE flexlora dropout s3: macro 2.7063→2.7505 worst=3.4503 dom_c0=0.943 err=0.000 alpha=32 wall=123s

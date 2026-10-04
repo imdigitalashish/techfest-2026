@@ -17,6 +17,7 @@ python -m eval.summarize --tag v2             # → eval/results/v2_summary.md +
 python -m eval.dropout_analysis --tag v2      # → eval/results/v2_dropout_analysis.md (+ canonical)
 python scripts/render_deliverable.py deliverables/round1-abstract.template.md deliverables/round1-abstract.md
 python scripts/check_numbers.py deliverables/round1-abstract.md --tag v2   # every quoted number vs results
+python scripts/check_claims.py --tag v2      # every qualitative claim (12) vs results
 ```
 SmolLM2-135M must be in the local HF cache (`huggingface-cli download HuggingFaceTB/SmolLM2-135M`). One 12-round run takes about 2 min on the M5 GPU when it is not shared. MPS runs are deterministic here: reruns across code revisions were bit-identical (thought node, 11:45).
 

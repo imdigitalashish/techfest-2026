@@ -19,8 +19,8 @@ Weak devices must supply useful fresh updates within limited resources, and avai
 - **Pilot:** HF PEFT LoRA on SmolLM2-135M, simulated on one shared model. Clients update nested B prefixes (ranks 2–16) under a shared frozen A, regenerated from a public seed, and a common LoRA scale; their zero-padded deltas aggregate exactly in weight space, including after the corrections below.
 - **Cost:** each payload holds r_k·d_out fp32 values per layer; at matched ranks the pilot's q/v adapters need {{const.upload_ratio_theory|.1f}}× fewer uplink values than A+B. Active coefficients and logical uplink shrink with rank; measured RAM, total communication and throughput are not yet established.
 - **Participation heuristics:**
-  - partial work cut off by the round deadline is kept and step-normalised (FedNova-style);
-  - an absent client's clipped direction is reused for up to four rounds (MIFA-style);
+  - deadline-cut partial work is kept and step-normalised (FedNova-style);
+  - absent clients' clipped directions are reused for ≤4 rounds (MIFA-style);
   - included clients are weighted equally.
 
   These do not guarantee unbiased optimisation; ablations test each.
@@ -39,8 +39,7 @@ Weak devices must supply useful fresh updates within limited resources, and avai
   | FlexLoRA | {{dropout.flexlora.macro_mean|.3f}} | {{dropout.spike_vs_flexlora.macro_mean|.3f}} ({{dropout.spike_vs_flexlora.macro_lo|.3f}} to {{dropout.spike_vs_flexlora.macro_hi|.3f}}; n={{dropout.spike_vs_flexlora.n|d}}) |
 
   - Paper-derived baselines, one fixed optimiser and scale; a full-system comparison under paired availability, not matched completed work.
-  - All five AnchorLoRA mean domain losses decrease; {{dropout.anchor_full.domains_ci_pos_bonf|d}} of five Bonferroni-adjusted intervals exclude zero.
-  - The starter's only positive domain gain is the data-rich one.
+  - All five AnchorLoRA domain losses decrease ({{dropout.anchor_full.domains_ci_pos_bonf|d}} of 5 Bonferroni-adjusted intervals exclude zero); every baseline improved only the data-rich domain while its other four regressed.
 
 ### Stretch ambitions
 - **Dropout mid-training.** A five-round tablet outage is built in.
@@ -54,7 +53,7 @@ We extend FFA-LoRA's frozen-A design (ICLR 2024) to prefix-masked device updates
 ### Evaluation plan
 - **Metrics:**
   - equal-device (macro) and per-domain held-out loss; finance accuracy;
-  - sample-weighted loss: AnchorLoRA's is {{dropout.spike_vs_fedavg_ab_homo.micro_mean|.3f}} worse, and no worst-domain improvement is established;
+  - sample-weighted loss: AnchorLoRA's is {{dropout.spike_vs_fedavg_ab_homo.micro_mean|.3f}} worse and its worst-domain loss {{dropout.spike_vs_fedavg_ab_homo.worst_mean|.3f}} higher, because the hardest, data-rich domain gains less;
   - aggregation residual, update shares, dropout recovery, bytes, peak memory.
 - **Meaningful participation:** fresh updates within a measured device budget that improve held-out utility versus a paired run withholding that client.
 - **Controls:** matched-work, rank-matched and leave-one-mechanism-out runs; FedEx-LoRA, PreLort, RoLoRA; local-only and centralised references.

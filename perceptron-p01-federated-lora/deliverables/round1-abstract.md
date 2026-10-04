@@ -9,9 +9,9 @@ Theme 1 (Efficient AI at Scale), Problem 1: *Cheap Fine-Tuning Across Weak, Scat
 
 ### Understanding of the challenge
 The starter recipe (PEFT LoRA + Flower FedAvg) has three failure modes:
-1. **LoRA updates are products.** ΔW_k = B_k·A_k, so averaging A and B separately gives mean(B)·mean(A) ≠ mean(B·A). Zero-padding mixed ranks adds more error. In our pilot, the starter's mean relative round-update aggregation residual was 5.7%; its effect on task loss is not isolated.
+1. **LoRA updates are products.** ΔW_k = B_k·A_k, so averaging A and B separately gives mean(B)·mean(A) ≠ mean(B·A). Zero-padding mixed ranks adds more error. In our pilot, the starter's mean relative round-update aggregation residual was 5.8%; its effect on task loss is not isolated.
 2. **Unequal work and dropouts bias the objective:** discarding weak devices' late or partial work favours always-on, fast devices (FedNova's "objective inconsistency").
-3. **Sample-weighted averaging is a micro-average.** Under the starter, the 8×-data device's domain improved by 0.37 nats/token while all four other domains ended *worse* than the untuned model.
+3. **Sample-weighted averaging is a micro-average.** Under the starter, the 8×-data device's domain improved by 0.38 nats/token while all four other domains ended *worse* than the untuned model.
 
 Weak devices must supply useful fresh updates within limited resources, and availability bias or quantity skew must not silently decide whose text the model serves. These are systems and statistical requirements, not consequences of exact aggregation. Our primary target is equal-device held-out loss; we report the sample-weighted trade-off.
 
@@ -19,8 +19,8 @@ Weak devices must supply useful fresh updates within limited resources, and avai
 - **Pilot:** HF PEFT LoRA on SmolLM2-135M, simulated on one shared model. Clients update nested B prefixes (ranks 2–16) under a shared frozen A, regenerated from a public seed, and a common LoRA scale; their zero-padded deltas aggregate exactly in weight space, including after the corrections below.
 - **Cost:** each payload holds r_k·d_out fp32 values per layer; at matched ranks the pilot's q/v adapters need 2.5× fewer uplink values than A+B. Active coefficients and logical uplink shrink with rank; measured RAM, total communication and throughput are not yet established.
 - **Participation heuristics:**
-  - partial work cut off by the round deadline is kept and step-normalised (FedNova-style);
-  - an absent client's clipped direction is reused for up to four rounds (MIFA-style);
+  - deadline-cut partial work is kept and step-normalised (FedNova-style);
+  - absent clients' clipped directions are reused for ≤4 rounds (MIFA-style);
   - included clients are weighted equally.
 
   These do not guarantee unbiased optimisation; ablations test each.
@@ -34,13 +34,12 @@ Weak devices must supply useful fresh updates within limited resources, and avai
   | Method | Macro loss | AnchorLoRA − method, 95% CI (shared seeds) |
   |---|---|---|
   | **AnchorLoRA** | **2.665** | — |
-  | Starter | 2.748 | -0.083 (-0.111 to -0.054; n=3) |
-  | FFA-LoRA | 2.716 | -0.051 (-0.079 to -0.024; n=2) |
-  | FlexLoRA | 2.745 | -0.080 (-0.188 to 0.028; n=2) |
+  | Starter | 2.747 | -0.081 (-0.093 to -0.070; n=5) |
+  | FFA-LoRA | 2.715 | -0.050 (-0.053 to -0.046; n=5) |
+  | FlexLoRA | 2.748 | -0.083 (-0.091 to -0.074; n=5) |
 
   - Paper-derived baselines, one fixed optimiser and scale; a full-system comparison under paired availability, not matched completed work.
-  - All five AnchorLoRA mean domain losses decrease; 4 of five Bonferroni-adjusted intervals exclude zero.
-  - The starter's only positive domain gain is the data-rich one.
+  - All five AnchorLoRA domain losses decrease (5 of 5 Bonferroni-adjusted intervals exclude zero); every baseline improved only the data-rich domain while its other four regressed.
 
 ### Stretch ambitions
 - **Dropout mid-training.** A five-round tablet outage is built in.
@@ -54,7 +53,7 @@ We extend FFA-LoRA's frozen-A design (ICLR 2024) to prefix-masked device updates
 ### Evaluation plan
 - **Metrics:**
   - equal-device (macro) and per-domain held-out loss; finance accuracy;
-  - sample-weighted loss: AnchorLoRA's is 0.112 worse, and no worst-domain improvement is established;
+  - sample-weighted loss: AnchorLoRA's is 0.116 worse and its worst-domain loss 0.057 higher, because the hardest, data-rich domain gains less;
   - aggregation residual, update shares, dropout recovery, bytes, peak memory.
 - **Meaningful participation:** fresh updates within a measured device budget that improve held-out utility versus a paired run withholding that client.
 - **Controls:** matched-work, rank-matched and leave-one-mechanism-out runs; FedEx-LoRA, PreLort, RoLoRA; local-only and centralised references.

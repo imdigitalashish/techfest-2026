@@ -10,43 +10,41 @@
 - _(none)_
 
 ## Now
-- **Phase:** 5–6, ACTIVE again (Supervisor 11:10, slot freed by EV C2). The 12 Oct Perceptron pick is open between P1, P7 and P9, and the evidence decides it.
-- **Definition of done (Supervisor 11:10):**
-  1. ≥ 5 paired seeds: AnchorLoRA vs the starter vs ≥ 1 published aggregator, dropout scenario included; per-domain gains; data-rich influence share.
-  2. Novelty positioned against CF-LoRA and PreLort.
-  3. Final abstract with numbers checked against results, plus the diagram.
-  4. Cross-model reviews (gpt-6-astra on abstract + spike; gpt-6-sol on code + eval).
-  5. Final memo; thought node current; pushed; message "DONE — slot free".
-- **Doing (11:40):**
-  - **Queue** (`eval/queue_runner.py`, one run at a time, nice 10, paused below 25 % memory level, resumed above 30 %): 69 v2 runs from one code hash.
-    - P1: AnchorLoRA / starter / FFA-LoRA / FlexLoRA × 5 seeds, dropout.
-    - P2: ablations (nonorm, tauact, PreLort-style seg) × 5.
-    - P3: clean scenario × 5. P4: ladder. P5: extras.
-    - ≈ 2.5 min per run; P1 due around 12:20.
-  - **GPU free (Supervisor 12:31).** Old runner 44556 terminated; the new runner **PID 78322** (memory-guarded, nice 10) resumed the queue at 12:31 with P1 `ffa_lora` seed 2. Namma Space's Brush is still training, so runs are slower. Polling every ≥10 min.
-  - Both cross-model reviews are done and recorded: gpt-6-sol (code/eval) 13/14 accepted; gpt-6-astra (abstract/spike) 12/12 accepted, 3.40/5 on v2. Abstract v3 and the memo are rendered from results. Both child sessions are archived.
-  - **Done since resume:**
-    - FFA-LoRA + FlexLoRA implemented from the papers' equations;
-    - bounded norm shares; sliced uploads; `env.code_sha` provenance;
-    - `research/novelty.md`;
-    - ADR 001 update with the 09:50 review dispositions;
-    - summarizer with paired / per-domain CIs and the micro loss;
-    - `scripts/render_deliverable.py` + `scripts/check_numbers.py` (abstract numbers come from results).
-- **Next:**
-  1. When P1 lands: abstract v2 from a template.
-  2. Start the astra review (abstract + spike).
-  3. Fold in the sol review.
-  4. Final memo.
-  5. DONE message.
+- **Phase:** ✅ the Supervisor's 11:10 definition of done is met (13:05 IST). GPU released at 12:57; the slot is free. Waiting for the 12 Oct Perceptron pick (P1 vs P7 vs P9).
+- **Headline** (5 paired seeds, dropout scenario, SmolLM2-135M, 12 rounds; `eval/results/v2_summary.md`):
+
+  | Method | Macro loss | AnchorLoRA − method, 95 % CI |
+  |---|---|---|
+  | AnchorLoRA | 2.665 | — |
+  | Starter | 2.747 | −0.081 [−0.093, −0.070] |
+  | FFA-LoRA | 2.715 | −0.050 [−0.053, −0.046] |
+  | FlexLoRA | 2.748 | −0.083 [−0.091, −0.074] |
+
+  - **Per domain:** AnchorLoRA improves all 5 domains (Bonferroni); every baseline improves only the data-rich one, and its other four regress.
+  - **Costs:**
+    - micro loss +0.116 [+0.107, +0.124];
+    - worst-domain loss +0.057 [+0.024, +0.089], because the data-rich domain is the hardest and gains less.
+  - **Data-rich device's mean norm share:** 0.88 (starter) → 0.21 (AnchorLoRA).
+  - **Outage device:** its domain stayed below untuned at every checkpoint in every AnchorLoRA seed; under the starter it peaked +0.28 above.
+- **Deliverables:** abstract v3 (889 words, rendered); memo (rendered, synced below); diagram; `research/novelty.md`; ADR 001 with supersession table; reviews + ledger.
+- **Checks:**
+  - `scripts/check_numbers.py`: PASS;
+  - `scripts/check_claims.py`: 12/12;
+  - 19 tests;
+  - committed token blocks and data manifest;
+  - bit-identical reruns across code revisions.
+- **Next (only when a GPU slot is granted):**
+  1. Run `eval/queue_later.txt` (85 runs, about 3–4 h on a shared GPU): P1b effective-scale-4 sensitivity → P2 matched-work/attribution controls (starter + partial, leave-one-mechanism-out) → P3 clean → P4 rest. To run, copy its lines into `eval/queue.txt` and `scripts/handover_to_queue.sh 0`.
+  2. The finals experiments from the astra review: matched-work attribution and weak-client removal; a resource-real Flower run with a real kill; a fresh FlowerTune-Finance holdout.
 - **Needs from user:**
   - Register by 15 Oct (after the 12 Oct selection).
-  - Teammates' names and skills (the abstract uses [TEAM] placeholders).
-  - Optional: a phone or Raspberry Pi for the physical-device stretch.
+  - Teammates' names and skills (the abstract has [TEAM] placeholders).
+  - Optional: a phone or Raspberry Pi for the resource-real weak-client run.
 - **Risks:**
-  1. Prior art is close on both halves (CF-LoRA, PreLort). We claim the combination + evaluation only.
-  2. Part of the gain may come from planned-step amplification or memory replay; the ablations will tell.
-  3. Micro (sample-weighted) loss is *worse* under AnchorLoRA: the data-rich domain gains less. It must be stated in the abstract.
-  4. 12-round runs on a local-text proxy.
+  1. Judges may read the work as incremental (it is a systems recipe; CF-LoRA and PreLort are close).
+  2. The gain is not yet attributed: AnchorLoRA admits more work (143 vs 115 fresh client-rounds over 3 seeds).
+  3. Micro and worst-domain costs.
+  4. Tiny pilot: 135M, 12 rounds, 2–3-document test sets.
 
 ## Phase 0 — constraints and what we must show (from `_briefs/perceptron.txt`, read 02:05 IST)
 **Hard constraints**
@@ -120,11 +118,11 @@ Full contracts: [architecture/components.md](architecture/components.md). Resear
 ## Selection memo
 _Source of truth: [deliverables/selection-memo.md](deliverables/selection-memo.md), rendered from results._
 
-*Rendered from committed results (`eval/results/v2_canonical.json`; AnchorLoRA/starter n = 3/3, FFA-LoRA n = 2, FlexLoRA n = 2 paired seeds) by `scripts/render_deliverable.py`. Scores 1–5, each with one line of evidence.*
+*Rendered from committed results (`eval/results/v2_canonical.json`; AnchorLoRA/starter n = 5/5, FFA-LoRA n = 5, FlexLoRA n = 5 paired seeds) by `scripts/render_deliverable.py`. Scores 1–5, each with one line of evidence.*
 
 | Criterion | Score | Evidence |
 |---|---|---|
-| **Winnability** | 4 | In our pilot the starter most teams will submit (PEFT LoRA + FedAvg) lets the 8×-data device's domain gain 0.369 nats/token while all four other domains regress below the untuned model. AnchorLoRA's macro loss is lower than the starter's by 0.083 (paired 95% CI -0.111 to -0.054, n = 3) and lower than FFA-LoRA's by 0.051 (-0.079 to -0.024, n = 2). The FlexLoRA comparison is -0.080 (-0.188 to 0.028, n = 2). The evidence is deterministic, provenance-tracked and cross-model reviewed (code 13/14 and abstract 12/12 findings accepted). |
+| **Winnability** | 4 | In our pilot the starter most teams will submit (PEFT LoRA + FedAvg) lets the 8×-data device's domain gain 0.375 nats/token while all four other domains regress below the untuned model. AnchorLoRA's macro loss is lower than the starter's by 0.081 (paired 95% CI -0.093 to -0.070, n = 5) It is also lower than FFA-LoRA's by 0.050 (-0.053 to -0.046) and FlexLoRA's by 0.083 (-0.091 to -0.074), each with n = 5. All five of AnchorLoRA's domains improve (Bonferroni); every baseline improves only the data-rich one. The evidence is deterministic, provenance-tracked and cross-model reviewed (code 13/14 and abstract 12/12 findings accepted). |
 | **Innovation headroom** | 3 | An evaluated *systems recipe*: FFA-LoRA's frozen-A design extended to prefix-masked device updates, plus participation handling and update-share diagnostics. It is not a new primitive. CF-LoRA (Sep 2026) and PreLort (Jun 2026) are close (`research/novelty.md`), and the hostile judge rated novelty 3/5. Headroom for the finals: matched-work attribution, resource-real rank-r_k clients, a real Flower kill, leave-one-out influence. |
 | **Feasibility** | 5 | Runs end to end today on a shared M5: 5 heterogeneous devices, seeded dropouts, 4 aggregators + ablations, 19 tests, committed data, one-command reproduction. Nothing is gated on hardware or the user; Azure covers scale-up. The 19–25 Nov exams are left free. |
 | **Demo strength** | 4 | Live per-device "who got better" bars plus update-share diagnostics. The data-rich device's round-and-seed mean norm share falls from 0.88 (starter) to 0.22; this is a magnitude diagnostic, not a fairness cap. Kill a Flower node mid-round. Less visual than trading or agent demos. |
@@ -132,10 +130,10 @@ _Source of truth: [deliverables/selection-memo.md](deliverables/selection-memo.m
 
 - **Biggest risks:**
   - Judges read it as incremental (published ingredients).
-  - Better-tuned baselines may close the gap; an effective-scale sensitivity run is queued.
-  - AnchorLoRA's micro (sample-weighted) loss is 0.112 worse than the starter's: the data-rich domain gains less. This is the price of the macro objective and must be argued, not hidden.
+  - Better-tuned baselines may close the gap. The pilot is a full-system comparison with more admitted work; effective-scale and attribution controls are queued (`eval/queue_later.txt`).
+  - AnchorLoRA's micro (sample-weighted) loss is 0.116 worse than the starter's, and its worst-domain loss 0.057 higher: the data-rich domain is also the hardest and gains less. This is the price of the macro objective and must be argued, not hidden.
   - The pilot is a 135M model, 12 rounds, with 2–3-document test sets per domain.
-- **One-line pitch:** "Federated LoRA in which a Raspberry Pi's data counts. Exact mixed-rank aggregation from a seed-shared frozen A, plus partial-work and per-device weighting. In our pilot it lowered every device's mean domain loss (4 of 5 Bonferroni-significant), while the standard recipe improved only the data-rich one."
+- **One-line pitch:** "Federated LoRA in which a Raspberry Pi's data counts. Exact mixed-rank aggregation from a seed-shared frozen A, plus partial-work and per-device weighting. In our pilot it lowered every device's mean domain loss (5 of 5 Bonferroni-significant), while the standard recipe improved only the data-rich one."
 - **Overall:** 4.2 / 5, the unweighted mean of the five scores (4 + 3 + 5 + 4 + 5 = 21). The hostile-judge review scored abstract v2 against the official rubric at 3.40/5; v3 applies all 12 of its fixes (not re-scored).
 - **Versus the other finalists** (facts as the Supervisor relayed them; the ranking is the Supervisor's call): our spike *replicated* under paired seeds, with bit-identical reruns, and has been compared against two published aggregators. P7's detector spike failed its pre-registered replication. P9 reports 36–43% catch rate on real τ-bench errors.
 
@@ -312,3 +310,10 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Abstract v3:** 889 words, all 8 sections, number check PASS, per-comparison shared n in the table, exploratory labels, an operational definition of meaningful participation.
 - **Also updated:** ADR 001 (supersession table), `research/novelty.md`, landscape, diagram, memo (re-rendered and synced).
 - **Provenance note (review #7):** the ten provisional v2 rows predate the per-run `data_digest`/`model_revision` fields. Continuity rests on the committed token blocks plus the bit-identical v1→v2 reruns. The original README document inventory cannot be rebuilt (source pool changed).
+
+### 2026-10-04 13:05 IST — Lead: definition of done met; slot free
+- **Queue:** runner PID 78322 finished all 20 P1 runs (5 seeds × AnchorLoRA / starter / FFA-LoRA / FlexLoRA, dropout scenario) at 12:57 under the memory guard, then exited. Post-P1 work was moved to `eval/queue_later.txt` to free the GPU.
+- **Final numbers:** in *Now*. All three paired macro CIs exclude zero; FlexLoRA's comparison, provisional at n = 2, is now clear at n = 5. FlexLoRA's served-model truncation error averages 0.51 %.
+- **Worst-domain cost is now significant:** +0.057 [+0.024, +0.089] vs the starter. Abstract and memo say so explicitly.
+- **New `scripts/check_claims.py`** asserts the 12 qualitative claims in the deliverables against `v2_canonical.json`; all pass. Abstract v3 re-rendered (889 words); memo re-rendered and synced.
+- **Supervisor messaged:** "DONE — slot free".
