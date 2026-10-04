@@ -10,7 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** ✅ **Definition of done met** (2026-10-04 14:33 IST). Waiting for the 12 Oct pick; the slot is freed to the Supervisor.
+- **Phase:** ▶ **Demo phase** (2026-10-04 20:33 IST; Supervisor 20:29; bar = PLAYBOOK §11). The earlier definition of done (13:05) was met and its slot freed.
+- **Demo plan:**
+  - A child session, "P3 demo builder" (plan mode, so I approve its "crazy" element before it builds), builds `demo/`.
+  - Crazy element (Supervisor's idea, refined): "the evaluator that says I don't know" on REAL data. A knob α mixes the deployed Thompson-sampling policy with uniform. Weights come exactly from logged propensities, and the reference line (1−α)·CTR(BTS) + α·CTR(Random) comes from the concurrent A/B arms. A day selector shows all days. The knob analysis is pre-registered before it is computed.
+  - Data: an aggregated OBD extract committed under CC BY 4.0. The licence was verified in the official zip's README on 4 Oct.
+  - Review: the gpt-6-astra session is reused for the demo review.
 - **Definition of done (Supervisor 13:05):**
   1. **Real OBD check**, with the analysis pre-registered before results: the BTS time-window slice; a drift test of the deployed BTS's logged propensities; a real before/after with real truth, in both directions.
   2. **Decomposer review fixes:** (a) a feedback/mix-shift knob; (b) the 2×2 Shapley decomposition plus the interaction term; (c) a misspecification test; (d) a drift sweep that shows where naive is right and where it is wrong.
@@ -246,3 +251,8 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Verdict contract** (`components/report/verdict.py`): one primary decision on the after-period contrast, otherwise "can't tell"; Shapley is secondary. Demo verdicts re-run: OBD deploy → cant_tell; rollback → hurt (reference inside the interval). The diagram uses "Monte-Carlo reference" and "noisy concurrent-arm reference" wording.
 - **Final selection memo:** win 3, innovation 3, feasibility 5, demo 4, fit 3; mean 3.6. **Recommendation: P7 over P3, narrowly** (P7's hostile score 71 vs 69, fit 5 vs 3); P3 is the credible runner-up. `eval/check_docs.py`: PASS.
 - **Deferred, with dates in Next:** A9 nuisance matrix; C8 OBD environment interval; A12 paired-DR baseline; A15 frozen near-zero test; held-out OBD campaigns.
+
+### 2026-10-04 20:33 IST — Demo phase started (Supervisor 20:29)
+- Read PLAYBOOK §11.
+- **Licence check:** the GitHub repo st-tech/zr-obp is Apache-2.0 (code). The README inside the official dataset zip (read by HTTP range request) says "This dataset is licensed under CC BY 4.0". The zip's VERSION file reads "08/18/2020 Open Bandit Dataset 1.0". So a small aggregated extract can be committed, with attribution and a change notice.
+- Spawned child session **"P3 demo builder"** (plan mode, notify always). Its kickoff has the full context, the crazy-element refinement (an exact real reference line for the α-mixture, plus a day selector), a pre-registration requirement for the knob analysis, the extract design (< 20 MB, a NOTICE file), the §11 deliverables and the honesty rules.
