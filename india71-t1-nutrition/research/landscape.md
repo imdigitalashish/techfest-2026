@@ -57,9 +57,9 @@ From [`L9`](sources/L9-poshan-tracker.md) (primary: PIB Research factsheet, 8 Ju
   - s.7(b) is *conditional*: it needs prior consent for that benefit or a Centre-notified database. s.7(c) (State function "under any law") fits supervisory and monitoring uses better.
   - s.8(3) accuracy duty when data drive decisions or are disclosed; s.17(2)(b) research only if "not to be used to take any decision specific to a Data Principal".
   - DPDP Rules 2025 (G.S.R. 846(E), 13 Nov 2025): Rule 1 commencement, with Rules 3 and 5–16 in force 18 months after notification, i.e. 13 May 2027. Rule 10 covers verifiable parental consent. Rule 12 + Fourth Schedule: Part A(1) clinical establishments/healthcare professionals (health services to the child); Part B(1) functions "in the interests of a child, under any law"; Part B(2) State benefits to children. Rule 5 + Second Schedule set standards for State processing.
-  - Whether the Act's ss.4–17 are already in force is **UNVERIFIED** (secondary trackers cite G.S.R. 843(E)).
-  - The statutory ICDS anchor (National Food Security Act 2013 s.5(2), "identified through the local anganwadi") is seen only in secondary text, so it is **UNVERIFIED** at primary.
-  - ABDM consent-artefact details are still **UNVERIFIED**.
+  - Commencement is now verified: G.S.R. 843(E), 13 Nov 2025 (Gazette page copy, `.data/raw/law/gsr843.pdf`) brings ss.3–5, 6(1)–(8),(10), **7 to 10** and 11 to 17 into force "eighteen months from the date of publication", i.e. **13 May 2027**. Definitions (s.2) and the Data Protection Board (ss.18–26) are in force from 13 Nov 2025. So the children's-data regime starts mid-way through any 2027 pilot, and we design for it from day one.
+  - Statutory ICDS anchor, verified by the lead at the Gazette text ([`V3`](sources/V3-lead-verified-nfsa-abdm-cmam.md)): **National Food Security Act 2013 s.6**, "The State Government shall, through the local anganwadi, identify and provide meals, free of charge, to children who suffer from malnutrition…". Secondary sources wrongly cite this as s.5(2).
+  - ABDM verified ([V3]): a "digital consent artefact defining the purpose of using the data, the duration…" is created for each share (HIP/HIU Guidelines, 24 Oct 2022, p.19), and RCH is named as a possible HIP (p.5). Specific purpose codes are not claimed.
 
 ## 5. What is deployed today
 | System / initiative | Owner · scale | What it does | Data → action | Evidence | Where we borrow / beat |

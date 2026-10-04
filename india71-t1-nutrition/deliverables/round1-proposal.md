@@ -76,8 +76,10 @@ flowchart LR
 - Using any of this data for HR, pay, transfer or disciplinary action is **denied in the policy code itself** and in the data-sharing agreement.
 - Remote, tribal and migrant-serving AWCs are compared only with similar AWCs. No diagnostic is shown below a minimum sample size.
 - *Privacy by design, mapped to the law:*
-  - Every beneficiary is a "child" under the DPDP Act 2023 (s.2(f)), so s.9 applies: verifiable parental consent, and no tracking or behavioural monitoring unless exempted. The DPDP Rules 2025 (notified 13 Nov 2025; most operative rules in force from 13 May 2027) exempt processing "in the interests of a child" under law, State benefits to children, and health services by clinical establishments (Rule 12, Fourth Schedule).
-  - Each rule in our policy code cites its basis: State function under law (s.7(c)); research only where no decision is taken about an individual (s.17(2)(b)); and the State-processing standards of purpose limitation and minimisation (Second Schedule).
+  - Every beneficiary is a "child" under the DPDP Act 2023 (s.2(f)), and the children's-data provisions (ss.7–10) commence on **13 May 2027** (G.S.R. 843(E)). Poshan Setu is built for that regime from day one.
+  - The State's legal duty is explicit: under the **National Food Security Act 2013 s.6** it "shall, through the local anganwadi, identify" children who suffer from malnutrition. Processing for that statutory function (DPDP s.7(c)) and "in the interests of a child, under any law" is exempt from parental consent and the no-tracking rule (DPDP Rules 2025, Rule 12, Fourth Schedule Part B(1)). Health services by clinical establishments are exempt under Part A(1).
+  - Research is allowed only where no decision is taken about an individual (s.17(2)(b)). State processing follows the Second Schedule standards of purpose limitation and minimisation.
+  - Health records arrive only through ABDM consent artefacts that fix purpose and duration.
   - **s.8(3) requires "completeness, accuracy and consistency" when data drive decisions about a person or are shared with another fiduciary.** The measurement diagnostics are how the State meets that duty.
   - Public dashboards use small-cell suppression or differential privacy.
 

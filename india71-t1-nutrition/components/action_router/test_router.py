@@ -19,7 +19,7 @@ def test_route_sam_first_step():
     task = tasks[0]
     assert task.owner_role == Role.AWW
     assert task.owner_scope_id == "AWC1"
-    assert task.action == "home_visit_and_referral"
+    assert task.action == "share_sam_list_with_asha_anm_and_refer"
     assert task.due_on == date(2026, 1, 3)
     assert task.escalation_level == 0
 
@@ -28,7 +28,7 @@ def test_route_data_recheck_unit_level():
     a = alert(AlertKind.DATA_RECHECK, "dr1").model_copy(update={"child_key": None})
     task = route([a], date(2026, 1, 1))[0]
     assert task.owner_role == Role.LS
-    assert task.action == "remeasure_random_sample_10_children"
+    assert task.action == "equipment_calibration_and_stock_check"
     assert task.due_on == date(2026, 1, 15)
 
 

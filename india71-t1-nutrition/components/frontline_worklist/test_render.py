@@ -16,7 +16,7 @@ def task(task_id: str, due: date, level: int = 0, role: Role = Role.AWW, scope: 
         due_on=due,
         status="open",
         escalation_level=level,
-        protocol_ref="ref (VERIFY)",
+        protocol_ref="CMAM-2023 p.20",
         history=[],
     )
 

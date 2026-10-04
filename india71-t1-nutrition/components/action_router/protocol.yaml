@@ -1,114 +1,121 @@
-version: "0.1.0"
-assumptions: "Working timelines to verify against national CMAM protocol 2023 (VERIFY)."
+version: "0.2.0"
+# Escalation ladders. Two kinds of protocol_ref:
+#   "CMAM-2023 p.N"  = timeline quoted from the national "Protocol for Management of Malnutrition in Children"
+#                      (MWCD + MoHFW, 10 Oct 2023; https://wcd.gov.in/documents/uploaded/CMAM-Book-10-10-2023%20(1).pdf;
+#                      PDF page numbers; verified 4 Oct 2026, see research/sources/V2-cmam-timelines.md).
+#   "DESIGN: ..."     = Poshan Setu's own operating rule (not an official norm), chosen to fit inside the official
+#                      cadence (weekly village review p.22, monthly district review p.22, monthly VHSND p.20).
+# Due days are counted from the alert date. A service-readiness gate (ADR 002) runs before any step.
+assumptions: "Official timelines cite CMAM-2023 page numbers; DESIGN rules are ours and are labelled as such."
 alerts:
   sam:
     - level: 0
       owner_role: aww
-      action: "home_visit_and_referral"
+      action: "share_sam_list_with_asha_anm_and_refer"
       due_days: 2
-      protocol_ref: "CMAM-2023-SAM-home-referral (VERIFY)"
+      protocol_ref: "CMAM-2023 p.20: 'Share the list of SAM children identified by her with ASHA and ANM within 2 days'"
     - level: 1
       owner_role: mo_phc
       action: "medical_appraisal"
-      due_days: 7
-      protocol_ref: "CMAM-2023-SAM-medical-appraisal (VERIFY)"
+      due_days: 5
+      protocol_ref: "CMAM-2023 p.8: screened 'by ANM/Medical Officer of PHC within 3-5 days of appetite test'"
     - level: 2
       owner_role: ls
       action: "supervisor_follow_up_unappraised_sam"
       due_days: 7
-      protocol_ref: "CMAM-2023-SAM-LS-day7 (VERIFY)"
+      protocol_ref: "DESIGN: escalate at the next weekly village/ward review (CMAM-2023 p.22 weekly review) if appraisal is overdue"
     - level: 3
       owner_role: cdpo
       action: "cdpo_mo_joint_escalation"
       due_days: 14
-      protocol_ref: "CMAM-2023-SAM-day14 (VERIFY)"
+      protocol_ref: "DESIGN: CDPO 'Review the referral cases and coordinate with Medical Officer' (CMAM-2023 p.21); day-14 trigger is ours"
     - level: 4
-      owner_role: dpo
-      action: "monthly_district_review"
+      owner_role: dm
+      action: "monthly_district_joint_review"
       due_days: 30
-      protocol_ref: "CMAM-2023-SAM-district-review (VERIFY)"
+      protocol_ref: "CMAM-2023 p.22: 'The District Administration shall review the progress every month'; joint MO review 'on monthly basis, especially with regards to SAM children'"
   mam:
     - level: 0
       owner_role: aww
       action: "counselling_and_supplementary_nutrition"
       due_days: 7
-      protocol_ref: "CMAM-2023-MAM-counselling-SNP (VERIFY)"
+      protocol_ref: "DESIGN: enrol in supplementary nutrition at identification (CMAM-2023 Step-4/5); 7-day completion window is ours"
     - level: 1
       owner_role: aww
-      action: "remeasure_in_14_days"
+      action: "fortnightly_visit_and_remeasure"
       due_days: 14
-      protocol_ref: "CMAM-2023-MAM-remeasure (VERIFY)"
+      protocol_ref: "CMAM-2023 p.11: 'For MAM/MUW children fortnightly visits shall be followed'"
     - level: 2
-      owner_role: ls
-      action: "supervisor_review_not_improving"
-      due_days: 30
-      protocol_ref: "CMAM-2023-MAM-LS-day30 (VERIFY)"
+      owner_role: mo_phc
+      action: "transfer_for_medical_review_if_not_gaining"
+      due_days: 28
+      protocol_ref: "CMAM-2023 p.11: refer on 'Weight loss for two consecutive weeks' / 'Failure to gain weight for consecutive two weeks'"
   growth_faltering:
     - level: 0
       owner_role: aww
       action: "home_visit_and_counselling"
       due_days: 7
-      protocol_ref: "Growth-monitoring-faltering-home-visit (VERIFY)"
+      protocol_ref: "DESIGN: within the weekly village review cycle (CMAM-2023 p.22); HBYC handbook gives 5 days for severe downward-curve cases (V2 row 9)"
     - level: 1
       owner_role: asha
       action: "joint_visit_if_illness_flagged"
       due_days: 7
-      protocol_ref: "Growth-monitoring-joint-ASHA-visit (VERIFY)"
+      protocol_ref: "DESIGN: joint ASHA visit when a linked health event exists (HBYC visits at 3/6/9/12/15 months, V2 row 14)"
     - level: 2
       owner_role: aww
       action: "monthly_remeasure"
       due_days: 30
-      protocol_ref: "Growth-monitoring-monthly-remeasure (VERIFY)"
+      protocol_ref: "Saksham Anganwadi & Poshan 2.0 guidelines 2022 p.15: monthly growth measurement (V2 row 13)"
     - level: 3
       owner_role: ls
       action: "supervisor_review_still_faltering"
       due_days: 30
-      protocol_ref: "Growth-monitoring-LS-day30 (VERIFY)"
+      protocol_ref: "DESIGN: next monthly sector meeting"
   risk_high:
     - level: 0
       owner_role: aww
       action: "home_visit_and_counselling"
       due_days: 7
-      protocol_ref: "Risk-high-home-visit (VERIFY)"
+      protocol_ref: "DESIGN: capacity-capped weekly worklist (spike B); behind the DPDP legal go/no-go (ADR 002)"
     - level: 1
       owner_role: asha
       action: "joint_visit_if_illness_flagged"
       due_days: 7
-      protocol_ref: "Risk-high-joint-ASHA-visit (VERIFY)"
+      protocol_ref: "DESIGN: joint ASHA visit when a linked health event exists"
     - level: 2
       owner_role: aww
       action: "monthly_remeasure"
       due_days: 30
-      protocol_ref: "Risk-high-monthly-remeasure (VERIFY)"
+      protocol_ref: "Saksham Anganwadi & Poshan 2.0 guidelines 2022 p.15: monthly growth measurement"
     - level: 3
       owner_role: ls
       action: "supervisor_review_still_high_risk"
       due_days: 30
-      protocol_ref: "Risk-high-LS-day30 (VERIFY)"
+      protocol_ref: "DESIGN: next monthly sector meeting"
   data_recheck:
     - level: 0
       owner_role: ls
-      action: "remeasure_random_sample_10_children"
+      action: "equipment_calibration_and_stock_check"
       due_days: 14
-      protocol_ref: "Data-quality-random-sample-remeasure (VERIFY)"
+      protocol_ref: "DESIGN (ADR 002): support before scrutiny — equipment and supplies first"
     - level: 1
-      owner_role: cdpo
-      action: "equipment_check"
+      owner_role: ls
+      action: "remeasure_random_sample_10_children"
       due_days: 30
-      protocol_ref: "Data-quality-equipment-check (VERIFY)"
+      protocol_ref: "DESIGN (ADR 002): random + targeted re-measurement; never used for employment action"
   health_signal:
     - level: 0
       owner_role: asha
       action: "joint_health_follow_up"
       due_days: 7
-      protocol_ref: "Health-signal-joint-follow-up (VERIFY)"
+      protocol_ref: "DESIGN: ASHA follow-up of a linked health event (HBYC schedule, V2 row 14)"
     - level: 1
       owner_role: mo_phc
       action: "medical_appraisal"
       due_days: 14
-      protocol_ref: "Health-signal-MO-review (VERIFY)"
+      protocol_ref: "DESIGN"
     - level: 2
       owner_role: ls
       action: "supervisor_review_pending_health_signal"
       due_days: 30
-      protocol_ref: "Health-signal-LS-review (VERIFY)"
+      protocol_ref: "DESIGN: next monthly sector meeting"
