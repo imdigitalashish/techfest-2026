@@ -1,0 +1,166 @@
+"""Claims registry: every number quoted in the deliverables, computed only from eval/results/.
+
+`compute()` returns {claim_id: rendered_string}. Bootstrap CIs use a fresh RandomState(0),
+10,000 resamples, seeds sorted. Groups whose source file is missing are skipped; templates
+that need them then fail to render (see eval/check_docs.py).
+Usage: .venv/bin/python eval/claims.py [--write]   # --write updates eval/results/claims.json
+"""
+import json, os, sys
+import numpy as np
+import pandas as pd
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+R = os.path.join(ROOT, "eval", "results")
+
+
+def _ci(d, n=10000):
+    bm = np.random.RandomState(0).choice(d, size=(n, len(d))).mean(1)
+    return float(np.percentile(bm, 2.5)), float(np.percentile(bm, 97.5))
+
+
+def _paired(df, label, base, metric):
+    P = df.pivot(index="seed", columns="label", values=metric).sort_index()
+    d = (P[label] - P[base]).values
+    return float(d.mean()), *_ci(d), P
+
+
+def _csv(name):
+    return pd.read_csv(os.path.join(R, name))
+
+
+def _json(name):
+    return json.load(open(os.path.join(R, name)))
+
+
+def g_h1(c):
+    df = _csv("E6_confirm_sync.csv")
+    m, lo, hi, P = _paired(df, "IA_sched_only", "TWAP", "is_bps")
+    c["h1_n"] = f"{df.seed.nunique()}"
+    c["h1_gain"], c["h1_gain_lo"], c["h1_gain_hi"] = f"{-m:.3f}", f"{-hi:.3f}", f"{-lo:.3f}"
+    c["h1_win"] = f"{np.mean((P['IA_sched_only'] - P['TWAP']).values < 0):.0%}"
+    om, olo, ohi, O = _paired(df, "IA_sched_only", "TWAP", "own_impact_bps")
+    tw, ia = O["TWAP"].mean(), O["IA_sched_only"].mean()
+    c["h1_own_twap"], c["h1_own_ia"] = f"{tw:.3f}", f"{ia:.3f}"
+    c["h1_own_pct"] = f"{-100 * om / tw:.0f}"
+    c["h1_own_lo"], c["h1_own_hi"] = f"{-ohi:.3f}", f"{-olo:.3f}"
+    I = df.pivot(index="seed", columns="label", values="instant_bps")
+    im, ilo, ihi, _ = _paired(df, "IA_full", "TWAP", "instant_bps")
+    c["touch_instant_pct"] = f"{-100 * im / I['TWAP'].mean():.0f}"
+    dm, dlo, dhi, _ = _paired(df, "IA_full", "TWAP", "drift_bps")
+    c["touch_drift"], c["touch_drift_lo"], c["touch_drift_hi"] = f"{dm:+.3f}", f"{dlo:+.3f}", f"{dhi:+.3f}"
+    fm, flo, fhi, _ = _paired(df, "IA_full", "TWAP", "is_bps")
+    c["touch_dis"], c["touch_dis_lo"], c["touch_dis_hi"] = f"{fm:+.3f}", f"{flo:+.3f}", f"{fhi:+.3f}"
+    c["twap_controllable"] = f"{O['TWAP'].mean() + I['TWAP'].mean():.2f}"
+    c["h1_share_of_controllable"] = f"{100 * -m / (O['TWAP'].mean() + I['TWAP'].mean()):.0f}"
+
+
+def g_ci_tightening(c):
+    e3, e5 = _csv("E3_test.csv"), _csv("E5_test_sync.csv")
+    r = []
+    for l in ["IA_full", "IA_sched_only", "TWAP_touch_limit", "VWAP"]:
+        s3 = (e3.pivot(index="seed", columns="label", values="is_bps")[l] - e3.pivot(index="seed", columns="label", values="is_bps")["TWAP"]).std()
+        s5 = (e5.pivot(index="seed", columns="label", values="is_bps")[l] - e5.pivot(index="seed", columns="label", values="is_bps")["TWAP"]).std()
+        r.append(s3 / s5)
+    c["ci_tightening"] = f"{np.median(r):.1f}"
+    c["e3_e5_n"] = f"{e5.seed.nunique()}"
+
+
+def g_noise(c):
+    n0, n1 = _csv("E4_nsr_naive.csv"), _csv("E4_nsr_sync.csv")
+    a, b = n0.own_impact_bps.std(), n1.own_impact_bps.std()
+    c["own_std_naive"], c["own_std_sync"], c["noise_reduction"] = f"{a:.2f}", f"{b:.2f}", f"{a / b:.0f}"
+    c["e4_n"] = f"{n1.seed.nunique()}"
+    j = _json("nsr_E4_nsr_naive_vs_E4_nsr_sync.json")["exps"]
+    nsr = lambda e: j[e]["1200"]["std"] / abs(j[e]["1200"]["mean"])
+    c["nsr_naive"], c["nsr_sync"] = f"{nsr('E4_nsr_naive'):.1f}", f"{nsr('E4_nsr_sync'):.1f}"
+    e1 = _json("nsr_E1_calib_train.json")["exps"]["E1_calib_train"]
+    c["gap_std_60"], c["gap_std_1200"] = f"{e1['60']['std']:.1f}", f"{e1['1200']['std']:.0f}"
+    c["gap_mean_300"] = f"{e1['300']['mean']:.1f}"
+
+
+def g_integrity(c):
+    tot = ok = 0
+    for f in sorted(os.listdir(R)):
+        if f.endswith(".csv") and f.startswith("E") and "pre_window_identical" in open(os.path.join(R, f)).readline():
+            d = _csv(f)
+            tot += len(d); ok += int(d.pre_window_identical.astype(bool).sum())
+    c["twin_runs_total"], c["twin_runs_identical"] = f"{tot:,}", f"{ok:,}"
+
+
+def g_facts(c):
+    f = _json("sim_facts.json")
+    c["n_trading_agents"] = f"{f['n_trading_agents']:,}"
+    c["abides_commit"] = f["abides_commit"][:7]
+    c["tick_bps"] = f"{f['tick_bps']:.1f}"
+    c["price_usd"] = f"{f['r_bar_cents'] / 100:,.0f}"
+    t = f["task"]
+    c["task_qty"], c["task_start"], c["task_end"], c["task_slots"] = f"{t['qty_default']:,}", t["start"][:5], t["end"][:5], f"{t['n_slots']}"
+
+
+def g_speed(c):
+    d = _csv("E8_ablation_val.csv")
+    c["wall_median_s"] = f"{d.wall_s.median():.0f}"
+
+
+def g_e8(c):
+    j = _json("E8_ablation_val_attribution.json")
+    k = j["contrasts"]
+    fmt = lambda t: (f"{t[0]:+.3f}", f"{t[1]:+.3f}", f"{t[2]:+.3f}")
+    c["e8_n"] = f"{j['n_seeds']}"
+    c["e8_A"], c["e8_A_lo"], c["e8_A_hi"] = fmt(k["A_qp_main"]["is_bps"])
+    c["e8_B"], c["e8_B_lo"], c["e8_B_hi"] = fmt(k["B_frontload_main"]["is_bps"])
+    c["e8_D"], c["e8_D_lo"], c["e8_D_hi"] = fmt(k["D_fixed_feedback"]["is_bps"])
+    c["e8_A_own"], c["e8_A_own_lo"], c["e8_A_own_hi"] = fmt(k["A_qp_main"]["own_impact_bps"])
+    c["e8_B_own"], c["e8_B_own_lo"], c["e8_B_own_hi"] = fmt(k["B_frontload_main"]["own_impact_bps"])
+    c["e8_attr_is"], c["e8_attr_own"] = j["attribution_is"], j["attribution_own"]
+    for arm in ["QP_only", "IA_sched_only", "IA_sched_fixed", "TWAP_legacy_fb"]:
+        t = fmt(j["arms"][arm]["d_is_bps_vs_TWAP"])
+        c[f"e8_{arm}"], c[f"e8_{arm}_lo"], c[f"e8_{arm}_hi"] = t
+
+
+def g_e7(c):
+    j = _json("realism_scorecard.json")
+    c["e7_n"] = f"{j['n_seeds']}"
+    c["e7_delta"] = "n/a" if j["delta"] is None else f"{j['delta']:.2f}"
+    lo, hi = j["delta_ci95"] or (float("nan"), float("nan"))
+    c["e7_delta_lo"], c["e7_delta_hi"] = f"{lo:.2f}", f"{hi:.2f}"
+    c["e7_verdict"] = j["verdict"]
+    c["e7_qmin"], c["e7_qmax"] = f"{j['qs'][0]:,}", f"{j['qs'][-1]:,}"
+    c["e7_part_min"], c["e7_part_max"] = f"{100 * j['participation'][0]:.0f}", f"{100 * j['participation'][-1]:.0f}"
+    i = j["qs"].index(4000)
+    c["e7_decay_4000"] = "n/a" if j["decay_ratio"][i] is None else f"{j['decay_ratio'][i]:.2f}"
+
+
+def g_e9(c):
+    j = _json("calibration_sync.json")
+    o, k = j["kernel_oos_second_half"], j["kernel"]
+    c["e9_r2_twap"], c["e9_r2_probe"] = f"{o['twap']['r2_mean_path']:.2f}", f"{o['probe']['r2_mean_path']:.2f}"
+    c["e9_tau"] = f"{k['tau_s']:.0f}"
+    n = _json("calibration.json")["kernel_oos_second_half"]
+    c["e1_r2_twap"], c["e1_r2_probe"] = f"{n['twap']['r2_mean_path']:.1f}", f"{n['probe']['r2_mean_path']:.1f}"
+
+
+GROUPS = [g_h1, g_ci_tightening, g_noise, g_integrity, g_facts, g_speed, g_e8, g_e7, g_e9]
+
+
+def compute(strict=False):
+    c, missing = {}, []
+    for g in GROUPS:
+        try:
+            g(c)
+        except FileNotFoundError as e:
+            missing.append(f"{g.__name__}: {os.path.basename(e.filename)}")
+            if strict:
+                raise
+    return c, missing
+
+
+if __name__ == "__main__":
+    c, missing = compute()
+    for k in sorted(c):
+        print(f"{k} = {c[k]}")
+    if missing:
+        print("MISSING SOURCES:", "; ".join(missing))
+    if "--write" in sys.argv:
+        json.dump(c, open(os.path.join(R, "claims.json"), "w"), indent=1, sort_keys=True)
+        print("wrote eval/results/claims.json")

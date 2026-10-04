@@ -1,0 +1,23 @@
+{
+ "config": "rmsc04",
+ "r_bar_cents": 100000,
+ "tick_bps": 0.1,
+ "agents_by_type": {
+  "ExchangeAgent": 1,
+  "NoiseAgent": 1000,
+  "ValueAgent": 102,
+  "AdaptiveMarketMakerAgent": 2,
+  "MomentumAgent": 12
+ },
+ "n_agents_total": 1117,
+ "n_trading_agents": 1116,
+ "abides_commit": "f9cbe51342b7dedd9587e4e069040d68a5c6477f",
+ "task": {
+  "side": "SELL",
+  "qty_default": 4000,
+  "start": "09:35:00",
+  "end": "09:55:00",
+  "n_slots": 40,
+  "end_time": "10:05:00"
+ }
+}

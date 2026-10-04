@@ -32,6 +32,15 @@ On fresh test seeds 1060–1259 (n = 200) with synced twins, IA_sched_only has m
   - No multiplicity correction: this is descriptive attribution on validation seeds, not a new confirmatory claim.
 - **Command:** `nice -n 10 .venv/bin/python eval/run_experiment.py --exp E8_ablation_val --seeds 100:200 --qty 4000 --policies eval/policies/e8_ablation.json --workers 4 --rng-sync per_wakeup`.
 
+**Outcome (appended 13:10 IST, after the run; registration text above unchanged):**
+- **Attribution: IS → unattributed at this n; own impact → unattributed at this n** (`eval/results/E8_ablation_val_attribution.md`).
+- Contrasts:
+  - A (QP main): +0.0020 [−0.0252, +0.0295].
+  - B (front-loading main): +0.0036 [−0.0188, +0.0256].
+  - C (interaction): +0.0194 [−0.0175, +0.0548].
+  - D (corrected feedback): −0.0122 [−0.0388, +0.0116].
+- **The E6 policy IA_sched_only did not beat TWAP on these 100 validation seeds: ΔIS +0.0056 [−0.0284, +0.0393]** (E6, 200 test seeds: −0.0340 [−0.0563, −0.0127]). Its own-impact gain also vanished: +0.0005 [−0.0315, +0.0322].
+
 ---
 
 ## E7 — Realism scorecard: does ABIDES rmsc04 reproduce square-root impact? (registered 2026-10-04 13:00 IST)
@@ -56,3 +65,16 @@ On fresh test seeds 1060–1259 (n = 200) with synced twins, IA_sched_only has m
 - **Success criterion:** r2_mean_path > 0 for both TWAP and PROBE held-out paths, i.e. the kernel predicts our average footprint better than a constant.
 - **Command:** `nice -n 10 .venv/bin/python eval/run_experiment.py --exp E9_calib_sync --seeds 0:40 --qty 4000 --policies eval/policies/calib.json --workers 4 --rng-sync per_wakeup && .venv/bin/python eval/calibrate.py --exp E9_calib_sync --out calibration_sync.json`.
 - **Note:** `eval/policies/test.json` and `confirm.json` keep using the naive-twin calibration (`calibration.json`) so E3–E6 stay reproducible; the synced kernel is reported, not swapped in.
+
+---
+
+## E10: Replication and attribution at n = 400 on fresh test seeds (registered 2026-10-04 13:12 IST)
+**Why:** H1 passed on test seeds 1060–1259 (−0.034 bps), but E8 (val 100–199) found +0.006. Either the effect is smaller than E6 estimated, or it varies by seed set. A larger fresh sample settles both the replication and the attribution.
+- **Seeds:** fresh test seeds 1260–1659 (n = 400; never used before). Synced twins; the same task as E5–E8.
+- **Arms:** identical to E8 (`eval/policies/e8_ablation.json`): TWAP, QP_only, TWAP_legacy_fb, IA_sched_only, IA_sched_fixed.
+- **H2 (replication of H1, confirmatory):** IA_sched_only has mean paired ΔIS vs TWAP < 0. One-sided α = 0.05: the 95th percentile of the bootstrap mean (10k resamples, RandomState(0), seeds sorted) is < 0.
+- **Attribution:** contrasts A–D and the attribution rule exactly as in E8, computed with `eval/attribution.py --exp E10_replication_test`.
+- **Reporting rule:**
+  - The abstract reports H2's result whichever way it goes.
+  - If H2 fails, the abstract must not claim that the agent beats TWAP on total slippage. It will instead report the pooled estimate over all synced test seeds (E5 ∪ E6 ∪ E10; descriptive, not confirmatory) and the robust components.
+- **Command:** `nice -n 10 .venv/bin/python eval/run_experiment.py --exp E10_replication_test --seeds 1260:1660 --qty 4000 --policies eval/policies/e8_ablation.json --workers 4 --rng-sync per_wakeup`.

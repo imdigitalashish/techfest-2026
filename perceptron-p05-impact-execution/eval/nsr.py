@@ -27,6 +27,13 @@ def main():
             m, s = np.nanmean(A[:, t]), np.nanstd(A[:, t], ddof=1)
             cells.append(f"{m:+.2f} / {s:.2f} / {s / max(abs(m), 1e-9):.1f}")
         lines.append(f"| {e} | {len(A)} | " + " | ".join(cells) + " |")
+    js = {}
+    for e in a.exps:
+        A = paths(e, a.label)
+        js[e] = {str(t): dict(mean=float(np.nanmean(A[:, t])), std=float(np.nanstd(A[:, t], ddof=1)), n=int(len(A))) for t in ts}
+    import json
+    json.dump(dict(label=a.label, unit="cents", exps=js), open(os.path.join(
+        ROOT, "eval", "results", "nsr_" + "_vs_".join(a.exps) + ".json"), "w"), indent=1)
     out = os.path.join(ROOT, "eval", "results", "nsr_" + "_vs_".join(a.exps) + ".md")
     open(out, "w").write("Twin gap Δmid in cents (+ = adverse), label " + a.label + "\n\n" + "\n".join(lines) + "\n")
     print("\n".join(lines))
