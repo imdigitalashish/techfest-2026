@@ -67,6 +67,12 @@ fi
 nice -n 10 "$PY" demo/build_replay.py --workers "${WORKERS:-3}"
 echo "[run.sh] replay cache ready ($(( $(date +%s) - T0 )) s after start)"
 
+# 4. Act 2, SEMI-SYNTHETIC splice stress test (two real held-out books spliced at known times; ~1.5 min once).
+if [[ ! -f demo/.cache/splice_index.json ]]; then
+  nice -n 10 "$PY" demo/build_splice.py
+fi
+echo "[run.sh] splice stress test ready ($(( $(date +%s) - T0 )) s after start)"
+
 if (( SERVE )); then
   echo "[run.sh] serving $URL. Press Ctrl-C to stop."
   wait "$SERVER_PID"

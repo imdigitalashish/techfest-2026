@@ -57,6 +57,19 @@
 
 **Close:** "Detect-and-retrain fails under real high-frequency dependence at any sensitivity; conditioning on state works, on 22 of 22 held-out days."
 
+**Optional, +45 s · Stress test (section 5, SEMI-SYNTHETIC)** · `fallback/11_splice_calm_to_volatile_12h.png`
+
+**Say:** "Real data has no labelled changepoints, so we made one. We spliced the calmest held-out day into the most volatile one at a time the judge picks. Day B's prices are shifted additively by whole ticks, so labels are unchanged, and the smoke test asserts that."
+
+**Click** `calm → volatile`, then any time.
+
+**Point at:**
+- the textbook KS firing 12–36 times on the calm half, before anything changed;
+- the head band flipping to high-vol within minutes;
+- the gate family ranked first after the splice, in 10/10 splices.
+
+**Say:** "This is labelled semi-synthetic; it's a stress test, not held-out evidence."
+
 ---
 
 **If asked:**

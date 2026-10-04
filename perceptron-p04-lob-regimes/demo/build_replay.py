@@ -36,10 +36,10 @@ def _sec(f, step: int) -> int:
     return int((f.grid_us[step] // 10**6) % 86400)
 
 
-def _day(day: str) -> dict:
-    ctx, cal, com = _G["ctx"], _G["cal"], _G["committed"]
-    t0 = time.time()
-    f, l = load_day(day)
+def frame_summary(f, l, ctx, com: dict | None = None, day: str | None = None) -> dict:
+    """10-minute aggregates of one feature frame: OHLC candles, regime-head share, and for each policy the per-day
+    log-loss, 10-minute bin-mean log-loss and alarm timestamps (seconds of the UTC day)."""
+    com = com or {}
     T = f.X.shape[0]
     start_s = _sec(f, 0)
     off = start_s % BIN_S
@@ -53,10 +53,7 @@ def _day(day: str) -> dict:
     for b in range(nb):
         seg = mid[b * BIN_S:(b + 1) * BIN_S]
         seg = seg[~np.isnan(seg)]
-        if seg.size:
-            candles.append([round(float(v), 2) for v in (seg[0], seg.max(), seg.min(), seg[-1])])
-        else:
-            candles.append(None)
+        candles.append([round(float(v), 2) for v in (seg[0], seg.max(), seg.min(), seg[-1])] if seg.size else None)
     rv = f.X[:, ctx.names.index("rv_600s_bps")]
     reg = np.searchsorted(ctx.regime_edges, rv, side="right")
     reg_share = [[None] * nb for _ in range(3)]
@@ -66,22 +63,35 @@ def _day(day: str) -> dict:
         seg = seg[seg >= 0]
         for r in range(3):
             reg_share[r][b] = round(float((seg == r).mean()), 4) if seg.size else None
-    out = {"day": day, "start_utc_s": start_s - off, "bin_s": BIN_S, "n_bins": nb, "candles": candles,
-           "regime_share": reg_share, "regime_edges_bps": [float(e) for e in ctx.regime_edges],
-           "policies": {}, "stops": {}}
+    out = {"day": day or f.day, "start_utc_s": start_s - off, "bin_s": BIN_S, "n_bins": nb, "candles": candles,
+           "regime_share": reg_share, "regime_edges_bps": [float(e) for e in ctx.regime_edges], "policies": {}}
+    lls = {}
     for p in POLS:
         r = run_episode(p, f, l, ctx, POLICIES[p])
         ll = pointwise_logloss(r.p_up, l.y)
+        lls[p] = ll
         s = score(r.p_up, l.y, l.move_bps)
         al = {}
         for a in r.alarms:
             al.setdefault(a.detector, []).append(_sec(f, a.step))
         rec = {"logloss": s["logloss"], "auc": s["auc"], "loss_bins": bins(ll), "alarms": al}
-        c = com.get(p, {}).get(day)
+        c = com.get(p, {}).get(day or f.day)
         if c is not None:
             rec["committed"] = c
             rec["match"] = bool(abs(c - s["logloss"]) < 1e-9)
         out["policies"][p] = rec
+    out["_ll"], out["_reg"], out["_bins"] = lls, reg, bins
+    return out
+
+
+def _day(day: str) -> dict:
+    ctx, cal, com = _G["ctx"], _G["cal"], _G["committed"]
+    t0 = time.time()
+    f, l = load_day(day)
+    out = frame_summary(f, l, ctx, com, day)
+    bins = out.pop("_bins")
+    out.pop("_ll"), out.pop("_reg")
+    out["stops"] = {}
     tr = ks_window_trace(f.X, ctx)
     out["ks_windows"] = {"n": int(tr["step"].size), "n_D1": int((tr["dmax"] >= 1.0).sum()),
                          "median_log10_pbon": float(np.median(np.log10(np.maximum(tr["pbon"], 1e-320))))}

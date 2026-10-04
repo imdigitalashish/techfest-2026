@@ -104,10 +104,25 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
   <div class="end" id="exec-end">Not tradable as a taker after fees.</div>
 </section>
 
+<section id="splice">
+  <h2>5 · Stress test: a changepoint we know the time of <span class="chip c-synth">SEMI-SYNTHETIC</span></h2>
+  <div class="mut" id="sp-method"></div>
+  <div class="kn" style="margin-top:8px"><span class="mut">direction:</span><span id="sp-dir"></span><span class="mut" style="margin-left:14px">splice at (UTC):</span><span id="sp-tau"></span></div>
+  <canvas id="sp" height="620"></canvas>
+  <div class="grid2" style="margin-top:8px">
+    <div><h3>Log-loss 2 hours before vs 2 hours after the splice <span class="chip c-live">live-computed</span> <span class="chip c-synth">SEMI-SYNTHETIC</span></h3>
+      <table id="sp-loss"><thead><tr><th>policy</th><th class="num">2 h before</th><th class="num">2 h after</th><th>rank after</th></tr></thead><tbody></tbody></table></div>
+    <div><h3>Who noticed, and when? <span class="chip c-live">live-computed</span> <span class="chip c-synth">SEMI-SYNTHETIC</span></h3>
+      <table id="sp-det"><thead><tr><th>signal</th><th class="num">alarms before splice (nothing changed yet)</th><th class="num">after</th><th class="num">first alarm after splice</th></tr></thead><tbody></tbody></table>
+      <div class="mut" id="sp-heads" style="margin-top:6px"></div></div>
+  </div>
+  <div class="verdict" id="sp-verdict"></div>
+</section>
+
 </main>
 <footer>
   Data: Tardis.dev free first-of-month <code>book_snapshot_5</code> files for Binance USD-M BTCUSDT, used for internal research and education. The raw data and any per-second series stay on this machine (<code>.data/</code>, <code>demo/.cache/</code>, both gitignored). On screen, prices appear only as 10-minute OHLC candles and losses as 10-minute aggregates (Tardis ToS §9.2).
-  Sources: <code>eval/results/v2_holdout*.json</code>, <code>eval/results/head_usage.md</code>, <code>demo/results/alarm_dial_sweep.json</code>, and the live <code>demo/.cache/replay_*.json</code>.
+  Sources: <code>eval/results/v2_holdout*.json</code>, <code>eval/results/head_usage.md</code>, <code>demo/results/alarm_dial_sweep.json</code>, the live <code>demo/.cache/replay_*.json</code>, and the SEMI-SYNTHETIC <code>demo/.cache/splice_*.json</code>.
 </footer>
 <script>
 "use strict";
@@ -329,8 +344,64 @@ async function boot(){
   window.__firstPaintMs=performance.now()-firstPaint;document.body.dataset.ready="1";
   poll();
 }
-window.addEventListener("resize",()=>{if(SB){drawScoreboard();drawReplay();drawDial();}});
+window.addEventListener("resize",()=>{if(SB){drawScoreboard();drawReplay();drawDial();}if(SPI)drawSplice();});
 boot();
+
+/* ---------- 5. semi-synthetic splice (separate from sections 1-4) ---------- */
+let SPI=null, SP={}, SPDIR="calm_to_volatile", SPH=12;
+function drawDayCanvas(cv,d,ksAl,ksBins,spliceS){
+  const [g,w,h]=ctx2d(cv);g.fillStyle=C("--panel");g.fillRect(0,0,w,h);
+  const L=64,R=w-14,nb=d.n_bins,X=b=>L+(b+.5)/nb*(R-L),bw=(R-L)/nb,T=s=>L+(s-d.start_utc_s)/(nb*d.bin_s)*(R-L);
+  const panes=[["price (10-min OHLC)",0,170],["alarms",178,92],["head",278,34],["log-loss (10-min mean)",320,170],["cum. Δ vs static",498,112]];
+  panes.forEach(([n,y,hh])=>{g.strokeStyle=C("--line");g.strokeRect(L,y+4,R-L,hh-6);g.save();g.fillStyle=C("--mut");g.translate(14,y+hh/2+g.measureText(n).width/2);g.rotate(-Math.PI/2);g.fillText(n,0,0);g.restore();});
+  g.fillStyle=C("--mut");for(let hr=0;hr<=24;hr+=3){const xx=T(hr*3600);if(xx<L-1||xx>R+1)continue;g.fillText(hhmm(hr*3600)+(hr===0?" UTC":""),xx-14,h-2);g.strokeStyle="#20262e";g.beginPath();g.moveTo(xx,4);g.lineTo(xx,h-14);g.stroke();}
+  const xs=T(spliceS);g.fillStyle="rgba(240,180,41,.07)";g.fillRect(xs,4,R-xs,h-18);g.strokeStyle=C("--acc");g.lineWidth=2;g.setLineDash([6,4]);g.beginPath();g.moveTo(xs,4);g.lineTo(xs,h-14);g.stroke();g.setLineDash([]);g.lineWidth=1;
+  g.fillStyle=C("--acc");g.fillText("SPLICE "+hhmm(spliceS)+" UTC (SEMI-SYNTHETIC)",xs+4,16);
+  const cs=d.candles.filter(Boolean),pmin=Math.min(...cs.map(c=>c[2])),pmax=Math.max(...cs.map(c=>c[1])),Y0=v=>8+(1-(v-pmin)/(pmax-pmin||1))*156;
+  d.candles.forEach((c,b)=>{if(!c)return;const [o,hi,lo,cl]=c,col=cl>=o?"#3fd08f":"#ff6b6b";g.strokeStyle=col;g.fillStyle=col;g.beginPath();g.moveTo(X(b),Y0(hi));g.lineTo(X(b),Y0(lo));g.stroke();g.fillRect(X(b)-bw*.35,Math.min(Y0(o),Y0(cl)),bw*.7,Math.max(1,Math.abs(Y0(o)-Y0(cl))));});
+  g.fillStyle=C("--mut");g.fillText(pmax.toFixed(0),L+4,28);g.fillText(pmin.toFixed(0),L+4,166);
+  const sg=d.policies.spike_gate.alarms;
+  [["KS (α = 1e-3) → refit",ksAl,C("--ks")],["KS audit (no action)",sg.rolling_ks_calibrated||[],C("--audit")],["CUSUM → shrink",sg.harm_cusum||[],C("--cusum")]].forEach(([n,arr,col],i)=>{const y=186+i*28;g.fillStyle=C("--mut");g.fillText(`${n}: ${arr.length}`,L+4,y+8);g.strokeStyle=col;g.lineWidth=1.5;for(const t of arr){g.beginPath();g.moveTo(T(t),y+11);g.lineTo(T(t),y+24);g.stroke();}g.lineWidth=1;});
+  const cols=["#6cb6ff","#f0b429","#ff6b6b"];for(let b=0;b<nb;b++){let y=282;for(let r=0;r<3;r++){const p=d.regime_share[r][b];if(p==null)continue;g.fillStyle=cols[r];g.fillRect(L+b*bw,y,bw+.5,p*26);y+=p*26;}}
+  const series=POLS.map(([k,n,c])=>[k==="ks_refit"?ksBins:d.policies[k].loss_bins,C(c),k]);
+  const all=series.flatMap(s=>s[0]).filter(v=>v!=null).sort((a,b)=>a-b),lmin=all[Math.floor(all.length*.01)],lmax=all[Math.floor(all.length*.99)];
+  const Y1=v=>326+(1-(Math.min(Math.max(v,lmin),lmax)-lmin)/(lmax-lmin||1))*158;
+  series.forEach(([arr,col,k])=>{g.strokeStyle=col;g.lineWidth=k==="regime_gated"||k==="ks_refit"?2:1.2;g.beginPath();let on=false;arr.forEach((v,b)=>{if(v==null){on=false;return;}on?g.lineTo(X(b),Y1(v)):g.moveTo(X(b),Y1(v));on=true;});g.stroke();g.lineWidth=1;});
+  g.fillStyle=C("--mut");g.fillText(lmax.toFixed(2),L+4,336);g.fillText(lmin.toFixed(2),L+4,482);
+  const base=d.policies.static_snorm.loss_bins,cum=series.map(([arr,col,k])=>{let c=0;return [arr.map((v,b)=>{if(v!=null&&base[b]!=null)c+=v-base[b];return c;}),col,k];});
+  const cv2=cum.flatMap(s=>s[0]),cmin=Math.min(0,...cv2),cmax=Math.max(0,...cv2),Y2=v=>504+(1-(v-cmin)/(cmax-cmin||1))*100;
+  g.strokeStyle="#555";g.beginPath();g.moveTo(L,Y2(0));g.lineTo(R,Y2(0));g.stroke();
+  cum.forEach(([arr,col,k])=>{g.strokeStyle=col;g.lineWidth=k==="regime_gated"||k==="ks_refit"?2:1.2;g.beginPath();arr.forEach((v,b)=>b?g.lineTo(X(b),Y2(v)):g.moveTo(X(b),Y2(v)));g.stroke();g.lineWidth=1;});
+}
+function spKnobs(){
+  knob5($("#sp-dir"),[["calm_to_volatile","calm → volatile"],["volatile_to_calm","volatile → calm"]],()=>SPDIR,v=>SPDIR=v);
+  knob5($("#sp-tau"),SPI.taus_h.map(hh=>[hh,String(hh).padStart(2,"0")+":00"]),()=>SPH,v=>SPH=v);
+}
+function knob5(el,opts,get,set){el.innerHTML="";opts.forEach(([v,l])=>{const b=document.createElement("button");b.className="btn"+(get()===v?" on":"");b.textContent=l;b.onclick=()=>{set(v);spKnobs();drawSplice();};el.appendChild(b);});}
+async function spLoad(name){if(!SP[name]){const r=await fetch(".cache/"+name,{cache:"no-store"});SP[name]=await r.json();}return SP[name];}
+async function drawSplice(){
+  if(!SPI)return;const name=`splice_${SPDIR}_${String(SPH).padStart(2,"0")}.json`;const d=await spLoad(name);
+  const ck=d.checks,ok=v=>v?'<span class="ok">✓</span>':'<span class="bad">✗</span>';
+  $("#sp-method").innerHTML=`<b>Method.</b> Real held-out order books, spliced: every snapshot of <b>${d.day_a}</b> received before ${hhmm(d.splice_utc_s)} UTC, then every snapshot of <b>${d.day_b}</b> from the same time of day. Day B's prices are shifted <b>additively</b> by ${d.shift_ticks.toLocaleString()} ticks (${d.shift_usd>=0?"+":"−"}$${Math.abs(d.shift_usd).toLocaleString()}) so the mid is continuous at the splice. Sizes are unchanged. The spliced book then goes through the same committed features, labels and policies (2023 training context). `+
+    `Integrity checks: features before the splice equal the unspliced day ${ok(ck.causal_features_pre)}; labels before it equal the unspliced day ${ok(ck.causal_labels_pre)}; labels after it equal day B's own labels on every real move ${ok(ck.labels_shift_invariant_post)} (${ck.n_post_labels_compared.toLocaleString()} steps). Exact decimal ties whose sign comes from floating-point rounding in the committed labeler: ${ck.n_float_noise_ties}, of which ${ck.n_float_noise_ties_flipped} flipped.`;
+  const ks=d.policies.ks_refit;drawDayCanvas($("#sp"),d,ks.alarms.rolling_ks||[],ks.loss_bins,d.splice_utc_s);
+  const names=Object.fromEntries(POLS.map(([k,n,c])=>[k,[n,c]]));const w=d.window_2h;const order=Object.keys(w).sort((a,b)=>w[a].after_2h-w[b].after_2h);
+  $("#sp-loss tbody").innerHTML=order.map((k,i)=>`<tr><td><i class="sw" style="background:${C(names[k][1])}"></i>${k==="ks_refit"?"Textbook KS → refit (α = 1e-3)":names[k][0]}</td><td class="num">${w[k].before_2h.toFixed(4)}</td><td class="num">${w[k].after_2h.toFixed(4)}</td><td>${i===0?'<b class="ok">1 (best)</b>':i+1}</td></tr>`).join("");
+  const dl={rolling_ks:"Textbook KS (α = 1e-3) → refit",rolling_ks_calibrated:"Calibrated KS audit (no action)",harm_cusum:"CUSUM on loss → shrink"};
+  $("#sp-det tbody").innerHTML=Object.entries(d.detectors).map(([k,v])=>`<tr><td>${dl[k]}</td><td class="num">${v.before}</td><td class="num">${v.after}</td><td class="num">${v.first_delay_min==null?"never":v.first_delay_min+" min"}</td></tr>`).join("");
+  const hb=d.gate_heads.before_1h,ha=d.gate_heads.after_1h,pc=a=>a.map(x=>(x*100).toFixed(0)+"%").join(" / ");
+  $("#sp-heads").innerHTML=`Regime gate, share of steps on the low / mid / high-vol head: 1 h before the splice ${pc(hb)}; 1 h after ${pc(ha)}. The gate needs no alarm: it switches as soon as its trailing 10-minute volatility crosses the 2023 tercile edges.`;
+  // verdict across all splices that are available
+  const files=SPI.splices.map(s=>s.file);const ds=await Promise.all(files.map(spLoad));
+  const best=ds.filter(x=>{const o=Object.keys(x.window_2h).sort((a,b)=>x.window_2h[a].after_2h-x.window_2h[b].after_2h)[0];return o==="regime_gated"||o==="spike_gate";}).length;
+  const pre=ds.filter(x=>x.direction==="calm_to_volatile").map(x=>x.detectors.rolling_ks.before);
+  $("#sp-verdict").innerHTML=`Across all ${ds.length} splices (2 directions × ${SPI.taus_h.length} times), the regime gate or gate + shrinkage has the lowest 2-hour post-splice log-loss in <b>${best}/${ds.length}</b>. On the calm → volatile splices, textbook KS raised <b>${Math.min(...pre)}–${Math.max(...pre)}</b> alarms on the calm half alone, before anything changed. ${chip("live-computed")} <span class="chip c-synth">SEMI-SYNTHETIC</span> These are illustrative stress tests on two spliced real days, not held-out evidence.`;
+}
+async function pollSplice(){
+  try{const r=await fetch(".cache/splice_index.json",{cache:"no-store"});if(r.ok){SPI=await r.json();spKnobs();await drawSplice();return;}}catch(e){}
+  $("#sp-method").innerHTML='<span style="color:var(--acc)">The splice stress test is built by demo/run.sh after the replay (about 1.5 min)…</span>';setTimeout(pollSplice,3000);
+}
+pollSplice();
 </script>
 </body>
 </html>

@@ -5,6 +5,7 @@ The demo is a live, offline page for the 10-second BTCUSDT mid-price direction f
 - **Replay.** Real days computed live by the committed code: the static model, one EWMA head, textbook KS→refit, the regime gate, and the gate with CUSUM shrinkage. Alarm tracks and the active regime head are shown too.
 - **The alarm dial.** The judge sets the textbook KS test's significance level α from 1e-1 down to 1e-300, or to "off". The judge can also pick the empirical-null mode. The replay and a 22-day held-out sweep follow the dial.
 - **Execution knob.** Choose a fee tier, delay and policy to see the edge after fees.
+- **Section 5, SEMI-SYNTHETIC stress test.** Two real held-out books are spliced at a time the judge picks, giving a changepoint whose time is known. The section shows who noticed the change, when, and who lost the least.
 
 ## Run
 
@@ -22,6 +23,19 @@ What happens:
 - **Requirements.** Python 3.11 with numpy, scipy, polars and scikit-learn (as for `eval/`). The page vendors no JavaScript libraries; it uses plain canvas.
 - **Options.** `demo/run.sh --no-open` skips opening the browser; `--build-only` builds without a server. `PORT=` and `WORKERS=` are honoured.
 
+## Act 2: SEMI-SYNTHETIC splice (section 5)
+
+`build_splice.py` builds the splices; `run.sh` runs it after the replay, which takes about 1.5 min once.
+- **Method.** Keep every snapshot of the calmest held-out day (2026-08-01) received before τ. After it, append every snapshot of the most volatile held-out day (2026-03-01) from the same time of day.
+- **Price shift.** Day B's prices are shifted **additively** by an integer number of 0.1 ticks, re-rounded to the tick grid, so the mid is continuous at τ.
+- **Coverage.** Both directions, at τ = 06, 09, 12, 15 and 18 UTC.
+
+`smoke.sh` asserts, for every splice:
+- features and labels before τ equal the unspliced day exactly (causality);
+- labels after τ equal day B's own labels on every real mid move (shift invariance).
+
+The one exception is an exact decimal tie whose sign comes from floating-point rounding in the committed labeler. It is reported on screen (at most 1 per splice). These are stress tests, not held-out evidence.
+
 ## Regenerate the committed aggregates
 
 ```bash
@@ -38,6 +52,7 @@ nice -n 10 python demo/build_sweep.py --workers 3      # demo/results/alarm_dial
 | One EWMA head, heads alone, head usage | `v2_holdout_posthoc_ablation.json`, `v2_holdout_posthoc_heads.json`, `head_usage.md` | post-hoc exploratory |
 | Dial: 22-day sweep, "why" inset | `demo/results/alarm_dial_sweep.json` (`build_sweep.py`) | post-hoc demo sweep, not pre-registered |
 | Replay curves, alarms, per-day totals | `demo/.cache/replay_<day>.json` (`build_replay.py`, gitignored) | live-computed |
+| Section 5 splice stress test | `demo/.cache/splice_*.json` (`build_splice.py`, gitignored) | live-computed, **SEMI-SYNTHETIC** |
 
 The demo imports `components/` and `eval/` unchanged. Each dial stop runs the committed `run_episode`, with α overridden through `dataclasses.replace(ctx, cfg=…)` or the empirical-null threshold through `dataclasses.replace(ctx, ks_thresholds=…)`.
 

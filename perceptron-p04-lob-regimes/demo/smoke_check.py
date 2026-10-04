@@ -28,6 +28,10 @@ def max_list_len(o, skip=()) -> int:
     return 0
 
 
+def html_text() -> str:
+    return (DEMO / "index.html").read_text()
+
+
 def main() -> int:
     hold = json.loads((ER / "v2_holdout.json").read_text())
     abl = json.loads((ER / "v2_holdout_posthoc_ablation.json").read_text())
@@ -100,6 +104,25 @@ def main() -> int:
     for t in tracked:
         if t.endswith(".json"):
             check(max_list_len(json.loads((ROOT / t).read_text())) <= 200, f"{t}: no per-second arrays")
+
+    print("[6] Act 2 splice (SEMI-SYNTHETIC): integrity checks")
+    si = DEMO / ".cache" / "splice_index.json"
+    check(si.exists(), "splice index built")
+    if si.exists():
+        idx = json.loads(si.read_text())
+        check(idx.get("status") == "SEMI-SYNTHETIC" and len(idx["splices"]) == 10, "10 splices, labelled SEMI-SYNTHETIC")
+        for sp in idx["splices"]:
+            d = json.loads((DEMO / ".cache" / sp["file"]).read_text())
+            c = d["checks"]
+            check(d["status"] == "SEMI-SYNTHETIC" and c["causal_features_pre"] and c["causal_labels_pre"],
+                  f"{sp['file']}: features and labels before the splice == unspliced day A")
+            check(c["labels_shift_invariant_post"] and c["n_post_labels_compared"] > 20000 and c["n_post_unmatched"] <= 1,
+                  f"{sp['file']}: labels after the splice == day B's own labels on every real move "
+                  f"(additive shift {d['shift_ticks']} ticks; {c['n_post_labels_compared']} steps)")
+            check(c["n_float_noise_ties_flipped"] <= 2, f"{sp['file']}: float-noise ties flipped = {c['n_float_noise_ties_flipped']} (<= 2)")
+            check(max_list_len(d, skip=("alarms",)) <= 145, f"{sp['file']}: 10-minute aggregates only")
+    for needle in ('id="splice"', "SEMI-SYNTHETIC", "additively"):
+        check(needle in html_text(), f"index.html contains {needle!r}")
 
     print("[5] page references every panel and data file")
     html = (DEMO / "index.html").read_text()

@@ -21,7 +21,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "eval"))
 warnings.filterwarnings("ignore", category=RuntimeWarning)  # spurious Accelerate matmul warnings in LogisticHead.fit
 
-from config_v2 import CFG_V2, SPLIT_V2  # noqa: E402
+from config_v2 import CFG_V2, SPLIT_V2, H_STEPS as H_STEPS_, STEP_S as STEP_S_  # noqa: E402,F401
 from run_v2 import load_day  # noqa: E402
 
 from components.adapter import POLICIES, build_context, run_episode  # noqa: E402
