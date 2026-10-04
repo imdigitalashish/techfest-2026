@@ -113,7 +113,7 @@ def test_segment_norm_gives_full_weight_to_sole_owner_of_a_column():
     lo = torch.zeros(D_OUT, R)
     lo[:, :2] = 1.0                    # rank-2 device writes columns 0-1 only
     meta = dict(n_examples=1, planned_steps=1, steps_done=1)
-    g, _ = s.aggregate(g, {"c0": {k: hi}, "c1": {k: lo}}, {"c0": meta, "c1": meta}, 0)
+    g, _ = s.aggregate(g, {"c0": {k: hi}, "c1": {k: lo[:, :2]}}, {"c0": meta, "c1": meta}, 0)  # payload width = rank
     assert torch.allclose(g["B"][k], torch.ones(D_OUT, R))  # shared columns: mean of 1 and 1; others: sole owner
 
 

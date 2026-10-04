@@ -10,27 +10,30 @@
 - _(none)_
 
 ## Now
-- **Phase:** 5. The spike replicates: on the dropout scenario `anchor_full` reaches macro 2.6651 on both seeds 0 and 1, vs the starter's 2.7346 / 2.7535 (untuned model 2.7063). A sequential seed and ratchet queue is running. The morning package was delivered at 08:00 IST.
-- **Plan:** (1) ≥ 5 seeds with 95 % CIs → (2) ratchet candidates (τ_eff actual vs planned, PreLort-style segment normalisation, decayed memory, √n weights) → (3) close the antithesis gaps (stronger baselines, de-confounded design, Sybil and leave-one-out tests) → (4) Flower kill-a-node demo → (5) standard datasets (finance sentiment, Dolly-15k) → (6) 0.5B–1.1B runs on Azure → abstract final by 31 Oct.
-- **Doing (09:45 IST):**
-  - **GPU queue** (Supervisor memory rule: one heavy job at a time under `nice -n 10`): `scripts/handover_to_queue.sh` → `scripts/gpu_queue.sh`. Phases run in order: replicate (dropout seeds 2–4: anchor_full, fedavg_ab_homo) → ratchet (4 candidates × seeds 0–1) → ablate → clean. It skips runs already recorded, so a restart is safe: `scripts/handover_to_queue.sh 0`.
-  - **Agents (Lean Mode: no new ones):** the independent ADR 001 review (rubber-duck, launched 09:43) is still running. Dropout-stretch evidence is done (`eval/results/v1_dropout_analysis.md`).
-- **Next:**
-  1. Add CIs to `eval.summarize` once seed 2 lands.
-  2. Ratchet decisions in `results.tsv`.
-  3. Flower kill-a-node demo with `LocalGrid.kill_node` (C10 parity run when the GPU is quiet).
-  4. Baselines: exact ΔW + SVD (FlexLoRA/FedPA-LoRA-style), PreLort, FedEx-LoRA, RoLoRA; centralised and local-only bounds.
-  5. Latin-square rotation; Sybil split; leave-one-device-out.
+- **Phase:** ⏸ **PAUSED** (Supervisor 09:55, user's decision: only 3 projects run at a time; P7 is the current Perceptron pick). Idle until the Supervisor says it's our turn. Morning package delivered at 08:00 IST.
+- **Headline (dropout scenario, 12 rounds, SmolLM2-135M):** AnchorLoRA macro 2.6651 / 2.6651 / 2.6646 (seeds 0–2) vs the starter's 2.7346 / 2.7535 / 2.7547 (untuned 2.7063). **Paired 95 % CI on Δ = [−0.111, −0.054]** (n = 3, mean −0.083). Every domain improves over the untuned model. The outage device's domain never rises above untuned (baselines peak +0.15 to +0.30). Sources: `eval/results/v1_summary.md`, `eval/results/v1_dropout_analysis.md`.
+- **Resume point (exact):**
+  1. Restart the GPU queue: `cd perceptron-p01-federated-lora && scripts/handover_to_queue.sh 0`. It is sequential under `nice -n 10` and skips finished runs.
+     - Next up: phase `replicate` resumes at **dropout `anchor_full` seed 3** (stopped at 09:50 seconds after it started; nothing lost), then `fedavg_ab_homo` s3, then seed 4 of both.
+     - Then `ratchet`: `anchor_full_tauact`, `_seg`, `_decay`, `_sqrtn` on seeds 0–1. Then `ablate`, then `clean`. Also add `anchor_full_nonorm` (defined in `STRATEGIES`, not yet in `gpu_queue.sh`) to the ratchet phase: it is the attribution test the ADR review asked for.
+  2. Apply the ADR-review rewording to `deliverables/round1-abstract.md`. Five changes:
+     - a less absolute title;
+     - "harmed" → "regressed below the untuned model";
+     - corrections apply "without the extra A/B factorisation error", not "exactly";
+     - leave-one-out/Sybil are *planned*;
+     - add the worst-domain trade-off (3.515 vs ≈3.44 for the starter).
+     Then re-count to ≤ 900 words.
+  3. Add an "Independent review (09:50)" section to ADR 001 from the review in the 09:50 Log entry.
+  4. The C10 Flower parity run needs a quiet GPU: `python -m components.flower_adapter.run_demo`.
 - **Needs from user:**
   - Register by 15 Oct (after the 12 Oct selection).
-  - Teammates' names and skills (the abstract has placeholders).
+  - Teammates' names and skills.
   - Optional: a phone or Raspberry Pi for the physical-device stretch.
-  - Azure GPU quota is not yet checked; the SKU ask will follow.
 - **Risks:**
-  1. **Prior art is now close on both sides:** CF-LoRA (arXiv 2609.36986, 29 Sep 2026) freezes a learned shared A, and PreLort (2606.15963) nests ranks. No paper combining a seed-frozen A with nested ranks was found (`research/raw/fedlora_frontier.md`). Claim the integration and the measurement only.
-  2. Frozen A may cap expressiveness (RoLoRA, NeurIPS 2025).
-  3. Only 2 seeds and 12 rounds, on a local-text proxy.
-  4. The shared M5 is memory-bound (swap ≈ 21 GB at 09:40), so runs are slow.
+  1. Prior art is close on both halves: CF-LoRA (frozen shared A) and PreLort (nested ranks). Claim the integration and the measurement only.
+  2. Frozen A may cap expressiveness (RoLoRA).
+  3. The gain may partly come from planned-step amplification or memory replay; the `tauact` and `nonorm` ablations are queued.
+  4. 12-round runs on a local-text proxy; FlowerTune Finance is the finals benchmark.
 
 ## Phase 0 — constraints and what we must show (from `_briefs/perceptron.txt`, read 02:05 IST)
 **Hard constraints**
@@ -200,3 +203,14 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
 - The queue landed anchor_full seed 2 at **2.6646**. Three AnchorLoRA seeds so far: 2.66508 / 2.66510 / 2.6646.
 - Lean Mode (Supervisor 09:40) acknowledged: no new agents; the ADR review agent launched at 09:43 is still running; compute is the single nice-10 queue.
+
+### 2026-10-04 09:52 IST — Lead: independent ADR review; seed-2 replication; PAUSED by Supervisor
+- **ADR 001 independent review** (rubber-duck, launched 09:43, before Lean Mode reached me). Verdict: "conditionally yes" as a spike. Defensible claim: *"an evaluated systems integration — not a new primitive — of frozen shared A with prefix-heterogeneous B ranks for exact mixed-rank aggregation, augmented with partial-participation handling, equal-client weighting, clipping, stale-update memory, and product-space influence instrumentation."* Findings:
+  1. **Upload accounting** counted r_k columns while the full r_max-wide ΔB was passed on. → *Fixed*: the anchor payload is now sliced to r_k columns and padded on the server (bit-identical numerics; tested). Device memory still allocates r_max, so it is not a measured claim.
+  2. **Planned-step rescaling** can amplify short partial updates. → The `anchor_full_tauact` and new `anchor_full_nonorm` ablations will tell.
+  3. **Memory reapplies a stale direction** for up to 4 rounds. → Report credited vs actual work (already in `v1_dropout_analysis.md`).
+  4. **Influence share** is unbounded near cancellation. → Bounded norm share + leave-one-out are planned (ADR synthesis #7).
+  5. **Seeds 0–1 came from different commits.** The code path was identical (the only intervening change was docs), and seeds 2–4 run from a single revision.
+  6. **Abstract over-claims:** five rewordings are listed in the resume point (not yet applied).
+- **Replication:** seed 2 saved by the queue: AnchorLoRA 2.6646 (114 s), starter 2.7547 (319 s). Paired 95 % CI at n = 3: [−0.111, −0.054].
+- **Pause (Supervisor 09:55).** Queue stopped at 09:50 right after seed 2 saved. `anchor_full` seed 3 had just started, so nothing was lost. No processes of ours are running. Code state committed with 13/13 tests. Resume point in *Now*. Idle.

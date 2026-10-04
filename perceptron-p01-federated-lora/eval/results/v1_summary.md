@@ -31,7 +31,7 @@ Model HuggingFaceTB/SmolLM2-135M, LoRA on q_proj, v_proj (r_max 16, α 32.0), 12
 
 | Strategy | seeds | macro ↓ | worst ↓ | weak-device gain ↑ | min rel. gain ↑ | c0 share | agg. error | max spike ↓ | upload MB (c0…c4) | wall s |
 |---|---|---|---|---|---|---|---|---|---|---|
-| FedAvg on A,B — rank 8 everywhere (starter baseline) | 0,1 | 2.7441 ± 0.0133 | 3.4379 ± 0.0276 | -0.1445 ± 0.0179 | -0.0634 ± 0.0085 | 1.0172 ± 0.0001 | 0.0559 ± 0.0013 | 0.0438 ± 0.0049 | 22.1 / 16.6 / 9.2 / 17.5 / 5.5 | 2880 |
+| FedAvg on A,B — rank 8 everywhere (starter baseline) | 0,1,2 | 2.7476 ± 0.0112 | 3.4524 ± 0.0318 | -0.1505 ± 0.0164 | -0.0679 ± 0.0098 | 1.0179 ± 0.0012 | 0.0571 ± 0.0023 | 0.0492 ± 0.0100 | 22.1 / 17.2 / 11.1 / 14.1 / 6.1 | 2026 |
 | FedAvg on A,B — device ranks, zero-padded (HetLoRA-style) | 0 | 2.7046 | 3.3599 | -0.0859 | -0.0392 | 1.0399 | 0.2544 | 0.0942 | 44.2 / 16.6 / 4.6 / 4.1 / 2.8 | 506 |
 | Frozen shared A, nested ranks, n_k weights (FFA-LoRA-style) | 0 | 2.7616 | 3.3847 | -0.1290 | -0.0668 | 0.9963 | 0.0000 | 0.0350 | 17.7 / 6.6 / 1.8 / 1.7 / 1.1 | 527 |
 | AnchorLoRA: + FedNova norm, macro weights, clip, memory, partial work | 0,1,2 | 2.6649 ± 0.0003 | 3.5142 ± 0.0018 | 0.0249 ± 0.0002 | 0.0039 ± 0.0010 | 0.2165 ± 0.0107 | 0.0000 ± 0.0000 | 0.0000 ± 0.0000 | 17.7 / 7.9 / 3.6 / 1.8 / 2.0 | 2418 |
@@ -40,7 +40,7 @@ Per-domain final loss (seed mean):
 
 | Strategy | wiki | pycode | cheaders | readmes | manpages |
 |---|---|---|---|---|---|
-| fedavg_ab_homo | 3.2678 | 2.5220 | 1.8719 | 2.6207 | 3.4379 |
+| fedavg_ab_homo | 3.2630 | 2.5265 | 1.8725 | 2.6236 | 3.4524 |
 | fedavg_ab_het | 3.2861 | 2.4821 | 1.8343 | 2.5604 | 3.3599 |
 | anchor_naive | 3.3654 | 2.5590 | 1.8849 | 2.6142 | 3.3847 |
 | anchor_full | 3.5142 | 2.3882 | 1.7599 | 2.4700 | 3.1923 |
@@ -51,5 +51,5 @@ Paired difference in final_macro_loss vs `fedavg_ab_homo` (same seed ⇒ identic
 |---|---|---|---|---|
 | fedavg_ab_het | 0 | -0.0301 | n = 1 (no CI) | s0: -0.0301 |
 | anchor_naive | 0 | +0.0270 | n = 1 (no CI) | s0: +0.0270 |
-| anchor_full | 0,1 | -0.0790 | [-0.1987, +0.0407] | s0: -0.0696, s1: -0.0884 |
+| anchor_full | 0,1,2 | -0.0827 | [-0.1109, -0.0544] | s0: -0.0696, s1: -0.0884, s2: -0.0900 |
 

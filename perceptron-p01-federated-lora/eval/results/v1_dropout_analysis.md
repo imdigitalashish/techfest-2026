@@ -11,6 +11,7 @@ Scenario `dropout`: device c4 (manpages) is offline in rounds 5–9 (1-based), o
 | fedavg_ab_het | 0 | `xxxo-----oo-` | r3: 3.2803 · r6: 3.3582 · r9: 3.5322 · r12: 3.3599 | +0.2992 | +0.1269 |
 | fedavg_ab_homo | 0 | `xxxo-----oo-` | r3: 3.3037 · r6: 3.4059 · r9: 3.4818 · r12: 3.4183 | +0.2488 | +0.1854 |
 | fedavg_ab_homo | 1 | `ox-o-----o--` | r3: 3.3124 · r6: 3.4156 · r9: 3.5172 · r12: 3.4574 | +0.2842 | +0.2244 |
+| fedavg_ab_homo | 2 | `oxxo-----o-o` | r3: 3.3051 · r6: 3.4000 · r9: 3.5382 · r12: 3.4814 | +0.3052 | +0.2484 |
 
 Rounds in which each device's work entered the aggregate (mean over seeds; + memory = rounds its last update was reused while absent):
 
@@ -19,7 +20,7 @@ Rounds in which each device's work entered the aggregate (mean over seeds; + mem
 | anchor_full | 12.0 | 10.7 + 1.0 | 9.7 + 2.0 | 10.0 + 2.0 | 5.3 + 5.7 |
 | anchor_naive | 12.0 | 9.0 | 5.0 | 9.0 | 3.0 |
 | fedavg_ab_het | 12.0 | 9.0 | 5.0 | 9.0 | 3.0 |
-| fedavg_ab_homo | 12.0 | 9.0 | 5.0 | 9.5 | 3.0 |
+| fedavg_ab_homo | 12.0 | 9.3 | 6.0 | 7.7 | 3.3 |
 
-Peak rise of the outage device's domain loss above the untuned model (mean over seeds): anchor_full -0.0210 (n=3); anchor_naive +0.1517 (n=1); fedavg_ab_het +0.2992 (n=1); fedavg_ab_homo +0.2665 (n=2)
+Peak rise of the outage device's domain loss above the untuned model (mean over seeds): anchor_full -0.0210 (n=3); anchor_naive +0.1517 (n=1); fedavg_ab_het +0.2992 (n=1); fedavg_ab_homo +0.2794 (n=3)
 

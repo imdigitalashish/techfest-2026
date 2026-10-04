@@ -144,18 +144,23 @@ class Anchor:
         return {k: (g["A"][k].clone(), g["B"][k].clone()) for k in g["A"]}
 
     def payload(self, view: LayerState, after: LayerState, rank: int) -> tuple[dict, int]:
-        nbytes = sum(4 * rank * B.shape[0] for _, B in after.values())
-        return {k: after[k][1] - view[k][1] for k in after}, nbytes
+        # only the device's own r_k columns of ΔB travel (A is regenerated from the seed); the server pads
+        out = {k: (after[k][1] - view[k][1])[:, :rank].contiguous() for k in after}
+        return out, sum(4 * v.numel() for v in out.values())
 
     @staticmethod
-    def _infer_rank(payload: dict) -> int:
-        """Highest non-zero B column + 1 (masked gradients leave columns >= r_k exactly zero)."""
-        r = 0
-        for v in payload.values():
-            nz = torch.nonzero(v.abs().sum(dim=0) > 0)
-            if nz.numel():
-                r = max(r, int(nz.max()) + 1)
-        return max(r, 1)
+    def _pad(payload: dict, ref: dict) -> dict:
+        """Zero-pad sliced ΔB_k [d_out, r_k] back to [d_out, r_max]; exact (masked columns are zero anyway)."""
+        out = {}
+        for k, v in payload.items():
+            full = ref[k]
+            if v.shape[1] == full.shape[1]:
+                out[k] = v
+            else:
+                z = torch.zeros_like(full)
+                z[:, : v.shape[1]] = v.to(full.device)
+                out[k] = z
+        return out
 
     def aggregate(self, g: dict, payloads: dict[str, dict], metas: dict[str, dict], t: int):
         g.setdefault("rank", {})
@@ -163,10 +168,9 @@ class Anchor:
         for c in sorted(payloads):
             g["n"][c] = metas[c]["n_examples"]
             g["tau"][c] = metas[c]["steps_done"] if self.tau_from == "actual" else metas[c]["planned_steps"]
-            if self.segment_norm:
-                g["rank"][c] = metas[c].get("rank") or self._infer_rank(payloads[c])
+            g["rank"][c] = next(iter(payloads[c].values())).shape[1]
             s = 1.0 / max(1, metas[c]["steps_done"]) if self.normalize == "nova" else 1.0
-            dirs[c] = {k: v * s for k, v in payloads[c].items()}
+            dirs[c] = {k: v * s for k, v in self._pad(payloads[c], g["B"]).items()}
         if self.clip_kappa is not None and len(dirs) >= 2:
             norms = {c: math.sqrt(sum(float((v * v).sum()) for v in d.values())) for c, d in dirs.items()}
             med = sorted(norms.values())[len(norms) // 2]
@@ -248,6 +252,9 @@ STRATEGIES: dict[str, Callable[[], object]] = {
                                       segment_norm=True),
     "anchor_full_sqrtn": lambda: Anchor(name="anchor_full_sqrtn", normalize="nova", weighting="sqrt_n",
                                         clip_kappa=2.0, memory=True, memory_max_age=4, accept_partial=True),
+    # attribution ablation (ADR 001 review 09:50): no step normalisation at all
+    "anchor_full_nonorm": lambda: Anchor(name="anchor_full_nonorm", normalize="none", weighting="uniform",
+                                         clip_kappa=2.0, memory=True, memory_max_age=4, accept_partial=True),
 }
 
 BASE_STRATEGIES = ["fedavg_ab_homo", "fedavg_ab_het", "anchor_naive", "anchor_full"]
