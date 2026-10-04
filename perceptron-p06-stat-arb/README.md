@@ -3,18 +3,22 @@
 Perceptron Hackathon 2026 (IIT Bombay × Optiver), Problem 6. Journal: [thought_node.md](thought_node.md). Spike decision: [ADR 001](architecture/adr/001-spike.md). Round-1 draft: [deliverables/round1-abstract.md](deliverables/round1-abstract.md).
 
 ## Reproduce (from this folder)
+Heavy steps go through `eval/run_guarded.sh`, which runs them under nice 10 and pauses them while system memory is low. Pinned environment: `requirements.lock`.
 ```bash
-uv venv .venv --python 3.11 && uv pip install --python .venv/bin/python -r pyproject.toml
-.venv/bin/python components/feed/fetch_tardis.py --dates 2026-09-01 2026-10-01      # free Tardis samples → .data/ (≈280 MB)
-.venv/bin/python -m pytest -q components/test_contracts.py                           # contract + behaviour tests
-.venv/bin/python -m eval.run_baseline --train 2026-09-01 --test 2026-10-01 \
-  --legs binance_BTCUSDT,binance-futures_BTCUSDT,coinbase_BTC-USD,okex_BTC-USDT,okex-swap_BTC-USDT-SWAP,bybit_BTCUSDT,kraken_BTC-USD,bitstamp_BTCUSD,deribit_BTC-PERPETUAL \
-  --tiers f0,f1,f2,f5 --out eval/results/baseline_0901_to_1001                       # decay report + latency frontier (~5 min on an M5)
-.venv/bin/python -m eval.plots eval/results/baseline_0901_to_1001.json               # figure
-.venv/bin/python -m components.decision.autoresearch.build_cells                     # ratchet data (cached in .cache/)
-.venv/bin/python -m components.decision.autoresearch.ratchet                         # ratchet loop → results.tsv
-.venv/bin/python components/feed/live_recorder.py --out .data/live --hours 1         # live 12-venue recorder
-.venv/bin/python -m eval.live_latency                                                # feed latency from this machine
+uv venv .venv --python 3.11 && uv pip install --python .venv/bin/python -r requirements.lock
+.venv/bin/python components/feed/fetch_tardis.py --dates 2026-09-01 2026-10-01                 # 9-leg days (baseline, decay)
+.venv/bin/python components/feed/fetch_tardis.py --set wf5 --dates 2025-10-01 2025-11-01 2025-12-01 2026-01-01 2026-02-01 \
+    2026-03-01 2026-04-01 2026-05-01 2026-06-01 2026-07-01 2026-08-01                            # walk-forward days (md5: eval/results/data_manifest_wf12.tsv)
+.venv/bin/python -m pytest -q components                                                       # contract, compiled-LEV and strict-simulator tests
+eval/run_guarded.sh .venv/bin/python -m eval.run_baseline --train 2026-09-01 --test 2026-10-01 --legs <9 legs> --tiers f0,f1,f2,f5 --out eval/results/baseline_0901_to_1001
+# PRE-REGISTERED primary test (eval/PREREGISTRATION-walkforward-12d.md; exact command inside)
+eval/run_guarded.sh .venv/bin/python -m eval.falsification walkforward --days <13 days> --out falsification_walkforward_12d_prereg --subset unseen7:<7 days>
+# Amendment 1 (strict fills, markouts, collisions, transfer, ablations)
+eval/run_guarded.sh .venv/bin/python -m eval.sensitivity --days <13 days> --subset unseen7:<7 days>
+eval/run_guarded.sh .venv/bin/python -m eval.decay_report --days <13 days>                     # decay: KM with CIs and publication-time bounds
+eval/run_guarded.sh .venv/bin/python -m eval.decision_timing                                    # compiled decision step p50/p99 (macOS: mach_absolute_time)
+.venv/bin/python -m eval.update_cadence && .venv/bin/python -m eval.latency_budget
+.venv/bin/python -m eval.headline && .venv/bin/python deliverables/render.py && .venv/bin/python eval/check_docs.py   # deliverables, drift check
 ```
 
 ## Layout
@@ -24,4 +28,4 @@ uv venv .venv --python 3.11 && uv pip install --python .venv/bin/python -r pypro
 - `research/` — `landscape.md`, `notes/`, `components/`.
 - `.data/`, `.cache/` — gitignored downloads, recordings and caches.
 
-All P&L figures are **simulated**. Assumptions are listed in each results file: pre-positioned inventory, IOC legs at top of book, order latency = feed latency = δ in sweeps, and uniform fee levels.
+All P&L figures are **simulated** (basis-adjusted execution surplus; markouts in Amendment 1). Assumptions are listed in each results file: pre-positioned inventory, IOC legs at top of book, order latency = feed latency = δ in sweeps, and uniform fee levels.
