@@ -30,6 +30,10 @@ def pct0(x):
     return f"{round(100 * x):.0f}"
 
 
+def sgn1(x):
+    return f"{x:.1f}".replace("-", "−")
+
+
 def inr(x):
     return f"{int(round(x)):,}"
 
@@ -45,30 +49,34 @@ def keys() -> dict[str, str]:
         k[f"fc_persist_r_{t}"] = f"{m['persistence']['all']['r']:.2f}"
         k[f"fc_persist_winter_{t}"] = f1(m["persistence"]["winter_nov_feb"]["MAE"])
         k[f"fc_cams_{t}"] = f1(m["cams_as_served_reference"]["all"]["MAE"])
-        best = max(v["skill_vs_persistence_MAE"] for kk, v in m.items() if kk.startswith("gbm"))
-        k[f"fc_gbm_best_gain_pct_{t}"] = pct0(best)
+        nf = ("gbm_level_no_future_met", "gbm_logratio_no_future_met")
+        best_nf = max(nf, key=lambda x: m[x]["skill_vs_persistence_MAE"])
+        k[f"fc_nofuture_best_pct_{t}"] = sgn1(100 * m[best_nf]["skill_vs_persistence_MAE"])
+        k[f"fc_nofuture_worst_pct_{t}"] = sgn1(100 * min(m[x]["skill_vs_persistence_MAE"] for x in nf))
+        k[f"fc_nofuture_best_winter_pct_{t}"] = sgn1(100 * m[best_nf]["winter_skill_vs_persistence_MAE"])
+        k[f"fc_oracle_pct_{t}"] = sgn1(100 * m["gbm_logratio_perfect_prog_met"]["skill_vs_persistence_MAE"])
+        k[f"fc_nofuture_mae_{t}"] = f1(m["gbm_logratio_no_future_met"]["all"]["MAE"])
+        k[f"fc_oracle_mae_{t}"] = f1(m["gbm_logratio_perfect_prog_met"]["all"]["MAE"])
         k[f"fc_persist_csi_{t}"] = f"{m['persistence']['all']['severe']['CSI']:.2f}"
-        k[f"fc_gbm_pp_csi_{t}"] = f"{m['gbm_logratio_perfect_prog_met']['all']['severe']['CSI']:.2f}"
-    rows = list(csv.DictReader(open(ROOT / "components" / "attribution" / "autoresearch" / "results.tsv"), delimiter="\t"))
-    v2 = {r["method"]: r for r in rows if r["timestamp_ist"] == "2026-10-04T09:47"}
-    short = {"pair_fixed": "pair", "ring": "ring", "ring_refcal": "refcal", "ring_selfcal": "selfcal"}
-    vals = {}
-    for meth, s in short.items():
-        r = v2[meth]
-        vals[s] = float(r["test_scalar_MAE"])
-        k[f"at_{s}"] = f1(vals[s])
-        k[f"at_dev_{s}"] = f"{float(r['dev_scalar_MAE']):.1f}"
-        k[f"at_csi_{s}"] = r["notes"].split("holdout CSI ")[1].split(";")[0]
-        for part in r["notes"].split(";")[-1].strip().split(" hard-rect ")[0:1]:
-            pass
-        sc = re.findall(r"(easy|medium|hard-rect|hard) (\d+\.\d)", r["notes"])
-        for name, val in sc:
-            k[f"at_{s}_{name.replace('-', '')}"] = val
-    k["at_cov"] = "0.95" if all("cov 0.95" in v2[m]["notes"] for m in ("ring", "ring_refcal", "ring_selfcal")) else "CHECK"
-    k["at_gain_selfcal_vs_refcal_pct"] = pct0(1 - vals["selfcal"] / vals["refcal"])
-    k["at_gain_selfcal_vs_ring_pct"] = pct0(1 - vals["selfcal"] / vals["ring"])
-    k["at_gain_ring_vs_pair_pct"] = pct0(1 - vals["ring"] / vals["pair"])
-    k["at_gain_selfcal_vs_pair_pct"] = pct0(1 - vals["selfcal"] / vals["pair"])
+    bd = json.loads((ROOT / "components" / "attribution" / "autoresearch" / "breakdown_v21.json").read_text())["methods"]
+    short = {"pair_fixed": "pair", "ring": "ring", "ring_refcal": "refcal", "ring_refcal14": "refcal14", "ring_selfcal": "selfcal"}
+    for meth, sh in short.items():
+        v = bd[meth]
+        k[f"at_{sh}"] = f1(v["mae_all"])
+        k[f"at_work_{sh}"] = f1(v["mae_work"])
+        k[f"at_diff_{sh}"] = f1(v["mae_diff_cov"])
+        k[f"at_csi_{sh}"] = f"{v['csi_gt50']:.2f}"
+        k[f"at_cov_{sh}"] = f"{v['coverage']:.2f}"
+        k[f"at_covwork_{sh}"] = f"{v['coverage_work']:.2f}"
+        k[f"at_pod_{sh}"] = f"{v['pod_gt50']:.3f}"
+        k[f"at_far_{sh}"] = f"{v['far_gt50']:.3f}"
+        for sc, val in v["per_scenario_mae_all"].items():
+            k[f"at_{sh}_{sc.replace('-', '')}"] = f1(val)
+    k["at_cov"] = k["at_cov_selfcal"]
+    k["at_gain_selfcal_vs_refcal14_pct"] = pct0(1 - bd["ring_selfcal"]["mae_all"] / bd["ring_refcal14"]["mae_all"])
+    k["at_gain_selfcal_vs_refcal_pct"] = pct0(1 - bd["ring_selfcal"]["mae_all"] / bd["ring_refcal"]["mae_all"])
+    k["at_gain_ring_vs_pair_pct"] = pct0(1 - bd["ring"]["mae_all"] / bd["pair_fixed"]["mae_all"])
+    k["at_gain_work_selfcal_vs_refcal14_pct"] = sgn1(100 * (1 - bd["ring_selfcal"]["mae_work"] / bd["ring_refcal14"]["mae_work"]))
     cw = json.loads((ROOT / "eval" / "results" / "calm_wind.json").read_text())
     k["calm_lt05_winter_pct"] = f1(100 * cw["nov_jan"]["share_lt_0_5"])
     k["calm_lt10_winter_pct"] = f1(100 * cw["nov_jan"]["share_lt_1_0"])
@@ -83,8 +91,6 @@ def keys() -> dict[str, str]:
     k["bom_gateway"] = inr(bt["by_subsystem_inr"]["gateway"])
     k["bom_actuator"] = inr(bt["by_subsystem_inr"]["actuator"])
     k["bom_wind_share_pct"] = pct0(bt["wind_share_of_total"])
-    k["bom_kit_vs_fine2l_pct"] = pct0(bt["kit_total_inr"] / 200000)  # yardstick: CAQM 2024 schedule, ₹1–2 lakh per site violation (fact F6)
-    k["bom_kit_vs_fine1l_pct"] = pct0(bt["kit_total_inr"] / 100000)
     rc = json.loads((ROOT / "deliverables" / "demo" / "ranking_check.json").read_text())
     k["demo_rho"] = f"{rc['spearman_rho']:.2f}"
     k["demo_top5"] = str(rc["top5_overlap"])

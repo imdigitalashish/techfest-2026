@@ -1,8 +1,10 @@
 """Doc-drift and claim-provenance check for the Round-1 deliverables. Exit code 1 on any problem.
 
 1. Drift: every rendered deliverable equals what eval/render_docs.py renders now from deliverables/src/ + committed results.
-2. Binding: in every {{v:ID|text}} placeholder, row ID exists in research/fact-check.md and each number in `text` appears in
-   that row (claim-level binding, not a file-wide match).
+2. Binding: in every {{v:ID|text}} placeholder, row ID exists in research/fact-check.md and each numeric token in `text`
+   equals a numeric token of that row (exact token match after removing thousands separators — not a substring match).
+   This is a binding/drift gate, NOT fact verification: whether a row is true is recorded in the row itself
+   (who opened the source, when, grade); run numbers are re-derived by components/attribution/autoresearch/breakdown_v21.py.
 3. Unmarked numbers: in the templates, every significant number (≥ 4 digits, a decimal, or a percentage) outside
    placeholders is flagged. Scoped exceptions: lines containing UNVERIFIED, years / ISO dates / year ranges, clock times,
    thresholds after ≥ ≤ < > ~, version strings (v2.1), units glued to a model/part name (ESP32-S3, SX1262, IN865).
@@ -20,10 +22,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from render_docs import OUT, PH, ROOT, SRC, TEMPLATES, render_all  # noqa: E402
 
 STALE = ["36.2 µg", "77.0 →", "77.0 µg", "33.8 ± 2.6", "97.8 ± 15.6", "58.0 ± 16.0", "−65 %", "-65%", "−42 %", "-42%", "65 %",
-         "tamper-proof", "can't be edited", "so clean sites can keep working", "close to its data limit", "24.1 µg/m³ (r 0.90", "₹5 lakh flat fine", "flat fine per violation", "flat ₹5 lakh"]
+         "tamper-proof", "can't be edited", "so clean sites can keep working", "close to its data limit", "24.1 µg/m³ (r 0.90", "₹5 lakh flat fine", "flat fine per violation", "flat ₹5 lakh", "adds at most", "at most 4%", "lower bound", "needs no permission",
+         "where nobody is", "every site, clean or dirty", "stops every site", "Run once by the lead", "held-out test once"]
 CURRENT = ["research/landscape.md", "architecture/components.md"]
-NUM = re.compile(r"(?<![\w.\-/])(\d{1,3}(?:,\d{2,3})+(?:\.\d+)?|\d+\.\d+|\d{4,}|\d+(?:\.\d+)?\s?%)(?![\w])")
-SKIP_BEFORE = re.compile(r"(≥|≤|<|>|~|±|v|×|§|Table|Figure|below|above|under|over|ESP|SX|IN|SHT|PMS|SDS|SPS|SEN|A|F|B|C|S)\s*$")
+NUM = re.compile(r"(₹\s?\d[\d,]*(?:\.\d+)?|(?<![\w.\-/])(?:\d{1,3}(?:,\d{2,3})+(?:\.\d+)?|\d+\.\d+|\d{4,}|\d+(?:\.\d+)?\s?%))(?![\w])")
+TOK = re.compile(r"\d[\d,]*(?:\.\d+)?")
+SKIP_BEFORE = re.compile(r"(≥|≤|<|>|~|±|v|×|§|Table|Figure|[Bb]elow|[Aa]bove|[Uu]nder|[Oo]ver|ESP|SX|IN|SHT|PMS|SDS|SPS|SEN|A|F|B|C|S)\s*$")
 
 
 def numbers(text: str) -> list[str]:
@@ -34,12 +38,22 @@ def norm(s: str) -> str:
     return s.replace("\u2009", " ").replace("–", "-").replace("−", "-").replace(" %", "%").replace(",", "")
 
 
-def fact_rows() -> dict[str, str]:
+def tokens(text: str) -> set[str]:
+    out = set()
+    for t in TOK.findall(text):
+        t = t.replace(",", "").rstrip(".")
+        out.add(t)
+        if "." in t:
+            out.add(t.rstrip("0").rstrip("."))
+    return out
+
+
+def fact_rows() -> dict[str, set[str]]:
     rows = {}
     for line in (ROOT / "research" / "fact-check.md").read_text().splitlines():
         m = re.match(r"^\|\s*(F\d+)\s*\|(.*)$", line)
         if m:
-            rows[m.group(1)] = norm(m.group(2))
+            rows[m.group(1)] = tokens(m.group(2))
     return rows
 
 
@@ -63,9 +77,9 @@ def main() -> int:
             if fid not in rows:
                 problems.append(f"BIND {name}: unknown fact row {fid}")
                 continue
-            for n in numbers(text) + re.findall(r"\d+", text):
-                if norm(n) not in rows[fid]:
-                    problems.append(f"BIND {name}: '{n}' in {{{{v:{fid}|{text}}}}} not found in fact row {fid}")
+            for n in sorted(tokens(text)):
+                if n not in rows[fid]:
+                    problems.append(f"BIND {name}: '{n}' in {{{{v:{fid}|{text}}}}} is not a numeric token of fact row {fid}")
         for i, line in enumerate(src.splitlines(), 1):
             if "UNVERIFIED" in line:
                 continue
@@ -89,9 +103,15 @@ def main() -> int:
         for s in STALE:
             if s in text:
                 problems.append(f"STALE {rel}: contains superseded '{s}'")
+    import csv as _csv, json as _json
+    bd = _json.loads((ROOT / "components" / "attribution" / "autoresearch" / "breakdown_v21.json").read_text())["methods"]
+    for r in _csv.DictReader(open(ROOT / "components" / "attribution" / "autoresearch" / "results.tsv"), delimiter="\t"):
+        if r["timestamp_ist"] == "2026-10-04T09:47" and r["method"] in bd:
+            if abs(float(r["test_scalar_MAE"]) - bd[r["method"]]["mae_all"]) > 0.011:
+                problems.append(f"LEDGER results.tsv {r['method']}: {r['test_scalar_MAE']} != breakdown_v21.json {bd[r['method']]['mae_all']}")
     memo = tn.split("## Selection memo", 1)[-1].split("\n## ", 1)[0]
     k = __import__("render_docs").keys()
-    for key in ["at_pair", "at_ring", "at_selfcal", "at_gain_selfcal_vs_refcal_pct", "bom_kit", "pw_load", "pw_margin", "calm_lt10_winter_pct"]:
+    for key in ["at_pair", "at_ring", "at_selfcal", "at_refcal14", "at_work_selfcal", "bom_kit", "pw_load", "pw_margin", "calm_lt05_winter_pct", "at_far_selfcal", "at_far_refcal14", "at_work_refcal14"]:
         if k[key] not in memo:
             problems.append(f"MEMO thought_node.md Selection memo: run number {key} = {k[key]} not found (memo out of date?)")
     for p in problems:

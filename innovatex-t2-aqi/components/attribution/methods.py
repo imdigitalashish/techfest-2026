@@ -67,4 +67,17 @@ def ring_refcal(obs, geom):
     return _ring(cal, obs, geom)
 
 
-METHODS = {"pair_fixed": pair_fixed, "ring": ring, "ring_selfcal": ring_selfcal, "ring_refcal": ring_refcal}
+def ring_refcal14(obs, geom):
+    """Stronger reference baseline (gpt-6-sol review, 4 Oct): causal 14-day median of past weekly reference-visit gains."""
+    cal = {}
+    for n in NODES:
+        col = f"refvisit_{n}"
+        if col in obs:
+            g = obs[col].shift(1).rolling("14D", min_periods=1).median().ffill().fillna(1.0).clip(0.2, 5.0)
+        else:
+            g = pd.Series(1.0, index=obs.index)
+        cal[n] = (obs[f"raw_{n}"] / g).values
+    return _ring(cal, obs, geom)
+
+
+METHODS = {"pair_fixed": pair_fixed, "ring": ring, "ring_selfcal": ring_selfcal, "ring_refcal": ring_refcal, "ring_refcal14": ring_refcal14}

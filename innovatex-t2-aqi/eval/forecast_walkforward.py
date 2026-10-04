@@ -69,6 +69,10 @@ def run(target):
     return out
 
 
+def f2(x):
+    return "  NA" if x is None else f"{x:.2f}"
+
+
 def main():
     res = {"stations": STATIONS, "results": [run("pm25"), run("pm10")]}
     with open(os.path.join(HERE, "results", "forecast_walkforward.json"), "w") as fh:
@@ -79,7 +83,7 @@ def main():
         for k, v in r["models"].items():
             a, w, s = v["all"], v["winter_nov_feb"], v["all"]["severe"]
             print(f"{k:32s} {a['MAE']:6.1f} {a['RMSE']:6.1f} {a['r']:5.2f} {v['skill_vs_persistence_MAE']:6.2f} | "
-                  f"{w['MAE']:5.1f} {v['winter_skill_vs_persistence_MAE']:6.2f} | {s['POD']:.2f} {s['FAR']:.2f} {s['CSI']:.2f} (ev={s['events']})")
+                  f"{w['MAE']:5.1f} {v['winter_skill_vs_persistence_MAE']:6.2f} | {f2(s['POD'])} {f2(s['FAR'])} {f2(s['CSI'])} (ev={s['events']})")
 
 
 if __name__ == "__main__":

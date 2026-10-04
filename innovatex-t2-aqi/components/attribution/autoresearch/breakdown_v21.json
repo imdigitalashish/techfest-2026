@@ -1,0 +1,111 @@
+{
+ "config": {
+  "period": [
+   "2026-01-01",
+   "2026-09-30"
+  ],
+  "seeds": [
+   9101,
+   9102,
+   9103,
+   9104,
+   9105
+  ],
+  "scenarios": [
+   "easy",
+   "medium",
+   "hard",
+   "hard-rect"
+  ],
+  "exceed": 50.0,
+  "blind": false,
+  "note": "fresh seeds, not blind (see docstring)"
+ },
+ "methods": {
+  "pair_fixed": {
+   "mae_all": 95.84,
+   "mae_work": 193.06,
+   "mae_diff_cov": 91.98,
+   "coverage": 1.0,
+   "coverage_work": 1.0,
+   "csi_gt50": 0.292,
+   "pod_gt50": 0.396,
+   "far_gt50": 0.343,
+   "csi_gt50_work": 0.355,
+   "per_scenario_mae_all": {
+    "easy": 80.13,
+    "medium": 95.38,
+    "hard": 101.92,
+    "hard-rect": 105.91
+   }
+  },
+  "ring": {
+   "mae_all": 69.12,
+   "mae_work": 124.9,
+   "mae_diff_cov": 60.07,
+   "coverage": 0.952,
+   "coverage_work": 0.962,
+   "csi_gt50": 0.509,
+   "pod_gt50": 0.659,
+   "far_gt50": 0.316,
+   "csi_gt50_work": 0.588,
+   "per_scenario_mae_all": {
+    "easy": 43.6,
+    "medium": 57.77,
+    "hard": 81.79,
+    "hard-rect": 93.32
+   }
+  },
+  "ring_refcal": {
+   "mae_all": 69.43,
+   "mae_work": 119.59,
+   "mae_diff_cov": 60.88,
+   "coverage": 0.952,
+   "coverage_work": 0.962,
+   "csi_gt50": 0.537,
+   "pod_gt50": 0.704,
+   "far_gt50": 0.327,
+   "csi_gt50_work": 0.624,
+   "per_scenario_mae_all": {
+    "easy": 41.32,
+    "medium": 53.12,
+    "hard": 86.05,
+    "hard-rect": 97.23
+   }
+  },
+  "ring_refcal14": {
+   "mae_all": 64.92,
+   "mae_work": 115.05,
+   "mae_diff_cov": 56.09,
+   "coverage": 0.952,
+   "coverage_work": 0.962,
+   "csi_gt50": 0.552,
+   "pod_gt50": 0.707,
+   "far_gt50": 0.305,
+   "csi_gt50_work": 0.629,
+   "per_scenario_mae_all": {
+    "easy": 38.65,
+    "medium": 50.28,
+    "hard": 77.54,
+    "hard-rect": 93.19
+   }
+  },
+  "ring_selfcal": {
+   "mae_all": 57.43,
+   "mae_work": 115.77,
+   "mae_diff_cov": 47.61,
+   "coverage": 0.952,
+   "coverage_work": 0.962,
+   "csi_gt50": 0.605,
+   "pod_gt50": 0.676,
+   "far_gt50": 0.145,
+   "csi_gt50_work": 0.624,
+   "per_scenario_mae_all": {
+    "easy": 36.46,
+    "medium": 45.23,
+    "hard": 66.7,
+    "hard-rect": 81.33
+   }
+  }
+ }
+}

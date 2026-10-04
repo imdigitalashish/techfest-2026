@@ -18,4 +18,4 @@ Open `dustledger-demo.html` in any browser (double-click). It needs **no interne
 1. *(0–10 s, left)* "Real data: Delhi's monitors this winter. A fence-line sensor mostly sees this background."
 2. *(10–35 s, right)* "Six simulated sites on a real Delhi week. The ring ranks them by their own dust; the inspector starts at the top. Nearly a quarter of this calm week is 'inconclusive' — we don't guess."
 3. *(35–50 s, click Show truth)* "Here's where we're wrong: we under-read calm hours, and the two cleanest sites swap places. That's why DPCC verifies before any penalty."
-4. *(50–60 s)* "Misting runs only when the site is the cause — here fewer hours than a timer for most sites. Whether that cuts dust is what our November trial measures."
+4. *(50–60 s)* "Misting runs only when the estimate says the site is adding dust — here fewer hours than a timer for most sites. Whether that cuts dust is what our November trial measures."

@@ -94,8 +94,10 @@ def metrics(y, yhat, target):
     for name, thr in (("severe", SEVERE[target]), ("very_poor_plus", VERY_POOR[target])):
         obs, fc = y > thr, yhat > thr
         hits, misses, fa = int((obs & fc).sum()), int((obs & ~fc).sum()), int((~obs & fc).sum())
-        m[name] = {"thr": thr, "events": int(obs.sum()), "POD": hits / max(1, hits + misses),
-                   "FAR": fa / max(1, hits + fa), "CSI": hits / max(1, hits + misses + fa)}
+        m[name] = {"thr": thr, "events": int(obs.sum()), "predicted": int(fc.sum()),
+                   "POD": hits / (hits + misses) if hits + misses else None,
+                   "FAR": fa / (hits + fa) if hits + fa else None,  # undefined when nothing is predicted
+                   "CSI": hits / (hits + misses + fa) if hits + misses + fa else None}
     return m
 
 
@@ -132,6 +134,10 @@ def run(target):
     return out
 
 
+def f2(x):
+    return "  NA" if x is None else f"{x:.2f}"
+
+
 def main():
     res = {"stations": STATIONS, "data": {"openaq": "s3://openaq-data-archive (public, unsigned)",
                                           "era5": "archive-api.open-meteo.com", "cams": "air-quality-api.open-meteo.com"},
@@ -146,7 +152,7 @@ def main():
             a, w = v["all"], v["winter_oct_feb"]
             s = a["severe"]
             print(f"{k:28s} {a['MAE']:6.1f} {a['RMSE']:6.1f} {a['r']:5.2f} {v['skill_vs_persistence_MAE']:6.2f} | "
-                  f"{s['POD']:.2f} {s['FAR']:.2f} {s['CSI']:.2f} (ev={s['events']}) | {w['MAE']:6.1f}")
+                  f"{f2(s['POD'])} {f2(s['FAR'])} {f2(s['CSI'])} (ev={s['events']}) | {w['MAE']:6.1f}")
 
 
 if __name__ == "__main__":

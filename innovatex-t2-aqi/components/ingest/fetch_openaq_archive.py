@@ -4,7 +4,8 @@ Archive layout (verified 2026-10-04): records/csv.gz/locationid={id}/year={yyyy}
 Columns: location_id, sensors_id, location, datetime (local ISO with offset), lat, lon, parameter, units, value.
 
 Writes one parquet per station to <out>/station_<id>.parquet with hourly means (IST, hour-beginning),
-plus <out>/manifest.json (files fetched, rows, failures). Raw files are not kept.
+plus <out>/manifest.json (files fetched, rows, failures, complete flag). Raw files are not kept.
+Refuses to average PM values with unexpected units; warns (and marks complete=false) on any failed listing or file.
 
 Usage:
   python fetch_openaq_archive.py --stations stations_delhi.csv --start 2023-10-01 --end 2026-09-30 \
@@ -80,6 +81,7 @@ def main():
         t0 = time.time()
         with ThreadPoolExecutor(a.workers) as ex:
             key_lists = list(ex.map(lambda ym: list_keys(s, loc, *ym), month_iter(start, end)))
+        failed_listings = sum(kl is None for kl in key_lists)  # a failed listing must not look like "no data"
         keys = [k for kl in key_lists if kl for k in kl
                 if a.start.replace("-", "") <= re.search(r"-(\d{8})\.csv\.gz$", k).group(1) <= a.end.replace("-", "")]
         with ThreadPoolExecutor(a.workers) as ex:
@@ -91,6 +93,9 @@ def main():
             print(f"{loc}: no data", file=sys.stderr)
             continue
         df = pd.concat(parts, ignore_index=True)
+        pm_units = set(df.loc[df["parameter"].isin(["pm25", "pm10"]), "units"].astype(str))
+        if pm_units - {"µg/m³", "ug/m3", "μg/m³"}:
+            raise ValueError(f"station {loc}: unexpected PM units {pm_units}; refusing to average mixed units")
         # Timestamps carry +05:30; convert to naive IST and floor to the hour (hour-beginning convention).
         ts = pd.to_datetime(df["datetime"], utc=True).dt.tz_convert("Asia/Kolkata").dt.tz_localize(None)
         df["hour"] = ts.dt.floor("h")
@@ -100,7 +105,12 @@ def main():
         hourly = df.pivot_table(index="hour", columns="parameter", values="value", aggfunc="mean").sort_index()
         hourly.columns.name = None
         hourly.to_parquet(out_path)
-        manifest["stations"][loc] = {"files": len(keys), "failed": failed, "rows": int(len(hourly)),
+        complete = failed == 0 and failed_listings == 0
+        if not complete:
+            print(f"WARNING {loc}: incomplete download ({failed} failed files, {failed_listings} failed listings); "
+                  f"delete {out_path} and re-run to retry", file=sys.stderr)
+        manifest["stations"][loc] = {"files": len(keys), "failed": failed, "failed_listings": failed_listings,
+                                     "complete": complete, "rows": int(len(hourly)),
                                      "first": str(hourly.index.min()), "last": str(hourly.index.max()), "units": units,
                                      "seconds": round(time.time() - t0, 1)}
         print(f"{loc}: {len(keys)} files, {failed} failed, {len(hourly)} hourly rows, {time.time()-t0:.0f}s", file=sys.stderr)

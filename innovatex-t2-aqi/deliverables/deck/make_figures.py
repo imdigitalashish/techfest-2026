@@ -17,7 +17,7 @@ def fig_forecast():
     r = json.load(open(os.path.join(ROOT, "eval", "results", "forecast_walkforward.json")))
     pm25 = next(x for x in r["results"] if x["target"] == "pm25")
     keys = ["persistence", "gbm_logratio_no_future_met", "gbm_logratio_perfect_prog_met", "cams_as_served_reference"]
-    labels = ["Yesterday's value\n(persistence)", "ML (gradient boosting)\n+ today's weather", "ML + tomorrow's\nweather (upper bound)", "Global model\n(CAMS, as served)"]
+    labels = ["Yesterday's value\n(persistence)", "ML, no future weather\n(retrospective ERA5)", "ML + tomorrow's actual\nweather (ORACLE)", "Global model, one grid\npoint (CAMS, as served)"]
     vals = [pm25["models"][k]["all"]["MAE"] for k in keys]
     fig, ax = plt.subplots(figsize=(10, 5.2))
     bars = ax.bar(labels, vals, color=[ACCENT, GREY, GREY, WARN])
@@ -31,20 +31,24 @@ def fig_forecast():
 
 
 def fig_attribution():
-    rows = list(csv.DictReader(open(os.path.join(ROOT, "components", "attribution", "autoresearch", "results.tsv")), delimiter="\t"))
-    v2 = {r["method"]: r for r in rows if r["timestamp_ist"] == "2026-10-04T09:47"}
-    keys = ["pair_fixed", "ring", "ring_refcal", "ring_selfcal"]
-    labels = ["Fixed upwind/\ndownwind pair", "Wind-resolved\nring", "Ring + weekly\nreference visits", "Ring + idle-hour\nself-calibration"]
-    vals = [float(v2[k]["test_scalar_MAE"]) for k in keys]
-    csi = [float(v2[k]["notes"].split("holdout CSI ")[1].split(";")[0]) for k in keys]
-    fig, ax = plt.subplots(figsize=(10, 5.2))
-    bars = ax.bar(labels, vals, color=[GREY, GREY, GREY, ACCENT])
-    for b, m, c in zip(bars, vals, csi):
-        ax.text(b.get_x() + b.get_width() / 2, m + 2, f"{m:.1f}\nevent CSI {c:.2f}", ha="center", fontsize=12, color=INK)
+    bd = json.load(open(os.path.join(ROOT, "components", "attribution", "autoresearch", "breakdown_v21.json")))["methods"]
+    keys = ["pair_fixed", "ring", "ring_refcal", "ring_refcal14", "ring_selfcal"]
+    labels = ["Fixed upwind/\ndownwind pair", "Wind-resolved\nring", "Ring + weekly\nreference visit", "Ring + 14-day median\nof reference visits", "Ring + idle-hour\nself-calibration"]
+    allh = [bd[k]["mae_all"] for k in keys]
+    work = [bd[k]["mae_work"] for k in keys]
+    x = np.arange(len(keys)); wdt = 0.38
+    fig, ax = plt.subplots(figsize=(11, 5.2))
+    b1 = ax.bar(x - wdt / 2, allh, wdt, color=[GREY] * 4 + [ACCENT], label="all hours (abstentions scored 0)")
+    b2 = ax.bar(x + wdt / 2, work, wdt, color="white", edgecolor=[GREY] * 4 + [ACCENT], hatch="//", label="work hours only (08–18, Mon–Sat)")
+    for b, v in list(zip(b1, allh)) + list(zip(b2, work)):
+        ax.text(b.get_x() + b.get_width() / 2, v + 2, f"{v:.1f}", ha="center", fontsize=11, color=INK)
+    ax.set_xticks(x, labels)
     ax.set_ylabel("Error in the site's own PM10, µg/m³ (MAE)")
-    ax.set_ylim(0, max(vals) * 1.3)
-    ax.set_title("Stress-tested replay: held-out Jan–Sep 2026, unseen seeds, 4 scenarios incl. an unseen site shape", fontsize=12)
-    fig.text(0.01, 0.01, "REAL background PM10 (CPCB monitor) + REAL ERA5 wind; SIMULATED site, plumes, sensors and faults. autoresearch/eval_v2.py (v2.1)", fontsize=9, color=WARN)
+    ax.set_ylim(0, max(work + allh) * 1.18)
+    ax.legend(frameon=False, fontsize=11, loc="upper right")
+    ax.set_title("Simulated sites on real Delhi background + wind · held-out Jan–Sep 2026, fresh seeds (not blind)", fontsize=12)
+    fig.text(0.01, 0.01, "REAL background PM10 (CPCB monitor) + REAL ERA5 wind; SIMULATED site, plumes, sensors and faults. "
+             "eval_v2.py v2.1 via breakdown_v21.py; abstain below 0.5 m/s", fontsize=9, color=WARN)
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     fig.savefig(os.path.join(HERE, "fig_attribution.png"), dpi=200)
 
