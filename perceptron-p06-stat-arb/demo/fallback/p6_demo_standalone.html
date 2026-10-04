@@ -294,7 +294,7 @@ window.addEventListener("unhandledrejection", e => window.__p6errors.push(String
     CV[id] = { c, ctx, W, H: Hh };
   }
   function layout() {
-    const st = S.view === "stage", a = st ? { pent: S.step === 2 ? 0.56 : 0.46, clocks: 0.22, front: 0.52 } : { pent: 0.56, clocks: 0.27, front: 0.46 };
+    const st = S.view === "stage", a = st ? { pent: S.step === 2 ? 0.49 : 0.46, clocks: 0.22, front: 0.52 } : { pent: 0.56, clocks: 0.27, front: 0.46 };
     fit("pent", a.pent); fit("clocks", a.clocks); fit("front", a.front); fit("scrub", 0.07); drawScrub(); drawFront();
   }
 
@@ -535,7 +535,7 @@ window.addEventListener("unhandledrejection", e => window.__p6errors.push(String
   const lastIdx = (q, t) => { let lo = 0, hi = q.n - 1, j = -1; while (lo <= hi) { const m = (lo + hi) >> 1; if (q.t[m] <= t) { j = m; lo = m + 1; } else hi = m - 1; } return j; };
 
   // pentagon layout: Coinbase on top; same-exchange legs adjacent
-  const NR = 46;
+  let NR = 46;   // node radius; scaled with the canvas height in drawPent
   const ORDER = ["coinbase:BTC-USD", "binance:BTCUSDT", "binance-futures:BTCUSDT", "okex-swap:BTC-USDT-SWAP", "okex:BTC-USDT"];
   function nodePos(W, Hh) {
     const cx = W * 0.5, cy = Hh * 0.48, r = Math.min(W * 0.34, Hh * 0.33);
@@ -544,6 +544,8 @@ window.addEventListener("unhandledrejection", e => window.__p6errors.push(String
   }
   function drawPent() {
     const cv = CV.pent; if (!cv) return; const { ctx, W, H: Hh } = cv; ctx.clearRect(0, 0, W, Hh);
+    NR = Math.max(30, Math.min(46, Hh * 0.115));
+    const fs = k => `${Math.round(NR * k)}px -apple-system, sans-serif`;
     const pos = nodePos(W, Hh), candSet = CIDX[S.fee], R = S.race, inRace = racing(), tgt = inRace && R.target;
     for (const i of active) {
       const isT = tgt && tgt.opp === E.opp_id[i] && R.state === "flash";
@@ -560,22 +562,24 @@ window.addEventListener("unhandledrejection", e => window.__p6errors.push(String
       if (isC || isT) { ctx.globalAlpha = fade; ctx.fillStyle = isT ? "#ffd23f" : "#ffcf8a"; ctx.font = "bold 12px -apple-system, sans-serif"; ctx.fillText(`+${e.toFixed(1)} bp`, qx - 18, qy - 4); }
       ctx.globalAlpha = 1;
     }
-    ctx.font = "600 13px -apple-system, sans-serif";
     LEGS.forEach((l, i) => {
       const q = Q[i], j = lastIdx(q, S.t);
       if (j !== q.last) { if (j > q.last && q.last >= 0) q.pulse = 1; q.last = j; }
       const [x, y] = pos[i], perp = l.includes("futures") || l.includes("SWAP");
       if (q.pulse > 0.02) { ctx.beginPath(); ctx.arc(x, y, NR + 2 + 10 * (1 - q.pulse), 0, Math.PI * 2); ctx.strokeStyle = `rgba(62,230,160,${q.pulse})`; ctx.lineWidth = 2; ctx.stroke(); q.pulse *= 0.86; }
       ctx.beginPath(); ctx.arc(x, y, NR, 0, Math.PI * 2); ctx.fillStyle = "#0f1628"; ctx.fill(); ctx.strokeStyle = perp ? "#b58bff" : "#4aa8ff"; ctx.lineWidth = 2; ctx.stroke();
-      ctx.fillStyle = "#e8edf7"; ctx.textAlign = "center"; ctx.fillText(NAME[l], x, y - 6);
-      ctx.font = "12px -apple-system, sans-serif"; ctx.fillStyle = "#93a1bd";
-      ctx.fillText(j >= 0 ? ((q.bid[j] + q.ask[j]) / 2).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—", x, y + 10);
-      ctx.fillStyle = "#5b6886"; ctx.font = "11px -apple-system, sans-serif"; ctx.fillText(QUOTE_CCY(l), x, y + 24);
-      ctx.fillText(`publishes every ~${cadence(l) >= 10 ? cadence(l).toFixed(0) : cadence(l).toFixed(1)} ms`, x, y + NR + 14);
-      ctx.textAlign = "left"; ctx.font = "600 13px -apple-system, sans-serif";
+      ctx.fillStyle = "#e8edf7"; ctx.textAlign = "center"; ctx.font = "600 " + fs(0.28); ctx.fillText(NAME[l], x, y - NR * 0.13);
+      ctx.font = fs(0.26); ctx.fillStyle = "#93a1bd";
+      ctx.fillText(j >= 0 ? ((q.bid[j] + q.ask[j]) / 2).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—", x, y + NR * 0.22);
+      ctx.fillStyle = "#5b6886"; ctx.font = fs(0.24); ctx.fillText(QUOTE_CCY(l), x, y + NR * 0.52);
+      ctx.font = "11px -apple-system, sans-serif";
+      ctx.fillText(`every ~${cadence(l) >= 10 ? cadence(l).toFixed(0) : cadence(l).toFixed(1)} ms`, x, y + NR + 13);
+      ctx.textAlign = "left";
     });
     ctx.fillStyle = "#5b6886"; ctx.font = "11px -apple-system, sans-serif";
-    ctx.fillText(inRace ? "race: press SPACE when the yellow flash appears" : "arrow = buy at the tail venue, sell at the head venue · orange = net edge > 0 after fees · ring = a quote was published", 10, Hh - 8);
+    const legend = ["arrow = buy at the tail venue, sell at the head · orange = net edge > 0 after fees · ring = a quote was published · every ~N ms = median publication gap",
+      "arrow: buy tail, sell head · orange: beats fees · ring: quote published · every ~N ms: median gap"].find(t => ctx.measureText(t).width < W - 20) || "orange: beats fees · ring: quote published";
+    ctx.fillText(inRace ? "race: press SPACE when the yellow flash appears" : legend, 10, Hh - 8);
     ctx.fillText(`${active.filter(i => S.t < eE[i]).length} open now`, 10, 16);
   }
   function arrowHead(ctx, fx, fy, x, y, c, s) {
