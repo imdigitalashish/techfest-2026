@@ -55,3 +55,26 @@ cd perceptron-p06-stat-arb && eval/run_guarded.sh .venv/bin/python -m eval.falsi
   --subset unseen7:2025-11-01,2025-12-01,2026-01-01,2026-02-01,2026-03-01,2026-04-01,2026-05-01
 ```
 Outputs go to `eval/results/falsification_walkforward_12d_prereg.{md,json}`; the result is reported whatever it is.
+
+---
+## Amendment 1 — sensitivity analyses prompted by the cross-model reviews (registered 2026-10-04 14:46 IST, before any of them is run)
+The primary result above is unchanged and stays primary: `falsification_walkforward_12d_prereg`, commit 340d4df, 12/12 days with both lower bounds > 0.
+
+The reviews `reviews/2026-10-04-spike-adr-gpt-6-astra.md` (P6-01, 02, 06, 08, 09) and the code review (gpt-6-sol, TASK A) raise threats that could produce LEV's uplift as an artefact. The following analyses will be implemented in **new** modules (`components/sim/strict.py`, `eval/sensitivity.py`); the frozen files are not edited. They use the same 13 days, 5 legs, detection, candidates, cells, policies and statistics as the primary test, and are reported whatever they show.
+
+- **S1 Strict execution (adverse missing-state bound).**
+  - Each leg fills against the first quote published at or after its arrival, not the last one before it.
+  - No fill if that quote is more than 1 s after arrival.
+  - Intents whose displayed size at detection is 0 are not sent.
+  - Outcomes are labelled from filled quantities.
+  - Unwinds also use the first quote at or after the unwind time.
+  - The frozen basis-adjusted mark is kept.
+- **S2 Markout accounting.** On top of S1, matched positions are marked at the mid of the first quote at or after arrival + H, for H ∈ {1 s, 10 s}, instead of the EWMA basis. Fees and unwinds are unchanged.
+- **S3 Shared liquidity.** For each policy and cell, flag selected intents whose leg hits a (venue, side, quote) already hit by an earlier selected intent of the same policy. Report the flagged share and their P&L, and recompute totals with flagged intents dropped.
+- **S4 Extra baselines and ablations:**
+  - ridge regression on the LEV features (same clipped target);
+  - LEV with clipping widened to ±1000 bps (effectively unclipped);
+  - transfer: policies trained on the frozen labels (day i−1), scored on strict outcomes (day i).
+- **Worlds.** V1 = S1, basis mark. V2 = S1 + 1 s markout. V3 = S1 + 10 s markout. V4 = transfer. In V1–V3, policies are trained and scored on that world's labels.
+- **Decision.** The primary claim is called **robust** only if LEV − tuned threshold keeps both 95% lower bounds > 0 in V1 **and** V2. Otherwise the primary claim is reported as **dependent on the frozen simulator's optimistic fills or basis marking**.
+- **Wording.** The frozen metric is renamed in all deliverables to **"basis-adjusted simulated execution surplus"** (P6-01); the day score is described as a **sum over six fee/latency scenarios** (P6-05). The 12 days are described as "12 sampled months, 5 previously inspected", with the unseen-7 subset alongside (P6-03).
