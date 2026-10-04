@@ -60,6 +60,10 @@ def season_forecast(year: int) -> dict:
         out["max_tide"][d] = tide[t0:t0 + 24].max(0)
         a = IC.access_factor(v[:24], lev[:24], r[:24], p1)
         out["access"][d, : a.shape[0]] = a
+    # Ablation input (P2_nofc): predicted access from the harmonic tide and dry-weather base flow only, no rain forecast
+    lev_t, v_t = HY.flow_state(np.broadcast_to(qb, tide.shape), tide, dtide, p1)
+    acc_t = IC.access_factor(v_t, lev_t, np.zeros_like(tide), p1)
+    out["access_tide"] = acc_t[: nd * 24].reshape(nd, 24, S)
     out["capacity_kg"] = p1["capacity_kg"]
     out["clear_rate"] = float(p1["clear_rate_kg_h"][0])
     out["t"] = ph["t"]

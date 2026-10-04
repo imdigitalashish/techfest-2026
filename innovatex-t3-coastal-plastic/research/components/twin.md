@@ -8,8 +8,8 @@ Code: [`components/twin_sim/`](../../components/twin_sim/README.md). All web sou
 |---|---|---|
 | Site coordinates | REAL (OSM) | Overpass API `way[waterway][name~"Mithi\|Dahisar\|Oshiwara\|…"](18.88,72.75,19.32,73.05); out geom;`. The downstream end node of the named way is used, because OSM waterways are drawn in the direction of flow. Ways used: [420108354](https://www.openstreetmap.org/way/420108354) (Mithi), [257443428](https://www.openstreetmap.org/way/257443428) (Oshiwara), [420108348](https://www.openstreetmap.org/way/420108348) (Dahisar). Trombay: Nominatim `q=Trombay` gave node [1366794662](https://www.openstreetmap.org/node/1366794662) (a bus station), used as an **approximate** anchor for a creek-shore nullah outfall. Nominatim found no "Mahim Creek" or "Mahul Creek" objects. |
 | Hourly rain 2019–2025 (Jun–Sep) | REAL (ERA5 reanalysis) | `https://archive-api.open-meteo.com/v1/archive?latitude=…&longitude=…&start_date=2019-06-01&end_date=2025-09-30&hourly=precipitation&models=era5&timezone=UTC`. The fetched seasons have no gaps. |
-| Day-ahead rain forecast | REAL archived NWP | Open-Meteo Previous Runs API, `hourly=precipitation_previous_day1&models=jma_gsm` (the run issued one day earlier). Our ASSUMPTION about `previous_day1` semantics, not verified in the API docs: for hours t0..t0+23 the value comes from runs issued before the 00 UTC decision at t0, so only those 24 hours are used. Probes for 15 Jul 2019: `jma_gsm` had data; `ecmwf_ifs025`, `gfs_seamless` and `best_match` `previous_day1` were empty. `ecmwf_ifs025` did have data on 15 Jul 2024. JMA GSM was chosen because it is the only model probed that covers both the tuning and held-out years. Skill at Mithi, daily totals over Jun–Sep 2019–2025: correlation with ERA5 0.658, total bias ×1.02 (computed from the committed `data/forcing_jjas.csv.gz`). The Historical Forecast API was **not checked**: the docs fetch timed out. |
-| Tide | REAL model data → harmonic prediction | Open-Meteo Marine API `hourly=sea_level_height_msl`. Probe at 19.04 N 72.80 E, July 2025: clear semidiurnal signal, daily ranges 1.67–3.99 m (neap to spring). The series is empty for 2019, 2021 and mid-2022 probes; the first value is 2022-11-23. We therefore fitted constituents with the `utide` Python package (v0.4.0; OLS, nodal corrections, 2022-11-23 → 2025-09-30, 24,600 h) and predicted 2019–2025. Fit: variance explained 0.992–0.993, RMSE 0.078–0.080 m. M2 is 1.06–1.16 m and S2 0.43–0.46 m (`data/tide_fit.json`). UHSLC was **not checked** (time). This is a model sea level, not a tide gauge. |
+| Day-ahead rain forecast | REAL archived NWP | Open-Meteo Previous Runs API, `hourly=precipitation_previous_day1&models=jma_gsm` The [Previous Runs API docs](https://open-meteo.com/en/docs/previous-runs-api) (opened 2026-10-04) say `_previous_day1` "returns the value predicted 24 hours before valid time". So for valid hours t0..t0+23, the value was predicted at or before t0−1 h, before the 00 UTC decision at t0. Hours from t0+24 onward would come from predictions made after the decision, so only the first 24 hours are used. Model publication latency of a few hours may mean the last of those hours were not yet public at 00 UTC; this is minor and UNVERIFIED. Probes for 15 Jul 2019: `jma_gsm` had data; `ecmwf_ifs025`, `gfs_seamless` and `best_match` `previous_day1` were empty. `ecmwf_ifs025` did have data on 15 Jul 2024. JMA GSM was chosen because it is the only model probed that covers both the tuning and held-out years. Skill at Mithi, daily totals over Jun–Sep 2019–2025: correlation with ERA5 0.658, total bias ×1.02 (computed from the committed `data/forcing_jjas.csv.gz`). The [Historical Forecast API docs](https://open-meteo.com/en/docs/historical-forecast-api) (opened 2026-10-04) describe a series built by "stitching the first hours of each successive model run", with coverage starting around 2021–2022. That makes it a near-nowcast rather than a day-ahead forecast, and it does not cover the 2019–2020 tuning years, so it was not used. (An earlier version of this file wrongly said this API was not checked.) |
+| Tide | REAL model data → harmonic prediction | Open-Meteo Marine API `hourly=sea_level_height_msl`. Probe at 19.04 N 72.80 E, July 2025: clear semidiurnal signal, daily ranges 1.67–3.99 m (neap to spring). The series is empty for 2019, 2021 and mid-2022 probes; the first value is 2022-11-23. We therefore fitted constituents with the `utide` Python package (v0.4.0; OLS, nodal corrections, 2022-11-23 → 2025-09-30, 24,600 h) and predicted 2019–2025. Fit: variance explained 0.992–0.993, RMSE 0.078–0.080 m. This RMSE is an **in-sample fit residual** against Open-Meteo **model** sea level over the fit window (2022-11-23 → 2025-09-30, which overlaps the held-out years). It is not validation against a tide gauge. We treat the tide as a known astronomical prediction, as published tide tables would be. M2 is 1.06–1.16 m and S2 0.43–0.46 m (`data/tide_fit.json`). UHSLC was **not checked** (time). This is a model sea level, not a tide gauge. |
 | Plastic load, hydraulics, boom, sensors, crews | SIMULATED with ASSUMPTION parameters | Parameter table in §3. |
 | City-wide plastic flux | Brief | `_briefs/innovatex.txt` line 121: about 5 million kg per year from Mumbai's waterways. |
 
@@ -30,13 +30,13 @@ Spatial resolution caveat: ERA5 is 0.25°, so Mithi and Trombay share one rain c
   - Invariants (tested): arrived = captured + entrainment + overtopping + bypass, and stored ≥ 0. Season mass balance: load = escaped + cleared + Δstored + Δpool.
 - **C9 risk forecaster.** Issued daily at 00 UTC (05:30 IST). The twin is run with **nominal** parameters, starting from the state implied by past rain and driven by the archived JMA forecast and the harmonic tide. Outputs, over a causal 24-hour horizon (see the disclosure in §4): arrivals, P(bypass), predicted access per hour, and p_overflow = 1−(1−σ((E[fill]−1)/0.15))·(1−P(bypass)). The policy never sees a draw's true parameters or the observed future rain.
 - **C10 dispatch.** All policies use the same crew-hours: 2 crews × 8 h/day, one site per crew-shift (asserted).
-  - P0 (status-quo fixed schedule): crew 1 at Mithi daily; crew 2 on a weekly area-weighted rotation; 08:30–16:30 IST.
-  - P1 (fill-threshold): crews go to the two highest simulated-sensor fill fractions; fixed shift.
-  - P2 (forecast- and tide-aware): greedy allocation by kg-at-risk = (sensed kg + w_arr·E[capture of 24 h forecast arrivals]) × (w_stock + w_bypass·P(bypass) + w_over·p_overflow). The shift start (06:30–10:30 IST) maximises predicted access, which targets low-water and slack/ebb windows.
+  - P0, **assumed fixed roster**: crew 1 at Mithi daily, crew 2 on a weekly area-weighted rotation, 08:30–16:30 IST. This is our proxy, not BMC's actual roster.
+  - P1, **fill-fraction-ranked fixed-shift rule**: crews go to the two highest simulated-sensor fill fractions; fixed shift.
+  - P2, **mass/risk-ranked, tide- and forecast-timed policy**: greedy allocation by kg-at-risk = (sensed kg + w_arr·E[capture of 24 h forecast arrivals]) × (w_stock + w_bypass·P(bypass) + w_over·p_overflow). The shift start (06:30–10:30 IST) maximises predicted access, which targets low-water and slack/ebb windows.
 
 ## 3. Parameters
 
-Every parameter, with nominal value, Monte Carlo range, unit and source or reasoning. This table is generated from `components/twin_sim/params.py`. The Monte Carlo uses 40 independent uniform draws over the ASSUMPTION ranges (seed 20261004).
+Every parameter, with nominal value, Monte Carlo range, unit and source or reasoning. This table is generated from `components/twin_sim/params.py`. The Monte Carlo uses 40 independent uniform draws over the ASSUMPTION ranges (seed 20261004). Each draw is one sampled parameter setting, not a season.
 
 | parameter | nominal | MC range | unit | kind | source / reasoning |
 |---|---|---|---|---|---|
@@ -84,19 +84,19 @@ The Mithi (73 km²) and Dahisar (35 km²) areas match the commonly quoted 7,295 
 
 ## 4. Results (SIMULATED twin, real forcing)
 
-Metric: escaped_kg summed over the 4 sites. For each Monte Carlo draw we compute the relative reduction vs P0; the table shows the median and 90% interval (p05–p95) over 40 draws. P2 was tuned only on 2019–2023, and the held-out years 2024–2025 were evaluated once.
+Metric: escaped_kg summed over the 4 sites. Each of the 40 Monte Carlo draws is one sampled parameter setting. For each setting we compute the relative reduction vs P0. The table shows the median and the **central 90% scenario range across sampled parameter settings** (p05–p95). This range is not a confidence interval. P2 was tuned only on 2019–2023, and no tuning used 2024–2025. The held-out comparison was computed twice in total (see the disclosure below); the later analyses (§6–§8) reuse the same settings without retuning.
 
 **Held-out Jun–Sep 2024 + 2025** (`results/metrics.json`). Crew-hours: 3,904 per policy. Load median 964 t. Bypass 13 site-hours (policy-independent).
 
-| policy | escaped kg, median (p05–p95) | reduction vs P0, median [90% interval] | draws better than P0 | captured fraction | cleared kg | overflow site-hours |
+| policy | escaped kg, median (p05–p95) | reduction vs P0, median [central 90% scenario range] | parameter settings (of 40) better than P0 | captured fraction | cleared kg | overflow site-hours |
 |---|---|---|---|---|---|---|
-| P0 fixed schedule | 428,336 (144,443–961,537) | — | — | 0.461 | 435,726 | 90.5 |
-| P1 fill-threshold | 455,001 (151,216–980,895) | **−3.1%** [−6.0%, −0.01%] | 2/40 | 0.444 | 424,964 | 74.5 |
-| P2 forecast + tide-aware | 411,619 (147,549–917,790) | **+2.1%** [−1.5%, +12.5%] | 28/40 | 0.492 | 480,425 | 87.0 |
+| P0 assumed fixed roster | 428,336 (144,443–961,537) | — | — | 0.461 | 435,726 | 90.5 |
+| P1 fill-fraction-ranked fixed-shift rule | 455,001 (151,216–980,895) | **−3.1%** [−6.0%, −0.01%] | 2/40 | 0.444 | 424,964 | 74.5 |
+| P2 mass/risk-ranked, tide- and forecast-timed | 411,619 (147,549–917,790) | **+2.1%** [−1.5%, +12.5%] | 28/40 | 0.492 | 480,425 | 87.0 |
 
-Tuning years 2019–2023, same 40 draws: P1 −3.2% [−5.9%, −0.3%]; P2 +1.5% [−1.1%, +10.8%], better than P0 in 30/40 draws.
+Tuning years 2019–2023, same 40 sampled parameter settings: P1 −3.2% [−5.9%, −0.3%]; P2 +1.5% [−1.1%, +10.8%], better than P0 in 30 of 40 parameter settings.
 
-**Disclosure: the held-out evaluation was run twice.** The first run (+2.2% [−1.5%, +13.5%], 29/40 draws) had a look-ahead bug. The forecaster's 48-hour horizon used `precipitation_previous_day1` for hours 24–47, and those forecasts were issued after the 00 UTC decision. We cut the horizon to a causal 24 hours and changed nothing else (no knobs, no logic), then re-ran. The table shows the corrected numbers. On the tuning metric, the fix cost +0.1% (1,034,784.9 → 1,035,830.4 kg; logged in `results.tsv`).
+**Disclosure: the held-out evaluation was run twice.** The first run (+2.2% [−1.5%, +13.5%], better in 29 of 40 parameter settings) had a look-ahead bug. The forecaster's 48-hour horizon used `precipitation_previous_day1` for hours 24–47, and those forecasts were issued after the 00 UTC decision. We cut the horizon to a causal 24 hours and changed nothing else (no knobs, no logic), then re-ran. The table shows the corrected numbers. On the tuning metric, the fix cost +0.1% (1,034,784.9 → 1,035,830.4 kg; logged in `results.tsv`).
 
 **Autoresearch ratchet** (`autoresearch/results.tsv`; tuning metric = mean escaped kg over 20 draws, 2019–2023):
 - Baseline P2: 1,039,816.6 kg. Best after the ratchet: 1,034,784.9 kg (−0.48%), with `w_arrival` 0.5 → 0.25.
@@ -106,21 +106,21 @@ Tuning years 2019–2023, same 40 draws: P1 −3.2% [−5.9%, −0.3%]; P2 +1.5%
 **Reading.**
 1. In this twin, crews are capacity-bound: they clear about 45–50% of the load. The useful lever is clearing more kg per crew-hour by timing shifts to low-water and slack windows. Day-ahead rain forecasts add at most about 0.5%. That is because boom capacity (9 t nominal at Mithi) is overwhelmed within hours in big events whatever was cleared beforehand, and flood bypass is rare on the ERA5 rain scale.
 2. Sensor-triggered dispatch by fill **fraction** (P1) is worse than an area-weighted fixed schedule. It sends crews to small booms that look full but hold little mass. Ranking by **kg at risk** fixes this.
-3. The P2 gain is uncertain: its 90% interval includes zero. Treat it as a design direction, not a demonstrated saving.
+3. The P2 gain is uncertain: its central 90% scenario range includes zero. Treat it as a design direction, not a demonstrated saving.
 
 ## 5. Limitations and next steps
 - No field calibration: every plastic-process parameter is an ASSUMPTION. The Monte Carlo covers parameter uncertainty, not structural model error.
 - ERA5 smooths convective extremes. IMD/BMC gauge data would sharpen the bypass and overflow dynamics.
-- Tide comes from a model fit (residual RMSE 8 cm vs the model series), with no storm surge. UHSLC and Survey of India predictions were not checked.
+- Tide comes from a harmonic fit to model sea level, with no storm surge. The 8 cm RMSE is an in-sample residual against the model series, not gauge validation. UHSLC and Survey of India predictions were not checked.
 - There is no crew travel time, and shift length is fixed. The idea backlog (crew-hour banking for storm surges, split shifts, learned value function) is in `autoresearch/program.md`.
 
 ## 6. Held-out analysis: escape causes, paired comparisons, FWCE, fail-open fuse SENSITIVITY (SIMULATED)
 
 Source: `components/twin_sim/results/analysis.json` (label SIMULATED), reproduced with `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis`.
 
-Setup: held-out Jun–Sep 2024+2025, 4 sites summed. The 40 draws, seed, P2 knobs and crew budget (2 crews × 8 h/day) are the same as `metrics.json`, and nothing was retuned. The analysis checks that its escaped-kg medians equal `metrics.json` and that the mass-balance error is 0 kg.
+Setup: held-out Jun–Sep 2024+2025, 4 sites summed. The 40 sampled parameter settings, seed, P2 knobs and crew budget (2 crews × 8 h/day) are the same as `metrics.json`, and nothing was retuned. The analysis checks that its escaped-kg medians equal `metrics.json` and that the mass-balance error is 0 kg.
 
-Notation: values are median [p05–p95] across draws. "Arrived" is the contract's `arrived_kg` at the boom, which also counts re-arrivals of re-floated debris.
+Notation: values are median [p05–p95], the central 90% scenario range across the 40 sampled parameter settings. "Arrived" is the contract's `arrived_kg` at the boom, which also counts re-arrivals of re-floated debris.
 
 **Escape by cause** (kg; share of escaped / share of arrived, medians):
 
@@ -130,7 +130,7 @@ Notation: values are median [p05–p95] across draws. "Arrived" is the contract'
 | P1 | 404,459 [112,970–819,587]; 90.6% / 32.8% | 34,918 [0–204,204]; 6.6% / 2.2% | 2,582 [0–56,237]; 0.7% / 0.2% | 455,001 [151,216–980,895] |
 | P2 | 391,972 [112,382–756,467]; 92.5% / 32.6% | 31,565 [0–183,725]; 5.9% / 1.7% | 2,589 [0–50,770]; 0.7% / 0.2% | 411,619 [147,549–917,790] |
 
-The 90% intervals of the shares are in the JSON. For entrainment's share of escaped they are about [64–100%].
+The central 90% scenario ranges of the shares are in the JSON. For entrainment's share of escaped they are about [64–100%].
 
 **Re-floating** is a re-exposure flux, not an escape term: the debris re-arrives at the boom on the ebb.
 - Tidal re-float: P0 302,891 kg (24.9% of arrived), P1 344,104 kg (27.5%), P2 266,179 kg (23.5%).
@@ -138,7 +138,7 @@ The 90% intervals of the shares are in the JSON. For entrainment's share of esca
 
 **Paired per-draw difference in escaped kg** (same draw, same sensor noise):
 
-| comparison | median | 90% interval | draws where the first is lower |
+| comparison | median | central 90% scenario range | parameter settings (of 40) where the first is lower |
 |---|---|---|---|
 | P2 vs P1 | −5.6% | [−15.8%, −0.3%] | 39/40 |
 | P2 vs P0 | −2.1% | [−12.5%, +1.5%] | 28/40 (matches §4) |
@@ -157,7 +157,7 @@ The 90% intervals of the shares are in the JSON. For entrainment's share of esca
 - (b) fuse: at release, only the arriving flux passes and the pocket keeps its catch;
 - (c) fuse plus tidal re-float × 0.5 or × 0.2. Re-float × 1 is identical to (b) by construction.
 
-| variant | escaped kg | Δ escaped vs (a), paired | draws lower than (a) | FWCE | Δ FWCE vs (a), pp |
+| variant | escaped kg | Δ escaped vs (a), paired | settings (of 40) lower than (a) | FWCE | Δ FWCE vs (a), pp |
 |---|---|---|---|---|---|
 | (a) current release | 411,619 [147,549–917,790] | — | — | 49.1% [30.9–70.1] | — |
 | (b) fuse | 411,415 [139,432–917,133] | −0.1% [−1.5%, 0.0%] | 31/40 | 49.5% [30.9–70.2] | +0.1 [0.0, +0.8] |
@@ -182,7 +182,7 @@ The code and tests are in place. The numbers are not run yet because the shared 
 
 The existing keys are unchanged: the default switches are bit-identical, which is tested.
 
-**Method.** The setup matches §6: held-out Jun–Sep 2024+2025, 40 draws, P2 knobs unchanged.
+**Method.** The setup matches §6: held-out Jun–Sep 2024+2025, 40 sampled parameter settings, P2 knobs unchanged.
 - **Boom angle θ ∈ {90° (current), 45°, 30°, 20°}.** Entrainment uses the normal velocity: e(v) takes |v|·sin θ, with e_max unchanged. Each angle is run with the current release behaviour and with the fuse plus re-float × 0.5. Reported: escaped kg as a paired change vs θ = 90° with the same hardware, and vs the current setup (no fuse, θ = 90°); FWCE.
 - **Entrainment split.** The floor (1 − e_max)·arrived leaks even at slack water. The velocity-driven part is (e_max − e)·arrived. Each is reported as a share of escaped.
 - **Exposure.** P2 with nominal parameters: the share of site-hours, and of arrived kg, with |v|·sin θ > v50 (0.45 m/s).

@@ -10,6 +10,8 @@ budget, P2 knobs and held-out monsoons (Jun-Sep 2024+2025) as results/metrics.js
 5. Boom-angle SENSITIVITY with P2: entrainment sees |v|*sin(theta). Entrainment is split into the
    (1 - e_max) slack-water floor and the velocity-driven part. Exposure is the share of hours and of
    arrived kg at |v| > v50 (P2, nominal parameters).
+6. Ablations (review findings 3/4/11): P1m (sensor-only, mass-ranked, P1's fixed shift), P2_notide
+   (timing off), P2_nofc (forecast terms off), with paired comparisons, plus a once-counted mass boundary.
 
 Reproduce: cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis
 """
@@ -38,6 +40,9 @@ VARIANTS = {
 }
 
 
+ABLATIONS = ("P1m", "P2_notide", "P2_nofc")
+ABLATION_PAIRS = [("P2", "P1m"), ("P2", "P2_notide"), ("P2", "P2_nofc"), ("P1m", "P1"), ("P1m", "P0"),
+                  ("P2_notide", "P1m"), ("P2_nofc", "P1m"), ("P2", "P1")]
 ANGLES = {90: 1.0, 45: float(np.sin(np.radians(45))), 30: 0.5, 20: float(np.sin(np.radians(20)))}
 ANGLE_HARDWARE = ["a_current_release", "c_fuse_refloat_x0.5"]
 
@@ -60,7 +65,7 @@ def run_configs(configs: dict, n_draws: int = N_DRAWS, seed: int = SEED, years: 
 
 def run_heldout(n_draws: int = N_DRAWS, seed: int = SEED, years: list | None = None) -> dict:
     """P0, P1, P2, the P2 fuse variants and the P2 boom-angle variants (theta90 = aliases)."""
-    configs = {p: (p, {}) for p in ("P0", "P1", "P2")}
+    configs = {p: (p, {}) for p in ("P0", "P1", "P2") + ABLATIONS}
     configs.update({f"P2|{v}": ("P2", VARIANTS[v]) for v in VARIANTS if VARIANTS[v]})
     configs.update({f"P2|{h}|theta{a}": ("P2", dict(VARIANTS[h], sin_theta=s))
                     for h in ANGLE_HARDWARE for a, s in ANGLES.items() if a != 90})
@@ -165,6 +170,23 @@ def summarise(runs: dict, metrics: dict | None = None) -> dict:
             "velocity_entrainment_share_of_escaped": dist(runs[f"P2|{h}|theta{a}"]["ent_vel"]
                                                           / runs[f"P2|{h}|theta{a}"]["escaped"])}
             for a, s in ANGLES.items()} for h in ANGLE_HARDWARE}
+    if all(a in runs for a in ABLATIONS):
+        names = ("P0", "P1", "P1m", "P2_notide", "P2_nofc", "P2")
+        out["ablations"] = {
+            "paired_escaped_rel_diff": {f"{a}_vs_{b}": paired(runs[a]["escaped"], runs[b]["escaped"])
+                                        for a, b in ABLATION_PAIRS},
+            "escaped_kg": {n: dist(runs[n]["escaped"], 0) for n in names},
+            "fwce": {n: dist(fwce(runs[n])) for n in names},
+            "cleared_share_of_unique_input": {n: dist(runs[n]["cleared"] / runs[n]["load"]) for n in names}}
+    out["mass_boundary"] = {p: {
+        "unique_input_kg": dist(runs[p]["load"], 0),
+        "cleared_kg": dist(runs[p]["cleared"], 0),
+        "stored_at_season_end_kg": dist(runs[p]["end_stored"], 0),
+        "held_upstream_at_season_end_kg": dist(runs[p]["end_pool"], 0),
+        "escaped_kg": dist(runs[p]["escaped"], 0),
+        "cleared_share": dist(runs[p]["cleared"] / runs[p]["load"]),
+        "retained_share": dist(runs[p]["end_stored"] / runs[p]["load"]),
+        "escaped_share": dist(runs[p]["escaped"] / runs[p]["load"])} for p in ("P0", "P1", "P2")}
     bal = max(float(np.abs(R["load"] - R["escaped"] - R["cleared"] - R["end_stored"] - R["end_pool"]).max())
               for R in runs.values())
     out["checks"] = {"mass_balance_max_abs_err_kg": round(bal, 6),
@@ -192,10 +214,22 @@ def main():
         "years": sim.HOLDOUT_YEARS, "crew_budget": f"{DP.N_CREWS} crews x {DP.SHIFT_H} h/day, all runs",
         "p2_knobs": DP.load_knobs(),
         "definitions": {
-            "interval": "median and p05/p95 across the 40 Monte Carlo draws",
-            "paired_rel_diff": "(a - b) / b per draw, same draw and sensor noise; negative = a lets less escape",
+            "range": "median and p05/p95 = central 90% scenario range across 40 sampled parameter settings "
+                     "(Monte Carlo draws of the ASSUMPTION ranges); not a confidence interval",
+            "paired_rel_diff": "(a - b) / b per sampled parameter setting (same setting and sensor noise); negative = "
+                               "a lets less escape; draws_a_lower = number of the 40 settings where a < b",
+            "policies": {"P0": "assumed fixed roster (area-weighted rotation, fixed 08:30 IST shift; not BMC's roster)",
+                         "P1": "fill-fraction-ranked fixed-shift rule",
+                         "P2": "mass/risk-ranked, tide- and forecast-timed policy",
+                         "P1m": "ablation: sensor-only mass-ranked fixed-shift rule (greedy on sensed kg, P1's shift)",
+                         "P2_notide": "ablation: P2 with tide-aware timing off (fixed 08:30 IST start)",
+                         "P2_nofc": "ablation: P2 with forecast terms off (sensed kg only; timing from tide-only access)"},
+            "mass_boundary": "unique input = catchment wash-off reaching the outfall (re-arrivals excluded) = escaped + "
+                             "cleared by crews (removal) + stored in boom at 30 Sep (temporary retention) + held "
+                             "upstream at 30 Sep; generic floating debris, not flexible packaging specifically",
             "arrived_at_boom": "contract arrived_kg: includes re-arrivals of re-floated/released debris",
-            "fwce": "(cleared + stored at 30 Sep) / catchment load; each kg counted once",
+            "fwce": "(cleared + stored at 30 Sep) / unique input (catchment load); each kg counted once; stored "
+                    "is temporary retention, cleared_share is removal",
             "gross_captured_over_arrived": "captured_kg / arrived_kg (double-counts re-captures)",
             "tidal_refloat": "stored debris lifted on flood tide into the upstream pool; it re-arrives on the "
                              "ebb (re-exposure flux, not an escape term)",
@@ -215,7 +249,10 @@ def main():
             "results show relative value under stated assumptions, not field evidence; field calibration comes "
             "in Round 2.",
             "Fuse/pocket rows are SENSITIVITY runs (assumption-driven), not evidence about real hardware.",
-            "Boom-angle rows are SENSITIVITY runs (assumption-driven): boom angle is not field evidence.",
+            "Boom-angle rows are SENSITIVITY runs (assumption-driven): boom angle is not field evidence. Angle acts "
+            "only through the assumed capture curve e(|v| sin theta), so it cannot independently confirm that "
+            "mechanism; v50 is transferred from oil-boom practice (UNVERIFIED ASSUMPTION).",
+            "Assumed capture losses dominate this twin; boom angle and retention are candidate field experiments.",
             "No retuning: P2 knobs, draws, seeds and crew budget identical to results/metrics.json.",
         ],
         **res,

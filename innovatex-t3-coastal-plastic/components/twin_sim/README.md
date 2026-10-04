@@ -14,7 +14,7 @@ python twin_sim/autoresearch/eval.py                # FROZEN tuning metric (2019
 python twin_sim/autoresearch/ratchet.py [--round2]  # keep-if-better loop over P2 knobs, logs results.tsv
 python -m twin_sim.run                              # held-out 2024-2025 comparison + results/bundle_part.json
 python -m twin_sim.run --bundle-only                # rebuild the bundle from committed metrics.json
-python -m twin_sim.analysis                         # SIMULATED escape causes, paired P2-P1, FWCE, fuse SENSITIVITY -> results/analysis.json
+python -m twin_sim.analysis                         # SIMULATED escape causes, paired comparisons, FWCE, ablations, fuse + boom-angle SENSITIVITY -> results/analysis.json
 ```
 
 ## Outputs (read by the dashboard)
@@ -22,15 +22,15 @@ python -m twin_sim.analysis                         # SIMULATED escape causes, p
 - `results/metrics.json`: held-out and tuning comparisons, P2 knobs, tide-fit skill and the reproduce command.
 - `results/analysis.json` (about 20 KB, label SIMULATED): escape split by cause, paired per-draw differences (P2 vs P1: −5.6% [−15.8%, −0.3%], 39/40 draws), FWCE per policy, and the fail-open fuse / one-way pocket SENSITIVITY. See twin.md §6.
 
-## Headline (SIMULATED, held-out Jun–Sep 2024+2025, 40 draws)
-Each figure is escaped kg vs P0: median reduction, then the 90% interval.
+## Headline (SIMULATED, held-out Jun–Sep 2024+2025, 40 sampled parameter settings)
+Each figure is escaped kg vs P0: the median reduction, then the central 90% scenario range across sampled parameter settings (p05–p95; not a confidence interval).
 
-| policy | median reduction | 90% interval | draws better than P0 |
+| policy | median reduction | central 90% scenario range | parameter settings (of 40) better than P0 |
 |---|---|---|---|
-| P1 (fill-threshold) | −3.1% | [−6.0%, −0.01%] | 2/40 |
-| P2 (forecast + tide-aware) | +2.1% | [−1.5%, +12.5%] | 28/40 |
+| P1 fill-fraction-ranked fixed-shift rule | −3.1% | [−6.0%, −0.01%] | 2/40 |
+| P2 mass/risk-ranked, tide- and forecast-timed policy | +2.1% | [−1.5%, +12.5%] | 28/40 |
 
-Captured fraction: P0 0.461, P1 0.444, P2 0.492. These are the corrected numbers after the causal-forecast fix; the first held-out run is disclosed in twin.md §4. Tide-aware shift timing is the main lever: ablating it raises the tuning metric by 3.7%. Forecast terms add 0.5% or less.
+Captured fraction: P0 0.461, P1 0.444, P2 0.492. These are the corrected numbers after the causal-forecast fix; the first held-out run is disclosed in twin.md §4. P0 is an **assumed fixed roster**, our proxy rather than BMC's actual roster. For what drives P2's gain (mass ranking vs tide timing vs forecasts), see the held-out ablations in twin.md §8 rather than the tuning-year ablation.
 
 ## Modules → contracts
 `sites.py` (Site) · `forcing.py` (C1 ForcingSeries) · `catchment_load.py` (C2 LoadSeries) · `hydraulics.py` (C3 HydraulicSeries) · `interceptor.py` (C4 InterceptorSeries) · `risk_forecaster.py` (C9 SiteForecast) · `dispatch.py` (C10 DispatchPlan) · `sim.py` (season simulator) · `params.py` (parameter table) · `run.py` (bundle + metrics).
@@ -42,6 +42,6 @@ Captured fraction: P0 0.461, P1 0.444, P2 0.492. These are the corrected numbers
   - Catchment areas, boom sizes and channel widths are ASSUMPTIONS.
 - Rain is ERA5 at 0.25°, so site pairs share cells. The forecast is JMA GSM `previous_day1`, the only probed model that is archived for both 2019 and 2024.
 - Tide is a UTide fit to Open-Meteo Marine sea level from 2022-11 onward (the marine series is empty earlier), predicted back to 2019.
-- Crew budget is 2 crews × 8 h/day for 4 sites, in daylight shifts. P0 is an area-weighted fixed rotation, which is our proxy for the status quo.
+- Crew budget is 2 crews × 8 h/day for 4 sites, in daylight shifts. P0 is an assumed area-weighted fixed roster, our proxy rather than BMC's actual roster.
 - `results/metrics.json` records `git_sha_at_run`, which is HEAD at run time. The final numbers come from the causal-forecast fix that is committed together with them.
 - The ratchet's pass 2 repeated pass 1 deterministically. It was aborted after 3 runs; the duplicate rows were removed and a note left in `results.tsv`.

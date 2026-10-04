@@ -1,10 +1,14 @@
 """C10 dispatch policies at EQUAL crew-hours (n_crews x shift_h every day, one site per crew-shift).
 
-P0 fixed schedule (status quo, area-weighted rotation, fixed 08:30-16:30 IST shift)
-P1 fill-threshold: crews to the two fullest booms by SIMULATED fill sensor, fixed shift
-P2 forecast- and tide-aware: kg-at-risk from sensed fill + day-ahead forecast arrivals, weighted by
-   forecast bypass/overflow risk; shift start chosen inside daylight to maximise predicted access
-   (low water, slack/ebb current) from the harmonic tide. Knobs: p2_knobs.json (autoresearch ratchet)."""
+P0  assumed fixed roster: area-weighted rotation, fixed 08:30-16:30 IST shift (our proxy, not BMC's roster)
+P1  fill-fraction-ranked fixed-shift rule: crews to the two highest SIMULATED fill fractions, fixed shift
+P2  mass/risk-ranked, tide- and forecast-timed policy: kg-at-risk from sensed fill + day-ahead forecast
+    arrivals, weighted by forecast bypass/overflow risk; shift start chosen inside daylight to maximise
+    predicted access (low water, slack/ebb current). Knobs: p2_knobs.json (autoresearch ratchet).
+Ablations (held-out analysis only, nothing retuned):
+P1m        sensor-only mass-ranked fixed-shift rule: greedy on sensed kg (fill x design capacity), P1's shift
+P2_notide  P2 with tide-aware timing off (fixed 08:30 IST start; allocation unchanged)
+P2_nofc    P2 with forecast terms off: ranks on sensed kg only; timing from tide-only predicted access"""
 from __future__ import annotations
 
 import json
@@ -58,6 +62,22 @@ def p1(ctx: DayCtx):
     return out
 
 
+def p1m(ctx: DayCtx):
+    """Sensor-only and mass-ranked: each crew goes to the site with the most sensed kg left after the
+    crews already sent there (nominal rate x shift each). Same fixed shift as P1; no tide, no forecast."""
+    cap, per_crew = ctx.fc["capacity_kg"], ctx.fc["clear_rate"] * SHIFT_H
+    out = []
+    for f in ctx.fill_obs:
+        rem = f * cap
+        crews = []
+        for _ in range(N_CREWS):
+            s = int(np.argmax(rem))
+            crews.append((s, FIXED_START_UTC, SHIFT_H))
+            rem[s] = max(rem[s] - per_crew, 0.0)
+        out.append(crews)
+    return out
+
+
 def load_knobs() -> dict:
     return json.loads(KNOBS_PATH.read_text())
 
@@ -66,10 +86,11 @@ def p2_factory(fc: dict, knobs: dict | None = None):
     k = dict(load_knobs(), **(knobs or {}))
     starts = list(k["starts_utc"])
     rate, cap = fc["clear_rate"], fc["capacity_kg"]
+    use_fc = k.get("use_forecast", True)
 
     def p2(ctx: DayCtx):
         d = ctx.day
-        acc = fc["access"][d]                                   # (24, S) predicted access
+        acc = (fc["access"] if use_fc else fc["access_tide"])[d]   # (24, S) predicted access
         win = np.array([acc[h:h + SHIFT_H].sum(0) for h in starts])
         if k["tide_aware"]:
             bi = win.argmax(0)
@@ -81,11 +102,15 @@ def p2_factory(fc: dict, knobs: dict | None = None):
         clear_cap = rate * acc_sum
         out = []
         for f in ctx.fill_obs:
-            p_over, _ = RF.p_overflow(fc, d, f)
-            risk = (k["w_stock"] + k["w_bypass"] * fc["p_bypass"][d] + k["w_over"] * p_over
-                    + k["loss_weight"] * (1.0 - fc["e_cap"][d]))
-            arr = fc["arr24"][d] if k["arr_horizon"] == 24 else fc["arr48"][d]
-            remaining = f * cap + k["w_arrival"] * fc["e_cap"][d] * arr
+            if use_fc:
+                p_over, _ = RF.p_overflow(fc, d, f)
+                risk = (k["w_stock"] + k["w_bypass"] * fc["p_bypass"][d] + k["w_over"] * p_over
+                        + k["loss_weight"] * (1.0 - fc["e_cap"][d]))
+                arr = fc["arr24"][d] if k["arr_horizon"] == 24 else fc["arr48"][d]
+                remaining = f * cap + k["w_arrival"] * fc["e_cap"][d] * arr
+            else:
+                risk = np.full(ctx.S, float(k["w_stock"]))
+                remaining = f * cap
             crews = []
             for _ in range(N_CREWS):
                 val = np.minimum(remaining, clear_cap) * risk
@@ -97,8 +122,14 @@ def p2_factory(fc: dict, knobs: dict | None = None):
     return p2
 
 
+ABLATION_KNOBS = {"P2_notide": {"tide_aware": False}, "P2_nofc": {"use_forecast": False}}
+
+
 def make_policy(name: str, fc: dict, knobs: dict | None = None):
-    return {"P0": lambda f: p0, "P1": lambda f: p1, "P2": lambda f: p2_factory(f, knobs)}[name](fc)
+    if name in ABLATION_KNOBS:
+        return p2_factory(fc, dict(ABLATION_KNOBS[name], **(knobs or {})))
+    return {"P0": lambda f: p0, "P1": lambda f: p1, "P1m": lambda f: p1m,
+            "P2": lambda f: p2_factory(f, knobs)}[name](fc)
 
 
 def dispatch_plan(policy_id: str, day: int, crews: list, fc: dict, site_ids: list, fill_obs) -> "C.DispatchPlan":
