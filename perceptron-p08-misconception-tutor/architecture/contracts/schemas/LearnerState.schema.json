@@ -1,0 +1,131 @@
+{
+ "$defs": {
+  "MisconceptionBelief": {
+   "properties": {
+    "misconception_id": {
+     "title": "Misconception Id",
+     "type": "string"
+    },
+    "p_holds": {
+     "maximum": 1.0,
+     "minimum": 0.0,
+     "title": "P Holds",
+     "type": "number"
+    },
+    "n_evidence": {
+     "default": 0,
+     "title": "N Evidence",
+     "type": "integer"
+    },
+    "last_updated": {
+     "anyOf": [
+      {
+       "format": "date-time",
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Last Updated"
+    }
+   },
+   "required": [
+    "misconception_id",
+    "p_holds"
+   ],
+   "title": "MisconceptionBelief",
+   "type": "object"
+  },
+  "Observation": {
+   "properties": {
+    "item_id": {
+     "title": "Item Id",
+     "type": "string"
+    },
+    "session_id": {
+     "title": "Session Id",
+     "type": "string"
+    },
+    "correct": {
+     "title": "Correct",
+     "type": "boolean"
+    },
+    "answer_value": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Answer Value"
+    },
+    "matched_misconceptions": {
+     "items": {
+      "type": "string"
+     },
+     "title": "Matched Misconceptions",
+     "type": "array"
+    },
+    "timestamp": {
+     "format": "date-time",
+     "title": "Timestamp",
+     "type": "string"
+    }
+   },
+   "required": [
+    "item_id",
+    "session_id",
+    "correct",
+    "answer_value"
+   ],
+   "title": "Observation",
+   "type": "object"
+  }
+ },
+ "properties": {
+  "learner_id": {
+   "title": "Learner Id",
+   "type": "string"
+  },
+  "beliefs": {
+   "additionalProperties": {
+    "$ref": "#/$defs/MisconceptionBelief"
+   },
+   "title": "Beliefs",
+   "type": "object"
+  },
+  "history": {
+   "items": {
+    "$ref": "#/$defs/Observation"
+   },
+   "title": "History",
+   "type": "array"
+  },
+  "sessions": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Sessions",
+   "type": "array"
+  },
+  "model_state": {
+   "additionalProperties": true,
+   "title": "Model State",
+   "type": "object"
+  },
+  "contract_version": {
+   "default": "0.1.1",
+   "title": "Contract Version",
+   "type": "string"
+  }
+ },
+ "required": [
+  "learner_id"
+ ],
+ "title": "LearnerState",
+ "type": "object"
+}

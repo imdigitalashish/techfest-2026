@@ -118,9 +118,10 @@ Model API returned "408 Timed out reading request body" for most agents (network
 - **Network:** GitHub Models stub (see correction above). Azure OpenAI provisioned 06:40; connections aborted until 07:06, then OK.
 
 ### 2026-10-04 07:50 IST — LLM baselines, autoresearch, honest re-scoring
-- Azure OpenAI reachable from 07:06. `python -m eval.run_diagnosis --llm-n 129` (with `AZURE_OPENAI_ENDPOINT` set; responses cached in `.cache/llm`): on the real 5-category set, **GPT-4.1-mini zero-shot 86.0%** (95% bootstrap CI 79.8–91.5); exec→LLM hybrid 86.8% (81.4–92.2); exec→TF-IDF 45.7%; TF-IDF 38.0%; majority 30.2%. The exec path is right 21/21 when it fires (LLM 20/21 on those).
+- Azure OpenAI reachable from 07:06. `python -m eval.run_diagnosis --llm-n 129` (with `AZURE_OPENAI_ENDPOINT` set; responses cached in `.cache/llm`): on the real 5-category set, **GPT-4.1-mini zero-shot 86.0%** (95% bootstrap CI 79.8–92.2); exec→LLM hybrid 86.8% (80.6–92.2); exec→TF-IDF 45.7%; TF-IDF 38.0%; majority 30.2%. The exec path is right 21/21 when it fires (LLM 20/21 on those).
 - `python -m eval.run_generation --n 40 --llm-n 8`: LLM-only generation 40/40 valid, targeted and discriminative on this simple pack.
 - **Lesson:** on simple arithmetic the LLM baseline is strong. Re-scored the selection memo (winnability 4→3, innovation 4→3); updated the abstract's novelty to claim exactness, competitor separation, set-level tracing + information gain, and slip abstention — not accuracy over the LLM.
 - Autoresearch C3 (`components/bugs/autoresearch/`): baseline reproduction_dev 0.1552 → iter 1 (prefer key-matching segment) neutral, reverted → iter 2 (trailing "=?", leading minus before a bracket) **0.1897**, kept; holdout unchanged 0.1690; guards OK.
 - Abstract v1 trimmed to ≤900 words (by word count).
+- Derived numbers (hybrids, 95% bootstrap CIs, exec precision 21/21) are now reproducible: `python -m eval.analyze_diagnosis` → `eval/results/diagnosis_derived.json`. The CIs replace the ad-hoc ones in my 07:52 message to the Supervisor (LLM upper bound 92.2, not 91.5). Contract JSON Schemas exported: `python -m architecture.contracts.export_schemas` (17 schemas).
 

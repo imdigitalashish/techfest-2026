@@ -1,0 +1,74 @@
+{
+ "$defs": {
+  "Domain": {
+   "enum": [
+    "school_math",
+    "probability",
+    "python"
+   ],
+   "title": "Domain",
+   "type": "string"
+  }
+ },
+ "properties": {
+  "misconception_id": {
+   "title": "Misconception Id",
+   "type": "string"
+  },
+  "name": {
+   "title": "Name",
+   "type": "string"
+  },
+  "description": {
+   "default": "",
+   "title": "Description",
+   "type": "string"
+  },
+  "domain": {
+   "$ref": "#/$defs/Domain"
+  },
+  "category": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Category"
+  },
+  "eedi_ids": {
+   "items": {
+    "type": "integer"
+   },
+   "title": "Eedi Ids",
+   "type": "array"
+  },
+  "construct_ids": {
+   "items": {
+    "type": "integer"
+   },
+   "title": "Construct Ids",
+   "type": "array"
+  },
+  "executable": {
+   "default": false,
+   "title": "Executable",
+   "type": "boolean"
+  },
+  "source": {
+   "title": "Source",
+   "type": "string"
+  }
+ },
+ "required": [
+  "misconception_id",
+  "name",
+  "domain",
+  "source"
+ ],
+ "title": "Misconception",
+ "type": "object"
+}

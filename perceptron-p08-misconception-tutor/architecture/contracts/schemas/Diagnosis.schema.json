@@ -1,0 +1,77 @@
+{
+ "$defs": {
+  "Hypothesis": {
+   "properties": {
+    "misconception_id": {
+     "title": "Misconception Id",
+     "type": "string"
+    },
+    "prob": {
+     "maximum": 1.0,
+     "minimum": 0.0,
+     "title": "Prob",
+     "type": "number"
+    },
+    "evidence": {
+     "items": {
+      "type": "string"
+     },
+     "title": "Evidence",
+     "type": "array"
+    }
+   },
+   "required": [
+    "misconception_id",
+    "prob"
+   ],
+   "title": "Hypothesis",
+   "type": "object"
+  }
+ },
+ "properties": {
+  "item_id": {
+   "title": "Item Id",
+   "type": "string"
+  },
+  "is_correct": {
+   "title": "Is Correct",
+   "type": "boolean"
+  },
+  "hypotheses": {
+   "items": {
+    "$ref": "#/$defs/Hypothesis"
+   },
+   "title": "Hypotheses",
+   "type": "array"
+  },
+  "p_slip": {
+   "maximum": 1.0,
+   "minimum": 0.0,
+   "title": "P Slip",
+   "type": "number"
+  },
+  "abstained": {
+   "default": false,
+   "title": "Abstained",
+   "type": "boolean"
+  },
+  "method": {
+   "title": "Method",
+   "type": "string"
+  },
+  "latency_ms": {
+   "default": 0.0,
+   "title": "Latency Ms",
+   "type": "number"
+  }
+ },
+ "required": [
+  "item_id",
+  "is_correct",
+  "hypotheses",
+  "p_slip",
+  "method"
+ ],
+ "title": "Diagnosis",
+ "type": "object"
+}

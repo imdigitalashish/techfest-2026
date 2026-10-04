@@ -1,0 +1,144 @@
+{
+ "$defs": {
+  "Domain": {
+   "enum": [
+    "school_math",
+    "probability",
+    "python"
+   ],
+   "title": "Domain",
+   "type": "string"
+  },
+  "Option": {
+   "properties": {
+    "label": {
+     "title": "Label",
+     "type": "string"
+    },
+    "text": {
+     "title": "Text",
+     "type": "string"
+    },
+    "value": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Value"
+    },
+    "misconception_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Misconception Id"
+    },
+    "is_key": {
+     "default": false,
+     "title": "Is Key",
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "label",
+    "text"
+   ],
+   "title": "Option",
+   "type": "object"
+  }
+ },
+ "properties": {
+  "item_id": {
+   "title": "Item Id",
+   "type": "string"
+  },
+  "domain": {
+   "$ref": "#/$defs/Domain"
+  },
+  "family": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Family"
+  },
+  "params": {
+   "additionalProperties": true,
+   "title": "Params",
+   "type": "object"
+  },
+  "stem": {
+   "title": "Stem",
+   "type": "string"
+  },
+  "answer_key": {
+   "title": "Answer Key",
+   "type": "string"
+  },
+  "options": {
+   "items": {
+    "$ref": "#/$defs/Option"
+   },
+   "title": "Options",
+   "type": "array"
+  },
+  "target_misconception_id": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Target Misconception Id"
+  },
+  "provenance": {
+   "default": "template",
+   "enum": [
+    "template",
+    "llm",
+    "eedi",
+    "hand"
+   ],
+   "title": "Provenance",
+   "type": "string"
+  },
+  "construct_name": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Construct Name"
+  }
+ },
+ "required": [
+  "item_id",
+  "domain",
+  "stem",
+  "answer_key"
+ ],
+ "title": "Item",
+ "type": "object"
+}

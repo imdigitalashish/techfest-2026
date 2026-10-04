@@ -1,0 +1,27 @@
+{
+ "properties": {
+  "misconception_id": {
+   "title": "Misconception Id",
+   "type": "string"
+  },
+  "prob": {
+   "maximum": 1.0,
+   "minimum": 0.0,
+   "title": "Prob",
+   "type": "number"
+  },
+  "evidence": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Evidence",
+   "type": "array"
+  }
+ },
+ "required": [
+  "misconception_id",
+  "prob"
+ ],
+ "title": "Hypothesis",
+ "type": "object"
+}

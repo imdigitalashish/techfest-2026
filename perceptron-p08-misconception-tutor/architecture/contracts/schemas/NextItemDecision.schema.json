@@ -1,0 +1,291 @@
+{
+ "$defs": {
+  "Domain": {
+   "enum": [
+    "school_math",
+    "probability",
+    "python"
+   ],
+   "title": "Domain",
+   "type": "string"
+  },
+  "GeneratedItem": {
+   "properties": {
+    "item": {
+     "$ref": "#/$defs/Item"
+    },
+    "predicted": {
+     "items": {
+      "$ref": "#/$defs/PredictedAnswer"
+     },
+     "title": "Predicted",
+     "type": "array"
+    },
+    "verification": {
+     "$ref": "#/$defs/VerificationReport"
+    },
+    "generator": {
+     "title": "Generator",
+     "type": "string"
+    }
+   },
+   "required": [
+    "item",
+    "predicted",
+    "verification",
+    "generator"
+   ],
+   "title": "GeneratedItem",
+   "type": "object"
+  },
+  "Item": {
+   "properties": {
+    "item_id": {
+     "title": "Item Id",
+     "type": "string"
+    },
+    "domain": {
+     "$ref": "#/$defs/Domain"
+    },
+    "family": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Family"
+    },
+    "params": {
+     "additionalProperties": true,
+     "title": "Params",
+     "type": "object"
+    },
+    "stem": {
+     "title": "Stem",
+     "type": "string"
+    },
+    "answer_key": {
+     "title": "Answer Key",
+     "type": "string"
+    },
+    "options": {
+     "items": {
+      "$ref": "#/$defs/Option"
+     },
+     "title": "Options",
+     "type": "array"
+    },
+    "target_misconception_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Target Misconception Id"
+    },
+    "provenance": {
+     "default": "template",
+     "enum": [
+      "template",
+      "llm",
+      "eedi",
+      "hand"
+     ],
+     "title": "Provenance",
+     "type": "string"
+    },
+    "construct_name": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Construct Name"
+    }
+   },
+   "required": [
+    "item_id",
+    "domain",
+    "stem",
+    "answer_key"
+   ],
+   "title": "Item",
+   "type": "object"
+  },
+  "Option": {
+   "properties": {
+    "label": {
+     "title": "Label",
+     "type": "string"
+    },
+    "text": {
+     "title": "Text",
+     "type": "string"
+    },
+    "value": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Value"
+    },
+    "misconception_id": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "default": null,
+     "title": "Misconception Id"
+    },
+    "is_key": {
+     "default": false,
+     "title": "Is Key",
+     "type": "boolean"
+    }
+   },
+   "required": [
+    "label",
+    "text"
+   ],
+   "title": "Option",
+   "type": "object"
+  },
+  "PredictedAnswer": {
+   "properties": {
+    "misconception_id": {
+     "title": "Misconception Id",
+     "type": "string"
+    },
+    "value": {
+     "anyOf": [
+      {
+       "type": "string"
+      },
+      {
+       "type": "null"
+      }
+     ],
+     "title": "Value"
+    }
+   },
+   "required": [
+    "misconception_id",
+    "value"
+   ],
+   "title": "PredictedAnswer",
+   "type": "object"
+  },
+  "VerificationReport": {
+   "properties": {
+    "item_id": {
+     "title": "Item Id",
+     "type": "string"
+    },
+    "well_formed": {
+     "title": "Well Formed",
+     "type": "boolean"
+    },
+    "key_verified": {
+     "title": "Key Verified",
+     "type": "boolean"
+    },
+    "key_method": {
+     "enum": [
+      "sympy",
+      "exec",
+      "none"
+     ],
+     "title": "Key Method",
+     "type": "string"
+    },
+    "target_fires": {
+     "title": "Target Fires",
+     "type": "boolean"
+    },
+    "discriminative": {
+     "title": "Discriminative",
+     "type": "boolean"
+    },
+    "n_competitors_separated": {
+     "default": 0,
+     "title": "N Competitors Separated",
+     "type": "integer"
+    },
+    "issues": {
+     "items": {
+      "type": "string"
+     },
+     "title": "Issues",
+     "type": "array"
+    }
+   },
+   "required": [
+    "item_id",
+    "well_formed",
+    "key_verified",
+    "key_method",
+    "target_fires",
+    "discriminative"
+   ],
+   "title": "VerificationReport",
+   "type": "object"
+  }
+ },
+ "properties": {
+  "item": {
+   "$ref": "#/$defs/GeneratedItem"
+  },
+  "mode": {
+   "enum": [
+    "diagnose",
+    "remediate"
+   ],
+   "title": "Mode",
+   "type": "string"
+  },
+  "expected_info_gain": {
+   "anyOf": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Expected Info Gain"
+  },
+  "rationale": {
+   "title": "Rationale",
+   "type": "string"
+  }
+ },
+ "required": [
+  "item",
+  "mode",
+  "rationale"
+ ],
+ "title": "NextItemDecision",
+ "type": "object"
+}

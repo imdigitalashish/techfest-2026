@@ -1,0 +1,25 @@
+{
+ "properties": {
+  "misconception_id": {
+   "title": "Misconception Id",
+   "type": "string"
+  },
+  "value": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Value"
+  }
+ },
+ "required": [
+  "misconception_id",
+  "value"
+ ],
+ "title": "PredictedAnswer",
+ "type": "object"
+}

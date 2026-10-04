@@ -1,0 +1,69 @@
+{
+ "$defs": {
+  "Domain": {
+   "enum": [
+    "school_math",
+    "probability",
+    "python"
+   ],
+   "title": "Domain",
+   "type": "string"
+  }
+ },
+ "properties": {
+  "target_misconception_id": {
+   "title": "Target Misconception Id",
+   "type": "string"
+  },
+  "competitor_ids": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Competitor Ids",
+   "type": "array"
+  },
+  "domain": {
+   "$ref": "#/$defs/Domain",
+   "default": "school_math"
+  },
+  "family": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Family"
+  },
+  "n": {
+   "default": 1,
+   "title": "N",
+   "type": "integer"
+  },
+  "seed": {
+   "default": 0,
+   "title": "Seed",
+   "type": "integer"
+  },
+  "exclude_item_ids": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Exclude Item Ids",
+   "type": "array"
+  },
+  "as_mcq": {
+   "default": true,
+   "title": "As Mcq",
+   "type": "boolean"
+  }
+ },
+ "required": [
+  "target_misconception_id"
+ ],
+ "title": "GenerationRequest",
+ "type": "object"
+}

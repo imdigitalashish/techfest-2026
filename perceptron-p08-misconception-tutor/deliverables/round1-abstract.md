@@ -40,7 +40,7 @@ The obvious baseline prompts an LLM to classify and then to "write a problem abo
 - **(iii) Slip abstention.**
 
 ## Evaluation plan
-- **Classification (real Eedi data).** 129 distractors labelled with our five misconceptions: majority 30.2%, TF-IDF 38.0%, GPT-4.1-mini zero-shot 86.0% (95% CI 79.8–91.5), executable→LLM hybrid 86.8% (not a significant gain). Next: harder packs and the open-set leg (MAP@25; kNN today 0.326).
+- **Classification (real Eedi data).** 129 distractors labelled with our five misconceptions: majority 30.2%, TF-IDF 38.0%, GPT-4.1-mini zero-shot 86.0% (95% CI 79.8–92.2), executable→LLM hybrid 86.8% (not a significant gain). Next: harder packs and the open-set leg (MAP@25; kNN today 0.326).
 - **Generation.** Verified-targeted yield and discriminative rate, ours vs LLM-only, on harder families (word problems, probability); blinded teacher ratings of 50 items.
 - **Bug programs.** Real-distractor reproduction: 15.5% → 19.0% (dev split) after the first automated improvement loop.
 - **Tracing.** Next-answer log-loss on real Eedi option-level sequences vs BKT and Option Tracing.

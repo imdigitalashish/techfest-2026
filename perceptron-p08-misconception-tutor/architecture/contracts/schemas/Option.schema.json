@@ -1,0 +1,47 @@
+{
+ "properties": {
+  "label": {
+   "title": "Label",
+   "type": "string"
+  },
+  "text": {
+   "title": "Text",
+   "type": "string"
+  },
+  "value": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Value"
+  },
+  "misconception_id": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Misconception Id"
+  },
+  "is_key": {
+   "default": false,
+   "title": "Is Key",
+   "type": "boolean"
+  }
+ },
+ "required": [
+  "label",
+  "text"
+ ],
+ "title": "Option",
+ "type": "object"
+}

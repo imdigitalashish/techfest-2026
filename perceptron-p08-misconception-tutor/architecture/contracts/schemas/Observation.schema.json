@@ -1,0 +1,47 @@
+{
+ "properties": {
+  "item_id": {
+   "title": "Item Id",
+   "type": "string"
+  },
+  "session_id": {
+   "title": "Session Id",
+   "type": "string"
+  },
+  "correct": {
+   "title": "Correct",
+   "type": "boolean"
+  },
+  "answer_value": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Answer Value"
+  },
+  "matched_misconceptions": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Matched Misconceptions",
+   "type": "array"
+  },
+  "timestamp": {
+   "format": "date-time",
+   "title": "Timestamp",
+   "type": "string"
+  }
+ },
+ "required": [
+  "item_id",
+  "session_id",
+  "correct",
+  "answer_value"
+ ],
+ "title": "Observation",
+ "type": "object"
+}

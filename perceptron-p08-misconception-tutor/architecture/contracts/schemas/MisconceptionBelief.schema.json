@@ -1,0 +1,38 @@
+{
+ "properties": {
+  "misconception_id": {
+   "title": "Misconception Id",
+   "type": "string"
+  },
+  "p_holds": {
+   "maximum": 1.0,
+   "minimum": 0.0,
+   "title": "P Holds",
+   "type": "number"
+  },
+  "n_evidence": {
+   "default": 0,
+   "title": "N Evidence",
+   "type": "integer"
+  },
+  "last_updated": {
+   "anyOf": [
+    {
+     "format": "date-time",
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Last Updated"
+  }
+ },
+ "required": [
+  "misconception_id",
+  "p_holds"
+ ],
+ "title": "MisconceptionBelief",
+ "type": "object"
+}

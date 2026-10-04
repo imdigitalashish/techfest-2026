@@ -1,0 +1,43 @@
+{
+ "properties": {
+  "raw": {
+   "title": "Raw",
+   "type": "string"
+  },
+  "value": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "title": "Value"
+  },
+  "parse_ok": {
+   "title": "Parse Ok",
+   "type": "boolean"
+  },
+  "kind": {
+   "enum": [
+    "number",
+    "fraction",
+    "expression",
+    "option",
+    "text",
+    "code_output"
+   ],
+   "title": "Kind",
+   "type": "string"
+  }
+ },
+ "required": [
+  "raw",
+  "value",
+  "parse_ok",
+  "kind"
+ ],
+ "title": "NormalizedAnswer",
+ "type": "object"
+}

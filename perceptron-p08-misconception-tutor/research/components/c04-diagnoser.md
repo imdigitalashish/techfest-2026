@@ -16,7 +16,7 @@ Contracts: [`architecture/components.md`](../../architecture/components.md). Sou
 | Open-set dense retriever (Qwen3-Embedding) + LLM rerank to approach Eedi-winner MAP@25 | 3 | 1 | 4 | 5 | 2 | 15 |
 
 ## Isolated metric — current value
-MVP closed set (real, n=129): majority **30.2%**, TF-IDF **38.0%**, exec->TF-IDF hybrid **45.7%**, GPT-4.1-mini zero-shot **86.0%** (95% CI 79.8–91.5), exec->LLM hybrid **86.8%** (81.4–92.2; +1 item, not significant). Exec path right 21/21 when it fires. Open set (real, 904 held-out pairs, 388 questions, 27.9% unseen labels): BM25 MAP@25 **0.093**, TF-IDF **0.120**, kNN over training labels **0.326**, TF-IDF+kNN Recall@25 **0.654**.
+MVP closed set (real, n=129): majority **30.2%**, TF-IDF **38.0%**, exec->TF-IDF hybrid **45.7%**, GPT-4.1-mini zero-shot **86.0%** (95% CI 79.8–92.2), exec->LLM hybrid **86.8%** (80.6–92.2; +1 item, not significant). Exec path right 21/21 when it fires. Open set (real, 904 held-out pairs, 388 questions, 27.9% unseen labels): BM25 MAP@25 **0.093**, TF-IDF **0.120**, kNN over training labels **0.326**, TF-IDF+kNN Recall@25 **0.654**.
 
 ## Next
 Add the LLM leg (Azure OpenAI) and a dense retriever; report hybrid gains with bootstrap CIs.

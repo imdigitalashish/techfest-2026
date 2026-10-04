@@ -1,0 +1,45 @@
+{
+ "properties": {
+  "learner_id": {
+   "title": "Learner Id",
+   "type": "string"
+  },
+  "session_id": {
+   "title": "Session Id",
+   "type": "string"
+  },
+  "item_id": {
+   "title": "Item Id",
+   "type": "string"
+  },
+  "answer_raw": {
+   "title": "Answer Raw",
+   "type": "string"
+  },
+  "explanation": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Explanation"
+  },
+  "timestamp": {
+   "format": "date-time",
+   "title": "Timestamp",
+   "type": "string"
+  }
+ },
+ "required": [
+  "learner_id",
+  "session_id",
+  "item_id",
+  "answer_raw"
+ ],
+ "title": "Response",
+ "type": "object"
+}

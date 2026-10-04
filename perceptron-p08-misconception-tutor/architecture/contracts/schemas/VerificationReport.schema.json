@@ -1,0 +1,55 @@
+{
+ "properties": {
+  "item_id": {
+   "title": "Item Id",
+   "type": "string"
+  },
+  "well_formed": {
+   "title": "Well Formed",
+   "type": "boolean"
+  },
+  "key_verified": {
+   "title": "Key Verified",
+   "type": "boolean"
+  },
+  "key_method": {
+   "enum": [
+    "sympy",
+    "exec",
+    "none"
+   ],
+   "title": "Key Method",
+   "type": "string"
+  },
+  "target_fires": {
+   "title": "Target Fires",
+   "type": "boolean"
+  },
+  "discriminative": {
+   "title": "Discriminative",
+   "type": "boolean"
+  },
+  "n_competitors_separated": {
+   "default": 0,
+   "title": "N Competitors Separated",
+   "type": "integer"
+  },
+  "issues": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Issues",
+   "type": "array"
+  }
+ },
+ "required": [
+  "item_id",
+  "well_formed",
+  "key_verified",
+  "key_method",
+  "target_fires",
+  "discriminative"
+ ],
+ "title": "VerificationReport",
+ "type": "object"
+}
