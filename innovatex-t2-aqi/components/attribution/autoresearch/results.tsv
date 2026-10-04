@@ -5,3 +5,4 @@ timestamp_ist	commit	hypothesis	method	dev_scalar_MAE	test_scalar_MAE	delta_dev_
 2026-10-04T08:03	fb8dbd4	EVALUATOR v1 (lead): 5 seeds; bounded sensor drift (v0 drift was unbounded 5%/month → negative slopes, NaN; v0 rows above are NOT comparable)	pair_fixed	115.09±24.19	97.84±15.63	—	baseline v1	CSI>50 dev 0.30 test 0.34; cov 1.00
 2026-10-04T08:03	fb8dbd4	ring (v1 evaluator)	ring	57.99±16.18	57.96±15.95	-57.10	kept	CSI>50 dev 0.56 test 0.58; cov 0.95
 2026-10-04T08:03	fb8dbd4	ring + idle-hour self-calibration (+ guards: median≥1, ratio clipped 0.2–5)	ring_selfcal	30.89±1.83	33.82±2.57	-27.10	kept (CANDIDATE)	CSI>50 dev 0.77 test 0.76; cov 0.95
+2026-10-04T08:24	63a91df	r2: max of the top-2 downwind nodes minus up-most (oblique winds)	ring_selfcal_top2	30.69±1.92	33.80±2.87	-0.20	NOT kept (below 1 µg/m³ noise bar; reverted)	CSI>50 dev 0.74 test 0.75 (slightly worse than CANDIDATE)
