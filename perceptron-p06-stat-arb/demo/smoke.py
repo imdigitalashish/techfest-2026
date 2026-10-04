@@ -13,7 +13,7 @@
    - the flattened models equal lev_*.npz.
 4. Browser (demo/browser_check.py, headless Chrome; skipped if none is installed): race setup, race length within the
    presenter deadline, and honest labels after the backend is killed.
-5. Copy guard: wording withdrawn after the demo review must not come back.
+5. Copy guard: wording withdrawn after the demo review must not come back; the talk track stays ≤ 350 spoken words.
 """
 from __future__ import annotations
 
@@ -83,6 +83,11 @@ def static_checks(P: dict) -> None:
     hits = [f"{w!r} in {f} ({banned[w]})" for f in ("app.js", "index.html", "SCRIPT.md", "fallback/README.md")
             for w in banned if os.path.exists(os.path.join(DEMO, f)) and w in open(os.path.join(DEMO, f)).read()]
     ok("copy guard: wording withdrawn after the demo review is absent", not hits, "; ".join(hits) if hits else f"{len(banned)} phrases")
+    rows = [[c.strip() for c in l.strip().strip("|").split("|")] for l in open(os.path.join(DEMO, "SCRIPT.md")).read().splitlines()
+            if re.match(r"^\| \d:\d\d", l)]
+    spoken = sum(len(c[2].split()) for c in rows if c[2] != "—")
+    ok("talk track fits 3:00: spoken words ≤ 350 and the last row ends at 3:00 (D11)",
+       bool(rows) and spoken <= 350 and rows[-1][0].endswith("3:00"), f"{spoken} spoken words in {len(rows)} timed rows (≈ {spoken / 3:.0f} s at 180 wpm)")
     m = P["meta"]
     ok("episode count matches meta and provenance", len(P["episodes"]["t_us"]) == m["window_episodes"] == prov["window"]["episodes"],
        f"{m['window_episodes']} episodes in the window")

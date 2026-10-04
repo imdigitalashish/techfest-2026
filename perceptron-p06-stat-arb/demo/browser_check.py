@@ -5,7 +5,8 @@ dependencies). Used by demo/smoke.py. Skipped, and reported as skipped, when no 
 Covers the stage-safety and state findings of reviews/2026-10-04-demo-gpt-6-astra.md:
   D02  sweeping to δ = 20 ms and pressing Start races at the named setup (frozen · 1 bp · 1 ms);
   D01  five trials with ~300 ms presses finish within the presenter deadline; every trial is logged;
-  D04  after the backend dies, the page notices without interaction, and no label still claims live computation;
+  D04  after the backend dies, the page notices without interaction and, before anything is touched, no label (the
+       finished race included) still claims live computation; after a δ change the race is rescored offline;
   D10  the offline race summary names the committed p50 as the ratio's base.
 """
 from __future__ import annotations
@@ -14,6 +15,7 @@ import asyncio
 import glob
 import json
 import os
+import re
 import shutil
 import signal
 import subprocess
@@ -72,6 +74,20 @@ class Page:
         raise TimeoutError(f"timed out after {timeout:.0f} s waiting for: {expr[:120]}")
 
 
+LABELS_JS = """({mode: document.getElementById('mode').textContent, ok: document.getElementById('liveok').textContent,
+    scope: document.getElementById('scope').textContent, rule: document.getElementById('raceRule').textContent,
+    status: document.getElementById('raceStatus').textContent, setup: document.getElementById('raceSetup').textContent,
+    two: document.getElementById('two').textContent, trials: document.getElementById('trials').textContent,
+    summary: document.getElementById('raceSummary').textContent, big: document.getElementById('bigcmp').textContent,
+    cards: [...document.querySelectorAll('.card')].map(c => c.textContent).join(' ')})"""
+LIVE_CLAIM = re.compile(r"\bLIVE\b|measured live|recomputed live|live p50|\bLive:|\blive ·|\(live\)|median, exact|exact RT")
+
+
+def live_claims(labels: dict) -> list[str]:
+    """Labels that still claim live computation, as 'label: matched text'."""
+    return [f"{k}: {m.group(0)!r}" for k, v in labels.items() for m in [LIVE_CLAIM.search(v)] if m]
+
+
 SET_DELTA = "(d => { const s = document.getElementById('delta'); s.value = P6_DATA.meta.deltas_ms.indexOf(d); s.dispatchEvent(new Event('input')); })"
 PRESS = "document.dispatchEvent(new KeyboardEvent('keydown', {code: 'Space', key: ' ', bubbles: true}))"
 
@@ -117,23 +133,35 @@ async def scenario(cdp_port: int, url: str, kill_backend, ok) -> None:
             ok("browser: race scored live at the race setup; machine selector = exported grid",
                r["src"] == "live" and r["sim"] == "frozen" and r["d"] == 1 and abs(r["machThr"] - r["gridThr"]) < 1e-6, f"machine threshold {r['machThr']:+.2f} USD")
 
-            # D04: kill the backend; the heartbeat must notice without any interaction
+            # sanity: before the kill, the race panel does carry live labels (so the checks below can fail)
+            before = await pg.ev(LABELS_JS)
+            ok("browser: before the loss the race panel is labelled live (precondition)",
+               bool(live_claims({k: before[k] for k in ("status", "two", "summary")})), before["status"])
+
+            # D04: kill the backend and touch NOTHING: the heartbeat must notice, and every label, the finished race
+            # included, must stop claiming live computation without any interaction
             t1 = time.time()
             kill_backend()
             await pg.wait("P6_STATE.conn === 'lost'", 15)
             ok("browser: backend loss detected without interaction", True, f"{time.time() - t1:.1f} s after the kill")
-            await pg.ev(f"{SET_DELTA}(5)")
-            await pg.wait("P6_STATE.race.result && P6_STATE.race.result.src === 'grid' && P6_STATE.race.result.d === 5", 10)
-            lab = await pg.ev("""({mode: document.getElementById('mode').textContent, ok: document.getElementById('liveok').textContent,
-                scope: document.getElementById('scope').textContent, rule: document.getElementById('raceRule').textContent,
-                cards: [...document.querySelectorAll('.card')].map(c => c.textContent).join(' '), status: document.getElementById('raceStatus').textContent,
-                big: document.getElementById('bigcmp').textContent, summary: document.getElementById('raceSummary').textContent})""")
-            stale = [k for k, v in lab.items() if "measured live" in v or "LIVE recompute" in v or "recomputed live" in v or "live p50" in v]
-            ok("browser: after the loss no label claims live computation",
+            await pg.wait("P6_STATE.race.result && P6_STATE.race.result.src === 'grid'", 5)
+            lab = await pg.ev(LABELS_JS)
+            stale = live_claims(lab)
+            ok("browser: untouched after the loss, no label (race panel included) claims live computation",
                "OFFLINE" in lab["mode"] and "lost" in lab["mode"] and "exported grid" in lab["ok"] and "backend lost" in lab["scope"]
-               and "offline" in lab["status"] and "exported grid" in lab["big"] and not stale, f"badge '{lab['mode']}'" + (f"; stale: {stale}" if stale else ""))
+               and "scored after the backend was lost" in lab["status"] and "Offline:" in lab["summary"] and "exported grid" in lab["big"]
+               and "compute allowance" in lab["two"] and not stale,
+               f"race status '{lab['status']}'" + (f"; stale: {stale}" if stale else ""))
             ok("browser: offline race ratio is against the committed p50, outcomes at the 7 µs allowance (D10)",
                "committed decision-step p50" in lab["summary"] and "7 µs allowance" in lab["summary"], "")
+
+            # then change δ offline: the same reaction times are rescored on the grid and the labels stay offline
+            await pg.ev(f"{SET_DELTA}(5)")
+            await pg.wait("P6_STATE.race.result && P6_STATE.race.result.src === 'grid' && P6_STATE.race.result.d === 5", 10)
+            lab2 = await pg.ev(LABELS_JS)
+            stale2 = live_claims(lab2)
+            ok("browser: after changing δ offline, the race is rescored at 5 ms and labels stay offline",
+               "δ = 5 ms" in lab2["summary"] and "OFFLINE" in lab2["mode"] and not stale2, "; ".join(stale2))
             errs = await pg.ev("window.__p6errors ? window.__p6errors.length : 0")
             ok("browser: no uncaught page errors", errs == 0, f"{errs} error(s)")
 

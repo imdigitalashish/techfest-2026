@@ -255,7 +255,7 @@ window.addEventListener("unhandledrejection", e => window.__p6errors.push(String
   const P50_COMMITTED_US = C.decision_timing.in_kernel_ns.p50 / 1e3;
   const SCEN_N = `${M.fees.length * M.reg_deltas_ms.length} fee/latency scenarios`;
   const SCEN = `${SCEN_N} (${M.fees.join(" and ")} bp/leg × δ ${M.reg_deltas_ms.join(", ")} ms)`;
-  const RACE = { sim: "frozen", fee: M.race_fee, delta: 1, n: 5, deadlineS: 45, lead: [1500, 4000], timeoutMs: 2000 };
+  const RACE = { sim: "frozen", fee: M.race_fee, delta: 1, n: 5, deadlineS: 45, cueS: 30, lead: [1500, 4000], timeoutMs: 2000 };
 
   // ---------------------------------------------------------------- data decoding
   const Q = LEGS.map(l => {
@@ -373,6 +373,8 @@ window.addEventListener("unhandledrejection", e => window.__p6errors.push(String
     if (!(S.conn === "live" || S.conn === "warming")) return;
     S.lostAt = wallClock(); S.liveRes = null; S.timing = null; S.liveSeq++;
     setConn("lost", reason); pollLater(5000);
+    // a finished race is rescored on the exported grid at once, so its labels never keep claiming live computation
+    if (S.race && !racing() && S.race.trials.length) scoreRace(false);
   }
   function setConn(state, detail = "") {
     const was = S.conn + "|" + S.connDetail;
@@ -684,8 +686,10 @@ window.addEventListener("unhandledrejection", e => window.__p6errors.push(String
       document.querySelector(".panel.replay").classList.add("flashing");
       showFlash("flash", `NOW · buy ${NAME[LEGS[R.target.b]]} / sell ${NAME[LEGS[R.target.s]]} · +${R.target.edge.toFixed(2)} bp`);
     } else if (R.state === "flash" && now - R.flashAt > RACE.timeoutMs) record(RACE.timeoutMs, true);
-    const txt = `race clock ${((now - R.t0) / 1000).toFixed(0)} s of ${RACE.deadlineS} s · trial ${Math.min(R.trials.length + 1, RACE.n)}/${RACE.n}`;
-    $("raceClock").textContent = txt;
+    const el = (now - R.t0) / 1000, late = el >= RACE.cueS;
+    $("raceClock").textContent = `race clock ${el.toFixed(0)} s of ${RACE.deadlineS} s · trial ${Math.min(R.trials.length + 1, RACE.n)}/${RACE.n}` +
+      (late ? ` · past ${RACE.cueS} s: Stop now keeps the talk to 3 min` : "");
+    $("raceClock").classList.toggle("warn", late);
   }
   function press(ts) {
     const R = S.race;
@@ -710,7 +714,7 @@ window.addEventListener("unhandledrejection", e => window.__p6errors.push(String
     $("flash").className = "flash hidden"; document.querySelector(".panel.replay").classList.remove("flashing");
     $("raceStop").disabled = true; $("raceBtn").disabled = false; $("raceBtn").textContent = "Start a new race (5 trials)";
     for (const b of $("steps").children) b.disabled = false; $("viewToggle").disabled = false;
-    $("raceClock").textContent = `finished in ${R.wallS.toFixed(1)} s · ${reason}`;
+    $("raceClock").textContent = `finished in ${R.wallS.toFixed(1)} s · ${reason}`; $("raceClock").classList.remove("warn");
     renderTrials(); renderRaceSetup(); renderRaceStatus();
     if (R.trials.length) await scoreRace(true);
     else { renderTwo(); $("raceSummary").innerHTML = "No completed trials, so there is nothing to score."; }
@@ -780,17 +784,22 @@ window.addEventListener("unhandledrejection", e => window.__p6errors.push(String
   function renderRaceStatus() {
     const R = S.race; let t = "";
     if (racing()) t = `trial ${Math.min(R.trials.length + 1, RACE.n)} of ${RACE.n}`;
-    else if (R && R.result) t = R.result.src === "live" ? `live · ${R.result.at}` : `offline grid · ${R.result.at}`;
+    else if (R && R.result) t = R.result.src === "live" ? `live · ${R.result.at}`
+      : S.conn === "lost" ? `offline grid · scored after the backend was lost at ${S.lostAt}` : `offline grid · ${R.result.at}`;
     $("raceStatus").textContent = t;
   }
   function renderTrials() {
     const R = S.race, tb = $("trials").querySelector("tbody"); tb.innerHTML = ""; if (!R) return;
     const SHORT = { "-1": "not sent", 0: "✗ missed", 1: "½ sell leg only", 2: "½ buy leg only", 3: "✓ both filled" };
     const cell = o => `<span style="color:${OCG[o.oc][1]}">${SHORT[o.oc]}</span> <b class="${o.pnl >= 0 ? "pos" : "neg"}">${fmtUsd(o.pnl, 2)}</b>`;
-    let k = 0;
+    let k = 0, fsRow = null, fsN = 0;
     for (const t of R.log) {
+      if (t.kind === "false" && fsRow) {        // consecutive false starts share one row, with their count
+        fsN++; fsRow.cells[1].textContent = `false start ×${fsN} (pressed before the flash): each logged, re-armed with a new opportunity`; continue;
+      }
+      fsRow = null; fsN = 0;
       const tr = document.createElement("tr");
-      if (t.kind === "false") tr.innerHTML = `<td>—</td><td colspan="4" class="warn">false start (pressed before the flash): logged, re-armed with a new opportunity</td>`;
+      if (t.kind === "false") { fsRow = tr; fsN = 1; tr.innerHTML = `<td>—</td><td colspan="4" class="warn">false start (pressed before the flash): logged, re-armed with a new opportunity</td>`; }
       else if (t.kind === "abandoned") tr.innerHTML = `<td>${t.n}</td><td colspan="4" class="warn">trial not completed: ${t.reason}</td>`;
       else {
         const i = k++, res = R.result && R.result.trials[i], d = R.result ? R.result.d : delta(), gone = t.dur < 2 * d + t.rt;
