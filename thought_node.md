@@ -6,23 +6,20 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (19:14 IST, 4 Oct)
+## Now (20:04 IST, 4 Oct)
 - **Mode:** play to WIN. Every project gets a PLAYBOOK §11 demo, and demos open on real data. At most 5 running at once.
-- **Running (5):**
-  - P2:
-    - Everything is done except the Astra demo review, then DONE.
-    - Sol reproduced 320/320 rows bit for bit. Astra scored the abstract 70/100.
-    - VM `p02-kv-1` is **deallocated**; the disk is kept for the finals.
-    - The paraphrase (T2) result is now led by the 32-token re-check: full cache 67% vs RoD 75%, exploratory.
-  - P6 demo: the review was triaged 10/10 and the clean-checkout smoke passes 18/18. DEMO DONE is due.
-  - P7 demo: opens on the real NYC July-4 surge; SCRIPT.md is written.
-  - P10 demo: Astra review in; triage under way.
-  - India@71 T1 demo:
-    - Opens on real NFHS-5 district rates, spot-verified 24/24.
-    - Then shows the verified 36-state gap between Poshan Tracker and NFHS-5.
-    - The children in the drill-down are simulated.
-- **Demo queue:** P9 → P1 → P3 → P8 → P4 → P5 → India@71 T3, then I check InnovateX T1–T3, EV C1/C2, India@71 T2 and Namma myself.
-- **Completed — awaiting your review (18):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6 · InnovateX T2 · India@71 T2 · P8 · InnovateX T3.
+- **Round 1: 19 of 20 done.** APCTT is gated on its 10 Oct data and needs your registration by 9 Oct.
+- **Demos done (2):**
+  - P10 "Break the band".
+  - P2: a memory slider, with its caveats shown on screen.
+- **Demos running (5):**
+  - P6: smoke 28/28 after its review fixes; DEMO DONE is due.
+  - P7: NYC July-4 opening; fixing its 10/10 accepted review items.
+  - India@71 T1: real NFHS-5 opening; review 12/12 accepted; eval_v2 sends infants under 6 months to the protocol pathway.
+  - P9: real τ-bench replay; an order-id laundering bypass was found and fixed, with committed decisions unchanged (991/991).
+  - P1: "unplug the tablet".
+- **Demo queue:** P3 → P8 → P4 → P5 → India@71 T3. Then I check InnovateX T1–T3, EV C1/C2, India@71 T2 and Namma myself.
+- **Estimate:** all demos done around midnight–2 AM.
 - **Azure:** P8's pay-per-token OpenAI resource. P2's VM is deallocated, with its disk kept.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
@@ -116,6 +113,9 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 20:04 IST — Sweep
+- P9: a demo-prep probe found an order-id laundering bypass in the retail guard. Fixed with regression tests; I checked that the committed τ-bench decisions are identical (991/991).
+- India@71 T1: eval_v2 (infant gate) → rule 0.473 vs programme 0.413 vs ML 0.430, disclosed in the proposal. The PDF is re-rendered at 6 pages and check_docs passes 20/20.
 ### 2026-10-04 19:58 IST — P2 completed + demo done (19 of 20 Round-1; 2 demos)
 - **P2 DONE (5aeb88f), verified:**
   - check_docs OK. Ledger: 2 sol reviews and 3 astra reviews.
