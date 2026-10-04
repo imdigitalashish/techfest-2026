@@ -69,6 +69,17 @@ def main():
     else:
         verdict = "consistent with concave, square-root-like impact"
     res["verdict"] = verdict
+    # POST HOC (not pre-registered), labelled as such in every output:
+    resolved = [i for i in range(len(a.qs)) if res["peak_ci95"][i][0] > 0]
+    res["post_hoc"] = dict(
+        note="not pre-registered; added after seeing E7",
+        resolved_sizes=[a.qs[i] for i in resolved],
+        delta_resolved=slope(np.log(part[resolved]), np.log(m[resolved])) if len(resolved) >= 2 else None,
+        doubling_ratios=[float(m[i + 1] / m[i]) if m[i] > 0 else None for i in range(len(a.qs) - 1)],
+        sqrt_law_doubling_ratio=float(np.sqrt(2)),
+        post_gap_mean_cents=[float(post[i].mean()) for i in range(len(a.qs))],
+        post_gap_ci95=[[float(np.percentile(post[i, idx].mean(1), 2.5)), float(np.percentile(post[i, idx].mean(1), 97.5))]
+                       for i in range(len(a.qs))])
     json.dump(res, open(os.path.join(ROOT, "eval", "results", "realism_scorecard.json"), "w"), indent=1)
     lines = ["# Realism scorecard (pre-registered E7): impact vs size, TWAP, synced twins", "",
              f"Seeds {seeds[0]}–{seeds[-1]} (n = {len(seeds)} per size, same seeds at every size); "
@@ -82,6 +93,14 @@ def main():
     lines += ["", f"**δ = {dtxt}**, 95% paired-bootstrap CI [{lo:.3f}, {hi:.3f}] "
               f"({res['boot_valid_frac']:.0%} of resamples had positive impact at every size). "
               f"Square-root law: δ ≈ 0.5. **Verdict (pre-registered rule): {verdict}.**"]
+    ph = res["post_hoc"]
+    dr = ", ".join("n/a" if r is None else f"×{r:.2f}" for r in ph["doubling_ratios"])
+    pg = ", ".join(f"{q}: {g:+.2f} [{c[0]:+.2f}, {c[1]:+.2f}]" for q, g, c in zip(a.qs, ph["post_gap_mean_cents"], ph["post_gap_ci95"]))
+    dres = "n/a" if ph["delta_resolved"] is None else f"{ph['delta_resolved']:.2f}"
+    lines += ["", "**Post hoc (not pre-registered).** The rule above is lenient: it accepts any CI overlapping [0.3, 0.7]. "
+              f"Impact ratio per size doubling: {dr} (square-root law: ×{ph['sqrt_law_doubling_ratio']:.2f}; linear: ×2). "
+              f"Slope over the sizes whose peak CI excludes 0 ({ph['resolved_sizes']}): δ = {dres}. "
+              f"Twin gap 10 min after completion, ¢ (mean [95% CI]): {pg}."]
     open(os.path.join(ROOT, "eval", "results", "realism_scorecard.md"), "w").write("\n".join(lines) + "\n")
     print("\n".join(lines))
 

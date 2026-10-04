@@ -57,6 +57,11 @@ On fresh test seeds 1060–1259 (n = 200) with synced twins, IA_sched_only has m
   - δ CI below 0.3, or I(Q) not increasing: "impact saturates or is unresolved" (flag).
 - **Command:** `for q in 1000 2000 4000 8000 16000; do nice -n 10 .venv/bin/python eval/run_experiment.py --exp E7_size_q$q --seeds 100:130 --qty $q --policies eval/policies/twap_only.json --workers 4 --rng-sync per_wakeup; done; .venv/bin/python eval/realism.py --qs 1000 2000 4000 8000 16000`.
 
+**Outcome (appended 13:20 IST; registration text above unchanged):**
+- δ = 1.006, 95% paired-bootstrap CI [0.546, 1.760] (75% of resamples had positive impact at every size). **The verdict under the registered rule is "consistent with concave, square-root-like impact", but only because the rule accepts any CI that overlaps [0.3, 0.7].** The rule was too lenient; that is our mistake, reported rather than re-scored.
+- Honest reading: the point estimate is near-linear. Post hoc, not pre-registered: impact grows ×2.00, ×2.34, ×1.85, ×1.82 per size doubling (square-root law: ×1.41), and the slope over the three resolved sizes is δ = 0.87.
+- Ten minutes after completion the twin gap is ≤ 0 at every size, with every CI including 0: no detectable permanent impact. See `eval/results/realism_scorecard.md`.
+
 ---
 
 ## E9 — Synced calibration of the own-impact kernel (C4 isolated metric) (registered 2026-10-04 13:00 IST)
@@ -65,6 +70,12 @@ On fresh test seeds 1060–1259 (n = 200) with synced twins, IA_sched_only has m
 - **Success criterion:** r2_mean_path > 0 for both TWAP and PROBE held-out paths, i.e. the kernel predicts our average footprint better than a constant.
 - **Command:** `nice -n 10 .venv/bin/python eval/run_experiment.py --exp E9_calib_sync --seeds 0:40 --qty 4000 --policies eval/policies/calib.json --workers 4 --rng-sync per_wakeup && .venv/bin/python eval/calibrate.py --exp E9_calib_sync --out calibration_sync.json`.
 - **Note:** `eval/policies/test.json` and `confirm.json` keep using the naive-twin calibration (`calibration.json`) so E3–E6 stay reproducible; the synced kernel is reported, not swapped in.
+
+**Outcome (appended 13:21 IST):** **success criterion NOT met.**
+- r2_mean_path: TWAP −0.02, PROBE −0.41 (naive E1: −2.89 / −4.19).
+- Per-seed RMSE: 4.24¢ / 4.06¢ (naive: 19.85¢ / 19.42¢), about 4.7× lower.
+- Synced kernel: τ = 180 s, g_tr = 0.0067¢/share, g_perm ≈ −0.0003 (≈ 0, consistent with E7's fully transient impact).
+- The exponential propagator does not yet predict our average footprint better than a constant. See `eval/results/calibration_sync.json`.
 
 ---
 
