@@ -6,14 +6,12 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (11:08 IST, 4 Oct)
+## Now (11:55 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
-- **Active:** Namma Space · P7 (Perceptron) · EV C2 (EV pick) · InnovateX T1 JalSakshi (zonal deck due 9 Oct) · P9 (Perceptron alternate).
-- **Completed — awaiting your review:** India@71 T1 (proposal PDF, 6 pages).
-- **Queue:** APCTT (when the 10 Oct data lands) → P1.
-- **Perceptron pick (12 Oct) is open:**
-  - P7's detector spike failed its pre-registered replication. Its robust claim (planning beats rules, including a +2.5 pp real NYC replay) and all headline numbers were independently reproduced.
-  - P9's real τ-bench errors: 36–43% harmful-catch at 1.85% false-block (vs 100% on its own synthetic tests).
+- **Active:** Namma Space (has GPU priority; P1 and P9 GPU jobs SIGSTOP-frozen until its Brush run ends) · InnovateX T1 (deck ready; final review applying) · P9 (final abstract; frontier-judge baseline running on Azure gpt-4.1-mini) · P1 · P4.
+- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7.
+- **Queue:** APCTT (when the 10 Oct data lands) → P10 → P5 → P3 → EV C1 → India@71 T3 → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
+- **Needs you today:** a 2-min mini-SOP test clip for Namma Space (see its Inbox / my chat message); Delhi zonal registration by 9 Oct.
 
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
@@ -64,6 +62,11 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 11:55 IST — Sweep
+- EV C2 (11:12) and P7 (11:17) completed and verified; P1 and P4 resumed.
+- P9's real-error results: 36–43% harmful-catch at 1.85% false-block. Against a small (1.7B) LLM judge at a matched stop rate, P9 stops 48% of harmful calls vs 28%. A frontier-judge baseline (Azure gpt-4.1-mini, full and cascade) is running to rule out a strawman comparison.
+- Namma got cross-project GPU priority for its end-to-end run. Its earlier 0.788→0.970 result was dropped after it found leakage.
+- P4 corrected my data-size assumption (20–40 MB/day; 46 free days) and verified the Binance fees at the primary source.
 ### 2026-10-04 11:17 IST — P7 completed
 Verified on main: abstract v1.2 (~880–900 words, [TEAM] placeholders), architecture, Q&A prep (15), 5 reviews + ledger. Headline numbers match `eval/results` (confirmatory +3.7 pp shock / +5.47 [+5.36, +5.59] shock+drift, 30/30, Holm; NYC replays +2.5 and +1.52 pp). Detector spike failed its pre-registered replication; re-scoped to decision-aware forecast trust (pre-registered test). Marked ✅ Completed. P4 resumed into the free slot.
 ### 2026-10-04 11:12 IST — EV C2 completed
