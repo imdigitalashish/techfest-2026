@@ -201,3 +201,15 @@ Model API returned "408 Timed out reading request body" for most agents (network
   - **Screens:** REAL first (3 baselines, 304-item browser), LIVE, CASCADE, SYNTHETIC (labelled).
   - **Builder's finding:** GPT-5.5's 2/40 changed diagnoses fall on items our parser can't read, where the engine abstains, so "ask it again" stays an honest beat and not the headline.
   - Approval conditions: conditional prediction wording, honesty labels (POST HOC; routing by construction; replayed), and no local text in front of judges.
+
+### 2026-10-04 22:27 IST — Demo built (builder) and verified by the lead from clean clones
+- **Builder commits:** `70853118` (engine, export, server, page, run/smoke, README, SCRIPT) and `69eb602e` (polish + 15 no-text fallback screenshots + offline page).
+- **My verification** (fresh clones of origin/main in /tmp, `nice -n 10`, memory guard):
+  - `demo/smoke.sh`: 49/49 PASS without `.data/`, 53/53 PASS with it. Includes: live engine = export 304/304; leak guard clean over 238 Eedi snippets in 14 demo files; all 21 knob settings equal the committed aggregates.
+  - `demo/run.sh` first visual: HTTP 200 + `/api/health` after **2.7 s from a fresh clone, including venv creation** (bar ≤60 s), no-text mode, 0 LLM calls.
+  - The server moves to a free port when 8765 is busy; another session's `http.server` on 8765 was left alone.
+- **Fallback screenshots** inspected by eye (01 REAL scoreboard, 03 REAL item 1195_B, 06 LIVE sealed prediction, 11 CASCADE budget):
+  - no Eedi item text; the step trace is on our own question;
+  - honest labels: LIVE/our own questions, "certificate is evidence, not proof", conditional seal, "Post hoc … saving 6.2%";
+  - numbers match committed results.
+- **Launched** the gpt-6-astra demo review (child "P8 demo review (astra)", `c70bf69a`).
