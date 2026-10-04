@@ -20,56 +20,66 @@ def j(p: Path) -> dict:
     return json.loads(p.read_text())
 
 
-def p0(x: float) -> str:
-    return f"{round(100 * x)}%"
+def counts(path: Path) -> dict:
+    """Row-level counts, so quoted percentages are computed once from integers (no double rounding)."""
+    d = j(path)
+    rows = d["rows"]
+    good = [r for r in rows if r["kind"] == "good"] if "kind" in rows[0] else [r for r in rows if r["should_execute"]]
+    bad = [r for r in rows if r["kind"] == "bad_harmful"] if "kind" in rows[0] else [r for r in rows if not r["should_execute"]]
+    return {"n": len(rows), "good": len(good), "bad": len(bad),
+            "stop": sum(r["decision"] != "allow" for r in bad), "hard": sum(r["decision"] == "block" for r in bad),
+            "fb": sum(r["decision"] == "block" for r in good), "hold": sum(r["decision"] == "escalate" for r in good),
+            "good_stop": sum(r["decision"] != "allow" for r in good), "m": d["metrics"]}
 
 
-def p1(x: float) -> str:
-    return f"{100 * x:.1f}%"
+def pc(k: int, n: int, nd: int = 0) -> str:
+    v = 100 * k / n
+    return f"{v:.{nd}f}%" if nd else f"{int(v + 0.5)}%"
 
 
-def ci0(ci: list[float]) -> str:
-    return f"{round(100 * ci[0])}–{round(100 * ci[1])}"
+def ci(c: list[float]) -> str:
+    return f"{int(100 * c[0] + 0.5)}–{int(100 * c[1] + 0.5)}"
 
 
 def claims() -> list[tuple[Path, str]]:
-    v0, bal = j(T / "t0_v0__test.json")["metrics"], j(T / "t0_balanced__test.json")["metrics"]
-    sch = j(T / "schema__test.json")["metrics"]
-    dev = j(T / "t0_balanced__dev.json")["metrics"]
-    judge = j(T / "llm_judge__test__sample300.json")["metrics"]
-    casc = j(T / "cascade_fast__test__sample300.json")["metrics"]
-    bal_s = j(T / "t0_balanced__test__sample300.json")["metrics"]
-    fr = j(T / "frontier__test__sample300.json")
-    astra = j(R / "t0__test__astra_redteam.json")["metrics"]
-    astra_schema = j(R / "schema__test__astra_redteam.json")["metrics"]
-    synth = j(R / "t0__test.json")["metrics"]
+    v0, bal = counts(T / "t0_v0__test.json"), counts(T / "t0_balanced__test.json")
+    dev, sch = counts(T / "t0_balanced__dev.json"), counts(T / "schema__test.json")
+    bs, jd = counts(T / "t0_balanced__test__sample300.json"), counts(T / "llm_judge__test__sample300.json")
+    astra = counts(R / "first_run" / "t0__test__astra_redteam.json")
+    synth = counts(R / "t0__test.json")
     audit = (ROOT / "eval" / "taubench" / "audit-test-misses.md").read_text()
     n_user = len(re.findall(r"\| A user-requested \|", audit))
     n_entity = len(re.findall(r"\| B wrong entity \|", audit))
-    assert sch["catch_harmful"] == 0.0
-    assert astra_schema["catch_rate"] == 0.0
+    assert sch["stop"] == 0 and jd["hold"] == 0
+    assert bal["m"]["score"] < v0["m"]["score"], "abstract says the tuned setting does not beat v0"
     out = [
         (ABSTRACT, f"{dev['n'] + bal['n']:,} calls"),
-        (ABSTRACT, f"({bal['n']} calls, {bal['n_harmful']} harmful)"),
+        (ABSTRACT, f"({bal['n']} calls, {bal['bad']} harmful)"),
         (ABSTRACT, "Schema checks catch 0%"),
-        (ABSTRACT, f"catches **{p0(v0['catch_harmful'])} (95% CI {ci0(v0['ci95_cluster_bootstrap']['catch_harmful'])})**"),
-        (ABSTRACT, f"blocks {p0(v0['false_block_rate'])} of good calls and escalates {p0(v0['escalation_rate'])}"),
-        (ABSTRACT, f"cuts false blocks to **{p1(bal['false_block_rate'])}** and escalations to {p0(bal['escalation_rate'])}"),
-        (ABSTRACT, f"catching **{p0(bal['catch_harmful'])} ({ci0(bal['ci95_cluster_bootstrap']['catch_harmful'])})**"),
-        (ABSTRACT, f"**{bal['latency_ms_p95']:.1f} ms** at p95"),
-        (ABSTRACT, f"the LLM judge catches {p0(judge['catch_harmful'])} of harmful calls but blocks {p0(judge['false_block_rate'])} of good ones"),
-        (ABSTRACT, f"median {judge['latency_ms_p50'] / 1000:.1f} s per call"),
-        (ABSTRACT, f"escalations on good calls from {p0(bal_s['escalation_rate'])} to {p0(casc['escalation_rate'])}"),
-        (ABSTRACT, f"harmful-call catch from {p0(bal_s['catch_harmful'])} to {p0(casc['catch_harmful'])}"),
-        (ABSTRACT, f"{n_user} that the simulated user explicitly requested"),
-        (ABSTRACT, f"{n_entity} wrong-entity choices"),
+        (ABSTRACT, f"**{pc(v0['stop'], v0['bad'])} (95% CI {ci(v0['m']['ci95_cluster_bootstrap']['catch_harmful'])})** of harmful calls"),
+        (ABSTRACT, f"blocks {pc(v0['fb'], v0['good'])} of good calls and holds {pc(v0['hold'], v0['good'])}"),
+        (ABSTRACT, f"cuts false blocks to **{pc(bal['fb'], bal['good'], 1)}** and holds to {pc(bal['hold'], bal['good'])}"),
+        (ABSTRACT, f"stopping **{pc(bal['stop'], bal['bad'])} ({ci(bal['m']['ci95_cluster_bootstrap']['catch_harmful'])})**"),
+        (ABSTRACT, f"**{bal['m']['latency_ms_p95']:.1f} ms** at p95"),
+        (ABSTRACT, f"Only {bal['hard']} of its stops are hard blocks"),
+        (ABSTRACT, f"at almost the same good-call stop rate ({pc(jd['good_stop'], jd['good'])} vs our {pc(bs['good_stop'], bs['good'])})"),
+        (ABSTRACT, f"the judge stops {pc(jd['stop'], jd['bad'])} of harmful calls and ours {pc(bs['stop'], bs['bad'])}"),
+        (ABSTRACT, f"{n_user} were explicitly requested"),
+        (ABSTRACT, f"{n_entity} were wrong-entity choices"),
         (ABSTRACT, f"{astra['n']} cases written by a different model family"),
-        (ABSTRACT, f"catches {p0(astra['catch_rate'])} ({ci0(astra['ci95_wilson']['catch_rate'])}) of {astra['n_bad']} bad calls"),
-        (ABSTRACT, f"blocks {p0(astra['false_block_rate'])} and escalates {p0(astra['escalation_rate'])} of {astra['n_good']} good ones"),
-        (ABSTRACT, f"our own synthetic suite ({p0(synth['catch_rate'])} caught, {p0(synth['false_block_rate'])} false blocks)"),
+        (ABSTRACT, f"stops {pc(astra['stop'], astra['bad'])} ({ci(astra['m']['ci95_wilson']['catch_rate'])}) of {astra['bad']} bad calls"),
+        (ABSTRACT, f"blocks {pc(astra['fb'], astra['good'])} and holds {pc(astra['hold'], astra['good'])} of {astra['good']} good ones"),
+        (ABSTRACT, f"synthetic suite scores {pc(synth['stop'], synth['bad'])} caught, {pc(synth['fb'], synth['good'])} false blocks"),
     ]
-    m = fr["llm_judge_matched"]["t0_balanced"]
-    out.append((ABSTRACT, f"at the same good-call stop rate ({p0(m['our_good_stop'])}) the judge catches {p0(m['judge_catch_at_same_stop'])}"))
+    b = {r["item_id"]: r for r in j(T / "t0_balanced__test__sample300.json")["rows"]}
+    c = {r["item_id"]: r for r in j(T / "cascade_fast__test__sample300.json")["rows"]}
+    held = [i for i, r in b.items() if r["decision"] == "escalate" and r["kind"] in ("good", "bad_harmful")]
+    settled = [i for i in held if c[i]["decision"] != "escalate"]
+    ok_block = sum(c[i]["decision"] == "block" and b[i]["kind"] == "bad_harmful" for i in settled)
+    bad_block = sum(c[i]["decision"] == "block" and b[i]["kind"] == "good" for i in settled)
+    released = sum(c[i]["decision"] == "allow" for i in settled)
+    out.append((ABSTRACT, f"settled {len(settled)} of {len(held)} held calls ({ok_block} harmful correctly blocked, "
+                          f"{bad_block} good calls wrongly blocked) and released {'none' if released == 0 else released}"))
     return out
 
 
@@ -81,6 +91,10 @@ def main() -> int:
         if s not in texts[doc]:
             bad += 1
             print(f"MISSING in {doc.relative_to(ROOT)}: {s!r}")
+    texts.setdefault(ABSTRACT, ABSTRACT.read_text())
+    if "[CASCADE-SENTENCE]" in texts[ABSTRACT] or "[ASTRA" in texts[ABSTRACT] or "[JUDGE" in texts[ABSTRACT]:
+        bad += 1
+        print("abstract still contains a result placeholder")
     words = len(re.sub(r"[*#`]", "", texts[ABSTRACT].split("## Problem", 1)[1]).split())
     if not 600 <= words <= 900:
         bad += 1

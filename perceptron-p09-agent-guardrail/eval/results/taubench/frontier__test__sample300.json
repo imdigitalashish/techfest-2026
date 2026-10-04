@@ -20,9 +20,9 @@
      0.0
     ]
    },
-   "latency_ms_p50": 0.0,
-   "latency_ms_p95": 0.0,
-   "commit": "102ab4e"
+   "latency_ms_p50": 0.001,
+   "latency_ms_p95": 0.001,
+   "commit": "2d3bf42-dirty"
   },
   "schema": {
    "catch_harmful": 0.0,
@@ -43,9 +43,9 @@
      0.0
     ]
    },
-   "latency_ms_p50": 0.002,
-   "latency_ms_p95": 0.003,
-   "commit": "102ab4e"
+   "latency_ms_p50": 0.003,
+   "latency_ms_p95": 0.004,
+   "commit": "2d3bf42-dirty"
   },
   "t0_v0": {
    "catch_harmful": 0.6916666666666667,
@@ -54,90 +54,113 @@
    "good_stop": 0.5333333333333333,
    "ci95": {
     "catch_harmful": [
-     0.567,
-     0.8038
+     0.5858,
+     0.7923
     ],
     "false_block_rate": [
-     0.0156,
-     0.1452
+     0.0085,
+     0.1571
     ],
     "escalation_rate": [
-     0.3611,
-     0.5684
+     0.3622,
+     0.5644
     ]
    },
-   "latency_ms_p50": 0.09,
-   "latency_ms_p95": 0.182,
-   "commit": "102ab4e"
+   "latency_ms_p50": 0.25,
+   "latency_ms_p95": 0.581,
+   "commit": "2d3bf42-dirty"
   },
   "t0_strict": {
-   "catch_harmful": 0.49166666666666664,
+   "catch_harmful": 0.5083333333333333,
    "false_block": 0.016666666666666666,
-   "escalation": 0.2833333333333333,
-   "good_stop": 0.3,
+   "escalation": 0.325,
+   "good_stop": 0.3416666666666667,
    "ci95": {
     "catch_harmful": [
-     0.3455,
-     0.6385
+     0.3582,
+     0.6562
     ],
     "false_block_rate": [
      0.0,
-     0.0444
+     0.0442
     ],
     "escalation_rate": [
-     0.2037,
-     0.3707
+     0.2378,
+     0.4215
     ]
    },
-   "latency_ms_p50": 0.105,
-   "latency_ms_p95": 0.192,
-   "commit": "102ab4e"
+   "latency_ms_p50": 0.192,
+   "latency_ms_p95": 0.328,
+   "commit": "2d3bf42-dirty"
   },
   "t0_balanced": {
-   "catch_harmful": 0.425,
+   "catch_harmful": 0.475,
    "false_block": 0.016666666666666666,
-   "escalation": 0.19166666666666668,
-   "good_stop": 0.20833333333333334,
+   "escalation": 0.25833333333333336,
+   "good_stop": 0.275,
    "ci95": {
     "catch_harmful": [
-     0.2823,
-     0.5769
+     0.3276,
+     0.6261
     ],
     "false_block_rate": [
      0.0,
-     0.0444
+     0.0442
     ],
     "escalation_rate": [
-     0.115,
-     0.2736
+     0.178,
+     0.3471
     ]
    },
-   "latency_ms_p50": 0.105,
-   "latency_ms_p95": 0.193,
-   "commit": "102ab4e"
+   "latency_ms_p50": 0.348,
+   "latency_ms_p95": 0.657,
+   "commit": "2d3bf42-dirty"
   },
   "t0_lenient": {
-   "catch_harmful": 0.23333333333333334,
+   "catch_harmful": 0.3,
    "false_block": 0.016666666666666666,
-   "escalation": 0.125,
-   "good_stop": 0.14166666666666666,
+   "escalation": 0.175,
+   "good_stop": 0.19166666666666668,
    "ci95": {
     "catch_harmful": [
-     0.1293,
-     0.3429
+     0.1812,
+     0.418
     ],
     "false_block_rate": [
      0.0,
-     0.0444
+     0.0442
     ],
     "escalation_rate": [
-     0.0583,
-     0.2037
+     0.1074,
+     0.25
     ]
    },
-   "latency_ms_p50": 0.109,
-   "latency_ms_p95": 0.19,
-   "commit": "102ab4e"
+   "latency_ms_p50": 0.271,
+   "latency_ms_p95": 0.528,
+   "commit": "2d3bf42-dirty"
+  },
+  "cascade_fast": {
+   "catch_harmful": 0.475,
+   "false_block": 0.058333333333333334,
+   "escalation": 0.21666666666666667,
+   "good_stop": 0.275,
+   "ci95": {
+    "catch_harmful": [
+     0.3276,
+     0.6261
+    ],
+    "false_block_rate": [
+     0.0208,
+     0.0982
+    ],
+    "escalation_rate": [
+     0.1414,
+     0.3063
+    ]
+   },
+   "latency_ms_p50": 0.479,
+   "latency_ms_p95": 3506.505,
+   "commit": "74d2128"
   },
   "llm_judge": {
    "catch_harmful": 0.2833333333333333,
@@ -684,20 +707,26 @@
    "judge_threshold": 86
   },
   "t0_strict": {
-   "our_good_stop": 0.3,
-   "our_catch": 0.49166666666666664,
+   "our_good_stop": 0.3416666666666667,
+   "our_catch": 0.5083333333333333,
    "judge_catch_at_same_stop": 0.008333333333333333,
    "judge_threshold": 86
   },
   "t0_balanced": {
-   "our_good_stop": 0.20833333333333334,
-   "our_catch": 0.425,
+   "our_good_stop": 0.275,
+   "our_catch": 0.475,
    "judge_catch_at_same_stop": 0.008333333333333333,
    "judge_threshold": 86
   },
   "t0_lenient": {
-   "our_good_stop": 0.14166666666666666,
-   "our_catch": 0.23333333333333334,
+   "our_good_stop": 0.19166666666666668,
+   "our_catch": 0.3,
+   "judge_catch_at_same_stop": 0.008333333333333333,
+   "judge_threshold": 86
+  },
+  "cascade_fast": {
+   "our_good_stop": 0.275,
+   "our_catch": 0.475,
    "judge_catch_at_same_stop": 0.008333333333333333,
    "judge_threshold": 86
   }

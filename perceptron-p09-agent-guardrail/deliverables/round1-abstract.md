@@ -1,57 +1,60 @@
-# Round 1 abstract (draft) — Perceptron 2026, Problem 9
+# Round 1 abstract — Perceptron 2026, Problem 9
 
 **Theme 6, AI You Can Actually Trust · Problem 9: Catching an Agent Before It Acts on a Bad Idea**
-**Working title: *Cite-Before-Act* — pre-trade risk checks for AI agents**
+**Cite-Before-Act: pre-trade risk checks for AI agents**
 
-*Draft v0.1, 4 Oct 2026. Numbers come from committed runs (reproduce commands in `eval/README.md`). Team details are placeholders until teammates are confirmed.*
+*Final draft, 4 Oct 2026. Every number comes from a committed result; `python -m eval.check_docs` fails if this text drifts from `eval/results/`.*
 
-## Problem and why it interests us
-Agents now place orders, move money and message clients. Their dangerous mistakes are plausible calls, not malformed ones: a real tool, valid JSON, and one value nobody supplied. Examples: a ticker that doesn't exist, ten times the quantity asked for, an account the user never named, a fee the policy never states. Trading solved the human version of this long ago with pre-trade risk checks that run before an order reaches the market. SEC Rule 15c3-5 requires rejecting orders that "exceed appropriate price or size parameters" or "indicate duplicative orders". We want that discipline for agents, plus one thing traders never needed: an agent can invent the order itself.
+## Problem and why we chose it
+Agents now cancel orders, move money and message customers. Their worst mistakes are plausible calls, not malformed ones: a real tool, valid JSON, and one argument nobody supplied — the wrong order, an invented ticker, ten times the quantity. Trading desks solved the human version with pre-trade controls (SEC Rule 15c3-5): hard blocks, soft alerts and manual review before an order reaches the market. We want that discipline for agents. [TEAM: why this matters to us.]
 
 ## Understanding of the challenge
-1. **Schema checks pass hallucinated calls by construction.** A 2026 study of tool hallucination finds that registry and signature checks cannot separate "borrowed arguments" from a valid call. The check has to be on argument *values*.
-2. **Absence of evidence is not contradiction.** An unverifiable value should trigger a question; a contradicted one, a block. Collapsing both into allow/deny gives either silent passes or approval fatigue.
-3. **The checker can hallucinate too.** An LLM judge can approve an invented value.
-4. **Checks have costs.** Latency and false blocks both hurt users, so verification effort must scale with risk (reversibility, value at stake).
+1. **Schema checks pass hallucinated calls by construction.** The check must be on argument *values* and where they came from.
+2. **Absence of evidence is not contradiction.** An unsupported value should be held for a question; a contradicted one, blocked.
+3. **The checker can hallucinate too.** Model verdicts need verifiable evidence.
+4. **Every stop has a cost.** False blocks break tasks and holds load humans, so a guard is a trade-off curve, not one accuracy number.
 
 ## Proposed approach
-A guard sits in the agent's pre-tool hook (a LangGraph node before `ToolNode`, or LangChain v1 `wrap_tool_call` middleware). It returns *allow*, *block with feedback*, or *escalate* for every write call.
-- **Tier 0: provenance plus contracts (deterministic, ≤5 ms).**
-  - For each intent-bearing argument, find its source: the user's words, the reference knowledge base (instrument master, accounts, limits, restricted list, numbered policy), or trust-labelled tool results.
-  - Each check returns *pass*, *fail* (contradicted), *unverifiable*, or *needs approval*, with evidence and a policy clause.
-  - Text from emails or tickets is never accepted as a source of intent; this is the prompt-injection defence.
-  - The same tier runs the pre-trade analogues: a price collar against the reference price, size and cash/notional limits, a short-sale check, the restricted list, and duplicate detection.
-- **Tiers 1–2: risk-routed resolution.** Only *unverifiable* checks reach a model: Qwen3-1.7B for low risk, Qwen3-8B for high risk, both run locally with MLX. The model must quote the words that settle the question. We match that quote verbatim against the request or the cited clause; if it doesn't match, the check stays unverifiable.
-- **Tier 3: human.** Unresolved or approval-required calls pause through LangGraph `interrupt()`. Blocked calls return their failed checks so the agent can repair the call.
+A guard in the agent's pre-tool hook (a LangGraph node before `ToolNode`, or LangChain v1 `wrap_tool_call`) returns *allow*, *block with feedback* or *hold for review* for every write call.
+- **Tier 0 (deterministic, sub-millisecond).**
+  - Every intent-bearing argument must trace to the user's words, the reference database or trusted tool data. Email or ticket text is never a source of intent.
+  - Each check returns *pass*, *fail*, *unverifiable* or *needs approval*, with evidence and a policy clause.
+  - Pre-trade-style contracts: price collar, size, cash, short-sale, restricted list, duplicates, ownership.
+- **Tiers 1–2.** Only the *unverifiable* residue goes to a model (Qwen3-1.7B, or 8B for high-risk calls). A verdict counts only if the user words or tool data it quotes are found verbatim, and a bare "yes" never counts.
+- **Tier 3.** A human, via LangGraph `interrupt()`. Blocked calls return their failed checks so the agent can repair them.
 
-## Minimum Viable mapping
-- *A checker that verifies ≥1 action class against a source:* we cover four classes (orders, fund transfers, cancellations, client messages), all checked against the reference KB. This runs today.
-- *Catching ≥1 deliberately bad action:* a red-team suite of 295 bad calls in 11 classes (fabricated entity, entity swap, numeric drift, side flip, duplicate, injection, unrequested action, hallucinated policy claim, policy violation and more), plus (by 25 Oct) a live LangGraph episode where an invented ticker is blocked and the agent repairs it.
+## Minimum Viable
+- *Checker for ≥1 action class against a source:* four trading-desk actions against a synthetic reference knowledge base, plus τ-bench retail's seven write tools against its order database.
+- *Catching a deliberately bad action:* a one-command demo blocks an invented ticker, a ×10 quantity, a buy/sell flip and an email-injected transfer, and holds a price the user never gave.
 
 ## Stretch ambitions
-1. **Risk-based fast/careful routing (above).** Thresholds will be set with conformal risk control / Learn-then-Test so the miss rate is bounded at a stated α.
-2. **The red-team suite as mutation testing for guards.** Operators turn good calls into typed bad ones. The suite is split by phrasing family, so evaluation uses wording the rules never saw.
+1. **Risk-routed fast/careful models**, with hold thresholds set by conformal risk control so the miss rate is bounded at a stated level.
+2. **Red-team suites**, grown into mutation testing for guards.
 
 ## Novelty versus the obvious baseline
-The obvious baseline asks an LLM "is this tool call OK?" with retrieved context. We differ in four ways:
-1. Per-argument provenance with trust labels, instead of one holistic judgement.
-2. A separate *unverifiable* verdict (ask the user), distinct from *contradicted* (block).
-3. Models resolve only the residue, and only with verified quotes, which limits checker hallucination.
-4. We report the trade-off frontier (catch rate, false blocks, escalations, latency), not a single accuracy number.
+The obvious baseline asks an LLM "is this call OK?". We differ in four ways:
+1. per-argument provenance instead of one holistic judgement;
+2. *unverifiable* (hold) kept separate from *contradicted* (block);
+3. model verdicts admitted only with verified quotes;
+4. evaluation on real agent errors, reporting the catch / false-block / hold trade-off with confidence intervals.
 
-Shipping tools (pre-tool hooks, Cedar gateway policies, groundedness APIs that score response text) don't check argument values against a knowledge source.
+Shipping tools (pre-tool hooks, Cedar gateway policies, groundedness APIs that score response *text*) don't check argument values against a source.
 
-## Evaluation plan
-- **Metrics:** catch rate, false-block rate, escalation rate, latency p50/p95, and closed-loop task success after self-repair.
-- **Baselines:** no guard, schema-only, and an LLM judge (1.7B and 8B) given the same KB.
-- **Data:**
-  - our suite, split into dev and test by phrasing family;
-  - LLM-paraphrased requests;
-  - τ-bench's published gpt-4o and Claude trajectories, replayed offline with every proposed write labelled against ground truth (real model errors).
-- **First numbers** (synthetic test split, 183 calls): Tier 0 catches 100% of 147 bad calls, blocks none of 36 good calls, and adds under 5 ms at p95 on a loaded laptop. Schema-only validation catches 0%. On a 61-call subsample, an LLM judge (Qwen3-1.7B) given the same KB catches 71% but blocks 69% of good calls, mostly through arithmetic slips. Test data is template-generated by the rules' author, so the τ-bench replay is the real test.
+## Evaluation plan and first results
+**Real agent errors.** We replayed every write call in τ-bench's published gpt-4o and Claude-3.5-Sonnet retail runs: 2,018 calls, labelled by whether each call's database effect matches the task's ground truth. Rules were tuned on half the tasks and tested on held-out tasks (991 calls, 167 harmful). The test was re-run once after an external code review fixed six bugs. 95% CIs are clustered by task.
+- Schema checks catch 0%.
+- Our untuned, policy-derived checker stops (blocks or holds) **68% (95% CI 57–77)** of harmful calls, but blocks 7% of good calls and holds 56%.
+- The tuned setting cuts false blocks to **2.0%** and holds to 30%, stopping **41% (28–55)**, at **0.4 ms** at p95. Only 3 of its stops are hard blocks.
+- It does not beat the untuned checker's score; it is a different point on the curve.
+- **LLM judge** (Qwen3-1.7B, same transcript and policy), on a 300-call sample: at almost the same good-call stop rate (27% vs our 28%), the judge stops 28% of harmful calls and ours 48%. The judge's stops are hard blocks; ours are mostly holds.
+- **Model tier, first try:** a 1.7B resolver with verified quotes settled 11 of 85 held calls (6 harmful correctly blocked, 5 good calls wrongly blocked) and released none. Tiers 1–2 need a stronger model.
+
+**Misses.** In 20 audited misses, 8 were explicitly requested by τ-bench's simulated user (invisible to any transcript check) and 8 were wrong-entity choices ("like my other order") — the target for Tiers 1–2.
+
+**Independent red team.** 160 cases written by a different model family that never saw our rules: the checker stops 82% (73–88) of 100 bad calls, but blocks 8% and holds 20% of 60 good ones. Our own synthetic suite scores 100% caught, 0% false blocks; self-written tests flatter.
 
 ## Feasibility and risks
-- **Team:** Ashish (systems, LLM engineering); [member 2: TBD]; [member 3: TBD].
-- **Compute:** everything runs on one laptop with open models; no paid APIs.
-- **Milestones:** 25 Oct live agent + interceptor · 1 Nov τ-bench replay · 10 Nov calibrated cascade · 17 Nov demo freeze · 19–25 Nov exams (no work) · 1 Dec progress report · December hardening and stretch goals.
-- **Risks → mitigations:** paraphrase brittleness → resolver, tracked as escalation rate; a flattering synthetic suite → τ-bench replay; local-model latency → prompt caching, smaller resolvers.
+- **Team:** [TEAM: names and skills.]
+- **Compute:** one laptop, open models, no paid APIs.
+- **Milestones:** 25 Oct live LangGraph agent · 1 Nov model tier on τ-bench residue · 10 Nov calibrated thresholds · 17 Nov demo freeze · 19–25 Nov exams (no work) · 1 Dec progress report · December hardening.
+- **Risks:** modest catch on real errors (we publish the curve); rules brittle on paraphrase (model tier, independent suites); users confirming wrong actions (check against earlier stated wants).
