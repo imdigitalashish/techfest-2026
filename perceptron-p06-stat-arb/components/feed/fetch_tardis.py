@@ -6,6 +6,7 @@ Do NOT send Range headers (the CDN answers 403). Files land in .data/tardis/ (gi
 
 Usage:
   .venv/bin/python components/feed/fetch_tardis.py --dates 2026-09-01 2026-10-01
+  .venv/bin/python components/feed/fetch_tardis.py --set wf5 --dates 2026-04-01 2026-03-01 ...   # walk-forward legs
 """
 from __future__ import annotations
 
@@ -31,6 +32,17 @@ DEFAULT = [
 ]
 
 
+# The 5 BTC legs used by the walk-forward falsification test (eval/falsification.py).
+WF5 = [
+    ("binance", "BTCUSDT"),
+    ("binance-futures", "BTCUSDT"),
+    ("coinbase", "BTC-USD"),
+    ("okex", "BTC-USDT"),
+    ("okex-swap", "BTC-USDT-SWAP"),
+]
+SETS = {"default": DEFAULT, "wf5": WF5}
+
+
 def fetch(exchange: str, symbol: str, date: str, data_type: str, out: str) -> str:
     y, m, d = date.split("-")
     url = f"https://datasets.tardis.dev/v1/{exchange}/{data_type}/{y}/{m}/{d}/{symbol}.csv.gz"
@@ -53,9 +65,10 @@ def main() -> None:
     ap.add_argument("--dates", nargs="+", default=["2026-09-01", "2026-10-01"])
     ap.add_argument("--type", default="quotes")
     ap.add_argument("--out", default=".data/tardis")
+    ap.add_argument("--set", default="default", choices=sorted(SETS))
     a = ap.parse_args()
     for date in a.dates:
-        for ex, sym in DEFAULT:
+        for ex, sym in SETS[a.set]:
             for attempt in range(3):
                 try:
                     print(fetch(ex, sym, date, a.type, a.out), flush=True)

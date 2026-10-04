@@ -7,20 +7,30 @@
 - _(empty)_
 
 ### Handled
+- 2026-10-04 14:11 (Supervisor, by message): resumed with a 5-point definition of done (walk-forward ≥ 12 pre-registered days, decay CIs + latency budget + compiled timing, final rendered abstract + drift check, cross-model reviews, final memo → "DONE — slot free"). → acting (see Now/Log).
+- 2026-10-04 09:55 (Supervisor, by message): pause. → paused at 10:00 with a resume point.
 - 2026-10-04 08:22 (Supervisor, by message): "Package accepted. Lean limits from 08:30: ≤2 concurrent sub-agents/child sessions; no downloads over 1 GB without a stated reason; heavy jobs one at a time under `nice -n 10`. Next: run ADR 001's falsification tests (clock skew; whether LEV beats the tuned threshold beyond noise on more held-out days). If it still doesn't separate, say so in the memo." → acting (see Now/Log).
 
 ## Now
-- **Phase:** ⏸ PAUSED by the Supervisor at 09:55 IST (user's decision: only 3 projects run at a time; P7 is the current Perceptron pick unless the user overrides). Nothing is running. Updated 10:00 IST.
-- **Resume point (in order):**
-  1. Re-run the walk-forward with May included (5 test days). All 6 days are on disk; Jun–Oct cells are cached in `.cache/falsification/`, so only May's cells are new (~10 min):
-     `cd perceptron-p06-stat-arb && nice -n 10 .venv/bin/python -m eval.falsification walkforward --days 2026-05-01 2026-06-01 2026-07-01 2026-08-01 2026-09-01 2026-10-01`
-  2. When download limits allow (~0.6 GB for 2026-01…04 and 2025-11/12, 5 legs), fetch more days so the test reaches ADR 001's ≥ 12 days. Use the same inline loop as `.data/fetch_walkforward.log`: `fetch(ex, sym, '<date>', 'quotes', '.data/tardis')` from `components/feed/fetch_tardis.py` for binance/BTCUSDT, binance-futures/BTCUSDT, coinbase/BTC-USD, okex/BTC-USDT, okex-swap/BTC-USDT-SWAP. Then re-run step 1 with all days.
-  3. Update the abstract's novelty point (4), the selection memo and the ADR 001 status with the final walk-forward result.
-  4. Then continue the earlier plan: residual survival + downside-quantile LEV, compiled LEV path (≤ 10 µs), BTC/ETH lead–lag tier, paper trading on the recorder, Azure vantage latency.
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the abstract's [TEAM] lines.
-- **Risks:** (a) LEV's uplift over the tuned threshold is consistent (4/4 held-out months) but not yet significant (n = 4); (b) the survival-EV rule does not beat the threshold, so survival stays a report and a feature, not the decision rule; (c) Tardis binance-spot quotes are ~100 ms granular; (d) fee schedules only partly verified, so headline results use uniform fee levels.
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the abstract's [TEAM] lines.
-- **Risks:** (a) the spike's gain over a tuned per-pair threshold is still within noise (+14%, < 1 SE); (b) cross-venue exchange clocks aren't a common clock, and Tardis binance-spot quotes are ~100 ms granular; (c) one held-out day so far; (d) Tonight's live latency medians are inflated by local congestion (seconds), so only p05 is used as a path-latency floor; (e) fee schedules are only partly verified, so headline results use uniform fee levels 0/1/2/5 bps.
+- **Phase:** ▶ RESUMED 2026-10-04 14:13 IST (Supervisor 14:11: P5 freed a batch slot). Goal: an honest final case for or against P6. The pick is open among P7/P9/P1/P10/P3; P4 and P5 recommend against themselves.
+- **Definition of done (Supervisor 14:11):**
+  1. Walk-forward: May (5 test days), then ≥ 12 held-out days, with the final test pre-registered (committed before the run). Report LEV − tuned threshold with its CI, and say so if it is within noise.
+  2. Decay: survival curves per pair with CIs, plus a simulated end-to-end latency budget. Measure the compiled (Numba) decision step at p50/p99 against the ≤ 10 µs target.
+  3. Final Round-1 abstract (600–900 words) with numbers rendered from committed results, a doc-drift check (`eval/check_docs.py`), and the diagram.
+  4. Cross-model reviews as child sessions (§10): `gpt-6-astra` max as hostile judge on the abstract and spike; `gpt-6-sol` max on code/eval, reproducing the headline numbers. Record them in `reviews/` and `reviews/ledger.tsv`.
+  5. Final selection memo, thought node current, everything pushed, then message the Supervisor "DONE — slot free". Paper trading and the Azure-vantage latency test are stretch only.
+- **Plan / order:**
+  - (a) Download 2025-10…2026-04 first-of-month days for 5 BTC legs, sequentially and alone (~0.85 GB).
+  - (b) Meanwhile: May cells + 5-test-day walk-forward (CPU, niced).
+  - (c) Compiled LEV + timing, decay-with-CI report, latency budget.
+  - (d) Freeze code, pre-register, run the 12-day test.
+  - (e) Render the abstract and run the drift check.
+  - (f) Reviews (≤ 2 child sessions).
+  - (g) Memo, then DONE.
+- **Doing:** lead only. No `task` sub-agents (user directive); reviewers will be child sessions.
+- **Machine rules:** heavy jobs `nice -n 10`, one at a time, only when `kern.memorystatus_level` ≥ 30. CPU only until ~14:30 (Namma holds the GPU). Poll long jobs at ≥ 10-minute intervals. No `git stash`/`--autostash`.
+- **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills for the abstract's [TEAM] lines.
+- **Risks:** (a) LEV's uplift over the tuned threshold may stay within noise even at 12 days. (b) Survival-EV fails receive-time replay, so it stays the report and a feature, not the rule. (c) Tardis binance-spot quotes are ~100 ms granular. (d) Fees are only partly verified, so headline results use uniform fee levels. (e) 5 of the 12 final test days were already seen in exploratory runs; the pre-registration reports the 7 unseen days separately.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
