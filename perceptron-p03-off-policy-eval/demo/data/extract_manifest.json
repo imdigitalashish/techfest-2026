@@ -1,0 +1,143 @@
+{
+ "dataset": "Open Bandit Dataset (ZOZO, Inc.), campaign 'All', policies Random and Bernoulli Thompson Sampling (BTS)",
+ "licence": "CC BY 4.0 \u2014 https://creativecommons.org/licenses/by/4.0/ (see demo/data/NOTICE.md)",
+ "source_zip": "https://research.zozo.com/data_release/open_bandit_dataset.zip",
+ "source_members": [
+  "open_bandit_dataset/random/all/all.csv (full)",
+  "open_bandit_dataset/bts/all/all.csv (time-ordered prefix, 100 MB compressed)"
+ ],
+ "window_utc": {
+  "start": "2019-11-24T00:00:00",
+  "end_exclusive": "2019-11-27T12:00:00",
+  "hours": 84,
+  "pre_registered_W_start": "2019-11-24T00:00:00.047846 (first BTS row; Random rows before it carry pre_t0 = 1)"
+ },
+ "columns": {
+  "obd_bts_all.csv.gz": "hour,item,position,propensity,click,count",
+  "obd_random_all.csv.gz": "hour,item,position,click,pre_t0,count (logged propensity 0.0125 for every row)"
+ },
+ "hour": "floor((timestamp - 2019-11-24T00:00:00 UTC) / 1 h), 0..83",
+ "propensity": "float64 exactly as parsed by eval/obd_zip_slice.py (pandas read_csv), written as Python's shortest round-trip repr; not rounded",
+ "files": {
+  "obd_bts_all.csv.gz": {
+   "sha256": "7c4fd505f8d3f57f22d2a297dc94952832041e4719ea6d56f0fdbedc0f659f17",
+   "bytes": 686837,
+   "lines": 139468,
+   "rows": 5956296
+  },
+  "obd_random_all.csv.gz": {
+   "sha256": "525bd1447e50dc3b6944d4b310a89641d86b418a81220608b8822728a6ae7754",
+   "bytes": 69487,
+   "lines": 20788,
+   "rows": 660907
+  }
+ },
+ "checks_raw_vs_extract": {
+  "bts_rows": [
+   5956296,
+   5956296
+  ],
+  "bts_hourly_rows_equal": true,
+  "bts_hourly_clicks_equal": true,
+  "bts_hourly_sum_inverse_propensity_rel_1e-12": true,
+  "bts_hourly_sum_click_over_propensity_rel_1e-12": true,
+  "random_rows": [
+   660907,
+   660907
+  ],
+  "random_pre_t0_rows": 3,
+  "random_hourly_rows_equal": true,
+  "random_clicks_equal": true
+ },
+ "checks_committed_numbers": {
+  "n_bts_W": {
+   "extract": 5956296.0,
+   "committed": 5956296.0,
+   "match_rel_1e-12": true
+  },
+  "n_random_W": {
+   "extract": 660904.0,
+   "committed": 660904.0,
+   "match_rel_1e-12": true
+  },
+  "n_random_W_floor (deviation run)": {
+   "extract": 660907.0,
+   "committed": 660907.0,
+   "match_rel_1e-12": true
+  },
+  "ctr_bts_W": {
+   "extract": 0.0048902875209694075,
+   "committed": 0.0048902875209694075,
+   "match_rel_1e-12": true
+  },
+  "ctr_random_W": {
+   "extract": 0.0034422548509314517,
+   "committed": 0.0034422548509314517,
+   "match_rel_1e-12": true
+  },
+  "halves_cell_R1_v": {
+   "extract": 0.003272788171411216,
+   "committed": 0.003272788171411216,
+   "match_rel_1e-12": true
+  },
+  "halves_cell_R2_v": {
+   "extract": 0.003635715558723935,
+   "committed": 0.003635715558723935,
+   "match_rel_1e-12": true
+  },
+  "halves_cell_B1_v": {
+   "extract": 0.00488912164941725,
+   "committed": 0.00488912164941725,
+   "match_rel_1e-12": true
+  },
+  "halves_cell_B2_v": {
+   "extract": 0.0048916291287902725,
+   "committed": 0.0048916291287902725,
+   "match_rel_1e-12": true
+  },
+  "halves_cell_R1_se": {
+   "extract": 9.622590785024406e-05,
+   "committed": 9.622590785024406e-05,
+   "match_rel_1e-12": true
+  },
+  "halves_cell_R2_se": {
+   "extract": 0.0001083435969012524,
+   "committed": 0.0001083435969012524,
+   "match_rel_1e-12": true
+  },
+  "halves_cell_B1_se": {
+   "extract": 3.907230070488719e-05,
+   "committed": 3.9072300704887194e-05,
+   "match_rel_1e-12": true
+  },
+  "halves_cell_B2_se": {
+   "extract": 4.192443565335223e-05,
+   "committed": 4.192443565335223e-05,
+   "match_rel_1e-12": true
+  },
+  "halves_naive_deploy": {
+   "extract": 0.0016188409573790565,
+   "committed": 0.0016188409573790565,
+   "match_rel_1e-12": true
+  },
+  "halves_reference_deploy": {
+   "extract": 0.0012559135700663374,
+   "committed": 0.0012559135700663374,
+   "match_rel_1e-12": true
+  },
+  "halves_deploy_IPW_effect": {
+   "extract": 0.0013883782551550507,
+   "committed": 0.0013883782551550505,
+   "match_rel_1e-12": true
+  },
+  "halves_deploy_SNIPW_effect": {
+   "extract": 0.0013748242125658783,
+   "committed": 0.001374824212565878,
+   "match_rel_1e-12": true
+  }
+ },
+ "all_checks_pass": true,
+ "regenerate": "nice -n 10 .venv/bin/python demo/make_extract.py (needs the raw slices; see the script header)",
+ "created_at": "2026-10-04 21:09:16 IST",
+ "numpy": "2.4.6"
+}
