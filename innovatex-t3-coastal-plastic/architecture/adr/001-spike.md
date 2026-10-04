@@ -80,6 +80,33 @@ Passive floating litter traps for tidal waterways already exist. The Bandalong L
 - Spike 2's claim narrows to a **fail-open fuse retrofit** for Mumbai's existing steel-net conveyor booms, plus an **instrumented pocket** that feeds dispatch and evidence.
 - The flume must still show a retention gain under reversal; otherwise we adopt an off-the-shelf trap design and drop the retention claim.
 
+## Update 16:25 IST — escape split, paired comparisons, fuse/pocket sensitivity (SIMULATED)
+Source: [`components/twin_sim/results/analysis.json`](../../components/twin_sim/results/analysis.json). Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis`. Same held-out years, draws, seed and crew budget as before; nothing retuned.
+
+**Findings:**
+- **Why plastic escapes (P2).** The twin's capture curve is an ASSUMPTION.
+  - Under or through the boom: 92.5% of escaped (interval 64.6–100%). This includes the (1 − e_max) floor that leaks even at slack water.
+  - Overflow: 5.9%.
+  - Flood release: 0.7%.
+- **Paired, same draws.**
+  - P2 vs P1: −5.6% escaped (interval −15.8% to −0.3%). P2 is better in 39 of 40 draws.
+  - P2 vs P0: −2.1% (−12.5% to +1.5%).
+  - P1 vs P0: +3.1%.
+  - Reading: tide-aware timing robustly beats the sensor-only "clear when full" rule. Against today's schedule its gain is small and uncertain.
+- **Fail-open fuse alone: −0.1%.** Release is rare on the ERA5 rain scale, so the fuse is a **flood-safety feature, not a capture lever**.
+- **One-way pocket (SENSITIVITY).** Re-float ×0.5 gives −5.0% (−9.9% to −1.4%; 40/40 draws). Re-float ×0.2 gives −9.4%.
+
+**Decision.**
+- Spike 2 is now framed as:
+  - **capture geometry**: boom angle (sensitivity requested; tow-tank test T6);
+  - the **one-way pocket**: retention, flume test T2;
+  - the fuse, for safety.
+- The deck says plainly that dispatch is a supporting lever.
+- Kill criteria are unchanged:
+  - drop the retention claim if T2 shows no gain over an angled boom;
+  - drop dispatch as a selling point if field calibration erases the P2-vs-P1 gap.
+- **Prototype method changed** from a pumped flume to a **tow tank**. Pumping 0.3–0.6 m/s even through a small channel needs thousands of litres per hour, while towing gives exact speed and free reversal. Ohmsett tests booms this way (fact F28).
+
 ## Update 07:15 IST — first twin result: timing alone is a small lever (SIMULATED)
 Source: [`components/twin_sim/results/metrics.json`](../../components/twin_sim/results/metrics.json). Reproduce with `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run`.
 

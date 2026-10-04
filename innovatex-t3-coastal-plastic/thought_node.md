@@ -65,6 +65,8 @@
 ## Key decisions
 - 2026-10-04 03:00 — Research and builds run in child sessions (resumable) rather than sub-agents after repeated HTTP 408 failures.
 - 2026-10-04 05:10 — Contracts v0.1 (`architecture/contracts/contracts.py`, pydantic v2) fix every component's I/O; children build behind them.
+- 2026-10-04 16:25 — Spike 2 reframed: capture geometry + one-way pocket are the capture levers; the fuse is for flood safety. Dispatch is a supporting lever. Prototype method changed to a tow tank ([ADR 001](architecture/adr/001-spike.md)).
+- 2026-10-04 16:10 — Deliverables are rendered from templates + committed results; `eval/check_docs.py` enforces source binding and drift (0 problems required).
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
@@ -82,22 +84,30 @@
 | C11 | MRV ledger | clearance records → `LedgerEntry` | manual weighbridge slips | – (support) | **done (v0)** | recall 0.72 @ 4.7% false flags; precision 0.45 @ 5% prevalence (SYNTHETIC) |
 | C12 | Dashboard | `DashboardBundle` → UI | — | – | **done (v0)** | task time (later) |
 | C13 | Recovery & upcycling | `CatchComposition` → `RecoveryRoute` | kabadiwala + co-processing | – | planned | ₹/t, diversion rate |
-| H1 | Barrier hardware: angled boom + ratchet pocket + fail-open fuse | flow → retained catch, head rise | BMC steel-net boom | **Spike 2** | designed (flume Oct) | retention after N reversals; head rise ≤ cap |
+| H1 | Barrier hardware: angled boom + one-way pocket + fail-open fuse | flow → retained catch, head rise | BMC steel-net boom | **Spike 2** | designed; tow tank priced (Oct) | T2 retention after N reversals; T3 head rise ≤ cap; T6 capture vs angle |
 | C14 | Source attribution | outfall flux + catchments → `WardHotspot` | ward complaints | – | planned | rank correlation (sim) |
 
 ## Selection memo
-_First version, 4 Oct 06:20 IST. Final by 7 Oct, 12:00 IST (one theme is pitched at the Delhi zonal on 10 Oct). Scored 1–5, one line of evidence each; **[V]** = still being verified._
-- **Winnability — 3/5.** Strong, current local story. The 5,000 t/yr figure in the brief comes from The Ocean Cleanup's 2026 Mumbai survey, and the brief's "Malad or Trombay" outlets are its two pilot Interceptor sites (MCGM permits, MPCB MoU, Plastic Fischer operating) — [mumbai-context](research/mumbai-context.md). Two cautions: Delhi judges may relate more readily to AQI (T2), and a big NGO already occupies the obvious "barrier at the creek mouth" answer.
-- **Innovation headroom — 3/5 (honest).** First twin result (SIMULATED, held-out 2024–25): forecast- and tide-aware dispatch cuts escaped plastic by a median 2.1% (90% interval: from 1.5% more to 12.5% less), mostly from tide-aware timing. Fill-threshold clearing does worse (+3.1%). Timing is a small lever, so the novelty must come from Spike 2: an angled-boom ratchet pocket with a fail-open fuse, retrofitted to existing booms. BMC runs 9 un-instrumented steel-net booms at ≈ ₹1 crore each, with 14 more planned. One-way flap traps are prior art, so we claim only what the flume shows — [ADR 001](architecture/adr/001-spike.md).
-- **Feasibility by the deadline — 4/5.** The software skeleton runs on real ERA5 rain, archived JMA forecasts and fitted tides, all on the M5 Mac. The flume prototype is a tabletop build with sourced electronics: ₹33,958 for the flume, ₹82,282 for the field node. Prototype work fits in 10 Oct – 15 Nov, before the 19–25 Nov exams.
-- **Demo strength at the finals — 4/5.** A reversible-flow flume where the tide turns and the trash stays, the fuse opens before the water rises, and a live dashboard counts it. That is visual and memorable.
-- **Fit with the user's strengths — 3/5.** Systems, ML and data pipelines are a strong fit. Hydraulics and fabrication are not, so the flume needs a teammate with hands-on skills.
-- **Biggest risk:** evidence is simulation-only until field data exists (circularity), and "why not just The Ocean Cleanup?". Mitigations:
-  - position the work as complementary — it covers the outfalls Interceptors won't reach and makes per-kg pay verifiable;
-  - report only relative gains under Monte Carlo;
-  - run a flume test before 10 Oct.
-- **One-line pitch:** "Two Interceptors will cover two of Mumbai's creeks. We make the hundreds of small nullah booms accountable. Crews clear before the storm and in the gate-closed window, a fail-open pocket keeps trash in when the tide turns, and contractors are paid only for verified kilograms."
-- **Lead's recommendation (provisional, 07:15):** T3 has the strongest *local* story we found (The Ocean Cleanup's 2026 Mumbai survey; BMC's booms and O&M contract). Its software evidence is honest but modest. Pitch T3 only if (a) a teammate can run the 2-hour reversed-flow flume test before 10 Oct, so the hardware claim has a measurement behind it, or (b) the sibling memos are weaker. Otherwise defer.
+_v2, 4 Oct 2026, 16:30 IST (after the afternoon evidence; final after the cross-model reviews). **Context:** T1 JalSakshi was picked for the Delhi zonal by two independent judges. This memo is the honest case for and against T3 as the alternative. Scores are 1–5 with one line of evidence each. Sources: [fact-check](research/fact-check.md) · [results](eval/RESULTS.md)._
+
+- **Winnability — 3/5.**
+  - For: specific, current and Mumbai-grounded, which is the theme's own city. The brief's 5 million kg figure is The Ocean Cleanup's 2026 survey. BMC is growing its boom network from 9 to 23 at ≈ ₹1 crore each, plus a ₹14.5 crore two-year O&M contract, so there is a clear buyer and a clear budget line. T1 lacks this.
+  - Against: an internationally known incumbent (The Ocean Cleanup + Plastic Fischer) already holds the two outlets the brief names, and a Delhi audience gets no home advantage.
+- **Innovation headroom — 2/5 on today's evidence, 4/5 if the tow tank confirms the pocket.**
+  - Tide-aware dispatch robustly beats the sensor-only rule: −5.6% escaped, better in 39/40 draws (SIMULATED). Against today's fixed schedule the gain is small and uncertain (−2.1%, interval crosses zero).
+  - The twin says escape is mostly under the boom, so the big lever is capture geometry and retention. That claim is a SENSITIVITY, and one-way floating traps are prior art (Bandalong).
+  - T1 scored 3 on novelty under hostile review.
+- **Feasibility by 1 Dec — 4/5.** A tow-tank flume with every part sourced, URL and date per line: structure ₹4,969.12 + electronics ₹33,957.99. The dashboard, twin and evidence records are BUILT. The schedule avoids the exams. Needs a hands-on teammate, as T1 does.
+- **Demo strength — 3/5 now, 4/5 with the tow tank.** Live dashboard and twin figures today. At the finals, a boom model towed back and forth while the pocket keeps its catch.
+- **Fit with the user's strengths — 3/5.** Systems, data and evidence pipelines fit well; the detector is commodity; hydraulics and fabrication need a teammate.
+- **Cost realism — weaker than T1.** A field node is ₹83,481.98 (Pi 5, AI HAT, 4G, 1.28 kWh battery) against T1's ≈ ₹11k. A duty-cycled variant needs a much smaller battery, but it is not yet priced as a set.
+- **Biggest risks:**
+  - every outcome number is simulated, with the circularity stated;
+  - the hardware lever is unproven and has prior art;
+  - AGPL-3.0 on the detector stack for any commercial use;
+  - "why not The Ocean Cleanup?"
+- **Verdict (honest):** **against switching.** T3's mean is ≈ 3.0 vs T1's 3.4 after hostile review. T3's strongest card (named buyer and budget, Mumbai specificity) does not outweigh its modest measured gains, a ~7× costlier node and a strong incumbent at the named sites. Keep T3 as a documented alternative. It becomes competitive only if a two-hour reversal test shows clear pocket retention before 10 Oct.
+- **One-line pitch:** *"Mumbai's trash booms leak in fast flow, are cleared on a fixed schedule and are paid on claimed loads. NullahNet retrofits them so crews clear at the right tide, the boom keeps its catch and never raises flood levels, and contractors are paid per verified kilogram."*
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -179,3 +189,19 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - The detection child was told to drop its queued YOLO training. Its load-guarded script had been waiting since 08:35 (load 67) and never started; ps confirms no T3 process is running.
 - Results saved: the detection child's later commit added zero-shot metrics on the TUD-GV held-out test (mAP50 0.394, mAP50-95 0.209, P 0.756 / R 0.140 @ 0.25). `eval/RESULTS.md` was regenerated and now covers 6 result files.
 - The precise resume point is under *Now*. The lead is idle.
+
+### 2026-10-04 15:56–16:26 IST — RESUMED: evidence + final package
+- **Resumed** by the Supervisor; Now rewritten.
+- **GPU request** sent and granted (15:58). The detection child is training YOLO11n on the GPU under the memory guard and lock. After 3 epochs, val mAP50 is 0.868; zero-shot test mAP50 was 0.394.
+- **Twin analysis** (child; SIMULATED; held-out 2024–25; 40 draws):
+  - escape is 92.5% under or through the boom (this share includes the assumed still-water leak);
+  - P2 vs P1: −5.6%, better in 39/40 draws; P2 vs P0: −2.1%;
+  - fuse alone −0.1%; one-way pocket ×0.5 −5.0%.
+  - Boom-angle sensitivity requested.
+- **Render/check system:** `eval/doc_numbers.py` (47 result aliases), `eval/render_docs.py`, `eval/check_docs.py` (drift, fact binding, unmarked numbers, stale text). `research/fact-check.md` has 29 facts + 6 derived rows. The lead re-opened the headline sources: TOC press release, HT trash booms, Bandalong, BFFP 2023, Ohmsett.
+- **Both [V] claims resolved:**
+  - low-value film is ignored → BFFP 2023 pp. 40–41;
+  - the tide pushes waste back → Lokmat quote.
+- **Package v1 built:** deck (10 + 4 backup slides, notes) as PDF and PPTX, Q&A prep (20 questions), one-page presenter card, prototype plan. The flume became a **tow tank**: BOM C ₹4,969.12, with URL and date per row (IndiaMART pages read in a browser, Shopify product data). Node incl. IP66 enclosure ₹83,481.98. `check_docs`: 0 problems.
+- **Licences:** `README.md` (AGPL-3.0 detector stack; CC BY 4.0 data; Open-Meteo, NASA POWER and OSM attribution). Lead fix: Open-Meteo attribution added to the dashboard footer (licence compliance).
+- **Selection memo v2:** honest verdict against switching from T1 (≈3.0 vs 3.4).
