@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import threading
 import time
@@ -71,7 +72,7 @@ def live_run(seed: int, qty: int) -> dict:
             raise Paused(lv)
         tr = D.run_arm(seed, spec, qty, "per_wakeup")
         st = D.pair_stats(g, tr)
-        stats = {k: st[k] for k in ("t1", "is_bps", "drift_bps", "own_bps", "instant_bps", "filled", "n_fills",
+        stats = {k: st[k] for k in ("t1", "is_bps", "drift_bps", "own_bps", "instant_bps", "delay_bps", "at_fill_bps", "filled", "n_fills",
                                     "ident", "ident_ok", "top1_exact", "hold", "arrival")}
         worlds[name] = dict(D.world_view(tr, base), fills=D.fills_view(st["fills"]), stats=stats,
                             gap2=D.half_cents(st["path"][::5]))
@@ -120,11 +121,14 @@ class Handler(SimpleHTTPRequestHandler):
                 return self._json(503, {"error": STATE["reason"]})
             q = parse_qs(u.query)
             try:
-                seed = int(q.get("seed", ["2026"])[0])
+                raw = q.get("seed", [""])[0]
+                assert re.fullmatch(r"0|[1-9][0-9]{0,9}", raw)
+                seed = int(raw)
                 qty = int(q.get("qty", ["4000"])[0])
-                assert 0 <= seed < 2 ** 31 and 1000 <= qty <= 16000 and qty % 1000 == 0
+                assert seed < 2 ** 31 and 1000 <= qty <= 16000 and qty % 1000 == 0
             except Exception:
-                return self._json(400, {"error": "seed must be 0..2^31-1 and qty one of 1,000..16,000 (step 1,000)"})
+                return self._json(400, {"error": "seed must be a whole number 0..2,147,483,647 and qty one of "
+                                                 "1,000..16,000 (step 1,000); nothing was run"})
             if not RUN_LOCK.acquire(blocking=False):
                 return self._json(409, {"busy": True})
             try:

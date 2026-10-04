@@ -7,7 +7,9 @@
    E7_size_q*.csv (synced, five sizes), E4_nsr_naive.csv (naive, 4,000) and E8_ablation_val.csv (IA_sched_only)
    rows for the exported seeds; IS terms match too; every twin pair is identical before 09:35.
 4. Recomputed statistics: the per-size means and the registered slope equal realism_scorecard.json and
-   claims.json; the cross-seed gap stds equal nsr_E4_*.json; the own-impact stds give claims' 6x.
+   claims.json; the cross-seed gap stds equal nsr_E4_*.json; the own-impact stds give claims' 6x; the cold open's
+   E10 arm means equal E10_replication_test.csv and their difference equals claims e10_dis.
+5. Wording: phrases retired by the 4 Oct demo review are absent; their replacements are present.
 """
 from __future__ import annotations
 
@@ -81,6 +83,15 @@ def main():
     check(P["scorecard"] == json.load(open(os.path.join(RES, "realism_scorecard.json"))), "scorecard snapshot == realism_scorecard.json")
     nsr = json.load(open(os.path.join(RES, "nsr_E4_nsr_naive_vs_E4_nsr_sync.json")))
     check(P["nsr"] == nsr, "nsr snapshot == nsr_E4_nsr_naive_vs_E4_nsr_sync.json")
+    e1 = json.load(open(os.path.join(RES, "nsr_E1_calib_train.json")))
+    check(P["nsr_e1"] == e1, "nsr_e1 snapshot == nsr_E1_calib_train.json")
+    x = e1["exps"]["E1_calib_train"]
+    check(f"{x['60']['std']:.1f}" == claims["gap_std_60"] and f"{x['1200']['std']:.0f}" == claims["gap_std_1200"]
+          and f"{x['300']['mean']:.1f}" == claims["gap_mean_300"],
+          f"E1 horizons: std {x['60']['std']:.2f} (1 min) / {x['1200']['std']:.2f} (20 min), mean {x['300']['mean']:.2f} (5 min) "
+          f"== claims; same-horizon means shown: {x['60']['mean']:+.1f} / {x['1200']['mean']:+.1f}")
+    sc0 = P["scorecard"]
+    check(f"{100 * sc0['boot_valid_frac']:.0f}" == claims["e7_valid_pct"], f"usable bootstrap draws {100 * sc0['boot_valid_frac']:.0f}% == claims e7_valid_pct")
 
     print("3. integrity: exported T1 gaps == committed CSVs")
     seeds, A = P["meta"]["seeds"], P["arms"]
@@ -123,6 +134,32 @@ def main():
               f"showcase {s}: stats agree with summary")
         g, w = sh["worlds"]["ghost"]["mid2"], sh["worlds"]["twap_4000"]["mid2"]
         check(g[300 + 1200] - w[300 + 1200] == round(2 * st["t1"]), f"showcase {s}: ghost mid − our mid at 09:55 == T1 gap")
+    r10 = list(csv.DictReader(open(os.path.join(RES, "E10_replication_test.csv"))))
+    tw = {r["seed"]: float(r["is_bps"]) for r in r10 if r["label"] == "TWAP"}
+    ia = {r["seed"]: float(r["is_bps"]) for r in r10 if r["label"] == "IA_sched_only"}
+    E = P["e10"]
+    mt, mi = sum(tw.values()) / len(tw), sum(ia.values()) / len(ia)
+    check(E["n"] == len(tw) == int(claims["e10_n"]) and close(E["twap_is_mean"], mt, 1e-12) and close(E["ia_is_mean"], mi, 1e-12)
+          and f"{mi - mt:+.3f}" == claims["e10_dis"],
+          f"cold open: E10 means TWAP {mt:.4f} / agent {mi:.4f} bps (n = {len(tw)}) == CSV; difference {mi - mt:+.4f} == claims e10_dis {claims['e10_dis']}")
+
+    print("5. wording (4 Oct demo review)")
+    texts = {f: open(os.path.join(DEMO, f)).read() for f in ("index.html", "SCRIPT.md", "README.md")}
+    retired = ["0.03 bp", "does not replicate", "single-seed differences are noise", "1 seed: noise", "single seeds are noisy",
+               "single-seed noise", "tighter paired confidence intervals", "tighter paired CI", "re-key every agent",
+               "shifts every later random draw", "spread and book-walking", "Type any seed", "Why sub-tick claims need the twin"]
+    hits = [(f, p) for f, t in texts.items() for p in retired if p.lower() in t.lower()]
+    check(not hits, f"{len(retired)} retired phrases absent from index.html, SCRIPT.md, README.md{' FOUND ' + str(hits) if hits else ''}")
+    need = ["one seed cannot establish an average advantage", "of bootstrap draws usable", "re-key every background agent",
+            "can desynchronise state-dependent random draws", "smaller paired-difference std", "median of 4 policies",
+            "decision-to-fill", "E10 did not confirm superiority", "The twin coupling made", "the ghost attributes it",
+            "0–2,147,483,647", "Here's why you can trust that answer", "1 new seed (live, synced)", "live paused (memory guard)",
+            "E10 aggregate, fixed at 4,000 shares", "id=\"a1qty\"", "id=\"a1agg\""]
+    miss = [p for p in need if p.lower() not in texts["index.html"].lower()]
+    check(not miss, f"{len(need)} required phrases present in index.html{' MISSING ' + str(miss) if miss else ''}")
+    shots = sorted(os.listdir(os.path.join(DEMO, "fallback")))
+    check(len(shots) >= 8 and all(f.endswith(".png") for f in shots), f"fallback/: {len(shots)} screenshots")
+
     print(f"\n{'ALL CHECKS PASSED' if not FAIL else str(len(FAIL)) + ' CHECK(S) FAILED'}")
     sys.exit(1 if FAIL else 0)
 

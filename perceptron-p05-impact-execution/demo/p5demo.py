@@ -29,7 +29,7 @@ from sim_env import world as W  # noqa: E402
 from sim_env.twins import make_factory  # noqa: E402
 from sim_env.world import TICKER, ns_at, run_world  # noqa: E402
 from execution_agent.policies import TwapPolicy, make_policy  # noqa: E402
-from tca import decompose_is, impact_path, implementation_shortfall, pre_window_exact  # noqa: E402
+from tca import decompose_fill_time, decompose_is, impact_path, implementation_shortfall, pre_window_exact  # noqa: E402
 from run_experiment import CFG  # noqa: E402
 
 DEPTH = 5
@@ -125,11 +125,13 @@ def pair_stats(null: dict, tr: dict) -> dict:
     path = impact_path(tr["res"], null["res"], GRID, SIDE)
     is_ = implementation_shortfall(rec["fills"], arrival, SIDE)
     dec = decompose_is(rec["fills"], [d[0] for d in rec["decisions"]], arrival, SIDE, tr["res"], null["res"])
+    dec.update(decompose_fill_time(rec["fills"], [d[0] for d in rec["decisions"]], arrival, SIDE, tr["res"]))
     k, n = top5_pre_trade_identity(tr, null)
     hn, ht = null["res"].holdings_by_type, tr["res"].holdings_by_type
     hold = {k_: int(ht.get(k_, 0) - hn.get(k_, 0)) for k_ in sorted(set(hn) | set(ht)) if k_ != "ExecutionAgent"}
     return dict(path=path, arrival=arrival, t1=float(path[1200]), is_bps=float(is_["is_bps"]),
                 drift_bps=dec["drift_bps"], own_bps=dec["own_impact_bps"], instant_bps=dec["instant_bps"],
+                delay_bps=dec["delay_bps"], at_fill_bps=dec["at_fill_bps"],
                 filled=int(rec["filled"]), n_fills=len(rec["fills"]), fills=rec["fills"],
                 ident=[k, n], ident_ok=bool(k == n and n > 0),
                 top1_exact=bool(pre_window_exact(tr["res"], null["res"], START)), hold=hold)

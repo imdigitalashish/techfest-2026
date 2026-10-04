@@ -10,6 +10,7 @@ while kern.memorystatus_level is below 30 (pauses below 25).
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import sys
@@ -98,6 +99,16 @@ def run_seed(seed: int, showcase: bool, log=print) -> dict:
     return out
 
 
+def e10_means() -> dict:
+    """Arm means of the committed E10 replication (the cold open's TWAP-vs-agent bars)."""
+    rows = list(csv.DictReader(open(os.path.join(RES, "E10_replication_test.csv"))))
+    tw = {r["seed"]: float(r["is_bps"]) for r in rows if r["label"] == "TWAP"}
+    ia = {r["seed"]: float(r["is_bps"]) for r in rows if r["label"] == "IA_sched_only"}
+    assert set(tw) == set(ia)
+    return dict(n=len(tw), twap_is_mean=sum(tw.values()) / len(tw), ia_is_mean=sum(ia.values()) / len(ia),
+                arm="IA_sched_only", source="eval/results/E10_replication_test.csv")
+
+
 def js(name: str, obj) -> str:
     return f"window.{name} = " + json.dumps(obj, separators=(",", ":"), allow_nan=False) + ";\n"
 
@@ -133,7 +144,8 @@ def main():
                 showcase=show, policy_file="eval/policies/e8_ablation.json (IA_sched_only), twap_only.json",
                 source="demo/export.py: committed run_world + tca on deterministic seeds")
     summary = dict(meta=meta, claims=load("claims.json"), scorecard=load("realism_scorecard.json"),
-                   nsr=load("nsr_E4_nsr_naive_vs_E4_nsr_sync.json"), arms=arms)
+                   nsr=load("nsr_E4_nsr_naive_vs_E4_nsr_sync.json"), nsr_e1=load("nsr_E1_calib_train.json"),
+                   e10=e10_means(), arms=arms)
     with open(os.path.join(a.out, "summary.js"), "w") as fh:
         fh.write(js("P5", summary))
     for s in show:

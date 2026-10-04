@@ -99,10 +99,26 @@ table.cost tr.tot td{font-weight:700;border-bottom:2px solid var(--ink)}
 .status.ready{background:var(--ok-soft);color:var(--ok)}
 .status.paused{background:var(--heat-soft);color:var(--heat)}
 .livelabel{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--paper);background:var(--ia);padding:3px 8px;border-radius:4px}
+.answer{display:grid;grid-template-columns:400px minmax(0,1fr);gap:16px}
+.bigdiff{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px;margin-top:6px}
+.bigdiff>span{width:100%;font-size:13px;color:var(--ink2)}
+.bigdiff b{font-family:var(--mono);font-size:32px;letter-spacing:-.03em}
+.bigdiff em{font-style:normal;font-family:var(--mono);font-size:15px;color:var(--ink2)}
+.notconf{display:inline-block;margin:8px 0 2px;background:var(--heat);color:#fff;font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:5px}
+.cta{display:flex;align-items:center;gap:18px;margin-top:16px;flex-wrap:wrap}
+.cta .fine{max-width:80ch;margin:0}
+.btn.big{font-size:17px;padding:12px 22px}
+.btn:hover:not(:disabled){filter:brightness(1.25)}
+.agg{font-size:13px;padding:6px 10px;border-radius:7px;background:var(--heat-soft);color:var(--ink);white-space:nowrap}
+.agg b{font-family:var(--mono);font-size:14px}
+.scalegrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:center}
+input[aria-invalid=true]{border-color:var(--heat);background:var(--heat-soft);outline-color:var(--heat)}
+table.cost tr.sub td{color:var(--ink2);font-size:12.5px;border-bottom-style:dotted}
+table.cost tr.sub td:first-child{padding-left:22px}
 .empty{padding:40px;text-align:center;color:var(--ink2);border:1px dashed var(--rule);border-radius:8px}
 kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--panel)}
 footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;margin:0 auto}
-@media (max-width:1100px){.grid1,.grid2{grid-template-columns:1fr}header{flex-wrap:wrap}}
+@media (max-width:1100px){.grid1,.grid2,.answer,.scalegrid{grid-template-columns:1fr}header{flex-wrap:wrap}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -110,23 +126,49 @@ footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;mar
 <header>
   <div class="brand"><b>Ghost Market</b><span>P5 · market-impact-aware execution · Perceptron 2026</span></div>
   <nav role="tablist" aria-label="Acts">
-    <button role="tab" data-act="1" aria-selected="true">1 Ghost market</button>
-    <button role="tab" data-act="2">2 Why the twin</button>
-    <button role="tab" data-act="3">3 TWAP vs impact-aware</button>
-    <button role="tab" data-act="4">4 Scoreboard</button>
-    <button role="tab" data-act="5">5 Live: your seed</button>
+    <button role="tab" data-act="answer" aria-selected="true">1 The answer</button>
+    <button role="tab" data-act="ghost">2 Ghost market</button>
+    <button role="tab" data-act="coupling">3 Coupling</button>
+    <button role="tab" data-act="seed">4 One seed</button>
+    <button role="tab" data-act="live">5 Live: your seed</button>
   </nav>
   <div class="stamp" title="There is no real market data in P5. Every number on this page comes from the ABIDES agent-based simulator.">SIMULATED (ABIDES rmsc04)</div>
 </header>
 <main>
 
-<!-- ============ ACT 1 ============ -->
-<section class="act on" id="act1">
+<!-- ============ BEAT 1: THE ANSWER (cold open) ============ -->
+<section class="act on" id="act-answer">
+  <h1>The answer first: our agent did not confirm beating TWAP.</h1>
+  <p class="lede">We sell <span data-c="task_qty"></span> shares over 20 minutes in a simulated market, once with TWAP and once with our impact-aware agent, on the same seeds. ΔIS = our implementation shortfall minus TWAP's (bps; negative = cheaper). <b>We do not claim to beat TWAP.</b></p>
+  <div class="answer">
+    <div class="panel">
+      <h2>TWAP vs our agent <small>E10: <span data-c="e10_n"></span> fresh seeds, mean implementation shortfall</small></h2>
+      <canvas id="a0bars" style="height:120px" aria-label="mean shortfall of TWAP and our agent"></canvas>
+      <div class="bigdiff"><span>ΔIS, our agent − TWAP (paired by seed)</span><b><span data-c="e10_dis"></span> bps</b><em>95% CI [<span data-c="e10_lo"></span>, <span data-c="e10_hi"></span>]</em></div>
+      <div class="notconf">Not confirmed</div>
+      <p class="fine">Strict pre-registered replication (E10): the one-sided 95% upper bound had to be below 0. Our agent = propagator-QP schedule plus front-loading, market orders (<code>IA_sched_only</code>).</p>
+      <div class="src">source: <code>claims.json</code> e10_dis, e10_lo, e10_hi, e10_n, e10_h2 · bar means from <code>E10_replication_test.csv</code> (computed by <code>demo/export.py</code>, checked by <code>demo/smoke.sh</code>)</div>
+    </div>
+    <div class="panel">
+      <h2>Every test block <small>ΔIS vs TWAP, bps, 95% paired-bootstrap CI</small></h2>
+      <canvas id="a4forest" style="height:292px" aria-label="forest plot of E6, E8, E10 and pooled"></canvas>
+      <div class="src">source: <code>claims.json</code> h1_dis/_lo/_hi, h1_n (E6) · e8_IA_sched_only/_lo/_hi, e8_n (E8) · e10_dis/_lo/_hi, e10_n (E10) · pool2_dis/_lo/_hi, pool2_n (pooled E6+E10)</div>
+    </div>
+  </div>
+  <div class="cta">
+    <button class="btn big" id="a0go">Here's why you can trust that answer →</button>
+    <p class="fine">E6 looked good once; E10 did not confirm superiority. The twin coupling made this paired difference measurable; the ghost (the same market without our order) attributes it.</p>
+  </div>
+</section>
+
+<!-- ============ BEAT 2a: GHOST MARKET ============ -->
+<section class="act" id="act-ghost">
   <h1>Same seed, two markets. The only difference is our order.</h1>
-  <p class="lede">We sell <span data-c="task_qty"></span> shares of a ~$<span data-c="price_usd"></span> stock between <span data-c="task_start"></span> and <span data-c="task_end"></span> in <span data-c="task_slots"></span> market-order slices, inside an exchange with <span data-c="n_trading_agents"></span> simulated traders. The <b style="color:var(--ghost)">ghost</b> is the same market and the same seed, with our order set to zero. The shaded gap between the two is our own footprint.</p>
+  <p class="lede">We sell <b id="a1qty">4,000</b> shares of a ~$<span data-c="price_usd"></span> stock between <span data-c="task_start"></span> and <span data-c="task_end"></span> in <span data-c="task_slots"></span> market-order slices, inside an exchange with <span data-c="n_trading_agents"></span> simulated traders. The <b style="color:var(--ghost)">ghost</b> is the same market and the same seed, with our order set to zero. The shaded gap between the two is our own footprint.</p>
   <div class="controls">
     <div class="ctl">seed <select id="a1seed" aria-label="seed"></select></div>
     <div class="ctl">order size <div class="seg" id="a1size" role="group" aria-label="order size"></div></div>
+    <div class="agg" id="a1agg" aria-live="polite" title="source: realism_scorecard.json peak_mean_cents, peak_ci95 (E7, 30 seeds); this seed: E7_size_q*.csv impact_end_cents (re-exported)"></div>
     <button class="btn" id="a1play" aria-label="play or pause">▶ Play</button>
     <div class="ctl">speed <div class="seg" id="a1speed" role="group" aria-label="speed"></div></div>
     <input type="range" class="scrub" id="a1scrub" min="0" max="2100" step="1" value="0" aria-label="time">
@@ -136,7 +178,7 @@ footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;mar
     <div class="panel">
       <canvas id="a1price" style="height:300px" aria-label="mid price of our market and the ghost"></canvas>
       <canvas id="a1gapc" style="height:150px;margin-top:4px" aria-label="our footprint over time"></canvas>
-      <div class="src">source: <code>demo/data/showcase_&lt;seed&gt;.js</code>, produced by <code>demo/export.py</code> (committed <code>run_world</code>, synced twins, top-5 book log). Showcase seeds are the first three of the E7 block, not hand-picked.</div>
+      <div class="src">source: <code>demo/data/showcase_&lt;seed&gt;.js</code>, produced by <code>demo/export.py</code> (committed <code>run_world</code>, synced twins, top-5 book log). Showcase seeds are the first three of the E7 block, not hand-picked. Play stops at 09:55 (T1); the size knob freezes the view there.</div>
     </div>
     <div class="panel">
       <div class="badge" id="a1badge"><span class="dot"></span><span></span></div>
@@ -156,22 +198,22 @@ footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;mar
       <h2>Impact vs order size <small>(footprint at T1 = 09:55, mean of <span data-c="e7_n"></span> seeds, synced twins, E7)</small></h2>
       <canvas id="a1size_chart" style="height:290px" aria-label="impact versus order size, log-log"></canvas>
       <p class="cap"><b>Impact grows roughly linearly; the real-world law is square-root (≈0.5). Realism gate needed.</b></p>
-      <p class="fine">registered slope <span data-c="e7_delta"></span> [<span data-c="e7_delta_lo"></span>, <span data-c="e7_delta_hi"></span>]; our pre-registered rule was lenient (see <code>eval/preregistration.md</code>). The dashed 0.5 line is a real-world literature reference (Sato &amp; Kanazawa, PRL 135, 257401 (2025): all Tokyo Stock Exchange stocks over 8 years; arXiv:2411.13965), drawn through our 4,000-share mean. It is not our result.</p>
-      <div class="src">source: <code>claims.json</code> e7_delta, e7_delta_lo, e7_delta_hi · <code>eval/results/realism_scorecard.json</code> (means, 95% CIs) · per-seed values from <code>E7_size_q*.csv</code> (re-exported and checked by <code>demo/smoke.sh</code>)</div>
+      <p class="fine">registered slope <span data-c="e7_delta"></span> [<span data-c="e7_delta_lo"></span>, <span data-c="e7_delta_hi"></span>], <span class="valid"></span>% of bootstrap draws usable; our pre-registered rule was lenient (see <code>eval/preregistration.md</code>). The dashed 0.5 line is a real-world literature reference (Sato &amp; Kanazawa, PRL 135, 257401 (2025): all Tokyo Stock Exchange stocks over 8 years; arXiv:2411.13965), drawn through our 4,000-share mean. It is not our result.</p>
+      <div class="src">source: <code>claims.json</code> e7_delta, e7_delta_lo, e7_delta_hi · <code>eval/results/realism_scorecard.json</code> (means, 95% CIs, boot_valid_frac; also the readout beside the size knob) · per-seed values from <code>E7_size_q*.csv</code> (re-exported and checked by <code>demo/smoke.sh</code>)</div>
     </div>
     <div class="panel">
-      <h2>Where our 4,000 shares ended up <small>net inventory change vs the ghost, by agent type</small></h2>
+      <h2>Where our 4,000 shares ended up <small>E10 aggregate, fixed at 4,000 shares (not the size knob): net inventory change vs the ghost, by agent type</small></h2>
       <canvas id="a1hold" style="height:230px" aria-label="net inventory change by agent type"></canvas>
       <p class="cap">Value agents end the session holding <b><span data-c="fb_value_pct"></span>%</b> of what we sold. Momentum agents: <b>no momentum amplification detected</b> (<span data-c="fb_momentum"></span> shares, 95% CI [<span data-c="fb_momentum_lo"></span>, <span data-c="fb_momentum_hi"></span>]).</p>
-      <div class="src">source: <code>claims.json</code> fb_value, fb_mm, fb_momentum, fb_noise (+ _lo/_hi): E10 TWAP arm, n = <span data-c="e10_n"></span> seeds, end-of-session holdings minus the ghost's.</div>
+      <div class="src">source: <code>claims.json</code> fb_value, fb_mm, fb_momentum, fb_noise (+ _lo/_hi): E10 TWAP arm, n = <span data-c="e10_n"></span> seeds, 4,000 shares, end-of-session holdings minus the ghost's.</div>
     </div>
   </div>
 </section>
 
-<!-- ============ ACT 2 ============ -->
-<section class="act" id="act2">
+<!-- ============ BEAT 2b: COUPLING ============ -->
+<section class="act" id="act-coupling">
   <h1>Without synchronised randomness, the ghost wanders off.</h1>
-  <p class="lede">Same <span data-c="e4_n"></span> seeds, same TWAP order. In <b>naive</b> twins, our first trade shifts every later random draw, so the ghost drifts into a different market and the "footprint" is mostly noise. <b>Synchronised</b> twins re-key every agent's random stream at each wake-up (<code>world.py: _synchronise_rng</code>), so the two markets differ only through reactions to our orders.</p>
+  <p class="lede">Same <span data-c="e4_n"></span> seeds, same TWAP order. In <b>naive</b> twins, our first trade can desynchronise state-dependent random draws (an agent that reacts to our trade consumes a different number of random numbers), so the ghost drifts into a different market and the "footprint" is mostly noise. <b>Synchronised</b> twins re-key every background agent's random stream at each wake-up (<code>world.py: _synchronise_rng</code>), so a reaction to our order cannot shift that agent's later random draws.</p>
   <div class="controls">
     <div class="toggle-big" role="group" aria-label="twin coupling">
       <button id="a2naive" aria-pressed="true">Naive twins</button>
@@ -181,23 +223,31 @@ footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;mar
   </div>
   <div class="grid1">
     <div class="panel">
-      <canvas id="a2chart" style="height:470px" aria-label="twin gap paths for 30 seeds"></canvas>
+      <canvas id="a2chart" style="height:440px" aria-label="twin gap paths for 30 seeds"></canvas>
       <div class="src">source: <code>demo/data/summary.js</code> arms naive_4000 and sync_4000 (seeds 100–129, re-exported); their T1 gaps equal <code>E4_nsr_naive.csv</code> and <code>E7_size_q4000.csv</code>, checked by <code>demo/smoke.sh</code>.</div>
     </div>
     <div class="panel">
       <div class="stat"><b id="a2std">—</b><p><strong>Std of the twin gap at T1</strong> (20 min) across these 30 seeds, computed here from the exported paths. <span id="a2stdchk"></span></p></div>
       <div class="stat"><b><span data-c="noise_reduction"></span>×</b><p><strong>less own-impact dispersion</strong>: per-seed std <span data-c="own_std_naive"></span> → <span data-c="own_std_sync"></span> bps (E4).<br><span class="src">source: claims.json noise_reduction, own_std_naive, own_std_sync</span></p></div>
-      <div class="stat"><b><span data-c="ci_tightening"></span>×</b><p><strong>tighter paired confidence intervals</strong> on the same <span data-c="e3_e5_n"></span> test seeds (E3 naive vs E5 synced).<br><span class="src">source: claims.json ci_tightening</span></p></div>
-      <div class="stat"><b><span data-c="gap_std_1200"></span>¢</b><p>Naive twin gap std at 20 min (<span data-c="gap_std_60"></span>¢ at 1 min), against a mean impact of <span data-c="gap_mean_300"></span>¢ (E1, 40 training seeds, naive).<br><span class="src">source: claims.json gap_std_1200, gap_std_60, gap_mean_300</span></p></div>
+      <div class="stat"><b><span data-c="ci_tightening"></span>×</b><p><strong>smaller paired-difference std</strong> (policy − TWAP on the same seed; median of 4 policies, same <span data-c="e3_e5_n"></span> test seeds, E3 naive vs E5 synced).<br><span class="src">source: claims.json ci_tightening (eval/claims.py: g_ci_tightening)</span></p></div>
+      <div class="stat"><b><span data-c="gap_std_60"></span>→<span data-c="gap_std_1200"></span>¢</b><p><strong>Naive twin gap std</strong> at 1 min → 20 min (E1, 40 training seeds, TWAP). Same-horizon means: <span id="e1m60"></span>¢ at 1 min, <span id="e1m1200"></span>¢ at 20 min; at 5 min the mean is <span data-c="gap_mean_300"></span>¢.<br><span class="src">source: claims.json gap_std_60, gap_std_1200, gap_mean_300 · nsr_E1_calib_train.json (means)</span></p></div>
       <div class="stat"><b>+<span data-c="e11_spread_pct"></span>%</b><p><strong>The price of the coupling:</strong> mean spreads are wider in synchronised worlds (E11); volume and trade counts stay within ±10%. Counterfactuals are conditional on this altered market.<br><span class="src">source: claims.json e11_spread_pct</span></p></div>
     </div>
   </div>
+  <div class="panel" style="margin-top:16px">
+    <h2>The twin coupling made the paired difference measurable; the ghost attributes it</h2>
+    <div class="scalegrid">
+      <canvas id="a4scale" style="height:150px" aria-label="own-impact noise versus the E6 point estimate"></canvas>
+      <p class="fine">Paired differences (our agent − TWAP on the same seed) are resolvable at this scale only because both arms share synchronised randomness: their std is <span data-c="ci_tightening"></span>× smaller (median of 4 policies). The ghost then splits each arm's cost into drift, own impact (ghost mid − our mid) and decision-to-fill cost. The bars: per-seed std of the own-impact term (naive vs synchronised twins, E4) against the E6 point estimate. One tick is <span data-c="tick_bps"></span> bp; the E6 point estimate is <span data-c="h1_cents"></span>¢ per share, about $<span data-c="h1_usd"></span> on a $<span data-c="parent_usd_m"></span>M order.</p>
+    </div>
+    <div class="src">source: <code>claims.json</code> own_std_naive, own_std_sync, h1_dis, ci_tightening, tick_bps, h1_cents, h1_usd, parent_usd_m</div>
+  </div>
 </section>
 
-<!-- ============ ACT 3 ============ -->
-<section class="act" id="act3">
+<!-- ============ BEAT 2c: ONE SEED ============ -->
+<section class="act" id="act-seed">
   <h1>TWAP vs the impact-aware schedule, against the same ghost.</h1>
-  <p class="lede"><b>One seed: single-seed differences are noise; aggregate in Act 4.</b> Both arms sell 4,000 shares with market orders against the same null twin, so every cost term is paired: drift (what the ghost did without us) + own impact (ghost mid − our mid at each decision) + instant (spread and book-walking).</p>
+  <p class="lede"><b>One seed cannot establish an average advantage;</b> the 400-seed average is on the first screen. Both arms sell 4,000 shares with market orders against the same null twin, so every cost term is paired: drift (what the ghost did without us) + own impact (ghost mid − our mid at each decision) + decision-to-fill cost (delay + at-fill concession).</p>
   <div class="controls">
     <div class="ctl">seed <select id="a3seed" aria-label="seed"></select></div>
     <span class="fine">arms: <b>TWAP</b> (40 equal slices) · <b style="color:var(--ia)">Impact-aware schedule (QP + front-loading, market orders)</b> · <b style="color:var(--ghost)">ghost</b> (= 0 by definition)</span>
@@ -211,45 +261,26 @@ footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;mar
     <div class="panel">
       <h2>Cost of this seed, bps <small>(positive = cost)</small></h2>
       <table class="cost" id="a3cost"></table>
-      <div class="src">computed by the committed <code>tca.decompose_is</code>; values equal the <code>E8_ablation_val.csv</code> rows for these seeds (checked by <code>demo/smoke.sh</code>).</div>
+      <div class="src">computed by the committed <code>tca.decompose_is</code>; values equal the <code>E8_ablation_val.csv</code> rows for these seeds (checked by <code>demo/smoke.sh</code>). One seed cannot establish an average advantage.</div>
       <h2 style="margin-top:14px">ΔIS on every seed of this block <small>(IA − TWAP, bps)</small></h2>
-      <canvas id="a3strip" style="height:120px" aria-label="per-seed difference strip"></canvas>
-      <p class="fine">Seeds 100–129, part of the E8 validation block. Each dot is one seed; the selected one is ringed. Means and CIs live in Act 4.</p>
+      <canvas id="a3strip" style="height:130px" aria-label="per-seed difference strip"></canvas>
+      <p class="fine">Seeds 100–129, part of the E8 validation block. Each dot is one seed; the selected one is ringed. The averages and CIs are on the first screen.</p>
       <div class="src">source: <code>demo/data/summary.js</code> is_bps of arms ia_4000 − sync_4000 (equal to <code>E8_ablation_val.csv</code>)</div>
     </div>
   </div>
 </section>
 
-<!-- ============ ACT 4 ============ -->
-<section class="act" id="act4">
-  <div class="verdict">We do not claim to beat TWAP.</div>
-  <p class="lede">ΔIS = our implementation shortfall minus TWAP's on the same seed (bps; negative = cheaper). The impact-aware schedule looked good once. The twin made a <span data-c="h1_gain"></span> bp difference measurable, and it is the twin that shows the result does not replicate.</p>
-  <div class="grid1">
-    <div class="panel">
-      <canvas id="a4forest" style="height:340px" aria-label="forest plot of E6, E8, E10 and pooled"></canvas>
-      <div class="controls" style="margin:6px 0 0"><button class="btn ghostbtn" id="a4replay">↻ replay the sequence</button></div>
-      <div class="src">source: <code>claims.json</code> h1_dis/_lo/_hi, h1_n (E6) · e8_IA_sched_only/_lo/_hi, e8_n (E8) · e10_dis, e10_lo, e10_hi, e10_n, e10_h2 (E10) · pool2_dis/_lo/_hi, pool2_n (pooled E6+E10). 95% paired-bootstrap CIs.</div>
-    </div>
-    <div class="panel">
-      <h2>Why sub-tick claims need the twin</h2>
-      <canvas id="a4scale" style="height:210px" aria-label="noise scale versus the E6 point estimate"></canvas>
-      <p class="fine">The top bar is the per-seed std of the own-impact term (naive twins). The bottom bar is the E6 point estimate. One tick is <span data-c="tick_bps"></span> bp. The E6 point estimate is <span data-c="h1_cents"></span>¢ per share, about $<span data-c="h1_usd"></span> on a $<span data-c="parent_usd_m"></span>M order.</p>
-      <div class="src">source: <code>claims.json</code> own_std_naive, own_std_sync, h1_dis, tick_bps, h1_cents, h1_usd, parent_usd_m</div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ LIVE ============ -->
-<section class="act" id="act5">
+<!-- ============ BEAT 3: LIVE ============ -->
+<section class="act" id="act-live">
   <h1>Bring your own seed: a brand-new twin pair, run live.</h1>
-  <p class="lede">Type any seed. The server runs three fresh ABIDES worlds with the committed code: the ghost, TWAP and the impact-aware schedule, all synchronised. Then it checks the pre-trade books event by event. Expect about 10 s.</p>
+  <p class="lede">Type a seed: a whole number from 0 to 2,147,483,647. The server runs three fresh ABIDES worlds with the committed code (the ghost, TWAP and the impact-aware schedule, all synchronised), then checks the pre-trade books event by event. Expect about 5–10 s.</p>
   <div class="controls livebar">
-    <div class="ctl">seed <input type="number" id="lvseed" value="2026" min="0" max="2147483647" style="width:130px" aria-label="seed"></div>
-    <div class="ctl">order size <input type="range" id="lvq" min="1000" max="16000" step="1000" value="4000" aria-label="order size"> <b id="lvqv" style="font-family:var(--mono)">4,000</b></div>
+    <div class="ctl"><label for="lvseed">seed (0–2,147,483,647)</label> <input type="text" inputmode="numeric" id="lvseed" value="2026" autocomplete="off" spellcheck="false" style="width:140px"></div>
+    <div class="ctl"><label for="lvq">order size</label> <input type="range" id="lvq" min="1000" max="16000" step="1000" value="4000"> <b id="lvqv" style="font-family:var(--mono)">4,000</b></div>
     <button class="btn" id="lvrun">Run twin pair</button>
-    <span class="status" id="lvstatus">checking the live lane…</span>
+    <span class="status" id="lvstatus" role="status">checking the live lane…</span>
   </div>
-  <div id="lvout"><div class="empty">No live run yet. Pick a seed and press <b>Run twin pair</b>; seeds 100–129 reproduce the committed E7/E8 rows exactly.</div></div>
+  <div id="lvout"><div class="empty">No live run yet. Type a seed and press <b>Run twin pair</b>; seeds 100–129 reproduce the committed E7/E8 rows exactly.</div></div>
   <template id="lvtpl">
     <div class="controls"><span class="livelabel">1 new seed (live, synced)</span><span class="fine" id="lvmeta"></span>
       <button class="btn ghostbtn" id="lvplay">▶ Replay</button><input type="range" class="scrub" id="lvscrub" min="0" max="2100" value="2100" aria-label="time"><span class="clock" id="lvclock">10:05:00</span></div>
@@ -264,7 +295,7 @@ footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;mar
     </div>
     <div class="grid2">
       <div class="panel"><h2>This seed on the E7 impact-vs-size chart</h2><canvas id="lvsize" style="height:250px"></canvas><div class="src">means and CIs: <code>realism_scorecard.json</code>; ring = this live seed (TWAP, footprint at T1).</div></div>
-      <div class="panel"><h2>Cost of this seed, bps</h2><table class="cost" id="lvcost"></table><div class="src">computed live by the committed <code>tca.decompose_is</code> (1 seed: noise; aggregates in Act 4)</div>
+      <div class="panel"><h2>Cost of this seed, bps</h2><table class="cost" id="lvcost"></table><div class="src">computed live by the committed <code>tca.decompose_is</code> and <code>tca.decompose_fill_time</code> (delay + at-fill). One seed cannot establish an average advantage.</div>
         <h2 style="margin-top:12px">Where the shares ended up <small>(this seed, vs the ghost)</small></h2><div id="lvhold" class="fine"></div></div>
     </div>
   </template>
@@ -285,7 +316,7 @@ function c(k) { if (!(k in C)) { MISSING.push(k); return "⟂" + k; } return C[k
 function pretty(s) { return String(s).replace(/^-/, "−").replace(/^\+/, "+"); }
 function num(k) { return parseFloat(String(c(k)).replace(/,/g, "").replace("−", "-")); }
 const COL = { ink: "#15171b", ink2: "#454b55", ink3: "#6b717b", rule: "#d9d2c5", ghost: "#4f6d93", heat: "#cf3f25", ia: "#0e7266", ok: "#1d7447", paper: "#fbfaf6" };
-const T_START = 300, T_END = 1500, T_MAX = 2100;   // seconds since 09:30
+const T_START = 300, T_END = 1500, T_MAX = 2100, T1_S = 1500;   // seconds since 09:30; T1 = 09:55
 const fmtT = s => { s = Math.max(0, Math.round(s)); const h = 9 + Math.floor((30 * 60 + s) / 3600), m = Math.floor(((30 * 60 + s) % 3600) / 60), x = s % 60; return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(x).padStart(2, "0")}`; };
 const sgn = (x, d = 1) => (x > 0 ? "+" : x < 0 ? "−" : "±") + Math.abs(x).toFixed(d);
 const usd = (cents, d = 2) => "$" + (cents / 100).toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -317,12 +348,12 @@ function meanStd(v) { const a = v.filter(x => x != null && isFinite(x)); const m
 
 // ---------- player ----------
 class Player {
-  constructor(onT, onState) { this.t = 0; this.speed = 60; this.playing = false; this.onT = onT; this.onState = onState || (() => {}); this.last = 0; }
+  constructor(onT, onState) { this.t = 0; this.speed = 60; this.playing = false; this.onT = onT; this.onState = onState || (() => {}); this.last = 0; this.stopAt = T_MAX; }
   set(t) { this.t = Math.max(0, Math.min(T_MAX, t)); this.onT(this.t); }
-  play() { if (this.t >= T_MAX) this.t = 0; this.playing = true; this.last = performance.now(); this.onState(true); requestAnimationFrame(n => this.tick(n)); }
+  play(stopAt) { if (this.t >= T_MAX) this.t = 0; this.stopAt = stopAt != null && stopAt > this.t ? stopAt : T_MAX; this.playing = true; this.last = performance.now(); this.onState(true); requestAnimationFrame(n => this.tick(n)); }
   pause() { this.playing = false; this.onState(false); }
   toggle() { this.playing ? this.pause() : this.play(); }
-  tick(now) { if (!this.playing) return; const dt = Math.min(.1, (now - this.last) / 1000); this.last = now; this.set(this.t + dt * this.speed); if (this.t >= T_MAX) { this.pause(); return; } requestAnimationFrame(n => this.tick(n)); }
+  tick(now) { if (!this.playing) return; const dt = Math.min(.1, (now - this.last) / 1000); this.last = now; const nt = this.t + dt * this.speed; if (nt >= this.stopAt) { this.set(this.stopAt); this.pause(); return; } this.set(nt); requestAnimationFrame(n => this.tick(n)); }
 }
 
 // ---------- market view: price chart + two ladders + identity badge ----------
@@ -438,20 +469,26 @@ class MarketView {
 const SIZES = P.meta.sizes, SHOW_SEEDS = Object.keys(SH).map(Number).sort((a, b) => a - b);
 const st1 = { seed: SHOW_SEEDS[0], q: 4000 };
 const mv1 = new MarketView({ canvas: $("#a1price"), gapCanvas: $("#a1gapc"), ladA: $("#a1ladA"), ladB: $("#a1ladB"), badge: $("#a1badge"), diffEl: $("#a1diff"), gapEl: $("#a1gap") });
-const pl1 = new Player(t => { mv1.setT(t); $("#a1scrub").value = t; $("#a1clock").textContent = fmtT(t); }, p => { $("#a1play").textContent = p ? "❚❚ Pause" : "▶ Play"; });
+const pl1 = new Player(t => { mv1.setT(t); $("#a1scrub").value = t; $("#a1clock").textContent = fmtT(t) + (Math.round(t) === T1_S ? " · T1" : ""); }, p => { $("#a1play").textContent = p ? "❚❚ Pause" : "▶ Play"; });
+pl1.speed = 120;
+function a1play() { if (pl1.playing) pl1.pause(); else pl1.play(pl1.t < T1_S ? T1_S : T_MAX); }
 function seg(el, vals, label, cur, on) {
   el.innerHTML = ""; for (const v of vals) { const b = document.createElement("button"); b.textContent = label(v); b.setAttribute("aria-pressed", String(v === cur)); b.onclick = () => { $$("#" + el.id + " button").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); on(v); }; el.appendChild(b); }
 }
 function a1load() {
   const show = SH[st1.seed]; if (!show) return;
   mv1.yKeys = ["ghost", ...SIZES.map(q => "twap_" + q), "ia_4000"];
-  mv1.set(show, [{ key: "twap_" + st1.q, label: "our market", color: COL.ink }]); mv1.setT(pl1.t); drawSize(); 
+  mv1.set(show, [{ key: "twap_" + st1.q, label: "our market", color: COL.ink }]); mv1.setT(pl1.t); drawSize();
+  const i = SIZES.indexOf(st1.q), sc = P.scorecard, [lo, hi] = sc.peak_ci95[i], v = P.arms["sync_" + st1.q].t1[P.meta.seeds.indexOf(st1.seed)];
+  $("#a1qty").textContent = grp(st1.q);
+  $("#a1agg").innerHTML = `${grp(st1.q)} shares, at 09:55, ${sc.n_seeds} seeds: <b>${sc.peak_mean_cents[i].toFixed(1)}¢</b> mean, 95% CI [${sgn(lo)}, ${sgn(hi)}] · seed ${st1.seed}: <b>${sgn(v)}¢</b>`;
 }
+function a1size(q) { st1.q = q; pl1.pause(); a1load(); pl1.set(T1_S); }
 SHOW_SEEDS.forEach(s => $("#a1seed").add(new Option(String(s), s)));
 $("#a1seed").onchange = e => { st1.seed = +e.target.value; a1load(); };
-seg($("#a1size"), SIZES, q => (q / 1000) + "k", st1.q, q => { st1.q = q; a1load(); });
-seg($("#a1speed"), [30, 60, 120, 240], v => v + "×", 60, v => { pl1.speed = v; });
-$("#a1play").onclick = () => pl1.toggle();
+seg($("#a1size"), SIZES, q => (q / 1000) + "k", st1.q, a1size);
+seg($("#a1speed"), [60, 120, 240], v => v + "×", 120, v => { pl1.speed = v; });
+$("#a1play").onclick = a1play;
 $("#a1scrub").oninput = e => { pl1.pause(); pl1.set(+e.target.value); };
 
 function drawSize(cv = $("#a1size_chart"), live = null) {
@@ -465,7 +502,7 @@ function drawSize(cv = $("#a1size_chart"), live = null) {
   const line = (f, color, dash, lw) => { const xs = [], ys = []; for (let q = 800; q <= 21000; q *= 1.05) { xs.push(X(qx(q))); ys.push(Y(Math.log10(f(q)))); } path(ctx, xs, ys, color, lw, dash, 1); };
   line(ref, COL.ghost, [6, 4], 2); line(fit, COL.heat, [], 2);
   const lg = (y, color, dash, label) => { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.setLineDash(dash); ctx.beginPath(); ctx.moveTo(m.l + 8, y); ctx.lineTo(m.l + 34, y); ctx.stroke(); ctx.restore(); text(ctx, label, m.l + 40, y, { color, weight: "650", size: 11.5 }); };
-  lg(m.t + 4, COL.heat, [], "this simulator (E7): slope " + pretty(c("e7_delta")) + " [" + pretty(c("e7_delta_lo")) + ", " + pretty(c("e7_delta_hi")) + "]");
+  lg(m.t + 4, COL.heat, [], "this simulator (E7): slope " + pretty(c("e7_delta")) + " [" + pretty(c("e7_delta_lo")) + ", " + pretty(c("e7_delta_hi")) + "], " + Math.round(100 * sc.boot_valid_frac) + "% of bootstrap draws usable");
   lg(m.t + 20, COL.ghost, [6, 4], "square-root law ≈0.5: real-world reference (TSE), not our data");
   SIZES.forEach((q, i) => {
     const x = X(qx(q)), mean = sc.peak_mean_cents[i], [lo, hi] = sc.peak_ci95[i], sel = !live && q === st1.q;
@@ -478,11 +515,11 @@ function drawSize(cv = $("#a1size_chart"), live = null) {
   if (live) {
     const x = X(qx(live.q)), v = live.t1;
     if (v > .25) { ctx.strokeStyle = COL.ia; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, Y(Math.log10(Math.min(v, 40))), 9, 0, 7); ctx.stroke(); text(ctx, "seed " + live.seed + ": " + sgn(v) + "¢", x + 13, Y(Math.log10(Math.min(v, 40))), { color: COL.ia, weight: "700" }); }
-    else text(ctx, "seed " + live.seed + ": " + sgn(v) + "¢ at T1 (≤ 0, off the log axis: single-seed noise)", w - m.r, h - m.b - 10, { align: "right", color: COL.ia, weight: "700" });
+    else text(ctx, "seed " + live.seed + ": " + sgn(v) + "¢ at T1 (≤ 0, off the log axis); one seed cannot establish the average", w - m.r, h - m.b - 10, { align: "right", color: COL.ia, weight: "700" });
   } else {
     const arm = P.arms["sync_" + st1.q], si = P.meta.seeds.indexOf(st1.seed), v = arm.t1[si], x = X(qx(st1.q));
     if (v > .25) { ctx.strokeStyle = COL.heat; ctx.lineWidth = 1.5; ctx.setLineDash([2, 2]); ctx.beginPath(); ctx.arc(x, Y(Math.log10(Math.min(v, 40))), 8, 0, 7); ctx.stroke(); ctx.setLineDash([]); }
-    text(ctx, `dotted ring = seed ${st1.seed} alone: ${sgn(v)}¢ (single seeds are noisy)`, w - m.r, h - m.b - 10, { align: "right", size: 11, color: COL.ink3 });
+    text(ctx, `dotted ring = seed ${st1.seed} alone: ${sgn(v)}¢; one seed cannot establish the average`, w - m.r, h - m.b - 10, { align: "right", size: 11, color: COL.ink3 });
   }
   mark(ctx, w, h);
 }
@@ -538,14 +575,17 @@ function drawA2() {
   $("#a2std").textContent = s1.toFixed(1) + "¢";
   $("#a2stdchk").innerHTML = (Math.abs(s1 - ref) < 1e-6 ? '<span class="check">✓</span>' : '<span class="warn">≠</span>') + ` equals the committed value ${ref.toFixed(2)}¢ (${sync ? "synced" : "naive"}). <span class="src">source: <code>nsr_E4_nsr_naive_vs_E4_nsr_sync.json</code></span>`;
 }
-document.addEventListener("keydown", e => { if (!$("#act2").classList.contains("on")) return; if (e.key === "n" || e.key === "N") a2set(false); if (e.key === "s" || e.key === "S") a2set(true); });
+document.addEventListener("keydown", e => { if (act !== "coupling" || e.target.tagName === "INPUT") return; if (e.key === "n" || e.key === "N") a2set(false); if (e.key === "s" || e.key === "S") a2set(true); });
+{ const e1 = P.nsr_e1.exps.E1_calib_train; $("#e1m60").textContent = sgn(e1["60"].mean); $("#e1m1200").textContent = sgn(e1["1200"].mean); }
+$$(".valid").forEach(el => { el.textContent = Math.round(100 * P.scorecard.boot_valid_frac); });
 
 // ---------- ACT 3 ----------
 P.meta.seeds.forEach(s => $("#a3seed").add(new Option(String(s), s)));
 $("#a3seed").onchange = drawA3;
 function costTable(el, a, b, la, lb) {
   const r = (lab, k, cls) => `<tr class="${cls || ""}"><td>${lab}</td><td>${sgn(a[k], 3)}</td><td>${sgn(b[k], 3)}</td><td>${sgn(b[k] - a[k], 3)}</td></tr>`;
-  el.innerHTML = `<tr><th></th><th>${la}</th><th style="color:var(--ia)">${lb}</th><th>Δ</th></tr>` + r("drift", "drift_bps") + r("own impact", "own_bps") + r("instant", "instant_bps") + r("total IS", "is_bps", "tot");
+  const split = a.delay_bps != null && b.delay_bps != null ? r("delay", "delay_bps", "sub") + r("at-fill concession", "at_fill_bps", "sub") : "";
+  el.innerHTML = `<tr><th></th><th>${la}</th><th style="color:var(--ia)">${lb}</th><th>Δ</th></tr>` + r("drift", "drift_bps") + r("own impact", "own_bps") + r('decision-to-fill<br><small class="fine">delay + at-fill concession</small>', "instant_bps") + split + r("total IS", "is_bps", "tot");
 }
 function pick(arm, i) { const A = P.arms[arm], o = {}; for (const k in A) o[k] = A[k][i]; return o; }
 function drawA3() {
@@ -573,22 +613,32 @@ function drawA3() {
       text(ctx, "shares sold per 30-s slot, 09:35 → 09:55", m.l, 6, { size: 11, color: COL.ink3 }); text(ctx, "max " + grp(mx), m.l - 6, Y(mx), { align: "right", size: 10.5, color: COL.ink3 });
     }
     mark(ctx, w, h); }
-  { const { ctx, w, h } = setup($("#a3strip")), m = { l: 16, r: 16, t: 16, b: 26 }, A = P.arms.sync_4000.is_bps, B = P.arms.ia_4000.is_bps;
+  { const { ctx, w, h } = setup($("#a3strip")), m = { l: 16, r: 16, t: 18, b: 36 }, A = P.arms.sync_4000.is_bps, B = P.arms.ia_4000.is_bps;
     const d = A.map((a, j) => B[j] - a), amp = Math.max(...d.map(Math.abs)) * 1.1, X = lin(-amp, amp, m.l, w - m.r), yc = (h - m.b + m.t) / 2;
-    vline(ctx, X(0), m.t - 6, h - m.b, COL.ink); text(ctx, "← IA cheaper", X(0) - 6, h - m.b + 12, { align: "right", size: 11, color: COL.ink3 }); text(ctx, "IA dearer →", X(0) + 6, h - m.b + 12, { size: 11, color: COL.ink3 });
-    text(ctx, sgn(-amp / 1.1, 2), m.l, h - m.b + 12, { size: 10.5, color: COL.ink3 }); text(ctx, sgn(amp / 1.1, 2), w - m.r, h - m.b + 12, { align: "right", size: 10.5, color: COL.ink3 });
+    hline(ctx, m.l, w - m.r, h - m.b, COL.ink3); vline(ctx, X(0), m.t - 6, h - m.b, COL.ink);
+    const ts = niceStep(2 * amp, 4); for (let k = -Math.floor(amp / ts); k * ts <= amp + 1e-12; k++) { const tv = +(k * ts).toFixed(6); vline(ctx, X(tv), h - m.b, h - m.b + 4, COL.ink3); text(ctx, tv === 0 ? "0" : sgn(tv, 2), X(tv), h - m.b + 12, { align: "center", size: 10.5, color: COL.ink3 }); }
+    text(ctx, "← IA cheaper", X(0) - 6, h - m.b + 27, { align: "right", size: 11, color: COL.ink3 }); text(ctx, "IA dearer →", X(0) + 6, h - m.b + 27, { size: 11, color: COL.ink3 });
     d.forEach((v, j) => { const jit = ((j * 7919) % 13 - 6) * 2.2; ctx.fillStyle = "rgba(21,23,27,.55)"; ctx.beginPath(); ctx.arc(X(v), yc + jit, 4, 0, 7); ctx.fill(); });
     const v = d[i]; ctx.strokeStyle = COL.heat; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(X(v), yc + (((i * 7919) % 13 - 6) * 2.2), 8, 0, 7); ctx.stroke();
     text(ctx, `seed ${seed}: ΔIS ${sgn(v, 3)} bps`, m.l, 8, { color: COL.heat, weight: "700" });
     mark(ctx, w, h); }
 }
 
-// ---------- ACT 4 ----------
+// ---------- THE ANSWER ----------
+function drawBars() {
+  const { ctx, w, h } = setup($("#a0bars")), E = P.e10, m = { l: 84, r: 78, t: 6, b: 22 };
+  const top = Math.ceil(Math.max(E.twap_is_mean, E.ia_is_mean) * 10 + 1e-9) / 10, X = lin(0, top, m.l, w - m.r);
+  const rows = [["TWAP", E.twap_is_mean, COL.ink], ["our agent", E.ia_is_mean, COL.ia]], rh = (h - m.t - m.b) / rows.length;
+  for (let k = 0; k <= Math.round(top * 10); k++) { const v = k / 10; vline(ctx, X(v), m.t, h - m.b, k ? "rgba(21,23,27,.08)" : COL.ink); text(ctx, v.toFixed(1), X(v), h - m.b + 11, { align: "center", size: 10.5, color: COL.ink3 }); }
+  text(ctx, "bps", X(top) + 16, h - m.b + 11, { size: 10.5, color: COL.ink3 });
+  rows.forEach(([lab, v, col], i) => { const y = m.t + rh * i + rh / 2; ctx.fillStyle = col; ctx.fillRect(X(0), y - 13, X(v) - X(0), 26); text(ctx, lab, m.l - 8, y, { align: "right", weight: "700", color: col, size: 13 }); text(ctx, v.toFixed(3), X(v) + 6, y, { weight: "700", color: col, size: 13 }); });
+  mark(ctx, w, h);
+}
 let a4t0 = 0, a4anim = null;
 function a4replay() { a4t0 = performance.now(); cancelAnimationFrame(a4anim); const loop = () => { drawA4(); if (performance.now() - a4t0 < 3600) a4anim = requestAnimationFrame(loop); }; loop(); }
-$("#a4replay").onclick = a4replay;
+$("#a0go").onclick = () => { pl1.pause(); pl1.t = 0; show("ghost"); };
 function drawA4() {
-  const { ctx, w, h } = setup($("#a4forest")), m = { l: 370, r: 205, t: 34, b: 40 }, el = performance.now() - a4t0;
+  const { ctx, w, h } = setup($("#a4forest")), m = { l: 360, r: 200, t: 14, b: 40 }, el = performance.now() - a4t0;
   const rows = [
     { name: "E6", desc: "hypothesis fixed before inspecting results", k: ["h1_dis", "h1_dis_lo", "h1_dis_hi"], n: "h1_n" },
     { name: "E8", desc: "validation: not reproduced", k: ["e8_IA_sched_only", "e8_IA_sched_only_lo", "e8_IA_sched_only_hi"], n: "e8_n" },
@@ -597,10 +647,10 @@ function drawA4() {
   const X = lin(-.07, .05, m.l, w - m.r), rh = (h - m.t - m.b) / rows.length;
   for (let v = -.06; v <= .041; v += .02) { const vv = +v.toFixed(2); vline(ctx, X(vv), m.t, h - m.b, vv === 0 ? COL.ink : "rgba(21,23,27,.08)", [], vv === 0 ? 1.5 : 1); text(ctx, vv === 0 ? "0" : sgn(vv, 2), X(vv), h - m.b + 12, { align: "center", size: 11, color: COL.ink3 }); }
   text(ctx, "← impact-aware cheaper than TWAP", X(0) - 8, h - m.b + 28, { align: "right", size: 11.5, color: COL.ink2, weight: "600" }); text(ctx, "dearer →", X(0) + 8, h - m.b + 28, { size: 11.5, color: COL.ink2, weight: "600" });
-  text(ctx, "ΔIS vs TWAP, bps (95% CI)", m.l, 14, { size: 12, color: COL.ink2, weight: "700" });
   rows.forEach((r, i) => {
     const a = Math.max(0, Math.min(1, (el - i * 750) / 450)); if (a <= 0) return;
     const y = m.t + rh * i + rh / 2, [v, lo, hi] = r.k.map(num); ctx.save(); ctx.globalAlpha = a;
+    if (r.name === "E10") { ctx.fillStyle = "rgba(207,63,37,.08)"; ctx.fillRect(4, y - rh / 2 + 3, w - 8, rh - 6); }
     text(ctx, r.name, 14, y - 9, { color: COL.ink, weight: "800", size: 15 }); text(ctx, r.desc + " · n = " + c(r.n), 14, y + 10, { color: r.pooled ? COL.ink3 : COL.ink2, size: 12.5 });
     const crosses = lo < 0 && hi > 0, col = r.pooled ? COL.ink3 : crosses ? COL.heat : COL.ink;
     ctx.strokeStyle = col; ctx.lineWidth = 2.5; ctx.setLineDash(r.pooled ? [5, 3] : []); ctx.beginPath(); ctx.moveTo(X(lo), y); ctx.lineTo(X(hi), y); ctx.stroke(); ctx.setLineDash([]);
@@ -624,6 +674,11 @@ function drawScale() {
 const API = location.protocol.startsWith("http") ? "" : null;
 let live = { ok: false }, mvL = null, plL = null;
 $("#lvq").oninput = e => { $("#lvqv").textContent = grp(+e.target.value); };
+const SEED_MAX = 2147483647;
+function parseSeed(s) { s = String(s).trim(); if (!/^(0|[1-9][0-9]{0,9})$/.test(s)) return null; const v = Number(s); return v <= SEED_MAX ? v : null; }
+function seedCheck() { const ok = parseSeed($("#lvseed").value) != null; $("#lvseed").setAttribute("aria-invalid", String(!ok)); return ok; }
+$("#lvseed").oninput = seedCheck;
+$("#lvseed").onkeydown = e => { if (e.key === "Enter" && !$("#lvrun").disabled) $("#lvrun").click(); };
 async function liveStatus() {
   const el = $("#lvstatus");
   if (API === null) { live = { live: false }; el.className = "status"; el.textContent = "live lane off in file:// mode: open the http URL that demo/run.sh prints; replays work here"; $("#lvrun").disabled = true; return; }
@@ -636,7 +691,8 @@ async function liveStatus() {
   $("#lvrun").disabled = !live.live;
 }
 $("#lvrun").onclick = async () => {
-  const seed = Math.max(0, Math.min(2147483647, Math.floor(+$("#lvseed").value || 0))), q = +$("#lvq").value, el = $("#lvstatus"), t0 = performance.now();
+  const seed = parseSeed($("#lvseed").value), q = +$("#lvq").value, el = $("#lvstatus"), t0 = performance.now();
+  if (seed == null) { seedCheck(); el.className = "status paused"; el.textContent = `invalid seed "${$("#lvseed").value.slice(0, 24)}": enter a whole number from 0 to 2,147,483,647 (nothing was run)`; $("#lvseed").focus(); return; }
   $("#lvrun").disabled = true; el.className = "status"; const tick = setInterval(() => { el.textContent = `running 3 fresh worlds for seed ${seed}… ${((performance.now() - t0) / 1000).toFixed(0)} s`; }, 250);
   try {
     const r = await fetch(`${API}/api/run?seed=${seed}&qty=${q}`, { cache: "no-store" }), j = await r.json();
@@ -664,32 +720,43 @@ function renderLive(j) {
 }
 
 // ---------- routing ----------
-const DRAW = { 1: () => { a1load(); drawHold(); }, 2: drawA2, 3: drawA3, 4: () => { a4replay(); drawScale(); }, 5: liveStatus };
-let act = 1;
+const ACTS = ["answer", "ghost", "coupling", "seed", "live"];
+const DRAW = {
+  answer: () => { a4replay(); drawBars(); },
+  ghost: () => { a1load(); drawHold(); if (pl1.t === 0 && !pl1.playing && !NOPLAY) a1play(); },
+  coupling: () => { drawA2(); drawScale(); },
+  seed: drawA3,
+  live: liveStatus,
+};
+let act = "answer", NOPLAY = false;
 function show(n, quiet) {
-  act = n; $$("nav button").forEach(b => b.setAttribute("aria-selected", String(+b.dataset.act === n)));
-  $$("section.act").forEach(s => s.classList.toggle("on", s.id === "act" + n));
-  if (n !== 1) pl1.pause();
+  act = n; $$("nav button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.act === n)));
+  $$("section.act").forEach(s => s.classList.toggle("on", s.id === "act-" + n));
+  if (n !== "ghost") pl1.pause();
+  window.scrollTo(0, 0);
   DRAW[n](); if (!quiet) history.replaceState(null, "", "#act=" + n);
 }
-$$("nav button").forEach(b => b.onclick = () => show(+b.dataset.act));
+$$("nav button").forEach(b => b.onclick = () => show(b.dataset.act));
 document.addEventListener("keydown", e => {
   if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
-  if (/^[1-5]$/.test(e.key)) show(+e.key);
-  if (e.key === " " && act === 1) { e.preventDefault(); pl1.toggle(); }
-  if (e.key === " " && act === 5 && plL) { e.preventDefault(); plL.toggle(); }
-  if (act === 1 && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { pl1.pause(); pl1.set(pl1.t + (e.key === "ArrowRight" ? 30 : -30)); }
+  if (/^[1-5]$/.test(e.key)) show(ACTS[+e.key - 1]);
+  if (e.key === " " && act === "ghost") { e.preventDefault(); a1play(); }
+  if (e.key === " " && act === "live" && plL) { e.preventDefault(); plL.toggle(); }
+  if (act === "ghost" && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { pl1.pause(); pl1.set(pl1.t + (e.key === "ArrowRight" ? 30 : -30)); }
 });
-let rz = null; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (act === 1) { mv1.draw(); drawSize(); drawHold(); } else if (act === 4) { drawA4(); drawScale(); } else if (act === 5 && mvL) mvL.draw(); else DRAW[act](); }, 120); });
+let rz = null; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (act === "ghost") { mv1.draw(); drawSize(); drawHold(); } else if (act === "answer") { drawA4(); drawBars(); } else if (act === "live" && mvL) mvL.draw(); else DRAW[act](); }, 120); });
 
 function route() {
   const H = Object.fromEntries(location.hash.slice(1).split("&").filter(Boolean).map(kv => kv.split("=")));
   if (H.seed && SH[+H.seed]) { st1.seed = +H.seed; $("#a1seed").value = H.seed; }
-  if (H.q && SIZES.includes(+H.q)) { st1.q = +H.q; seg($("#a1size"), SIZES, q => (q / 1000) + "k", st1.q, q => { st1.q = q; a1load(); }); }
+  if (H.q && SIZES.includes(+H.q)) { st1.q = +H.q; seg($("#a1size"), SIZES, q => (q / 1000) + "k", st1.q, a1size); }
   if (H.s3) $("#a3seed").value = H.s3;
   if (H.mode === "sync") { st2.f = 1; st2.target = 1; $("#a2naive").setAttribute("aria-pressed", "false"); $("#a2sync").setAttribute("aria-pressed", "true"); }
-  show(+(H.act || 1), true);
-  if (+(H.act || 1) === 1) { if (H.t != null) { pl1.pause(); pl1.set(+H.t); } else { pl1.set(0); if (H.play !== "0") pl1.play(); } }
+  NOPLAY = H.play === "0";
+  const n = ACTS.includes(H.act) ? H.act : "answer";
+  if (n === "ghost" && H.t != null) { pl1.pause(); pl1.t = +H.t; }
+  show(n, true);
+  if (H.y) window.scrollTo(0, +H.y);
 }
 addEventListener("hashchange", route);
 route();

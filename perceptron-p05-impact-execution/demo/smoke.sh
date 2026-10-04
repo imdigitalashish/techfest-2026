@@ -3,8 +3,9 @@
 # 1-4. demo/smoke_check.py: data loads (<5 MB, no CDN), key numbers == eval/results/claims.json, exported T1 gaps
 #      == committed E7/E4/E8 CSV rows, recomputed means/slope/stds == committed results.
 # 5.   run.sh with DEMO_NO_OPEN=1 prints READY within 60 s and serves the page and data.
-# 6.   If the live lane is available: one live run (seed 101, 4,000 shares) returns pre-trade identity true and
-#      reproduces the committed E7/E8 rows; skipped with a message when the memory guard trips.
+# 6.   If the live lane is available: invalid seeds are rejected (never substituted); one live run (seed 101,
+#      4,000 shares) returns pre-trade identity true, reproduces the committed E7/E8 rows, and its delay + at-fill
+#      split sums to the decision-to-fill term; skipped with a message when the memory guard trips.
 set -euo pipefail
 cd "$(dirname "$0")"
 PY=../.venv/bin/python
@@ -40,6 +41,11 @@ done
 case "$S" in
   *'"live":true'*)
     if printf '%s' "$S" | grep -q '"paused":true'; then echo "  skip live run: live paused (memory guard)"; echo "SMOKE PASSED"; exit 0; fi
+    for BAD in -1 2147483648 12.5 abc; do
+      CODE="$(curl -s -o /dev/null -w '%{http_code}' "${URL}api/run?seed=${BAD}&qty=4000")"
+      [ "$CODE" = 400 ] || fail "invalid seed '$BAD' was not rejected (HTTP $CODE)"
+    done
+    echo "  ok   invalid seeds (-1, 2^31, 12.5, abc) rejected with HTTP 400, nothing run"
     T1=$("$PY" -c 'import time; print(time.time())')
     curl -fsS --max-time 120 "${URL}api/run?seed=101&qty=4000" >"$LOG.json" || fail "live run request failed"
     "$PY" - "$LOG.json" "$T1" <<'EOF' || exit 1
@@ -52,9 +58,11 @@ tw, ia = j["worlds"]["twap"]["stats"], j["worlds"]["ia"]["stats"]
 ok = tw["ident_ok"] and ia["ident_ok"] and tw["top1_exact"] and ia["top1_exact"]
 ok &= tw["t1"] == float(row("E7_size_q4000.csv", "TWAP")["impact_end_cents"])
 ok &= ia["t1"] == float(row("E8_ablation_val.csv", "IA_sched_only")["impact_end_cents"])
+ok &= all(abs(s["delay_bps"] + s["at_fill_bps"] - s["instant_bps"]) < 1e-9 for s in (tw, ia))
+ok &= j["label"] == "1 new seed (live, synced)"
 print(f"  {'ok  ' if ok else 'FAIL'} live seed 101 in {time.time() - float(sys.argv[2]):.1f}s: pre-trade top-5 identity "
       f"{tw['ident'][0]}/{tw['ident'][1]} (TWAP) {ia['ident'][0]}/{ia['ident'][1]} (IA); T1 gaps {tw['t1']:+.1f}c / {ia['t1']:+.1f}c "
-      f"== E7_size_q4000.csv / E8_ablation_val.csv")
+      f"== E7_size_q4000.csv / E8_ablation_val.csv; delay + at-fill == decision-to-fill")
 sys.exit(0 if ok else 1)
 EOF
     ;;
