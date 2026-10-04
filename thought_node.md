@@ -6,11 +6,11 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (07:25 IST, 4 Oct)
-- **Phase:** Overnight run, final hour. Every lead is writing its morning package; push cut-off 08:15 IST, report 08:30.
-- **Doing:** Sweeps every 15 min — status checks, restarting dead leads, gap nudges, hallucination spot-checks.
-- **Next:** 08:15 final pull → `MORNING_REPORT.md` (delivered work, real numbers, rankings per competition, what needs you) → lift Lean Mode after 08:30.
-- **Lean Mode (since 05:50):** no sub-agents/child sessions, small requests, no big downloads. Reason: the shared uplink saturated (~55 KB/s per stream) and model calls failed with `408 Timed out reading request body` — 405 of ~408 errors overnight. Errors fell from ~20 to ~2 per 10 min once it took effect.
+## Now (08:00 IST, 4 Oct)
+- **Phase:** Overnight run, final 30 min. 17 of 20 projects have a full morning package; push cut-off 08:15, report 08:30.
+- **Doing:** Final calls sent at 07:47 to the 9 leads missing memos; refreshing `MORNING_REPORT.md` after 08:15.
+- **Next:** Final report → lift Lean Mode at 08:30 with limits (≤3 concurrent sub-agents per lead, no downloads >1 GB without reason, stagger heavy compute — the Mac hit load ~100 and ~42 GB swap).
+- **Lean Mode (since 05:50):** no sub-agents/child sessions, small requests, no big downloads. Cause: uplink saturation made model calls fail with `408 Timed out reading request body` (405 of ~408 errors overnight).
 
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
@@ -23,29 +23,29 @@
 - [ ] **Azure resource created overnight (FYI, costs money):** P8 provisioned Azure OpenAI `tf26-p08-aoai-1004` (resource group `rg-tf26-p08`, Sweden Central, gpt-4.1-mini). Delete the resource group if P8 isn't pursued.
 - [ ] **If P8 is chosen:** its stretch goal needs a ~30-learner pilot in November.
 
-## Portfolio (07:25 IST)
-| Project | Status | Note |
-|---|---|---|
-| perceptron-p01-federated-lora | 🟢 | Landscape (42 verified sources), components, contracts, first results. Missing ADR, abstract, memo. |
-| perceptron-p02-kv-cache | 🔴 | Research agents all died on 408s; little pushed. Nudged 07:22. |
-| perceptron-p03-off-policy-eval | 🟢 | Landscape, components, contracts, ADR, abstract (894 words). 30-seed bank running; memo + numbers by 08:15. |
-| perceptron-p04-lob-regimes | 🟢 | Full package except abstract. Memo v1 4.2/5; real Binance runs. |
-| perceptron-p05-impact-execution | 🟠 | Eval + code; docs missing. Nudged 07:22. |
-| perceptron-p06-stat-arb | 🟢 | Full package incl. abstract; memo v1 (honest: edge not yet significant). |
-| perceptron-p07-multi-agent-allocation | 🟢 | Landscape, components, ADR, harness; journal stale. Nudged 07:22. |
-| perceptron-p08-misconception-tutor | 🟢 | Full package + memo; real Eedi numbers. |
-| perceptron-p09-agent-guardrail | 🟠 | Contracts, eval, code (local models). Docs missing. Nudged 07:22. |
-| perceptron-p10-trusted-text-signal | 🟠 | Contracts, eval, code. Docs missing. Nudged 07:22. |
-| apctt-trl-assessor | 🔴 | Died on 408s (02:30, 05:51); restarted 07:10. |
-| ev-c1-infra-map-india | 🟠 | Code + data work; docs missing. Nudged 07:22. |
-| ev-c2-green-auto-lca | 🟠 | Cited factor DB, benchmarks, engine; docs partial. Nudged 07:22. |
-| namma-space | 🟠 | Capture SOP published; first splat trained on M5; docs missing. Nudged 07:22. |
-| india71-t1-nutrition | 🔴 | Died 06:07 with uncommitted work; restarted 07:10. |
-| india71-t2-learning | 🟢 | Components, contracts, ADR, proposal skeleton, memo. Missing landscape. |
-| india71-t3-finance | 🟠 | Components, contracts, skeleton. Died 06:05; restarted 07:10. |
-| innovatex-t1-groundwater | 🟢 | Landscape, contracts, real Delhi DWLR data (185 stations). Missing components, ADR, pitch. Nudged 07:22. |
-| innovatex-t2-aqi | 🔴 | Died 06:17 with uncommitted research; restarted 07:10. |
-| innovatex-t3-coastal-plastic | 🟢 | Most complete: landscape, ADR, twin sim (real ERA5/tides), MRV dashboard, prototype plan. |
+## Portfolio (08:00 IST) — package = landscape, components, contracts, ADR, deliverables, eval, memo
+| Project | Package | Memo (self-score) | Last push | Note |
+|---|---|---|---|---|
+| [apctt-trl-assessor](apctt-trl-assessor/thought_node.md) | 7/7 | 4.2 | 2 min ago | Lost the night to 408s; restarted 07:10 and caught up (7/7). Data + criteria arrive 10 Oct. |
+| [ev-c1-infra-map-india](ev-c1-infra-map-india/thought_node.md) | 3/7 | — | 4 min ago | 🟠 Lost time to deep source verification; pushing again since 07:54 (3/7). |
+| [ev-c2-green-auto-lca](ev-c2-green-auto-lca/thought_node.md) | 7/7 | 4.0 | 2 min ago | Real run: petrol scooter 62.9 vs e-scooter 39.7 gCO2e/km (−36.9% [29–44%]); −14% at operating margin, −55% at build margin; ICCT 2021 replicated at 0.06% MAPE. |
+| [india71-t1-nutrition](india71-t1-nutrition/thought_node.md) | 7/7 | 4.2 | 9 min ago | Restarted 07:10; recovered uncommitted work and caught up. |
+| [india71-t2-learning](india71-t2-learning/thought_node.md) | 7/7 | 4.2 | 23 min ago | "Ek Tasveer": ≤3-SMS Monday plan + interval-backed block estimates (synthetic district calibrated to ASER 2024). |
+| [india71-t3-finance](india71-t3-finance/thought_node.md) | 6/7 | — | 13 min ago | Restarted 07:10; package in, memo pending. |
+| [innovatex-t1-groundwater](innovatex-t1-groundwater/thought_node.md) | 7/7 | 4.0 | 6 min ago | Real Delhi DWLR data (336 stations, 483k obs). |
+| [innovatex-t2-aqi](innovatex-t2-aqi/thought_node.md) | 7/7 | 3.8 | 4 min ago | Restarted 07:10 with uncommitted research; caught up — package + memo in. |
+| [innovatex-t3-coastal-plastic](innovatex-t3-coastal-plastic/thought_node.md) | 7/7 | 3.4 | 3 min ago | Most complete InnovateX entry; dispatch gain small (−2.1% median, simulated) → spike is a ratchet boom pocket. |
+| [namma-space](namma-space/thought_node.md) | 1/7 | — | 148 min ago | 🔴 Pipeline code exists locally but is unpushed; SOP + first splat done. Final call pending. |
+| [perceptron-p01-federated-lora](perceptron-p01-federated-lora/thought_node.md) | 7/7 | 4.2 | 4 min ago | FedAvg hurts 4/5 domains; AnchorLoRA improves all (1 seed, SmolLM2-135M). |
+| [perceptron-p02-kv-cache](perceptron-p02-kv-cache/thought_node.md) | 5/7 | 4.2 | 1 min ago | 🟠 Research agents all died overnight; landscape, harness and memo in; components/ADR/abstract pending. |
+| [perceptron-p03-off-policy-eval](perceptron-p03-off-policy-eval/thought_node.md) | 7/7 | 4.0 | 10 min ago | Simulator + 5 estimators + confounding bounds; 30-seed bank running. |
+| [perceptron-p04-lob-regimes](perceptron-p04-lob-regimes/thought_node.md) | 7/7 | 4.2 | 3 min ago | Real Binance: KS→retrain hurts (+0.020 log-loss); regime heads help (−0.013). |
+| [perceptron-p05-impact-execution](perceptron-p05-impact-execution/thought_node.md) | 7/7 | 4.2 | 14 min ago | ABIDES: −0.60 bps vs TWAP [−1.12, −0.10] on 18 seeds; mostly from not walking the book (honest). |
+| [perceptron-p06-stat-arb](perceptron-p06-stat-arb/thought_node.md) | 7/7 | 4.0 | 17 min ago | Real 9-venue ticks; our ranking +$802 vs tuned +$768/day — not yet significant (honest). |
+| [perceptron-p07-multi-agent-allocation](perceptron-p07-multi-agent-allocation/thought_node.md) | 7/7 | 4.3 | 2 min ago | MPC beats best rule allocator 10/10 seeds: +3.9 pp (shock), +5.4 pp (shock+drift). |
+| [perceptron-p08-misconception-tutor](perceptron-p08-misconception-tutor/thought_node.md) | 7/7 | 3.8 | 2 min ago | Self-corrected: GPT-4.1-mini zero-shot gets 86% on the real 5-way Eedi set (ours 46%) → scores lowered; innovation now rests on set-level tracing + verified items. |
+| [perceptron-p09-agent-guardrail](perceptron-p09-agent-guardrail/thought_node.md) | 7/7 | 4.6 | 1 min ago | 147/147 bad caught, 0/36 good blocked, p95 2.06 ms — synthetic, optimistic; τ-bench replay next. |
+| [perceptron-p10-trusted-text-signal](perceptron-p10-trusted-text-signal/thought_node.md) | 7/7 | 4.2 | 7 min ago | Package in; Theme-6 alternative to P9 (one per team). |
 
 ## Key decisions
 - 2026-10-04 — Build all 20 problem statements; submit the strongest per competition within the submission limits.
@@ -57,6 +57,8 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 08:00 IST — Sweep
+161+ commits on main; 17/20 full packages. P8 self-corrected after a strong LLM baseline (GPT-4.1-mini zero-shot 86% vs its method's 46% on real Eedi) and lowered its scores — the adversarial-baseline discipline working as intended. Headline numbers for P1, P4, P5, P6, P7, P8, P9, EV C2 and InnovateX T3 traced to committed result files. 4 frontier arXiv citations from memos verified (UQ-LOB 2609.31491, 2607.09230, MalruleLib 2601.03217, GrowthHacker 2511.00802). Laggards: Namma Space (code unpushed), EV C1, P2.
 ### 2026-10-04 07:25 IST — Sweep
 76 commits on main. Restarted 4 dead leads at 07:10 (APCTT, India@71 T1/T3, InnovateX T2), each with uncommitted work to secure first. Sent 13 gap-specific alignment nudges at 07:22. Spot-check: 27/28 sampled citation URLs resolve (the 1 failure is a 403 bot-block by Economic Times). Memos in: P4 (4.2/5), P6, P8, India@71 T2.
 ### 2026-10-04 05:50 IST — Lean Mode
