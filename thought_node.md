@@ -6,18 +6,22 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (17:36 IST, 4 Oct)
-- **Mode:** play to WIN. Every project gets a working demo to PLAYBOOK §11 ("what you asked + what's crazy"). At most 5 running at once.
+## Now (18:26 IST, 4 Oct)
+- **Mode:** play to WIN. Every project gets a PLAYBOOK §11 demo. New rule (18:18, after your challenge on simulation): demos open on real data, with simulation second and labelled. At most 5 running at once.
 - **Running (5):**
-  - P2, Round 1:
-    - R1 replicated on fresh T2 contexts: RoD at 10% memory 0.69 vs full cache 0.46 (+0.23, CI +0.10 to +0.38).
-    - Asked the lead to check whether the full cache's loss is a 10-token answer cap: 17 of its 26 misses contain no number.
-    - VM chain ETA ~18:45. The demo is part of DONE.
-  - InnovateX T3: review fixes landed (tide refit with no held-out leak; calibrated MRV review cut-off). Final re-render next.
-  - Demo builders: P7, P10, P6.
-- **Demo queue:** India@71 T1 → P9 → P1 → P3 → P8 → P4 → P5 → India@71 T3. After that I check the existing demos myself: InnovateX T1–T3, EV C1/C2, India@71 T2, Namma.
-- **Completed — awaiting your review (17):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6 · InnovateX T2 · India@71 T2 · P8.
-- **Azure running now:** P2's VM `p02-kv-1` (deallocate at P2's DONE) and P8's pay-per-token OpenAI resource.
+  - P2, Round 1 plus demo:
+    - Post-hoc checks done. Exact KV for the same recalled blocks restores 0.90 at 25% memory, so the loss comes from approximating those blocks.
+    - The synonym split (T3) is negative and disclosed. The "beats full" result on T2 is flagged as confounded by answer truncation.
+    - The demo replays committed rows by default; live mode is opt-in.
+    - The VM is still running E6.
+  - Demo builders:
+    - P6: talk track and fallback done; nearly finished.
+    - P10: timed from a fresh clone.
+    - P7: asked to open on the real NYC July-4 replay.
+    - India@71 T1: asked to open on real NFHS-5 district data before the simulated children.
+- **Demo queue:** P9 → P1 → P3 → P8 → P4 → P5 → India@71 T3. Then I check the existing demos myself: InnovateX T1–T3, EV C1/C2, India@71 T2, Namma.
+- **Completed — awaiting your review (18):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6 · InnovateX T2 · India@71 T2 · P8 · InnovateX T3.
+- **Azure running now:** P2's VM `p02-kv-1` and P8's pay-per-token OpenAI resource.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -110,6 +114,11 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 18:26 IST — Sweep
+- You asked "why is everyone simulation; will this win?" My answer: not on simulation alone. Round 1 is fine, but the finals need real evidence.
+  - PLAYBOOK §11 now says "real data first" (47ac13d).
+  - P7 and India@71 T1 were asked to open their demos on real data: the NYC replay and NFHS-5.
+- P2: the demo plays back committed results (fp16 weights, fp32 compute in live mode). I asked it to deallocate the VM right after E6 if sol doesn't need it.
 ### 2026-10-04 17:59 IST — InnovateX T3 completed (18 of 20)
 - **InnovateX T3 DONE (d82d80f), verified on main:** check_docs 0 problems (35 fact rows); 85 tests pass; astra and sol reviews in the ledger.
   - Tide model trained only on pre-2024 data: P2 vs P1 −5.2% [−15.9, −0.8], 39/40 (SIMULATED). The litter-counter fix replaced an artefactual 33% with +15.9% (SYNTHETIC).
