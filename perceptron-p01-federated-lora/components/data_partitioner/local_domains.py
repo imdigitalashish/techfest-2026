@@ -28,7 +28,8 @@ import torch
 ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / ".data"
 SITE = Path(sys.prefix) / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages"
-WIKI_GLOB = str(Path.home() / ".cache/huggingface/hub/datasets--wikitext/snapshots/*/wikitext-103-raw-v1")
+WIKI_GLOBS = [str(Path.home() / f".cache/huggingface/hub/{repo}/snapshots/*/wikitext-103-raw-v1")
+              for repo in ("datasets--wikitext", "datasets--Salesforce--wikitext")]
 
 DOMAINS = ["wiki", "pycode", "cheaders", "readmes", "manpages"]
 MAX_FILES = 3000
@@ -75,7 +76,7 @@ def _file_docs(domain: str) -> tuple[list[str], list[str]]:
 def _wiki_docs() -> tuple[list[str], list[str]]:
     import pandas as pd
 
-    snaps = sorted(glob.glob(WIKI_GLOB))
+    snaps = sorted(s for g in WIKI_GLOBS for s in glob.glob(g))
     if not snaps:
         raise FileNotFoundError("WikiText-103 not in the HF cache; run scripts/fetch_data.sh")
     d = Path(snaps[-1])
