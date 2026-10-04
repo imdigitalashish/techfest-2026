@@ -16,7 +16,7 @@
   2. Build to §11: `demo/run.sh`, baseline side by side with a judge knob, SIMULATED labels on every screen, numbers from committed results, `demo/SCRIPT.md`, `demo/fallback/`, `demo/smoke.sh`.
   3. One gpt-6-astra demo review, recorded in `reviews/`.
   4. The lead verifies from a clean checkout, then sends "DEMO DONE".
-- **Doing:** spawning the demo builder.
+- **Doing:** the demo builder (child session 'P5 demo builder') is building the approved 'GHOST MARKET' design; target ~23:30 IST. The lead then verifies from a clean worktree and runs the gpt-6-astra demo review. Updated 2026-10-04 21:54 IST.
 - **Earlier phase (definition of done, met 14:08):** see the Log.
 - **Delivered:**
   - E8, E7, E9, E10, E11 and E12, each pre-registered by commit time.
@@ -304,3 +304,20 @@ Those labels were estimates, 1–7 min ahead of the clock. The other headers are
 
 ### 2026-10-04 21:49 IST — Demo phase started (Supervisor 21:47)
 §11 read. Supervisor's suggestion: the "ghost market", same-seed twins with and without our order, with an order-size knob, the naive-vs-synchronised contrast, and an honest E6→E8→E10 ending. **Assumption:** P5 has no real market data, so every screen is labelled SIMULATED (ABIDES). The only real-world anchors are cited literature values (the square-root law, δ ≈ 0.5, from the Tokyo Stock Exchange survey), shown as labelled references, not as our results.
+
+### 2026-10-04 21:54 IST — Demo design approved
+- **Builder's proposal (child session):** one offline page, every screen stamped SIMULATED (ABIDES rmsc04).
+  - Act 1, the ghost market: two same-seed books side by side; the ghost twin translucent; a pre-trade identity badge; the shaded gap is our footprint, with an order-size knob (E7) and a log-log impact panel against the real-world square-root reference.
+  - Act 2: naive vs synced spaghetti (E4: 6×, 7.7×; the coupling's +13% spreads footnoted).
+  - Act 3: TWAP | impact-aware | ghost on one seed, with the IS split.
+  - Act 4: honest forest plot (E6 → E8 → E10; pooled marked descriptive).
+  - Live lane: "bring your own seed" through a stdlib server under the memory guard. I timed a fresh synced twin pair at 3.9 s.
+- **Approved with 8 amendments**, aligned with the hostile-judge fixes:
+  - an exact identity-scope label;
+  - no "fails" (say "roughly linear vs ≈0.5; realism gate needed");
+  - "net inventory", not "who took the other side";
+  - a single-seed noise caption;
+  - E6/E8/E10 status labels;
+  - "1 new seed (live)";
+  - a headless `DEMO_NO_OPEN=1` READY line;
+  - a source footnote on every panel.
