@@ -11,6 +11,7 @@
 
 ## Now
 - **Phase:** 6 — deliverables **complete for the Delhi zonal** (Supervisor's definition of done, 4 Oct 12:45 IST). Next lead work comes after the zonal: the Round-2 build (`deliverables/prototype-plan.md`).
+- **Active again (2026-10-04 23:26 IST):** demo upgrade to PLAYBOOK §11 ("the winning demo"), Supervisor request. The child session **Demo builder · JalSakshi** is building `innovatex-t1-groundwater/demo/`: run.sh, SCRIPT.md, fallback/, smoke.sh; REAL first; knobs = pulse size incl. an honest 20 L miss, gauge unplug → deferred, a twice-daily-logger baseline. Next: verify from a clean checkout → gpt-6-astra "judge watching the demo" review → fixes → "DEMO DONE".
 - **Definition of done (due 9 Oct 18:00 IST):**
   1. ✅ Final deck: `deliverables/zonal-deck.md` → `zonal-deck.pdf` / `.pptx`. 9 main slides + 5 backups, speaker notes with timing, 9:15 route + 45 s reserve.
   2. ✅ Q&A: `deliverables/qa-prep.md`, 28 questions.
@@ -213,3 +214,12 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Plan:** status key, datum and blind zone, vent, mandatory gauge, duty-cycle and deferral acceptance tests, §11 pilot cost with assumptions, §12 safety and water-quality boundaries.
 - **Presenter card:** updated (one page).
 - **Housekeeping:** the earlier lead-response line "installed cost includes them" was corrected. Dated current-state notes added to the landscape, verifier README, ADR and components.
+
+### 2026-10-04 23:26 IST — Demo upgrade (PLAYBOOK §11) started
+- Supervisor (23:23): JalSakshi is the live-pitch pick, so its demo must meet §11.
+- Read §11. Pre-approved the "crazy" element, which is grounded in committed tests (`test_verifier.py`):
+  - the judge picks a pulse size (20 L / 100 L / 500 L / 1,200 L; a 20 L bucket is honestly NOT caught);
+  - unplugging the rain gauge gives `deferred`, never an accusation;
+  - a twice-daily-logger baseline sits beside our 1-min event sampling.
+- Spawned one child session, "Demo builder · JalSakshi", with a complete brief. Package path `demo/`; the builder must not modify the verifier, simulator, evaluators or results.
+- Rules passed on: CPU only, `nice -n 10`, memory guard (start ≥ 30, pause < 25; it read 31 at start), IST timestamps, no git stash.
