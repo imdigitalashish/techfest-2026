@@ -3,7 +3,7 @@
 **Green Auto India — EV Infra & Green Mobility AI Challenge, Challenge 2.** Companion to `round1-methodology.md`.
 **Team name / ID / leader:** _[to fill after registration on techfest.org, by 15 Oct]_
 
-<!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `83a80a699b-dirty`).<!-- headline:end -->
+<!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `0d15e1cf49`).<!-- headline:end -->
 
 ## 0. What exists today (demonstrated, 4 Oct) vs what we commit to (December)
 | Demonstrated now (in the repository, reproducible) | Committed for the Grand Finale (16–18 Dec) |
