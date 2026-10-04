@@ -8,4 +8,4 @@ Metric: `components/action_router/sim.py` prints one-line JSON labelled `SIMULAT
 
 Run: `.venv/bin/python -m pytest components/action_router -q` or `.venv/bin/python -m components.action_router.sim`.
 
-Assumptions: timelines are working assumptions pending verification against national CMAM protocol 2023 and are marked `(VERIFY)` in `protocol.yaml`.
+Assumptions: `protocol.yaml` v0.2.0: official steps cite the CMAM Protocol 2023 (MWCD + MoHFW) page numbers, verified in `research/sources/V3-lead-verified-nfsa-abdm-cmam.md`; rules marked `DESIGN` are Poshan Setu operating choices, not official norms. The ops simulation (`sim.py`) uses illustrative assumptions.

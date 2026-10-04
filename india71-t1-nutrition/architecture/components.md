@@ -67,7 +67,7 @@ flowchart LR
 - **C3:** age < 0 or ≥ 60 months, or missing length → z = null. Flags follow WHO cut-offs.
 - **C4:** fewer than 30 measurements per unit → `insufficient_data`. Credibility never blocks service; it routes re-measurement.
 - **C5:** low `data_confidence` → the alert becomes a re-measure task, not a referral. Weekly batch.
-- **C6:** a missing owner escalates immediately. SLA ladder from [`components/action_router/protocol.yaml`](../components/action_router/protocol.yaml); all timelines marked (VERIFY) against the national CMAM protocol.
+- **C6:** a missing owner escalates immediately; a service-readiness gate runs first (ADR 002). SLA ladder from [`components/action_router/protocol.yaml`](../components/action_router/protocol.yaml) v0.2.0. Official steps cite CMAM Protocol 2023 page numbers (2-day list sharing, 3–5-day medical appraisal, fortnightly MAM visits, monthly district review); our own rules are labelled DESIGN.
 - **C9:** default deny; unknown purpose → deny.
 
 ## Glossary

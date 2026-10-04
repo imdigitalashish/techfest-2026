@@ -44,4 +44,4 @@ What must be true for a child to be helped *before* SAM? (a) A measurement that 
 ## Consequences
 - We need a re-measurement protocol (LS samples 10 children per flagged AWC) in the proposal.
 - Real-data validation needs a state partner. This is listed under *Needs from user*.
-- All legal-basis citations remain (VERIFY) until the DPDP Act/Rules and ABDM texts are checked.
+- Legal-basis citations were verified on 4 Oct 2026 (V1, V3); the children's-data regime commences 13 May 2027 (G.S.R. 843(E)). See ADR 002 for the legal go/no-go.

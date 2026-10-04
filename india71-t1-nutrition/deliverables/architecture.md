@@ -83,7 +83,7 @@ sequenceDiagram
 | Public | Aggregates | Public reporting | Any | differential privacy |
 | Researcher | Pseudonymous only, with approval | Research | Approved scope | pseudonymise |
 
-Legal basis per rule is cited in `components/policy_gate/policy.yaml`. Every citation is marked (VERIFY) until checked against the DPDP Act 2023, DPDP Rules 2025 and the ABDM policies.
+Legal basis per rule is cited in `components/policy_gate/policy.yaml` (v0.2.0), verified against the primary texts: DPDP Act 2023, the G.S.R. 843(E) commencement notification, DPDP Rules 2025, NFSA 2013 s.6, and the ABDM HIP/HIU Guidelines. See `research/sources/V1-dpdp-verified.md` and `V3-lead-verified-nfsa-abdm-cmam.md`.
 
 ## 4. Deployment sketch
 - **Runs inside the state data centre or MeghRaj government cloud:** batch jobs (nightly ingest and linkage; weekly scoring and routing), a small Postgres for tasks and the audit log, and an object store for pseudonymous extracts.
