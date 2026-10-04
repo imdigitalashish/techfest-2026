@@ -1,4 +1,4 @@
-# Eval results (commit a2cfc31, n=10000, seed=20261004)
+# Eval results (commit d5df843, n=10000, seed=20261004)
 
 Reproduce: `python3 eval/eval.py` from `ev-c2-green-auto-lca/`. Units: g CO2e per vehicle-km.
 

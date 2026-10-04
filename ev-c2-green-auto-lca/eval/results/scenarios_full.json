@@ -155,30 +155,30 @@
    },
    "p_bev_lower": 1.0,
    "variance_share_of_reduction": {
-    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_footnote": 0.32584805520720284,
-    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_footnote": 0.2628466170814253,
+    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_footnote": 0.3258480552072028,
+    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_footnote": 0.26284661708142526,
     "fuels.petrol.ttw.in.icct2021": 0.1902713056603947,
-    "energy.electricity.in.icct2021_lifecycle_2021_2032": 0.18503194315528343,
-    "fuels.petrol.wtt.in.icct2021": 0.01431726844467267,
+    "energy.electricity.in.icct2021_lifecycle_2021_2032": 0.1850319431552834,
+    "fuels.petrol.wtt.in.icct2021": 0.014317268444672668,
     "vehicle.2w.lifetime_km.icct2021": 0.00904550636582059,
-    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.005212237306866394,
-    "battery.scooter_ev.capacity.icct2021": 0.002414997587157448,
-    "battery.li_ion.production_intensity.icct2021": 0.002287776172455309,
-    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.0016485981123117556,
-    "vehicle.2w.production_intensity.icct2021": 0.0010756949064096033
+    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.005212237306866393,
+    "battery.scooter_ev.capacity.icct2021": 0.0024149975871574476,
+    "battery.li_ion.production_intensity.icct2021": 0.0022877761724553088,
+    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.0016485981123117554,
+    "vehicle.2w.production_intensity.icct2021": 0.001075694906409603
    },
    "spearman_with_reduction": {
-    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.039366092481660925,
-    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_footnote": 0.5534424611184247,
-    "vehicle.2w.lifetime_km.icct2021": 0.09221070683810707,
-    "battery.scooter_ev.capacity.icct2021": -0.047645650412456504,
     "vehicle.2w.production_intensity.icct2021": -0.03179870731798708,
-    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": -0.06999660875196609,
-    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_footnote": -0.49706834336668343,
-    "energy.electricity.in.icct2021_lifecycle_2021_2032": -0.41705013311450134,
-    "battery.li_ion.production_intensity.icct2021": -0.04637369224373692,
+    "vehicle.2w.lifetime_km.icct2021": 0.09221070683810707,
     "fuels.petrol.ttw.in.icct2021": 0.4229135095611351,
-    "fuels.petrol.wtt.in.icct2021": 0.11600988419609884
+    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_footnote": 0.5534424611184247,
+    "energy.electricity.in.icct2021_lifecycle_2021_2032": -0.41705013311450134,
+    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_footnote": -0.49706834336668343,
+    "battery.li_ion.production_intensity.icct2021": -0.04637369224373692,
+    "fuels.petrol.wtt.in.icct2021": 0.11600988419609884,
+    "battery.scooter_ev.capacity.icct2021": -0.047645650412456504,
+    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": -0.06999660875196609,
+    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.039366092481660925
    }
   }
  },
@@ -351,17 +351,17 @@
     "vehicle.2w.production_intensity.icct2021": 0.0004896536563019643
    },
    "spearman_with_reduction": {
-    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.0431064301190643,
-    "battery.scooter_ev.capacity.icct2021": -0.04446943857669439,
-    "vehicle.2w.lifetime_km.icct2021": 0.07477420897574209,
     "vehicle.2w.production_intensity.icct2021": -0.021452173630521737,
-    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": -0.06341373908213739,
-    "energy.electricity.in.icct2021_lifecycle_2021_2032": -0.4241851883938519,
-    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied": 0.5485995479779955,
-    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied": -0.5048816791768168,
-    "battery.li_ion.production_intensity.icct2021": -0.04071451229914512,
+    "vehicle.2w.lifetime_km.icct2021": 0.07477420897574209,
     "fuels.petrol.ttw.in.icct2021": 0.4187005576190056,
-    "fuels.petrol.wtt.in.icct2021": 0.11473036108330362
+    "energy.electricity.in.icct2021_lifecycle_2021_2032": -0.4241851883938519,
+    "battery.li_ion.production_intensity.icct2021": -0.04071451229914512,
+    "fuels.petrol.wtt.in.icct2021": 0.11473036108330362,
+    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied": -0.5048816791768168,
+    "battery.scooter_ev.capacity.icct2021": -0.04446943857669439,
+    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied": 0.5485995479779955,
+    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": -0.06341373908213739,
+    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.0431064301190643
    }
   }
  },
@@ -530,36 +530,36 @@
    },
    "p_bev_lower": 1.0,
    "variance_share_of_reduction": {
-    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied": 0.3486489962244992,
-    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied": 0.29914310464061883,
+    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied": 0.34864899622449924,
+    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied": 0.2991431046406189,
     "fuels.petrol.density.unsd2020": 0.16652678785582054,
     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.08533146089967102,
-    "fuels.petrol.co2_per_energy.ipcc2006": 0.04147176375798922,
+    "fuels.petrol.co2_per_energy.ipcc2006": 0.04147176375798923,
     "fuels.petrol.wtt.in.icct2021": 0.020981683426952218,
-    "fuels.petrol.ncv.ipcc2006": 0.017337878512800768,
-    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.005709585835740167,
-    "energy.electricity.in.td_loss_share.fy2023_24": 0.005078692396273078,
-    "battery.li_ion.production_intensity.icct2021": 0.003332645671820662,
+    "fuels.petrol.ncv.ipcc2006": 0.01733787851280077,
+    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.005709585835740168,
+    "energy.electricity.in.td_loss_share.fy2023_24": 0.005078692396273079,
+    "battery.li_ion.production_intensity.icct2021": 0.0033326456718206624,
     "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.0027976034919256804,
-    "vehicle.2w.lifetime_km.icct2021": 0.0022112847446653155,
+    "vehicle.2w.lifetime_km.icct2021": 0.002211284744665316,
     "vehicle.2w.production_intensity.icct2021": 0.0008840803975030648,
-    "battery.scooter_ev.capacity.icct2021": 0.0005444321437201986
+    "battery.scooter_ev.capacity.icct2021": 0.0005444321437201987
    },
    "spearman_with_reduction": {
-    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.051192923479929237,
-    "battery.scooter_ev.capacity.icct2021": -0.02258336896583369,
-    "vehicle.2w.lifetime_km.icct2021": 0.0455133901311339,
     "vehicle.2w.production_intensity.icct2021": -0.028778140691781407,
+    "vehicle.2w.lifetime_km.icct2021": 0.0455133901311339,
     "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": -0.0731339708033397,
-    "fuels.petrol.density.unsd2020": 0.39496526486565264,
-    "fuels.petrol.ncv.ipcc2006": 0.1274426603184266,
-    "fuels.petrol.co2_per_energy.ipcc2006": 0.1971029406990294,
-    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied": 0.571493191082932,
-    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied": -0.5293663718896637,
     "battery.li_ion.production_intensity.icct2021": -0.055874213346742134,
     "energy.electricity.in.grid_wavg_generation.fy2025_26": -0.28272970584729706,
+    "fuels.petrol.wtt.in.icct2021": 0.1401964497339645,
+    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied": -0.5293663718896637,
     "energy.electricity.in.td_loss_share.fy2023_24": -0.06897517414175174,
-    "fuels.petrol.wtt.in.icct2021": 0.1401964497339645
+    "fuels.petrol.ncv.ipcc2006": 0.1274426603184266,
+    "battery.scooter_ev.capacity.icct2021": -0.02258336896583369,
+    "fuels.petrol.density.unsd2020": 0.39496526486565264,
+    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied": 0.571493191082932,
+    "fuels.petrol.co2_per_energy.ipcc2006": 0.1971029406990294,
+    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.051192923479929237
    }
   }
  },
@@ -744,20 +744,20 @@
     "vehicle.2w.production_intensity.icct2021": 0.0001330048577689162
    },
    "spearman_with_reduction": {
-    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.05045244368452444,
-    "energy.electricity.in.grid_om.fy2025_26": -0.2919562341155623,
-    "battery.scooter_ev.capacity.icct2021": -0.015361846569618465,
-    "vehicle.2w.lifetime_km.icct2021": 0.012643055346430553,
     "vehicle.2w.production_intensity.icct2021": -0.011168016255680162,
+    "vehicle.2w.lifetime_km.icct2021": 0.012643055346430553,
     "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": -0.055820847810208477,
-    "fuels.petrol.density.unsd2020": 0.38953158418331585,
-    "fuels.petrol.ncv.ipcc2006": 0.12539140475391405,
-    "fuels.petrol.co2_per_energy.ipcc2006": 0.1939674414556744,
-    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied": 0.5628992566089925,
-    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied": -0.5464562284485622,
     "battery.li_ion.production_intensity.icct2021": -0.03901832302218323,
+    "fuels.petrol.wtt.in.icct2021": 0.1383239199152392,
+    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied": -0.5464562284485622,
+    "energy.electricity.in.grid_om.fy2025_26": -0.2919562341155623,
     "energy.electricity.in.td_loss_share.fy2023_24": -0.07153346184733461,
-    "fuels.petrol.wtt.in.icct2021": 0.1383239199152392
+    "fuels.petrol.ncv.ipcc2006": 0.12539140475391405,
+    "battery.scooter_ev.capacity.icct2021": -0.015361846569618465,
+    "fuels.petrol.density.unsd2020": 0.38953158418331585,
+    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied": 0.5628992566089925,
+    "fuels.petrol.co2_per_energy.ipcc2006": 0.1939674414556744,
+    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.05045244368452444
    }
   }
  },
@@ -942,20 +942,20 @@
     "battery.scooter_ev.capacity.icct2021": 0.0012074388672972485
    },
    "spearman_with_reduction": {
-    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.05202530459225305,
-    "energy.electricity.in.grid_bm.fy2025_26": -0.26654097567740975,
-    "battery.scooter_ev.capacity.icct2021": -0.03360059625600596,
-    "vehicle.2w.lifetime_km.icct2021": 0.09702231863822319,
     "vehicle.2w.production_intensity.icct2021": -0.056183713917837136,
+    "vehicle.2w.lifetime_km.icct2021": 0.09702231863822319,
     "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": -0.10003293634032936,
-    "fuels.petrol.density.unsd2020": 0.4011301186593012,
-    "fuels.petrol.ncv.ipcc2006": 0.13000329463603294,
-    "fuels.petrol.co2_per_energy.ipcc2006": 0.20100846732608468,
-    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied": 0.5818337671183377,
-    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied": -0.49964105072841053,
+    "energy.electricity.in.grid_bm.fy2025_26": -0.26654097567740975,
     "battery.li_ion.production_intensity.icct2021": -0.08206290150462901,
+    "fuels.petrol.wtt.in.icct2021": 0.1424619892046199,
+    "vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied": -0.49964105072841053,
     "energy.electricity.in.td_loss_share.fy2023_24": -0.06456553361765534,
-    "fuels.petrol.wtt.in.icct2021": 0.1424619892046199
+    "fuels.petrol.ncv.ipcc2006": 0.13000329463603294,
+    "battery.scooter_ev.capacity.icct2021": -0.03360059625600596,
+    "fuels.petrol.density.unsd2020": 0.4011301186593012,
+    "vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied": 0.5818337671183377,
+    "fuels.petrol.co2_per_energy.ipcc2006": 0.20100846732608468,
+    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.05202530459225305
    }
   }
  }
