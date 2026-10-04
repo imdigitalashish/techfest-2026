@@ -138,4 +138,6 @@ def test_verdict_paths(sim):
     v = verdict(sh, {"V(after,old)": good, "V(before,new)": good}, rule)
     assert v.decision == ("worked" if sh.policy.lo > 0 else "hurt" if sh.policy.hi < 0 else "inconclusive")
     bad = dict(good, ess_frac=0.001)
-    assert verdict(sh, {"V(after,old)": bad}, rule).decision == "cant_tell"
+    assert verdict(sh, {"V(after,old)": bad, "V(before,new)": bad}, rule).decision == "cant_tell"
+    v1 = verdict(sh, {"V(after,old)": good, "V(before,new)": bad}, rule)
+    assert v1.diagnostics["decided_on"].startswith("Policy effect in the after period") and "not estimable" in v1.headline
