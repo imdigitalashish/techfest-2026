@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import subprocess
 import sys
 import time
@@ -71,12 +72,49 @@ def manp(run: dict, fed: str) -> dict[int, float]:
     return {r["round"]: r["delta"][DOM] for r in run["records"] if r["fed"] == fed}
 
 
+FEDS = ("fedavg_ab_homo", "anchor_full")
+ROUNDS = 6
+OUTAGE = {"unplug": {"c4": [2, 3, 4, 5, 6]}, "ghost": {}}  # exactly the pre-registered histories
+
+
+def check_run(kind: str, seed: int) -> list[str]:
+    """Why a validation run cannot be used (empty = usable): seed, 6 rounds x both strategies, the exact
+    tablet-only outage (rounds 2-6) or none for a ghost, no other device unplugged, finite values."""
+    path = run_path(kind, seed)
+    if not path.exists():
+        return [f"{path.name} missing"]
+    R = json.loads(path.read_text())
+    cfg, probs = R.get("config", {}), []
+    if cfg.get("seed") != seed or cfg.get("rounds") != ROUNDS:
+        probs.append(f"config seed/rounds {cfg.get('seed')}/{cfg.get('rounds')} != {seed}/{ROUNDS}")
+    want_script = {"c4": [2, ROUNDS]} if kind == "unplug" else {}
+    if cfg.get("script") != want_script:
+        probs.append(f"script {cfg.get('script')} != {want_script}")
+    if R.get("unplugged_rounds") != OUTAGE[kind]:
+        probs.append(f"unplugged rounds {R.get('unplugged_rounds')} != {OUTAGE[kind]}")
+    have = sorted((r["fed"], r["round"]) for r in R.get("records", []))
+    want = sorted((f, t) for f in FEDS for t in range(1, ROUNDS + 1))
+    if have != want:
+        probs.append(f"records {len(have)} != the 12 (strategy, round) pairs")
+    vals = list(R.get("untuned", {}).values())
+    for r in R.get("records", []):
+        vals += list(r["per_domain"].values()) + list(r["delta"].values())
+        for dev, d in r["devices"].items():
+            out = r["round"] in OUTAGE[kind].get(dev, [])
+            if out != (d["state"] == "unplugged"):
+                probs.append(f"{r['fed']} round {r['round']}: {dev} state {d['state']}")
+    if len(R.get("untuned", {})) != 5 or not all(isinstance(v, (int, float)) and math.isfinite(v) for v in vals):
+        probs.append("missing or non-finite loss values")
+    return probs
+
+
 def table() -> dict:
     rows, prov = [], set()
     for seed in SEEDS:
         u, g = run_path("unplug", seed), run_path("ghost", seed)
-        if not (u.exists() and g.exists()):
-            rows.append({"seed": seed, "missing": [p.name for p in (u, g) if not p.exists()]})
+        problems = check_run("unplug", seed) + check_run("ghost", seed)
+        if problems:
+            rows.append({"seed": seed, "invalid": problems})
             continue
         U, G = json.loads(u.read_text()), json.loads(g.read_text())
         for R in (U, G):
@@ -99,7 +137,8 @@ def table() -> dict:
             "wall_s": {"unplug": U["wall_s"], "ghost": G["wall_s"]},
             "peak_rss_mb": max(U.get("peak_rss_mb", 0), G.get("peak_rss_mb", 0)),
         })
-    done = [r for r in rows if "missing" not in r]
+    done = [r for r in rows if "invalid" not in r]
+    # a verdict exists only when every pre-registered seed has two usable runs
     verdict = {k: (all(r[k] for r in done) if len(done) == len(SEEDS) else None) for k in ("P1", "P2", "P3")}
     band = {}
     if done:
@@ -137,13 +176,15 @@ def write_table(res: dict) -> str:
          "rebase onto main changed its hash); code_sha (sha1 over demo/live_engine.py and components/**/*.py) identifies "
          "the code, and demo/smoke.sh checks that the current engine has the same code_sha.", "",
          "Criteria (every seed must pass):"] + [f"- **{k}** {v}" for k, v in CRITERIA.items()] + [
-         "- determinism: round 1 (and the untuned eval) identical bit for bit in the ghost and unplug runs", "",
+         "- determinism: round 1 (and the untuned eval) identical bit for bit in the ghost and unplug runs",
+         "- usable runs only: each seed needs both runs with 6 rounds x both strategies, finite losses, and exactly the "
+         "pre-registered history (tablet unplugged in rounds 2-6, nothing else; the ghost: nothing unplugged)", "",
          "| seed | AnchorLoRA manpages, max over r1-6 | starter manpages r6 | AnchorLoRA manpages r6 | unplug effect "
          "r6: starter / AnchorLoRA | P1 | P2 | P3 | deterministic r1 | wall s (unplug / ghost) |",
          "|---|---|---|---|---|---|---|---|---|---|"]
     for r in res["rows"]:
-        if "missing" in r:
-            L.append(f"| {r['seed']} | missing: {', '.join(r['missing'])} |||||||||")
+        if "invalid" in r:
+            L.append(f"| {r['seed']} | not usable: {'; '.join(r['invalid'])} |||||||||")
             continue
         L.append(f"| {r['seed']} | {f(r['anchor_manp_max'])} | {f(r['starter_manp_r6'])} | {f(r['anchor_manp_r6'])} | "
                  f"{f(r['effect_starter'])} / {f(r['effect_anchor'])} | {yn(r['P1'])} | {yn(r['P2'])} | "

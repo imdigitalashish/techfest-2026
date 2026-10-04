@@ -1,27 +1,44 @@
-# P1 demo: 3-minute talk track
+# P1 demo: 3-minute talk track (event-gated)
 
-**Setup, before the judges arrive (1 min):** `cd perceptron-p01-federated-lora && demo/run.sh`. The browser opens on tab **1**. If the live panel says "unavailable", run `demo/fetch.sh` once. On a screen smaller than 1440×900, zoom the browser to 90%.
+**Before the judges arrive (1 min):**
+- Run `cd perceptron-p01-federated-lora && demo/run.sh`. The browser opens on tab **1**. Present it at 1440×900 and 100% zoom.
+- The pill in the header should read *LIVE · ready*. If it says *unavailable*, run `demo/fetch.sh` once, or use the RECORDED run (see below).
 
-Keys: **1–4** switch tabs, **S** starts the live run, **T** pulls or restores the tablet's plug.
+**Keys:** **1–4** switch tabs, **S** starts the live run, **T** pulls or restores the tablet's plug, **R** resumes (only while the run is holding).
 
-| time | click | say | point at |
+**How the live run moves.** It is event-gated, not timed. After **S**, the engine loads the model and runs round 1 of both federations. Then it **holds**, and the stage band reads *Round 1 complete — pull the tablet plug, then Resume*. Nothing advances until you resume.
+
+A plug change takes effect from the next round, so the page accepts one only while a later round remains. The stage band says when plug changes are closed.
+
+Act on what the screen shows, never on the clock.
+
+| state on screen | do | say | point at |
 |---|---|---|---|
-| 0:00 | Tab **1**, *Committed runs* | "Five simulated devices fine-tune the same real 135-million-parameter model, each on its own real text. The workstation holds 8× the data, and the Raspberry Pi can afford rank 2. These are committed runs: 4 strategies × 5 paired seeds, 12 rounds with dropouts and deadline cut-offs." | the labels *SIMULATED device budgets · real SmolLM2-135M · real text* |
-| 0:15 | (same) | "Every baseline (the starter, FFA-LoRA, FlexLoRA) improves only Wikipedia, the data-rich device's domain. The other four domains end up worse than not training at all. AnchorLoRA improves all five." | orange bars below the line; teal bars above it; ledger **5/5** vs **1/5** |
-| 0:30 | (same) | "On the mean loss over the five domains, AnchorLoRA beats the starter by 0.081, 95% interval 0.070 to 0.093, paired by seed. The workstation's share of the update's magnitude drops from 0.88 to 0.22. That is a magnitude diagnostic, not a fairness guarantee." | **−0.081 [−0.093, −0.070]**; **0.88** → **0.22** |
-| 0:45 | **S** (starts the live run in the background: model load and round 1 take about 20–30 s) | – | the *LIVE* pill in the header |
-| 0:47 | Tab **2**, *Tablet outage* | "In the committed runs the tablet goes offline for rounds 5 to 9. Under the starter its domain ends up 0.277 worse than untuned at its worst point (seed average). AnchorLoRA stays below the untuned loss at every evaluated round in every seed." | **+0.277** vs **−0.020**; teal line above 0 |
-| 1:00 | **Play rounds** | "Here is why. ◐ is partial work the server keeps, where the starter's ✕ throws it away. ↺ is the server reusing an absent device's last update, for at most 4 rounds." | the tablet row: ✕ ✕ ✕ (starter) vs ◐ ◐ ◐ and ↺ (AnchorLoRA) |
-| 1:15 | Tab **3**, *Live* | "This is live, on this laptop's CPU: the real model, two federations side by side, running through Flower's message API on an in-process grid. Now pull the tablet's plug." | the power strip |
-| 1:20 | the judge clicks **tablet** (or **T**) during round 1 | "From the next round, both federations lose the tablet, at the same moment." | the chip *plug pulled · out from round 2* |
-| 1:30–2:30 | watch rounds 2–6 (about 10–30 s each, depending on machine load) | "Watch the man-pages line. The starter's falls below the untuned model; AnchorLoRA's stays above it. Its chip says it is reusing the tablet's last update, age 1 of 4. At round 6 the memory expires and AnchorLoRA's line still holds. The dashed lines are the same run with nobody unplugged, recorded earlier by this same engine. The caption shows how closely the live run matched them before your click; 0 means bit for bit." | teal chip *reusing last update · age k/4* → *memory expired · age 5 > 4*; the caption *max \|live − ghost\| = 0* |
-| 2:10 | (same) | "Most of the gap is the starter's domination, as the ghost shows. The unplug adds to the starter's damage, and AnchorLoRA's memory absorbs it. That held in all 5 pre-registered validation seeds. The band is their range." | the caption *unplug's own effect … Starter +x, AnchorLoRA +y*; the shaded band |
-| 2:30 | optional knob | "Pull any other plug, even the workstation's. The system responds from the next round. Those outcomes are this run only, not pre-validated." | any socket |
-| 2:35 | Tab **4**, *Costs* | "What it costs: equal weights trade the workstation's domain for the other four. The sample-weighted loss is 0.116 worse than the starter, and the worst domain is 0.057 worse. Device budgets are simulated; the model and the text are real." | **+0.116 [+0.107, +0.124]**, **+0.057 [+0.024, +0.089]** |
+| tab 1, *LIVE · ready* | – | "Five simulated devices fine-tune one real 135-million-parameter model, each on its own real text. The workstation holds 8× the data; the Raspberry Pi can afford rank 2. These are committed runs: 4 strategies × 5 paired seeds, 12 rounds with dropouts and deadline cut-offs." | the labels *SIMULATED device budgets · real SmolLM2-135M · real text* |
+| tab 1 | – | "Every baseline (the starter, FFA-LoRA, FlexLoRA) improves only Wikipedia, the data-rich device's domain. The other four domains end up worse than not training at all. AnchorLoRA improves all five." | orange bars below the line, teal bars above it; ledger **5/5** vs **1/5** |
+| tab 1 | press **S** (the model loads and round 1 runs in the background) | "On the mean loss over the five domains, AnchorLoRA beats the starter by 0.081, 95% interval 0.070 to 0.093, paired by seed. The workstation's share of the update's magnitude falls from 0.88 to 0.22, as a round-and-seed mean. That is a magnitude diagnostic, not a guarantee." | **−0.081 [−0.093, −0.070]**; **0.88** → **0.22**; the pill turns to *LIVE · loading*, then *round 1/6* |
+| tab **2** | **Play rounds** | "In the committed runs the tablet is offline for rounds 5 to 9. Under the starter its domain peaks 0.277 above the untuned loss (mean of 5 seeds). AnchorLoRA stays below the untuned loss at every evaluated round in every seed. ◐ is partial work that AnchorLoRA keeps; the starter's ✕ throws it away. ↺ is the server reusing the tablet's last update, for at most 4 rounds." | the tablet strip next to the curve; **+0.277** vs **−0.020** |
+| the pill reads *LIVE · HOLD after round 1* (wait for it; tab 2 can run longer) | key **3** | "This is live, on this laptop's CPU: the real model, two federations side by side, running through Flower's message API on an in-process grid. Round 1 is done in both, and the run is holding for you." | the stage band |
+| HOLD | the judge clicks **tablet** (or **T**) | "The tablet is out from round 2 in both federations. That is the scenario we pre-registered and checked on five seeds." Then read the projection line exactly as it is displayed, for example "its round-1 update is reused in rounds 2–5 and expires in round 6". Never promise an expiry the line does not show. | the chip *plug pulled · out from round 2*; the projection line |
+| HOLD, plug pulled | **Resume** (or **R**) | – | – |
+| rounds 2–6 running | – | "Watch the man-pages line: the starter's falls below the untuned model, and AnchorLoRA's stays above it. The chip shows the server reusing the tablet's last update; the age counts up to 4." If the chip then shows *memory expired · age 5 > 4*, say so. | the teal chip *reusing last update · age k/4*; both panels say *after round N* (the last round both federations finished) |
+| the effect caption next to the curve shows *pre-validated scenario* | – | Read the caption's sentence: "Most of this gap exists even with nobody unplugged. In the five validation seeds, removing the tablet changed the starter's final man-pages loss by +0.009 to +0.029 and AnchorLoRA's by −0.002 to +0.008. The full system was less sensitive; this comparison does not isolate memory's contribution." | the dashed ghost lines (same seed, nobody unplugged); the caption |
+| **cutoff: talk time 2:10, if the stage band does not yet say *Live run finished*** | click **Stop live and play RECORDED** (speed **16×**) | "We stop the live engine here. This is the same pre-registered scenario, recorded earlier by the same engine, labelled RECORDED." | the purple *RECORDED, not live* band |
+| optional, only while the band says a later round remains | pull or restore any other plug | "Any device can be pulled or restored. The system responds from the next round. Such a history was not pre-validated, and the caption calls it the combined intervention effect in this run." | the caption's *not pre-validated* tag |
+| 2:20, tab **4** | – | "What it costs: equal weights trade the workstation's domain for the other four. The sample-weighted loss is 0.116 worse than under the starter, and the worst domain is 0.057 worse. The device budgets are simulated; the model and the text are real." | **+0.116 [+0.107, +0.124]**, **+0.057 [+0.024, +0.089]** |
 | 3:00 | – | "One command, offline, CPU only. Every number on screen carries its source." | the small mono keys under each number |
 
-In the pre-registered validation (5 seeds, tablet out from round 2), the man-pages loss at round 6 relative to untuned was: starter **+0.076 to +0.140** (worse), AnchorLoRA **−0.026 to −0.040** (better). See `demo/validation/RESULTS.md`. Do not quote any other live numbers in advance.
+**Validation numbers (from `demo/validation/RESULTS.md`):** the pre-registered validation covered 5 seeds, with the tablet out from round 2. Man-pages loss relative to untuned at round 6 was:
+- starter **+0.076 to +0.140** (worse)
+- AnchorLoRA **−0.026 to −0.040** (better)
 
-**If live fails or is slow:** keep talking over the committed tabs. On tab 3, click **Play RECORDED run** (speed 4×). It is labelled RECORDED and replays the validation run of seed 0, the scripted version of the same unplug. Last resort: `demo/fallback/recorded_live.gif` and the PNG frames in `demo/fallback/`. A *Paused for memory* banner means the Mac is short of memory; training resumes on its own.
+Do not quote any other live numbers in advance.
 
-**Words to avoid:** unbiased, minimal upload, RAM/throughput savings, fairness cap, "no spike" between checkpoints, matched-work attribution. **Say instead:** full-system comparison under paired availability, magnitude diagnostic, at the evaluated rounds, simulated device budgets.
+**If live is unavailable, slow, or the yellow banner says *Paused during training* or *Waiting to start*:**
+1. Click **Stop live and play RECORDED**. It stops the engine first and switches only after the server confirms the stop.
+2. If the stop fails, the band says so and the live controls stay active.
+3. Last resort: `demo/fallback/recorded_live.gif` and the PNG frames in `demo/fallback/`.
+
+**Words to avoid:** unbiased, minimal upload, RAM/throughput savings, fairness cap, "no spike" between checkpoints, matched-work attribution. Also avoid claiming that memory "absorbs" or "saves" anything: the comparison does not isolate it.
+
+**Say instead:** full-system comparison under paired availability, magnitude diagnostic, at the evaluated rounds, simulated device budgets.

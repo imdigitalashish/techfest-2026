@@ -5,7 +5,14 @@
 Serves demo/web/ and, only when the project venv and the cached SmolLM2-135M are present, runs the LIVE engine
 (`nice -n 10 .venv/bin/python -m demo.live_engine`) as one child process (one model copy), relaying its JSON-line
 events to the page over Server-Sent Events and the judge's clicks back to it on stdin. The engine itself pauses
-while kern.memorystatus_level < 25 and resumes at >= 30 (and starts only at >= 30); the page shows that pause.
+while kern.memorystatus_level < 25 and resumes at >= 30 (and starts only at >= 30); the page shows that pause,
+with its reason and threshold (added to the engine's memory events here).
+
+Stage flow (event-gated, not wall-clock): while round 1 runs, the server asks the engine to hold after it
+(the engine's own "pause after this round"), and announces the hold with a `stage_hold` event once round 1 has
+finished in both federations. The judge pulls a plug, then resumes, so the validated "out from round 2" scenario
+always happens. Plug changes are accepted only from round 1 on and only while a later round remains.
+The live engine is unchanged by this (its code_sha is the validated one).
 """
 from __future__ import annotations
 
@@ -21,6 +28,12 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from demo.live_engine import LIVE as LIVE_CFG, MEM_PAUSE, MEM_RESUME, MEM_START  # noqa: E402 (stdlib-only import)
+
+STAGE_HOLD_AFTER = 1  # hold after this round for the judge's plug
+TEST_ENGINE_ENV = "P1_DEMO_TEST_ENGINE"  # demo/smoke_checks.py only: run a protocol double instead of the model
 WEB = ROOT / "demo" / "web"
 LIVE_DIR = ROOT / "demo" / ".live"  # session recordings + engine log (gitignored)
 VENV_PY = ROOT / ".venv" / "bin" / "python"
@@ -46,7 +59,16 @@ def hub_dir() -> Path:
     return Path.home() / ".cache" / "huggingface" / "hub"
 
 
+def engine_cmd(seed: int) -> list[str]:
+    double = os.environ.get(TEST_ENGINE_ENV)
+    if double:
+        return [sys.executable, double, "--seed", str(seed)]
+    return ["nice", "-n", "10", str(VENV_PY), "-m", "demo.live_engine", "--seed", str(seed)]
+
+
 def live_check() -> tuple[bool, list[str]]:
+    if os.environ.get(TEST_ENGINE_ENV):
+        return True, []
     why = []
     if not VENV_PY.exists():
         why.append("no project venv (.venv): run demo/fetch.sh")
@@ -69,6 +91,17 @@ class Live:
         self.seed = None
         self.state = "idle"
         self.rec = None
+        self._reset_stage()
+
+    def _reset_stage(self) -> None:
+        self.round = 0  # last round started by the engine
+        self.round_ended = 0  # last round finished by the engine (both federations)
+        self.rounds = int(LIVE_CFG["rounds"])
+        self.engine_paused = False  # engine acknowledged a pause (it holds after the current round)
+        self.holding = False  # engine has finished the round and is waiting for resume
+        self.hold_sent = False
+        self.stopping = False
+        self.memory: dict | None = None  # active memory pause, if any
 
     def start(self, seed: int) -> tuple[int, dict]:
         ok, why = live_check()
@@ -81,13 +114,14 @@ class Live:
             stamp = time.strftime("%Y%m%d-%H%M%S")
             self.rec = open(LIVE_DIR / f"session-{stamp}-s{seed}.jsonl", "w")
             log = open(LIVE_DIR / "engine.log", "a")
-            cmd = ["nice", "-n", "10", str(VENV_PY), "-m", "demo.live_engine", "--seed", str(seed)]
+            cmd = engine_cmd(seed)
             self.proc = subprocess.Popen(cmd, cwd=ROOT, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=log,
                                          text=True, bufsize=1)
             self.run_id += 1
             self.seed = seed
+            self._reset_stage()
             self.events = [{"ev": "server_start", "run_id": self.run_id, "seed": seed, "pid": self.proc.pid,
-                            "cmd": " ".join(cmd[:3] + [".venv/bin/python"] + cmd[4:])}]
+                            "hold_after": STAGE_HOLD_AFTER, "cmd": " ".join(Path(c).name if "/" in c else c for c in cmd)}]
             self.state = "running"
             self.lock.notify_all()
             threading.Thread(target=self._pump, args=(self.proc, self.run_id), daemon=True).start()
@@ -102,15 +136,70 @@ class Live:
                 ev = json.loads(line)
             except ValueError:
                 continue
+            extra = self._observe(ev, proc, run_id)
             self._add(ev, run_id)
+            if extra:
+                self._add(extra, run_id)
         rc = proc.wait()
-        self._add({"ev": "engine_exit", "code": rc}, run_id)
+        with self.lock:
+            stopped = self.stopping and run_id == self.run_id
+        self._add({"ev": "engine_exit", "code": rc, "stopped": stopped}, run_id)
         with self.lock:
             if run_id == self.run_id:
-                self.state = "finished" if rc == 0 else "failed"
+                self.state = "stopped" if stopped else ("finished" if rc == 0 else "failed")
+                self.holding = self.engine_paused = False
+                self.memory = None
                 if self.rec:
                     self.rec.close()
                     self.rec = None
+
+    def _observe(self, ev: dict, proc: subprocess.Popen, run_id: int) -> dict | None:
+        """Track the stage state from engine events; annotate memory events; request the hold after round 1."""
+        kind = ev.get("ev")
+        with self.lock:
+            if run_id != self.run_id:
+                return None
+            if kind == "hello":
+                self.rounds = int(ev.get("rounds", self.rounds))
+            elif kind == "round_start":
+                self.round = int(ev["round"])
+                self.holding = False
+                if self.round == STAGE_HOLD_AFTER and self.round < self.rounds and not self.hold_sent:
+                    self.hold_sent = True
+                    self._write({"cmd": "pause"})  # engine: hold after this round (it is in round 1 for >= 5 s)
+            elif kind == "paused":
+                self.engine_paused = True
+                if self.round >= 1 and self.round_ended == self.round and not self.holding:
+                    return self._hold()  # the pause arrived after the round had already finished
+            elif kind == "resumed":
+                self.engine_paused = self.holding = False
+            elif kind == "round_end":
+                self.round_ended = int(ev["round"])
+                if self.engine_paused and self.round_ended == self.round:
+                    return self._hold()
+            elif kind == "memory":
+                if ev.get("paused"):
+                    if ev.get("where") == "start":
+                        ev.update(reason="waiting_to_start", requires=MEM_START)
+                    else:
+                        ev.update(reason="paused_training", pause_below=MEM_PAUSE, resumes_at=MEM_RESUME)
+                    self.memory = dict(ev)
+                else:
+                    ev.update(reason="resumed")
+                    self.memory = None
+        return None
+
+    def _hold(self) -> dict:
+        """The engine has finished round `self.round` and waits for resume (caller holds self.lock)."""
+        self.holding = True
+        return {"ev": "stage_hold", "after_round": self.round, "next_round": self.round + 1, "rounds": self.rounds,
+                "staged": self.round == STAGE_HOLD_AFTER}
+
+    def _write(self, cmd: dict) -> None:
+        """Send one command line to the engine (caller holds self.lock)."""
+        if self.proc and self.proc.poll() is None and self.proc.stdin:
+            self.proc.stdin.write(json.dumps(cmd) + "\n")
+            self.proc.stdin.flush()
 
     def _add(self, ev: dict, run_id: int) -> None:
         with self.lock:
@@ -126,30 +215,50 @@ class Live:
         with self.lock:
             if not self.proc or self.proc.poll() is not None:
                 return 409, {"error": "no live run in progress"}
+            if cmd.get("cmd") in ("unplug", "replug"):
+                if self.round < 1:
+                    return 409, {"error": "plug changes open once round 1 has started"}
+                if self.round >= self.rounds:
+                    return 409, {"error": f"no later round: the run ends after round {self.rounds}"}
             try:
-                self.proc.stdin.write(json.dumps(cmd) + "\n")  # type: ignore[union-attr]
-                self.proc.stdin.flush()  # type: ignore[union-attr]
+                self._write(cmd)
             except (BrokenPipeError, OSError) as e:
                 return 409, {"error": str(e)}
         return 200, {"ok": True}
 
     def stop(self) -> tuple[int, dict]:
+        """Terminate the engine and wait until it has exited (the page switches views only after this returns)."""
         with self.lock:
-            p = self.proc
-        if not p or p.poll() is not None:
-            return 200, {"ok": True, "note": "nothing running"}
+            p, run = self.proc, self.run_id
+            if not p or p.poll() is not None:
+                return 200, {"ok": True, "stopped": True, "note": "no live process"}
+            self.stopping = True
         p.terminate()
         try:
-            p.wait(timeout=5)
+            p.wait(timeout=8)
         except subprocess.TimeoutExpired:
             p.kill()
-        return 200, {"ok": True}
+            try:
+                p.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                return 500, {"error": f"engine pid {p.pid} did not exit"}
+        with self.lock:
+            if run == self.run_id:
+                self.state = "stopped"
+                self.holding = self.engine_paused = False
+                self.memory = None
+        return 200, {"ok": True, "stopped": True, "code": p.returncode}
 
     def status(self) -> dict:
         ok, why = live_check()
         with self.lock:
-            return {"live_available": ok, "why": why, "state": self.state, "run_id": self.run_id, "seed": self.seed,
-                    "pid": self.proc.pid if self.proc else None, "n_events": len(self.events),
+            running = bool(self.proc and self.proc.poll() is None)
+            return {"live_available": ok, "why": why, "state": "running" if running else self.state,
+                    "running": running, "run_id": self.run_id, "seed": self.seed,
+                    "pid": self.proc.pid if running else None, "n_events": len(self.events),
+                    "round": self.round, "rounds": self.rounds, "holding": self.holding,
+                    "engine_paused": self.engine_paused, "memory": self.memory,
+                    "thresholds": {"start": MEM_START, "pause_below": MEM_PAUSE, "resume_at": MEM_RESUME},
                     "memory_level": memory_level(), "time": time.strftime("%H:%M:%S")}
 
 

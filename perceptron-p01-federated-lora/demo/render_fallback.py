@@ -8,6 +8,7 @@ runs and the RECORDED live run), so the frames show exactly what the page shows.
 from __future__ import annotations
 
 import json
+import textwrap
 from pathlib import Path
 
 import matplotlib
@@ -35,6 +36,18 @@ def fmt(v: float, nd: int = 3, signed: bool = True) -> str:
     if float(s) == 0:
         return s
     return (M if v < 0 else "+" if signed else "") + s
+
+
+def validation_sentence() -> str:
+    """The reviewers' wording, with the ranges read from demo/validation/results.json (as on the live page)."""
+    rows = P["validation"]["results"]["rows"]
+    s = [r["effect_starter"] for r in rows]
+    a = [r["effect_anchor"] for r in rows]
+    words = {5: "five"}
+    return (f"Most of this gap exists even with nobody unplugged. In the {words.get(len(rows), len(rows))} validation "
+            f"seeds, removing the tablet changed the starter's final man-pages loss by {fmt(min(s))} to {fmt(max(s))} "
+            f"and AnchorLoRA's by {fmt(min(a))} to {fmt(max(a))}. The full system was less sensitive; this comparison "
+            "does not isolate memory's contribution.")
 
 
 def stamp(fig, text: str) -> None:
@@ -110,8 +123,9 @@ def frame_outage() -> None:
     lines += ["", "AnchorLoRA: below untuned at every", "evaluated round in every seed."]
     fig.text(0.65, 0.8, "\n".join(lines), va="top", family="monospace", fontsize=10.5)
     fig.text(0.06, 0.94, "COMMITTED RUNS · real SmolLM2-135M · real text · SIMULATED device budgets", weight="bold", color="#5a3f94")
-    stamp(fig, "source: eval/results/logs/v2_dropout_<strategy>_s<seed>.json (eval.per_domain_loss.manpages) − "
-               "base_per_domain_smollm2-135m.json;\nv2_dropout_canonical.json (*.outage_peak_rise_mean/max)")
+    stamp(fig, "plotted: base_per_domain_smollm2-135m.json manpages − eval/results/logs/v2_dropout_<strategy>_s<seed>.json "
+               "eval.per_domain_loss.manpages (positive = better);\npeaks: v2_dropout_canonical.json "
+               "*.outage_peak_rise_mean/max (trained − untuned: positive = worse)")
     fig.savefig(OUT / "frame2_committed_outage.png")
     plt.close(fig)
 
@@ -150,7 +164,7 @@ def live_frames() -> list:
             elif dev.get("memory") == "expired":
                 note += f", memory expired (age {dev['memory_age']} > 4)"
             ax.text(0, -rng * 0.97, note, fontsize=10, color="#3f4944")
-        ax = fig.add_axes([0.05, 0.08, 0.78, 0.28])
+        ax = fig.add_axes([0.05, 0.08, 0.69, 0.28])
         out = [r for r in sorted(rounds) if rounds[r]["anchor_full"]["devices"]["c4"]["state"] == "unplugged" and r <= t]
         for r in out:
             ax.axvspan(r - 0.5, min(r + 0.5, 6), color="#ece6f6")
@@ -166,8 +180,10 @@ def live_frames() -> list:
         ax.axhline(0, color="#18201c", lw=1.2)
         ax.set_xlim(0, 6.6)
         ax.set_xticks(range(7))
-        ax.set_title("Tablet's domain (man pages): solid = this run · dashed = ghost (nobody unplugged) · "
-                     "band = 5-seed validation range", loc="left", fontsize=11)
+        ax.set_title("Tablet's domain (man pages): solid = this run · dashed = ghost (same seed, nobody unplugged)\n"
+                     "band = reference for tablet-only outage from round 2 (5 validation seeds)", loc="left", fontsize=10.5)
+        if t >= 2:
+            fig.text(0.765, 0.36, textwrap.fill(validation_sentence(), 44), va="top", fontsize=9, color="#18201c")
         ax.legend(loc="upper left", fontsize=10, frameon=False)
         fig.text(0.05, 0.975, "RECORDED, not live · validation run, seed 0, tablet unplugged by script from round 2\n"
                  "reduced config (batch 1×64, eval 8×64 tok/domain, 6 rounds) · Δ vs untuned on the same eval subset\n"

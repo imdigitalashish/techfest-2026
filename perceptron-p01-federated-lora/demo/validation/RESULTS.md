@@ -11,6 +11,7 @@ Criteria (every seed must pass):
 - **P2** round 6 of the unplug run: starter manpages loss > untuned AND > AnchorLoRA's
 - **P3** unplug effect at round 6 (unplug run - ghost run, manpages) larger for the starter than for AnchorLoRA
 - determinism: round 1 (and the untuned eval) identical bit for bit in the ghost and unplug runs
+- usable runs only: each seed needs both runs with 6 rounds x both strategies, finite losses, and exactly the pre-registered history (tablet unplugged in rounds 2-6, nothing else; the ghost: nothing unplugged)
 
 | seed | AnchorLoRA manpages, max over r1-6 | starter manpages r6 | AnchorLoRA manpages r6 | unplug effect r6: starter / AnchorLoRA | P1 | P2 | P3 | deterministic r1 | wall s (unplug / ghost) |
 |---|---|---|---|---|---|---|---|---|---|

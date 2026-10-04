@@ -1,22 +1,30 @@
 """Headless smoke test of the P1 demo: no browser, no GPU. Exit 0 = every check passed.
 
-  python3 demo/smoke_checks.py --replay-only    # stdlib only: page data vs committed sources, headline numbers, server
-  .venv/bin/python demo/smoke_checks.py         # + live path: schedule equivalence, a 2-round live run through the
-                                                #   Flower path (finite, equal to the committed ghost/validation run),
-                                                #   and Flower path == the in-process harness for round 1
+  python3 demo/smoke_checks.py --replay-only    # stdlib only: page data vs committed sources, headline numbers,
+                                                #   validation runs + verdict, fallback files, server, stage flow
+                                                #   (protocol double), page selftest in headless Chrome (WARN if none)
+  .venv/bin/python demo/smoke_checks.py         # + live path: schedule equivalence; through the server, the real
+                                                #   engine holds after round 1, takes the tablet unplug, resumes,
+                                                #   and stops on request (rounds 1-2 equal the committed seed-0 runs);
+                                                #   Flower path == the in-process harness for round 1
 demo/smoke.sh wraps this under nice -n 10.
 """
 from __future__ import annotations
 
 import argparse
+import html
 import itertools
 import json
 import math
+import os
 import re
+import shutil
+import signal
 import socket
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import urllib.error
 import urllib.request
@@ -148,7 +156,15 @@ def replay_checks() -> None:
         fresh = json.loads(json.dumps(validate.table()))  # same JSON round trip as results.json
         check(fresh["verdict"] == committed["verdict"] and fresh["rows"] == committed["rows"],
               "validation table recomputed from demo/validation/runs equals results.json")
-        check(all(v is not None for v in committed["verdict"].values()), f"validation complete: {committed['verdict']}")
+        for kind in ("unplug", "ghost"):
+            for seed in validate.SEEDS:
+                probs = validate.check_run(kind, seed)
+                check(not probs, f"validation run {kind}_s{seed}: seed, 6 rounds x both strategies, exact outage "
+                                 f"({validate.OUTAGE[kind] or 'none'}), finite" + (f" -- {probs}" if probs else ""))
+        check(sorted(committed["verdict"]) == ["P1", "P2", "P3"] and all(v is True for v in committed["verdict"].values()),
+              f"pre-registered criteria all True (not just present): {committed['verdict']}")
+        check(sorted(r["seed"] for r in committed["rows"]) == validate.SEEDS and all("invalid" not in r for r in committed["rows"]),
+              "verdict covers seeds 0-4, every one usable")
         check(committed["deterministic_r1_all"] is True, "round 1 identical in ghost and unplug runs (every seed)")
         from demo.live_engine import provenance  # stdlib at import time (torch loads lazily)
 
@@ -163,6 +179,12 @@ def replay_checks() -> None:
         same = all(any(r["fed"] == e["fed"] and r["round"] == e["round"] and r["per_domain"] == e["per_domain"]
                        for r in u0["records"]) for e in rounds)
         check(len(rounds) == 12 and same, "RECORDED events are the validation unplug run of seed 0 (12 round events, same values)")
+    fb = ROOT / "demo" / "fallback"
+    need = ["frame1_committed_gains.png", "frame2_committed_outage.png"] + [f"frame3_recorded_live_r{t}.png" for t in range(1, 7)]
+    pngs_ok = all((fb / n).is_file() and (fb / n).read_bytes()[:8] == b"\x89PNG\r\n\x1a\n" for n in need)
+    gif = fb / "recorded_live.gif"
+    gif_ok = gif.is_file() and gif.read_bytes()[:6] in (b"GIF89a", b"GIF87a") and gif.stat().st_size > 10_000
+    check(pngs_ok and gif_ok, f"fallback: {len(need)} PNG frames + recorded_live.gif exist and are valid images")
 
 
 # ---------------------------------------------------------------------------------------------------------
@@ -215,6 +237,136 @@ def server_checks() -> None:
         proc.wait(timeout=5)
 
 
+def start_server(env: dict | None = None) -> tuple[subprocess.Popen, str | None]:
+    proc = subprocess.Popen(["/usr/bin/env", "python3", str(ROOT / "demo" / "server.py"), "--port", str(free_port()),
+                             "--no-browser"], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
+                            env={**os.environ, **(env or {})})
+    m = re.search(r"http://127\.0\.0\.1:(\d+)/", proc.stdout.readline())  # type: ignore[union-attr]
+    return proc, (f"http://127.0.0.1:{m.group(1)}" if m else None)
+
+
+def status(base: str) -> dict:
+    return json.loads(http(base + "/api/status")[1])
+
+
+def wait_until(pred, timeout: float, step: float = 0.1):
+    t = time.time()
+    while time.time() - t < timeout:
+        v = pred()
+        if v:
+            return v
+        time.sleep(step)
+    return None
+
+
+def recording(since: float) -> Path | None:
+    files = [f for f in (ROOT / "demo" / ".live").glob("session-*.jsonl") if f.stat().st_mtime >= since - 1]
+    return max(files, key=lambda f: f.stat().st_mtime) if files else None
+
+
+def events(path: Path | None) -> list[dict]:
+    return [json.loads(x) for x in path.read_text().splitlines() if x.strip()] if path and path.exists() else []
+
+
+def stage_flow_checks() -> None:
+    print("[stage flow through the server, with the engine's protocol double (demo/fake_engine.py, no model)]")
+    proc, base = start_server({"P1_DEMO_TEST_ENGINE": str(ROOT / "demo" / "fake_engine.py")})
+    try:
+        check(base is not None, "server started with the protocol double")
+        if base is None:
+            return
+        t0 = time.time()
+        code, _ = http(base + "/api/start", {"seed": 0})
+        check(code == 200, f"POST /api/start -> {code}")
+        code, body = http(base + "/api/cmd", {"cmd": "unplug", "device": "c4"})
+        check(code == 409 and b"round 1" in body, f"plug change before round 1 refused -> {code} {body[:60]!r}")
+        held = wait_until(lambda: status(base).get("holding"), 15)
+        evs = events(recording(t0))
+        kinds = [e["ev"] for e in evs]
+        hold = next((e for e in evs if e["ev"] == "stage_hold"), None)
+        check(bool(held) and hold is not None and hold["after_round"] == 1 and hold["staged"] is True
+              and not any(e["ev"] == "round_start" and e["round"] == 2 for e in evs),
+              "engine holds after round 1 (stage_hold after_round=1, staged) before any round 2")
+        code, _ = http(base + "/api/cmd", {"cmd": "unplug", "device": "c4"})
+        check(code == 200, f"tablet plug pulled at the hold -> {code}")
+        code, _ = http(base + "/api/cmd", {"cmd": "resume"})
+        check(code == 200, f"resume -> {code}")
+        wait_until(lambda: status(base).get("round") == 3, 15, 0.02)
+        code, body = http(base + "/api/cmd", {"cmd": "unplug", "device": "c1"})
+        check(code == 409 and b"no later round" in body, f"plug change in the final round refused -> {code} {body[:60]!r}")
+        fin = wait_until(lambda: (lambda s: s if not s["running"] else None)(status(base)), 15)
+        check(bool(fin) and fin["state"] == "finished", f"run finished -> state {fin and fin['state']}")
+        evs = events(recording(t0))
+        ack = next((e for e in evs if e["ev"] == "cmd_ack" and e["device"] == "c4"), {})
+        r2 = next((e for e in evs if e["ev"] == "round_start" and e["round"] == 2), {})
+        check(ack.get("effective_round") == 2 and r2.get("unplugged") == ["c4"], "unplug acknowledged for round 2 and applied in round 2")
+        mem = [e for e in evs if e["ev"] == "memory" and e.get("paused")]
+        start = next((e for e in mem if e.get("where") == "start"), {})
+        train = next((e for e in mem if e.get("where") == "train"), {})
+        check(start.get("reason") == "waiting_to_start" and start.get("requires") == 30
+              and train.get("reason") == "paused_training" and train.get("resumes_at") == 30 and train.get("pause_below") == 25,
+              "memory events carry their reason and threshold (start: requires 30; training: below 25, resumes at 30)")
+        t1 = time.time()
+        http(base + "/api/start", {"seed": 0})
+        wait_until(lambda: status(base).get("holding"), 15)
+        code, body = http(base + "/api/stop", {})
+        st = status(base)
+        check(code == 200 and json.loads(body).get("stopped") is True and not st["running"] and st["state"] == "stopped",
+              f"stop is awaited: /api/stop -> {code}, then status running={st['running']} state={st['state']}")
+        ex = wait_until(lambda: next((e for e in events(recording(t1)) if e["ev"] == "engine_exit"), None), 5)
+        check(bool(ex) and ex.get("stopped") is True, "engine_exit recorded as stopped")
+    finally:
+        proc.terminate()
+        proc.wait(timeout=5)
+
+
+def find_chrome() -> str | None:
+    cands = [os.environ.get("P1_DEMO_CHROME"), "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+             "/Applications/Chromium.app/Contents/MacOS/Chromium",
+             "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+             shutil.which("google-chrome"), shutil.which("chromium"), shutil.which("chromium-browser")]
+    return next((c for c in cands if c and Path(c).exists()), None)
+
+
+def ui_checks() -> None:
+    print("[page in headless Chrome at 1440x900: ?selftest=1 drives all 4 tabs and the stage flow from committed fixtures]")
+    chrome = find_chrome()
+    if not chrome:
+        print("  WARN no Chrome/Chromium/Edge found: headless UI check skipped (not a failure)")
+        return
+    url = (ROOT / "demo" / "web" / "index.html").as_uri() + "?selftest=1"
+    buf: list[str] = []
+    with tempfile.TemporaryDirectory() as prof:
+        cmd = [chrome, "--headless=new", "--disable-gpu", "--hide-scrollbars", "--window-size=1440,900",
+               f"--user-data-dir={prof}", "--use-mock-keychain", "--no-first-run", "--no-default-browser-check",
+               "--disable-extensions", "--disable-background-networking", "--disable-component-update", "--disable-sync",
+               "--virtual-time-budget=20000", "--dump-dom", url]
+        t0 = time.time()
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True, start_new_session=True)
+
+        def reader() -> None:
+            for line in p.stdout:  # type: ignore[union-attr]
+                buf.append(line)
+                if "</html>" in line:
+                    return
+
+        th = threading.Thread(target=reader, daemon=True)
+        th.start()
+        th.join(timeout=60)
+        try:
+            os.killpg(p.pid, signal.SIGKILL)  # headless Chrome may linger after --dump-dom; its own process group
+        except ProcessLookupError:
+            pass
+        p.wait(timeout=10)
+    m = re.search(r'<pre id="selftest"[^>]*>(.*?)</pre>', "".join(buf), re.S)
+    check(m is not None, f"selftest result found in the dumped DOM ({time.time() - t0:.1f}s, file:// page, no network)")
+    if not m:
+        return
+    r = json.loads(html.unescape(m.group(1)))
+    for c in r["checks"]:
+        check(c["ok"], f"page: {c['name']}" + (f" -- {c['detail']}" if not c["ok"] and c.get("detail") else ""))
+
+
 # ---------------------------------------------------------------------------------------------------------
 def wait_memory(limit_s: int = 90) -> bool:
     t = time.time()
@@ -241,23 +393,53 @@ def live_checks() -> None:
     if not wait_memory():
         check(False, "memory level stayed < 30: live checks not run (guard)")
         return
-    print("[live path: 2 rounds through the Flower adapter, CPU, tablet unplugged in round 2]")
-    with tempfile.TemporaryDirectory() as td:
-        out = Path(td) / "run.json"
-        t0 = time.time()
-        r = subprocess.run([sys.executable, "-m", "demo.live_engine", "--seed", "0", "--rounds", "2", "--unplug", "c4:2-2",
-                            "--no-stdin", "--out", str(out)], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-                           text=True, timeout=170)
-        check(r.returncode == 0 and out.exists(), f"engine exit {r.returncode} in {time.time() - t0:.0f}s")
-        if not out.exists():
+    print("[live path through the server: real engine, hold after round 1, tablet unplugged, resume, awaited stop]")
+    proc, base = start_server()
+    by: dict = {}
+    try:
+        check(base is not None and status(base).get("live_available") is True, "server up, live engine available")
+        if base is None:
             return
-        events = [json.loads(x) for x in r.stdout.splitlines() if x.strip()]
-        check(all(isinstance(e, dict) and "ev" in e for e in events), f"{len(events)} stdout lines, all JSON events")
-        run = json.loads(out.read_text())
-    vals = [v for rec in run["records"] for v in rec["per_domain"].values()] + list(run["untuned"].values())
-    check(len(run["records"]) == 4 and all(math.isfinite(v) for v in vals), f"{len(vals)} live losses, all finite")
-    check(run["identical_start"] is True, "both federations start from the identical untuned model")
-    by = {(r["fed"], r["round"]): r for r in run["records"]}
+        t0 = time.time()
+        code, _ = http(base + "/api/start", {"seed": 0})
+        check(code == 200, f"POST /api/start -> {code}")
+        code, body = http(base + "/api/cmd", {"cmd": "unplug", "device": "c4"})
+        check(code == 409 and b"round 1" in body, f"plug change before round 1 refused -> {code}")
+        held = wait_until(lambda: status(base).get("holding"), 240, 0.5)
+        evs = events(recording(t0))
+        check(bool(held) and any(e["ev"] == "stage_hold" and e["after_round"] == 1 for e in evs)
+              and not any(e["ev"] == "round_start" and e["round"] == 2 for e in evs),
+              f"engine holds after round 1 ({time.time() - t0:.0f}s after start)")
+        c1, _ = http(base + "/api/cmd", {"cmd": "unplug", "device": "c4"})
+        c2, _ = http(base + "/api/cmd", {"cmd": "resume"})
+        check(c1 == 200 and c2 == 200, f"tablet plug pulled at the hold, resumed -> {c1}, {c2}")
+        done2 = wait_until(lambda: (lambda ev: ev if sum(e["ev"] == "round" and e["round"] == 2 for e in ev) == 2 else None)(
+            events(recording(t0))), 240, 0.5)
+        code, body = http(base + "/api/stop", {})
+        st = status(base)
+        check(bool(done2) and code == 200 and not st["running"] and st["state"] == "stopped",
+              f"round 2 done, then stop awaited -> {code}, running={st['running']}, state={st['state']} ({time.time() - t0:.0f}s)")
+        pid = next((e.get("pid") for e in events(recording(t0)) if e["ev"] == "server_start"), None)
+        gone = True
+        try:
+            os.kill(pid, 0)
+            gone = False
+        except (ProcessLookupError, TypeError):
+            pass
+        check(gone, f"engine process {pid} is gone after the stop")
+        evs = events(recording(t0))
+    finally:
+        proc.terminate()
+        proc.wait(timeout=5)
+    ack = next((e for e in evs if e["ev"] == "cmd_ack" and e.get("device") == "c4"), {})
+    check(ack.get("effective_round") == 2, "unplug acknowledged for round 2 (the validated scenario)")
+    untuned = next((e for e in evs if e["ev"] == "untuned"), {})
+    by = {(e["fed"], e["round"]): e for e in evs if e["ev"] == "round"}
+    vals = [v for rec in by.values() for v in rec["per_domain"].values()] + list(untuned.get("per_domain", {}).values())
+    check(len(by) == 4 and len(vals) == 25 and all(math.isfinite(v) for v in vals), f"{len(vals)} live losses, all finite")
+    check(untuned.get("identical_start") is True, "both federations start from the identical untuned model")
+    if len(by) < 4:
+        return
     a2 = by[("anchor_full", 2)]["devices"]["c4"]
     s2 = by[("fedavg_ab_homo", 2)]["devices"]["c4"]
     check(s2["state"] == "unplugged" and a2["state"] == "unplugged" and a2.get("memory") == "reused" and a2.get("memory_age") == 1,
@@ -303,6 +485,8 @@ def main() -> None:
     t0 = time.time()
     replay_checks()
     server_checks()
+    stage_flow_checks()
+    ui_checks()
     if not a.replay_only:
         live_checks()
     print(f"\nsmoke: {'PASS' if not FAILS else 'FAIL'} ({len(FAILS)} failed) in {time.time() - t0:.0f}s"
