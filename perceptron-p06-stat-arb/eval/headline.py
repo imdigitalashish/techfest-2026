@@ -133,6 +133,10 @@ def build() -> dict[str, str]:
     h["collide_lev"] = f"{sen['collisions']['V2_strict_mo1']['lev']:.0%}"
     s3 = sen["collision_dropped"]["V2_strict_mo1"]["registered"]["lev - threshold_pair"]
     h["s3_mean"], h["s3_tci"] = usd(s3["mean_usd_per_day"]), ci(*s3["t_ci95"])
+    v4 = w["V4_transfer"]["registered"]["lev - threshold_pair"]["t_ci95"]
+    h["v4_phrase"] = ("has no established advantage over the threshold under strict fills" if v4[0] <= 0 <= v4[1]
+                      else "keeps an advantage over the threshold under strict fills" if v4[0] > 0
+                      else "is worse than the threshold under strict fills")
 
     cad = {r["leg"]: r for r in json.load(open(R + "update_cadence.json"))["legs"]}
     h["cad_bnf_ms"] = f"{cad['binance-futures_BTCUSDT']['median_gap_ms']:.0f}"

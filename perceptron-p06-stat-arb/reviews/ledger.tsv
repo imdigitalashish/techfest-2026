@@ -1,0 +1,2 @@
+date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	spike/ADR/pre-registration	gpt-6-astra	max	13	13	0	53/100 plan score; 3 blockers → metric renamed, Amendment 1 (strict fills, markouts, collisions), 5-inspected-days framing; 5 accepted only partly (see dispositions)

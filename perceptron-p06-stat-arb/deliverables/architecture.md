@@ -30,11 +30,12 @@ flowchart LR
   W --> PT
 ```
 
-| Component | Isolated metric | Baseline result (held-out 2026-10-01) |
+| Component | Isolated metric | Result (from committed results) |
 |---|---|---|
-| C6 detector | AUC-PR of "profitable at latency L" | 345,890 episodes ≥ 1 bps over fair basis |
-| C7 decay | integrated Brier (log-t), C-index | KM by pair IBS 0.109 (pooled KM 0.126), C-index 0.625; median lifetime 90.5 ms |
-| C8 decision | simulated P&L at (latency, fee) | at 1 bps/leg and 10 ms one-way: naive −$1,570 · tuned threshold +$768 · LEV +$802 |
-| C2 latency | pinball loss of quantiles | Tardis collector p50 1.8 ms (Binance perp) – 39.7 ms (Coinbase); Mac in India p05 69–107 ms |
+| C6 detector | AUC-PR of "profitable at latency L" | 345,890 episodes ≥ 1 bp over fair basis on the held-out day 2026-10-01 |
+| C7 decay | integrated Brier (log-t), C-index; median lifetime with hour-block CI | median 90.5 ms (95% CI 84.0–100.0); 13 monthly medians 26–68 ms |
+| C8 decision (spike) | simulated P&L at (latency, fee) | pre-registered walk-forward, LEV − tuned threshold: +$299/day, 95% t-CI [+$130, +$468], 12/12 months positive — supported (both 95% lower bounds are above zero) |
+| C8 compiled step | p50/p99 per decision | 6.1 µs / 41.5 µs (Numba, exact vs scikit-learn) |
+| C2 latency | pinball loss of quantiles | Tardis collector p50 1.8 ms (Binance perp) to 40 ms; Mac in India p05 69–107 ms |
 
-Sources: `eval/results/baseline_0901_to_1001.md`, `eval/results/live_latency.md`.
+Sources: `eval/results/headline.json` (rendered by `deliverables/render.py`; checked by `eval/check_docs.py`).

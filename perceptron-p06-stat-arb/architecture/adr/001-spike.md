@@ -40,3 +40,14 @@ The brief asks us to "identify and rank cross-asset mispricings in near real tim
 - **Test 3:** passed for LEV (uplift positive in all 5 clock variants; half-life rank ρ ≥ 0.984). Survival-EV as a decision rule fails receive-time replay, which confirms the synthesis: survival is the report and a feature, LEV is the rule. Partial fills beyond top-of-book remain untested. See [results](../../eval/results/falsification_clockskew.md).
 - **Test 1:** inconclusive at n = 4 days: 4/4 positive, mean +$248/day, but the t-CI includes 0. Needs ≥ 12 days. See [results](../../eval/results/falsification_walkforward.md).
 - **Test 2:** partial. Full-feature LEV beats edge-only LEV on 4/4 days, with the same significance caveat. Matched-event permutation is not yet run.
+
+## Status update — 2026-10-04 15:39 IST (final for the 12 Oct selection)
+- **Test 1, walk-forward, pre-registered** ([registration](../../eval/PREREGISTRATION-walkforward-12d.md); [result](../../eval/results/falsification_walkforward_12d_prereg.md)): **passed.** LEV − tuned threshold is +$299/day, 12/12 months, t-CI [+$130, +$468]. The 7 unseen months gave 7/7, +$343/day. Reproduced independently by `gpt-6-sol`.
+- **Test 3, execution and causal robustness** (Amendment 1, [results](../../eval/results/sensitivity_amendment1.md), [provenance](../../eval/results/sensitivity_amendment1.provenance.md)): **passes the registered rule, but the effect is fragile.**
+  - Strict next-quote fills: +$73/day, [+$10, +$135].
+  - Strict fills with a 1 s markout: +$70/day, [+$0.2, +$140]. That is 24% of the frozen gain.
+  - Dropping shared-liquidity collisions: +$40/day, [−$12, +$92], within noise.
+  - Frozen-trained LEV scored under strict fills: has no established advantage over the threshold under strict fills (−$7.8/day, [−$148, +$132]).
+- **Test 2, ablation:** under the frozen simulator, the latency input matters (LEV − no-latency-input LEV +$477/day). Under strict fills with markouts it adds +$40/day, and LEV − GBM classifier is −$0.3/day (neither significant).
+- **Survival:** it stays the MVP decay report, with publication-time bounds, and a baseline. As a decision rule, survival EV trails the threshold (−$77/day). Residual-survival features were never part of LEV; that remains future work.
+- **Decision:** keep LEV as the spike for any finals build, but present it as a *benchmark of what latency-aware ranking is worth and where public data stops resolving it*, not as a validated edge. The next real test needs tick-by-tick capture near the exchanges and live paper fills.

@@ -1,50 +1,55 @@
-# Round-1 abstract (draft v1, 2026-10-04) — Perceptron 2026 · Problem 6
+# Round-1 abstract — Perceptron 2026 · Problem 6
 
-**Arriving on time: latency-aware ranking of cross-venue crypto mispricings**
+**Arriving on time: ranking cross-venue crypto mispricings by their value when the order lands**
 
-*Status: draft for the 31 Oct submission. Every number below comes from committed runs in `perceptron-p06-stat-arb/eval/results/` on public Tardis.dev tick data (train 1 Sep 2026, held-out 1 Oct 2026); P&L figures are simulated. Team lines marked [TEAM] await the user.*
+*Rendered from committed results in `perceptron-p06-stat-arb/eval/results/` by `deliverables/render.py`; `eval/check_docs.py` checks every number. Data: public Tardis.dev tick quotes. All results are simulated. [TEAM] lines await the team.*
 
-**Problem and theme.** Theme 3 (Markets & Trading Intelligence), Problem 6: cross-asset statistical arbitrage with latency budgets. It is a clean test of a question every trading system faces: is a signal still worth anything by the time we can act on it? [TEAM: why it matters to us.]
+**Problem and theme.** Theme 3 (Markets & Trading Intelligence), Problem 6. It isolates a question every trading system faces: is a signal still worth anything by the time we can act on it? [TEAM: why it matters to us.]
 
-**Understanding of the challenge.** Spotting a price gap is easy. Our detector finds 345,890 gaps of ≥1 bp (beyond each pair's fair basis) in one day across nine BTC markets. The hard part is what a gap is worth *when our order lands*. The gap may not be real (asynchronous or stale quotes, different clocks, USD-vs-USDT or spot-vs-perpetual basis). It may close before we arrive. Fees and displayed size may consume it. Waiting for confirmation raises confidence but spends the lifetime. On the held-out day the median gap lasted 90 ms, and 10% were gone within 3.9 ms. The hazard decreases with age (Weibull shape 0.43). Raw gap size ranks opportunities well at 0.5 ms (Spearman 0.83 with realised P&L), but at 50 ms it is uninformative (0.05).
+**Understanding of the challenge.** Detection is easy: on one held-out day our detector finds 345,890 gaps of at least 1 bp beyond each pair's fair basis, across nine BTC markets. The hard part is a gap's value when our order arrives:
+- the gap may be a stale quote or a structural basis (USD vs USDT, spot vs perpetual);
+- it may close first;
+- fees and displayed size may consume it;
+- waiting for confirmation spends its lifetime.
 
-**Proposed approach.** An event-driven pipeline of typed components, each with its own metric:
-1. Ingestion of Tardis.dev quotes (exchange and collector timestamps) for Binance, Coinbase, OKX, Bybit, Kraken, Bitstamp and Deribit, plus our own 12-venue websocket recorder.
-2. A consolidated as-of book on the receive clock.
-3. A fair-basis and lead–lag estimator: EWMA, then Kalman, then Hayashi–Yoshida.
-4. A detector of executable crosses, bid_A − ask_B, net of basis and fees and capped at top-of-book size.
-5. A decay model: Kaplan–Meier by venue pair, extended to residual survival.
-6. The decision layer, our spike, which ranks by *latency-conditioned executable value*: LEV(x, L) = E[P&L | features, end-to-end latency L]. It is learned with gradient boosting from simulator labels and decides act-now, wait or skip. Its interpretable counterpart is EV = S(L|x)·net − (1−S(L|x))·λ, where S is survival and λ the expected loss of a legged attempt.
-7. A simulator that decides on receive-time state but fills both IOC legs against each venue's book at its own arrival time, including partial fills, fees and unwind loss.
-8. A paper trader that runs the same code path on live feeds.
+Gap size predicts outcomes well at 0.5 ms (Spearman 0.83) but not at 50 ms (0.05). Public data also limits what is measurable. In these samples Binance and OKX publish quotes on 26–100 ms grids, against 3.3 ms for Coinbase, so a lifetime is known only to within its venues' publication intervals.
 
-Tools: Python, polars, numba, lifelines, scikit-learn.
+**Proposed approach.** Separately tested components:
+1. Ingest Tardis.dev quotes and our 12-venue websocket recorder.
+2. Maintain an as-of book per venue and a 60 s EWMA fair basis per pair; Kalman and Hayashi–Yoshida lead–lag come next.
+3. Detect executable crosses net of basis and fees, capped at top-of-book size.
+4. Measure decay with survival analysis per venue pair.
+5. **Decide (spike):** rank by *latency-conditioned executable value*, LEV(x, L): a gradient-boosted estimate of expected execution surplus, clipped at ±30 bp, given market-state features and end-to-end latency L. It is learned from simulator labels, and we act if LEV > 0.
+6. Simulate: decide on received state; fill both IOC legs at each venue's book when each order arrives; unwind failed legs.
+7. Paper-trade the same path live.
 
-**Minimum Viable mapping.** *Detect mispricings with a threshold or statistical model:* threshold and basis-adjusted detector, already running on real ticks (a 9-venue day in ~5 minutes on a laptop). *Report how fast opportunities decay:* survival curves by venue pair and gap size. Median lifetime is 46 ms for perpetual–perpetual pairs, 95–105 ms for pairs involving spot, and 200–257 ms for the most frequent Deribit pairs. The average gap keeps 74% of its size after 100 ms and 48% after 500 ms. Both come from one command and run live at the demo.
+The compiled decision step (Numba, matching scikit-learn's predictions) takes 6.1 µs at p50 and 41.5 µs at p99 on a shared laptop.
 
-**Stretch goals.** *Simulated end-to-end latency budget:* L = feed + compute + order latency, swept to give a latency–P&L frontier per policy and fee level. Tardis collectors see Binance perpetual quotes 1.8 ms after the exchange stamp (median). Our laptop in India sees the fastest 5% of Binance-perpetual, Coinbase, Kraken and Deribit messages 69–107 ms late (medians: seconds, on a congested link). We will measure from cloud regions to choose a vantage point. *Paper trading:* live recorder → same pipeline → simulated fills with measured latency.
+**Minimum Viable mapping.**
+- *Detect mispricings with a threshold or statistical model:* running on real ticks.
+- *Report how fast the opportunity typically decays:* survival curves with confidence intervals. The median lifetime is 90.5 ms (95% CI 84.0–100.0); publication times bound it to 11.3–147.1 ms. By pair type it is 46 ms (perpetual–perpetual), 105 ms (spot–perpetual) and 95 ms (spot–spot). Across 13 monthly samples of five markets it ranges from 26 to 68 ms.
 
-**Novelty.** (1) We rank by value at arrival, not by visible gap. At 50 ms with 1 bp per-leg fees, the top decile by LEV earned +0.89 bp per trade against +0.04 bp for the top decile by gap size. (2) Decay is treated as censored survival, with an explicit act-or-wait rule derived from the hazard shape. (3) Evaluation uses a latency–P&L frontier with exchange-time fills rather than a zero-latency backtest. (4) An auto-research ratchet keeps changes only beyond bootstrap noise; its first loop has *not* yet beaten a tuned per-pair threshold significantly (+14%, within one standard error).
+**Stretch goals.**
+- *Latency budget:* L = feed + compute + order. Compute takes microseconds; distance takes milliseconds. Tardis collectors see Binance perpetual quotes 1.8 ms after the exchange timestamp (median), and the slowest venue 40 ms after. From our laptop in India, the fastest 5% of messages arrive 69–107 ms late. At 1 bp per-leg fees, naive trading stops paying at 4.6 ms one-way.
+- *Paper trading:* the live recorder feeds the same pipeline.
 
-**Evaluation plan.**
-- *Data:* Tardis first-of-month days for walk-forward (≥12 days), plus our live recordings.
-- *Baselines:* naive (trade every gap above fees), a tuned per-pair×latency threshold (the bar to beat) and EV with Kaplan–Meier.
-- *Metrics:* simulated P&L and capture ratio per latency and fee level; ranking quality; integrated Brier score and C-index for decay; drawdown and tail loss.
-- *Rigor:* paired block bootstrap across days, receive-time replay with ±5 ms clock-offset perturbation, and ablations.
-- *Held-out numbers today (1 bp/leg; latencies are one-way, applied to feed and orders):*
+**Novelty.** Our contribution is a falsification-first decision benchmark on public data, not a new learner:
+1. We rank by value at arrival. At 50 ms, with the frozen simulator, the top decile by LEV earned +0.89 bp per trade, against +0.04 bp ranked by gap size.
+2. Decay is reported together with its observability limits.
+3. The walk-forward is pre-registered, the stricter simulators are registered amendments, and the ablations are published whatever they show.
 
-| One-way latency | Naive | Tuned threshold | LEV |
-|---|---|---|---|
-| 1 ms | +$1,490 | +$1,977 | +$1,926 |
-| 10 ms | −$1,570 | +$768 | +$802 |
-| 100 ms | −$4,433 | +$30 | −$33 |
+**Evaluation plan.** We fit on one month's first day and test on the next. Baselines are naive trading, a tuned per-pair × fee × latency threshold (the bar to beat) and survival EV. The metric is simulated execution surplus (fills after fees, marked against the fair basis), summed over six fee/latency scenarios.
+- *Pre-registered: 12 sampled months, 5 of them previously inspected.* LEV beat the threshold in 12/12 months, by a mean of +$299/day (+23%); 95% t-interval [+$130, +$468]. Verdict: supported (both 95% lower bounds are above zero). On the 7 months never inspected: 7/7, +$343/day ([+$70, +$616]).
+- *Stricter simulators (registered amendment):* filling at the next published quote gives +$73/day ([+$10, +$135]); adding a mark-to-mid 1 s later gives +$70/day ([+$0.2, +$140]). Verdict: the registered rule passes, but the gain shrinks to 24% of its frozen-simulator value.
+- *Fragility:* dropping intents that reuse a quote already hit (18% of LEV's trades) leaves +$40/day ([−$12, +$92]). A LEV trained on optimistic fills has no established advantage over the threshold under strict fills (−$7.8/day, [−$148, +$132]).
+- *Attribution (exploratory):* with the frozen simulator, LEV beats a GBM classifier by +$98/day ([+$48, +$148]) and the same model without the latency input by +$477/day ([+$247, +$708]). With strict fills and markouts, these become −$0.3 and +$40/day (neither significant). Survival EV trails the threshold (−$77/day).
 
-**Feasibility and risks.** [TEAM: skills — systems/latency, ML, quant.] The MVP already runs end to end; the remaining work is rigor and engineering.
+**Feasibility and risks.** [TEAM: skills — systems/latency, ML, quant.] The MVP and both stretch simulators run.
 
-*Milestones:* abstract and multi-day dataset by 31 Oct; walk-forward, residual survival and compiled LEV 1–17 Nov; exams 19–25 Nov (no planned work); midway report by 1 Dec; paper trading, cloud vantage and demo 1–14 Dec.
+*Milestones:* abstract by 31 Oct; lead–lag and deeper-book fills 1–17 Nov; exams 19–25 Nov; midway report by 1 Dec; paper trading and demo 1–14 Dec.
 
-*Risks and mitigations:*
-- Cross-venue clocks are not common: receive-time replay and offset perturbation.
-- Some venues publish ~100 ms snapshots: interval censoring, excluded from millisecond claims.
-- Fees can erase every edge (Coinbase Exchange's lowest-volume taker fee is 60 bps): we report fee-level frontiers, not one profit number.
-- Our spike may not beat a well-tuned threshold: the frozen evaluator will tell us, and we will say so.
+*Risks:*
+- Venue clocks differ; we re-test conclusions under receive-time replay.
+- Publication grids hide sub-cadence dynamics; for the finals we will capture tick-by-tick feeds near the exchanges.
+- Fees can erase every edge (Coinbase Exchange's lowest-volume taker fee is 60 bps).
+- Public replay cannot pin down LEV's value; its gain ranges from within noise to +$299/day depending on execution assumptions. We will measure it with live paper fills.

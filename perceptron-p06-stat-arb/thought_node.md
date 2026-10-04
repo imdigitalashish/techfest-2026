@@ -12,7 +12,7 @@
 - 2026-10-04 08:22 (Supervisor, by message): "Package accepted. Lean limits from 08:30: ≤2 concurrent sub-agents/child sessions; no downloads over 1 GB without a stated reason; heavy jobs one at a time under `nice -n 10`. Next: run ADR 001's falsification tests (clock skew; whether LEV beats the tuned threshold beyond noise on more held-out days). If it still doesn't separate, say so in the memo." → acting (see Now/Log).
 
 ## Now
-- **Phase:** ▶ RESUMED 2026-10-04 14:13 IST (Supervisor 14:11: P5 freed a batch slot). Goal: an honest final case for or against P6. The pick is open among P7/P9/P1/P10/P3; P4 and P5 recommend against themselves.
+- **Phase:** ▶ RESUMED 14:13. Definition-of-done items 1–3 and 5 complete at 15:39 IST. Item 4 (cross-model reviews) is in its final round: `gpt-6-astra` TASK 2 (final abstract) and the `gpt-6-sol` review file.
 - **Definition of done (Supervisor 14:11):**
   1. Walk-forward: May (5 test days), then ≥ 12 held-out days, with the final test pre-registered (committed before the run). Report LEV − tuned threshold with its CI, and say so if it is within noise.
   2. Decay: survival curves per pair with CIs, plus a simulated end-to-end latency budget. Measure the compiled (Numba) decision step at p50/p99 against the ≤ 10 µs target.
@@ -27,7 +27,7 @@
   - (e) Render the abstract and run the drift check.
   - (f) Reviews (≤ 2 child sessions).
   - (g) Memo, then DONE.
-- **Doing (14:31):** the guarded chain (`shellId chain`) is waiting for memory ≥ 30. Order: regenerate the 5-day exploratory run → **pre-registered 12-day walk-forward** → decision timing → decay report → latency budget. Child sessions (2/2): [P6 review · hostile judge](ghapp://sessions/6eed2e99-3ec9-4dca-82f3-e4f5a67e9995) (`gpt-6-astra` max) reviews the spike, ADR and pre-registration now, and the final abstract later; [P6 review · code & repro](ghapp://sessions/0c269353-f371-42e6-8d58-817560ebc903) (`gpt-6-sol` max) does a static review now and reproduces numbers after my 'chain done' message.
+- **Doing (15:39):** waiting on the reviewer child sessions ([hostile judge](ghapp://sessions/6eed2e99-3ec9-4dca-82f3-e4f5a67e9995), [code & repro](ghapp://sessions/0c269353-f371-42e6-8d58-817560ebc903)); then dispositions + `reviews/ledger.tsv` → DONE to the Supervisor. Azure VM `rg-p06-statarb` deleted (`az group exists` → false).
 - **Machine rules:** heavy jobs `nice -n 10`, one at a time, only when `kern.memorystatus_level` ≥ 30. CPU only until ~14:30 (Namma holds the GPU). Poll long jobs at ≥ 10-minute intervals. No `git stash`/`--autostash`.
 - **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills for the abstract's [TEAM] lines.
 - **Risks:** (a) LEV's uplift over the tuned threshold may stay within noise even at 12 days. (b) Survival-EV fails receive-time replay, so it stays the report and a feature, not the rule. (c) Tardis binance-spot quotes are ~100 ms granular. (d) Fees are only partly verified, so headline results use uniform fee levels. (e) 5 of the 12 final test days were already seen in exploratory runs; the pre-registration reports the 7 unseen days separately.
@@ -73,6 +73,10 @@
 - 2026-10-04 — Simulator semantics: decide on receive-time state, fill each leg on exchange-time truth at `t_decide + L_order[venue]`; IOC legs, top-of-book size, same-venue unwind of mismatches; inventory pre-positioned (labelled assumption).
 - 2026-10-04 — Headline P&L uses uniform taker-fee levels (0/1/2/5 bps per leg), not unverified venue tiers; official tiers are cited only where `research/notes/fees.md` verified them.
 
+- 2026-10-04 — **Final evaluation stance:** the pre-registered walk-forward is primary (+$299/day, [+$130, +$468]). Amendment 1's stricter simulators are reported beside it: +$70/day under strict fills and a 1 s markout; +$40/day after dropping shared-liquidity collisions. The frozen metric is renamed *basis-adjusted simulated execution surplus*. See the ADR 001 status.
+- 2026-10-04 — Amendment 1 run 1 went to my own short-lived Azure D16s_v5 (Japan East), because the shared Mac sat at load average 73. Data md5 was verified and the VM deleted. The corrected run 2 ran on the Mac; the registered quantities are bit-identical across the two machines.
+- 2026-10-04 — **Selection recommendation: keep P7, with P6 as the Theme 3 fallback** (see memo).
+
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
@@ -82,21 +86,46 @@
 | C4 | `fair_value` | state → fair basis, lead–lag | EWMA basis (60 s) | next upgrade | EWMA inlined; Kalman/HY pending | OOS RMSE of 100 ms mid-diff |
 | C5 | `costs` | venue, tier → bps | uniform fee levels + official tables | no | built; fees partly verified | unit tests vs fee tables |
 | C6 | `detector` | state + basis → OpportunityFrame | threshold over fair basis | no | built; 345,890 episodes on held-out day | AUC-PR at latency L |
-| C7 | `decay` | episodes → S(t\|x), half-lives | Kaplan–Meier | core of spike | KM, KM-by-pair (IBS 0.109), Weibull AFT | IBS, C-index |
-| C8 | `decision` | opportunity + S + L → order intents | naive · tuned threshold | **SPIKE** | naive, threshold(+pair), EV, EV+wait, LEV; ratchet v1 | simulated P&L at (L, fee) |
-| C9 | `sim` | intents + exchange-time truth → fills, P&L | zero-latency backtest | no | built; contract tests pass | determinism, fill-rule tests |
+| C7 | `decay` | episodes → S(t\|x), half-lives | Kaplan–Meier | MVP report + baseline | KM by pair with hour-block CIs and publication-time bounds; survival EV trails the threshold | IBS, C-index, median CI |
+| C8 | `decision` | opportunity + S + L → order intents | naive · tuned threshold | **SPIKE** | LEV: pre-registered, passed; fragile under strict simulators; Numba-compiled (exact) | simulated execution surplus at (L, fee) |
+| C9 | `sim` | intents + exchange-time truth → fills, P&L | zero-latency backtest | no | frozen (optimistic) + strict (next quote, markout, collisions, end-of-data censoring) | determinism, fill-rule tests |
 | C10 | `paper` | live feed → same path → dashboard | — | stretch | recorder live; loop pending | live-vs-sim divergence |
 | C11 | `eval` | everything → reports, frontier | — | — | `eval.run_baseline`, `eval.plots`, `eval.live_latency` | latency–P&L frontier |
 
 ## Selection memo
-_First version 2026-10-04 07:20 IST; final by 12 Oct. Scores 1–5 with evidence._
-- **Winnability — 3/5.** Real multi-venue tick data, a held-out day, honest frontier plots and an end-to-end build already exist, which most abstracts won't have. But Theme 3 is crowded (P4/P5/P6) and Optiver judges are domain experts, so the bar is high.
-- **Innovation headroom — 3/5.** The spike ranks by value at arrival, not visible gap. It is clearly better *at ranking* under latency: at 50 ms and 1 bp/leg, the top decile by LEV earned +0.89 bp/trade vs +0.04 bp by raw edge. **Falsification update (10:00 IST):** in the walk-forward (train on the previous month's first day, test on 2026-07/08/09/10-01), LEV beat the tuned per-pair threshold on **4/4 days**, mean +$248/day (+22%). That is **not yet significant**: t-CI [−$187, +$682], sign-test p = 0.062, the smallest p possible with 4 days. The survival-EV rule does **not** separate from the threshold (2/4 days, −$39/day). Under ±5 ms clock skew and receive-time replay the uplift keeps its sign. The full feature set beats an edge-only LEV on 4/4 days (+$209/day), so the latency/staleness features carry information. Bottom line: consistent direction, not proven.
-- **Feasibility by the deadline — 5/5.** MVP done tonight on an M5 (9-venue day in ~5 min). Remaining work is rigor and engineering, and fits around the 19–25 Nov exams.
-- **Demo strength — 4/5.** Live 12-venue feed, live decay curves, latency–P&L frontier, paper trading on the same code path.
-- **Fit with the user's strengths — 4/5.** Latency/systems engineering plus ML evaluation, and Azure regions for vantage-point experiments. Less "frontier-model" heavy than other Perceptron problems.
-- **Biggest risk:** the spike may never beat a well-tuned threshold beyond noise; clock-skew artefacts at millisecond scale could also undermine decay claims. Both are testable (ADR 001's falsification tests).
-- **One-line pitch:** "Every mispricing has a price tag in milliseconds — we rank cross-venue crypto mispricings by what they'll be worth when our order lands, not what they show now."
+_Final version, 2026-10-04 15:39 IST. Scores are 1–5, each with evidence. Every number is checked by `eval/check_docs.py` against `eval/results/headline.json` or `deliverables/static_numbers.tsv`._
+
+**Recommendation: keep P7 as the team's Perceptron pick, and hold P6 as the Theme 3 fallback.** P6 is the most rigorously evaluated build in Theme 3; P4 and P5 recommend against themselves. But its spike's measured edge does not survive realistic execution with confidence, and P7's evidence is stronger.
+
+- **Winnability — 3.** For:
+  - pre-registered evidence on real exchange ticks;
+  - independent reproduction twice: all comparison fields by the `gpt-6-sol` reviewer, and the registered decision quantities bit-identical on Azure x86 and the Mac;
+  - published negative results and stated observability limits.
+
+  Against: the hostile-judge plan score was 53/100 before the final results, and the headline weakens under scrutiny (below).
+- **Innovation headroom — 2.**
+  - With the frozen simulator, LEV beat a tuned per-pair threshold in 12/12 months: +$299/day, t-CI [+$130, +$468]. In the 7 never-inspected months it was 7/7.
+  - Under the registered stricter simulator (next-quote fills plus a 1 s markout), it is +$70/day, t-CI [+$0.2, +$140] — 24% of the frozen gain.
+  - Dropping intents that reuse displayed liquidity leaves +$40/day, t-CI [−$12, +$92], within noise.
+  - A LEV trained on optimistic fills has no established advantage over the threshold under strict fills (−$7.8/day).
+  - The latency input mattered under optimistic fills (+$477/day) but much less under strict ones (+$40/day; with the GBM-classifier comparison, neither significant).
+
+  What remains novel is the method: a falsification-first latency-decision benchmark that shows where public quote data stops resolving the answer.
+- **Feasibility by the deadline — 5.** MVP and both stretch simulators run. The full sensitivity suite takes 5 minutes on a 16-core VM. The compiled decision step is 6.1 µs at p50 and 41.5 µs at p99 on the shared laptop, so the ≤ 10 µs target holds at p50 only. Work fits around the 19–25 Nov exams.
+- **Demo strength — 4.**
+  - Live 12-venue recorder.
+  - Decay with confidence intervals and publication-time bounds: median 90.5 ms, bounded to 11.3–147.1 ms.
+  - Latency budget: compute in microseconds against distance in milliseconds; naive trading stops paying at 4.6 ms one-way.
+  - Weak point: "LEV beats the threshold" needs every caveat above.
+- **Fit with the user's strengths — 4.** Latency and systems engineering, rigorous ML evaluation, Azure for vantage-point capture.
+- **P6 vs P7 (current consensus pick).**
+  - *Evidence:* P7's primary claim is decisive and pre-registered (6/6 scenarios on 30/30 fresh seeds, per its memo), and its final abstract scored 71/100 with a hostile judge. P6's primary passes, but only 24% survives strict fills, and it is within noise once shared liquidity is dropped. **P7 wins on evidence.**
+  - *Novelty:* both are narrow. P7's headline (MPC beats rules) is known, but it adds a counter-intuitive pre-registered finding (better forecasts can serve fewer people). P6's LEV is applied integration; its novelty is the benchmark and the observability limits. Roughly even, with P7 more memorable.
+  - *Sponsor fit:* P6 sits on Optiver's home ground with real exchange data, its one clear edge.
+  - *Risk:* P6's core claim can be dismantled with an execution-model question; P7's spike (forecast trust) is still a plan.
+  - **Net: P7 first, P6 second.**
+- **Biggest risk:** public replay cannot pin down LEV's value — from within noise to +$299/day depending on execution assumptions. Settling it needs tick-by-tick capture near the exchanges plus live paper fills before 15–18 Dec.
+- **One-line pitch:** "We measure what a crypto mispricing is worth when our order lands — and exactly where public data stops being able to tell."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -153,3 +182,22 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Data resolution finding** (`eval/results/update_cadence.md`, 2026-10-01): Binance spot and OKX spot/swap quotes are on a 100 ms grid (99.6–100% of gaps), Binance perp every 26.0 ms (minimum 26 ms), Bybit at a 39 ms median and Bitstamp at 328 ms. Coinbase (3.3 ms) and Kraken (12.8 ms) are fine-grained. So decay below a venue's cadence is not resolvable, and absolute P&L at 1–5 ms is optimistic. Policy comparisons remain like-for-like. This confirms the antithesis's resolution point; the caveat is now in the decay report and the abstract.
 - **Docs pipeline:** `eval/headline.py` → `eval/results/headline.json` → `deliverables/render.py` (abstract and architecture rendered from templates) → `eval/check_docs.py` (re-render diff, numeric-token tracing against headline values or `deliverables/static_numbers.tsv`, 600–900 words). Dry-run: 875 words.
 - **Machine rules:** `eval/run_guarded.sh` waits for `kern.memorystatus_level` ≥ 30, sends SIGSTOP below 25, resumes at ≥ 30, and runs under nice 10. Memory sat at 24–28 for most of this window (other projects), so heavy jobs are queued, not running.
+
+### 2026-10-04 14:35–15:39 IST — Pre-registered result, reviews, Amendment 1 (Azure + Mac), final deliverables (lead)
+- **Pre-registered 12-day walk-forward** (results commit 340d4df; run at 9cadff6, frozen files byte-identical to registration code 604f54d): LEV − tuned threshold +$299/day, 12/12, t-CI [+$130, +$468], bootstrap [+$165, +$451]. **Supported.** Unseen-7: 7/7, +$343/day, [+$70, +$616]. Survival EV trails the threshold (−$77/day).
+- **Determinism and reproduction:**
+  - The 6 rebuilt cache days are byte-identical, and the regenerated 5-day run matches.
+  - `gpt-6-sol` reproduced all 91 fields and rebuilt Feb from raw data.
+  - Amendment 1 on Azure x86 vs the Mac arm64: all registered quantities identical; only the GBM classifier's fit varies on one V3 day (`eval/results/sensitivity_amendment1.provenance.md`).
+- **Reviews:**
+  - `gpt-6-astra` TASK 1 gave 53/100 and 13 findings, all accepted (some partly); see `reviews/2026-10-04-dispositions.md`.
+  - `gpt-6-sol` TASK A gave 7 items, all accepted. It then found post-end quote reuse in `strict.py`, fixed by the registered erratum (0 rows affected), and asked for softer V4 wording (accepted). It withdrew its collision-rule point after re-reading the registration.
+- **Amendment 1** (registered 14:46 before implementation; erratum 15:19 before the corrected run):
+  - V1 strict fills: +$73/day, [+$10, +$135].
+  - V2 strict fills + 1 s markout: +$70/day, [+$0.2, +$140]. **The registered rule passes, but at 24% of the frozen gain.**
+  - S3 collision-dropped: +$40/day, [−$12, +$92], within noise.
+  - V4 transfer: −$7.8/day, [−$148, +$132]; no established advantage.
+  - Exploratory: LEV − GBM classifier +$98/day frozen vs −$0.3/day strict+markout. LEV − no-latency-input +$477/day vs +$40/day.
+- **Decay with publication-time bounds** (Supervisor 14:41): median 90.5 ms (hour-block CI 84.0–100.0), bounded to 11.3–147.1 ms. Monthly 5-market medians range 26–68 ms.
+- **Reaction time:** compiled decision step 6.1 µs at p50, 41.5 µs at p99; detector 87 ns per event.
+- **Deliverables:** abstract and architecture page rendered from `headline.json`; `eval/check_docs.py` passes. **Memo final: keep P7, with P6 as the Theme 3 fallback** (Supervisor 15:29 asked for an explicit comparison with P7).
