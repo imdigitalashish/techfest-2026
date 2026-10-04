@@ -21,10 +21,12 @@ def diagnostics(w: np.ndarray, r: np.ndarray) -> dict:
     w, r = np.asarray(w, float), np.asarray(r, float)
     n = len(w)
     wr = w * r
+    sd = w.std(ddof=1)
+    z = (w.mean() - 1.0) / (sd / np.sqrt(n)) if sd > 0 else (0.0 if np.isclose(w.mean(), 1.0) else np.inf)
     return {
         "ess_frac": float(w.sum() ** 2 / (n * (w ** 2).sum())),
         "ess_r": float(wr.sum() ** 2 / (wr ** 2).sum()) if (wr ** 2).sum() > 0 else 0.0,
-        "z_mean_w": float((w.mean() - 1.0) / (w.std(ddof=1) / np.sqrt(n))),
+        "z_mean_w": float(z),
         "max_w": float(w.max()),
         "n": int(n),
     }

@@ -123,3 +123,19 @@ def test_gate_diagnostics_and_rule():
     w_bad = np.where(rng.random(20_000) < 0.001, 900.0, 0.1)  # a few huge weights: low ESS
     ok, why = decide(diagnostics(w_bad, r), rule)
     assert not ok and any("ESS/n" in x for x in why)
+
+
+def test_verdict_paths(sim):
+    from components.decomposer.decompose import shapley
+    from components.report.gate import diagnostics
+    from components.report.verdict import verdict
+    w = sim.world
+    sh = shapley(sim.before, sim.after, ActionDist(probs=w.policy(sim.before.X, "new"), policy="new"),
+                 ActionDist(probs=w.policy(sim.after.X, "old"), policy="old"))
+    good = diagnostics(np.ones(1000), np.ones(1000))
+    good["z_mean_w"] = 0.0
+    rule = {"tau_ess": 0.05, "tau_r": 0.0, "tau_z": 3.0}
+    v = verdict(sh, {"V(after,old)": good, "V(before,new)": good}, rule)
+    assert v.decision == ("worked" if sh.policy.lo > 0 else "hurt" if sh.policy.hi < 0 else "inconclusive")
+    bad = dict(good, ess_frac=0.001)
+    assert verdict(sh, {"V(after,old)": bad}, rule).decision == "cant_tell"

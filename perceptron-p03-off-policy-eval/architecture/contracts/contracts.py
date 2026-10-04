@@ -147,9 +147,12 @@ class ShapleyDecomposition(_M):
 
 # C10 Report ---------------------------------------------------------------------------------
 class Verdict(_M):
-    decision: Literal["worked", "hurt", "inconclusive"]
+    """decision "cant_tell" = the overlap gate abstained: the logs cannot support an off-policy answer."""
+
+    decision: Literal["worked", "hurt", "inconclusive", "cant_tell"]
     headline: str
-    decomposition: Decomposition
+    decomposition: Optional[Decomposition] = None
+    shapley: Optional[ShapleyDecomposition] = None
     sensitivity: Optional[SensitivityCurve] = None
     diagnostics: dict = Field(default_factory=dict)
 
