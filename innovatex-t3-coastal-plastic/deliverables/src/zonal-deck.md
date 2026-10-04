@@ -237,7 +237,7 @@ Use if asked "show us the software". Walk: map → a site → rain + tide → fi
 | Claim we do **not** make | Why |
 |---|---|
 | Tonnes diverted per year | The twin's absolute kilograms rest on assumed load and capture curves |
-| The one-way pocket works | Its effect is a SENSITIVITY until the reversed-flow flume measures retention |
+| The one-way pocket works | Its effect is a SENSITIVITY until the tow tank measures retention |
 | The camera counts all plastic | Night, rain, glare and submerged film; fill from the range sensor is the primary reading |
 | Records stop fraud | Hashes make edits detectable; they cannot make inputs true; flags trigger review |
 | Drain plastic earns EPR certificates | Not found in the rules; upside only |

@@ -19,10 +19,11 @@
   3. **Numbers rendered from committed results:** `eval/render_docs.py` + `eval/check_docs.py` (drift check); licences recorded in `README.md`.
   4. **Cross-model reviews as child sessions:** gpt-6-astra (max) as hostile judge on deck and pitch; gpt-6-sol (max) on code and eval, reproducing the headline numbers. Recorded in `reviews/` + `reviews/ledger.tsv`.
   5. **Final memo (honest T3 vs T1),** thought node current, all pushed → message "DONE — slot free".
-- **Doing:**
-  - Lead: render/check system, deck, Q&A, presenter card, prototype-plan pricing, licences.
-  - Children (≤2 at a time): *T3 digital twin + dispatch* does the twin analyses; *T3 detection + flux* does the YOLO baseline after the GPU grant.
-  - Heavy jobs are serialised with the lock `/tmp/t3-heavy.lock`, run under `nice -n 10`, and start only when `kern.memorystatus_level` ≥ 30.
+- **Doing (16:35):**
+  - *T3 detection + flux*: YOLO11n training on the GPU (epoch 5: val mAP50 0.912), then held-out test eval.
+  - *T3 digital twin + dispatch*: boom-angle sensitivity, queued on the heavy-job lock.
+  - Lead: package v1 built and pushed (deck PDF/PPTX, Q&A, card, prototype plan, `check_docs` 0 problems), licences in README, selection memo v2.
+  - Next: when both children finish, start the two cross-model reviews (gpt-6-astra hostile judge; gpt-6-sol code/eval) as child sessions; prompts are ready in the session files.
 - **Rules now:** child sessions only, no `task` sub-agents. No `git stash` / `--autostash`. Timestamps from `TZ=Asia/Kolkata date`.
 - **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments, leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup's 2026 Interceptors cover the big Malad and Trombay creek mouths. NullahNet is the network layer for the rest:
   - pocket-fill sensing;
