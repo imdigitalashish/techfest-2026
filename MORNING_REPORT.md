@@ -1,57 +1,75 @@
 # Morning report — Techfest 2026 portfolio
 
-**4 Oct 2026 · v1 written 07:45 IST** — refreshed after the 08:15 push cut-off; see the end for changes.
+**4 Oct 2026, 08:20 IST** · repo: [imdigitalashish/techfest-2026](https://github.com/imdigitalashish/techfest-2026) · journal: [thought_node.md](thought_node.md)
 
 ## Bottom line
-- All 20 problem statements have a project lead; most have a cited state-of-the-art review, a component map with typed contracts, a spike decision (ADR) and a Round-1 draft on `main`.
-- 9 projects already have a full morning package with **real, reproducible numbers** (P1, P3, P4, P6, P7, P8, P9, EV C2, India@71 T2) and InnovateX T3 is complete on simulated data; the rest land by 08:15 (status below).
-- Overnight the shared network saturated and model calls failed with HTTP 408 for ~3.5 h; switching every lead to *Lean Mode* at 05:50 fixed it. Five projects lost most of the night (APCTT, P2, EV C1, Namma Space, InnovateX T2).
-- Every number below traces to a committed result file (spot-checked); synthetic or simulated results are labelled. 27 of 28 sampled citations resolve (the 28th is a news-site bot block).
+- **All 20 problem statements delivered a morning package**: cited state-of-the-art review, component map with typed contracts, spike decision (ADR), Round-1 draft, eval harness, and a selection memo. ~220 commits overnight.
+- **Real, reproducible numbers** exist for 16 projects; the rest are labelled synthetic or pending. I traced the headline numbers to committed result files, and 27 of 28 sampled citations resolve.
+- **The system corrected itself honestly.** Three leads downgraded their own claims after stronger tests:
+  - P8: a plain GPT-4.1-mini baseline beat its classifier, 86% vs 46%.
+  - P5: its 18-seed gain vanished on 60 seeds.
+  - P6: its edge is not yet significant.
+  Treat the rest of this report the same way: confident where the evidence is.
+- **Overnight incident:** the shared network saturated and model calls failed with HTTP 408 for ~3.5 h. *Lean Mode* at 05:50 fixed it. Four leads crashed and were restarted at 07:10; all recovered.
 
-## What you need to do (in order)
-1. **By 9 Oct — AI for Technology Readiness:** register (team 1–3, all ≤35 on 17 Dec). The training guide + data arrive **10 Oct** to registered teams only — drop them into the Inbox of [`apctt-trl-assessor/thought_node.md`](apctt-trl-assessor/thought_node.md).
-2. **By 7 Oct — InnovateX:** decide whether to pitch at the **Delhi zonal on 10 Oct** (South Asian University); I'll recommend one theme from the 7 Oct memos. Register by 9 Oct.
-3. **Today, ~20 min — Namma Space capture:** film your home following [`namma-space/deliverables/capture-sop.md`](namma-space/deliverables/capture-sop.md) (4K30, HDR off, AE/AF lock, print the marker at 100%, say room names aloud, AirDrop the originals). Round 1 (31 Oct) needs a working viewer of *your* space.
-4. **Teammates:** names + skills for the team-fit sections (Perceptron ≤3 · APCTT 1–3 · EV 2–5 · Namma ≤4 · India@71 ≤4 · InnovateX ≤4). Several abstracts have `[TEAM]` placeholders.
-5. **By 15 Oct:** register Perceptron (one problem), EV (one track), Namma Space, India@71 (one theme) — I'll give final picks by 12 Oct.
-6. **Azure GPU quota (for Namma Space):** both subscriptions have 0 quota for T4/A10/A100/H100. Request *Standard NCASv3_T4 Family* (8 vCPU) or *NVadsA10v5* (36 vCPU) in Central India or East US.
-7. **Optional accounts:** Kaggle (official Eedi data, P8) · DHS Program (NFHS-5 microdata, India@71 T1) · Open Charge Map API key (EV C1).
-8. **FYI — Azure spend:** P8 created Azure OpenAI `tf26-p08-aoai-1004` (rg `rg-tf26-p08`, Sweden Central, gpt-4.1-mini). Delete the resource group if P8 isn't pursued.
+## What you need to do
+| When | Action |
+|---|---|
+| **By 9 Oct** | **Register for AI for Technology Readiness** (team 1–3, all ≤35 on 17 Dec). The training guide and data come **10 Oct**, to registered teams only. Drop them into the Inbox of [apctt-trl-assessor/thought_node.md](apctt-trl-assessor/thought_node.md). |
+| **By 7 Oct** | **InnovateX:** confirm you'll pitch at the **Delhi zonal (10 Oct, South Asian University)**. I'll pick T1 or T2 on 7 Oct. Register by 9 Oct. |
+| **Today (~20 min)** | **Namma Space capture:** film your home per [capture-sop.md](namma-space/deliverables/capture-sop.md). Use 4K30 with HDR off and AE/AF lock. Print the marker at 100% scale, say room names aloud, and AirDrop the originals. |
+| **This week** | **Teammates:** names and skills. Abstracts have `[TEAM]` placeholders. Limits: Perceptron ≤3 · APCTT 1–3 · EV 2–5 · Namma Space ≤4 · India@71 ≤4 · InnovateX ≤4. |
+| **By 15 Oct** | **Register** Perceptron (one problem), EV (one track), Namma Space and India@71 (one theme), after my picks on **12 Oct**. |
+| When convenient | **Azure GPU quota** for Namma Space: request *NCASv3_T4* (8 vCPU) or *NVadsA10v5* in Central India or East US. Current quota is 0. |
+| Optional | Kaggle login (P8, P10) · DHS Program account (India@71 T1) · Open Charge Map key (EV C1) · a state WCD or district contact for pilot data (India@71 T1) · a Raspberry Pi or old phone (P1 stretch). |
+| FYI | P8 created Azure OpenAI `tf26-p08-aoai-1004` (resource group `rg-tf26-p08`, Sweden Central). It costs money; delete it if P8 isn't pursued. |
 
-## Recommendations by competition (preliminary — final picks by 12 Oct)
-Scores are each lead's own 1–5 self-assessment (winnability · innovation · feasibility · demo · fit); my ranking also weighs evidence quality, crowding and fit with your strengths.
+## Recommendations by competition
+Self-scores are each lead's own average of winnability, innovation, feasibility, demo and fit (1–5). My ranks also weigh evidence quality, how crowded the problem is, and fit with your strengths. **Final picks: 7 Oct (InnovateX) and 12 Oct (the rest).**
 
 ### Perceptron (IITB × Optiver) — one problem per team
-| Rank | Problem | Self-score | Strongest evidence so far | My read |
+| # | Problem | Self | Evidence on main (✱ = synthetic) | Read |
 |---|---|---|---|---|
-| 1 | [P9 Agent guardrail](perceptron-p09-agent-guardrail/thought_node.md) | 4.6 | Tier-0 guard caught 147/147 bad calls, blocked 0/36 good, p95 2.06 ms — **synthetic split, self-authored templates (optimistic)** | Best fit for frontier models + systems; "pre-trade risk checks for AI agents" speaks Optiver's language. Needs real-error replay (τ-bench) to be credible. |
-| 2 | [P7 Multi-agent allocation](perceptron-p07-multi-agent-allocation/thought_node.md) | ~4.3 | Look-ahead MPC beats 3 rule allocators under a demand shock (10-seed held-out); change detector 0.415 vs EWMA 0.438 | Your home turf (autoscaling = dispatch); single-problem theme. Risk: collapses to "MPC beats rules". |
-| 3 | [P1 Federated LoRA](perceptron-p01-federated-lora/thought_node.md) | 4.2 | Starter FedAvg makes 4 of 5 domains *worse* than untuned (macro 2.735 vs 2.706); AnchorLoRA 2.665 improves every domain (SmolLM2-135M, 1 seed) | Striking, real finding; novelty is integration + measurement. More seeds running. |
-| 4 | [P4 Order-book regimes](perceptron-p04-lob-regimes/thought_node.md) | 4.2 | Real Binance BTCUSDT: textbook KS→retrain fires 48×/day and *hurts* (+0.020 log-loss); regime heads help (−0.013) | Rigorous and Optiver-native, but small effects and expert judges. |
-| 5 | [P8 Misconception tutor](perceptron-p08-misconception-tutor/thought_node.md) | 4.2 | Real Eedi: 5-way diagnosis 46% vs 38% TF-IDF vs 30% majority, 0% wrong attribution; simulated learners 5.5% vs 58.4% errors left | Best demo; weaker fit with your strengths; needs a real ~30-learner pilot. |
-| 6 | [P3 Off-policy evaluation](perceptron-p03-off-policy-eval/thought_node.md) | 4.0 | Simulator + 5 estimators + confounding bounds built; 30-seed bank pending | Rigorous; statistics-heavy fit. |
-| 7 | [P6 Cross-asset stat arb](perceptron-p06-stat-arb/thought_node.md) | 3.8 | Real 9-venue ticks: 345,890 mispricings, median life 90.5 ms; naive −$1,570/day vs tuned +$768 vs ours +$802 (not significant) | Honest and well built, but the edge isn't significant yet. |
-| — | [P2 KV-cache](perceptron-p02-kv-cache/thought_node.md) · [P5 Execution](perceptron-p05-impact-execution/thought_node.md) · [P10 Text signal](perceptron-p10-trusted-text-signal/thought_node.md) | pending | Memos due 08:15 | P10 and P9 share Theme 6 (one per team). |
+| 1 | [P7 Multi-agent allocation](perceptron-p07-multi-agent-allocation/thought_node.md) | 4.3 | Look-ahead MPC beats the best rule allocator on **10/10 held-out seeds**: +3.9 pp served under a shock [CI +3.3, +4.6], +5.4 pp under shock + drift [+5.2, +5.7] (simulator) | Strongest evidence; autoscaling/dispatch is your home turf. Risk: shrinks to "MPC beats rules" unless the change-detector spike adds measurable value. |
+| 2 | [P9 Agent guardrail](perceptron-p09-agent-guardrail/thought_node.md) | 4.6 | Catches 147/147 bad tool calls, blocks 0/36 good ones, p95 2.06 ms ✱ (self-authored test set, optimistic) | Best fit for frontier models. "Pre-trade risk checks for AI agents" speaks Optiver's language. **Becomes #1 if it holds on real agent errors (τ-bench replay) by 10 Oct.** |
+| 3 | [P1 Federated LoRA](perceptron-p01-federated-lora/thought_node.md) | 4.2 | Starter FedAvg leaves 4 of 5 domains *worse* than untuned (2.735 vs 2.706 macro loss); AnchorLoRA 2.665 improves every domain (SmolLM2-135M, 1 seed) | Striking and real; needs more seeds (running). |
+| 4 | [P10 Trusted text signal](perceptron-p10-trusted-text-signal/thought_node.md) | 4.2 | Real StockNet: the starter's conformal bands cover 81.3% of a 90% target. Certified CR-ACI holds 89.5% clean and 89.7% under a fake-post attack, for +0.3% width | Rigorous; text adds almost no accuracy, so it sells trust, not alpha. Same theme as P9. |
+| 5 | [P4 Order-book regimes](perceptron-p04-lob-regimes/thought_node.md) | 4.2 | Real Binance: textbook drift-retrain fires 48×/day and *hurts* (+0.020 log-loss); regime heads help (−0.013) | Optiver-native and honest; small effects; expert judges. |
+| 6 | [P3 Off-policy evaluation](perceptron-p03-off-policy-eval/thought_node.md) | 4.0 | ✱ Naive before/after gets the wrong sign in 30/30 seeds; the doubly-robust estimator recovers the truth (93% coverage). Real OBD sample: inconclusive at 10k rows | Rigorous; statistics-heavy fit. |
+| 7 | [P2 KV-cache](perceptron-p02-kv-cache/thought_node.md) | 4.2 | No measured numbers yet (memory swap starved the harness overnight) | Promising spike ("Recall-on-Demand") and fit 5; unproven. |
+| 8 | [P5 Impact-aware execution](perceptron-p05-impact-execution/thought_node.md) | 4.0 | 60 held-out seeds: −0.06 bps vs TWAP [−0.44, +0.34], **not significant**. Its "synchronised twins" spike cuts counterfactual noise ~6× | Honest negative; the noise-reduction trick is reusable. |
+| 9 | [P6 Cross-asset stat arb](perceptron-p06-stat-arb/thought_node.md) | 3.8 | Real 9-venue ticks: 345,890 mispricings, median life 90.5 ms; ours +$802/day vs tuned threshold +$768 — **not significant** | Well built; no edge yet. |
+| 10 | [P8 Misconception tutor](perceptron-p08-misconception-tutor/thought_node.md) | 3.8 | Real Eedi: zero-shot GPT-4.1-mini scores **86%** vs our classifier's 46% | Great demo, but the obvious baseline wins the MVP. |
 
-### AI for Technology Readiness (APCTT, UN ESCAP) — single problem
-[apctt-trl-assessor](apctt-trl-assessor/thought_node.md): the lead lost the night to 408s and restarted at 07:10; landscape on main, rest by 08:15. The decisive inputs (data, criteria) arrive 10 Oct. **Register regardless** — it's the largest prize and open to you.
+### AI for Technology Readiness (APCTT, UN ESCAP) — one problem
+[apctt-trl-assessor](apctt-trl-assessor/thought_node.md) · self 4.2. It lost the night to 408s, restarted at 07:10, and caught up with a full package, an ~8.6k-record public labelled set, and an offline, evidence-first ordinal design. The biggest unknown is the hidden data's genre and metric, which arrive 10 Oct. **Register regardless**: it's the largest prize, the only one open to non-students, and has 3 submissions.
 
 ### EV Infra & Green Mobility (MHI × ICAT) — one track per team
-- **Leaning [C2 Green Auto India (LCA)](ev-c2-green-auto-lca/thought_node.md)** (self-score 4.0): replicates the main open Indian 2-wheeler benchmark (ICCT 2021) within 0.06 % and exposes an inconsistency in it; the grid-factor method alone moves the e-scooter saving from 14 % to 55 %. No open India-specific automotive LCA database exists.
-- [C1 EV Infra Map India](ev-c1-infra-map-india/thought_node.md): memo pending (lost time overnight).
+1. **[C2 Green Auto India — LCA](ev-c2-green-auto-lca/thought_node.md)** · self 4.0 · lean. Real run: petrol scooter 62.9 vs e-scooter 39.7 gCO₂e/km (**−36.9%**, CI 29–44%). Grid method alone swings the saving from 14% to 55%. It replicates the ICCT 2021 Indian 2W study within 0.06% and found ICCT's printed inputs don't reproduce its own table. Closest to ICAT's core work.
+2. **[C1 EV Infra Map India](ev-c1-infra-map-india/thought_node.md)** · self 4.2 · close second. Live VAHAN pipeline (36/36 states, RTO level). Finding: open data covers only ~2% of official charging stations, so its spike is a "completeness-aware charger census". Risk: supply-side data access.
 
-### Namma Space (Juspay) — single problem
-[namma-space](namma-space/thought_node.md): capture SOP done; first Gaussian splat trained on the M5 (Brush/Metal, public *drjohnson* scene, 36.9 min); navigation geometry in progress. Biggest dependency: **your capture** + GPU quota.
+### Namma Space (Juspay) — one problem
+[namma-space](namma-space/thought_node.md) · self 4.0. The whole pipeline ran end-to-end overnight on a public multi-room scene (photos → 3D Gaussian splat → floor alignment → walkable grid → A* path) on the M5, with no CUDA needed for Round 1. The path-safety metric is being re-run. **Blocked on your capture** for Round 1 (31 Oct).
 
 ### India @71/100 — one theme per team
-- **Leaning [T2 Foundational learning](india71-t2-learning/thought_node.md)** (self-score 4.2): "Ek Tasveer" — a ≤3-SMS Monday plan per teacher + interval-backed block estimates, on a synthetic district calibrated to ASER 2024 (23.4 % Std III reading). Richest public evidence base; proposal draft exists.
-- [T1 Nutrition](india71-t1-nutrition/thought_node.md) and [T3 Financial inclusion](india71-t3-finance/thought_node.md): memos pending (both restarted 07:10).
+1. **[T1 Nutrition — "Poshan Setu"](india71-t1-nutrition/thought_node.md)** · 4.2 · lean. The sharpest verified "scorecard vs reality" gap: Poshan Tracker reports **5.46%** wasting vs NFHS-5's **19.3%** (Rajya Sabha USQ 477; PIB 1988614). It has 10 tested components. Model metrics are synthetic (no public microdata); a state or district data contact would lift it.
+2. **[T3 Financial inclusion — "Sakriya"](india71-t3-finance/thought_node.md)** · 4.2. Inoperative Jan Dhan accounts rose from **14.1% to 26.4%** (Lok Sabha, 8 Dec 2025) while the FI-Index rose. On synthetic data, uplift-based targeting captures 34–38% of achievable gain vs the status quo's 4%.
+3. **[T2 Learning — "Ek Tasveer"](india71-t2-learning/thought_node.md)** · 4.2. Richest evidence base and a complete proposal; the demo runs on a synthetic district calibrated to ASER 2024.
 
-### InnovateX — one theme per team, Delhi zonal 10 Oct
-- [T3 Coastal plastic](innovatex-t3-coastal-plastic/thought_node.md) (self-score 3.4) is complete: Mumbai reality check, digital twin on real ERA5 rain + tides, pitch + prototype plan (flume ₹33,958; field node ₹82,282). Honest caveat: smart dispatch is a small lever (median −2.1 % escaped plastic, simulated), and Delhi judges may relate more to AQI.
-- [T1 Groundwater](innovatex-t1-groundwater/thought_node.md) (real Delhi data: 336 stations, 483k observations) and [T2 AQI](innovatex-t2-aqi/thought_node.md): memos pending. Final pick from the 7 Oct memos.
+### InnovateX — one theme, Delhi zonal 10 Oct
+- **[T1 Groundwater — "JalSakshi"](innovatex-t1-groundwater/thought_node.md)** (4.0) and **[T2 AQI — "DustLedger"](innovatex-t2-aqi/thought_node.md)** (4.0) are tied.
+  - T1 audits rainwater-harvesting pits per storm and uses real Delhi data (336 stations, 483k observations).
+  - T2 runs a fence-line dust ring that attributes a construction site's own dust. It's Delhi's most relatable and most crowded theme.
+  - Both have demo 5. I decide on 7 Oct after a hostile-judge review.
+- [T3 Coastal plastic](innovatex-t3-coastal-plastic/thought_node.md) (3.4) is the most finished, but its own lead recommends it only if T1 and T2 falter: weak fit for a Delhi panel, and the dispatch gain is small.
 
-## What changes now
-- **Lean Mode lifts at 08:30 with limits:** ≤3 concurrent sub-agents per lead, no downloads over 1 GB without a reason, and heavy compute staggered. The Mac hit load ~100 and ~42 GB swap overnight.
-- Leads continue autonomously toward their Round-1 deadlines; I keep sweeping and will bring the 7 Oct (InnovateX) and 12 Oct (all other) selections to you.
-- Steer any project by writing in the Inbox of its `thought_node.md` (GitHub web editor is fine).
+## What happens next
+- **08:30 — Lean Mode lifts with limits:** ≤3 concurrent sub-agents per lead, no downloads over 1 GB without a reason, and heavy compute staggered. The Mac hit load ~100 and ~42 GB swap overnight.
+- Leads continue toward their Round-1 deadlines. Next jobs:
+  - P9 replays real agent errors.
+  - P1 adds seeds.
+  - P2 runs its benchmark grid.
+  - Namma Space processes your capture.
+  - APCTT adapts on 10 Oct.
+- I keep sweeping every 15 min and bring the 7 Oct and 12 Oct picks to you.
+- **To steer a project,** write in the Inbox of its `thought_node.md` (the GitHub web editor is fine).
