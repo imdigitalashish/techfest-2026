@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** ✅ Definition of done met (2026-10-04 13:20 IST). Waiting for the 12 Oct selection.
+- **Phase:** Demo phase (Supervisor 21:24 IST, PLAYBOOK §11). One child session, *P4 demo builder*, is writing `demo/PROPOSAL.md`; the lead approves it before the build. After the build: a gpt-6-astra demo review, then a clean-checkout verification, then DEMO DONE.
 - **State:**
   - Pre-registered v2 evaluation done and independently reproduced; reviews triaged (23 accepted, 3 of them in part, 0 rejected).
   - Abstract v2.1 is final (830 words; `[TEAM]` placeholders).
@@ -207,4 +207,18 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - `eval/results/v2_holdout_posthoc_ablation.md`: regime heads vs one EWMA head −0.0083 [−0.0118, −0.0059], 22/22 days, so the gain is the regime heads, not the normaliser.
   - `eval/results/feed_delay.md`: median 2.9 ms over 46 days.
 - **Ledger:** `reviews/ledger.tsv` has 2 lines. Memo re-scored to 3.4/5.
+
+### 2026-10-04 21:24–21:50 IST — Demo phase started
+- Supervisor directive: a winning demo per PLAYBOOK §11. It must open on real data, with simulation second and labelled. Rules: at most 2 child sessions, CPU only, `nice`, memory guard ≥30%, no git stash.
+- **Tardis.dev ToS checked** (https://docs.tardis.dev/legal/terms-of-service, accessed 2026-10-04):
+  - Clause 9.2 forbids redistributing the Data, except aggregated Derived Data such as OHLC candles at ≥10-minute resolution that cannot be used to reconstruct the raw data.
+  - "Derived Data does not include Data that has merely been reformatted, filtered, sampled…".
+  - Permitted use: internal research and educational use.
+  - Consequence: commit only aggregates; per-second series are built locally after a documented fetch; prices are shown as 10-minute candles. No raw data was ever committed (checked with `git ls-files`).
+- **Fixed my own figure** `deliverables/figures/day_2024-05-01.png`: it showed a ~1-s price line. It now uses 10-minute OHLC candles, and volatility, head and loss are 10-minute bin means.
+- **Spawned the demo builder** (autopilot) with the ToS rules, committed facts, a concept ("the alarm that cries wolf" knob plus a real replay) and an instruction to stop after `demo/PROPOSAL.md`.
+- **New post-hoc evidence** (exploratory): `eval/results/v2_holdout_posthoc_heads.md`, `eval/results/head_usage.md`.
+  - Each regime head alone loses to the gate: high-vol head +0.0141 (better on 1/22 days), mid-vol +0.0138, low-vol +0.0526.
+  - Held-out head usage: low/mid/high 20.7% / 33.2% / 46.0%, with large day-to-day swings.
+  - So the gain comes from switching between heads, not from one better model. This answers a likely judge question.
 
