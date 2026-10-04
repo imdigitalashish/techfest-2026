@@ -1,0 +1,37 @@
+{
+ "label": "EXPLORATORY post hoc (PREREG amendment 5): T2 contexts, max_new=32",
+ "summary": {
+  "full@1.0": {
+   "n": 48,
+   "lenient": 0.6666666666666666,
+   "strict": 0.6666666666666666
+  },
+  "rod@0.1": {
+   "n": 48,
+   "lenient": 0.75,
+   "strict": 0.75
+  },
+  "rod@0.25": {
+   "n": 48,
+   "lenient": 0.6041666666666666,
+   "strict": 0.6041666666666666
+  },
+  "snapkv_qa@0.25": {
+   "n": 48,
+   "lenient": 0.7291666666666666,
+   "strict": 0.7291666666666666
+  },
+  "streaming@0.1": {
+   "n": 48,
+   "lenient": 0.020833333333333332,
+   "strict": 0.020833333333333332
+  },
+  "streaming@0.25": {
+   "n": 48,
+   "lenient": 0.20833333333333334,
+   "strict": 0.20833333333333334
+  }
+ },
+ "wall_s": 618.3,
+ "command": "HF_HUB_OFFLINE=1 ~/venv_kvp/bin/python components/recall_on_demand/posthoc_maxnew.py"
+}

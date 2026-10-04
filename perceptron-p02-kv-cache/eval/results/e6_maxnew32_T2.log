@@ -1,0 +1,49 @@
+context 1/12 T=4044 elapsed 51s
+context 2/12 T=4224 elapsed 100s
+context 3/12 T=4126 elapsed 159s
+context 4/12 T=4195 elapsed 221s
+context 5/12 T=4036 elapsed 267s
+context 6/12 T=4288 elapsed 316s
+context 7/12 T=4148 elapsed 364s
+context 8/12 T=4090 elapsed 419s
+context 9/12 T=4080 elapsed 464s
+context 10/12 T=4090 elapsed 514s
+context 11/12 T=4100 elapsed 565s
+context 12/12 T=4289 elapsed 618s
+{
+ "label": "EXPLORATORY post hoc (PREREG amendment 5): T2 contexts, max_new=32",
+ "summary": {
+  "full@1.0": {
+   "n": 48,
+   "lenient": 0.6666666666666666,
+   "strict": 0.6666666666666666
+  },
+  "rod@0.1": {
+   "n": 48,
+   "lenient": 0.75,
+   "strict": 0.75
+  },
+  "rod@0.25": {
+   "n": 48,
+   "lenient": 0.6041666666666666,
+   "strict": 0.6041666666666666
+  },
+  "snapkv_qa@0.25": {
+   "n": 48,
+   "lenient": 0.7291666666666666,
+   "strict": 0.7291666666666666
+  },
+  "streaming@0.1": {
+   "n": 48,
+   "lenient": 0.020833333333333332,
+   "strict": 0.020833333333333332
+  },
+  "streaming@0.25": {
+   "n": 48,
+   "lenient": 0.20833333333333334,
+   "strict": 0.20833333333333334
+  }
+ },
+ "wall_s": 618.3,
+ "command": "HF_HUB_OFFLINE=1 ~/venv_kvp/bin/python components/recall_on_demand/posthoc_maxnew.py"
+}

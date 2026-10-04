@@ -1,0 +1,288 @@
+{"sample": 0, "q": 0, "method": "full", "frac": 1.0, "answer": "2058756", "lenient": true, "strict": true}
+{"sample": 0, "q": 1, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to lunar-harbor is 7368886.", "lenient": false, "strict": false}
+{"sample": 0, "q": 2, "method": "full", "frac": 1.0, "answer": "9312", "lenient": false, "strict": false}
+{"sample": 0, "q": 3, "method": "full", "frac": 1.0, "answer": "9184876", "lenient": true, "strict": true}
+{"sample": 0, "q": 0, "method": "streaming", "frac": 0.1, "answer": "The seven-digit code is 1234567.", "lenient": false, "strict": false}
+{"sample": 0, "q": 1, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 0, "q": 2, "method": "streaming", "frac": 0.1, "answer": "01111111", "lenient": false, "strict": false}
+{"sample": 0, "q": 3, "method": "streaming", "frac": 0.1, "answer": "The seven-digit code is 001.", "lenient": false, "strict": false}
+{"sample": 0, "q": 0, "method": "streaming", "frac": 0.25, "answer": "Here is the seven-digit code:\n\n001", "lenient": false, "strict": false}
+{"sample": 0, "q": 1, "method": "streaming", "frac": 0.25, "answer": "The seven-digit code is 9184876.", "lenient": false, "strict": false}
+{"sample": 0, "q": 2, "method": "streaming", "frac": 0.25, "answer": "The seven-digit code is 622-1234.", "lenient": false, "strict": false}
+{"sample": 0, "q": 3, "method": "streaming", "frac": 0.25, "answer": "9184876", "lenient": true, "strict": true}
+{"sample": 0, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "2058756", "lenient": true, "strict": true}
+{"sample": 0, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to lunar-harbor is 7368886.", "lenient": false, "strict": false}
+{"sample": 0, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to urban-kettle is 7368886.", "lenient": true, "strict": true}
+{"sample": 0, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "9184876", "lenient": true, "strict": true}
+{"sample": 0, "q": 0, "method": "rod", "frac": 0.1, "answer": "I can't assist with this request.", "lenient": false, "strict": false}
+{"sample": 0, "q": 1, "method": "rod", "frac": 0.1, "answer": "The seven-digit code is 9312021.", "lenient": true, "strict": true}
+{"sample": 0, "q": 2, "method": "rod", "frac": 0.1, "answer": "736888", "lenient": false, "strict": false}
+{"sample": 0, "q": 3, "method": "rod", "frac": 0.1, "answer": "The seven-digit code is 9184876.", "lenient": true, "strict": true}
+{"sample": 0, "q": 0, "method": "rod", "frac": 0.25, "answer": "The seven-digit code is 9312021.", "lenient": false, "strict": false}
+{"sample": 0, "q": 1, "method": "rod", "frac": 0.25, "answer": "The seven-digit code is 9312021.", "lenient": true, "strict": true}
+{"sample": 0, "q": 2, "method": "rod", "frac": 0.25, "answer": "736888", "lenient": false, "strict": false}
+{"sample": 0, "q": 3, "method": "rod", "frac": 0.25, "answer": "9188", "lenient": false, "strict": false}
+{"sample": 1, "q": 0, "method": "full", "frac": 1.0, "answer": "4837993", "lenient": true, "strict": true}
+{"sample": 1, "q": 1, "method": "full", "frac": 1.0, "answer": "1513214", "lenient": true, "strict": true}
+{"sample": 1, "q": 2, "method": "full", "frac": 1.0, "answer": "1513214", "lenient": false, "strict": false}
+{"sample": 1, "q": 3, "method": "full", "frac": 1.0, "answer": "4633934", "lenient": true, "strict": true}
+{"sample": 1, "q": 0, "method": "streaming", "frac": 0.1, "answer": "The code is 123456789.", "lenient": false, "strict": false}
+{"sample": 1, "q": 1, "method": "streaming", "frac": 0.1, "answer": "123456789", "lenient": false, "strict": false}
+{"sample": 1, "q": 2, "method": "streaming", "frac": 0.1, "answer": "123456789", "lenient": false, "strict": false}
+{"sample": 1, "q": 3, "method": "streaming", "frac": 0.1, "answer": "0000000000", "lenient": false, "strict": false}
+{"sample": 1, "q": 0, "method": "streaming", "frac": 0.25, "answer": "The code is 1234567890.", "lenient": false, "strict": false}
+{"sample": 1, "q": 1, "method": "streaming", "frac": 0.25, "answer": "1234567890", "lenient": false, "strict": false}
+{"sample": 1, "q": 2, "method": "streaming", "frac": 0.25, "answer": "The code is 1234567890.", "lenient": false, "strict": false}
+{"sample": 1, "q": 3, "method": "streaming", "frac": 0.25, "answer": "4633934", "lenient": true, "strict": true}
+{"sample": 1, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "4837993", "lenient": true, "strict": true}
+{"sample": 1, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "1513214", "lenient": true, "strict": true}
+{"sample": 1, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "1513214", "lenient": false, "strict": false}
+{"sample": 1, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "4633934", "lenient": true, "strict": true}
+{"sample": 1, "q": 0, "method": "rod", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 1, "q": 1, "method": "rod", "frac": 0.1, "answer": "1513214", "lenient": true, "strict": true}
+{"sample": 1, "q": 2, "method": "rod", "frac": 0.1, "answer": "1154433", "lenient": true, "strict": true}
+{"sample": 1, "q": 3, "method": "rod", "frac": 0.1, "answer": "4633934", "lenient": true, "strict": true}
+{"sample": 1, "q": 0, "method": "rod", "frac": 0.25, "answer": "1154433", "lenient": false, "strict": false}
+{"sample": 1, "q": 1, "method": "rod", "frac": 0.25, "answer": "1513214", "lenient": true, "strict": true}
+{"sample": 1, "q": 2, "method": "rod", "frac": 0.25, "answer": "1513214", "lenient": false, "strict": false}
+{"sample": 1, "q": 3, "method": "rod", "frac": 0.25, "answer": "4633934", "lenient": true, "strict": true}
+{"sample": 2, "q": 0, "method": "full", "frac": 1.0, "answer": "4873297", "lenient": true, "strict": true}
+{"sample": 2, "q": 1, "method": "full", "frac": 1.0, "answer": "8710866", "lenient": true, "strict": true}
+{"sample": 2, "q": 2, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to noble-otter is 8710866.", "lenient": false, "strict": false}
+{"sample": 2, "q": 3, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to crimson-meadow is 5972605.", "lenient": true, "strict": true}
+{"sample": 2, "q": 0, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 2, "q": 1, "method": "streaming", "frac": 0.1, "answer": "The answer is not provided in the text.", "lenient": false, "strict": false}
+{"sample": 2, "q": 2, "method": "streaming", "frac": 0.1, "answer": "The answer is not provided in the text, but I can give you a hint: it's a seven-digit code that was issued to a noble-ot", "lenient": false, "strict": false}
+{"sample": 2, "q": 3, "method": "streaming", "frac": 0.1, "answer": "The answer is not provided in the text, but I can give you a hint: it's a seven-digit code that was issued to a person w", "lenient": false, "strict": false}
+{"sample": 2, "q": 0, "method": "streaming", "frac": 0.25, "answer": "1000", "lenient": false, "strict": false}
+{"sample": 2, "q": 1, "method": "streaming", "frac": 0.25, "answer": "1000", "lenient": false, "strict": false}
+{"sample": 2, "q": 2, "method": "streaming", "frac": 0.25, "answer": "The digits are: 1234567", "lenient": false, "strict": false}
+{"sample": 2, "q": 3, "method": "streaming", "frac": 0.25, "answer": "1234567890", "lenient": false, "strict": false}
+{"sample": 2, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "4873297", "lenient": true, "strict": true}
+{"sample": 2, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to jade-tiger is 8710866.", "lenient": true, "strict": true}
+{"sample": 2, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to noble-otter is 8710866.", "lenient": false, "strict": false}
+{"sample": 2, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to crimson-meadow is 5972605.", "lenient": true, "strict": true}
+{"sample": 2, "q": 0, "method": "rod", "frac": 0.1, "answer": "4873297", "lenient": true, "strict": true}
+{"sample": 2, "q": 1, "method": "rod", "frac": 0.1, "answer": "8710866", "lenient": true, "strict": true}
+{"sample": 2, "q": 2, "method": "rod", "frac": 0.1, "answer": "7982340", "lenient": true, "strict": true}
+{"sample": 2, "q": 3, "method": "rod", "frac": 0.1, "answer": "5972605", "lenient": true, "strict": true}
+{"sample": 2, "q": 0, "method": "rod", "frac": 0.25, "answer": "4873297", "lenient": true, "strict": true}
+{"sample": 2, "q": 1, "method": "rod", "frac": 0.25, "answer": "8710866", "lenient": true, "strict": true}
+{"sample": 2, "q": 2, "method": "rod", "frac": 0.25, "answer": "7982340", "lenient": true, "strict": true}
+{"sample": 2, "q": 3, "method": "rod", "frac": 0.25, "answer": "5972605", "lenient": true, "strict": true}
+{"sample": 3, "q": 0, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to tidal-lotus is: 4185149", "lenient": true, "strict": true}
+{"sample": 3, "q": 1, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to olive-beacon is 9377905.", "lenient": true, "strict": true}
+{"sample": 3, "q": 2, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to silver-nebula is: 1579247", "lenient": true, "strict": true}
+{"sample": 3, "q": 3, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to vivid-canyon is: 7782828", "lenient": true, "strict": true}
+{"sample": 3, "q": 0, "method": "streaming", "frac": 0.1, "answer": "I cannot provide a response that includes the seven-digit code for tidal-lotus. Is there anything else I can help you wi", "lenient": false, "strict": false}
+{"sample": 3, "q": 1, "method": "streaming", "frac": 0.1, "answer": "I cannot provide a response that includes the seven-digit code for \"olive-beacon.\" Is there something else I can help yo", "lenient": false, "strict": false}
+{"sample": 3, "q": 2, "method": "streaming", "frac": 0.1, "answer": "I cannot provide a response that includes the seven-digit code for \"silver-nebula.\" Is there something else I can help y", "lenient": false, "strict": false}
+{"sample": 3, "q": 3, "method": "streaming", "frac": 0.1, "answer": "The digits are: 0000000", "lenient": false, "strict": false}
+{"sample": 3, "q": 0, "method": "streaming", "frac": 0.25, "answer": "1579247", "lenient": false, "strict": false}
+{"sample": 3, "q": 1, "method": "streaming", "frac": 0.25, "answer": "1579247", "lenient": false, "strict": false}
+{"sample": 3, "q": 2, "method": "streaming", "frac": 0.25, "answer": "1579247", "lenient": true, "strict": true}
+{"sample": 3, "q": 3, "method": "streaming", "frac": 0.25, "answer": "1579247", "lenient": false, "strict": false}
+{"sample": 3, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to tidal-lotus is: 4185149", "lenient": true, "strict": true}
+{"sample": 3, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to olive-beacon is: 9377905", "lenient": true, "strict": true}
+{"sample": 3, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to silver-nebula is: 1579247", "lenient": true, "strict": true}
+{"sample": 3, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to vivid-canyon is: 7782828", "lenient": true, "strict": true}
+{"sample": 3, "q": 0, "method": "rod", "frac": 0.1, "answer": "The seven-digit code issued to tidal-lotus is: 4185149", "lenient": true, "strict": true}
+{"sample": 3, "q": 1, "method": "rod", "frac": 0.1, "answer": "The seven-digit code issued to olive-beacon is 9377905.", "lenient": true, "strict": true}
+{"sample": 3, "q": 2, "method": "rod", "frac": 0.1, "answer": "The seven-digit code issued to silver-nebula is 1579247.", "lenient": true, "strict": true}
+{"sample": 3, "q": 3, "method": "rod", "frac": 0.1, "answer": "7782828", "lenient": true, "strict": true}
+{"sample": 3, "q": 0, "method": "rod", "frac": 0.25, "answer": "The seven-digit code issued to tidal-lotus is: 4185149", "lenient": true, "strict": true}
+{"sample": 3, "q": 1, "method": "rod", "frac": 0.25, "answer": "9377905", "lenient": true, "strict": true}
+{"sample": 3, "q": 2, "method": "rod", "frac": 0.25, "answer": "1579247", "lenient": true, "strict": true}
+{"sample": 3, "q": 3, "method": "rod", "frac": 0.25, "answer": "7782828", "lenient": true, "strict": true}
+{"sample": 4, "q": 0, "method": "full", "frac": 1.0, "answer": "8364554", "lenient": true, "strict": true}
+{"sample": 4, "q": 1, "method": "full", "frac": 1.0, "answer": "8364554", "lenient": false, "strict": false}
+{"sample": 4, "q": 2, "method": "full", "frac": 1.0, "answer": "3724554", "lenient": false, "strict": false}
+{"sample": 4, "q": 3, "method": "full", "frac": 1.0, "answer": "1729595", "lenient": true, "strict": true}
+{"sample": 4, "q": 0, "method": "streaming", "frac": 0.1, "answer": "123456789", "lenient": false, "strict": false}
+{"sample": 4, "q": 1, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 4, "q": 2, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 4, "q": 3, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 4, "q": 0, "method": "streaming", "frac": 0.25, "answer": "1729595", "lenient": false, "strict": false}
+{"sample": 4, "q": 1, "method": "streaming", "frac": 0.25, "answer": "The code is 1729595.", "lenient": false, "strict": false}
+{"sample": 4, "q": 2, "method": "streaming", "frac": 0.25, "answer": "1729595", "lenient": false, "strict": false}
+{"sample": 4, "q": 3, "method": "streaming", "frac": 0.25, "answer": "1729595", "lenient": true, "strict": true}
+{"sample": 4, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "8364554", "lenient": true, "strict": true}
+{"sample": 4, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "8364554", "lenient": false, "strict": false}
+{"sample": 4, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to silver-glacier is 3746401.", "lenient": false, "strict": false}
+{"sample": 4, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "1729595", "lenient": true, "strict": true}
+{"sample": 4, "q": 0, "method": "rod", "frac": 0.1, "answer": "8364554", "lenient": true, "strict": true}
+{"sample": 4, "q": 1, "method": "rod", "frac": 0.1, "answer": "3746401", "lenient": true, "strict": true}
+{"sample": 4, "q": 2, "method": "rod", "frac": 0.1, "answer": "9 1 0 3 5 9 6", "lenient": false, "strict": false}
+{"sample": 4, "q": 3, "method": "rod", "frac": 0.1, "answer": "1729595", "lenient": true, "strict": true}
+{"sample": 4, "q": 0, "method": "rod", "frac": 0.25, "answer": "8364554", "lenient": true, "strict": true}
+{"sample": 4, "q": 1, "method": "rod", "frac": 0.25, "answer": "8364554", "lenient": false, "strict": false}
+{"sample": 4, "q": 2, "method": "rod", "frac": 0.25, "answer": "9215693", "lenient": true, "strict": true}
+{"sample": 4, "q": 3, "method": "rod", "frac": 0.25, "answer": "1729595", "lenient": true, "strict": true}
+{"sample": 5, "q": 0, "method": "full", "frac": 1.0, "answer": "9426", "lenient": false, "strict": false}
+{"sample": 5, "q": 1, "method": "full", "frac": 1.0, "answer": "9426", "lenient": false, "strict": false}
+{"sample": 5, "q": 2, "method": "full", "frac": 1.0, "answer": "9426", "lenient": false, "strict": false}
+{"sample": 5, "q": 3, "method": "full", "frac": 1.0, "answer": "6926956", "lenient": true, "strict": true}
+{"sample": 5, "q": 0, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 5, "q": 1, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 5, "q": 2, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 5, "q": 3, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 5, "q": 0, "method": "streaming", "frac": 0.25, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 5, "q": 1, "method": "streaming", "frac": 0.25, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 5, "q": 2, "method": "streaming", "frac": 0.25, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 5, "q": 3, "method": "streaming", "frac": 0.25, "answer": "6926956", "lenient": true, "strict": true}
+{"sample": 5, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "9426", "lenient": false, "strict": false}
+{"sample": 5, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "9426164", "lenient": false, "strict": false}
+{"sample": 5, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "9426164", "lenient": false, "strict": false}
+{"sample": 5, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "6926956", "lenient": true, "strict": true}
+{"sample": 5, "q": 0, "method": "rod", "frac": 0.1, "answer": "9426164", "lenient": true, "strict": true}
+{"sample": 5, "q": 1, "method": "rod", "frac": 0.1, "answer": "4347329", "lenient": true, "strict": true}
+{"sample": 5, "q": 2, "method": "rod", "frac": 0.1, "answer": "9619658", "lenient": true, "strict": true}
+{"sample": 5, "q": 3, "method": "rod", "frac": 0.1, "answer": "6926956", "lenient": true, "strict": true}
+{"sample": 5, "q": 0, "method": "rod", "frac": 0.25, "answer": "9 1 0 6 6 5 9 0 6", "lenient": false, "strict": false}
+{"sample": 5, "q": 1, "method": "rod", "frac": 0.25, "answer": "9619658", "lenient": false, "strict": false}
+{"sample": 5, "q": 2, "method": "rod", "frac": 0.25, "answer": "9619658", "lenient": true, "strict": true}
+{"sample": 5, "q": 3, "method": "rod", "frac": 0.25, "answer": "6926956", "lenient": true, "strict": true}
+{"sample": 6, "q": 0, "method": "full", "frac": 1.0, "answer": "9598322", "lenient": true, "strict": true}
+{"sample": 6, "q": 1, "method": "full", "frac": 1.0, "answer": "9598322", "lenient": false, "strict": false}
+{"sample": 6, "q": 2, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to tidal-falcon is 9071549.", "lenient": true, "strict": true}
+{"sample": 6, "q": 3, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to rusty-nebula is 4352749.", "lenient": true, "strict": true}
+{"sample": 6, "q": 0, "method": "streaming", "frac": 0.1, "answer": "0112345678", "lenient": false, "strict": false}
+{"sample": 6, "q": 1, "method": "streaming", "frac": 0.1, "answer": "The first three digits are 000.", "lenient": false, "strict": false}
+{"sample": 6, "q": 2, "method": "streaming", "frac": 0.1, "answer": "014235", "lenient": false, "strict": false}
+{"sample": 6, "q": 3, "method": "streaming", "frac": 0.1, "answer": "014237", "lenient": false, "strict": false}
+{"sample": 6, "q": 0, "method": "streaming", "frac": 0.25, "answer": "0112345678", "lenient": false, "strict": false}
+{"sample": 6, "q": 1, "method": "streaming", "frac": 0.25, "answer": "01234567", "lenient": false, "strict": false}
+{"sample": 6, "q": 2, "method": "streaming", "frac": 0.25, "answer": "01123", "lenient": false, "strict": false}
+{"sample": 6, "q": 3, "method": "streaming", "frac": 0.25, "answer": "011122", "lenient": false, "strict": false}
+{"sample": 6, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "9598322", "lenient": true, "strict": true}
+{"sample": 6, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code is 4447470.", "lenient": true, "strict": true}
+{"sample": 6, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to tidal-falcon is 9071549.", "lenient": true, "strict": true}
+{"sample": 6, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to \"rusty-nebula\" is 4352749.", "lenient": true, "strict": true}
+{"sample": 6, "q": 0, "method": "rod", "frac": 0.1, "answer": "9 5 2 8 3 7", "lenient": false, "strict": false}
+{"sample": 6, "q": 1, "method": "rod", "frac": 0.1, "answer": "4447470", "lenient": true, "strict": true}
+{"sample": 6, "q": 2, "method": "rod", "frac": 0.1, "answer": "9071549", "lenient": true, "strict": true}
+{"sample": 6, "q": 3, "method": "rod", "frac": 0.1, "answer": "4352749", "lenient": true, "strict": true}
+{"sample": 6, "q": 0, "method": "rod", "frac": 0.25, "answer": "9-5-9-3-2-8", "lenient": false, "strict": false}
+{"sample": 6, "q": 1, "method": "rod", "frac": 0.25, "answer": "4447", "lenient": false, "strict": false}
+{"sample": 6, "q": 2, "method": "rod", "frac": 0.25, "answer": "9071549", "lenient": true, "strict": true}
+{"sample": 6, "q": 3, "method": "rod", "frac": 0.25, "answer": "4352749", "lenient": true, "strict": true}
+{"sample": 7, "q": 0, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to quiet-jaguar is 1469342.", "lenient": true, "strict": true}
+{"sample": 7, "q": 1, "method": "full", "frac": 1.0, "answer": "The seven-digit code is 2536816.", "lenient": false, "strict": false}
+{"sample": 7, "q": 2, "method": "full", "frac": 1.0, "answer": "The seven-digit code is 2536816.", "lenient": true, "strict": true}
+{"sample": 7, "q": 3, "method": "full", "frac": 1.0, "answer": "The seven-digit code is 2182013.", "lenient": true, "strict": true}
+{"sample": 7, "q": 0, "method": "streaming", "frac": 0.1, "answer": "The code is 123456789.", "lenient": false, "strict": false}
+{"sample": 7, "q": 1, "method": "streaming", "frac": 0.1, "answer": "1234567890", "lenient": false, "strict": false}
+{"sample": 7, "q": 2, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 7, "q": 3, "method": "streaming", "frac": 0.1, "answer": "The digits are: 123456789", "lenient": false, "strict": false}
+{"sample": 7, "q": 0, "method": "streaming", "frac": 0.25, "answer": "The code is 1234567890.", "lenient": false, "strict": false}
+{"sample": 7, "q": 1, "method": "streaming", "frac": 0.25, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 7, "q": 2, "method": "streaming", "frac": 0.25, "answer": "The seven-digit code is 1234567.", "lenient": false, "strict": false}
+{"sample": 7, "q": 3, "method": "streaming", "frac": 0.25, "answer": "2182013", "lenient": true, "strict": true}
+{"sample": 7, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to quiet-jaguar is 1469342.", "lenient": true, "strict": true}
+{"sample": 7, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code is 2536816.", "lenient": false, "strict": false}
+{"sample": 7, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code is 2536816.", "lenient": true, "strict": true}
+{"sample": 7, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code is 2182013.", "lenient": true, "strict": true}
+{"sample": 7, "q": 0, "method": "rod", "frac": 0.1, "answer": "1469342", "lenient": true, "strict": true}
+{"sample": 7, "q": 1, "method": "rod", "frac": 0.1, "answer": "3973111", "lenient": true, "strict": true}
+{"sample": 7, "q": 2, "method": "rod", "frac": 0.1, "answer": "2536816", "lenient": true, "strict": true}
+{"sample": 7, "q": 3, "method": "rod", "frac": 0.1, "answer": "The seven-digit code is 1234567.", "lenient": false, "strict": false}
+{"sample": 7, "q": 0, "method": "rod", "frac": 0.25, "answer": "The seven-digit code is 1469342.", "lenient": true, "strict": true}
+{"sample": 7, "q": 1, "method": "rod", "frac": 0.25, "answer": "The seven-digit code is 2536816.", "lenient": false, "strict": false}
+{"sample": 7, "q": 2, "method": "rod", "frac": 0.25, "answer": "The seven-digit code is 2536816.", "lenient": true, "strict": true}
+{"sample": 7, "q": 3, "method": "rod", "frac": 0.25, "answer": "The seven-digit code is 2536816.", "lenient": false, "strict": false}
+{"sample": 8, "q": 0, "method": "full", "frac": 1.0, "answer": "4097244", "lenient": true, "strict": true}
+{"sample": 8, "q": 1, "method": "full", "frac": 1.0, "answer": "2166274", "lenient": true, "strict": true}
+{"sample": 8, "q": 2, "method": "full", "frac": 1.0, "answer": "5 7 8 3 1", "lenient": false, "strict": false}
+{"sample": 8, "q": 3, "method": "full", "frac": 1.0, "answer": "5578744", "lenient": true, "strict": true}
+{"sample": 8, "q": 0, "method": "streaming", "frac": 0.1, "answer": "01111111", "lenient": false, "strict": false}
+{"sample": 8, "q": 1, "method": "streaming", "frac": 0.1, "answer": "01111111", "lenient": false, "strict": false}
+{"sample": 8, "q": 2, "method": "streaming", "frac": 0.1, "answer": "01111111", "lenient": false, "strict": false}
+{"sample": 8, "q": 3, "method": "streaming", "frac": 0.1, "answer": "011112", "lenient": false, "strict": false}
+{"sample": 8, "q": 0, "method": "streaming", "frac": 0.25, "answer": "01424301", "lenient": false, "strict": false}
+{"sample": 8, "q": 1, "method": "streaming", "frac": 0.25, "answer": "5578744", "lenient": false, "strict": false}
+{"sample": 8, "q": 2, "method": "streaming", "frac": 0.25, "answer": "5578744", "lenient": false, "strict": false}
+{"sample": 8, "q": 3, "method": "streaming", "frac": 0.25, "answer": "5578744", "lenient": true, "strict": true}
+{"sample": 8, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "4097244", "lenient": true, "strict": true}
+{"sample": 8, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "4 2 6 7 3 0 5", "lenient": false, "strict": false}
+{"sample": 8, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "5 7 8 1 3 9", "lenient": false, "strict": false}
+{"sample": 8, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "5578744", "lenient": true, "strict": true}
+{"sample": 8, "q": 0, "method": "rod", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 8, "q": 1, "method": "rod", "frac": 0.1, "answer": "2166274", "lenient": true, "strict": true}
+{"sample": 8, "q": 2, "method": "rod", "frac": 0.1, "answer": "5281815", "lenient": true, "strict": true}
+{"sample": 8, "q": 3, "method": "rod", "frac": 0.1, "answer": "5578744", "lenient": true, "strict": true}
+{"sample": 8, "q": 0, "method": "rod", "frac": 0.25, "answer": "1\n2\n3\n4\n5\n6\n7", "lenient": false, "strict": false}
+{"sample": 8, "q": 1, "method": "rod", "frac": 0.25, "answer": "2166274", "lenient": true, "strict": true}
+{"sample": 8, "q": 2, "method": "rod", "frac": 0.25, "answer": "5 7 8 1 3 4 2", "lenient": false, "strict": false}
+{"sample": 8, "q": 3, "method": "rod", "frac": 0.25, "answer": "5578744", "lenient": true, "strict": true}
+{"sample": 9, "q": 0, "method": "full", "frac": 1.0, "answer": "7485352", "lenient": true, "strict": true}
+{"sample": 9, "q": 1, "method": "full", "frac": 1.0, "answer": "7485352", "lenient": false, "strict": false}
+{"sample": 9, "q": 2, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to lunar-harbor is 5252322.", "lenient": true, "strict": true}
+{"sample": 9, "q": 3, "method": "full", "frac": 1.0, "answer": "7485352", "lenient": false, "strict": false}
+{"sample": 9, "q": 0, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 9, "q": 1, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 9, "q": 2, "method": "streaming", "frac": 0.1, "answer": "I can't provide the seven-digit code for \"lunar-harbor\" as it appears to be a fictional or non-existent location. Is the", "lenient": false, "strict": false}
+{"sample": 9, "q": 3, "method": "streaming", "frac": 0.1, "answer": "8241978", "lenient": true, "strict": true}
+{"sample": 9, "q": 0, "method": "streaming", "frac": 0.25, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 9, "q": 1, "method": "streaming", "frac": 0.25, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 9, "q": 2, "method": "streaming", "frac": 0.25, "answer": "The code is 123456789.", "lenient": false, "strict": false}
+{"sample": 9, "q": 3, "method": "streaming", "frac": 0.25, "answer": "8241978", "lenient": true, "strict": true}
+{"sample": 9, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "7485352", "lenient": true, "strict": true}
+{"sample": 9, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to quiet-island is 4154776.", "lenient": true, "strict": true}
+{"sample": 9, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to lunar-harbor is 5252322.", "lenient": true, "strict": true}
+{"sample": 9, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code is 8241978.", "lenient": true, "strict": true}
+{"sample": 9, "q": 0, "method": "rod", "frac": 0.1, "answer": "7485352", "lenient": true, "strict": true}
+{"sample": 9, "q": 1, "method": "rod", "frac": 0.1, "answer": "4154776", "lenient": true, "strict": true}
+{"sample": 9, "q": 2, "method": "rod", "frac": 0.1, "answer": "The code is 5252326.", "lenient": false, "strict": false}
+{"sample": 9, "q": 3, "method": "rod", "frac": 0.1, "answer": "8245356", "lenient": false, "strict": false}
+{"sample": 9, "q": 0, "method": "rod", "frac": 0.25, "answer": "7485352", "lenient": true, "strict": true}
+{"sample": 9, "q": 1, "method": "rod", "frac": 0.25, "answer": "7485 5376", "lenient": false, "strict": false}
+{"sample": 9, "q": 2, "method": "rod", "frac": 0.25, "answer": "The seven-digit code is: 7485352", "lenient": false, "strict": false}
+{"sample": 9, "q": 3, "method": "rod", "frac": 0.25, "answer": "8241978", "lenient": true, "strict": true}
+{"sample": 10, "q": 0, "method": "full", "frac": 1.0, "answer": "The seven-digit code is 9494460.", "lenient": true, "strict": true}
+{"sample": 10, "q": 1, "method": "full", "frac": 1.0, "answer": "The seven-digit code is 4701049.", "lenient": true, "strict": true}
+{"sample": 10, "q": 2, "method": "full", "frac": 1.0, "answer": "The seven-digit code is: 9494460", "lenient": false, "strict": false}
+{"sample": 10, "q": 3, "method": "full", "frac": 1.0, "answer": "The seven-digit code is: 6389610", "lenient": true, "strict": true}
+{"sample": 10, "q": 0, "method": "streaming", "frac": 0.1, "answer": "854217", "lenient": false, "strict": false}
+{"sample": 10, "q": 1, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 10, "q": 2, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 10, "q": 3, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 10, "q": 0, "method": "streaming", "frac": 0.25, "answer": "I cannot provide information about a specific individual. Can I help you with something else?", "lenient": false, "strict": false}
+{"sample": 10, "q": 1, "method": "streaming", "frac": 0.25, "answer": "I cannot provide information about a private citizen. Can I help you with something else?", "lenient": false, "strict": false}
+{"sample": 10, "q": 2, "method": "streaming", "frac": 0.25, "answer": "I cannot provide information about a specific individual. Can I help you with something else?", "lenient": false, "strict": false}
+{"sample": 10, "q": 3, "method": "streaming", "frac": 0.25, "answer": "6389610", "lenient": true, "strict": true}
+{"sample": 10, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "9494460", "lenient": true, "strict": true}
+{"sample": 10, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code is: 4701049", "lenient": true, "strict": true}
+{"sample": 10, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code is: 9494460", "lenient": false, "strict": false}
+{"sample": 10, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code is: 6389610", "lenient": true, "strict": true}
+{"sample": 10, "q": 0, "method": "rod", "frac": 0.1, "answer": "2000", "lenient": false, "strict": false}
+{"sample": 10, "q": 1, "method": "rod", "frac": 0.1, "answer": "4701049", "lenient": true, "strict": true}
+{"sample": 10, "q": 2, "method": "rod", "frac": 0.1, "answer": "9789506", "lenient": true, "strict": true}
+{"sample": 10, "q": 3, "method": "rod", "frac": 0.1, "answer": "6389610", "lenient": true, "strict": true}
+{"sample": 10, "q": 0, "method": "rod", "frac": 0.25, "answer": "The seven-digit code is 9494460.", "lenient": true, "strict": true}
+{"sample": 10, "q": 1, "method": "rod", "frac": 0.25, "answer": "The code is 4701049.", "lenient": true, "strict": true}
+{"sample": 10, "q": 2, "method": "rod", "frac": 0.25, "answer": "9789506", "lenient": true, "strict": true}
+{"sample": 10, "q": 3, "method": "rod", "frac": 0.25, "answer": "6389610", "lenient": true, "strict": true}
+{"sample": 11, "q": 0, "method": "full", "frac": 1.0, "answer": "2186600", "lenient": true, "strict": true}
+{"sample": 11, "q": 1, "method": "full", "frac": 1.0, "answer": "2186600", "lenient": false, "strict": false}
+{"sample": 11, "q": 2, "method": "full", "frac": 1.0, "answer": "The seven-digit code issued to gentle-island is 5233866.", "lenient": true, "strict": true}
+{"sample": 11, "q": 3, "method": "full", "frac": 1.0, "answer": "1636133", "lenient": true, "strict": true}
+{"sample": 11, "q": 0, "method": "streaming", "frac": 0.1, "answer": "The code is 0000000000.", "lenient": false, "strict": false}
+{"sample": 11, "q": 1, "method": "streaming", "frac": 0.1, "answer": "The code is 00000000.", "lenient": false, "strict": false}
+{"sample": 11, "q": 2, "method": "streaming", "frac": 0.1, "answer": "The code is 00000000.", "lenient": false, "strict": false}
+{"sample": 11, "q": 3, "method": "streaming", "frac": 0.1, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 11, "q": 0, "method": "streaming", "frac": 0.25, "answer": "The code is 1234567.", "lenient": false, "strict": false}
+{"sample": 11, "q": 1, "method": "streaming", "frac": 0.25, "answer": "The code is 0000000000.", "lenient": false, "strict": false}
+{"sample": 11, "q": 2, "method": "streaming", "frac": 0.25, "answer": "The seven-digit code is 1234567.", "lenient": false, "strict": false}
+{"sample": 11, "q": 3, "method": "streaming", "frac": 0.25, "answer": "1636133", "lenient": true, "strict": true}
+{"sample": 11, "q": 0, "method": "snapkv_qa", "frac": 0.25, "answer": "2186600", "lenient": true, "strict": true}
+{"sample": 11, "q": 1, "method": "snapkv_qa", "frac": 0.25, "answer": "2186600", "lenient": false, "strict": false}
+{"sample": 11, "q": 2, "method": "snapkv_qa", "frac": 0.25, "answer": "The seven-digit code issued to Gentle Island is 5233866.", "lenient": true, "strict": true}
+{"sample": 11, "q": 3, "method": "snapkv_qa", "frac": 0.25, "answer": "1636133", "lenient": true, "strict": true}
+{"sample": 11, "q": 0, "method": "rod", "frac": 0.1, "answer": "2186600", "lenient": true, "strict": true}
+{"sample": 11, "q": 1, "method": "rod", "frac": 0.1, "answer": "The code is 011.", "lenient": false, "strict": false}
+{"sample": 11, "q": 2, "method": "rod", "frac": 0.1, "answer": "The code is 00000000.", "lenient": false, "strict": false}
+{"sample": 11, "q": 3, "method": "rod", "frac": 0.1, "answer": "1636133", "lenient": true, "strict": true}
+{"sample": 11, "q": 0, "method": "rod", "frac": 0.25, "answer": "2186600.", "lenient": true, "strict": true}
+{"sample": 11, "q": 1, "method": "rod", "frac": 0.25, "answer": "2186600.", "lenient": false, "strict": false}
+{"sample": 11, "q": 2, "method": "rod", "frac": 0.25, "answer": "2186600.", "lenient": false, "strict": false}
+{"sample": 11, "q": 3, "method": "rod", "frac": 0.25, "answer": "1636", "lenient": false, "strict": false}
