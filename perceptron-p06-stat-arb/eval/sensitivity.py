@@ -133,11 +133,13 @@ def main() -> None:
     a = ap.parse_args()
     t0 = time.time()
     subsets = {x.split(":", 1)[0]: x.split(":", 1)[1].split(",") for x in a.subset}
-    frozen, strict, fps = {}, {}, {}
+    frozen, strict, fps, excluded = {}, {}, {}, {}
     for d in a.days:
         frozen[d] = cached_cells(d)[0]
-        strict[d], fps[d] = strict_cells(d)
-        print(f"cells {d}: frozen {frozen[d].height} strict {strict[d].height} ({time.time() - t0:.0f}s)", flush=True)
+        sc, fps[d] = strict_cells(d)
+        excluded[d] = int((~sc["valid"]).sum())          # erratum: marks/unwinds unavailable past the end of the data
+        strict[d] = sc.filter(pl.col("valid"))
+        print(f"cells {d}: frozen {frozen[d].height} strict {strict[d].height} excluded {excluded[d]} ({time.time() - t0:.0f}s)", flush=True)
     worlds = {k: {} for k in ("V0_frozen", "V1_strict", "V2_strict_mo1", "V3_strict_mo10", "V4_transfer")}
     for prev, cur in zip(a.days[:-1], a.days[1:]):
         m_frozen = fit_all(frozen[prev])
@@ -149,7 +151,7 @@ def main() -> None:
     res = {"worlds": {w: summarise(v, subsets) for w, v in worlds.items()},
            "collision_dropped": {w: summarise(v, subsets, "total_dropped") for w, v in worlds.items() if w != "V0_frozen"},
            "collisions": {w: {p: float(np.mean([v[d][p]["flagged_share"] for d in v])) for p in POLICIES} for w, v in worlds.items()},
-           "per_day_raw": worlds, "fingerprints": fps}
+           "per_day_raw": worlds, "fingerprints": fps, "excluded_rows_unavailable_marks": excluded}
     v1, v2 = res["worlds"]["V1_strict"]["registered"]["lev - threshold_pair"], res["worlds"]["V2_strict_mo1"]["registered"]["lev - threshold_pair"]
     robust = all(x["ci95"][0] > 0 and x["t_ci95"][0] > 0 for x in (v1, v2))
     res["decision"] = "robust" if robust else "dependent on the frozen simulator's optimistic fills or basis marking"
@@ -181,6 +183,8 @@ def main() -> None:
             L += [f"S3 shared liquidity: flagged share LEV {res['collisions'][w]['lev']:.1%}, threshold {res['collisions'][w]['threshold_pair']:.1%}; "
                   f"with flagged intents dropped, LEV − threshold = {c['mean_usd_per_day']:+,.1f}/day, t-CI [{c['t_ci95'][0]:+,.1f}, {c['t_ci95'][1]:+,.1f}], "
                   f"{c['days_positive']}/{c['n_days']} days.", ""]
+    L += [f"Erratum (Amendment 1): strict rows whose markout or unwind quote lies beyond the end of the data are excluded for every policy; "
+          f"excluded rows per day: {json.dumps(excluded)} (total {sum(excluded.values())}).", ""]
     L += [f"Runtime {res['runtime_s']:.0f} s · commit `{res['commit']}` · `{res['command']}`", ""]
     open(f"eval/results/{a.out}.md", "w").write("\n".join(L))
     print("\n".join(L[:6]))

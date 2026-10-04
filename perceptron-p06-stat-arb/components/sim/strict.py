@@ -25,17 +25,21 @@ def at_next(b: LegBook, t: np.ndarray, cap_us: float):
     return ok, i, b.bid[i], b.ask[i], b.bsz[i], b.asz[i]
 
 
-def mid_next(b: LegBook, t: np.ndarray) -> np.ndarray:
-    i = np.clip(np.searchsorted(b.ts, t, side="left"), 0, b.ts.size - 1)
-    return 0.5 * (b.bid[i] + b.ask[i])
+def mid_next(b: LegBook, t: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """(available, mid of the first quote at/after t). Unavailable past the end of the data (erratum, Amendment 1)."""
+    i = np.searchsorted(b.ts, t, side="left")
+    ok = i < b.ts.size
+    i = np.clip(i, 0, b.ts.size - 1)
+    return ok, 0.5 * (b.bid[i] + b.ask[i])
 
 
 def simulate_strict(intents: pl.DataFrame, books: dict[str, LegBook], order_lat_us: dict[str, float], fee_bps: dict[str, float],
                     q_max: float = 0.05, stale_cap_us: float = 1e6, markouts_s: tuple[float, ...] = (1.0, 10.0)) -> pl.DataFrame:
     intents = intents.filter(pl.col("size") > 0)
-    cols = ["opp_id", "outcome", "pnl_usd", "pnl_bps", "snap_s", "snap_b"] + [f"pnl_{k}_mo{h:g}" for h in markouts_s for k in ("usd", "bps")]
+    cols = ["opp_id", "outcome", "pnl_usd", "pnl_bps", "snap_s", "snap_b"] + [f"pnl_{k}_mo{h:g}" for h in markouts_s for k in ("usd", "bps")] + ["valid"]
     if intents.height == 0:
-        return pl.DataFrame(schema={c: (pl.Int64 if c in ("opp_id", "snap_s", "snap_b") else pl.Utf8 if c == "outcome" else pl.Float64) for c in cols})
+        return pl.DataFrame(schema={c: (pl.Int64 if c in ("opp_id", "snap_s", "snap_b") else pl.Utf8 if c == "outcome"
+                                        else pl.Boolean if c == "valid" else pl.Float64) for c in cols})
     res = []
     for (sv, bv), g in intents.group_by(["sell_venue", "buy_venue"]):
         S, B = books[sv], books[bv]
@@ -57,11 +61,12 @@ def simulate_strict(intents: pl.DataFrame, books: dict[str, LegBook], order_lat_
         fees_m = m * (fs * np.where(fill_s, bid_s, 0.0) + fb * np.where(fill_b, ask_b, 0.0))
         spread = np.where(fill_s & fill_b, bid_s - ask_b, 0.0)
         t_unw = td + 2 * max(ols, olb)
-        _, _, _, ask_s2, _, _ = at_next(S, t_unw + ols, np.inf)
-        _, _, bid_b2, _, _, _ = at_next(B, t_unw + olb, np.inf)
+        oku_s, _, _, ask_s2, _, _ = at_next(S, t_unw + ols, np.inf)
+        oku_b, _, bid_b2, _, _, _ = at_next(B, t_unw + olb, np.inf)
         xs, xb = qs - m, qb - m   # unmatched quantity sold on S / bought on B → bought back on S / sold back on B
         unw = (np.where(xs > 0, xs * (bid_s - ask_s2) - xs * fs * (bid_s + ask_s2), 0.0)
                + np.where(xb > 0, xb * (bid_b2 - ask_b) - xb * fb * (bid_b2 + ask_b), 0.0))
+        valid = ((xs <= 0) | oku_s) & ((xb <= 0) | oku_b)     # an unwind needs a quote after the unwind time
         pnl = m * (spread - basis_px) - fees_m + unw
         denom = q * mid0
         out = {"opp_id": g["opp_id"].to_numpy(),
@@ -69,8 +74,11 @@ def simulate_strict(intents: pl.DataFrame, books: dict[str, LegBook], order_lat_
                "pnl_usd": pnl, "pnl_bps": pnl / denom * 1e4,
                "snap_s": np.where(fill_s, i_s, -1).astype(np.int64), "snap_b": np.where(fill_b, i_b, -1).astype(np.int64)}
         for h in markouts_s:
-            ms_, mb_ = mid_next(S, ta_s + h * 1e6), mid_next(B, ta_b + h * 1e6)
+            okm_s, ms_ = mid_next(S, ta_s + h * 1e6)
+            okm_b, mb_ = mid_next(B, ta_b + h * 1e6)
+            valid &= (m <= 0) | (okm_s & okm_b)               # a markout needs quotes after arrival + H
             p = m * (spread - (ms_ - mb_)) - fees_m + unw
             out[f"pnl_usd_mo{h:g}"], out[f"pnl_bps_mo{h:g}"] = p, p / denom * 1e4
+        out["valid"] = valid
         res.append(pl.DataFrame(out))
     return pl.concat(res).sort("opp_id").select(cols)
