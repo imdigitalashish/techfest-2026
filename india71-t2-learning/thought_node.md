@@ -10,18 +10,19 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED** by the Supervisor at 09:55 IST (user's decision: only 3 projects run at a time; T1 is the provisional India@71 pick unless the user overrides). Nothing is running; no background jobs.
-- **State at pause:** morning package complete and pushed — [landscape](research/landscape.md) · [components + contracts](architecture/components.md) · [12 per-component notes](research/components/) · [ADR 001 v2](architecture/adr/001-spike.md) (incl. first-principles review + case-register synthesis) · selection memo v1 (below) · [round-1 proposal v0.3](deliverables/round1-proposal.md) (renders to exactly 6 A4 pages, Arial 11 pt) + [architecture](deliverables/architecture.md) · walking skeleton + eval harness with ASER-calibrated numbers (`eval/results/summary.md`) · real-data ASER × PARAKH × UDISE+ analysis (`eval/results/real_data_analysis.md`) · auto-research scaffolds with baseline rows (C5 `components/trust_audit/autoresearch/`, C4 `components/diagnostics/autoresearch/`).
-- **Resume point (in order):**
-  1. C5/C6 interval calibration — 90 % intervals cover only 27 % of true block values. Start: bootstrap over the moderation sample in `components/trust_audit/core.py::adjust` and propagate into `components/area_estimation/core.py::fay_herriot_benchmark`; target coverage ≥ 0.85 without raising block MAE. Then find the minimum effective moderation sample (the 120-school / 12-re-test case failed).
-  2. Re-run: `cd india71-t2-learning && nice -n 10 python3 eval/run_eval.py` (~3.5 CPU-min; 15–35 min wall under contention) → update the proposal demo table.
-  3. Implement the C11 learning-case register (ADR 001 synthesis v2: notify → owner → recheck → verified cure; case-finding rate = notified ÷ (C6 prevalence × UDISE+ enrolment)) + a simulator test where honest notification beats inflation.
-  4. First auto-research iterations (C4: `python3 components/diagnostics/autoresearch/eval.py`, baseline 0.551; C5: `python3 components/trust_audit/autoresearch/eval.py`, baseline 2.335 at default calibration — re-baseline at ASER calibration first).
-  5. Make the simulator's inflation need-correlated so C9 allocation can show (or fail to show) a targeting gain.
-  6. Re-run failed research narrowly: DPDP Rules 2025 text, NDEAR/VSK architecture at a government source, Kenya Tusome/Ceará; verify the three agent-cited papers (Aiyar & Bhattacharya 2016; Berry et al. 2020; Johnson & Parrado 2021).
-  7. Selection memo final by 12 Oct (compare with T1/T3 memos); proposal: team details only placeholders left.
-- **Needs from user:** Register by 15 Oct for one India@71 theme (Supervisor: T1 provisional). Teammates (≤4): names and skills.
-- **Risks:** interval under-coverage (resume step 1); allocation gain not shown; PARAKH and ASER disagree strongly by state (this is evidence *for* our crosswalk, but jury may ask which to trust — answer: neither alone; link with uncertainty).
+- **Phase:** ▶ RESUMED 2026-10-04 15:23 IST (Supervisor: batch slot freed) — finishing to the Supervisor's definition of done, then "DONE — slot free".
+- **Context:** one India@71 theme per team. T1 (nutrition) ✅ is the provisional pick; T3 (finance) ✅ recommends T1. Our memo must make an honest case for or against T2.
+- **Definition of done (Supervisor, 15:24):**
+  1. Interval calibration: 90 % intervals cover only 27 % → bootstrap through `trust_audit` into the Fay–Herriot benchmark, ≥ 0.85 coverage on **held-out** blocks; coverage test **pre-registered and committed before the run**.
+  2. Evidence honesty: SYNTHETIC labels; allocation gain shown or plainly "not shown"; verify DPDP Rules 2025, NDEAR/VSK and the three agent-cited papers at primary sources (else UNVERIFIED).
+  3. Final proposal in the brief's format: `deliverables/India71_100_[TeamID].pdf`, ≤ 6 pages, Arial ≥ 11 pt, fonts embedded, all required sections; numbers rendered from committed results with a doc-drift check (`eval/check_docs.py`, T1's model).
+  4. Cross-model reviews as child sessions (≤ 2 at a time): `gpt-6-astra` (max) hostile judge on the proposal; `gpt-6-sol` (max) on code + eval incl. reproducing headline numbers → `reviews/` + `reviews/ledger.tsv`.
+  5. Final selection memo vs T1 and T3; thought node current; push; message the Supervisor.
+- **Plan (order):** (a) profile + speed up the simulator so evaluations take minutes, not half an hour; (b) pre-register the coverage test → commit; (c) implement bootstrap calibration → run → record; (d) allocation: test once with need-correlated inflation, report either way; (e) primary-source verification; (f) results JSON → proposal → `check_docs.py` → PDF; (g) reviews (astra on the proposal, sol on code) → address → ledger; (h) memo vs T1/T3 → DONE.
+- **Doing:** lead alone (no child sessions yet).
+- **Machine rules:** heavy jobs `nice -n 10`, one at a time, only when `kern.memorystatus_level` ≥ 30; no GPU without asking the Supervisor; small requests; poll long jobs ≥ 10 min apart; never `git stash`/`--autostash`; timestamps from `TZ=Asia/Kolkata date`.
+- **Needs from user:** Register by 15 Oct for one India@71 theme. Teammates (≤ 4): names and skills.
+- **Risks:** coverage may need a model change, not just a bootstrap (between-block variance of inflation); allocation gain may not exist in our simulator — say so; review findings may force proposal changes late.
 
 ## Phase 0 extraction (from `_briefs/india71.txt`, verified 4 Oct 02:10 IST)
 **Hard constraints**
