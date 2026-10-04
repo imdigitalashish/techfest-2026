@@ -136,4 +136,4 @@ Supervisor directive: no sub-agents, small requests, push every 30 min. Committi
   - synthetic-data statement rendered; licences on all sources; duplicate CEA entry merged; `requirements.txt`.
 - **Headline policy:** the harmonized sedan result leads. The scooter number always carries "partial, mixed-basis GHG indicator".
 - **Supervisor 10:53:** gazette date checked against the PDF (notification 23 Dec 2024; release 12 Dec 2024 per steel.gov.in) and recorded. Spike D parked until reactivation.
-- 11:10 — Dashboard: the what-if loss selector now defaults to the scenario's own loss setting, so the default view equals the card for every scenario (browser-checked: 20.4 / 10.0 / 45.5 / 38.1 / 16.2 %). Clean checkout of main re-verified: 19 tests pass, same inputs id gives identical results, docs OK. DONE sent to the Supervisor.
+- 11:09 — Dashboard: the what-if loss selector now defaults to the scenario's own loss setting, so the default view equals the card for every scenario (browser-checked: 20.4 / 10.0 / 45.5 / 38.1 / 16.2 %). Clean checkout of main re-verified: 19 tests pass, same inputs id gives identical results, docs OK. DONE sent to the Supervisor.
