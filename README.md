@@ -27,13 +27,13 @@ Private monorepo: one folder per problem statement, each run by its own project-
 | [apctt-trl-assessor](apctt-trl-assessor/thought_node.md) | ⏳ Queued #1 — starts when the 10 Oct data arrives | AI for Technology Readiness (APCTT, UN ESCAP) | TRL 1–9 from technical documents | Frozen model · 15 Nov | 16–17 Dec |
 | [ev-c1-infra-map-india](ev-c1-infra-map-india/thought_node.md) | ✅ Completed — ready for your review | EV Infra & Green Mobility (MHI × ICAT) | EV Infra Map India | Methodology + roadmap · 30 Oct | 16–18 Dec |
 | [ev-c2-green-auto-lca](ev-c2-green-auto-lca/thought_node.md) | ✅ Completed — ready for your review | EV Infra & Green Mobility (MHI × ICAT) | Green Auto India (automotive LCA database) | Methodology + roadmap · 30 Oct | 16–18 Dec |
-| [namma-space](namma-space/thought_node.md) | 🟢 Active | Namma Space (Juspay) | Phone capture → 3D indoor twin with search and navigation | 3D web viewer · 31 Oct | 16–17 Dec |
+| [namma-space](namma-space/thought_node.md) | ✅ Completed — ready for your review | Namma Space (Juspay) | Phone capture → 3D indoor twin with search and navigation | 3D web viewer · 31 Oct | 16–17 Dec |
 | [india71-t1-nutrition](india71-t1-nutrition/thought_node.md) | ✅ Completed — ready for your review | India @71/100 | Maternal & early-childhood nutrition | 6-page proposal · 1 Nov | 16–18 Dec |
-| [india71-t2-learning](india71-t2-learning/thought_node.md) | ⏳ Queued #2 | India @71/100 | Foundational learning outcomes | 6-page proposal · 1 Nov | 16–18 Dec |
+| [india71-t2-learning](india71-t2-learning/thought_node.md) | 🟢 Active | India @71/100 | Foundational learning outcomes | 6-page proposal · 1 Nov | 16–18 Dec |
 | [india71-t3-finance](india71-t3-finance/thought_node.md) | 🟢 Active | India @71/100 | Financial inclusion & meaningful banking access | 6-page proposal · 1 Nov | 16–18 Dec |
 | [innovatex-t1-groundwater](innovatex-t1-groundwater/thought_node.md) | ✅ Completed — ready for your review | InnovateX | IoT underground water management | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
-| [innovatex-t2-aqi](innovatex-t2-aqi/thought_node.md) | ⏳ Queued #3 | InnovateX | Rising AQI in cities | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
-| [innovatex-t3-coastal-plastic](innovatex-t3-coastal-plastic/thought_node.md) | ⏳ Queued #4 | InnovateX | Coastal plastic pollution (Mumbai) | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
+| [innovatex-t2-aqi](innovatex-t2-aqi/thought_node.md) | ⏳ Queued #2 | InnovateX | Rising AQI in cities | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
+| [innovatex-t3-coastal-plastic](innovatex-t3-coastal-plastic/thought_node.md) | ⏳ Queued #3 | InnovateX | Coastal plastic pollution (Mumbai) | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
 
 ## Key dates
 
