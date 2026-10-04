@@ -13,9 +13,9 @@ flowchart TB
     EST[OPE estimators<br/>IPW · SNIPW · DM · DR · Switch-DR<br/>→ per-round influence terms]
   end
   subgraph SPIKE[Spikes]
-    DEC[★ Decomposer · 2×2 Shapley<br/>cells V·period, policy·: two observed, two by OPE<br/>→ policy effect · environment · interaction<br/>environment = user-mix shift ·DR density ratio· + response drift]
-    GATE[★ Overlap gate<br/>ESS/n · effective rewards · mean-weight test<br/>thresholds calibrated on simulation only]
-    CERT[★ Certificate<br/>intervals for the difference · MSM bounds · tipping point Γ*]
+    DEC[★ Decomposer<br/>primary: after-period contrast D₁<br/>secondary: 2×2 Shapley + interaction ·OPE fills two cells·<br/>old-policy ordering: mix shift ·DR density ratio· + drift]
+    GATE[★ Overlap gate · exploratory<br/>ESS/n · mean-weight test · zero-reward guard<br/>gates every OPE cell a term needs]
+    CERT[★ Certificate<br/>Wald + hour-block intervals · after-period Hajek-MSM bounds · Γ*]
   end
   REP[Verdict: worked / hurt / can't tell from these logs<br/>waterfall · intervals · diagnostics]
   subgraph EVAL[Evaluation — every number checked against truth]
@@ -34,12 +34,16 @@ flowchart TB
   REP --> CHK
 ```
 
-**The identity the system audits** (Shapley over two factors; the two counterfactual cells come from OPE):
-naive = V(after, π₁) − V(before, π₀) = policy + environment, where
-- policy = ½[(V(before, π₁) − V(before, π₀)) + (V(after, π₁) − V(after, π₀))];
-- interaction = (V(after, π₁) − V(after, π₀)) − (V(before, π₁) − V(before, π₀)).
+**Estimands (review A3):**
+- *Primary:* the after-period policy contrast on the observed traffic, D₁ = V(after, π₁) − V(after, π₀). One OPE cell is needed, from the after logs.
+- *Secondary:* the Shapley attribution over two factors. Both OPE cells (V(before, π₁) from before logs, V(after, π₀) from after logs) must pass the gate.
+  - naive = V(after, π₁) − V(before, π₀) = policy + environment.
+  - policy = ½[(V(before, π₁) − V(before, π₀)) + D₁]; interaction = D₁ − (V(before, π₁) − V(before, π₀)).
+  - Half of the interaction sits inside each main term, so it is never added as a third bar.
+- *Separately:* the old-policy-ordered environment change, V(after, π₀) − V(before, π₀), splits into user-mix shift (doubly robust density ratio) and response drift. It does not partition the Shapley environment term.
+- *Not identified* from these logs: the total effect when the policy changes who arrives (feedback).
 
-If the gate fails on the logs behind an OPE cell, the verdict is "can't tell from these logs".
+If the gate fails on the logs behind a needed cell, the verdict falls back to the ordering whose cell passes, or says "can't tell from these logs".
 
 Component contracts: [`../architecture/components.md`](../architecture/components.md) · spike rationale: [`../architecture/adr/001-spike.md`](../architecture/adr/001-spike.md).
 

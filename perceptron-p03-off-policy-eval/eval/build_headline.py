@@ -55,6 +55,7 @@ def main():
     for pol, tag in (("P-static", "static"), ("P-hourly", "hourly")):
         for e in ("IPW", "SNIPW", "DR", "DM"):
             put(f"a2_{tag}_{e.lower()}_relerr", f"{100 * o['a2'][pol][e]['rel_err']:.1f}%", f"obd_slice.json a2.{pol}.{e}.rel_err")
+    put("a2_static_dr_relerr2", f"{100 * o['a2']['P-static']['DR']['rel_err']:.2f}%", "obd_slice.json a2.P-static.DR.rel_err (2 dp)")
     put("a1_changed", f"{o['a1']['cells_ratio_ge_1.5']}/20", "obd_slice.json a1.cells_ratio_ge_1.5")
     put("a1_median_ratio", f"{o['a1']['median_ratio']:.0f}", "obd_slice.json a1.median_ratio")
     A, Bd = o["a3_halves"]["A_deploy_BTS"], o["a3_halves"]["B_rollback_to_Random"]
@@ -100,6 +101,9 @@ def main():
     put("ms_dm_bias_pp", sgn(100 * ms["dm_bias"], 2), "decomposer_review.json nonlinmix2.0 DM bias ×100")
     put("ms_mixdm_bias_pp", sgn(100 * ms["mix_dm_bias"], 2), "decomposer_review.json nonlinmix2.0 DM-mix bias ×100")
     put("ms_mixdr_bias_pp", sgn(100 * ms["mix_dr_bias"], 2), "decomposer_review.json nonlinmix2.0 DR-mix bias ×100")
+    n_cov = sum(round(v["shap_cover"] * v["seeds"]) for v in r.values())
+    put("shap_counts", f"{n_cov}/{sum(v['seeds'] for v in r.values())}", "decomposer_review.json sum of shap_cover × seeds")
+    put("shap_settings", str(len(r)), "decomposer_review.json experiments")
     put("shap_cover", f"{100 * np.mean([v['shap_cover'] for v in r.values()]):.0f}%", "decomposer_review.json mean Shapley coverage")
 
     put("ms_true_mix_pp", sgn(100 * ms["truth"]["mix"], 2), "decomposer_review.json nonlinmix2.0 true mix ×100")

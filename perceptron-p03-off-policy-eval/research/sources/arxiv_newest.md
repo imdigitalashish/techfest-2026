@@ -502,3 +502,12 @@ Fetched with `research/tools/arxiv_fetch.py --query ... --since 2025-01-01` from
 
 ## Query: abs:"sensitivity analysis" AND abs:"policy value"
 
+
+## Query: id_list=2301.10330 (verification for the abstract, review A12)
+
+### arXiv:2301.10330 — Off-Policy Evaluation for Action-Dependent Non-Stationary Environments
+- Authors: Yash Chandak, Shiv Shankar, Nathaniel D. Bastian, Bruno Castro da Silva, Emma Brunskil, Philip S. Thomas
+- Published: 2023-01-24
+- Comment: Accepted at Thirty-sixth Conference on Neural Information Processing Systems (NeurIPS 2022)
+- URL: https://arxiv.org/abs/2301.10330 (accessed 2026-10-04 via arXiv API)
+- Abstract: Methods for sequential decision-making are often built upon a foundational assumption that the underlying decision process is stationary. This limits the application of such methods because real-world problems are often subject to changes due to external factors (passive non-stationarity), changes induced by interactions with the system itself (active non-stationarity), or both (hybrid non-stationarity). In this work, we take the first steps towards the fundamental challenge of on-policy and off-policy evaluation amidst structured changes due to active, passive, or hybrid non-stationarity. Towards this goal, we make a higher-order stationarity assumption such that non-stationarity results in changes over time, but the way changes happen is fixed. We propose, OPEN, an algorithm that uses a double application of counterfactual reasoning and a novel importance-weighted instrument-variable regression to obtain both a lower bias and a lower variance estimate of the structure in the changes of a policy's past performances. Finally, we show promising results on how OPEN can be used to predict future performances for several domains inspired by real-world applications that exhibit non-stationarity.
