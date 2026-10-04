@@ -10,12 +10,11 @@
 - _(none)_
 
 ## Now
-- **Phase:** 1–2 (SOTA research running in parallel with component map + contracts). Started 02:05 IST, 4 Oct.
-- **Plan (to 08:30 IST):** (1) 8 research agents → `research/sources/R*.md` → `research/landscape.md`; (2) component map + typed contracts (`architecture/`); (3) per-component research + six hats / adversarial / first-principles → ADR 001; (4) walking skeleton on WHO standards + SYNTHETIC cohort, eval harness with real numbers; (5) round-1 proposal + architecture diagram; (6) first auto-research loop on a spike.
-- **Doing:** research agents R1 gov systems · R2 law & standards · R3 evidence & numbers · R4a early-warning SOTA · R4b data quality / linkage / privacy SOTA · R5 deployed today · R6b social signal (retry) · R7b data sources (retry). Lead: Phase 0, WHO tables (done), components + contracts.
-- **Next:** landscape.md → components.md + contracts → builders → ADR 001 → proposal draft.
-- **Needs from user:** Register by 15 Oct for one theme (after the 12 Oct selection). Teammates (≤4): names and skills. (Probable) DHS Program account for NFHS-5 microdata — details to follow from R7b.
-- **Risks:** no public Poshan Tracker microdata (demo relies on SYNTHETIC data; real-data validation becomes a pilot item) · research-agent timeouts (2 already failed; relaunched narrower) · proposal must fit 6 A4 pages.
+- **Phase:** Morning package delivered (08:00 IST, 4 Oct). Next: Phase 4–5 on the spikes (early-warning evaluator, then auto-research loop on the credibility engine).
+- **Plan (next 48 h):** (1) build C5 `early_warning` with a frozen recall@capacity evaluator against the "no weight gain in 2 months" baseline; (2) first ratchet loop on C4 (`autoresearch/program.md`, frozen `eval.py`, `results.tsv`); (3) verify the legal layer (DPDP Act/Rules 2025, ABDM consent artefact, NDGFP) and the CMAM protocol timelines against primary texts. Then remove every (VERIFY) tag or change the design; (4) fix the action-router ops simulation (output invalid: median 999 days); (5) re-run the failed research threads (data-quality methods, deployed-global, NFHS-5 subgroup numbers) one at a time.
+- **Doing:** lead only (Supervisor lean mode: no sub-agents until lifted).
+- **Needs from user:** (a) Register by 15 Oct for one India@71 theme, after the 12 Oct selection memo. (b) Teammates (≤4): names, skills and contacts for the proposal header. (c) Optional, high value: any contact in a state WCD department or district administration willing to discuss a read-only Poshan Tracker extract for a pilot. Real data would replace our synthetic validation.
+- **Risks:** (1) all model metrics are on SYNTHETIC data; real Poshan Tracker microdata isn't public. (2) Legal citations unverified (agents failed). (3) Unions are already hostile to monitoring (FRS), so credibility scoring must be framed as supportive supervision. (4) Infrastructure: 20+ research agents died on 408 timeouts overnight.
 
 ## Phase 0 — what the judges must be able to see (from `_briefs/india71.txt`)
 | Criterion (official) | What we must show | Evidence we will produce |
@@ -59,22 +58,45 @@ Context from the statement: Poshan Tracker already tracks growth-monitoring and 
 - What others ship: state-level nutrition dashboards and command centres, and NGO/tech-partner pilots — find the latest published evaluations.
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — Working name **Poshan Setu**; no new frontline app, no new data entry; two-plane design (identity vault vs pseudonymous analytics). [components.md](architecture/components.md)
+- 2026-10-04 — Measurable gap = survey-vs-admin divergence on wasting (NFHS-5 19.3% vs Poshan Tracker 5.46%, June 2025) and the unknown share of under-detection behind it. [landscape §1](research/landscape.md)
+- 2026-10-04 — Spikes: **A credibility engine** + **B capacity-constrained early warning**; rest best practice. [ADR 001](architecture/adr/001-spike.md)
+- 2026-10-04 — Demo on WHO tables (real) + SYNTHETIC cohort calibrated to ki-consortium parameters; every artefact carries `synthetic=True`.
 
 ## Components
-| # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
+| # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric (latest, committed) |
 |---|---|---|---|---|---|---|
+| C0 | cohort_simulator | SimConfig → events + truth | — | | built | calibration: wasting 17.2% (NFHS-5 19.3%), stunting 36.7% (35.5%), 90-day recovery 70.9% (ki 71.1%), at-birth wasting 22.8% (ki SA 18.9%) — SYNTHETIC |
+| C1 | ingest_adapters | extracts/FHIR → canonical events | ETL | | contract | % schema-valid |
+| C2 | identity_linkage | IdentityRecord → LinkDecision | ID join, Fellegi–Sunter | (C) | built | F1 ids 0.513 · prob 0.945 · PPRL 0.968 — SYNTHETIC |
+| C3 | growth_standards | MeasurementEvent → AnthroZ | WHO Anthro | | built | max error 0.003 z on 87,408 WHO table points |
+| C4 | credibility_engine | events+z → RecordQuality, UnitCredibility | SMART / WHO-UNICEF survey checks | **A** | built | AUROC fabricating 0.694±0.041, any non-good 1.0 — SYNTHETIC |
+| C5 | early_warning | z, velocity, health events → RiskScore | 2-month no-gain rule | **B** | next | recall@capacity |
+| C6 | action_router | RiskScore/Alert → Task | monthly review | | built (sim invalid) | % within SLA |
+| C7 | frontline_worklist | Task → Worklist | PT home-visit scheduler | | built | payload bytes, % SMS ≤160 |
+| C8 | aggregate_publisher | events → AggregateCell | static dashboards | | contract | relative error at ε |
+| C9 | policy_gate | AccessRequest → AccessDecision | RBAC | | built | 29/29 red-team, 0 false allows |
+| C10 | audit_ledger | event → AuditEntry | DB audit | | built | tamper detection 100/100 |
 
-## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (the team registers for one theme by 15 Oct). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+## Selection memo (v1, 4 Oct 2026 — final by 12 Oct)
+- **Winnability — 4/5.** Few student teams will bring a verified admin-vs-survey gap (5.46% vs 19.3% wasting) *plus* a working, tested architecture. The judging rubric rewards evidence and ecosystem analysis, which we have with primary citations.
+- **Innovation headroom — 4/5.** The credibility engine (AWC-level trust scores from routine data, used to correct prevalence and target re-measurement) has no deployed Indian equivalent we could find. Capacity-capped, reason-coded early warning on linked ICDS + health data is rare in the literature ([L6](research/sources/L6-ews-models.md)).
+- **Feasibility by the deadline — 5/5.** Core components already run and are tested. The proposal (≤6 pages) is due 1 Nov, before the 19–25 Nov exams; finals prep is light.
+- **Demo strength at finals — 4/5.** Live pipeline: WHO-validated z-scores → credibility map → weekly worklist → escalation → audit trail. Weakness: synthetic data unless a state shares an extract.
+- **Fit with the user's strengths — 4/5.** Large-scale data systems, privacy engineering and ML; Microsoft/Azure experience is relevant to the government-cloud deployment story.
+- **Biggest risk:** judges discount synthetic validation, or see credibility scoring as surveillance of AWWs. Mitigation: re-measurement protocol as ground truth; supportive-supervision framing; real-data pilot plan.
+- **One-line pitch:** "India's child-growth data says 5% of children are wasted; the national survey says 19%. Poshan Setu tells each district which numbers to trust and which children to see this week, without a single new app."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 02:05–03:35 IST — Phase 0 + research fan-out
+Read PLAYBOOK, brief, official statement. Branch renamed. Wrote Phase 0 judging map and assumptions A1–A4 (see above). Launched 8 research agents (R1–R7); 7 of 8 died on model 408 timeouts (0 turns). Typed contracts written (pydantic → 23 JSON Schemas). WHO LMS tables fetched from WHO `anthro` (commit b776d8a).
+
+### 2026-10-04 03:35–06:10 IST — narrow research retry, builders, z-score engine
+Relaunched research as 12 narrow agents (L1–L12). Survivors with usable notes: L5 growth epidemiology (ki consortium, verified), L6 early-warning models, L7 deployed India (partial), L8 global (partial), L9 Poshan Tracker facts, L12 linkage/DP/audit tools, R6 social signal (partial), L4 state CSV. Failed: L1 DPDP, L2 ABDM/NDGFP, L3 NFHS-5, L10 CMAM protocol, L11 DQ methods → legal citations stay (VERIFY). Built `growth_standards` (validated against WHO's own expanded z-score tables: max error 0.003 z on 87,408 points), `cohort_simulator` (SYNTHETIC; calibrated), `credibility_engine` + frozen `eval.py`. Builder agents produced `identity_linkage` (F1 0.513/0.945/0.968) and most of policy_gate / audit_ledger / action_router / frontline_worklist before failing. Supervisor imposed lean mode at ~05:50.
+
+### 2026-10-04 07:10–08:00 IST — resume after session crash; morning package
+Pushed all component work (`31ccc35`; 19 tests pass). Verified the core gap at primary sources myself: Rajya Sabha USQ 477 Annexure I (Poshan Tracker June 2025: 37.07/5.46/15.93) and PIB PRID 1988614 (NFHS-5 35.5/19.3/32.1; Poshan Tracker Nov 2023 37.51/17.43/6). Wrote research/landscape.md, architecture/components.md, ADR 001, deliverables/round1-proposal.md + architecture.md, selection memo v1. Ran all component metrics into `eval/results/*.json`. Known issue: action-router ops simulation output invalid (median 999 days; queue overload under default assumptions), so it is excluded from all claims until fixed.
+
