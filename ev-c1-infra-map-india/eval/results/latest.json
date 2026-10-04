@@ -1,0 +1,972 @@
+{
+ "nat_bev_cum": {
+  "value": 10550090,
+  "text": "10,550,090",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "nat_bev_2025": {
+  "value": 2356971,
+  "text": "2,356,971",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "nat_bev_share_2025": {
+  "value": 8.05,
+  "text": "8.05%",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "official_pcs_aug2025": {
+  "value": 29277,
+  "text": "29,277",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "nat_bev_per_pcs": {
+  "value": 360.4,
+  "text": "360",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "osm_n": {
+  "value": 600,
+  "text": "600",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "osm_pct_official": {
+  "value": 2.05,
+  "text": "2.05%",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "osm_operator_pct": {
+  "value": 31.8,
+  "text": "31.8%",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "osm_socket_pct": {
+  "value": 7.8,
+  "text": "7.8%",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "mh_bev_cum": {
+  "value": 1185108,
+  "text": "1,185,108",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "mh_pcs": {
+  "value": 4155,
+  "text": "4,155",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "mh_bev_per_pcs": {
+  "value": 285.2,
+  "text": "285",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "mh_share_2W": {
+  "value": 83.6,
+  "text": "83.6%",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "mh_share_3W": {
+  "value": 5.5,
+  "text": "5.5%",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "mh_share_4W": {
+  "value": 9.6,
+  "text": "9.6%",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "state_bev_per_pcs_chandigarh": {
+  "value": 1966.0,
+  "text": "1,966",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_chandigarh": {
+  "value": 27524,
+  "text": "27,524",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_chandigarh": {
+  "value": 14,
+  "text": "14",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_assam": {
+  "value": 1123.1,
+  "text": "1,123",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_assam": {
+  "value": 386338,
+  "text": "386,338",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_assam": {
+  "value": 344,
+  "text": "344",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_bihar": {
+  "value": 1084.7,
+  "text": "1,085",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_bihar": {
+  "value": 565118,
+  "text": "565,118",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_bihar": {
+  "value": 521,
+  "text": "521",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_tripura": {
+  "value": 810.4,
+  "text": "810",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_tripura": {
+  "value": 45383,
+  "text": "45,383",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_tripura": {
+  "value": 56,
+  "text": "56",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_uttar_pradesh": {
+  "value": 792.0,
+  "text": "792",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_uttar_pradesh": {
+  "value": 1842283,
+  "text": "1,842,283",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_uttar_pradesh": {
+  "value": 2326,
+  "text": "2,326",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_chhattisgarh": {
+  "value": 632.5,
+  "text": "632",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_chhattisgarh": {
+  "value": 218859,
+  "text": "218,859",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_chhattisgarh": {
+  "value": 346,
+  "text": "346",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_odisha": {
+  "value": 556.5,
+  "text": "556",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_odisha": {
+  "value": 346713,
+  "text": "346,713",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_odisha": {
+  "value": 623,
+  "text": "623",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_uttarakhand": {
+  "value": 524.1,
+  "text": "524",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_uttarakhand": {
+  "value": 116866,
+  "text": "116,866",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_uttarakhand": {
+  "value": 223,
+  "text": "223",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_madhya_pradesh": {
+  "value": 452.9,
+  "text": "453",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_madhya_pradesh": {
+  "value": 519491,
+  "text": "519,491",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_madhya_pradesh": {
+  "value": 1147,
+  "text": "1,147",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_puducherry": {
+  "value": 414.0,
+  "text": "414",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_puducherry": {
+  "value": 20700,
+  "text": "20,700",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_puducherry": {
+  "value": 50,
+  "text": "50",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_tamil_nadu": {
+  "value": 405.2,
+  "text": "405",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_tamil_nadu": {
+  "value": 721587,
+  "text": "721,587",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_tamil_nadu": {
+  "value": 1781,
+  "text": "1,781",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_jharkhand": {
+  "value": 402.2,
+  "text": "402",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_jharkhand": {
+  "value": 141963,
+  "text": "141,963",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_jharkhand": {
+  "value": 353,
+  "text": "353",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_west_bengal": {
+  "value": 387.2,
+  "text": "387",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_west_bengal": {
+  "value": 349636,
+  "text": "349,636",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_west_bengal": {
+  "value": 903,
+  "text": "903",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_rajasthan": {
+  "value": 377.9,
+  "text": "378",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_rajasthan": {
+  "value": 578615,
+  "text": "578,615",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_rajasthan": {
+  "value": 1531,
+  "text": "1,531",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_andhra_pradesh": {
+  "value": 357.8,
+  "text": "358",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_andhra_pradesh": {
+  "value": 283726,
+  "text": "283,726",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_andhra_pradesh": {
+  "value": 793,
+  "text": "793",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_gujarat": {
+  "value": 348.2,
+  "text": "348",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_gujarat": {
+  "value": 420666,
+  "text": "420,666",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_gujarat": {
+  "value": 1208,
+  "text": "1,208",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_telangana": {
+  "value": 339.9,
+  "text": "340",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_telangana": {
+  "value": 362348,
+  "text": "362,348",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_telangana": {
+  "value": 1066,
+  "text": "1,066",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_kerala": {
+  "value": 315.2,
+  "text": "315",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_kerala": {
+  "value": 438804,
+  "text": "438,804",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_kerala": {
+  "value": 1392,
+  "text": "1,392",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_goa": {
+  "value": 300.7,
+  "text": "301",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_goa": {
+  "value": 47518,
+  "text": "47,518",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_goa": {
+  "value": 158,
+  "text": "158",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_jammu_and_kashmir": {
+  "value": 294.9,
+  "text": "295",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_jammu_and_kashmir": {
+  "value": 54555,
+  "text": "54,555",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_jammu_and_kashmir": {
+  "value": 185,
+  "text": "185",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_maharashtra": {
+  "value": 285.2,
+  "text": "285",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_maharashtra": {
+  "value": 1185108,
+  "text": "1,185,108",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_maharashtra": {
+  "value": 4155,
+  "text": "4,155",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_delhi": {
+  "value": 278.4,
+  "text": "278",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_delhi": {
+  "value": 547611,
+  "text": "547,611",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_delhi": {
+  "value": 1967,
+  "text": "1,967",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_punjab": {
+  "value": 257.8,
+  "text": "258",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_punjab": {
+  "value": 184866,
+  "text": "184,866",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_punjab": {
+  "value": 717,
+  "text": "717",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_lakshadweep": {
+  "value": 224.0,
+  "text": "224",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_lakshadweep": {
+  "value": 224,
+  "text": "224",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_lakshadweep": {
+  "value": 1,
+  "text": "1",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_haryana": {
+  "value": 207.4,
+  "text": "207",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_haryana": {
+  "value": 193926,
+  "text": "193,926",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_haryana": {
+  "value": 935,
+  "text": "935",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_mizoram": {
+  "value": 207.2,
+  "text": "207",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_mizoram": {
+  "value": 2694,
+  "text": "2,694",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_mizoram": {
+  "value": 13,
+  "text": "13",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_karnataka": {
+  "value": 152.4,
+  "text": "152",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_karnataka": {
+  "value": 928891,
+  "text": "928,891",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_karnataka": {
+  "value": 6097,
+  "text": "6,097",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_ut_of_dnh_and_dd": {
+  "value": 149.7,
+  "text": "150",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_ut_of_dnh_and_dd": {
+  "value": 1347,
+  "text": "1,347",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_ut_of_dnh_and_dd": {
+  "value": 9,
+  "text": "9",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_andaman_and_nicobar_island": {
+  "value": 139.0,
+  "text": "139",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_andaman_and_nicobar_island": {
+  "value": 556,
+  "text": "556",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_andaman_and_nicobar_island": {
+  "value": 4,
+  "text": "4",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_ladakh": {
+  "value": 104.0,
+  "text": "104",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_ladakh": {
+  "value": 104,
+  "text": "104",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_ladakh": {
+  "value": 1,
+  "text": "1",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_manipur": {
+  "value": 71.6,
+  "text": "72",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_manipur": {
+  "value": 4152,
+  "text": "4,152",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_manipur": {
+  "value": 58,
+  "text": "58",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_himachal_pradesh": {
+  "value": 63.8,
+  "text": "64",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_himachal_pradesh": {
+  "value": 8745,
+  "text": "8,745",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_himachal_pradesh": {
+  "value": 137,
+  "text": "137",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_meghalaya": {
+  "value": 43.2,
+  "text": "43",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_meghalaya": {
+  "value": 2676,
+  "text": "2,676",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_meghalaya": {
+  "value": 62,
+  "text": "62",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_arunachal_pradesh": {
+  "value": 7.0,
+  "text": "7",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_arunachal_pradesh": {
+  "value": 328,
+  "text": "328",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_arunachal_pradesh": {
+  "value": 47,
+  "text": "47",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_sikkim": {
+  "value": 3.4,
+  "text": "3",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_sikkim": {
+  "value": 41,
+  "text": "41",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_sikkim": {
+  "value": 12,
+  "text": "12",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_per_pcs_nagaland": {
+  "value": 3.0,
+  "text": "3",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_cum_nagaland": {
+  "value": 128,
+  "text": "128",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_pcs_nagaland": {
+  "value": 42,
+  "text": "42",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "mh_rtos": {
+  "value": 61,
+  "text": "61",
+  "source": "eval/results/mh_district_summary.json"
+ },
+ "mh_reconciliation_err": {
+  "value": 0.0,
+  "text": "0.0",
+  "source": "eval/results/mh_district_summary.json"
+ },
+ "ocm_n_in_india": {
+  "value": 1869,
+  "text": "1,869",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "ovt_n_in_india": {
+  "value": 1039,
+  "text": "1,039",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "osm_n_in_india": {
+  "value": 599,
+  "text": "599",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "linked_records": {
+  "value": 3507,
+  "text": "3,507",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "linked_sites": {
+  "value": 3336,
+  "text": "3,336",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "sites_in_all3": {
+  "value": 7,
+  "text": "7",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "open_coverage_pct": {
+  "value": 11.4,
+  "text": "11.4%",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_nat": {
+  "value": 80832.7,
+  "text": "80,833",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_nat_lo": {
+  "value": 35915.2,
+  "text": "35,915",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_nat_hi": {
+  "value": 171036.3,
+  "text": "171,036",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_states": {
+  "value": 17,
+  "text": "17",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_median_ratio": {
+  "value": 0.576,
+  "text": "0.58",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "union_median_ratio": {
+  "value": 0.094,
+  "text": "0.094",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_median_abs_log": {
+  "value": 0.844,
+  "text": "0.84",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_ci_coverage": {
+  "value": 0.471,
+  "text": "47%",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_passes": {
+  "value": false,
+  "text": "fails",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "cg_districts": {
+  "value": 28,
+  "text": "28",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_official_total": {
+  "value": 270,
+  "text": "270",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_wape_open_share": {
+  "value": 0.995,
+  "text": "0.99",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_spearman_open_share": {
+  "value": 0.456,
+  "text": "0.46",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_wape_bev_share": {
+  "value": 0.54,
+  "text": "0.54",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_spearman_bev_share": {
+  "value": 0.855,
+  "text": "0.85",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_wape_blend_50_50": {
+  "value": 0.705,
+  "text": "0.70",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_spearman_blend_50_50": {
+  "value": 0.766,
+  "text": "0.77",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_wape_small_area_model": {
+  "value": 0.41,
+  "text": "0.41",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_spearman_small_area_model": {
+  "value": 0.841,
+  "text": "0.84",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_ci_coverage": {
+  "value": 0.821,
+  "text": "82%",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "sa_loo": {
+  "value": 0.515,
+  "text": "0.52",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "mh_districts": {
+  "value": 35,
+  "text": "35",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_open_sites": {
+  "value": 435,
+  "text": "435",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_zero_open_districts": {
+  "value": 17,
+  "text": "17",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_need_ka": {
+  "value": 7773,
+  "text": "7,773",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_shortfall_ka": {
+  "value": 3641,
+  "text": "3,641",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "ka_bev_per_pcs": {
+  "value": 152.4,
+  "text": "152.4",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "sa_b_mh": {
+  "value": 0.463,
+  "text": "0.46",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "sa_c_mh": {
+  "value": 0.313,
+  "text": "0.31",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_top1_name": {
+  "value": "Nagpur",
+  "text": "Nagpur",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_top1_bev_per_stn": {
+  "value": 573.8,
+  "text": "574",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_top1_range": {
+  "value": "423–774",
+  "text": "423–774",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_top2_name": {
+  "value": "Amravati",
+  "text": "Amravati",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_top2_bev_per_stn": {
+  "value": 467.3,
+  "text": "467",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_top2_range": {
+  "value": "323–723",
+  "text": "323–723",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_top3_name": {
+  "value": "Nashik",
+  "text": "Nashik",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_top3_bev_per_stn": {
+  "value": 441.0,
+  "text": "441",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_top3_range": {
+  "value": "351–566",
+  "text": "351–566",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "nagpur_bev": {
+  "value": 113736,
+  "text": "113,736",
+  "source": "eval/results/mh_district_gap.csv"
+ },
+ "nagpur_open": {
+  "value": 4,
+  "text": "4",
+  "source": "eval/results/mh_district_gap.csv"
+ },
+ "nagpur_est": {
+  "value": 198.2,
+  "text": "198",
+  "source": "eval/results/mh_district_gap.csv"
+ },
+ "nagpur_lo": {
+  "value": 147.0,
+  "text": "147",
+  "source": "eval/results/mh_district_gap.csv"
+ },
+ "nagpur_hi": {
+  "value": 269.04999999999995,
+  "text": "269",
+  "source": "eval/results/mh_district_gap.csv"
+ },
+ "nagpur_3w_pct": {
+  "value": 24,
+  "text": "24%",
+  "source": "eval/results/mh_district_gap.csv"
+ },
+ "c9_dev_naive": {
+  "value": 0.2315,
+  "text": "0.232",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9_hold_naive": {
+  "value": 0.2229,
+  "text": "0.223",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9_dev_pooled": {
+  "value": 0.1732,
+  "text": "0.173",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9_hold_pooled": {
+  "value": 0.1657,
+  "text": "0.166",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9_dev_logit": {
+  "value": 0.147,
+  "text": "0.147",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9_hold_logit": {
+  "value": 0.1572,
+  "text": "0.157",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9_dev_ensemble": {
+  "value": 0.1584,
+  "text": "0.158",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9_hold_ensemble": {
+  "value": 0.161,
+  "text": "0.161",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9_hold_gain_vs_naive": {
+  "value": 29,
+  "text": "29%",
+  "source": "eval/results/c9_summary.json"
+ },
+ "nowcast_wape": {
+  "value": 0.0721,
+  "text": "7.2%",
+  "source": "eval/results/c9_summary.json"
+ },
+ "nowcast_mean_nat_err": {
+  "value": 0.0301,
+  "text": "3.0%",
+  "source": "eval/results/c9_summary.json"
+ },
+ "nowcast_max_nat_err": {
+  "value": 0.0773,
+  "text": "7.7%",
+  "source": "eval/results/c9_summary.json"
+ },
+ "nowcast_2026": {
+  "value": 3598002,
+  "text": "3,598,002",
+  "source": "eval/results/c9_summary.json"
+ },
+ "nowcast_2026_m": {
+  "value": 3.6,
+  "text": "3.60 million",
+  "source": "eval/results/c9_summary.json"
+ },
+ "nowcast_2026_lo_m": {
+  "value": 3.56,
+  "text": "3.56",
+  "source": "eval/results/c9_summary.json"
+ },
+ "nowcast_2026_hi_m": {
+  "value": 3.6,
+  "text": "3.60",
+  "source": "eval/results/c9_summary.json"
+ },
+ "ytd_2026": {
+  "value": 2533727,
+  "text": "2,533,727",
+  "source": "eval/results/c9_summary.json"
+ },
+ "nowcast_growth": {
+  "value": 53,
+  "text": "53%",
+  "source": "eval/results/c9_summary.json"
+ }
+}

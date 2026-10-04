@@ -1,0 +1,54 @@
+{
+ "radius_m": 150,
+ "records": {
+  "osm": 599,
+  "ocm": 1869,
+  "ovt": 1039
+ },
+ "sites_linked": 3336,
+ "national_cells": {
+  "001": 952,
+  "010": 1720,
+  "011": 65,
+  "100": 501,
+  "101": 15,
+  "110": 76,
+  "111": 7
+ },
+ "national_mse": {
+  "n_obs": 3336,
+  "model": "OC+OV+CV",
+  "N_hat": 80832.7,
+  "ci90_lo": 35915.2,
+  "ci90_hi": 171036.3,
+  "n_boot_ok": 300
+ },
+ "official_national_aug2025": 29277,
+ "ieefa_national_jul2026": 52718,
+ "states_evaluated": 17,
+ "states_with_mse": 21,
+ "bias_median_log_ratio_mse": -0.552,
+ "median_abs_log_ratio_mse": 0.844,
+ "bias_median_log_ratio_union": -2.365,
+ "median_abs_log_ratio_union": 2.365,
+ "ci90_coverage_of_official": 0.471,
+ "median_mse_over_official": 0.576,
+ "median_union_over_official": 0.094,
+ "passes_state_check": false,
+ "pass_rule": "median |ln(MSE/official)| < ln 1.25 AND 90% CI covers official in >= 80% of states (states with >= 100 official PCS)"
+}
+    state_key  n_osm  n_ocm  n_ovt  in_all3  n_obs    model   N_hat  ci90_lo  ci90_hi  official_pcs_aug2025  mse_over_official
+    karnataka     67    379    170        4    573 OC+OV+CV 12734.6   2709.8  65391.7                  6097              2.089
+  maharashtra     71     76    303        1    435       OC  5302.5   3372.0  12978.7                  4155              1.276
+ uttarpradesh     24     29     34        0     82       OV   336.4    208.0    788.0                  2326              0.145
+        delhi    172     33     64        1    254       OC  2496.0   1384.3   6089.2                  1967              1.269
+    tamilnadu     68    211    128        1    378       OC  2261.3   1678.0   3625.8                  1781              1.270
+    rajasthan      4     47     13        0     63    indep   848.1    251.7   1011.3                  1531              0.554
+       kerala     96    598     41        0    689       OV  1781.0   1502.5   2164.8                  1392              1.279
+      gujarat      6     32     69        0    106    indep  2809.3    857.3   3060.1                  1208              2.326
+    telangana      4     12    115        0    130    indep  1885.1    571.2   2399.2                  1066              1.768
+      haryana     10     28     43        0     73       OC   204.2    144.3    363.2                   935              0.218
+andhrapradesh     31     77     13        0    119    indep  1887.3    743.7   3877.4                   793              2.380
+       punjab      1      2      8        0     10    indep    25.4     10.0     35.0                   717              0.035
+       odisha      2    239      1        0    240    indep   358.8    240.0    714.6                   623              0.576
+ chhattisgarh      0     54      1        0     55       CV    55.7     55.3     56.2                   346              0.161
