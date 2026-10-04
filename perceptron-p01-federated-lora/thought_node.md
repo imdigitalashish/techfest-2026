@@ -24,7 +24,7 @@
     - P3: clean scenario × 5. P4: ladder. P5: extras.
     - ≈ 2.5 min per run; P1 due around 12:20.
   - **GPU FROZEN** for Namma Space (Supervisor ~11:46): runner PID 44556 stopped, no training running. Restart on "GPU free" with `kill 44556 && scripts/handover_to_queue.sh 0`.
-  - Child session "P1 review: abstract+spike (gpt-6-astra)" is running. The gpt-6-sol code review is done; dispositions are recorded.
+  - Both cross-model reviews are done and recorded: gpt-6-sol (code/eval) 13/14 accepted; gpt-6-astra (abstract/spike) 12/12 accepted, 3.40/5 on v2. Abstract v3 and the memo are rendered from results. Both child sessions are archived.
   - **Done since resume:**
     - FFA-LoRA + FlexLoRA implemented from the papers' equations;
     - bounded norm shares; sliced uploads; `env.code_sha` provenance;
@@ -290,3 +290,25 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
   AnchorLoRA improves 4/5 domains Bonferroni-significant.
 - **Started** child session "P1 review: abstract+spike (gpt-6-astra)" (max effort): rubric scores, novelty vs CF-LoRA/PreLort, over-claims. The sol session is archived.
+
+### 2026-10-04 12:28 IST — Lead: hostile-judge review acted on; abstract v3
+- **gpt-6-astra (max) review** of abstract v2 + spike: **3.40/5** on the official rubric (1 BLOCKING, 8 MAJOR, 3 MINOR). **All 12 accepted**; dispositions appended to `reviews/2026-10-04-abstract-spike-gpt-6-astra.md`, ledger updated.
+  - **The BLOCKING finding was right:** exact aggregation ≠ unbiased optimisation.
+    - The participation corrections are heuristics.
+    - Prefix masks also omit other clients' gradients in columns that only c0 owns.
+    - So "unbiased under partial participation" is gone from every deliverable.
+  - **Novelty reframed** as "an evaluated systems recipe extending FFA-LoRA's frozen-A design to prefix-masked device updates".
+    - Not a new primitive; no "minimal upload" claim.
+    - `anchor_full_seg` ≠ PreLort, because PreLort's multi-prefix training is not reproduced.
+  - **The reviewer recounted admitted work over seeds 0–2:**
+
+    | Quantity | AnchorLoRA | Starter |
+    |---|---|---|
+    | Fresh client-rounds | 143 | 115 |
+    | Partial client-rounds | 28 | 0 |
+    | Replays | 32 | 0 |
+
+    So the pilot is a **full-system comparison, not matched work**. The attribution controls (P2) are the decisive next experiment.
+- **Abstract v3:** 889 words, all 8 sections, number check PASS, per-comparison shared n in the table, exploratory labels, an operational definition of meaningful participation.
+- **Also updated:** ADR 001 (supersession table), `research/novelty.md`, landscape, diagram, memo (re-rendered and synced).
+- **Provenance note (review #7):** the ten provisional v2 rows predate the per-run `data_digest`/`model_revision` fields. Continuity rests on the committed token blocks plus the bit-identical v1→v2 reruns. The original README document inventory cannot be rebuilt (source pool changed).
