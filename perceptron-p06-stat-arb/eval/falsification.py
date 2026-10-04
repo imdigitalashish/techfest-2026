@@ -82,13 +82,16 @@ def day_q(date: str, offsets: dict | None = None) -> tuple[pl.DataFrame, list[st
 def cached_cells(date: str, tag: str = "exch", offsets: dict | None = None, clock: str = "ts_exch_us", feed_extra: bool = True):
     os.makedirs(CACHE, exist_ok=True)
     pc, po = f"{CACHE}/cells_{date}_{tag}.parquet", f"{CACHE}/opp_{date}_{tag}.parquet"
+    keep = ["opp_id", "pair", "duration_us", "censored", "edge0_bps", "t_start_us"]
     if os.path.exists(pc) and os.path.exists(po):
-        return pl.read_parquet(pc), pl.read_parquet(po)
+        o = pl.read_parquet(po)
+        if "t_start_us" in o.columns:          # older caches lack it → rebuild (deterministic)
+            return pl.read_parquet(pc), o
     q, legs = day_q(date, offsets)
     c, o = cells(q, legs, date, clock, feed_extra)
     c.write_parquet(pc)
-    o.select("opp_id", "pair", "duration_us", "censored", "edge0_bps").write_parquet(po)
-    return c, o.select("opp_id", "pair", "duration_us", "censored", "edge0_bps")
+    o.select(keep).write_parquet(po)
+    return c, o.select(keep)
 
 
 def score_policies(train: pl.DataFrame, test: pl.DataFrame) -> list[dict]:
@@ -122,13 +125,33 @@ def sign_p(x: np.ndarray) -> float:
     return float(binomtest(k, x.size, 0.5, alternative="greater").pvalue)
 
 
+def wilcoxon_p(x: np.ndarray) -> float:
+    """One-sided Wilcoxon signed-rank p-value for 'median difference > 0'."""
+    from scipy.stats import wilcoxon
+    if x.size < 2 or np.all(x == 0):
+        return float("nan")
+    return float(wilcoxon(x, alternative="greater").pvalue)
+
+
+def compare(diff: np.ndarray, base: np.ndarray | None = None) -> dict:
+    lo, hi = boot_ci(diff)
+    tlo, thi = t_ci(diff)
+    out = {"mean_usd_per_day": float(diff.mean()), "median_usd_per_day": float(np.median(diff)), "ci95": [lo, hi],
+           "t_ci95": [tlo, thi], "days_positive": int((diff > 0).sum()), "sign_p": sign_p(diff), "wilcoxon_p": wilcoxon_p(diff),
+           "n_days": int(diff.size), "falsified (lower bound <= 0)": bool(lo <= 0 or tlo <= 0)}
+    if base is not None:
+        out["relative_uplift_mean"] = float(np.mean(diff / np.where(base != 0, base, np.nan)))
+        out["relative_uplift_of_totals"] = float(diff.sum() / base.sum()) if base.sum() != 0 else float("nan")
+    return out
+
+
 def boot_ci(x: np.ndarray, n: int = 10000, seed: int = 0) -> tuple[float, float]:
     rng = np.random.default_rng(seed)
     means = rng.choice(x, size=(n, x.size), replace=True).mean(axis=1)
     return float(np.quantile(means, 0.025)), float(np.quantile(means, 0.975))
 
 
-def walkforward(days: list[str]) -> dict:
+def walkforward(days: list[str], subsets: dict[str, list[str]] | None = None) -> dict:
     data = {}
     for d in days:
         t0 = time.time()
@@ -141,15 +164,15 @@ def walkforward(days: list[str]) -> dict:
         print("scored", cur, flush=True)
     df = pl.DataFrame([{k: v for k, v in r.items() if k != "cells"} for r in per_day])
     wide = df.pivot(on="policy", index="test", values="total").sort("test")
-    out = {"days": days, "per_day": per_day, "table": wide.to_dicts(), "comparisons": {}}
-    for a, b in [("lev", "threshold_pair"), ("gbm_clf", "threshold_pair"), ("ev_kmpair", "threshold_pair"), ("threshold_pair", "naive"),
-                 ("lev", "lev_edge_only")]:
-        diff = (wide[a] - wide[b]).to_numpy()
-        lo, hi = boot_ci(diff)
-        tlo, thi = t_ci(diff)
-        out["comparisons"][f"{a} - {b}"] = {"mean_usd_per_day": float(diff.mean()), "ci95": [lo, hi], "t_ci95": [tlo, thi],
-                                            "days_positive": int((diff > 0).sum()), "sign_p": sign_p(diff), "n_days": int(diff.size),
-                                            "falsified (lower bound <= 0)": bool(lo <= 0 or tlo <= 0)}
+    out = {"days": days, "per_day": per_day, "table": wide.to_dicts(), "comparisons": {}, "subsets": {}}
+    pairs = [("lev", "threshold_pair"), ("gbm_clf", "threshold_pair"), ("ev_kmpair", "threshold_pair"), ("threshold_pair", "naive"),
+             ("lev", "lev_edge_only")]
+    for a, b in pairs:
+        out["comparisons"][f"{a} - {b}"] = compare((wide[a] - wide[b]).to_numpy(), wide[b].to_numpy())
+    for name, sub in (subsets or {}).items():
+        w = wide.filter(pl.col("test").is_in(sub))
+        out["subsets"][name] = {"test_days": w["test"].to_list(),
+                                **{f"{a} - {b}": compare((w[a] - w[b]).to_numpy(), w[b].to_numpy()) for a, b in pairs[:1] + pairs[4:]}}
     # per-cell LEV − threshold
     cell_keys = list(per_day[0]["cells"])
     pc = {}
@@ -211,11 +234,21 @@ def md_walkforward(r: dict) -> str:
         L.append(f"| {row['test']} | " + " | ".join(f"{row[p]:,.0f}" for p in pols) + " |")
     L += ["", "Falsified = the lower bound of either 95% interval is ≤ 0. With few test days the percentile bootstrap is optimistic, "
           "so the t-interval and a one-sided sign test are also reported.", "",
-          "| comparison | mean USD/day | 95% bootstrap CI | 95% t-CI | days positive | sign-test p | falsified? |", "|---|---|---|---|---|---|---|"]
+          "| comparison | mean USD/day | median | 95% bootstrap CI | 95% t-CI | days positive | sign p | Wilcoxon p | rel. uplift (totals) | falsified? |",
+          "|---|---|---|---|---|---|---|---|---|---|"]
+
+    def row(k, v):
+        rel = v.get("relative_uplift_of_totals")
+        return (f"| {k} | {v['mean_usd_per_day']:+,.1f} | {v['median_usd_per_day']:+,.1f} | [{v['ci95'][0]:+,.1f}, {v['ci95'][1]:+,.1f}] | "
+                f"[{v['t_ci95'][0]:+,.1f}, {v['t_ci95'][1]:+,.1f}] | {v['days_positive']}/{v['n_days']} | {v['sign_p']:.4f} | "
+                f"{v['wilcoxon_p']:.4f} | {'' if rel is None else f'{rel:+.1%}'} | {'YES' if v['falsified (lower bound <= 0)'] else 'no'} |")
     for k, v in r["comparisons"].items():
-        L.append(f"| {k} | {v['mean_usd_per_day']:+,.1f} | [{v['ci95'][0]:+,.1f}, {v['ci95'][1]:+,.1f}] | "
-                 f"[{v['t_ci95'][0]:+,.1f}, {v['t_ci95'][1]:+,.1f}] | {v['days_positive']}/{v['n_days']} | {v['sign_p']:.3f} | "
-                 f"{'YES' if v['falsified (lower bound <= 0)'] else 'no'} |")
+        L.append(row(k, v))
+    for name, sub in r.get("subsets", {}).items():
+        L += ["", f"Subset `{name}` (test days {', '.join(sub['test_days'])}):", "",
+              "| comparison | mean USD/day | median | 95% bootstrap CI | 95% t-CI | days positive | sign p | Wilcoxon p | rel. uplift (totals) | falsified? |",
+              "|---|---|---|---|---|---|---|---|---|---|"]
+        L += [row(k, v) for k, v in sub.items() if k != "test_days"]
     L += ["", "LEV − threshold by cell (mean USD/day, 95% CI, days positive):", "", "| cell | mean | CI | days + |", "|---|---|---|---|"]
     for k, v in r["lev_minus_threshold_by_cell"].items():
         L.append(f"| {k} | {v['mean']:+,.1f} | [{v['ci95'][0]:+,.1f}, {v['ci95'][1]:+,.1f}] | {v['days_positive']} |")
@@ -241,12 +274,15 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     w = sub.add_parser("walkforward"); w.add_argument("--days", nargs="+", required=True)
+    w.add_argument("--out", default="falsification_walkforward")
+    w.add_argument("--subset", action="append", default=[], help="name:day1,day2,... (test days for a secondary analysis)")
     c = sub.add_parser("clockskew"); c.add_argument("--train", default="2026-09-01"); c.add_argument("--test", default="2026-10-01")
     c.add_argument("--seeds", type=int, nargs="+", default=[0, 1, 2]); c.add_argument("--max-skew-ms", type=float, default=5.0)
     a = ap.parse_args()
     t0 = time.time()
     if a.cmd == "walkforward":
-        res, name, md = walkforward(a.days), "falsification_walkforward", md_walkforward
+        subsets = {x.split(":", 1)[0]: x.split(":", 1)[1].split(",") for x in a.subset}
+        res, name, md = walkforward(a.days, subsets), a.out, md_walkforward
     else:
         res, name, md = clockskew(a.train, a.test, a.seeds, int(a.max_skew_ms * 1000)), "falsification_clockskew", md_clockskew
     res["runtime_s"] = time.time() - t0
