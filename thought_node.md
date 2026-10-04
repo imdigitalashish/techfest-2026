@@ -7,13 +7,12 @@
 - _(empty)_
 
 ## Now (16:44 IST, 4 Oct)
-- **Mode:** batch of up to 5. The queue holds only APCTT (gated on the 10 Oct data), so 4 leads are active.
+- **Mode:** batch of up to 5. The queue holds only APCTT (gated on the 10 Oct data), so 3 leads are active.
 - **Active:**
   - P2: primary passed (+0.396 vs StreamingLLM at 25% KV). Identity checks I1–I3 pass, so the loss at 25/50% is real, not plumbing; mechanism under test. Selection memo v2.
   - P8: final abstract (check_docs 118 claims OK); astra and sol reviews running. Honest headline: no gap vs GPT-5.5 on real data; the exact-first cascade halves LLM calls and cost on tutor-native items; the engine is deterministic (GPT-5.5 changed 2/40 answers across 3 runs).
-  - India@71 T2: proposal v1.1 final PDF. Two pre-registered coverage tests passed (0.967, conservative, ±6 pp). Reviews: sol 12/12, astra 4/4.
   - InnovateX T3: final package v1; astra review running; YOLO11n baseline on the GPU.
-- **Completed — awaiting your review (15):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6 · InnovateX T2.
+- **Completed — awaiting your review (16):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6 · InnovateX T2 · India@71 T2.
 - **Azure running now:** P2's VM `p02-kv-1` (D16ds_v5) and P8's pay-per-token OpenAI resource.
 - **Memory:** level 25–32%, swap 28–30 GB. Your VM and the open 3D-viewer panel are the big consumers.
 ## User action items
@@ -40,7 +39,8 @@
   - Your VM (`com.apple.Virtualization`, up 7 days, 6.2 GB resident + 9.9 GB compressed) is by far the largest user. CapCut (~2.3 GB) and Brave/Chrome (~5 GB) come next.
   - Namma Space's 3D training is spending 79% of its CPU time in the kernel, i.e. thrashing.
   - Quitting the VM (Docker/OrbStack/UTM) and CapCut while the projects run is the single biggest speed-up. I've already closed the projects' leftover browsers and servers.
-- [ ] **India@71 theme pick by 15 Oct (one theme per team):** T1 nutrition (✅, memo 4.2) vs T3 financial inclusion (✅, memo 3.9, which itself recommends T1); T2 learning is still running.
+- [ ] **India@71 theme pick by 15 Oct (one theme per team):** all three are ✅. T1 nutrition (memo 4.2) is recommended by all three leads; T2 learning (3.9) and T3 financial inclusion (3.9) both recommend T1.
+  - T2's honest findings: its intervals are conservative (96.7% coverage of nominal 90%, ±6 pp, in two pre-registered tests), and its allocation gain is not shown. It's the stronger reserve on evidence quality.
   - T3's honest finding: its learned targeting beats the transparent rule only on SYNTHETIC data, so the rule ships, as in T1.
   - If T3 is chosen: team details, a partner bank's financial-inclusion head, and field conversations.
 - [ ] **India@71 T1 (✅ Completed — please review):** team names + Team ID for `India71_100_[TeamID].pdf`; a state/district WCD contact for a pilot data extract; a union/worker-association contact for co-design.
@@ -106,6 +106,14 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 16:47 IST — India@71 T2 completed
+- **T2 DONE (4c073af), verified on main:** check_docs 17/17; 67 tests; PDF 6 pp Arial.
+  - Reviews: astra 24/25 + re-score, sol 12/12.
+  - Memo 3.9: it recommends T1.
+  - Killed its leftover Playwright Chrome (PID 82640).
+- All three India@71 leads now recommend T1.
+- No resume (queue gated); 3 leads active.
+
 ### 2026-10-04 16:44 IST — Sweep
 - P2 identity checks pass (dev seed 100): the non-monotonic recall at 25/50% KV is a real effect of isolated re-prefill, not an artifact.
 - India@71 T2 v2 coverage test registered 16:31:04 on fresh seeds 201–230; v1 stands.
