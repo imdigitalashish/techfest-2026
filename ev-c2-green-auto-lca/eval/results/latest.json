@@ -1,20 +1,20 @@
 {
   "harness": "v2",
-  "commit": "15075e1",
-  "inputs_id": "8997a50ce9",
+  "commit": "adbe4b0",
+  "inputs_id": "e8a4f972e7",
   "n": 10000,
   "seed": 20261004,
   "db": {
-    "records": 124,
-    "sources": 19,
+    "records": 127,
+    "sources": 20,
     "by_status": {
-      "verified": 104,
+      "verified": 107,
       "derived": 20
     },
     "by_layer": {
       "energy": 73,
       "fuels": 13,
-      "method": 7,
+      "method": 10,
       "vehicle": 10,
       "battery": 4,
       "use": 17
@@ -25,7 +25,7 @@
       "CO2e-AR6-GWP100": 2,
       "CO2e-AR5-GWP100": 22,
       "CO2e-CH4-GWP20": 5,
-      "CO2e-unspecified": 2
+      "CO2e-unspecified": 5
     }
   },
   "verification": {
