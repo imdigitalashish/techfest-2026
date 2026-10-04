@@ -326,8 +326,8 @@ const $$ = s => Array.from(document.querySelectorAll(s));
 
 // ---- provenance: ONE value (MODE) drives every label; these two lines are the only place the words appear
 const PROV_WORDS = {
-  LIVE: {badge: 'LIVE', adj: 'live', ff: 'fast-forwarding, computed live', computed: 'computed live now by the committed code', ms: 'LP re-plan every minute: %s ms median (measured live on this laptop)', only: 'live only', you: 'your live intervention', sg: 'your surge', Sg: 'Your surge', me: 'you', stopped: 'LIVE COMPUTATION STOPPED.', closing: 'The interventions and simulations were computed live; the reference distributions and confidence intervals are committed results.'}, // PROV-WORDS:LIVE
-  RECORDED: {badge: 'RECORDED', adj: 'recorded', ff: 'fast-forwarding (recorded)', computed: 'recorded earlier by demo/record.py from the committed code', ms: 'solve times are not part of the recording', only: 'recorded, not committed evidence', you: 'a recorded intervention', sg: 'the recorded surge', Sg: 'The recorded surge', me: 'recorded', stopped: '', closing: 'In this recording, the interventions and simulations were computed earlier by demo/record.py from the committed code; the reference distributions and confidence intervals are committed results.'}, // PROV-WORDS:RECORDED
+  LIVE: {badge: 'LIVE', adj: 'live', ff: 'fast-forwarding, computed live', computed: 'computed live now by the committed code', ms: 'LP re-plan every minute: %s ms median (measured live on this laptop)', only: 'live only', you: 'your live intervention', sg: 'your surge', Sg: 'Your surge', me: 'you', since: 'live only', stopped: 'LIVE COMPUTATION STOPPED.', closing: 'The interventions and simulations were computed live; the reference distributions and confidence intervals are committed results.'}, // PROV-WORDS:LIVE
+  RECORDED: {badge: 'RECORDED', adj: 'recorded', ff: 'fast-forwarding (recorded)', computed: 'recorded earlier by demo/record.py from the committed code', ms: 'solve times are not part of the recording', only: 'recorded, not committed evidence', you: 'a recorded intervention', sg: 'the surge', Sg: 'The surge', me: 'recorded', since: 'recorded', stopped: '', closing: 'In this recording, the interventions and simulations were computed earlier by demo/record.py from the committed code; the reference distributions and confidence intervals are committed results.'}, // PROV-WORDS:RECORDED
 };
 let MODE = 'LIVE', PW = PROV_WORDS.LIVE, BACKEND = false, STOPPED = false;
 const pvTag = (m = MODE) => `<span class="pv ${m}">${m === 'COMMITTED' ? 'COMMITTED' : PROV_WORDS[m].badge}</span>`;
@@ -743,6 +743,8 @@ class LiveView {
     } else if (this.o.chip) this.o.chip(this, chip);
     else { chip.className = 'chip'; chip.textContent = ''; }
     if (this.o.onDom) this.o.onDom(this);
+    const over = this.cities.some(c => { const p = c.cv.parentElement; if (p.scrollTop) p.scrollTop = 0; return p.scrollHeight > p.clientHeight + 1; });
+    if (over && TAB === this.key && !this.refit) { this.refit = true; layout(); this.refit = false; }   // labels grew: shrink the cities
   }
 }
 
@@ -819,7 +821,7 @@ const NYC_VIEW = {
       v.id('Lost' + s).textContent = opened ? v.win[i] : '–';
       v.id('LostLbl' + i).textContent = `fleet-wide losses, 21:30–23:30 (${PW.adj}${fin ? ', final' : opened ? ', so far' : ', opens 21:30'})`;
       v.id('SrvLbl' + i).textContent = `served since 3 July (${PW.adj})`;
-      if (inter && since) { v.id('C3' + s).textContent = v.since[i]; v.id('C3Lbl' + i).textContent = `lost since ${PW.sg} (${PW.only})`; }
+      if (inter && since) { v.id('C3' + s).textContent = v.since[i]; v.id('C3Lbl' + i).textContent = `lost since ${PW.sg} (${PW.since})`; }
       else { v.id('C3' + s).textContent = v.base ? v.hops(i).toFixed(2) : '–'; v.id('C3Lbl' + i).textContent = 'empty hops per served request'; }
     });
   },
