@@ -1,0 +1,136 @@
+{
+ "metric": "escaped_kg summed over 4 sites and the held-out monsoons (Jun-Sep 2024+2025); relative reduction vs P0 per Monte Carlo draw; median and 90% interval (p05-p95)",
+ "n_draws": 40,
+ "seed": 20261004,
+ "crew_budget": "2 crews x 8 h/day, all policies",
+ "heldout_2024_2025": {
+  "P0": {
+   "escaped_kg_median": 428336.0,
+   "escaped_kg_p05": 144443.0,
+   "escaped_kg_p95": 961537.0,
+   "reduction_vs_P0_median": 0.0,
+   "reduction_vs_P0_p05": 0.0,
+   "reduction_vs_P0_p95": 0.0,
+   "draws_better_than_P0": 0,
+   "captured_fraction_median": 0.4612,
+   "cleared_kg_median": 435726.0,
+   "overflow_site_hours_median": 90.5,
+   "bypass_site_hours_median": 13.0,
+   "crew_hours": 3904.0,
+   "load_kg_median": 964381.0
+  },
+  "P1": {
+   "escaped_kg_median": 455001.0,
+   "escaped_kg_p05": 151216.0,
+   "escaped_kg_p95": 980895.0,
+   "reduction_vs_P0_median": -0.0314,
+   "reduction_vs_P0_p05": -0.0602,
+   "reduction_vs_P0_p95": -0.0001,
+   "draws_better_than_P0": 2,
+   "captured_fraction_median": 0.4437,
+   "cleared_kg_median": 424964.0,
+   "overflow_site_hours_median": 74.5,
+   "bypass_site_hours_median": 13.0,
+   "crew_hours": 3904.0,
+   "load_kg_median": 964381.0
+  },
+  "P2": {
+   "escaped_kg_median": 410771.0,
+   "escaped_kg_p05": 146876.0,
+   "escaped_kg_p95": 917410.0,
+   "reduction_vs_P0_median": 0.0215,
+   "reduction_vs_P0_p05": -0.015,
+   "reduction_vs_P0_p95": 0.1347,
+   "draws_better_than_P0": 29,
+   "captured_fraction_median": 0.4929,
+   "cleared_kg_median": 481506.0,
+   "overflow_site_hours_median": 89.5,
+   "bypass_site_hours_median": 13.0,
+   "crew_hours": 3904.0,
+   "load_kg_median": 964381.0
+  }
+ },
+ "tuning_2019_2023": {
+  "P0": {
+   "escaped_kg_median": 1121494.0,
+   "escaped_kg_p05": 380019.0,
+   "escaped_kg_p95": 2419938.0,
+   "reduction_vs_P0_median": 0.0,
+   "reduction_vs_P0_p05": 0.0,
+   "reduction_vs_P0_p95": 0.0,
+   "draws_better_than_P0": 0,
+   "captured_fraction_median": 0.4432,
+   "cleared_kg_median": 1091391.0,
+   "overflow_site_hours_median": 249.5,
+   "bypass_site_hours_median": 158.0,
+   "crew_hours": 9760.0,
+   "load_kg_median": 2407299.0
+  },
+  "P1": {
+   "escaped_kg_median": 1167738.0,
+   "escaped_kg_p05": 407874.0,
+   "escaped_kg_p95": 2474235.0,
+   "reduction_vs_P0_median": -0.0315,
+   "reduction_vs_P0_p05": -0.0588,
+   "reduction_vs_P0_p95": -0.0032,
+   "draws_better_than_P0": 1,
+   "captured_fraction_median": 0.4224,
+   "cleared_kg_median": 1054822.0,
+   "overflow_site_hours_median": 231.0,
+   "bypass_site_hours_median": 158.0,
+   "crew_hours": 9760.0,
+   "load_kg_median": 2407299.0
+  },
+  "P2": {
+   "escaped_kg_median": 1065774.0,
+   "escaped_kg_p05": 383212.0,
+   "escaped_kg_p95": 2312822.0,
+   "reduction_vs_P0_median": 0.0159,
+   "reduction_vs_P0_p05": -0.0107,
+   "reduction_vs_P0_p95": 0.1136,
+   "draws_better_than_P0": 31,
+   "captured_fraction_median": 0.465,
+   "cleared_kg_median": 1178149.0,
+   "overflow_site_hours_median": 292.5,
+   "bypass_site_hours_median": 158.0,
+   "crew_hours": 9760.0,
+   "load_kg_median": 2407299.0
+  }
+ },
+ "p2_knobs": {
+  "starts_utc": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "tide_aware": true,
+  "w_stock": 1.0,
+  "w_bypass": 2.0,
+  "w_over": 1.0,
+  "w_arrival": 0.25,
+  "loss_weight": 0.0,
+  "arr_horizon": 24
+ },
+ "tide_fit": {
+  "mithi_mahim": {
+   "variance_explained": 0.9924,
+   "rmse_m": 0.079
+  },
+  "oshiwara_malad": {
+   "variance_explained": 0.9932,
+   "rmse_m": 0.078
+  },
+  "dahisar_mouth": {
+   "variance_explained": 0.9933,
+   "rmse_m": 0.08
+  },
+  "trombay_mahul": {
+   "variance_explained": 0.9924,
+   "rmse_m": 0.079
+  }
+ },
+ "reproduce": "cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run",
+ "git_sha_at_run": "f93276f"
+}

@@ -1,0 +1,16 @@
+{
+ "starts_utc": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "tide_aware": true,
+ "w_stock": 1.0,
+ "w_bypass": 2.0,
+ "w_over": 1.0,
+ "w_arrival": 0.25,
+ "loss_weight": 0.0,
+ "arr_horizon": 24
+}
