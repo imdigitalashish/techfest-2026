@@ -2,7 +2,7 @@
 
 **Goal:** minimise the mean paired implementation-shortfall difference vs TWAP (bps) on validation seeds 100–139: SELL 4,000 shares, 09:35–09:55, 40 slots.
 
-**Frozen evaluator:** `eval.py` (never edited by the loop). It prints the scalar on line 1 and the CI, win rate and own impact on line 2.
+**Frozen evaluator:** `eval.py`, frozen at 09:55 IST on 4 Oct before first use and never edited by the loop. It uses synchronised twins (`per_wakeup`) by default and prints one line per candidate: label, mean ΔIS vs TWAP, CI, win rate, Δown impact and Δinstant.
 
 **Keep rule:** keep a change only if the new mean beats the incumbent by more than the incumbent's CI half-width / 2 **and** the new CI's upper bound < 0. Re-check every 5 kept changes on a fresh val slice (seeds 140–199) to catch seed overfitting. Test seeds (1000+) are used only by the lead for releases.
 
