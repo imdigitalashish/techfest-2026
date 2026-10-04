@@ -6,7 +6,7 @@
 Theme 1 (Efficient AI at Scale), Problem 2: *Squeezing Long-Context Inference into Less Memory*. Llama-3.2-1B keeps 32 KiB of key/value (KV) cache per token: a 32k-token chat holds 1 GiB, more than its 4-bit weights. That decides whether long-context assistants fit on laptops and phones.
 
 ## Understanding of the challenge
-Shrinking the cache is easy; shrinking it *without forgetting* is hard. Eviction methods (StreamingLLM, H2O, SnapKV) must choose what to delete **before the question exists**, and a deleted token is gone for good. Later questions target content nobody scored highly at compression time; SCBench reports such methods "suffer in multi-turn scenarios". Quantisation never deletes, but its saving is bounded by bit-width. Query-aware selection (Quest) keeps the full cache resident. The crux: high compression **and** robustness to questions that arrive after compression.
+Eviction methods (StreamingLLM, H2O, SnapKV) must choose what to delete **before the question exists**, and a deleted token is gone for good. Later questions target content nobody scored highly; SCBench reports such methods "suffer in multi-turn scenarios". Quantisation never deletes, but its saving is bounded by bit-width. Query-aware selection (Quest) keeps the full cache resident. The crux: high compression **and** robustness to questions that arrive after compression.
 
 ## Proposed approach
 **Recall-on-Demand (RoD)** turns eviction into a *cache miss*. Per context we keep three tiers:
@@ -43,13 +43,13 @@ Query-scored key indices (Quest, ArkVale) and token recomputation (CacheBlend, H
   - non-inferiority vs the full cache (5-point margin);
   - every tested query-agnostic baseline;
   - paraphrased and aliased splits, and a recompute-context ablation.
-- **Unit of analysis:** 12 held-out contexts, with context-clustered bootstrap CIs. Scorer tuning used only development seeds (an exploratory best of 322 variants).
+- **Statistics:** 12 held-out contexts per split, context-clustered bootstrap CIs; scorer tuned only on development seeds (exploratory best of 322).
 - **Metrics:** recall, retained bytes, needle-block hit rate, latency.
 - **Preliminary results:** <!-- p2:headline:begin -->
 On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. At 25% of the KV memory, ten query-agnostic baselines recall 0%–35% and RoD 58%: +0.40 over StreamingLLM (95% CI +0.25 to +0.54; pre-registered), yet 0.25 below the full cache. At 10% memory RoD recalls 85% (baselines ≤6%); on fresh paraphrased contexts it recalls 69% vs the full cache's 46% (+0.23, 95% CI +0.10 to +0.38), but 12 of the full cache's 26 misses are answers cut off by our 10-token limit.
 <!-- p2:headline:end -->
 - **Controls:** <!-- p2:caveats:begin -->
-RoD minus a lexical index over the same ids at 25%: +0.04 (-0.04 to +0.12) on literal needles, +0.27 (+0.10 to +0.44) on paraphrased ones; accuracy given a recalled needle falls from 98% at 10% to 55% at 25% memory, mostly by naming another needle's value; 64 tokens of recompute context change RoD's recall by -0.08 (-0.17 to +0.00); CPU answer time 6.2× StreamingLLM's.
+RoD minus a lexical index over the same ids at 25%: +0.04 (-0.04 to +0.12) on literal and +0.27 (+0.10 to +0.44) on paraphrased needles; accuracy given a recalled needle falls from 98% at 10% to 55% at 25% memory, mostly by naming another needle's value; recomputing blocks with 64 extra tokens of context does not help (-0.08, -0.17 to +0.00); synonym-aliased keys defeat even the full cache (10%), so meaning-based retrieval is untested (RoD's block hit there is 23% vs 73% for lexical); CPU answer time 6.2× StreamingLLM's.
 <!-- p2:caveats:end -->
 
 ## Feasibility and risks

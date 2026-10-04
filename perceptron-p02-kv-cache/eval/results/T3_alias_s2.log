@@ -1,0 +1,52 @@
+sample 1/12 T=4106 prefill=19.4s
+  done sample 1 elapsed=102s
+sample 2/12 T=4084 prefill=19.0s
+  done sample 2 elapsed=185s
+sample 3/12 T=4166 prefill=19.6s
+  done sample 3 elapsed=282s
+sample 4/12 T=4013 prefill=14.8s
+  done sample 4 elapsed=369s
+sample 5/12 T=4174 prefill=17.7s
+  done sample 5 elapsed=462s
+sample 6/12 T=4094 prefill=15.9s
+  done sample 6 elapsed=558s
+sample 7/12 T=4181 prefill=18.3s
+  done sample 7 elapsed=646s
+sample 8/12 T=4137 prefill=15.0s
+  done sample 8 elapsed=744s
+sample 9/12 T=4038 prefill=16.8s
+  done sample 9 elapsed=833s
+sample 10/12 T=4055 prefill=17.0s
+  done sample 10 elapsed=921s
+sample 11/12 T=4083 prefill=18.6s
+  done sample 11 elapsed=1015s
+sample 12/12 T=4139 prefill=18.5s
+  done sample 12 elapsed=1115s
+| method | keep frac | n_q (ctx) | recall | 95% CI (ctx bootstrap) | stored MiB | answer-time MiB | compression | s/answer (CPU) | needle-block hit |
+|---|---|---|---|---|---|---|---|---|---|
+| full | 1.0 | 48 (12) | 0.104 | 0.04–0.17 | 128.307 | 128.307 | 1.0× | 1.252 |  |
+| kvp_expected | 0.1 | 48 (12) | 0.000 | 0.00–0.00 | 12.815 | 12.815 | 10.01× | 0.837 |  |
+| kvp_expected | 0.25 | 48 (12) | 0.021 | 0.00–0.06 | 32.062 | 32.062 | 4.0× | 0.793 |  |
+| rod | 0.1 | 48 (12) | 0.208 | 0.12–0.29 | 7.044 | 11.044 | 18.22× | 1.419 | 0.2292 |
+| rod | 0.25 | 48 (12) | 0.167 | 0.08–0.25 | 16.587 | 30.587 | 7.74× | 2.916 | 0.8372 |
+| rodlex | 0.1 | 48 (12) | 0.146 | 0.08–0.21 | 6.406 | 12.406 | 20.03× | 1.414 | 0.7292 |
+| rodlex | 0.25 | 48 (12) | 0.188 | 0.10–0.29 | 16.031 | 31.198 | 8.0× | 2.802 | 0.9767 |
+| snapkv | 0.1 | 48 (12) | 0.000 | 0.00–0.00 | 12.831 | 12.831 | 10.0× | 0.719 |  |
+| snapkv | 0.25 | 48 (12) | 0.000 | 0.00–0.00 | 32.081 | 32.081 | 4.0× | 0.69 |  |
+| streaming | 0.1 | 48 (12) | 0.062 | 0.02–0.12 | 12.831 | 12.831 | 10.0× | 0.513 |  |
+| streaming | 0.25 | 48 (12) | 0.146 | 0.06–0.23 | 32.081 | 32.081 | 4.0× | 0.559 |  |
+
+| keep frac | A − B | Δ recall | 95% CI (paired ctx bootstrap) | contexts |
+|---|---|---|---|---|
+| 0.1 | rod − streaming | +0.146 | +0.04 … +0.25 | 12 |
+| 0.1 | rod − snapkv | +0.208 | +0.12 … +0.29 | 12 |
+| 0.1 | rod − rodlex | +0.062 | -0.02 … +0.15 | 12 |
+| 0.1 | rod − kvp_expected | +0.208 | +0.12 … +0.29 | 12 |
+| 0.1 | rodlex − streaming | +0.083 | -0.02 … +0.17 | 12 |
+| 0.1 | snapkv − streaming | -0.062 | -0.12 … -0.02 | 12 |
+| 0.25 | rod − streaming | +0.021 | -0.08 … +0.12 | 12 |
+| 0.25 | rod − snapkv | +0.167 | +0.08 … +0.25 | 12 |
+| 0.25 | rod − rodlex | -0.021 | -0.15 … +0.08 | 12 |
+| 0.25 | rod − kvp_expected | +0.146 | +0.04 … +0.25 | 12 |
+| 0.25 | rodlex − streaming | +0.042 | -0.06 … +0.15 | 12 |
+| 0.25 | snapkv − streaming | -0.146 | -0.23 … -0.06 | 12 |

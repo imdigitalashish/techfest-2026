@@ -1,0 +1,388 @@
+{
+ "meta": {
+  "name": "T3_alias_s2",
+  "backend": "torch-cpu",
+  "model": "mlx-community/Llama-3.2-1B-Instruct-4bit (dequantised, fp32 compute)",
+  "model_snapshot": "/home/azureuser/.cache/huggingface/hub/models--mlx-community--Llama-3.2-1B-Instruct-4bit/snapshots/08231374eeacb049a0eade7922910865b8fce912",
+  "kv_dtype": "torch.float16",
+  "kv_bytes_per_token": 32768,
+  "ctx_target": 4096,
+  "n_contexts": 12,
+  "needles": 4,
+  "seed": 2,
+  "style": "alias",
+  "fracs": [
+   0.1,
+   0.25
+  ],
+  "methods": [
+   "full",
+   "streaming",
+   "snapkv",
+   "kvp_expected",
+   "rod",
+   "rodlex"
+  ],
+  "rod_layer": 5,
+  "rod_bits": 4,
+  "rod_scorer": "softmax_lift",
+  "rod_qsel": "content",
+  "lex_qsel": "content",
+  "kvp_fracs": "0.1,0.25",
+  "halo": 0,
+  "block": 64,
+  "chat_date": "26 Jul 2024",
+  "torch": "2.10.0+cpu",
+  "threads": 8,
+  "cpu": "Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz",
+  "machine": "Linux-6.8.0-1064-azure-x86_64-with-glibc2.35",
+  "peak_rss_GiB": 7.33,
+  "wall_s": 1115.1,
+  "command": "python eval/kvbench_torch.py --ctx 4096 --n 12 --needles 4 --seed 2 --fracs 0.1,0.25 --methods full,streaming,snapkv,kvp_expected,rod,rodlex --style alias --rod_layer 5 --rod_bits 4 --rod_scorer softmax_lift --rod_qsel content --lex_qsel content --kvp_fracs 0.1,0.25 --halo 0 --threads 8 --name T3_alias_s2"
+ },
+ "table": [
+  {
+   "method": "full",
+   "frac": 1.0,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.1042,
+   "ci95_ctx_boot": [
+    0.0417,
+    0.1667
+   ],
+   "stored_MiB": 128.307,
+   "answer_time_MiB": 128.307,
+   "full_MiB": 128.307,
+   "compression_x": 1.0,
+   "s_per_answer": 1.252,
+   "oracle": false,
+   "needle_block_hit": null,
+   "n_needle_evicted": null
+  },
+  {
+   "method": "kvp_expected",
+   "frac": 0.1,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.0,
+   "ci95_ctx_boot": [
+    0.0,
+    0.0
+   ],
+   "stored_MiB": 12.815,
+   "answer_time_MiB": 12.815,
+   "full_MiB": 128.307,
+   "compression_x": 10.01,
+   "s_per_answer": 0.837,
+   "oracle": false,
+   "needle_block_hit": null,
+   "n_needle_evicted": null
+  },
+  {
+   "method": "kvp_expected",
+   "frac": 0.25,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.0208,
+   "ci95_ctx_boot": [
+    0.0,
+    0.0625
+   ],
+   "stored_MiB": 32.062,
+   "answer_time_MiB": 32.062,
+   "full_MiB": 128.307,
+   "compression_x": 4.0,
+   "s_per_answer": 0.793,
+   "oracle": false,
+   "needle_block_hit": null,
+   "n_needle_evicted": null
+  },
+  {
+   "method": "rod",
+   "frac": 0.1,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.2083,
+   "ci95_ctx_boot": [
+    0.125,
+    0.2917
+   ],
+   "stored_MiB": 7.044,
+   "answer_time_MiB": 11.044,
+   "full_MiB": 128.307,
+   "compression_x": 18.22,
+   "s_per_answer": 1.419,
+   "oracle": false,
+   "needle_block_hit": 0.2292,
+   "n_needle_evicted": 48
+  },
+  {
+   "method": "rod",
+   "frac": 0.25,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.1667,
+   "ci95_ctx_boot": [
+    0.0833,
+    0.25
+   ],
+   "stored_MiB": 16.587,
+   "answer_time_MiB": 30.587,
+   "full_MiB": 128.307,
+   "compression_x": 7.74,
+   "s_per_answer": 2.916,
+   "oracle": false,
+   "needle_block_hit": 0.8372,
+   "n_needle_evicted": 43
+  },
+  {
+   "method": "rodlex",
+   "frac": 0.1,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.1458,
+   "ci95_ctx_boot": [
+    0.0833,
+    0.2083
+   ],
+   "stored_MiB": 6.406,
+   "answer_time_MiB": 12.406,
+   "full_MiB": 128.307,
+   "compression_x": 20.03,
+   "s_per_answer": 1.414,
+   "oracle": false,
+   "needle_block_hit": 0.7292,
+   "n_needle_evicted": 48
+  },
+  {
+   "method": "rodlex",
+   "frac": 0.25,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.1875,
+   "ci95_ctx_boot": [
+    0.1042,
+    0.2917
+   ],
+   "stored_MiB": 16.031,
+   "answer_time_MiB": 31.198,
+   "full_MiB": 128.307,
+   "compression_x": 8.0,
+   "s_per_answer": 2.802,
+   "oracle": false,
+   "needle_block_hit": 0.9767,
+   "n_needle_evicted": 43
+  },
+  {
+   "method": "snapkv",
+   "frac": 0.1,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.0,
+   "ci95_ctx_boot": [
+    0.0,
+    0.0
+   ],
+   "stored_MiB": 12.831,
+   "answer_time_MiB": 12.831,
+   "full_MiB": 128.307,
+   "compression_x": 10.0,
+   "s_per_answer": 0.719,
+   "oracle": false,
+   "needle_block_hit": null,
+   "n_needle_evicted": null
+  },
+  {
+   "method": "snapkv",
+   "frac": 0.25,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.0,
+   "ci95_ctx_boot": [
+    0.0,
+    0.0
+   ],
+   "stored_MiB": 32.081,
+   "answer_time_MiB": 32.081,
+   "full_MiB": 128.307,
+   "compression_x": 4.0,
+   "s_per_answer": 0.69,
+   "oracle": false,
+   "needle_block_hit": null,
+   "n_needle_evicted": null
+  },
+  {
+   "method": "streaming",
+   "frac": 0.1,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.0625,
+   "ci95_ctx_boot": [
+    0.0208,
+    0.125
+   ],
+   "stored_MiB": 12.831,
+   "answer_time_MiB": 12.831,
+   "full_MiB": 128.307,
+   "compression_x": 10.0,
+   "s_per_answer": 0.513,
+   "oracle": false,
+   "needle_block_hit": null,
+   "n_needle_evicted": null
+  },
+  {
+   "method": "streaming",
+   "frac": 0.25,
+   "n_q": 48,
+   "n_ctx": 12,
+   "acc": 0.1458,
+   "ci95_ctx_boot": [
+    0.0625,
+    0.2292
+   ],
+   "stored_MiB": 32.081,
+   "answer_time_MiB": 32.081,
+   "full_MiB": 128.307,
+   "compression_x": 4.0,
+   "s_per_answer": 0.559,
+   "oracle": false,
+   "needle_block_hit": null,
+   "n_needle_evicted": null
+  }
+ ],
+ "paired_deltas": [
+  {
+   "frac": 0.1,
+   "a": "rod",
+   "b": "streaming",
+   "delta_acc": 0.1458,
+   "ci95_ctx_boot": [
+    0.0417,
+    0.25
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.1,
+   "a": "rod",
+   "b": "snapkv",
+   "delta_acc": 0.2083,
+   "ci95_ctx_boot": [
+    0.125,
+    0.2917
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.1,
+   "a": "rod",
+   "b": "rodlex",
+   "delta_acc": 0.0625,
+   "ci95_ctx_boot": [
+    -0.0208,
+    0.1458
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.1,
+   "a": "rod",
+   "b": "kvp_expected",
+   "delta_acc": 0.2083,
+   "ci95_ctx_boot": [
+    0.125,
+    0.2917
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.1,
+   "a": "rodlex",
+   "b": "streaming",
+   "delta_acc": 0.0833,
+   "ci95_ctx_boot": [
+    -0.0208,
+    0.1667
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.1,
+   "a": "snapkv",
+   "b": "streaming",
+   "delta_acc": -0.0625,
+   "ci95_ctx_boot": [
+    -0.125,
+    -0.0208
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.25,
+   "a": "rod",
+   "b": "streaming",
+   "delta_acc": 0.0208,
+   "ci95_ctx_boot": [
+    -0.0833,
+    0.125
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.25,
+   "a": "rod",
+   "b": "snapkv",
+   "delta_acc": 0.1667,
+   "ci95_ctx_boot": [
+    0.0833,
+    0.25
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.25,
+   "a": "rod",
+   "b": "rodlex",
+   "delta_acc": -0.0208,
+   "ci95_ctx_boot": [
+    -0.1458,
+    0.0833
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.25,
+   "a": "rod",
+   "b": "kvp_expected",
+   "delta_acc": 0.1458,
+   "ci95_ctx_boot": [
+    0.0417,
+    0.25
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.25,
+   "a": "rodlex",
+   "b": "streaming",
+   "delta_acc": 0.0417,
+   "ci95_ctx_boot": [
+    -0.0625,
+    0.1458
+   ],
+   "n_ctx": 12
+  },
+  {
+   "frac": 0.25,
+   "a": "snapkv",
+   "b": "streaming",
+   "delta_acc": -0.1458,
+   "ci95_ctx_boot": [
+    -0.2292,
+    -0.0625
+   ],
+   "n_ctx": 12
+  }
+ ]
+}

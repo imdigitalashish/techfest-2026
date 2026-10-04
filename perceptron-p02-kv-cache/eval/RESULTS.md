@@ -23,7 +23,11 @@ Pre-registration: [`PREREG.md`](PREREG.md). Engine parity: [`results/parity_torc
 - **S5** (RoD − baseline, keep 0.5, T1): StreamingLLM (ours) +0.167 (95% CI +0.02 to +0.31, 12 contexts); SnapKV-variant (ours, +4 sinks) +0.375 (95% CI +0.21 to +0.56, 12 contexts); H2O-style (ours) +0.333 (95% CI +0.15 to +0.50, 12 contexts); RoD-lexical (control) +0.000 (95% CI -0.08 to +0.08, 12 contexts); kvpress ExpectedAttention not run
 - **Byte check T1**: RoD answer-time bytes > a baseline's stored bytes in 0 of 36 (context, keep) cells
 - **Byte check T2**: RoD answer-time bytes > a baseline's stored bytes in 0 of 36 (context, keep) cells
+- **Byte check T3**: RoD answer-time bytes > a baseline's stored bytes in 0 of 24 (context, keep) cells
 - **S4 pairing**: 12 contexts; context lengths identical to T1's: yes
+- **S6** (RoD − RoD-lexical, keep 0.1, T3 synonym-aliased keys; confirmatory): +0.062 (95% CI -0.02 to +0.15, 12 contexts) → not shown
+- **S6** (RoD − RoD-lexical, keep 0.25, T3 synonym-aliased keys; exploratory): -0.021 (95% CI -0.15 to +0.08, 12 contexts)
+- **T3 ceiling** (full cache): recall 0.104 (< 0.5: T3 too hard; S6 inconclusive)
 
 ## T1 — literal needles, seed 0
 
@@ -122,6 +126,26 @@ torch-cpu · Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz · torch 2.10.0+cpu �
 | SnapKV, question-aware (oracle) | 0.50 | 0.417 | 0.29–0.54 | 64.7 | 2.0× | 64.7 | 1.27 |  |
 | **RoD (ours)** | 0.50 | 0.458 | 0.38–0.54 | 32.8 | 4.0× | 63.0 | 5.89 | 1.00 |
 | RoD-lexical (control) | 0.50 | 0.396 | 0.29–0.48 | 32.4 | 4.0× | 63.3 | 5.58 | 0.95 |
+
+## T3 — synonym-aliased keys, seed 2
+
+`python eval/kvbench_torch.py --ctx 4096 --n 12 --needles 4 --seed 2 --fracs 0.1,0.25 --methods full,streaming,snapkv,kvp_expected,rod,rodlex --style alias --rod_layer 5 --rod_bits 4 --rod_scorer softmax_lift --rod_qsel content --lex_qsel content --kvp_fracs 0.1,0.25 --halo 0 --threads 8 --name T3_alias_s2`
+
+torch-cpu · Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz · torch 2.10.0+cpu · 8 threads · wall 1115.1 s · 12 contexts × 4 questions · mean context 4106 tokens
+
+| Method | Keep | Recall | 95% CI | Stored KV MiB | Compression | Answer-time MiB | s/answer (CPU) | Needle-block hit |
+|---|---|---|---|---|---|---|---|---|
+| Full cache | 1.00 | 0.104 | 0.04–0.17 | 128.3 | 1.0× | 128.3 | 1.25 |  |
+| StreamingLLM (ours) | 0.10 | 0.062 | 0.02–0.12 | 12.8 | 10.0× | 12.8 | 0.51 |  |
+| SnapKV-variant (ours, +4 sinks) | 0.10 | 0.000 | 0.00–0.00 | 12.8 | 10.0× | 12.8 | 0.72 |  |
+| **RoD (ours)** | 0.10 | 0.208 | 0.12–0.29 | 7.0 | 18.2× | 11.0 | 1.42 | 0.23 |
+| RoD-lexical (control) | 0.10 | 0.146 | 0.08–0.21 | 6.4 | 20.0× | 12.4 | 1.41 | 0.73 |
+| kvpress ExpectedAttention | 0.10 | 0.000 | 0.00–0.00 | 12.8 | 10.0× | 12.8 | 0.84 |  |
+| StreamingLLM (ours) | 0.25 | 0.146 | 0.06–0.23 | 32.1 | 4.0× | 32.1 | 0.56 |  |
+| SnapKV-variant (ours, +4 sinks) | 0.25 | 0.000 | 0.00–0.00 | 32.1 | 4.0× | 32.1 | 0.69 |  |
+| **RoD (ours)** | 0.25 | 0.167 | 0.08–0.25 | 16.6 | 7.7× | 30.6 | 2.92 | 0.84 |
+| RoD-lexical (control) | 0.25 | 0.188 | 0.10–0.29 | 16.0 | 8.0× | 31.2 | 2.80 | 0.98 |
+| kvpress ExpectedAttention | 0.25 | 0.021 | 0.00–0.06 | 32.1 | 4.0× | 32.1 | 0.79 |  |
 
 ## S4 — RoD with halo 64, seed 0
 

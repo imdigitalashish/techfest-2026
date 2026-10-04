@@ -322,23 +322,31 @@ def headline(V):
     return s + "."
 
 
+def block_hit(rows, m, f):
+    ev = [r for r in rows if r["method"] == m and abs(r["frac"] - f) < 1e-9 and r.get("needle_evicted")]
+    return sum(bool(r.get("needle_block_hit")) for r in ev) / max(1, len(ev))
+
+
 def caveats(V):
     if not V.get("T1"):
         return "_Controls pending._"
     sh = lambda x: "pending" if x is None else f"{x['d']:+.2f} ({x['lo']:+.2f} to {x['hi']:+.2f})"
     rod, st = get(V["T1"], "rod", 0.25), get(V["T1"], "streaming", 0.25)
     mm = mech(load("T1")["rows"], "rod")
-    parts = [f"RoD minus a lexical index over the same ids at 25%: {sh(V.get('S2_T1'))} on literal needles"
-             + (f", {sh(V.get('S2_T2'))} on paraphrased ones" if V.get("T2") else ""),
+    parts = [f"RoD minus a lexical index over the same ids at 25%: {sh(V.get('S2_T1'))} on literal"
+             + (f" and {sh(V.get('S2_T2'))} on paraphrased needles" if V.get("T2") else " needles"),
              f"accuracy given a recalled needle falls from {mm[0.1]['acc_given_hit']:.0%} at 10% to {mm[0.25]['acc_given_hit']:.0%} at 25% "
              f"memory, mostly by naming another needle's value"]
-    if V.get("T3"):
-        fc = get(V["T3"], "full", 1.0)
-        parts.append(f"with synonym-aliased keys (full cache {fc['acc']:.0%}) RoD minus lexical at 10% is {sh((V.get('S6') or {}).get(0.1))}")
     if V.get("S4"):
-        parts.append(f"64 tokens of recompute context change RoD's recall by {sh(V['S4'].get(0.25))}")
+        x = V["S4"].get(0.25)
+        parts.append(f"recomputing blocks with 64 extra tokens of context does not help ({x['d']:+.2f}, {x['lo']:+.2f} to {x['hi']:+.2f})")
+    if V.get("T3"):
+        r3 = load("T3")["rows"]
+        fc = get(V["T3"], "full", 1.0)
+        parts.append(f"synonym-aliased keys defeat even the full cache ({fc['acc']:.0%}), so meaning-based retrieval is untested "
+                     f"(RoD's block hit there is {block_hit(r3, 'rod', 0.1):.0%} vs {block_hit(r3, 'rodlex', 0.1):.0%} for lexical)")
     parts.append(f"CPU answer time {rod['s'] / st['s']:.1f}× StreamingLLM's")
-    return "; ".join(parts) + "."
+    return "; ".join(parts).capitalize()[:1] + "; ".join(parts)[1:] + "."
 
 
 def memo_scores(V):
@@ -360,7 +368,9 @@ def memo_scores(V):
          + ("The 10% observation replicated on fresh contexts (R1), though T2's full-cache ceiling is depressed by a 10-token answer limit (amendment 5)." if rep else ("The 10% observation did not replicate (R1)." if r1 is not None else "R1 replication pending."))),
         ("Innovation headroom", inn, "A narrow but real combination: token-backed selective recomputation guided by a single-layer 4-bit key index with a contrastive scorer. Its constituents are prior art "
          f"(hostile judge: 3/5). At 10% memory the sketch beats a lexical index over the same ids by {lex10['d']:+.2f} (95% CI {lex10['lo']:+.2f} to {lex10['hi']:+.2f}). "
-         "Headroom: precision-first recall, a streamed scorer, per-channel sketches, multi-turn."),
+         + (f"With synonym-aliased keys (too hard even for the full cache) its block hit is {block_hit(load('T3')['rows'], 'rod', 0.1):.0%} vs "
+            f"{block_hit(load('T3')['rows'], 'rodlex', 0.1):.0%} for lexical, so meaning-based retrieval is not shown. " if V.get("T3") else "")
+         + "Headroom: precision-first recall, a streamed scorer, per-channel sketches, multi-turn."),
         ("Feasibility", 4, "The whole pre-registered evaluation runs end to end on one CPU VM, with logit parity, identity checks, reference baselines and reviews. "
          "The Apple-silicon (MLX) demo path is not yet validated; CPU answer time is "
          f"{get(t, 'rod', 0.25)['s'] / get(t, 'streaming', 0.25)['s']:.1f}× StreamingLLM's at 25% memory. The 19–25 Nov exams are left free."),
