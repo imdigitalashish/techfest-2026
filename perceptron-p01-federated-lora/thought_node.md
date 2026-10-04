@@ -23,7 +23,7 @@
     - P2: ablations (nonorm, tauact, PreLort-style seg) × 5.
     - P3: clean scenario × 5. P4: ladder. P5: extras.
     - ≈ 2.5 min per run; P1 due around 12:20.
-  - **GPU FROZEN** for Namma Space (Supervisor ~11:46): runner PID 44556 stopped, no training running. Restart on "GPU free" with `kill 44556 && scripts/handover_to_queue.sh 0`.
+  - **GPU free (Supervisor 12:31).** Old runner 44556 terminated; the new runner **PID 78322** (memory-guarded, nice 10) resumed the queue at 12:31 with P1 `ffa_lora` seed 2. Namma Space's Brush is still training, so runs are slower. Polling every ≥10 min.
   - Both cross-model reviews are done and recorded: gpt-6-sol (code/eval) 13/14 accepted; gpt-6-astra (abstract/spike) 12/12 accepted, 3.40/5 on v2. Abstract v3 and the memo are rendered from results. Both child sessions are archived.
   - **Done since resume:**
     - FFA-LoRA + FlexLoRA implemented from the papers' equations;
