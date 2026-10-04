@@ -10,11 +10,13 @@
 - _(none)_
 
 ## Now
-- **Phase:** finishing (resumed 13:52). Definition of done items 1–3 and 5 complete; item 4 (cross-model reviews) done, including a fix-verification round. 2026-10-04 15:14 IST.
-- **Done:** final PDF `deliverables/India71_100_[TeamID].pdf` (6 pp, Arial only, ≥ 11 pt, fonts embedded — `deliverables/check_pdf.py` PASS), generated from committed results (`deliverables/render_numbers.py`; `eval/check_docs.py` 28/28); verification pass (AePS, mapper consent/routing, BC Sakhi, MuleHunter, FI-Index weights, DEPA, DPDP Rules r.16, June 2025 BC re-KYC, NSFI 2025-30, P4 URL); C6 pre-registered twice (v0.2 at 14:00; corrected v0.3 at 14:57 after review — H1 +0.086, H2, H3 pass; SYNTHETIC); reviews: gpt-6-astra (15 issues) and gpt-6-sol (18 issues) → all accepted except the PDF rename (`reviews/2026-10-04-decisions.md`, `reviews/ledger.tsv`).
-- **Doing:** nothing — DONE sent to the Supervisor; idle until resumed.
-- **Needs from user:** (1) Theme choice by 15 Oct — recommendation **T1** (see memo). (2) If T3: team name/ID (rename the PDF), up to 4 members, a partner bank's FI head, and 3–5 field conversations (BC / BC Sakhi, rural branch manager, Lead District Manager) before 1 Nov.
-- **Risks:** account-level evidence is SYNTHETIC; cross-bank person counts need an identity-translation service nobody has authorised; per-BC task cap not implemented; checkpoint publication is a production requirement, not built.
+- **Phase:** DEMO (resumed 2026-10-04 22:22 IST, Supervisor; PLAYBOOK §11). Round-1 package is done (proposal PDF, reviews, memo — see Log 15:20).
+- **Definition of done (§11 + Supervisor 22:21):** `demo/run.sh` one command, offline, first visual ≤ 60 s, CPU only; **opens on REAL data** (state-wise inoperative PMJDY tiles from Lok Sabha USQ 4090, verified FI-Index and AePS facts) and only then a labelled SYNTHETIC one-bank drill-down; baseline side by side; at least one judge knob; every on-screen number from committed results or live committed code; the "crazy" element; `demo/SCRIPT.md` (3-min talk track); `demo/fallback/`; `demo/smoke.sh`; one gpt-6-astra demo review in `reviews/` + `ledger.tsv`; lead verifies from a clean checkout → "DEMO DONE".
+- **Plan:** spawn ONE demo-builder child session → it proposes the crazy element (Supervisor's suggestion: "try to break it" — DP ledger refuses a double-spend, a BC cannot see another bank's customer, the gate refuses the smarter challenger, women's floor as a hard constraint) → I approve → it builds → gpt-6-astra demo review (2nd child) → fixes → clean-checkout verification → DEMO DONE.
+- **Doing:** spawning the builder (plan mode for the approval gate, then autopilot for the build).
+- **Rules:** ≤ 2 child sessions; CPU only; `nice -n 10` + memory guard (start ≥ 30, pause < 25); clock timestamps; no stash.
+- **Needs from user:** unchanged (theme choice by 15 Oct — recommendation T1; if T3: team details, partner bank, field conversations).
+- **Risks:** C7 fraud gate and C8 outreach exist only as designs — the demo must either build labelled prototypes or not show them as working; simulation must never look like field evidence.
 
 ## Brief → what we must be able to show (Phase 0, 02:55 IST)
 Hard constraints: one theme per team, fixed at registration (15 Oct); team ≤4; Round 1 = ≤6 pages A4, 1-inch margins, Arial ≥11 pt, single PDF `India71_100_[Team ID].pdf` via Google Form by 1 Nov; must be a concrete technical architecture (targeting model / interoperable access layer / governance dashboard), not a financial product; original work. Round 2 (16–18 Dec): 10-min talk + 5-min Q&A.
@@ -165,3 +167,6 @@ The proposal described a purpose/policy engine with a hash-chained audit log tha
 - **gpt-6-astra re-review:** 11/15 resolved, 4 partial, 0 new blocking; T1 still ranked higher (narrower gap). Partial 5/8/9 fixed in text (rights floor vs targeting objective; annual DP cap; time-bounded, appealable fraud holds).
 - **gpt-6-sol re-review:** reproduced v0.3 seeds 20–22 exactly; found H3 strict-floor shortfall (seed 29, one woman — holdout rounding; every available woman was treated), caller-asserted own-customer scope in C5, and a NEW blocking DP-ledger double-spend across clients. All fixed after the run (not re-run, per registration): holdout rounding + strict `floor_ok`; C5 identity registry (31/31, 95/95; now called a prototype); ledger lock + re-read transaction; gate holdout aligned. Dated note in `c6_v03_results.md`; decisions and ledger updated.
 - **Final:** proposal v1.1 regenerated (28/28 drift checks), PDF PASS (6 pp, Arial only, ≥ 11 pt, embedded), 17/17 tests. Selection memo final: T3 3.9/5 vs T1 4.2 → **recommend T1**.
+
+### 2026-10-04 22:22 IST — Demo phase started (Supervisor)
+Read PLAYBOOK §11. Inbox empty. Plan: one demo-builder child session (proposal → my approval → build), then a gpt-6-astra demo review, clean-checkout verification, DEMO DONE.
