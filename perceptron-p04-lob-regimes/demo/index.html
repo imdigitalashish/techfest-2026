@@ -75,7 +75,7 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
   <div class="dialrow" style="margin-top:10px">
     <div style="flex:1;min-width:320px">
       <input type="range" id="dial-range" min="0" max="16" step="1" value="2">
-      <div class="mut" style="display:flex;justify-content:space-between;font-size:11px"><span>α = 1e-1 (twitchy)</span><span>1e-100</span><span>1e-300</span><span>off (α = 0)</span></div>
+      <div class="mut" id="dial-ticks" style="position:relative;height:16px;font-size:11px"></div>
     </div>
     <div class="kn"><span class="mut">empirical-null mode:</span><span id="cal-btns"></span></div>
   </div>
@@ -174,10 +174,10 @@ function drawReplay(){
   if(!d){g.fillStyle=C("--acc");g.font="15px -apple-system,Helvetica,Arial,sans-serif";g.fillText(`Building ${DAY} with the committed code… (the scoreboard and dial sweep above are already live)`,20,40);
     $("#rp-totals tbody").innerHTML="";return;}
   const L=64,R=w-14,nb=d.n_bins,X=b=>L+(b+.5)/nb*(R-L),bw=(R-L)/nb;
-  const panes=[["price (10-min OHLC)",0,170],["alarms",178,92],["active head",278,34],["log-loss, 10-min bin mean",320,170],["cumulative Δ vs static",498,112]];
-  panes.forEach(([n,y,hh])=>{g.strokeStyle=C("--line");g.strokeRect(L,y+4,R-L,hh-6);g.save();g.fillStyle=C("--mut");g.translate(12,y+hh/2+30);g.rotate(-Math.PI/2);g.fillText(n,0,0);g.restore();});
+  const panes=[["price (10-min OHLC)",0,170],["alarms",178,92],["head",278,34],["log-loss (10-min mean)",320,170],["cum. Δ vs static",498,112]];
+  panes.forEach(([n,y,hh])=>{g.strokeStyle=C("--line");g.strokeRect(L,y+4,R-L,hh-6);g.save();g.fillStyle=C("--mut");g.translate(14,y+hh/2+g.measureText(n).width/2);g.rotate(-Math.PI/2);g.fillText(n,0,0);g.restore();});
   // time axis ticks
-  g.fillStyle=C("--mut");for(let b=0;b<=nb;b+=18){const xx=L+b/nb*(R-L);g.fillText(hhmm(d.start_utc_s+b*d.bin_s),xx-14,h-2);
+  g.fillStyle=C("--mut");for(let hr=0;hr<=24;hr+=3){const xx=L+(hr*3600-d.start_utc_s)/(nb*d.bin_s)*(R-L);if(xx<L-1||xx>R+1)continue;g.fillText(hhmm(hr*3600)+(hr===0?" UTC":""),xx-14,h-2);
     g.strokeStyle="#20262e";g.beginPath();g.moveTo(xx,4);g.lineTo(xx,h-14);g.stroke();}
   // events
   for(const e of d.events){const xx=L+(e.utc_s-d.start_utc_s)/(nb*d.bin_s)*(R-L);g.strokeStyle=C("--acc");g.setLineDash([4,3]);g.beginPath();g.moveTo(xx,4);g.lineTo(xx,h-14);g.stroke();g.setLineDash([]);
@@ -224,6 +224,9 @@ function stopLabel(id){if(id==="off")return "off (α = 0)";if(id.startsWith("cal
 function setupDial(){
   ORDER=SW.stops.filter(s=>s.kind!=="calibrated").map(s=>s.id);const rg=$("#dial-range");rg.max=ORDER.length-1;rg.value=ORDER.indexOf("naive_3");
   rg.oninput=()=>{STOP=ORDER[+rg.value];calBtns();drawDial();drawReplay();};
+  const tk=$("#dial-ticks");tk.innerHTML="";const lab={"naive_1":"1e-1","naive_3":"1e-3","naive_30":"1e-30","naive_100":"1e-100","naive_300":"1e-300","off":"off"};
+  ORDER.forEach((id,i)=>{if(!lab[id])return;const sp=document.createElement("span");sp.textContent=lab[id];sp.style.position="absolute";
+    sp.style.left=`calc(${i/(ORDER.length-1)*100}% - ${i/(ORDER.length-1)*16}px + 8px)`;sp.style.transform="translateX(-50%)";tk.appendChild(sp);});
   calBtns();
 }
 function calBtns(){const el=$("#cal-btns");el.innerHTML="";SW.stops.filter(s=>s.kind==="calibrated").forEach(s=>{const b=document.createElement("button");
