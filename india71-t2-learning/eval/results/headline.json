@@ -131,6 +131,58 @@
         "gain_shown": false,
         "n_worlds": 30
       }
+    },
+    "v2_language_b10": {
+      "pass": true,
+      "coverage90": 0.9666666666666667,
+      "coverage_wilson95": [
+        0.9291947482669836,
+        0.9846354185722956
+      ],
+      "n_blocks": 180,
+      "mae_pp": 2.101945445944032,
+      "raw_mae_pp": 4.1689705230973395,
+      "mean_half_width_pp": 6.013461742138648,
+      "mean_error_pp": 0.3890485979067567,
+      "direct_coverage90": 0.9666666666666667,
+      "allocation": {
+        "raw_mean": 2972.2,
+        "moderated_mean": 2964.0666666666666,
+        "oracle_mean": 2996.8333333333335,
+        "diff_moderated_minus_raw_mean": -8.133333333333333,
+        "diff_ci95": [
+          -13.48555405050896,
+          -2.7811126161577056
+        ],
+        "gain_shown": false,
+        "n_worlds": 30
+      }
+    },
+    "v2_numeracy_b10": {
+      "pass": true,
+      "coverage90": 0.9555555555555556,
+      "coverage_wilson95": [
+        0.9147621269171728,
+        0.9773101788068854
+      ],
+      "n_blocks": 180,
+      "mae_pp": 2.5436244194956408,
+      "raw_mae_pp": 5.8678908850813825,
+      "mean_half_width_pp": 6.646521642455296,
+      "mean_error_pp": -0.06915086607725526,
+      "direct_coverage90": 0.9444444444444444,
+      "allocation": {
+        "raw_mean": 2830.866666666667,
+        "moderated_mean": 2825.633333333333,
+        "oracle_mean": 2875.1666666666665,
+        "diff_moderated_minus_raw_mean": -5.233333333333333,
+        "diff_ci95": [
+          -13.128158685486232,
+          2.6614920188195654
+        ],
+        "gain_shown": false,
+        "n_worlds": 30
+      }
     }
   },
   "coverage_cluster_ci": {
@@ -139,6 +191,15 @@
     "ci95": [
       0.9333333333333333,
       0.9888888888888889
+    ],
+    "reps": 4000
+  },
+  "coverage_v2_cluster_ci": {
+    "label": "post hoc, world-level bootstrap over 30 held-out districts",
+    "coverage": 0.9666666666666667,
+    "ci95": [
+      0.9333333333333333,
+      0.9944444444444445
     ],
     "reps": 4000
   },

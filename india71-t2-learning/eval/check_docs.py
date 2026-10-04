@@ -29,22 +29,27 @@ def claims() -> list[tuple[Path, str]]:
     m_read = re.search(r"ASER govt Std III reading vs PARAKH Grade 3 Language \| 27 \| [0-9.]+ \| ([0-9.]+)", rda)
     m_math = re.search(r"ASER govt Std III subtraction vs PARAKH Grade 3 Mathematics \| 27 \| [0-9.]+ \| ([0-9.]+)", rda)
     m_loso = re.search(r"PARAKH Language -> ASER reading \| 27 \| ([0-9.]+) \| ([0-9.]+)", rda)
+    v2 = cv["v2_language_b10"]; al2 = v2["allocation"]; cc = h["coverage_cluster_ci"]
+    m = lambda x: x.replace("-", "−")  # proposal uses the Unicode minus sign
     out = [
-        (PROPOSAL, f"**{_f(b10['raw_mae_pp'], 2)} → {_f(b10['mae_pp'], 2)} pp**"),
-        (PROPOSAL, f"**{_f(100 * b10['coverage90'])} %** ({_f(100 * b10['coverage_wilson95'][0])}–{_f(100 * b10['coverage_wilson95'][1])}); **±{_f(b10['mean_half_width_pp'])} pp**"),
+        (PROPOSAL, f"**{_f(b10['raw_mae_pp'], 2)} → {_f(b10['mae_pp'], 2)} pp** / **{_f(v2['raw_mae_pp'], 2)} → {_f(v2['mae_pp'], 2)} pp**"),
+        (PROPOSAL, f"**{_f(100 * b10['coverage90'])} %** / **{_f(100 * v2['coverage90'])} %**; **±{_f(b10['mean_half_width_pp'])} pp** "
+                   f"(district-clustered 95 % CI for v1: {_f(100 * cc['ci95'][0])}–{_f(100 * cc['ci95'][1])} %)"),
         (PROPOSAL, f"±{_f(cv['language_b05']['mean_half_width_pp'])} / ±{_f(b10['mean_half_width_pp'])} / ±{_f(cv['language_b20']['mean_half_width_pp'])} pp"),
-        (PROPOSAL, f"{round(100 * sep['share_flagged_below_or_above_average'])} % of blocks fall clearly above or below the district average, "
-                   f"{'all' if sep['share_flags_on_correct_side'] == 1.0 else 'X'} on the correct side; true block spread ≈ {round(sep['median_true_spread_within_district_pp'])} pp"),
-        (PROPOSAL, f"**Not shown** ({al['diff_moderated_minus_raw_mean']:+.1f} children, CI {al['diff_ci95'][0]:.1f} to {al['diff_ci95'][1]:+.1f})".replace("CI -", "CI −")),
+        (PROPOSAL, f"{sep['n_flagged']} of {sep['n_blocks']}, {'all' if sep['share_flags_on_correct_side'] == 1.0 else 'X'} on the correct side, but raw reports rank blocks as well "
+                   f"({round(100 * sep['point_side_correct_raw'])} % vs {round(100 * sep['point_side_correct_moderated'])} % on the correct side)"),
+        (PROPOSAL, m(f"(v1: {al['diff_moderated_minus_raw_mean']:+.1f} children, CI {al['diff_ci95'][0]:.1f} to {al['diff_ci95'][1]:+.1f})")),
+        (PROPOSAL, m(f"in v2 ({al2['diff_moderated_minus_raw_mean']:.1f}, CI {al2['diff_ci95'][0]:.1f} to {al2['diff_ci95'][1]:.1f})")),
         (PROPOSAL, f"{_f(c4['adaptive_cat_8']['level_acc'][0], 3)}, vs {_f(c4['bayes_irt_full']['level_acc'][0], 3)} for the full test"),
         (PROPOSAL, f"{tp['whatsapp_hi_bytes']}-byte Hindi message, {tp['sms_hi_segments']} SMS / {gv['passed']} of {gv['total']} pass"),
         (PROPOSAL, f"(Spearman ρ = {_f(float(m_read.group(1)), 2)}; maths ρ = {_f(float(m_math.group(1)), 2)})"),
         (PROPOSAL, f"(out-of-state error {_f(float(m_loso.group(1)))} vs {_f(float(m_loso.group(2)))} points)"),
         (PROPOSAL, "600 schools, 6 blocks"),
-        (PROPOSAL, "30 held-out districts (180 blocks)"),
+        (PROPOSAL, "(30 each, 180 blocks)"),
     ]
+    assert al2["diff_ci95"][1] < 0, "v2 allocation is claimed to be worse"
     # allocation at 5 % must be worse (CI entirely below 0) for the sentence "at a 5 % budget it is worse"
-    out.append((PROPOSAL, "at a 5 % budget it is worse" if al5["diff_ci95"][1] < 0 else "CLAIM-NOT-SUPPORTED: 5% allocation worse"))
+    out.append((PROPOSAL, "and at a 5 % budget, so school figures are not used for targeting" if al5["diff_ci95"][1] < 0 else "CLAIM-NOT-SUPPORTED: 5% allocation worse"))
     # calibration targets quoted in the proposal must equal the simulator calibration
     cal = (ROOT / "eval" / "sim" / "calibration.py").read_text()
     for v in ("0.234", "0.276"):

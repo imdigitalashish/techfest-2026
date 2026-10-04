@@ -1,6 +1,6 @@
 # Ek Tasveer: one trusted picture of every child's foundational learning
 ### A NIPUN Bharat decision layer on UDISE+, state assessments, PARAKH and ASER
-India @ 71/100 Challenge · Theme 2: Foundational Learning Outcomes · Round 1 proposal v1.0
+India @ 71/100 Challenge · Theme 2: Foundational Learning Outcomes · Round 1 proposal v1.1
 
 **Team:** _[name]_ · **Team ID:** _[after registration]_ · **Institution:** IIT Delhi _(+ teammates)_ · **Contact:** _[email, phone]_
 
@@ -10,7 +10,7 @@ India @ 71/100 Challenge · Theme 2: Foundational Learning Outcomes · Round 1 p
 
 **The scorecard.** India scores 71/100 on the SDG India Index 2023-24 [1]. NIPUN Bharat (2021) set "universal FLN in primary schools by 2026-27": by the end of Grade 3 a child reads with meaning at ≥ 60 words a minute and handles numbers to 9,999 [2]. A 2024 parliamentary answer restates the goal as FLN "by Grade 2 by 2026-27" [3]; a pilot follows its state's operative goal order.
 
-**The lived reality (proxy evidence).** In rural **government** schools, **23.4 %** of Std III children could read a Std II-level text and **27.6 %** could do at least subtraction in 2024, up from 16.3 % and 20.2 % in 2022 [4]. These are ASER foundational-skill proxies, not measured NIPUN attainment, but they show most children are far from the goal in the mission's final year. PARAKH 2024 finds Scheduled Tribe children lowest in Grade 3 (maths 57 % vs 61 % for others) [5]; 1,04,125 single-teacher schools enrol 33.8 lakh children [6].
+**The lived reality (proxy evidence).** In rural **government** schools, **23.4 %** of Std III children could read a Std II-level text and **27.6 %** could do at least subtraction in 2024, up from 16.3 % and 20.2 % in 2022 [4]. These are ASER foundational-skill proxies, not measured NIPUN attainment, but they show most children were far from the goal two years before its 2026-27 target year. PARAKH 2024 finds Scheduled Tribe children lowest in Grade 3 (maths 57 % vs 61 % for others) [5]; 1,04,125 single-teacher schools enrol 33.8 lakh children [6].
 
 **The implementation gap we target.** Schools already record a lot: UDISE+ holds student-wise records ("more than 60 fields for each student") [6]. States run census-style FLN tests; the Ministry itself says UDISE, NAS, NIPUN Bharat and DIKSHA are "efficient systems working in silos" [7]. The gap is between **recorded** and **acted on, by someone trusted**:
 1. **Untrusted numbers.** Teacher-graded census tests in Madhya Pradesh overstated maths by **38.9** and Hindi by **33.8 percentage points** against independent re-tests [8]. NAS 2017 state averages were "likely artificially high", and ASER is "less reliable" for district averages [9]. Officials cannot see which blocks are truly behind.
@@ -42,7 +42,7 @@ India @ 71/100 Challenge · Theme 2: Foundational Learning Outcomes · Round 1 p
 | **AI oral reading** — Wadhwani AI *Vaachan Samiksha*, ~30,000 Gujarat schools (developer figures) [17] | Tamper-resistant fluency scores | Independent accuracy against human raters |
 | **TaRL** (Pratham) [13] | Assess → group → teach at level | A light recurring check and follow-up inside state systems |
 
-**Why the gap persists.** Pipes scaled faster than trust. Verification is used to grade, not to correct the data. Dashboards monitor, but nothing obliges or equips anyone to act on what they show.
+**Why the gap persists.** Pipes scaled faster than trust. Verification is used to grade, not to correct the data. VSKs aim to support data-driven decisions [7], but the sources we reviewed document no evaluated mechanism that equips a teacher to act on the data each week.
 
 ## 4. Proposed solution: one picture, two loops
 
@@ -62,7 +62,7 @@ flowchart TB
 
 **Loop 1: classroom support (teacher-led, every week).** Once a term the teacher runs a short oral check per child. The default is a printed ASER-style branching tool; an adaptive engine runs on a school or CRC smartphone where one exists. Children are placed in level groups, never labelled. The teacher receives one activity per group from the state's own content, by print, SMS or IVR, plus a recheck date. The state protects a **daily level-grouped period** and CRCs mentor, as in the evaluated TaRL model [13]. We do not claim TaRL's effects for software alone. The check *replaces* the state test's data entry; it is not an extra task.
 
-**Loop 2: measurement assurance (independent, every term).** We adapt moderation, back-checks and small-area estimation to census FLN data. Each term a rotating random sample of schools (risk-weighted, known inclusion probabilities) is re-tested from a frozen roster within a two-week window. Assessors come from another cluster, scores are blinded, and a 20 % double-assessed subsample estimates assessor error; coaching happens only after scores are recorded. A calibration model corrects every school's reported results. A Fay–Herriot model then gives **block estimates with conservative 90 % intervals**, benchmarked only to an independent survey of the *same construct, population and term*, never to PARAKH scale scores or old ASER rounds. A discrepancy is never treated as proof of cheating.
+**Loop 2: measurement assurance (independent, every term).** We adapt moderation, back-checks and small-area estimation to census FLN data. Each term a rotating random sample of schools (risk-weighted, known inclusion probabilities) is re-tested from a frozen roster within a two-week window. Assessors come from another cluster, scores are blinded, and 20 % of re-tested children are assessed twice to estimate assessor error (this assumes the two assessors err independently; a recorded-audio expert check tests that assumption). Coaching happens only after scores are recorded. A calibration model corrects every school's reported results. A Fay–Herriot model then gives **block estimates with conservative 90 % intervals**, benchmarked only to an independent survey of the *same construct, population and term* (run by SCERT/DIET or a contracted agency), never to PARAKH scale scores or old ASER rounds; without one, estimates are published unbenchmarked. A discrepancy is never treated as proof of cheating.
 
 **Learning-support record, with a firewall.** The record is time-limited, revisable and institution-owned: group, activity, recheck date, support needs. It holds no ability labels, quotas or rankings of teachers. A state order bars using these diagnostic or moderation records for personnel, transfer or promotion decisions. Parents and teachers can see and correct records, and school-level moderation data stays with the moderation team. Unmet need is reported only as an uncertain aggregate for planning.
 
@@ -77,17 +77,17 @@ flowchart TB
 | School-level moderated figure | calibrated share, interval | moderation team and state analyst; never for personnel decisions | two terms |
 | Block estimates | share, 90 % interval, children counted | public (VSK, SMC summaries); cells under 10 children suppressed | aggregate only |
 
-**Working demo (SYNTHETIC children; real runs).** A simulated district (600 schools, 6 blocks) matched to two ASER 2024 marginals, in which 30 % of schools inflate. Results come from a **pre-registered** test on 30 held-out districts (180 blocks):
+**Working demo (SYNTHETIC children; real runs).** A simulated district (600 schools, 6 blocks) matched to two ASER 2024 marginals, in which 30 % of schools inflate. Two **pre-registered** tests on fresh held-out districts (30 each, 180 blocks): v1, and v2 with the audit-design corrections from our code review.
 
-| Result | Value |
+| Result (v1 / v2) | Value |
 |---|---|
-| Block error, teacher-reported → moderated (10 % of schools re-tested) | **4.31 → 2.16 pp** |
-| Coverage of nominal 90 % intervals (conservative); mean half-width | **96.7 %** (92.9–98.5); **±6.0 pp** |
-| Re-test budget 5 % / 10 % / 20 % of schools: interval half-width | ±8.3 / ±6.0 / ±4.2 pp |
-| Do ±6 pp intervals separate blocks? (exploratory) | 55 % of blocks fall clearly above or below the district average, all on the correct side; true block spread ≈ 25 pp |
-| Better camp targeting from moderated numbers? | **Not shown** (+0.2 children, CI −5.6 to +6.1); at a 5 % budget it is worse |
-| Adaptive check, 8 of 16 items: exact level (5 levels) | 0.546, vs 0.597 for the full test (synthetic items) |
-| Weekly plan for a class of 60 / policy tests | 755-byte Hindi message, 3 SMS / 36 of 36 pass |
+| Block error, teacher-reported → moderated (10 % of schools re-tested) | **4.31 → 2.16 pp** / **4.17 → 2.10 pp** |
+| Coverage of nominal 90 % intervals (conservative); mean half-width | **96.7 %** / **96.7 %**; **±6.0 pp** (district-clustered 95 % CI for v1: 93.3–98.9 %) |
+| Re-test budget 5 % / 10 % / 20 % of schools (v1): half-width | ±8.3 / ±6.0 / ±4.2 pp |
+| Blocks clearly above or below the district average (post hoc) | 97 of 180, all on the correct side, but raw reports rank blocks as well (98 % vs 97 % on the correct side): moderation fixes the level, not the ranking |
+| Camp targeting with moderated school figures | **No gain** (v1: +0.2 children, CI −5.6 to +6.1); **worse** in v2 (−8.1, CI −13.5 to −2.8) and at a 5 % budget, so school figures are not used for targeting |
+| Adaptive check, 8 of 16 items: exact level (5 levels) | 0.538, vs 0.592 for the full test (frozen cut-points, synthetic items) |
+| Weekly plan for a class of 60 / policy tests incl. forged requests | 801-byte Hindi message, 3 SMS / 42 of 42 pass |
 
 These are stress tests of the method, not evidence about real states. Item difficulties, error rates and the honesty of classroom data are simulator assumptions, and the adaptive stopping rule is a model rule, not field certainty.
 
@@ -103,12 +103,12 @@ These are stress tests of the method, not evidence about real states. Item diffi
 | VSK IT team | Hosts approved services only |
 | Independent evaluator | Measures outcomes |
 
-**Quantities per 100 schools per term (design, at 10 %).** 10 school re-tests × 12 children = 120 independent assessments plus 24 double checks. At 16 items and an assumed 20 seconds per item, a full check takes about 5.3 minutes per child. Prices are to be quoted in phase 0; VSKs already receive Rs. 2–5 crore per State/UT [7].
+**Pilot operating box (phase 0).** Grade 3 first (Grades 1–2 follow a SCERT play-based adaptation); one district and one language chosen with the state; a daily level-grouped period fixed by state order. **Quantities per 100 schools per term (design, at 10 %):** 10 school re-tests × 12 children = 120 independent assessments plus 24 double checks; at 16 items and an assumed 20 seconds per item a full check takes ~5.3 minutes per child. **Anchor per district per term:** ~200 children in 20 random schools, same tool, run by SCERT/DIET or a contracted agency. Prices are quoted in phase 0 and approved before launch; VSKs already receive Rs. 2–5 crore per State/UT [7].
 
 | Phase | Scope and gate |
 |---|---|
 | 0: feasibility (1 term) | One district, one language. **Gates:** state order, legal review, data-sharing and processor agreements, VSK slot, timetable release. Measures: time use, data quality, harms, the reported vs re-tested gap. No impact claims. |
-| 1: evaluation (1 year) | Cluster-randomised rollout; pre-specified, independently assessed learning outcome; spillover controls. |
+| 1: evaluation (1 year) | Cluster-randomised: the same supported pedagogy (protected period + mentoring) with vs without the layer; pre-specified, independently assessed learning outcome; spillover controls. |
 | 2: scale | Only if incremental learning, workload and harm indicators pass; open components as public goods. |
 
 **Risks → mitigations.** Workload → the check replaces existing entry, and the plan is printed. Gaming → random rotation, cross-cluster assessors, no quotas. Stigma → no labels, plus the firewall. Language → validate before use. Weak benefit → stop at the phase-1 gate.

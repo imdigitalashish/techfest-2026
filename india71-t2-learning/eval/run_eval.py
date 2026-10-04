@@ -41,7 +41,8 @@ HELDOUT = list(range(101, 131))
 def coverage_results() -> dict:
     out = {}
     for key, f in [("language_b10", "coverage_heldout"), ("numeracy_b10", "coverage_heldout_numeracy"), ("language_b05", "coverage_heldout_b05"),
-                   ("language_b20", "coverage_heldout_b20"), ("language_b10_needcorr", "coverage_heldout_needcorr")]:
+                   ("language_b20", "coverage_heldout_b20"), ("language_b10_needcorr", "coverage_heldout_needcorr"),
+                   ("v2_language_b10", "coverage_v2_heldout"), ("v2_numeracy_b10", "coverage_v2_heldout_numeracy")]:
         d = json.loads((RES / f"{f}.json").read_text())
         out[key] = {"pass": d["primary"]["pass"], **d["summary"]["fh"], "direct_coverage90": d["summary"]["direct"]["coverage90"],
                     "allocation": d["summary"]["allocation"]}
@@ -79,9 +80,9 @@ def separation_exploratory() -> dict:
             "point_side_correct_raw": float(((b.raw < b.d_raw) == true_below).mean())}
 
 
-def coverage_cluster_ci(reps: int = 4000, seed: int = 7) -> dict:
+def coverage_cluster_ci(reps: int = 4000, seed: int = 7, name: str = "coverage_heldout") -> dict:
     """POST HOC: world-level (cluster) bootstrap CI for held-out coverage; blocks within a district are dependent."""
-    b = pd.read_csv(RES / "coverage_heldout.blocks.csv")
+    b = pd.read_csv(RES / f"{name}.blocks.csv")
     b = b[b.method == "fh"]
     per = b.groupby("seed").covered.agg(["sum", "size"])
     rng = np.random.default_rng(seed); k = per["sum"].to_numpy(); n = per["size"].to_numpy(); out = []
@@ -154,13 +155,13 @@ def c4() -> dict:
 def main() -> int:
     RES.mkdir(parents=True, exist_ok=True); DEMO.mkdir(parents=True, exist_ok=True)
     head = {"synthetic": True, "calibration": "ASER 2024 govt Std III: reading 0.234, subtraction 0.276 (eval/sim/calibration.py)",
-            "coverage": coverage_results(), "coverage_cluster_ci": coverage_cluster_ci(), "separation_exploratory": separation_exploratory(), "detection_auc_heldout": held_out_auc(),
+            "coverage": coverage_results(), "coverage_cluster_ci": coverage_cluster_ci(), "coverage_v2_cluster_ci": coverage_cluster_ci(name="coverage_v2_heldout"), "separation_exploratory": separation_exploratory(), "detection_auc_heldout": held_out_auc(),
             "demo_dashboard": demo_dashboard(), "teacher_plan": teacher_plan_demo(), "governance": governance(), "c4_diagnostics": c4(),
             "command": "nice -n 10 python3 eval/run_eval.py"}
     (RES / "headline.json").write_text(json.dumps(head, indent=2) + "\n")
     cv = head["coverage"]; sep = head["separation_exploratory"]; c = head["c4_diagnostics"]
     lines = ["# SYNTHETIC evaluation summary", "", f"Command: `{head['command']}` (coverage runs: see `eval/preregistration/2026-10-04-coverage.md`).", "",
-             "| Run (held-out seeds 101-130, 180 blocks) | 90% coverage | Wilson 95% | MAE moderated (pp) | MAE raw (pp) | mean half-width (pp) | allocation gain shown |",
+             "| Run (held-out: v1 seeds 101-130, v2 seeds 201-230; 180 blocks each) | 90% coverage | Wilson 95% | MAE moderated (pp) | MAE raw (pp) | mean half-width (pp) | allocation gain shown |",
              "|---|---:|---:|---:|---:|---:|---|"]
     for k, v in cv.items():
         lines.append(f"| {k} | {v['coverage90']:.3f} | {v['coverage_wilson95'][0]:.3f}–{v['coverage_wilson95'][1]:.3f} | {v['mae_pp']:.2f} | {v['raw_mae_pp']:.2f} | {v['mean_half_width_pp']:.2f} | {v['allocation']['gain_shown']} |")

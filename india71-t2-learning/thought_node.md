@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** finishing — definition of done items 1–3 complete; reviews (item 4) in progress; memo (item 5) drafted.
-- **Done since resume:** (1) **pre-registered interval test PASS** — held-out coverage 0.967 of nominal 0.90 (conservative), ±6.0 pp, block MAE 2.16 vs 4.31 pp; allocation gain **not shown**; (2) primary-source verification (DPDP Rules 2025 + commencement, VSK AU349, three agent-cited papers; NDEAR unreachable → UNVERIFIED); (3) proposal v1.0 + `deliverables/India71_100_[TeamID].pdf` (6 pages, Arial embedded, ≥ 11 pt; `check_docs` 16/16); (4) hostile-judge review of v0.3 (gpt-6-astra, 25 issues, 24 accepted).
-- **Doing:** child sessions — `T2 code review (sol)` (gpt-6-sol max: reproduce headline numbers, leakage, correctness) · `T2 hostile judge (astra)` re-scoring v1.0.
-- **Next:** address review findings → regenerate results if code changes → `check_docs` → PDF → ledger → final memo → push → message Supervisor "DONE — slot free".
-- **Needs from user:** Register by 15 Oct for one India@71 theme (memo below recommends T1). Teammates (≤ 4): names and skills; team name, Team ID, institution, contact for the PDF header.
-- **Risks:** a code-review finding could move the headline numbers (then they are regenerated and `check_docs` enforces consistency); the hostile judge may still score T2 below T3.
+- **Phase:** ✅ DONE for the Supervisor's definition of done (2026-10-04 16:42 IST). Round-1 deliverable final: [`deliverables/India71_100_[TeamID].pdf`](deliverables/India71_100_[TeamID].pdf) (source [`round1-proposal.md`](deliverables/round1-proposal.md) v1.1).
+- **Evidence state:** two pre-registered held-out PASSes — v1 ([prereg](eval/preregistration/2026-10-04-coverage.md), seeds 101–130): coverage 96.7 % of nominal 90 %, ±6.0 pp, MAE 4.31 → 2.16 pp; v2 with code-review design fixes ([prereg](eval/preregistration/2026-10-04-coverage-v2.md), seeds 201–230): 96.7 %, MAE 4.17 → 2.10 pp. Honest negatives: camp targeting with moderated school figures — no gain (v1), worse (v2, 5 % budget); raw reports rank blocks as well as moderated ones (moderation fixes level, not ranking). All SYNTHETIC.
+- **Reviews:** gpt-6-astra v0.3 (25 issues, 24 accepted), v1.0 re-review 6/7/5/6/5/5 = 34/60, no blocking (4 new majors fixed in v1.1); gpt-6-sol code + eval (12 issues, all accepted; blocking governance bypass fixed; numbers reproduced byte-identical). Ledger: [`reviews/ledger.tsv`](reviews/ledger.tsv).
+- **Next (only if T2 is chosen on 12 Oct):** the 13 partly-resolved review items need pilot-state decisions (district, sponsor, procurement, power calculation, field precision targets, device security); a real pilot partner; first auto-research iterations on seeds 1–30 with confirmations on fresh seeds.
+- **Needs from user:** Register by 15 Oct for one India@71 theme — memo below recommends **T1**. Teammates (≤ 4); team name, Team ID, institution and contact for the PDF header; rename the PDF to `India71_100_<TeamID>.pdf`.
+- **Risks:** synthetic-only evidence; heavy institutional asks (state order for protected period + firewall, cross-cluster assessors, anchor survey); a policy jury may see measurement, not learning.
 
 ## Phase 0 extraction (from `_briefs/india71.txt`, verified 4 Oct 02:10 IST)
 **Hard constraints**
@@ -70,25 +70,34 @@ Full specs: [architecture/components.md](architecture/components.md) · contract
 | C1 | Source connectors | sources → raw rows + Provenance | state ETL / VSK ingestion | no | spec | ingest validation pass rate |
 | C2 | Canonical model & identity | raw → School/Student/Response | Ed-Fi/CEDS-style, UDISE+/LGD codes | no | built (first pass) | validation pass rate; linkage F1 |
 | C3 | Competency framework & crosswalk | docs/items → Competency/Item (Q-matrix) | SCERT expert mapping | no | built (first pass) | κ vs expert Q-matrix |
-| C4 | Diagnostic engine | Responses → ChildDiagnosis | ASER highest-level rule | **spike 1** | built; CAT@8 0.546 vs full 0.597 vs ASER rule 0.472 (seeds 101–105) | exact level accuracy at 8 items |
+| C4 | Diagnostic engine | Responses → ChildDiagnosis | ASER highest-level rule | **spike 1** | built; frozen dev cut-points: CAT@8 0.538 vs full 0.592 vs ASER rule 0.486 (seeds 101–105) | exact level accuracy at 8 items |
 | C5 | Measurement assurance | reported results → block estimates + intervals | Gunotsav / Saksham verification | **spike 2** | **pre-registered PASS**: coverage 0.967 (nominal 0.90), MAE 2.16 vs 4.31 pp (held-out 101–130) | block MAE s.t. coverage ≥ 0.85 |
 | C6 | Linking + small-area estimation | bias residuals + anchor → block estimates | direct averages | part of spike 2 | Fay–Herriot on the bias + precision-weighted benchmark | coverage; MAE |
-| C7 | Teacher point-of-use | ChildDiagnosis → TeacherPlan | state apps / chatbots | **spike 1** | built; 755 B Hindi, 3 SMS, IVR; printed default | payload bytes; SMS segments |
+| C7 | Teacher point-of-use | ChildDiagnosis → TeacherPlan | state apps / chatbots | **spike 1** | built; 801 B Hindi, 3 SMS, IVR; printed default | payload bytes; SMS segments |
 | C8 | CRC visit planner | AreaEstimate + trust → VisitPlan | rota | no | spec | need-weighted coverage |
 | C9 | Allocation & policy feedback | estimates → AllocationDecision | enrolment-proportional | demoted | **no gain shown** (pre-registered; worse at 5 % budget) | below-goal children reached vs raw / oracle |
 | C10 | Dashboards | estimates → HTML/JSON | VSK dashboards | no | rebuilt: block estimates + intervals, no school labels | disclosure pass rate; KB |
 | C11 | Action ledger & outcome loop | ActionRecord → effects | none | no | spec | % actions with outcome in 6 wks |
-| C12 | Governance & access | AccessRequest → AccessDecision | role portals | no | built; 36/36 | policy suite pass rate |
+| C12 | Governance & access | AccessRequest + trusted server context → AccessDecision | role portals | no | fail-closed; 42/42 incl. 5 forged-request cases; wired into the dashboard | policy suite pass rate |
 
-## Selection memo
-_v1, 4 Oct 2026 06:00 IST (lead). Final by 12 Oct. Scores 1–5 with one line of evidence._
-- **Winnability — 4/5.** Theme 2 has the richest public evidence base of the three (ASER 2024 full report and state tables on disk; PARAKH 2024 national reports public; UDISE+), and the brief explicitly penalises "a generic ed-tech pitch" — the trap most teams will fall into. Our entry is a decision layer with typed contracts and moderation, grounded field-by-field in these datasets.
-- **Innovation headroom — 4/5.** Spike 2, *measurement assurance* (rotating sentinel re-tests during existing CRC visits → model-assisted calibration → small-area block estimates benchmarked to PARAKH/ASER): novelty check done (09:10) — each element has precedent (NESA/QCAA/KS2 moderation, IPA back-checks, RBF verification, validation-subsample correction, FH literacy SAE), but no opened source combines them for Indian FLN census data → claim adaptation/combination novelty (`research/sources/novelty-check-measurement-assurance.md`). Spike 1 (adaptive check → Monday plan in ≤ 3 SMS → 6-week recheck) is incremental alone, strong as a loop on a shared competency spine. See [ADR 001](architecture/adr/001-spike.md).
-- **Feasibility by the deadline — 5/5.** Runs entirely on the Mac (numpy/scipy); no hardware, credentials or real child data needed for Round 1. User effort: team details, a read-through, PDF export (~2 h), outside the 19–25 Nov exams.
-- **Demo strength — 4/5.** A Hindi WhatsApp/SMS/IVR "Monday plan" for a teacher (659 bytes / 3 SMS in the first run) plus a moderated block dashboard with intervals, on a synthetic district calibrated to ASER 2024 government-school Std III levels (23.4 % reading, 27.6 % subtraction).
-- **Fit with the user's strengths — 4/5.** National-scale data architecture (contracts, DPI integration with UDISE+/VSK/DIKSHA/APAAR, privacy by design) and statistical ML (IRT, small-area estimation, sampling design).
-- **Biggest risk.** A jury may read the simulation as self-validating; mitigations: real-data ASER/PARAKH analysis, sensitivity analysis across bias scenarios, and a pilot design with staggered roll-out. Second risk: "policing teachers" — addressed by the non-punitive moderation design (ADR 001).
-- **One-line pitch.** *Ek Tasveer turns the data India's schools already collect into one trusted picture — a Monday plan for every Grade 1–3 teacher and moderated, interval-backed block numbers for every official — so the three in four Grade 3 children in rural government schools who cannot yet read a Grade 2 text get the right help this week.*
+## Selection memo (FINAL — 2026-10-04 16:42 IST; theme decision 12 Oct, registration by 15 Oct)
+_Honest case for or against T2 against T1 (✅, 4.2/5, the default pick) and T3 (✅, 3.9/5, recommends T1). Scores 1–5 with one line of evidence each._
+- **Winnability — 3/5.** The evidence chain is verified at primary sources:
+  - ASER 2024: 23.4 % of rural govt Std III children read a Std II text (a proxy, not NIPUN attainment);
+  - teacher-graded census scores in MP were +38.9 pp above re-tests;
+  - NAS state averages are "likely artificially high";
+  - the MoE itself says its systems work "in silos".
+  The same hostile judge scored our v1.0 at **34/60, equal to T3's v1.0** (T1 was not numerically scored). Theme 2 will draw many ed-tech pitches. Our distinctive asset is statistical, and that is harder to sell to a policy jury than T1's "children flagged before severe wasting".
+- **Innovation headroom — 4/5.** Measurement assurance passed **two pre-registered held-out tests** (v1 and the code-review-corrected v2): conservative 90 % intervals (96.7 % coverage, ±6 pp) and block error roughly halved (SYNTHETIC). Novelty is adaptation/combination (moderation + back-checks + misclassification correction + Fay–Herriot on the bias), per a bounded search.
+- **Feasibility by the deadline — 5/5.** The final-format PDF exists today: 6 pages, Arial embedded, ≥ 11 pt, `check_docs` 17/17. Round 1 needs only team details from the user, all outside the 19–25 Nov exams.
+- **Demo strength at finals — 3.5/5.**
+  - Have: block dashboard with intervals (no school labels, C12 suppression), Hindi WhatsApp/SMS/IVR plan, pre-registered results, real ASER × PARAKH × UDISE+ state analysis.
+  - Missing: real child data. The main honest finding (moderation fixes the *level*, not the *ranking*) is subtle, and the adaptive check is modest (0.538 exact level at 8 items).
+- **Fit with the user's strengths — 4/5.** Statistics, data systems, privacy engineering; Azure for a VSK-hosted pilot.
+- **Overall — 3.9/5** (mean of the five) vs **T1 4.2**, **T3 3.9**.
+- **Biggest risk:** the institutional ask is heavy — a state order for a protected period and a personnel-use firewall, cross-cluster assessors, and a same-construct anchor survey. Education juries are sensitive to anything that looks like policing teachers.
+- **Recommendation: keep T1.** T2 is the stronger reserve on evidence quality: two pre-registered passes, a verified inflation literature and real-data analysis. Prefer it only if the user wants education and can find a state/SCERT partner for a phase-0 district before 1 Nov.
+- **One-line pitch:** "Schools already test every Grade 3 child, but no one can trust or act on the numbers. Ek Tasveer gives each teacher a weekly group plan and gives officials moderated block numbers with honest intervals — in two pre-registered tests on simulated districts it halved block error without labelling a single school."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -128,3 +137,21 @@ Antithesis (rubber-duck) argued the audit spike is asserted-not-demonstrated, re
 - Hostile judge (gpt-6-astra, max) on v0.3: 25 issues (4 blocking), scores 4/6/4/4/3/3. Accepted 24 (rejected only invented rupee prices) → proposal v1.0: ASER as proxies not NIPUN attainment; same-construct anchoring only; learning-support record + firewall replaces case/cure; verified DPDP timeline and exemption; responsibility chain + phase-0 gates; cluster-randomised phase 1; allocation demoted.
 - Verified at primary sources: DPDP G.S.R. 843(E) and Rules 2025 Rule 12/Fourth Schedule; VSK (AU349: "working in silos"); Johnson & Parrado; Berry et al. (via authors' VoxDev summary); Aiyar & Bhattacharya (publisher abstract). NDEAR: UNVERIFIED (hosts unreachable).
 - Final PDF `deliverables/India71_100_[TeamID].pdf`: 6 pages, A4 595×842, Arial only, embedded, min glyph 11 pt (`python3 deliverables/build_pdf.py --check`); Chromium had been shrinking pages 2.5 % because of unbreakable URLs — fixed.
+
+### 2026-10-04 16:42 IST — Reviews processed; v2 pre-registered PASS; proposal v1.1 final; DONE
+- **gpt-6-sol (code + eval):** reproduced the headline byte-for-byte (174/180 = 0.967; MAE 2.157 vs 4.310). 12 findings, all accepted:
+  - BLOCKING governance bypass via caller text → fail-closed `TrustedContext`, 42/42 incl. forged requests;
+  - dashboard now routes cells through C12 suppression;
+  - C4 cut-points no longer derived from held-out truth (frozen from dev worlds; C4 now 0.538 / 0.592 / 0.486);
+  - incomplete audits raise instead of publishing;
+  - `truth_block` children-weighted; contract and allocation-API wording.
+  The registered v1 command re-run after the fixes gives identical JSON and CSV.
+- **v2 pre-registration** committed 16:31 IST (exact-π systematic PPS, assessor-error variance, pooled 20 % double checks), pushed before running fresh seeds 201–230.
+  - Language PASS: coverage 0.967, MAE 2.10 vs 4.17 pp, ±6.0 pp; numeracy 0.956.
+  - Allocation with moderated school figures is **worse** than raw (−8.1, CI −13.5 to −2.8). So school figures are not used for targeting.
+- **Post hoc (labelled):**
+  - district-clustered CI for v1 coverage: 93.3–98.9 %;
+  - with a child-weighted district average, 97/180 blocks are clearly above or below it, all on the correct side;
+  - matched baseline: raw reports rank blocks as well (98 % vs 97 %), so moderation fixes level, not ranking.
+- **gpt-6-astra re-review of v1.0:** 6/7/5/6/5/5 = 34/60, no blocking. N1–N4 and its top-3 fixes went into v1.1: the double-rater assumption plus an audio check, the clustered CI, an anchor supplier, the matched baseline, a pilot operating box, source-bounded ecosystem wording, the 2026-27 inference, and a phase-1 comparator. 13 partly-resolved items are deferred to Round 2 with reasons.
+- **Final PDF:** 6 pages, A4, Arial embedded, min 11 pt; `check_docs` 17/17. Selection memo final: **recommend T1**; T2 is the reserve.

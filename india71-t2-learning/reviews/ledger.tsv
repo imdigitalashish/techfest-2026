@@ -1,2 +1,4 @@
 date	artifact	model	effort	issues	accepted	rejected	note
 2026-10-04	proposal-v0.3 (hostile judge: policy, feasibility, harm)	gpt-6-astra	max	25	24	1	4 blocking all accepted (ASER proxy vs NIPUN, anchoring, DPDP currency, case register); rejected only invented rupee unit prices (#12 part); see 2026-10-04-proposal-gpt-6-astra.responses.md
+2026-10-04	code + eval (all components, pre-registered coverage test)	gpt-6-sol	max	12	12	0	reproduced 0.967 / 2.16 vs 4.31 byte-identical; blocking governance bypass fixed (42/42 incl. forged requests); C4 cut-point leak fixed; design fixes 5/6/10 delivered as separately pre-registered v2 (seeds 201-230: coverage 0.967, MAE 2.10 vs 4.17)
+2026-10-04	proposal-v1.0 re-review	gpt-6-astra	max	4	4	0	scores 6/7/5/6/5/5 (34/60, no blocking); N1-N4 + top-3 fixes applied in v1.1; 13 partly-resolved originals deferred to Round 2 with reasons
