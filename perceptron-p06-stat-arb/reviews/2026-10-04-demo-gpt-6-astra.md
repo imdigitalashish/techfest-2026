@@ -190,3 +190,48 @@ These are implementation-effort estimates, not measured completion times. None r
 | 5 | Add a compact three-step stage view with persistent scope labels and the relevant baseline/result/caveat visible together; retain the full dashboard for Q&A. | 90-115 min | Gives the judge one comparison to understand at each moment instead of a scrolling control room. Addresses P6-D08. |
 
 Do not spend the next two hours making the pentagon prettier or training a larger learner. The most persuasive ending is already present in the evidence: **selection helps this replay benchmark; public quote resolution and execution assumptions limit what can honestly be claimed.**
+
+## Re-review (f953719)
+
+**Checked:** 2026-10-04, `6e2a7df` (demo identical to `f953719`), same single-reviewer method. One warm `PORT=8799 bash demo/run.sh --no-browser` run at **1440 x 900**, using automated, not human, reactions. Three steps, controls, race, backend loss and offline rescore exercised. No training/assets rebuilt; standalone inlining matched; static scan clean; own server/tab stopped.
+
+**Not independently repeated:** the lead-reported fresh-clone **28/28 smoke** and **0.3 s visual / 3.4 s LIVE** timings. Projector legibility and an oral three-minute rehearsal remain **UNVERIFIED**.
+
+**Result: nine FIXED, one PARTLY.** Citations below refer to the re-reviewed revision, not the original review's line numbers.
+
+| Finding | Verdict | Evidence |
+|---|---|---|
+| P6-D01 | **FIXED** | Five trials plus a false start and one timeout finished in **26.20 s**, all six rows retained. A separate Stop kept one completed trial and logged the abandoned next trial; the source caps the race at 45 s (`demo/app.js:36,441-496`). |
+| P6-D02 | **FIXED** | Starting from strict / 2 bp / 20 ms / 0.1x reset to frozen / 1 bp / 1 ms / 1x and produced **+$25.36** for the machine selector; restore-setup also worked (`demo/app.js:425-440,546-556`). |
+| P6-D03 | **FIXED** | Visible headline copy names the **six-scenario sum** and separates it from the one-setup day column; the revised narration does likewise (`demo/app.js:234-235,619-622`; `demo/SCRIPT.md:34,41`). |
+| P6-D04 | **PARTLY** | Heartbeat correctly changed the badge/counters to OFFLINE, but the completed race retained its live-computation claims until I changed latency. Reproduction and regression-test gap below (`demo/app.js:150-154,197,558-562`). |
+| P6-D05 | **FIXED** | Cards display **12 sampled first-of-month days, five previously inspected**, plus the unseen-seven **+$343 [+$70, +$616]** result; the talk track discloses prior inspection (`demo/app.js:619-622`; `demo/SCRIPT.md:38,41,45`). |
+| P6-D06 | **FIXED** | Card and script now say **illustrative sensitivity range, not a bound on executable lifetime** (`demo/app.js:625`; `demo/SCRIPT.md:68`). |
+| P6-D07 | **FIXED** | Dashboard presets identify receive-minus-venue p05, unresolved clock offset and snapped delta; the card explicitly rejects a latency bound and separates the order-delay assumption (`demo/app.js:82-93,628`). |
+| P6-D08 | **FIXED** | All three steps fit **1440 x 900** without scrolling: lowest panels in steps 1/2 ended at y=854; step 3's footer ended at y=785. Replay/result coexist; arrow-key navigation worked (`demo/app.js:642-658`; `demo/style.css:90-114`). |
+| P6-D09 | **FIXED** | At frozen / 1 bp / 5 ms the full-day caption correctly says **at most three trades**, largest absolute surplus **$0.31**; switching to 2 bp removed the human-band caption (`demo/app.js:291-298`). |
+| P6-D10 | **FIXED** | Offline rescore of **311.3 ms** displayed **51,173x**, exactly using the committed 6.083333... microsecond p50; the text separately named the 7 microsecond simulation allowance and 300 ms RT grid (`demo/app.js:497-506,586-594`). |
+
+### Remaining P6-D04 - major - Passive backend loss leaves the completed race stale
+
+**Reproduction:** complete a LIVE race, stop the backend, **touch nothing**. Badge/scope said OFFLINE/grid, but race status still said **"live · 19:59:28"**, the machine row **"live p50 measured on this machine"**, and the summary **"Live: committed simulator at your exact RT."** The rule had switched to the 7 microsecond allowance. Changing delta repaired the race labels.
+
+`backendLost` clears window results/timing, not `race.result`; `renderAll` omits the 2x2. The new test **changes delta before checking those labels** (`demo/browser_check.py:120-138`), missing this case.
+
+**Fix:** rescore on loss, or consistently label the retained last-LIVE snapshot and its original parameters. Assert all source labels **before** changing delta.
+
+### P6-D11 - major - The rewritten talk track is over its speaking-time budget
+
+The timed "say" cells contain **581 whitespace-delimited words**, versus approximately 445 previously (`demo/SCRIPT.md:38-46`). After the 25-second silent race, 155 seconds remain: **225 words/minute**. The rule alone is **64 words in 10 seconds** (384 words/minute). At 180 words/minute, speech plus race takes **3:39**, before clicks/questions. This is budget arithmetic, not an oral rehearsal.
+
+**Fix:** cut to roughly 330-350 spoken words, retain the corrected on-screen disclosures, move detailed comparisons to Q&A, and give Stop an explicit talk-time cue.
+
+| Dimension | Re-score / 5 | Reason |
+|---|---:|---|
+| Wow / lean-in factor | **4** | Bounded participation and adjacent counterfactuals make the interaction land. |
+| Clarity in three minutes | **3** | Clearer stage sequence, but the spoken script remains over budget. |
+| Honesty and rigour | **4** | Scientific scope/disclosures corrected; passive-loss race provenance remains inconsistent. |
+| Robustness on the finals laptop | **4** | Bounded race, working Stop, heartbeat and offline rescore; D04 still needs closure. |
+| Fit to Problem 6 | **5** | Detection, decay and latency-aware selection remain directly on brief. |
+
+**Verdict: substantially stronger and scientifically clearer, but not yet three-minute finals-ready until the script is cut and passive-loss race provenance is fixed.**
