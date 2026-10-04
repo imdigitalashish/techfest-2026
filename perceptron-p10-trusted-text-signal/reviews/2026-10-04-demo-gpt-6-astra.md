@@ -92,3 +92,12 @@ Re-verification:
 - Fresh clone (`uv` venv path): `smoke.sh` ALL PASS. Engine 35/35; 78,000 within-budget attacks, 0 violations; 14 endpoint checks; browser self-test 10/10; negative control.
 - Browser self-test alone: 3/3 runs pass (6–7.5 s).
 - Fallback screenshots re-captured (00–09).
+
+---
+## Lead decisions (P10 lead, 4 Oct 2026 19:25 IST)
+All six items ACCEPTED as the builder proposed (M1–M4, two MINOR), plus the two "winning" suggestions. None rejected.
+- M4 is accepted on PLAYBOOK §11's terms: a documented one-time setup step is allowed, and every number is disclosed.
+- **Lead verification from a clean checkout** (fresh worktree of `40e3f0c`; no venv, `.data` or `.cache`):
+  - `demo/setup.sh`: 108 s, offline via the `uv` cache, MiniLM found.
+  - `demo/smoke.sh`: **ALL PASS** in 188 s. Engine 35/35 equal to `text_minilm_v2.json` within 1e-9; 78,000 within-budget attacks, 0 certified containment violations; 14 endpoint checks; headless page self-test 10/10, including the stale-result check; negative control behaves.
+  - `P10_NO_OPEN=1 demo/run.sh`: first visual (page plus `/api/meta` with live ACI) after **23 s** from launch (17 s after setup, under load, memory level 33). The MiniLM scorer was ready 8.7 s later.

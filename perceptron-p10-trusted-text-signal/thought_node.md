@@ -21,7 +21,7 @@
   4. Final Round-1 abstract rendered from committed results, a doc-drift check script, and the architecture diagram.
   5. Cross-model reviews as child sessions (PLAYBOOK §10, at most 2 at a time): `gpt-6-astra` (max) as hostile judge on the abstract and spike; `gpt-6-sol` (max) on code and eval, including reproducing the headline numbers. Record them in `reviews/` and `ledger.tsv`.
   6. Final selection memo, thought node current, everything pushed, then message the Supervisor.
-- **Doing:** spawning one demo-builder child session (plan mode). It proposes the "crazy" element; I approve; it builds to §11. Lead steer: "you are the manipulator" — a judge writes fake posts (scored live by the real scorer) within budget k and tries to make the band miss. The certified band holds; plain CQR can be broken on honestly selected vulnerable days; past k the guarantee badge turns off. Plus a rolling ACI meter and an honest "text adds no value, p = 0.46" panel.
+- **Doing:** ✅ **DEMO DONE** (4 Oct ~19:30 IST). "Break the band" is on main (`demo/`), reviewed (gpt-6-astra 78/100, 0 blocking, all fixed) and verified by me from a clean checkout. Next, after the 12 Oct selection: edit budget, FNSPID pre-registration, formal round-off review.
 - **Machine rules:** start heavy jobs only when `sysctl -n kern.memorystatus_level` ≥ 30 (pause below 25); always `nice -n 10`, one job at a time; CPU only; small requests; poll long jobs at ≥ 10-minute intervals; no FinBERT download (MiniLM is cached).
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section. Optional: a Kaggle API token (`~/.kaggle/kaggle.json`).
 - **Risks:**
@@ -246,3 +246,13 @@ Added `tests/` (43 pass): DST-safe 16:00 ET alignment, contract rejection, brute
   - D: deletion-box bars.
 - **Builder's probe:** 327 stock-days (2.0%) are flippable by ≤ 3 posts; 207 of them have zero real posts (exploratory). I required the base rate of silent days to be shown next to it.
 - **My other steers:** a meaningful first visual; k = 0 on the knob; attribution; `smoke.sh` ≤ ~3 min and non-zero on mismatch; the reviewer is the last allowed child.
+
+### 2026-10-04 19:30 IST — DEMO DONE
+- The builder delivered "Break the band" (`demo/`, HEAD `40e3f0c`):
+  - a manipulator console with live MiniLM scoring and `trust_of`;
+  - the plain interval breaks on honestly labelled vulnerable days (1 of 327, 2.0%) while the certified band holds;
+  - a live red-team (0 violations), a population replay that snaps onto committed numbers, deletion-box bars, a live ACI meter (89.497% = committed), and an always-visible honest footer;
+  - a fallback gallery when setup is missing.
+- gpt-6-astra demo review: **78/100, "would lean in: yes"**, 0 blocking. 4 major + 2 minor issues, all accepted and fixed (stale async results, vacuous browser smoke, footer qualifications, timing disclosure, width denominator, narrow screens).
+- **Lead clean-checkout verification:** setup 108 s · smoke ALL PASS (188 s; 35/35 engine checks = committed JSON within 1e-9; 0 violations in 78,000 attacks; page self-test 10/10) · first visual 23 s after launch.
+- Messaged the Supervisor "DEMO DONE".
