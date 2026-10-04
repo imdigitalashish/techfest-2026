@@ -88,7 +88,7 @@ All four results come from runs committed to our repo, each with a reproduce com
 - **Digital twin (SIMULATED plastic, real forcing):**
   - Inputs: 4 Mumbai outfalls; ERA5 rain; archived JMA day-ahead forecasts (so no hindsight); tide fitted with UTide to Open-Meteo Marine sea level (RMSE ≈ 0.08 m).
   - Held-out monsoons 2024–25; 2 crews × 8 h/day for every policy; 40 Monte Carlo draws.
-  - Forecast- and tide-aware dispatch cut escaped plastic by a median **2.1%** vs the fixed schedule (90% interval −1.5% to +12.5%; better in 28 of 40 draws). Most of the gain comes from *tide-aware* timing, not from rain forecasts.
+  - Forecast- and tide-aware dispatch cut escaped plastic by a median **2.1%** vs the fixed schedule (90% interval: from 1.5% more to 12.5% less; better in 28 of 40 draws). Most of the gain comes from *tide-aware* timing, not from rain forecasts.
   - Clearing whenever the pocket looks full did *worse* (+3.1% escaped).
   - **Lesson:** timing alone is a small lever. About half the arriving plastic is not captured whatever the schedule. So the headline lever is capture physics at high flow, which is why we build the angled-boom ratchet pocket.
   - Reproduce: `python -m twin_sim.run`.
