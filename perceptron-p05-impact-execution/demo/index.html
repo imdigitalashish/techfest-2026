@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ghost Market · P5 market-impact-aware execution · SIMULATED (ABIDES)</title>
+<link rel="icon" href="data:,">
+<style>
+:root{
+  --paper:#f4f1ea; --panel:#fbfaf6; --rule:#d9d2c5; --ink:#15171b; --ink2:#454b55; --ink3:#6b717b;
+  --ghost:#4f6d93; --ghost-soft:rgba(79,109,147,.16); --heat:#cf3f25; --heat-soft:rgba(207,63,37,.17);
+  --ia:#0e7266; --ok:#1d7447; --ok-soft:rgba(29,116,71,.12); --bid:#3b7a5a; --ask:#a04a5c;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:16px;padding:10px 22px;background:var(--paper);border-bottom:1px solid var(--rule)}
+.brand{display:flex;flex-direction:column;line-height:1.15;flex:none}
+.brand b{font-size:19px;letter-spacing:-.01em}
+.brand span{font-size:12px;color:var(--ink2)}
+nav{display:flex;gap:2px;flex:1;flex-wrap:wrap}
+nav button{border:0;background:none;padding:8px 12px;border-radius:6px;cursor:pointer;color:var(--ink2);font-weight:550;font-size:14px}
+nav button:hover{background:rgba(21,23,27,.06);color:var(--ink)}
+nav button[aria-selected=true]{background:var(--ink);color:var(--paper)}
+nav button:focus-visible,.btn:focus-visible,.seg button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--heat);outline-offset:2px}
+.stamp{flex:none;border:2px solid var(--heat);color:var(--heat);font-weight:800;font-size:12px;letter-spacing:.11em;padding:5px 9px;border-radius:3px;transform:rotate(-2deg);text-transform:uppercase;white-space:nowrap}
+main{padding:18px 22px 40px;max-width:1680px;margin:0 auto}
+section.act{display:none}
+section.act.on{display:block}
+h1{font-size:27px;line-height:1.15;letter-spacing:-.015em;margin:4px 0 4px;max-width:60ch;text-wrap:balance}
+.lede{color:var(--ink2);margin:0 0 14px;max-width:96ch}
+.grid1{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:16px}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:16px}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:12px 14px}
+.panel h2{font-size:15px;margin:0 0 6px;letter-spacing:-.005em}
+.panel h2 small{font-weight:500;color:var(--ink2);font-size:13px}
+canvas{display:block;width:100%}
+.src{font-size:11.5px;color:var(--ink3);margin-top:6px;overflow-wrap:anywhere}
+.src code{font-family:var(--mono);font-size:11px;color:var(--ink2)}
+.cap{font-size:13.5px;color:var(--ink);margin:6px 0 0}
+.fine{font-size:12px;color:var(--ink2)}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:0 0 12px}
+.ctl{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2)}
+.seg{display:inline-flex;border:1px solid var(--rule);border-radius:7px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:none;padding:6px 11px;cursor:pointer;font-family:var(--mono);font-size:13px;color:var(--ink2)}
+.seg button+button{border-left:1px solid var(--rule)}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.seg button:hover:not([aria-pressed=true]){background:rgba(21,23,27,.06)}
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:7px;padding:7px 14px;cursor:pointer;font-weight:600}
+.btn.ghostbtn{background:var(--panel);color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+select,input[type=number]{border:1px solid var(--rule);background:var(--panel);border-radius:7px;padding:6px 8px;font-family:var(--mono);font-size:13px}
+input[type=range]{accent-color:var(--ink)}
+.scrub{flex:1;min-width:220px}
+.clock{font-family:var(--mono);font-size:14px;min-width:70px}
+.badge{display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:7px;border:1px solid var(--rule);background:var(--panel);font-size:13.5px;transition:background .25s,border-color .25s}
+.badge .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--ink3);flex:none;display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--paper)}
+.badge.ok{border-color:var(--ok);background:var(--ok-soft)}
+.badge.ok .dot{background:var(--ok);border-color:var(--ok)}
+.badge.bad{border-color:var(--heat);background:var(--heat-soft)}
+.badge.bad .dot{background:var(--heat);border-color:var(--heat)}
+.badge b{font-family:var(--mono);font-weight:650}
+.ladders{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.lad h3{font-size:12.5px;margin:0 0 4px;color:var(--ink2);font-weight:650;text-transform:uppercase;letter-spacing:.06em}
+.lad h3 i{font-style:normal;color:var(--ghost)}
+.lv{position:relative;display:grid;grid-template-columns:1fr auto;gap:6px;font-family:var(--mono);font-size:12.5px;padding:2px 6px;border-radius:3px;height:22px;align-items:center}
+.lv .bar{position:absolute;right:0;top:3px;bottom:3px;border-radius:2px;opacity:.22}
+.lv.a .bar{background:var(--ask)} .lv.b .bar{background:var(--bid)}
+.lv.a .px{color:var(--ask)} .lv.b .px{color:var(--bid)}
+.lv .q{text-align:right;color:var(--ink)}
+.lv.diff{background:var(--heat-soft)}
+.lv.mid{display:block;height:24px;line-height:20px;color:var(--ink2);font-size:11px;border-top:1px dashed var(--rule);border-bottom:1px dashed var(--rule);border-radius:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ghostlad .lv{opacity:.82}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.ro{padding:8px 10px;border:1px solid var(--rule);border-radius:7px;background:var(--panel)}
+.ro span{display:block;font-size:12px;color:var(--ink2)}
+.ro b{font-family:var(--mono);font-size:20px;letter-spacing:-.02em}
+.ro b.heat{color:var(--heat)}
+table.cost{border-collapse:collapse;width:100%;font-size:13.5px;margin-top:4px}
+table.cost th,table.cost td{padding:5px 8px;border-bottom:1px solid var(--rule);text-align:right}
+table.cost th:first-child,table.cost td:first-child{text-align:left}
+table.cost td{font-family:var(--mono)}
+table.cost tr.tot td{font-weight:700;border-bottom:2px solid var(--ink)}
+.toggle-big{display:inline-flex;border:2px solid var(--ink);border-radius:9px;overflow:hidden}
+.toggle-big button{border:0;background:var(--panel);padding:9px 18px;font-weight:700;cursor:pointer;font-size:14.5px}
+.toggle-big button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.stat{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule)}
+.stat:last-child{border-bottom:0}
+.stat b{font-family:var(--mono);font-size:22px;min-width:92px;letter-spacing:-.02em}
+.stat p{margin:0;font-size:13.5px;color:var(--ink2)}
+.stat p strong{color:var(--ink)}
+.verdict{font-size:30px;font-weight:800;letter-spacing:-.02em;margin:2px 0 4px}
+.check{color:var(--ok);font-weight:700}
+.warn{color:var(--heat);font-weight:700}
+.livebar{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.status{font-size:13px;padding:6px 10px;border-radius:6px;background:rgba(21,23,27,.05);color:var(--ink2)}
+.status.ready{background:var(--ok-soft);color:var(--ok)}
+.status.paused{background:var(--heat-soft);color:var(--heat)}
+.livelabel{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--paper);background:var(--ia);padding:3px 8px;border-radius:4px}
+.empty{padding:40px;text-align:center;color:var(--ink2);border:1px dashed var(--rule);border-radius:8px}
+kbd{font-family:var(--mono);font-size:11px;border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:0 4px;background:var(--panel)}
+footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;margin:0 auto}
+@media (max-width:1100px){.grid1,.grid2{grid-template-columns:1fr}header{flex-wrap:wrap}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>Ghost Market</b><span>P5 · market-impact-aware execution · Perceptron 2026</span></div>
+  <nav role="tablist" aria-label="Acts">
+    <button role="tab" data-act="1" aria-selected="true">1 Ghost market</button>
+    <button role="tab" data-act="2">2 Why the twin</button>
+    <button role="tab" data-act="3">3 TWAP vs impact-aware</button>
+    <button role="tab" data-act="4">4 Scoreboard</button>
+    <button role="tab" data-act="5">5 Live: your seed</button>
+  </nav>
+  <div class="stamp" title="There is no real market data in P5. Every number on this page comes from the ABIDES agent-based simulator.">SIMULATED (ABIDES rmsc04)</div>
+</header>
+<main>
+
+<!-- ============ ACT 1 ============ -->
+<section class="act on" id="act1">
+  <h1>Same seed, two markets. The only difference is our order.</h1>
+  <p class="lede">We sell <span data-c="task_qty"></span> shares of a ~$<span data-c="price_usd"></span> stock between <span data-c="task_start"></span> and <span data-c="task_end"></span> in <span data-c="task_slots"></span> market-order slices, inside an exchange with <span data-c="n_trading_agents"></span> simulated traders. The <b style="color:var(--ghost)">ghost</b> is the same market and the same seed, with our order set to zero. The shaded gap between the two is our own footprint.</p>
+  <div class="controls">
+    <div class="ctl">seed <select id="a1seed" aria-label="seed"></select></div>
+    <div class="ctl">order size <div class="seg" id="a1size" role="group" aria-label="order size"></div></div>
+    <button class="btn" id="a1play" aria-label="play or pause">▶ Play</button>
+    <div class="ctl">speed <div class="seg" id="a1speed" role="group" aria-label="speed"></div></div>
+    <input type="range" class="scrub" id="a1scrub" min="0" max="2100" step="1" value="0" aria-label="time">
+    <span class="clock" id="a1clock">09:30:00</span>
+  </div>
+  <div class="grid1">
+    <div class="panel">
+      <canvas id="a1price" style="height:300px" aria-label="mid price of our market and the ghost"></canvas>
+      <canvas id="a1gapc" style="height:150px;margin-top:4px" aria-label="our footprint over time"></canvas>
+      <div class="src">source: <code>demo/data/showcase_&lt;seed&gt;.js</code>, produced by <code>demo/export.py</code> (committed <code>run_world</code>, synced twins, top-5 book log). Showcase seeds are the first three of the E7 block, not hand-picked.</div>
+    </div>
+    <div class="panel">
+      <div class="badge" id="a1badge"><span class="dot"></span><span></span></div>
+      <div class="ladders">
+        <div class="lad"><h3>our market</h3><div id="a1ladA"></div></div>
+        <div class="lad ghostlad"><h3><i>ghost</i> (no order)</h3><div id="a1ladB"></div></div>
+      </div>
+      <div class="readout">
+        <div class="ro"><span>our footprint now (ghost mid − our mid)</span><b class="heat" id="a1gap">—</b></div>
+        <div class="ro"><span>book levels differing from the ghost</span><b id="a1diff">—</b></div>
+      </div>
+      <div class="src">identity: every logged top-5 book event before 09:35, compared field by field (<code>demo/p5demo.py: top5_pre_trade_identity</code>); top of book also passes the committed <code>tca.pre_window_exact</code>.</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <h2>Impact vs order size <small>(footprint at T1 = 09:55, mean of <span data-c="e7_n"></span> seeds, synced twins, E7)</small></h2>
+      <canvas id="a1size_chart" style="height:290px" aria-label="impact versus order size, log-log"></canvas>
+      <p class="cap"><b>Impact grows roughly linearly; the real-world law is square-root (≈0.5). Realism gate needed.</b></p>
+      <p class="fine">registered slope <span data-c="e7_delta"></span> [<span data-c="e7_delta_lo"></span>, <span data-c="e7_delta_hi"></span>]; our pre-registered rule was lenient (see <code>eval/preregistration.md</code>). The dashed 0.5 line is a real-world literature reference (Sato &amp; Kanazawa, PRL 135, 257401 (2025): all Tokyo Stock Exchange stocks over 8 years; arXiv:2411.13965), drawn through our 4,000-share mean. It is not our result.</p>
+      <div class="src">source: <code>claims.json</code> e7_delta, e7_delta_lo, e7_delta_hi · <code>eval/results/realism_scorecard.json</code> (means, 95% CIs) · per-seed values from <code>E7_size_q*.csv</code> (re-exported and checked by <code>demo/smoke.sh</code>)</div>
+    </div>
+    <div class="panel">
+      <h2>Where our 4,000 shares ended up <small>net inventory change vs the ghost, by agent type</small></h2>
+      <canvas id="a1hold" style="height:230px" aria-label="net inventory change by agent type"></canvas>
+      <p class="cap">Value agents end the session holding <b><span data-c="fb_value_pct"></span>%</b> of what we sold. Momentum agents: <b>no momentum amplification detected</b> (<span data-c="fb_momentum"></span> shares, 95% CI [<span data-c="fb_momentum_lo"></span>, <span data-c="fb_momentum_hi"></span>]).</p>
+      <div class="src">source: <code>claims.json</code> fb_value, fb_mm, fb_momentum, fb_noise (+ _lo/_hi): E10 TWAP arm, n = <span data-c="e10_n"></span> seeds, end-of-session holdings minus the ghost's.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT 2 ============ -->
+<section class="act" id="act2">
+  <h1>Without synchronised randomness, the ghost wanders off.</h1>
+  <p class="lede">Same <span data-c="e4_n"></span> seeds, same TWAP order. In <b>naive</b> twins, our first trade shifts every later random draw, so the ghost drifts into a different market and the "footprint" is mostly noise. <b>Synchronised</b> twins re-key every agent's random stream at each wake-up (<code>world.py: _synchronise_rng</code>), so the two markets differ only through reactions to our orders.</p>
+  <div class="controls">
+    <div class="toggle-big" role="group" aria-label="twin coupling">
+      <button id="a2naive" aria-pressed="true">Naive twins</button>
+      <button id="a2sync" aria-pressed="false">Synchronised twins</button>
+    </div>
+    <span class="fine">press <kbd>N</kbd> / <kbd>S</kbd></span>
+  </div>
+  <div class="grid1">
+    <div class="panel">
+      <canvas id="a2chart" style="height:470px" aria-label="twin gap paths for 30 seeds"></canvas>
+      <div class="src">source: <code>demo/data/summary.js</code> arms naive_4000 and sync_4000 (seeds 100–129, re-exported); their T1 gaps equal <code>E4_nsr_naive.csv</code> and <code>E7_size_q4000.csv</code>, checked by <code>demo/smoke.sh</code>.</div>
+    </div>
+    <div class="panel">
+      <div class="stat"><b id="a2std">—</b><p><strong>Std of the twin gap at T1</strong> (20 min) across these 30 seeds, computed here from the exported paths. <span id="a2stdchk"></span></p></div>
+      <div class="stat"><b><span data-c="noise_reduction"></span>×</b><p><strong>less own-impact dispersion</strong>: per-seed std <span data-c="own_std_naive"></span> → <span data-c="own_std_sync"></span> bps (E4).<br><span class="src">source: claims.json noise_reduction, own_std_naive, own_std_sync</span></p></div>
+      <div class="stat"><b><span data-c="ci_tightening"></span>×</b><p><strong>tighter paired confidence intervals</strong> on the same <span data-c="e3_e5_n"></span> test seeds (E3 naive vs E5 synced).<br><span class="src">source: claims.json ci_tightening</span></p></div>
+      <div class="stat"><b><span data-c="gap_std_1200"></span>¢</b><p>Naive twin gap std at 20 min (<span data-c="gap_std_60"></span>¢ at 1 min), against a mean impact of <span data-c="gap_mean_300"></span>¢ (E1, 40 training seeds).<br><span class="src">source: claims.json gap_std_1200, gap_std_60, gap_mean_300</span></p></div>
+      <div class="stat"><b>+<span data-c="e11_spread_pct"></span>%</b><p><strong>The price of the coupling:</strong> mean spreads are wider in synchronised worlds (E11); volume and trade counts stay within ±10%. Counterfactuals are conditional on this altered market.<br><span class="src">source: claims.json e11_spread_pct</span></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT 3 ============ -->
+<section class="act" id="act3">
+  <h1>TWAP vs the impact-aware schedule, against the same ghost.</h1>
+  <p class="lede"><b>One seed: single-seed differences are noise; aggregate in Act 4.</b> Both arms sell 4,000 shares with market orders against the same null twin, so every cost term is paired: drift (what the ghost did without us) + own impact (ghost mid − our mid at each decision) + instant (spread and book-walking).</p>
+  <div class="controls">
+    <div class="ctl">seed <select id="a3seed" aria-label="seed"></select></div>
+    <span class="fine">arms: <b>TWAP</b> (40 equal slices) · <b style="color:var(--ia)">Impact-aware schedule (QP + front-loading, market orders)</b> · <b style="color:var(--ghost)">ghost</b> (= 0 by definition)</span>
+  </div>
+  <div class="grid1">
+    <div class="panel">
+      <canvas id="a3chart" style="height:330px" aria-label="footprint paths for TWAP and impact-aware"></canvas>
+      <canvas id="a3sched" style="height:120px;margin-top:8px" aria-label="shares sold per slot"></canvas>
+      <div class="src">source: <code>demo/data/summary.js</code> arms sync_4000 and ia_4000 (policy <code>IA_sched_only</code> from <code>eval/policies/e8_ablation.json</code>, the arm tested in E6/E8/E10); per-slot schedule from the showcase fills (seeds 100–102).</div>
+    </div>
+    <div class="panel">
+      <h2>Cost of this seed, bps <small>(positive = cost)</small></h2>
+      <table class="cost" id="a3cost"></table>
+      <div class="src">computed by the committed <code>tca.decompose_is</code>; values equal the <code>E8_ablation_val.csv</code> rows for these seeds (checked by <code>demo/smoke.sh</code>).</div>
+      <h2 style="margin-top:14px">ΔIS on every seed of this block <small>(IA − TWAP, bps)</small></h2>
+      <canvas id="a3strip" style="height:120px" aria-label="per-seed difference strip"></canvas>
+      <p class="fine">Seeds 100–129, part of the E8 validation block. Each dot is one seed; the selected one is ringed. Means and CIs live in Act 4.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT 4 ============ -->
+<section class="act" id="act4">
+  <div class="verdict">We do not claim to beat TWAP.</div>
+  <p class="lede">ΔIS = our implementation shortfall minus TWAP's on the same seed (bps; negative = cheaper). The impact-aware schedule looked good once. The twin made a 0.03 bp difference measurable, and it is the twin that shows the result does not replicate.</p>
+  <div class="grid1">
+    <div class="panel">
+      <canvas id="a4forest" style="height:340px" aria-label="forest plot of E6, E8, E10 and pooled"></canvas>
+      <div class="controls" style="margin:6px 0 0"><button class="btn ghostbtn" id="a4replay">↻ replay the sequence</button></div>
+      <div class="src">source: <code>claims.json</code> h1_dis/_lo/_hi, h1_n (E6) · e8_IA_sched_only/_lo/_hi, e8_n (E8) · e10_dis, e10_lo, e10_hi, e10_n, e10_h2 (E10) · pool2_dis/_lo/_hi, pool2_n (pooled E6+E10). 95% paired-bootstrap CIs.</div>
+    </div>
+    <div class="panel">
+      <h2>Why sub-tick claims need the twin</h2>
+      <canvas id="a4scale" style="height:210px" aria-label="noise scale versus the E6 point estimate"></canvas>
+      <p class="fine">The top bar is the per-seed std of the own-impact term (naive twins). The bottom bar is the E6 point estimate. One tick is <span data-c="tick_bps"></span> bp. The E6 point estimate is <span data-c="h1_cents"></span>¢ per share, about $<span data-c="h1_usd"></span> on a $<span data-c="parent_usd_m"></span>M order.</p>
+      <div class="src">source: <code>claims.json</code> own_std_naive, own_std_sync, h1_dis, tick_bps, h1_cents, h1_usd, parent_usd_m</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIVE ============ -->
+<section class="act" id="act5">
+  <h1>Bring your own seed: a brand-new twin pair, run live.</h1>
+  <p class="lede">Type any seed. The server runs three fresh ABIDES worlds with the committed code: the ghost, TWAP and the impact-aware schedule, all synchronised. Then it checks the pre-trade books event by event. Expect about 10 s.</p>
+  <div class="controls livebar">
+    <div class="ctl">seed <input type="number" id="lvseed" value="2026" min="0" max="2147483647" style="width:130px" aria-label="seed"></div>
+    <div class="ctl">order size <input type="range" id="lvq" min="1000" max="16000" step="1000" value="4000" aria-label="order size"> <b id="lvqv" style="font-family:var(--mono)">4,000</b></div>
+    <button class="btn" id="lvrun">Run twin pair</button>
+    <span class="status" id="lvstatus">checking the live lane…</span>
+  </div>
+  <div id="lvout"><div class="empty">No live run yet. Pick a seed and press <b>Run twin pair</b>; seeds 100–129 reproduce the committed E7/E8 rows exactly.</div></div>
+  <template id="lvtpl">
+    <div class="controls"><span class="livelabel">1 new seed (live, synced)</span><span class="fine" id="lvmeta"></span>
+      <button class="btn ghostbtn" id="lvplay">▶ Replay</button><input type="range" class="scrub" id="lvscrub" min="0" max="2100" value="2100" aria-label="time"><span class="clock" id="lvclock">10:05:00</span></div>
+    <div class="grid1">
+      <div class="panel"><canvas id="lvprice" style="height:280px" aria-label="live mid paths"></canvas><canvas id="lvgapc" style="height:140px;margin-top:4px" aria-label="live footprint"></canvas>
+        <div class="src">computed live by <code>demo/server.py</code> → <code>demo/p5demo.py</code> (committed <code>run_world</code>, <code>tca</code>).</div></div>
+      <div class="panel">
+        <div class="badge" id="lvbadge"><span class="dot"></span><span></span></div>
+        <div class="ladders"><div class="lad"><h3>TWAP world</h3><div id="lvladA"></div></div><div class="lad ghostlad"><h3><i>ghost</i> (no order)</h3><div id="lvladB"></div></div></div>
+        <div class="readout"><div class="ro"><span>TWAP footprint at T1</span><b class="heat" id="lvt1a">—</b></div><div class="ro"><span>impact-aware footprint at T1</span><b id="lvt1b" style="color:var(--ia)">—</b></div></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><h2>This seed on the E7 impact-vs-size chart</h2><canvas id="lvsize" style="height:250px"></canvas><div class="src">means and CIs: <code>realism_scorecard.json</code>; ring = this live seed (TWAP, footprint at T1).</div></div>
+      <div class="panel"><h2>Cost of this seed, bps</h2><table class="cost" id="lvcost"></table>
+        <h2 style="margin-top:12px">Where the shares ended up <small>(this seed, vs the ghost)</small></h2><div id="lvhold" class="fine"></div></div>
+    </div>
+  </template>
+</section>
+</main>
+<footer>Keys: <kbd>1</kbd>–<kbd>5</kbd> acts · <kbd>space</kbd> play/pause · <kbd>←</kbd>/<kbd>→</kbd> scrub · Data: <span id="metaline"></span></footer>
+
+<script src="data/summary.js"></script>
+<script src="data/showcase_100.js"></script>
+<script src="data/showcase_101.js"></script>
+<script src="data/showcase_102.js"></script>
+<script>
+"use strict";
+const P = window.P5, C = P.claims, SH = window.P5_SHOW || {};
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const MISSING = [];
+function c(k) { if (!(k in C)) { MISSING.push(k); return "⟂" + k; } return C[k]; }
+function pretty(s) { return String(s).replace(/^-/, "−").replace(/^\+/, "+"); }
+function num(k) { return parseFloat(String(c(k)).replace(/,/g, "").replace("−", "-")); }
+const COL = { ink: "#15171b", ink2: "#454b55", ink3: "#6b717b", rule: "#d9d2c5", ghost: "#4f6d93", heat: "#cf3f25", ia: "#0e7266", ok: "#1d7447", paper: "#fbfaf6" };
+const T_START = 300, T_END = 1500, T_MAX = 2100;   // seconds since 09:30
+const fmtT = s => { s = Math.max(0, Math.round(s)); const h = 9 + Math.floor((30 * 60 + s) / 3600), m = Math.floor(((30 * 60 + s) % 3600) / 60), x = s % 60; return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(x).padStart(2, "0")}`; };
+const sgn = (x, d = 1) => (x > 0 ? "+" : x < 0 ? "−" : "±") + Math.abs(x).toFixed(d);
+const usd = (cents, d = 2) => "$" + (cents / 100).toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+const grp = n => Math.round(n).toLocaleString("en-US");
+
+$$("[data-c]").forEach(el => { el.textContent = pretty(c(el.dataset.c)); });
+$("#metaline").textContent = `${P.meta.source}; exported ${P.meta.generated}; ABIDES ${P.meta.abides_commit}; seeds ${P.meta.seeds[0]}–${P.meta.seeds[P.meta.seeds.length - 1]}.`;
+
+// ---------- canvas helpers ----------
+function setup(cv) {
+  const dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+  ctx.font = "12px " + getComputedStyle(document.body).fontFamily; ctx.textBaseline = "middle"; return { ctx, w, h };
+}
+const lin = (d0, d1, r0, r1) => v => r0 + (v - d0) * (r1 - r0) / (d1 - d0);
+function mark(ctx, w, h) { ctx.save(); ctx.font = "700 10px system-ui"; ctx.fillStyle = "rgba(207,63,37,.8)"; ctx.textAlign = "right"; ctx.textBaseline = "top"; ctx.fillText("SIMULATED (ABIDES)", w - 6, 3); ctx.restore(); }
+function text(ctx, s, x, y, o = {}) { ctx.save(); ctx.fillStyle = o.color || COL.ink2; ctx.font = (o.weight || "500") + " " + (o.size || 12) + "px system-ui"; ctx.textAlign = o.align || "left"; ctx.textBaseline = o.base || "middle"; ctx.fillText(s, x, y); ctx.restore(); }
+function hline(ctx, x0, x1, y, color, dash) { ctx.save(); ctx.strokeStyle = color; ctx.setLineDash(dash || []); ctx.beginPath(); ctx.moveTo(x0, y + .5); ctx.lineTo(x1, y + .5); ctx.stroke(); ctx.restore(); }
+function vline(ctx, x, y0, y1, color, dash, lw) { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = lw || 1; ctx.setLineDash(dash || []); ctx.beginPath(); ctx.moveTo(x + .5, y0); ctx.lineTo(x + .5, y1); ctx.stroke(); ctx.restore(); }
+function niceStep(span, n) { const raw = span / n, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * p; }
+function path(ctx, xs, ys, color, lw, dash, alpha) {
+  ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.globalAlpha = alpha == null ? 1 : alpha; ctx.setLineDash(dash || []); ctx.lineJoin = "round";
+  ctx.beginPath(); let pen = false;
+  for (let i = 0; i < xs.length; i++) { if (ys[i] == null || !isFinite(ys[i])) { pen = false; continue; } if (!pen) { ctx.moveTo(xs[i], ys[i]); pen = true; } else ctx.lineTo(xs[i], ys[i]); }
+  ctx.stroke(); ctx.restore();
+}
+function meanStd(v) { const a = v.filter(x => x != null && isFinite(x)); const m = a.reduce((s, x) => s + x, 0) / a.length; const sd = Math.sqrt(a.reduce((s, x) => s + (x - m) * (x - m), 0) / (a.length - 1)); return [m, sd, a.length]; }
+
+// ---------- player ----------
+class Player {
+  constructor(onT, onState) { this.t = 0; this.speed = 60; this.playing = false; this.onT = onT; this.onState = onState || (() => {}); this.last = 0; }
+  set(t) { this.t = Math.max(0, Math.min(T_MAX, t)); this.onT(this.t); }
+  play() { if (this.t >= T_MAX) this.t = 0; this.playing = true; this.last = performance.now(); this.onState(true); requestAnimationFrame(n => this.tick(n)); }
+  pause() { this.playing = false; this.onState(false); }
+  toggle() { this.playing ? this.pause() : this.play(); }
+  tick(now) { if (!this.playing) return; const dt = Math.min(.1, (now - this.last) / 1000); this.last = now; this.set(this.t + dt * this.speed); if (this.t >= T_MAX) { this.pause(); return; } requestAnimationFrame(n => this.tick(n)); }
+}
+
+// ---------- market view: price chart + two ladders + identity badge ----------
+function buildLadder(el) {
+  el.innerHTML = ""; const rows = [];
+  for (let i = 0; i < 11; i++) {
+    const d = document.createElement("div");
+    d.className = "lv " + (i < 5 ? "a" : i === 5 ? "mid" : "b");
+    d.innerHTML = i === 5 ? '' : '<span class="bar"></span><span class="px"></span><span class="q"></span>';
+    el.appendChild(d); rows.push(d);
+  }
+  return rows;
+}
+function lvl(lad, i) { // i: 0..4 bids, 5..9 asks (level index 0 = touch)
+  const side = i < 5 ? 0 : 1, k = i % 5, pxo = lad[side * 10 + k], q = lad[side * 10 + 5 + k];
+  return { px: pxo, q };
+}
+class MarketView {
+  constructor(o) { Object.assign(this, o); this.rowsA = buildLadder(o.ladA); this.rowsB = buildLadder(o.ladB); this.t = 0; }
+  set(show, arms) {
+    this.show = show; this.arms = arms; const W = show.worlds, keys = this.yKeys || ["ghost", ...arms.map(a => a.key)];
+    let lo = Infinity, hi = -Infinity, gmax = 2, gmin = -2;
+    for (const k of keys) { const mm = W[k] && W[k].mid2; if (!mm) continue; for (let i = 150; i < mm.length; i++) { const v = mm[i]; if (v != null) { lo = Math.min(lo, v / 2); hi = Math.max(hi, v / 2); } } }
+    for (const k of keys) { if (k === "ghost" || !W[k]) continue; const mm = W[k].mid2, g = W.ghost.mid2; for (let i = T_START; i < mm.length; i++) if (mm[i] != null && g[i] != null) { const d = (g[i] - mm[i]) / 2; gmax = Math.max(gmax, d); gmin = Math.min(gmin, d); } }
+    const pad = Math.max(2, (hi - lo) * .08); this.y0 = lo - pad; this.y1 = hi + pad; this.gmax = gmax * 1.12; this.gmin = gmin * 1.12;
+    const qs = []; for (const k of ["ghost", arms[0].key]) for (const L of W[k].lad) for (let j = 0; j < 5; j++) { qs.push(L[5 + j], L[15 + j]); }
+    qs.sort((a, b) => a - b); this.qmax = Math.max(1, qs[Math.floor(qs.length * .97)]);
+    this.draw();
+  }
+  setT(t) { this.t = t; this.draw(); }
+  frame(cv, m, Y0, Y1, yfmt, ystep) {
+    const { ctx, w, h } = setup(cv), X = lin(0, T_MAX, m.l, w - m.r), Y = lin(Y0, Y1, h - m.b, m.t);
+    ctx.fillStyle = "rgba(21,23,27,.045)"; ctx.fillRect(X(T_START), m.t, X(T_END) - X(T_START), h - m.t - m.b);
+    for (let v = Math.ceil(Y0 / ystep) * ystep; v <= Y1 + 1e-9; v += ystep) { hline(ctx, m.l, w - m.r, Y(v), Math.abs(v) < 1e-9 && yfmt.zero ? "rgba(21,23,27,0)" : "rgba(21,23,27,.08)"); text(ctx, yfmt(v), m.l - 6, Y(v), { align: "right", size: 11, color: COL.ink3 }); }
+    for (let s = 0; s <= T_MAX; s += 300) { vline(ctx, X(s), h - m.b, h - m.b + 4, COL.ink3); text(ctx, fmtT(s).slice(0, 5), X(s), h - m.b + 13, { align: "center", size: 11, color: COL.ink3 }); }
+    return { ctx, w, h, X, Y };
+  }
+  draw() {
+    if (!this.show) return;
+    const W = this.show.worlds, g = W.ghost.mid2, tEnd = Math.min(T_MAX, Math.floor(this.t)), a0 = W[this.arms[0].key].mid2;
+    const m = { l: 74, r: 104, t: 22, b: 24 }, step = niceStep(this.y1 - this.y0, 5);
+    const { ctx, w, h, X, Y } = this.frame(this.canvas, m, this.y0, this.y1, v => usd(v, step < 1 ? 3 : 2), step);
+    text(ctx, "mid price · our selling window 09:35–09:55 shaded", m.l + 2, 9, { size: 11, color: COL.ink3 });
+    ctx.save(); ctx.beginPath(); ctx.rect(m.l, m.t, w - m.l - m.r, h - m.t - m.b); ctx.clip();
+    for (let i = T_START; i < tEnd; i++) {
+      const gv = g[i], av = a0[i]; if (gv == null || av == null || gv === av) continue;
+      ctx.fillStyle = gv > av ? "rgba(207,63,37,.32)" : "rgba(79,109,147,.22)";
+      const y1 = Y(gv / 2), y2 = Y(av / 2); ctx.fillRect(X(i), Math.min(y1, y2), Math.max(1, X(i + 1) - X(i)) + .3, Math.abs(y2 - y1));
+    }
+    const xs = [], n = tEnd + 1; for (let i = 0; i < n; i++) xs.push(X(i));
+    const ys = arr => arr.slice(0, n).map(v => v == null ? null : Y(v / 2));
+    path(ctx, xs, ys(g), COL.ghost, 2.4, [7, 4], .9);
+    for (const a of this.arms) path(ctx, xs, ys(W[a.key].mid2), a.color, 1.8, [], 1);
+    ctx.restore();
+    this.arms.forEach((a, j) => { const f = W[a.key].fills || []; ctx.fillStyle = a.color === COL.ink ? COL.heat : a.color; const yb = h - m.b - 2 - j * 7; for (const [ft, , q] of f) { if (ft > this.t) break; const hh = Math.min(16, 2 + Math.sqrt(q) / 2.2); ctx.fillRect(X(ft) - .75, yb - hh, 1.5, hh); } });
+    if (this.t > 0 && this.t < T_MAX) vline(ctx, X(this.t), m.t, h - m.b, COL.ink, [], 1);
+    const lx = Math.min(X(tEnd) + 8, w - m.r + 8);
+    if (g[tEnd] != null) text(ctx, "ghost", lx, Y(g[tEnd] / 2) - 10, { color: COL.ghost, weight: "700" });
+    this.arms.forEach((a, j) => { const v = W[a.key].mid2[tEnd]; if (v != null) text(ctx, a.label, lx, Y(v / 2) + 10 + 14 * j, { color: a.color, weight: "700" }); });
+    text(ctx, "ticks: our fills", w - m.r + 8, h - m.b - 8, { size: 10.5, color: COL.heat });
+    mark(ctx, w, h);
+    if (this.gapCanvas) this.drawGap(tEnd);
+    this.drawLadders(tEnd); this.badgeUpdate();
+  }
+  drawGap(tEnd) {
+    const W = this.show.worlds, g = W.ghost.mid2, m = { l: 74, r: 104, t: 22, b: 24 }, st = niceStep(this.gmax - this.gmin, 4);
+    const fmt = v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(+v.toFixed(1)) + "¢";
+    const { ctx, w, h, X, Y } = this.frame(this.gapCanvas, m, this.gmin, this.gmax, fmt, st);
+    text(ctx, "our footprint = ghost mid − our mid (¢)", m.l + 2, 9, { size: 11, color: COL.ink2, weight: "650" });
+    hline(ctx, m.l, w - m.r, Y(0), COL.ghost, [7, 4]); text(ctx, "ghost = 0", w - m.r + 8, Y(0), { color: COL.ghost, weight: "700" });
+    ctx.save(); ctx.beginPath(); ctx.rect(m.l, m.t, w - m.l - m.r, h - m.t - m.b); ctx.clip();
+    const a0 = W[this.arms[0].key].mid2;
+    for (let i = T_START; i < tEnd; i++) { if (g[i] == null || a0[i] == null) continue; const d = (g[i] - a0[i]) / 2; if (!d) continue; ctx.fillStyle = d > 0 ? "rgba(207,63,37,.55)" : "rgba(79,109,147,.45)"; const y = Y(d), y0 = Y(0); ctx.fillRect(X(i), Math.min(y, y0), Math.max(1, X(i + 1) - X(i)) + .3, Math.abs(y - y0)); }
+    this.arms.slice(1).forEach(a => { const mm = W[a.key].mid2, xs = [], ys = []; for (let i = T_START; i <= tEnd; i++) { xs.push(X(i)); ys.push(g[i] == null || mm[i] == null ? null : Y((g[i] - mm[i]) / 2)); } path(ctx, xs, ys, a.color, 2, [], 1); });
+    ctx.restore();
+    if (tEnd >= T_START) {
+      const now = this.arms.map(a => { const mm = W[a.key].mid2; return g[tEnd] == null || mm[tEnd] == null ? null : (g[tEnd] - mm[tEnd]) / 2; });
+      if (this.arms.length === 1) { if (now[0] != null) text(ctx, sgn(now[0]) + "¢", Math.min(X(tEnd) + 8, w - m.r + 8), Y(Math.max(this.gmin, Math.min(this.gmax, now[0]))) - 8, { color: COL.heat, weight: "800", size: 13 }); }
+      else text(ctx, "now: " + this.arms.map((a, j) => a.label + " " + (now[j] == null ? "—" : sgn(now[j]) + "¢")).join(" · "), w - m.r - 140, 9, { align: "right", size: 11.5, color: COL.ink, weight: "700" });
+    }
+    if (this.t > 0 && this.t < T_MAX) vline(ctx, X(this.t), m.t, h - m.b, COL.ink, [], 1);
+    mark(ctx, w, h);
+  }
+  drawLadders(tEnd) {
+    const W = this.show.worlds, k = Math.min(W.ghost.lad.length - 1, Math.floor(tEnd / this.show.ladder_dt));
+    const A = W[this.arms[0].key].lad[k], B = W.ghost.lad[k], base = this.show.base; let diff = 0;
+    const fill = (rows, L, other) => {
+      for (let r = 0; r < 11; r++) {
+        if (r === 5) continue;
+        const i = r < 5 ? 5 + (4 - r) : (r - 6), { px, q } = lvl(L, i), o = lvl(other, i), row = rows[r];
+        const empty = px === -99999 || q === 0;
+        row.children[1].textContent = empty ? "—" : usd(base + px);
+        row.children[2].textContent = empty ? "" : grp(q);
+        row.children[0].style.width = empty ? "0" : Math.min(100, 100 * q / this.qmax) + "%";
+        const d = px !== o.px || q !== o.q; row.classList.toggle("diff", d && rows === this.rowsA); if (d && rows === this.rowsA) diff++;
+      }
+    };
+    fill(this.rowsA, A, B); fill(this.rowsB, B, A);
+    const mid = (L) => { const b = L[0], a = L[10]; return (b === -99999 || a === -99999) ? null : (2 * base + a + b) / 2; };
+    for (const [rows, L] of [[this.rowsA, A], [this.rowsB, B]]) { const mm = mid(L); rows[5].textContent = mm == null ? "mid —" : `mid ${usd(mm, mm % 1 ? 3 : 2)} · spread ${L[10] - L[0]}¢`; }
+    if (this.diffEl) this.diffEl.textContent = `${diff}/10`;
+    if (this.gapEl) { const g = W.ghost.mid2[tEnd], a = W[this.arms[0].key].mid2[tEnd]; this.gapEl.textContent = (tEnd < T_START || g == null || a == null) ? "0.0¢" : sgn((g - a) / 2) + "¢"; }
+  }
+  badgeUpdate() {
+    if (!this.badge) return; const st = this.show.worlds[this.arms[0].key].stats, [k, n] = st.ident, b = this.badge;
+    const done = this.t >= T_START; b.classList.toggle("ok", done && st.ident_ok); b.classList.toggle("bad", done && !st.ident_ok);
+    b.children[0].textContent = done ? (st.ident_ok ? "✓" : "✗") : "";
+    b.children[1].innerHTML = done ? `pre-trade top-5 book events identical: <b>${grp(k)}/${grp(n)}</b>` : `pre-trade top-5 book events identical: <b>checking 09:30–09:35…</b>`;
+  }
+}
+
+// ---------- ACT 1 ----------
+const SIZES = P.meta.sizes, SHOW_SEEDS = Object.keys(SH).map(Number).sort((a, b) => a - b);
+const st1 = { seed: SHOW_SEEDS[0], q: 4000 };
+const mv1 = new MarketView({ canvas: $("#a1price"), gapCanvas: $("#a1gapc"), ladA: $("#a1ladA"), ladB: $("#a1ladB"), badge: $("#a1badge"), diffEl: $("#a1diff"), gapEl: $("#a1gap") });
+const pl1 = new Player(t => { mv1.setT(t); $("#a1scrub").value = t; $("#a1clock").textContent = fmtT(t); }, p => { $("#a1play").textContent = p ? "❚❚ Pause" : "▶ Play"; });
+function seg(el, vals, label, cur, on) {
+  el.innerHTML = ""; for (const v of vals) { const b = document.createElement("button"); b.textContent = label(v); b.setAttribute("aria-pressed", String(v === cur)); b.onclick = () => { $$("#" + el.id + " button").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); on(v); }; el.appendChild(b); }
+}
+function a1load() {
+  const show = SH[st1.seed]; if (!show) return;
+  mv1.yKeys = ["ghost", ...SIZES.map(q => "twap_" + q), "ia_4000"];
+  mv1.set(show, [{ key: "twap_" + st1.q, label: "our market", color: COL.ink }]); mv1.setT(pl1.t); drawSize(); 
+}
+SHOW_SEEDS.forEach(s => $("#a1seed").add(new Option(String(s), s)));
+$("#a1seed").onchange = e => { st1.seed = +e.target.value; a1load(); };
+seg($("#a1size"), SIZES, q => (q / 1000) + "k", st1.q, q => { st1.q = q; a1load(); });
+seg($("#a1speed"), [30, 60, 120, 240], v => v + "×", 60, v => { pl1.speed = v; });
+$("#a1play").onclick = () => pl1.toggle();
+$("#a1scrub").oninput = e => { pl1.pause(); pl1.set(+e.target.value); };
+
+function drawSize(cv = $("#a1size_chart"), live = null) {
+  const { ctx, w, h } = setup(cv), sc = P.scorecard, m = { l: 52, r: 18, t: 16, b: 40 };
+  const qx = Math.log10, X = lin(qx(700), qx(23000), m.l, w - m.r), Y = lin(Math.log10(.25), Math.log10(40), h - m.b, m.t);
+  for (const v of [.25, .5, 1, 2, 5, 10, 20, 40]) { hline(ctx, m.l, w - m.r, Y(Math.log10(v)), "rgba(21,23,27,.08)"); text(ctx, v + "¢", m.l - 6, Y(Math.log10(v)), { align: "right", size: 11, color: COL.ink3 }); }
+  SIZES.forEach((q, i) => { text(ctx, (q / 1000) + "k", X(qx(q)), h - m.b + 12, { align: "center", size: 11, color: COL.ink2 }); text(ctx, Math.round(100 * sc.participation[i]) + "% of volume", X(qx(q)), h - m.b + 26, { align: "center", size: 10, color: COL.ink3 }); });
+  const lp = sc.participation.map(Math.log), lm = sc.peak_mean_cents.map(Math.log), mx = lp.reduce((a, b) => a + b) / lp.length, my = lm.reduce((a, b) => a + b) / lm.length;
+  const V = sc.window_volume_mean, fit = q => Math.exp(my + sc.delta * (Math.log(q / V) - mx));
+  const i4 = SIZES.indexOf(4000), ref = q => sc.peak_mean_cents[i4] * Math.sqrt(q / 4000);
+  const line = (f, color, dash, lw) => { const xs = [], ys = []; for (let q = 800; q <= 21000; q *= 1.05) { xs.push(X(qx(q))); ys.push(Y(Math.log10(f(q)))); } path(ctx, xs, ys, color, lw, dash, 1); };
+  line(ref, COL.ghost, [6, 4], 2); line(fit, COL.heat, [], 2);
+  const lg = (y, color, dash, label) => { ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.setLineDash(dash); ctx.beginPath(); ctx.moveTo(m.l + 8, y); ctx.lineTo(m.l + 34, y); ctx.stroke(); ctx.restore(); text(ctx, label, m.l + 40, y, { color, weight: "650", size: 11.5 }); };
+  lg(m.t + 4, COL.heat, [], "this simulator (E7): slope " + pretty(c("e7_delta")) + " [" + pretty(c("e7_delta_lo")) + ", " + pretty(c("e7_delta_hi")) + "]");
+  lg(m.t + 20, COL.ghost, [6, 4], "square-root law ≈0.5: real-world reference (TSE), not our data");
+  SIZES.forEach((q, i) => {
+    const x = X(qx(q)), mean = sc.peak_mean_cents[i], [lo, hi] = sc.peak_ci95[i], sel = !live && q === st1.q;
+    const yl = lo > .25 ? Y(Math.log10(lo)) : h - m.b, yh = Y(Math.log10(Math.min(hi, 40)));
+    vline(ctx, x, yh, yl, sel ? COL.ink : COL.ink3, [], sel ? 2 : 1.3);
+    if (lo <= .25) { ctx.fillStyle = COL.ink3; ctx.beginPath(); ctx.moveTo(x - 4, yl - 6); ctx.lineTo(x + 4, yl - 6); ctx.lineTo(x, yl); ctx.fill(); }
+    ctx.fillStyle = sel ? COL.ink : COL.paper; ctx.strokeStyle = COL.ink; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, Y(Math.log10(mean)), sel ? 6.5 : 5, 0, 7); ctx.fill(); ctx.stroke();
+    if (sel) text(ctx, mean.toFixed(1) + "¢ mean", x + 10, Y(Math.log10(mean)) + 14, { weight: "700", color: COL.ink });
+  });
+  if (live) {
+    const x = X(qx(live.q)), v = live.t1;
+    if (v > .25) { ctx.strokeStyle = COL.ia; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, Y(Math.log10(Math.min(v, 40))), 9, 0, 7); ctx.stroke(); text(ctx, "seed " + live.seed + ": " + sgn(v) + "¢", x + 13, Y(Math.log10(Math.min(v, 40))), { color: COL.ia, weight: "700" }); }
+    else text(ctx, "seed " + live.seed + ": " + sgn(v) + "¢ at T1 (≤ 0, off the log axis: single-seed noise)", w - m.r, h - m.b - 10, { align: "right", color: COL.ia, weight: "700" });
+  } else {
+    const arm = P.arms["sync_" + st1.q], si = P.meta.seeds.indexOf(st1.seed), v = arm.t1[si], x = X(qx(st1.q));
+    if (v > .25) { ctx.strokeStyle = COL.heat; ctx.lineWidth = 1.5; ctx.setLineDash([2, 2]); ctx.beginPath(); ctx.arc(x, Y(Math.log10(Math.min(v, 40))), 8, 0, 7); ctx.stroke(); ctx.setLineDash([]); }
+    text(ctx, `dotted ring = seed ${st1.seed} alone: ${sgn(v)}¢ (single seeds are noisy)`, w - m.r, h - m.b - 10, { align: "right", size: 11, color: COL.ink3 });
+  }
+  mark(ctx, w, h);
+}
+function drawHold() {
+  const { ctx, w, h } = setup($("#a1hold")), m = { l: 112, r: 70, t: 26, b: 24 };
+  const rows = [["value agents", "fb_value"], ["market makers", "fb_mm"], ["momentum", "fb_momentum"], ["noise traders", "fb_noise"]];
+  const X = lin(-1000, 4500, m.l, w - m.r), rh = (h - m.t - m.b) / rows.length;
+  for (const v of [-1000, 0, 1000, 2000, 3000, 4000]) { vline(ctx, X(v), m.t, h - m.b, v === 0 ? COL.ink : "rgba(21,23,27,.08)"); text(ctx, (v > 0 ? "+" : v < 0 ? "−" : "") + grp(Math.abs(v)), X(v), h - m.b + 12, { align: "center", size: 11, color: COL.ink3 }); }
+  vline(ctx, X(4000), m.t, h - m.b, COL.heat, [4, 3], 1.5); text(ctx, "4,000 = all we sold", X(4000) - 4, m.t - 8, { align: "right", size: 10.5, color: COL.heat });
+  rows.forEach(([lab, k], i) => {
+    const y = m.t + rh * i + rh / 2, v = num(k), lo = num(k + "_lo"), hi = num(k + "_hi");
+    ctx.fillStyle = k === "fb_value" ? "rgba(21,23,27,.82)" : "rgba(21,23,27,.35)"; ctx.fillRect(Math.min(X(0), X(v)), y - 9, Math.abs(X(v) - X(0)), 18);
+    ctx.strokeStyle = COL.heat; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X(lo), y); ctx.lineTo(X(hi), y); ctx.moveTo(X(lo), y - 5); ctx.lineTo(X(lo), y + 5); ctx.moveTo(X(hi), y - 5); ctx.lineTo(X(hi), y + 5); ctx.stroke();
+    text(ctx, lab, m.l - 8, y, { align: "right", color: COL.ink, weight: "600" });
+    text(ctx, pretty(c(k)), Math.max(X(hi), X(v)) + 6, y, { color: COL.ink, weight: "650" });
+  });
+  mark(ctx, w, h);
+}
+
+// ---------- ACT 2 ----------
+const st2 = { f: 0, target: 0, anim: null };
+function a2set(sync) {
+  $("#a2naive").setAttribute("aria-pressed", String(!sync)); $("#a2sync").setAttribute("aria-pressed", String(sync));
+  st2.target = sync ? 1 : 0; const f0 = st2.f, t0 = performance.now(), D = matchMedia("(prefers-reduced-motion: reduce)").matches ? 1 : 900;
+  cancelAnimationFrame(st2.anim);
+  const step = now => { const u = Math.min(1, (now - t0) / D), e = 1 - Math.pow(2, -10 * u); st2.f = f0 + (st2.target - f0) * (u >= 1 ? 1 : e); drawA2(); if (u < 1) st2.anim = requestAnimationFrame(step); };
+  st2.anim = requestAnimationFrame(step);
+}
+$("#a2naive").onclick = () => a2set(false); $("#a2sync").onclick = () => a2set(true);
+function stdAt(arm, j) { return meanStd(P.arms[arm].gap2.map(p => p[j] == null ? null : p[j] / 2)); }
+function drawA2() {
+  const { ctx, w, h } = setup($("#a2chart")), N = P.arms.naive_4000.gap2, S = P.arms.sync_4000.gap2, f = st2.f, gs = P.meta.grid_s;
+  const m = { l: 56, r: 20, t: 16, b: 28 }, n = N[0].length, X = lin(0, (n - 1) * gs, m.l, w - m.r);
+  let amp = 0; for (const p of N) for (const v of p) if (v != null) amp = Math.max(amp, Math.abs(v / 2)); amp = Math.ceil(amp / 10) * 10;
+  const Y = lin(-amp, amp, h - m.b, m.t);
+  ctx.fillStyle = "rgba(21,23,27,.045)"; ctx.fillRect(X(0), m.t, X(1200) - X(0), h - m.t - m.b);
+  text(ctx, "our selling window", X(0) + 6, m.t + 9, { size: 11, color: COL.ink3 });
+  const st = niceStep(2 * amp, 6); for (let v = -Math.floor(amp / st) * st; v <= amp; v += st) { hline(ctx, m.l, w - m.r, Y(v), v === 0 ? "rgba(21,23,27,.35)" : "rgba(21,23,27,.07)"); text(ctx, (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v) + "¢", m.l - 6, Y(v), { align: "right", size: 11, color: COL.ink3 }); }
+  for (let s = 0; s <= 1800; s += 300) text(ctx, "+" + s / 60 + " min", X(s), h - m.b + 13, { align: "center", size: 11, color: COL.ink3 });
+  const xs = N[0].map((_, j) => X(j * gs)), mix = (a, b) => a.map((v, j) => (v == null || b[j] == null) ? null : ((1 - f) * v + f * b[j]) / 2);
+  const P2 = N.map((p, i) => mix(p, S[i])), mean = [], sd = [];
+  for (let j = 0; j < n; j++) { const [mm, s] = meanStd(P2.map(p => p[j])); mean.push(mm); sd.push(s); }
+  ctx.fillStyle = f > .5 ? "rgba(79,109,147,.16)" : "rgba(207,63,37,.12)"; ctx.beginPath();
+  for (let j = 0; j < n; j++) ctx.lineTo(xs[j], Y(Math.min(amp, mean[j] + sd[j]))); for (let j = n - 1; j >= 0; j--) ctx.lineTo(xs[j], Y(Math.max(-amp, mean[j] - sd[j]))); ctx.fill();
+  const col = f > .5 ? COL.ghost : COL.heat;
+  for (const p of P2) path(ctx, xs, p.map(v => v == null ? null : Y(Math.max(-amp, Math.min(amp, v)))), col, 1.1, [], .45);
+  path(ctx, xs, mean.map(v => Y(v)), COL.ink, 2.6, [], 1);
+  const j1 = 1200 / gs; vline(ctx, X(1200), m.t, h - m.b, COL.ink, [3, 3], 1.2);
+  text(ctx, `T1 (09:55): std ${sd[j1].toFixed(1)}¢, mean ${sgn(mean[j1])}¢`, X(1200) + 8, m.t + 10, { color: COL.ink, weight: "700" });
+  text(ctx, "thin lines: 30 seeds · thick: mean · band: ±1 std", w - m.r - 4, h - m.b - 10, { align: "right", size: 11, color: COL.ink3 });
+  mark(ctx, w, h);
+  const sync = st2.target === 1, arm = sync ? "sync_4000" : "naive_4000", [, s1] = stdAt(arm, j1), ref = P.nsr.exps[sync ? "E4_nsr_sync" : "E4_nsr_naive"]["1200"].std;
+  $("#a2std").textContent = s1.toFixed(1) + "¢";
+  $("#a2stdchk").innerHTML = (Math.abs(s1 - ref) < 1e-6 ? '<span class="check">✓</span>' : '<span class="warn">≠</span>') + ` equals the committed value ${ref.toFixed(2)}¢ (${sync ? "synced" : "naive"}). <span class="src">source: <code>nsr_E4_nsr_naive_vs_E4_nsr_sync.json</code></span>`;
+}
+document.addEventListener("keydown", e => { if (!$("#act2").classList.contains("on")) return; if (e.key === "n" || e.key === "N") a2set(false); if (e.key === "s" || e.key === "S") a2set(true); });
+
+// ---------- ACT 3 ----------
+P.meta.seeds.forEach(s => $("#a3seed").add(new Option(String(s), s)));
+$("#a3seed").onchange = drawA3;
+function costTable(el, a, b, la, lb) {
+  const r = (lab, k, cls) => `<tr class="${cls || ""}"><td>${lab}</td><td>${sgn(a[k], 3)}</td><td>${sgn(b[k], 3)}</td><td>${sgn(b[k] - a[k], 3)}</td></tr>`;
+  el.innerHTML = `<tr><th></th><th>${la}</th><th style="color:var(--ia)">${lb}</th><th>Δ</th></tr>` + r("drift", "drift_bps") + r("own impact", "own_bps") + r("instant", "instant_bps") + r("total IS", "is_bps", "tot");
+}
+function pick(arm, i) { const A = P.arms[arm], o = {}; for (const k in A) o[k] = A[k][i]; return o; }
+function drawA3() {
+  const seed = +$("#a3seed").value, i = P.meta.seeds.indexOf(seed), tw = pick("sync_4000", i), ia = pick("ia_4000", i), gs = P.meta.grid_s;
+  costTable($("#a3cost"), tw, ia, "TWAP", "impact-aware");
+  { const { ctx, w, h } = setup($("#a3chart")), m = { l: 56, r: 120, t: 14, b: 26 }, n = tw.gap2.length, X = lin(0, (n - 1) * gs, m.l, w - m.r);
+    let amp = 4; for (const v of [...tw.gap2, ...ia.gap2]) if (v != null) amp = Math.max(amp, Math.abs(v / 2)); amp = Math.ceil(amp * 1.15);
+    const Y = lin(-amp, amp, h - m.b, m.t);
+    ctx.fillStyle = "rgba(21,23,27,.045)"; ctx.fillRect(X(0), m.t, X(1200) - X(0), h - m.t - m.b);
+    const sp = niceStep(2 * amp, 6); for (let v = -Math.floor(amp / sp) * sp; v <= amp; v += sp) { hline(ctx, m.l, w - m.r, Y(v), "rgba(21,23,27,.07)"); text(ctx, (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(+v.toFixed(2)) + "¢", m.l - 6, Y(v), { align: "right", size: 11, color: COL.ink3 }); }
+    hline(ctx, m.l, w - m.r, Y(0), COL.ghost, [7, 4]); text(ctx, "ghost (= 0)", w - m.r + 6, Y(0), { color: COL.ghost, weight: "700" });
+    for (let s = 0; s <= 1800; s += 300) text(ctx, fmtT(T_START + s).slice(0, 5), X(s), h - m.b + 13, { align: "center", size: 11, color: COL.ink3 });
+    const xs = tw.gap2.map((_, j) => X(j * gs));
+    path(ctx, xs, tw.gap2.map(v => v == null ? null : Y(v / 2)), COL.ink, 2, [], 1); path(ctx, xs, ia.gap2.map(v => v == null ? null : Y(v / 2)), COL.ia, 2, [], 1);
+    vline(ctx, X(1200), m.t, h - m.b, COL.ink, [3, 3]); text(ctx, "T1 = 09:55", X(1200) + 5, h - m.b - 8, { size: 11, color: COL.ink3 });
+    text(ctx, "footprint (ghost mid − our mid) · at T1:", m.l + 6, m.t + 8, { size: 11, color: COL.ink3 });
+    text(ctx, "TWAP " + sgn(tw.t1) + "¢", m.l + 6, m.t + 24, { color: COL.ink, weight: "700" }); text(ctx, "impact-aware " + sgn(ia.t1) + "¢", m.l + 96, m.t + 24, { color: COL.ia, weight: "700" });
+    mark(ctx, w, h); }
+  { const { ctx, w, h } = setup($("#a3sched")), m = { l: 56, r: 120, t: 14, b: 18 }, show = SH[seed];
+    if (!show) { text(ctx, "per-slot schedule shown for showcase seeds " + SHOW_SEEDS.join(", "), m.l, h / 2, { color: COL.ink3 }); }
+    else {
+      const bins = k => { const b = new Array(40).fill(0); for (const [t, , q] of show.worlds[k].fills) { const s = Math.min(39, Math.max(0, Math.floor((t - T_START) / 30))); b[s] += q; } return b; };
+      const A = bins("twap_4000"), B = bins("ia_4000"), mx = Math.max(...A, ...B), X = lin(0, 40, m.l, w - m.r), Y = lin(0, mx, h - m.b, m.t), bw = (X(1) - X(0)) / 2 - 1;
+      for (let s = 0; s < 40; s++) { ctx.fillStyle = "rgba(21,23,27,.75)"; ctx.fillRect(X(s), Y(A[s]), bw, Y(0) - Y(A[s])); ctx.fillStyle = COL.ia; ctx.fillRect(X(s) + bw + 1, Y(B[s]), bw, Y(0) - Y(B[s])); }
+      text(ctx, "shares sold per 30-s slot, 09:35 → 09:55", m.l, 6, { size: 11, color: COL.ink3 }); text(ctx, "max " + grp(mx), m.l - 6, Y(mx), { align: "right", size: 10.5, color: COL.ink3 });
+    }
+    mark(ctx, w, h); }
+  { const { ctx, w, h } = setup($("#a3strip")), m = { l: 16, r: 16, t: 16, b: 26 }, A = P.arms.sync_4000.is_bps, B = P.arms.ia_4000.is_bps;
+    const d = A.map((a, j) => B[j] - a), amp = Math.max(...d.map(Math.abs)) * 1.1, X = lin(-amp, amp, m.l, w - m.r), yc = (h - m.b + m.t) / 2;
+    vline(ctx, X(0), m.t - 6, h - m.b, COL.ink); text(ctx, "← IA cheaper", X(0) - 6, h - m.b + 12, { align: "right", size: 11, color: COL.ink3 }); text(ctx, "IA dearer →", X(0) + 6, h - m.b + 12, { size: 11, color: COL.ink3 });
+    text(ctx, sgn(-amp / 1.1, 2), m.l, h - m.b + 12, { size: 10.5, color: COL.ink3 }); text(ctx, sgn(amp / 1.1, 2), w - m.r, h - m.b + 12, { align: "right", size: 10.5, color: COL.ink3 });
+    d.forEach((v, j) => { const jit = ((j * 7919) % 13 - 6) * 2.2; ctx.fillStyle = "rgba(21,23,27,.55)"; ctx.beginPath(); ctx.arc(X(v), yc + jit, 4, 0, 7); ctx.fill(); });
+    const v = d[i]; ctx.strokeStyle = COL.heat; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(X(v), yc + (((i * 7919) % 13 - 6) * 2.2), 8, 0, 7); ctx.stroke();
+    text(ctx, `seed ${seed}: ΔIS ${sgn(v, 3)} bps`, m.l, 8, { color: COL.heat, weight: "700" });
+    mark(ctx, w, h); }
+}
+
+// ---------- ACT 4 ----------
+let a4t0 = 0, a4anim = null;
+function a4replay() { a4t0 = performance.now(); cancelAnimationFrame(a4anim); const loop = () => { drawA4(); if (performance.now() - a4t0 < 3600) a4anim = requestAnimationFrame(loop); }; loop(); }
+$("#a4replay").onclick = a4replay;
+function drawA4() {
+  const { ctx, w, h } = setup($("#a4forest")), m = { l: 370, r: 205, t: 34, b: 40 }, el = performance.now() - a4t0;
+  const rows = [
+    { name: "E6", desc: "hypothesis fixed before inspecting results", k: ["h1_dis", "h1_dis_lo", "h1_dis_hi"], n: "h1_n" },
+    { name: "E8", desc: "validation: not reproduced", k: ["e8_IA_sched_only", "e8_IA_sched_only_lo", "e8_IA_sched_only_hi"], n: "e8_n" },
+    { name: "E10", desc: "strict pre-registered replication: NOT confirmed", k: ["e10_dis", "e10_lo", "e10_hi"], n: "e10_n" },
+    { name: "E6 + E10 pooled", desc: "descriptive", k: ["pool2_dis", "pool2_lo", "pool2_hi"], n: "pool2_n", pooled: true }];
+  const X = lin(-.07, .05, m.l, w - m.r), rh = (h - m.t - m.b) / rows.length;
+  for (let v = -.06; v <= .041; v += .02) { const vv = +v.toFixed(2); vline(ctx, X(vv), m.t, h - m.b, vv === 0 ? COL.ink : "rgba(21,23,27,.08)", [], vv === 0 ? 1.5 : 1); text(ctx, vv === 0 ? "0" : sgn(vv, 2), X(vv), h - m.b + 12, { align: "center", size: 11, color: COL.ink3 }); }
+  text(ctx, "← impact-aware cheaper than TWAP", X(0) - 8, h - m.b + 28, { align: "right", size: 11.5, color: COL.ink2, weight: "600" }); text(ctx, "dearer →", X(0) + 8, h - m.b + 28, { size: 11.5, color: COL.ink2, weight: "600" });
+  text(ctx, "ΔIS vs TWAP, bps (95% CI)", m.l, 14, { size: 12, color: COL.ink2, weight: "700" });
+  rows.forEach((r, i) => {
+    const a = Math.max(0, Math.min(1, (el - i * 750) / 450)); if (a <= 0) return;
+    const y = m.t + rh * i + rh / 2, [v, lo, hi] = r.k.map(num); ctx.save(); ctx.globalAlpha = a;
+    text(ctx, r.name, 14, y - 9, { color: COL.ink, weight: "800", size: 15 }); text(ctx, r.desc + " · n = " + c(r.n), 14, y + 10, { color: r.pooled ? COL.ink3 : COL.ink2, size: 12.5 });
+    const crosses = lo < 0 && hi > 0, col = r.pooled ? COL.ink3 : crosses ? COL.heat : COL.ink;
+    ctx.strokeStyle = col; ctx.lineWidth = 2.5; ctx.setLineDash(r.pooled ? [5, 3] : []); ctx.beginPath(); ctx.moveTo(X(lo), y); ctx.lineTo(X(hi), y); ctx.stroke(); ctx.setLineDash([]);
+    for (const e of [lo, hi]) { ctx.beginPath(); ctx.moveTo(X(e), y - 6); ctx.lineTo(X(e), y + 6); ctx.stroke(); }
+    ctx.fillStyle = r.pooled ? COL.paper : col; ctx.beginPath();
+    if (r.pooled) { ctx.moveTo(X(v), y - 8); ctx.lineTo(X(v) + 8, y); ctx.lineTo(X(v), y + 8); ctx.lineTo(X(v) - 8, y); ctx.closePath(); ctx.fill(); ctx.stroke(); } else { ctx.arc(X(v), y, 6.5, 0, 7); ctx.fill(); }
+    text(ctx, `${pretty(c(r.k[0]))} [${pretty(c(r.k[1]))}, ${pretty(c(r.k[2]))}]`, w - m.r + 12, y, { color: col, weight: "700", size: 13 });
+    ctx.restore();
+  });
+  mark(ctx, w, h);
+}
+function drawScale() {
+  const { ctx, w, h } = setup($("#a4scale")), m = { l: 14, r: 70, t: 22, b: 10 };
+  const rows = [["per-seed std of the own-impact term (naive twins)", num("own_std_naive"), COL.heat], ["per-seed std of the own-impact term (synced twins)", num("own_std_sync"), COL.ghost], ["the E6 point estimate (|ΔIS|)", Math.abs(num("h1_dis")), COL.ink]];
+  const X = lin(0, 1.05, m.l, w - m.r), rh = (h - m.t - m.b) / rows.length;
+  rows.forEach(([lab, v, col], i) => { const y = m.t + rh * i; text(ctx, lab, m.l, y + 9, { size: 12, color: COL.ink2, weight: "600" }); ctx.fillStyle = col; ctx.fillRect(X(0), y + 20, Math.max(2, X(v) - X(0)), 14); text(ctx, v.toFixed(v < .1 ? 3 : 2) + " bps", X(v) + 8, y + 27, { color: col, weight: "700" }); });
+  mark(ctx, w, h);
+}
+
+// ---------- LIVE ----------
+const API = location.protocol.startsWith("http") ? "" : null;
+let live = { ok: false }, mvL = null, plL = null;
+$("#lvq").oninput = e => { $("#lvqv").textContent = grp(+e.target.value); };
+async function liveStatus() {
+  const el = $("#lvstatus");
+  if (API === null) { live = { live: false }; el.className = "status"; el.textContent = "live lane off in file:// mode: open the http URL that demo/run.sh prints; replays work here"; $("#lvrun").disabled = true; return; }
+  try {
+    const r = await fetch(API + "/api/status", { cache: "no-store" }), j = await r.json(); if (j.app !== "p5-ghost-market") throw new Error("not the P5 server"); live = j;
+    if (j.paused) { el.className = "status paused"; el.textContent = "live paused (memory guard)"; }
+    else if (j.live) { el.className = "status ready"; el.textContent = "live lane ready"; }
+    else { el.className = "status"; el.textContent = j.reason || "live lane unavailable"; if (/warming/.test(j.reason || "")) setTimeout(liveStatus, 1500); }
+  } catch (e) { live = { live: false }; el.className = "status"; el.textContent = "live lane offline: start demo/run.sh (needs the README's venv + scripts/fetch_abides.sh); replays work without it"; }
+  $("#lvrun").disabled = !live.live;
+}
+$("#lvrun").onclick = async () => {
+  const seed = Math.max(0, Math.min(2147483647, Math.floor(+$("#lvseed").value || 0))), q = +$("#lvq").value, el = $("#lvstatus"), t0 = performance.now();
+  $("#lvrun").disabled = true; el.className = "status"; const tick = setInterval(() => { el.textContent = `running 3 fresh worlds for seed ${seed}… ${((performance.now() - t0) / 1000).toFixed(0)} s`; }, 250);
+  try {
+    const r = await fetch(`${API}/api/run?seed=${seed}&qty=${q}`, { cache: "no-store" }), j = await r.json();
+    clearInterval(tick);
+    if (j.paused) { el.className = "status paused"; el.textContent = "live paused (memory guard)"; return; }
+    if (j.busy) { el.textContent = "another live run is in progress; try again in a few seconds"; return; }
+    if (j.error) { el.className = "status paused"; el.textContent = "live run failed: " + j.error; return; }
+    el.className = "status ready"; el.textContent = `done in ${j.wall_s.toFixed(1)} s (server time)`; renderLive(j);
+  } catch (e) { clearInterval(tick); el.className = "status paused"; el.textContent = "live run failed: " + e.message; }
+  finally { $("#lvrun").disabled = !live.live; }
+};
+function renderLive(j) {
+  const out = $("#lvout"); out.innerHTML = ""; out.appendChild($("#lvtpl").content.cloneNode(true));
+  $("#lvmeta").textContent = `seed ${j.seed} · ${grp(j.qty)} shares · arrival mid ${usd(j.arrival, 3)} · ${j.label}`;
+  mvL = new MarketView({ canvas: $("#lvprice"), gapCanvas: $("#lvgapc"), ladA: $("#lvladA"), ladB: $("#lvladB"), badge: $("#lvbadge") });
+  mvL.set(j, [{ key: "twap", label: "TWAP", color: COL.ink }, { key: "ia", label: "impact-aware", color: COL.ia }]);
+  plL = new Player(t => { mvL.setT(t); $("#lvscrub").value = t; $("#lvclock").textContent = fmtT(t); }, p => { $("#lvplay").textContent = p ? "❚❚ Pause" : "▶ Replay"; });
+  plL.speed = 120; $("#lvplay").onclick = () => plL.toggle(); $("#lvscrub").oninput = e => { plL.pause(); plL.set(+e.target.value); };
+  plL.set(0); plL.play();
+  const a = j.worlds.twap.stats, b = j.worlds.ia.stats;
+  $("#lvt1a").textContent = sgn(a.t1) + "¢"; $("#lvt1b").textContent = sgn(b.t1) + "¢";
+  costTable($("#lvcost"), a, b, "TWAP", "impact-aware");
+  $("#lvhold").innerHTML = Object.entries(a.hold).map(([k, v]) => `<b>${k.replace("Agent", "")}</b> ${v > 0 ? "+" : v < 0 ? "−" : ""}${grp(Math.abs(v))}`).join(" · ") + ` <span class="src">(TWAP world minus the ghost, end of session; a single seed)</span>`;
+  drawSize($("#lvsize"), { q: j.qty, t1: a.t1, seed: j.seed });
+}
+
+// ---------- routing ----------
+const DRAW = { 1: () => { a1load(); drawHold(); }, 2: drawA2, 3: drawA3, 4: () => { a4replay(); drawScale(); }, 5: liveStatus };
+let act = 1;
+function show(n, quiet) {
+  act = n; $$("nav button").forEach(b => b.setAttribute("aria-selected", String(+b.dataset.act === n)));
+  $$("section.act").forEach(s => s.classList.toggle("on", s.id === "act" + n));
+  if (n !== 1) pl1.pause();
+  DRAW[n](); if (!quiet) history.replaceState(null, "", "#act=" + n);
+}
+$$("nav button").forEach(b => b.onclick = () => show(+b.dataset.act));
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT") return;
+  if (/^[1-5]$/.test(e.key)) show(+e.key);
+  if (e.key === " " && act === 1) { e.preventDefault(); pl1.toggle(); }
+  if (e.key === " " && act === 5 && plL) { e.preventDefault(); plL.toggle(); }
+  if (act === 1 && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { pl1.pause(); pl1.set(pl1.t + (e.key === "ArrowRight" ? 30 : -30)); }
+});
+let rz = null; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (act === 1) { mv1.draw(); drawSize(); drawHold(); } else if (act === 4) { drawA4(); drawScale(); } else if (act === 5 && mvL) mvL.draw(); else DRAW[act](); }, 120); });
+
+function route() {
+  const H = Object.fromEntries(location.hash.slice(1).split("&").filter(Boolean).map(kv => kv.split("=")));
+  if (H.seed && SH[+H.seed]) { st1.seed = +H.seed; $("#a1seed").value = H.seed; }
+  if (H.q && SIZES.includes(+H.q)) { st1.q = +H.q; seg($("#a1size"), SIZES, q => (q / 1000) + "k", st1.q, q => { st1.q = q; a1load(); }); }
+  if (H.s3) $("#a3seed").value = H.s3;
+  if (H.mode === "sync") { st2.f = 1; st2.target = 1; $("#a2naive").setAttribute("aria-pressed", "false"); $("#a2sync").setAttribute("aria-pressed", "true"); }
+  show(+(H.act || 1), true);
+  if (+(H.act || 1) === 1) { if (H.t != null) { pl1.pause(); pl1.set(+H.t); } else { pl1.set(0); if (H.play !== "0") pl1.play(); } }
+}
+addEventListener("hashchange", route);
+route();
+if (MISSING.length) console.error("missing claims keys:", MISSING.join(", "));
+window.__P5_READY = { missing: MISSING.slice() };
+</script>
+</body>
+</html>
