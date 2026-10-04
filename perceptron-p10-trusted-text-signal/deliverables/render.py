@@ -3,7 +3,7 @@
 Templates (`deliverables/*.template.md`) contain placeholders:
     {{<result-stem>:<dotted.path>|<fmt>}}  e.g. {{baseline_v1:ablation.fusion.split.coverage|pct}}
     {{D:<derived-name>|<fmt>}}             derived values computed in `derived()` below
-fmt: pct (one-decimal percent of a fraction) · pp1/pp2/pp3 (fixed decimals) · int · p (p-value, 2 sig. figs) · signpct (signed percent)
+fmt: pct (one-decimal percent of a fraction) · pp1..pp4 (fixed decimals) · int · p (p-value, 2 sig. figs) · signpct (signed percent) · str
 Result stems resolve to eval/results/<stem>.json. Usage:
     PYTHONPATH=. .venv/bin/python deliverables/render.py            # writes deliverables/<name>.md
     PYTHONPATH=. .venv/bin/python deliverables/check_drift.py       # fails if anything is stale
@@ -25,32 +25,41 @@ def result(stem: str) -> dict:
 
 
 def get(stem: str, path: str):
+    """Dotted path; dict keys may themselves contain dots (longest matching key wins)."""
     node = derived() if stem == "D" else result(stem)
-    for part in path.split("."):
-        node = node[int(part)] if isinstance(node, list) else node[part]
+    parts = path.split(".")
+    i = 0
+    while i < len(parts):
+        if isinstance(node, list):
+            node, i = node[int(parts[i])], i + 1
+            continue
+        for j in range(len(parts), i, -1):
+            key = ".".join(parts[i:j])
+            if key in node:
+                node, i = node[key], j
+                break
+        else:
+            raise KeyError(f"{stem}:{path} (at {parts[i]!r})")
     return node
 
 
 def derived() -> dict:
-    b = result("baseline_v1")
+    """Derived numbers for the abstract. Headline StockNet run = text_minilm_v1 (the scorer the approach names)."""
+    b = result("text_minilm_v1")
     fz = b["ablation"]["fusion"]
-    w0 = fz["cqr_sym"]["mean_width"]
     cr = b["spike"]["cr_aci"]
-    pump = b["attack"]["pump"]
-    d = {
-        "cert_k3_width_pct": 100 * (b["spike"]["clean_k3"]["mean_width"] / w0 - 1),
-        "cert_pump_width_pct": 100 * (pump["certified"]["mean_width"] / pump["vanilla_cqr"]["mean_width"] - 1),
+    split_p = fz["split"]["kupiec_p"]
+    t = result("text_utility_djia_v1")
+    return {
+        "kupiec_split": "p < 0.001" if split_p < 1e-3 else f"p = {split_p:.2g}",
+        "cert_k3_width_pct": 100 * (b["spike"]["clean_k3"]["mean_width"] / fz["cqr_sym"]["mean_width"] - 1),
         "cr_aci_clean_width_pct": 100 * (cr["cr_aci_clean"]["mean_width"] / cr["cqr_aci_clean"]["mean_width"] - 1),
         "cr_aci_pump_width_pct": 100 * (cr["cr_aci_pump"]["mean_width"] / cr["cqr_aci_pump"]["mean_width"] - 1),
         "worst_variant_vanilla_cov": b["attack"]["oracle"]["worst3"][0]["vanilla_coverage"],
         "worst_variant_cert_cov": b["attack"]["oracle"]["worst3"][0]["certified_coverage"],
+        "djia_decision": t["primary"]["decision"],
+        "djia_rel_improvement_pct": 100 * t["primary"]["relative_improvement"],
     }
-    try:
-        t = result("text_utility_djia_v1")
-        d["djia_rel_improvement_pct"] = 100 * t["primary"]["relative_improvement"]
-    except FileNotFoundError:
-        pass
-    return d
 
 
 def fmt(v, f: str) -> str:
@@ -64,6 +73,8 @@ def fmt(v, f: str) -> str:
         return f"{int(round(v)):,}"
     if f == "p":
         return f"{v:.2g}"
+    if f == "str":
+        return str(v)
     raise ValueError(f)
 
 

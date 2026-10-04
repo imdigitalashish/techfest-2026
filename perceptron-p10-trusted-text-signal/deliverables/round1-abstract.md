@@ -1,47 +1,57 @@
 # Round 1 abstract — Perceptron 2026, Problem 10: Trusting a Signal Extracted from Messy, Manipulated Text
 
-_Draft v0, 4 Oct 2026. Preliminary numbers: `eval/results/baseline_v0.json` (reproduce at commit 06e2d81 with `eval/run_baselines.py`). A corrected rerun (deletion-stable trust, exact ACI semantics; see `research/notes/review-adr001-rubber-duck.md`) is pending and may shift them slightly. Team section to be completed by the team._
+_Rendered from committed results by `deliverables/render.py` (template: `round1-abstract.template.md`); `deliverables/check_drift.py` fails if any number is stale. Results: `eval/results/`. The team section is to be completed by the team._
 
-**Problem & theme.** Theme 6 (AI You Can Actually Trust), Problem 10. Desks and apps act on sentiment from news and social posts, and one hacked tweet once moved the Dow 140 points. We want a text-plus-price signal whose error bar stays honest when some of the text is fake.
+**Problem & theme.** Theme 6 (AI You Can Actually Trust), Problem 10. Desks and apps act on sentiment from news and social posts, and one hacked tweet once moved the Dow 140 points. We make the confidence bound, not the point forecast, the thing a user can trust when some of the text is fake.
 
-**Understanding of the challenge.** Three difficulties interact. (1) The text signal is weak: next-day direction is barely predictable from sentiment, and text may say more about *how much* a price moves than *which way*. (2) Daily returns are not exchangeable: volatility clusters and regimes shift, so a split-conformal interval that is valid "on average" under-covers exactly in stressed markets. (3) Manipulation acts on the test input: an attacker who injects posts moves the features after calibration, which no standard conformal guarantee covers. The bound can then be narrow, shifted and confidently wrong. "Meaningful" must therefore be measured, not asserted: valid on held-out time, valid within regimes, misses not clustered in time, as narrow as possible, and robust to a stated attack budget.
+**Understanding of the challenge.** Three difficulties interact.
+1. **Text is a weak signal.** On two datasets we found it adds no measurable accuracy to a strong price baseline (results below).
+2. **Returns are not exchangeable.** Volatility clusters, so a split-conformal band that is valid on average under-covers exactly in stressed markets.
+3. **Manipulation acts on the test input.** Injected posts move the features after calibration, which no standard conformal guarantee covers.
 
-**Proposed approach.** A ten-component pipeline with typed contracts between stages:
-1. *Ingest + align:* tweets/news and daily bars; every document is assigned to the trading day whose 16:00 New York close it precedes (look-ahead leakage is a unit-tested metric — 0 of 119,641 documents).
-2. *Text scorer:* VADER with a finance lexicon (baseline), then FinBERT (`ProsusAI/finbert`, `yiyanghkust/finbert-tone`). LLM scorers only with a look-ahead test, because LLMs can recall pre-cutoff outcomes.
-3. *Trust scorer:* account age, followers, verification, copy-paste clusters, cashtag spam.
-4. *Bounded-influence aggregator:* count, mean, 20% trimmed mean, dispersion, trust.
-5. *Fusion model:* LightGBM quantile regression (5%, 50%, 95%) on 12 price/volatility features plus the text features.
-6. *Conformal layer:* MAPIE 1.5 for split conformal and conformalized quantile regression (CQR); our own Adaptive Conformal Inference (ACI) loop for drift.
-7. *Spike — CR-ACI, certified manipulation-robust conformal:* if at most k documents of a ticker-day are injected, the clean feature vector lies in a "deletion box" whose per-feature ranges we compute exactly from order statistics. We propagate that box through every tree of each quantile model and widen by the ACI-tuned conformal correction. For every attack within budget k, the interval contains the clean model's interval. So it misses only where the clean forecast would have missed: an attacker within budget cannot add misses, at a measurable width cost.
+So "meaningful" must be measured: valid on held-out time and within regimes, misses not clustered, narrow, and robust to a stated attack budget.
 
-Data: StockNet (87 US stocks, 119,641 tweets with user metadata, 2014–2016; MIT licence); its StockNet model is a victim of the published tweet-concatenation attack (Xie et al., NAACL 2022). For the finals, FNSPID (KDD 2024; news for S&P 500 firms 1999–2023), so we can test across 2008, 2020 and 2022.
+**Proposed approach.** A ten-component pipeline with typed contracts:
+1. *Ingest and align* posts to the 16:00 New York close. Look-ahead leakage is a tested metric: 0 of 119,641 tweets leak.
+2. *Text scorer:* frozen MiniLM-L6 embeddings plus a sentiment head trained on labelled financial tweets (macro-F1 0.69 vs 0.49 for the VADER lexicon). It never sees returns, so unlike LLM backtests it cannot memorise outcomes.
+3. *Trust* from each post's own account metadata.
+4. *Bounded-influence aggregation:* count, mean, 20% trimmed mean, dispersion.
+5. *Fusion:* LightGBM quantile regression on 12 price/volatility features plus text.
+6. *Conformal layer:* MAPIE split conformal and conformalized quantile regression (CQR), plus Adaptive Conformal Inference (ACI) for drift.
+7. *Spike, CR-ACI:* if at most k posts of a stock-day are injected, the clean features lie in a "deletion box" whose per-feature ranges we compute exactly from order statistics. We propagate the box through every tree and widen by the ACI-tuned conformal correction. For every attack within budget, the interval contains the clean model's interval, so an attacker cannot add misses.
 
-**Minimum Viable mapping.** MV1 "fusion model of text sentiment + time series": the LightGBM quantile fusion model, already running end-to-end. MV2 "off-the-shelf conformal bounds": MAPIE `SplitConformalRegressor` and `ConformalizedQuantileRegressor` around it, also running.
+**Minimum Viable mapping.** MV1 (fusion of text sentiment and a time-series signal): the LightGBM quantile fusion model, running end to end. MV2 (off-the-shelf conformal bounds): MAPIE split conformal and CQR around it, also running.
 
-**Stretch ambitions.** (1) Adversarial scenario: a pump attack (k bullish bot posts per ticker-day) and an oracle attacker (worst of 12 injection variants within k = 3). Then a noisy-label scenario: flipped sentiment labels when fine-tuning FinBERT. (2) Calibration, not just presence: Kupiec unconditional-coverage and Christoffersen independence tests, coverage by volatility regime and tweet volume, and worst-day coverage. Both stretch goals use the same harness, so robustness is reported *as coverage*.
+**Stretch ambitions.** Both are already built.
+- *Adversarial:* pump attacks (k bullish posts from fresh accounts), a 53-variant oracle, and burst attacks on chosen days.
+- *Noisy labels:* flipping 20% / 40% of the scorer's training labels lowers macro-F1 to 0.66 / 0.61.
+- *Calibration:* Kupiec and Christoffersen tests, day-clustered confidence intervals, coverage by volatility regime.
 
-**Novelty.** Robust conformal methods (RSCP, VRCP, ICML 2024, NeurIPS 2025) certify bounded perturbations of a single input (ℓp balls, smoothing noise, sparse edits) or poisoned calibration data, mostly for classification. In our searches we found no method that certifies coverage against a budget of injected *documents* feeding a text + time-series regressor. We also report a price-of-robustness curve (width versus k): what the text channel is worth against the attack surface it opens.
+Next: an edit budget (attackers who alter real posts) and FNSPID news 2018–2023.
 
-**Evaluation plan.** Strict time order: train 2014, calibrate H1-2015, test Jul 2015–Mar 2016 (16,443 ticker-days, including the Aug-2015 and Jan-2016 sell-offs). Baselines: price-only, text-only and fusion models, each with split CP, CQR and CQR+ACI. Metrics: coverage at 90%, mean width, Winkler score, Kupiec/Christoffersen p-values, coverage by regime, and clean vs attacked coverage for k = 0…5. Preliminary results:
-- Split CP is not meaningful here. The fusion model covers 81.3% (Kupiec p < 0.001) and only 76.5% in the high-volatility tercile.
-- CQR reaches 86.3% (width 4.71 percentage points of return). ACI restores 89.4% (width 5.22).
-- Text adds almost nothing to point accuracy (pinball loss 0.3518 fusion vs 0.3513 price-only), consistent with the literature.
-- Under a 12-variant oracle attack (k = 3), plain CQR falls from 86.3% to 84.4%. The certified interval keeps 88.0% and can never fall below the clean 86.3% within budget. Width: +4.5% clean; 5.09 vs 4.59 pp under a pump attack.
-- CR-ACI: 89.5% clean, 89.7% under the pump, at +0.3% / +0.9% width vs plain ACI.
+**Novelty.**
+1. Robust conformal methods (RSCP, VRCP, ICML 2024, NeurIPS 2025) certify bounded perturbations of one input, or poisoned calibration data, mostly for classification. In our searches none certifies coverage against a budget of injected documents feeding a text-and-time-series regressor.
+2. We pre-registered "does text help?" on unseen data. A price-of-robustness curve (width versus k) then decides how much text to admit; dropping text is its k = ∞ end.
 
-**Feasibility and risks.** Everything above runs on one Apple-silicon laptop. Risks:
-- The threat model covers injection only; editing documents is next, and true-but-misleading news is out of scope.
-- Box relaxations may loosen as features grow; a ratchet loop minimises certified width under a frozen evaluator.
-- Weak text signal; mitigated by stronger scorers and FNSPID news.
+**Evaluation plan and preliminary results.** StockNet (87 US stocks, tweets with account metadata): train 2014, calibrate H1-2015, test Jul-2015–Mar-2016 (16,443 stock-days, including the Aug-2015 and Jan-2016 sell-offs). Target coverage is 90%.
+- *The starter baseline is not meaningful.* Split conformal covers 81.6% overall and 76.9% in the high-volatility tercile (Kupiec p < 0.001). CQR reaches 86.6%; ACI 89.5% (day-clustered 90% CI 87.5%–91.2%).
+- *Text value.* Pinball loss is 0.3508 with text vs 0.3513 without. Our pre-registered test on unseen Kaggle DJIA news (2008–2016, 505 test days) found no evidence that text adds value: interval score +0.1%, p = 0.46.
+- *Attacks (k = 3).* The oracle drives plain CQR to 84.7%. The certified interval is guaranteed never to fall below the clean 86.7%. Under the worst fixed attack it covers 89.5% (plain CQR 85.7%). CR-ACI covers 89.5% clean and 89.7% under a pump, for +0.3% / +1.0% width versus plain ACI. The insurance is cheap because the exposure is small.
 
-Team: Ashish (ML systems; large-scale and frontier-model engineering) plus two teammates (roles: quantitative finance; NLP) — names and skills TBD. Milestones:
+Baselines: price-only, text-only and fusion models, each with split, CQR and ACI.
+
+**Feasibility and risks.** Everything runs CPU-only on one laptop; the full StockNet evaluation takes 59 s. Unit tests check the certificate against brute force and ACI against its theorem. Risks:
+- Text may stay weak. The pitch rests on guarantees; FNSPID and stronger scorers will be tested, not assumed.
+- The threat model is injection-only; an edit budget is next.
+- Boxes may loosen as features grow; a ratchet loop minimises certified width.
+
+Team: Ashish (ML systems; large-scale and frontier-model engineering) plus two teammates, names and skills TBD.
 
 | Weeks | Milestone |
 |---|---|
-| 5–18 Oct | FinBERT scorers, FNSPID subset |
-| 19 Oct–1 Nov | Edit-budget certificate, regime-conditional conformal, abstract |
-| 2–15 Nov | Ratchet loops, noisy-label study, demo dashboard |
-| 19–25 Nov | Exams; automated runs only |
+| 5–18 Oct | Edit-budget certificate; FNSPID subset |
+| 19 Oct–1 Nov | Regime-conditional conformal; final abstract |
+| 2–15 Nov | Ratchet loops; demo dashboard |
+| 19–25 Nov | Exams (automated runs only) |
 | 1 Dec | Midway report |
-| 15–18 Dec | Finals: live demo with an attack toggle and a k slider |
+| 15–18 Dec | Finals: live attack toggle and k slider |

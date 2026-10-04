@@ -1,0 +1,13 @@
+{
+  "scorer": "minilm",
+  "tickers": 87,
+  "tweets": 119641,
+  "aligned_docs": 119641,
+  "leakage_docs": 0,
+  "panel_rows": 48711,
+  "panel_rows_with_docs": 23588,
+  "first_day": "2014-01-02",
+  "last_day": "2016-03-31",
+  "scorer_seconds": 0.9,
+  "total_seconds": 13.0
+}
