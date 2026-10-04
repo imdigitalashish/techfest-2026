@@ -103,10 +103,10 @@ Tuning years 2019–2023, same 40 sampled parameter settings: P1 −3.2% [−5.9
 - Ablating tide-aware timing makes it **+3.7% worse** (1,078,082.6 kg).
 - Removing all forecast terms makes it +0.23% worse. No single forecast-weight change cleared the 0.1% keep threshold.
 
-**Reading.**
-1. In this twin, crews are capacity-bound: they clear about 45–50% of the load. The useful lever is clearing more kg per crew-hour by timing shifts to low-water and slack windows. Day-ahead rain forecasts add at most about 0.5%. That is because boom capacity (9 t nominal at Mithi) is overwhelmed within hours in big events whatever was cleared beforehand, and flood bypass is rare on the ERA5 rain scale.
-2. Sensor-triggered dispatch by fill **fraction** (P1) is worse than an area-weighted fixed schedule. It sends crews to small booms that look full but hold little mass. Ranking by **kg at risk** fixes this.
-3. The P2 gain is uncertain: its central 90% scenario range includes zero. Treat it as a design direction, not a demonstrated saving.
+**Reading** (revised after the held-out ablations in §8).
+1. In this twin, crews are capacity-bound: they clear about 45–50% of the unique input. P2's full gain over P1 comes in two parts. Ranking by mass instead of fill fraction gives −2.0% (P1m vs P1). Everything else P2 adds gives −2.7% (P2 vs P1m). Within P2, tide-aware timing is the largest single lever (−3.2% vs P2_notide), and day-ahead forecasts are small (−0.4% vs P2_nofc). Each component's central 90% scenario range includes zero. Only the complete P2-vs-P1 comparison (−5.6% [−15.8%, −0.3%]) excludes zero.
+2. Fill-**fraction** ranking (P1) is worse than the assumed fixed roster, because it sends crews to small booms that look full but hold little mass. A sensor-only **mass**-ranked rule (P1m) is about level with the roster: +0.6% [−0.6%, +2.8%]. The roster is itself mass-aware, since one crew is at the largest site every day.
+3. The P2 gain vs P0 is uncertain: its central 90% scenario range includes zero. Treat it as a design direction, not a demonstrated saving.
 
 ## 5. Limitations and next steps
 - No field calibration: every plastic-process parameter is an ASSUMPTION. The Monte Carlo covers parameter uncertainty, not structural model error.
@@ -130,7 +130,7 @@ Notation: values are median [p05–p95], the central 90% scenario range across t
 | P1 | 404,459 [112,970–819,587]; 90.6% / 32.8% | 34,918 [0–204,204]; 6.6% / 2.2% | 2,582 [0–56,237]; 0.7% / 0.2% | 455,001 [151,216–980,895] |
 | P2 | 391,972 [112,382–756,467]; 92.5% / 32.6% | 31,565 [0–183,725]; 5.9% / 1.7% | 2,589 [0–50,770]; 0.7% / 0.2% | 411,619 [147,549–917,790] |
 
-The central 90% scenario ranges of the shares are in the JSON. For entrainment's share of escaped they are about [64–100%].
+The central 90% scenario ranges of the shares are in the JSON. For entrainment's share of escaped they are about [64–100%]. The 92.5% figure is the P2 scenario with the current release behaviour and the boom normal to the flow (θ = 90°). "Entrainment" here includes the assumed slack-water floor (1 − e_max); §7 splits it.
 
 **Re-floating** is a re-exposure flux, not an escape term: the debris re-arrives at the boom on the ebb.
 - Tidal re-float: P0 302,891 kg (24.9% of arrived), P1 344,104 kg (27.5%), P2 266,179 kg (23.5%).
@@ -173,21 +173,101 @@ The central 90% scenario ranges of the shares are in the JSON. For entrainment's
 - **The pocket rows scale the assumed tidal re-float rate** (k_refloat 0.01–0.08 /h). Keeping more catch raises overtopping (P2 median 31.6 t → 44.1 t → 50.4 t), and the net figures above include this.
 - **Still omitted from the twin:** travel time between sites, minimum clearance duration, gated (flap-gate) outfalls, boom angle θ, and a perfect-foresight oracle policy.
 
-## 7. Boom angle, entrainment split and exposure (SENSITIVITY / SIMULATED; numbers pending)
+## 7. Entrainment split, exposure and boom angle (SIMULATED; angle = SENSITIVITY)
 
-The code and tests are in place. The numbers are not run yet because the shared heavy-job lock was busy. To produce them: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis`. This writes these new keys to `results/analysis.json`:
-- `boom_angle_sensitivity_P2`
-- `entrainment_split`
-- `exposure_P2_nominal`
+Source: `results/analysis.json`, keys `entrainment_split`, `exposure_P2_nominal` and `boom_angle_sensitivity_P2`. Reproduce with `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis`.
 
-The existing keys are unchanged: the default switches are bit-identical, which is tested.
+Setup: held-out Jun–Sep 2024+2025, 40 sampled parameter settings, nothing retuned. Values are median [central 90% scenario range across sampled parameter settings].
 
-**Method.** The setup matches §6: held-out Jun–Sep 2024+2025, 40 sampled parameter settings, P2 knobs unchanged.
-- **Boom angle θ ∈ {90° (current), 45°, 30°, 20°}.** Entrainment uses the normal velocity: e(v) takes |v|·sin θ, with e_max unchanged. Each angle is run with the current release behaviour and with the fuse plus re-float × 0.5. Reported: escaped kg as a paired change vs θ = 90° with the same hardware, and vs the current setup (no fuse, θ = 90°); FWCE.
-- **Entrainment split.** The floor (1 − e_max)·arrived leaks even at slack water. The velocity-driven part is (e_max − e)·arrived. Each is reported as a share of escaped.
-- **Exposure.** P2 with nominal parameters: the share of site-hours, and of arrived kg, with |v|·sin θ > v50 (0.45 m/s).
+**Assumed capture losses dominate this twin; boom angle and retention are candidate field experiments, not findings.**
+
+**Entrainment split** (current boom, θ = 90°):
+
+| policy | slack-water floor (1 − e_max)·arrived: kg; share of escaped | velocity-driven (e_max − e)·arrived: kg; share of escaped |
+|---|---|---|
+| P0 | 179.3 t; 51.4% [14.4–80.0] | 154.9 t; 37.9% [9.0–80.0] |
+| P1 | 183.9 t; 51.1% [14.3–79.8] | 159.5 t; 37.8% [8.9–80.1] |
+| P2 | 179.0 t; 51.3% [14.5–81.5] | 148.5 t; 38.4% [9.1–79.8] |
+
+About half of what escapes in this twin is the assumed floor: items assumed to pass under the boom even at slack water (e_max 0.70–0.95, an ASSUMPTION). Velocity-driven entrainment is about 38%. The deck should not present the 92.5% as velocity entrainment.
+
+**Exposure** (P2, nominal parameters): the share of site-hours and of arrived kg with |v|·sin θ > v50 = 0.45 m/s.
+
+| θ | share of site-hours | share of arrived kg |
+|---|---|---|
+| 90° (current) | 13.2% | 13.2% |
+| 45° | 4.2% | 3.6% |
+| 30° | 0.7% | 0.4% |
+| 20° | 0.03% | 0.01% |
+
+By site at 90° (hours / kg): Mithi 13.9% / 13.3%, Oshiwara 19.3% / 14.3%, Dahisar 19.2% / 16.1%, Trombay 0.6% / 0.5%. Velocity loss is not confined to |v| > v50. The assumed logistic curve already loses about 12% of e_max at v50 − 2w, so the velocity-driven share of escape (≈ 38%) is larger than this exposure share.
+
+**Boom angle θ (SENSITIVITY, P2).** e(v) uses |v|·sin θ, with e_max unchanged. Each row is a paired comparison with θ = 90° on the same hardware.
+
+| hardware | θ | escaped (t) | Δ escaped vs θ = 90° | settings (of 40) lower | Δ escaped vs current boom (a, θ = 90°) | FWCE | Δ FWCE vs θ = 90° (pp) | velocity share of escaped |
+|---|---|---|---|---|---|---|---|---|
+| (a) current release | 90° | 411.6 [147.5–917.8] | — | — | — | 49.1% [30.9–70.1] | — | 38.4% |
+| (a) | 45° | 380.3 [130.5–886.2] | −10.4% [−21.0, −0.8] | 40 | −10.4% | 54.6% [38.8–75.6] | +5.6 [+0.3, +12.4] | 21.0% |
+| (a) | 30° | 377.4 [123.7–866.1] | −15.0% [−37.6, −0.8] | 40 | −15.0% | 59.2% [39.5–77.0] | +7.7 [+0.3, +23.1] | 9.8% |
+| (a) | 20° | 376.7 [108.4–850.1] | −17.2% [−49.6, −0.7] | 40 | −17.2% | 61.9% [39.6–78.6] | +8.6 [+0.3, +28.8] | 4.7% |
+| (c) fuse + re-float ×0.5 | 90° | 385.5 [128.1–889.5] | — | — | −5.0% [−9.9, −1.4] | 51.5% [32.8–73.1] | — | 37.3% |
+| (c) | 45° | 354.5 [119.8–862.3] | −10.9% [−21.8, −0.4] | 40 | −16.7% [−28.0, −4.8] | 57.8% [39.8–78.3] | +5.3 [+0.2, +12.5] | 21.0% |
+| (c) | 30° | 346.8 [113.1–826.6] | −16.5% [−40.4, −0.6] | 40 | −21.6% [−42.1, −4.7] | 61.9% [40.1–79.6] | +7.6 [+0.2, +22.9] | 9.2% |
+| (c) | 20° | 345.7 [102.3–810.6] | −18.8% [−53.0, −0.7] | 40 | −23.4% [−55.1, −4.8] | 66.1% [40.1–81.1] | +8.6 [+0.3, +27.9] | 4.4% |
 
 **Caveats.**
-- Boom angle is not field evidence. Boom length grows as W/sin θ (×2.9 at 20°). Capacity, cost and mooring loads are held fixed or not modelled.
-- P2's forecaster still assumes θ = 90°, so the policy is unchanged.
-- The circularity caveat in §6 applies.
+- **Not independent confirmation.** Angle acts only through the same assumed capture curve e(|v|·sin θ). Its benefit is the velocity-driven share by construction, so it cannot confirm that mechanism.
+- **v50 is borrowed.** It is transferred from oil-boom practice (UNVERIFIED ASSUMPTION, 0.30–0.70 m/s).
+- **Diminishing returns.** Most of the modelled gain is reached by 45°. Boom length grows as 1/sin θ (×1.41 at 45°, ×2 at 30°, ×2.92 at 20°). Capacity, cost and mooring loads are held fixed or not modelled, and P2's forecaster still assumes θ = 90°.
+- **The floor is untouched.** The slack-water floor does not change with angle or dispatch. Testing e_max at slack water is the first field experiment.
+- **Circularity** (§6) applies.
+
+## 8. Held-out ablations and the mass boundary (SIMULATED; review findings 3 and 11)
+
+Source: `results/analysis.json`, keys `ablations` and `mass_boundary`. Same setup as §7; nothing was retuned, and all policies spend the same crew-hours.
+
+Ablation policies:
+- **P1m**, sensor-only mass-ranked fixed-shift rule. Greedy on sensed kg (fill × design capacity), with P1's 08:30 IST shift; no tide, no forecast.
+- **P2_notide**: P2 with tide-aware timing off (fixed 08:30 IST start; allocation unchanged).
+- **P2_nofc**: P2 with forecast terms off. It ranks on sensed kg only, and takes timing from tide-only predicted access.
+
+Paired escaped kg:
+
+| comparison | isolates | median | central 90% scenario range | settings (of 40) where the first is lower |
+|---|---|---|---|---|
+| P1m vs P1 | mass vs fill-fraction ranking (sensor-only, fixed shift) | −2.0% | [−4.1%, +0.2%] | 37 |
+| P1m vs P0 | sensor-only mass ranking vs assumed fixed roster | +0.6% | [−0.6%, +2.8%] | 10 |
+| P2 vs P1m | everything P2 adds beyond mass-ranked sensors | −2.7% | [−12.6%, +1.2%] | 34 |
+| P2 vs P2_notide | tide-aware timing, within P2 | −3.2% | [−12.0%, +0.6%] | 34 |
+| P2 vs P2_nofc | forecast terms, within P2 | −0.4% | [−1.9%, +1.0%] | 29 |
+| P2_nofc vs P1m | tide timing on top of mass ranking, no forecasts | −2.2% | [−12.9%, +0.4%] | 33 |
+| P2_notide vs P1m | forecast/risk terms without timing | −0.4% | [−1.6%, +6.4%] | 26 |
+| P2 vs P1 | the complete policy comparison | −5.6% | [−15.8%, −0.3%] | 39 |
+
+| policy | escaped (t) | FWCE | cleared share of unique input |
+|---|---|---|---|
+| P0 assumed fixed roster | 428.3 [144.4–961.5] | 46.0% | 45.8% |
+| P1 fill-fraction-ranked fixed-shift rule | 455.0 [151.2–980.9] | 44.2% | 44.1% |
+| P1m sensor-only mass-ranked | 429.0 [147.7–968.8] | 45.7% | 45.5% |
+| P2_notide | 448.5 [155.4–965.4] | 46.2% | 45.9% |
+| P2_nofc | 415.4 [150.6–921.2] | 48.8% | 47.2% |
+| P2 mass/risk-ranked, tide- and forecast-timed | 411.6 [147.5–917.8] | 49.1% | 48.0% |
+
+**What can be claimed.**
+- The complete P2 policy lets 5.6% less escape than the fill-fraction rule, [−15.8%, −0.3%], lower in 39 of 40 settings.
+- Against the assumed roster, the result is −2.1% [−12.5%, +1.5%]: uncertain.
+- Tide timing is the largest single component in the held-out ablation. This matches the tuning-year ablation (+3.7% worse without it). But it is **not separately established**: its range reaches +0.6%.
+- "Sensors alone" do not beat the assumed roster in this twin, whether ranked by fraction (+3.1%) or by mass (+0.6%). This may differ with more sites or a roster that is not mass-aware (UNTESTED).
+
+**Mass boundary** (finding 11). Each kg is counted once and re-arrivals are excluded. Unique input = escaped + cleared + stored in the boom at 30 Sep + held upstream at 30 Sep. Values are summed over the two monsoons.
+
+| policy | unique input (t) | cleared = removal (t) | stored at 30 Sep = temporary retention (t) | held upstream at 30 Sep (t) | escaped (t) |
+|---|---|---|---|---|---|
+| P0 | 964.4 [349.6–1,388.1] | 435.7 [152.1–774.7] | 2.9 [0.8–33.9] | 1.2 [0.3–4.3] | 428.3 [144.4–961.5] |
+| P1 | 964.4 [349.6–1,388.1] | 425.0 [143.5–763.7] | 3.0 [0.5–34.0] | 1.3 [0.4–4.1] | 455.0 [151.2–980.9] |
+| P2 | 964.4 [349.6–1,388.1] | 480.4 [147.7–785.0] | 2.7 [0.6–25.2] | 1.2 [0.3–3.8] | 411.6 [147.5–917.8] |
+
+- FWCE (§6) = (cleared + stored) ÷ unique input. For P2 that is 48.0% removal plus 0.3% retention, so FWCE here is almost entirely crew removal.
+- Removal is not final diversion. What happens to cleared material (sorting, recycling, landfill) is outside the twin.
+- Each monsoon starts with an empty boom and empty upstream pool. This is an ASSUMPTION: pre-monsoon clearance.
+- The twin's mass is generic floating debris, scaled from the brief's city-wide plastic figure. It is not specific to flexible packaging, and there is no moisture correction; the wet bulk density is used only for boom volume.
