@@ -16,7 +16,7 @@
   2. Build to §11: `demo/run.sh`, baseline side by side with a judge knob, SIMULATED labels on every screen, numbers from committed results, `demo/SCRIPT.md`, `demo/fallback/`, `demo/smoke.sh`.
   3. One gpt-6-astra demo review, recorded in `reviews/`.
   4. The lead verifies from a clean checkout, then sends "DEMO DONE".
-- **Doing:** the demo is built (ef608074) and verified by the lead from a clean worktree. The gpt-6-astra demo review (child session) is running. Updated 2026-10-04 22:26 IST. Updated 2026-10-04 21:54 IST.
+- **Doing:** the builder is applying the 13 accepted demo-review fixes (gpt-6-astra 3.5/5): label precision, an agent-first cold open, the size knob frozen at 09:55 with the aggregate shown, and a 3-beat script. Then the lead re-verifies from a clean worktree and sends DEMO DONE. Updated 2026-10-04 22:44 IST.
 - **Earlier phase (definition of done, met 14:08):** see the Log.
 - **Delivered:**
   - E8, E7, E9, E10, E11 and E12, each pre-registered by commit time.
@@ -329,3 +329,9 @@ Those labels were estimates, 1–7 min ahead of the clock. The other headers are
 - **Labelling:** SIMULATED stamped in the sticky header and on every chart canvas; 13 "source:" footnotes.
 - **Fallback:** 8 screenshots in talk order.
 - The verification server was stopped after use. The clean worktree is at `/tmp/p5_clean_demo_check` (to be removed after the review).
+
+### 2026-10-04 22:44 IST — Demo review in (gpt-6-astra, 3.5/5); 13/13 accepted
+- **Scores:** robustness 5, crazy element 4, knob 4; did-what-asked 3, honesty 3, clarity 3.
+- **The reviewer reproduced everything end to end:** live seed 20261004 in 4.8 s with 731/731 identical pre-trade events; smoke passed; offline; no console errors.
+- **Same wording errors fixed in the reviewed abstract, memo and ADR:** "every background agent" (not every agent); "paired-difference std 7.7×" (not "CIs"); explicit horizons (5-min mean gap). The abstract is 899 words; check_docs OK; pytest 7/7.
+- **Decisions:** `reviews/2026-10-04-demo-gpt-6-astra.decisions.md`; ledger updated.
