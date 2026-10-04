@@ -123,6 +123,15 @@ _Final, 4 Oct 2026 (v4). Re-scored after both cross-model reviews; supersedes v1
 - **Overall: 3.8 / 5.** Recommendation: a solid, low-risk Perceptron pick whose claims are modest but survive adversarial review. Choose it over P7 if P7's spike stays unreplicated; it will not win on novelty alone.
 
 ## Log
+### 2026-10-04 19:39 IST — Demo proposal approved
+- **Builder's proposal:**
+  1. REAL τ-bench harmful write: unguarded vs live Tier 0 vs replayed gpt-4.1-mini judge;
+  2. crazy element "Hijack the agent": the judge types a support ticket, a SCRIPTED compromised agent obeys it, and the real committed guard runs live with the ticket as an untrusted observation, plus a benign control;
+  3. operating-point knob over 300 real calls against the judge's curve, with an honesty panel;
+  4. SYNTHETIC desk cases.
+- **Probe results:** 0/300 mismatches for six configs; 7/7 injections over 5 real conversations blocked; benign controls allowed. Before today's fix, the address hijack and order swap were allowed.
+- **Approved, with notes:** curated attack templates + honest free text (literal-value taint limit shown); a precomputed "unguarded outcome" DB diff; on-screen labels REAL/SCRIPTED/SYNTHETIC/REPLAYED/LIVE; the full §11 bar; no git stash; `pipefail`.
+
 ### 2026-10-04 19:35 IST — Demo phase started (PLAYBOOK §11)
 - **19:29 Supervisor:** demo slot granted. Rules: 1 demo-builder child, CPU only, `nice -n 10` + memory guard, no git stash, replay committed judge outputs. Spawned **P9 demo builder** (autopilot) with full context and an approval gate on its proposal.
 - **Bypass found and fixed while preparing the injection moment.** The retail adapter ignored trust labels: an injected ticket naming another of the user's orders made the guard ALLOW the cancellation. It now enforces the untrusted-text rule (P-1.3): a value seen in untrusted text that the user never stated → FAIL `provenance.untrusted`. All 18 committed τ-bench result files were re-run: decisions and reasons identical (no τ-bench item has untrusted observations). Regression tests in `tests/test_retail_injection.py`.
