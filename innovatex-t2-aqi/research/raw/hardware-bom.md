@@ -87,7 +87,8 @@ Accessed: 2026-10-04 (IST), research session started ~08:33 IST.
 
 ## (16) Relay/SSR module
 
-_pending_
+- **Songle Single-channel 5V 30A Relay Module (Power Failure Relay / opto-isolated)** · Robu.in · **₹149.00 (Incl. GST)** · Availability: "In Stock" (5 customer reviews) · https://robu.in/product/songle-single-channel-5v-30a-relay-module-power-failure-relay/ · accessed 2026-10-04 ~09:46 IST (Playwright).
+- Note: the generic "5V 1 Channel Relay Module" (opto-coupler, SKU 9716) was ₹39.00 (Incl. GST) but shown **Out of Stock** — https://robu.in/product/1-channel-isolated-5v-relay-module-opto-coupler-for-arduino-pic-avr-dsp-arm/.
 
 ---
 
