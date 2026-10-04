@@ -22,6 +22,7 @@
 - [ ] **Azure resource created overnight (FYI, costs money):** P8 provisioned Azure OpenAI `tf26-p08-aoai-1004` (resource group `rg-tf26-p08`, Sweden Central, gpt-4.1-mini). Delete the resource group if P8 isn't pursued.
 - [ ] **If P8 is chosen:** its stretch goal needs a ~30-learner pilot in November.
 
+- [ ] **Mac memory (08:50):** swap is ~97% full (34.6 of 35.8 GB). Your own VM (`com.apple.Virtualization`, ~16 GB incl. compressed) and CapCut are the largest non-project users. Pausing them while the projects run, or approving Azure compute for heavy jobs, would stop the slowdowns. I've asked P1 and P9 to shrink their jobs.
 ## Portfolio (08:18 IST) — package = landscape, components, contracts, ADR, deliverables, eval, memo
 | Project | Package | Memo (self-score) | Last push | Note |
 |---|---|---|---|---|
