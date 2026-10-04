@@ -109,14 +109,16 @@ class CertifiedCQR:
     def __init__(self, model: QuantileFusion, q_offset: float, k: int):
         self.model, self.Q, self.k = model, q_offset, k
         self.dumps = [m.booster_.dump_model() for m in model.models]
-        self.text_idx = [model.cols.index(c) for c in TEXT_COLS if c in model.cols]
+        feats = [c for c in TEXT_COLS if c in model.cols]
+        self.text_idx = [model.cols.index(c) for c in feats]
+        self.text_sel = [TEXT_COLS.index(c) for c in feats]
 
     def boxes(self, X: np.ndarray, docs: list[tuple[np.ndarray, np.ndarray]]) -> tuple[np.ndarray, np.ndarray]:
         lo, hi = X.copy(), X.copy()
         if self.text_idx:
             for r, (s, w) in enumerate(docs):
                 b_lo, b_hi = deletion_box(s, w, self.k)
-                lo[r, self.text_idx], hi[r, self.text_idx] = b_lo, b_hi
+                lo[r, self.text_idx], hi[r, self.text_idx] = b_lo[self.text_sel], b_hi[self.text_sel]
         return lo, hi
 
     def raw_bounds(self, X: np.ndarray, docs: list[tuple[np.ndarray, np.ndarray]]) -> tuple[np.ndarray, np.ndarray]:
