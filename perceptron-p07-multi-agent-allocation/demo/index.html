@@ -9,10 +9,12 @@
 :root{--bg:#0b1020;--panel:#111a33;--panel2:#16213f;--line:#26335c;--text:#e8eef7;--dim:#93a0c4;--amber:#ffb020;--red:#ff4d5e;--green:#3ddc97;--blue:#4cc3ff;--orange:#ff8a3d}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:16px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden}
+body{display:flex;flex-direction:column}
+header,#offline,footer{flex:none}
 button,select{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:5px 10px;cursor:pointer}
 button:hover{border-color:var(--dim)}
 button.on{background:#2b3a6b;border-color:var(--amber);color:#fff}
-header{display:flex;align-items:center;gap:14px;padding:8px 16px;border-bottom:1px solid var(--line);height:60px}
+header{display:flex;align-items:center;gap:14px;padding:8px 16px;border-bottom:1px solid var(--line);min-height:56px}
 .brand{font-size:18px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .brand b{color:var(--amber)}
 nav{display:flex;gap:6px}
@@ -20,13 +22,12 @@ nav button{font-size:15.5px;padding:7px 12px;white-space:nowrap}
 .badge{margin-left:auto;padding:6px 12px;border-radius:7px;font-weight:800;font-size:13.5px;letter-spacing:.05em;white-space:nowrap}
 .badge.synth{background:#3a2a05;color:var(--amber);border:1px solid var(--amber)}
 .badge.real{background:#06301f;color:var(--green);border:1px solid var(--green)}
-#offline{display:none;background:#5a0f19;color:#fff;padding:6px 16px;font-weight:700;border-bottom:1px solid var(--red);height:34px;white-space:nowrap;overflow:hidden}
-main{height:calc(100% - 60px - 62px)}
-body.off main{height:calc(100% - 60px - 62px - 34px)}
+#offline{display:none;background:#5a0f19;color:#fff;padding:6px 16px;font-weight:700;border-bottom:1px solid var(--red)}
+main{flex:1;min-height:0}
 section{height:100%;padding:8px 16px;overflow:hidden}
 section[hidden]{display:none!important}
 section.live{display:flex;flex-direction:column;gap:8px}
-.databar{background:#06301f;border:1px solid #1d6b4c;color:#c9f5e2;border-radius:9px;padding:5px 12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none}
+.databar{background:#06301f;border:1px solid #1d6b4c;color:#c9f5e2;border-radius:9px;padding:5px 12px;font-size:14px;flex:none}
 .databar b{color:var(--green)}
 .lgrid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr 420px;gap:14px}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;display:flex;flex-direction:column;min-width:0;min-height:0}
@@ -34,15 +35,16 @@ section.live{display:flex;flex-direction:column;gap:8px}
 .ptitle .tag{font-size:13px;font-weight:700;padding:2px 7px;border-radius:5px;margin-left:6px;vertical-align:3px}
 .tag.rule{background:#3b1d27;color:#ff9aa6}
 .tag.plan{background:#0f3a2c;color:var(--green)}
-.psub{color:var(--dim);font-size:14px;min-height:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.psub{color:var(--dim);font-size:14px;min-height:19px}
 canvas.city{display:block;margin:4px auto 0}
 .counters{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;margin-top:6px}
 .ctr .v{font-size:36px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.05}
-.ctr .l{font-size:13px;color:var(--dim)}
+.ctr .l{font-size:13px;color:var(--dim);min-height:34px}
+#nycMsLine,#synMsLine{min-height:34px}
 .ctr.big .v{font-size:46px}
 .lostc .v{color:var(--red)}
 .good .v,.goodv{color:var(--green)}
-.chip{margin-top:2px;font-size:16px;font-weight:800;min-height:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{margin-top:2px;font-size:16px;font-weight:800;min-height:22px}
 .chip.good{color:var(--green)}.chip.bad{color:var(--red)}
 canvas.spark{display:block;width:100%;height:42px;margin-top:4px}
 aside{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:auto}
@@ -68,14 +70,13 @@ canvas.strip{display:block;width:100%;height:92px;margin-top:2px}
 details summary{cursor:pointer;color:var(--dim);font-size:14px}
 details .row{margin-top:6px}
 label{font-size:14px;color:var(--dim)}
-footer{height:62px;border-top:1px solid var(--line);padding:7px 16px;font-size:14px;overflow:hidden;background:#0a0f1e}
-footer div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+footer{border-top:1px solid var(--line);padding:6px 16px;font-size:13.5px;background:#0a0f1e}
 footer .pre b{color:var(--green)}
 footer .hon{color:#c9d2ea;margin-top:3px}
 footer .hon b{color:var(--amber)}
 [data-src]{text-decoration:underline dotted #5b6a96;text-underline-offset:3px;cursor:help}
 #tip{position:fixed;pointer-events:none;background:#000e;border:1px solid var(--line);padding:6px 9px;border-radius:7px;font-size:13px;max-width:460px;display:none;z-index:20}
-.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--dim);margin-top:3px}
+.legend{display:flex;gap:4px 10px;flex-wrap:wrap;font-size:12.5px;color:var(--dim);margin-top:5px;padding-top:5px;border-top:1px solid var(--line)}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
 .sq{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
 .rcpt{font-size:15px;margin:2px 0}
@@ -96,6 +97,20 @@ canvas.bars{display:block;width:100%;height:150px}
 #tab-evidence .cap{color:#c9d2ea;font-size:14px;margin-top:6px}
 .honest li{margin:4px 0;font-size:16px}
 .warn{color:var(--amber)}
+@media (max-height:820px){
+  header{min-height:48px;padding:4px 16px}
+  nav button{padding:5px 10px;font-size:14.5px}
+  .ptitle{font-size:18px}
+  .ctr .v{font-size:28px}
+  .ctr.big .v{font-size:36px}
+  .ctr .l{font-size:12px;min-height:30px}
+  .databar{font-size:13px;padding:3px 10px}
+  footer{font-size:12.5px;padding:4px 16px}
+  canvas.spark{height:32px}
+  section{padding:6px 14px}
+  #nycSizes .hint,#synSizes .hint{display:none}
+  #nycStrip{height:56px!important}
+}
 </style>
 </head>
 <body>
@@ -117,7 +132,7 @@ canvas.bars{display:block;width:100%;height:150px}
   <div class="lgrid">
     <div class="panel">
       <div class="ptitle">BEST RULE <span class="tag rule">reactive</span></div>
-      <div class="psub">best rule on this replay (committed): rebalances toward the last 30 minutes of observed demand</div>
+      <div class="psub">best rule on this replay (committed)</div>
       <canvas class="city" id="nycCityL" data-zonetip="1"></canvas>
       <div class="counters">
         <div class="ctr big lostc"><div class="v" id="nycLostL">–</div><div class="l" id="nycLostLbl0">lost 21:30–23:30, 4 July (live)</div></div>
@@ -128,7 +143,7 @@ canvas.bars{display:block;width:100%;height:150px}
     </div>
     <div class="panel" id="nycPR">
       <div class="ptitle">LOOK-AHEAD PLANNER <span class="tag plan">MPC · EWMA</span></div>
-      <div class="psub">LP over the lead time; daily cycle learned from 1–2 July only; never told about 4 July</div>
+      <div class="psub">trained on 1–2 July only; not told about 4 July</div>
       <canvas class="city" id="nycCityR" data-zonetip="1"></canvas>
       <div class="counters">
         <div class="ctr big good"><div class="v" id="nycLostR">–</div><div class="l" id="nycLostLbl1">lost 21:30–23:30, 4 July (live)</div></div>
@@ -249,9 +264,9 @@ const C = {zone: '#18223f', edge: '#2a3866', empty: '#0d1328', idle: '#f2f6ff', 
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 let BACKEND = false;
-const RULE_DESC = {greedy: 'surplus idle units hop to the neighbour with the longest unmet queue (decentralised)',
-  reactive: 'rebalances toward the last 30 minutes of observed demand', static: 'rebalances toward historical average demand'};
-const BRAIN = {'mpc-ewma': ['MPC · EWMA', 'LP over the lead time: units about to free up, live queues, EWMA demand forecast'],
+const RULE_DESC = {greedy: 'idle units hop to the neighbour with the longest queue (decentralised)',
+  reactive: 'rebalances toward the last 30 min of demand', static: 'rebalances toward historical average demand'};
+const BRAIN = {'mpc-ewma': ['MPC · EWMA', 'LP over the lead time: units about to free up, live queues, EWMA forecast'],
   'mpc-queue': ['MPC · queue only', 'same LP, no demand forecast: live queues and units about to free up only'],
   'mpc-ewma@trust=0.5': ['MPC · half trust', 'same LP, EWMA forecast multiplied by 0.5'],
   'oracle': ['MPC · true rates', 'same LP fed the true rates: your surge from its onset, never before']};
@@ -405,9 +420,9 @@ class City {
   }
 }
 function legendHTML() {
-  return `<div class="legend"><span><i class="dot" style="background:${C.idle}"></i>idle unit</span><span><i class="dot" style="background:${C.moving}"></i>repositioning, empty</span>` +
-    `<span><i class="dot" style="background:${C.busy}"></i>carrying a request</span><span><i class="sq" style="background:${C.queue}"></i>waiting request</span>` +
-    `<span style="color:${C.red}">✕ lost (waited P minutes)</span><span><i class="sq" style="background:${C.amber}"></i>planner shading: LP shadow price of one more idle unit (brightest = worth most now)</span></div>`;
+  return `<div class="legend"><span><i class="dot" style="background:${C.idle}"></i>idle</span><span><i class="dot" style="background:${C.moving}"></i>repositioning</span>` +
+    `<span><i class="dot" style="background:${C.busy}"></i>carrying</span><span><i class="sq" style="background:${C.queue}"></i>waiting request</span>` +
+    `<span style="color:${C.red}">✕ lost request</span><span><i class="sq" style="background:${C.amber}"></i>planner heat: LP shadow price of one more idle unit (relative)</span></div>`;
 }
 function drawSpark(cv, series, shocks, t) {
   const w = cv.clientWidth || 300, h = 42, x = sizeCanvas(cv, w, h), n = 240;
@@ -437,7 +452,7 @@ class LiveView {
       c.cv.addEventListener('mouseleave', () => { this.cities.forEach(k => { k.hover = null; }); $('#tip').style.display = 'none'; });
       c.cv.addEventListener('click', e => this.click(i, e));
     });
-    id('PR').insertAdjacentHTML('beforeend', legendHTML());
+    id('Sizes').insertAdjacentHTML('afterend', legendHTML());
     id('Speeds').innerHTML = `<button class="rs" title="restart (r)">⟲</button><button class="pause" title="pause (space)">❚❚</button>` +
       o.speeds.map(s => `<button data-speed="${s}">${s}</button>`).join('');
     id('Speeds').querySelector('.rs').onclick = () => this.start();
@@ -615,6 +630,10 @@ let FIRST_VISUAL = false;
 
 // ------------------------------------------------------------------ July 4th (real trips): the opening scene
 const NYC_CITY = {flip: true, empty: new Set(), labels: {}};
+const SURGE_WIN = (() => {   // committed note: "2025-07-04 22:00–22:30" -> simulated minutes (4 July is day 2 of the replay)
+  const m = /2025-07-04 (\d\d):(\d\d)–(\d\d):(\d\d)/.exec(EV.claims.nyc_surge.window);
+  return m ? [1440 + 60 * +m[1] + +m[2], 1440 + 60 * +m[3] + +m[4]] : [0, 0];
+})();
 const NYC_TIPS = {};
 function nycCells(config) {
   const ranked = (config && config.info && config.info.cell_zones_by_train_pickups) || {}, all = EV.claims.nyc_cells;
@@ -631,23 +650,24 @@ function nycSetup() {
   const m = EV.claims.nyc_event_lost_mean, cmp = EV.claims.nyc_cmp, b = EV.claims.nycb_cmp, s = EV.claims.nyc_surge;
   nycCells(null);
   $('#nycRcpt').innerHTML = `Committed mean, ${S('csv_nyc', '20 replicates')}: planner <b class="goodv">${S('csv_nyc', m['mpc-ewma'].text)}</b> vs reactive <b style="color:${C.red}">${S('csv_nyc', m.reactive.text)}</b> <span class="hint">(greedy ${S('csv_nyc', m.greedy.text)}, static ${S('csv_nyc', m.static.text)})</span>`;
-  $('#nycWhole').innerHTML = `<h3 style="margin:0 0 3px">Served, planner − reactive (committed, 20 replicates)</h3>` +
+  $('#nycWhole').innerHTML = `<h3 style="margin:0 0 3px">Served, planner − reactive, 20 replicates</h3>` +
     `<div>3–4 July (this replay): <b>${S('nyc', cmp['Δ served (pp) [95% paired CI]'])} pp</b> · ${S('nyc', cmp['replicates won'])}</div>` +
     `<div>10–11 July (ordinary days): <b>${S('nycb', b['Δ served (pp) [95% paired CI]'])} pp</b> · ${S('nycb', b['replicates won'])}</div>` +
     `<div class="src">eval/results/nyc-v2/summary.md · eval/results/nyc-v2b/summary.md</div>`;
   $('#nycSurge').innerHTML = `Observed surge: ${esc(EV.claims.nyc_cells[s.cell].join(', '))}, ${S('replay', s.window.slice(11))}: ${S('replay', s.count)} pickups vs ${S('replay', s['train mean'])} on training days (${S('replay', s.ratio)}×). <b class="warn">Cause UNVERIFIED.</b> Neither allocator was told.`;
 }
 function nycStrip(v) {
-  const cv = $('#nycStrip'), w = cv.clientWidth || 380, hh = 72, x = sizeCanvas(cv, w, hh);
+  const cv = $('#nycStrip'), w = cv.clientWidth || 380, hh = cv.clientHeight || 72, x = sizeCanvas(cv, w, hh);
   x.clearRect(0, 0, w, hh);
   const R = EV.seeds.nyc.reactive.event_lost, Pp = EV.seeds.nyc['mpc-ewma'].event_lost, hi = Math.max(...R, ...Pp) * 1.08 + 2;
   const X = val => 8 + (w - 80) * val / hi;
   x.fillStyle = C.dim; x.font = '12px -apple-system,Helvetica,sans-serif'; x.fillText('0', X(0) - 3, hh - 3); x.fillText(Math.round(hi) + ' lost', X(hi) - 30, hh - 3);
-  [[Pp, C.green, 14, 'planner'], [R, C.red, 42, 'reactive']].forEach(([vals, col, y, lab]) => {
+  const y1 = 12, y2 = hh - 28;
+  [[Pp, C.green, y1, 'planner'], [R, C.red, y2, 'reactive']].forEach(([vals, col, y, lab]) => {
     x.globalAlpha = 0.6; x.fillStyle = col; vals.forEach(val => { x.beginPath(); x.arc(X(val), y, 4.5, 0, 6.283); x.fill(); });
     x.globalAlpha = 1; x.fillText(lab, w - 62, y + 4);
   });
-  if (v.winSteps >= WIN) [[v.win[1], 14], [v.win[0], 42]].forEach(([val, y]) => { x.strokeStyle = C.amber; x.lineWidth = 3; x.beginPath(); x.arc(X(val), y, 9, 0, 6.283); x.stroke(); });
+  if (v.winSteps >= WIN) [[v.win[1], y1], [v.win[0], y2]].forEach(([val, y]) => { x.strokeStyle = C.amber; x.lineWidth = 3; x.beginPath(); x.arc(X(val), y, 9, 0, 6.283); x.stroke(); });
 }
 function nycCommittedRow() {   // committed per-replicate window losses for replicate 200
   const k = p => { const s = EV.seeds.nyc[p]; return s.event_lost[s.seed.indexOf(200)]; };
@@ -693,7 +713,7 @@ const NYC_VIEW = {
     if (h !== v.lastWin) { $('#nycWin').innerHTML = h; v.lastWin = h; }
     nycStrip(v);
     drawSpark($('#nycSpark'), v.series, v.shocks, v.t);
-    const surge = v.t >= 1440 + 22 * 60 && v.t < 1440 + 22 * 60 + 30, cell = +EV.claims.nyc_surge.cell;
+    const [a, b] = SURGE_WIN, surge = v.t >= a && v.t < b, cell = +EV.claims.nyc_surge.cell;
     v.cities.forEach(c => { c.shocks = v.shocks.concat(surge ? [{t0: 0, end: 1e9, zones: [cell], dash: true, label: 'observed surge'}] : []); });
   },
 };
@@ -945,8 +965,8 @@ function buildEvidence() {
 }
 function buildFooter() {
   const p = EV.claims.prereg, k = s => p[s]['Δ served (pp) [95% paired CI]'], c = EV.claims, ph = c.phase['8,10'].main;
-  $('#preLine').innerHTML = `<b>Pre-registered</b> (synthetic), ${S('prereg', '30 fresh seeds')}, planner vs the rule fixed on tuning seeds: shock ${S('confirm', k('shock'))} pp · shock+drift ${S('confirm', k('shock+drift'))} · shock+drift+spikes ${S('confirm', k('shock+drift+spikes'))} · ${S('confirm', p.shock['seeds won'])} each · Holm p = ${S('confirm', p.shock['Holm p'])}`;
-  $('#honLine').innerHTML = `<b>Honest:</b> <a href="#" id="toEv" style="color:#ffb020">all limits</a> · it cannot see a surge coming · real demand, simulated fleet · under a pure shock a queue-only planner did better (${S('confirm', c.queue_shock_pp['Δ served (pp) [95% paired CI]'])} pp) · at L=8, P=10 no reliable gain (${S('phase', ph['look-ahead vs best rule'])})`;
+  $('#preLine').innerHTML = `<b>Pre-registered</b> (synthetic, ${S('prereg', '30 fresh seeds')}, vs the rule fixed on tuning seeds): shock ${S('confirm', k('shock'))} pp · +drift ${S('confirm', k('shock+drift'))} · +drift+spikes ${S('confirm', k('shock+drift+spikes'))} · ${S('confirm', p.shock['seeds won'])} each · Holm p = ${S('confirm', p.shock['Holm p'])}`;
+  $('#honLine').innerHTML = `<b>Honest:</b> <a href="#" id="toEv" style="color:#ffb020">all limits</a> · cannot see a surge coming · real demand, simulated fleet · pure shock: queue-only planner did better (${S('confirm', c.queue_shock_pp['Δ served (pp) [95% paired CI]'])} pp) · L=8, P=10: no reliable gain (${S('phase', ph['look-ahead vs best rule'])})`;
   $('#toEv').onclick = e => { e.preventDefault(); showTab('evidence'); };
 }
 
@@ -966,10 +986,13 @@ function showTab(t) {
   layout();
 }
 function layout() {
-  const fit = (cv, extra) => { const p = cv.parentElement; return Math.max(160, Math.floor(Math.min(p.clientWidth - 26, p.clientHeight - extra))); };
-  if (TAB === 'nyc') { const s = fit($('#nycCityL'), 196); NYCV.cities.forEach(c => c.setSize(s)); NYCV.dom(); }
-  if (TAB === 'syn') { const s = fit($('#synCityL'), 196); SYNV.cities.forEach(c => c.setSize(s)); SYNV.dom(); }
-  if (TAB === 'week') { const s = fit($('#wk0'), 128); Week.cities.forEach(c => c.setSize(s)); Week.lastF = null; }
+  const fit = (...cvs) => Math.max(150, Math.min(...cvs.map(cv => {   // the tallest sibling rows decide; nothing else shrinks
+    const p = cv.parentElement, other = [...p.children].filter(c => c !== cv).reduce((h, c) => h + c.offsetHeight, 0);
+    return Math.floor(Math.min(p.clientWidth - 26, p.clientHeight - other - 30));
+  })));
+  if (TAB === 'nyc') { const s = fit($('#nycCityL'), $('#nycCityR')); NYCV.cities.forEach(c => c.setSize(s)); NYCV.dom(); }
+  if (TAB === 'syn') { const s = fit($('#synCityL'), $('#synCityR')); SYNV.cities.forEach(c => c.setSize(s)); SYNV.dom(); }
+  if (TAB === 'week') { const s = fit($('#wk0'), $('#wk1'), $('#wk2')); Week.cities.forEach(c => c.setSize(s)); Week.lastF = null; }
 }
 window.addEventListener('resize', layout);
 document.addEventListener('keydown', e => {
