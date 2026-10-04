@@ -5,7 +5,8 @@
 ## 1. The local problem, in numbers
 
 **Depletion and over-extraction.**
-- The Ministry of Jal Shakti's 2023 dynamic groundwater assessment, as reported by The Hindu, puts **617.25 km² of Delhi's 1,487.61 km² recharge-worthy area (41.49 %) in the "Over-Exploited" category** [S6].
+- **CGWB 2025 (primary):** Delhi's annual recharge is 0.38 bcm, its extractable resource 0.35 bcm and its extraction 0.32 bcm, a **stage of extraction of 92.10 %**. **10 of 34 tehsils are over-exploited**, covering 337.44 km² of 1,487.62 km² recharge-worthy area (*National Compilation on Dynamic Ground Water Resources of India, 2025*, §7.32, PDF p. 154 / printed p. 128) [S23]. Verified by the primary-source checker (`research/primary-source-checks.md`).
+- The 2023 assessment, as reported by The Hindu, had 617.25 km² of 1,487.61 km² (41.49 %) over-exploited [S6]. The over-exploited area therefore **shrank** between assessments. The pitch says "still over-exploited", not "worsening".
 - Delhi land is sinking where groundwater is pumped. CNA's report from Dwarka quotes a housing-society representative: residents stopped using groundwater, but "the adjoining areas – they're still using the groundwater" [S14]. BusinessLine/Bloomberg (29 Oct 2025) reports a *Nature Sustainability* study finding more than 2,400 buildings in New Delhi, Mumbai and Chennai already at high structural-damage risk [S15].
 - Quality: the New Indian Express (2 Dec 2025), summarising a CGWB report, says 13–15 % of Delhi samples exceeded the uranium safe limit, with nitrate, fluoride, lead and salinity also found [S13].
 
@@ -127,10 +128,11 @@ Scores are 1–5 for judged impact, novelty, feasibility by 1 Dec, measurability
 - [S20] RAKwireless RAK3172 product page: https://store.rakwireless.com/products/wisduo-lpwan-module-rak3172
 - [S21] `india-water-data` client (provenance of the WRIS dataset API): https://github.com/DrJagadeeshG/india-water-data
 - [S22] MichielBruijn/lora-humidity-sensor (measured sleep floor 220 µA; ≈11 mAh/day): https://github.com/MichielBruijn/lora-humidity-sensor
+- [S23] CGWB, *National Compilation on Dynamic Ground Water Resources of India, 2025*: https://cgwb.gov.in/cgwbpnm/publication-detail/1741 (PDF: https://cgwb.gov.in/cgwbpnm/download/1741), §7.32 Delhi. Opened 2026-10-04 by the primary-source checker.
 - [run] `eval/realdata_profile.py` → `eval/results/realdata_profile.json`. Reproduce: `innovatex-t1-groundwater/.venv/bin/python innovatex-t1-groundwater/components/data-ingest/fetch_delhi.py && innovatex-t1-groundwater/.venv/bin/python innovatex-t1-groundwater/eval/realdata_profile.py`.
 
 ## Gaps / UNVERIFIED (to close before 9 Oct)
-- CGWB 2024/2025 assessment numbers for Delhi (stage of extraction %) from the primary PDF/IN-GRES; we only have the 2023 area figure via The Hindu.
+- ~~CGWB 2025 assessment for Delhi~~ closed: 92.10 % stage of extraction [S23]. Still open: primary DJB/Assembly source for the ₹204.46 cr figure, which is only secondary (HT citing DJB data). See `research/primary-source-checks.md`.
 - Delhi aquifer parameters (Sy, T) from the CGWB NAQUIM report. They are needed for WTF recharge in mm.
 - Prices for our own BOM parts (vendor pages blocked or timed out tonight). The BOM marks them UNVERIFIED.
 - What RWH-monitoring products really do: open the zbotic/JIIT/Kritsnam/FluxGen pages.

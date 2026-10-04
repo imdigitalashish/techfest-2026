@@ -11,7 +11,7 @@
 - *"We're <team>. In ten minutes we'll show you why Delhi's groundwater rules work on paper but not in the ground, and a ₹-cheap IoT instrument that changes that."*
 
 **2. The local problem (0:30–1:45).** Three facts, three sources.
-- 41.49 % of Delhi's recharge-worthy area (617.25 of 1,487.61 km²) is over-exploited (2023 assessment via The Hindu, 20 Apr 2025).
+- Delhi extracts **92.1 %** of its annually extractable groundwater, and 10 of 34 tehsils (337.44 km²) are over-exploited (CGWB *Dynamic Ground Water Resources of India 2025*, §7.32, primary). The 2023 assessment, via The Hindu, had 617.25 km² over-exploited. Say "still", not "getting worse": the over-exploited area shrank between assessments.
 - DJB identified 20,297 illegal borewells. 15,962 were sealed and more than 4,000 couldn't be traced (HT, 10 Jun 2025). In 2026 the NGT found seals that let borewells run "very conveniently".
 - Dwarka residents stopped pumping; "the adjoining areas – they're still using the groundwater" (CNA). The ground is sinking.
 - *Pause on the subsidence photo. The point: extraction policing is adversarial and slow. Recharge is the lever the city controls.*
@@ -65,6 +65,10 @@
   - sensor body below the silt line on a stand;
   - enclosure rated for 50 °C+.
 - **Maintenance:** clogging alerts are themselves the maintenance schedule.
+
+**7b. Results (simulation, honest) — see deck slide 7 and `components/recharge_verifier/README.md`.**
+- On the monsoon-2024 holdout, v1 has a median per-storm volume error of 3.0 %, catches 100 % of fakes, and wrongly flags 0 % of honest storms.
+- On the harsher stress test, the error is 13.0 %. The fixes we tried improve the stress test but worsen the ideal case, so they are not adopted yet. Saying so builds trust.
 
 **8. Cost and model (8:00–9:00).**
 - **Cost:** BOM target **< ₹6,000 per node** at prototype quantities (deliverables/prototype-plan.md; part prices to be confirmed) vs ≈ ₹38,000 for a CGWA-style DWLR (Acorn listing).

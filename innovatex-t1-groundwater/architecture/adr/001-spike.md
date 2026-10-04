@@ -72,6 +72,11 @@
 | B extraction fingerprint | 4 | 4 | 3 | 2 | 3 | 16 |
 | C SealGuard | 3 | 2 | 3 | 2 | 3 | 13 |
 
+## Update (09:50 IST, 4 Oct)
+- **Ratchet v1** (kept): monsoon-2024 holdout event MdAPE 10.3 % → 3.0 %, fake recall 0.3 → 1.0.
+- **Frozen evaluator v2** (drain-law mismatch + imperfect gauge): v1 scores 13.0 %. Three drain-law variants reach 4.9–5.3 % on v2 but worsen v1 by 15–31 % relative. Under the pre-registered keep rule they are **not kept**.
+- The spike choice stands. The metric is working as intended: it caught an overfit before we adopted it.
+
 ## Consequences
 - The walking skeleton implements C0 (simulator on real ERA5 rain), C5 (verifier baseline) and C4 (QC on real DWLR) first. The autoresearch loop targets C5's event-volume MdAPE with a frozen evaluator.
 - The Round-2 prototype must include a physical rig with a metered inflow (ground truth) and blind trials.
