@@ -33,12 +33,14 @@ def nyc(run: str) -> str:
     ev = d.pivot(index="seed", columns="policy", values="event_lost") if "event_lost" in d else None
     best = sv[[r for r in RULES if r in sv]].mean().idxmax()
     days = {"nyc-jul03-04": "July 3–4 2025 (train July 1–2)", "nyc-jul10-11": "July 10–11 2025 (train July 8–9)"}
+    event = ("Event window = July 4 21:30–23:30 (the largest observed surge: 20.7x raw, un-thinned pickups in one cell "
+             "22:00–22:30; cause UNVERIFIED). " if ev is not None else
+             "No event window: this ordinary-days replay has no designated surge, so event-loss columns are absent. ")
     out = [f"# NYC TLC real-trace replay — `{run}`", "",
            f"{days.get(d.scenario.iloc[0], d.scenario.iloc[0])} yellow-taxi trips, Manhattan-internal, thinned to ~10 requests/min; "
            f"{d.seed.nunique()} thinning replicates (seeds {d.seed.min()}–{d.seed.max()}); K={int(d.n_agents.iloc[0])}, "
-           f"P={int(d.patience.iloc[0])}, L=1; mean arrivals per run {int(d.arrivals.mean())}. Event window = July 4 21:30–23:30 "
-           "(the largest observed surge, 20.7x in one cell 22:00–22:30; cause UNVERIFIED). `oracle` here is a retrospective "
-           "15-min centred smoother of realised demand (hindsight), not a forecast-value bound.", "",
+           f"P={int(d.patience.iloc[0])}, L=1; mean arrivals per run {int(d.arrivals.mean())}. " + event +
+           "`oracle` here is a retrospective 15-min centred smoother of realised demand (hindsight), not a forecast-value bound.", "",
            "| policy | " + " | ".join(cols) + " |", "|---|" + "---|" * len(cols)]
     for p, r in t.iterrows():
         out.append(f"| {p} | " + " | ".join(f"{r[c]:.4f}" if c != "event_lost" else f"{r[c]:.1f}" for c in cols) + " |")

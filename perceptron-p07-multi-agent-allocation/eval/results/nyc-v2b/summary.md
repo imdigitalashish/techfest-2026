@@ -1,6 +1,6 @@
 # NYC TLC real-trace replay — `eval/results/nyc-v2b`
 
-July 10–11 2025 (train July 8–9) yellow-taxi trips, Manhattan-internal, thinned to ~10 requests/min; 20 thinning replicates (seeds 200–219); K=40, P=10, L=1; mean arrivals per run 28743. Event window = July 4 21:30–23:30 (the largest observed surge, 20.7x in one cell 22:00–22:30; cause UNVERIFIED). `oracle` here is a retrospective 15-min centred smoother of realised demand (hindsight), not a forecast-value bound.
+July 10–11 2025 (train July 8–9) yellow-taxi trips, Manhattan-internal, thinned to ~10 requests/min; 20 thinning replicates (seeds 200–219); K=40, P=10, L=1; mean arrivals per run 28743. No event window: this ordinary-days replay has no designated surge, so event-loss columns are absent. `oracle` here is a retrospective 15-min centred smoother of realised demand (hindsight), not a forecast-value bound.
 
 | policy | served_frac | lost_frac | mean_wait | empty_per_srv | pending_frac |
 |---|---|---|---|---|---|

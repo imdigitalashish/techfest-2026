@@ -4,3 +4,4 @@ date	artifact	model	effort	issues	accepted	rejected	note
 2026-10-04	spike ADR001 + phase-v1 (L,P) law	gpt-6-astra	max	8	7	1	equivalence analysis rejected for R1 (no margin); mechanism study deferred; addendum A pre-registered H1 replication
 2026-10-04	headline numbers reproduction (session)	gpt-6-sol	max	3	3	0	all headline numbers reproduced exactly (7/7 analyses, 8 episodes 31/31 metrics, highspy 1.15.1); wording fixes only
 2026-10-04	final abstract v1.0 + diagram (session)	gpt-6-astra	max	8	8	0	hostile 71/100; 1 numeric MISMATCH (trust-sweep comparator pair) fixed; addendum B1 adds best-fixed-trust and detector-free-gate comparators; abstract v1.2 881 words
+2026-10-04	live demo (judge watching; session)	gpt-6-astra	max	10	10	0	7.5/10; provenance wording + 1280x720 stage layout + handover timing + seed-21 framing; frozen-protocol mode deferred (counted accepted); lead fixed nyc-v2b caption source bug

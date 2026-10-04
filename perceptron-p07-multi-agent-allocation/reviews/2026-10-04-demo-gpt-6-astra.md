@@ -673,3 +673,22 @@ Movement cost and shock recovery, means over seeds. Recovery steps are censored 
 | shock+drift+spikes | static | 0.585 | 771.9 | 0.00 | 120.0 |
 
 </details>
+
+---
+
+## Lead decisions (2026-10-04 19:52 IST)
+
+| # | Decision | Action (who) |
+|---|---|---|
+| 1 | Dead knob after the replay ends — **ACCEPTED** | Builder: start armed/paused; auto-pause at the unperturbed window result; a conspicuous "Your turn: restart at 21:15" control starts a separate, labelled interactive run; reject or disable zero-duration end-of-trace shocks (the server returns an error); SCRIPT.md scripts the handover. No invented taxi data. |
+| 2 | "Your surge is seed #21" overclaims — **ACCEPTED** (frozen-protocol mode **DEFERRED**) | Builder: reword everywhere to "your live intervention, shown alongside 20 committed reference runs; not a new test seed or a calibrated prediction for this location/time". Flag off-reference clicks (onset outside 04:12–06:36, overlapping shocks, size ≠ ×1, horizon mismatch) with an "off-reference" chip. The literal seed-21 protocol mode is deferred (after Round 1). |
+| 3 | 1280×720 hides story-critical evidence — **ACCEPTED** | Builder: a stage layout validated at 1280×720. The active prediction, the current intervention result and all eight (L,P) cells are visible together; secondary receipts and legends go in a drawer; the real-data qualification sits next to the main result. Fallback screenshots retaken at 1280×720. |
+| 4 | Script skips the long-horizon stretch — **ACCEPTED** | Builder: a mandatory 20–30 s pre-warmed week segment (day-7 result; live seed-200 bars vs the 10-seed committed means; month = 4 seeds). Trim the p-value recitation. |
+| 5 | Recorded/committed shown as "live" — **ACCEPTED** (provenance MISMATCH) | Builder: one LIVE / RECORDED / COMMITTED provenance value drives every label. Closing line: "The interventions and simulations were computed live; the reference distributions and confidence intervals are committed results." In fallback mode the week shows committed or recorded media, not an empty "live" scene. |
+| 6 | 62-pickup anomaly vs 46-loss counter are different populations — **ACCEPTED** | Lead (done): the source caption now says "20.7x raw, un-thinned pickups in one cell". Builder: label the anomaly "raw TLC cell pickups, before thinning" and the counter "fleet-wide losses, 21:30–23:30"; say it is an illustrative, retrospectively chosen window, not a causal estimate. |
+| 7 | "6 h" false for late NYC clicks — **ACCEPTED** | Builder: show the returned start, end and actual duration ("up to 6 h; this replay ends at midnight"), and qualify late-day truncation in synthetic mode too. |
+| 8 | Ordinary-days caption imports the July-4 event — **ACCEPTED** (lead's source bug) | Lead (done): `eval/summarise_misc.py` writes the event-window sentence only when event losses exist; `nyc-v2b/summary.md` regenerated ("No event window …"), numeric tables unchanged. Builder: regenerate `demo/data/evidence.js`. |
+| 9 | "Bit-identical" broader than the parity check — **ACCEPTED** | Builder: "matches the committed served-fraction and loss metrics; daily fractions match at committed precision" (SCRIPT, badges, README). |
+| 10 | No stage-safe recovery on backend loss — **ACCEPTED** | Builder: on a fetch failure, pause, mark live computation stopped, and offer **Retry** and **Open recorded fallback**. Never silently relabel live as recorded. |
+
+Score noted: 7.5/10 ("would shortlist; not yet confidently top-3"). Re-verification from a fresh clone after the fixes.
