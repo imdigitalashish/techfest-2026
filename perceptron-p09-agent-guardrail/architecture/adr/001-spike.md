@@ -45,3 +45,28 @@ The brief asks for a checker that verifies at least one class of agent action ag
 - The ratchet target is S1's mention parser and resolver (`components/checker/`). `eval/run_eval.py` and the suite stay frozen per loop.
 - The abstract leads with S1, frames S2 as the stretch goal, and states the synthetic-suite caveat openly.
 - Next: τ-bench replay (MIT; ~40 MB of logs), an LLM-paraphrased test family, a LangGraph live demo with self-repair.
+
+## Status update — 4 Oct 2026, 12:15 IST (real-error evidence)
+Evidence from the held-out τ-bench replay (`eval/taubench/README.md`), the gpt-6-astra independent red team (`eval/external/astra/`) and the gpt-6-sol code review (`reviews/`):
+
+**Confirmed**
+- **S1 beats the obvious baseline at matched human load.**
+  - On 300 real gpt-4o and Claude-3.5-Sonnet write calls, balanced Tier 0 stops 47.5% of harmful calls at 1.7% false blocks.
+  - A gpt-4.1-mini judge reading the full transcript stops 35.0% at 11.7% false blocks. Even with its threshold tuned on the same sample, at the same good-call stop rate the judge stops 24.2%.
+- **S2's cascade shape is right.**
+  - Giving gpt-4.1-mini only the held residue cuts holds on good calls from 25.8% to 16.7%, with no extra false blocks.
+  - Cost: $0.00036 per guarded call, against $0.0014 to judge every call.
+
+**Refuted or weakened**
+- **The synthetic 100% figure was flattering.** On real errors: 40.7% [28–55] at 2.0% false blocks and 30% holds (full held-out test); 68% at 56% holds for the untuned v0. On an independent red team: 82% stopped, 8% false blocks.
+- **Dev tuning did not improve the held-out score.** The untuned v0 scores highest (0.325 vs balanced 0.235); tuning moved the operating point rather than the frontier.
+- **A 1.7B model is not a usable careful tier.** It settled 11 of 85 holds, and 5 of those wrongly.
+- **Thesis concession:** 8 of 20 audited misses were requested outright by τ-bench's simulated user, so no transcript-based provenance check can catch them.
+
+**Decision**
+- Keep S1 and S2.
+- The careful tier is a frontier API model (gpt-4.1-mini or better) or a larger local model; the 1.7B model is demoted to an offline fallback.
+- Before the next tuning round:
+  - build a scenario-grouped holdout (gpt-6-sol issue 3);
+  - add consent/policy labels alongside DB-effect labels (issue 2);
+  - add checks for the two fixable miss classes: wrong-entity resolution (via the careful tier) and one-return-per-order sequencing.

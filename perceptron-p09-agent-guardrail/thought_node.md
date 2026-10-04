@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** ACTIVE (resumed 10:48 IST, 4 Oct). Definition-of-done items 1–3 done; item 4: sol review done, astra abstract review running; item 5: this update. Updated 11:52 IST.
+- **Phase:** ACTIVE (resumed 10:48 IST, 4 Oct). Definition-of-done items 1–3 done; item 4: sol review done, astra abstract review running; item 5: this update. Updated 12:15 IST.
 - **GPU pause (Supervisor, ~11:47):** Namma Space needs the GPU. My only MLX job (the `cascade_fast` test run) had just completed, so there was no PID to pause. No local-model job runs until "GPU free", and none is needed for the definition of done.
 - **Headline evidence: real agent errors** (`eval/taubench/README.md`).
   - **Set and protocol:**
@@ -25,10 +25,18 @@
     | **balanced (primary)** | **40.7%** [28.3, 55.1] | 3 | **2.0%** [0.6, 4.0] | 30.3% | 0.4 ms |
     | lenient | 26.4% | 3 | 2.0% | 18.2% | 0.6 ms |
 
-  - **300-call sample** (120 good / 120 harmful / 60 rejected):
-    - balanced: 47.5% stopped, 1.7% false blocks, 25.8% holds.
-    - **LLM judge** (Qwen3-1.7B, same transcript + policy): 28.3% stopped, 26.7% false blocks (all hard blocks), 2.6 s median. Its risk score is uninformative.
-    - **cascade_fast** (Tier 1 on balanced's holds, verified quotes): settled 11 of 85 holds (6 harmful correctly blocked, 5 good wrongly blocked) and released none. That is a negative first result: the careful tier needs a stronger model.
+  - **300-call sample** (120 good / 120 harmful / 60 rejected; `eval/results/taubench/frontier__test__sample300.json`):
+
+    | Guard | Stops harmful | False-block | Holds on good | Good-call stop | Cost per guarded call |
+    |---|---|---|---|---|---|
+    | balanced (Tier 0) | 47.5% | 1.7% | 25.8% | 27.5% | $0 (0.7 ms p95) |
+    | **cascade_aoai** (balanced + gpt-4.1-mini on holds only) | **44.2%** | **1.7%** | **16.7%** | 18.3% | **$0.00036** |
+    | gpt-4.1-mini judge, every call | 35.0% | 11.7% | 22.5% | 34.2% | $0.0014 (2.3 s median) |
+    | Qwen3-1.7B judge, every call | 28.3% | 26.7% | 0% | 26.7% | local, 2.6 s median |
+    | cascade_fast (1.7B on holds) | 47.5% | 5.8% | 21.7% | 27.5% | local |
+
+    - **Matched comparison:** the gpt-4.1-mini judge's risk threshold was tuned on this same sample, which favours the judge. At strict's good-call stop rate (34.2%) the judge stops 36.7% vs strict's 50.8%; at balanced's rate (27.5%), 24.2% vs 47.5%.
+    - **Cost source:** Azure Retail Prices API, Sweden Central Global, $0.0004/1K input and $0.0016/1K output (`cost.py`).
   - **Miss audit** (20, first run):
     - 8 requested by the simulated user (no transcript check can catch these);
     - 8 wrong-entity resolutions;
@@ -115,17 +123,25 @@ _Final, 4 Oct 2026 (v3; replaces v1 from 07:35, which scored 4.6 on synthetic ev
     - no-guard, schema and LLM-judge baselines;
     - a 160-case red team by a different model family (82% stopped, 8% false blocks);
     - two cross-model reviews.
-  - **The obvious baseline loses clearly.** On the same 300 calls, at almost the same good-call stop rate (27% vs 28%), a Qwen3-1.7B judge stops 28% of harmful calls and our balanced checker 48%. The judge's stops are all hard blocks (26.7% of good calls blocked) against our 1.7%. Ours runs in under 1 ms.
+  - **The obvious baseline loses clearly, including a frontier judge.** On the same 300 real calls, a gpt-4.1-mini judge reading the full transcript stops 35.0% of harmful calls but hard-blocks 11.7% of good ones; a local 1.7B judge, 28.3% and 26.7%. Our balanced checker stops 47.5% at 1.7% false blocks in under 1 ms. With gpt-4.1-mini resolving only its holds, holds drop from 25.8% to 16.7% at $0.00036 per guarded call, against $0.0014 to judge every call.
   - **Against:** the absolute catch on real errors is modest: 40.7% [28–55] at 2.0% false blocks and 30% holds, or 68% if one accepts 56% holds. The first model-tier attempt (1.7B) released no holds. A team with a 100% toy demo may read better on a quick skim.
 - **Innovation headroom — 4.** Argument-level provenance with an explicit *unverifiable* state, and quote-verified model resolution of only that residue. The miss audit makes the spike falsifiable: 8 of 20 misses are wrong-entity resolutions that the careful tier must fix. The nearest 2026 work (ActGov, ContrAgent, closed-world resolution, Cedar gates) checks policies or schemas, not argument values against a source.
 - **Feasibility — 5.** Built end to end on the M5 with open local models and no paid APIs; the τ-bench replay is MIT-licensed, about 65 MB and reproducible with one command. Remaining work fits before 17 Nov: stronger careful tier, scenario-grouped holdout, live LangGraph demo.
 - **Demo strength — 4.** The desk demo is crisp: an invented ticker, a ×10 order, a side flip and an injected transfer are stopped in under 1 ms with the clause cited. The frontier chart against the judge makes a strong slide. The modest real-error catch has to be framed as the hard-block / soft-alert / manual-review trade-off a trading desk already lives with.
 - **Fit with the user's strengths — 5.** Agent infrastructure, evaluation at scale, frontier models. Microsoft's own agent guardrails (Prompt Shields, groundedness, task adherence) are among the shipped baselines.
 - **Biggest risk:** "41% catch" read as weak. Mitigation: lead with the frontier and the matched judge comparison, and show that 8 of 20 misses are invisible to any transcript-based check (the simulated user asked for them).
-- **One-line pitch:** *Pre-trade risk checks for AI agents: every argument must cite its source. On real agent errors, at the same good-call stop rate, this stops 48% of harmful calls where an LLM judge stops 28%, while hard-blocking 15× fewer good calls (1.7% vs 26.7%).*
+- **One-line pitch:** *Pre-trade risk checks for AI agents: every argument must cite its source. On real agent errors, at the same human-review load, this stops about twice as many harmful calls as a gpt-4.1-mini judge (47.5% vs 24.2%) at a quarter of the cost when a model settles the residue.*
 - **Overall: 4.4 / 5.** Recommendation: P9 is a sound Perceptron pick, with claims that are modest but survive a held-out test, an independent red team and two cross-model reviews.
 
 ## Log
+### 2026-10-04 12:15 IST — Frontier-model baselines (Supervisor suggestion, ~11:55)
+- **Azure OpenAI gpt-4.1-mini** (existing deployment in `rg-tf26-p08`; key only in an env var, never written; scanned the repo and /tmp for it, nothing found):
+  - as a full-transcript judge on the 300-call sample;
+  - as the careful tier on balanced's holds only.
+- **Rate limit:** the first run hit HTTP 429 at 162/300 with 6 workers. Resumed from the checkpoint with 2 workers and Retry-After backoff; 0 empty outputs.
+- **Results:** in *Now*. Main finding: the cascade gives the frontier model the residue only. That cuts holds by a third at 4× lower cost than judging every call, with no extra false blocks.
+- Abstract updated (898 words; check_docs 21 claims; pytest 7/7). Told the astra reviewer to score the new version.
+
 ### 2026-10-04 11:52 IST — Reviews in, fixes, held-out re-run, final abstract
 - **11:13** gpt-6-astra red-team suite landed (160 cases, never saw the rules). First run: 82.0% stopped, 8.3% false blocks, 20.0% holds. Session archived.
 - **11:26** gpt-6-sol code/eval review: 11 issues (1 critical, 8 major, 2 minor), all raw numbers reproduced, all accepted (2 in part). Main bugs:
