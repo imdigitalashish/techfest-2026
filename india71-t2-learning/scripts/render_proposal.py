@@ -1,7 +1,7 @@
 """Render deliverables/round1-proposal.md to HTML (A4, Arial 11 pt, 1-inch margins) for PDF printing.
 
 Usage: python3 scripts/render_proposal.py  -> deliverables/build/round1-proposal.html
-Mermaid blocks are replaced by the pre-rendered diagram image if deliverables/build/architecture.svg exists,
+Mermaid blocks are replaced by the pre-rendered diagram image deliverables/build/architecture.png (from diagram.html via a headless browser) if it exists,
 otherwise by a placeholder box of the same approximate height (for page-count checks).
 """
 from pathlib import Path
@@ -10,10 +10,10 @@ import markdown
 
 ROOT = Path(__file__).resolve().parents[1]
 src = (ROOT / "deliverables/round1-proposal.md").read_text(encoding="utf-8")
-svg = ROOT / "deliverables/build/architecture.svg"
+svg = ROOT / "deliverables/build/architecture.png"
 def repl(_m):
     if svg.exists():
-        return f'<img src="architecture.svg" style="width:100%;max-height:9cm">'
+        return f'<img src="architecture.png" style="width:100%;max-height:8.5cm;object-fit:contain">'
     return '<div style="height:7.5cm;border:1px dashed #999;text-align:center;line-height:7.5cm">[architecture diagram]</div>'
 src = re.sub(r"```mermaid.*?```", repl, src, flags=re.S)
 html_body = markdown.markdown(src, extensions=["tables"])

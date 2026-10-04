@@ -1,0 +1,18 @@
+<!doctype html><html><head><meta charset="utf-8"><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>body{margin:0;background:#fff;font-family:Arial} #d{display:inline-block;padding:8px}</style></head><body>
+<div id="d"><pre class="mermaid">flowchart LR
+  U[UDISE+ codes, enrolment,<br/>student-wise records] --> C2
+  S[State assessment app] --> C2
+  K[Classroom checks<br/>WhatsApp / IVR / ORF] --> C2
+  P[PARAKH / ASER] --> C6
+  C2[Canonical model<br/>+ pseudonyms] --> C4[Adaptive diagnostic]
+  C3[NIPUN competency<br/>crosswalk] --> C4
+  C4 --> C7[Monday plan<br/>WhatsApp / SMS / IVR]
+  C7 --> C11[Action ledger<br/>+ 6-week recheck]
+  C2 --> C5[Measurement assurance<br/>rotating re-tests]
+  C5 --> C6[Block estimates<br/>+ intervals]
+  C6 --> C9[Allocation + SMC page]
+  C6 --> V[VSK dashboard]
+  C11 --> C9
+</pre></div>
+<script>mermaid.initialize({startOnLoad:true, theme:'neutral', flowchart:{htmlLabels:true, curve:'basis'}, themeVariables:{fontFamily:'Arial', fontSize:'15px'}});</script></body></html>
