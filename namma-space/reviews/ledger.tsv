@@ -1,0 +1,2 @@
+date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	ADR 001 spike choice	rubber-duck (harness default)	default	10	9 (+1 partly)	0	found metric leakage, the J cliff, and the traj_override bug; strong on eval correctness

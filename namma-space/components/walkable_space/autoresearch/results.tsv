@@ -1,0 +1,10 @@
+timestamp	commit	hypothesis	J_A	delta_A	J_B	delta_B	kept	notes
+2026-10-04T09:13:06	8cc56b9	BASELINE {"carve_beta": 4.0, "close_m": 0.2, "floor_dilate_m": 0.3, "floor_tol": 0.08, "min_occ_points": 2, "obstacle_inflate_m": 0.0, "traj_override": true, "traj_radius": 0.35, "use_carving": true, "use_trajectory": true, "voxel": 0.1}	0.5947		0.5500		baseline	recall_A=0.970 coll_A=0.375 proxyhits_A=0.152
+2026-10-04T09:14:50	8cc56b9	trajectory gives connectivity only (no override of obstacle cells) {"traj_override": false}	0.6591	+0.0644	0.5788	+0.0288	yes	recall_A=0.909 coll_A=0.250 succ_A=1.00 area=27.0
+2026-10-04T09:15:28	8cc56b9	stricter floater removal: carve_beta 4 -> 2 {"carve_beta": 2.0}	0.6591	+0.0000			no	recall_A=0.909 coll_A=0.250 succ_A=1.00 area=27.5
+2026-10-04T09:15:46	8cc56b9	keep more obstacle evidence: carve_beta 4 -> 8 {"carve_beta": 8.0}	0.6288	-0.0303			no	recall_A=0.879 coll_A=0.250 succ_A=1.00 area=26.7
+2026-10-04T09:16:10	8cc56b9	narrower walked corridor: traj_radius 0.35 -> 0.20 {"traj_radius": 0.2}	0.6591	+0.0000			no	recall_A=0.909 coll_A=0.250 succ_A=1.00 area=27.0
+2026-10-04T09:16:29	8cc56b9	safety margin: inflate obstacles by 5 cm {"obstacle_inflate_m": 0.05}	0.5682	-0.0909			no	recall_A=0.818 coll_A=0.250 succ_A=1.00 area=24.9
+2026-10-04T09:16:48	8cc56b9	single-point obstacles: min_occ_points 2 -> 1 {"min_occ_points": 1}	0.6182	-0.0409			no	recall_A=0.818 coll_A=0.200 succ_A=1.00 area=24.8
+2026-10-04T09:17:15	8cc56b9	smaller hole closing: close_m 0.20 -> 0.10 {"close_m": 0.1}	0.6591	+0.0000			no	recall_A=0.909 coll_A=0.250 succ_A=1.00 area=27.0
+2026-10-04T09:17:40	8cc56b9	wider floor evidence: floor_dilate_m 0.30 -> 0.50 {"floor_dilate_m": 0.5}	0.6591	+0.0000			no	recall_A=0.909 coll_A=0.250 succ_A=1.00 area=27.0

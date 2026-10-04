@@ -20,7 +20,9 @@ from scipy import ndimage
 
 DEFAULTS = dict(cell=0.05, voxel=0.10, agent_radius=0.25, agent_height=1.70, step_height=0.15,
                 floor_tol=0.08, floor_dilate_m=0.30, min_occ_points=2, carve_beta=4.0,
-                traj_radius=0.35, close_m=0.20)
+                traj_radius=0.35, close_m=0.20, traj_override=False, obstacle_inflate_m=0.0)
+# traj_override=False kept by ratchet #1 (2026-10-04): trajectory adds connectivity but never erases
+# obstacle evidence. J_A 0.595 -> 0.659, J_B 0.550 -> 0.579 (autoresearch/results.tsv).
 
 
 def _disk(r_cells):
@@ -75,6 +77,8 @@ def build_grid(points, traj, rays_from=None, rays_to=None, use_carving=True, use
         obst &= free <= p["carve_beta"] * occ
     up2 = lambda m: np.kron(m, np.ones((ratio, ratio), bool))[:nx, :nz]
     O = up2(obst.any(axis=1))
+    if p["obstacle_inflate_m"] > 0:
+        O = ndimage.binary_dilation(O, _disk(p["obstacle_inflate_m"] / cell))
     fl = P[np.abs(P[:, 1]) < p["floor_tol"]]
     ij = np.floor((fl[:, [0, 2]] - lo) / cell).astype(int)
     ok = (ij[:, 0] >= 0) & (ij[:, 0] < nx) & (ij[:, 1] >= 0) & (ij[:, 1] < nz)
@@ -90,7 +94,7 @@ def build_grid(points, traj, rays_from=None, rays_to=None, use_carving=True, use
     T[cij[:, 0], cij[:, 1]] = True
     T = ndimage.binary_dilation(T, _disk(p["traj_radius"] / cell))
     W = ndimage.binary_closing(F | T if use_trajectory else F, _disk(p["close_m"] / cell)) & ~O
-    if use_trajectory:
+    if use_trajectory and p["traj_override"]:
         W |= T
     clearance = ndimage.distance_transform_edt(W) * cell
     N = clearance >= p["agent_radius"]

@@ -1,0 +1,9 @@
+[
+ {"label": "Fireplace with landscape painting", "kind": "landmark", "aliases": ["fireplace", "painting", "mantelpiece"], "image": "IMG_6334.jpg", "u": 0.35, "v": 0.80},
+ {"label": "Fireplace with blue vase", "kind": "landmark", "aliases": ["fireplace", "vase", "hearth"], "image": "IMG_6450.jpg", "u": 0.34, "v": 0.33},
+ {"label": "Glass-fronted bookcase", "kind": "item", "aliases": ["bookcase", "cabinet", "bookshelf"], "image": "IMG_6433.jpg", "u": 0.67, "v": 0.62},
+ {"label": "Round table with chairs", "kind": "item", "aliases": ["table", "dining table", "chairs"], "image": "IMG_6549.jpg", "u": 0.45, "v": 0.30},
+ {"label": "Chandelier", "kind": "item", "aliases": ["light", "ceiling light"], "image": "IMG_6566.jpg", "u": 0.37, "v": 0.40},
+ {"label": "Fire extinguisher", "kind": "item", "aliases": ["extinguisher", "safety", "fire"], "image": "IMG_6292.jpg", "u": 0.65, "v": 0.88},
+ {"label": "Wooden chest", "kind": "item", "aliases": ["chest", "trunk", "storage box"], "image": "IMG_6588.jpg", "u": 0.83, "v": 0.62}
+]

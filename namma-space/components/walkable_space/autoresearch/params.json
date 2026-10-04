@@ -1,0 +1,13 @@
+{
+ "carve_beta": 4.0,
+ "close_m": 0.2,
+ "floor_dilate_m": 0.3,
+ "floor_tol": 0.08,
+ "min_occ_points": 2,
+ "obstacle_inflate_m": 0.0,
+ "traj_override": false,
+ "traj_radius": 0.35,
+ "use_carving": true,
+ "use_trajectory": true,
+ "voxel": 0.1
+}

@@ -1,0 +1,80 @@
+kind	id	status	meta	licence	title_or_description
+repo	colmap/colmap	OK	stars=12854 pushed=2026-10-04	NOASSERTION	COLMAP - Structure-from-Motion and Multi-View Stereo
+repo	colmap/glomap	OK	stars=2351 pushed=2026-01-30	BSD-3-Clause	[DEPRECATED] GLOMAP - Global Structured-from-Motion Revisited
+repo	ArthurBrussee/brush	OK	stars=5134 pushed=2026-10-03	Apache-2.0	3D Reconstruction for all
+repo	WebODM/OpenSplat	OK	stars=2207 pushed=2026-10-02	AGPL-3.0	Production-grade 3D gaussian splatting with CPU/GPU support for Windows, Mac and Linux 💦
+repo	nerfstudio-project/gsplat	OK	stars=5750 pushed=2026-09-19	Apache-2.0	CUDA accelerated rasterization of gaussian splatting
+repo	graphdeco-inria/gaussian-splatting	OK	stars=24079 pushed=2025-10-17	NOASSERTION	Original reference implementation of "3D Gaussian Splatting for Real-Time Radiance Field Rendering"
+repo	facebookresearch/vggt	OK	stars=14453 pushed=2026-05-19	NOASSERTION	[CVPR 2025 Best Paper Award] VGGT: Visual Geometry Grounded Transformer
+repo	facebookresearch/map-anything	OK	stars=3784 pushed=2026-08-07	Apache-2.0	MapAnything: Universal Feed-Forward Metric 3D Reconstruction
+repo	naver/mast3r	OK	stars=3116 pushed=2025-06-30	NOASSERTION	Grounding Image Matching in 3D with MASt3R
+repo	naver/dust3r	NOT_FOUND			Get "https://api.github.com/repos/naver/dust3r": net/http: TLS handshake timeout
+repo	ByteDance-Seed/Depth-Anything-3	OK	stars=6428 pushed=2026-07-27	Apache-2.0	Depth Anything 3
+repo	yyfz/Pi3	NOT_FOUND			Get "https://api.github.com/repos/yyfz/Pi3": net/http: TLS handshake timeout
+repo	sparkjsdev/spark	OK	stars=3679 pushed=2026-10-02	MIT	:sparkles:  An advanced 3D Gaussian Splatting renderer for THREE.js
+repo	playcanvas/supersplat	NOT_FOUND			Get "https://api.github.com/repos/playcanvas/supersplat": net/http: TLS handshak
+repo	playcanvas/engine	OK	stars=16978 pushed=2026-10-03	MIT	Powerful web graphics runtime built on WebGL, WebGPU, WebXR and glTF
+repo	mkkellogg/GaussianSplats3D	OK	stars=2903 pushed=2025-10-19	MIT	Three.js-based implementation of 3D Gaussian splatting
+repo	nianticlabs/spz	OK	stars=924 pushed=2026-09-01	MIT	File format for 3D Gaussian splats. About 10x smaller than the PLY equivalent with virtually no perceptible loss in visu
+repo	isaac-mason/recast-navigation-js	OK	stars=430 pushed=2026-07-06	MIT	WebAssembly port of Recast Navigation, a navigation mesh construction, path-finding, and spatial reasoning toolkit. 
+repo	recastnavigation/recastnavigation	OK	stars=7941 pushed=2026-02-27	Zlib	Industry-standard navigation-mesh toolset for games
+repo	facebookresearch/habitat-sim	OK	stars=3830 pushed=2026-07-21	MIT	A flexible, high-performance 3D simulator for Embodied AI research.
+repo	cvg/Hierarchical-Localization	OK	stars=4229 pushed=2025-12-10	Apache-2.0	Visual localization made easy with hloc
+repo	minghanqin/LangSplat	OK	stars=1090 pushed=2025-10-10	NOASSERTION	Official implementation of the paper "LangSplat: 3D Language Gaussian Splatting" [CVPR2024 Highlight]
+repo	lkeab/gaussian-grouping	OK	stars=1060 pushed=2024-07-04	Apache-2.0	[ECCV'2024] Gaussian Grouping for open-world Anything reconstruction, segmentation and editing.
+repo	facebookresearch/sam2	OK	stars=19951 pushed=2026-05-30	Apache-2.0	The repository provides code for running inference with the Meta Segment Anything Model 2 (SAM 2), links for downloading
+repo	facebookresearch/sam3	OK	stars=11862 pushed=2026-09-18	NOASSERTION	The repository provides code for running inference and finetuning with the Meta Segment Anything Model 3 (SAM 3), links 
+repo	IDEA-Research/GroundingDINO	OK	stars=10646 pushed=2024-08-12	Apache-2.0	[ECCV 2024] Official implementation of the paper "Grounding DINO: Marrying DINO with Grounded Pre-Training for Open-Set 
+repo	concept-graphs/concept-graphs	OK	stars=962 pushed=2025-10-16	MIT	Official code release for ConceptGraphs
+repo	rmurai0610/MASt3R-SLAM	OK	stars=3196 pushed=2025-11-09	NOASSERTION	[CVPR 2025] MASt3R-SLAM: Real-Time Dense SLAM with 3D Reconstruction Priors
+repo	nianticlabs/ace	OK	stars=439 pushed=2024-01-29	NOASSERTION	[CVPR 2023 - Highlight] Accelerated Coordinate Encoding (ACE): Learning to Relocalize in Minutes using RGB and Poses
+repo	hbb1/2d-gaussian-splatting	OK	stars=3304 pushed=2026-08-25	NOASSERTION	[SIGGRAPH'24] 2D Gaussian Splatting for Geometrically Accurate Radiance Fields
+repo	zju3dv/PGSR	OK	stars=1112 pushed=2024-12-25	NOASSERTION	[TVCG2024] PGSR: Planar-based Gaussian Splatting for Efficient and High-Fidelity Surface Reconstruction
+repo	autonomousvision/gaussian-opacity-fields	OK	stars=1022 pushed=2024-11-15	NOASSERTION	[SIGGRAPH Asia'24 & TOG] Gaussian Opacity Fields: Efficient Adaptive Surface Reconstruction in Unbounded Scenes
+repo	openai/whisper	OK	stars=109929 pushed=2026-08-31	MIT	Robust Speech Recognition via Large-Scale Weak Supervision
+repo	ml-explore/mlx	OK	stars=28641 pushed=2026-10-03	MIT	MLX: An array framework for Apple silicon
+page	https://matterport.com/	OK			Capture, share, and collaborate in immersive 3D. | Matterport | Our 3D cameras and virtual tour software platform help you digitize your building, automatically create 3D tours, 4K print quality photos, schematic f
+page	https://poly.cam/	OK			Polycam — AI 3D Scanning, Floor Plans & Reality Capture for Teams | 
+page	https://scaniverse.com/	OK			Capture - Mobile and Multi-Sensor 3D Mapping for Enterprise | Niantic Spatial, Inc. | Niantic Spatial’s Capture tools and services includes Scaniverse, on-demand data capture, and supports Bring Your Own Data (BYOD) from phones and drones to LiDA
+page	https://www.nianticspatial.com/	OK			Real-world foundation models for physical AI | Niantic Spatial, Inc. | Niantic Spatial builds real-world foundational models for physical AI, so people and machines can work efficiently and safely together.
+page	https://lumalabs.ai/	OK			Luma | AI Agents for Creative Work | Luma AI is the creative AI platform for video generation and image creation. Powered by the world's leading video generation models, Ray and Uni, and creative a
+page	https://www.worldlabs.ai/	OK			World Labs | World Labs is a spatial intelligence company, building frontier models that can perceive, generate, and interact with the 3D world.
+page	https://sparkjs.dev/	OK			Home - Spark | An advanced 3D Gaussian Splatting renderer for THREE.js
+page	https://superspl.at/	OK			SuperSplat - The Home for 3D Gaussian Splatting | Edit, publish, share, download, and browse 3D Gaussian Splats with the open source SuperSplat platform.
+page	https://developer.apple.com/augmented-reality/roomplan/	OK			RoomPlan Overview - Augmented Reality - Apple Developer | RoomPlan is a new Swift API that utilizes the camera and LiDAR Scanner on iPhone and iPad to create a 3D floor plan of a room with characteristics like dimensio
+page	https://www.kiriengine.app/	OK			KIRI Engine: 3D Scanner App for iPhone, Android, and Web | The most powerful 3D scanner app for iPhone, Android, and Web. Capture in 3D with Photogrammetry, Featureless Object Scan, 3D Gaussian Splatting, 3DGS To Mesh a
+page	https://www.navvis.com/	OK			Laser scanning solutions & digital twin technology | NavVis | NavVis
+page	https://www.pointr.tech/	OK			Pointr - AI Mapping, Wayfinding, & Positioning | Pointr provides the most accurate indoor location & mapping solution for hospitals, businesses, and organizations with smooth indoor & outdoor transition.
+page	https://mapsted.com/	OK			Mapsted Indoor Positioning Platform – No Beacons, No Wi‑Fi | Mapsted’s indoor positioning platform provides precise, real‑time location data across 4+ billion sq ft, enabling seamless mapping, navigation and visitor analy
+page	https://www.indooratlas.com/	OK			Unlock Smart Spaces with IndoorAtlas | Indoor Location-Based Solutions | Discover the power of indoor positioning technology with IndoorAtlas. Build innovative indoor location-based solutions using our cross-platform SDK. Explore cas
+page	https://immersal.com/	OK			Accurate device positioning for navigation & visualization - Immersal | Immersal SDK enables developers to build wayfinding solutions for asset and people tracking in complex indoor and outdoor environments.
+page	https://www.multiset.ai/	OK			Human & Machine Readable Maps For Physical AI | MultiSet AI | 
+page	https://www.realityscan.com/	OK			RealityScan | 3D models from images and laser scans - RealityScan | Create detailed 3D models from images and laser scans with ease. Our photogrammetry solution makes it simple for anyone to turn their surroundings into astoundi
+page	https://www.jawset.com/	OK			Jawset Postshot | 
+page	https://developers.google.com/ar	OK			Build new augmented reality experiences that seamlessly blend the digital and physical worlds | ARCore | Google for Developers | Discover links to learn more about and get started with the technology to create world-scale, immersive augmented reality experiences.
+page	https://immersive-web.github.io/webxr-ar-module/	OK			WebXR Augmented Reality Module - Level 1 | 
+paper	3D Gaussian Splatting for Real-Time Radiance Field Rendering	ERROR			HTTP Error 429: Unknown Error
+paper	2D Gaussian Splatting for Geometrically Accurate Radiance Fi	ERROR			HTTP Error 429: Unknown Error
+paper	VGGT: Visual Geometry Grounded Transformer	ERROR			HTTP Error 429: Unknown Error
+paper	Grounding Image Matching in 3D with MASt3R	ERROR			HTTP Error 429: Unknown Error
+paper	DUSt3R: Geometric 3D Vision Made Easy	ERROR			HTTP Error 429: Too Many Requests
+paper	Global Structure-from-Motion Revisited	ERROR			HTTP Error 503: Service Unavailable
+paper	MapAnything: Universal Feed-Forward Metric 3D Reconstruction	ERROR			HTTP Error 429: Too Many Requests
+paper	Depth Anything 3: Recovering the Visual Space from Any Views	ERROR			HTTP Error 429: Too Many Requests
+paper	LangSplat: 3D Language Gaussian Splatting	ERROR			HTTP Error 429: Too Many Requests
+paper	Gaussian Grouping: Segment and Edit Anything in 3D Scenes	ERROR			HTTP Error 429: Too Many Requests
+paper	Splat-Nav: Safe Real-Time Robot Navigation in Gaussian Splat	ERROR			HTTP Error 429: Unknown Error
+paper	SAM 2: Segment Anything in Images and Videos	ERROR			HTTP Error 429: Too Many Requests
+paper	ConceptGraphs: Open-Vocabulary 3D Scene Graphs for Perceptio	ERROR			HTTP Error 429: Unknown Error
+paper	MASt3R-SLAM: Real-Time Dense SLAM with 3D Reconstruction Pri	ERROR			HTTP Error 429: Too Many Requests
+paper	Gaussian Opacity Fields: Efficient Adaptive Surface Reconstr	ERROR			HTTP Error 429: Unknown Error
+paper	AnySplat: Feed-forward 3D Gaussian Splatting from Unconstrai	ERROR			HTTP Error 429: Too Many Requests
+paper	Fast3R: Towards 3D Reconstruction of 1000+ Images in One For	ERROR			HTTP Error 429: Unknown Error
+paper	Accelerated Coordinate Encoding: Learning to Relocalize in M	ERROR			HTTP Error 429: Unknown Error
+paper	Hierarchical 3D Gaussian Representation for Real-Time Render	ERROR			HTTP Error 429: Unknown Error
+paper	SAM 3: Segment Anything with Concepts	ERROR			HTTP Error 429: Too Many Requests
+paper	Taming 3DGS: High-Quality Radiance Fields with Limited Resou	ERROR			HTTP Error 429: Unknown Error
+paper	3D Gaussian Splatting as Markov Chain Monte Carlo	ERROR			The read operation timed out
+paper	ScanNet++: A High-Fidelity Dataset of 3D Indoor Scenes	ERROR			HTTP Error 429: Too Many Requests
+paper	ARKitScenes: A Diverse Real-World Dataset For 3D Indoor Scen	ERROR			HTTP Error 429: Too Many Requests
+paper	Robust Speech Recognition via Large-Scale Weak Supervision	ERROR			HTTP Error 429: Unknown Error

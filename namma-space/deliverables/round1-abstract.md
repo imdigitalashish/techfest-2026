@@ -32,8 +32,24 @@ Design principles:
 4. **Scene alignment:** up = mean camera up, refined by a floor plane fitted to the lowest dense height peak; scale from the marker or camera height; yaw from the principal axes. **[drjohnson]** 4.3 s; floor refined by 2.9° over the camera-up estimate; point heights span −0.03 to 2.65 m (p1–p99), consistent with a floor and a ceiling. Scale on drjohnson is ASSUMED (no marker; 1.5 m camera-height prior).
 5. **Packaging:** importance-pruned, compressed splats + `nav.json` + `pois.json` + a manifest. *(Next.)*
 
-## 5. Web viewer *(in progress)*
-three.js + a WebGL Gaussian-splat renderer (Spark planned; licence and version to be confirmed), with PointerLock WASD and mouse-look at a 1.6 m eye height. Movement is collision-checked against the NavGrid, so the user can't walk through walls or furniture. POI labels are click targets. Targets: ≥50 fps p95 on a 2023 laptop, first frame ≤5 s. **TODO(home):** measured fps, time to first frame and package size on the user's home.
+## 5. Web viewer
+three.js 0.180 + Spark 2.3.1 (MIT) Gaussian-splat renderer, loaded from CDNs via an import map: zero install. Features:
+- PointerLock WASD + mouse-look at a 1.6 m eye height, with smoothed acceleration;
+- movement collision-checked against the NavGrid, sliding along walls, so the user can't walk through walls or furniture;
+- a minimap you can click to get a route;
+- POI labels, search with route + auto-walk, and in-viewer POI tagging.
+
+**[drjohnson]** 1.0M splats (32 MB `.splat`, importance-pruned from 2M), Chrome 154 on an Apple M5 (shared machine):
+
+| Measurement | Value |
+|---|---|
+| Static view | median **45 fps**, p95 frame time 36.7 ms |
+| First frame | 1.05 s |
+| All splats loaded (localhost) | 10.5 s |
+| In-browser A* route (8–11 m) | 82–94 ms |
+| While walking | median 42 fps, p95 104.7 ms |
+
+The p95 while walking means hitching, which is the next optimisation target (splat budget vs sort cost). Targets: ≥50 fps p95 on a 2023 laptop; first frame ≤5 s over the network. **TODO(home):** the same measurements on the user's home over a public URL.
 
 ## 6. Navigation layer (preview of Round 2)
 **Walkable space (our spike A).** The evidence already in the capture is fused into a 5 cm NavGrid:
@@ -53,7 +69,9 @@ The planner is 8-connected A* with a clearance penalty, plus line-of-sight strin
 | + walked trajectory | 0.939 | 37.5% | 1.009 | 7.3 / 44.4 ms |
 | both | **0.970** | 37.5% | 1.009 | 6.5 / 43.6 ms |
 
-All variants found a path for 100% of pairs. Evidence fusion makes far more of the real walkable space reachable. The trajectory prior also brings paths closer to furniture, so our optimisation target is recall *at a fixed collision budget*, tuned on a held-out split and confirmed on a second scene with real geometry.
+All variants found a path for 100% of pairs. Evidence fusion makes far more of the real walkable space reachable. The trajectory prior also brings paths closer to furniture, so our optimisation target is recall *at a fixed collision budget*.
+
+**Auto-research ratchet (first loop).** A frozen evaluator scores J = recall − collision rate on split A, with confirmation on a second held-out split B. Of 8 automatic hypotheses, one was kept: *use the walked trajectory for connectivity only, never to erase obstacle evidence*. It raised J_A from 0.595 to 0.659 (recall 0.909, near-collision paths 37.5% → 25.0%) and J_B from 0.550 to 0.579. The other 7 changes (carving thresholds, obstacle inflation, corridor width, closing and dilation radii) were reverted (`components/walkable_space/autoresearch/results.tsv`).
 
 ## 7. Evaluation protocol
 Fixed held-out splits (every 8th image), fixed seeds, one command per result (`.venv/bin/python eval/run_nav_e2e.py`). Each component has an isolated metric: registration rate (posing), held-out PSNR/SSIM/LPIPS at a time budget (splats), floor residual and marker scale error (alignment), recall at a collision budget (walkable space), success / collision / latency (planner), p95 frame time (viewer). **TODO(home):** the same table on the user's home capture.
