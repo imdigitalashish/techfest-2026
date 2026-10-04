@@ -10,7 +10,17 @@
 - _(none)_
 
 ## Now
-- **Phase:** Demo phase (Supervisor 21:24 IST, PLAYBOOK §11). One child session, *P4 demo builder*, is writing `demo/PROPOSAL.md`; the lead approves it before the build. After the build: a gpt-6-astra demo review, then a clean-checkout verification, then DEMO DONE.
+- **Phase:** ⏸ **PAUSED for the night** (user directive via the Supervisor, 23:36 IST). Demo phase almost done: the build is complete and the review fixes are applied, but **the lead's clean-checkout verification has not been done yet, so no DEMO DONE was sent.** No jobs, servers or headless browsers are running. The demo builder is told to stay idle.
+- **Demo resume point (exact, in order):**
+  1. Lead clean-checkout verification of `demo/` at **`5cc22557`** (or later demo HEAD), following the plan in the session files (`p4-demo-verify-plan.md`):
+     - fresh `git clone`;
+     - hard-link the raw train and replay days into `.data`, leaving one replay day out so the fetch runs;
+     - `demo/run.sh --no-open` (time the first visual), then `demo/smoke.sh` (expect SMOKE PASSED + BROWSER STAGE PASSED, ~5 min cold);
+     - check that `git status` is clean, kill the server by PID, delete the clone.
+  2. Add the fix commit hashes to the lead response in `reviews/2026-10-04-demo-gpt-6-astra.md`.
+  3. Message the Supervisor "DEMO DONE".
+
+  The builder's own clean-clone run at `5cc22557`: smoke exit 0 in 321 s, 173 checks, browser stage passed; first visual 2 s with a warm cache.
 - **State:**
   - Pre-registered v2 evaluation done and independently reproduced; reviews triaged (23 accepted, 3 of them in part, 0 rejected).
   - Abstract v2.1 is final (830 words; `[TEAM]` placeholders).
@@ -237,4 +247,5 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - 22:23 **Act 2 done** (builder, `e3bd77ee`): section 5, a SEMI-SYNTHETIC splice. The calmest held-out book runs until τ, then the most volatile one takes over with an additive tick shift (2 directions × 5 τ). Smoke asserts causality before τ and label invariance after τ.
   - Illustrative result: the regime gate (± shrinkage) has the lowest 2-hour post-splice loss in 10/10 splices. Textbook KS fires 12–36 times *before* anything changes. The gate's high-vol share goes from 0% to 66–99% within an hour with no alarm.
   - The builder's labeler caveat was quantified: 4 of 3.0M scored labels are float-noise pseudo-moves → disclosed as PREREGISTRATION Amendment 3.
+- 23:38 **Demo review fixes D1–D8 applied by the builder** (HEAD `5cc22557`), with the browser smoke stage covering the day-identity race, DPR 2, overflow, error states and provenance chips; smoke passed from a clean clone. **PAUSE** (user directive, 23:36): builder told to stop; no processes left running; resume point written in *Now*.
 
