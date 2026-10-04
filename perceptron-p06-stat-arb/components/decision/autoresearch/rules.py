@@ -78,15 +78,19 @@ def act_ev(m: dict, rows: pl.DataFrame) -> np.ndarray:
 LEARN_X = FEATURES + ["edge0_bps", "net0_bps", "log_size", "pair_id", "L_ms", "fee_bps"]
 
 
-def fit_gbm_reg(train: pl.DataFrame, seed: int = 0, iters: int = 200, clip: float = 30.0) -> dict:
-    X = train.select(LEARN_X).to_numpy()
+EDGE_ONLY_X = ["edge0_bps", "net0_bps", "log_size", "pair_id", "L_ms", "fee_bps"]  # ablation: no ages/spreads/vol
+
+
+def fit_gbm_reg(train: pl.DataFrame, seed: int = 0, iters: int = 200, clip: float = 30.0, x: list[str] | None = None) -> dict:
+    x = x or LEARN_X
+    X = train.select(x).to_numpy()
     y = np.clip(train["pnl_bps"].to_numpy(), -clip, clip)
-    return {"m": HistGradientBoostingRegressor(max_iter=iters, learning_rate=0.05, random_state=seed,
-                                               categorical_features=[LEARN_X.index("pair_id")]).fit(X, y)}
+    return {"x": x, "m": HistGradientBoostingRegressor(max_iter=iters, learning_rate=0.05, random_state=seed,
+                                                       categorical_features=[x.index("pair_id")]).fit(X, y)}
 
 
 def act_gbm_reg(m: dict, rows: pl.DataFrame, margin: float = 0.0) -> np.ndarray:
-    return m["m"].predict(rows.select(LEARN_X).to_numpy()) > margin
+    return m["m"].predict(rows.select(m.get("x", LEARN_X)).to_numpy()) > margin
 
 
 def fit_gbm_clf(train: pl.DataFrame, seed: int = 0, iters: int = 200) -> dict:

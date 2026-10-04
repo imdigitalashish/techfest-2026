@@ -7,13 +7,15 @@
 - _(empty)_
 
 ### Handled
-- _(none)_
+- 2026-10-04 08:22 (Supervisor, by message): "Package accepted. Lean limits from 08:30: ≤2 concurrent sub-agents/child sessions; no downloads over 1 GB without a stated reason; heavy jobs one at a time under `nice -n 10`. Next: run ADR 001's falsification tests (clock skew; whether LEV beats the tuned threshold beyond noise on more held-out days). If it still doesn't separate, say so in the memo." → acting (see Now/Log).
 
 ## Now
-- **Phase:** morning package complete (Phases 0–5 v1; fact-checked). Next: Phase 3/5 depth — multi-day walk-forward and falsification tests. Updated 07:40 IST.
-- **Plan (to 12 Oct selection):** (1) download ≥12 Tardis first-of-month days (2025-10 … 2026-10) and run the walk-forward; (2) receive-time replay + ±5 ms clock-offset perturbation; (3) residual survival S(a+L)/S(a) and downside-quantile LEV; (4) compiled/linear LEV path (≤10 µs); (5) tier-3 BTC/ETH lead–lag; (6) paper-trading loop on the live recorder; (7) re-measure latency from Azure regions.
-- **Doing:** nothing running except the live recorder (`shellId recorder`, ends ≈08:17 IST on its own).
-- **Next:** walk-forward data fetch → falsification test 1 (walk-forward superiority) → selection memo v2.
+- **Phase:** 3/5 depth — ADR 001 falsification tests (Supervisor, 08:22). Updated 08:50 IST.
+- **Plan:** (1) Test 3, clock skew + receive-time replay on 09-01 → 10-01 (running: `eval.falsification clockskew`, niced). (2) Test 1, walk-forward on consecutive first-of-month days 2026-01 … 2026-10 for 5 BTC legs. The download is ~0.82 GB (under the 1 GB cap); reason: walk-forward over 9 held-out days. Runs progressively as days arrive. (3) Update the memo honestly: if LEV doesn't separate from the tuned threshold, say so.
+- **Doing:** lead only. Jobs: `clockskew` (CPU, `nice -n 10`), `wf_fetch` (network). No sub-agents (Lean limits: ≤2 concurrent).
+- **Next:** walk-forward run → memo v2 → ADR 001 status update → push.
+- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the abstract's [TEAM] lines.
+- **Risks:** (a) the spike's gain over a tuned per-pair threshold is still within noise (+14%, < 1 SE); (b) cross-venue exchange clocks aren't a common clock, and Tardis binance-spot quotes are ~100 ms granular; (c) one held-out day so far; (d) tonight's live latency medians are inflated by local congestion (seconds), so only p05 is used as a path-latency floor; (e) fee schedules are only partly verified, so headline results use uniform fee levels 0/1/2/5 bps.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the abstract's [TEAM] lines.
 - **Risks:** (a) the spike's gain over a tuned per-pair threshold is still within noise (+14%, < 1 SE); (b) cross-venue exchange clocks aren't a common clock, and Tardis binance-spot quotes are ~100 ms granular; (c) one held-out day so far; (d) Tonight's live latency medians are inflated by local congestion (seconds), so only p05 is used as a path-latency floor; (e) fee schedules are only partly verified, so headline results use uniform fee levels 0/1/2/5 bps.
 

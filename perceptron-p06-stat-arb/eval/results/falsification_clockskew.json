@@ -1,0 +1,118 @@
+{
+ "train": "2026-09-01",
+ "test": "2026-10-01",
+ "max_skew_us": 5000,
+ "variants": [
+  {
+   "variant": "exch",
+   "offsets_us": null,
+   "episodes_test": 102075,
+   "median_lifetime_ms": 34.9,
+   "S10ms": 0.7020132255694344,
+   "pair_halflife_spearman_vs_exch": 1.0,
+   "n_pairs": 20,
+   "totals": {
+    "naive": -2487.8255498830545,
+    "threshold_pair": 1175.1302902564464,
+    "ev_kmpair": 1169.2758012124161,
+    "gbm_clf": 1274.4392186657676,
+    "lev": 1341.529834391146
+   },
+   "uplift_lev_minus_threshold": 166.39954413469968,
+   "uplift_ev_minus_threshold": -5.854489044030288
+  },
+  {
+   "variant": "recv",
+   "offsets_us": null,
+   "episodes_test": 98282,
+   "median_lifetime_ms": 41.899,
+   "S10ms": 0.6905638875887753,
+   "pair_halflife_spearman_vs_exch": 0.984198924212229,
+   "n_pairs": 20,
+   "totals": {
+    "naive": -4113.3783351630955,
+    "threshold_pair": 442.0460122382355,
+    "ev_kmpair": -415.20073427393436,
+    "gbm_clf": 432.93747775559933,
+    "lev": 702.6891824978027
+   },
+   "uplift_lev_minus_threshold": 260.64317025956717,
+   "uplift_ev_minus_threshold": -857.2467465121699
+  },
+  {
+   "variant": "skew0",
+   "offsets_us": {
+    "binance-futures:BTCUSDT": 3507,
+    "binance:BTCUSDT": 1370,
+    "coinbase:BTC-USD": 111,
+    "okex-swap:BTC-USDT-SWAP": -2302,
+    "okex:BTC-USDT": -1922
+   },
+   "episodes_test": 100459,
+   "median_lifetime_ms": 35.192,
+   "S10ms": 0.7304870643745213,
+   "pair_halflife_spearman_vs_exch": 0.9951073343099189,
+   "n_pairs": 20,
+   "totals": {
+    "naive": -1900.3154493460277,
+    "threshold_pair": 1272.1332879966453,
+    "ev_kmpair": 1226.372636529669,
+    "gbm_clf": 1340.7557961775897,
+    "lev": 1435.7182027877852
+   },
+   "uplift_lev_minus_threshold": 163.5849147911399,
+   "uplift_ev_minus_threshold": -45.76065146697624
+  },
+  {
+   "variant": "skew1",
+   "offsets_us": {
+    "binance-futures:BTCUSDT": -268,
+    "binance:BTCUSDT": 118,
+    "coinbase:BTC-USD": 2552,
+    "okex-swap:BTC-USDT-SWAP": 4505,
+    "okex:BTC-USDT": -4652
+   },
+   "episodes_test": 102728,
+   "median_lifetime_ms": 34.618,
+   "S10ms": 0.6947375593801107,
+   "pair_halflife_spearman_vs_exch": 0.9879518072289157,
+   "n_pairs": 20,
+   "totals": {
+    "naive": -2003.1045633491299,
+    "threshold_pair": 1354.2111379016299,
+    "ev_kmpair": 1349.4150880612751,
+    "gbm_clf": 1444.1285679235043,
+    "lev": 1459.717479609723
+   },
+   "uplift_lev_minus_threshold": 105.50634170809303,
+   "uplift_ev_minus_threshold": -4.796049840354726
+  },
+  {
+   "variant": "skew2",
+   "offsets_us": {
+    "binance-futures:BTCUSDT": 3376,
+    "binance:BTCUSDT": -2384,
+    "coinbase:BTC-USD": -3907,
+    "okex-swap:BTC-USDT-SWAP": -2015,
+    "okex:BTC-USDT": -862
+   },
+   "episodes_test": 100622,
+   "median_lifetime_ms": 34.593,
+   "S10ms": 0.6978791914293095,
+   "pair_halflife_spearman_vs_exch": 0.9920964195313714,
+   "n_pairs": 20,
+   "totals": {
+    "naive": -2417.2038894544585,
+    "threshold_pair": 1153.5060366990604,
+    "ev_kmpair": 1131.0529042208466,
+    "gbm_clf": 1212.4045021941256,
+    "lev": 1298.1825906307954
+   },
+   "uplift_lev_minus_threshold": 144.67655393173504,
+   "uplift_ev_minus_threshold": -22.453132478213774
+  }
+ ],
+ "runtime_s": 3778.4662590026855,
+ "commit": "b7a857a",
+ "command": "python -m eval.falsification clockskew"
+}
