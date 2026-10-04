@@ -207,3 +207,15 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Supervisor 16:24** asked for an identity check: done on dev seed 100. I1, I2 and I3 pass at keep 0.10, 0.25, 0.50 and 1.0, so this is not a plumbing artifact.
 - **Selection memo v2:** scores rendered by rules fixed before T2/T3 (`deliverables/selection-memo.md`). Currently 3.8/5 with R1 pending.
 
+
+### 2026-10-04 17:35 IST: T2 replicates; demo builder started
+- **T2** (seed 1, paraphrased templates, 17:32):
+  - **R1 replicated.** RoD − full at 10% memory = +0.23 (CI +0.10 to +0.38). RoD recalls 0.688 vs the full cache's 0.458. The full cache is weak on this harder template family.
+  - **S3 replicated:** RoD − StreamingLLM at 25% = +0.375 (CI +0.23 to +0.54).
+  - **S2 on T2:** the sketch beats the lexical index, +0.27 (CI +0.10 to +0.44); on T1 it was +0.04 (ns).
+  - **R2:** the mechanism replicates. Accuracy given a hit is 0.82 / 0.59 / 0.35 at 10 / 25 / 50% memory.
+- **Memo v2 by rule:** winnability 4, innovation 4, feasibility 4, demo 4, fit 5, so **4.2/5**, tying P1's 4.2.
+- **Supervisor 17:28 (user directive, PLAYBOOK §11):** a working demo is now part of DONE.
+  - Spawned [P2 demo builder](ghapp://sessions/931e0d5e-6f6f-4cc3-ac7a-2f28c39c2b5c), then approved its proposal "Forget 90%, then ask anything": live plant-a-needle, a budget knob (10–50%), an X-ray block strip, side-by-side baselines, plus a replay of the committed rows.
+  - Adjustments I required: show m, label live results "single example", sketch heat computed by committed code, the non-monotonic dip shown, and a smoke test that doesn't assert RoD's outcome.
+- **Abstract:** 847 words rendered; headline and caveats now include the T2 replication with a hedged mechanism.
