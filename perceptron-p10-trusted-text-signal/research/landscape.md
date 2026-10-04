@@ -56,7 +56,20 @@ MAPIE 1.5.0 was released 2026-08-05 (1,600 stars, BSD-3) and also ships exchange
 ## 6. Data (lead-verified)
 - **StockNet** (Xu & Cohen, ACL 2018) — github.com/yumoxu/stocknet-dataset, MIT, 681 stars, last push 2019-03-06 **[L]**; locally: 87 tickers with tweets, 119,641 raw tweets (with user metadata), prices 2012-09-04 → 2017-09-01 **[L]** (`eval/prepare.py` output).
 - **FNSPID** (KDD 2024) — HF `Zihan1004/FNSPID`: `All_external.csv` 5,731 MB, `nasdaq_exteral_data.csv` 23,233 MB, `full_history.zip` 590 MB **[L]**. Finals dataset (stream-filter by ticker; never store whole).
-- Kaggle "Daily News for Stock Market Prediction" — no Kaggle credentials on this machine; mirror **UNVERIFIED**.
+- Kaggle "Daily News for Stock Market Prediction" (aaron7sun/stocknews) — no Kaggle credentials here. A GitHub mirror is verified **[L]**:
+  - the news file is byte-identical (git blob `9a7899b5…`) in two independent mirrors;
+  - DJIA closes match Yahoo ^DJI on all 1,989 days (max relative difference 7e-11);
+  - the dataset's `Label` is the *same-day* price direction (99.9% agreement), i.e. contemporaneous with the headlines, so it is not a forecast target.
+
+  Used for our pre-registered text-utility test (`eval/results/text_utility_djia_v1.md`).
 
 ## 7. Not verified tonight (do not cite yet)
-Lopez-Lira & Tang numbers · Chen, Kelly & Xiu (SSRN) · CiK benchmark · Kupiec 1995 / Christoffersen 1998 primary pages · SEBI finfluencer rules and pump-and-dump orders · Binoculars / Fast-DetectGPT detection numbers · TextAttack maintenance status · Bloomberg / S&P / Dow Jones product pages · social signal (X/HN/Reddit) — the R7 agent produced no file.
+Lopez-Lira & Tang numbers · Chen, Kelly & Xiu (SSRN) · CiK benchmark · Kupiec 1995 / Christoffersen 1998 primary pages · SEBI finfluencer rules and pump-and-dump orders · Binoculars / Fast-DetectGPT detection numbers · TextAttack maintenance status · Bloomberg / S&P / Dow Jones product pages.
+
+## 8. Social signal (added 4 Oct 08:50; `notes/R7-social-signal.md`)
+- **Hacker News skeptics** — each item is a lead, CONFIRMED / UNCONFIRMED per item in the note:
+  - news-sentiment signals may just lag price;
+  - LLM stock signals are "weaponisable" by people who game them;
+  - conformal's guarantee rests on exchangeability.
+- Reddit returned HTTP 403, and `site:x.com` searches returned nothing.
+- Our answers: the pre-registered text test (lag/value), CR-ACI (gaming within a budget), ACI plus regime coverage (exchangeability).

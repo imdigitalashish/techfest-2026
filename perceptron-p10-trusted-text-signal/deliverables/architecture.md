@@ -3,28 +3,31 @@
 ```mermaid
 flowchart TB
   subgraph Inputs
-    T["Tweets / news<br/>(StockNet now · FNSPID finals)"]
-    P["Daily prices<br/>(OHLCV)"]
-    A["Attacker<br/>injects ≤ k posts per ticker-day"]
+    T["Posts / news<br/>(StockNet tweets · Kaggle DJIA headlines · FNSPID for finals)"]
+    P["Daily prices (OHLCV)"]
+    A["Attacker<br/>injects ≤ k posts per stock-day"]
   end
   A -.-> T
-  T --> AL["Align to 16:00 ET close<br/>look-ahead leaks = 0"]
-  AL --> SC["Text scorer<br/>VADER → FinBERT"]
-  SC --> TR["Trust scorer<br/>age · followers · copy-paste · spam"]
-  TR --> AG["Bounded-influence aggregator<br/>count · mean · trimmed mean · std · trust"]
-  P --> TS["Price features<br/>lags · realised vol · Parkinson · volume · market"]
-  AG --> FU["Fusion model<br/>LightGBM quantiles 5% · 50% · 95%"]
+  T --> AL["Align to the 16:00 ET close<br/>look-ahead leaks = 0 (tested)"]
+  AL --> SC["Text scorer<br/>frozen MiniLM-L6 + sentiment head<br/>(never sees returns)"]
+  SC --> TR["Trust from the post's own account<br/>(deletion-stable)"]
+  TR --> AG["Bounded-influence aggregator<br/>count · mean · trimmed mean · dispersion · trust"]
+  P --> TS["Price features<br/>lags · realised vol · range · volume · market"]
+  AG --> FU["Fusion: LightGBM quantiles<br/>5% · 50% · 95%"]
   TS --> FU
-  FU --> CP["Minimum Viable: MAPIE<br/>split CP · CQR"]
-  FU --> ACI["Adaptive Conformal Inference<br/>(drift)"]
+  FU --> CP["Minimum Viable: MAPIE<br/>split conformal · CQR"]
+  FU --> ACI["ACI (own loop)<br/>long-run coverage under drift"]
   TR --> BOX["Deletion box B_k<br/>exact per-feature ranges"]
   BOX --> PROP["Interval propagation<br/>through every tree"]
   FU --> PROP
-  PROP --> CR["SPIKE · CR-ACI interval<br/>[LB − q_t, UB + q_t]"]
+  PROP --> CR["SPIKE · CR-ACI<br/>[LB − q_t, UB + q_t]"]
   ACI --> CR
   CP --> EV
-  CR --> EV["Frozen evaluator<br/>coverage · width · Winkler · Kupiec · Christoffersen<br/>by regime · clean vs attacked · k = 0…5"]
-  EV --> UI["Demo: band per stock-day,<br/>attack toggle, k slider, 'which posts could flip this?'"]
+  CR --> EV["Frozen evaluator<br/>coverage · width · Winkler · Kupiec · Christoffersen<br/>day-clustered CIs · regimes · clean vs attacked · k = 0…5"]
+  EV --> GATE["Text gate (pre-registered test)<br/>admit text only if it earns its certified width;<br/>k = ∞ ⇒ price-only"]
+  GATE --> UI["Demo: band per stock-day,<br/>attack toggle, k slider,<br/>'which posts could flip this?'"]
 ```
 
-**Guarantee in one line:** if at most k of a ticker-day's documents are injected, the clean feature vector lies in the deletion box, so the CR-ACI interval contains the interval the clean model would have produced; ACI keeps long-run coverage at 1 − α under drift.
+**Guarantee in one line:** if at most k of a stock-day's posts are injected, the clean features lie in the deletion box, so the CR-ACI interval contains the interval the clean model would have produced with the same offset — an attacker within budget cannot add misses. ACI keeps long-run coverage near 1 − α under drift.
+
+**Measured trade-off:** what the text channel buys (pre-registered test on unseen data) against what it costs (certified width at budget k). Results: `eval/results/text_minilm_v1.md`, `eval/results/text_utility_djia_v1.md`.

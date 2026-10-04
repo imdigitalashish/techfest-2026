@@ -36,3 +36,17 @@ The bottleneck is not sentiment accuracy. Conformal validity is a statement abou
 - C5 aggregators and C7 features must each come with an exact deletion-range rule (enforced in `certify.py`).
 - C7 stays a tree ensemble (or monotone/linear) until a neural verifier is added.
 - The eval harness reports clean, pump and oracle coverage for every method, plus width at k = 0…5.
+
+## Update — 4 Oct 2026, 13:30 IST (v1)
+- **Independent antithesis done** (rubber-duck review, saved with per-item decisions in `research/notes/review-adr001-rubber-duck.md`). Its three blocking findings are fixed and tested:
+  - trust is now computed from each post's own metadata (deletion- and injection-stable);
+  - the ACI loop now matches Gibbs & Candès (no clipping, whole line at α_t ≤ 0, empty set at α_t ≥ 1, long-run bound tested on adversarial sequences);
+  - the claim is restated as interval containment: an attacker within budget cannot add misses, i.e. certified coverage under attack ≥ the clean coverage.
+- **Its evaluation critiques are addressed:**
+  - a 53-variant oracle grid (mixed and intermediate attacks) plus the guaranteed floor;
+  - burst attacks on pre-specified days;
+  - day-clustered confidence intervals;
+  - ratchet splits moved inside 2014.
+- **"Drop the text" was tested, pre-registered, on unseen data** (Kaggle DJIA news; `eval/preregistration/2026-10-04-text-utility-djia.md`). Result: no evidence that text adds value (Winkler +0.1%, p = 0.46).
+- **Consequence for the decision:** CR-ACI stays the spike, but the framing changes from "robust text alpha" to "trust and coverage guarantees for an untrusted text channel". The price-of-robustness curve plus the text-utility test form a *text gate*: admit text only if it earns its certified width, with dropping text as the k = ∞ end. On current data the insurance is cheap (+0.3% width with ACI on StockNet/MiniLM) because the exposure is small.
+- Cross-model reviews (PLAYBOOK §10) are in `reviews/`, with decisions in `reviews/ledger.tsv`.
