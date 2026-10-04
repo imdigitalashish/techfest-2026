@@ -88,14 +88,19 @@ def taint(args: dict, user_text: str, observations: list[dict]) -> list[CheckRes
     bad = [o for o in observations if o.get("trust") == "untrusted"]
     if not bad:
         return []
-    ut = norm_quotes(" ".join(str(o.get("result", "")) for o in bad)).lower()
-    un = norm_quotes(user_text).lower()
+    alnum = lambda t: re.sub(r"[^a-z0-9]", "", norm_quotes(str(t)).lower())
+    ut = alnum(" ".join(str(o.get("result", "")) for o in bad))
+    un = alnum(user_text)
     out = []
     for k, v in args.items():
         for val in _values(v):
-            lv = val.lower()
-            if len(lv) >= 4 and lv in ut and lv not in un:
-                src = next(o.get("tool", "untrusted content") for o in bad if lv in str(o.get("result", "")).lower())
+            # format-insensitive: '#W5481803' ~ 'W5481803' ~ 'w 5481803'; 'gift_card_4418290' ~ 'gift card 4418290';
+            # a long digit run alone ('order 5481803') also counts
+            variants = {alnum(val)} | set(re.findall(r"\d{6,}", val))
+            hit = [x for x in variants if len(x) >= 4 and x in ut]
+            if hit and not any(x in un for x in hit):
+                src = next((o.get("tool", "untrusted content") for o in bad if any(x in alnum(o.get("result", "")) for x in hit)),
+                           "untrusted content")
                 out.append(C("provenance.untrusted", k, S.FAIL,
                              f"{k}={val!r} appears in untrusted content ({src}) and the user never stated it; "
                              f"untrusted text cannot authorize actions (P-1.3)",
