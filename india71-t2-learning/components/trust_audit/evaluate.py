@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 from eval.sim.world import make_world
+from eval.sim.calibration import ASER2024_GOVT_STD3
 from components.trust_audit.core import forensic_flags, select_audit, retest, adjust, assessments_frame, detection_auc
 
 
@@ -39,7 +40,7 @@ def _coverage(world, vals):
 
 
 def evaluate_seed(seed:int, budget_frac:float=0.10, world=None, risk=None):
-    w=world if world is not None else make_world(seed); pub=w.public_view(); n=len(pub.schools); b=max(1, round(n*budget_frac))
+    w=world if world is not None else make_world(seed, dict(ASER2024_GOVT_STD3)); pub=w.public_view(); n=len(pub.schools); b=max(1, round(n*budget_frac))
     risk=risk if risk is not None else forensic_flags(pub.teacher_reports, pub.schools, pub.item_responses, pub.item_bank)
     raw=risk[["udise_code","reported_pct_meeting_goal"]]
     res={"seed":seed,"budget_frac":budget_frac,"raw_block_mae_pp":_block_mae(w,raw,"reported_pct_meeting_goal"),"risk_auc":detection_auc(risk,w.truth_school)}

@@ -6,6 +6,7 @@ sys.path.insert(0, str(ROOT))
 import numpy as np, pandas as pd
 
 from eval.sim.world import make_world
+from eval.sim.calibration import ASER2024_GOVT_STD3
 from components.trust_audit import forensic_flags, select_audit, retest, adjust
 from components.trust_audit.evaluate import evaluate_seed
 from components.area_estimation import estimate_areas, evaluate_area, survey_anchor
@@ -17,7 +18,7 @@ SEEDS=[1,2,3,4,5]
 def _mean_sd(xs): return f"{np.mean(xs):.3f} ± {np.std(xs,ddof=1):.3f}" if len(xs)>1 else f"{xs[0]:.3f}"
 
 def pipeline(seed:int, write_demo=False, world=None, risk=None):
-    w=world if world is not None else make_world(seed); pub=w.public_view()
+    w=world if world is not None else make_world(seed, dict(ASER2024_GOVT_STD3)); pub=w.public_view()
     try:
         __import__("components.diagnostics"); __import__("components.teacher_view")
     except Exception:
@@ -28,6 +29,8 @@ def pipeline(seed:int, write_demo=False, world=None, risk=None):
     trust=adjust(pub.schools,risk,audit,sel)
     areas=estimate_areas(pub,trust)
     area_metrics=evaluate_area(w,areas["fh_benchmarked"])
+    for name in ("baseline_direct","audit_adjusted_direct"):
+        m=evaluate_area(w,areas[name]); area_metrics[f"{name}_block_rmse_pp"]=m["block_rmse_pp"]; area_metrics[f"{name}_coverage90"]=m["coverage90"]
     raw_alloc=allocate_camps(pub,trust,None,"baseline_raw")
     adj_alloc=allocate_camps(pub,trust,None,"audit_adjusted")
     oracle_alloc=allocate_camps(pub,trust,None,"oracle",truth_school=w.truth_school)
@@ -42,7 +45,7 @@ def main():
     resdir=ROOT/"eval/results"; resdir.mkdir(parents=True,exist_ok=True)
     trust_rows=[]; rows=[]
     for s in SEEDS:
-        w=make_world(s); pub=w.public_view(); risk=forensic_flags(pub.teacher_reports,pub.schools,pub.item_responses,pub.item_bank)
+        w=make_world(s, dict(ASER2024_GOVT_STD3)); pub=w.public_view(); risk=forensic_flags(pub.teacher_reports,pub.schools,pub.item_responses,pub.item_bank)
         for bf in (0.05,0.10,0.20):
             trust_rows.append(evaluate_seed(s,bf,world=w,risk=risk))
         rows.append(pipeline(s,write_demo=(s==SEEDS[0]),world=w,risk=risk))
@@ -56,6 +59,10 @@ def main():
     summary.append(f"| Trust risk-PPS block MAE @10% audit (pp) | {_mean_sd(trust_df[trust_df.budget_frac.eq(0.10)].risk_pps_block_mae_pp.tolist())} |\n")
     summary.append(f"| Raw reported block MAE @10% audit row (pp) | {_mean_sd(trust_df[trust_df.budget_frac.eq(0.10)].raw_block_mae_pp.tolist())} |\n")
     summary.append(f"| Inflation detection AUC | {_mean_sd(trust_df[trust_df.budget_frac.eq(0.10)].risk_auc.tolist())} |\n")
+    summary.append(f"| Area raw direct block RMSE (pp) | {_mean_sd(df.baseline_direct_block_rmse_pp.tolist())} |\n")
+    summary.append(f"| Area raw direct 90% CI coverage | {_mean_sd(df.baseline_direct_coverage90.tolist())} |\n")
+    summary.append(f"| Area audit-adjusted direct block RMSE (pp) | {_mean_sd(df.audit_adjusted_direct_block_rmse_pp.tolist())} |\n")
+    summary.append(f"| Area audit-adjusted direct 90% CI coverage | {_mean_sd(df.audit_adjusted_direct_coverage90.tolist())} |\n")
     summary.append(f"| Area FH benchmarked block RMSE (pp) | {_mean_sd(df.block_rmse_pp.tolist())} |\n")
     summary.append(f"| Area 90% CI coverage | {_mean_sd(df.coverage90.tolist())} |\n")
     summary.append(f"| Aggregate-anchor abs diff (pp) | {_mean_sd(df.aggregate_anchor_abs_diff_pp.tolist())} |\n")
