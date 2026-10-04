@@ -6,25 +6,27 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (20:52 IST, 4 Oct)
+## Now (21:39 IST, 4 Oct)
 - **Mode:** play to WIN. Every project gets a PLAYBOOK §11 demo, and demos open on real data. At most 5 running at once.
 - **Round 1: 19 of 20 done.** APCTT is gated on its 10 Oct data and needs your registration by 9 Oct.
-- **Demos done (3):**
+- **Demos done (5), all re-verified by me:**
   - P10 "Break the band".
   - P2: memory slider.
   - P6: "race the machine".
+  - P7: real NYC July-4 surge.
+  - P9: "hijack the agent".
 - **Demos running (5):**
-  - P7: NYC July-4 opening; review fixes.
-  - India@71 T1: real NFHS-5 opening; review fixes, including Bloom-filter linkage through the encoded boundary.
-  - P9:
-    - Real τ-bench replay. Review 12/12 accepted.
-    - Three guard fixes from demo probes; committed decisions re-verified as identical each time.
+  - India@71 T1: re-check fixes landed; DEMO DONE is close.
   - P1:
     - "Unplug the tablet": a real Flower LocalGrid.
-    - Live config pre-registered at 20:20 and passed 5/5 seeds at 20:45.
-  - P3: "the evaluator that says I don't know", on real OBD data (CC BY 4.0 verified).
-- **Demo queue:** P8 → P4 → P5 → India@71 T3. Then I check InnovateX T1–T3, EV C1/C2, India@71 T2 and Namma myself.
-- **Estimate:** all demos done around midnight–2 AM.
+    - Pre-registered live criteria pass 5/5 seeds.
+    - Review 8/8 accepted.
+  - P3: "says I don't know", on real OBD; alpha-knob pre-registered 21:07:33.
+  - P8: "ask it again". Eedi is CC BY-NC with no redistribution, so it uses a fetch step.
+  - P4: "the alarm that cries wolf", on real Binance books.
+- **Demo queue:** P5 → India@71 T3. Then I check InnovateX T1–T3, EV C1/C2, India@71 T2 and Namma myself.
+- **Estimate:** all demos done around midnight–1 AM.
+- **Open item:** P6's demo commits a raw Tardis slice. Check the terms before the repo goes public.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -117,6 +119,9 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 21:39 IST — Sweep
+- P4: the abstract now adds "each head alone worse than switching (+0.0138 to +0.0526)". The numbers are in eval/results/v2_holdout_posthoc_heads.json, labelled post hoc.
+- India@71 T1: the linkage claim was corrected to a matched-precision comparison (IDs 1,565 / pooled names 4,063 / encoded 3,522 of 4,531). The privacy method recovers fewer links than pooled names, and the proposal now says so.
 ### 2026-10-04 21:24 IST — P9 demo done (5 demos)
 - **P9 DEMO DONE (0834fb2):** smoke ALL PASS in my clone (155 PASS, 0 FAIL). Astra finals-judge review: 12/12 accepted.
   - Real first: a recorded gpt-4o τ-bench harmful write. Tier 0 holds it live; the replayed gpt-4.1-mini judge allows it. 61/120 vs 42/120 harmful calls stopped on 300 real calls, labelled not significant (+15.8 pp, CI −2 to +34).
