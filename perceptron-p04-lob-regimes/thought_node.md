@@ -208,7 +208,7 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - `eval/results/feed_delay.md`: median 2.9 ms over 46 days.
 - **Ledger:** `reviews/ledger.tsv` has 2 lines. Memo re-scored to 3.4/5.
 
-### 2026-10-04 21:24–21:50 IST — Demo phase started
+### 2026-10-04 21:24–21:32 IST — Demo phase started
 - Supervisor directive: a winning demo per PLAYBOOK §11. It must open on real data, with simulation second and labelled. Rules: at most 2 child sessions, CPU only, `nice`, memory guard ≥30%, no git stash.
 - **Tardis.dev ToS checked** (https://docs.tardis.dev/legal/terms-of-service, accessed 2026-10-04):
   - Clause 9.2 forbids redistributing the Data, except aggregated Derived Data such as OHLC candles at ≥10-minute resolution that cannot be used to reconstruct the raw data.
