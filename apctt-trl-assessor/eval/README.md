@@ -47,3 +47,14 @@ Raw outputs: `results/baseline_np_v0_<label>.json`, ledger `results/results_nump
 Fit 320.3 s (begin) / 141.9 s (end); predict 17.8 / 21.4 ms/doc (overloaded machine). The majority class is the training mode.
 
 **Reading.** All three label definitions show the same pattern: QWK ≈0.26–0.32 for text-only hashed ridge, a 0.12–0.17 MAE gain over the majority class, and decoding trading exact accuracy against MAE and QWK. `trl_begin` is the easiest by MAE because its labels concentrate at TRL 2–3. The primary label stays `trl_current` until the 10 Oct guide defines the target.
+
+## Walking skeleton — end-to-end check (2026-10-04 08:12 IST)
+`python -m components.skeleton.runner --train` fits the v0 threshold-ridge model on the TechPort `trl_current` **train** split (4.8 s). Then `python -m components.skeleton.runner --in .data/examples_in --out .data/examples_out` runs file → ParsedDocument → evidence → distribution → decision → gap analysis → `Assessment`, validated against `architecture/contracts/contracts.schema.json`. Contract tests: `python -m components.skeleton.test_skeleton` (6/6 pass, including empty, non-English and 200 kB inputs).
+
+| Held-out TechPort doc (random, seed 7) | Gold `trl_current` | Predicted (median) | 80% interval | Evidence items | Latency |
+|---|---|---|---|---|---|
+| 96214 | 3 | 3 | [1, 6] | 0 | 8 ms |
+| 17919 | 5 | 5 | [3, 6] | 1 | 13 ms |
+| 103122 | 6 | 3 | [2, 4] | 0 | 27 ms |
+
+3 docs in 0.11 s (26 docs/s, CPU, numpy only). Three examples are anecdotes, not a metric; the held-out metrics are the tables above. **Finding:** the rubric-wording lexicon (C3 v0) fires on only 0–1 sentences per TechPort description, so recall is the first target for C3's isolated metric and its ratchet.
