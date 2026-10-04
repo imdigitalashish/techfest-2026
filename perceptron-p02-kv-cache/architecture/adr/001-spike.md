@@ -76,3 +76,22 @@ Build **C7 Recall-on-Demand** as spike A on top of a StreamingLLM resident cache
   3. Add non-literal needles (NoLiMa-style) to defuse the lexical-match objection.
   4. Run the prior-art pass.
   5. Add a latency table.
+
+## Update v2 (2026-10-04 15:25 IST): what changed after the first measurements
+- **Backend.**
+  - MLX's Linux CPU backend measured 3.5 GFLOP/s on an fp32 GEMM on the Azure VM; PyTorch reached 599 GFLOP/s there. All measured numbers therefore come from a PyTorch twin of the harness, [`eval/kvbench_torch.py`](../../eval/kvbench_torch.py), running the *same* weights (the MLX 4-bit model, dequantised).
+  - Parity: engine vs HF reference, max |Δlogit| 2e-5 with fp32 KV and 0.011 with fp16 KV; MLX vs torch 5e-5 ([`eval/results/parity_torch.json`](../../eval/results/parity_torch.json)). The MLX harness stays as the Apple-silicon demo path.
+- **The a-priori RoD scorer failed.** A 2-bit sketch at layer 8, scored by softmax-sum, reached needle-block hit@3 of only 0.24 on dev seeds: block 0 (system prompt plus instruction) soaked up the attention.
+- **Dev sweep** (seeds 100–109, 322 variants; [`results.tsv`](../../components/recall_on_demand/autoresearch/results.tsv)) chose:
+  - **Scorer `softmax_lift`:** the question's attention distribution over the evicted keys *minus* that of the context's last 64 tokens. This cancels keys that every query attends to, such as sinks and formatting tokens.
+  - Content question tokens only; **4-bit sketch at layer 5**.
+  - Result: hit@3 = 0.95 (best of 322; exploratory, so optimistically biased). The lexical IDF control reached 0.91. Layer 5 dominates (the next-best layer reaches 0.69); 2-bit sketches top out at 0.60.
+- **Cost of the final store per token:** 288 B sketch + 4 B id (0.89% of 32 KiB), plus 256 KiB of window queries per context. All of it is charged to RoD's own KV budget.
+- **Confirmation.** The choice is frozen in [`eval/PREREG.md`](../../eval/PREREG.md), committed 15:14 IST before any test run. Test splits:
+  - T1: literal needles, seed 0.
+  - T2: paraphrased templates, seed 1.
+  - T3: synonym-aliased keys, seed 2 (amendment 1, 15:18).
+  - S4: halo ablation.
+
+  Baselines include NVIDIA kvpress's reference presses (StreamingLLM, SnapKV, ObservedAttention, Knorm, ExpectedAttention, TOVA), run on CPU.
+- **Novelty claim, narrowed** (prior-art report, `research/components/recall-on-demand-prior-art.md`): to our knowledge, no published KV-recall scheme keeps *no* KV for evicted tokens, only token ids plus a single-layer low-bit key sketch, and recovers by position-faithful re-prefill of the blocks the live question selects. ArkVale's digest mechanism remains UNVERIFIED.
