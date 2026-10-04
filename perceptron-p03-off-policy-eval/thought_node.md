@@ -22,8 +22,8 @@
   - **OBD sample** (REAL; [`eval/results/obd_sample_summary.md`](eval/results/obd_sample_summary.md); reproduce with `.venv/bin/python eval/run_obd.py`). On-policy BTS CTR is 0.00420 (CI 0.00293–0.00547). IPW and DR estimates from the Random logs, 0.00455–0.00521, all have CIs containing the truth: inconclusive at 10k rows. A diagnostic shows the deployed BTS ≠ the static obp prior.
   - Contract tests: 8/8 pass (`.venv/bin/python -m pytest -q tests`).
 - **Next:**
-  1. A first ratchet scaffold on C6 (program.md, frozen eval.py, results.tsv baseline).
-  2. After lean mode: an independent rubber-duck review of ADR 001; per-component research files; check the OBP paper on how BTS propensities were generated; full OBD (26M rows) via Azure or a chunked download; a semi-synthetic OBD before/after with injected drift; a waterfall plot for the demo.
+  1. Continue the C6 ratchet (backlog ideas 2–8; DR baseline nRMSE 0.21823; SNDR was not kept).
+  2. After lean mode: an independent rubber-duck review of ADR 001; dedicated research files for the spike components; check the OBP paper on how BTS propensities were generated; full OBD (26M rows) via Azure or a chunked download; a semi-synthetic OBD before/after with injected drift; a waterfall plot for the demo; the experimentation-vendor check (UNVERIFIED tonight).
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
 - **Risks:**
   - The network is saturated, so research fan-out is deferred.
@@ -67,7 +67,7 @@
 | C3 | PropensityModel | log → `Propensity` | logged / logistic | | logged only | held-out log-loss |
 | C4 | RewardModel | log → `RewardModelOut` | cross-fitted logistic | | done (`components/estimators/ope.py`) | held-out log-loss |
 | C5 | ValueEstimator | → `ValueEstimate` | IPW/SNIPW/DM/DR/Switch-DR | | done | rel. error (OBD), RMSE (bank) |
-| C6 | DeltaEstimator | → `DeltaEstimate` | V̂(new) − V̂(old) | ratchet target | baseline done | Δ-RMSE on bank |
+| C6 | DeltaEstimator | → `DeltaEstimate` | V̂(new) − V̂(old) | ratchet target | DR baseline; ratchet live (`components/delta_estimator/autoresearch/`) | Δ-nRMSE on the mini bank (baseline 0.21823) |
 | C7 | Interval | influence → `Interval` | Wald, bootstrap | ★ (with C8) | baseline done | coverage + width |
 | C8 | Sensitivity | → `SensitivityCurve` | MSM Hajek bounds + bootstrap | ★ | v0 done (`components/sensitivity/msm.py`) | validity at Γ_true + width |
 | C9 | Decomposer | before/after → `Decomposition` | naive gap | ★ | v0 done | RMSE + sign of the policy term |
@@ -125,3 +125,21 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Hypothesis (UNVERIFIED): the deployed BTS updated its posterior during the week. So we added a week-average empirical-BTS evaluation policy (ESS 2,639 vs 1,644 for the prior).
 - **Abstract:** MVP bullets now carry these numbers, labelled as simulator vs the real OBD sample (863 words).
 - **Tests:** 8/8 contract tests pass.
+
+### 2026-10-04 08:00 IST — First auto-research ratchet; morning package complete
+- **C6 ratchet** (`components/delta_estimator/autoresearch/`):
+  - `program.md` sets the goal, constraints and an 8-idea backlog from the landscape. `eval.py` is FROZEN: a mini bank of 4 synthetic scenarios × 12 seeds, 5k rows each, plus a `--holdout` world seed.
+  - Baseline DR: dev nRMSE **0.21823**.
+  - Iteration 1, SNDR: 0.21944 (+0.00121, within noise). Not kept; reverted. Ledger in `results.tsv`.
+  - Lesson: at 12 seeds, coverage is noisy (the baseline's minimum is 0.83 against a 0.90 guard). Next iterations double the seeds before any keep decision.
+- **Per-component research index:** `research/components/README.md` (mapped to landscape sections, as lean mode allows).
+- **Morning package (PLAYBOOK §9) status:**
+  1. landscape ✅
+  2. components + contracts ✅
+  3. per-component research ✅ (index; dedicated spike files next)
+  4. ADR 001 ✅
+  5. selection memo v1 ✅
+  6. Round-1 abstract + architecture ✅
+  7. skeleton + eval with real numbers ✅ (simulator bank v0 + OBD sample)
+  8. first ratchet loop ✅ (baseline + 1 iteration)
+  9. thought node current ✅

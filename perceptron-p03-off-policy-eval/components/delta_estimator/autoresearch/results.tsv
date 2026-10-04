@@ -1,2 +1,3 @@
 timestamp	commit	hypothesis	metric(nRMSE,dev)	delta	kept	notes
 2026-10-04T07:53+05:30	(scaffold commit)	baseline: doubly robust (DR), cross-fitted logistic reward model	0.21823	—	baseline	min_coverage 0.83 at 12 seeds (binomial SE about 0.06); per-scenario nRMSE: drift_masks 0.1015, drift_fakes 0.0851, low_overlap 0.1518, small_effect 0.5346
+2026-10-04T07:57+05:30	(not committed; reverted)	iter 1: SNDR — self-normalised DR residual (backlog idea 1)	0.21944	+0.00121	no	worse than baseline, within seed noise; low_overlap 0.1582 vs 0.1518; log eval/logs/ratchet_c6_iter1_sndr.log
