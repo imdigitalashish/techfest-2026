@@ -26,4 +26,6 @@ CFG = {
     "ks_subsample": 10,
     "ks": {"window": 600, "subsample": 10, "stride": 30, "alpha": 1e-3, "persist": 3, "cooldown": 1800},
     "ph": {"delta": 0.005, "threshold": 25.0, "min_n": 300},
+    # Calibrated KS: per-feature critical D = this quantile of the leave-one-train-day-out null.
+    "ksc": {"stride": 60, "quantile": 0.999},
 }

@@ -19,7 +19,7 @@ import numpy as np
 from components.contracts import EpisodeResult, FeatureFrame, Labels
 from components.forecaster import LogisticHead
 from components.normalizer import EWMANorm, StaticNorm
-from components.shift_detector import PageHinkley, RollingKS
+from components.shift_detector import PageHinkley, RollingKS, calibrate_ks_null
 
 POLICIES: dict[str, dict] = {
     "static_snorm":   dict(norm="static", heads=[("static",)]),
@@ -35,6 +35,10 @@ POLICIES: dict[str, dict] = {
     "fs_ks_boost":    dict(norm="ewma", heads=[("static",), ("sgd", 0.0005), ("sgd", 0.005), ("periodic", 900, 1800),
                                                ("regime", 0), ("regime", 1), ("regime", 2), ("alarm_refit", 1800, 600)],
                            combine="fixed_share", detectors=["ks"], on_alarm=["refit", "boost"]),
+    "ksc_refit":      dict(norm="ewma", heads=[("alarm_refit", 1800, 600)], detectors=["ksc"], on_alarm=["refit"]),
+    "fs_ksc_boost":   dict(norm="ewma", heads=[("static",), ("sgd", 0.0005), ("sgd", 0.005), ("periodic", 900, 1800),
+                                               ("regime", 0), ("regime", 1), ("regime", 2)],
+                           combine="fixed_share", detectors=["ksc"], on_alarm=["boost"]),
 }
 
 
@@ -50,6 +54,7 @@ class Context:
     ks_ref: np.ndarray
     ks_idx: list[int]
     cfg: dict = field(default_factory=dict)
+    ks_thresholds: np.ndarray | None = None
 
 
 def build_context(train: list[tuple[FeatureFrame, Labels]], cfg: dict) -> Context:
@@ -71,7 +76,12 @@ def build_context(train: list[tuple[FeatureFrame, Labels]], cfg: dict) -> Contex
     ks_names = cfg["ks_features"]
     ks_idx = [names.index(n) for n in ks_names]
     ks_ref = X[::cfg["ks_subsample"]][:, ks_idx]
-    return Context(names, snorm, enorm, heads, regime, edges, ks_ref, ks_idx, cfg)
+    thr = None
+    if cfg.get("ksc"):
+        k = cfg["ks"]
+        thr = calibrate_ks_null([f.X for f, _ in train], ks_idx, k["window"], k["subsample"],
+                                cfg["ksc"]["stride"], cfg["ksc"]["quantile"])
+    return Context(names, snorm, enorm, heads, regime, edges, ks_ref, ks_idx, cfg, thr)
 
 
 def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
@@ -100,6 +110,8 @@ def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
 
     dets = spec.get("detectors", [])
     ks = RollingKS(ctx.ks_ref, ctx.ks_idx, list(cfg["ks_features"]), **cfg["ks"]) if "ks" in dets else None
+    if "ksc" in dets:
+        ks = RollingKS(ctx.ks_ref, ctx.ks_idx, list(cfg["ks_features"]), **cfg["ks"], thresholds=ctx.ks_thresholds)
     ph = PageHinkley(**cfg["ph"]) if "ph" in dets else None
     on_alarm = spec.get("on_alarm", [])
     alarm_heads = [i for i, k in enumerate(kinds) if k[0] == "alarm_refit"]

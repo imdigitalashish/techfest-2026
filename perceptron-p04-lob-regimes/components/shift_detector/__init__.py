@@ -23,11 +23,14 @@ class RollingKS:
 
     def __init__(self, ref: np.ndarray, feature_idx: list[int], feature_names: list[str],
                  window: int = 600, subsample: int = 10, stride: int = 30, alpha: float = 1e-3,
-                 persist: int = 3, cooldown: int = 1800):
+                 persist: int = 3, cooldown: int = 1800, thresholds: np.ndarray | None = None):
         self.ref = [np.sort(ref[:, k]) for k in range(ref.shape[1])]
         self.idx, self.names = feature_idx, feature_names
         self.window, self.subsample, self.stride = window, subsample, stride
         self.alpha, self.persist, self.cooldown = alpha, persist, cooldown
+        self.thresholds = thresholds  # per-feature critical D from an empirical null (calibrated mode)
+        if thresholds is not None:
+            self.name = "rolling_ks_calibrated"
         self.hits, self.last_alarm = 0, -10**9
         self.last_p = np.ones(len(feature_idx))
 
@@ -35,15 +38,38 @@ class RollingKS:
         if t < self.window or t % self.stride:
             return None
         cur = X_raw[t - self.window + 1:t + 1:self.subsample][:, self.idx]
-        p = np.array([ks_2samp(cur[:, k], self.ref[k], method="asymp").pvalue for k in range(len(self.idx))])
-        self.last_p = p
-        reject = p.min() * len(self.idx) < self.alpha
+        res = [ks_2samp(cur[:, k], self.ref[k], method="asymp") for k in range(len(self.idx))]
+        if self.thresholds is None:
+            p = np.array([r.pvalue for r in res])
+            self.last_p = p
+            reject, k, stat = p.min() * len(self.idx) < self.alpha, int(p.argmin()), float(p.min())
+        else:
+            ratio = np.array([r.statistic for r in res]) / self.thresholds
+            reject, k, stat = bool(ratio.max() > 1.0), int(ratio.argmax()), float(ratio.max())
         self.hits = self.hits + 1 if reject else 0
         if self.hits >= self.persist and t - self.last_alarm >= self.cooldown:
             self.last_alarm, self.hits = t, 0
-            k = int(p.argmin())
-            return Alarm(t, self.name, float(p.min()), {"feature": self.names[k]})
+            return Alarm(t, self.name, stat, {"feature": self.names[k]})
         return None
+
+
+def calibrate_ks_null(days_X: list[np.ndarray], feature_idx: list[int], window: int, subsample: int,
+                      stride: int, quantile: float) -> np.ndarray:
+    """Empirical null for the windowed KS statistic, leave-one-day-out over training days.
+
+    For each training day, windows of that day are compared with a reference built from the
+    *other* training days, so the null contains real autocorrelation, intraday seasonality and
+    day-to-day variation — everything the i.i.d. p-value ignores. Returns per-feature critical D.
+    """
+    D = [[] for _ in feature_idx]
+    for i, Xi in enumerate(days_X):
+        ref = np.vstack([Xj for j, Xj in enumerate(days_X) if j != i])[::subsample][:, feature_idx]
+        ref = [np.sort(ref[:, k]) for k in range(len(feature_idx))]
+        for t in range(window, Xi.shape[0], stride):
+            cur = Xi[t - window + 1:t + 1:subsample][:, feature_idx]
+            for k in range(len(feature_idx)):
+                D[k].append(ks_2samp(cur[:, k], ref[k], method="asymp").statistic)
+    return np.array([np.quantile(d, quantile) for d in D])
 
 
 class PageHinkley:
