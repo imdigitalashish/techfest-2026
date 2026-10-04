@@ -10,12 +10,15 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ **Demo phase** (2026-10-04 20:33 IST; Supervisor 20:29; bar = PLAYBOOK §11). The earlier definition of done (13:05) was met and its slot freed.
-- **Demo plan:**
-  - A child session, "P3 demo builder" (plan mode, so I approve its "crazy" element before it builds), builds `demo/`.
-  - Crazy element (Supervisor's idea, refined): "the evaluator that says I don't know" on REAL data. A knob α mixes the deployed Thompson-sampling policy with uniform. Weights come exactly from logged propensities, and the reference line (1−α)·CTR(BTS) + α·CTR(Random) comes from the concurrent A/B arms. A day selector shows all days. The knob analysis is pre-registered before it is computed.
-  - Data: an aggregated OBD extract committed under CC BY 4.0. The licence was verified in the official zip's README on 4 Oct.
-  - Review: the gpt-6-astra session is reused for the demo review.
+- **Phase:** ⏸ **PAUSED** (2026-10-04 23:37 IST; user directive via the Supervisor, 23:36). Demo phase: **the demo is built and verified; DEMO DONE has not been sent yet** (no DEMO DONE tonight, per the directive).
+- **Resume point (exact):**
+  1. Re-verify: `git fetch origin && bash perceptron-p03-off-policy-eval/eval/verify_demo_clean.sh` (expected: run.sh ≤ 1 s, smoke 30/30 PASS).
+  2. A quick browser look at the D1/D2 fixes: sheet 3 at Nov 26 α 0.33, cluster mode, should show "E1 inside; E2 still rejects".
+  3. Message the Supervisor "DEMO DONE".
+  4. Optional: a short gpt-6-astra re-check of the fixed demo (86540241), with a ledger row.
+- **Demo state at pause** (main 86540241, verified from a clean checkout at 23:36:15 IST: no .data; run.sh 0.2 s; smoke 30/30 PASS):
+  - The builder applied all 12 demo-review fixes. Spoken script 375 words; measured rehearsal 2:52 with clicks. E1 and E2 are shown side by side, with the BTS-primary counts 75/12/403/116 (69/81 at α>0).
+  - The builder ("P3 demo builder") was told to stop and stay idle. No servers or jobs of mine are running.
 - **Definition of done (Supervisor 13:05):**
   1. **Real OBD check**, with the analysis pre-registered before results: the BTS time-window slice; a drift test of the deployed BTS's logged propensities; a real before/after with real truth, in both directions.
   2. **Decomposer review fixes:** (a) a feedback/mix-shift knob; (b) the 2×2 Shapley decomposition plus the interaction term; (c) a misspecification test; (d) a drift sweep that shows where naive is right and where it is wrong.
@@ -289,3 +292,8 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Majors: chronology overstated; "31/33" sold as fresh evidence; the 403 refusals over-read; a 500-word script for 3 minutes; script/screen state mismatches; ESS and z over-interpreted; simulator called "exact".
   - Minors: dynamic numbers lack hover sources; replay vs independent recompute conflated; one inconsistent fallback.
 - All 12 accepted (`reviews/2026-10-04-dispositions.md`; ledger row). The fix list went to the builder: copy contract, E1/E2 side by side, BTS-primary counts, a 350–400-word script with presets and a timed rehearsal, source keys, re-captured fallbacks.
+
+### 2026-10-04 23:37 IST — Demo fixes verified; PAUSED for the night
+- The builder pushed 86540241 ("apply the gpt-6-astra review (D1–D12)"): 375-word script, rehearsal 2:52 with clicks, E1/E2 side by side, BTS-primary counts with an α>0 disclosure (69/81), fallbacks re-captured with states.json.
+- Lead clean-checkout verification (`eval/verify_demo_clean.sh`, 23:36:10–23:36:15): run.sh 0.2 s; smoke **30/30 PASS**, including the new E2 assert at Nov 26 α 0.33 (difference CI −0.290 … −0.008), the fallback-state checks and the rehearsal check.
+- **PAUSE (user directive, 23:36):** builder told to stop; temporary files cleaned; no DEMO DONE tonight. The resume point is in *Now*.
