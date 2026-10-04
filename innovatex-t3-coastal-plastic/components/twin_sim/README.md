@@ -26,9 +26,9 @@ Each figure is escaped kg vs P0: median reduction, then the 90% interval.
 | policy | median reduction | 90% interval | draws better than P0 |
 |---|---|---|---|
 | P1 (fill-threshold) | −3.1% | [−6.0%, −0.01%] | 2/40 |
-| P2 (forecast + tide-aware) | +2.2% | [−1.5%, +13.5%] | 29/40 |
+| P2 (forecast + tide-aware) | +2.1% | [−1.5%, +12.5%] | 28/40 |
 
-Captured fraction: P0 0.461, P1 0.444, P2 0.493. Tide-aware shift timing is the main lever: ablating it raises the tuning metric by 3.7%. Forecast terms add 0.5% or less.
+Captured fraction: P0 0.461, P1 0.444, P2 0.492. These are the corrected numbers after the causal-forecast fix; the first held-out run is disclosed in twin.md §4. Tide-aware shift timing is the main lever: ablating it raises the tuning metric by 3.7%. Forecast terms add 0.5% or less.
 
 ## Modules → contracts
 `sites.py` (Site) · `forcing.py` (C1 ForcingSeries) · `catchment_load.py` (C2 LoadSeries) · `hydraulics.py` (C3 HydraulicSeries) · `interceptor.py` (C4 InterceptorSeries) · `risk_forecaster.py` (C9 SiteForecast) · `dispatch.py` (C10 DispatchPlan) · `sim.py` (season simulator) · `params.py` (parameter table) · `run.py` (bundle + metrics).
@@ -41,5 +41,5 @@ Captured fraction: P0 0.461, P1 0.444, P2 0.493. Tide-aware shift timing is the 
 - Rain is ERA5 at 0.25°, so site pairs share cells. The forecast is JMA GSM `previous_day1`, the only probed model that is archived for both 2019 and 2024.
 - Tide is a UTide fit to Open-Meteo Marine sea level from 2022-11 onward (the marine series is empty earlier), predicted back to 2019.
 - Crew budget is 2 crews × 8 h/day for 4 sites, in daylight shifts. P0 is an area-weighted fixed rotation, which is our proxy for the status quo.
-- `results/metrics.json` records `git_sha_at_run` = f93276f, the HEAD before this package was committed. The code that produced it is commit 4df701c.
+- `results/metrics.json` records `git_sha_at_run`, which is HEAD at run time. The final numbers come from the causal-forecast fix that is committed together with them.
 - The ratchet's pass 2 repeated pass 1 deterministically. It was aborted after 3 runs; the duplicate rows were removed and a note left in `results.tsv`.

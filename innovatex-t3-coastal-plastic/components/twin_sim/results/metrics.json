@@ -35,16 +35,16 @@
    "load_kg_median": 964381.0
   },
   "P2": {
-   "escaped_kg_median": 410771.0,
-   "escaped_kg_p05": 146876.0,
-   "escaped_kg_p95": 917410.0,
-   "reduction_vs_P0_median": 0.0215,
-   "reduction_vs_P0_p05": -0.015,
-   "reduction_vs_P0_p95": 0.1347,
-   "draws_better_than_P0": 29,
-   "captured_fraction_median": 0.4929,
-   "cleared_kg_median": 481506.0,
-   "overflow_site_hours_median": 89.5,
+   "escaped_kg_median": 411619.0,
+   "escaped_kg_p05": 147549.0,
+   "escaped_kg_p95": 917790.0,
+   "reduction_vs_P0_median": 0.0214,
+   "reduction_vs_P0_p05": -0.0149,
+   "reduction_vs_P0_p95": 0.1251,
+   "draws_better_than_P0": 28,
+   "captured_fraction_median": 0.4916,
+   "cleared_kg_median": 480425.0,
+   "overflow_site_hours_median": 87.0,
    "bypass_site_hours_median": 13.0,
    "crew_hours": 3904.0,
    "load_kg_median": 964381.0
@@ -82,16 +82,16 @@
    "load_kg_median": 2407299.0
   },
   "P2": {
-   "escaped_kg_median": 1065774.0,
-   "escaped_kg_p05": 383212.0,
-   "escaped_kg_p95": 2312822.0,
-   "reduction_vs_P0_median": 0.0159,
-   "reduction_vs_P0_p05": -0.0107,
-   "reduction_vs_P0_p95": 0.1136,
-   "draws_better_than_P0": 31,
-   "captured_fraction_median": 0.465,
-   "cleared_kg_median": 1178149.0,
-   "overflow_site_hours_median": 292.5,
+   "escaped_kg_median": 1066698.0,
+   "escaped_kg_p05": 385340.0,
+   "escaped_kg_p95": 2314529.0,
+   "reduction_vs_P0_median": 0.0152,
+   "reduction_vs_P0_p05": -0.0111,
+   "reduction_vs_P0_p95": 0.1083,
+   "draws_better_than_P0": 30,
+   "captured_fraction_median": 0.4642,
+   "cleared_kg_median": 1177326.0,
+   "overflow_site_hours_median": 285.0,
    "bypass_site_hours_median": 158.0,
    "crew_hours": 9760.0,
    "load_kg_median": 2407299.0
@@ -132,5 +132,5 @@
   }
  },
  "reproduce": "cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run",
- "git_sha_at_run": "f93276f"
+ "git_sha_at_run": "312eae6"
 }
