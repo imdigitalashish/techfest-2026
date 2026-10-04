@@ -7,7 +7,7 @@ import { NavGrid, planPath, pathLength } from "./nav.js";
 
 const T0 = performance.now();
 const params = new URLSearchParams(location.search);
-const base = new URL(params.get("scene") || "../../.data/packages/drjohnson/manifest.json", location.href);
+const base = new URL(params.get("scene") || "scene/manifest.json", location.href);
 const $ = (id) => document.getElementById(id);
 
 const manifest = await (await fetch(base)).json();

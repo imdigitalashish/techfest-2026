@@ -1,0 +1,167 @@
+{
+ "protocol": "nav_eval_v2 (see docstring)",
+ "dense_proxy_splats": 172217,
+ "variants": {
+  "points_only": {
+   "A": {
+    "n_heldout": 33,
+    "n_map_frames": 100,
+    "buffer": 2,
+    "pairs": 40,
+    "success": 0.925,
+    "recall_buffered": 0.8484848484848485,
+    "proxy_noise_floor_015": 0.15151515151515152,
+    "length_ratio_median": 1.0277207379803932,
+    "plan_ms_median": 35.01054202206433,
+    "area_navigable_m2": 27.6875,
+    "fail_reasons": {
+     "no_path": 0,
+     "snap": 3
+    },
+    "CFC@0.15": 0.725,
+    "CFC@0.25": 0.6,
+    "score": 0.6
+   },
+   "B": {
+    "n_heldout": 33,
+    "n_map_frames": 98,
+    "buffer": 2,
+    "pairs": 40,
+    "success": 0.925,
+    "recall_buffered": 0.8484848484848485,
+    "proxy_noise_floor_015": 0.18181818181818182,
+    "length_ratio_median": 1.0249411543183968,
+    "plan_ms_median": 35.796625015791506,
+    "area_navigable_m2": 26.385000000000005,
+    "fail_reasons": {
+     "no_path": 0,
+     "snap": 3
+    },
+    "CFC@0.15": 0.7,
+    "CFC@0.25": 0.625,
+    "score": 0.625
+   }
+  },
+  "points+carving": {
+   "A": {
+    "n_heldout": 33,
+    "n_map_frames": 100,
+    "buffer": 2,
+    "pairs": 40,
+    "success": 0.925,
+    "recall_buffered": 0.8484848484848485,
+    "proxy_noise_floor_015": 0.15151515151515152,
+    "length_ratio_median": 1.0277207379803932,
+    "plan_ms_median": 32.83787501277402,
+    "area_navigable_m2": 27.942500000000003,
+    "fail_reasons": {
+     "no_path": 0,
+     "snap": 3
+    },
+    "CFC@0.15": 0.725,
+    "CFC@0.25": 0.6,
+    "score": 0.6
+   },
+   "B": {
+    "n_heldout": 33,
+    "n_map_frames": 98,
+    "buffer": 2,
+    "pairs": 40,
+    "success": 0.925,
+    "recall_buffered": 0.8787878787878788,
+    "proxy_noise_floor_015": 0.18181818181818182,
+    "length_ratio_median": 1.0150770108650495,
+    "plan_ms_median": 32.96741604572162,
+    "area_navigable_m2": 27.7575,
+    "fail_reasons": {
+     "no_path": 0,
+     "snap": 3
+    },
+    "CFC@0.15": 0.7,
+    "CFC@0.25": 0.6,
+    "score": 0.6
+   }
+  },
+  "points+trajectory": {
+   "A": {
+    "n_heldout": 33,
+    "n_map_frames": 100,
+    "buffer": 2,
+    "pairs": 40,
+    "success": 0.925,
+    "recall_buffered": 0.8787878787878788,
+    "proxy_noise_floor_015": 0.15151515151515152,
+    "length_ratio_median": 1.0277207379803932,
+    "plan_ms_median": 18.58108298620209,
+    "area_navigable_m2": 27.745,
+    "fail_reasons": {
+     "no_path": 0,
+     "snap": 3
+    },
+    "CFC@0.15": 0.725,
+    "CFC@0.25": 0.6,
+    "score": 0.6
+   },
+   "B": {
+    "n_heldout": 33,
+    "n_map_frames": 98,
+    "buffer": 2,
+    "pairs": 40,
+    "success": 1.0,
+    "recall_buffered": 0.9090909090909091,
+    "proxy_noise_floor_015": 0.18181818181818182,
+    "length_ratio_median": 1.0200856761787245,
+    "plan_ms_median": 16.570353996939957,
+    "area_navigable_m2": 27.2175,
+    "fail_reasons": {
+     "no_path": 0,
+     "snap": 0
+    },
+    "CFC@0.15": 0.7,
+    "CFC@0.25": 0.65,
+    "score": 0.65
+   }
+  },
+  "full": {
+   "A": {
+    "n_heldout": 33,
+    "n_map_frames": 100,
+    "buffer": 2,
+    "pairs": 40,
+    "success": 0.925,
+    "recall_buffered": 0.8787878787878788,
+    "proxy_noise_floor_015": 0.15151515151515152,
+    "length_ratio_median": 1.0277207379803932,
+    "plan_ms_median": 37.32333396328613,
+    "area_navigable_m2": 28.0,
+    "fail_reasons": {
+     "no_path": 0,
+     "snap": 3
+    },
+    "CFC@0.15": 0.725,
+    "CFC@0.25": 0.6,
+    "score": 0.6
+   },
+   "B": {
+    "n_heldout": 33,
+    "n_map_frames": 98,
+    "buffer": 2,
+    "pairs": 40,
+    "success": 1.0,
+    "recall_buffered": 0.9090909090909091,
+    "proxy_noise_floor_015": 0.18181818181818182,
+    "length_ratio_median": 1.014972293328865,
+    "plan_ms_median": 38.438791496446356,
+    "area_navigable_m2": 28.0375,
+    "fail_reasons": {
+     "no_path": 0,
+     "snap": 0
+    },
+    "CFC@0.15": 0.675,
+    "CFC@0.25": 0.6,
+    "score": 0.6
+   }
+  }
+ },
+ "reproduce": "cd namma-space && .venv/bin/python eval/nav_eval_v2.py --out eval/results/drjohnson_nav_v2.json"
+}
