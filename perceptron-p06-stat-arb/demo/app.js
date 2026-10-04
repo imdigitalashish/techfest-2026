@@ -135,6 +135,8 @@
       ? "<b>Frozen</b> (the pre-registered primary): each IOC leg fills against the <b>last published</b> quote at arrival, up to its displayed size."
       : "<b>Strict V1</b> (Amendment 1): each leg fills against the <b>next published</b> quote after arrival; size-0 intents are not sent; threshold and LEV are <b>refit on strict 09-01 labels</b>.";
     S.liveRes = null; renderCounters(); drawFront(); drawScrub(); refreshLive();
+    if (S.race && S.race.result && !S.race.running) scoreRace(false);   // same reaction times, new δ / simulator
+    if (S.race !== undefined) renderRaceRule();
   }
 
   // ---------------------------------------------------------------- counters
@@ -202,12 +204,14 @@
       ctx.setLineDash([]); ctx.globalAlpha = 1;
     }
     for (const pt of series.lev) if (M.reg_deltas_ms.includes(pt[2])) dot(ctx, X(pt[0]), Y(pt[1]), 3.5, "#b58bff");
-    ctx.fillStyle = "#b58bff"; ctx.fillText("● LEV trained latencies", W - 150, padT + 10);
+    [["naive", "#ff6b6b"], ["tuned threshold", "#4aa8ff"], ["LEV (● trained latencies; dashed = outside)", "#b58bff"]].forEach(([t, c], k) => {
+      const lx = padL + 8 + [0, 62, 175][k]; ctx.fillStyle = c; ctx.fillRect(lx, Hh - padB - 34, 14, 3); ctx.fillText(t, lx + 18, Hh - padB - 30);
+    });
     // human (reaction-time) points at the current δ
     if (human.length) {
       ctx.fillStyle = "rgba(255,210,63,.18)"; ctx.fillRect(X(2 * delta() + RTS[0]), padT, X(2 * delta() + RTS[RTS.length - 1]) - X(2 * delta() + RTS[0]), Hh - padT - padB);
       for (const [l, n, t] of human) { dot(ctx, X(l), Y(n), 2.5, "#ff6b6b"); dot(ctx, X(l), Y(t), 2.5, "#4aa8ff"); }
-      ctx.fillStyle = "#ffd23f"; ctx.fillText("humans: 100 ms–2 s", X(2 * delta() + RTS[0]) + 3, padT + 10);
+      ctx.fillStyle = "#ffd23f"; ctx.fillText("human RTs", X(2 * delta() + RTS[0]) + 3, padT + 10); ctx.fillText("100 ms–2 s", X(2 * delta() + RTS[0]) + 3, padT + 23);
     }
     // current machine L and the race result
     ctx.strokeStyle = "#ffd23f"; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X(machineL()), padT); ctx.lineTo(X(machineL()), Hh - padB); ctx.stroke();
@@ -290,7 +294,7 @@
   }
 
   // ---------------------------------------------------------------- decay clocks
-  const OCG = { "-1": ["not sent", "#5b6886"], 0: ["✗ both legs missed", "#93a1bd"], 1: ["½ sell leg only → unwound", "#ffb347"], 2: ["½ buy leg only → unwound", "#ffb347"], 3: ["✓ both legs filled", "#3ee6a0"] };
+  const OCG = { "-1": ["not sent (size 0)", "#5b6886"], 0: ["✗ both legs missed", "#93a1bd"], 1: ["½ sell leg only, unwound", "#ffb347"], 2: ["½ buy leg only, unwound", "#ffb347"], 3: ["✓ both legs filled", "#3ee6a0"] };
   function drawClocks(now) {
     const cv = CV.clocks; if (!cv) return; const { ctx, W, H: Hh } = cv; ctx.clearRect(0, 0, W, Hh);
     const candSet = CIDX[S.fee];
@@ -301,7 +305,7 @@
       if (eS[i] > S.t) S.linger.delete(i);
     }
     const rows = [...S.linger.keys()].sort((a, b) => eS[b] - eS[a]).slice(0, 6);
-    const x0 = 250, x1 = W - 120, lmin = Math.log10(0.3), lmax = Math.log10(3000), X = ms => x0 + (Math.log10(Math.max(ms, 0.3)) - lmin) / (lmax - lmin) * (x1 - x0);
+    const x0 = 250, x1 = W - 165, lmin = Math.log10(0.3), lmax = Math.log10(3000), X = ms => x0 + (Math.log10(Math.max(ms, 0.3)) - lmin) / (lmax - lmin) * (x1 - x0);
     ctx.font = "11px -apple-system, sans-serif"; ctx.fillStyle = "#5b6886";
     for (const ms of [1, 10, 100, 1000]) { ctx.fillText(fmtMs(ms), X(ms) - 10, 12); ctx.fillRect(X(ms), 16, 1, Hh - 20); }
     const L = machineL(), rowH = (Hh - 22) / 6;
@@ -317,7 +321,7 @@
       ctx.fillStyle = "#e8edf7"; ctx.font = "12px -apple-system, sans-serif";
       ctx.fillText(`buy ${NAME[b]} → sell ${NAME[s]}`, 6, y + rowH / 2 - 1);
       ctx.fillStyle = "#93a1bd"; ctx.font = "11px -apple-system, sans-serif";
-      ctx.fillText(`+${E.edge0[i].toFixed(2)} bp · ${open ? "open " + fmtMs(el) : "closed after " + fmtMs((E.dur_us[i]) / 1000)}`, 6, y + rowH / 2 + 12);
+      ctx.fillText(`+${E.edge0[i].toFixed(2)} bp · ${open ? "open " + fmtMs(el) : E.dur_us[i] === 0 ? "closed within the same exchange timestamp" : "closed after " + fmtMs(E.dur_us[i] / 1000)}`, 6, y + rowH / 2 + 12);
       if (S.t - eS[i] >= L || !open) {
         const o = candOutcome(S.fee, E.opp_id[i]);
         if (o) { const [txt, c] = OCG[o.oc]; ctx.fillStyle = c; ctx.font = "12px -apple-system, sans-serif"; ctx.fillText(txt, x1 + 6, y + rowH / 2 - 1); ctx.fillStyle = o.pnl >= 0 ? "#3ee6a0" : "#ff6b6b"; ctx.fillText(fmtUsd(o.pnl, 2), x1 + 6, y + rowH / 2 + 12); }
@@ -400,6 +404,11 @@
   function median(a) { const s = [...a].sort((x, y) => x - y), n = s.length; return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2; }
   async function finishRace() {
     const R = S.race; R.running = false; S.playing = false; updatePlay(); $("flash").className = "flash hidden";
+    await scoreRace(true);
+  }
+  let raceSeq = 0;
+  async function scoreRace(scroll) {
+    const R = S.race, seq = ++raceSeq;
     const rts = R.trials.map(t => t.rt), rtMed = median(rts), rtGrid = RTS[nearestIdx(RTS, rtMed)];
     const fee = M.race_fee, d = delta(), ids = R.trials.map(t => t.opp);
     const res = { rtMed, rtGrid, d, sim: S.sim, src: "grid" };
@@ -424,8 +433,9 @@
         }));
       } catch (e) { res.src = "grid"; }
     }
+    if (seq !== raceSeq) return;
     R.result = res; renderTrials(); renderTwo(); drawFront();
-    document.querySelector("section.race").scrollIntoView({ behavior: "smooth", block: "start" });
+    if (scroll) document.querySelector("section.race").scrollIntoView({ behavior: "smooth", block: "start" });
     $("raceStatus").textContent = res.src === "live" ? "computed live by committed code" : "offline: exported grid (RT snapped)";
   }
   function renderTrials() {
@@ -437,7 +447,7 @@
       const idx = k++, res = R.result && R.result.trials[idx];
       const L = 2 * delta() + t.rt, gone = t.dur < L;
       const cell = o => (o ? `<span style="color:${OCG[o.oc][1]}">${OCG[o.oc][0]}</span> <b class="${o.pnl >= 0 ? "pos" : "neg"}">${fmtUsd(o.pnl, 2)}</b>` : "…");
-      tr.innerHTML = `<td>${idx + 1}</td><td>buy ${NAME[LEGS[t.b]]} / sell ${NAME[LEGS[t.s]]} · +${t.edge.toFixed(2)} bp<br><small style="color:var(--dim)">lived ${fmtMs(t.dur)}${gone ? " · gone before your order landed" : ""}</small></td>
+      tr.innerHTML = `<td>${idx + 1}</td><td>buy ${NAME[LEGS[t.b]]} / sell ${NAME[LEGS[t.s]]} · +${t.edge.toFixed(2)} bp<br><small style="color:var(--dim)">${t.dur === 0 ? "closed within the same exchange timestamp" : "lived " + fmtMs(t.dur)}${gone ? " · gone before your order landed" : ""}</small></td>
         <td><b>${t.timeout ? "≥ 2,000" : t.rt.toFixed(0)} ms</b></td><td>${res ? cell(res.you) : "…"}</td><td>${res ? cell(res.mach) : "…"}</td>`;
       tb.appendChild(tr);
     });
@@ -453,7 +463,7 @@
       When your order landed (L ≈ ${fmtMs(r.you.L)}), <b>${(100 * goneY).toFixed(0)}%</b> of this window's mispricings with net edge &gt; 0 had already closed; at the machine's L (${fmtMs(r.mach.L)}): <b>${(100 * goneM).toFixed(0)}%</b>
       (Kaplan–Meier on the window's ${km.n} such episodes; closed = edge back within 1 bp of the fair basis).
       The selector is re-tuned on ${M.train_day} at your speed (grid ${r.rtGrid} ms): it ${r.you.thr.n ? "trades " + r.you.thr.n + " times" : "declines to trade"}.
-      ${r.src === "live" ? "Computed live by the committed simulator at your exact RT." : "Offline: RT snapped to the exported grid."}`;
+      ${r.src === "live" ? "Computed live by the committed simulator at your exact RT." : "Offline: RT snapped to the exported grid."} Change δ or the simulator: your reaction times stay and the table is rescored.`;
   }
 
   // ---------------------------------------------------------------- committed evidence
@@ -488,7 +498,7 @@
   {
     const ts = CAND[M.race_fee].t_start_us.map(t => (t - M.w0_us) / 1000); let best = 0, bi = 0, j = 0;
     for (let i = 0; i < ts.length; i++) { while (ts[j] < ts[i] - 30000) j++; if (i - j + 1 > best) { best = i - j + 1; bi = j; } }
-    S.t = Math.max(0, ts[bi] - 2000);
+    S.t = Math.max(0, ts[bi] - 300);
   }
   layout(); changed(); renderEvidence(); renderRaceRule(); rebuildActive();
   requestAnimationFrame(frame);

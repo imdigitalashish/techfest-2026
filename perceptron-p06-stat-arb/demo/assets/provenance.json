@@ -1,9 +1,25 @@
 {
- "built_at_ist": "2026-10-04 17:56:58 IST",
- "commit": "a869f76dd1387cef4788e2ecf1bd2e06ea0a36ae",
+ "built_at_ist": "2026-10-04 18:11:57 IST",
+ "commit": "0103b5096f95e912f99812954bd4cebd0c0792a7",
  "builder_unmodified_vs_commit": true,
+ "source_blobs": {
+  "demo/build_assets.py": "6e4035bf5050e09f5d2b7de03732081490685e6e",
+  "components/feed/normalize.py": "e793e8bfd9043a2e02ed20bbefa0e500e42d4098",
+  "components/detector/cross.py": "a511eafaf5f646103995cdbb5c5630aa2cb2c878",
+  "components/decay/survival.py": "04c12a4c712544397d8c3babc143906a7432a24f",
+  "components/decision/policies.py": "72e19e374ac0def858c87978a30bdc04cb21fdbe",
+  "components/decision/lev.py": "a2e5c7bf2576c4fa8d80ba55e383444d607dbae2",
+  "components/decision/autoresearch/rules.py": "15aa319dab069b6740634635021cd353c1e70533",
+  "components/decision/autoresearch/build_cells.py": "8d2d7b4381b647e438043c33118cdf9179d0c5aa",
+  "components/decision/compiled.py": "c865170cda5c54e0910222507bc1f7de85569880",
+  "components/sim/fills.py": "2a1851b17e29231f89e1c185c5447c0ac8f88f76",
+  "components/sim/strict.py": "e4f8336f0f7d7603cff45b4a9365bd78382b12ad",
+  "components/costs/fees.py": "37d1d5d4b57debcf25d2870920e9afb4053493b6",
+  "eval/run_baseline.py": "1bbe6d57eecfcf72df3ce42827d59cd7a24058cf",
+  "eval/falsification.py": "bb9dd8400c36993c42a96d7405c6509983b820b3"
+ },
  "command": "eval/run_guarded.sh .venv/bin/python -m demo.build_assets",
- "runtime_s": 184.1,
+ "runtime_s": 491.9,
  "python": "3.11.14",
  "platform": "macOS-26.2-arm64-arm-64bit",
  "packages": {
