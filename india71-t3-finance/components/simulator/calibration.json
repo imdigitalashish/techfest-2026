@@ -16,6 +16,7 @@
     "bc_sakhi_district_share": {"value": 0.5, "status": "ASSUMPTION", "source": "share of districts with active BC Sakhis"},
     "kyc_due_share_old": {"value": 0.5, "status": "ASSUMPTION", "source": "accounts opened 2014-2016 still pending periodic KYC update"},
     "arm_costs_inr": {"value": {"none": 0, "sms_ivr": 3, "bc_visit": 100, "upi_onboard": 120, "incentive": 55}, "status": "ASSUMPTION", "source": "cost per contact in Rs"},
+    "opened_for_dbt_share": {"value": 0.6, "status": "ASSUMPTION", "source": "share of DBT-receiving accounts opened for the purpose of DBT (exempt from the RBI inoperative stipulation)"},
     "data_quality_flip": {"value": 0.02, "status": "ASSUMPTION", "source": "accounts whose official inoperative flag disagrees with the ledger"}
   }
 }

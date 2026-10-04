@@ -113,7 +113,13 @@
       "type": "boolean"
     },
     "official_inoperative": {
+      "description": "CBS flag set by the bank under RBI rules (DBT-purpose accounts exempt)",
       "title": "Official Inoperative",
+      "type": "boolean"
+    },
+    "opened_for_dbt": {
+      "description": "account opened to receive DBT/scholarship credits (RBI/2023-24/105 Annex para 3)",
+      "title": "Opened For Dbt",
       "type": "boolean"
     },
     "rupay_active_90d": {
@@ -173,6 +179,7 @@
     "months_since_last_customer_txn",
     "kyc_due",
     "official_inoperative",
+    "opened_for_dbt",
     "rupay_active_90d",
     "has_pmjjby",
     "has_pmsby",

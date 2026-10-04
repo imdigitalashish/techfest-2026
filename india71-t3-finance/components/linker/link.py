@@ -15,7 +15,7 @@ import hmac
 import numpy as np
 import pandas as pd
 
-STATE_RANK = {"inoperative": 0, "dormant_risk": 1, "pass_through": 2, "basic": 3, "meaningful": 4}
+STATE_RANK = {"no_use_24m": 0, "dormant_risk": 1, "pass_through": 2, "basic": 3, "meaningful": 4}
 RANK_STATE = {v: k for k, v in STATE_RANK.items()}
 
 

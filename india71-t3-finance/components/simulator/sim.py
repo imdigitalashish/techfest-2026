@@ -136,6 +136,7 @@ def _accounts(persons: pd.DataFrame, rng: np.random.Generator, cfg: SimConfig) -
     rep["is_pmjdy"] = rng.random(n) < np.where(opened <= 2016, 0.9, 0.6)
     rep["kyc_due"] = (opened <= 2016) & (rng.random(n) < c["kyc_due_share_old"])
     rep["bank_id"] = rng.choice(BANKS, size=n, p=BANK_P)
+    rep["opened_for_dbt"] = rep["is_dbt_account"] & (rng.random(n) < c.get("opened_for_dbt_share", 0.6))
     rep["account_token"] = [f"A{i:07d}" for i in range(n)]
     return rep
 
@@ -173,7 +174,8 @@ DBT_AMOUNT = {"women_ct_monthly": 1250.0, "pension_monthly": 1000.0, "pmkisan_qu
 def _calibrate_offset(acc, cfg, rng, months) -> float:
     target = cfg.calibration["inoperative_target"]
     lo, hi = -6.0, 6.0
-    sub = acc.sample(min(len(acc), 30_000), random_state=0)
+    pm = acc[acc["is_pmjdy"]]  # calibrate the PMJDY population, as the official target is a PMJDY share
+    sub = pm.sample(min(len(pm), 30_000), random_state=0)
     dbt_any = _dbt_schedule(sub["dbt_type"].to_numpy(), months, rng).any(axis=1) & sub["is_dbt_account"].to_numpy()
     for _ in range(30):
         mid = (lo + hi) / 2
@@ -243,7 +245,9 @@ def simulate(cfg: SimConfig | None = None) -> dict:
             "share_dbt_withdrawn_7d": np.where(dbt_withdraw[:, t], retain, 0.0),
             "eom_balance": np.round(np.where(active[:, t], rng.lognormal(6.5, 1.2, n) * (1 - retain), rng.lognormal(3.0, 1.0, n)), 2),
             "months_since_last_customer_txn": ms.astype(int),
-            "kyc_due": acc["kyc_due"], "official_inoperative": np.where(flip, ~inop_t, inop_t),
+            "kyc_due": acc["kyc_due"],
+            "official_inoperative": np.where(flip, ~(inop_t & ~acc["opened_for_dbt"].to_numpy()), inop_t & ~acc["opened_for_dbt"].to_numpy()),
+            "opened_for_dbt": acc["opened_for_dbt"],
             "rupay_active_90d": (alloc[:, 2] + alloc[:, 3] > 0) | (recent.sum(axis=1) > 1) & (w[:, 2] + w[:, 3] > 0.3),
             "has_pmjjby": has_pmjjby, "has_pmsby": has_pmsby, "has_apy": has_apy,
             "token_credit_count": np.zeros(n, dtype=int), "last_bc_id": acc["bc_id"],

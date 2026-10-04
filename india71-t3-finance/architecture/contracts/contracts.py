@@ -31,14 +31,15 @@ class AgeBand(str, Enum):
 
 
 class UsageState(str, Enum):
-    INOPERATIVE = "inoperative"    # no customer-induced txn for 24 months (RBI rule)
+    NO_USE_24M = "no_use_24m"      # behavioural: no customer-induced txn for 24 months. NOT the RBI legal status
+                                   # (see AccountUsage.regulatory_inoperative; DBT/scholarship-purpose accounts are exempt)
     DORMANT_RISK = "dormant_risk"  # no customer-induced txn for 12-23 months
     PASS_THROUGH = "pass_through"  # inflows (mostly DBT) cashed out fast; little other use
     BASIC = "basic"                # some customer-induced use, below "meaningful"
     MEANINGFUL = "meaningful"      # sustained, diverse, customer-induced use
 
 
-STATE_ORDER = ["inoperative", "dormant_risk", "pass_through", "basic", "meaningful"]
+STATE_ORDER = ["no_use_24m", "dormant_risk", "pass_through", "basic", "meaningful"]
 
 
 class Arm(str, Enum):
@@ -74,7 +75,8 @@ class AccountMonth(Strict):
     eom_balance: float
     months_since_last_customer_txn: int = Field(ge=0)
     kyc_due: bool
-    official_inoperative: bool
+    official_inoperative: bool = Field(description="CBS flag set by the bank under RBI rules (DBT-purpose accounts exempt)")
+    opened_for_dbt: bool = Field(description="account opened to receive DBT/scholarship credits (RBI/2023-24/105 Annex para 3)")
     rupay_active_90d: bool
     has_pmjjby: bool
     has_pmsby: bool
@@ -95,6 +97,7 @@ class AccountUsage(Strict):
     retention: float = Field(ge=0, le=1)
     protection: float = Field(ge=0, le=1)
     reason_codes: str = Field(description="semicolon-separated rule ids")
+    regulatory_inoperative: bool = Field(description="RBI legal status as flagged in CBS; independent of the behavioural state")
 
 
 # ---------- C3 -> C6, C10 (clean room only) ----------

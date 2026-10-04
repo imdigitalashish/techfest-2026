@@ -2,7 +2,8 @@
 
 Input: AccountMonth rows (last 12 months per account). Output: AccountUsage rows (contract).
 Rules v0 (every rule id is emitted in reason_codes):
-  R1 inoperative   : months since last customer-induced txn >= 24 (RBI inoperative rule)
+  R1 no_use_24m    : months since last customer-induced txn >= 24. Behavioural only — the RBI legal status is passed
+                     through separately as regulatory_inoperative (CBS flag; DBT/scholarship-purpose accounts exempt)
   R2 dormant_risk  : 12 <= months since last customer-induced txn < 24
   R3 pass_through  : DBT credited in >= 3 months, >= 80% of each credit withdrawn within 7 days,
                      and voluntary (non-DBT-cash-out) activity in < 3 months
@@ -53,10 +54,11 @@ def classify(account_month: pd.DataFrame, as_of: str | None = None) -> pd.DataFr
     dorm = (agg["ms"] >= 12) & ~inop
     pt = (agg["dbt_months"] >= 3) & (agg["fast_out_months"] >= agg["dbt_months"] * 0.8) & (agg["vol_months"] < 3) & ~inop & ~dorm
     meaningful = (agg["vol_months"] >= 6) & ((agg["channels"] >= 2) | (agg["protection"] > 0) | ((agg["dbt_months"] > 0) & (agg["retention"] >= 0.5))) & ~inop & ~dorm & ~pt
-    state = np.select([inop, dorm, pt, meaningful], ["inoperative", "dormant_risk", "pass_through", "meaningful"], default="basic")
+    state = np.select([inop, dorm, pt, meaningful], ["no_use_24m", "dormant_risk", "pass_through", "meaningful"], default="basic")
     reasons = np.select([inop, dorm, pt, meaningful], ["R1;G1", "R2;G1", "R3;G1", "R4;G1"], default="R5;G1")
     return pd.DataFrame({
         "account_token": agg["account_token"], "bank_id": agg["bank_id"], "as_of_month": as_of, "state": state,
         "mus": agg["mus"], "frequency": agg["frequency"].round(4), "diversity": agg["diversity"].round(4),
         "retention": agg["retention"].round(4), "protection": agg["protection"].round(4), "reason_codes": reasons,
+        "regulatory_inoperative": agg["account_token"].map(last["official_inoperative"]).astype(bool).to_numpy(),
     })

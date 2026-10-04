@@ -21,7 +21,7 @@
     },
     "UsageState": {
       "enum": [
-        "inoperative",
+        "no_use_24m",
         "dormant_risk",
         "pass_through",
         "basic",

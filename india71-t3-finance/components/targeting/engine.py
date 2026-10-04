@@ -17,7 +17,7 @@ CONFIG = {"learner": "t", "max_iter": 200, "learning_rate": 0.05, "max_leaf_node
 
 NUM = ["mus", "n_accounts", "months_since_last_customer_txn", "share_dbt_withdrawn_7d", "dist_bc_km"]
 BOOL = ["female", "rural", "kyc_due", "is_dbt_account", "dbt_monthly", "has_phone", "smartphone", "literate", "bc_sakhi_present"]
-CAT = {"state": ["inoperative", "dormant_risk", "pass_through", "basic"], "age_band": ["18-25", "26-40", "41-60", "60+"]}
+CAT = {"state": ["no_use_24m", "dormant_risk", "pass_through", "basic"], "age_band": ["18-25", "26-40", "41-60", "60+"]}
 
 
 def design(X: pd.DataFrame) -> np.ndarray:
