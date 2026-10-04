@@ -49,7 +49,7 @@
    - Compare: one CGWA-compliant DWLR (Acorn) lists ≈ ₹38,000 and logs twice a day.
    - Volume pricing isn't quoted yet, so we don't claim it.
 10. **"What's the impact number?"**
-    - **DJB estimates ≈ 733 million litres a year of recharge potential from its Phase-I campaign (Indian Express). That's the claim we'd audit, structure by structure.**
+    - **The Phase-I campaign's recharge potential is estimated at ≈ 733 million litres a year (rooftop area × average rainfall, as reported by Indian Express). That's the estimate we'd audit, structure by structure.**
     - Our number will be measured litres per verified structure.
 11. **"Why would DJB adopt this rather than random inspections?"**
     - **We make inspections smarter, not unnecessary.** Ranking 1,000 sites by drain-rate decline sends crews to the clogged ones first.

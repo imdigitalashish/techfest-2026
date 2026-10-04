@@ -41,7 +41,7 @@ Status key: **ACCEPTED** = we change the work; **REJECTED** = we keep it, with a
 | G2 | Self-certification is not in force | **ACCEPTED** | As R1. |
 | G3 | 3 % is circular; open on the rebate; illegal borewells to backup | **ACCEPTED** | The deck opens on the rebate/verification gap. Illegal borewells move to a backup slide. Results lead with 13 %. |
 | G4 | No owner buys a device that can take their rebate | **ACCEPTED** | As A4, plus "an inspector can override any verdict". ₹204.46 cr is never called our market. |
-| G5 | No impact number; battery life is a wish | **ACCEPTED** | DJB's own estimate (733 M L/yr for Phase I) is presented as **the claim we will audit**, not our result. The battery line is replaced with a measurement plan plus a labelled reference. Team name/ID go under Needs from user. |
+| G5 | No impact number; battery life is a wish | **ACCEPTED** | The campaign's estimated potential (733 M L/yr, Indian Express; an estimate from rooftop area × average rainfall) is presented as **the estimate we will audit**, not our result. The battery line is replaced with a measurement plan plus a labelled reference. Team name/ID go under Needs from user. |
 | Q1–Q5 | Five questions | **ACCEPTED** | In `qa-prep.md`. |
 | O1/O2 | Self-certification and the 1.5× penalty overstated | **ACCEPTED** | "may attract" wording. The deck table now carries a Status column (in force / planned / may). |
 | O3 | MS5837 as a 0–3 m sensor; tube/cable/potting excluded | **ACCEPTED** | As G1. The installed cost includes them. |

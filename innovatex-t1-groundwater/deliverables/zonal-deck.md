@@ -39,7 +39,7 @@ SAY: "We're ‹team›. Delhi has made rainwater harvesting compulsory for 25 ye
 
 > "Till now, there was a rule but no real checking." — Delhi water minister (HT, 21 Apr 2026)
 
-"Many have become non-functional due to inadequate maintenance" — DJB official (Indian Express)
+"Many have become non-functional due to inadequate maintenance" — an official, quoted by Indian Express
 
 <!--
 TIME 0:20–1:40 (80 s).
@@ -56,7 +56,7 @@ DON'T SAY "never checked" or "self-certification is the rule". HT says it's plan
   <span class="small">CGWB, *Dynamic Ground Water Resources of India 2025*, §7.32</span>
 - DJB Phase I: **restore 1,000 non-functional** RWH systems in government buildings and build 500 new ones (target 30 Jun 2026). 7,596 of 9,148 government buildings already have RWH.
   <span class="small">Indian Express (2026)</span>
-- DJB estimates the campaign's recharge potential at **≈ 733 million litres a year**. Today nobody can say how much of that reaches the ground.
+- The campaign's recharge potential is **estimated at ≈ 733 million litres a year** (rooftop area × average rainfall). Today nobody can say how much of that reaches the ground.
   <span class="small">Indian Express (2026); an estimate, not a measurement</span>
 
 <!--
@@ -174,7 +174,7 @@ DON'T claim volume pricing (not quoted). DON'T say households will rush to buy i
 
 # Impact and the ask
 
-- **Audit DJB's own claim** (≈ 733 M L/yr) structure by structure, in measured litres
+- **Audit the campaign's own estimate** (≈ 733 M L/yr) structure by structure, in measured litres
 - **Clogging alerts** send cleaning crews to the pits that stopped working, before the monsoon
 - **Data hygiene:** QC for the city's DWLR stream, so the aquifer response can be checked
 - **Roadmap:**
