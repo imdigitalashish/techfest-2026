@@ -40,7 +40,7 @@ Next: an edit budget (attackers who alter real posts) and pre-registered FNSPID 
 
 Baselines: price-only, text-only and fusion models, each with split, CQR and ACI.
 
-**Feasibility and risks.** Everything runs CPU-only on one laptop. The cached StockNet evaluation takes {{text_minilm_v2:meta.runtime_s|int}} s, and an independent reviewer reproduced every headline number exactly. Unit tests check the certificate against brute force and ACI against its theorem. Risks:
+**Feasibility and risks.** Everything runs CPU-only on one laptop. The cached StockNet evaluation takes {{text_minilm_v2:meta.runtime_s|int}} s. The v1 non-timing results were independently reproduced; v2 changes are recorded. Unit tests check the certificate against brute force and ACI against its theorem. Risks:
 - Text may stay weak; the pitch rests on guarantees.
 - The threat model is injection-only; an edit budget is next.
 - Boxes may loosen as features grow; a ratchet loop minimises certified width.

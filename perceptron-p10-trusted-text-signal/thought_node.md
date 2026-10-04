@@ -123,20 +123,26 @@ Headline run: StockNet with the MiniLM scorer, [`eval/results/text_minilm_v2.md`
 | C12 | decision / demo | INTERVALS → UI | — | | ⏳ | hit rate of "interval excludes 0" |
 
 ## Selection memo
-_v2 DRAFT, 4 Oct 13:15 IST — to be finalised with the cross-model scores (gpt-6-astra hostile judge, gpt-6-sol reproduction). v1 (4 Oct 07:50) is superseded. The pick is open between P7 (done), P9, P1 and P4. P10 enters late; this is the honest case. Every number is in `eval/results/` and is checked by `deliverables/check_drift.py`._
-- **Winnability — 3.**
-  - For: the strongest evidence discipline of any plan we could submit here — pre-registration on unseen data, an exact certificate unit-tested against brute force, day-clustered intervals, an abstract rendered from results. It also shows the organisers' starter baseline is not meaningful (MAPIE split CP 81.6%, 76.9% in high volatility).
-  - Against: our own pre-registered test found **no evidence that text adds value** (DJIA Winkler +0.1%, p = 0.46; StockNet pinball 0.3508 vs 0.3513). The problem's premise — that fusing text helps — is therefore unsupported in our data, and the pitch has to become "trust and coverage guarantees for an untrusted channel".
-- **Innovation headroom — 3.5.**
-  - The certificate is new in this setting as far as our searches go: exact deletion box for order-statistic aggregators, tree interval propagation, and a combination with ACI.
-  - Close prior art bounds worst-case conformity-score changes (Zargarbashi et al., ICML 2024), so the claim is hedged.
-  - Measured payoffs are small because the exposure is small: the oracle takes plain CQR to 84.7% vs a certified floor of 86.7%; CR-ACI ≈ ACI.
-- **Feasibility — 5.** Built, tested (59 tests) and reproducible on CPU in about a minute per run. Data is free and hash-pinned. Remaining work (edit budget, FNSPID) fits before 17 Nov.
-- **Demo strength — 3.** An attack toggle and k slider are easy to show. The visible effect is subtle (≈ 2 pp coverage), and the most honest headline ("text did not help") is not a crowd-pleaser.
-- **Fit with the user's strengths — 4.** Evaluation rigour, guarantees and systems; little frontier-model work, by design (LLM scorers risk look-ahead).
-- **Biggest risk:** judges read P10 as "the fusion doesn't help, so what is being trusted?" Mitigation: lead with the guarantee and the pre-registered honesty. Moving to news-rich, event-driven data (FNSPID earnings news) is where text should matter, but this is a hope, not evidence.
-- **Recommendation:** **not** the team's pick unless P9 (the Theme-6 alternative) and P1 / P4 fall through. P10 is a credible, low-risk backup with a rigorous core, but its ceiling is capped by the measured absence of text value. Within Theme 6, compare against P9's final 62/100 once the gpt-6-astra score for P10 is in.
-- **One-line pitch:** "A 90% band you can still trust when someone floods the feed with fake posts — proved, tested on unseen data, and honest that the text itself added nothing measurable."
+_FINAL (v3), 4 Oct 2026 ~13:50 IST. Supersedes v1 (07:50) and the v2 draft. Every number is in `eval/results/` and is checked by `deliverables/check_drift.py`. The pick is open between P7 (done), P9, P1 and P4; P10 enters late, so this is the honest case._
+- **Independent score:**
+  - gpt-6-astra hostile judge (official rubric), on the near-final abstract: **3.20/5 (64/100)** — "plausible reserve-list candidate, not a comfortable top-25–30 choice"; 5 blocking issues, all fixed in v2.
+  - Re-score of the final abstract (v2): **3.70/5 (74/100)**. 0 former blockers unresolved; 1 new (reproduction wording), fixed.
+  - For comparison (from their memos): P7 71/100, P9 62/100, P1 3.40/5 (68/100, earlier version).
+- **Winnability — 3.5.**
+  - For: evidence discipline. A registered null on unseen data, with a positive control showing the test's power; an exact certificate unit-tested against brute force, with a derived round-off margin; the v1 results independently reproduced (gpt-6-sol). It also shows the organisers' starter baseline is not meaningful: MAPIE split CP 81.6%, 76.9% in high volatility. Round 1 is judged on the plan, and the final abstract scores 74/100 with the hostile judge.
+  - Against: the pre-registered test found **no evidence that text adds value** (Winkler +0.1%, p = 0.46; pre-open variant −0.6%). The fusion the problem asks for is a formality on our data, so the pitch rests on "trust and coverage guarantees for an untrusted channel". That caps the finals story.
+- **Innovation headroom — 3.** The independent judge also gave 3. Robust conformal is specialised to document-injection budgets through tractable deletion ranges and tree propagation. Close prior art (VRCP, RCP1, Zargarbashi et al. ICML 2024) makes it a specialisation, not a new principle. The measured payoffs are small because the exposure is small: the oracle takes plain CQR to 84.7% vs a certified floor of 86.7%, and CR-ACI ≈ ACI.
+- **Feasibility — 5.** Built and reproduced, with 70 tests; CPU-only, about 1–4 min per run. Data is free and hash-pinned. The edit budget and FNSPID pre-registration fit before 17 Nov.
+- **Demo strength — 3.** An attack toggle and k slider are easy to build. The visible effect is ≈ 2 pp of coverage, and the honest headline ("text did not help") is not a crowd-pleaser.
+- **Fit with the user's strengths — 4.** Evaluation rigour, guarantees and systems; deliberately little frontier-model work (LLM scorers risk look-ahead).
+- **Overall: 3.7/5** (unweighted mean: 3.5 + 3 + 5 + 3 + 4 = 18.5).
+- **Biggest risk:** "If the text doesn't help, what are we trusting?" The answer is a channel-admission audit with a guarantee, which is honest but caps the ceiling. Moving to event-driven, news-rich data (FNSPID earnings news) is where text should matter: a hope, not evidence.
+- **Recommendation: a close second to P7, and the Theme-6 pick over P9.**
+  - On the abstract, P10's final hostile score (74/100) is the highest of the memos I could read: P7 71, P1 68 (earlier version), P9 62. Those come from separate review runs, so gaps of a few points are within reviewer noise.
+  - For the finals, P7's effect size and demo are stronger (1.4 vs 39.6 requests lost in its surge replay), whereas P10's visible effect is ≈ 2 pp of coverage plus a guarantee. So I'd still pick **P7 first**, with P10 a close second.
+  - Choose P10 if the user values a rigorous, guarantee-centred Round-1 plan, and a deliberately honest negative result, over a large demo effect.
+  - Either way, P10's reusable assets transfer: the pre-registration plus positive-control pattern, the render/drift tooling and the certified-interval code.
+- **One-line pitch:** "A 90% band you can still trust when someone floods the feed with fake posts — certified for a stated budget, tested on unseen data, and honest that the text itself added nothing measurable."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor

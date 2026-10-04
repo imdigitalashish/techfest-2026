@@ -36,3 +36,9 @@ Original issue numbers retained.
 Minimal replacement: **"The v1 non-timing results were independently reproduced; v2 changes are recorded."** This is a provenance correction, not evidence that v2 results are wrong; it requires no new compute.
 
 **Disposition: 0 unresolved former blockers; 1 new blocking claim correction.**
+
+---
+## Lead decisions (P10 lead, 4 Oct 2026 ~13:50 IST)
+| # | Item | Decision | What changed |
+|---|---|---|---|
+| New | "Reproduced every headline number" overstates (the independent run covered v1) | ACCEPTED | Replaced with your wording: "The v1 non-timing results were independently reproduced; v2 changes are recorded." (A v2 reproduction by gpt-6-sol is in progress; the wording will change only if it completes.) |
