@@ -76,7 +76,10 @@ def run(guard_name: str, split: str, limit: int | None = None, every: int = 1, o
                      "tiers": v.tiers_run, "feedback": v.feedback[:300]})
         if k % 10 == 0:
             print(f"  [{guard_name}] {k + 1}/{len(items)} {time.time() - t0:.0f}s", file=sys.stderr, flush=True)
-    commit = subprocess.run(["git", "describe", "--always", "--dirty"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
+    head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
+    code_dirty = subprocess.run(["git", "status", "--porcelain", "--", "../components", "../architecture", "run_eval.py", "data"],
+                                capture_output=True, text=True, cwd=ROOT).stdout.strip()
+    commit = head + ("-dirty" if code_dirty else "")
     out = {"guard": guard_name, "split": split, "every": every, "suite": str(SUITE.relative_to(ROOT.parent)), "commit": commit,
            "wall_s": round(time.time() - t0, 1), "metrics": metrics(rows), "rows": rows}
     out_dir.mkdir(parents=True, exist_ok=True)
