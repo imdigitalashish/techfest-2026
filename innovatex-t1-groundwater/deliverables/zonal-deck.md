@@ -20,7 +20,7 @@ style: |
 ‹Member 1 — role› · ‹Member 2 — role› · ‹Member 3 — role› · ‹Member 4 — role› · ‹email / phone›
 
 <!--
-TIME 0:00–0:20 (20 s).
+TIME 0:00–0:20 (20 s). LOGISTICS: present from your own laptop, zonal-deck.pdf first, with the demo HTML open in a second tab (offline). Cue card: presenter-card.pdf.
 SAY: "We're ‹team›. Delhi has made rainwater harvesting compulsory for 25 years and paid crores in rebates for it. Nobody can tell you whether those pits work. We built the instrument that can."
 -->
 

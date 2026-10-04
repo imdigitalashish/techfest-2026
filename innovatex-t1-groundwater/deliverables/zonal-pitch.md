@@ -3,6 +3,8 @@
 - **Slides + per-slide speaker notes + timing:** [`zonal-deck.md`](zonal-deck.md). Ready-made exports: [`zonal-deck.pdf`](zonal-deck.pdf) and [`zonal-deck.pptx`](zonal-deck.pptx). Regenerate with `CHROME_PATH=... npx @marp-team/marp-cli@4 zonal-deck.md --pdf --allow-local-files` (PPTX slides are images; edit the `.md`).
 - **Live demo:** [`demo/jalsakshi-demo.html`](demo/jalsakshi-demo.html). Offline; the 60-second script is in `demo/README.md`.
 - **Q&A:** [`qa-prep.md`](qa-prep.md) (25 questions).
+- **One-page presenter cue card:** [`presenter-card.pdf`](presenter-card.pdf) (source: `presenter-card.md`). It covers the opening line, the 3 numbers, time checkpoints, demo cues, the 5 hardest questions and a 5-minute cut.
+- **Logistics:** present from your own laptop, **PDF first**. The PPTX's slides are full-slide images (fonts baked in; speaker notes are text), so it is safe on a venue Windows PC, but it can't be edited in PowerPoint. Edit the `.md` and re-export instead.
 - **Review response** that shaped this version: [`../reviews/2026-10-04-lead-response.md`](../reviews/2026-10-04-lead-response.md).
 
 ## Timing (10:00)
