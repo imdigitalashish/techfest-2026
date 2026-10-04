@@ -117,6 +117,13 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 21:24 IST — P9 demo done (5 demos)
+- **P9 DEMO DONE (0834fb2):** smoke ALL PASS in my clone (155 PASS, 0 FAIL). Astra finals-judge review: 12/12 accepted.
+  - Real first: a recorded gpt-4o τ-bench harmful write. Tier 0 holds it live; the replayed gpt-4.1-mini judge allows it. 61/120 vs 42/120 harmful calls stopped on 300 real calls, labelled not significant (+15.8 pp, CI −2 to +34).
+  - Crazy element: "Hijack the agent". The judge types a support ticket, the scripted agent obeys it, and the committed guard blocks it live. Benign controls are allowed, and one known false block is labelled.
+  - Four guard fixes surfaced by demo probing. Committed τ-bench decisions are identical to the pre-demo baseline (verified by me).
+- Slot → P4 demo ("the alarm that cries wolf"; Tardis redistribution terms to check).
+- Open item: P6's demo commits a raw Tardis quote slice (window_books.npz). Check Tardis' terms before the repo is shared publicly.
 ### 2026-10-04 21:13 IST — P7 demo done (4 demos)
 - **P7 DEMO DONE (Perceptron consensus pick):** smoke 47/47 in my clone (44 s). Astra demo review 7.5/10, all 10 items applied.
   - Opens on REAL NYC July-4 trips: the best rule and the planner run live on identical demand, next to the committed receipts. Surge window 1.40 vs 39.55 lost; +2.52 pp, 20/20.
