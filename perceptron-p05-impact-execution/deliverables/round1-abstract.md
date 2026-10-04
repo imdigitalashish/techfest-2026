@@ -1,6 +1,6 @@
 # Round 1 abstract (draft v0.1, 4 Oct 2026): Perceptron 2026, Problem 5
 
-> Draft for the 31 Oct submission (600–900 words; currently ≈ 880). Numbers marked † come from committed runs (`eval/results/`), reproducible with the commands in `perceptron-p05-impact-execution/thought_node.md`. **Team names and skills are placeholders until the user confirms the team.**
+> Draft for the 31 Oct submission (600–900 words). Numbers marked † come from committed runs (`eval/results/`), reproducible with the commands in `perceptron-p05-impact-execution/thought_node.md`. **Team names and skills are placeholders until the user confirms the team.**
 
 **Title:** *Ghost-Book Execution: measuring and minimising our own market impact with counterfactual twin markets*
 
@@ -20,7 +20,7 @@ Slippage is **endogenous**. When we sell, our child orders consume bids, displac
 
 ## 4. Minimum Viable mapping
 1. *TWAP/VWAP baseline:* **built.** TWAP sends 40 equal market-order slices. VWAP follows a volume curve learned on training seeds only.
-2. *Agent that measurably beats the baseline on slippage:* **built.** On held-out seeds (preliminary, n = 18), the impact-aware agent's shortfall is 0.78 bps vs TWAP's 1.38 bps. The paired difference is **−0.60 bps [95% CI −1.12, −0.10]** and it wins on 67% of seeds†. An ablation shows most of the gain comes from not walking the book (touch-only tactic: −0.62 bps). That cuts our twin-measured own impact from 0.71 to ≈ 0.15 bps†. By 31 Oct we will report n = 200 test seeds.
+2. *Agent that measurably beats the baseline on slippage:* **built; partly met.** On 60 held-out seeds, the impact-aware agent cuts the instantaneous (spread and book-walking) cost by 35%: −0.043 bps, 95% CI [−0.051, −0.036]†. Its total shortfall vs TWAP (−0.06 bps [−0.44, +0.34]) is **not yet significant**. Our twin-measured own-impact term varies ≈1.5 bps per seed because the twins decorrelate. Fixing that variance (§3) and running n ≥ 200 seeds is our first milestone.
 
 ## 5. Stretch ambitions
 - **Counterfactual book:** synchronised twins give the exact "book without our order". The ghost-book estimator reproduces it live, scored by RMSE against the twin.
