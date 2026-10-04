@@ -24,3 +24,14 @@
 **Rejected:** none.
 
 **Verdict to re-check after the builder's fix round:** §11 items 4 (honesty) and 5 (script) were "No" in this snapshot. The lead re-verifies from a clean clone before sending DEMO DONE.
+
+## Re-check (gpt-6-astra, max; acc3292, snapshot 306509d): decisions
+Raw: [`2026-10-04-demo-gpt-6-astra.recheck.md`](2026-10-04-demo-gpt-6-astra.recheck.md). Result: 10 FIXED, 2 PARTLY (M4, M5), plus 4 residual issues. §11: yes on 1, 2, 3, 6, 7; no on 4 and 5.
+
+| # | Issue | Decision | Disposition |
+|---|---|---|---|
+| R1 | "Cannot reach that precision" is false at 100% IDs: the threshold-1.0, ID-only operating point is missing from the search (major) | **ACCEPTED** | **B:** add the endpoint, handle the empty probabilistic set, test the perfect-ID case, re-export the affected cells |
+| R2 | False-link bars vanish when true links equal gold pairs (major) | **ACCEPTED** | **B:** common count axis sized to max(correct + false); visible-red check |
+| R3 | "We operate at matched precision" overstates an in-sample, proposed policy; the child path uses 0.91 | **ACCEPTED** | **B:** SCRIPT and screen wording say "in-sample comparison; proposed operating policy"; the child-path threshold is aligned or disclosed |
+| R4 | K10 promises "+3 more slots below" that aren't accessible (minor) | **ACCEPTED** | **B:** full roster in Details, or "not shown" |
+| M5 (residual) | SCRIPT claims the K1 non-significance message without selecting K1 | **ACCEPTED** | **B:** add the K1 click and return to K5, or drop the claim |
