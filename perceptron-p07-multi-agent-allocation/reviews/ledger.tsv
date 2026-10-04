@@ -1,0 +1,2 @@
+date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	abstract-v0.2+ADR001+mvp-v1	rubber-duck (harness default)	default	15	14	1	hostile judge 48/100; age-indexed LP rejected for R1 (fluid abandonment instead); cross-zone matching deferred (counted as partial accept)

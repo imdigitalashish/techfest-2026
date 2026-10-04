@@ -1,0 +1,28 @@
+{
+ "hops": [
+  1,
+  2,
+  4,
+  8
+ ],
+ "patience": [
+  3,
+  10
+ ],
+ "policies": [
+  "greedy",
+  "reactive",
+  "mpc-ewma",
+  "mpc-cusum-v1",
+  "oracle"
+ ],
+ "scenario": "shock",
+ "seeds": "100-109",
+ "horizon": 720,
+ "n_agents": 40,
+ "workers": 8,
+ "out": "eval/results/phase-v1",
+ "summarise_only": false,
+ "n_jobs": 400,
+ "wall_s": 1103.269739151001
+}
