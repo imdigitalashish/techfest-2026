@@ -7,29 +7,29 @@
 - _(empty)_
 
 ### Handled
+- 2026-10-04 17:28 IST (Supervisor 17:28, by message): NEW PHASE — winning demo per PLAYBOOK §11. Spawn one demo builder child session; approve its "crazy" element; verify `demo/run.sh` and `demo/smoke.sh` from a clean checkout; one `gpt-6-astra` (max) demo review; then "DEMO DONE". → acting (see Now/Log).
 - 2026-10-04 14:11 (Supervisor, by message): resumed with a 5-point definition of done (walk-forward ≥ 12 pre-registered days, decay CIs + latency budget + compiled timing, final rendered abstract + drift check, cross-model reviews, final memo → "DONE — slot free"). → acting (see Now/Log).
 - 2026-10-04 09:55 (Supervisor, by message): pause. → paused at 10:00 with a resume point.
 - 2026-10-04 08:22 (Supervisor, by message): "Package accepted. Lean limits from 08:30: ≤2 concurrent sub-agents/child sessions; no downloads over 1 GB without a stated reason; heavy jobs one at a time under `nice -n 10`. Next: run ADR 001's falsification tests (clock skew; whether LEV beats the tuned threshold beyond noise on more held-out days). If it still doesn't separate, say so in the memo." → acting (see Now/Log).
 
 ## Now
-- **Phase:** ✅ **DONE** (15:52 IST, 4 Oct). All five definition-of-done items from the Supervisor's 14:11 message are met; "DONE — slot free" sent. The project is idle until the 12 Oct selection or new Inbox items.
-- **State:** final selection memo below — **keep P7, with P6 as the Theme 3 fallback**.
-  - Pre-registered result: LEV − tuned threshold +$299/day, t-CI [+$130, +$468].
-  - Registered stricter simulators: +$73 and +$70/day (about a quarter remains); within noise once shared-liquidity collisions are dropped.
-  - Final abstract scored 62/100 by `gpt-6-astra` (P7: 71/100). `check_docs` passes (897 words). Every headline number was reproduced by `gpt-6-sol`.
-- **If P6 is picked on 12 Oct, next:**
-  1. Fill the [TEAM] lines.
-  2. Rerun the benchmark on our own finer-cadence recordings (`eval/results/live_cadence.md`).
-  3. Build a streaming detector open signal and the paper trader.
-  4. Pre-register a fresh confirmatory test on new first-of-month days, with a stated minimum worthwhile effect.
-  5. Model inventory limits and deeper-book fills.
-- **Needs from user:**
-  - register by 15 Oct, after the 12 Oct selection;
-  - teammates' names, skills, motivation and ownership for the abstract's [TEAM] lines; the review scores team fit 1/5 without them.
+- **Phase:** ▶ DEMO (PLAYBOOK §11), started 2026-10-04 17:28 IST (Supervisor 17:28, user directive). The evaluation phase is DONE at 378ac26: memo = keep P7, P6 as Theme 3 fallback.
+- **Plan:** one child session, the *demo builder*, owns `demo/`.
+  1. It proposes the "crazy" element; I approve it.
+  2. It builds to the §11 bar: `demo/run.sh` (one command, offline, first visual ≤ 60 s), `demo/SCRIPT.md`, `demo/fallback/`, `demo/smoke.sh`.
+  3. I spawn one `gpt-6-astra` (max) "judge watching the demo" review (child session 2 of 2) and decide its dispositions.
+  4. I verify run and smoke from a clean checkout, then message the Supervisor "DEMO DONE".
+- **Demo core (lead's brief to the builder):**
+  - Lead with what is *robust*: on a real cross-venue BTC replay, latency-aware selection stays positive where naive trading turns negative. Threshold − naive is significant under every simulator.
+  - LEV vs threshold is shown honestly as modest, with a strict-fills toggle.
+  - Decay clock with the cadence floor; live compiled decision timing.
+  - Every number comes from committed results or committed code running live on a committed slice.
+- **Doing:** spawning the demo builder.
+- **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills for the abstract's [TEAM] lines.
 - **Risks:**
-  - Public replay cannot pin down LEV's value: simulated fills are optimistic or pessimistic by construction, and publication cadence hides sub-cadence dynamics.
-  - The live path needs a streaming detector.
-  - Fees are only partly verified, so results use uniform fee levels.
+  - Demo honesty: the LEV gain is fragile, so the demo must not imply a validated edge.
+  - Committed-slice size: keep assets ≤ 10 MB.
+  - First visual ≤ 60 s despite Numba JIT: the page must render from exported JSON while the backend warms up.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
