@@ -68,6 +68,31 @@ ALIASES: dict[str, tuple[str, str, str]] = {
     "pk2_lo": ("an", f"{_FS}.c_fuse_refloat_x0.2.escaped_rel_vs_a.p05", "spct1"),
     "pk2_hi": ("an", f"{_FS}.c_fuse_refloat_x0.2.escaped_rel_vs_a.p95", "spct1"),
     "pk2_fwce": ("an", f"{_FS}.c_fuse_refloat_x0.2.fwce_delta_pp_vs_a.median", "pp1"),
+    # --- twin: ablations (which ingredient matters), SIMULATED ---
+    "abl_tide_med": ("an", "ablations.paired_escaped_rel_diff.P2_vs_P2_notide.median", "spct1"),
+    "abl_tide_lo": ("an", "ablations.paired_escaped_rel_diff.P2_vs_P2_notide.p05", "spct1"),
+    "abl_tide_hi": ("an", "ablations.paired_escaped_rel_diff.P2_vs_P2_notide.p95", "spct1"),
+    "abl_tide_n": ("an", "ablations.paired_escaped_rel_diff.P2_vs_P2_notide.draws_a_lower", "int"),
+    "abl_fc_med": ("an", "ablations.paired_escaped_rel_diff.P2_vs_P2_nofc.median", "spct1"),
+    "abl_mass_med": ("an", "ablations.paired_escaped_rel_diff.P1m_vs_P1.median", "spct1"),
+    "abl_mass_lo": ("an", "ablations.paired_escaped_rel_diff.P1m_vs_P1.p05", "spct1"),
+    "abl_mass_hi": ("an", "ablations.paired_escaped_rel_diff.P1m_vs_P1.p95", "spct1"),
+    "p2p1m_med": ("an", "ablations.paired_escaped_rel_diff.P2_vs_P1m.median", "spct1"),
+    "p2p1m_lo": ("an", "ablations.paired_escaped_rel_diff.P2_vs_P1m.p05", "spct1"),
+    "p2p1m_hi": ("an", "ablations.paired_escaped_rel_diff.P2_vs_P1m.p95", "spct1"),
+    # --- twin: what 'under the boom' is made of; how often flow is fast (SIMULATED) ---
+    "ent_floor_esc": ("an", "entrainment_split.P2.floor_1_minus_emax.share_of_escaped.median", "pct0"),
+    "ent_vel_esc": ("an", "entrainment_split.P2.velocity_driven.share_of_escaped.median", "pct0"),
+    "expo_kg": ("an", "exposure_P2_nominal.theta90.share_of_arrived_kg", "pct1"),
+    "expo_h": ("an", "exposure_P2_nominal.theta90.share_of_hours", "pct1"),
+    # --- twin: boom-angle SENSITIVITY (follows from the assumed capture curve) ---
+    "ang45_med": ("an", "boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_theta90.median", "spct1"),
+    "ang30_med": ("an", "boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_theta90.median", "spct1"),
+    "ang20_med": ("an", "boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_theta90.median", "spct1"),
+    "ang20_lo": ("an", "boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_theta90.p05", "spct1"),
+    "ang20_hi": ("an", "boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_theta90.p95", "spct1"),
+    "ang20_len": ("an", "boom_angle_sensitivity_P2.a_current_release.theta20.boom_length_factor_1_over_sin_theta", "f1"),
+    "combo20_med": ("an", "boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_current_a_theta90.median", "spct1"),
     # --- twin: forcing quality ---
     "tide_rmse_mithi": ("twin", "tide_fit.mithi_mahim.rmse_m", "f2"),
     "tide_var_mithi": ("twin", "tide_fit.mithi_mahim.variance_explained", "pct1"),
@@ -129,6 +154,8 @@ def fmt(v, kind: str) -> str:
         return str(v)
     if kind == "int":
         return f"{int(round(v)):,}"
+    if kind == "f1":
+        return f"{v:.1f}"
     if kind == "f2":
         return f"{v:.2f}"
     if kind == "f3":

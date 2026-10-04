@@ -53,9 +53,9 @@ DON'T SAY the tonnage was measured. It is a survey estimate. DON'T SAY "pickers 
 
 # NullahNet in one picture <span class="tag">CONCEPT · PLANNED</span>
 
-![w:860](figures/fig_retrofit_concept.png)
+![h:330](figures/fig_retrofit_concept.png)
 
-<span class="small">**Every morning:** the ward engineer sees each boom's fill and tomorrow's tide and rain, and gets a clearance plan. **Crews** clear in safe tide windows. **Each clearance** produces a signed record (before/after photos, weighbridge slip, GPS) that is checked against the sensors. **The retrofit** (angle, one-way pocket, fail-open section) is a design to test, not a proven device.</span>
+<span class="small">**Mornings:** the ward engineer sees each boom's fill plus tomorrow's tide and rain, and gets a clearance plan. **Crews** clear in safe tide windows. **Each clearance** yields a signed record (photos, weighbridge slip, GPS) checked against the sensors. **The retrofit** is a design to test, not a proven device.</span>
 
 <!--
 TIME 1:25–2:30 (65 s).
@@ -89,18 +89,18 @@ DON'T SAY "the booms have no sensors" or "nobody does this". Say "we found no pu
 
 ![bg right:48% fit](figures/fig_escape_split.png)
 
-<style scoped>section { font-size: 20px; }</style>
+<style scoped>section { font-size: 19px; }</style>
 
-Digital twin of four Mumbai outfalls: real rain, archived forecasts, fitted tide; assumed plastic and boom behaviour; held-out monsoons 2024–25; {{r:n_draws}} sampled parameter settings.
-- **Assumed capture losses dominate:** {{r:ent_esc}} of escaped plastic passes under or through the boom (central 90% scenario range {{r:ent_esc_lo}}–{{r:ent_esc_hi}}). This includes a loss the model assumes even in still water.
-- Overflow of a full pocket: {{r:over_esc}} · flood release: {{r:byp_esc}}
-- Oil-spill boom guidance (an analogy, not a plastic threshold): booms lose their catch above about {{f:F14|0.35 m/s}} across the boom, irrespective of skirt depth
+Twin of four Mumbai outfalls: real rain, forecasts and tide; *assumed* plastic and boom behaviour; held-out 2024–25; {{r:n_draws}} parameter settings.
+- **{{r:ent_esc}}** of escape passes under or through the boom (central 90% scenario range {{r:ent_esc_lo}}–{{r:ent_esc_hi}}); overflow {{r:over_esc}}; flood release {{r:byp_esc}}
+- But {{r:ent_floor_esc}} of escape is a still-water leak we *assumed*; {{r:ent_vel_esc}} is speed-driven; only {{r:expo_kg}} of plastic arrives at high speed
+- Oil-boom guidance, as an analogy: booms leak above about {{f:F14|0.35 m/s}} across the boom
 
-**So we test capture first:** boom angle and pocket retention, in a tow tank, before anything else.
+**Measure first:** a real boom's still-water leak, then capture vs speed, angle and retention (tow tank).
 
 <!--
 TIME 3:25–4:20 (55 s).
-SAY: "In our model, most plastic escapes by slipping under or through the boom, not by overflowing a full pocket. But that pattern comes from the capture curve we assumed, informed by oil-boom practice. It tells us what to test first: angle and retention."
+SAY: "In our model, most plastic escapes by slipping under or through the boom, not by overflowing a full pocket. But half of that is a constant leak we assumed, and fast flow is rare. So the first thing to measure is a real boom's leak, then angle and retention."
 LINE TO LAND: "The twin tells us where to look; the tow tank must tell us whether it's true."
 DON'T SAY "booms fail because they're square to the flow" as a finding. It is a hypothesis built into the model.
 -->
@@ -109,35 +109,38 @@ DON'T SAY "booms fail because they're square to the flow" as a finding. It is a 
 
 # Evidence 1 · Timing the crews <span class="tag">SIMULATED</span>
 
-<style scoped>section { font-size: 20px; }</style>
+<style scoped>section { font-size: 19px; }</style>
 
 ![bg right:50% fit](figures/fig_levers.png)
 
-Held-out monsoons 2024–25; equal crew-hours ({{r:crew_budget}}); paired over {{r:n_draws}} sampled parameter settings of one model.
-- **The full policy** (rank booms by kilograms at risk; time crews to tide and forecast) vs **a fill-fraction-ranked fixed-shift rule:** escaped plastic **{{r:p2p1_med}}** (central 90% scenario range {{r:p2p1_lo}} to {{r:p2p1_hi}}); lower in {{r:p2p1_n}} of {{r:n_draws}} settings
-- vs **an assumed fixed roster** (not BMC's real schedule): {{r:p2p0_med}} (range {{r:p2p0_lo}} to {{r:p2p0_hi}}), small and uncertain
-- Fill-fraction rule vs assumed roster: {{r:p1p0_med}}
-- Decisions use only forecasts archived before the fact
+Held-out 2024–25; equal crew-hours ({{r:crew_budget}}); paired over {{r:n_draws}} parameter settings of one model.
+- **Full policy** (rank by kg at risk; time to tide and forecast) vs **fill-fraction rule:** escaped **{{r:p2p1_med}}** (central 90% scenario range {{r:p2p1_lo}} to {{r:p2p1_hi}}); lower in {{r:p2p1_n}} of {{r:n_draws}} settings
+- vs **an assumed fixed roster** (not BMC's real one): {{r:p2p0_med}} (range {{r:p2p0_lo}} to {{r:p2p0_hi}}): small, uncertain
+- Alone: tide timing {{r:abl_tide_med}} (range {{r:abl_tide_lo}} to {{r:abl_tide_hi}}), forecasts {{r:abl_fc_med}}, kg ranking {{r:abl_mass_med}}. None clears zero alone
 
 <!--
 TIME 4:20–5:30 (70 s).
-SAY: "Same two crews, same hours, one model with many parameter settings. Our full policy lets less plastic escape than a simple 'clear the fullest boom' rule in 39 of 40 settings. Against a fixed roster, which we assumed rather than observed, the gain is small and could be zero. The comparison bundles three changes (ranking by kilograms, tide timing, forecasts), so we don't credit any one of them alone."
+SAY: "Same two crews, same hours, one model with many parameter settings. Our full policy lets less plastic escape than a simple 'clear the fullest boom' rule in {{r:p2p1_n}} of {{r:n_draws}} settings. Against a fixed roster, which we assumed rather than observed, the gain is small and could be zero. The comparison bundles three changes (ranking by kilograms, tide timing, forecasts), so we don't credit any one of them alone."
 LINE TO LAND: "In our model, a sensor without good timing can make things worse; the combination is what helps."
-DON'T SAY "tide timing saves this much" or "39 of 40 seasons". It's 39 of 40 parameter settings of one model, and the gain belongs to the whole policy.
+Decisions use only forecasts archived before the fact. DON'T SAY "tide timing saves this much" or call the settings "seasons". It's {{r:p2p1_n}} of {{r:n_draws}} parameter settings of one model, and the gain belongs to the whole policy; tide timing alone does not clear zero.
 -->
 
 ---
 
 # Evidence 2 · Retrofit levers <span class="tag">SENSITIVITY</span>
 
+<style scoped>section { font-size: 21px; }</style>
+
 What-if runs in the same twin (full policy; each row relative to today's boom with the same dispatch):
 - **Fail-open section alone:** {{r:fuse_med}}. Its job is flood safety, not capture, and that safety is unproven until we measure opening head, delay and reset.
 - **One-way pocket**, assuming it halves the catch lifted out by the flood tide: {{r:pk5_med}} (range {{r:pk5_lo}} to {{r:pk5_hi}}); assuming a fifth: {{r:pk2_med}}.
-- The retention factor is an **assumption**; the tow tank must measure it. Rows are separate what-ifs: don't add them up.
+- **Angling the boom** (this follows from the capture curve we assumed, so it is not a confirmation): 45° {{r:ang45_med}}, 30° {{r:ang30_med}}, 20° {{r:ang20_med}} vs square-on. At 20° the boom is {{r:ang20_len}}× the channel width.
+- 20° + fail-open section + pocket (halving re-float): {{r:combo20_med}} vs today's boom.
+- Retention and capture-vs-speed are **assumptions** the tow tank must measure. Rows are separate what-ifs: don't add them up.
 
 <!--
 TIME 5:30–6:25 (55 s).
-SAY: "These are what-ifs, not evidence. The fail-open section barely changes capture in the model; it's there for flood safety, which we still have to measure. A one-way pocket matters only if it really holds its catch when the tide reverses, and that is the first thing our tow tank measures."
+SAY: "These are what-ifs, not evidence. The fail-open section barely changes capture; it's there for flood safety, which we still have to measure. A pocket and an angled boom help in the model, but only because of curves we assumed. A 20-degree boom is about three times as long as the channel is wide, so it may not fit every nullah. The tow tank decides."
 LINE TO LAND: "We only claim what the tow tank shows."
 DON'T SAY the pocket "cuts escape" as a fact. Say "if it retains half, the model says {{r:pk5_med}}".
 -->

@@ -18,7 +18,7 @@ plt.rcParams.update({"font.size": 13, "axes.spines.top": False, "axes.spines.rig
 def escape_split() -> None:
     causes = [("entrainment", "under / through the boom", "#c0392b"), ("overtopping", "overflow of a full pocket", "#e67e22"),
               ("bypass_release", "flood release", "#7f8c8d")]
-    pols = [("P0", "Fixed schedule"), ("P1", "Clear when full"), ("P2", "Tide-aware dispatch")]
+    pols = [("P0", "Assumed roster"), ("P1", "Fill-fraction rule"), ("P2", "Full policy")]
     fig, ax = plt.subplots(figsize=(7.6, 5.6))
     for y, (p, label) in enumerate(pols):
         left = 0.0
@@ -33,7 +33,7 @@ def escape_split() -> None:
     ax.set_xlabel("share of escaped plastic (median of draws, %)")
     ax.set_title("Why plastic gets past the boom\nSIMULATED · held-out monsoons 2024–25", fontsize=14)
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.18), ncol=1, frameon=False, fontsize=11)
-    fig.text(0.01, 0.01, "'Under the boom' includes the leak the twin assumes even in still water. "
+    fig.text(0.01, 0.01, "'Under the boom' includes the still-water leak the twin assumes. Medians of shares need not sum to 100%. "
              "Source: components/twin_sim/results/analysis.json", fontsize=8, color="#555")
     fig.tight_layout()
     fig.savefig(FIG / "fig_escape_split.png", dpi=160)
@@ -42,23 +42,25 @@ def escape_split() -> None:
 
 def levers() -> None:
     pair = AN["paired_escaped_rel_diff"]
+    abl = AN.get("ablations", {}).get("paired_escaped_rel_diff", {})
     fs = AN["fuse_sensitivity_P2"]
+    ang = AN.get("boom_angle_sensitivity_P2", {})
     rows = [
-        ("Tide-aware vs clear-when-full", pair["P2_vs_P1"], "SIMULATED"),
-        ("Tide-aware vs fixed schedule", pair["P2_vs_P0"], "SIMULATED"),
-        ("Clear-when-full vs fixed schedule", pair["P1_vs_P0"], "SIMULATED"),
-        ("Fail-open fuse alone", fs["b_fail_open_fuse"]["escaped_rel_vs_a"], "SENSITIVITY"),
-        ("Fuse + one-way pocket (re-float ×0.5)", fs["c_fuse_refloat_x0.5"]["escaped_rel_vs_a"], "SENSITIVITY"),
-        ("Fuse + one-way pocket (re-float ×0.2)", fs["c_fuse_refloat_x0.2"]["escaped_rel_vs_a"], "SENSITIVITY"),
+        ("Full policy vs fill-fraction rule", pair["P2_vs_P1"], "SIMULATED"),
+        ("Full policy vs assumed fixed roster", pair["P2_vs_P0"], "SIMULATED"),
     ]
-    angle = AN.get("boom_angle_sensitivity_P2")
-    if isinstance(angle, dict):
-        cur = angle.get("a_current_release", {})
-        pk = angle.get("c_fuse_refloat_x0.5", {})
-        if "theta30" in cur:
-            rows.append(("Boom angled at 30° (vs square-on)", cur["theta30"]["escaped_rel_vs_theta90"], "SENSITIVITY"))
-        if "theta30" in pk:
-            rows.append(("30° + fuse + pocket (vs today)", pk["theta30"]["escaped_rel_vs_current_a_theta90"], "SENSITIVITY"))
+    if "P2_vs_P2_notide" in abl:
+        rows.append(("Tide timing alone", abl["P2_vs_P2_notide"], "SIMULATED"))
+    if "P1m_vs_P1" in abl:
+        rows.append(("Ranking by kg alone", abl["P1m_vs_P1"], "SIMULATED"))
+    rows += [
+        ("Fail-open section alone", fs["b_fail_open_fuse"]["escaped_rel_vs_a"], "SENSITIVITY"),
+        ("One-way pocket (re-float ×0.5)", fs["c_fuse_refloat_x0.5"]["escaped_rel_vs_a"], "SENSITIVITY"),
+    ]
+    if "theta30" in ang.get("a_current_release", {}):
+        rows.append(("Boom angled at 30° (vs square-on)", ang["a_current_release"]["theta30"]["escaped_rel_vs_theta90"], "SENSITIVITY"))
+    if "theta20" in ang.get("c_fuse_refloat_x0.5", {}):
+        rows.append(("20° + fuse + pocket (vs today)", ang["c_fuse_refloat_x0.5"]["theta20"]["escaped_rel_vs_current_a_theta90"], "SENSITIVITY"))
     fig, ax = plt.subplots(figsize=(8.8, 6.0))
     for i, (label, r, kind) in enumerate(rows):
         y = len(rows) - 1 - i
@@ -69,9 +71,9 @@ def levers() -> None:
         ax.text(max(hi, med) + 0.6, y, f"{med:+.1f}%".replace("-", "−"), va="center", fontsize=11, color=col)
     ax.axvline(0, color="#333", lw=1)
     ax.set_yticks(range(len(rows)), [r[0] for r in reversed(rows)], fontsize=11)
-    ax.set_xlabel("change in escaped plastic (%)\ndot = median · bar = 90% interval · left is better", fontsize=12)
+    ax.set_xlabel("change in escaped plastic (%)\ndot = median · bar = central 90% scenario range · left is better", fontsize=12)
     ax.set_title("Where the leverage is (digital twin)\nblue = SIMULATED policy comparison · purple = SENSITIVITY (assumed)", fontsize=12)
-    fig.text(0.01, 0.01, "Paired over the same Monte Carlo draws, held-out 2024–25. Source: components/twin_sim/results/analysis.json",
+    fig.text(0.01, 0.01, f"Paired over the same {AN['n_draws']} sampled parameter settings of one model, held-out 2024–25. Rows are separate what-ifs: do not add them. Source: components/twin_sim/results/analysis.json",
              fontsize=8, color="#555")
     fig.tight_layout()
     fig.savefig(FIG / "fig_levers.png", dpi=160)

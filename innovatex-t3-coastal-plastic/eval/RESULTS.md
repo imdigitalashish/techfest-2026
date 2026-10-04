@@ -1,6 +1,6 @@
 # Results — every number with its reproduce command
 
-Generated 2026-10-04 17:05 IST at commit `88b92ff` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
+Generated 2026-10-04 17:09 IST at commit `cc59273` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
 
 ## detection — flux_synthetic.json
 
@@ -380,7 +380,7 @@ Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.ana
 |---|---|
 | label | SIMULATED |
 | what | digital-twin analysis, held-out monsoons Jun-Sep 2024+2025, 4 sites summed; real forcing (ERA5 rain, archived JMA day-ahead forecast, harmonic tide), ASSUMPTION process parameters |
-| git_sha_at_run | 8b34ea5 |
+| git_sha_at_run | 330c689 |
 | n_draws | 40 |
 | seed | 20261004 |
 | years | [2024, 2025] |
@@ -393,16 +393,27 @@ Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.ana
 | p2_knobs.w_arrival | 0.25 |
 | p2_knobs.loss_weight | 0 |
 | p2_knobs.arr_horizon | 24 |
-| definitions.interval | median and p05/p95 across the 40 Monte Carlo draws |
-| definitions.paired_rel_diff | (a - b) / b per draw, same draw and sensor noise; negative = a lets less escape |
+| definitions.range | median and p05/p95 = central 90% scenario range across 40 sampled parameter settings (Monte Carlo draws of the ASSUMPTION ranges); not a confidence interval |
+| definitions.paired_rel_diff | (a - b) / b per sampled parameter setting (same setting and sensor noise); negative = a lets less escape; draws_a_lower = number of the 40 settings where a < b |
+| definitions.policies.P0 | assumed fixed roster (area-weighted rotation, fixed 08:30 IST shift; not BMC's roster) |
+| definitions.policies.P1 | fill-fraction-ranked fixed-shift rule |
+| definitions.policies.P2 | mass/risk-ranked, tide- and forecast-timed policy |
+| definitions.policies.P1m | ablation: sensor-only mass-ranked fixed-shift rule (greedy on sensed kg, P1's shift) |
+| definitions.policies.P2_notide | ablation: P2 with tide-aware timing off (fixed 08:30 IST start) |
+| definitions.policies.P2_nofc | ablation: P2 with forecast terms off (sensed kg only; timing from tide-only access) |
+| definitions.mass_boundary | unique input = catchment wash-off reaching the outfall (re-arrivals excluded) = escaped + cleared by crews (removal) + stored in boom at 30 Sep (temporary retention) + held upstream at 30 Sep; generic floating debris, not flexible packaging specifically |
 | definitions.arrived_at_boom | contract arrived_kg: includes re-arrivals of re-floated/released debris |
-| definitions.fwce | (cleared + stored at 30 Sep) / catchment load; each kg counted once |
+| definitions.fwce | (cleared + stored at 30 Sep) / unique input (catchment load); each kg counted once; stored is temporary retention, cleared_share is removal |
 | definitions.gross_captured_over_arrived | captured_kg / arrived_kg (double-counts re-captures) |
 | definitions.tidal_refloat | stored debris lifted on flood tide into the upstream pool; it re-arrives on the ebb (re-exposure flux, not an escape term) |
 | definitions.flood_release | stored debris released during bypass/high head (current hardware), into the pool |
 | definitions.fuse | SENSITIVITY: at release only the arriving flux passes; the pocket keeps its catch |
 | definitions.refloat_mult | SENSITIVITY: one-way pocket scales tidal re-float; x1 with the fuse equals variant b |
-| caveats | ['SIMULATED: escaped_kg is computed by the same assumed process model that the policies act on, so results show relative value under stated assumptions, not field evidence; field calibration comes in Round 2.', 'Fuse/pocket rows are SENSITIVITY runs (assumption-driven), not evidence about real hardware.', 'No retuning: P2 knobs, draws, seeds and crew budget identical to results/metrics.json.'] |
+| definitions.sin_theta | SENSITIVITY: boom at angle theta to the flow; e(v) uses the normal component /v/*sin(theta), e_max unchanged; boom length (W/sin theta), capacity, cost and loads not modelled; P2's forecaster still assumes theta=90 (policy unchanged) |
+| definitions.ent_floor | (1 - e_max) * arrived outside bypass: leaks even at slack water (ASSUMPTION e_max 0.70-0.95) |
+| definitions.ent_vel | (e_max - e(v)) * arrived outside bypass: velocity-driven entrainment |
+| definitions.exposure | P2, nominal parameters, held-out years: share of site-hours and of arrived kg with /v/*sin(theta) > v50 (0.45 m/s nominal) |
+| caveats | ['SIMULATED: escaped_kg is computed by the same assumed process model that the policies act on, so results show relative value under stated assumptions, not field evidence; field calibration comes in Round 2.', 'Fuse/pocket rows are SENSITIVITY runs (assumption-driven), not evidence about real hardware.', 'Boom-angle rows are SENSITIVITY runs (assumption-driven): boom angle is not field evidence. Angle acts only through the assumed capture curve e(/v/ sin theta), so it cannot independently confirm that mechanism; v50 is transferred from oil-boom practice (UNVERIFIED ASSUMPTION).', 'Assumed capture losses dominate this twin; boom angle and retention are candidate field experiments.', 'No retuning: P2 knobs, draws, seeds and crew budget identical to results/metrics.json.'] |
 | escape_split.P0.escaped_kg.median | 4.283e+05 |
 | escape_split.P0.escaped_kg.p05 | 1.444e+05 |
 | escape_split.P0.escaped_kg.p95 | 9.615e+05 |
@@ -723,6 +734,442 @@ Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.ana
 | fuse_sensitivity_P2.c_fuse_refloat_x0.2.tidal_refloat_kg.median | 6.733e+04 |
 | fuse_sensitivity_P2.c_fuse_refloat_x0.2.tidal_refloat_kg.p05 | 1.095e+04 |
 | fuse_sensitivity_P2.c_fuse_refloat_x0.2.tidal_refloat_kg.p95 | 4.696e+05 |
+| entrainment_split.P0.floor_1_minus_emax.kg.median | 1.793e+05 |
+| entrainment_split.P0.floor_1_minus_emax.kg.p05 | 6.605e+04 |
+| entrainment_split.P0.floor_1_minus_emax.kg.p95 | 5.437e+05 |
+| entrainment_split.P0.floor_1_minus_emax.share_of_escaped.median | 0.5145 |
+| entrainment_split.P0.floor_1_minus_emax.share_of_escaped.p05 | 0.1443 |
+| entrainment_split.P0.floor_1_minus_emax.share_of_escaped.p95 | 0.7998 |
+| entrainment_split.P0.floor_1_minus_emax.share_of_entrainment.median | 0.5617 |
+| entrainment_split.P0.floor_1_minus_emax.share_of_entrainment.p05 | 0.1593 |
+| entrainment_split.P0.floor_1_minus_emax.share_of_entrainment.p95 | 0.8878 |
+| entrainment_split.P0.velocity_driven.kg.median | 1.549e+05 |
+| entrainment_split.P0.velocity_driven.kg.p05 | 1.997e+04 |
+| entrainment_split.P0.velocity_driven.kg.p95 | 4.39e+05 |
+| entrainment_split.P0.velocity_driven.share_of_escaped.median | 0.3788 |
+| entrainment_split.P0.velocity_driven.share_of_escaped.p05 | 0.0903 |
+| entrainment_split.P0.velocity_driven.share_of_escaped.p95 | 0.8001 |
+| entrainment_split.P0.velocity_driven.share_of_entrainment.median | 0.4383 |
+| entrainment_split.P0.velocity_driven.share_of_entrainment.p05 | 0.1122 |
+| entrainment_split.P0.velocity_driven.share_of_entrainment.p95 | 0.8407 |
+| entrainment_split.P1.floor_1_minus_emax.kg.median | 1.839e+05 |
+| entrainment_split.P1.floor_1_minus_emax.kg.p05 | 6.684e+04 |
+| entrainment_split.P1.floor_1_minus_emax.kg.p95 | 5.593e+05 |
+| entrainment_split.P1.floor_1_minus_emax.share_of_escaped.median | 0.5111 |
+| entrainment_split.P1.floor_1_minus_emax.share_of_escaped.p05 | 0.1433 |
+| entrainment_split.P1.floor_1_minus_emax.share_of_escaped.p95 | 0.7984 |
+| entrainment_split.P1.floor_1_minus_emax.share_of_entrainment.median | 0.5598 |
+| entrainment_split.P1.floor_1_minus_emax.share_of_entrainment.p05 | 0.159 |
+| entrainment_split.P1.floor_1_minus_emax.share_of_entrainment.p95 | 0.8886 |
+| entrainment_split.P1.velocity_driven.kg.median | 1.595e+05 |
+| entrainment_split.P1.velocity_driven.kg.p05 | 2.102e+04 |
+| entrainment_split.P1.velocity_driven.kg.p95 | 4.622e+05 |
+| entrainment_split.P1.velocity_driven.share_of_escaped.median | 0.3781 |
+| entrainment_split.P1.velocity_driven.share_of_escaped.p05 | 0.0894 |
+| entrainment_split.P1.velocity_driven.share_of_escaped.p95 | 0.8009 |
+| entrainment_split.P1.velocity_driven.share_of_entrainment.median | 0.4402 |
+| entrainment_split.P1.velocity_driven.share_of_entrainment.p05 | 0.1114 |
+| entrainment_split.P1.velocity_driven.share_of_entrainment.p95 | 0.841 |
+| entrainment_split.P2.floor_1_minus_emax.kg.median | 1.79e+05 |
+| entrainment_split.P2.floor_1_minus_emax.kg.p05 | 6.697e+04 |
+| entrainment_split.P2.floor_1_minus_emax.kg.p95 | 4.946e+05 |
+| entrainment_split.P2.floor_1_minus_emax.share_of_escaped.median | 0.513 |
+| entrainment_split.P2.floor_1_minus_emax.share_of_escaped.p05 | 0.1449 |
+| entrainment_split.P2.floor_1_minus_emax.share_of_escaped.p95 | 0.8149 |
+| entrainment_split.P2.floor_1_minus_emax.share_of_entrainment.median | 0.5634 |
+| entrainment_split.P2.floor_1_minus_emax.share_of_entrainment.p05 | 0.1593 |
+| entrainment_split.P2.floor_1_minus_emax.share_of_entrainment.p95 | 0.8888 |
+| entrainment_split.P2.velocity_driven.kg.median | 1.485e+05 |
+| entrainment_split.P2.velocity_driven.kg.p05 | 1.969e+04 |
+| entrainment_split.P2.velocity_driven.kg.p95 | 4.357e+05 |
+| entrainment_split.P2.velocity_driven.share_of_escaped.median | 0.3836 |
+| entrainment_split.P2.velocity_driven.share_of_escaped.p05 | 0.0913 |
+| entrainment_split.P2.velocity_driven.share_of_escaped.p95 | 0.798 |
+| entrainment_split.P2.velocity_driven.share_of_entrainment.median | 0.4366 |
+| entrainment_split.P2.velocity_driven.share_of_entrainment.p05 | 0.1112 |
+| entrainment_split.P2.velocity_driven.share_of_entrainment.p95 | 0.8407 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.sin_theta | 1 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.boom_length_factor_1_over_sin_theta | 1 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_kg.median | 4.116e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_kg.p05 | 1.475e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_kg.p95 | 9.178e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_rel_vs_theta90.median | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_rel_vs_theta90.p05 | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_rel_vs_theta90.p95 | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_rel_vs_theta90.draws_a_lower | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_rel_vs_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_rel_vs_current_a_theta90.median | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_rel_vs_current_a_theta90.p05 | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_rel_vs_current_a_theta90.p95 | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_rel_vs_current_a_theta90.draws_a_lower | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.escaped_rel_vs_current_a_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.fwce.median | 0.4907 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.fwce.p05 | 0.3088 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.fwce.p95 | 0.7013 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.fwce_delta_pp_vs_theta90.median | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.fwce_delta_pp_vs_theta90.p05 | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.fwce_delta_pp_vs_theta90.p95 | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.fwce_delta_pp_vs_current_a_theta90.median | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.fwce_delta_pp_vs_current_a_theta90.p05 | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.fwce_delta_pp_vs_current_a_theta90.p95 | 0 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.velocity_entrainment_share_of_escaped.median | 0.3836 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.velocity_entrainment_share_of_escaped.p05 | 0.0913 |
+| boom_angle_sensitivity_P2.a_current_release.theta90.velocity_entrainment_share_of_escaped.p95 | 0.798 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.sin_theta | 0.7071 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.boom_length_factor_1_over_sin_theta | 1.414 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_kg.median | 3.803e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_kg.p05 | 1.305e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_kg.p95 | 8.862e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_theta90.median | -0.104 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_theta90.p05 | -0.2103 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_theta90.p95 | -0.0078 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_current_a_theta90.median | -0.104 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_current_a_theta90.p05 | -0.2103 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_current_a_theta90.p95 | -0.0078 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_current_a_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.escaped_rel_vs_current_a_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.fwce.median | 0.5459 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.fwce.p05 | 0.3875 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.fwce.p95 | 0.7558 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.fwce_delta_pp_vs_theta90.median | 5.58 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.fwce_delta_pp_vs_theta90.p05 | 0.34 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.fwce_delta_pp_vs_theta90.p95 | 12.43 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.fwce_delta_pp_vs_current_a_theta90.median | 5.58 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.fwce_delta_pp_vs_current_a_theta90.p05 | 0.34 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.fwce_delta_pp_vs_current_a_theta90.p95 | 12.43 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.velocity_entrainment_share_of_escaped.median | 0.2099 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.velocity_entrainment_share_of_escaped.p05 | 0.02 |
+| boom_angle_sensitivity_P2.a_current_release.theta45.velocity_entrainment_share_of_escaped.p95 | 0.7311 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.sin_theta | 0.5 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.boom_length_factor_1_over_sin_theta | 2 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_kg.median | 3.774e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_kg.p05 | 1.237e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_kg.p95 | 8.661e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_theta90.median | -0.1502 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_theta90.p05 | -0.3758 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_theta90.p95 | -0.0077 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_current_a_theta90.median | -0.1502 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_current_a_theta90.p05 | -0.3758 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_current_a_theta90.p95 | -0.0077 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_current_a_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.escaped_rel_vs_current_a_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.fwce.median | 0.5916 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.fwce.p05 | 0.3946 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.fwce.p95 | 0.7696 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.fwce_delta_pp_vs_theta90.median | 7.69 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.fwce_delta_pp_vs_theta90.p05 | 0.32 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.fwce_delta_pp_vs_theta90.p95 | 23.07 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.fwce_delta_pp_vs_current_a_theta90.median | 7.69 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.fwce_delta_pp_vs_current_a_theta90.p05 | 0.32 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.fwce_delta_pp_vs_current_a_theta90.p95 | 23.07 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.velocity_entrainment_share_of_escaped.median | 0.098 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.velocity_entrainment_share_of_escaped.p05 | 0.0035 |
+| boom_angle_sensitivity_P2.a_current_release.theta30.velocity_entrainment_share_of_escaped.p95 | 0.5108 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.sin_theta | 0.342 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.boom_length_factor_1_over_sin_theta | 2.924 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_kg.median | 3.767e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_kg.p05 | 1.084e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_kg.p95 | 8.501e+05 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_theta90.median | -0.1717 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_theta90.p05 | -0.4965 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_theta90.p95 | -0.007 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_current_a_theta90.median | -0.1717 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_current_a_theta90.p05 | -0.4965 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_current_a_theta90.p95 | -0.007 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_current_a_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_current_a_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.fwce.median | 0.6189 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.fwce.p05 | 0.3962 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.fwce.p95 | 0.7863 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.fwce_delta_pp_vs_theta90.median | 8.57 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.fwce_delta_pp_vs_theta90.p05 | 0.28 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.fwce_delta_pp_vs_theta90.p95 | 28.8 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.fwce_delta_pp_vs_current_a_theta90.median | 8.57 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.fwce_delta_pp_vs_current_a_theta90.p05 | 0.28 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.fwce_delta_pp_vs_current_a_theta90.p95 | 28.8 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.velocity_entrainment_share_of_escaped.median | 0.0472 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.velocity_entrainment_share_of_escaped.p05 | 0.0011 |
+| boom_angle_sensitivity_P2.a_current_release.theta20.velocity_entrainment_share_of_escaped.p95 | 0.3585 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.sin_theta | 1 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.boom_length_factor_1_over_sin_theta | 1 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_kg.median | 3.855e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_kg.p05 | 1.281e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_kg.p95 | 8.895e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_rel_vs_theta90.median | 0 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_rel_vs_theta90.p05 | 0 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_rel_vs_theta90.p95 | 0 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_rel_vs_theta90.draws_a_lower | 0 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_rel_vs_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_rel_vs_current_a_theta90.median | -0.0503 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_rel_vs_current_a_theta90.p05 | -0.0987 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_rel_vs_current_a_theta90.p95 | -0.0137 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_rel_vs_current_a_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.escaped_rel_vs_current_a_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.fwce.median | 0.5149 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.fwce.p05 | 0.3284 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.fwce.p95 | 0.731 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.fwce_delta_pp_vs_theta90.median | 0 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.fwce_delta_pp_vs_theta90.p05 | 0 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.fwce_delta_pp_vs_theta90.p95 | 0 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.fwce_delta_pp_vs_current_a_theta90.median | 2.58 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.fwce_delta_pp_vs_current_a_theta90.p05 | 0.93 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.fwce_delta_pp_vs_current_a_theta90.p95 | 3.99 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.velocity_entrainment_share_of_escaped.median | 0.3734 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.velocity_entrainment_share_of_escaped.p05 | 0.0844 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta90.velocity_entrainment_share_of_escaped.p95 | 0.802 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.sin_theta | 0.7071 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.boom_length_factor_1_over_sin_theta | 1.414 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_kg.median | 3.545e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_kg.p05 | 1.198e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_kg.p95 | 8.623e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_rel_vs_theta90.median | -0.1091 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_rel_vs_theta90.p05 | -0.2175 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_rel_vs_theta90.p95 | -0.0044 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_rel_vs_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_rel_vs_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_rel_vs_current_a_theta90.median | -0.1666 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_rel_vs_current_a_theta90.p05 | -0.2803 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_rel_vs_current_a_theta90.p95 | -0.0479 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_rel_vs_current_a_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.escaped_rel_vs_current_a_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.fwce.median | 0.5783 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.fwce.p05 | 0.3979 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.fwce.p95 | 0.7835 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.fwce_delta_pp_vs_theta90.median | 5.29 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.fwce_delta_pp_vs_theta90.p05 | 0.21 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.fwce_delta_pp_vs_theta90.p95 | 12.49 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.fwce_delta_pp_vs_current_a_theta90.median | 8.48 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.fwce_delta_pp_vs_current_a_theta90.p05 | 2.34 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.fwce_delta_pp_vs_current_a_theta90.p95 | 15.47 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.velocity_entrainment_share_of_escaped.median | 0.2099 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.velocity_entrainment_share_of_escaped.p05 | 0.0195 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta45.velocity_entrainment_share_of_escaped.p95 | 0.725 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.sin_theta | 0.5 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.boom_length_factor_1_over_sin_theta | 2 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_kg.median | 3.468e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_kg.p05 | 1.131e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_kg.p95 | 8.266e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_rel_vs_theta90.median | -0.1646 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_rel_vs_theta90.p05 | -0.4044 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_rel_vs_theta90.p95 | -0.0062 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_rel_vs_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_rel_vs_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_rel_vs_current_a_theta90.median | -0.2163 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_rel_vs_current_a_theta90.p05 | -0.4209 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_rel_vs_current_a_theta90.p95 | -0.0473 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_rel_vs_current_a_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.escaped_rel_vs_current_a_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.fwce.median | 0.6191 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.fwce.p05 | 0.4013 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.fwce.p95 | 0.7964 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.fwce_delta_pp_vs_theta90.median | 7.59 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.fwce_delta_pp_vs_theta90.p05 | 0.22 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.fwce_delta_pp_vs_theta90.p95 | 22.87 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.fwce_delta_pp_vs_current_a_theta90.median | 10.66 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.fwce_delta_pp_vs_current_a_theta90.p05 | 2.59 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.fwce_delta_pp_vs_current_a_theta90.p95 | 24.97 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.velocity_entrainment_share_of_escaped.median | 0.0916 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.velocity_entrainment_share_of_escaped.p05 | 0.0033 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta30.velocity_entrainment_share_of_escaped.p95 | 0.5151 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.sin_theta | 0.342 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.boom_length_factor_1_over_sin_theta | 2.924 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_kg.median | 3.457e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_kg.p05 | 1.023e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_kg.p95 | 8.106e+05 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_theta90.median | -0.1879 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_theta90.p05 | -0.5299 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_theta90.p95 | -0.0071 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_current_a_theta90.median | -0.2342 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_current_a_theta90.p05 | -0.5512 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_current_a_theta90.p95 | -0.0482 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_current_a_theta90.draws_a_lower | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_current_a_theta90.n_draws | 40 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.fwce.median | 0.661 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.fwce.p05 | 0.4012 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.fwce.p95 | 0.8106 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.fwce_delta_pp_vs_theta90.median | 8.61 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.fwce_delta_pp_vs_theta90.p05 | 0.25 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.fwce_delta_pp_vs_theta90.p95 | 27.89 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.fwce_delta_pp_vs_current_a_theta90.median | 11.68 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.fwce_delta_pp_vs_current_a_theta90.p05 | 2.68 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.fwce_delta_pp_vs_current_a_theta90.p95 | 30.66 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.velocity_entrainment_share_of_escaped.median | 0.044 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.velocity_entrainment_share_of_escaped.p05 | 0.0011 |
+| boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.velocity_entrainment_share_of_escaped.p95 | 0.362 |
+| ablations.paired_escaped_rel_diff.P2_vs_P1m.median | -0.0271 |
+| ablations.paired_escaped_rel_diff.P2_vs_P1m.p05 | -0.1264 |
+| ablations.paired_escaped_rel_diff.P2_vs_P1m.p95 | 0.0122 |
+| ablations.paired_escaped_rel_diff.P2_vs_P1m.draws_a_lower | 34 |
+| ablations.paired_escaped_rel_diff.P2_vs_P1m.n_draws | 40 |
+| ablations.paired_escaped_rel_diff.P2_vs_P2_notide.median | -0.0318 |
+| ablations.paired_escaped_rel_diff.P2_vs_P2_notide.p05 | -0.1197 |
+| ablations.paired_escaped_rel_diff.P2_vs_P2_notide.p95 | 0.0057 |
+| ablations.paired_escaped_rel_diff.P2_vs_P2_notide.draws_a_lower | 34 |
+| ablations.paired_escaped_rel_diff.P2_vs_P2_notide.n_draws | 40 |
+| ablations.paired_escaped_rel_diff.P2_vs_P2_nofc.median | -0.0042 |
+| ablations.paired_escaped_rel_diff.P2_vs_P2_nofc.p05 | -0.0188 |
+| ablations.paired_escaped_rel_diff.P2_vs_P2_nofc.p95 | 0.0099 |
+| ablations.paired_escaped_rel_diff.P2_vs_P2_nofc.draws_a_lower | 29 |
+| ablations.paired_escaped_rel_diff.P2_vs_P2_nofc.n_draws | 40 |
+| ablations.paired_escaped_rel_diff.P1m_vs_P1.median | -0.0203 |
+| ablations.paired_escaped_rel_diff.P1m_vs_P1.p05 | -0.0414 |
+| ablations.paired_escaped_rel_diff.P1m_vs_P1.p95 | 0.0016 |
+| ablations.paired_escaped_rel_diff.P1m_vs_P1.draws_a_lower | 37 |
+| ablations.paired_escaped_rel_diff.P1m_vs_P1.n_draws | 40 |
+| ablations.paired_escaped_rel_diff.P1m_vs_P0.median | 0.006 |
+| ablations.paired_escaped_rel_diff.P1m_vs_P0.p05 | -0.0058 |
+| ablations.paired_escaped_rel_diff.P1m_vs_P0.p95 | 0.0275 |
+| ablations.paired_escaped_rel_diff.P1m_vs_P0.draws_a_lower | 10 |
+| ablations.paired_escaped_rel_diff.P1m_vs_P0.n_draws | 40 |
+| ablations.paired_escaped_rel_diff.P2_notide_vs_P1m.median | -0.0038 |
+| ablations.paired_escaped_rel_diff.P2_notide_vs_P1m.p05 | -0.0164 |
+| ablations.paired_escaped_rel_diff.P2_notide_vs_P1m.p95 | 0.0644 |
+| ablations.paired_escaped_rel_diff.P2_notide_vs_P1m.draws_a_lower | 26 |
+| ablations.paired_escaped_rel_diff.P2_notide_vs_P1m.n_draws | 40 |
+| ablations.paired_escaped_rel_diff.P2_nofc_vs_P1m.median | -0.0223 |
+| ablations.paired_escaped_rel_diff.P2_nofc_vs_P1m.p05 | -0.1292 |
+| ablations.paired_escaped_rel_diff.P2_nofc_vs_P1m.p95 | 0.0035 |
+| ablations.paired_escaped_rel_diff.P2_nofc_vs_P1m.draws_a_lower | 33 |
+| ablations.paired_escaped_rel_diff.P2_nofc_vs_P1m.n_draws | 40 |
+| ablations.paired_escaped_rel_diff.P2_vs_P1.median | -0.0557 |
+| ablations.paired_escaped_rel_diff.P2_vs_P1.p05 | -0.1575 |
+| ablations.paired_escaped_rel_diff.P2_vs_P1.p95 | -0.0033 |
+| ablations.paired_escaped_rel_diff.P2_vs_P1.draws_a_lower | 39 |
+| ablations.paired_escaped_rel_diff.P2_vs_P1.n_draws | 40 |
+| ablations.escaped_kg.P0.median | 4.283e+05 |
+| ablations.escaped_kg.P0.p05 | 1.444e+05 |
+| ablations.escaped_kg.P0.p95 | 9.615e+05 |
+| ablations.escaped_kg.P1.median | 4.55e+05 |
+| ablations.escaped_kg.P1.p05 | 1.512e+05 |
+| ablations.escaped_kg.P1.p95 | 9.809e+05 |
+| ablations.escaped_kg.P1m.median | 4.29e+05 |
+| ablations.escaped_kg.P1m.p05 | 1.477e+05 |
+| ablations.escaped_kg.P1m.p95 | 9.688e+05 |
+| ablations.escaped_kg.P2_notide.median | 4.485e+05 |
+| ablations.escaped_kg.P2_notide.p05 | 1.554e+05 |
+| ablations.escaped_kg.P2_notide.p95 | 9.654e+05 |
+| ablations.escaped_kg.P2_nofc.median | 4.154e+05 |
+| ablations.escaped_kg.P2_nofc.p05 | 1.506e+05 |
+| ablations.escaped_kg.P2_nofc.p95 | 9.212e+05 |
+| ablations.escaped_kg.P2.median | 4.116e+05 |
+| ablations.escaped_kg.P2.p05 | 1.475e+05 |
+| ablations.escaped_kg.P2.p95 | 9.178e+05 |
+| ablations.fwce.P0.median | 0.4603 |
+| ablations.fwce.P0.p05 | 0.307 |
+| ablations.fwce.P0.p95 | 0.6992 |
+| ablations.fwce.P1.median | 0.4425 |
+| ablations.fwce.P1.p05 | 0.3 |
+| ablations.fwce.P1.p95 | 0.6926 |
+| ablations.fwce.P1m.median | 0.457 |
+| ablations.fwce.P1m.p05 | 0.3058 |
+| ablations.fwce.P1m.p95 | 0.698 |
+| ablations.fwce.P2_notide.median | 0.462 |
+| ablations.fwce.P2_notide.p05 | 0.3104 |
+| ablations.fwce.P2_notide.p95 | 0.6974 |
+| ablations.fwce.P2_nofc.median | 0.4884 |
+| ablations.fwce.P2_nofc.p05 | 0.3078 |
+| ablations.fwce.P2_nofc.p95 | 0.7014 |
+| ablations.fwce.P2.median | 0.4907 |
+| ablations.fwce.P2.p05 | 0.3088 |
+| ablations.fwce.P2.p95 | 0.7013 |
+| ablations.cleared_share_of_unique_input.P0.median | 0.4579 |
+| ablations.cleared_share_of_unique_input.P0.p05 | 0.2977 |
+| ablations.cleared_share_of_unique_input.P0.p95 | 0.6962 |
+| ablations.cleared_share_of_unique_input.P1.median | 0.4408 |
+| ablations.cleared_share_of_unique_input.P1.p05 | 0.2906 |
+| ablations.cleared_share_of_unique_input.P1.p95 | 0.6905 |
+| ablations.cleared_share_of_unique_input.P1m.median | 0.4554 |
+| ablations.cleared_share_of_unique_input.P1m.p05 | 0.2938 |
+| ablations.cleared_share_of_unique_input.P1m.p95 | 0.6957 |
+| ablations.cleared_share_of_unique_input.P2_notide.median | 0.4591 |
+| ablations.cleared_share_of_unique_input.P2_notide.p05 | 0.2985 |
+| ablations.cleared_share_of_unique_input.P2_notide.p95 | 0.695 |
+| ablations.cleared_share_of_unique_input.P2_nofc.median | 0.4719 |
+| ablations.cleared_share_of_unique_input.P2_nofc.p05 | 0.3067 |
+| ablations.cleared_share_of_unique_input.P2_nofc.p95 | 0.6981 |
+| ablations.cleared_share_of_unique_input.P2.median | 0.4796 |
+| ablations.cleared_share_of_unique_input.P2.p05 | 0.3075 |
+| ablations.cleared_share_of_unique_input.P2.p95 | 0.6988 |
+| mass_boundary.P0.unique_input_kg.median | 9.644e+05 |
+| mass_boundary.P0.unique_input_kg.p05 | 3.496e+05 |
+| mass_boundary.P0.unique_input_kg.p95 | 1.388e+06 |
+| mass_boundary.P0.cleared_kg.median | 4.357e+05 |
+| mass_boundary.P0.cleared_kg.p05 | 1.521e+05 |
+| mass_boundary.P0.cleared_kg.p95 | 7.747e+05 |
+| mass_boundary.P0.stored_at_season_end_kg.median | 2936 |
+| mass_boundary.P0.stored_at_season_end_kg.p05 | 758 |
+| mass_boundary.P0.stored_at_season_end_kg.p95 | 3.386e+04 |
+| mass_boundary.P0.held_upstream_at_season_end_kg.median | 1199 |
+| mass_boundary.P0.held_upstream_at_season_end_kg.p05 | 332 |
+| mass_boundary.P0.held_upstream_at_season_end_kg.p95 | 4266 |
+| mass_boundary.P0.escaped_kg.median | 4.283e+05 |
+| mass_boundary.P0.escaped_kg.p05 | 1.444e+05 |
+| mass_boundary.P0.escaped_kg.p95 | 9.615e+05 |
+| mass_boundary.P0.cleared_share.median | 0.4579 |
+| mass_boundary.P0.cleared_share.p05 | 0.2977 |
+| mass_boundary.P0.cleared_share.p95 | 0.6962 |
+| mass_boundary.P0.retained_share.median | 0.0028 |
+| mass_boundary.P0.retained_share.p05 | 0.0016 |
+| mass_boundary.P0.retained_share.p95 | 0.0326 |
+| mass_boundary.P0.escaped_share.median | 0.5388 |
+| mass_boundary.P0.escaped_share.p05 | 0.2994 |
+| mass_boundary.P0.escaped_share.p95 | 0.691 |
+| mass_boundary.P1.unique_input_kg.median | 9.644e+05 |
+| mass_boundary.P1.unique_input_kg.p05 | 3.496e+05 |
+| mass_boundary.P1.unique_input_kg.p95 | 1.388e+06 |
+| mass_boundary.P1.cleared_kg.median | 4.25e+05 |
+| mass_boundary.P1.cleared_kg.p05 | 1.435e+05 |
+| mass_boundary.P1.cleared_kg.p95 | 7.637e+05 |
+| mass_boundary.P1.stored_at_season_end_kg.median | 3045 |
+| mass_boundary.P1.stored_at_season_end_kg.p05 | 509 |
+| mass_boundary.P1.stored_at_season_end_kg.p95 | 3.405e+04 |
+| mass_boundary.P1.held_upstream_at_season_end_kg.median | 1305 |
+| mass_boundary.P1.held_upstream_at_season_end_kg.p05 | 363 |
+| mass_boundary.P1.held_upstream_at_season_end_kg.p95 | 4096 |
+| mass_boundary.P1.escaped_kg.median | 4.55e+05 |
+| mass_boundary.P1.escaped_kg.p05 | 1.512e+05 |
+| mass_boundary.P1.escaped_kg.p95 | 9.809e+05 |
+| mass_boundary.P1.cleared_share.median | 0.4408 |
+| mass_boundary.P1.cleared_share.p05 | 0.2906 |
+| mass_boundary.P1.cleared_share.p95 | 0.6905 |
+| mass_boundary.P1.retained_share.median | 0.0029 |
+| mass_boundary.P1.retained_share.p05 | 0.0014 |
+| mass_boundary.P1.retained_share.p95 | 0.0311 |
+| mass_boundary.P1.escaped_share.median | 0.5563 |
+| mass_boundary.P1.escaped_share.p05 | 0.306 |
+| mass_boundary.P1.escaped_share.p95 | 0.6989 |
+| mass_boundary.P2.unique_input_kg.median | 9.644e+05 |
+| mass_boundary.P2.unique_input_kg.p05 | 3.496e+05 |
+| mass_boundary.P2.unique_input_kg.p95 | 1.388e+06 |
+| mass_boundary.P2.cleared_kg.median | 4.804e+05 |
+| mass_boundary.P2.cleared_kg.p05 | 1.477e+05 |
+| mass_boundary.P2.cleared_kg.p95 | 7.85e+05 |
+| mass_boundary.P2.stored_at_season_end_kg.median | 2692 |
+| mass_boundary.P2.stored_at_season_end_kg.p05 | 642 |
+| mass_boundary.P2.stored_at_season_end_kg.p95 | 2.523e+04 |
+| mass_boundary.P2.held_upstream_at_season_end_kg.median | 1213 |
+| mass_boundary.P2.held_upstream_at_season_end_kg.p05 | 350 |
+| mass_boundary.P2.held_upstream_at_season_end_kg.p95 | 3812 |
+| mass_boundary.P2.escaped_kg.median | 4.116e+05 |
+| mass_boundary.P2.escaped_kg.p05 | 1.475e+05 |
+| mass_boundary.P2.escaped_kg.p95 | 9.178e+05 |
+| mass_boundary.P2.cleared_share.median | 0.4796 |
+| mass_boundary.P2.cleared_share.p05 | 0.3075 |
+| mass_boundary.P2.cleared_share.p95 | 0.6988 |
+| mass_boundary.P2.retained_share.median | 0.0026 |
+| mass_boundary.P2.retained_share.p05 | 0.0013 |
+| mass_boundary.P2.retained_share.p95 | 0.0255 |
+| mass_boundary.P2.escaped_share.median | 0.5084 |
+| mass_boundary.P2.escaped_share.p05 | 0.2973 |
+| mass_boundary.P2.escaped_share.p95 | 0.69 |
 | checks.mass_balance_max_abs_err_kg | 0 |
 | checks.equal_crew_hours | True |
 | checks.escaped_median_matches_metrics_json | True |
@@ -733,16 +1180,52 @@ Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.ana
 | per_draw.P0.fwce | [list of 40] |
 | per_draw.P1.escaped_kg | [list of 40] |
 | per_draw.P1.fwce | [list of 40] |
+| per_draw.P1m.escaped_kg | [list of 40] |
+| per_draw.P1m.fwce | [list of 40] |
 | per_draw.P2.escaped_kg | [list of 40] |
 | per_draw.P2.fwce | [list of 40] |
+| per_draw.P2_nofc.escaped_kg | [list of 40] |
+| per_draw.P2_nofc.fwce | [list of 40] |
+| per_draw.P2_notide.escaped_kg | [list of 40] |
+| per_draw.P2_notide.fwce | [list of 40] |
 | per_draw.P2|a_current_release.escaped_kg | [list of 40] |
 | per_draw.P2|a_current_release.fwce | [list of 40] |
+| per_draw.P2|a_current_release|theta20.escaped_kg | [list of 40] |
+| per_draw.P2|a_current_release|theta20.fwce | [list of 40] |
+| per_draw.P2|a_current_release|theta30.escaped_kg | [list of 40] |
+| per_draw.P2|a_current_release|theta30.fwce | [list of 40] |
+| per_draw.P2|a_current_release|theta45.escaped_kg | [list of 40] |
+| per_draw.P2|a_current_release|theta45.fwce | [list of 40] |
 | per_draw.P2|b_fail_open_fuse.escaped_kg | [list of 40] |
 | per_draw.P2|b_fail_open_fuse.fwce | [list of 40] |
 | per_draw.P2|c_fuse_refloat_x0.2.escaped_kg | [list of 40] |
 | per_draw.P2|c_fuse_refloat_x0.2.fwce | [list of 40] |
 | per_draw.P2|c_fuse_refloat_x0.5.escaped_kg | [list of 40] |
 | per_draw.P2|c_fuse_refloat_x0.5.fwce | [list of 40] |
+| per_draw.P2|c_fuse_refloat_x0.5|theta20.escaped_kg | [list of 40] |
+| per_draw.P2|c_fuse_refloat_x0.5|theta20.fwce | [list of 40] |
+| per_draw.P2|c_fuse_refloat_x0.5|theta30.escaped_kg | [list of 40] |
+| per_draw.P2|c_fuse_refloat_x0.5|theta30.fwce | [list of 40] |
+| per_draw.P2|c_fuse_refloat_x0.5|theta45.escaped_kg | [list of 40] |
+| per_draw.P2|c_fuse_refloat_x0.5|theta45.fwce | [list of 40] |
+| exposure_P2_nominal.v50_ms_nominal | 0.45 |
+| exposure_P2_nominal.hours_per_site | 5856 |
+| exposure_P2_nominal.theta90.share_of_hours | 0.1322 |
+| exposure_P2_nominal.theta90.share_of_arrived_kg | 0.132 |
+| exposure_P2_nominal.theta90.by_site.mithi_mahim.share_of_hours | 0.1387 |
+| exposure_P2_nominal.theta90.by_site.mithi_mahim.share_of_arrived_kg | 0.1331 |
+| exposure_P2_nominal.theta90.by_site.oshiwara_malad.share_of_hours | 0.1928 |
+| exposure_P2_nominal.theta90.by_site.oshiwara_malad.share_of_arrived_kg | 0.1431 |
+| exposure_P2_nominal.theta90.by_site.dahisar_mouth.share_of_hours | 0.1918 |
+| exposure_P2_nominal.theta90.by_site.dahisar_mouth.share_of_arrived_kg | 0.1614 |
+| exposure_P2_nominal.theta90.by_site.trombay_mahul.share_of_hours | 0.0056 |
+| exposure_P2_nominal.theta90.by_site.trombay_mahul.share_of_arrived_kg | 0.005 |
+| exposure_P2_nominal.theta45.share_of_hours | 0.0417 |
+| exposure_P2_nominal.theta45.share_of_arrived_kg | 0.0359 |
+| exposure_P2_nominal.theta30.share_of_hours | 0.0066 |
+| exposure_P2_nominal.theta30.share_of_arrived_kg | 0.0038 |
+| exposure_P2_nominal.theta20.share_of_hours | 0.0003 |
+| exposure_P2_nominal.theta20.share_of_arrived_kg | 0.0001 |
 
 ## twin_sim — metrics.json
 

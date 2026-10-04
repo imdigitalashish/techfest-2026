@@ -29,12 +29,13 @@
 **4. "Why is your dispatch gain against today's schedule so small?"**
 - Because it is small, and we say so: {{r:p2p0_med}} escaped vs an *assumed* fixed roster, central 90% scenario range {{r:p2p0_lo}} to {{r:p2p0_hi}} (SIMULATED).
 - The robust comparison is our full policy against a fill-fraction-ranked rule: {{r:p2p1_med}}, lower in {{r:p2p1_n}} of {{r:n_draws}} settings.
-- That comparison bundles three changes: ranking by kilograms, tide timing and forecasts. We don't credit any one of them alone; separating them is the next analysis.
+- That comparison bundles three changes. Separated in the model: tide timing alone {{r:abl_tide_med}} (range {{r:abl_tide_lo}} to {{r:abl_tide_hi}}), forecasts {{r:abl_fc_med}}, ranking by kilograms {{r:abl_mass_med}}. None clears zero on its own; only the full combination does.
 
 **5. "So what *is* the big lever?"**
-- In our model, capture losses: {{r:ent_esc}} of escaped plastic passes under or through the boom, including an assumed still-water loss. Overflow is {{r:over_esc}}.
+- In our model, capture losses: {{r:ent_esc}} of escaped plastic passes under or through the boom; overflow is {{r:over_esc}}.
+- But {{r:ent_floor_esc}} of all escape is a still-water leak we *assumed*, only {{r:ent_vel_esc}} is driven by flow speed, and just {{r:expo_kg}} of arriving plastic comes at high speed. So the first measurement is a real boom's leak.
 - That pattern comes from a capture curve we assumed, informed by oil-boom guidance (about {{f:F14|0.35 m/s}} across the boom).
-- So we test angle and pocket retention first. With a pocket that halves tidal re-floating, the model gives {{r:pk5_med}} (SENSITIVITY).
+- Then angle and pocket retention. Under the assumed curves, a 30° boom gives {{r:ang30_med}} and a pocket that halves re-floating gives {{r:pk5_med}} (SENSITIVITY: these follow from our assumptions; they are not confirmations).
 
 ## B. Flood safety and hardware
 
@@ -99,8 +100,8 @@
 - We do not claim a payback. The pilot must measure the extra verified dry kilograms per rupee against a stated baseline.
 
 **17. "Why does this beat a cheap kilogram-ranked roster or an extra clearance visit?"**
-- We haven't shown that yet. A kilogram-ranked roster and a timing-only variant are the next comparisons in the twin.
-- An extra visit costs crew-hours. Our comparison holds crew-hours equal, and an extra visit would be evaluated the same way.
+- In our model, a cheap kilogram-ranked sensor rule gets part of the way: {{r:abl_mass_med}} vs the fill-fraction rule. Our full policy vs that kilogram-ranked rule is {{r:p2p1m_med}}, with a range ({{r:p2p1m_lo}} to {{r:p2p1m_hi}}) that crosses zero. So a simple kg-ranked rule may be enough; the field pilot should test it first.
+- An extra visit costs crew-hours. Our comparisons hold crew-hours equal.
 
 **18. "Who takes the wet film, who pays to prepare and transport it, and what proves final disposal?"**
 - Nobody buys it for its material value; waste-picker groups report sachets sometimes go to cement kilns for free ({{f:F25|Break Free From Plastic, 2023}}).
@@ -129,7 +130,7 @@
 - A field pilot depends on permission, safety and a site survey.
 
 **23. "Where does a longer, angled boom and a bank pocket fit without blocking access or the conveyor?"**
-- At 20° the boom is about three times the channel width, which may not fit narrow nullahs. That is why we start with one surveyed site and a dimensioned drawing.
+- At 20° the boom is {{r:ang20_len}}× the channel width, which may not fit narrow nullahs. That is why we start with one surveyed site and a dimensioned drawing.
 - The concept sketch is not to scale; land, anchor and access permissions come first.
 
 **24. "What happens when power, communications or a sensor fail during a storm?"**

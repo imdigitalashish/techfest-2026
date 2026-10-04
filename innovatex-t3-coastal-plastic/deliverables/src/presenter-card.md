@@ -19,9 +19,9 @@
 
 - {{f:F01|5 million kg}} a year: The Ocean Cleanup's survey *estimate* for the region.
 - BMC booms in a 2025 report: {{f:F12|9}} existing, expanding to {{f:F12|23}}, about {{f:F12|₹1 crore}} each. Maintenance contract: {{f:F13|₹14.5 crore}} for two years across six waterways.
-- Model (SIMULATED): {{r:ent_esc}} of escaped plastic passes under or through the boom. That is an assumed capture curve, not a finding.
+- Model (SIMULATED): {{r:ent_esc}} of escaped plastic passes under or through the boom, but {{r:ent_floor_esc}} of escape is an *assumed* still-water leak. Assumed curves, not findings.
 - Full policy vs fill-fraction rule: {{r:p2p1_med}}, lower in {{r:p2p1_n}} of {{r:n_draws}} *parameter settings*. Vs an assumed roster: {{r:p2p0_med}}, small and uncertain.
-- Fail-open section alone: {{r:fuse_med}} (it's for safety). Pocket, if it halves re-floating: {{r:pk5_med}} (SENSITIVITY).
+- Fail-open alone: {{r:fuse_med}} (it's for safety). Pocket halving re-float: {{r:pk5_med}}; 30° boom: {{r:ang30_med}} (SENSITIVITY). Tide timing alone: {{r:abl_tide_med}}, doesn't clear zero.
 - Sensor node: {{f:D04|₹83,481.98}} in listed parts with enclosure. Installation and servicing are extra.
 
 **Fast answers**
