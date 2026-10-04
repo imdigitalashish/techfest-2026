@@ -132,6 +132,21 @@ def claims() -> dict:
             u = inv["usage"][k]
             c[f"inv.{k}.cost_per_item"] = f"${u['cost_usd_estimate'] / max(1, u['calls']):.3f}"
             c[f"inv.{k}.reasoning_per_item"] = f"{round(u['reasoning_tokens'] / max(1, u['calls'])):,}"
+        # L3-only effort (demo review #4): same population as the L3 accuracy, from the committed responses
+        rpath = RES / "llm_gaps_inversion_responses.jsonl"
+        if rpath.exists():
+            rows = [json.loads(x) for x in rpath.read_text().splitlines() if x.strip()]
+            for k in inv.get("decisions", {}):
+                l3 = [r for r in rows if r["model"] == k and "-L3-" in r["item_id"]]
+                if not l3:
+                    continue
+                pin, pout = inv["models"][k]["price"]
+                rt = sum(((r.get("usage") or {}).get("completion_tokens_details") or {}).get("reasoning_tokens", 0) for r in l3)
+                cost = sum((r.get("usage") or {}).get("prompt_tokens", 0) / 1e6 * pin
+                           + (r.get("usage") or {}).get("completion_tokens", 0) / 1e6 * pout for r in l3)
+                c[f"inv.{k}.L3_reasoning_per_item"] = f"{round(rt / len(l3)):,}"
+                c[f"inv.{k}.L3_cost_per_item"] = f"${cost / len(l3):.3f}"
+                c[f"inv.{k}.L3_n"] = str(len(l3))
     if r.get("usage"):
         for k, u in r["usage"].items():
             c[f"real.{k}.cost1000"] = f"${1000 * u['cost_usd_estimate'] / max(1, u['calls']):.2f}"
