@@ -56,7 +56,7 @@
 - What companies ship: urban air-quality networks and forecasting products — check recent launches and city deployments.
 
 ## Key decisions
-- 2026-10-04 — City = Delhi-NCR; pollution source = construction & demolition dust; product = DustLedger (site-level attribution, not city AQI). Evidence: blanket bans in WAP 2026-27 and GRAP, flat fines, 1.38 M registered workers, no vendor attributes a site's own increment ([landscape](research/landscape.md)).
+- 2026-10-04 — City = Delhi-NCR; pollution source = construction & demolition dust; product = DustLedger (site-level attribution, not city AQI). Evidence: blanket bans in WAP 2026-27 and GRAP, flat fines, 1.38 M construction workers on Delhi's welfare-board rolls (89,518 active), no vendor attributes a site's own increment ([landscape](research/landscape.md)).
 - 2026-10-04 — Spike = C6 attribution + inter-node self-calibration; second spike = C8 closed-loop misting; forecasting stays best-practice ([ADR 001](architecture/adr/001-spike.md)).
 - 2026-10-04 — Real data via the OpenAQ public S3 archive (no key) + Open-Meteo (ERA5, CAMS). Everything simulated is labelled `provenance="SIMULATED"`.
 

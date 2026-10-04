@@ -72,7 +72,7 @@
 | Stubble burning | Regional and episodic (≤ 44 % on peak days); outside a city solution's control | Forecast input |
 | Industry | CPCB online emission monitoring already exists | — |
 
-We chose construction & demolition dust because it is the source Delhi controls by **blanket bans** that hurt 1.38 M registered workers, has an identifiable **payer** (the site owner, facing flat fines), is **measurable at a fence line**, and leaves a gap no vendor we found fills. We answer the "dust is less harmful than combustion" objection in ADR 001.
+We chose construction & demolition dust because it is the source Delhi controls by **blanket bans** that hit construction workers (1.38 M on Delhi's welfare-board rolls, 89,518 active), has an identifiable **payer** (the site owner, facing flat fines), is **measurable at a fence line**, and leaves a gap no vendor we found fills. We answer the "dust is less harmful than combustion" objection in ADR 001.
 
 ## 6. Open research (UNVERIFIED, next)
 Construction's own share of Delhi PM10/PM2.5; the exact CAQM direction text (sensor and portal requirements, the 500 m² registration threshold); BMC's 2023 Mumbai construction-sensor rules; PM10 sensor targets (EPA/CEN); suppression efficiency and water use; Indian prices for the BOM (see `deliverables/prototype-plan.md` for what's verified).

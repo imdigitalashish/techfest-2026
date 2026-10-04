@@ -4,7 +4,7 @@
 - **Context:** [landscape](../../research/landscape.md) · [components](../components.md)
 
 ## Context
-Delhi controls construction dust with blanket restrictions: Nov 1–Jan 31 restrictions on dust-generating works and a total ban Dec 10–Jan 20 (Winter Action Plan 2026-27), plus GRAP stops (16 days of GRAP-3 in 2025). These affect 1.38 M registered workers. Compliance is measured by equipment counts, CCTV and self-audits, and reference monitors are 25–50 km² apart. **Nobody measures what a given site adds.** The judges reward novelty, robustness in "high-dust atmospheres", calibration/maintenance realism, cost, scalability and quantified impact.
+Delhi controls construction dust with blanket restrictions: Nov 1–Jan 31 restrictions on dust-generating works and a total ban Dec 10–Jan 20 (Winter Action Plan 2026-27), plus GRAP stops (16 days of GRAP-3 in 2025). Delhi's construction welfare board has 1.38 M workers on its rolls (89,518 active members). Compliance is measured by equipment counts, CCTV and self-audits, and the reference-monitor norm is one station per 25–50 km². **Nobody measures what a given site adds.** The judges reward novelty, robustness in "high-dust atmospheres", calibration/maintenance realism, cost, scalability and quantified impact.
 
 ## Candidates (scored 1–5)
 | Candidate | Impact on judged criteria | Novelty vs SOTA | Feasible by 1 Dec | Scalar metric | Demo | Total |
