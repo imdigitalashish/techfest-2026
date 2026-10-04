@@ -1,6 +1,6 @@
 # Zonal pitch — InnovateX Theme 3 (Delhi zonal, 10 Oct 2026, 10 minutes)
 
-> Draft v1.2 (4 Oct 2026, 07:15 IST) by the project lead. Every number carries a source key; the source list is at the end and in [`../research/`](../research/).
+> Draft v1.3 (4 Oct 2026, 07:35 IST) by the project lead. Every number carries a source key; the source list is at the end and in [`../research/`](../research/).
 > - **[V]** = lead not yet verified at a primary source. Verify it or cut it before the pitch.
 > - **SIMULATED** = output of our digital twin, not field data.
 > - **⟨FILL⟩** = to be filled from a committed run or the sourced BOM. Never invent it.
@@ -22,13 +22,18 @@ Two Interceptors will soon guard two of Mumbai's creeks. NullahNet makes the lon
 ## Slide 2 — The problem in numbers (0:40–1:40)
 - **≈5 million kg/yr.** The Mumbai metropolitan region releases an estimated 5 million kg of plastic a year into the Arabian Sea and Indian Ocean. Impacts reach 220 km of coastline, 152 km² of mangroves, 107 protected species and ~1.9 million livelihoods (The Ocean Cleanup, Smart Rivers Survey, 10 Feb 2026) [S1].
 - **≈50 outlets.** That flow enters the sea through "around 50 drains and nullahs" (Lokmat Times, reporting the same study) [S4].
+- **186 outfalls.** Mumbai's storm-water network has ~2,000 km of open drains and 186 outfalls. Most drains were designed for ~25 mm/h of rain at low tide (BRIMSTOWAD, via a secondary summary; the primary PDF was unreachable) [M:S7].
+- **The pulse is visible.** After more than 1,000 mm of rain in early July 2026, BMC removed 2,498.66 t of marine waste from seven beaches in 11 days (9–19 Jul 2026); 1,825 t came from Juhu alone [M:S17][M:S18].
+- **Uncollected waste.** An older BMC estimate says 500 t/day of uncollected waste "ends up in the storm water drains". Mumbai generated 6,330 t/day of municipal waste in 2022 [M:S10][M:S16].
 - **Global ranking.** An independent global model (Meijer et al. 2021, *Science Advances*) ranks Malad Creek #30 and the Mithi #48 of 31,819 modelled outfalls worldwide. These are modelled estimates, not measurements [S5][S6].
 - **Speaker notes:** "Two different methods disagree on the exact tonnage. The model puts Malad Creek alone at ~2,700 t/yr. Both agree Mumbai is one of the world's largest urban sources. The same study names Malad and Trombay — the two outlets in your problem statement." Show one map: outfalls, Malad and Trombay creeks, the Mithi.
 
 ## Slide 3 — Our specific source (1:40–2:30)
 - **What leaks:** floating single-use *flexible* packaging — carry bags, films, multilayer sachets — from market and dense-settlement catchments. It enters nullahs and leaks at *small* outfalls.
 - **Why this one:**
-  - It is the litter collection misses (low resale value, so informal pickers skip it) **[V — cite a Mumbai composition survey]**.
+  - Plastic made up 75.5% of 52,770 litter items counted at Juhu and Aksa beaches, and plastic bags were the largest beach-trash component in a 2015–16 survey [M:TL;DR 8].
+  - It is the residue collection misses: low resale value means informal pickers skip it **[V]**.
+  - The ban hasn't stopped it. In 2024 BMC fined 44,448 establishments a total of ₹41.7 lakh but confiscated only 2,148 kg of plastic [M:S19][M:S21].
   - It is light, so the first monsoon storms flush it.
   - It escapes under booms when the flow is fast.
 - **Speaker notes:** "Bottles get picked up because they have resale value; films and sachets don't. That makes film the residual that reaches the sea." Say this only once a composition source is cited; otherwise frame it as our hypothesis and the first thing our camera measures.
@@ -38,7 +43,7 @@ Two Interceptors will soon guard two of Mumbai's creeks. NullahNet makes the lon
 |---|---|---|
 | The Ocean Cleanup Interceptors at Malad and Trombay creeks (MCGM permits, MPCB MoU, 2026) [S1][S2] | Big solar barriers at two creek mouths; 61–92 t/yr expected from the first systems [S1] | ≈1.2–1.8% of 5,000 t/yr (our arithmetic). The other outfalls are untouched. |
 | Plastic Fischer TrashBooms (on-ground partner) [S2][S7] | Low-tech booms; 3.2 million kg recovered with 71 booms across 8 sites (India + Indonesia); per-kg third-party verification [S7] | Manual chain of custody; no forecasting or tide logic; sees only what reaches the bank |
-| BMC steel-net trash booms with conveyors at nullah mouths [S11] | 9 booms since ~2022, 14 more planned (→ 23). About ₹1 crore each. About 1.5 t/day per boom in the dry season and 2.5–3 t/day in the monsoon (mixed garbage). O&M is ₹14.5 crore for 2 years across six western-suburb sites [S12] | Un-instrumented: no fill sensing, no forecast or tide logic, and pay is per contract, not per verified kg. Quantities are hard to verify — a 2025 police probe concerned Mithi desilting quantities **[V]**. |
+| BMC steel-net trash booms with conveyors at nullah mouths [S11] | 9 booms since ~2022, 14 more planned (→ 23). About ₹1 crore each. About 1.5 t/day per boom in the dry season and 2.5–3 t/day in the monsoon (mixed garbage). O&M is ₹14.5 crore for 2 years across six western-suburb sites [S12] | Un-instrumented: no fill sensing, no forecast or tide logic, and pay is per contract, not per verified kg. Quantities are hard to verify. In the Mithi desilting case, the EOW SIT's FIR cites a ₹65.54 crore wrongful loss. The SIT is examining ₹1,100 crore spent on the Mithi by BMC and MMRDA since 2005 (allegations under investigation) [P:P5]. |
 | Trash wheel (Baltimore), Bubble Barrier (Amsterdam), WasteShark | ~500 tons/yr at one site (operator claim) [S8]; ~1 t/yr at one canal [S9]; 160-litre basket [S10] | Costly fixed civil works, mains power, or tiny capacity. None built for twice-daily tidal reversal. |
 - **Speaker notes:** "We are not competing with The Ocean Cleanup. They take the two biggest mouths. We take the long tail, and our data layer could plug into their verification too."
 
@@ -102,8 +107,8 @@ All four results come from runs committed to our repo, each with a reproduce com
   - Ratchet/fuse retrofit: ⟨FILL after the flume build⟩.
   - **For comparison:** a BMC boom costs ≈ ₹1 crore [S11], and boom O&M runs ≈ ₹1.2 crore per site-year (derived from ₹14.5 crore / 6 sites / 2 years; assumes one boom per site) [S12]. Instrumenting a boom costs **under 1% of the boom's price**.
 - **Who pays:**
-  - BMC storm-water-drain budgets already pay for booms and clearance **[V amounts]**. We make that spend verifiable and better timed.
-  - Producers (PIBOs) under EPR could fund the low-value film stream **[V eligibility]**.
+  - BMC already pays for booms and clearance. Its 2026-27 budget is ₹80,952.56 crore, with roads and storm-water drains taking "more than half". Boom O&M runs ₹14.5 crore for two years at six sites [P:P4][S12]. We make that spend verifiable and better timed.
+  - Producers (PIBOs) under EPR. Category II explicitly covers "carry bags, plastic sachet or pouches". Non-recyclable plastic may go to end-of-life routes such as cement-kiln co-processing [P:P1]. **Open question:** whether drain-recovered plastic earns EPR certificates is NOT FOUND in the rules. The workaround is a registered processor partner.
   - CSR and plastic-credit buyers pay for verified kg. Plastic Fischer already sells verified waste credits [S7].
 - **Speaker notes:** "Our wedge is pay-per-verified-kg. It saves the city money on the claims that cannot be verified. It is not another cost line."
 
@@ -147,7 +152,9 @@ All four results come from runs committed to our repo, each with a reproduce com
 8. **"Hash chains don't make data true."**
    - Correct. They make edits detectable. Truth comes from *independent* evidence: camera before/after fill, weighbridge, GPS.
    - Disagreements are flagged for review, not auto-rejected.
-9. **"Who buys wet, dirty film?"** Low-value film usually goes to cement-kiln co-processing, which is an end-of-life route under EPR **[V]**. Producers fund it; resale value doesn't. ⟨FILL from policy-economics.md⟩
+9. **"Who buys wet, dirty film?"**
+   - Nobody buys it for its material value. Under the PWM Rules, non-recyclable plastic may go to end-of-life routes — road construction, waste-to-energy, waste-to-oil, cement-kiln co-processing — through processors registered on CPCB's EPR portal [P:P1].
+   - Producers' EPR obligations are the paying party. We have not found a rule confirming that drain-recovered plastic earns certificates, so we treat that revenue as upside, not as the base case.
 10. **"Isn't the real fix waste collection upstream?"**
     - Yes, and interception is the last line of defence.
     - Our outfall data ranks catchments by leakage, so the ward can target collection and enforcement. That is source reduction informed by data.
@@ -176,4 +183,6 @@ All four results come from runs committed to our repo, each with a reproduce com
 - [S11] Hindustan Times on BMC's nullah trash booms (9 installed, 14 planned, ≈ ₹1 crore each, t/day) — URL and quotes in [interception-hardware.md](../research/components/interception-hardware.md) and [landscape.md](../research/landscape.md)
 - [S12] Free Press Journal, 30 Jul 2026, on BMC's ₹14.5-crore two-year boom O&M contract (Virgo Specialties) — see [interception-hardware.md](../research/components/interception-hardware.md)
 - [S13] NASA POWER climatology API (Mumbai) and Indian retailer product pages, opened 2026-10-04 — see [sensing-edge-bom.md](../research/components/sensing-edge-bom.md)
+- [M:…] keys in [research/mumbai-context.md](../research/mumbai-context.md) (sources S1–S21: The Ocean Cleanup, Lokmat, Plastic Bank / Meijer et al. 2021, BRIMSTOWAD summary, BMC ESR 2022-23, beach-clean-up and ban-enforcement reporting, EOW FIR coverage)
+- [P:…] keys in [research/components/policy-economics.md](../research/components/policy-economics.md) (P1 PWM Rules 2016 as amended / EPR guidelines; P4–P7 BMC budget 2026-27; P8 Maharashtra minimum wages)
 - [S14] ITOPF Technical Information Paper 3 (boom escape velocity ≈ 0.35 m/s) — see [interception-hardware.md](../research/components/interception-hardware.md)
