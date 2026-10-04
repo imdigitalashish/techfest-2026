@@ -10,12 +10,19 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
+- **Phase:** 0 done → 4 (walking skeleton + eval harness) in parallel with 1–3 docs. **LEAN MODE** (Supervisor, 05:49): no sub-agents, small requests, no downloads > 200 MB, push every 30 min.
+- **Plan (to 08:15 push):** MLX harness on the *already-cached* `mlx-community/Llama-3.2-1B-Instruct-4bit` + local WikiText-103 haystack → real numbers for full cache vs StreamingLLM / H2O / SnapKV / K-norm / KV-quant, query-agnostic protocol → landscape.md (primary sources I open myself) → components + contracts → ADR 001 → selection memo → abstract + architecture.md.
+- **Doing:** lead alone (7 research agents launched at 02:10 all died on model-side "408 request body" timeouts; no output survived).
+- **Next:** harness smoke test → baseline grid in background → docs.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** _(lead fills)_
+- **Risks:** (1) Lost 02:10–05:50 to agent failures — research depth is thinner than planned; landscape cites only what I open myself. (2) Shared 24 GB M5 with 19 sibling sessions: GPU/RAM contention can slow runs. (3) Network saturated: no model downloads; model = 4-bit weights (KV itself stays fp16).
+
+## Phase 0 — what the judges need to see (from `_briefs/perceptron.txt`)
+- **MVP bullets → evidence:** (a) one existing method applied + memory saved vs uncompressed → a table of *retained KV bytes* (counting every index/scale byte) and measured peak memory, per method and ratio; (b) accuracy drop on a small long-context recall task → needle-recall accuracy with 95% Wilson CIs vs the full cache.
+- **Stretch → evidence:** a modification of an existing method (our spike) + ≥ 2 baselines (StreamingLLM, H2O, SnapKV, K-norm, KV-quant) on the same harness.
+- **Round 1 (31 Oct) is plan-only:** 600–900-word abstract, 8 sections (problem & theme, understanding, approach, MVP mapping, stretch, novelty, evaluation plan, feasibility & risks) + optional 1-page diagram. Weights: understanding 20 · soundness 25 · novelty 20 · clarity 10 · evaluation 15 · team 10.
+- **Rules:** team ≤ 3, one Perceptron problem per team, original work, queries only via the Techfest portal; finals need a working build (MVP + stretch).
+- **Assumptions (overnight, no user):** A1 model = Llama-3.2-1B-Instruct (in the brief's 1–3B range; 4-bit MLX weights already on disk; KV in fp16). A2 primary protocol = *query-agnostic* (compress the context before the question arrives) — it matches "chat histories"; query-aware numbers reported alongside. A3 recall task = RULER-style synthetic needles in WikiText-103 text (generated with fixed seeds; labelled synthetic).
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -59,3 +66,9 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 06:00 IST — Phase 0 done; switching to lean mode
+- Read PLAYBOOK, seeded brief and `_briefs/perceptron.txt`; constraints and judge-facing evidence list are in *Phase 0* above.
+- 02:10: launched 6 research agents (eviction papers, quant/low-rank/recompute, companies, social, benchmarks, libraries) + 1 first-principles agent. All failed or vanished with model-side "408 Timed out reading request body" (machine-wide network saturation); no output survived. Lesson: keep requests small; do research myself with compact fetches.
+- Environment: Apple M5, 24 GB, macOS 26.2; project venv `perceptron-p02-kv-cache/.venv` (mlx 0.32.3, mlx-lm 0.32.0; the kvpress/torch install timed out on the network — not retried, per lean mode). Cached model `mlx-community/Llama-3.2-1B-Instruct-4bit` (16 layers, 8 KV heads × 64 dims → 32 KiB fp16 KV per token). Azure: a Visual Studio Enterprise subscription is enabled; GPU quota unknown (not needed tonight).
+- Supervisor 05:49: LEAN MODE — acknowledged; working alone and sequentially.
