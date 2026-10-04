@@ -234,8 +234,8 @@ def generate_benchmark(n: int = 5000, seed: int = 2026, shared_id_rate: float = 
     return pd.DataFrame(poshan_rows), pd.DataFrame(rch_rows), truth
 
 
-FEMALE_NAMES_OTHER_ENDINGS = {"Yasmin", "Noor", "Rukhsar", "Shabnam", "Parveen", "Hetal", "Kinjal", "Foram", "Rukhsar"}
-MALE_NAMES_FEMININE_ENDINGS = {"Krishna", "Aditya", "Shaurya", "Rudra", "Sai", "Ali", "Mani", "Bala", "Muthu", "Saravanan"}
+FEMALE_NAMES_OTHER_ENDINGS = {"Yasmin", "Noor", "Rukhsar", "Shabnam", "Parveen", "Hetal", "Kinjal", "Foram", "Ritu", "Komal", "Kajal"}
+MALE_NAMES_FEMININE_ENDINGS = {"Krishna", "Aditya", "Shaurya", "Rudra", "Sai", "Ali", "Mani", "Bala", "Muthu", "Saravanan", "Partha"}
 FEMALE_FIRST = [x for x in dict.fromkeys(FIRST_NAMES)
                 if (x.lower().endswith(("a", "i", "ya", "ee")) and x not in MALE_NAMES_FEMININE_ENDINGS)
                 or x in FEMALE_NAMES_OTHER_ENDINGS]

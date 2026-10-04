@@ -2,23 +2,27 @@
 
 Every on-screen number comes from committed results or from committed code run here.
   gap           REAL  research/sources/state_gap_verified.csv (NFHS-5 via LS USQ 2668; Poshan Tracker June 2025 via
-                      RS USQ 477; notes V4-state-gap-verified.md)
+                      RS USQ 477; notes V4-state-gap-verified.md), plus per-indicator dispersion across States/UTs
   districts     REAL  NFHS-5 district fact-sheet values (IIPS/MoHFW), rebuilt by eval/fetch_nfhs5.py into
                       .data/raw/nfhs5/nfhs5_district_tidy.csv; only the 4 under-5 indicators; spot-check V5 (24/24)
   committed           eval/results/*.json, copied verbatim
   linkage       SYNTHETIC  components.identity_linkage benchmark (5,000 children, seed 2026) over a 7 x 5 grid of RCH-ID
-                      coverage x extra typo rate; the (0.35, 0.0) cell must equal eval/results/identity_linkage.json
-  worklist_ref  SYNTHETIC  frozen eval_v1 protocol (train seeds 21-22, test 23-24, reference simulator) at K = 1..10;
-                      K = 5 must equal eval/results/early_warning_v1.json
-  sim           SIMULATED children, REAL district rates: for each preset district the simulator is calibrated to its
-                      NFHS-5 wasting and stunting (demo/calibrate_district.py), then: the eval_v1 protocol at K = 1..10,
-                      an example child chosen by SELECTION_RULE and linked by PPRL (computed against simulator truth),
-                      seeded random AWC-months, the AWW's SMS worklist (action_router + frontline_worklist), six
-                      policy-gate requests (policy_gate.gate.decide) and the week's audit ledger (audit_ledger.Ledger)
+                      coverage x extra typo rate. Bloom-filter linkage runs through the department boundary
+                      (pprl.encode_department on each side, pprl.match_encoded on encodings only); the (0.35, 0.0) cell
+                      must equal eval/results/identity_linkage.json. Per method: correct and false accepted links; plus
+                      Bloom-filter linkage at the threshold that matches pooled name matching's precision (pprl.accept_at)
+  worklist_ref  SYNTHETIC  frozen eval_v2 protocol (infant gate; train 21-22, test 23-24, reference simulator) at
+                      K = 1..10; K = 5 must equal eval/results/early_warning_v2.json
+  sim           SIMULATED children, REAL district rates: per preset district the simulator is calibrated to its NFHS-5
+                      wasting and stunting (demo/calibrate_district.py), then: the eval_v2 protocol at K = 1..10, an
+                      example child chosen by SELECTION_RULE and linked through the encoded boundary (checked against
+                      simulator truth), seeded random AWC-months, the AWW's SMS list with the capacity gate
+                      (action_router.route + mark_undelivered, frontline_worklist), six policy-gate requests
+                      (policy_gate.gate.decide, recorded at export) and the week's audit ledger (audit_ledger.Ledger)
                       with Python's verdicts on tamper scenarios (demo/js/ledger.js must reproduce them; demo/smoke.sh)
 
 Run from india71-t1-nutrition/ (fetch REAL district data first: .venv/bin/python eval/fetch_nfhs5.py):
-  nice -n 10 .venv/bin/python -m demo.export                  # every section (~30 min; memory guard between jobs)
+  nice -n 10 .venv/bin/python -m demo.export                  # every section (~20 min; memory guard between jobs)
   .venv/bin/python -m demo.export --only sim --districts amravati
   .venv/bin/python -m demo.export --check                      # quick re-derivation against the data file (~1 min)
 """
@@ -31,6 +35,7 @@ import inspect
 import json
 import os
 import pickle
+import statistics
 import subprocess
 import sys
 import time
@@ -56,15 +61,18 @@ NOISE_LEVELS = [0.0, 0.1, 0.2, 0.3, 0.4]
 LINK_N, LINK_SEED = 5000, 2026
 K_VALUES = list(range(1, 11))
 STORY_SEED, IDENTITY_SEED = 23, 2026
+STORY_K = 5
 N_EXAMPLES = 24
 SECTIONS = ["gap", "districts", "committed", "linkage", "worklist_ref", "sim"]
 PRESETS = {"nandurbar": ("Maharashtra", "Nandurbar"), "amravati": ("Maharashtra", "Amravati")}
 PRESET_NOTES = {"nandurbar": "", "amravati": "Amravati district contains Melghat"}
 SELECTION_RULE = (
-    "First child (ascending simulator key) in the seed-23 test cohort that (1) has an incident wasting episode the "
-    "lowest-WHZ rule listed (K = 5 slots per AWC-month) 1-3 months before onset, at age 6 months or more (younger "
-    "infants bypass ranking in the design), (2) has an RCH birth weight and at least one U-WIN missed dose, (3) has a "
-    "Poshan Tracker record without the RCH ID, and (4) was linked to its own health record by PPRL (checked against "
+    "First child (ascending simulator key) in the seed-23 test cohort whose FIRST-EVER wasting episode (born inside "
+    "the simulated window, so its whole history is visible; true WLZ never below -2 and no recorded MAM/SAM before "
+    "onset) (1) is rankable (6 months or older when the 1-3 month window opens) and was listed by the lowest-WHZ rule "
+    "(K = 5 slots per AWC-month) 1-3 months before onset, (2) has an RCH birth weight and at least one later "
+    "health-system record (an ASHA illness record in RCH or a U-WIN missed dose), (3) has a Poshan Tracker record "
+    "without the RCH ID, and (4) was linked to its own health record through the encoded boundary (checked against "
     "simulator truth)."
 )
 STATE_CODE = {
@@ -143,28 +151,35 @@ def cached(name: str, fn):
     return value
 
 
+def department_key() -> bytes:
+    """Demo constant shared by the two departments and withheld from the matcher (production: state key management).
+    It is link.py's CLK key, so the encoded path reproduces the committed Bloom-filter results bit for bit."""
+    from components.identity_linkage.link import DEFAULT_CLK_KEY
+    return DEFAULT_CLK_KEY
+
+
 @contextmanager
 def simulator_overrides(overrides: dict | None):
-    """Run the frozen eval_v1 code unchanged, with its SimConfig(seed=...) replaced by the calibrated config."""
-    from components.early_warning import eval_v1
+    """Run the frozen eval_v2 code unchanged, with its SimConfig(seed=...) replaced by the calibrated config."""
+    from components.early_warning import eval_v2
     from demo.calibrate_district import config
-    original = eval_v1.SimConfig
+    original = eval_v2.SimConfig
     if overrides:
-        eval_v1.SimConfig = lambda seed: config(seed, overrides)
+        eval_v2.SimConfig = lambda seed: config(seed, overrides)
     try:
         yield
     finally:
-        eval_v1.SimConfig = original
+        eval_v2.SimConfig = original
 
 
 def build(tag: str, seed: int, overrides: dict | None):
-    """eval_v1.build(seed) (features + observed status + truth), cached per (simulator config, seed)."""
-    from components.early_warning import eval_v1
+    """eval_v2.build(seed) (features + observed status + truth with age), cached per (simulator config, seed)."""
+    from components.early_warning import eval_v2
 
     def run():
         with simulator_overrides(overrides):
-            return eval_v1.build(seed)
-    return cached(f"build_{tag}_{seed}" if tag != "ref" else f"build_{seed}", run)
+            return eval_v2.build(seed)
+    return cached(f"v2build_{tag}_{seed}", run)
 
 
 def simulation(tag: str, seed: int, overrides: dict | None):
@@ -175,9 +190,10 @@ def simulation(tag: str, seed: int, overrides: dict | None):
 
 
 def rank_pool(df: pd.DataFrame) -> pd.DataFrame:
-    """Observed-normal candidate pool with both rules' scores and within-AWC-month ranks (as eval_v1.flag)."""
+    """eval_v2's rankable pool (observed normal, >= 183 days) with both rules' scores and within-AWC-month ranks."""
+    from components.early_warning import eval_v2
     from components.early_warning import model as ew
-    pool = df[df.obs_status == "normal"].copy()
+    pool = eval_v2.pool_of(df).copy()
     pool["score_whz"] = ew.score_lowest_whz(pool)
     pool["score_rule"] = ew.score_rule_no_gain(pool)
     g = ["seed", "awc_code", "month_index"]
@@ -186,10 +202,18 @@ def rank_pool(df: pd.DataFrame) -> pd.DataFrame:
     return pool
 
 
+def rankable_episodes(truth: pd.DataFrame) -> pd.DataFrame:
+    from components.early_warning import eval_v2
+    ep = eval_v2.episodes(truth)
+    return ep[ep.rankable]
+
+
 def awc_example(df: pd.DataFrame, pool: pd.DataFrame, eps: pd.DataFrame, awc: str, month: int) -> dict:
+    from components.early_warning import eval_v2
     rows = pool[(pool.awc_code == awc) & (pool.month_index == month)].sort_values("rank_whz")
     onset = eps.groupby("child_key").onset.apply(list).to_dict()
     cur = df[(df.awc_code == awc) & (df.month_index == month)]
+    infants = cur[(cur.obs_status == "normal") & (cur.age_days < eval_v2.MIN_AGE_DAYS)]
     children = []
     for r in rows.itertuples():
         ahead = [o - month for o in onset.get(r.child_key, []) if 1 <= o - month <= 3]
@@ -199,8 +223,9 @@ def awc_example(df: pd.DataFrame, pool: pd.DataFrame, eps: pd.DataFrame, awc: st
             "onset_in": int(min(ahead)) if ahead else None,
         })
     return {
-        "awc": awc, "month_index": int(month), "date": str(pd.Timestamp(rows.measured_on.max()).date()),
-        "n_pool": len(children), "n_observed_sam_mam": int(cur.obs_status.isin(["sam", "mam"]).sum()),
+        "awc": awc, "month_index": int(month), "date": str(pd.Timestamp(cur.measured_on.max()).date()),
+        "n_pool": len(children), "n_infant_pathway": int(len(infants)),
+        "n_observed_sam_mam": int(cur.obs_status.isin(["sam", "mam"]).sum()),
         "n_onset_next3": sum(c["onset_in"] is not None for c in children), "children": children,
     }
 
@@ -219,17 +244,22 @@ def section_gap(data: dict) -> dict:
             item["code"] = STATE_CODE[r["state"]]
             out_rows.append(item)
     counts = {k: {"pt_lower": sum(x["pt"][k] < x["nfhs5"][k] for x in out_rows), "n": len(out_rows)} for k in ind}
+    dispersion = {}
+    for k in ind:
+        diffs = [abs(x["nfhs5"][k] - x["pt"][k]) for x in out_rows]
+        dispersion[k] = {"median_abs_diff_pp": round(statistics.median(diffs), 2), "within_5pp": sum(d <= 5 for d in diffs),
+                         "n": len(diffs)}
     assert counts["wasted"] == {"pt_lower": 36, "n": 36}, counts["wasted"]
     assert india["nfhs5"]["wasted"] == 19.3 and india["pt"]["wasted"] == 5.46
     assert len({x["code"] for x in out_rows}) == 36
     return {
-        "label": "REAL", "rows": out_rows, "india": india, "counts": counts,
+        "label": "REAL", "rows": out_rows, "india": india, "counts": counts, "dispersion": dispersion,
         "source_file": "research/sources/state_gap_verified.csv (V4)",
         "nfhs5_source": rows[0]["nfhs5_source"].split(": http")[0],
         "pt_source": rows[0]["pt_source"].split(": http")[0],
         "caveat": ("Different years (2019-21 vs June 2025), ages (0-59 months vs 0-5 years) and denominators "
                    "(household sample vs registered and measured children): an unexplained discrepancy, not a "
-                   "measured under-detection rate."),
+                   "measured under-detection rate and not evidence about any worker."),
     }
 
 
@@ -256,9 +286,7 @@ def section_districts(data: dict) -> dict:
     for k, (st, wa, sev, uw) in v5.items():  # the 24 values the lead verified against the IIPS fact sheets (V5)
         r = by[k]
         assert (r["stunted"], r["wasted"], r["severe"], r["underweight"]) == (st, wa, sev, uw), (k, r)
-    presets = {}
-    for pid, key in PRESETS.items():
-        presets[pid] = by[key] | {"id": pid, "note": PRESET_NOTES[pid]}
+    presets = {pid: by[key] | {"id": pid, "note": PRESET_NOTES[pid]} for pid, key in PRESETS.items()}
     return {
         "label": "REAL", "rows": rows, "n_districts_source": n_all, "excluded": [
             {"state": s, "district": di, "reason": "conflicting duplicate rows in the compilation"} for s, di in conflicted],
@@ -269,15 +297,53 @@ def section_districts(data: dict) -> dict:
 
 
 def section_committed(data: dict) -> dict:
-    names = ["identity_linkage", "early_warning_v1", "pipeline_demo", "policy_gate", "audit_ledger", "growth_standards",
-             "cohort_calibration"]
+    names = ["identity_linkage", "early_warning_v1", "early_warning_v2", "pipeline_demo", "policy_gate", "audit_ledger",
+             "growth_standards", "cohort_calibration"]
     return {n: json.loads((RESULTS / f"{n}.json").read_text()) for n in names}
 
 
-# ---------------------------------------------------------------- linkage benchmark grid
+# ---------------------------------------------------------------- linkage benchmark grid (SYNTHETIC)
+def _counts(decisions, truth: dict, gold: set) -> dict:
+    from components.identity_linkage.eval_linkage import _accepted_pairs, pairwise_metrics
+    m = pairwise_metrics(decisions, truth)
+    acc = _accepted_pairs(decisions)
+    m["accepted_links"] = len(acc)
+    m["true_links"] = len(acc & gold)
+    m["false_links"] = len(acc) - m["true_links"]
+    return m
+
+
+def precision_matched_threshold(low, gold: set, target: float, start: float) -> tuple[float, bool]:
+    """Lowest acceptance threshold >= start at which Bloom-filter precision reaches `target` (for decisions matched at
+    clerical_low, see pprl.accept_at). Returns (threshold, reached); if never reached, the max-precision threshold."""
+    det = [frozenset((s.value, r) for s, r in d.members) for d in low if d.method == "deterministic"]
+    prob = sorted(((d.match_probability, frozenset((s.value, r) for s, r in d.members) in gold)
+                   for d in low if d.method == "probabilistic"), key=lambda x: -x[0])
+    n_acc, n_true = len(det), sum(p in gold for p in det)
+    points = []  # (threshold, accepted, true), threshold descending
+    i = 0
+    while i < len(prob):
+        t = prob[i][0]
+        while i < len(prob) and prob[i][0] == t:
+            n_acc += 1
+            n_true += prob[i][1]
+            i += 1
+        if t >= start:
+            points.append((t, n_acc, n_true))
+    if not points:
+        return start, False
+    points[-1] = (start, points[-1][1], points[-1][2])  # the lowest point accepts exactly what threshold=start accepts
+    ok = [t for t, a, tr in points if a and tr / a >= target]
+    if ok:
+        return min(ok), True
+    best = max(points, key=lambda p: (p[2] / p[1] if p[1] else 0, -p[0]))
+    return best[0], False
+
+
 def _grid_cell(args: tuple[float, float]) -> dict:
-    from components.identity_linkage.eval_linkage import _accepted_pairs, _truth_pairs, pairwise_metrics
+    from components.identity_linkage.eval_linkage import _truth_pairs
     from components.identity_linkage.link import link_from_frames
+    from components.identity_linkage.pprl import accept_at, encode_department, match_encoded
     from components.identity_linkage.synth_registries import generate_benchmark
 
     cov, noise = args
@@ -286,13 +352,23 @@ def _grid_cell(args: tuple[float, float]) -> dict:
     gold = _truth_pairs(truth)
     cell = {"coverage": cov, "noise": noise, "poshan_records": len(poshan), "health_records": len(health),
             "gold_pairs": len(gold), "poshan_with_rch_id": int(sum("rch_id" in s for s in poshan.shared_ids))}
-    for name, method in [("ids_only", "ids"), ("plaintext_probabilistic", "plaintext"), ("pprl_bloom", "pprl")]:
+    for name, method in [("ids_only", "ids"), ("plaintext_probabilistic", "plaintext")]:
         t0 = time.perf_counter()
-        decisions = link_from_frames(poshan, health, method=method)
-        m = pairwise_metrics(decisions, truth)
-        m["runtime_seconds"] = round(time.perf_counter() - t0, 2)
-        m["true_links"] = len(_accepted_pairs(decisions) & gold)
-        cell[name] = m
+        cell[name] = _counts(link_from_frames(poshan, health, method=method), truth, gold)
+        cell[name]["runtime_seconds"] = round(time.perf_counter() - t0, 2)
+    t0 = time.perf_counter()
+    key = department_key()
+    enc_p, enc_h = encode_department(poshan, key), encode_department(health, key)  # each department, on its own side
+    cell["pprl_bloom"] = _counts(match_encoded(enc_p, enc_h), truth, gold)       # the matcher sees encodings only
+    cell["pprl_bloom"]["runtime_seconds"] = round(time.perf_counter() - t0, 2)
+    defaults = inspect.signature(match_encoded).parameters
+    start, low_t = defaults["threshold"].default, defaults["clerical_low"].default
+    low = match_encoded(enc_p, enc_h, threshold=low_t)
+    target = cell["plaintext_probabilistic"]["precision"]
+    t_star, reached = precision_matched_threshold(low, gold, target, start)
+    pm = _counts(accept_at(low, t_star), truth, gold)
+    pm.update(threshold=round(t_star, 4), target_precision=target, reached=reached)
+    cell["pprl_bloom_precision_matched"] = pm
     return cell
 
 
@@ -311,39 +387,44 @@ def section_linkage(data: dict, workers: int = 2) -> dict:
     jobs = [(c, n) for c in COVERAGE_LEVELS for n in NOISE_LEVELS]
     jobs.sort(key=lambda j: (j != (0.35, 0.0), j))  # the committed cell first: fail fast
     cells = {}
-    log(f"linkage grid: {len(jobs)} cells x 3 methods, {workers} worker(s)")
+    log(f"linkage grid: {len(jobs)} cells, {workers} worker(s); Bloom-filter linkage through pprl.encode_department/match_encoded")
     with ProcessPoolExecutor(max_workers=workers) as pool:
         for cell in pool.map(_grid_cell, jobs):
             cells[cell_key(cell["coverage"], cell["noise"])] = cell
+            pm = cell["pprl_bloom_precision_matched"]
             log(f"  cov={cell['coverage']:.2f} noise={cell['noise']:.2f}: F1 ids {cell['ids_only']['f1']:.3f} "
-                f"plain {cell['plaintext_probabilistic']['f1']:.3f} pprl {cell['pprl_bloom']['f1']:.3f}")
+                f"plain {cell['plaintext_probabilistic']['f1']:.3f} pprl {cell['pprl_bloom']['f1']:.3f} "
+                f"(false {cell['pprl_bloom']['false_links']} vs {cell['plaintext_probabilistic']['false_links']}); "
+                f"precision-matched t={pm['threshold']} true {pm['true_links']} false {pm['false_links']} reached={pm['reached']}")
             if (cell["coverage"], cell["noise"]) == (0.35, 0.0):
                 check_default_cell(cell, json.loads((RESULTS / "identity_linkage.json").read_text()))
-                log("  default cell == eval/results/identity_linkage.json")
-    from components.identity_linkage.link import link_plaintext, link_pprl_bloom
-    sig_p, sig_x = inspect.signature(link_pprl_bloom).parameters, inspect.signature(link_plaintext).parameters
+                log("  default cell == eval/results/identity_linkage.json (Bloom-filter via the encoded boundary)")
+    from components.identity_linkage.pprl import ALLOWED_COLUMNS, match_encoded
+    sig = inspect.signature(match_encoded).parameters
     return {
         "label": "SYNTHETIC", "n_children": LINK_N, "seed": LINK_SEED, "coverage_levels": COVERAGE_LEVELS,
         "noise_levels": NOISE_LEVELS, "default": cell_key(0.35, 0.0), "cells": dict(sorted(cells.items())),
-        "pprl_threshold": sig_p["threshold"].default, "pprl_clerical_low": sig_p["clerical_low"].default,
-        "plaintext_threshold": sig_x["threshold"].default, "default_cell_equals_committed": True,
+        "pprl_threshold": sig["threshold"].default, "pprl_clerical_low": sig["clerical_low"].default,
+        "boundary_columns": list(ALLOWED_COLUMNS), "default_cell_equals_committed": True,
         "command": "nice -n 10 .venv/bin/python -m demo.export --only linkage",
     }
 
 
-# ---------------------------------------------------------------- worklist (frozen eval_v1 protocol)
+# ---------------------------------------------------------------- worklist (frozen eval_v2 protocol)
 def worklist_eval(builds: dict, committed: dict | None) -> dict:
-    """eval_v1.main's steps for K = 1..10 (same pool, labels, models, RNG streams); asserts K = 5 == committed."""
-    from components.early_warning import eval_v1
+    """eval_v2.main's steps for K = 1..10 (same gate, pool, labels, models, RNG streams); asserts K = 5 == committed."""
+    from components.early_warning import eval_v2 as ev
     from components.early_warning import model as ew
 
-    train = pd.concat([builds[s][0] for s in eval_v1.TRAIN_SEEDS], ignore_index=True)
-    train["label"] = eval_v1.observed_labels(train)
-    train = train[(train.obs_status == "normal") & train.label.notna()]
-    tests = [builds[s] for s in eval_v1.TEST_SEEDS]
-    pool = pd.concat([d[d.obs_status == "normal"] for d, _ in tests], ignore_index=True)
-    eps = pd.concat([eval_v1.episodes(t).assign(seed=s) for (d, t), s in zip(tests, eval_v1.TEST_SEEDS)], ignore_index=True)
-    max_month = {s: int(t.month_index.max()) for (d, t), s in zip(tests, eval_v1.TEST_SEEDS)}
+    train = pd.concat([builds[s][0] for s in ev.TRAIN_SEEDS], ignore_index=True)
+    train["label"] = ev.observed_labels(train)
+    train = ev.pool_of(train)
+    train = train[train.label.notna()]
+    tests = [builds[s] for s in ev.TEST_SEEDS]
+    pool = pd.concat([ev.pool_of(d) for d, _ in tests], ignore_index=True)
+    eps_all = pd.concat([ev.episodes(t).assign(seed=s) for (d, t), s in zip(tests, ev.TEST_SEEDS)], ignore_index=True)
+    eps = eps_all[eps_all.rankable][["child_key", "onset", "seed"]].reset_index(drop=True)
+    max_month = {s: int(t.month_index.max()) for (d, t), s in zip(tests, ev.TEST_SEEDS)}
     m_anthro = ew.fit_logistic(train, ew.ANTHRO_V1)
     m_full = ew.fit_logistic(train, ew.ANTHRO_V1 + ew.HEALTH)
     rng = np.random.default_rng(0)
@@ -356,109 +437,124 @@ def worklist_eval(builds: dict, committed: dict | None) -> dict:
     }
     awc_of = pool.drop_duplicates(["seed", "child_key"]).set_index(["seed", "child_key"]).awc_code
     recall = {n: [] for n in scores}
-    ci = {n: [] for n in list(scores) + ["diff_whz_minus_rule"]}
+    ci_names = list(scores) + ["diff_lowest_whz_vs_rule", "diff_full_vs_lowest_whz"]
+    ci = {n: [] for n in ci_names}
     for k in K_VALUES:
         per_ep = {}
         for name, sc in scores.items():
-            r, e = eval_v1.evaluate(pool, eps, eval_v1.flag(pool, sc, k=k), max_month)
+            r, e = ev.evaluate(pool, eps, ev.flag(pool, sc, k=k), max_month)
             recall[name].append(round(r["episode_recall"], 4))
             per_ep[name] = e
-        brng = np.random.default_rng(0)  # same stream as eval_v1.main: random scores first, then the bootstrap
+        brng = np.random.default_rng(0)  # same stream as eval_v2.main: random scores first, then the bootstrap
         brng.random(len(pool))
         base = per_ep["lowest_observed_whz"]
         base["awc"] = awc_of.reindex(pd.MultiIndex.from_arrays([base.seed, base.child_key])).to_numpy()
         clusters = base.awc.dropna().unique()
         groups = {c: np.nonzero(base.awc.to_numpy() == c)[0] for c in clusters}
         det = {n: per_ep[n].detected.to_numpy() for n in scores}
-        boot = {n: [] for n in ci}
-        for _ in range(eval_v1.N_BOOT):
+        boot = {n: [] for n in ci_names}
+        for _ in range(ev.N_BOOT):
             idx = np.concatenate([groups[c] for c in brng.choice(clusters, len(clusters))])
             for n in scores:
                 boot[n].append(det[n][idx].mean())
-            boot["diff_whz_minus_rule"].append(det["lowest_observed_whz"][idx].mean() - det["rule_no_gain_2m"][idx].mean())
-        for n in ci:
+            boot["diff_lowest_whz_vs_rule"].append(det["lowest_observed_whz"][idx].mean() - det["rule_no_gain_2m"][idx].mean())
+            boot["diff_full_vs_lowest_whz"].append(det["logistic_anthro_plus_linked_health"][idx].mean() - det["lowest_observed_whz"][idx].mean())
+        for n in ci_names:
             ci[n].append([round(float(np.percentile(boot[n], 2.5)), 4), round(float(np.percentile(boot[n], 97.5)), 4)])
         log(f"  K={k}: WHZ rule {recall['lowest_observed_whz'][-1]:.4f}  programme rule {recall['rule_no_gain_2m'][-1]:.4f}")
     if committed is not None:
         i5 = K_VALUES.index(5)
         for name in scores:
             assert recall[name][i5] == committed["methods"][name]["episode_recall"], (name, recall[name][i5])
-        for name in ["logistic_anthro", "logistic_anthro_plus_linked_health", "lowest_observed_whz"]:
-            assert ci[name][i5] == committed["bootstrap_95ci"][name], (name, ci[name][i5])
-        log("  K=5 recall and CIs == eval/results/early_warning_v1.json")
+        for name, val in committed["bootstrap_95ci"].items():
+            assert ci[name][i5] == val, (name, ci[name][i5], val)
+        assert len(eps) == committed["n_episodes_rankable"] and len(eps_all) == committed["n_episodes_all"]
+        log("  K=5 recall, CIs and episode counts == eval/results/early_warning_v2.json")
     return {"K_values": K_VALUES, "recall": recall, "ci95": ci, "n_episodes": int(len(eps)),
-            "test_seeds": list(eval_v1.TEST_SEEDS), "train_seeds": list(eval_v1.TRAIN_SEEDS)}
+            "n_episodes_all": int(len(eps_all)), "infant_pathway_share": round(float(1 - eps_all.rankable.mean()), 4),
+            "min_age_days": ev.MIN_AGE_DAYS, "test_seeds": list(ev.TEST_SEEDS), "train_seeds": list(ev.TRAIN_SEEDS)}
 
 
 def section_worklist_ref(data: dict) -> dict:
-    from components.early_warning import eval_v1
+    from components.early_warning import eval_v2
     builds = {}
-    for s in eval_v1.TRAIN_SEEDS + eval_v1.TEST_SEEDS:
+    for s in eval_v2.TRAIN_SEEDS + eval_v2.TEST_SEEDS:
         builds[s] = build("ref", s, None)
         log(f"  reference build seed {s}: {len(builds[s][0]):,} rows")
-    out = worklist_eval(builds, json.loads((RESULTS / "early_warning_v1.json").read_text()))
-    return out | {"label": "SYNTHETIC (reference simulator)", "k5_equals_committed": True,
+    out = worklist_eval(builds, json.loads((RESULTS / "early_warning_v2.json").read_text()))
+    return out | {"label": "SYNTHETIC (reference simulator)", "k5_equals_committed": True, "protocol": "eval_v2",
                   "command": "nice -n 10 .venv/bin/python -m demo.export --only worklist_ref"}
 
 
 # ---------------------------------------------------------------- simulated children, REAL district rates
 def story(sim: dict, df23: pd.DataFrame, truth23: pd.DataFrame) -> dict:
-    from components.early_warning import eval_v1
+    from components.early_warning import eval_v2
     from components.early_warning import model as ew
     from components.identity_linkage.eval_linkage import pairwise_metrics
-    from components.identity_linkage.link import (clk_bits, deterministic_links, dice_bits, link_pprl_bloom,
-                                                  records_from_frame)
+    from components.identity_linkage.link import dice_bits
+    from components.identity_linkage.pprl import encode_department, match_encoded
     from components.identity_linkage.synth_registries import identities_for_cohort
 
-    pool = df23[df23.obs_status == "normal"]
-    flagged = eval_v1.flag(pool, ew.score_lowest_whz(pool), k=5)
-    eps = eval_v1.episodes(truth23).assign(seed=STORY_SEED)
-    res, per_ep = eval_v1.evaluate(pool, eps, flagged, {STORY_SEED: int(truth23.month_index.max())})
+    pool = eval_v2.pool_of(df23)
+    flagged = eval_v2.flag(pool, ew.score_lowest_whz(pool), k=STORY_K)
+    eps_all = eval_v2.episodes(truth23).assign(seed=STORY_SEED)
+    eps = eps_all[eps_all.rankable][["child_key", "onset", "seed"]].reset_index(drop=True)
+    res, per_ep = eval_v2.evaluate(pool, eps, flagged, {STORY_SEED: int(truth23.month_index.max())})
 
     memory_guard()
     poshan_df, health_df, truth_ids, ids = identities_for_cohort(sim["children"], seed=IDENTITY_SEED)
-    P, H = records_from_frame(poshan_df), records_from_frame(health_df)
-    dec_ids = deterministic_links(P, H)[0]
-    dec_pprl = link_pprl_bloom(P, H)
+    key = department_key()
+    enc_p, enc_h = encode_department(poshan_df, key), encode_department(health_df, key)
+    dec_pprl = match_encoded(enc_p, enc_h)
+    dec_ids = [d for d in dec_pprl if d.method == "deterministic"]
     m_ids, m_pprl = pairwise_metrics(dec_ids, truth_ids), pairwise_metrics(dec_pprl, truth_ids)
     accepted = {d.members[0][1]: d for d in dec_pprl if d.method in ("deterministic", "probabilistic") and len(d.members) == 2}
-    ids_linked = {d.members[0][1] for d in dec_ids}
-    p_by, h_by = {r.source_record_id: r for r in P}, {r.source_record_id: r for r in H}
+    enc_p_by, enc_h_by = enc_p.set_index("record_id"), enc_h.set_index("record_id")
+    p_raw, h_raw = poshan_df.set_index("source_record_id"), health_df.set_index("source_record_id")
     hev = sim["health_events"]
     has_bw = set(hev[hev.kind == "birth_weight"].child_key)
-    has_miss = set(hev[hev.kind == "immunisation_missed"].child_key)
-    det = per_ep[per_ep.detected][["child_key", "onset"]]
-    fm = flagged.merge(det, on="child_key")
-    fm = fm[(fm.month_index >= fm.onset - 3) & (fm.month_index <= fm.onset - 1)]
-    age_at_first_flag = fm.sort_values("month_index").groupby(["child_key", "onset"]).age_m.first().to_dict()
+    has_later = set(hev[hev.kind.isin(["immunisation_missed", "illness_diarrhoea"])].child_key)
 
+    # first-ever onset: born inside the window, never truly wasted and never recorded MAM/SAM before onset
+    tsort = truth23.sort_values(["child_key", "month_index"])
+    first_age = tsort.groupby("child_key").age_days.min()
+    min_wlz_month = tsort[tsort.true_wlz < -2].groupby("child_key").month_index.min()
+    min_obs_month = df23[df23.obs_status.isin(["sam", "mam"])].groupby("child_key").month_index.min()
     chosen = None
-    for row in det.sort_values(["child_key", "onset"]).itertuples():
-        ck, idd = row.child_key, ids[row.child_key]
-        if age_at_first_flag[(ck, row.onset)] < 6:
+    for row in per_ep[per_ep.detected].sort_values(["child_key", "onset"]).itertuples():
+        ck, o, idd = row.child_key, int(row.onset), ids[row.child_key]
+        if first_age.get(ck, 9999) > 31 or min_wlz_month.get(ck, 9999) < o or min_obs_month.get(ck, 9999) < o:
             continue
-        if ck not in has_bw or ck not in has_miss or "rch_id" in p_by[idd["pt_id"]].shared_ids:
+        if ck not in has_bw or ck not in has_later or "rch_id" in p_raw.loc[idd["pt_id"], "shared_ids"]:
             continue
         d = accepted.get(idd["pt_id"])
-        if d is None or d.members[1][1] != idd["rch_id"]:
+        if d is None or d.method != "probabilistic" or d.members[1][1] != idd["rch_id"]:
             continue
         chosen = row
         break
     assert chosen is not None, "no child satisfies the selection rule"
     ck, idd = chosen.child_key, ids[chosen.child_key]
-    prec, hrec, decision = p_by[idd["pt_id"]], h_by[idd["rch_id"]], accepted[idd["pt_id"]]
+    decision = accepted[idd["pt_id"]]
     linked_correctly = truth_ids[("rch", decision.members[1][1])] == truth_ids[("poshan_tracker", decision.members[0][1])]
     assert linked_correctly
-    bits_p, bits_h = clk_bits(prec), clk_bits(hrec)
+    clk_p, clk_h = enc_p_by.loc[idd["pt_id"], "clk"], enc_h_by.loc[idd["rch_id"], "clk"]
+    bits_p, bits_h = int(clk_p, 16), int(clk_h, 16)
 
-    def rec_view(r) -> dict:
-        return {"system": {"poshan_tracker": "Poshan Tracker (MWCD)", "rch": "RCH (MoHFW)"}[r.source.value],
-                "record_id": r.source_record_id, "child_name": r.child_name, "mother_name": r.mother_name,
-                "father_name": r.father_name, "dob": str(r.dob) if r.dob else None,
-                "sex": r.sex.value if r.sex else None, "village": r.village_code, "awc": r.awc_code,
+    def rec_view(raw: pd.DataFrame, rid: str, system: str) -> dict:
+        r = raw.loc[rid]
+        val = lambda v: None if v is None or (isinstance(v, float) and np.isnan(v)) else v
+        return {"system": system, "record_id": rid, "child_name": val(r.child_name), "mother_name": val(r.mother_name),
+                "father_name": val(r.father_name), "dob": str(r.dob) if val(r.dob) is not None else None,
+                "sex": getattr(val(r.sex), "value", val(r.sex)), "village": val(r.village_code), "awc": val(r.awc_code),
                 "shared_ids": dict(r.shared_ids)}
 
+    def enc_view(enc: pd.DataFrame, rid: str) -> dict:
+        e = enc.loc[rid]
+        return {"record_id": rid, "block_tokens": [t[:12] for t in e.block_tokens], "id_tokens": [t[:12] for t in e.id_tokens],
+                "sex_token": e.sex_token[:12] if isinstance(e.sex_token, str) else None}
+
     mine = df23[df23.child_key == ck].sort_values("month_index")
+    pool_months = set(pool[pool.child_key == ck].month_index)
     flags = flagged[flagged.child_key == ck]
     tm = truth23[truth23.child_key == ck].sort_values("month_index")
     mdate = dict(zip(tm.month_index, tm.measured_on))  # this child's AWC growth-monitoring day each month
@@ -471,26 +567,29 @@ def story(sim: dict, df23: pd.DataFrame, truth23: pd.DataFrame) -> dict:
                        "system": {"rch": "RCH", "uwin": "U-WIN"}[e.source],
                        "record_id": idd["uwin_id"] if e.source == "uwin" else idd["rch_id"]})
     child_row = sim["children"].set_index("child_key").loc[ck]
-    example = awc_example(df23, rank_pool(df23), eval_v1.episodes(truth23), str(mine.awc_code.iloc[0]), first_flag)
+    example = awc_example(df23, rank_pool(df23), rankable_episodes(truth23), str(mine.awc_code.iloc[0]), first_flag)
     example["featured_ref"] = "PT-" + ck[-6:]
     n_health = sum(1 for v in ids.values() if v["rch_id"])
     return {
         "selection_rule": SELECTION_RULE, "n_children": len(ids), "n_with_health_record": n_health,
         "linkage": {"ids_only": {k: r4(v) for k, v in m_ids.items()}, "pprl_bloom": {k: r4(v) for k, v in m_pprl.items()},
-                    "gold_pairs": n_health},
+                    "gold_pairs": n_health, "path": "pprl.encode_department (each side) -> pprl.match_encoded"},
         "whz_rule_recall_seed23": r4(res["episode_recall"]), "n_episodes_seed23": int(res["n_episodes"]),
         "child": {
             "key": ck, "ref": "PT-" + ck[-6:], "child_key_hmac": decision.child_key, "sex": child_row.sex,
             "dob_true": str(pd.Timestamp(child_row.dob_true).date()), "awc": str(mine.awc_code.iloc[0]),
-            "poshan_record": rec_view(prec), "health_record": rec_view(hrec),
+            "first_ever_onset": True,
+            "poshan_record": rec_view(p_raw, idd["pt_id"], "Poshan Tracker (MWCD)"),
+            "health_record": rec_view(h_raw, idd["rch_id"], "RCH (MoHFW)"),
+            "poshan_encoded": enc_view(enc_p_by, idd["pt_id"]), "health_encoded": enc_view(enc_h_by, idd["rch_id"]),
             "link": {"method": decision.method, "score": r4(decision.match_probability), "dice": r4(dice_bits(bits_p, bits_h)),
-                     "linked_correctly": bool(linked_correctly), "ids_only_linked": idd["pt_id"] in ids_linked,
-                     "bits_poshan": format(bits_p, "0250x"), "bits_health": format(bits_h, "0250x"), "n_bits": 1000,
+                     "linked_correctly": bool(linked_correctly), "ids_only_linked": False,
+                     "bits_poshan": clk_p, "bits_health": clk_h, "n_bits": 1000,
                      "set_poshan": bits_p.bit_count(), "set_health": bits_h.bit_count(), "set_both": (bits_p & bits_h).bit_count()},
             "measurements": [{"month_index": int(r.month_index), "date": str(pd.Timestamp(r.measured_on).date()),
-                              "age_m": round(float(r.age_m), 1), "weight_kg": r4(r.weight_kg),
-                              "height_cm": r4(r.length_height_cm), "whz": r4(r.wlhz), "status": r.obs_status}
-                             for r in mine.itertuples()],
+                              "age_m": round(float(r.age_m), 1), "age_days": int(r.age_days), "weight_kg": r4(r.weight_kg),
+                              "height_cm": r4(r.length_height_cm), "whz": r4(r.wlhz), "status": r.obs_status,
+                              "rankable": int(r.month_index) in pool_months} for r in mine.itertuples()],
             "truth_wlz": [{"month_index": int(r.month_index), "date": str(pd.Timestamp(r.measured_on).date()),
                            "wlz": r4(r.true_wlz)} for r in tm.itertuples()],
             "flags": [{"month_index": int(r.month_index), "date": str(pd.Timestamp(mdate[r.month_index]).date()),
@@ -503,15 +602,14 @@ def story(sim: dict, df23: pd.DataFrame, truth23: pd.DataFrame) -> dict:
 
 
 def random_examples(df23: pd.DataFrame, truth23: pd.DataFrame) -> tuple[list[dict], str]:
-    from components.early_warning import eval_v1
     pool23 = rank_pool(df23)
-    eps23 = eval_v1.episodes(truth23)
+    eps23 = rankable_episodes(truth23)
     mm = int(truth23.month_index.max())
     sizes = pool23.groupby(["awc_code", "month_index"]).size()
     cand = sorted(i for i, n in sizes.items() if n >= 8 and 3 <= i[1] <= mm - 3)
     pick = np.random.default_rng(2026).choice(len(cand), size=N_EXAMPLES, replace=False)
-    rule = (f"{N_EXAMPLES} AWC-months drawn at random (numpy seed 2026) from seed-23 AWC-months with >= 8 "
-            "observed-normal children and a known 3-month future")
+    rule = (f"{N_EXAMPLES} AWC-months drawn at random (numpy seed 2026) from seed-23 AWC-months with >= 8 rankable "
+            "children (observed normal, 6 months or older) and a known 3-month future")
     return [awc_example(df23, pool23, eps23, *cand[i]) for i in sorted(pick)], rule
 
 
@@ -531,7 +629,7 @@ def alerts_for(sim: dict, df23: pd.DataFrame, awc: str, month: int):
                               severity=4 if r.obs_status == "sam" else 3, created_on=today,
                               evidence=[f"WHZ {r.wlhz:.2f}" if pd.notna(r.wlhz) else "MUAC/oedema"],
                               recommended_action="protocol", synthetic=True))
-    for r in pool[pool.rank_whz <= 5].sort_values("rank_whz").itertuples():
+    for r in pool[pool.rank_whz <= STORY_K].sort_values("rank_whz").itertuples():
         alerts.append(m.Alert(alert_id=f"risk_high-{r.event_id}", child_key=r.child_key, geo=geo, kind=m.AlertKind.RISK_HIGH,
                               severity=2, created_on=today, evidence=[f"WHZ {r.wlhz:.2f} (rank {int(r.rank_whz)} in AWC)"],
                               recommended_action="home visit", synthetic=True))
@@ -543,45 +641,57 @@ def sms_for(sim: dict, df23: pd.DataFrame, st: dict) -> dict:
     from components.action_router import router
     from components.frontline_worklist import render
 
-    geo, today, alerts = alerts_for(sim, df23, st["example"]["awc"], st["example"]["month_index"])
+    ex = st["example"]
+    geo, today, alerts = alerts_for(sim, df23, ex["awc"], ex["month_index"])
+    by_alert = {a.alert_id: a for a in alerts}
     tasks = router.route(alerts, today)
     refs = {a.alert_id: "PT-" + a.child_key[-6:] for a in alerts if a.child_key}
     worklists = render.build_worklists(tasks, refs, {"default": 10, "aww": 10, "ls": 15}, today)
     aww = next(w for w in worklists if w.worker_role == m.Role.AWW)
     sms = render.to_sms(aww)
-    in_list = {it.task_id: s for it, s in zip(aww.items, sms)}
-    queue = sorted((t for t in tasks if t.owner_role == m.Role.AWW and t.status == "open"),
-                   key=lambda t: (-render._priority(t), t.due_on, t.task_id))  # build_worklists' own order
+    delivered = {it.task_id for it in aww.items}
+    gated = router.mark_undelivered(tasks, delivered, today, by_alert)
+    queue_order = sorted((t for t in tasks if t.owner_role == m.Role.AWW and t.status == "open"),
+                         key=lambda t: (-render._priority(t), t.due_on, t.task_id))  # build_worklists' own order
+    gated_by_id = {t.task_id: t for t in gated}
     featured_ref = st["child"]["ref"]
-    task = next(t for t in tasks if refs.get(t.alert_id) == featured_ref)
+    featured = next(t for t in queue_order if refs.get(t.alert_id) == featured_ref)
+    exception = [t for t in gated if t.task_id.startswith("capacity-")]
     later = today + timedelta(days=8)
-    escalated = router.escalate([task], later, {a.alert_id: a for a in alerts})
-    nxt = [t for t in escalated if t.escalation_level > task.escalation_level]
-    ladder = [{k: s[k] for k in ("level", "owner_role", "action", "due_days", "protocol_ref")}
-              for s in router._PROTOCOL["alerts"]["risk_high"]]
-    sam0 = router._PROTOCOL["alerts"]["sam"][0]
+    day8 = {t.task_id: t for t in router.escalate(gated, later, by_alert)}
+    blocked_ids = [t.task_id for t in gated if t.status == "blocked"]
     pdm = json.loads((RESULTS / "pipeline_demo.json").read_text())
+    from components.early_warning import eval_v2
+    infants = df23[(df23.awc_code == ex["awc"]) & (df23.month_index == ex["month_index"]) & (df23.obs_status == "normal")
+                   & (df23.age_days < eval_v2.MIN_AGE_DAYS)]
     return {
-        "awc": geo.awc_code, "week_of": str(today), "capacity": aww.capacity,
+        "awc": geo.awc_code, "sector": geo.sector_code, "week_of": str(today), "capacity": aww.capacity, "K": STORY_K,
+        "featured_pipeline": True,
         "alerts_by_kind": {k: sum(a.kind.value == k for a in alerts) for k in ["sam", "mam", "risk_high"]},
+        "n_infant_pathway": int(len(infants)),
         "messages": [{"text": s, "chars": len(s)} for s in sms],
-        "items": [{"ref": it.child_local_ref, "action": it.action, "due_on": str(it.due_on), "priority": it.priority,
-                   "reason_en": it.reason_en, "reason_hi": it.reason_hi} for it in aww.items],
-        "featured_ref": featured_ref,
         "queue": [{"ref": refs.get(t.alert_id, "UNIT"), "kind": t.alert_id.split("-", 1)[0], "action": t.action,
-                   "due_on": str(t.due_on), "in_sms": t.task_id in in_list} for t in queue],
-        "featured_task": {"task_id": task.task_id, "action": task.action, "due_on": str(task.due_on),
-                          "owner_role": task.owner_role.value, "in_sms": task.task_id in in_list,
-                          "queue_position": 1 + [t.task_id for t in queue].index(task.task_id)},
-        "escalation": {"checked_on": str(later), "assumed": "task not done by its due date",
-                       "next": [{"owner_role": t.owner_role.value, "owner_scope": t.owner_scope_id, "action": t.action,
-                                 "due_on": str(t.due_on), "protocol_ref": t.protocol_ref} for t in nxt]},
-        "ladder_risk_high": ladder,
-        "sam_step0": {"action": sam0["action"], "due_days": sam0["due_days"], "protocol_ref": sam0["protocol_ref"]},
-        "tasks": [{"task_id": t.task_id, "owner": f"{t.owner_role.value}:{t.owner_scope_id}"} for t in tasks],
+                   "due_on": str(t.due_on), "delivered": t.task_id in delivered, "status": gated_by_id[t.task_id].status,
+                   "blocked_reason": gated_by_id[t.task_id].blocked_reason,
+                   "worker_clock": str(gated_by_id[t.task_id].worker_clock_started_on or "") or None,
+                   "child_clock": str(gated_by_id[t.task_id].child_clock_started_on or "") or None} for t in queue_order],
+        "featured_ref": featured_ref,
+        "featured_task": {"task_id": featured.task_id, "action": featured.action, "delivered": featured.task_id in delivered,
+                          "status": gated_by_id[featured.task_id].status, "blocked_reason": gated_by_id[featured.task_id].blocked_reason,
+                          "worker_clock": gated_by_id[featured.task_id].worker_clock_started_on is not None,
+                          "child_clock_started_on": str(gated_by_id[featured.task_id].child_clock_started_on),
+                          "queue_position": 1 + [t.task_id for t in queue_order].index(featured.task_id),
+                          "status_day8": day8[featured.task_id].status},
+        "capacity_exception": [{"task_id": t.task_id, "owner_role": t.owner_role.value, "owner_scope": t.owner_scope_id,
+                                "action": t.action, "due_on": str(t.due_on), "protocol_ref": t.protocol_ref} for t in exception],
+        "day8": {"checked_on": str(later), "blocked_still_blocked": all(day8[i].status == "blocked" for i in blocked_ids),
+                 "n_blocked": len(blocked_ids)},
+        "sam_step0": {k: router._PROTOCOL["alerts"]["sam"][0][k] for k in ("action", "due_days", "protocol_ref")},
+        "tasks": [{"task_id": t.task_id, "owner": f"{t.owner_role.value}:{t.owner_scope_id}", "status": t.status} for t in gated],
         "district_run": {k: pdm[k] for k in ["children_measured_this_month", "awcs", "tasks", "worklists", "sms_max_chars"]}
                         | {"escalated_after_8_days": pdm["escalation_after_8_days"]["escalated_tasks"],
                            "assumed_on_time": pdm["escalation_after_8_days"]["assumed_on_time_completion"]},
+        "render_limit_chars": 160,
     }
 
 
@@ -624,7 +734,7 @@ def gate_for(sim: dict, df23: pd.DataFrame, st: dict) -> dict:
                     "legal_basis": d.legal_basis, "policy_version": d.policy_version})
     for o in out:
         assert o["decision"] == GATE_EXPECT[o["id"]], (o["id"], o["decision"])
-    return {"policy_version": out[0]["policy_version"], "requests": out,
+    return {"policy_version": out[0]["policy_version"], "requests": out, "recorded_at_export": True,
             "context_note": "Actor role and scope come from the authenticated session; subject geography from the vault."}
 
 
@@ -666,11 +776,14 @@ def ledger_for(st: dict, sms: dict, gate_out: dict) -> dict:
 
     ledger = Ledger()
     child = st["child"]
-    ledger.append("system:identity_vault", "link_decision", f"child_key:{child['child_key_hmac'][:16]}",
+    ledger.append("system:pprl_matcher", "link_decision", f"child_key:{child['child_key_hmac'][:16]}",
                   decision_ref=f"pprl score {child['link']['score']:.3f}")
     for t in sms["tasks"]:
-        ledger.append("system:action_router", "task_created", t["task_id"])
+        if not t["task_id"].startswith("capacity-"):
+            ledger.append("system:action_router", "task_created", t["task_id"])
     ledger.append("system:frontline_worklist", "worklist_sent", f"aww:{sms['awc']}")
+    for t in sms["capacity_exception"]:
+        ledger.append("system:action_router", "capacity_exception", t["task_id"])
     for r in gate_out["requests"]:
         ledger.append(r["actor_id"], f"access_{r['decision']}", r["request_id"], decision_ref=r["rule_id"])
     entries = [e.model_dump(mode="json") for e in ledger.entries]
@@ -680,12 +793,13 @@ def ledger_for(st: dict, sms: dict, gate_out: dict) -> dict:
     assert scen["intact"]["no_checkpoint"] == [True, None] and scen["truncate_3"]["no_checkpoint"] == [True, None]
     assert scen["truncate_3"]["checkpoint"][0] is False and scen["flip_reseal_all"]["checkpoint"][0] is False
     return {"entries": entries, "checkpoint": {"count": checkpoint[0], "head": checkpoint[1]}, "python_verdicts": scen,
-            "checkpoint_note": "Count + head hash kept outside the ledger (e.g. signed into the district review minutes)."}
+            "checkpoint_note": "Count + head hash kept outside the ledger (e.g. signed into the district review minutes); "
+                               "simulated in this demo."}
 
 
 def district_cohort(pid: str, preset: dict) -> dict:
     from components.cohort_simulator import calibrate
-    from components.early_warning import eval_v1
+    from components.early_warning import eval_v2
     from demo.calibrate_district import config, district_overrides
 
     log(f"sim[{pid}]: calibrate to NFHS-5 {preset['district']} wasted {preset['wasted']} stunted {preset['stunted']}")
@@ -699,12 +813,12 @@ def district_cohort(pid: str, preset: dict) -> dict:
     assert abs(100 * achieved["wasting_prev_u5"] - preset["wasted"]) <= 0.15
     assert abs(100 * achieved["stunting_prev_u5"] - preset["stunted"]) <= 0.15
     builds = {}
-    for s in eval_v1.TRAIN_SEEDS + eval_v1.TEST_SEEDS:
+    for s in eval_v2.TRAIN_SEEDS + eval_v2.TEST_SEEDS:
         builds[s] = build(pid, s, overrides)
         log(f"  build seed {s}: {len(builds[s][0]):,} rows")
     wl = worklist_eval(builds, None)
     df23, truth23 = builds[STORY_SEED]
-    log("  example child, linkage, SMS, gate, ledger")
+    log("  example child, encoded linkage, SMS + capacity gate, gate, ledger")
     st = story(sim, df23, truth23)
     examples, rule = random_examples(df23, truth23)
     sms = sms_for(sim, df23, st)
@@ -772,7 +886,8 @@ def check_quick(data: dict) -> list[str]:
     same("committed eval/results", section_committed(data), data["committed"])
     cell = _grid_cell((0.35, 0.0))
     check_default_cell(cell, data["committed"]["identity_linkage"])
-    same("linkage default cell (re-run, == identity_linkage.json)", cell, data["linkage"]["cells"][data["linkage"]["default"]])
+    same("linkage default cell (re-run through the encoded boundary, == identity_linkage.json)", cell,
+         data["linkage"]["cells"][data["linkage"]["default"]])
     for pid in data["sim"]["order"]:
         led = data["sim"][pid]["ledger"]
         cp = (led["checkpoint"]["count"], led["checkpoint"]["head"])
