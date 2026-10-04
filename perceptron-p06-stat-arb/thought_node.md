@@ -24,7 +24,7 @@
   - LEV vs threshold is shown honestly as modest, with a strict-fills toggle.
   - Decay clock with the cadence floor; live compiled decision timing.
   - Every number comes from committed results or committed code running live on a committed slice.
-- **Doing:** spawning the demo builder.
+- **Doing (17:29):** [P6 demo builder](ghapp://sessions/d90f3e4a-6dd4-4baf-8ddd-6a1e15f31123), child 1 of 2, is building from a full kickoff brief; its crazy-element proposal is expected first.
 - **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills for the abstract's [TEAM] lines.
 - **Risks:**
   - Demo honesty: the LEV gain is fragile, so the demo must not imply a validated edge.
@@ -218,3 +218,13 @@ Folder, brief and journal created. The lead session starts Phase 0.
   The architecture page was regenerated to match the evaluated system.
 - **New evidence for the finals fix** (`eval/results/live_cadence.md`): our recorder's channels publish Binance perpetual every 2 ms (median) versus 26 ms in the Tardis samples, and OKX every 20–30 ms versus 100 ms. Coinbase's live `ticker` is coarser than Tardis level-2 quotes.
 - **Records:** `reviews/2026-10-04-dispositions.md` (37 items: 13 + 16 + 8) and `reviews/ledger.tsv` (3 lines). The abstract, at 897 words, passes `check_docs`.
+
+### 2026-10-04 17:27–17:29 IST — Demo phase kickoff (lead)
+- The Supervisor's 17:28 message (user directive, PLAYBOOK §11) moved P6 into the demo phase.
+- Spawned [P6 demo builder](ghapp://sessions/d90f3e4a-6dd4-4baf-8ddd-6a1e15f31123) with the runtime-default model. It owns `demo/` and reads the lead's `.data`/`.cache` via read-only symlinks.
+- Lead's brief to the builder:
+  - Lead the demo with the robust result: latency-aware selection vs naive trading under latency.
+  - Show LEV vs threshold honestly, with a strict-fills toggle.
+  - Architecture: offline HTML fed by exported JSON (which doubles as the fallback), plus a Python backend only for live recompute and live Numba timing.
+  - Committed slice: 10–20 minutes of 2026-10-01 for the 5 walk-forward legs, using the walk-forward's own LEV model (trained on 2026-09-01).
+  - Candidate crazy element: "race the machine" (the judge's measured reaction time fed into the committed simulator); the builder proposes and I approve.
