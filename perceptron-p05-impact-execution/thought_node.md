@@ -56,7 +56,7 @@
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
 | C1 | sim_env | WorldSpec → WorldResult | ABIDES rmsc04 | | ✅ | realism scorecard (δ, decay) |
-| C2 | twin_runner | TwinSpec → TwinPair | naive same-seed twins | ★ | ✅ naive; sync next | NSR = std/\|mean\| of Δmid(T1) |
+| C2 | twin_runner | TwinSpec → TwinPair | naive same-seed twins | ★ | ✅ naive + sync (NSR 4.7 → 1.4) | NSR = std/\|mean\| of Δmid(T1) |
 | C3 | market_state | BookSnapshot+fills → Features | L1 quotes | | partial | R² → next-slot cost |
 | C4 | impact_model | Features+fills → ImpactEstimate | exp. propagator | ★ | ✅ v0 (OOS R² < 0) | ghost-book RMSE vs twin |
 | C5 | scheduler | ParentOrder+ImpactParams → Schedule | TWAP/VWAP/AC | | ✅ | model cost; ΔIS |
