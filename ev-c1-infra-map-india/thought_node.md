@@ -142,3 +142,9 @@ Folder, brief and journal created. The lead session starts Phase 0.
 ### 2026-10-04 13:10 IST — Resumed (Supervisor: batch slot)
 - Definition of done received (see *Now*). New rules adopted: PLAYBOOK §4 (child sessions only, ≤ 2), §6 (no stash/autostash), §10 (cross-model reviews + ledger). Memory level 39 at resume.
 
+### 2026-10-04 13:45 IST — Step 1 (facts) done: fact-check + policy norms verified at primary sources
+- `research/fact-check.md` (lead-verified, reproducible with `research/tools/verify.py`): 11 agent claims → 7 VERIFIED (2 with corrections, 2 with scope notes), 1 via secondary reports only (J.D. Power), 1 PARTLY (DTE 1:191 ratio UNVERIFIED), 1 GitHub check, and the novelty search (none found in 3 searches + 2 candidate checks).
+- **Policy numbers verified:** MoP guidelines No. 12/2/2018-EV (17 Sep 2024), clause 11(1): one station per 1 km × 1 km urban grid by FY2030; every 20 km on both sides of highways; fast charging every 100 km for long-range/heavy-duty. Clause 13: BEE runs a "National online database of all public charging stations", and CPOs share annual energy sold per charger with it. PM E-DRIVE (PIB 2060774, 1 Oct 2024): ₹2,000 crore for 22,100 e-4W fast chargers + 1,800 e-bus + 48,400 e-2W/3W (our sum 72,300). NITI Aayog: "no global consensus on number of charging points required".
+- **New official time point:** PIB 2086533 (20 Dec 2024) has 25,202 stations with a state annex. With BEE (Apr 2025) and MoP (Aug 2025) that is three state-wise snapshots → growth-aligned supply series for C5/C10.
+- Agent files (`sota-methods.md`, `companies-products.md`) are now headed "unverified — cite only via fact-check.md".
+

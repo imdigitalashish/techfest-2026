@@ -1,3 +1,5 @@
+> **Status:** unverified research-agent output (4 Oct 2026). Only the claims re-checked in [fact-check.md](fact-check.md) may be cited.
+
 # What companies and agencies ship today — EV charger mapping, aggregation & siting analytics
 
 > Research for Techfest 2026 (IIT Bombay) "EV Infra & Green Mobility AI Challenge" (MHI x ICAT), Challenge 1 — EV Infra Map India.

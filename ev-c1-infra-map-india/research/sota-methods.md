@@ -1,3 +1,5 @@
+> **Status:** unverified research-agent output (4 Oct 2026). Only the claims re-checked in [fact-check.md](fact-check.md) may be cited.
+
 # SOTA Methods — EV Infra Map India (condensed, lean-mode)
 
 > Techfest 2026 (IIT Bombay) EV Infra & Green Mobility Challenge 1. Compiled 2026-10-04, all access dates 2026-10-04.
