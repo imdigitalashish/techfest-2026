@@ -12,7 +12,7 @@
   reference_year: "2024"
   technology: any steelmaking route (plant-level MRV by NISST under BEE CCTS procedure)
   source_id: mos-green-steel-taxonomy-2024
-  locator: "Notification of 23 Dec 2024, clause 1 (p. 4 of the Gazette extract)"
+  locator: "Notification dated 23 Dec 2024 (Gazette Extraordinary No. 342, 24 Dec 2024), clause 1, PDF p. 4"
   quote: "plant with CO2 equivalent emission intensity less than 2.2 tonnes of CO 2e per tonne of finished steel (tfs)"
   accessed: 2026-10-04
   pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 3, rationale: "Official threshold; not a measured intensity of any plant or route"}
