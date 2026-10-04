@@ -39,3 +39,7 @@ flowchart TB
 naive gap = Ȳ_after − Ȳ_before = **[Ȳ_after − V̂_after(π₀)]** (policy effect: OPE, with CI) + **[V̂_after(π₀) − Ȳ_before]** (environment change), where environment change = user-mix shift + response drift.
 
 Component contracts: [`../architecture/components.md`](../architecture/components.md) · spike rationale: [`../architecture/adr/001-spike.md`](../architecture/adr/001-spike.md).
+
+**Example output** (SYNTHETIC simulator S1, mean of 30 seeds; regenerate with `.venv/bin/python eval/plot_waterfall.py`):
+
+![S1 waterfall](figures/S1_drift_masks_gain_waterfall.png)

@@ -126,7 +126,7 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Abstract:** MVP bullets now carry these numbers, labelled as simulator vs the real OBD sample (863 words).
 - **Tests:** 8/8 contract tests pass.
 
-### 2026-10-04 08:00 IST — First auto-research ratchet; morning package complete
+### 2026-10-04 07:57 IST — First auto-research ratchet; morning package complete
 - **C6 ratchet** (`components/delta_estimator/autoresearch/`):
   - `program.md` sets the goal, constraints and an 8-idea backlog from the landscape. `eval.py` is FROZEN: a mini bank of 4 synthetic scenarios × 12 seeds, 5k rows each, plus a `--holdout` world seed.
   - Baseline DR: dev nRMSE **0.21823**.
@@ -143,3 +143,6 @@ Folder, brief and journal created. The lead session starts Phase 0.
   7. skeleton + eval with real numbers ✅ (simulator bank v0 + OBD sample)
   8. first ratchet loop ✅ (baseline + 1 iteration)
   9. thought node current ✅
+
+### 2026-10-04 08:03 IST — Demo asset
+- Waterfall charts for S1 and S2 in `deliverables/figures/`, rendered by `eval/plot_waterfall.py` from the committed `sim_bank_runs.csv` (SYNTHETIC). S1: the dashboard shows −0.056; the estimated split is policy +0.075, mix +0.016, season −0.146, each matching the truth to 3 decimals. Linked from `deliverables/architecture.md`.
