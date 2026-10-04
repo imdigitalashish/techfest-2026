@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** DEMO phase (PLAYBOOK §11), started 19:29 IST; demo builder child running. Round-1 package final pending [TEAM] details. Updated 12:46 IST, 4 Oct.
+- **Phase:** DEMO phase (PLAYBOOK §11). Demo built and verified from a clean clone; visual fixes and the astra demo review in progress. Round-1 package final pending [TEAM] details. Updated 12:46 IST, 4 Oct.
 - **Deliverables:**
   - `deliverables/round1-abstract.md`: 877 words. All 22 quoted numbers are verified against `eval/results/` and the τ-bench README by `eval/check_docs.py`, which is part of pytest (7/7 pass).
   - `deliverables/architecture.md`: diagram.
@@ -123,6 +123,13 @@ _Final, 4 Oct 2026 (v4). Re-scored after both cross-model reviews; supersedes v1
 - **Overall: 3.8 / 5.** Recommendation: a solid, low-risk Perceptron pick whose claims are modest but survive adversarial review. Choose it over P7 if P7's spike stays unreplicated; it will not win on novelty alone.
 
 ## Log
+### 2026-10-04 20:15 IST — Demo built; lead verified from a clean clone
+- **Builder pushed the demo** (`f3446ba`).
+- **Screens:** (1) REAL τ-bench errors: no guard (τ-bench tool DB diff) vs LIVE Tier 0 vs REPLAYED gpt-4.1-mini judge; (2) "Hijack the agent": typed ticket → SCRIPTED agent → LIVE guard, plus a benign control; (3) knob over 300 real calls against the judge's curve; (4) SYNTHETIC desk; (5) "what this does not show".
+- **Lead clean-clone check:** first visual 0.2 s (recorded gallery), live page 2.3 s, `smoke.sh` 83/83 ALL PASS. Endpoints OK; the hijack engine probed with 6 tickets × 3 scenarios gave only blocks or "agent ignored", and controls allowed. Bundle 0.52 MB gz.
+- **Builder's finding:** contraction tokens (I'm → "m" = size M) produce wrong reasons. Impact measured (15 decisions on balanced test) and documented as a known issue; deliberately not fixed against test data.
+- **Requested two visual fixes:** the screen-1 DB-diff wrapping and the sticky-header artifact in the fallbacks. Started the gpt-6-astra "judge watching the demo" review.
+
 ### 2026-10-04 19:39 IST — Demo proposal approved
 - **Builder's proposal:**
   1. REAL τ-bench harmful write: unguarded vs live Tier 0 vs replayed gpt-4.1-mini judge;
