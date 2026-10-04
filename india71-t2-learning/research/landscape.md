@@ -20,6 +20,14 @@
 
 **Reading the gap.** The scorecard counts enrolment and inputs (ANER 96.5 %, PTR 18) and the mission sets a 2026-27 deadline; the independent measure says fewer than one in four Grade 3 children in rural government schools can read a Grade 2 text. 2026-27 is the current school year.
 
+## 1b. Real-data check: do the two national instruments agree? (our analysis)
+Command: `python3 scripts/extract_parakh2024_state.py && python3 scripts/extract_udise2425_state.py && python3 scripts/real_data_analysis.py` → [`../eval/results/real_data_analysis.md`](../eval/results/real_data_analysis.md). Inputs: ASER 2024 state tables (govt schools, Std III) and 35 PARAKH 2024 state reports (Grade 3 average %, p. 14 of each), 27 states in both.
+- ASER reading vs PARAKH language: Pearson r = 0.552, Spearman ρ = 0.437, mean absolute rank difference 6.56 places; ASER subtraction vs PARAKH maths: r = 0.339, ρ = 0.255, 6.96 places.
+- Largest disagreement: Rajasthan — PARAKH Grade 3 language 70 % (4th; state report p. 14, verified) vs ASER govt Std III reading Std II text 12.1 % (23rd; verified in the ASER report text).
+- Leave-one-state-out linear link PARAKH → ASER: MAE 9.21 pp vs 10.46 pp for the national mean (reading); 7.55 vs 7.86 pp (maths).
+- UDISE+ single-teacher-school share and PTR show weak state-level correlations with either outcome (|r| ≤ 0.18, n = 27).
+- Caveat: different constructs (oral fixed-level vs written average % correct), populations (rural households vs schools) and timing — the analysis shows the instruments are not interchangeable, not that either is wrong.
+
 ## 2. The data the system already holds (UDISE+ 2024-25)
 Source: UDISE+ 2024-25 report, https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf (pp. 10–32).
 - 1,471,473 schools; 246,932,680 enrolments; 10,122,420 teachers; 1,013,322 government schools (68.9 %).

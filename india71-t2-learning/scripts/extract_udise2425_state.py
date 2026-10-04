@@ -23,7 +23,7 @@ FIELDNAMES = [
 
 
 def table_block(text: str) -> str:
-    start = text.index("Table 2.2: State wise highlights of the UDISE+ 2024-25 data")
+    start = text.rindex("Table 2.2: State wise highlights of the UDISE+ 2024-25 data")
     end = text.index("Source: UDISE+ 2024-25", start)
     return text[start:end]
 

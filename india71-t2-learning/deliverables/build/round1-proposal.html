@@ -26,7 +26,7 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 <tbody>
 <tr>
 <td><strong>Commensurability</strong></td>
-<td>PARAKH 2024 reports Grade 3 children answering ~64 % of language items correctly [7]; ASER 2024 reports 23.4 % of government-school Std III children reading a Std II text [3]. Both are right — they measure different things — but no system links them</td>
+<td>ASER levels, PARAKH average scores and state tests use different constructs and scales; no system links them (see §2)</td>
 <td>Teacher, block and state see different pictures</td>
 </tr>
 <tr>
@@ -108,6 +108,7 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 </tr>
 </tbody>
 </table>
+<p><strong>Our real-data check (27 states).</strong> We linked ASER 2024 and PARAKH 2024 state results. The two national instruments rank states very differently: Spearman ρ = 0.44 for reading/language and 0.26 for arithmetic/maths, with a mean rank gap of ~7 places; Rajasthan is 4th of 27 on PARAKH Grade 3 language (70 %) [22] but 23rd on ASER (12.1 % of government-school Std III children read a Std II text) [3]. Using PARAKH to predict ASER cuts out-of-sample error only from 10.5 to 9.2 points (reading) and 7.9 to 7.6 (maths). The instruments measure different things — so a crosswalk with explicit uncertainty must come before either drives decisions.</p>
 <p><strong>Design lesson.</strong> Reports and ratings produced compliance, not learning [13], [14]; unverified official numbers were off by over 30 points [5]; diagnosis that becomes a grouped, level-appropriate action works [8], [15], [16]. So the layer must make numbers trustworthy and end every diagnosis in an action.</p>
 <h2>3. Existing ecosystem — why the gap persists</h2>
 <table>
@@ -125,7 +126,7 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 <td>No learning levels</td>
 </tr>
 <tr>
-<td><strong>VSKs</strong> (Gujarat: 54,000 schools, 1.15 crore students, per officials [9])</td>
+<td><strong>VSKs</strong> (state command centres)</td>
 <td>Command-centre dashboards: attendance, assessments</td>
 <td>Monitoring, not a classroom action; no causal evaluation found</td>
 </tr>
@@ -148,7 +149,7 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 </table>
 <p><strong>Why the gap persists.</strong> Data pipes scaled; verified impact did not. Teacher-graded data is fragile, so states verify by brute force, and verification samples are not used as measurement. Dashboards monitor; few systems turn a diagnosis into next week's activity.</p>
 <h2>4. Proposed solution — "one picture, two loops"</h2>
-<p>Ek Tasveer is <strong>not a new app</strong>. It is a thin decision layer that plugs into what states run — UDISE+ for master data, the state assessment app for capture, the VSK for dashboards, DIKSHA for content, WhatsApp/SMS/IVR for delivery — and adds the five missing links through 12 components with typed, open contracts (JSON Schema), so a state can adopt one component at a time.</p>
+<p>Ek Tasveer is <strong>not a new app</strong>: a thin decision layer on what states already run (UDISE+, the state assessment app, the VSK, DIKSHA, WhatsApp/SMS/IVR) that adds the five missing links through 12 components with typed, open contracts (JSON Schema) — adoptable one component at a time.</p>
 <p><img src="architecture.png" style="width:100%;max-height:8.5cm;object-fit:contain"></p>
 <p><strong>Loop 1 — the classroom, weekly.</strong> A teacher runs a few-minute oral check per child on the NIPUN-aligned ladder (letter → word → Grade 1 text → Grade 2 text; numbers → subtraction → division). An adaptive engine stops as soon as it is ≥ 90 % sure of the child's level and returns a <strong>Monday plan</strong>: TaRL groups, one activity per group from the state's own content, and the competency to recheck in four weeks — as one WhatsApp message, ≤ 3 SMS, or an IVR call in the local language. Names stay on the teacher's phone; the system holds only pseudonyms.</p>
 <p><strong>Loop 2 — the system, termly ("measurement assurance").</strong> Exam boards already <em>moderate</em> school-assessed marks against independent evidence — e.g. NSW's NESA and Queensland's QCAA, which reviews "a selected sample" from every school [21]. We adapt that idea, plus survey back-checks and small-area estimation, to FLN census data, using the sample to <em>calibrate</em>, not to grade. Each term a small, rotating sample of schools — chosen by statistical uncertainty and decision value, always with a random component, so every school has a known inclusion probability — is re-tested by the cluster coordinator during the regular academic-support visit, who then coaches that group. A model-assisted estimator calibrates every school's reported results; small-area estimation with UDISE+ covariates then gives <strong>block numbers with intervals that add up to the PARAKH/ASER anchor</strong>. No school-level "trust label" is published: the aim is a true picture, not blame.</p>
@@ -222,7 +223,7 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 <p><strong>Beneficiaries.</strong> Grade 1–3 children in government schools of the pilot district, then the state (counted from UDISE+ grade-wise enrolment).
 <strong>Outcome indicators.</strong> Share of Grade 3 children meeting the reading and numeracy goals at block level, with intervals, every term; teacher minutes per child; share of actions rechecked within six weeks; gap between reported and moderated figures.
 <strong>Expected effect and scale.</strong> TaRL-style grouping has strong RCT support [8]; the staggered pilot measures our effect rather than assuming it. No new hardware or app: the layer runs on the state's VSK, uses UDISE+ identifiers and speaks WhatsApp/SMS/IVR.</p>
-<h2>References</h2>
+<h2>References (all accessed 4 Oct 2026; quotes and page numbers in <code>research/sources/</code>)</h2>
 <ol>
 <li>NITI Aayog, SDG India Index 2023-24 (PIB). https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2032857 ; SDG 4 score: https://static.pib.gov.in/WriteReadData/userfiles/image/image010QARO.jpeg</li>
 <li>Ministry of Education (2021). <em>NIPUN Bharat</em>, pp. 2, 5, 12, 29. https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf</li>
@@ -232,10 +233,9 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 <li>Rajya Sabha Unstarred Q. 3224 (Foundational Learning Study 2022). https://sansad.in/getFile/annex/259/AU3224.pdf?source=pqars</li>
 <li>NCERT (2025). <em>PARAKH Rashtriya Sarvekshan 2024, National Report</em>, pp. 1–4. https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_India_IND.pdf</li>
 <li>J-PAL. <em>Teaching at the Right Level</em> (case study). https://www.povertyactionlab.org/case-study/teaching-right-level-improve-learning</li>
-<li>Careers360 (citing Gujarat officials). https://news.careers360.com/focus-on-quality-learning-fund-allocation-have-transformed-gujarats-education-sector-officials</li>
 <li>Govt. of Haryana. <em>The Saksham Haryana programme</em>. https://www.prharyana.gov.in/en/the-saksham-haryana-programme-an-initiative-of-haryana-school-education-department-which-has-been-0</li>
 <li>Wadhwani AI. <em>Vaachan Samiksha</em>. https://www.wadhwaniai.org/vaachan-samiksha-leveraging-ai-to-bridge-the-literacy-divide/</li>
-<li>AWS (2023), ConveGenius SwiftChat press release. https://press.aboutamazon.com/in/2023/9/convegenius-builds-swiftchat-conversational-ai-platform-on-aws-to-improve-education-for-100-million-students</li>
+<li>AWS (2023). ConveGenius SwiftChat. https://press.aboutamazon.com/in/2023/9/convegenius-builds-swiftchat-conversational-ai-platform-on-aws-to-improve-education-for-100-million-students</li>
 <li>Muralidharan &amp; Sundararaman (2010). Diagnostic feedback to teachers. <em>Economic Journal</em> (J-PAL summary): https://www.povertyactionlab.org/print/pdf/node/702092</li>
 <li>Muralidharan &amp; Singh. <em>Improving Public Sector Management at Scale?</em> NBER WP 28129. https://www.nber.org/system/files/working_papers/w28129/w28129.pdf</li>
 <li>Banerjee et al. (2016). <em>Mainstreaming an Effective Intervention: TaRL in India</em>. https://www.povertyactionlab.org/sites/default/files/research-paper/TaRL_Paper_August2016.pdf</li>
@@ -245,5 +245,5 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 <li>Govt. of Gujarat. <em>Gunotsav — About</em>. https://gunotsav.gujarat.gov.in/aboutus.html</li>
 <li>UP NIPUN external assessment RFP (GeM). https://bidplus.gem.gov.in/bidding/bid/downloadBuyerDoc/5579037/17001372817746.pdf</li>
 <li>NESA, <em>HSC assessment moderation</em>: https://www.nsw.gov.au/education-and-training/nesa/hsc/exams-and-marking/assessment-moderation ; QCAA, <em>Confirmation</em>: https://www.qcaa.qld.edu.au/senior/assessment/quality-assurance/confirmation</li>
-</ol>
-<p>All sources accessed 4 Oct 2026; quotes and page numbers in <code>research/sources/</code>.</p></body></html>
+<li>NCERT (2025). <em>PRS 2024 State Report: Rajasthan</em>, p. 14 (+34 state reports). https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_Rajasthan_IND008.pdf</li>
+</ol></body></html>

@@ -88,7 +88,26 @@ def top_bottom_changes(aser: pd.DataFrame, indicator: str) -> tuple[pd.DataFrame
 
 def md_table(df: pd.DataFrame, columns: list[str] | None = None) -> str:
     show = df if columns is None else df[columns]
-    return show.to_markdown(index=False, floatfmt=".2f")
+    headers = [str(col) for col in show.columns]
+    rows = []
+    for _, row in show.iterrows():
+        rendered = []
+        for value in row.tolist():
+            if isinstance(value, float):
+                rendered.append(f"{value:.2f}")
+            else:
+                rendered.append(str(value))
+        rows.append(rendered)
+    widths = [
+        max(len(headers[i]), *(len(row[i]) for row in rows)) if rows else len(headers[i])
+        for i in range(len(headers))
+    ]
+
+    def line(values: list[str]) -> str:
+        return "| " + " | ".join(value.ljust(widths[i]) for i, value in enumerate(values)) + " |"
+
+    separator = "| " + " | ".join("-" * widths[i] for i in range(len(headers))) + " |"
+    return "\n".join([line(headers), separator, *[line(row) for row in rows]])
 
 
 def main() -> None:

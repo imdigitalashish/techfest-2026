@@ -73,9 +73,10 @@ def download(url: str, dest: Path) -> None:
         dest.write_bytes(response.read())
 
 
-def pdf_text(pdf: Path) -> str:
+def pdf_text(pdf: Path, first_page: int | None = 13, last_page: int | None = 15) -> str:
+    page_args = [] if first_page is None or last_page is None else ["-f", str(first_page), "-l", str(last_page)]
     return subprocess.check_output(
-        ["pdftotext", "-layout", str(pdf), "-"],
+        ["pdftotext", *page_args, "-layout", str(pdf), "-"],
         text=True,
         stderr=subprocess.DEVNULL,
     )
@@ -85,7 +86,7 @@ def grade3_comparison_page(text: str, state: str) -> tuple[int, str]:
     for page_no, page in enumerate(text.split("\f"), start=1):
         if (
             "GRADE 3" in page
-            and "Comparison of State Average with National Average Across Subjects" in page
+            and "Average with National Average Across Subjects" in page
             and "Language" in page
             and "Mathematics" in page
         ):
@@ -94,7 +95,7 @@ def grade3_comparison_page(text: str, state: str) -> tuple[int, str]:
 
 
 def extract_values(page: str, state: str) -> tuple[int, int]:
-    section = page.split("Comparison of State Average with National Average Across Subjects", 1)[1]
+    section = re.split(r"Comparison of (?:State|UT) Average with National Average Across Subjects", page, maxsplit=1)[1]
     section = section.split("In both Language", 1)[0]
     nums = [int(x) for x in re.findall(r"(\d+)%", section)]
     if len(nums) < 4:
@@ -122,7 +123,12 @@ def main() -> None:
         try:
             download(url, pdf)
             text = pdf_text(pdf)
-            page_no, page = grade3_comparison_page(text, state)
+            try:
+                page_no, page = grade3_comparison_page(text, state)
+                page_no += 12
+            except RuntimeError:
+                text = pdf_text(pdf, None, None)
+                page_no, page = grade3_comparison_page(text, state)
             language, mathematics = extract_values(page, state)
         except (urllib.error.URLError, subprocess.CalledProcessError, RuntimeError) as exc:
             failures.append(f"{state}: {exc}")

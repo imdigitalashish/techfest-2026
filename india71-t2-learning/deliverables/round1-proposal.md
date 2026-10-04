@@ -20,7 +20,7 @@
 
 | Break | Today | Consequence |
 |---|---|---|
-| **Commensurability** | PARAKH 2024 reports Grade 3 children answering ~64 % of language items correctly [7]; ASER 2024 reports 23.4 % of government-school Std III children reading a Std II text [3]. Both are right — they measure different things — but no system links them | Teacher, block and state see different pictures |
+| **Commensurability** | ASER levels, PARAKH average scores and state tests use different constructs and scales; no system links them (see §2) | Teacher, block and state see different pictures |
 | **Trust** | Census-style tests are often "proctored and graded by teachers in the same school"; Madhya Pradesh's Pratibha Parv (~6–7 million students) was shown to "mislead inferences about learning levels" [5] | Officials cannot tell progress from reporting pressure |
 | **Granularity** | Trustworthy surveys (ASER, PARAKH) are samples | Silent about a block, a school, a child |
 | **Actionability** | Outputs are averages and "% NIPUN" | Nobody is told *which children, which skill, which activity, this week* |
@@ -40,6 +40,8 @@
 | Phone + SMS targeted instruction, Botswana (RCT) | +0.121 SD numeracy; SMS alone +0.024 SD (not significant) | [16] |
 | Global Education Evidence Advisory Panel (2023) | "Targeting teaching instruction by learning level, not grade" is a *Great Buy* | [17] |
 
+**Our real-data check (27 states).** We linked ASER 2024 and PARAKH 2024 state results. The two national instruments rank states very differently: Spearman ρ = 0.44 for reading/language and 0.26 for arithmetic/maths, with a mean rank gap of ~7 places; Rajasthan is 4th of 27 on PARAKH Grade 3 language (70 %) [22] but 23rd on ASER (12.1 % of government-school Std III children read a Std II text) [3]. Using PARAKH to predict ASER cuts out-of-sample error only from 10.5 to 9.2 points (reading) and 7.9 to 7.6 (maths). The instruments measure different things — so a crosswalk with explicit uncertainty must come before either drives decisions.
+
 **Design lesson.** Reports and ratings produced compliance, not learning [13], [14]; unverified official numbers were off by over 30 points [5]; diagnosis that becomes a grouped, level-appropriate action works [8], [15], [16]. So the layer must make numbers trustworthy and end every diagnosis in an action.
 
 ## 3. Existing ecosystem — why the gap persists
@@ -47,7 +49,7 @@
 | System (deployed) | What it does | What it leaves undone |
 |---|---|---|
 | **UDISE+** [4] | School census + student-wise records since 2022-23 | No learning levels |
-| **VSKs** (Gujarat: 54,000 schools, 1.15 crore students, per officials [9]) | Command-centre dashboards: attendance, assessments | Monitoring, not a classroom action; no causal evaluation found |
+| **VSKs** (state command centres) | Command-centre dashboards: attendance, assessments | Monitoring, not a classroom action; no causal evaluation found |
 | **State FLN assessments + verification** — Haryana *Saksham Ghoshna*: a block is "Saksham" if > 80 % of students score > 50 %, checked by a third-party test in all 119 blocks [10]; Gujarat *Gunotsav*: 3,000 senior officials assess "25% schools from all the blocks" [19]; UP: NIPUN app with external verification [20] | Census data + verification | Verification grades schools or blocks; it is not used to *calibrate* the data, so it must be huge |
 | **AI oral reading** — Wadhwani AI Vaachan Samiksha, ~30,000 Gujarat schools (developer figures) [11] | Tamper-resistant fluency scores | No independent accuracy check found; no remediation plan |
 | **TaRL** (Pratham) [8]; chatbots such as SwiftChat in 14 states (vendor figures) [12] | Assess → group → activities; delivery channels to teachers | Needs a light, recurring diagnostic and follow-up at scale |
@@ -56,7 +58,7 @@
 
 ## 4. Proposed solution — "one picture, two loops"
 
-Ek Tasveer is **not a new app**. It is a thin decision layer that plugs into what states run — UDISE+ for master data, the state assessment app for capture, the VSK for dashboards, DIKSHA for content, WhatsApp/SMS/IVR for delivery — and adds the five missing links through 12 components with typed, open contracts (JSON Schema), so a state can adopt one component at a time.
+Ek Tasveer is **not a new app**: a thin decision layer on what states already run (UDISE+, the state assessment app, the VSK, DIKSHA, WhatsApp/SMS/IVR) that adds the five missing links through 12 components with typed, open contracts (JSON Schema) — adoptable one component at a time.
 
 ```mermaid
 flowchart LR
@@ -111,7 +113,7 @@ flowchart LR
 **Outcome indicators.** Share of Grade 3 children meeting the reading and numeracy goals at block level, with intervals, every term; teacher minutes per child; share of actions rechecked within six weeks; gap between reported and moderated figures.
 **Expected effect and scale.** TaRL-style grouping has strong RCT support [8]; the staggered pilot measures our effect rather than assuming it. No new hardware or app: the layer runs on the state's VSK, uses UDISE+ identifiers and speaks WhatsApp/SMS/IVR.
 
-## References
+## References (all accessed 4 Oct 2026; quotes and page numbers in `research/sources/`)
 1. NITI Aayog, SDG India Index 2023-24 (PIB). https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2032857 ; SDG 4 score: https://static.pib.gov.in/WriteReadData/userfiles/image/image010QARO.jpeg
 2. Ministry of Education (2021). *NIPUN Bharat*, pp. 2, 5, 12, 29. https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf
 3. ASER Centre (2025). *Annual Status of Education Report (Rural) 2024*. https://asercentre.org/wp-content/uploads/2022/12/ASER_2024_Final-Report_13_2_24-1.pdf
@@ -120,10 +122,9 @@ flowchart LR
 6. Rajya Sabha Unstarred Q. 3224 (Foundational Learning Study 2022). https://sansad.in/getFile/annex/259/AU3224.pdf?source=pqars
 7. NCERT (2025). *PARAKH Rashtriya Sarvekshan 2024, National Report*, pp. 1–4. https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_India_IND.pdf
 8. J-PAL. *Teaching at the Right Level* (case study). https://www.povertyactionlab.org/case-study/teaching-right-level-improve-learning
-9. Careers360 (citing Gujarat officials). https://news.careers360.com/focus-on-quality-learning-fund-allocation-have-transformed-gujarats-education-sector-officials
 10. Govt. of Haryana. *The Saksham Haryana programme*. https://www.prharyana.gov.in/en/the-saksham-haryana-programme-an-initiative-of-haryana-school-education-department-which-has-been-0
 11. Wadhwani AI. *Vaachan Samiksha*. https://www.wadhwaniai.org/vaachan-samiksha-leveraging-ai-to-bridge-the-literacy-divide/
-12. AWS (2023), ConveGenius SwiftChat press release. https://press.aboutamazon.com/in/2023/9/convegenius-builds-swiftchat-conversational-ai-platform-on-aws-to-improve-education-for-100-million-students
+12. AWS (2023). ConveGenius SwiftChat. https://press.aboutamazon.com/in/2023/9/convegenius-builds-swiftchat-conversational-ai-platform-on-aws-to-improve-education-for-100-million-students
 13. Muralidharan & Sundararaman (2010). Diagnostic feedback to teachers. *Economic Journal* (J-PAL summary): https://www.povertyactionlab.org/print/pdf/node/702092
 14. Muralidharan & Singh. *Improving Public Sector Management at Scale?* NBER WP 28129. https://www.nber.org/system/files/working_papers/w28129/w28129.pdf
 15. Banerjee et al. (2016). *Mainstreaming an Effective Intervention: TaRL in India*. https://www.povertyactionlab.org/sites/default/files/research-paper/TaRL_Paper_August2016.pdf
@@ -133,5 +134,4 @@ flowchart LR
 19. Govt. of Gujarat. *Gunotsav — About*. https://gunotsav.gujarat.gov.in/aboutus.html
 20. UP NIPUN external assessment RFP (GeM). https://bidplus.gem.gov.in/bidding/bid/downloadBuyerDoc/5579037/17001372817746.pdf
 21. NESA, *HSC assessment moderation*: https://www.nsw.gov.au/education-and-training/nesa/hsc/exams-and-marking/assessment-moderation ; QCAA, *Confirmation*: https://www.qcaa.qld.edu.au/senior/assessment/quality-assurance/confirmation
-
-All sources accessed 4 Oct 2026; quotes and page numbers in `research/sources/`.
+22. NCERT (2025). *PRS 2024 State Report: Rajasthan*, p. 14 (+34 state reports). https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_Rajasthan_IND008.pdf
