@@ -1,0 +1,84 @@
+osm_id,ocm_id,dist_m,osm_name,ocm_name,state,name_sim
+node/6761961057,OCM-306767,12.3,,Near Snow White,Delhi,22.22222222222223
+node/7083796927,OCM-306982,6.1,,EESL Charging Station ,Delhi,25.0
+node/8893808042,OCM-313508,6.0,Electric Vehicle Charging Station,ANERT - EESL Sangamukham - EESL,Kerala,24.56140350877193
+node/8919501650,OCM-311495,1.8,Tata Motors True Sai Works FC,The True Saai Works Salem,Tamil Nādu,59.25925925925926
+node/8919511936,OCM-311623,8.9,Zeon Charging Navakkarai, Adyar Ananda Bhavan Navakkarai,Tamil Nādu,59.25925925925926
+node/9202909866,OCM-103616,8.9,Ather Charging Grid,Ather Space,Karnātaka,62.5
+node/9524427359,OCM-313637,2.0,TATA Charging Station,EVM MG Motors Coastline Garage - ChargeMOD,Kerala,34.920634920634924
+node/9527221544,OCM-308935,24.0,veev,Adyar Ananda Bhavan,Tamil Nādu,8.695652173913047
+node/9739308831,OCM-313886,103.6,EV Charging station,Open Kitchen EVCS - GO EC,Kerala,31.818181818181813
+node/9780694390,OCM-171101,33.1,Zeon Charging station,Saravana Bhavan,Tamil Nādu,33.33333333333333
+node/9796873472,OCM-309349,47.9,,Trifecta Addatto,Karnātaka,10.526315789473685
+node/9956403209,OCM-311491,28.8,Zeon Charging Station,Anandha Bhavan,Tamil Nādu,28.57142857142857
+node/9956542246,OCM-311500,3.3,Zeon Charging Station,Adyar Ananda Bhavan - A2B,Tamil Nādu,30.434782608695656
+node/10000890138,OCM-484935,10.7,,Hotel Sangam,Mahārāshtra,26.66666666666667
+node/10137291010,OCM-308366,11.2,Zeon Charging,Aryaas Pure Veg,Tamil Nādu,28.57142857142857
+node/10240014908,OCM-306938,6.6,,EESL Charging Station ,Delhi,25.0
+node/10290789663,OCM-481493,6.5,,Balewadi Charge Park,Mahārāshtra,8.695652173913047
+node/10564130631,OCM-306967,71.8,,EESL Charging Station ,Delhi,25.0
+node/10797010208,OCM-481491,99.8,,MG Motor B.U. Bhandari Showroom,Mahārāshtra,11.764705882352942
+node/10908485595,OCM-306980,27.8,,GTB Nagar Metro Station Parking,Delhi,17.647058823529406
+node/10978384002,OCM-313533,10.0,"KSEB Charging station, Kottiyam",Kottiyam KSEB EVCS - ChargeMOD,Kerala,65.57377049180329
+node/11116285790,OCM-480431,28.0,ATHER Fast Charger,Kakkanad Thomas Tower EVCS,Kerala,27.272727272727266
+node/11157574366,OCM-313814,9.3,EV Super charging station,Le Sky Dine EVCS - GO EC,Kerala,20.40816326530613
+node/11288409893,OCM-313670,7.7,KSEB,Irinjalakkuda KSEB EVCS - ChargeMOD,Kerala,100.0
+node/11536826351,OCM-308936,42.1,,Jio BP Pulse - Mettupalayam,Tamil Nādu,6.666666666666671
+node/11578223404,OCM-485112,86.1,,Nanded City,Mahārāshtra,28.57142857142857
+node/11637354348,OCM-306985,9.7,,EESL Charging Station ,Delhi,25.0
+node/11669054294,OCM-478914,56.1,,Hill View EVCS,Kerala,0.0
+node/11818587530,OCM-309151,11.2,GLIDA Charging Station,GLIDA Charging Hub,Karnātaka,87.5
+node/11849592981,OCM-484938,4.1,,Amrai Resort,Mahārāshtra,13.333333333333329
+node/11854233582,OCM-308992,32.0,Gogate Plaza,Gogte Plaza,Karnātaka,95.65217391304348
+node/11864351274,OCM-308978,5.6,Tata Power TSS Sirsi,"TSS Super Market, Sirsi",Karnātaka,62.06896551724138
+node/11919269548,OCM-311480,25.2,,Saravana Bhavan Classic,Tamil Nādu,23.07692307692308
+node/11962153068,OCM-313622,34.0,,Raos EVCS - ChargeMOD,Kerala,8.333333333333329
+node/11964375344,OCM-313856,9.9,,Prestige EV Super Charging Station - GO EC,Kerala,13.333333333333329
+node/11964404990,OCM-313638,49.4,EVOK Charging Station,Sulfex Mattress (EVOK) - ChargeMOD,Kerala,32.727272727272734
+node/11964642849,OCM-313868,10.7,,Tribute Royale EVCS - GO EC,Kerala,6.666666666666671
+node/11964655417,OCM-313511,15.3,,ANERT EESL - Ernakulam,Kerala,16.0
+node/11970703533,OCM-313636,7.7,,Steelane (EVOK) - ChargeMOD,Kerala,13.333333333333329
+node/12002046035,OCM-309319,82.7,,Freedom Park,Karnātaka,13.333333333333329
+node/12016136802,OCM-308663,20.9,,MEI EV charging hub,Karnātaka,18.181818181818187
+node/12090459397,OCM-311632,9.5,,Texvalley,Tamil Nādu,16.66666666666667
+node/12098546110,OCM-306984,7.8,,EESL Charging Station ,Delhi,25.0
+node/12100028686,OCM-308799,76.9,Honda e:swap,"Prerana Motors, Rajaji Nagar",Karnātaka,25.0
+node/12181413140,OCM-313434,6.5,,Kanthari Restaurants,Kerala,26.086956521739125
+node/12183518228,OCM-313694,9.2,KSEB EV Charging Station,Ponnani KSEB EVCS - ChargeMOD,Kerala,60.37735849056604
+node/12192527479,OCM-307034,11.9,,Statiq Charging Station,Delhi,23.07692307692308
+node/12327155403,OCM-313659,10.7,EV Point,EV Point EVCS - ChargeMOD,Kerala,100.0
+node/12432219066,OCM-308893,9.5,,Shell Recharge Mahadeva Kodigehalli,Karnātaka,5.263157894736835
+node/12470580711,OCM-301155,36.9,Super Hub EV Charging Hub,Hotel Aishwarya Bhavan,Tamil Nādu,32.55813953488372
+node/12509386001,OCM-313869,11.0,Electric vehicle charging station,Central Talkies EVCS - GO EC,Kerala,26.229508196721312
+node/12823839873,OCM-306797,10.7,,TERRA CHARGE BSES,Delhi,0.0
+node/13040660047,OCM-313679,10.4,,Guardian EV Charging Station by Imminent Future - ChargeMOD,Kerala,9.677419354838705
+node/13238855163,OCM-308649,19.0,,Hotel Harsha Grand,Karnātaka,19.04761904761905
+node/13276174617,OCM-313905,30.1,,SK EVCS - GO EC,Kerala,0.0
+node/13506982427,OCM-479124,3.5,Ather Grid Charging station,Ather Grid Charging Station,Odisha,96.29629629629629
+node/13586349702,OCM-313675,9.7,,Surya Hotel (EVOK) - ChargeMOD,Kerala,6.060606060606062
+node/13593376578,OCM-313875,41.5,,Cassia Regency EVCS - GO EC,Kerala,13.333333333333329
+node/13639995467,OCM-479066,23.7,,Ather Grid Charging Station,Andhra Pradesh,20.0
+node/13640142200,OCM-479172,122.7,,Ather Grid Charging Station,Andhra Pradesh,20.0
+node/13952067947,OCM-472810,99.4,,Tata Power Yamuna Expressway Mathura Exit LHS,Uttar Pradesh,8.333333333333329
+node/13962501791,OCM-313862,11.1,,EVGO Hub - GO EC,Kerala,0.0
+node/13990548253,OCM-474462,30.7,,EQ Future Mobility Thakkaram,Kerala,6.451612903225808
+node/13992548532,OCM-313453,15.2,Zeon,Chennai Ananda Bhavan,Kerala,16.0
+node/14000450128,OCM-313861,41.9,,Daffodils EVCS - GO EC,Kerala,8.0
+node/14002814701,OCM-478890,82.1,,Lulu Mall EVCS,Kerala,11.764705882352942
+node/14005707553,OCM-478907,11.4,Yash Square GOEC Electric Vehicle (Car) Charging Station 2x60 KW CCS2,Yash Square EVCS,Kerala,81.48148148148148
+node/14063411321,OCM-311482,52.1,Chargezone EV Charging,Hotel Saravanaa Bavaa,Tamil Nādu,32.55813953488372
+node/14096406876,OCM-311484,31.7,Chargezone EV Charging (Gentari),Hotel Saravanaa Bhava,Tamil Nādu,30.188679245283012
+node/14127552402,OCM-313575,8.4,ചാർജമോഡ് ഇവി ചാർജിങ് സ്റ്റേഷൻ,V Charge Hub - ChargeMOD,Kerala,11.320754716981128
+node/14133758030,OCM-311481,18.2,,Sree Saravana Bhavan Veg. Treat,Tamil Nādu,17.647058823529406
+node/14166994014,OCM-312046,4.7,,Azadpur Metro Station,Delhi,16.66666666666667
+way/639223862,OCM-313581,16.3,,Punnapra KSEB EVCS - ChargeMOD,Kerala,12.121212121212125
+way/1150511285,OCM-308898,99.4,,Shell Recharge Bagmane Solarium,Karnātaka,11.764705882352942
+way/1152420782,OCM-480934,13.4,,"Burger King, Tathawade",Mahārāshtra,16.0
+way/1152421163,OCM-480933,9.5,,Tata Motors Tathawade,Mahārāshtra,8.333333333333329
+way/1215901273,OCM-313627,2.2,,Vyttila KSEB EVCS - ChargeMOD,Kerala,6.25
+way/1217492370,OCM-313587,4.7,,Gandhi Nagar KSEB EVCS - ChargeMOD,Kerala,10.810810810810807
+way/1334165085,OCM-309317,42.3,,"Jio-BP Pulse Hub, Marathalli",Karnātaka,6.451612903225808
+way/1353053241,OCM-309186,5.3,Jio BP,Jio BP Charging Hub Chikkagubbi ,Karnātaka,100.0
+way/1362135033,OCM-313584,21.7,,Pallam KSEB EVCS - ChargeMOD,Kerala,6.451612903225808
+way/1412674423,OCM-313510,14.3,,ANERT EESL - Autokast ,Kerala,8.333333333333329
+way/1496159597,OCM-313736,5.9,,Thamarassery KESEB EVCS - ChargeMOD,Kerala,5.263157894736835

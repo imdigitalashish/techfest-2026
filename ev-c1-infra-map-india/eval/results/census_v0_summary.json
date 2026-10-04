@@ -1,0 +1,23 @@
+{
+ "osm_sites": 600,
+ "ocm_sites": 1872,
+ "osm_unassigned_state": 1,
+ "ocm_unassigned_state": 3,
+ "mutual_nn_matches_by_radius_m": {
+  "50": 71,
+  "100": 81,
+  "150": 83,
+  "250": 93,
+  "500": 111
+ },
+ "radius_used_m": 150,
+ "matches_name_sim_ge_60_pct": 13.3,
+ "national_union": 2385,
+ "national_official": 29277,
+ "national_union_coverage_pct": 8.15,
+ "national_chapman_on_totals": 13399.9,
+ "states_evaluated_m_ge_3": 5,
+ "median_abs_rel_err_union": 0.901,
+ "median_abs_rel_err_chapman": 0.697,
+ "ocm_state_text_disagrees_with_polygon": 156
+}
