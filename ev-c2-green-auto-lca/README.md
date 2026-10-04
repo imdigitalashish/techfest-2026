@@ -4,7 +4,7 @@ Journal and current state: [`thought_node.md`](thought_node.md). Method: [`../PL
 
 ## Quickstart (from this folder; Python 3.11 with numpy, pydantic, pyyaml, pytest; pdfplumber for the digitizer)
 ```bash
-bash data/fetch/fetch_sources.sh                 # re-download raw sources into .data/raw/ (gitignored)
+python3 data/fetch/fetch_sources.py              # re-download raw sources into .data/raw/ (gitignored)
 python3 -m pytest components/lca_engine/tests -q # contract tests (10)
 python3 eval/eval.py                             # frozen eval: ICCT replication + India-2026 case study -> eval/results/
 python3 components/dashboard/build.py            # -> deliverables/dashboard/index.html (open in a browser, offline)
