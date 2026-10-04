@@ -22,6 +22,10 @@ import pandas as pd
 H_ON = 0.02
 MERGE_GAP = pd.Timedelta(hours=3)
 PAD = pd.Timedelta(minutes=30)
+# ratchet switches (see autoresearch/results.tsv)
+USE_WITHIN_FIT = True        # exp1: fit k within each contiguous recession limb (fixed-effects slope)
+USE_RAIN_CONSISTENCY = True  # exp2: implausible only if stage-implied inflow exceeds what rain can explain
+USE_JUMP_TEST = True         # exp3: flag one-minute stage jumps that rain in +-5 min cannot explain
 
 
 def _events(stage: pd.Series) -> list[tuple[pd.Timestamp, pd.Timestamp]]:
@@ -43,7 +47,22 @@ def _fit_k(seg: pd.Series, rain_min: pd.Series, h_max: float) -> float | None:
         return None
     x = (s.index - s.index[0]).total_seconds() / 3600.0
     y = np.log(s.to_numpy())
-    slope = np.polyfit(x, y, 1)[0]
+    if USE_WITHIN_FIT:
+        x = np.asarray(x)
+        limb = np.concatenate([[0], np.cumsum(np.diff(x) > 0.1)])   # new limb after a >6-min gap
+        num = den = 0.0
+        for L in np.unique(limb):
+            m = limb == L
+            if m.sum() < 10:
+                continue
+            xc = x[m] - x[m].mean()
+            num += float(np.sum(xc * (y[m] - y[m].mean())))
+            den += float(np.sum(xc * xc))
+        if den <= 0:
+            return None
+        slope = num / den
+    else:
+        slope = np.polyfit(x, y, 1)[0]
     return float(-slope) if slope < 0 else None
 
 
@@ -73,7 +92,17 @@ def verify(stage: pd.Series, rain_min: pd.Series, structure: dict) -> list[dict]
         rise = float(seg.max() - seg.iloc[0])
         prior = structure["runoff_coeff"] * structure["catchment_m2"] * rain_mm / 1000.0
         ci = k_use / k_ref if k_ref else None
-        if rain_mm < 1.0 or inflow > 3.0 * max(prior, 0.05):
+        if USE_RAIN_CONSISTENCY:
+            implausible = (rain_mm < 0.1 and rise > 0.03) or inflow > 3.0 * prior + 0.15
+        else:
+            implausible = rain_mm < 1.0 or inflow > 3.0 * max(prior, 0.05)
+        if USE_JUMP_TEST and not implausible:
+            v = seg.to_numpy()
+            dv = np.diff(v) * A                                          # m3 per sample step
+            rr = rain_min.reindex(seg.index, fill_value=0).rolling(11, center=True, min_periods=1).sum().to_numpy()[1:]
+            cap = 3.0 * structure["runoff_coeff"] * structure["catchment_m2"] * rr / 1000.0 + 0.15
+            implausible = bool(np.any(dv > cap))
+        if implausible:
             verdict = "implausible"
         elif ci is not None and ci < 0.5:
             verdict = "clogged"
