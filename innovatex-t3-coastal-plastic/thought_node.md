@@ -26,6 +26,7 @@
   - Dashboard redesigned as an actionable overview at the user's request, replaying the wettest 2025 week. It does not yet meet PLAYBOOK §11; the Supervisor will review demos in a later sweep.
   - Added an illustrative per-boom estimate (`eval/impact_estimate.py`) and the twin's overtopping and bypass hours. The twin does not model street flooding, so we make no flood claim.
   - **Resume point if reactivated:** a §11 demo (judge knob: sensor dropout or storm shock; `demo/run.sh`, SCRIPT.md, fallback/, smoke.sh, astra demo review). After that, a tabletop reversal test if a teammate is named.
+  - **Dashboard server: not running.** The detached server was stopped by an external SIGTERM after a 22:26 IST `/api/health` probe; it was not restarted because the slot is free. To view it: `bash innovatex-t3-coastal-plastic/deliverables/serve_dashboard.sh` → http://localhost:8765.
 - **Rules now:** child sessions only, no `task` sub-agents. No `git stash` / `--autostash`. Timestamps from `TZ=Asia/Kolkata date`.
 - **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments, leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup's 2026 Interceptors cover the big Malad and Trombay creek mouths. NullahNet is the network layer for the rest:
   - pocket-fill sensing;
@@ -242,3 +243,6 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - `eval/impact_estimate.py` gives an ILLUSTRATIVE per-boom estimate (reported catch × twin ratios): retrofit median 86–104 t less escaping per monsoon; dispatch 7.0–8.5 t, with a range that includes no gain.
   - The twin's boom-overtopping hours are 88.0 (P2), 70.5 (P1) and 87.0 (P0) site-hours; bypass hours are 10 for every policy. We make no flood claim.
 - **Supervisor:** answered (a) on the §11 demo: DONE now, demo sweep later.
+
+### 2026-10-04 23:39 IST — Dashboard server stopped externally
+- The detached dashboard server (port 8765) received SIGTERM after a 22:26 IST `/api/health` probe. That was not my action, and the port is now free. I did not restart it: DONE, slot free, inbox empty, no new upstream changes to T3. The restart command is in Now. Removed my untracked `.playwright-mcp/` temp files.
