@@ -13,8 +13,8 @@
 _Updated 2026-10-04 10:55 IST._
 - **Phase:** active batch, closing the DoD. MVP plus both stretch goals done with held-out CIs. Spike tested end-to-end: pre-registered replication **failed**, reported. NYC replay done. Final abstract drafted (900 words). Memo final.
 - **Doing:**
-  - Follow-up runs: matched-α (`phase-v2b`) and forecast-trust sweep (`trust-v2`); then planner sensitivity (`phase-v2c`).
-  - Next: the final-abstract cross-model review as a **child session** (gpt-6-astra, max).
+  - Child sessions (cap 2): [P7 review: final abstract (gpt-6-astra)](ghapp://sessions/d2aa3a44-ee56-48d2-90bc-57f11d2a08a7) and [P7 review: headline repro (gpt-6-sol)](ghapp://sessions/a31b5287-a4cf-4ebe-9123-0b6644c8c243).
+  - Planner-sensitivity run `phase-v2c` (legacy backlog, same seeds) running.
 - **Next:**
   1. Fold in the trust/sensitivity results.
   2. Launch the abstract review session; record ACCEPTED/REJECTED in `reviews/` and the ledger.
@@ -64,8 +64,8 @@ Details: [architecture/components.md](architecture/components.md) · contracts: 
 | C1 | Simulator (+ PettingZoo wrapper) | targets (K,) → StepInfo; FleetState | own numpy core | — | built | steps/s; determinism, conservation |
 | C2 | Scenario generator | config, seed → DemandTrace + labels | own parametric model (synthetic) | — | built | rate fidelity |
 | C3 | Nowcaster | counts → level | EWMA / moving average | — | built | nowcast MAE |
-| C4 | Change detector | counts, expected → alarm, onset, post-change rate | two-sided Poisson CUSUM | **yes** | built, ratchet v1 | delay at fixed ARL₀; F1 with margin |
-| C5 | Forecaster | observe / forecast(t, H) → mean (H, Z) | deseasonalised EWMA | **yes** | built, ratchet v1 | frozen `eval.py` score (MAE_all + MAE_post_shock) |
+| C4 | Change detector | counts, expected → alarm, onset, post-change rate | two-sided Poisson CUSUM | input to spike | built, ratchet v1; restart role failed pre-registered replication | delay at fixed ARL₀; F1 with margin |
+| C5 | Forecaster + **trust gate** | observe / forecast(t, H) → mean (H, Z); planner sees trust × mean | deseasonalised EWMA | **yes (trust gate)** | built; fixed-trust sweep done (exploratory) | served fraction (decision loss), not forecast error |
 | C6 | MPC planner | idle, incoming, queue, demand → Plan (flows, duals) | time-expanded LP, HiGHS | — | built | served fraction under the oracle forecast; p99 latency |
 | C7 | Coordinator | flows → per-unit orders | lowest-index pick / Hungarian | (B later) | built | assignment cost ratio |
 | C8 | RL comparator | per-unit obs → Discrete(Z) | MAPPO / IPPO (TorchRL) | — | planned | served fraction on test seeds |
@@ -200,3 +200,17 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
 - **Reviews:** gpt-6-sol (code + eval, 9 items, all accepted, 2 fixes deferred) and gpt-6-astra (spike + law, 8 items, 7 accepted). Supervisor framing (10:47) accepted: lead with the forecast-hurts-planner finding; spike = decision-aware forecast trust.
 - **Citations verified:** Elmachtoub & Grigas (Management Science 2022) and Wilder et al. (AAAI 2019) via arXiv API plus Crossref; Page (1954) bibliographic record via Crossref.
 - **Fixes:** rates now reach only the oracle; `pending_frac`; seed-bootstrap CIs for long runs; integer `@k=v` parsing; `--legacy` in phase; Holm per endpoint in `confirm.py`.
+
+### 2026-10-04 10:50–11:05 IST — Follow-ups, final abstract, review sessions
+- **Matched-α** (`eval/results/phase-v2-merged/summary.md`):
+  - Detector − EWMA(α=0.01) is positive in 7/8 cells (+0.18 to +0.64 pp). The restart beats equally slow smoothing but not the faster default EWMA(α=0.05).
+  - Fixed H=14 for both arms gives the same negatives as phase-v2, so the horizon confound does not explain the miss.
+- **Trust sweep** (exploratory, L=1, P=10, 30 seeds; `eval/results/trust-v2/summary.md`):
+  - An intermediate trust beats both extremes in 4/4 scenarios: shock+drift +1.13 pp [+1.05, +1.21] (trust 0.5); shock+drift+spikes +1.24 (0.5); shock +0.20 (0.25); drift +0.16 (0.75).
+  - The best trust varies by regime, which supports spike A″ (decision-aware, regime-gated trust). It must still pass the pre-registered test (Addendum B, to be written before the run).
+- **Summaries written** so every abstract number has a committed file: `eval/summarise_misc.py` → nyc-v2, pareto-v2, trust-v2 `summary.md`.
+- **Final abstract** (`deliverables/round1-abstract.md`): 899 words, all 8 required sections, `[TEAM-n]` placeholders.
+  - Every number was audited against committed files.
+  - One over-general claim was fixed: the true-rate forecast hurts "in three of four long-lead-time cells", not everywhere.
+- **Architecture diagram final:** trust-gate spike.
+- **Cross-model review sessions launched** (Supervisor directive: sessions, cap 2): gpt-6-astra hostile-judge review of the final abstract; gpt-6-sol independent reproduction of the headline numbers.
