@@ -1,0 +1,64 @@
+{
+ "hypothetical_fix": "strip 'm 's 're 've 'll 'd 't before norm() (not applied to committed code)",
+ "code_sha256": "d8f996317195d04c",
+ "by_split": {
+  "dev": {
+   "t0_strict": {
+    "n_changed": 14,
+    "changes": {
+     "bad_harmful: block -> escalate": 1,
+     "good: allow -> escalate": 7,
+     "good: block -> escalate": 5,
+     "good: escalate -> allow": 1
+    }
+   },
+   "t0_balanced": {
+    "n_changed": 14,
+    "changes": {
+     "bad_harmful: block -> escalate": 1,
+     "good: allow -> escalate": 7,
+     "good: block -> escalate": 5,
+     "good: escalate -> allow": 1
+    }
+   },
+   "t0_lenient": {
+    "n_changed": 6,
+    "changes": {
+     "bad_harmful: block -> escalate": 1,
+     "good: block -> allow": 3,
+     "good: block -> escalate": 2
+    }
+   }
+  },
+  "test": {
+   "t0_strict": {
+    "n_changed": 15,
+    "changes": {
+     "bad_harmful: allow -> block": 1,
+     "bad_harmful: block -> escalate": 1,
+     "good: allow -> escalate": 8,
+     "good: block -> escalate": 5
+    }
+   },
+   "t0_balanced": {
+    "n_changed": 15,
+    "changes": {
+     "bad_harmful: allow -> block": 1,
+     "bad_harmful: block -> escalate": 1,
+     "good: allow -> escalate": 8,
+     "good: block -> escalate": 5
+    }
+   },
+   "t0_lenient": {
+    "n_changed": 8,
+    "changes": {
+     "bad_harmful: allow -> block": 1,
+     "bad_harmful: block -> allow": 1,
+     "good: allow -> escalate": 1,
+     "good: block -> allow": 4,
+     "good: block -> escalate": 1
+    }
+   }
+  }
+ }
+}
