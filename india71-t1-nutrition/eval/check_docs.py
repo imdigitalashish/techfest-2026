@@ -51,6 +51,13 @@ def claims() -> list[tuple[Path, str]]:
                    f"{round(al['tamper_detection_rate'] * al['n_mutations'])}/{al['n_mutations']}**"),
         (COMPONENTS, f"**{rule:.3f}**"),
     ]
+    import csv
+    rows = list(csv.DictReader(open(ROOT / "research" / "sources" / "state_gap_verified.csv")))
+    states = [r for r in rows if r["state"] != "India"]
+    below = sum(float(r["pt_jun2025_wasted_pct"]) < float(r["nfhs5_wasted_pct"]) for r in states)
+    out.append((PROPOSAL, f"**all {below} States/UTs**" if below == len(states) else f"**{below} of {len(states)} States/UTs**"))
+    mh = next(r for r in rows if r["state"] == "Maharashtra")
+    out.append((PROPOSAL, f"Maharashtra {float(mh['pt_jun2025_wasted_pct']):.2f}% vs {float(mh['nfhs5_wasted_pct']):.1f}%"))
     cal = j("cohort_calibration.json")
     out.append((PROPOSAL, f"at-birth wasting is {round(100 * cal['at_birth_wasting'], 1)}%"))
     return out

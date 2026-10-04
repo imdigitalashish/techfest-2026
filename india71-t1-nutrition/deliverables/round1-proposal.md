@@ -14,7 +14,7 @@ In May 2026, Poshan Tracker recorded growth monitoring for **over 6.3 crore chil
 | Underweight | 32.1% | 17.43% (under 6) | 15.93% |
 | **Wasted** | **19.3%** | **6%** | **5.46%** |
 
-The divergence is in the weight-based indicators. The figures aren't directly comparable: the age bands differ, the periods differ, and one source samples households while the other counts children registered and measured. So this is an **unexplained discrepancy**, not proof of missed children. The Ministry itself notes that administrative data "suffer from data gaps due to coverage, measurement, training etc." (Rajya Sabha reply, as reported in [6]). Today no one can say, for any district or Anganwadi, how much of the gap is real change, coverage, measurement error or misclassification.
+The divergence is in the weight-based indicators, and it is universal: Poshan Tracker's wasting is below NFHS-5's in **all 36 States/UTs** (e.g. Maharashtra 4.01% vs 25.6%) [2, 14]. The figures aren't directly comparable: the age bands differ, the periods differ, and one source samples households while the other counts children registered and measured. So this is an **unexplained discrepancy**, not proof of missed children. The Ministry itself notes that administrative data "suffer from data gaps due to coverage, measurement, training etc." (Rajya Sabha reply, as reported in [6]). Today no one can say, for any district or Anganwadi, how much of the gap is real change, coverage, measurement error or misclassification.
 
 **Who falls into the gap.** Infants and young children (0–23 months) in high-burden, tribal-majority blocks.
 - Wasting starts early: in South Asian cohorts, 18.9% of babies were wasted at birth and 52.2% had at least one episode by age two [7].
@@ -161,3 +161,4 @@ Every number below comes from a committed run in our repository. **SYNTHETIC row
 11. MWCD & MoHFW, Protocol for Management of Malnutrition in Children, 10 Oct 2023, pp. 8, 11, 20–22.
 12. DPDP Act 2023; G.S.R. 843(E) and DPDP Rules 2025 (G.S.R. 846(E)), 13 Nov 2025.
 13. National Food Security Act 2013 (No. 20 of 2013), s.6.
+14. Lok Sabha Unstarred Q. 2668, 4 Aug 2023, Annexure (NFHS-5 State/UT-wise).
