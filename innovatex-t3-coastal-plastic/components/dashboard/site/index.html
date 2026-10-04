@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nullah outfall plastic interception · operations</title>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="title">
+    <h1 data-i18n="title">Nullah outfall plastic interception — operations</h1>
+    <p class="meta" id="meta">Loading bundle…</p>
+  </div>
+  <div class="lang" role="group" aria-label="Second language">
+    <span class="lang-label">Labels</span>
+    <button type="button" data-lang="mr" aria-pressed="true">मराठी</button>
+    <button type="button" data-lang="hi" aria-pressed="false">हिंदी</button>
+    <button type="button" data-lang="none" aria-pressed="false">EN</button>
+  </div>
+</header>
+<div id="mockstrip" class="mockstrip" hidden></div>
+<nav class="jump" aria-label="Sections">
+  <a href="#sites">Sites</a><a href="#site">Site</a><a href="#plan">Plan</a><a href="#records">Records</a><a href="#detection">Detection</a><a href="#metrics">Metrics</a>
+</nav>
+<main>
+  <section id="sites" class="panel sites">
+    <h2 data-i18n="map">Outfall sites</h2>
+    <div class="map-wrap"><div id="map" role="application" aria-label="Map of outfall sites"></div><p id="tilenote" class="tilenote" hidden>Map tiles need internet (OpenStreetMap). Site markers are placed by latitude/longitude and still work offline.</p></div>
+    <h3 data-i18n="risk">Overflow risk</h3>
+    <ol id="sitelist" class="sitelist"></ol>
+  </section>
+
+  <section id="site" class="panel site" aria-live="polite">
+    <div class="site-head">
+      <div><h2 id="sitename">—</h2><p id="sitesub" class="sub"></p></div>
+      <div id="riskbox" class="riskbox"></div>
+    </div>
+    <div class="chartblock">
+      <div class="chart-head"><h3 data-i18n="rain_tide">Rain and tide</h3><div id="forcingprov" class="prov"></div></div>
+      <div id="chart-forcing" class="chart"></div>
+    </div>
+    <div class="chartblock simulated-block">
+      <div class="chart-head"><h3 data-i18n="fill">Boom fill and escape</h3><div id="interprov" class="prov"></div></div>
+      <div id="chart-inter" class="chart"></div>
+    </div>
+    <div class="twocol">
+      <div><h3 data-i18n="forecast">Forecast</h3><div id="forecast"></div></div>
+      <div><h3 data-i18n="telemetry">Edge node</h3><div id="telemetry"></div></div>
+    </div>
+  </section>
+
+  <section id="plan" class="panel plan">
+    <h2 data-i18n="plan">Today's dispatch plan</h2>
+    <p id="planmeta" class="sub"></p>
+    <div class="tablewrap"><table id="plantable"><thead><tr><th>Crew</th><th>Site</th><th>Window (IST)</th><th class="num">Expected kg</th><th>Why</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="detection" class="panel detection">
+    <h2 data-i18n="detection">Floating-plastic detection</h2>
+    <div id="detbody"></div>
+  </section>
+
+  <section id="records" class="panel records">
+    <h2 data-i18n="ledger">Clearance evidence records</h2>
+    <p class="sub">Each crew claim is reconciled against the boom's measured fill drop (volume, dry-equivalent kg) and sealed in a SHA-256 hash chain, signed per crew device. Verification runs in this browser.</p>
+    <div class="controls">
+      <button type="button" id="verify" class="primary" data-i18n-btn="verify">Verify chain</button>
+      <button type="button" id="tamper">Edit one record (demo)</button>
+      <button type="button" id="reset" disabled>Restore original</button>
+      <span id="verifystatus" class="status" role="status"></span>
+    </div>
+    <p id="anchorline" class="anchor"></p>
+    <div class="tablewrap"><table id="ledgertable"><thead><tr><th class="num">#</th><th>Site · crew</th><th>Window (IST)</th><th class="num">Claimed wet kg</th><th class="num">Claimed dry kg</th><th class="num">Sensor dry kg</th><th class="num">Ratio</th><th>Flag</th><th>Hash</th><th>Chain</th></tr></thead><tbody></tbody></table></div>
+  </section>
+
+  <section id="metrics" class="panel metrics">
+    <h2 data-i18n="metrics">Component metrics</h2>
+    <div id="metricsbody" class="metricgrid"></div>
+  </section>
+</main>
+<footer class="foot">
+  <ul id="disclaimers"></ul>
+  <p>Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · <a href="https://leafletjs.com">Leaflet</a> 1.9.4 (BSD-2-Clause, vendored). Marathi/Hindi labels are draft translations pending native-speaker review.</p>
+  <p id="via" class="sub"></p>
+</footer>
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="ledger_verify.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
