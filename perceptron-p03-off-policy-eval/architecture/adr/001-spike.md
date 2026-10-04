@@ -44,3 +44,20 @@
 ## Consequences
 - C8 and C9 get research files and ratchet programs; C5, C6 and C7 baselines must exist first (walking skeleton).
 - The scenario bank (C11) is the most important piece of infrastructure: frozen, versioned, with a held-out copy.
+
+---
+
+## Addendum v2 — 2026-10-04 13:50 IST: what the evidence changed
+
+**Status:** accepted with changes. The independent antithesis is now delegated to a cross-model hostile judge (gpt-6-astra, max; `reviews/`), which replaces the lead-written antithesis above.
+
+1. **C9 Decomposer → 2×2 Shapley.** The v0 policy term was the environment-first ordering (the effect in the after period). A hostile reading ("your attribution depends on order") is correct whenever policy and season interact.
+   - v1 reports the Shapley policy term, the environment term and their **interaction**. OPE fills both unobserved cells. Simulated coverage is 0.95 for the Shapley term and 0.93 for the interaction (`eval/results/decomposer_review.md`).
+   - On real OBD the interaction is not negligible: truth −0.36 ± 0.31 per 1,000 in the deploy direction (`eval/results/obd_slice_summary.md`).
+2. **Mix term → doubly robust option.** When the reward model is misspecified along the mix-shift direction, the DM mix term is biased (+0.57 points against a true +1.79). The DR density-ratio version is unbiased (−0.01).
+3. **Identification limit.** With policy-induced audience change (feedback), OPE on after-period logs identifies the *direct* effect only. In simulation the total effect exceeds it by 5.7 points at feedback 1.0. We state this as a limitation rather than claim the total effect.
+4. **New spike element: the overlap gate (C10).** Real OBD showed DR intervals missing the truth when the after-policy is greedy (deploy direction, ESS/n 0.05–0.8%). The product answer is "can't tell from these logs".
+   - Thresholds were calibrated on the simulator only (`eval/gate_rule.json`, frozen at commit b4e95ae).
+   - Applied post hoc to OBD: no confident wrong answers, at the cost of one unnecessary abstention.
+   - This turns the method's main failure mode into a visible, testable feature. It directly answers the brief's "did it work, or did it just look like it did?"
+5. **Kept as is:** the MSM sensitivity layer (C8). In the hidden-override scenario it holds the truth at Γ_true in 10/10 runs and flags fragility (Γ\* = 1.25). Covariate benchmarking of Γ\* remains the next step.
