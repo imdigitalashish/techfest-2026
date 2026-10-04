@@ -109,3 +109,17 @@ def test_feedback_separates_direct_and_total_effect():
     t = ground_truth(World(cfg), n_mc=50_000)
     assert abs(t.feedback_population_effect) > 1e-3
     assert t.total_effect == pytest.approx(t.policy_effect_after + t.feedback_population_effect)
+
+
+def test_gate_diagnostics_and_rule():
+    from components.report.gate import decide, diagnostics
+    rng = np.random.default_rng(0)
+    w_good = rng.uniform(0.5, 1.5, 20_000)
+    r = (rng.random(20_000) < 0.3).astype(float)
+    d = diagnostics(w_good, r)
+    assert 0.9 < d["ess_frac"] <= 1.0 and abs(d["z_mean_w"]) < 4
+    rule = {"tau_ess": 0.05, "tau_r": 0.0, "tau_z": 3.0}
+    assert decide(d, rule)[0]
+    w_bad = np.where(rng.random(20_000) < 0.001, 900.0, 0.1)  # a few huge weights: low ESS
+    ok, why = decide(diagnostics(w_bad, r), rule)
+    assert not ok and any("ESS/n" in x for x in why)

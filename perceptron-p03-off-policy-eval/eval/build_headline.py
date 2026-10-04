@@ -61,6 +61,7 @@ def main():
     put("a3A_naive_k", sgn(1000 * A["naive"], 2), "obd_slice.json a3_halves.A.naive ×1000")
     put("a3A_truth_k", sgn(1000 * A["truth"], 2), "obd_slice.json a3_halves.A.truth ×1000")
     put("a3A_dr_k", sgn(1000 * A["DR"]["policy_effect_after"], 2), "obd_slice.json a3_halves.A.DR ×1000")
+    put("a3A_dr_hw", f"{1000 * 1.959963984540054 * A['DR']['se']:.2f}", "obd_slice.json a3_halves.A.DR.se ×1000 ×1.96")
     put("a3A_overstate", f"{100 * (A['naive'] - A['truth']) / A['truth']:.0f}%", "obd_slice.json (naive − truth)/truth, direction A")
     put("a3A_naive_err_k", f"{1000 * abs(A['naive'] - A['truth']):.2f}", "obd_slice.json |naive − truth| ×1000")
     put("a3A_dr_err_k", f"{1000 * A['DR']['abs_err']:.2f}", "obd_slice.json |DR − truth| ×1000")
