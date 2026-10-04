@@ -55,6 +55,7 @@ _Updated 2026-10-04 17:30 IST._
 - 2026-10-04 — Seeds 100+ are frozen test seeds; seeds 0–99 are for tuning and the ratchet. Policies are paired by seed (common random numbers).
 - 2026-10-04 — MPC LP: H=6, HiGHS interior-point. The benchmark gave 17.7 ms at H=6 and 26.4 ms at H=8 (default HiGHS: 25.0 / 33.0 ms).
 - 2026-10-04 — Lean mode (Supervisor, 05:50): no sub-agents. ADR 001's antithesis is therefore labelled self-critique; an independent review is queued.
+- 2026-10-04 — Demo concept approved: **"Your shock is seed #21"**. A judge-clicked shock on a live city; best rule vs MPC on identical demand; the committed (L,P)-cell prediction shown first; the live delta lands among the 20 committed per-seed deltas; LP shadow-price heat; live replication on 8 cities; NYC July-4 and week receipts recomputed live (bit-identical to committed rows); honest panel.
 
 ## Components
 Details: [architecture/components.md](architecture/components.md) · contracts: [architecture/contracts/contracts.py](architecture/contracts/contracts.py)
@@ -247,3 +248,17 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
 - **New PLAYBOOK §6 rules acknowledged:** never `git stash`/`--autostash` (I had used `--autostash` in my push loop until now; from now on I commit before rebasing). Timestamps come from the clock.
 - **Pre-registration times:** all four stated times were 2–11 minutes later than their commits. I appended a dated correction to `eval/preregistration.md` without editing the registered text. The order is verified for every registration: main prereg committed 10:10:38, mvp-v2 started 10:11:01; Addendum A 10:25:33, phase-v2 started 10:32:25; B (10:59:23) and B1 (11:14:31) have no test runs yet (max seed used = 229).
 - **Memory guard** (as I interpret it): start heavy jobs only when `memory_pressure` reports free ≥ 30%. It was 32% at 17:28.
+
+### 2026-10-04 17:53 IST — Demo plan approved
+- The builder's plan ("Your shock is seed #21") is grounded in uncommitted scratch probes. Committed code reproduces the mvp-v2 seed-200 rows exactly. Live-injected shocks on 12 seeds gave −124.9 lost (12/12) at (1,10) vs −126.8 committed, and +10.3 (5/12) at (8,10) vs +16.3. The LP takes ~1.1 ms per step.
+- **Approved** with feedback:
+  - promote "replicate my shock on 8 cities" (live paired CI) to core if time allows;
+  - an on-screen seed plus a "copy reproduce command", smoke-tested;
+  - shadow-price legend wording;
+  - an unmissable RECORDED banner;
+  - the NYC source line;
+  - an optional GPU-cluster lens labelled as an analogy;
+  - a colour-blind-safe palette;
+  - smoke.sh ≤ 2 min;
+  - SCRIPT.md contingency lines.
+- Also: landscape §3c added (Serverless in the Wild, ServerlessLLM, Llumnix abstracts) to back the analogy wording.
