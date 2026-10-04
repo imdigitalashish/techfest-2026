@@ -167,6 +167,8 @@ We play to win, not just to pass Round 1. A judge's reaction should be: "you did
    - First visual within ≤ 60 s on this Mac.
    - CPU only unless the Supervisor grants the GPU.
 2. **Shows the core claim live** on committed real data where possible, with a baseline side by side so the gap is visible. SYNTHETIC data is labelled on screen.
+   - **Real first** (user, 18:18): judges discount simulation-only evidence. If the project has any real data, such as a replay, public records, a real dataset or a real model, the demo opens on it.
+   - Simulation comes second, as a labelled stress test or as the drill-down where real data cannot exist yet, e.g. private records or unbuilt hardware.
 3. **The "crazy" element:** the one capability that makes a judge lean in, for example a shock, an attack, a dropout or a budget squeeze, and the system visibly handling it. At least one knob the judge can turn and watch the system respond.
 4. **Honest:** every on-screen number comes from committed results or is computed live by committed code. No new claims without evidence.
 5. **Fallbacks:** `demo/SCRIPT.md` (a 3-minute talk track: what to click, what to say, which number to point at), plus a recorded fallback (GIF/MP4 or screenshots) in `demo/fallback/` in case live fails.
