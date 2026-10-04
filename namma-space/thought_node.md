@@ -13,8 +13,9 @@
 - **Phase:** active batch (Supervisor, 09:55). The definition of done has 6 items: E2E pipeline · viewer + POIs + search + path · abstract + video script + setup · drop-in script · memo + journal · cross-model review of the Round-1 deliverable.
 - **Plan:** E2E on raw drjohnson photos (own SfM → Brush → align → NavGrid → package → site → eval v3) → POIs + site + viewer measurement (S_V) → fill the abstract → cross-model reviews as sessions (gpt-6-astra: deliverable; gpt-6-sol: eval code + headline numbers) → DONE message.
 - **Doing:**
-  - lead: E2E run (Brush training since 10:12); abstract v0.9 drafted with ⟨pending⟩ slots.
+  - lead: E2E run (Brush training since 10:12, slowed by swap thrashing); abstract v0.9 updated with the review fixes; ⟨pending⟩ slots wait for this run.
   - child sessions (2/2): [companies research](ghapp://sessions/f288d1bd-555c-428d-800f-15071f60f1bc), [SOTA nav/POI/AR/viewer](ghapp://sessions/4eb75b17-eb5d-4b07-9a64-ad9b17993992).
+- **E2E status (12:35):** Brush (PID 67016) has been training for 2 h 20 min, vs 36.9 min for the same job in the baseline. Cause: machine-wide swap is at 21.2 of 21.5 GB and Brush's RSS is 3.6 MB (it was 1.5 GB in the baseline), so the process is thrashing. Contributing: my Playwright viewer tab, left rendering 1M splats on the GPU since 08:49 (now closed), and the nice 10 that Brush inherited from the orchestrator. The inputs are not the cause (262 vs 263 images, same resolution). ETA unknown: Brush writes nothing to disk before step 15000. Decision point 13:15: if there's no export by then, restart without nice at --max-splats 1M.
 - **Next:** fill numbers → reviews → DONE. After DONE, only work that needs the user's capture: process it with `./process_capture.sh`, deploy, measure S_T / S_V.
 - **Needs from user:**
   1. Register by 15 Oct (team ≤4; teammates' names).
