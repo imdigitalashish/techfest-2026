@@ -33,23 +33,29 @@ def _better(a, a_sanity, b, b_sanity):
     return a.num_reg_images() > b.num_reg_images()
 
 
-def pose_sanity(rec):
+def pose_sanity(rec, ordered=True):
     """Reference-free degeneracy check. Registration rate and reprojection error do NOT catch collapsed or
-    scattered global solutions (seen on drjohnson with sequential matching: 99.6% registered, 0.66 px, yet ATE 34%
-    of the scene). Flags many far cameras or a strongly bimodal camera spread."""
+    scattered global solutions (drjohnson with sequential matching: 99.6% registered, 0.66 px, yet ATE 34% of the
+    scene). Calibrated on drjohnson (4 Oct 2026): good model jump_frac 0.0038 / outliers 0; degenerate 0.29 / 0.11.
+      ordered input (video): consecutive camera steps must be smooth -> jump_frac_10x = share of steps > 10x median
+      unordered photos: name order is not capture order -> use far-camera fraction + p75/p50 spread instead"""
     import numpy as np
-    C = []
+    items = []
     for img in rec.images.values():
         T = img.cam_from_world() if callable(img.cam_from_world) else img.cam_from_world
         R = np.asarray(T.rotation.matrix())
-        C.append(-R.T @ np.asarray(T.translation).reshape(3))
-    C = np.array(C)
+        items.append((img.name, -R.T @ np.asarray(T.translation).reshape(3)))
+    items.sort()
+    C = np.array([c for _, c in items])
     d = np.linalg.norm(C - np.median(C, axis=0), axis=1)
     p50, p75 = (float(x) for x in np.percentile(d, [50, 75]))
     out_frac = float(np.mean(d > 3 * max(p75, 1e-9)))
     spread = p75 / max(p50, 1e-9)
+    steps = np.linalg.norm(np.diff(C, axis=0), axis=1)
+    jump = float(np.mean(steps > 10 * max(float(np.median(steps)), 1e-12))) if len(steps) else 0.0
+    degenerate = out_frac > 0.05 or (jump > 0.05 if ordered else spread > 3.5)
     return {"outlier_cam_frac": round(out_frac, 4), "spread_ratio_p75_p50": round(spread, 3),
-            "degenerate": bool(out_frac > 0.05 or spread > 3.5)}
+            "jump_frac_10x": round(jump, 4), "ordered": ordered, "degenerate": bool(degenerate)}
 
 
 def _mean_reproj(rec):
@@ -98,12 +104,12 @@ def run_sfm(frames_dir, out, mapper="global", matcher="auto", camera_model="SIMP
             rec = _largest(pycolmap.global_mapping(db, frames_dir, raw))
         except Exception as e:  # noqa: BLE001
             print("global mapping failed:", e)
-    sanity = pose_sanity(rec) if rec is not None and rec.num_reg_images() >= 3 else None
+    sanity = pose_sanity(rec, ordered) if rec is not None and rec.num_reg_images() >= 3 else None
     if rec is None or rec.num_reg_images() < 0.8 * n or (sanity and sanity["degenerate"]):
         g, g_sanity = rec, sanity
         rec = _largest(pycolmap.incremental_mapping(db, frames_dir, raw))
         used = "incremental"
-        sanity = pose_sanity(rec) if rec is not None and rec.num_reg_images() >= 3 else None
+        sanity = pose_sanity(rec, ordered) if rec is not None and rec.num_reg_images() >= 3 else None
         if _better(g, g_sanity, rec, sanity):
             rec, used, sanity = g, "global", g_sanity
     t["map_s"] = time.perf_counter() - t0
