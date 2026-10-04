@@ -3,8 +3,6 @@
 **Theme 6, AI You Can Actually Trust · Problem 9: Catching an Agent Before It Acts on a Bad Idea**
 **Cite-Before-Act: pre-trade risk checks for AI agents**
 
-*Final draft, 4 Oct 2026. Every number comes from a committed result; `python -m eval.check_docs` fails if this text drifts from `eval/results/`.*
-
 ## Problem and why we chose it
 Agents now cancel orders, move money and message customers. Their worst mistakes are plausible calls, not malformed ones: a real tool, valid JSON, and one argument nobody supplied — the wrong order, an invented ticker, ten times the quantity. Trading desks solved the human version with pre-trade controls (SEC Rule 15c3-5): hard blocks, soft alerts and manual review. We want that discipline for agents. [TEAM: why this matters to us.]
 
@@ -16,11 +14,11 @@ Agents now cancel orders, move money and message customers. Their worst mistakes
 
 ## Proposed approach
 A guard in the agent's pre-tool hook (a LangGraph node before `ToolNode`, or LangChain v1 `wrap_tool_call`) returns *allow*, *block with feedback* or *hold for review* for every write call.
-- **Tier 0 (deterministic, sub-millisecond).**
-  - Every intent-bearing argument must trace to the user's words, the reference database or trusted tool data. Email or ticket text is never a source of intent.
+- **Tier 0 (deterministic).**
+  - Bind each intent-bearing argument to the user's request or a specifically confirmed proposal; database and tool records supply facts, not authority. Email or ticket text cannot authorize actions.
   - Each check returns *pass*, *fail*, *unverifiable* or *needs approval*, with evidence and a policy clause.
   - Pre-trade-style contracts: price collar, size, cash, short-sale, restricted list, duplicates, ownership.
-- **Tiers 1–2.** Only the *unverifiable* residue goes to a model (a frontier API model such as gpt-4.1-mini, or local Qwen3 offline). A verdict counts only if the user words or tool data it quotes are found verbatim, and a bare "yes" never counts.
+- **Tiers 1–2 (experimental).** Route *unverifiable* checks to gpt-4.1-mini or local Qwen3. Require substantive source-matched quotes; occurrence does not establish entailment. Ambiguous entity bindings must first reach this tier rather than pass Tier 0.
 - **Tier 3.** A human, via LangGraph `interrupt()`. Blocked calls return their failed checks so the agent can repair them.
 
 ## Minimum Viable
@@ -28,33 +26,27 @@ A guard in the agent's pre-tool hook (a LangGraph node before `ToolNode`, or Lan
 - *Catching a deliberately bad action:* a one-command demo blocks an invented ticker, a ×10 quantity, a buy/sell flip and an email-injected transfer, and holds a price the user never gave.
 
 ## Stretch ambitions
-1. **Risk-routed fast/careful models**, with hold thresholds set by conformal risk control so the miss rate is bounded at a stated level.
+1. **Risk-routed fast/careful models**; attempt conformal control of harmful-call miss rate on untouched calibration scenarios, subject to exchangeability and a predeclared review budget.
 2. **Red-team suites**, grown into mutation testing for guards.
 
 ## Novelty versus the obvious baseline
-The obvious baseline asks an LLM "is this call OK?". We differ in four ways:
-1. per-argument provenance instead of one holistic judgement;
-2. *unverifiable* (hold) kept separate from *contradicted* (block);
-3. model verdicts admitted only with verified quotes;
-4. evaluation on real agent errors, reporting the catch / false-block / hold trade-off with confidence intervals.
-
-Shipping tools (pre-tool hooks, Cedar gateway policies, groundedness APIs that score response *text*) don't check argument values against a source.
+The starter baseline already combines a framework and KB. ActGov, ContrAgent and AgentSpec supply rule gates; CaMeL separates trusted flows; Cedar checks arguments. Our proposed contribution combines intent provenance, abstention and source-checked model evidence. We will ablate provenance and quote checking against input-matched policy-only and model-only guards at a fixed review budget on freshly adjudicated, scenario-disjoint tasks.
 
 ## Evaluation plan and first results
-**Real agent errors.** We replayed every write call in τ-bench's published gpt-4o and Claude-3.5-Sonnet retail runs: 2,018 calls, labelled by whether each call's database effect matches the task's ground truth. Rules were tuned on half the tasks and tested on held-out tasks (991 calls, 167 harmful). The test was re-run once after an external code review fixed six bugs. 95% CIs are clustered by task.
+**Historical replay.** Published gpt-4o and Claude-3.5-Sonnet retail runs yielded 2,018 writes. Here, 'good' means ground-truth-equivalent DB effects; 'harmful' means accepted but non-equivalent, not adjudicated safety. Development-selected configurations were evaluated on parity-held-out task IDs within overlapping scenarios (991 calls: 702 good, 167 harmful, 122 tool-rejected). Code-review corrections used test evidence; these are exploratory results from one post-review rerun. The deterministic guards' 95% percentile CIs resample tasks across models.
 - Schema checks catch 0%.
 - Our untuned, policy-derived checker stops (blocks or holds) **68% (95% CI 57–77)** of harmful calls, but blocks 7% of good calls and holds 56%.
-- The tuned setting cuts false blocks to **2.0%** and holds to 30%, stopping **41% (28–55)**, at **0.4 ms** at p95. Only 3 of its stops are hard blocks.
+- Tuned: **68/167** harmful-labelled stops (**41%; 95% CI 28–55**), comprising **3 blocks/65 holds**; good-labelled calls: **14/702 blocked (2.0%)**, **213/702 held (30%)**. In-process retail p95: **under 1 ms**, excluding model/framework/human time.
 - It does not beat the untuned checker's score; it is a different point on the curve.
-- **LLM judges** (same transcript and policy) on a 300-call sample: gpt-4.1-mini stops 35% of harmful calls but hard-blocks 12% of good calls; a local Qwen3-1.7B, 28% and 27%. Even with its risk threshold tuned on this sample, gpt-4.1-mini stops 37% at the good-call stop rate (34%) where our strict setting stops 51%.
-- **Cascade:** with gpt-4.1-mini resolving only held calls, holds on good calls fall from 26% to 17% at 1.7% false blocks, still stopping 44% of harmful calls, for $0.00036 per guarded call versus $0.0014 to judge every call. A 1.7B resolver settled 11 of 85 holds, 5 wrongly.
+- **LLM judges:** same stratified 300 calls. gpt-4.1-mini stopped 42/120 harmful calls, or 44/120 at a test-selected threshold, versus strict Tier 0's 61/120. Each stopped 41/120 good calls. Judges receive truncated transcripts; Tier 0 also reads the database. This is exploratory: the paired 95% CI for strict minus thresholded judge is −3 to +32 points.
+- **Cascade:** gpt-4.1-mini released 11 good-labelled and 4 harmful-labelled holds. Good-call holds fell 31/120 to 20/120, but harmful catch fell 57/120 to 53/120; good blocks stayed 2/120. API-token cost: about $0.00036/sampled-call versus $0.0014 for the judge (estimated), excluding human/local costs. Qwen3-1.7B converted 11/85 holds to blocks, including 5 DB-good calls.
 
-**Misses.** In 20 audited misses, 8 were explicitly requested by τ-bench's simulated user (invisible to any transcript check) and 8 were wrong-entity choices ("like my other order") — the target for Tiers 1–2.
+**Misses.** The first-run 20-miss audit found eight user-confirmed disagreements and eight wrong-entity choices. All eight wrong-entity calls still pass Tier 0 and never reach the resolver. Hidden-only preferences may be unobservable.
 
-**Independent red team.** 160 cases written by a different model family that never saw our rules: the checker stops 82% (73–88) of 100 bad calls, but blocks 8% and holds 20% of 60 good ones. Our own synthetic suite scores 100% caught, 0% false blocks; self-written tests flatter.
+**Independent synthetic red team.** A different-family author, blinded to the checker, wrote 160 cases. After fixes, 82/100 bad calls were stopped (Wilson 95% CI 73–88); 5/60 good calls were blocked and 14/60 held. This is a designed challenge set, not a deployment sample; self-authored tests are regression checks.
 
 ## Feasibility and risks
 - **Team:** [TEAM: names and skills.]
-- **Compute:** one laptop, open models, no paid APIs.
-- **Milestones:** 25 Oct live LangGraph agent · 1 Nov model tier on τ-bench residue · 10 Nov calibrated thresholds · 17 Nov demo freeze · 19–25 Nov exams (no work) · 1 Dec progress report · December hardening.
+- **Compute:** laptop checks, metered gpt-4.1-mini API, local Qwen3 offline.
+- **Milestones:** 25 Oct live LangGraph agent · 1 Nov entity-binding checks + model tier · 10 Nov calibrated thresholds · 17 Nov demo freeze · 19–25 Nov exams (no work) · 1 Dec progress report · December hardening.
 - **Risks:** modest catch on real errors (we publish the curve); rules brittle on paraphrase (model tier, independent suites); users confirming wrong actions (check against earlier stated wants).

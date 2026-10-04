@@ -4071,5 +4071,15 @@
     "model_calls=0"
    ]
   }
+ ],
+ "metrics_recomputed": [
+  {
+   "at_commit": "d20d3e7",
+   "reason": "CI clustering by task_id (astra review B)",
+   "previous_catch_ci": [
+    0.2977,
+    0.5938
+   ]
+  }
  ]
 }

@@ -373,3 +373,33 @@ print("Audited wrong-entity routing:",
       [(i.strip(), current[i.strip()]["decision"]) for i in ids])
 PY
 ```
+
+---
+
+## Lead response (P9 lead, Claude Opus 5.5, 4 Oct 2026)
+
+All 21 items (12 text edits + 9 methodology demands A–I) were checked against the code and results. **All 21 accepted**; two edits were modified, none rejected. The abstract is now at commit `HEAD` of this response. `eval/check_docs.py` verifies 22 literal claims against `eval/results/` and the τ-bench README; 877 body words.
+
+| Item | Decision | Action |
+|---|---|---|
+| Edit 1 (oracle, reused/overlapping holdout) | **ACCEPTED** | Applied verbatim. |
+| Edit 2 (straw baseline, novelty) | **ACCEPTED** | Applied verbatim. The "shipping tools don't check argument values" sentence was wrong; our own notes show Cedar does. |
+| Edit 3 (occurrence ≠ entailment) | **ACCEPTED** | Applied verbatim. |
+| Edit 4 (miss cohort; resolver cannot see wrong-entity calls) | **ACCEPTED** | Applied verbatim. `check_docs` now asserts that all eight audited wrong-entity calls are still `allow`. |
+| Edit 5 (hosted comparison, exploratory) | **ACCEPTED, extended** | Applied, plus the paired 95% CI for strict minus thresholded judge (−3 to +32 points). It is computed by `frontier.py::paired_diffs` and committed in `frontier__test__sample300.json`. Our clustering gives [−3.23, 31.68], close to the reviewer's [−4.59, 30.99]. |
+| Edit 6 (conditional conformal) | **ACCEPTED** | Applied verbatim. |
+| Edit 7 (cascade release errors, cost scope) | **ACCEPTED** | Applied verbatim. The paired CI for cascade minus balanced catch is [−7.29, −0.76] pp, so the 4 releases cost real catch. |
+| Edit 8 (facts vs authority; no blanket latency) | **ACCEPTED** | Applied verbatim, as the *proposed* design. The current Tier 0 still lets tool data ground an unnamed order id; the misses paragraph discloses this. |
+| Edit 9 (auditable operating point) | **ACCEPTED, modified** | Applied with counts. Latency is quoted as "under 1 ms" rather than "0.4 ms": wall-clock p95 varies across runs on this shared machine (0.42 ms, then 0.6 ms on the clean re-run). `check_docs` asserts p95 < 1 ms for every deterministic config. |
+| Edit 10 (consistent post-fix red team) | **ACCEPTED** | Post-fix counts (82/100; 5/60 blocked; 14/60 held). |
+| Edit 11 ("no paid APIs" contradiction) | **ACCEPTED** | Applied verbatim. |
+| Edit 12 (drop internal note) | **ACCEPTED** | Deleted. |
+| A (DB-effect oracle ≠ safety) | **ACCEPTED (deferred)** | Stated in the abstract and README. Adjudicated consent/policy/factual labels on fresh scenarios are the first post-Round-1 task. |
+| B (holdout scope; stale CI) | **ACCEPTED** | Stale local-judge CI recomputed from stored rows (`run.py --recompute`): [0.125, 0.4397]. The hosted results were also recomputed, with no change. The README describes a within-scenario check. A scenario-grouped split comes before any further tuning. |
+| C (reused test; stale protocol; dirty stamps) | **ACCEPTED** | README test history and diagram reconciled (also flagged by the Supervisor). Every result now carries `code_sha256`. Deterministic guards were re-run on clean commit `d20d3e7`, with decisions verified identical row by row. LLM-row provenance is documented. |
+| D (unequal information; paired inference; test-selected threshold) | **ACCEPTED** | Paired CIs computed and the abstract says "exploratory" and "truncated transcripts". Input-matched comparison and a policy-only ablation are the promised primary experiment (edit 2). |
+| E (rescue mechanism blind to targets; quote binding) | **ACCEPTED (deferred code)** | Abstract corrected. The fixes (route ambiguous entity bindings to *unverifiable*; require the quote to contain the bound value, cf. `#w2597054` vs `#W4597054`) are **not** applied to the current results: that would be tuning on test. They go in with the next holdout. |
+| F (stopped ≠ risk reduction) | **ACCEPTED** | Hold vs block counts reported. Closed-loop repair/human outcomes planned (live LangGraph milestone). |
+| G (independence ≠ IID; "invisible" too strong) | **ACCEPTED** | Wording changed in edits 4 and 10. |
+| H (conformal is conditional) | **ACCEPTED** | Edit 6. |
+| I (cost is estimated sample token cost) | **ACCEPTED** | Edit 7 says "estimated, excluding human/local costs"; the extrapolation is documented in `cost.py`. |

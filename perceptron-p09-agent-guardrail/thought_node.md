@@ -10,46 +10,37 @@
 - _(none)_
 
 ## Now
-- **Phase:** ACTIVE (resumed 10:48 IST, 4 Oct). Definition-of-done items 1–3 done; item 4: sol review done, astra abstract review running; item 5: this update. Updated 12:15 IST.
-- **GPU pause (Supervisor, ~11:47):** Namma Space needs the GPU. My only MLX job (the `cascade_fast` test run) had just completed, so there was no PID to pause. No local-model job runs until "GPU free", and none is needed for the definition of done.
-- **Headline evidence: real agent errors** (`eval/taubench/README.md`).
-  - **Set and protocol:**
-    - 991 held-out τ-bench write calls from gpt-4o and Claude-3.5-Sonnet (702 good, 167 harmful, 122 rejected); frozen configs; 95% CIs clustered by task.
-    - The test was **re-run once after the sol code review fixed six bugs**. The first run is archived in `eval/results/first_run/`.
+- **Phase:** Definition of done met; "DONE — slot free" sent to the Supervisor. Round-1 package final pending [TEAM] details. Updated 12:46 IST, 4 Oct.
+- **Deliverables:**
+  - `deliverables/round1-abstract.md`: 877 words. All 22 quoted numbers are verified against `eval/results/` and the τ-bench README by `eval/check_docs.py`, which is part of pytest (7/7 pass).
+  - `deliverables/architecture.md`: diagram.
+  - `deliverables/mvp-demo-output.txt`: MVP demo (`python -m eval.demo_mvp`).
+- **Evidence (all exploratory where stated; details in `eval/taubench/README.md`):**
+  - **Real agent errors.** 2,018 historical τ-bench write calls (gpt-4o, Claude-3.5-Sonnet). Labels are DB-effect equivalence with ground truth, not adjudicated safety. Parity-held-out tasks within overlapping scenarios: 991 calls (702 good / 167 harmful / 122 rejected). One post-review re-run; the first run is archived.
 
-    | Config (full test, post-review) | Stops harmful (block or hold) | Hard blocks | False-block | Holds on good | p95 |
-    |---|---|---|---|---|---|
-    | none / schema-only | 0% | 0 | 0% | 0% | — |
-    | v0 (policy-only, untuned) | **67.7%** [56.9, 77.2] | 6 | 7.3% | 55.8% | 0.3 ms |
-    | strict | 44.9% | 3 | 2.0% | 36.5% | 0.4 ms |
-    | **balanced (primary)** | **40.7%** [28.3, 55.1] | 3 | **2.0%** [0.6, 4.0] | 30.3% | 0.4 ms |
-    | lenient | 26.4% | 3 | 2.0% | 18.2% | 0.6 ms |
+    | Config (full test) | Stops harmful [95% CI] | Blocks / holds on harmful | Good blocked | Good held |
+    |---|---|---|---|---|
+    | none / schema | 0% | — | 0% | 0% |
+    | v0 (untuned) | 67.7% [56.9, 77.2] | 6 / 107 | 7.3% | 55.8% |
+    | **balanced** | **40.7%** [28.3, 55.1] | 3 / 65 | **2.0%** | 30.3% |
 
-  - **300-call sample** (120 good / 120 harmful / 60 rejected; `eval/results/taubench/frontier__test__sample300.json`):
-
-    | Guard | Stops harmful | False-block | Holds on good | Good-call stop | Cost per guarded call |
-    |---|---|---|---|---|---|
-    | balanced (Tier 0) | 47.5% | 1.7% | 25.8% | 27.5% | $0 (0.7 ms p95) |
-    | **cascade_aoai** (balanced + gpt-4.1-mini on holds only) | **44.2%** | **1.7%** | **16.7%** | 18.3% | **$0.00036** |
-    | gpt-4.1-mini judge, every call | 35.0% | 11.7% | 22.5% | 34.2% | $0.0014 (2.3 s median) |
-    | Qwen3-1.7B judge, every call | 28.3% | 26.7% | 0% | 26.7% | local, 2.6 s median |
-    | cascade_fast (1.7B on holds) | 47.5% | 5.8% | 21.7% | 27.5% | local |
-
-    - **Matched comparison:** the gpt-4.1-mini judge's risk threshold was tuned on this same sample, which favours the judge. At strict's good-call stop rate (34.2%) the judge stops 36.7% vs strict's 50.8%; at balanced's rate (27.5%), 24.2% vs 47.5%.
-    - **Cost source:** Azure Retail Prices API, Sweden Central Global, $0.0004/1K input and $0.0016/1K output (`cost.py`).
-  - **Miss audit** (20, first run):
-    - 8 requested by the simulated user (no transcript check can catch these);
-    - 8 wrong-entity resolutions;
-    - 3 policy sequencing / incomplete action;
-    - 1 caused by a rule I removed during tuning.
-- **Independent red team** (`eval/external/astra/`, gpt-6-astra, never saw the rules; 160 cases): first run, **82.0% stopped [73.3, 88.3], 8.3% false blocks, 20.0% holds**. Re-run after the review fixes (now in-sample): 82.0% / 8.3% / 23.3%.
-- **Desk domain** (self-authored, secondary): synthetic 100% / 0% (after relabelling 6 P-1.2 seeds); Claude independent set 100% / 0% with 10.9% holds; white-box 7/27 bypasses now stopped.
-- **Reviews** (`reviews/ledger.tsv`): gpt-6-sol code/eval raised 11 issues, all 11 accepted (2 in part). gpt-6-astra hostile judge on the abstract: running.
-- **Rule (Supervisor, ~11:03):** local-model runs only when `kern.memorystatus_level` ≥ 25% (watchdog pauses below 25%, resumes at 30%), Qwen3-1.7B only, `nice -n 10`, chunked and resumable, one LLM job at a time; plus the GPU pause above.
-- **Next:**
-  1. Act on the astra review (ledger) and adjust the abstract.
-  2. Final memo, push, then "DONE — slot free".
-  3. After Round 1: scenario-grouped holdout, stronger careful model, consent/policy relabelling, live LangGraph demo.
+  - **300-call sample:**
+    - gpt-4.1-mini judge: 35.0% stopped, 11.7% of good calls blocked.
+    - Qwen3-1.7B judge: 28.3% / 26.7%.
+    - Strict Tier 0: 50.8% / 1.7%.
+    - Paired difference, strict minus thresholded gpt-4.1-mini judge: +14.2 pp [−3.2, +31.7], not significant. Balanced minus the 1.7B judge: +19.2 pp [3.0, 36.5].
+    - Hosted cascade: good-call holds 31 → 20 of 120, but harmful catch 57 → 53 of 120 (paired −3.3 pp [−7.3, −0.8]). Cost about $0.00036 per guarded call vs $0.0014 for the judge.
+  - **Independent red team** (gpt-6-astra, blinded, 160 cases), post-fix: 82/100 stopped [73, 88]; 5/60 good blocked; 14/60 held.
+  - **Known gap:** all 8 audited wrong-entity misses pass Tier 0, so the model tier never sees them. Entity-binding routing and value-bound quote checks are designed but deliberately not applied before a fresh holdout.
+- **Reviews** (`reviews/ledger.tsv`):
+  - gpt-6-sol (code/eval): 11/11 accepted.
+  - gpt-6-astra (hostile judge, abstract scored **3.10/5 = 62/100**): 21/21 accepted (12 edits applied, 2 modified).
+- **Next (after Round 1, or when the Supervisor reassigns the slot):**
+  1. Scenario-grouped holdout.
+  2. Adjudicated consent/policy labels.
+  3. Entity-binding routing + value-bound quotes.
+  4. Input-matched policy-only and model-only ablations at a fixed review budget.
+  5. Live LangGraph agent with closed-loop repair.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section of the abstract (placeholders now).
 - **Risks:** (1) synthetic-suite optimism, since the same author wrote templates and rules → τ-bench replay + paraphrase family; (2) paraphrase brittleness of regex mention parsing → LLM resolver, escalation rate tracked; (3) local LLM latency/memory on a shared Mac (8B not measured tonight); (4) close 2026 work (ActGov, ContrAgent, closed-world resolution) → precise novelty claim (argument-value provenance, three-way verdict, verified-quote residue resolution, frontier evaluation).
 
@@ -115,25 +106,38 @@ Full contracts: [architecture/components.md](architecture/components.md) · pyda
 | 14 | Audit log | Verdict → JSONL | logging | | partial | completeness |
 
 ## Selection memo
-_Final, 4 Oct 2026 (v3; replaces v1 from 07:35, which scored 4.6 on synthetic evidence alone). Scored 1–5 against the real-error evidence after the gpt-6-sol review fixes. Every number is in `eval/results/` and checked by `eval/check_docs.py`._
+_Final, 4 Oct 2026 (v4). Re-scored after both cross-model reviews; supersedes v1 (4.6, synthetic only) and v3 (4.4). Every number is in `eval/results/` and checked by `eval/check_docs.py`._
 
-- **Winnability — 4.**
-  - **For:** Round 1 judges the plan, and our strongest criteria carry the most weight: evaluation rigour (15%) and technical soundness (25%). The evidence base:
-    - a held-out test on 991 *real* gpt-4o and Claude-3.5-Sonnet write calls from τ-bench, with task-clustered CIs;
-    - no-guard, schema and LLM-judge baselines;
-    - a 160-case red team by a different model family (82% stopped, 8% false blocks);
-    - two cross-model reviews.
-  - **The obvious baseline loses clearly, including a frontier judge.** On the same 300 real calls, a gpt-4.1-mini judge reading the full transcript stops 35.0% of harmful calls but hard-blocks 11.7% of good ones; a local 1.7B judge, 28.3% and 26.7%. Our balanced checker stops 47.5% at 1.7% false blocks in under 1 ms. With gpt-4.1-mini resolving only its holds, holds drop from 25.8% to 16.7% at $0.00036 per guarded call, against $0.0014 to judge every call.
-  - **Against:** the absolute catch on real errors is modest: 40.7% [28–55] at 2.0% false blocks and 30% holds, or 68% if one accepts 56% holds. The first model-tier attempt (1.7B) released no holds. A team with a 100% toy demo may read better on a quick skim.
-- **Innovation headroom — 4.** Argument-level provenance with an explicit *unverifiable* state, and quote-verified model resolution of only that residue. The miss audit makes the spike falsifiable: 8 of 20 misses are wrong-entity resolutions that the careful tier must fix. The nearest 2026 work (ActGov, ContrAgent, closed-world resolution, Cedar gates) checks policies or schemas, not argument values against a source.
-- **Feasibility — 5.** Built end to end on the M5 with open local models and no paid APIs; the τ-bench replay is MIT-licensed, about 65 MB and reproducible with one command. Remaining work fits before 17 Nov: stronger careful tier, scenario-grouped holdout, live LangGraph demo.
-- **Demo strength — 4.** The desk demo is crisp: an invented ticker, a ×10 order, a side flip and an injected transfer are stopped in under 1 ms with the clause cited. The frontier chart against the judge makes a strong slide. The modest real-error catch has to be framed as the hard-block / soft-alert / manual-review trade-off a trading desk already lives with.
-- **Fit with the user's strengths — 5.** Agent infrastructure, evaluation at scale, frontier models. Microsoft's own agent guardrails (Prompt Shields, groundedness, task adherence) are among the shipped baselines.
-- **Biggest risk:** "41% catch" read as weak. Mitigation: lead with the frontier and the matched judge comparison, and show that 8 of 20 misses are invisible to any transcript-based check (the simulated user asked for them).
-- **One-line pitch:** *Pre-trade risk checks for AI agents: every argument must cite its source. On real agent errors, at the same human-review load, this stops about twice as many harmful calls as a gpt-4.1-mini judge (47.5% vs 24.2%) at a quarter of the cost when a model settles the residue.*
-- **Overall: 4.4 / 5.** Recommendation: P9 is a sound Perceptron pick, with claims that are modest but survive a held-out test, an independent red team and two cross-model reviews.
+- **Winnability — 3.** The gpt-6-astra hostile judge scores the final abstract **3.10/5 (62/100)**: "plausibly shortlisted, but borderline".
+  - For: rare rigour for Round 1. Held-out real agent errors, task-clustered and paired CIs, frontier-model baselines, a blinded red team by a different model family, and two cross-model reviews whose 32 issues were all accepted and acted on.
+  - Against:
+    - modest catch on real errors (40.7% at 2% false blocks);
+    - an advantage over a gpt-4.1-mini judge that is pointwise but not significant (paired CI crosses zero);
+    - the reused (post-review) test.
+- **Innovation headroom — 3.** Components exist in prior art: rule gates (ActGov, AgentSpec, ContrAgent), flow separation (CaMeL), argument checks (Cedar). The defensible novelty is the intent-provenance + abstention + source-checked-evidence combination, plus an isolating ablation at a fixed review budget. A concrete open target remains: wrong-entity binding.
+- **Feasibility — 5.** Everything is built and reproducible with one command per stage. Local plus a metered gpt-4.1-mini (about $0.00036 per guarded call). All remaining milestones fit before 17 Nov.
+- **Demo strength — 4.** The desk demo is crisp: an invented ticker, a ×10 order, a side flip and an injected transfer are stopped in under 1 ms with the clause cited. The trade-off curve against an LLM judge is a strong, honest slide.
+- **Fit with the user's strengths — 5.** Agent infrastructure, evaluation at scale, frontier models; Microsoft's agent guardrails are among the shipped comparators.
+- **Biggest risk:** judges reading "built from known parts, modest catch" as incremental. Mitigation: lead with the evaluation design (real errors, frontier baselines, paired CIs, blinded red team) and the falsifiable ablation plan.
+- **One-line pitch:** *Pre-trade risk checks for AI agents: bind every argument to the user's request, and measure the trade-off on real agent errors. On the same 300 τ-bench calls, it stops 48% of harmful calls while blocking 1.7% of good ones; a gpt-4.1-mini judge stops 35% and blocks 11.7%.*
+- **Overall: 3.8 / 5.** Recommendation: a solid, low-risk Perceptron pick whose claims are modest but survive adversarial review. Choose it over P7 if P7's spike stays unreplicated; it will not win on novelty alone.
 
 ## Log
+### 2026-10-04 12:46 IST — Hostile-judge review applied; final package; DONE
+- **gpt-6-astra hostile judge** scored the 4566887 abstract 3.10/5 (62/100) with 12 exact edits and 9 methodology demands. All 21 accepted (`reviews/2026-10-04-abstract-gpt-6-astra.md`). Key corrections:
+  - the wrong-entity misses never reach the model tier;
+  - Cedar *does* check arguments, so the "shipping tools don't" claim is gone;
+  - the strict-vs-gpt-4.1-mini advantage has a paired CI crossing zero;
+  - the stale local-judge CI was recomputed from stored rows;
+  - "no paid APIs" contradicted the metered tier.
+- **Supervisor (12:37):** fixed the stale README test-history line and added README claims to `check_docs`.
+- **Provenance:**
+  - added `code_sha256` to every result;
+  - re-ran all deterministic guards on clean commit `d20d3e7`, with decisions verified identical row by row;
+  - recomputed LLM-row metrics without regeneration;
+  - removed three superseded morning "every3" desk results.
+- **Incident (my mistake):** `git stash` is shared across worktrees. A sync of mine ran `git stash; …; git stash pop` on a clean tree, so the pop applied another session's `autostash` (P7 `eval/results/phase-v2c/episodes.csv`) into my worktree and conflicted. I restored that file to `main` in my worktree and left the shared stash entry untouched for P7. I no longer use `git stash`; syncs copy files aside instead.
+
 ### 2026-10-04 12:15 IST — Frontier-model baselines (Supervisor suggestion, ~11:55)
 - **Azure OpenAI gpt-4.1-mini** (existing deployment in `rg-tf26-p08`; key only in an env var, never written; scanned the repo and /tmp for it, nothing found):
   - as a full-transcript judge on the 300-call sample;
