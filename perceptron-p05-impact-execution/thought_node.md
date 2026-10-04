@@ -86,14 +86,9 @@
 | C12 | demo_ui | results → app | — | | ⏳ | — |
 
 ## Selection memo
-_v1, 4 Oct 07:45 IST (final by 12 Oct). Each item scored 1–5 with one line of evidence._
-- **Winnability: 4/5 (09:50: pre-registered result confirmed).** On 200 fresh test seeds with synced twins (E6), the propagator-optimised schedule beats TWAP: ΔIS −0.034 bps [95% CI −0.056, −0.013], one-sided p ≈ 0.0006; own impact −0.041 [−0.063, −0.020] (−19%). It sits in Optiver's home domain. Against: "agent beats TWAP in a sim" is crowded (Karpe 2020, Hafsi & Vittori 2024, Olby et al. ICAIF 2025), and our effect is small.
-- **Innovation headroom: 5/5 (was 4).** Evidence since 08:12: synchronised twins cut the own-impact noise ~6× and paired-CI width 7.5× (E4/E5). Spike = synchronised counterfactual twins plus a deployable ghost-book estimator. Evidence of headroom: naive twins decorrelate (std 33¢ vs 3–5¢ signal, E1), and I found no prior work fixing this in tonight's arXiv searches (absence UNVERIFIED beyond those). The twin-exact IS decomposition (drift/own impact/instant) is a crisp evaluation novelty.
-- **Feasibility by the deadline: 5/5.** ABIDES runs on the M5 (0.9 s/day idle) with no GPU. Skeleton, twins, TCA, calibration and 3 policies were built overnight. Week-by-week plan avoids 19–25 Nov.
-- **Demo strength: 4/5.** Side-by-side real book vs ghost book, live IS decomposition bars, "who absorbed our order" chart. Sim-only (no live market), but the judges asked for a simulator.
-- **Fit with the user's strengths: 4/5.** Large-scale simulation (10⁴–10⁵ paired runs), systems engineering, a rigorous eval harness. Frontier models are optional (PPO challenger; MarS on Azure).
-- **Biggest risk:** the effect is small, ≈10% of TWAP's controllable cost (own impact 0.217 + instant 0.123 = 0.34 bps), and its mechanism is not yet attributed. Code review found that the feedback term acts as a ~1.2× front-loading, not a brake. Hypothesis to test: finishing early beats the delayed amplification of our selling by momentum agents, a feedback loop. E8 and agent ablations will settle it. ABIDES' impact realism (square-root law) is also untested. The ABIDES impact realism (square-root exponent) is still untested, so a judge could ask "is the impact physics even right?". Mitigation: the realism scorecard and a size sweep next.
-- **One-line pitch:** *"We run twin markets, one with our order and one without, synchronised so their only difference is our footprint; then we train an execution agent to shrink it. First result: −19% own impact vs TWAP, pre-registered and confirmed on 200 fresh seeds."*
+<!-- memo:begin (rendered from deliverables/selection-memo.template.md; edit the template) -->
+_(rendered by eval/render_docs.py)_
+<!-- memo:end -->
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor

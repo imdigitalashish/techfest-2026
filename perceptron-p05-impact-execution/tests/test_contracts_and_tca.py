@@ -92,3 +92,9 @@ def test_fill_time_split_sums_to_instant():
     dec = decompose_is(fills, dts, arr, "SELL", treat, twin)
     ft = decompose_fill_time(fills, dts, arr, "SELL", treat)
     assert abs(dec["instant_bps"] - (ft["delay_bps"] + ft["at_fill_bps"])) < 1e-9
+
+
+def test_docs_have_no_drift():
+    import subprocess
+    r = subprocess.run([sys.executable, os.path.join(ROOT, "eval", "check_docs.py")], capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout[-2000:]

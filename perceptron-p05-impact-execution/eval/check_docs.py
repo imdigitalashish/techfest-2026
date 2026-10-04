@@ -22,6 +22,8 @@ ALLOW = [  # (regex, reason)
     (r"(?<=Python )3\.11", "software version"),
     (r"(?<=PRL )135|(?<=PRL 135, )257401", "citation"),
     (r"600–900", "rubric word limit"),
+    (r"±10%", "pre-registered equivalence margin (E11), not a result"),
+    (r"95%(?= CI)", "confidence level, not a result"),
 ]
 
 

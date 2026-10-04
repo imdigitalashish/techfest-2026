@@ -1,56 +1,59 @@
-# Round 1 abstract (draft v0.1, 4 Oct 2026): Perceptron 2026, Problem 5
+# Round 1 abstract (final v1.0, 4 Oct 2026): Perceptron 2026, Problem 5
 
-> Draft for the 31 Oct submission (600–900 words). Numbers marked † come from committed runs (`eval/results/`), reproducible with the commands in `perceptron-p05-impact-execution/thought_node.md`. **Team names and skills are placeholders until the user confirms the team.**
+> Rendered from `round1-abstract.template.md` by `eval/render_docs.py`. Every result number comes from `eval/results/`, which `eval/check_docs.py` enforces. Tags: [built], [evaluated], [unresolved], [planned]. Teammates are placeholders until confirmed.
 
-**Title:** *Ghost-Book Execution: measuring and minimising our own market impact with counterfactual twin markets*
+**Title:** *Twin-market execution: measure your own footprint before claiming to beat TWAP*
 
 ## 1. Problem and theme
-Theme 3 (Markets & Trading Intelligence), **Problem 5: Market-Impact-Aware Execution Strategy**. A large order moves the very price its owner then pays; market makers like Optiver sit on the other side of it. We want an agent that knows its own footprint, and an evaluation that proves it.
+Theme 3, **Problem 5: Market-Impact-Aware Execution Strategy**. A large order moves the price its owner pays; market makers such as Optiver sit on the other side. We want to know, with error bars, how much of our cost we caused before trusting any "beats TWAP" number.
 
 ## 2. Understanding of the challenge
-Slippage is **endogenous**. When we sell, our child orders consume bids, displace the mid, and trigger reactions: market makers re-quote, momentum traders join, value traders absorb. Part of that displacement decays and part persists, so a historical backtest can't answer "what would the price have been without us?". In a simulator the counterfactual exists, but we found it is fragile. In ABIDES, a world with our order and its same-seed twin without it are bit-identical until our first trade (80/80 runs)†. After that they **decorrelate**: the std of the twin mid-price gap grows from 4.7¢ at 1 minute to 33¢ at 20 minutes, while our systematic impact is only ~3–5¢†. The crux is therefore twofold: act on an impact signal that is small compared with market noise, and **measure** it well enough to prove the agent beats TWAP for the right reason.
+Slippage is endogenous: our orders consume liquidity and other agents react, so no backtest can say what the price would have been without us. ABIDES can, but we measured three obstacles [evaluated]:
+1. **Noise.** A same-seed twin without our order drifts apart after our first trade: the mid gap's std grows from 4.7¢ (1 min) to 33¢ (20 min), against a mean impact of 3.2¢.
+2. **Physics.** In the default market our impact is near-linear in size (log-log slope 0.87 [0.57, 1.35]; square-root law: δ ≈ 0.5) and fully transient, so TWAP is near-optimal and scheduling gains are tiny.
+3. **Statistics.** Sub-tick effects need paired designs, pre-registration and replication.
 
 ## 3. Proposed approach
-- **Simulator:** J.P. Morgan's **ABIDES** (rmsc04: exchange plus 1,117 noise, value, momentum and adaptive market-maker agents), running on Python 3.11 through our adapter. One simulated day takes ≈1 s on an M5 Mac†.
-- **Counterfactual twins:** every episode runs twice on the same seed, with our agent and with a null agent. We **re-key each background agent's random stream per wake-up** (random-number synchronisation), so the twins differ only through causal responses to our orders. This cuts the own-impact noise 6× (std 0.97 → 0.16 bps over 30 seeds)†.
-- **Exact cost decomposition:** shortfall = *drift* (twin mid move) + *own impact* (twin mid − our mid) + *instantaneous cost* (spread, book walking); an identity enforced by unit tests†.
-- **Own-impact model:** a propagator I(t) = Σ qᵢ·(g_perm + g_tr·e^{−(t−tᵢ)/τ}) fitted to twin-measured impact paths. The current fit on train seeds gives τ ≈ 60 s†. The deployable **ghost book** (observed mid minus estimated own impact) is trained against the twins but uses only observable data, as a live desk would.
-- **Impact-aware agent:** (i) a schedule that solves the discrete propagator-model quadratic program, (ii) feedback that slows down while our estimated own impact is above its steady state, and (iii) child orders capped at the touch, with the remainder posted passively. Forced completion at the deadline.
-- **Optimiser:** an autoresearch ratchet on validation seeds (keep only significant gains); PPO on the same features as a challenger.
+- **Simulator** [built]: J.P. Morgan's ABIDES (rmsc04: an exchange and 1,116 noise, value, momentum and market-maker agents; 35-minute sessions) via our Python 3.11 adapter.
+- **Synchronised twins** [evaluated]:
+  - Each seed runs with our agent and with a null agent. Re-keying every agent's random stream per wake-up (a common-random-numbers coupling) keeps them aligned; pre-trade books match event-by-event in 180/180 runs checked exactly.
+  - Own-impact dispersion falls 6× (0.97 → 0.16 bps); paired CIs tighten 7.7×.
+  - The counterfactual is conditional on the simulator and the coupling. The coupling keeps volume and trade counts within ±10% but widens mean spreads by 13% (E11), so it describes a slightly different market.
+- **Cost accounting** [built]: shortfall = drift + own impact (twin mid − our mid) + cost vs the decision-time mid, split into decision-to-fill delay and at-fill cost.
+- **Realism gate** [planned]: recalibrate the agent mix (order splitting and liquidity replenishment drive square-root impact in arXiv:2607.04280) until impact is concave and partly permanent; MarS is the out-of-family check.
+- **Counterfactual-mid estimator** [unresolved]: a propagator fitted to twin paths (τ = 120 s) predicts the no-order mid from our fills (SELL: observed mid + estimated impact); held-out R² is 0.15 (TWAP) and -0.02 (random slicing), per-seed RMSE 5.0¢ vs 19.7¢ with naive twins.
+- **Agent** [built]: a propagator-QP schedule plus child-order tactics.
+  - Touch-capped orders improve the fill price by 0.041 bps [0.036, 0.046] vs TWAP (genuine price improvement, not decision-to-fill movement; E12), but give it back in timing (+0.026 bps).
+  - Policy search: a development-time ratchet with paired comparisons and untouched confirmation seeds; PPO deferred.
 
 ## 4. Minimum Viable mapping
-1. *TWAP/VWAP baseline:* **built.** TWAP sends 40 equal market-order slices. VWAP follows a volume curve learned on training seeds only.
-2. *Agent that measurably beats the baseline on slippage:* **built and confirmed.** Synchronised twins make paired CIs 7.5× tighter†. In a pre-registered test on 200 fresh seeds, our propagator-optimised schedule beats TWAP by **0.034 bps [95% CI 0.013, 0.056]** and cuts our own impact 19% (0.217 → 0.176 bps)†. A touch-limited variant cuts instantaneous cost by a third but gives it back in timing†.
+1. *TWAP/VWAP baseline* [built]: 40 equal market-order slices; VWAP follows a volume curve from training seeds.
+2. *Agent that beats the baseline* [evaluated; not yet met on total slippage]. ΔIS = our shortfall − TWAP's on the same seed (negative = cheaper):
+   - **E6:** QP schedule plus front-loading (market orders) on 200 fresh seeds: ΔIS -0.034 bps [95% CI -0.056, -0.013]; the hypothesis was fixed before inspecting results.
+   - **E8:** on 100 validation seeds it did not reproduce (ΔIS +0.006 bps).
+   - **E10:** the strictly pre-registered replication on 400 new seeds gives ΔIS -0.013 bps [-0.029, +0.003]: H2 **not confirmed**.
+   - What replicated is smaller: the QP schedule lowers own impact (-0.014 bps [-0.025, -0.002]) but pays part back in instantaneous cost; front-loading is negligible.
+   - Pooled over both fixed-size test blocks (n = 600, descriptive): ΔIS -0.020 bps [-0.032, -0.007], 0.20¢ per share cheaper.
+   - We do not yet claim to beat TWAP: with near-linear impact the headroom is tiny, so the realism gate comes first.
 
 ## 5. Stretch ambitions
-- **Counterfactual book:** synchronised twins give the exact "book without our order". The ghost-book estimator reproduces it live, scored by RMSE against the twin.
-- **Feedback loops:** who absorbed our 4,000 shares and who amplified them (per agent type), market-maker spread/depth response, and impulse responses after completion, including adaptive market makers (cf. ABIDES-MARL, 2025).
+- **Counterfactual book:** the null twin is the simulator's no-order book under our coupling [evaluated for the mid]. Depth and queue reconstruction, and a live estimator, are [planned].
+- **Feedback loops:** with synchronised twins, value agents absorb 102% of our 4,000 shares by session end, while momentum agents end at +70 [-60, +204] shares. The amplification that naive twins suggested vanishes. This is inventory redistribution, not yet a mechanism; response paths and agent ablations are [planned].
 
 ## 6. Novelty
-Prior work trains RL agents in reactive simulators and reports "beats TWAP" (Karpe 2020; Hafsi & Vittori 2024; Olby et al. 2025). We add: (a) **paired twin evaluation** with an exact own-impact decomposition per seed; (b) a measured **decorrelation problem** and a fix (random-number synchronisation), which we have not found in the literature; (c) a **deployable** counterfactual estimator certified against ground truth; (d) ablations that attribute savings to schedule, tactic and feedback.
+Common random numbers are classical; reactive impact simulation exists (MarS, ABIDES-MARL); Olby et al. (ICAIF 2025) split slippage into impact and risk. Ours is an evaluation discipline: a documented coupling with measured variance reduction, a per-seed cost decomposition, a realism gate before optimisation, and timestamped pre-registration with replication, including our own non-replication.
 
 ## 7. Evaluation plan
-- **Primary metric:** implementation shortfall (bps vs arrival mid), as the paired ΔIS vs TWAP with 95% bootstrap CIs and win rate.
-- **Secondary:** std, CVaR95, the drift/own-impact/instant split, mark-outs at +5/+10 min, 100% completion.
-- **Seeds:** disjoint train (calibration) / validation (tuning) / test (claims) sets.
-- **Baselines:** TWAP, VWAP, Almgren–Chriss, and tactic-only and schedule-only ablations.
-- **Realism scorecard:** impact-vs-size exponent against the square-root law (δ ≈ 0.5, Sato & Kanazawa, PRL 2025) and decay after completion.
-- **Robustness:** 3–25% participation, buy and sell, market-maker ablations, and Microsoft's MarS generative simulator.
+- **Primary:** paired shortfall vs TWAP (arrival-mid benchmark) with bootstrap CIs, in bps and cents per share.
+- **Secondary:** the cost terms, CVaR95, completion.
+- **Claims:** pre-registered fixed-size test blocks with replication.
+- **Baselines:** TWAP, VWAP, front-loaded TWAP, QP-only; Almgren–Chriss and Obizhaeva–Wang schedules [planned].
+- **Realism:** impact-vs-size slope, permanence, market statistics.
+- **Robustness:** 3–47% participation, buys and sells, agent-type ablations, MarS.
 
 ## 8. Feasibility and risks
-**Team:** Ashish (IIT Delhi; large-scale systems at Microsoft) plus *[teammate 2: RL/ML]* and *[teammate 3: quant/statistics]*, to be confirmed.
+**Team:** Ashish (IIT Delhi; large-scale systems at Microsoft), plus [teammate 2: RL/ML] and [teammate 3: quant/statistics], to be confirmed.
 
-**Plan:**
-- Weeks 1–2: synchronised twins and realism scorecard.
-- Week 3: ghost-book estimator.
-- Week 4: agent ratchet and PPO.
-- Before 17 Nov: n = 200 test results and the feedback analysis.
-- 19–25 Nov: exams (frozen).
-- 1 Dec: midway report.
-- Then: MarS check and demo.
+**Plan:** weeks 1–2 realism gate; week 3 estimator; week 4 tactics and ratchet; replicated results by 17 Nov; exams 19–25 Nov (frozen); midway report 1 Dec; then MarS and demo.
 
-**Risks:**
-- Decorrelation may be intrinsic chaos. Mitigation: more seeds and control variates.
-- Unrealistic ABIDES impact. Mitigation: the scorecard and MarS.
-- Overfitting to seeds. Mitigation: a held-out test set.
-- Gains that are only spread capture. Mitigation: decomposition and ablations.
+**Risks:** ABIDES may never reach realistic impact (fallback: MarS); gains may stay sub-tick (we would report the instrument and an honest null); seed overfitting (untouched confirmation blocks).

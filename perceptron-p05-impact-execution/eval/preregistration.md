@@ -150,3 +150,45 @@ The clock times written in this file were the lead's estimates, not readings of 
 - **Command:** `nice -n 10 .venv/bin/python eval/run_experiment.py --exp E12_filltime_test --seeds 1660:1720 --qty 4000 --policies eval/policies/test_touch.json --workers 4 --rng-sync per_wakeup` (test_touch.json = the TWAP, IA_full and TWAP_touch_limit entries of test.json).
 
 **Correction to A1 item 2 (appended 2026-10-04 13:15:26 IST):** the text "(0.2¢/share, ≈  on the M parent)" lost its dollar figures to shell substitution. Intended text: "(0.2¢/share, ≈ $8 on the $4M parent)", i.e. 0.02 bps × $4,000,000 = $8 per 4,000-share parent at $1,000/share. The margin itself (±0.02 bps) is unchanged.
+
+---
+
+## E10 outcome (appended 2026-10-04 13:34:19 IST; the registration and amendment A1 above are unchanged)
+- **H2 (confirmatory): NOT CONFIRMED.** IA_sched_only vs TWAP: ΔIS **−0.0127 bps** [−0.0283, +0.0027], one-sided 95% upper bound +0.0004, bootstrap tail fraction 0.0551, win rate 53%, n = 400 fresh test seeds (`eval/results/E10_replication_test_H2_verdict.md`).
+- **Reporting rule applied:** no deliverable may claim that the agent beats TWAP on total slippage.
+- **Components:** own impact −0.0148 [−0.0291, −0.0009]; instant +0.0045 [+0.0017, +0.0072]; drift −0.0023 [−0.0074, +0.0028].
+- **Attribution under A1** (`eval/results/E10_replication_test_attribution.md`):
+  - QP main effect on IS: −0.0118 [−0.0247, +0.0006], **unresolved**.
+  - QP main effect on own impact: −0.0136 [−0.0252, −0.0022], **detected (−)**.
+  - Front-loading main effect, interaction and corrected feedback: **negligible** (CIs within ±0.02 bps) for both IS and own impact.
+- **Integrity:** sampled pre-trade mids match in 2,000/2,000 runs; all filled.
+
+## E11 outcome (appended 2026-10-04 13:37:30 IST)
+Synced / native null worlds, n = 60 each (`eval/results/E11_market_laws.md`):
+
+| Statistic | Synced / native | 95% CI | Label |
+|---|---|---|---|
+| Volume | 0.980 | [0.961, 0.999] | preserved (±10%) |
+| Trade count | 0.986 | [0.962, 1.010] | preserved (±10%) |
+| **Mean spread** | **1.134** | **[1.024, 1.261]** | **differs** |
+| 1-min return std | 1.026 | [0.897, 1.165] | unresolved |
+| Touch depth | 1.053 | [0.993, 1.114] | unresolved |
+| 10-s return autocorrelation (difference) | −0.030 | [−0.073, +0.014] | unresolved |
+
+**Reading:** the coupling keeps activity but widens quoted spreads by about 13%, so results under synchronised twins describe a slightly different market than native ABIDES. The cause is not yet diagnosed (candidate: market-maker wake-up timing). Fix candidates: per-message keying, or recalibrating the market makers under the coupling.
+
+## E12 outcome (appended 2026-10-04 13:43:13 IST)
+n = 60 fresh test seeds (1660–1719), synced (`eval/results/E12_filltime_test.csv`; claims in `eval/results/claims.json`).
+
+**Exact pre-trade identity:** 180/180 runs. Event-level top-of-book logs are identical before 09:35, and arrival mids are exactly equal.
+
+**Paired Δ vs TWAP, bps (95% CI):**
+
+| Arm | Δdecision-time cost | = Δdelay | + Δat-fill |
+|---|---|---|---|
+| TWAP_touch_limit | −0.037 [−0.042, −0.032] | +0.004 [−0.001, +0.009] | −0.041 [−0.046, −0.036] |
+| IA_full | −0.033 [−0.039, −0.027] | +0.009 [+0.004, +0.013] | −0.042 [−0.048, −0.035] |
+
+Identity residual: 6.0e-07 bps.
+
+**Reading:** the touch-cap saving is genuine fill-price improvement, not decision-to-fill movement. The delay term is small and adverse; the losses that offset it come through drift exposure and own impact (deferred volume).

@@ -1,29 +1,32 @@
-# Architecture (optional 1-page diagram for Round 1)
+# Architecture (1-page diagram for Round 1)
+
+Status tags: **[built]** code exists · **[evaluated]** measured in committed runs · **[unresolved]** measured but not yet working · **[planned]**. Numbers on this page are rendered from `eval/results/` (`eval/render_docs.py`, checked by `eval/check_docs.py`).
 
 ```mermaid
 flowchart TB
-  subgraph SIM["Reactive market: ABIDES rmsc04 (1 exchange + 1,117 agents)"]
+  subgraph SIM["Reactive market [built]: ABIDES rmsc04, 1 exchange + 1,116 trading agents, 35-min session"]
     direction LR
-    W1["World A: with our agent<br/>(treatment)"]
-    W0["World B: null agent<br/>(counterfactual twin)"]
+    W1["World A: our execution agent<br/>(treatment)"]
+    W0["World B: null agent, no orders<br/>(counterfactual twin)"]
   end
-  SEED["Same seed + synchronised random streams<br/>(re-keyed per agent wake-up)"] --> W1 & W0
+  SEED["Same seed; random streams re-keyed per agent wake-up<br/>(common-random-numbers coupling) [evaluated]"] --> W1 & W0
 
-  subgraph AGENT["Impact-aware execution agent (deployable: observables only)"]
+  subgraph AGENT["Execution agent: sees only its own fills and the book"]
     direction TB
-    OBS["Book snapshot + own fills"] --> GB["Ghost-book estimator<br/>Î(t) = Σ qᵢ·G(t−tᵢ); ghost mid = mid − Î"]
-    GB --> SCH["Schedule: transient-impact QP<br/>+ slow down while Î above steady state"]
-    SCH --> TAC["Child orders: take ≤ touch,<br/>post the remainder, forced completion"]
+    OBS["Book snapshot + own fills"] --> CF["Counterfactual-mid estimator [unresolved]<br/>Î(t) = Σ qᵢ·G(t−tᵢ); SELL: no-order mid ≈ observed mid + Î"]
+    CF --> SCH["Schedule [built]: propagator-QP<br/>(+ front-loading variant)"]
+    SCH --> TAC["Child orders [built]: market or touch-capped;<br/>forced completion at the deadline"]
   end
   W1 <-->|"orders / fills / quotes"| AGENT
 
-  W1 & W0 --> TCA["TCA: IS = drift + own impact + instantaneous<br/>(exact per seed)"]
-  W1 & W0 --> FB["Feedback analysis: who absorbed our order,<br/>MM spread/depth response, impulse response"]
-  W0 -. "ground-truth labels (train seeds)" .-> GB
-  TCA --> EV["Evaluation: paired ΔIS vs TWAP/VWAP/AC<br/>95% bootstrap CI, CVaR, held-out test seeds"]
+  W1 & W0 --> TCA["Cost accounting [evaluated]: IS = drift + own impact (twin − ours)<br/>+ cost vs decision mid (= delay + at-fill cost)"]
+  W1 & W0 --> FB["Inventory redistribution by agent type [evaluated, descriptive];<br/>response paths and ablations [planned]"]
+  W0 -. "training targets (train seeds)" .-> CF
+  TCA --> EV["Evaluation [evaluated]: paired ΔIS vs TWAP / VWAP / front-loaded TWAP,<br/>pre-registered fixed-n blocks + replication"]
+  SC["Realism scorecard [evaluated]: impact-vs-size slope, permanence,<br/>market statistics; recalibration gate [planned]"] --> EV
   FB --> EV
-  EV --> AR["Autoresearch ratchet<br/>(frozen eval; keep only significant gains)"]
+  EV --> AR["Development-time policy search [built; PPO deferred]<br/>paired vs incumbent, untouched confirmation seeds"]
   AR --> AGENT
 ```
 
-**Reading it:** both worlds start bit-identical. Every difference between them is caused by our orders, which yields the exact counterfactual book (stretch goal 1) and per-agent-type feedback (stretch goal 2). The agent itself never sees World B. It learns an estimator of it from training seeds, so the same agent could run on a live venue.
+**Reading it:** both worlds share a seed and a random-number coupling, so they match until our first order. Afterwards, differences between them measure our footprint *within this simulator*. The agent never sees World B; the estimator that is meant to stand in for it live has not yet passed its held-out test.

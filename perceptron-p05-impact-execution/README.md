@@ -23,6 +23,12 @@ python3.11 -m venv --system-site-packages .venv           # needs numpy, pandas,
 ```
 `eval/policies/test.json` is generated from `eval/results/calibration.json` by `eval/make_test_policies.py`.
 
+## Experiments, claims and docs
+- Pre-registrations, amendments and outcomes, each committed before its run: [`eval/preregistration.md`](eval/preregistration.md). Git commit times are authoritative.
+- Confirmatory verdicts: `.venv/bin/python eval/h1_verdict.py --exp E10_replication_test --name H2`. Attribution: `eval/attribution.py --exp <exp>`. Realism: `eval/realism.py`. Market statistics under the coupling: `eval/market_laws.py`.
+- Every number quoted in `deliverables/` and in the thought node's selection memo comes from `eval/claims.py`. To re-render: `.venv/bin/python eval/render_docs.py`. To verify there is no drift: `.venv/bin/python eval/check_docs.py` (also run by `pytest -q tests`).
+- Cross-model reviews and the lead's decisions: [`reviews/`](reviews/) (ledger: `reviews/ledger.tsv`).
+
 ## Layout
 - `components/sim_env`: ABIDES adapter, pomegranate shim, world builder, twins, RNG synchronisation.
 - `components/execution_agent`: the ABIDES agent and pure policies (TWAP, VWAP, PROBE, IA), plus `autoresearch/` (frozen eval, program, ledger).

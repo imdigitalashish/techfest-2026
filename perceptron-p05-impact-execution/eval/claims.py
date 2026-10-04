@@ -37,6 +37,7 @@ def g_h1(c):
     m, lo, hi, P = _paired(df, "IA_sched_only", "TWAP", "is_bps")
     c["h1_n"] = f"{df.seed.nunique()}"
     c["h1_gain"], c["h1_gain_lo"], c["h1_gain_hi"] = f"{-m:.3f}", f"{-hi:.3f}", f"{-lo:.3f}"
+    c["h1_dis"], c["h1_dis_lo"], c["h1_dis_hi"] = f"{m:+.3f}", f"{lo:+.3f}", f"{hi:+.3f}"
     c["h1_win"] = f"{np.mean((P['IA_sched_only'] - P['TWAP']).values < 0):.0%}"
     om, olo, ohi, O = _paired(df, "IA_sched_only", "TWAP", "own_impact_bps")
     tw, ia = O["TWAP"].mean(), O["IA_sched_only"].mean()
@@ -167,6 +168,15 @@ def g_e10(c):
     c["e10_dis"], c["e10_lo"], c["e10_hi"], c["e10_up95"] = f"{m:+.3f}", f"{lo:+.3f}", f"{hi:+.3f}", f"{up:+.3f}"
     c["e10_h2"] = "confirmed" if up < 0 else "not confirmed"
     j = _json("E10_replication_test_attribution.json")
+    om, olo, ohi, _ = _paired(df, "IA_sched_only", "TWAP", "own_impact_bps")
+    c["e10_own"], c["e10_own_lo"], c["e10_own_hi"] = f"{om:+.3f}", f"{olo:+.3f}", f"{ohi:+.3f}"
+    im, ilo, ihi, _ = _paired(df, "IA_sched_only", "TWAP", "instant_bps")
+    c["e10_instant"] = f"{im:+.3f}"
+    c["e10_A_own"], c["e10_A_own_lo"], c["e10_A_own_hi"] = (f"{x:+.3f}" for x in j["contrasts"]["A_qp_main"]["own_impact_bps"])
+    c["e10_B_label"] = j["a1_labels"]["B_frontload_main"]["is_bps"]
+    c["e10_A_label"] = j["a1_labels"]["A_qp_main"]["is_bps"]
+    c["e10_A_own_label"] = j["a1_labels"]["A_qp_main"]["own_impact_bps"]
+    j = _json("E10_replication_test_attribution.json")
     k = j["contrasts"]
     c["e10_attr_is"], c["e10_attr_own"] = j["attribution_is"], j["attribution_own"]
     for key, name in [("A_qp_main", "A"), ("B_frontload_main", "B"), ("D_fixed_feedback", "D")]:
@@ -181,6 +191,11 @@ def g_e10(c):
         x = _csv(f)
         Q = x.pivot(index="seed", columns="label", values="is_bps")
         pool.append((Q["IA_sched_only"] - Q["TWAP"]).rename(f))
+    p2 = pd.concat(pool[1:]).sort_index()        # E6 u E10 (A1 item 5): no discovery data
+    assert p2.index.is_unique
+    m2, l2, h2 = float(p2.mean()), *_ci(p2.values)
+    c["pool2_n"], c["pool2_dis"], c["pool2_lo"], c["pool2_hi"] = f"{len(p2)}", f"{m2:+.3f}", f"{l2:+.3f}", f"{h2:+.3f}"
+    c["pool2_cents"] = f"{-m2 * 10:.2f}"          # bps -> ¢/share at $1,000 (1 bp = 10¢)
     pd_ = pd.concat(pool).sort_index()
     assert pd_.index.is_unique, "pooled seeds must be disjoint"
     pm, plo, phi = float(pd_.mean()), *_ci(pd_.values)
@@ -215,7 +230,8 @@ def g_e11(c):
     lab = [v["label"] for k, v in j.items() if isinstance(v, dict)]
     c["e11_preserved"], c["e11_total"] = f"{sum(x.startswith('preserved') for x in lab)}", f"{len(lab)}"
     c["e11_differs"] = f"{sum(x == 'differs' for x in lab)}"
-    for k in ("volume", "spread_cents", "ret_std_1m_bps", "touch_depth"):
+    c["e11_spread_pct"] = f"{100 * (j['spread_cents']['value'] - 1):.0f}"
+    for k in ("volume", "spread_cents", "ret_std_1m_bps", "touch_depth", "n_trades"):
         c[f"e11_{k}_ratio"] = f"{j[k]['value']:.2f}"
         c[f"e11_{k}_lo"], c[f"e11_{k}_hi"] = f"{j[k]['ci95'][0]:.2f}", f"{j[k]['ci95'][1]:.2f}"
         c[f"e11_{k}_label"] = j[k]["label"]
@@ -229,6 +245,8 @@ def g_e12(c):
         for m in ("delay_bps", "at_fill_bps", "instant_bps"):
             mm, lo, hi, _ = _paired(df, arm, "TWAP", m)
             c[f"e12_{key}_{m[:-4]}"], c[f"e12_{key}_{m[:-4]}_lo"], c[f"e12_{key}_{m[:-4]}_hi"] = f"{mm:+.3f}", f"{lo:+.3f}", f"{hi:+.3f}"
+    am, alo, ahi, _ = _paired(df, "TWAP_touch_limit", "TWAP", "at_fill_bps")
+    c["e12_tl_at_fill_abs"], c["e12_tl_at_fill_abs_lo"], c["e12_tl_at_fill_abs_hi"] = f"{-am:.3f}", f"{-ahi:.3f}", f"{-alo:.3f}"
     res = (df.instant_bps - df.delay_bps - df.at_fill_bps).abs().max()
     c["e12_identity_resid"] = f"{res:.1e}"
 
