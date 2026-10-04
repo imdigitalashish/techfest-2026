@@ -9,6 +9,9 @@ GET  /api/sweep?config=C       LIVE Tier 0 (C in none|schema|t0_v0|t0_strict|t0_
                                calls, with the count of decisions identical to the committed result file;
                                C in cascade_aoai|cascade_fast|llm_judge_aoai|llm_judge -> REPLAYED committed rows
 GET  /api/item?id=I&config=C   LIVE full check list (passes included, with evidence) for one real call
+     [&variant=gt]             ... or for the closest ground-truth write of the same tool, through the same checks
+All inputs are validated: malformed JSON, non-object bodies, wrong field types, unknown configs and tickets over
+2,000 characters get HTTP 400 (nothing is silently truncated or run under a different config).
 POST /api/hijack               {scenario, ticket, config} -> SCRIPTED agent + LIVE retail guard (ticket = untrusted)
 GET  /api/desk                 LIVE run of eval/demo_mvp.py (SYNTHETIC desk), parsed into cards
 POST /api/desk_custom          {user_request, args, inbox} -> LIVE desk guard on a free-form call
@@ -27,9 +30,28 @@ from urllib.parse import parse_qs, urlparse
 
 DEMO = Path(__file__).resolve().parent
 sys.path.insert(0, str(DEMO.parent))
-from demo.engine import CONFIGS_LIVE, CONFIGS_REPLAYED, engine  # noqa: E402
+from demo.engine import CONFIGS_HIJACK, CONFIGS_ITEM, CONFIGS_LIVE, CONFIGS_REPLAYED, MAX_TICKET, engine, gt_args  # noqa: E402
 
 T0 = float(os.environ.get("P9_T0", time.time()))
+MAX_BODY = 16_000
+
+
+class BadRequest(ValueError):
+    pass
+
+
+def field(b: dict, name: str, kind, default=None, required: bool = False, max_len: int | None = None):
+    """Typed field from a JSON object body: absent -> default (or 400 if required); wrong type / too long -> 400."""
+    if name not in b:
+        if required:
+            raise BadRequest(f"missing field {name!r}")
+        return default
+    v = b[name]
+    if not isinstance(v, kind) or isinstance(v, bool) and kind is not bool:
+        raise BadRequest(f"field {name!r} must be {getattr(kind, '__name__', kind)}")
+    if max_len is not None and len(v) > max_len:
+        raise BadRequest(f"field {name!r} is longer than {max_len} characters ({len(v)}); nothing was truncated or run")
+    return v
 
 
 class H(BaseHTTPRequestHandler):
@@ -51,7 +73,15 @@ class H(BaseHTTPRequestHandler):
 
     def body(self) -> dict:
         n = int(self.headers.get("Content-Length") or 0)
-        return json.loads(self.rfile.read(n) or b"{}")
+        if n > MAX_BODY:
+            raise BadRequest(f"request body over {MAX_BODY} bytes")
+        try:
+            b = json.loads(self.rfile.read(n) or b"{}")
+        except (json.JSONDecodeError, UnicodeDecodeError) as e:
+            raise BadRequest(f"malformed JSON: {e}") from None
+        if not isinstance(b, dict):
+            raise BadRequest("request body must be a JSON object")
+        return b
 
     def do_GET(self):
         u = urlparse(self.path)
@@ -86,11 +116,19 @@ class H(BaseHTTPRequestHandler):
                 if it is None:
                     return self.json({"error": "unknown item"}, 404)
                 c = q.get("config", "t0_strict")
-                c = c if c.startswith("t0_") else "t0_balanced"
+                if c not in CONFIGS_ITEM:
+                    raise BadRequest(f"config must be one of {CONFIGS_ITEM}")
+                if q.get("variant") == "gt":  # the closest ground-truth write of the same tool, through the same checks
+                    g = gt_args(it)
+                    if g is None:
+                        return self.json({"error": "no ground-truth write of this tool"}, 404)
+                    return self.json({**E.checks(c, it, args=g), "args": g})
                 return self.json(E.checks(c, it))
             if u.path == "/api/desk":
                 return self.json(E.desk_script())
             return self.json({"error": "not found"}, 404)
+        except (BadRequest, ValueError) as e:
+            return self.json({"error": str(e)}, 400)
         except Exception as e:  # never kill the demo on a bad request
             traceback.print_exc()
             return self.json({"error": f"{type(e).__name__}: {e}"}, 500)
@@ -101,12 +139,26 @@ class H(BaseHTTPRequestHandler):
             E = engine()
             b = self.body()
             if u.path == "/api/hijack":
-                if b.get("scenario") not in E.scen:
-                    return self.json({"error": "unknown scenario"}, 400)
-                return self.json(E.hijack(b["scenario"], str(b.get("ticket", ""))[:2000], b.get("config", "t0_balanced")))
+                sc = field(b, "scenario", str, required=True)
+                if sc not in E.scen:
+                    raise BadRequest(f"unknown scenario {sc!r}")
+                cfg = field(b, "config", str, default="t0_balanced")
+                if cfg not in CONFIGS_HIJACK:
+                    raise BadRequest(f"config must be one of {CONFIGS_HIJACK}")
+                return self.json(E.hijack(sc, field(b, "ticket", str, required=True, max_len=MAX_TICKET), cfg))
             if u.path == "/api/desk_custom":
-                return self.json(E.desk_custom(str(b.get("user_request", ""))[:500], dict(b.get("args") or {}), str(b.get("inbox", ""))[:1000]))
+                args = field(b, "args", dict, required=True)
+                for k in ("quantity", "limit_price"):
+                    if k in args and (isinstance(args[k], bool) or not isinstance(args[k], (int, float))):
+                        raise BadRequest(f"args.{k} must be a number")
+                for k in ("account_id", "symbol", "side", "order_type"):
+                    if k in args and not isinstance(args[k], str):
+                        raise BadRequest(f"args.{k} must be a string")
+                return self.json(E.desk_custom(field(b, "user_request", str, required=True, max_len=500), dict(args),
+                                               field(b, "inbox", str, default="", max_len=1000)))
             return self.json({"error": "not found"}, 404)
+        except (BadRequest, ValueError) as e:
+            return self.json({"error": str(e)}, 400)
         except Exception as e:
             traceback.print_exc()
             return self.json({"error": f"{type(e).__name__}: {e}"}, 500)

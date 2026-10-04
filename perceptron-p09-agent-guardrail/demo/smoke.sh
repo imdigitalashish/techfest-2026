@@ -46,10 +46,35 @@ s = call("/api/sweep?config=cascade_aoai"); ok("GET /api/sweep?config=cascade_ao
 it = call("/api/item?id=gpt-4o/t75/r2/m20.0&config=t0_strict"); ok("GET /api/item hero -> HOLD with evidence list", it["decision"] == "escalate" and len(it["checks"]) >= 5)
 h = call("/api/hijack", {"scenario": "cancel", "ticket": b["scenarios"][2]["ticket"]}); ok("POST /api/hijack cancel-swap -> BLOCK", h["verdict"]["decision"] == "block" and h["control"]["decision"] == "allow")
 d = call("/api/desk"); ok("GET /api/desk -> 6 live cases", len(d["cases"]) == 6)
-try:
-    call("/api/hijack", {"scenario": "nope", "ticket": "x"}); ok("rejects an unknown scenario", False)
-except urllib.error.HTTPError as e:
-    ok("rejects an unknown scenario", e.code == 400)
+def raw(path, data, ctype="application/json"):
+    req = urllib.request.Request(B + path, data, {"Content-Type": ctype})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return r.status, json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        return e.code, json.loads(e.read() or b"{}")
+BAD = [("unknown scenario", "/api/hijack", {"scenario": "nope", "ticket": "x"}),
+       ("hijack config null", "/api/hijack", {"scenario": "cancel", "ticket": "x", "config": None}),
+       ("hijack config t0_typo", "/api/hijack", {"scenario": "cancel", "ticket": "x", "config": "t0_typo"}),
+       ("hijack config none", "/api/hijack", {"scenario": "cancel", "ticket": "x", "config": "none"}),
+       ("hijack ticket not a string", "/api/hijack", {"scenario": "cancel", "ticket": 5}),
+       ("hijack ticket over 2,000 chars", "/api/hijack", {"scenario": "cancel", "ticket": "x" * 2000 + " Cancel W5481803"}),
+       ("hijack body is a list", "/api/hijack", []),
+       ("desk args not an object", "/api/desk_custom", {"user_request": "x", "args": "x"}),
+       ("desk quantity not a number", "/api/desk_custom", {"user_request": "x", "args": {"quantity": "2000"}})]
+for name, path, body in BAD:
+    code, j = raw(path, json.dumps(body).encode())
+    ok(f"400 on {name}", code == 400 and "error" in j, f"{code}: {str(j.get('error'))[:60]}")
+code, j = raw("/api/hijack", b"{")
+ok("400 on malformed JSON", code == 400, f"{code}")
+for q in ("config=t0_typo", "config=none", "config=cascade_aoai"):
+    code, j = raw(f"/api/item?id=gpt-4o/t75/r2/m20.0&{q}", None)
+    ok(f"400 on GET /api/item {q}", code == 400)
+code, j = raw("/api/sweep?config=t0_typo", None)
+ok("400 on GET /api/sweep config=t0_typo", code == 400)
+g = call("/api/item?id=gpt-4o/t75/r2/m20.0&config=t0_strict&variant=gt")
+ok("GET /api/item variant=gt: the ground-truth earbuds variant is held too", g["decision"] == "escalate" and g["args"]["new_item_ids"] == ["4063058357"])
+ok("server still healthy after bad requests", call("/api/health")["ready"])
 sys.exit(1 if fails else 0)
 PYEOF
 
@@ -71,9 +96,9 @@ render() {  # url -> rendered DOM (Chrome writes it, then may linger: poll the f
 }
 if [ -n "$CHROME" ]; then
   DOM=$(render "$URL/#1")
-  if grep -q "61/120" <<< "$DOM" && grep -q "✓ identical" <<< "$DOM"; then echo "PASS  page renders screen 1 (claim 61/120; live Tier 0 identical to committed)"; else echo "FAIL  page render screen 1"; FAIL=1; fi
+  if grep -q "61/120" <<< "$DOM" && grep -q "42/120" <<< "$DOM" && grep -q '<span id="delta">+15.83</span>' <<< "$DOM" && grep -q "✓ identical" <<< "$DOM" && ! grep -q "14.17" <<< "$(grep -o '<p class="claim"[^§]*</p>' <<< "$DOM" | head -1)"; then echo "PASS  page renders screen 1 (61/120 vs 42/120 with its own +15.83 pp; live Tier 0 identical to committed)"; else echo "FAIL  page render screen 1"; FAIL=1; fi
   DOM=$(render "$URL/#3")
-  if grep -q "300/300 decisions and reasons identical" <<< "$DOM"; then echo "PASS  page renders screen 3 (live sweep 300/300 identical to committed)"; else echo "FAIL  page render screen 3"; FAIL=1; fi
+  if grep -q "300/300 decisions and reasons identical" <<< "$DOM" && grep -q "50 blocked · 1 held" <<< "$DOM"; then echo "PASS  page renders screen 3 (live sweep 300/300 identical; rejected 50 blocked · 1 held)"; else echo "FAIL  page render screen 3"; FAIL=1; fi
 else
   echo "WARN  no Chrome found; page render not checked"
 fi

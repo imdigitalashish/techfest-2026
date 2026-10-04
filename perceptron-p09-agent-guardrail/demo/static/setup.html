@@ -27,14 +27,14 @@ figcaption b{color:var(--ink)}
   <span class="st" id="st">One-time setup is running. This page switches to the live demo by itself.</span>
 </header>
 <main>
-  <figure><img src="../fallback/01-real-hero-earbuds.png" alt=""><figcaption><b>A real harmful write</b> (gpt-4o, τ-bench): Tier 0 holds it because the user never asked for IPX7; the gpt-4.1-mini judge allows it at risk 0.</figcaption></figure>
-  <figure><img src="../fallback/04-hijack-refund-to-strangers-gift-card.png" alt=""><figcaption><b>Hijack:</b> a ticket redirects the refund to a stranger's gift card. Blocked; the real call with the same ticket is allowed.</figcaption></figure>
+  <figure><img src="../fallback/01-real-hero-earbuds.png" alt=""><figcaption><b>A recorded harmful-labelled write</b> (gpt-4o, τ-bench): Tier 0 holds it because the user never asked for IPX7; the gpt-4.1-mini judge allows it at risk 0. The ground-truth variant is held too.</figcaption></figure>
+  <figure><img src="../fallback/04-hijack-refund-to-users-own-other-card.png" alt=""><figcaption><b>Hijack:</b> a ticket redirects the refund to the user's own other card. Blocked; the real call with the same ticket is allowed.</figcaption></figure>
   <figure><img src="../fallback/05-hijack-no-id-held.png" alt=""><figcaption><b>The limit, shown:</b> "the credit card" without an id is not tainted. The call is only held by payment provenance.</figcaption></figure>
-  <figure><img src="../fallback/07-hijack-cancel-another-order.png" alt=""><figcaption><b>Hijack:</b> a ticket asks to cancel another of the user's orders. Blocked.</figcaption></figure>
-  <figure><img src="../fallback/09-knob-strict.png" alt=""><figcaption><b>The knob:</b> strict, live on 300 real calls, 300/300 identical to the committed file, against the judge's whole curve.</figcaption></figure>
-  <figure><img src="../fallback/10-knob-cascade.png" alt=""><figcaption><b>Cascade (replayed):</b> fewer holds, but 4 harmful holds released.</figcaption></figure>
-  <figure><img src="../fallback/11-desk-synthetic.png" alt=""><figcaption><b>SYNTHETIC desk:</b> invented ticker, ×10, side flip, an unstated price, an injected ₹4,75,000 transfer.</figcaption></figure>
-  <figure><img src="../fallback/12-what-this-does-not-show.png" alt=""><figcaption><b>What this does not show:</b> the caveats behind every number.</figcaption></figure>
+  <figure><img src="../fallback/08-hijack-known-false-block.png" alt=""><figcaption><b>Known false block:</b> a benign note naming the order blocks the legitimate call.</figcaption></figure>
+  <figure><img src="../fallback/10-knob-strict.png" alt=""><figcaption><b>The knob:</b> strict, live on 300 recorded calls, 300/300 identical to the committed file, against the judge's whole curve.</figcaption></figure>
+  <figure><img src="../fallback/11-knob-cascade.png" alt=""><figcaption><b>Cascade (replayed):</b> fewer holds, but 4 harmful holds released.</figcaption></figure>
+  <figure><img src="../fallback/12-desk-synthetic.png" alt=""><figcaption><b>SYNTHETIC desk:</b> invented ticker, ×10, side flip, an unstated price, an injected ₹4,75,000 transfer.</figcaption></figure>
+  <figure><img src="../fallback/13-what-this-does-not-show.png" alt=""><figcaption><b>What this does not show:</b> the caveats behind every number.</figcaption></figure>
 </main>
 <script>
 // same origin: this static server answers 404 for /api/health; the live server answers {"ready": true}
