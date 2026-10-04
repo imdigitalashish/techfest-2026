@@ -6,21 +6,16 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (13:25 IST, 4 Oct)
+## Now (13:52 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - Namma Space: Brush E2E run 1 was killed at 13:15 after 3 h of memory thrashing; restarted 13:16 on baseline settings, ETA 13:55–14:10. It holds the GPU exclusively for a clean timing.
-  - P10: final abstract (813 words) states the pre-registered negative result (text adds no value, p = 0.46); astra review in; seed-stable (ACI 89.47% ± 0.03 pp).
-  - P5: E6's effect didn't reproduce on validation seeds. The pre-registered 400-seed replication E10 is running; E11/E12 were registered from review items.
-  - P3: pre-registered real OBD results are in (DR within 0.1–1.6% of the true CTR); decomposer v1 with Shapley and interaction.
-  - EV C1: fact-check done; monthly VAHAN forecast with 2026 nowcast. Asked it to validate capture–recapture against the official state counts.
-- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4.
-- **Queue:** APCTT (when the 10 Oct data lands) → India@71 T3 → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
-- **Needs you today:**
-  - free memory (see *Mac memory* below);
-  - a 2-min mini-SOP test clip for Namma Space;
-  - Delhi zonal registration by 9 Oct.
-
+  - Namma Space: Brush trained cleanly in 24.5 min (vs 36.9), but its own camera solve (SfM) is degenerate on drjohnson (30/262 cameras far off; PSNR 18.3 dB); it reports this as a posing failure. Fix in progress: exhaustive matching plus a trajectory-error gate, then one more ~25-min GPU slot.
+  - P5: the pre-registered 400-seed replication (E10) did not confirm H2. The abstract was retitled honestly ("measure your own footprint before claiming to beat TWAP").
+  - P3: real OBD results plus an overlap gate frozen before it was applied to OBD; reviews running.
+  - EV C1: 3-source estimate validated against official state counts and on Chhattisgarh districts; reviews running.
+  - India@71 T3: resumed 13:52 into P10's slot.
+- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10.
+- **Queue:** APCTT (when the 10 Oct data lands) → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -48,11 +43,12 @@
   - one timed rehearsal using `presenter-card.pdf`;
   - a pilot contact or letter (e.g. DJB, as the rainwater-harvesting nodal agency);
   - supplier quotes for the parts in `prototype-plan.md`.
-- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1 and P4 are ✅ Completed and ready for your review; P10, P5 and P3 are still running.
+- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1, P4 and P10 are ✅ Completed and ready for your review; P5 and P3 are still running.
   - **P7 multi-agent allocation:** planning beats the best rule, +3.7 pp under shock and +5.5 pp under shock+drift (30/30 seeds, pre-registered). Its detector spike failed replication. astra hostile score 71/100.
   - **P9 agent guardrail:** on held-out real agent errors, 41% of harmful calls stopped at 2.0% of good calls blocked (30% held for review). astra 62/100; memo 3.8/5.
   - **P1 federated LoRA:** the only method that improves every domain (macro −0.081 vs the starter), at a stated cost on the data-rich domain. astra 68/100 on the draft before its fixes; memo 4.2/5.
   - **P4 order-book regimes:** the most rigorous (sol reproduced it exactly), but the gain is small (−0.0099 log-loss) and not tradable after fees. astra 53/100 before fixes; memo 3.4/5. P4 itself recommends P7 or P9.
+  - **P10 trusted text signal:** prediction intervals that keep their promised coverage on messy, manipulated text (89.47% vs a 90% target). Its pre-registered test found the text adds no forecasting value (p = 0.46), so the pitch is trust and coverage guarantees, not alpha. astra 74/100; memo 3.7/5. P10 itself ranks P7 first and P10 a close second.
   - The astra scores were given at different stages and the memos are self-scored, so treat them as rough, not a ranking.
   - Whichever you pick: teammates' names for the [TEAM] placeholders, then register by 15 Oct.
 ## Portfolio (08:18 IST) — package = landscape, components, contracts, ADR, deliverables, eval, memo
@@ -90,6 +86,18 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 13:52 IST — P10 completed; Namma jetsam diagnosis
+- **P10 DONE (47ddf82), verified on main:**
+  - Its pre-registered DJIA text test found no evidence that text adds value (p = 0.46); a positive control shows the test detects gains of 11% or more.
+  - ACI coverage 89.47% vs the 90% target.
+  - 70 tests pass in its venv. Under system Python they fail on `lightgbm`, because there's no dependency manifest. check_drift: no drift; abstract 894 words.
+  - Reviews: astra 64 → 74/100, sol exact reproduction; 21 items accepted. Memo 3.7/5.
+  - India@71 T3 resumed into the slot.
+- **Namma:**
+  - Its orchestrator was killed by macOS jetsam at 13:41:13 (kernel log: "killing largest compressed process Python [19913] 101341 MB").
+  - Namma traced the cause to its degenerate SfM: the walkable grid's bounds became 4.8 km × 1.4 km, i.e. 2.7 billion cells.
+  - Guards are being added.
+
 ### 2026-10-04 13:25 IST — Sweep
 - **New PLAYBOOK §6 rule (13:06):** timestamps come from the clock. Two leads had written times 7–24 min ahead of it; P5 appended a correction (git commit times are authoritative) and disclosed that its original H1 was registered after launch but before inspection.
 - **Pre-registration order verified on main:**
