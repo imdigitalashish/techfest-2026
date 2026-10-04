@@ -66,6 +66,11 @@ flowchart LR
 ## Spike choice
 See [ADR 001](adr/001-spike.md). Spike A: executable misconceptions → exact diagnosis + verified *discriminative* generation (C3, C4, C6). Spike B: set-Bayes tracing + EIG policy (C7, C8). Everything else follows best existing practice.
 
+## Measured against frontier LLMs (pre-registered, 4 Oct 15:21 IST; `eval/llm_gap_protocol.md`)
+- **C4:** on real Eedi data, GPT-5.5 diagnosed 79.4% of positives with 0.0% false claims, against the engine's 19.1% with 0.0%. C4 is therefore an **exact-first cascade**: engine first, the LLM on abstentions (`eval/run_cascade.py`, `eval/run_prob_pack.py --task diag`).
+- **C6:** LLM-only probability keys were exact 36.7% (GPT-4.1-mini), 96.7% (GPT-5.4-mini) and 100.0% (GPT-5.5) of the time. Our keys are exact by construction.
+- **C7:** synthetic tracing, exact held set: tracer 64.0% vs GPT-5.4-mini 66.0%, not significantly different.
+
 ## Changelog
 - 0.1.0 (05:00 IST, 4 Oct): initial contracts.
 - 0.1.1 (05:30 IST, 4 Oct): `DiagnosisRequest.prior`, `LearnerState.model_state`, `ComposableBugLibrary.predict_set`; `Item.construct` renamed `construct_name` (it shadowed a pydantic attribute).

@@ -19,7 +19,7 @@
   4. Cross-model reviews as child sessions: gpt-6-astra (max) as hostile judge on abstract + spike; gpt-6-sol (max) on code/eval, reproducing the headline numbers → `reviews/` + `reviews/ledger.tsv`.
   5. Final selection memo; push; message the Supervisor "DONE — slot free".
 - **Plan:** protocol → runner (`eval/run_llm_gaps.py`; responses saved to committed JSONL so scoring reproduces offline) → runs (bounded; tokens and cost logged per part) → analysis → pitch/abstract/memo → 2 reviews → triage → DONE.
-- **Doing:** lead running the pre-registered LLM-gap parts (real done; inversion, tracing, prob_pack in a background job). No child sessions yet.
+- **Doing:** every pre-registered experiment has run (total $19.75). Final abstract, architecture, ADR revision and selection memo are written; `check_docs` passes. Next: two cross-model reviews as child sessions (gpt-6-astra max: abstract + spike; gpt-6-sol max: code + eval reproduction).
 - **Rules in force:** no `task` sub-agents; ≤2 child sessions; never `git stash`/`--autostash`; timestamps from `TZ=Asia/Kolkata date`; heavy jobs `nice -n 10`, CPU only, start only when `kern.memorystatus_level` ≥ 30; small API batches; poll long jobs ≥10 min apart; Azure keys in env only.
 - **Needs from user:**
   - Register by 15 Oct (after the 12 Oct selection).
@@ -63,6 +63,9 @@
 - 2026-10-04 — **Data:** label space = Eedi Misconceptions Graph v1.0 (CC BY 4.0). Real eval = Kaggle Eedi 2024 data via HF mirror `cdtmc/eedi-ir` (research use, not redistributed, fidelity UNVERIFIED).
 - 2026-10-04 — **Novelty claim narrowed** after finding MalruleLib (ACL 2026): we claim real-distractor validation, discriminative verified generation, set-level EIG tracing, and slip abstention — *not* "executable misconceptions" in general.
 - 2026-10-04 — **LLM backend:** Azure OpenAI `tf26-p08-aoai-1004` (rg `rg-tf26-p08`, swedencentral, deployment gpt-4.1-mini 2025-04-14). The key is read at runtime via `az`, never stored. GitHub Models is unusable from this network.
+- 2026-10-04 15:21 — **Pre-registered LLM-gap protocol** (`eval/llm_gap_protocol.md`, plus Addendum A at 15:29 and Addendum B at 15:51). Run against gpt-4.1-mini, gpt-5.4-mini and gpt-5.5, with an offline-reproducible scoring path.
+- 2026-10-04 16:45 — **Spike A re-scoped** ([ADR 001, revision 1](architecture/adr/001-spike.md)). "Executable diagnosis beats LLM diagnosis" is refuted for reasoning models, so the design is now an **exact-first cascade**: the engine answers what it can prove, and a frontier LLM handles the rest. Claims are limited to cost, latency, determinism and verified generation.
+- 2026-10-04 16:45 — **Selection recommendation: against P8** as the team's Perceptron pick (see the Selection memo).
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
@@ -70,10 +73,10 @@
 | C1 | Catalogue | id → Misconception | Eedi graph (CC BY) | — | built | link coverage 5/5 |
 | C2 | Normaliser | raw → NormalizedAnswer | Fraction parsing | — | built | canonicalisation acc 8/8 cases |
 | C3 | Bug library | Item → PredictedAnswer[] | mal-rules (Sleeman, MalruleLib) | **A** | built (5 bugs); autoresearch loop | reproduction_dev 0.155 → 0.190 (loop iter 2); wrong attribution 0% |
-| C4 | Diagnoser | DiagnosisRequest → Diagnosis | LLM zero-shot; retrieval+rerank | **A** | built | closed-set acc (real, n=129): LLM 86.0%, exec→LLM 86.8%, exec→TF-IDF 45.7%, TF-IDF 38.0%, majority 30.2% |
+| C4 | Diagnoser (exact-first cascade) | DiagnosisRequest → Diagnosis | LLM zero-shot; retrieval+rerank | **A** (re-scoped) | built | real Eedi (pre-registered): GPT-5.5 79.4% of positives / 0.0% false claims; engine 19.1% / 0.0%; cascade = GPT-5.5 accuracy at −8.6% cost |
 | C5 | Verifier | Item → VerificationReport | none / LLM self-check | — | built | fault detection (mutation suite: to do) |
-| C6 | Generator | GenerationRequest → GeneratedItem[] | LLM-only | **A** | built | verified-targeted yield: ours 400/400 (by construction); LLM-only 40/40 |
-| C7 | Learner model | state+obs → LearnerState | BKT / pyKT | **B** | built | exact-set acc 0.836 (synthetic) |
+| C6 | Generator | GenerationRequest → GeneratedItem[] | LLM-only | **A** | built | verified by construction; LLM-only probability keys: GPT-4.1-mini 36.7%, GPT-5.4-mini 96.7%, GPT-5.5 100.0% |
+| C7 | Learner model | state+obs → LearnerState | BKT / pyKT | **B** | built | synthetic tracing: 64.0% exact set vs GPT-5.4-mini 66.0% (n.s.), GPT-4.1-mini 16.0% |
 | C8 | Policy | NextItemRequest → NextItemDecision | random practice | **B** | built | misconceptions still held after 4 sessions: 5.5% vs 58.4% (synthetic) |
 | C9 | Feedback | Diagnosis → text | generic "answer is X" | — | template built | rubric pass rate (to define) |
 | C10 | Simulated learners | Item → Response | prompted LLM students | — | built | fidelity vs Eedi option stats (to do) |
@@ -81,14 +84,21 @@
 | C12 | Open-set retrieval | text → ranked ids | BM25 / Eedi winners | — | baseline | MAP@25 0.326 (kNN, 904 held-out pairs) |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-- **Winnability: 3/5** (revised 07:45 from 4 after the LLM baselines). We already have a differentiated, working, evaluated core on day 1. It runs end to end on a laptop (`components/tutor/cli.py`) and has real-data numbers on Eedi distractors (`eval/results/diagnosis.json`). Theme 5 has a single problem, so competition is spread differently (UNVERIFIED how many teams pick it).
-- **Innovation headroom: 3/5** (revised 07:45 from 4). GPT-4.1-mini zero-shot already gets 86.0% on our real 5-category set, and LLM-only generation was 40/40 valid on simple arithmetic, so the edge must come from set-level tracing + information gain, exactness/verification, and harder packs. Spike = executable misconceptions validated on *real* distractors → discriminative, SymPy-verified generation → set-level Bayesian tracing with information-gain item choice and slip abstention. The obvious LLM-prompt baseline can't verify its items or tell a slip from a misconception. Also, executable mal-rules exist (MalruleLib ACL 2026; Sleeman), so the claim must stay narrow.
-- **Feasibility by the deadline: 5/5.** ms per turn on the M5, no GPU. The LLM is used only for the open-set leg and the bug compiler (Azure OpenAI now provisioned). 12 components behind tested contracts. Exams 19–25 Nov fall after the core milestones.
-- **Demo strength at the finals: 5/5.** A judge types a wrong answer; the tutor names the exact rule ("1/8 is what adding tops and bottoms gives"), asks the most informative next question, and shows a verified item and a teacher heat-map. A quant pack (probability/EV misconceptions) speaks to Optiver.
-- **Fit with the user's strengths: 3/5.** Evaluation rigour, LLM pipelines and Azure fit. Less large-scale-systems depth than P1/P2. Microsoft ships adjacent products (Math Progress, Study and Learn Agent), which is useful context.
-- **Biggest risk:** stretch goal 2 (evidence that targeted practice reduces errors) is convincing only with real learners. Today it is simulation (labelled synthetic). A ~30-learner pilot must happen in Nov, around the exams. Secondary risk: the LaTeX parser covers only 41% of real Eedi items.
-- **One-line pitch:** *Wrong answers are outputs of wrong rules — we execute the rules, so we can name the one you used, prove it with the next question, and verify every practice problem we generate.*
+_Final, 4 Oct 2026 (after the pre-registered LLM-gap tests: `eval/llm_gap_protocol.md`; results in `eval/results/llm_gaps_*.json`, `llm_consistency.json`, `cascade_real.json`; total API spend $19.75). Scores are 1–5 with one line of evidence each._
+- **Verdict: against picking P8** as the team's one Perceptron problem, unless the user specifically wants Theme 5 *and* the team can run a real-learner pilot in November.
+- **Winnability: 2/5.** The obvious baseline, a frontier LLM, is as accurate and as safe as our engine on real data. GPT-5.5 diagnosed 79.4% of 131 real positives with 0.0% false claims on 152 same-domain negatives; our engine diagnosed 19.1% with 0.0%. Judges will ask "why not just GPT-5.5?".
+- **Innovation headroom: 2/5.**
+  - Every pre-registered gap (H1–H7) holds only against gpt-4.1-mini: false claims 15.8%, deep inversion 11.7%, probability keys 36.7% exact. Reasoning models close every one: GPT-5.5 inversion 100.0%, keys 100.0%. Our tracer reached 64.0% vs GPT-5.4-mini's 66.0%, not significantly different.
+  - What remains is the exact-first cascade:
+    - It halves LLM calls and cost on engine-native items ($7.32 → $3.66 per 1,000), but only 26 of 304 real Eedi items are engine-explainable ($6.50 → $5.95).
+    - Determinism: GPT-5.5 changed 2 of 40 repeated diagnoses.
+    - Latency: 0.11 ms vs 3.1 s.
+  - That is engineering value with modest novelty; executable misconceptions are prior art (MalruleLib, ACL 2026).
+- **Feasibility: 5/5.** Built and evaluated: 12 components, contract tests, offline-reproducible results, CPU only.
+- **Demo strength: 4/5.** An instant, exact "this is the rule you used", plus verified practice and a teacher heat-map, makes a clear demo. The honest answer to "why not GPT-5.5?" weakens it.
+- **Fit with the user's strengths: 3/5.** LLM evaluation rigour and Azure fit well; there is little large-scale-systems depth.
+- **Biggest risk:** there is no accuracy edge over frontier LLMs. The only result a judge would weigh heavily, real learning gains, needs a November pilot that overlaps the exams.
+- **One-line pitch (if picked):** *Name the rule, prove it, verify the practice — an exact-first cascade that answers what it can prove instantly and for free, and hands the rest to a frontier LLM.*
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -144,3 +154,14 @@ Model API returned "408 Timed out reading request body" for most agents (network
   - Also: adding a NONE option dropped gpt-4.1-mini from 86.0% (forced choice) to 55.7% on positives.
   - Cost: $2.42 total; gpt-5.5 $0.0065 per item.
 - Synthetic parts (inversion, tracing) and prob_pack are running; their results are secondary by registration.
+
+### 2026-10-04 16:41 IST — All pre-registered parts done; pitch re-framed; deliverables final (pre-review)
+- **Synthetic inversion:** gpt-4.1-mini 18.9% overall (11.7% at 7–8 operators; blamed a misconception for 98.3% of slips); gpt-5.4-mini 95.0% at L3 (no gap); gpt-5.5 100.0% at L3 (no gap).
+- **Synthetic tracing:** tracer 64.0% exact set vs gpt-5.4-mini 66.0% (Δ −2 pp, CI −7 to +3) and gpt-5.5 60.0% (tracer 66.0% on the same 50; n.s.); gpt-4.1-mini 16.0% (gap).
+- **prob_pack gen** (key and misconception answer both exact): gpt-4.1-mini 36.7% (gap), gpt-5.4-mini 96.7% (CI up to 100%, no gap), gpt-5.5 100.0%.
+- **prob_diag (confirmatory cascade, Addendum B):** H8 confirmed for all three models. LLM calls per 1,000 halved; GPT-5.5 cost per 1,000 $7.32 → $3.66, latency 3.5 s → 1.8 s; errors removed: 1 (gpt-5.4-mini). Slip false attributions stay with the LLM: gpt-4.1-mini 85.0%, gpt-5.4-mini 8.3%, gpt-5.5 3.3%.
+- **Consistency (40 real items):** gpt-5.5 changed 2/40 across 3 runs; gpt-5.4-mini 3/40; gpt-4.1-mini 1/40 even at temperature 0. The engine is deterministic, 0.11 ms median.
+- **Real cascade (post hoc, = HYB):** GPT-5.5 accuracy unchanged; cost $6.50 → $5.95 per 1,000; the engine answers only 26/304 real items.
+- **Total API spend:** $19.75 (cap $60).
+- **Re-framed pitch:** exact-first cascade; no accuracy claim. ADR 001 revision 1, final abstract (792 words, rendered from results; `check_docs` OK), architecture diagram, components, landscape §8b, and the final selection memo (**against P8**) are all written.
+- Offline reproduction of real_negatives checked: identical metrics and decisions.

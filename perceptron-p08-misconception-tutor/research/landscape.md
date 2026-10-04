@@ -79,6 +79,9 @@ Domain packs: [notes/r7](notes/r7-domain-taxonomies.md) gives cited, executable 
 4. **Evaluation.** Real Eedi distractors for diagnosis; machine-checked generation validity; program-based simulated learners in a factorial design for the stretch goal; a small real pilot before finals.
 5. **Product.** Teacher-in-the-loop dashboard (Eedi × DeepMind evidence); Socratic feedback; never let an LLM state an unverified number (Khan).
 
+### 8b. What our own pre-registered tests showed (4 Oct, `eval/llm_gap_protocol.md`)
+Reasoning LLMs (GPT-5.4-mini, GPT-5.5) matched our exact engine and tracer on every test. On real Eedi data they made no false claims on 152 same-domain negatives and covered far more positives. A non-reasoning model (GPT-4.1-mini) failed every test. The engine's distinct value is cost, latency, determinism and verified generation, not accuracy. See [ADR 001 revision 1](../architecture/adr/001-spike.md).
+
 ## 9. Gaps to close before 31 Oct
 
 - Kaggle Eedi 2024 / MAP 2025 leaderboard scores and top write-ups (Kaggle pages not opened).

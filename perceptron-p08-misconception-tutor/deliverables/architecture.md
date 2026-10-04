@@ -1,33 +1,37 @@
-# Architecture — "Find the rule you're actually using"
+<!-- GENERATED from deliverables/templates/architecture.md by `python -m eval.render_docs`; edit the template, not this file. -->
+# Architecture — exact-first cascade tutor (P8)
 
-*One page for the Round-1 submission (optional diagram). Component contracts: [`../architecture/components.md`](../architecture/components.md).*
+*The one-page diagram for the Round-1 submission. Component contracts: [`../architecture/components.md`](../architecture/components.md). Numbers are rendered from committed results by `python -m eval.render_docs`.*
 
 ```mermaid
 flowchart TB
-  subgraph Session["One tutoring turn (< 0.5 s on a laptop)"]
-    A["Learner answers item\n'1/8 + 1/8 = 1/8'"] --> N["Normaliser\nexact rational"]
-    N --> D{"Diagnoser\nP(misconception set | answer)"}
-    B["Bug library\nexecutable misconceptions\n(LTR, SQ_DOUBLE, SUB_NEG, FRAC_ADD, NEG×NEG, …)"] -->|"predicted wrong answer\nfor every bug and bug-set"| D
-    R["Open-set retrieval + LLM rerank\nEedi catalogue (2,587 / 8,117)"] -->|"when no bug explains it"| D
-    D -->|"posterior + slip / abstain"| M["Set-level Bayesian tracer\n2^K joint, sessions, relapse"]
+  subgraph Turn["One tutoring turn"]
+    A["Learner answers an item"] --> N["Normaliser<br/>exact rational"]
+    N --> E{"Stage 1 — executable engine<br/>does exactly one known misconception<br/>reproduce this answer?"}
+    B["Misconception packs (bug switches)<br/>arithmetic: LTR, SQ_DOUBLE, SUB_NEG, FRAC_ADD, NEG×NEG<br/>probability: EQUIPROB, INDEP, ADD_PROB, INVERSE, JENSEN"] --> E
+    E -->|"yes: name it with exact evidence<br/>0.11 ms, deterministic, no cost"| D["Diagnosis + posterior"]
+    E -->|"no: abstain"| L["Stage 2 — frontier LLM (GPT-5.5)<br/>5 codes + NONE, catalogue retrieval<br/>real data: 0.0% false claims"]
+    L --> D
+    D --> M["Set-level Bayesian tracer<br/>2^K joint over held misconceptions,<br/>sessions, remission and relapse"]
     M --> P{"Policy"}
-    P -->|"uncertain: max expected info gain"| G
-    P -->|"confident: remediate top misconception"| G["Generator\nparameter search: target fires,\ncompetitors give distinct answers"]
-    G --> V["Verifier\nSymPy key, target fires,\npairwise-distinct distractors"]
-    V -->|"verified item"| Q["Next item + feedback naming the rule\n'that is what adding tops and bottoms gives'"]
+    P -->|"uncertain: max expected information gain"| G
+    P -->|"confident: targeted practice"| G["Generator<br/>target fires; competitors give<br/>pairwise-distinct wrong answers"]
+    G --> V["Verifier<br/>SymPy key, target fires, distractors distinct"]
+    V --> Q["Next item + feedback naming the rule"]
     Q --> A
   end
-  C1[("Eedi Misconceptions Graph\nCC BY 4.0")] --> B
-  C1 --> R
-  BC["LLM bug compiler (stretch)\nmisconception text → bug program"] -->|"accepted only if it reproduces\nreal Eedi distractors"| B
-  M --> S[("Learner store\nacross sessions")]
-  M --> T["Teacher view\nmisconception heat-map"]
-  subgraph Eval["Evaluation harness"]
-    E1["Real: Eedi 2024 distractors\nclosed-set acc, MAP@25"]
-    E2["Generation: verified-targeted yield\nours vs LLM-only"]
-    E3["Simulated learners (labelled synthetic)\n2×2 factorial + oracle"]
-    E4["Pilot: pre/post isomorphic items\nvs random-practice control"]
+  C1[("Eedi Misconceptions Graph<br/>CC BY 4.0")] --> L
+  M --> S[("Learner store")]
+  M --> T["Teacher view: misconception heat-map"]
+  subgraph Eval["Pre-registered evaluation (eval/llm_gap_protocol.md)"]
+    E1["Real Eedi: 131 positives, 152 same-domain negatives<br/>vs GPT-4.1-mini, GPT-5.4-mini, GPT-5.5"]
+    E2["Synthetic inversion, tracing, probability keys"]
+    E3["Cascade: LLM calls, cost, latency per 1,000; consistency"]
+    E4["Learning: simulation, then a consented pilot"]
   end
 ```
 
-**Reading the diagram.** A wrong answer is treated as the *output of a procedure*. Every misconception in the library is an executable change to one rule of an exact interpreter, so the system knows exactly which wrong answer each misconception, or each *combination* of them, produces. Diagnosis is Bayesian inversion of those programs, with an explicit "just a slip" hypothesis. The next item is either the most informative one (while uncertain) or a targeted practice item (once confident). Each item is generated so the target misconception fires and competing misconceptions give *different* wrong answers. It is then checked independently by SymPy before any learner sees it.
+**Reading the diagram.** A wrong answer is treated as the output of a procedure.
+- **Stage 1.** Every misconception in a pack is an executable change to one rule of an exact interpreter. So when one of them reproduces the learner's answer, the system can say so with proof, instantly and identically every time.
+- **Stage 2.** Everything else goes to a frontier LLM. On real Eedi data GPT-5.5 made no false claims on same-domain negatives, so it is a safe second stage.
+- **Tracing and practice.** The tracer keeps a posterior over which *combination* of misconceptions the learner holds. Generated practice is built so that the targeted misconception and its competitors give different wrong answers, and SymPy verifies every key before a learner sees it.

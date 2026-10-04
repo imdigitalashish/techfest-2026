@@ -169,6 +169,15 @@ def claims() -> dict:
         c["casc.real.n"] = str(cr["n_items"])
         for k, v in cr["models"].items():
             c[f"casc.real.{k}.ba"] = pct(v["cascade"]["ba"]) + "%"
+            c[f"casc.real.{k}.cost1000_llm"] = f"${v['cost_usd_per_1000_llm_only']:.2f}"
+            c[f"casc.real.{k}.cost1000_cascade"] = f"${v['cost_usd_per_1000_cascade']:.2f}"
+    if r.get("counts"):
+        c["real.p_eval"] = str(r["counts"]["P_evaluable"])
+    spend = [_load(n).get("total_cost_usd_estimate", 0) for n in
+             ("llm_gaps_real_negatives.json", "llm_gaps_inversion.json", "llm_gaps_tracing.json",
+              "llm_gaps_prob_pack.json", "llm_gaps_prob_diag.json", "llm_consistency.json")]
+    if all(spend):
+        c["total.spend"] = f"${sum(spend):.2f}"
     return c
 
 

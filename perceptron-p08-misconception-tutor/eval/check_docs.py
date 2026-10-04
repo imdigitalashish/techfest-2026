@@ -24,10 +24,14 @@ DOCS = [
 ]
 REQUIRED = {
     "deliverables/round1-abstract.md": [
-        "closed5.llm41", "real.exec_fcr", "real.gpt-5.5.fcr", "real.gpt-4.1-mini.fcr",
-        "real.gated.gpt-5.5.ba", "real.gpt-5.5.ba", "inv.gpt-5.5.L3", "trace.tracer_exact", "sim.ours_left", "sim.random_left",
+        "real.p_eval", "real.n_pos", "real.n_neg", "real.gpt-5.5.accP", "real.gpt-5.5.fcr", "real.exec_accP", "real.exec_fcr",
+        "real.gpt-4.1-mini.fcr", "inv.gpt-5.5.L3", "inv.gpt-4.1-mini.L3", "trace.tracer_exact", "trace.gpt-5.4-mini.exact",
+        "prob.gen.gpt-5.5.both", "prob.gen.gpt-4.1-mini.both", "cons.engine_ms", "diag.gpt-5.5.cost1000_llm",
+        "diag.gpt-5.5.cost1000_cascade", "cons.gpt-5.5.latency", "cons.gpt-5.5.disagree", "cons.n", "casc.real.engine_answers",
+        "casc.real.n", "sim.ours_left", "sim.random_left", "open.map25_knn",
     ],
-    "thought_node.md": ["real.exec_fcr", "real.gpt-5.5.fcr"],
+    "deliverables/architecture.md": ["real.gpt-5.5.fcr", "cons.engine_ms", "real.n_pos", "real.n_neg"],
+    "thought_node.md": ["real.exec_fcr", "real.gpt-5.5.fcr", "real.gpt-5.5.accP", "real.exec_accP", "total.spend"],
 }
 DESIGN_CONSTANTS = {"0.75", "0.5", "2.0"}  # remediation threshold, decision threshold, contract/schema versions
 IGNORE = [r"(?i)gpt-[\d.]+(-mini)?", r"Opus \d+\.\d+", r"Python \d+\.\d+", r"CC BY(-NC)? \d\.\d", r"v\d+(\.\d+)+",
@@ -42,8 +46,8 @@ def scan(text: str) -> list[str]:
 
 
 def main() -> int:
-    ok_vals = allowed() | DESIGN_CONSTANTS
     cl = claims()
+    ok_vals = allowed() | DESIGN_CONSTANTS | {n for v in cl.values() for n in NUM.findall(v.replace("$", " "))}
     failures = 0
     for path, start, end in DOCS:
         p = ROOT / path
