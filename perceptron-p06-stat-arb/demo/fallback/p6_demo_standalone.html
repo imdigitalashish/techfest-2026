@@ -206,7 +206,7 @@ window.P6_DATA={"meta":{"test_day":"2026-10-01","train_day":"2026-09-01","legs":
 
   // ---------------------------------------------------------------- state
   const S = { sim: "frozen", fee: 1, di: DELTAS.indexOf(1), playing: false, speed: 1, t: 0, live: false, ready: false, api: null,
-    timing: null, liveRes: null, liveKey: "", race: null, linger: new Map() };
+    timing: null, liveRes: null, liveKey: "", race: null, linger: new Map(), probes: 0 };
   const delta = () => DELTAS[S.di];
   const machineL = () => 2 * delta() + MACH_D / 1000;
   const levInRange = () => delta() >= M.lev_delta_range_ms[0] && delta() <= M.lev_delta_range_ms[1];
@@ -265,7 +265,10 @@ window.P6_DATA={"meta":{"test_day":"2026-10-01","train_day":"2026-09-01","legs":
       setMode(s.ready ? "live" : "warming", s.ready ? "LIVE · committed code recomputing on this machine" : `LIVE (warming) · ${s.stage}`);
       if (!S.liveRes) refreshLive();
       if (!s.ready) setTimeout(pollStatus, 700); else { refreshLive(); renderEvidence(); renderRaceRule(); }
-    } catch (e) { S.live = false; setMode("offline", "OFFLINE · precomputed grid (same code, exported)"); }
+    } catch (e) {
+      S.live = false; setMode("offline", "OFFLINE · precomputed grid (same code, exported)");
+      if (++S.probes < 60) setTimeout(pollStatus, 3000);   // a backend started after the page still upgrades it
+    }
   }
   function setMode(cls, txt) { const m = $("mode"); m.className = "mode " + cls; m.textContent = txt; }
   let liveSeq = 0;
