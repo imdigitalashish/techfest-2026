@@ -99,3 +99,4 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - Ledger row 001 recorded with SCORE 37.33 (vs 47.67 naive), kept provisionally. The FOMC "hit" is a chance alignment of the cooldown-periodic alarm, as stated in the note.
 - ADR 001 updated: the spike is calibration *plus* monitoring the invariant/normalised representation *plus* the harm gate. Candidate 003 (drop the level features) is running.
 - Numbers in the abstract, landscape and components were cross-checked against `baseline.md`; two latency figures were tightened.
+- 07:59 Ratchet: cand_001 confirmed by frozen eval.py (SCORE 37.33, kept provisionally); cand_002 (q=1.0) rejected (45.67, misses FOMC). The null's 99.9% KS distances between two calm training days reach 0.87 (depth level) and 0.99 (60 s realised vol): raw activity/volatility levels are nearly disjoint day to day, so per-feature KS must run on normalised/invariant features (cand_003 running).
