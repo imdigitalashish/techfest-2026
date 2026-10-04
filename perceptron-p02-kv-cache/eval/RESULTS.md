@@ -10,11 +10,15 @@ Pre-registration: [`PREREG.md`](PREREG.md). Engine parity: [`results/parity_torc
 - **S7** (RoD − full cache, keep 0.5, T1) (descriptive): -0.229 (95% CI -0.40 to -0.06, 12 contexts)
 - **S1** (RoD vs each query-agnostic baseline, keep 0.25, T1): beats **all** 9 baselines; weakest margin kvpress TOVA +0.229 (95% CI +0.04 to +0.40, 12 contexts)
 - **S2** (RoD − RoD-lexical, keep 0.25, T1 literal): +0.042 (95% CI -0.04 to +0.12, 12 contexts) → no evidence the sketch beats lexical retrieval
-- **S2** (RoD − RoD-lexical, keep 0.25, T2 paraphrase): pending
-- **S3** (primary replicated on T2 paraphrase): pending
+- **S2** (RoD − RoD-lexical, keep 0.25, T2 paraphrase): +0.271 (95% CI +0.10 to +0.44, 12 contexts) → sketch beats lexical
+- **R1** (replication on T2: RoD − full at keep 0.10, margin −0.15): +0.229 (95% CI +0.10 to +0.38, 12 contexts) → **replicated** (lower bound > −0.15)
+- **R2 mechanism T1** (RoD): keep 0.1: block hit 0.88, accuracy given hit 0.98, 4/7 wrong answers name another needle's value; keep 0.25: block hit 1.00, accuracy given hit 0.55, 16/20 wrong answers name another needle's value; keep 0.5: block hit 1.00, accuracy given hit 0.53, 10/19 wrong answers name another needle's value
+- **R2 mechanism T2** (RoD): keep 0.1: block hit 0.85, accuracy given hit 0.82, 0/15 wrong answers name another needle's value; keep 0.25: block hit 0.93, accuracy given hit 0.59, 10/20 wrong answers name another needle's value; keep 0.5: block hit 1.00, accuracy given hit 0.35, 15/26 wrong answers name another needle's value
+- **S3** (primary replicated on T2 paraphrase): +0.375 (95% CI +0.23 to +0.54, 12 contexts) → replicated
 - **S5** (RoD − baseline, keep 0.1, T1): StreamingLLM (ours) +0.833 (95% CI +0.71 to +0.94, 12 contexts); SnapKV-variant (ours, +4 sinks) +0.854 (95% CI +0.73 to +0.96, 12 contexts); H2O-style (ours) +0.854 (95% CI +0.73 to +0.96, 12 contexts); RoD-lexical (control) +0.417 (95% CI +0.31 to +0.52, 12 contexts); kvpress ExpectedAttention +0.854 (95% CI +0.73 to +0.96, 12 contexts)
 - **S5** (RoD − baseline, keep 0.5, T1): StreamingLLM (ours) +0.167 (95% CI +0.02 to +0.31, 12 contexts); SnapKV-variant (ours, +4 sinks) +0.375 (95% CI +0.21 to +0.56, 12 contexts); H2O-style (ours) +0.333 (95% CI +0.15 to +0.50, 12 contexts); RoD-lexical (control) +0.000 (95% CI -0.08 to +0.08, 12 contexts); kvpress ExpectedAttention not run
 - **Byte check T1**: RoD answer-time bytes > a baseline's stored bytes in 0 of 36 (context, keep) cells
+- **Byte check T2**: RoD answer-time bytes > a baseline's stored bytes in 0 of 36 (context, keep) cells
 
 ## T1 — literal needles, seed 0
 
@@ -64,6 +68,55 @@ torch-cpu · Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz · torch 2.10.0+cpu �
 | SnapKV, question-aware (oracle) | 0.50 | 0.854 | 0.75–0.94 | 64.4 | 2.0× | 64.4 | 1.00 |  |
 | **RoD (ours)** | 0.50 | 0.604 | 0.44–0.75 | 32.6 | 4.0× | 62.7 | 5.40 | 1.00 |
 | RoD-lexical (control) | 0.50 | 0.604 | 0.44–0.75 | 32.2 | 4.0× | 63.3 | 5.28 | 1.00 |
+
+## T2 — paraphrased templates, seed 1
+
+`python eval/kvbench_torch.py --ctx 4096 --n 12 --needles 4 --seed 1 --fracs 0.1,0.25,0.5 --methods full,int8,int4,int2,streaming,random,h2o,snapkv,knorm,snapkv_qa,rod,rodlex,kvp_streaming,kvp_snapkv,kvp_observed,kvp_knorm,kvp_expected,kvp_tova --style paraphrase --rod_layer 5 --rod_bits 4 --rod_scorer softmax_lift --rod_qsel content --lex_qsel content --kvp_fracs 0.1,0.25 --halo 0 --threads 8 --name T2_paraphrase_s1`
+
+torch-cpu · Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz · torch 2.10.0+cpu · 8 threads · wall 4444.8 s · 12 contexts × 4 questions · mean context 4142 tokens
+
+| Method | Keep | Recall | 95% CI | Stored KV MiB | Compression | Answer-time MiB | s/answer (CPU) | Needle-block hit |
+|---|---|---|---|---|---|---|---|---|
+| Full cache | 1.00 | 0.458 | 0.33–0.58 | 129.5 | 1.0× | 129.5 | 1.05 |  |
+| int8 KV | 1.00 | 0.458 | 0.33–0.58 | 68.8 | 1.9× | 68.8 | 1.19 |  |
+| int4 KV | 1.00 | 0.354 | 0.21–0.50 | 36.4 | 3.6× | 36.4 | 1.28 |  |
+| int2 KV | 1.00 | 0.000 | 0.00–0.00 | 20.2 | 6.4× | 20.2 | 1.77 |  |
+| StreamingLLM (ours) | 0.10 | 0.021 | 0.00–0.06 | 12.9 | 10.0× | 12.9 | 0.70 |  |
+| Random (control) | 0.10 | 0.000 | 0.00–0.00 | 12.9 | 10.0× | 12.9 | 0.76 |  |
+| H2O-style (ours) | 0.10 | 0.021 | 0.00–0.06 | 12.9 | 10.0× | 12.9 | 0.81 |  |
+| SnapKV-variant (ours, +4 sinks) | 0.10 | 0.000 | 0.00–0.00 | 12.9 | 10.0× | 12.9 | 0.78 |  |
+| K-norm (ours) | 0.10 | 0.000 | 0.00–0.00 | 12.9 | 10.0× | 12.9 | 0.88 |  |
+| SnapKV, question-aware (oracle) | 0.10 | 0.396 | 0.25–0.54 | 12.9 | 10.0× | 12.9 | 1.16 |  |
+| **RoD (ours)** | 0.10 | 0.688 | 0.56–0.79 | 7.1 | 18.2× | 11.1 | 1.44 | 0.85 |
+| RoD-lexical (control) | 0.10 | 0.312 | 0.19–0.44 | 6.5 | 20.0× | 12.5 | 1.55 | 0.91 |
+| kvpress StreamingLLM | 0.10 | 0.021 | 0.00–0.06 | 12.9 | 10.0× | 12.9 | 0.69 |  |
+| kvpress SnapKV | 0.10 | 0.000 | 0.00–0.00 | 12.9 | 10.0× | 12.9 | 0.77 |  |
+| kvpress ObservedAttention (H2O) | 0.10 | 0.000 | 0.00–0.00 | 12.9 | 10.0× | 12.9 | 0.86 |  |
+| kvpress Knorm | 0.10 | 0.000 | 0.00–0.00 | 12.9 | 10.0× | 12.9 | 0.84 |  |
+| kvpress ExpectedAttention | 0.10 | 0.000 | 0.00–0.00 | 12.9 | 10.0× | 12.9 | 0.83 |  |
+| kvpress TOVA | 0.10 | 0.021 | 0.00–0.06 | 12.9 | 10.0× | 12.9 | 0.73 |  |
+| StreamingLLM (ours) | 0.25 | 0.208 | 0.15–0.25 | 32.4 | 4.0× | 32.4 | 0.68 |  |
+| Random (control) | 0.25 | 0.000 | 0.00–0.00 | 32.4 | 4.0× | 32.4 | 0.71 |  |
+| H2O-style (ours) | 0.25 | 0.083 | 0.02–0.15 | 32.4 | 4.0× | 32.4 | 0.81 |  |
+| SnapKV-variant (ours, +4 sinks) | 0.25 | 0.000 | 0.00–0.00 | 32.4 | 4.0× | 32.4 | 0.93 |  |
+| K-norm (ours) | 0.25 | 0.000 | 0.00–0.00 | 32.4 | 4.0× | 32.4 | 0.94 |  |
+| SnapKV, question-aware (oracle) | 0.25 | 0.458 | 0.33–0.56 | 32.4 | 4.0× | 32.4 | 1.18 |  |
+| **RoD (ours)** | 0.25 | 0.583 | 0.46–0.73 | 16.7 | 7.7× | 31.0 | 3.13 | 0.93 |
+| RoD-lexical (control) | 0.25 | 0.312 | 0.21–0.44 | 16.2 | 8.0× | 31.2 | 3.02 | 0.91 |
+| kvpress StreamingLLM | 0.25 | 0.208 | 0.15–0.25 | 32.4 | 4.0× | 32.4 | 0.67 |  |
+| kvpress SnapKV | 0.25 | 0.000 | 0.00–0.00 | 32.4 | 4.0× | 32.4 | 0.91 |  |
+| kvpress ObservedAttention (H2O) | 0.25 | 0.021 | 0.00–0.06 | 32.4 | 4.0× | 32.4 | 0.82 |  |
+| kvpress Knorm | 0.25 | 0.000 | 0.00–0.00 | 32.4 | 4.0× | 32.4 | 0.91 |  |
+| kvpress ExpectedAttention | 0.25 | 0.000 | 0.00–0.00 | 32.4 | 4.0× | 32.4 | 0.72 |  |
+| kvpress TOVA | 0.25 | 0.146 | 0.06–0.23 | 32.4 | 4.0× | 32.4 | 0.76 |  |
+| StreamingLLM (ours) | 0.50 | 0.438 | 0.33–0.54 | 64.7 | 2.0× | 64.7 | 0.65 |  |
+| Random (control) | 0.50 | 0.021 | 0.00–0.06 | 64.7 | 2.0× | 64.7 | 0.83 |  |
+| H2O-style (ours) | 0.50 | 0.208 | 0.12–0.29 | 64.7 | 2.0× | 64.7 | 0.81 |  |
+| SnapKV-variant (ours, +4 sinks) | 0.50 | 0.062 | 0.00–0.12 | 64.7 | 2.0× | 64.7 | 0.98 |  |
+| K-norm (ours) | 0.50 | 0.021 | 0.00–0.06 | 64.7 | 2.0× | 64.7 | 1.02 |  |
+| SnapKV, question-aware (oracle) | 0.50 | 0.417 | 0.29–0.54 | 64.7 | 2.0× | 64.7 | 1.27 |  |
+| **RoD (ours)** | 0.50 | 0.458 | 0.38–0.54 | 32.8 | 4.0× | 63.0 | 5.89 | 1.00 |
+| RoD-lexical (control) | 0.50 | 0.396 | 0.29–0.48 | 32.4 | 4.0× | 63.3 | 5.58 | 0.95 |
 
 ## Recall drop vs the full cache (T1, paired by context; MVP)
 
