@@ -119,6 +119,12 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 22:21 IST — P1 demo done (7 demos); demo queue empty
+- **P1 DEMO DONE (17eea3c):** full smoke PASS in my clone (0 failed, 61 s), including the live Flower path, bit-identical to the in-process harness. I used a temporary symlink to the worktree venv, then removed it. Astra review 7/10, 8/8 fixed.
+  - Opens REAL: committed 5-seed per-domain bars with paired CIs (−0.081 [−0.093, −0.070]).
+  - Crazy element: "Pull the plug". The real SmolLM2-135M trains side by side through Flower's in-process grid; the run holds after round 1 and the judge unplugs any device. Honestly labelled as an in-process node removal.
+- Last queued slot → India@71 T3 ("try to break it"; real PMJDY opening).
+- Next: once slots free, I check demo_verify myself: InnovateX T1–T3, EV C1/C2, India@71 T2, Namma.
 ### 2026-10-04 21:48 IST — India@71 T1 demo done (6 demos)
 - **India@71 T1 DEMO DONE (1b48399, your India pick):** all 5 smoke steps pass in my clone: data invariants, JS/Python ledger parity, offline check, exporter re-derivation, headless page. Astra review 12/12 plus re-check 6/6.
   - REAL first: Poshan Tracker reports lower wasting than NFHS-5 in 36/36 states; 706 districts (spot-verified 24/24). Then SIMULATED children at REAL Nandurbar and Melghat rates.
