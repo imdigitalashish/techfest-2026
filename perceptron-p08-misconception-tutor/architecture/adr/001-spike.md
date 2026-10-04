@@ -67,3 +67,26 @@ The real bottleneck is **identifiability**, not classification capacity. One wro
 - C3, C4, C6, C7 and C8 get autoresearch loops (first: generator / diagnosis coverage).
 - Contracts expose `predicted` answers and `p_slip` so any diagnoser can be swapped in.
 - Next evidence to collect: LLM-only baselines for classification and generation (Azure OpenAI being provisioned), bug-compiler validation rate on Eedi, real option-level tracing (Eedi NeurIPS-2020-style data), a small human pilot.
+
+## Revision 1 — 2026-10-04 16:23 IST, after the pre-registered LLM-gap tests
+The protocol and runner were committed before any run: [`eval/llm_gap_protocol.md`](../../eval/llm_gap_protocol.md). Every number below is from `eval/results/` and reproduces offline with `--offline`.
+
+| Pre-registered test | Engine / tracer | GPT-4.1-mini | GPT-5.4-mini | GPT-5.5 |
+|---|---|---|---|---|
+| Real Eedi: positives correct / false claims on 152 same-domain negatives | 19.1% / 0.0% | 55.7% / 15.8% | 69.5% / 0.0% | 79.4% / 0.0% |
+| Synthetic inversion, 7–8 operators: exact set | 100% (by construction) | 11.7% | 95.0% | 100.0% |
+| Synthetic tracing: exact held set after 12 answers | 64.0% | 16.0% | 66.0% | 60.0% (tracer 66.0% on the same 50) |
+| Synthetic probability: key and misconception answer both exact | 100% (by construction) | 36.7% | 96.7% | 100.0% |
+
+**Decision.**
+- **Spike A as framed above** ("executable diagnosis beats LLM diagnosis") is **refuted for reasoning models**: every pre-registered gap (H1–H7) holds only against gpt-4.1-mini.
+- **Spike A is re-scoped** as stage 1 of an *exact-first cascade* and as the generator's verifier. Its claims are now determinism, zero marginal cost, millisecond latency and exact, checkable evidence. Accuracy is no longer claimed.
+- **Spike B (set-level tracer)** is statistically indistinguishable from GPT-5.4-mini and GPT-5.5 reading the same history, even on synthetic learners drawn from its own model family. It stays, for cost (GPT-5.5 cost $0.146 per learner here) and for information-gain item choice, with no accuracy claim.
+
+**Hats, revised.**
+- **White:** the table above.
+- **Red:** much less impressive than the overnight framing.
+- **Black:** a judge will ask "why not GPT-5.5 everywhere?". The honest answer is cost, latency, determinism and verification guarantees, not accuracy.
+- **Yellow:** exact evidence, and items that are verified rather than trusted.
+- **Green:** the only remaining differentiator a judge would weigh heavily is *real learning evidence* (the pilot).
+- **Blue:** at the 12 Oct selection, P8 should not be the Perceptron pick unless the team values the education theme and can run the pilot.

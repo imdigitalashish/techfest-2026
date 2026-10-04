@@ -1,0 +1,143 @@
+{
+ "part": "prob_pack",
+ "task": "diag",
+ "label": "CONFIRMATORY (Addendum B); SYNTHETIC engine-native items",
+ "protocol": "eval/llm_gap_protocol.md (Addendum B)",
+ "n_items": 120,
+ "engine_coverage": 0.5,
+ "engine_latency_ms_median": 0.0003,
+ "methods": {
+  "ENGINE(abstain->NONE)": {
+   "acc_bug": 1.0,
+   "false_attribution_slip": 0.0,
+   "acc_all": 1.0,
+   "acc_all_ci": [
+    1.0,
+    1.0
+   ]
+  },
+  "LLM:gpt-4.1-mini": {
+   "acc_bug": 1.0,
+   "false_attribution_slip": 0.85,
+   "acc_all": 0.575,
+   "acc_all_ci": [
+    0.4833,
+    0.6667
+   ]
+  },
+  "CASCADE:gpt-4.1-mini": {
+   "acc_bug": 1.0,
+   "false_attribution_slip": 0.85,
+   "acc_all": 0.575,
+   "acc_all_ci": [
+    0.4833,
+    0.6667
+   ]
+  },
+  "LLM:gpt-5.4-mini": {
+   "acc_bug": 0.9833,
+   "false_attribution_slip": 0.0833,
+   "acc_all": 0.95,
+   "acc_all_ci": [
+    0.9083,
+    0.9833
+   ]
+  },
+  "CASCADE:gpt-5.4-mini": {
+   "acc_bug": 1.0,
+   "false_attribution_slip": 0.0833,
+   "acc_all": 0.9583,
+   "acc_all_ci": [
+    0.9248,
+    0.9917
+   ]
+  },
+  "LLM:gpt-5.5": {
+   "acc_bug": 1.0,
+   "false_attribution_slip": 0.0333,
+   "acc_all": 0.9833,
+   "acc_all_ci": [
+    0.9583,
+    1.0
+   ]
+  },
+  "CASCADE:gpt-5.5": {
+   "acc_bug": 1.0,
+   "false_attribution_slip": 0.0333,
+   "acc_all": 0.9833,
+   "acc_all_ci": [
+    0.9583,
+    1.0
+   ]
+  }
+ },
+ "usage": {
+  "gpt-4.1-mini": {
+   "calls": 120,
+   "errors": 0,
+   "prompt_tokens": 32048,
+   "completion_tokens": 921,
+   "reasoning_tokens": 0,
+   "cost_usd_estimate": 0.0143
+  },
+  "gpt-5.4-mini": {
+   "calls": 120,
+   "errors": 0,
+   "prompt_tokens": 31928,
+   "completion_tokens": 60137,
+   "reasoning_tokens": 57580,
+   "cost_usd_estimate": 0.2946
+  },
+  "gpt-5.5": {
+   "calls": 120,
+   "errors": 0,
+   "prompt_tokens": 31928,
+   "completion_tokens": 23946,
+   "reasoning_tokens": 21782,
+   "cost_usd_estimate": 0.878
+  }
+ },
+ "invalid": {
+  "gpt-4.1-mini": 0,
+  "gpt-5.4-mini": 0,
+  "gpt-5.5": 0
+ },
+ "decisions": {
+  "gpt-4.1-mini": {
+   "H8a_cascade_acc_all_ge_llm": true,
+   "H8b_llm_calls_per_1000_cascade": 500.0,
+   "H8b_le_550": true,
+   "H8_confirmed": true,
+   "llm_errors_on_bug_items_removed": 0.0,
+   "cost_usd_per_1000_llm_only": 0.1192,
+   "cost_usd_per_1000_cascade": 0.0596,
+   "latency_s_median_llm_call": 1.667,
+   "latency_s_per_diagnosis_cascade": 0.8335
+  },
+  "gpt-5.4-mini": {
+   "H8a_cascade_acc_all_ge_llm": true,
+   "H8b_llm_calls_per_1000_cascade": 500.0,
+   "H8b_le_550": true,
+   "H8_confirmed": true,
+   "llm_errors_on_bug_items_removed": 0.0167,
+   "cost_usd_per_1000_llm_only": 2.455,
+   "cost_usd_per_1000_cascade": 1.2275,
+   "latency_s_median_llm_call": 2.739,
+   "latency_s_per_diagnosis_cascade": 1.3695
+  },
+  "gpt-5.5": {
+   "H8a_cascade_acc_all_ge_llm": true,
+   "H8b_llm_calls_per_1000_cascade": 500.0,
+   "H8b_le_550": true,
+   "H8_confirmed": true,
+   "llm_errors_on_bug_items_removed": 0.0,
+   "cost_usd_per_1000_llm_only": 7.3167,
+   "cost_usd_per_1000_cascade": 3.6583,
+   "latency_s_median_llm_call": 3.5245,
+   "latency_s_per_diagnosis_cascade": 1.7623
+  }
+ },
+ "price_source": "Azure Retail Prices API, serviceName 'Foundry Models', swedencentral, Global meters (gpt 4.1 mini Inp/Outp glbl; 5.4 mini Inp/Opt Gl; 5.5 ShortCo inp/opt Gl), accessed 2026-10-04. Reasoning tokens are assumed to be billed as output tokens (assumption).",
+ "command": "python -m eval.run_prob_pack --task diag",
+ "total_cost_usd_estimate": 1.1869
+}
