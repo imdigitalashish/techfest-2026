@@ -3,7 +3,8 @@
 coverage, mean width, Winkler interval score (Gneiting & Raftery 2007), Kupiec (1995) POF test,
 Christoffersen (1998) independence test (pooled first-order Markov transitions per ticker),
 and coverage by group (regime). Pooled p-values ignore cross-sectional dependence of misses on
-the same day, so they are optimistic; we also report day-level coverage dispersion.
+the same day, so they are optimistic; we therefore also report mean daily coverage with a 90%
+day-block bootstrap CI (date-cluster inference; added 4 Oct 13:00 after the independent review).
 """
 from __future__ import annotations
 
@@ -47,6 +48,18 @@ def christoffersen_ind(df: pd.DataFrame) -> float:
     return float(chi2.sf(lr, 1))
 
 
+def day_block_ci(x: np.ndarray, block: int = 5, b: int = 2000, seed: int = 0) -> list[float]:
+    """90% percentile CI of the mean of a daily series via circular moving-block bootstrap over days."""
+    n = len(x)
+    if n < 2:
+        return [float("nan"), float("nan")]
+    rng = np.random.default_rng(seed)
+    nb = int(np.ceil(n / block))
+    idx = (rng.integers(0, n, size=(b, nb))[:, :, None] + np.arange(block)).reshape(b, -1)[:, :n] % n
+    m = x[idx].mean(1)
+    return [float(np.quantile(m, 0.05)), float(np.quantile(m, 0.95))]
+
+
 def evaluate(iv: pd.DataFrame, truth: pd.DataFrame, alpha: float, groups: dict[str, pd.Series] | None = None) -> dict:
     """lo > hi is the empty interval (always a miss, width 0); infinite bounds are allowed (v1, 4 Oct 10:00).
 
@@ -62,7 +75,9 @@ def evaluate(iv: pd.DataFrame, truth: pd.DataFrame, alpha: float, groups: dict[s
            "median_width": float(np.median(w[fin])), "frac_infinite": float(1 - fin.mean()),
            "winkler": winkler(y[fin], lo_w[fin], hi_w[fin], alpha),
            "kupiec_p": kupiec_pof(d["miss"].to_numpy(), alpha), "christoffersen_p": christoffersen_ind(d),
-           "worst_day_coverage": float(day_cov.min()), "day_coverage_p10": float(day_cov.quantile(0.10))}
+           "worst_day_coverage": float(day_cov.min()), "day_coverage_p10": float(day_cov.quantile(0.10)),
+           "n_days": int(len(day_cov)), "mean_day_coverage": float(day_cov.mean()),
+           "mean_day_coverage_ci90": day_block_ci(day_cov.sort_index().to_numpy())}
     if groups:
         key = d.set_index(["ticker", "trade_date"]).index
         for gname, gser in groups.items():
