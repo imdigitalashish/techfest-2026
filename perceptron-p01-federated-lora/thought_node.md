@@ -10,30 +10,42 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED** (Supervisor 09:55, user's decision: only 3 projects run at a time; P7 is the current Perceptron pick). Idle until the Supervisor says it's our turn. Morning package delivered at 08:00 IST.
-- **Headline (dropout scenario, 12 rounds, SmolLM2-135M):** AnchorLoRA macro 2.6651 / 2.6651 / 2.6646 (seeds 0–2) vs the starter's 2.7346 / 2.7535 / 2.7547 (untuned 2.7063). **Paired 95 % CI on Δ = [−0.111, −0.054]** (n = 3, mean −0.083). Every domain improves over the untuned model. The outage device's domain never rises above untuned (baselines peak +0.15 to +0.30). Sources: `eval/results/v1_summary.md`, `eval/results/v1_dropout_analysis.md`.
-- **Resume point (exact):**
-  1. Restart the GPU queue: `cd perceptron-p01-federated-lora && scripts/handover_to_queue.sh 0`. It is sequential under `nice -n 10` and skips finished runs.
-     - Next up: phase `replicate` resumes at **dropout `anchor_full` seed 3** (stopped at 09:50 seconds after it started; nothing lost), then `fedavg_ab_homo` s3, then seed 4 of both.
-     - Then `ratchet`: `anchor_full_tauact`, `_seg`, `_decay`, `_sqrtn` on seeds 0–1. Then `ablate`, then `clean`. Also add `anchor_full_nonorm` (defined in `STRATEGIES`, not yet in `gpu_queue.sh`) to the ratchet phase: it is the attribution test the ADR review asked for.
-  2. Apply the ADR-review rewording to `deliverables/round1-abstract.md`. Five changes:
-     - a less absolute title;
-     - "harmed" → "regressed below the untuned model";
-     - corrections apply "without the extra A/B factorisation error", not "exactly";
-     - leave-one-out/Sybil are *planned*;
-     - add the worst-domain trade-off (3.515 vs ≈3.44 for the starter).
-     Then re-count to ≤ 900 words.
-  3. Add an "Independent review (09:50)" section to ADR 001 from the review in the 09:50 Log entry.
-  4. The C10 Flower parity run needs a quiet GPU: `python -m components.flower_adapter.run_demo`.
+- **Phase:** 5–6, ACTIVE again (Supervisor 11:10, slot freed by EV C2). The 12 Oct Perceptron pick is open between P1, P7 and P9, and the evidence decides it.
+- **Definition of done (Supervisor 11:10):**
+  1. ≥ 5 paired seeds: AnchorLoRA vs the starter vs ≥ 1 published aggregator, dropout scenario included; per-domain gains; data-rich influence share.
+  2. Novelty positioned against CF-LoRA and PreLort.
+  3. Final abstract with numbers checked against results, plus the diagram.
+  4. Cross-model reviews (gpt-6-astra on abstract + spike; gpt-6-sol on code + eval).
+  5. Final memo; thought node current; pushed; message "DONE — slot free".
+- **Doing (11:40):**
+  - **Queue** (`eval/queue_runner.py`, one run at a time, nice 10, paused below 25 % memory level, resumed above 30 %): 69 v2 runs from one code hash.
+    - P1: AnchorLoRA / starter / FFA-LoRA / FlexLoRA × 5 seeds, dropout.
+    - P2: ablations (nonorm, tauact, PreLort-style seg) × 5.
+    - P3: clean scenario × 5. P4: ladder. P5: extras.
+    - ≈ 2.5 min per run; P1 due around 12:20.
+  - **Child session** "P1 review: code+eval (gpt-6-sol)" is running.
+  - **Done since resume:**
+    - FFA-LoRA + FlexLoRA implemented from the papers' equations;
+    - bounded norm shares; sliced uploads; `env.code_sha` provenance;
+    - `research/novelty.md`;
+    - ADR 001 update with the 09:50 review dispositions;
+    - summarizer with paired / per-domain CIs and the micro loss;
+    - `scripts/render_deliverable.py` + `scripts/check_numbers.py` (abstract numbers come from results).
+- **Next:**
+  1. When P1 lands: abstract v2 from a template.
+  2. Start the astra review (abstract + spike).
+  3. Fold in the sol review.
+  4. Final memo.
+  5. DONE message.
 - **Needs from user:**
   - Register by 15 Oct (after the 12 Oct selection).
-  - Teammates' names and skills.
+  - Teammates' names and skills (the abstract uses [TEAM] placeholders).
   - Optional: a phone or Raspberry Pi for the physical-device stretch.
 - **Risks:**
-  1. Prior art is close on both halves: CF-LoRA (frozen shared A) and PreLort (nested ranks). Claim the integration and the measurement only.
-  2. Frozen A may cap expressiveness (RoLoRA).
-  3. The gain may partly come from planned-step amplification or memory replay; the `tauact` and `nonorm` ablations are queued.
-  4. 12-round runs on a local-text proxy; FlowerTune Finance is the finals benchmark.
+  1. Prior art is close on both halves (CF-LoRA, PreLort). We claim the combination + evaluation only.
+  2. Part of the gain may come from planned-step amplification or memory replay; the ablations will tell.
+  3. Micro (sample-weighted) loss is *worse* under AnchorLoRA: the data-rich domain gains less. It must be stated in the abstract.
+  4. 12-round runs on a local-text proxy.
 
 ## Phase 0 — constraints and what we must show (from `_briefs/perceptron.txt`, read 02:05 IST)
 **Hard constraints**
@@ -214,3 +226,26 @@ Folder, brief and journal created. The lead session starts Phase 0.
   6. **Abstract over-claims:** five rewordings are listed in the resume point (not yet applied).
 - **Replication:** seed 2 saved by the queue: AnchorLoRA 2.6646 (114 s), starter 2.7547 (319 s). Paired 95 % CI at n = 3: [−0.111, −0.054].
 - **Pause (Supervisor 09:55).** Queue stopped at 09:50 right after seed 2 saved. `anchor_full` seed 3 had just started, so nothing was lost. No processes of ours are running. Code state committed with 13/13 tests. Resume point in *Now*. Idle.
+
+### 2026-10-04 11:40 IST — Lead: resumed (Supervisor 11:10); v2 evidence pipeline
+- **Synced.** The Inbox is empty. The `autostash` in the stash list belongs to the P7 worktree (shared stash list), so I left it alone.
+- **Published baselines, read from the full papers.**
+  - **FlexLoRA** (arXiv 2402.11505 §3): W_g = Σ n_i s B_i A_i / Σ n_i; client i gets B_i = U[:, :r_i] Σ[:r_i, :r_i] / s and A_i = V[:r_i, :]ᵀ.
+    - Our choices, documented in the code: round 0 uses the standard LoRA init; late devices are dropped; the global model is evaluated at its rank-16 truncation, and the truncation error is reported.
+  - **FFA-LoRA** (ICLR 2024) = `Anchor(homogeneous_rank=8)`: frozen A, FedAvg(n_k) over B.
+  - Unit tests check the paper's equations; 17 tests pass.
+- **Novelty.**
+  - CF-LoRA's full text: frozen shared Ā gives "exactly the average of the clients' induced updates"; its A is *learned* and clustered; 0 hits for any rank-heterogeneity mechanism.
+  - PreLort: prefix-nested ranks with segment-wise averaging; the LoRA parameters are trained.
+  - → `research/novelty.md` (one-sentence claim, credit table, comparison table); landscape §2 gets 7 verified 2026 rows.
+- **Determinism.** The v2 rerun of `anchor_full` seed 0 (code 046b2cdabf9a) reproduces v1 (commit e6b17ac) **bit for bit**: Δ = 0.0 on the macro loss and on every domain.
+- **v1 at 3 seeds** (honest costs now visible):
+
+  | Comparison (paired Δ, AnchorLoRA − starter) | Mean | 95 % CI |
+  |---|---|---|
+  | Macro | −0.083 | [−0.111, −0.054] |
+  | Micro (sample-weighted) | **+0.112** (AnchorLoRA worse) | [+0.097, +0.127] |
+  | Worst domain | +0.062 | [−0.021, +0.145] |
+
+  Per-domain gains vs the untuned model: AnchorLoRA is CI > 0 on 5/5 domains; the starter only on wiki (+0.369), with the other four significantly negative.
+- **Memory rule.** Implemented in `eval/queue_runner.py`. The level hovers at 23–36 %, so runs pause and resume often (9 pauses by 11:30).

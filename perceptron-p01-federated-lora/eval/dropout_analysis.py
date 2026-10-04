@@ -63,6 +63,13 @@ def main() -> None:
         lines.append(f"| {strat} | " + " | ".join(cells) + " |")
     lines += ["", "Peak rise of the outage device's domain loss above the untuned model (mean over seeds): "
               + "; ".join(f"{s} {statistics.mean(v):+.4f} (n={len(v)})" for s, v in sorted(peak.items())), ""]
+    canon = {f"dropout.{s}.outage_peak_rise_mean": statistics.mean(v) for s, v in peak.items()}
+    canon.update({f"dropout.{s}.outage_peak_rise_max": max(v) for s, v in peak.items()})
+    for strat, per in contrib.items():
+        for c in dom:
+            canon[f"dropout.{strat}.{c}.rounds_used_mean"] = statistics.mean(u for u, _ in per[c])
+            canon[f"dropout.{strat}.{c}.rounds_memory_mean"] = statistics.mean(m for _, m in per[c])
+    (OUT / f"{args.tag}_dropout_canonical.json").write_text(json.dumps(canon, indent=1, sort_keys=True) + "\n")
     (OUT / f"{args.tag}_dropout_analysis.md").write_text("\n".join(lines) + "\n")
     print("\n".join(lines))
 

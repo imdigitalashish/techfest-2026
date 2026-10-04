@@ -18,10 +18,10 @@ flowchart TB
   subgraph Server["Server (Flower ServerApp + custom strategy) — C6 AnchorLoRA aggregator"]
     direction TB
     N["① FedNova step normalisation<br/>(partial work from deadline cut-offs is kept)"]
-    W["② Macro weights + median-norm clip<br/>(no device can dominate)"]
-    MEM["③ Memory of absent devices ≤ 4 rounds<br/>(dropouts don't bias the objective)"]
+    W["② Macro weights + median-norm clip<br/>(caps any one device's weight)"]
+    MEM["③ Memory of absent devices ≤ 4 rounds<br/>(reduces dropout bias toward always-on devices)"]
     AGG["④ Exact aggregation: B ← B + Σ_k w_k ΔB_k<br/>(Σ w_k ΔB_k·A is exact for any rank mix)"]
-    AUD["⑤ Influence audit in ΔW space<br/>(share s_k per device per round)"]
+    AUD["⑤ Influence audit in ΔW space<br/>(projection + bounded norm share per device per round)"]
     N --> W --> MEM --> AGG --> AUD
   end
   Devices -->|"ΔB_k: r_k·d_out floats per layer + steps done"| Server
@@ -33,4 +33,4 @@ flowchart TB
   SIM["C2 device simulator: seeded offline rounds, deadline cut-offs, mid-run outage<br/>(identical schedule for every strategy → paired comparison)"] -.-> Devices
 ```
 
-**Reading the diagram.** Every device runs the full global adapter but trains only as many columns of B as its memory allows. A is identical everywhere (regenerated from a seed), so the server's sum of B-updates is exactly the sum of the devices' weight updates ΔW_k = ΔB_k·A. Steps ①–③ are classic federated-optimisation corrections that become exact for LoRA because of this, and ⑤ makes "quiet domination" visible every round. The baselines in the evaluation swap the server box for FedAvg over A and B (the starter), HetLoRA-style zero-padding, FFA-LoRA, exact ΔW averaging + SVD (FlexLoRA-style), FedEx-LoRA and RoLoRA.
+**Reading the diagram.** Every device runs the full global adapter but trains only as many columns of B as its memory allows. A is identical everywhere (regenerated from a seed), so the server's sum of B-updates is exactly the sum of the devices' weight updates ΔW_k = ΔB_k·A. Steps ①–③ are classic federated-optimisation corrections; sharing A removes the factorisation error underneath them (they keep their own assumptions, which the ablations test). ⑤ makes "quiet domination" a number every round. The evaluation swaps the server box for the baselines. Implemented and run on 5 paired seeds: FedAvg over A and B (the starter), FFA-LoRA (ICLR 2024), FlexLoRA (arXiv 2402.11505) and HetLoRA-style zero-padding. Planned for the finals: FedEx-LoRA, PreLort and RoLoRA.
