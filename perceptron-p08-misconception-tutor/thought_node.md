@@ -11,7 +11,7 @@
 - 2026-10-04 09:55 (Supervisor): **PAUSE** (user's decision; only Namma Space, P7 and EV C2 run; P7 is the Perceptron pick unless the user overrides). → Paused at 10:00 IST. No jobs were running.
 
 ## Now
-- **Phase:** ✅ **Done for this batch (17:45 IST, 4 Oct)**: definition of done met; "DONE — slot free" sent to the Supervisor.
+- **Phase:** ✅ **Done for this batch (17:16 IST, 4 Oct)**: definition of done met; "DONE — slot free" sent to the Supervisor.
 - **Plan / result:**
   - Pre-registered LLM-gap tests (`eval/llm_gap_protocol.md`): no gap was detected against the reasoning models; gaps were detected only against gpt-4.1-mini.
   - The pitch is re-framed as an **exact-first cascade** with no accuracy claim.
@@ -64,9 +64,9 @@
 - 2026-10-04 — **Novelty claim narrowed** after finding MalruleLib (ACL 2026): we claim real-distractor validation, discriminative verified generation, set-level EIG tracing, and slip abstention — *not* "executable misconceptions" in general.
 - 2026-10-04 — **LLM backend:** Azure OpenAI `tf26-p08-aoai-1004` (rg `rg-tf26-p08`, swedencentral, deployment gpt-4.1-mini 2025-04-14). The key is read at runtime via `az`, never stored. GitHub Models is unusable from this network.
 - 2026-10-04 15:21 — **Pre-registered LLM-gap protocol** (`eval/llm_gap_protocol.md`, plus Addendum A at 15:29 and Addendum B at 15:51). Run against gpt-4.1-mini, gpt-5.4-mini and gpt-5.5, with an offline-reproducible scoring path.
-- 2026-10-04 16:45 — **Spike A re-scoped** ([ADR 001, revision 1](architecture/adr/001-spike.md)). "Executable diagnosis beats LLM diagnosis" is refuted for reasoning models, so the design is now an **exact-first cascade**: the engine answers what it can prove, and a frontier LLM handles the rest. Claims are limited to cost, latency, determinism and verified generation.
-- 2026-10-04 16:45 — **Selection recommendation: against P8** as the team's Perceptron pick (see the Selection memo).
-- 2026-10-04 17:40 — **Review-driven corrections** ([responses](reviews/2026-10-04-responses.md); 35 issues, all accepted, 4 of them partly).
+- 2026-10-04 16:41 — **Spike A re-scoped** ([ADR 001, revision 1](architecture/adr/001-spike.md)). "Executable diagnosis beats LLM diagnosis" is refuted for reasoning models, so the design is now an **exact-first cascade**: the engine answers what it can prove, and a frontier LLM handles the rest. Claims are limited to cost, latency, determinism and verified generation.
+- 2026-10-04 16:41 — **Selection recommendation: against P8** as the team's Perceptron pick (see the Selection memo).
+- 2026-10-04 17:15 — **Review-driven corrections** ([responses](reviews/2026-10-04-responses.md); 35 issues, all accepted, 4 of them partly).
   - Cascade costs are now summed over routed items: probability items \$7.32 → \$5.08 per 1,000, real items \$6.10.
   - Wording: "certificate", not "proof"; "no gap detected", not "match".
   - MVP narrowed to the arithmetic pack; the pilot is now randomised against a GPT-5.5 tutor.
@@ -191,3 +191,6 @@ Model API returned "408 Timed out reading request body" for most agents (network
   - tracing sensitivity excluding 7 ambiguous learners: unchanged.
 - **Code:** strict offline mode, usage summed over retries, cache provenance, pinned and checksummed data, display round-trip parser with tests (10 tests pass), and a hardened drift check (fresh-render comparison, claim-only numbers, `--selftest`).
 - **Docs:** abstract, architecture and memo re-rendered; ADR 001 Revision 2; protocol clarifications appended; landscape §8b, components.md and c04 corrected.
+
+### 2026-10-04 17:16 IST — Timestamp correction
+- Key decisions and Now carried typed times (16:45, 17:40, 17:45) that did not come from the clock. Replaced with the git commit times (16:41, 17:15) and the current clock (17:16), per PLAYBOOK §6.
