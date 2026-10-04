@@ -1,0 +1,17 @@
+                                        served_frac  ...  empty_per_srv
+scenario           policy                            ...               
+drift              mpc-ewma@trust=0.25       0.9867  ...         0.5744
+                   mpc-ewma@trust=0.5        0.9954  ...         0.6555
+                   mpc-ewma@trust=0.75       0.9962  ...         0.7029
+shock              mpc-ewma@trust=0.25       0.9569  ...         0.4060
+                   mpc-ewma@trust=0.5        0.9563  ...         0.4535
+                   mpc-ewma@trust=0.75       0.9511  ...         0.4905
+shock+drift        mpc-ewma@trust=0.25       0.9397  ...         0.5331
+                   mpc-ewma@trust=0.5        0.9434  ...         0.5862
+                   mpc-ewma@trust=0.75       0.9394  ...         0.6213
+shock+drift+spikes mpc-ewma@trust=0.25       0.9350  ...         0.5407
+                   mpc-ewma@trust=0.5        0.9380  ...         0.5944
+                   mpc-ewma@trust=0.75       0.9332  ...         0.6312
+
+[12 rows x 4 columns]
+360 episodes in 183s -> eval/results/trust-v2

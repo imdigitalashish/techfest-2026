@@ -1,62 +1,71 @@
-# Round-1 abstract — Perceptron 2026, Problem 7 (DRAFT v0.2, 4 Oct 2026)
+# Round-1 abstract — Perceptron 2026, Problem 7 (FINAL v1.0, 4 Oct 2026)
 
-**Title:** *Shock-aware look-ahead: a multi-agent allocator that detects demand regime changes and re-plans before supply runs out*
+**Title:** *When does look-ahead pay? Decision-aware reallocation of a shared fleet under demand shocks and drift*
 
-**Problem & theme.** Theme 4, Problem 7: splitting a shared resource when demand keeps changing. Ride-hailing fleets, delivery riders and GPU clusters serving models share one structure: units of supply take time to move, while demand moves without warning. Our lead works on large-scale systems and has seen autoscalers react one cold-start too late. We want to build and *measure* the fix.
+**Problem & theme.** Theme 4, Problem 7: splitting a shared resource when demand keeps changing. Ride-hailing fleets, delivery riders and GPU clusters share a structure. Moving supply takes lead time L (driving, loading a model). Waiting demand leaves after patience P (customer patience, request timeout). Demand shifts without warning. [TEAM] works on large-scale systems, where autoscalers reacting one cold-start too late are a daily cost.
 
-**Understanding of the challenge.** Reallocation has a lead time L (driving, loading a model); waiting demand has a patience P before it abandons. A reactive allocator learns of a shift only once queues form, so when L is comparable to or larger than P, it is structurally late. Look-ahead helps only if its demand model is right, and a sudden shift is exactly when the model breaks. The crux is coupled:
-1. **Detect, but don't chase noise.** Catch regime changes quickly (low detection delay) without reacting to Poisson noise or one-off spikes (low false-alarm rate).
-2. **Plan over the lead time.** Pre-position supply over a horizon of at least L, counting units about to free up and the trips that relocate them.
-3. **Coordinate the agents.** Keep agents from herding onto one hotspot, and weigh empty travel against service.
+**Understanding of the challenge.** A reactive allocator learns of a shift only once queues form, so it is structurally late whenever L is comparable to P. Look-ahead needs a demand model, whose quality and use interact. An abrupt shock is exactly when the model is stale, and a planner treating forecasts as certain holds supply back for demand that may never arrive. Fast change detection trades against false alarms on transient spikes, and agents must not herd onto one hotspot.
 
-Abrupt shocks and gradual drift stress opposite sides of this trade-off.
-
-**Proposed approach.** A PettingZoo `ParallelEnv` dispatch simulator (built, numpy):
-- 25 zones, with each resource unit as an agent;
-- Poisson demand with a diurnal cycle, shocks, hotspot drift, transient spikes and over-dispersion;
-- FIFO queues with abandonment, and travel at one step per hop;
-- ground-truth change labels, and identical request streams for every policy (common random numbers).
-
-The allocator is a pipeline of components with typed contracts:
-1. **Change detector:** a two-sided Poisson CUSUM per zone, deseasonalised, which estimates the onset and the post-change rate; Bayesian online change-point detection (BOCPD) is next.
-2. **Forecaster:** a learned time-of-day profile × a per-zone level. A slow EWMA tracks drift; an alarm restarts the level at the running post-change mean. Conformal-PID upper bands are planned as safety stock.
-3. **Model-predictive planner:** a rolling-horizon LP on a time-expanded zone graph — hop flows, service flows returning units along the origin–destination matrix, and backlog. HiGHS solves it in about 18 ms per step.
-4. **Coordinator:** turns zone flows into per-unit orders; LP dual prices give a decentralised, market-style variant.
+**Proposed approach.**
+- *Environment (built):* a PettingZoo `ParallelEnv` where 40 agents (resource units) serve a 25-zone grid.
+  - Poisson demand has a daily cycle, abrupt shocks, gradual hotspot drift, transient spikes, over-dispersion and ground-truth change labels.
+  - Queues are FIFO with abandonment; repositioning takes lead time L per hop.
+  - A replay mode uses NYC TLC yellow-taxi trips (July 2025, Manhattan, thinned).
+- *Allocator:* a rolling-horizon model-predictive planner. It is a linear program on a time-expanded zone graph: moves arrive after L steps, trips return units through the origin–destination matrix, and backlog abandons at rate 1/P. Warm-started HiGHS solves it in ~6 ms per step (median, laptop).
+  - Inputs: a forecaster (time-of-day profile × per-zone level) and a per-zone Poisson CUSUM detector.
+  - A coordinator turns zone flows into per-agent orders (centralised planning, per-agent execution).
+- *Spike — decision-aware forecast trust:* the planner sees trust × forecast. Trust is set per zone from calibrated forecast uncertainty and the detector's regime state, and tuned for served fraction rather than forecast error (cf. Elmachtoub & Grigas 2022; Wilder et al. 2019).
 
 **Minimum Viable mapping.**
-- *(i) Rule-based allocators (built):* static historical shares, a decentralised greedy neighbour rule, and reactive proportional rebalancing.
-- *(ii) A planning agent that beats them under sudden shifts (built):* the MPC look-ahead agent. On 10 held-out seeds (1 simulated day, 40 units, P=10) with an abrupt shock, it served 95.0% of requests vs 91.0% for the best rule. That is +3.9 pp, paired 95% CI [+3.3, +4.6], better on 10/10 seeds, Wilcoxon p=0.002. It lost 82 fewer requests in the two hours after the shock.
-- With shock **and** drift in one run, the margin is +5.4 pp [+5.2, +5.7] over the best rule.
-- A clairvoyant-forecast MPC scores the same (94.8%). At this patience, *planning*, not prediction, carries the gain. This is why our spike targets the regime where prediction matters.
+- *(i)* Three rule-based allocators: static historical shares, a decentralised greedy neighbour rule, and reactive proportional rebalancing.
+- *(ii)* A planning agent that beats them under sudden shifts, shown in a pre-registered test (reference rule fixed on tuning seeds; 30 fresh test seeds):
+  - +3.7 percentage points served under an abrupt shock (95% CI [+3.3, +4.2]);
+  - +5.5 under shock-plus-drift;
+  - 30/30 seeds, Holm-adjusted p ≈ 10⁻⁸.
 
 **Stretch ambitions.**
-1. Shock + drift + spikes in one run — implemented.
-2. Week-to-month horizons with repeated regime changes, using batch-means confidence intervals.
-3. An RL comparator (MAPPO/IPPO via TorchRL, trained with shock/drift randomisation), to answer "RL or planning?" with evidence.
-4. A compute-cluster instantiation, where L = cold start.
+- Both stretch goals already run:
+  - Shock + drift + spikes in one run: +6.0 pp.
+  - A simulated week with a shock every day plus drift: +6.3 pp over the best rule (CI [+6.3, +6.4]), with 132 fewer requests lost per shock. The greedy rule decays from 91% to 47% served by day 7; the planner stays above 90%.
+  - A 30-day month (4 seeds): +6.4 pp.
+- Real-trace replay: +2.5 pp on NYC trips; 38 fewer requests lost in an observed July-4 night surge.
+- Next: an RL comparator (MAPPO/IPPO, TorchRL), decentralised coordination via the LP's dual prices, and a compute-cluster instance (L = cold start).
 
-**Novelty / differentiation.** Production systems guard against shocks with fixed-threshold heuristics: Knative's panic mode at 200% of capacity; AWS/Azure predictive scaling that only scales out. In our scan we found no allocator that couples a statistical change detector (with a tunable, *measured* false-alarm rate) to the forecast inside a rolling-horizon planner. We contribute a falsifiable law for when look-ahead pays: lost demand ≈ Δλ·max(0, d + L − P), where Δλ is the extra demand rate, d the detection delay, L the lead time and P the patience. We map it across the (L, P) plane instead of claiming one blanket win.
+**Novelty / differentiation.** Production systems guard against shocks with fixed heuristics: Knative's panic mode at 200% of capacity; AWS and Azure predictive scaling that only scales out. We contribute a measured map of which look-ahead layer helps where, from same-solver ablations across lead time and patience, failures included.
+- Planning over the lead time beats the best rule in 7 of 8 (L, P) cells (+2.3 to +9.8 pp, 20/20 seeds each).
+- The demand forecast is essential under drift and short patience. Yet a better forecast — even the true rates — made the certainty-equivalent planner serve fewer people in three of four long-lead-time cells (−1.1 to −1.5 pp).
+- Under a pure shock, ignoring the forecast entirely lost 62 fewer requests per shock.
+- Our pre-registered change-detector hypothesis did not replicate.
+
+That miss defines the spike: decide how much to trust the forecast, per regime, by its effect on service. An exploratory sweep agrees: half-trust beats both full trust and queue-only by +1.1–1.2 pp under shock-plus-drift; the best trust varies by regime (0.25 shocks, 0.75 drift).
 
 **Evaluation plan.**
-- **Primary metric:** served fraction.
-- **Shock-window metrics:** demand lost in the two hours after onset, and time to recover to 90% served.
-- **Secondary metrics:** p95 wait, empty moves, planner latency.
-- **Per-component metrics:** detection delay at a fixed false-alarm rate; post-shock forecast error.
-- **Baselines:** the three rules, EWMA-MPC (the no-detector ablation), RL, and the oracle (regret reference).
-- **Statistics** (Agarwal et al., NeurIPS 2021): ≥20 frozen test seeds kept separate from tuning seeds; paired bootstrap CIs, IQM, Wilcoxon tests with Holm correction.
-- **Scenarios:** stationary, shock, drift, shock+drift, spikes, plus the (L, P) sweep.
+- *Metrics:*
+  - served fraction (primary);
+  - requests lost per shock;
+  - empty moves per request (the planner out-serves the reactive rule while moving less);
+  - per component: detection delay, false alarms per zone-day, post-shock forecast error.
+- *Baselines:*
+  - the three rules;
+  - same-planner ablations (myopic horizon, queue-only, no detector);
+  - a true-rate-forecast planner.
+- *Protocol* (following Agarwal et al. 2021):
+  - pre-registration, with reference rules fixed on tuning seeds;
+  - 30 fresh test seeds; paired bootstrap CIs; Wilcoxon tests with Holm correction;
+  - the (L, P) grid, NYC replay, week and month horizons.
+- *Pre-registered spike test:* tuned trust must beat both full trust (1) and queue-only planning (0) across the grid on fresh seeds.
 
 **Feasibility and risks.**
-- **Team:** systems/optimisation (Ashish, IIT Delhi), RL [teammate 2, TBD], statistics and visualisation [teammate 3, TBD].
-- **Built already:** the simulator, baselines, MPC, harness, and a first auto-tuning loop on the detector.
-- **Milestones:**
-  - Oct: BOCPD, conformal buffers, the (L, P) sweep.
-  - early Nov: RL comparator.
-  - by 17 Nov: demo dashboard (exams 19–25 Nov).
-  - 1 Dec: frozen-seed results.
-  - Dec: real-trace replay (NYC TLC) and rehearsal.
-- **Risks:**
-  - The detector may add little when L ≤ P (our pilot shows exactly this), so we test where it matters.
-  - RL may beat MPC; we would report it.
-  - Synthetic demand.
-  - LP latency at city scale; mitigated by warm starts or min-cost flow.
+- *Team:* [TEAM-1] optimisation and simulation; [TEAM-2] RL comparator and coordination; [TEAM-3] statistics and the demo.
+- *Built:* simulator, baselines, planner, harness, results.
+- *Milestones:*
+  - Oct: trust spike and mechanism tests.
+  - Early Nov: RL comparator.
+  - By 17 Nov: click-to-shock dashboard (exams 19–25 Nov).
+  - 1 Dec: frozen results.
+  - Dec: rehearsal.
+- *Risks:*
+  - The LP approximates first-step matching; tie-breaks are solver-specific (backend recorded).
+  - Demand is mostly synthetic (real replay mitigates).
+  - Planning is centralised; a decentralised variant is planned.
+  - RL may beat our planner; we would report it.

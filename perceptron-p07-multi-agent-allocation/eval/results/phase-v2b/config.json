@@ -1,0 +1,27 @@
+{
+ "hops": [
+  1,
+  2,
+  4,
+  8
+ ],
+ "patience": [
+  3,
+  10
+ ],
+ "policies": [
+  "mpc-ewma@alpha=0.01",
+  "mpc-ewma@horizon=14",
+  "mpc-cusum-v1@horizon=14"
+ ],
+ "scenario": "shock",
+ "seeds": "200-219",
+ "horizon": 720,
+ "n_agents": 40,
+ "workers": 8,
+ "out": "eval/results/phase-v2b",
+ "summarise_only": false,
+ "legacy": false,
+ "n_jobs": 480,
+ "wall_s": 317.8412160873413
+}

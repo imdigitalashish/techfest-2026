@@ -1,0 +1,22 @@
+{
+ "scenarios": [
+  "shock",
+  "drift",
+  "shock+drift",
+  "shock+drift+spikes"
+ ],
+ "policies": [
+  "mpc-ewma@trust=0.25",
+  "mpc-ewma@trust=0.5",
+  "mpc-ewma@trust=0.75"
+ ],
+ "seeds": "200-229",
+ "n_agents": 40,
+ "patience": 10,
+ "horizon": 1440,
+ "workers": 8,
+ "out": "eval/results/trust-v2",
+ "legacy": false,
+ "n_jobs": 360,
+ "wall_s": 182.52757716178894
+}
