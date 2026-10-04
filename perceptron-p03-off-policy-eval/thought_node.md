@@ -266,3 +266,18 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Four panels: REAL ×3 (dashboard vs A/B; when logs can tell; the knob), then SYNTHETIC.
 - **Pre-registered predictions** (from committed numbers, made before any knob computation). The z-test is α-invariant, so the gate refuses at every α>0 on Nov 25 and W1. On Nov 26 the gate answers up to α≈0.39 while IPW's interval misses the reference above α≈0.27 (honest "answered-miss" cells). On W2 the gate is conservative.
 - **Refinements sent:** mirror reference labelled approximate; neutral explanation of z-test refusals; Nov 26 misses made prominent; Panel 1 rendered from headline.json; SCRIPT.md opens on real data; deterministic HTML; report P1–P5 outcomes.
+
+### 2026-10-04 21:48 IST — Demo built; lead verification; review requested
+- **Builder commits:** pre-registration 10209ca (21:07:33, before any knob computation) → extract aecbfa4 (0.76 MB, CC BY 4.0, exact propensities, NOTICE, manifest) → knob results 3919858 → page and tooling 228a683.
+- **Knob results** (REAL, pre-registered; `demo/results/knob_summary.md`):
+  - 31 of 33 predictions hit.
+  - BTS logs: the gate's first abstention is at α 0.43 on W2 and 0.40 on Nov 26. On W, W1, Nov 24 and Nov 25 it refuses at every α>0, because the α-invariant mean-weight z is 4.5–6.1.
+  - IPS answered with the reference outside its interval at 12 of 1,212 grid points, all on Nov 26 between α 0.28 and 0.39; the largest miss is 0.036 per 1,000. With hour-cluster intervals there are none.
+  - Random logs: answered, with the reference inside, at all 606 points.
+  - 403 refusals were unnecessary. The gate is conservative on greedy logs.
+- **Lead verification from a clean checkout** (`eval/verify_demo_clean.sh`: a worktree at origin/main with no .data):
+  - run.sh shows the first visual in 0.2 s; smoke.sh passes 23/23.
+  - Rebuilding with a numpy-free python3.13 from a git archive (no .git) gives a byte-identical page.
+  - Browser check (Playwright, served over localhost): no console errors.
+- **Sent back to the builder:** at 1200 px the sheet-3 title block is cramped; check 1280/1440/1920.
+- **Demo review requested:** the gpt-6-astra session was reused for the PLAYBOOK §11.7 "judge watching the demo" review.
