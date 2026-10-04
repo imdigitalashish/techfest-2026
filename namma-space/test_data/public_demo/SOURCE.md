@@ -28,3 +28,9 @@ Fetch (reproducible): `ffmpeg -i "https://upload.wikimedia.org/wikipedia/commons
 
 ## Not hostable (do not deploy derived twins)
 Deep Blending *drjohnson* (non-commercial research licence) · ScanNet/ScanNet++ · Matterport3D/HM3D · Tanks & Temples (contradictory licence page) · Mip-NeRF 360 (licence UNVERIFIED) — see `research/datasets.md`.
+
+## Result of processing (4 Oct 2026) — not trained, by decision
+- Ingest: 360 frames extracted at 4 fps from the 90 s Theora clip → 168 kept by the blur filter (10.1 s).
+- Posing attempt 1: sequential matching + global mapper, 85/168 registered. **Stopped by the pose-sanity gate**: consecutive-frame jump fraction 0.19, vs 0.0038 for a good model. The footage is an edited tour with cuts and fast pans (≥1 hard cut detected by colour histogram), i.e. not SOP-compliant.
+- Posing attempt 2: exhaustive matching + incremental mapper, 28.4 min (matching 20.9 min). A **coherent but partial** model: 62/168 registered (37%), jump fraction 0.016 (passes), 0.91 px.
+- Decision: not trained. 37% coverage of a multi-storey atrium would make a poor public demo and fail the D′ coverage acceptance. The public demo should be an SOP-compliant capture: ideally our own, or the Eyeful Tower `meeting_room` (MIT) after adding per-camera intrinsics.
