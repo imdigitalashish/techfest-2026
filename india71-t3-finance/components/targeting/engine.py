@@ -12,7 +12,7 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 
 ARMS = ["sms_ivr", "bc_visit", "upi_onboard", "incentive"]
 CONFIG = {"learner": "t", "max_iter": 200, "learning_rate": 0.05, "max_leaf_nodes": 15, "min_samples_leaf": 40, "l2": 1.0,
-          "shrink": 1.0}  # shrink: weight on per-person deviation from the arm's pilot ATE (1.0 = no shrinkage)
+          "shrink": 0.5}  # shrink: weight on per-person deviation from the arm's pilot ATE (1.0 = no shrinkage)
 
 NUM = ["mus", "n_accounts", "months_since_last_customer_txn", "share_dbt_withdrawn_7d", "dist_bc_km"]
 BOOL = ["female", "rural", "kyc_due", "is_dbt_account", "dbt_monthly", "has_phone", "smartphone", "literate", "bc_sakhi_present"]
