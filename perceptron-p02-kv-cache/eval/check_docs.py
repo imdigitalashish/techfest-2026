@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from render_docs import DOCS, ROOT, compute, render, render_blocks, results_md  # noqa: E402
 
 CURRENT = ["deliverables/round1-abstract.md", "deliverables/architecture.md", "deliverables/selection-memo.md",
-           "thought_node.md", "research/landscape.md", "architecture/components.md"]
+           "thought_node.md", "research/landscape.md", "architecture/components.md", "README.md"]
 STALE = ["160 B", "≈ 160", "~160", "0.5%", "0.5 %", "0.49%", "2-bit key sketch", "2-bit sketch", "2-bit index",
          "2-bit keys", "layer 8", "2-bit single-layer", "single-layer 2-bit"]
 

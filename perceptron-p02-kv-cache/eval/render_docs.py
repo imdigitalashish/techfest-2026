@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "eval" / "results"
 SPLITS = {"T1": "T1_literal_s0", "T2": "T2_paraphrase_s1", "T3": "T3_alias_s2", "S4": "S4_halo64_s0"}
-DOCS = ["eval/RESULTS.md", "deliverables/round1-abstract.md", "thought_node.md", "deliverables/selection-memo.md"]
+DOCS = ["eval/RESULTS.md", "deliverables/round1-abstract.md", "thought_node.md", "deliverables/selection-memo.md", "README.md"]
 QA = ["h2o", "snapkv", "knorm", "kvp_streaming", "kvp_snapkv", "kvp_observed", "kvp_knorm", "kvp_expected", "kvp_tova"]
 NAMES = {"full": "Full cache", "int8": "int8 KV", "int4": "int4 KV", "int2": "int2 KV", "streaming": "StreamingLLM (ours)",
          "random": "Random (control)", "h2o": "H2O-style (ours)", "snapkv": "SnapKV-variant (ours, +4 sinks)", "knorm": "K-norm (ours)",
