@@ -1,2 +1,4 @@
 date	artifact	model	effort	issues	accepted	rejected	note
 2026-10-04	ADR 001 spike + code (antithesis)	rubber-duck agent (Claude family, task sub-agent)	default	11	10	1	pre-section-10 review; raw text + per-item decisions in research/notes/review-adr001-rubber-duck.md; rejected: none outright, "drop the text" partly accepted (tested by pre-registration)
+2026-10-04	Round-1 abstract v1 + spike (ADR 001, certify.py, robust_conformal.md)	gpt-6-astra	max	12	12	0	score 3.20/5 (64/100); 5 blocking all fixed in v2 (abstract/docs/code/tests); #5 search log and #9 comparators partly deferred; raw review + decisions in reviews/2026-10-04-abstract-and-spike-gpt-6-astra.md
+2026-10-04	code + eval + reproduction (baseline_v1, text_minilm_v1, text_utility_djia_v1)	gpt-6-sol	max	6	6	0	8/8 requested headline numbers + all non-timing JSON leaves reproduced exactly; B1-B3, N1-N2 fixed (v2), pandas warning fixed; tests 70

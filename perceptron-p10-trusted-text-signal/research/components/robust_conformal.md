@@ -21,10 +21,10 @@ Let the observed sentiments be sorted, s₁ ≤ … ≤ s_n, and let m = n − j
 3. **Trust mean.** The same argument applied to the sorted trust weights; the box is per-feature, so it need not be the same subset as for sentiment (a sound relaxation).
 4. **Standard deviation (population, ddof = 0).**
    - *Minimum:* a minimum-variance m-subset is contiguous in sorted order. Exchange argument: if a kept y₁ < z < y₂ with z removed, swapping z for whichever of y₁, y₂ is farther from the subset mean does not increase variance.
-   - *Maximum:* a maximum-variance m-subset is a prefix plus a suffix. Exchange argument: for a kept y with removed z₁ < y < z₂, the variance change from replacing y by z is Δ = (z − y)[(z − μ) + (y − μ) − (z − y)/m]. If y ≥ μ, replacing y by z₂ gives Δ > 0. If y < μ, replacing y by z₁ gives Δ > 0. So no kept element can have removed elements on both sides, and the removed set is one contiguous block.
+   - *Maximum:* a maximum-variance m-subset is a prefix plus a suffix. Exchange argument: for a kept y with removed z₁ < y < z₂, the variance change from replacing y by z is Δ = ((z − y)/m)·[(z − μ) + (y − μ) − (z − y)/m] (the 1/m factor was missing in v1; noted by gpt-6-astra — the sign argument is unchanged). If y ≥ μ, replacing y by z₂ gives Δ > 0. If y < μ, replacing y by z₁ gives Δ > 0. So no kept element can have removed elements on both sides, and the removed set is one contiguous block.
 5. **Empty set.** When every document may be removed (m = 0), the aggregator's no-document values (all zeros) are included.
 
-The joint feasible set is a subset of the product of these ranges, so the box is sound (possibly loose jointly). The prefix-sum variance has ~1e-8 cancellation error, so the box is widened by ε = 1e-6. Empirical confirmation: `tests/test_contracts_and_certificate.py::test_deletion_box_exact_vs_brute_force` enumerates every deletion of ≤ k documents for 40 random cases and checks soundness and exactness.
+The joint feasible set is a subset of the product of these ranges, so the box is sound (possibly loose jointly). **Numerics (v2, after gpt-6-sol review B2):** v1 widened the box by a fixed ε = 1e-6, and the reviewer built a valid 50,003-post constant-sentiment day whose clean std fell outside it. v2 instead takes sums after centring at the median, and widens every bound by a round-off budget derived from the recursive-summation error bound: |δ var| ≤ (12 n²/m + 8) u X², and the same factor times (1 + max|s|) for mean-like features, plus 1e-12 for the aggregator's own rounding. It is valid for n ≤ 10⁶ posts per stock-day (enforced). Tests: brute-force exactness on 40 random small cases, the reviewer's case, and five random 5,000–60,000-post days.
 
 ## Why the tree bound is sound
 For an axis-aligned box, each tree's reachable leaves are found by descending both children whenever the box straddles the split threshold. Then:
@@ -34,11 +34,12 @@ min over box of Σ_trees f_t(x) ≥ Σ_trees min over box of f_t(x)
 and similarly for the maximum. LightGBM folds the initial score into the first tree; a degenerate box reproduces `predict` exactly (error 0 on the test set; also tested on synthetic data).
 
 ## Guarantee
-Let D be the clean documents and D′ ⊇ D the observed ones, with |D′ \ D| ≤ k. Then features(D) ∈ B_k(D′), so [LB − q, UB + q] ⊇ [q̂_lo(x) − q, q̂_hi(x) + q] for the same offset q. Two consequences:
-- **Split CQR (fixed q):** coverage ≥ 1 − α under exchangeability of the clean calibration and test data.
-- **ACI (q_t online):** long-run coverage of the CR-ACI intervals follows from ACI's arbitrary-sequence guarantee, and every interval contains the clean-feature interval with the same q_t.
+Let D be the clean documents and D′ ⊇ D the observed ones, with |D′ \ D| ≤ k. Then features(D) ∈ B_k(D′). So, **for the same offset q**, [LB − q, UB + q] ⊇ [q̂_lo(x) − q, q̂_hi(x) + q].
+- **Fixed-offset certified CQR (q = split-CQR offset from clean calibration data):** every row that the clean interval covers is covered under any attack within budget. Coverage is ≥ 1 − α under exchangeability of clean calibration and test data. The measured "floor" (e.g. 86.7%) is this test set's clean coverage, a retrospective number rather than a future probability.
+- **CR-ACI (q_t adapted online):** per-row containment holds only against an ACI run that uses the *same* q_t sequence. The defender's run adapts to observed, possibly attacked, outcomes, so the clean and attacked runs are **not nested** (counterexample from gpt-6-sol, kept as `tests/test_review_fixes.py::test_separately_adapted_aci_runs_are_not_nested`). What CR-ACI keeps is ACI's arbitrary-sequence guarantee on long-run *mean daily* miscoverage, with worst-case bound (max(α, 1−α) + γ)/(γT). That bound is weak at our horizon (≈ 0.48 at T = 189, γ = 0.01).
+- **Not a recovery of price-only:** deleting all documents under the fixed fusion model gives the fusion model's no-text input, not a separately trained price-only model. Large k gives an envelope, and price-only is a separate zero-exposure alternative (gpt-6-astra #7).
 
-**Not covered:** edits of real documents (planned: replace ≤ k documents by any value in [−1, 1]), attacks on prices, true-but-misleading news, and cross-day attacks on history features (excluded by design: no attention-history feature in the certified model).
+**Not covered:** edits of real documents (planned: replace ≤ k documents by any value in [−1, 1]), attacks on prices, true-but-misleading news, poisoned calibration data, and cross-day attacks on history features (excluded by design: no attention-history feature in the certified model).
 
 ## Measured (`eval/results/baseline_v0.md`)
 - Certified CQR width costs +2.9% / +3.9% / +4.5% / +5.1% for k = 1 / 2 / 3 / 5 on clean data.

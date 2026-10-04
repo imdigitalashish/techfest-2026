@@ -24,10 +24,10 @@ flowchart TB
   ACI --> CR
   CP --> EV
   CR --> EV["Frozen evaluator<br/>coverage · width · Winkler · Kupiec · Christoffersen<br/>day-clustered CIs · regimes · clean vs attacked · k = 0…5"]
-  EV --> GATE["Text gate (pre-registered test)<br/>admit text only if it earns its certified width;<br/>k = ∞ ⇒ price-only"]
+  EV --> GATE["Text gate (pre-registered test)<br/>admit text only if it earns its certified width;<br/>otherwise use the separate price-only model"]
   GATE --> UI["Demo: band per stock-day,<br/>attack toggle, k slider,<br/>'which posts could flip this?'"]
 ```
 
-**Guarantee in one line:** if at most k of a stock-day's posts are injected, the clean features lie in the deletion box, so the CR-ACI interval contains the interval the clean model would have produced with the same offset — an attacker within budget cannot add misses. ACI keeps long-run coverage near 1 − α under drift.
+**Guarantee in one line:** if at most k of a stock-day's posts are injected, the clean features lie in the deletion box, so *at a fixed offset* the certified interval contains the interval the clean model would have produced — an attacker within budget cannot add misses. ACI separately keeps long-run mean daily coverage near 1 − α under drift; separately adapted clean and attacked ACI runs need not be nested.
 
 **Measured trade-off:** what the text channel buys (pre-registered test on unseen data) against what it costs (certified width at budget k). Results: `eval/results/text_minilm_v1.md`, `eval/results/text_utility_djia_v1.md`.

@@ -80,3 +80,22 @@ Ranked by expected score impact; **5 BLOCKING**.
 8. **NON-BLOCKING -- Inference/holdout claims.** Replace pooled significance with day-block uncertainty; label StockNet exploratory and freeze the next holdout before further selection. Write: "StockNet estimates are close; the DJIA test did not establish incremental interval-score value." Regime calibration and short-horizon protection remain evaluation goals.
 9. **NON-BLOCKING -- Attack realism/comparators.** Add raw-text replay, prospectively selected concentrated attacks and actual budgets above certified k; compare with trimmed-aggregation-only and adversarial training. Keep oracle searches distinct from certificates.
 10. **NON-BLOCKING -- Reporting precision.** Write "Winkler improvement +0.1%, p=0.46", "worst of 53 tested variants", and "cached StockNet evaluation: 59 s"; explicitly label symmetric CQR in the attack comparison.
+
+---
+## Lead decisions (P10 lead, 4 Oct 2026 ~14:00 IST; v2 = commit after this review)
+| # | Item | Decision | What changed |
+|---|---|---|---|
+| 1 | Adaptive guarantee (BLOCKING) | ACCEPTED | Per-row containment is claimed only at a fixed offset. CR-ACI is claimed for long-run mean daily coverage only. Non-nesting is documented by a test (`tests/test_review_fixes.py`). Abstract, ADR, `robust_conformal.md` and the diagram are reworded. |
+| 2 | No admission benefit | ACCEPTED (partly done) | Admission rule in the abstract ("if text fails, the channel stays off"). Positive control run: the test detects a +11.1% Winkler gain (p = 0.019) and misses +3.9% (p = 0.11). FNSPID pre-registration is in the plan. |
+| 3 | Leakage absolutes (BLOCKING) | ACCEPTED | Now "timestamp-alignment check"; "the head receives no return labels; contamination of the pretrained encoder is not excluded". |
+| 4 | Submission readiness (BLOCKING) | ACCEPTED | Milestones show registration by 15 Oct and submission by 30 Oct (deadline 31 Oct). The team line no longer invents teammates; names are a *Needs from user* item. |
+| 5 | Novelty attribution | ACCEPTED (wording); search log deferred | "We specialise robust conformal verification to document-injection budgets…"; VRCP/RCP1 regression acknowledged. Completing R2's search log is due before 12 Oct. |
+| 6 | Numerical certification gap (BLOCKING) | ACCEPTED | Centred sums plus a derived round-off budget, with a document cap (`MAX_DOCS`). sol's 50,003-post counterexample and random large-n cases are regression tests. |
+| 7 | False k = ∞ endpoint (BLOCKING) | ACCEPTED | Price-only is described as a separate zero-exposure alternative everywhere. |
+| 8 | Inference / holdout claims | ACCEPTED | StockNet is labelled exploratory; the two-dataset claim is reworded; the next holdout (FNSPID) will be pre-registered. |
+| 9 | Attack realism / comparators | ACCEPTED (partly done) | Budgets beyond k added (10 posts: certified 86.9% vs plain 86.2%). Raw-text replay, trimmed-aggregation-only and adversarial-training comparators are deferred to the finals plan. Burst payloads were chosen from test outcomes; they are an attack stress test, not evidence for the certificate. |
+| 10 | Reporting precision | ACCEPTED | "Winkler 3.524 → 3.520, p = 0.46"; "worst of 53 tested variants"; "cached StockNet evaluation"; symmetric CQR labelled. |
+| — | Missing 1/m in the variance-change formula | ACCEPTED | Fixed in `research/components/robust_conformal.md`. |
+| — | ACI worst-case bound ≈ 0.48 at T = 189 | ACCEPTED | Stated in the report and in `robust_conformal.md`. |
+
+No item rejected.

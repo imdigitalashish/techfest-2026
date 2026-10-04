@@ -56,3 +56,16 @@ The read-only data link and **copied**, not linked, MiniLM cache were used in th
 ## Verdict
 
 **Reproducibility: pass. Unqualified certificate and tradeability claims: not yet ready (3 BLOCKING, 2 NON-BLOCKING).** The required eight explicitly specified headline numbers (seven MiniLM coverages and DJIA p-value), all seven analogous VADER coverages, and every non-timing result in the three headline JSONs reproduced exactly. The 16:00 ET assignment, backward-looking StockNet rolling features, chronological label availability, finite-sample CQR quantile, quantile-crossing handling, MAPIE symmetric cross-check (maximum difference 0), daily ACI feedback, paired centered circular-block p-value, and day-block coverage CI showed no additional discrepancy on inspection. The fixed-CQR empirical floor is not the separately adapted CR-ACI guarantee, and the registered DJIA null is conditional on an opening price that the trading-at-open claim cannot use as described.
+
+---
+## Lead decisions (P10 lead, 4 Oct 2026 ~14:00 IST)
+| # | Finding | Decision | What changed |
+|---|---|---|---|
+| B1 | CR-ACI per-row containment does not follow | ACCEPTED | Claim restricted to the fixed-offset certified CQR. CR-ACI is claimed for its long-run daily guarantee only. Your counterexample is a regression test (`test_separately_adapted_aci_runs_are_not_nested`). |
+| B2 | Fixed EPS can exclude a clean vector | ACCEPTED | `deletion_box` now takes sums after centring at the median and widens by a derived round-off budget, with a cardinality cap of 10⁶. Your 49,997 + 3 case (k = 1, 3) and random 5k–60k-post days are tests. v2 reruns committed; differences from v1 are in `eval/results/v1_vs_v2_diff.json` (headline numbers unchanged at reported precision; no-text days got tighter, because v1's margin needlessly straddled thresholds at exactly 0). |
+| B3 | DJIA "tradeable at the open" | ACCEPTED | Registered result unchanged and qualified as conditional on the official open (post-hoc note in the pre-registration and the report). Exploratory pre-open variant without gap features: −0.6%, p = 0.73 (`eval/exploratory_djia_v2.py`). |
+| N1 | Empty intervals scored as points | ACCEPTED | Excluded from width/Winkler as undefined; `frac_empty` reported; test added. No committed run has empty rows. |
+| N2 | FinBERT pump uses VADER | ACCEPTED | `template_sentiment` now raises `NotImplementedError` for unsupported scorers; dispatch test added. |
+| — | pandas positional `sum(1)` warning | ACCEPTED | `contracts.py` uses `sum(axis=1)`. |
+
+No finding rejected. Tests: 70 pass.

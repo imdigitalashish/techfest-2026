@@ -48,5 +48,16 @@ The bottleneck is not sentiment accuracy. Conformal validity is a statement abou
   - day-clustered confidence intervals;
   - ratchet splits moved inside 2014.
 - **"Drop the text" was tested, pre-registered, on unseen data** (Kaggle DJIA news; `eval/preregistration/2026-10-04-text-utility-djia.md`). Result: no evidence that text adds value (Winkler +0.1%, p = 0.46).
-- **Consequence for the decision:** CR-ACI stays the spike, but the framing changes from "robust text alpha" to "trust and coverage guarantees for an untrusted text channel". The price-of-robustness curve plus the text-utility test form a *text gate*: admit text only if it earns its certified width, with dropping text as the k = ∞ end. On current data the insurance is cheap (+0.3% width with ACI on StockNet/MiniLM) because the exposure is small.
+- **Consequence for the decision:** CR-ACI stays the spike, but the framing changes from "robust text alpha" to "trust and coverage guarantees for an untrusted text channel". The price-of-robustness curve plus the text-utility test form a *text gate*: admit text only if it earns its certified width; otherwise use the price-only model. Note (cross-model review): price-only is a separate zero-exposure alternative, *not* the k = ∞ end of the curve. On current data the insurance is cheap (+0.3% width with ACI on StockNet/MiniLM) because the exposure is small.
 - Cross-model reviews (PLAYBOOK §10) are in `reviews/`, with decisions in `reviews/ledger.tsv`.
+
+## Update — 4 Oct 2026, ~14:00 IST (cross-model reviews, PLAYBOOK §10)
+- **gpt-6-astra** (hostile judge): abstract 3.20/5 (64/100), 5 blocking issues. **gpt-6-sol**: all headline numbers reproduced exactly; 3 blocking issues.
+- **Accepted and fixed:**
+  - Per-row containment is now claimed only at a fixed offset; CR-ACI is claimed only for its long-run daily guarantee (non-nesting is documented by a test).
+  - The deletion box uses a derived round-off margin (centred sums, document cap; the reviewer's 50,003-post counterexample is a regression test).
+  - The DJIA test is qualified as conditional on the official open. An exploratory pre-open variant is also null, and a positive control shows the test detects ≥ 11% Winkler gains.
+  - Leakage wording now says "timestamp-alignment check", and encoder contamination is not excluded.
+  - The milestones include registration (15 Oct) and abstract submission (30 Oct). Teammates are no longer invented.
+  - k = ∞ is no longer called price-only.
+- Decisions per item: `reviews/ledger.tsv` and the "Lead decisions" section of each review.

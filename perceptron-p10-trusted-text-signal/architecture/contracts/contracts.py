@@ -90,7 +90,7 @@ SCORED_DOCS = Contract(
     "SCORED_DOCS",
     {**ALIGNED_DOCS.columns, "p_pos": "float", "p_neg": "float", "p_neu": "float", "sentiment": "float"},
     ALIGNED_DOCS.checks + (
-        ("probabilities sum to 1", lambda d: bool(np.allclose(d[["p_pos", "p_neg", "p_neu"]].sum(1), 1, atol=1e-3))),
+        ("probabilities sum to 1", lambda d: bool(np.allclose(d[["p_pos", "p_neg", "p_neu"]].sum(axis=1), 1, atol=1e-3))),
         ("sentiment in [-1, 1]", _in("sentiment", -1, 1))),
     DOCS.unique_key,
 )
