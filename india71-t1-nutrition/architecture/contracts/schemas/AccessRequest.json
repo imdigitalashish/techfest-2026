@@ -20,6 +20,7 @@
         "public_reporting",
         "research",
         "model_training",
+        "employment_action",
         "other"
       ],
       "title": "Purpose",

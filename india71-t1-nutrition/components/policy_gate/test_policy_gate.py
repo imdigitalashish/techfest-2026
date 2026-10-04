@@ -48,6 +48,8 @@ CASES = [
     ("deny anm no task", req(Role.ANM, ScopeLevel.AWC, "AWC1", Purpose.CARE_COORDINATION, DataCategory.IDENTIFIED_CHILD), {"subject_geo": GEO}, "deny"),
     ("deny researcher identified", req(Role.RESEARCHER, ScopeLevel.NATIONAL, "IN", Purpose.RESEARCH, DataCategory.IDENTIFIED_CHILD), {"subject_geo": GEO, "approval_id": "irb-1"}, "deny"),
     ("deny public pseudonymous", req(Role.PUBLIC, ScopeLevel.NATIONAL, "IN", Purpose.PUBLIC_REPORTING, DataCategory.PSEUDONYMOUS_CHILD), {"subject_geo": GEO}, "deny"),
+    ("deny employment action by CDPO", req(Role.CDPO, ScopeLevel.PROJECT, "P1", Purpose.EMPLOYMENT_ACTION, DataCategory.AGGREGATE), {"subject_geo": GEO}, "deny"),
+    ("deny employment action by DM", req(Role.DM, ScopeLevel.DISTRICT, "D1", Purpose.EMPLOYMENT_ACTION, DataCategory.PSEUDONYMOUS_CHILD), {"subject_geo": GEO}, "deny"),
     ("deny other purpose", req(Role.AWW, ScopeLevel.AWC, "AWC1", Purpose.OTHER, DataCategory.IDENTIFIED_CHILD), {"subject_geo": GEO}, "deny"),
     ("deny dpo identified no escalation", req(Role.DPO, ScopeLevel.DISTRICT, "D1", Purpose.PROGRAMME_MONITORING, DataCategory.IDENTIFIED_CHILD), {"subject_geo": GEO}, "deny"),
     ("deny health no consent", req(Role.AWW, ScopeLevel.AWC, "AWC1", Purpose.SERVICE_DELIVERY, DataCategory.HEALTH_RECORD), {"subject_geo": GEO}, "deny"),

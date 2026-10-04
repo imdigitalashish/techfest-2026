@@ -1,6 +1,6 @@
 # Poshan Setu: making India's child-growth data trustworthy, linked and acted on within the week
 
-**The India @71/100 Challenge · Theme 1: Maternal & Early Childhood Nutrition · Round 1 proposal (draft v0.1, 4 Oct 2026)**
+**The India @71/100 Challenge · Theme 1: Maternal & Early Childhood Nutrition · Round 1 proposal (draft v0.2, 4 Oct 2026)**
 **Team:** _[name]_ · **Team ID:** _[after registration]_ · **Institution:** IIT Delhi _(+ teammates)_ · **Contact:** _[email, phone]_
 
 ---
@@ -14,9 +14,9 @@ India weighs and measures more young children every month than any other country
 | Underweight | 32.1% | 17.43% (under 6) | 15.93% |
 | **Wasted** | **19.3%** | **6%** | **5.46%** |
 
-Height-based stunting agrees between the two sources. Weight-based wasting and underweight diverge two- to three-and-a-half-fold. Part of the gap may be real improvement since 2019–21, or differences in timing and age range. But stunting did not fall, so improvement alone can't explain it. The Ministry's own explanation is that administrative data "suffer from data gaps due to coverage, measurement, training etc." (reply as reported in [6]).
+Height-based stunting agrees between the two sources. Weight-based wasting and underweight diverge two- to three-and-a-half-fold. The figures are not directly comparable: the age bands differ (0–59 months vs "0–5 years"), the periods differ (2019–21 vs 2025), and one counts sampled households while the other counts children registered and measured. So this is an **unexplained discrepancy**, not proof of missed children. The Ministry's own explanation is that administrative data "suffer from data gaps due to coverage, measurement, training etc." (reply as reported in [6]). Today no one can say, for any district or Anganwadi, how much of the gap is true change, coverage, measurement error or misclassification.
 
-**The measurable gap we target:** *the share of truly wasted children whom the frontline system never flags, and the time from first growth faltering to action.* The gap lands hardest on (a) **infants under 6 months**, when wasting incidence peaks. In South Asian cohorts 18.9% of babies are wasted at birth, and 52.2% of children have at least one wasting episode by age 2 [7]. It also lands on (b) **children in tribal-majority, high-burden blocks**. In Melghat, the data existed (Poshan Tracker showed 1,82,443 malnourished children in Maharashtra in Feb 2025), yet after 65 infant deaths in five months the Bombay High Court called the response "extremely casual". Officials blamed departments working "in silos" [5]. And it hits (c) **seasonal-migrant children**, who drop out of monthly weighing.
+**The measurable gap we target:** (i) the *undecomposed* wasting discrepancy at Anganwadi and district level; and (ii) the *time from first growth faltering to action* for each child. The gap lands hardest on (a) **infants under 6 months**, when wasting incidence peaks. In South Asian cohorts 18.9% of babies are wasted at birth, and 52.2% of children have at least one wasting episode by age 2 [7]. It also lands on (b) **children in tribal-majority, high-burden blocks**. In Melghat, the data existed (Poshan Tracker showed 1,82,443 malnourished children in Maharashtra in Feb 2025), yet after 65 infant deaths in five months the Bombay High Court called the response "extremely casual". Officials blamed departments working "in silos" [5]. And it hits (c) **seasonal-migrant children**, who drop out of monthly weighing.
 
 The failure isn't missing data. Nobody can tell **which numbers to trust**, the Anganwadi and health records about the same child **are not linked**, and **no one owns a deadline** for acting on a falling growth curve.
 
@@ -45,7 +45,7 @@ flowchart LR
   ABDM[ABDM consent-gated FHIR] --> ING
   ING --> VAULT[Identity vault: privacy-preserving linkage → pseudonymous child_key]
   ING --> Z[WHO z-scores + velocity]
-  Z --> CRED[Credibility engine ★]
+  Z --> CRED[Measurement diagnostics ★: AWC × device × month]
   CRED --> EW[Early warning ★: 90-day risk + reason codes]
   EW --> ROUTE[Action router: owner, due date, escalation]
   CRED --> ROUTE
@@ -65,13 +65,16 @@ flowchart LR
 - For every child under 5, each week: WHO 2006 z-scores, WHO 2009 weight-velocity z, recent change in weight-for-length, birth weight, illness, missed doses, prior episodes and the AWC's credibility.
 - These feed a calibrated, interpretable model of the risk of becoming wasted within 90 days.
 - Children are ranked **within each AWC up to that worker's weekly visit capacity**, so alerts never exceed what a worker can do. Each child carries two or three plain-language reasons in Hindi and English.
-- Low-credibility data triggers a *re-measure* task, not a referral.
+- Doubtful measurements trigger a *re-measure* task, not a referral.
+- **Legal go/no-go:** child-level scoring is switched on only after the responsible Data Fiduciary and the DPDP basis for children's data are confirmed in writing (the s.9 exemptions under the Rules, or verifiable parental consent). Until then the system runs the aggregate measurement-quality and routing layer only.
 
 **4.3 Data quality and governance safeguards (sub-area 3).**
 - *Record level:* WHO plausibility flags plus longitudinal impossibilities (height falling by more than 1.5 cm, weight jumps, identical weights three months running).
-- *AWC level:* the **credibility engine (spike A)** scores digit preference, date-of-birth heaping, the spread of WHZ (expected near 1 SD), and *trajectory realism* (copied-forward data almost never shows the small dips real measurement does).
-- Low-credibility AWCs get an equipment check and a supervisor re-measurement of 10 random children. This doubles as the ground truth for validating the models. Scores support supervision; they are never punitive.
-- Prevalence is reported raw and credibility-adjusted.
+- *Measurement-system diagnostics (spike A)* per **AWC × device × month, never per worker**: digit preference, date-of-birth heaping, the spread of WHZ (expected near 1 SD), missingness, and *trajectory realism* (copied-forward data rarely shows the small dips real measurement does).
+- There is no score or rank for managers. **Support comes before scrutiny:** a flag first triggers an equipment calibration and a stock/connectivity check. Only then does the Lady Supervisor re-measure 10 children. Re-measurement also runs in randomly chosen *unflagged* AWCs, which yields unbiased ground truth for validating everything else.
+- Workers see the same diagnostics, can annotate them ("scale broken since the 12th") and can appeal.
+- Using any of this data for HR, pay, transfer or disciplinary action is **denied in the policy code itself** and in the data-sharing agreement.
+- Remote, tribal and migrant-serving AWCs are compared only with similar AWCs. No diagnostic is shown below a minimum sample size.
 - *Privacy by design:* purpose-bound access, data minimisation, small-cell suppression or differential privacy for public dashboards, and no profiling beyond service delivery. These follow the DPDP Act 2023 provisions on children's data and State services, and ABDM's consent model. Each rule carries its legal citation in the policy code, to be confirmed against the notified Rules.
 
 **4.4 Decision rights and accountability (sub-area 2).**
@@ -86,31 +89,38 @@ flowchart LR
 
 The timelines are working assumptions, to be aligned with the national malnutrition-management protocol (MWCD–MoHFW, 2023) and the Poshan 2.0 review cadence. Every task carries an SLA clock, and every escalation and data access is written to the hash-chained audit log.
 
+A **service-readiness gate** sits in front of the clocks. If the input an action needs is missing (a working scale, rations, an NRC bed, transport), the *input gap* is escalated to the CDPO and DPO first. The worker's clock starts only when the input exists, so the system documents supply failures, not just worker failures.
+
 ## 5. Working prototype (what already runs)
-All components are typed modules with contract tests, and every number below comes from a committed run in our repository. **Model results use a clearly labelled SYNTHETIC cohort.** Real Poshan Tracker microdata isn't public; the cohort is calibrated to published longitudinal-cohort parameters [7].
+All components are typed modules with contract tests, and every number below comes from a committed run in our repository. **Rows marked SYNTHETIC are engineering checks on a simulated district, not validation.** Real Poshan Tracker microdata isn't public; the simulator is calibrated to published longitudinal-cohort parameters [7]. Our tuning loop rejects "improvements" that don't survive a simulator variant: its first candidate raised the score to 0.95, failed that test, and was reverted. Real-world validity will come only from the pilot's blinded re-measurement.
 
 | Component | Metric | Result |
 |---|---|---|
-| WHO z-score engine | Max error vs WHO's own published tables (87,408 points, ±4 SD) | **0.003 z** |
-| Record linkage, ICDS ↔ health (synthetic dual registry, 5,000 children) | Pairwise F1: shared IDs only / probabilistic / privacy-preserving Bloom filter | **0.51 / 0.94 / 0.97** |
-| Credibility engine (synthetic, 120 AWCs, 3 seeds) | AUROC, any unreliable AWC / copy-forward AWCs specifically; gross-error recall | **1.00 / 0.69 / 0.995** |
-| Early warning v0 (held-out synthetic cohort; 5 home visits per AWC per month) | Recall of children who become wasted within 3 months: logistic model / "no weight gain in 2 months" rule | **0.33 / 0.25** |
-| Policy gate | Red-team access requests correctly denied | **29/29, 0 false allows** |
+| WHO z-score engine (real WHO tables) | Max error vs WHO's own published tables (87,408 points, ±4 SD) | **0.003 z** |
+| Record linkage, ICDS ↔ health (SYNTHETIC dual registry, 5,000 children) | Pairwise F1: shared IDs only / probabilistic / privacy-preserving Bloom filter | **0.51 / 0.94 / 0.97** |
+| Measurement diagnostics, spike A (SYNTHETIC, 120 AWCs, 3 seeds) | AUROC, any unreliable AWC / copy-forward AWCs specifically; gross-error recall | **1.00 / 0.69 / 0.995** |
+| Early warning v0 (SYNTHETIC held-out cohort; 5 home visits per AWC per month) | Recall of children who become wasted within 3 months: logistic model / "no weight gain in 2 months" rule | **0.33 / 0.25** |
+| Policy gate | Red-team access requests correctly handled, incl. employment-use denial | **31/31, 0 false allows** |
 | Audit log | Random tampering detected | **100/100** |
 
 ## 6. Feasibility and implementation roadmap
 - **Nov–Dec 2026 (prototype):** early-warning model and its evaluation; auto-tuned credibility indices; legal review of the DPDP and ABDM mapping; finals demo.
-- **Pilot, months 1–6 (one district, ~1,500 AWCs):**
+- **Before any pilot (prerequisites):**
+  - Paid co-design with Anganwadi worker unions and AWWs from tribal, migrant and low-connectivity areas.
+  - A written protocol on prohibited uses, workload, correction and grievance, with worker seats in pilot governance.
+  - A legal opinion on the DPDP basis for each data flow.
+  - A pre-registered validation design.
+- **Pilot, months 1–6 (one district):**
   - Read-only Poshan Tracker extract under a data-sharing agreement with the state WCD department.
-  - Supervisor re-measurement audits in sampled AWCs to measure true credibility.
+  - A concurrent, blinded re-measurement of a matched random sample, to decompose the wasting discrepancy into true change, coverage, measurement and classification.
   - Worklists delivered through existing apps/SMS.
   - Stepped-wedge rollout by sector to measure impact.
 - **Scale, months 6–24:** state rollout; RCH/U-WIN linkage via the state health department; offer to NeGD as a Poshan Tracker module.
 - **Feasibility:** linkage, scoring and routing are batch jobs over monthly data. A state's volume is processed in minutes to hours on standard government cloud. *Estimate; to be benchmarked.*
 
 **Key risks and mitigations:**
-- No data access → start with the aggregate and audit layer, which needs no identifiers.
-- Punitive use of scores → policy and training.
+- No data access or no legal basis for child-level scoring → start with the aggregate, measurement-diagnostics and audit layer, which needs no child-level prediction.
+- Punitive use → no worker-level outputs; employment use denied in code and contract.
 - Model bias against unmeasured migrant children → missed-measurement alerts and subgroup recall reporting.
 
 ## 7. Expected impact and scalability
@@ -119,8 +129,9 @@ All components are typed modules with contract tests, and every number below com
   - share of incident wasting flagged ≥30 days before it occurs, at fixed capacity;
   - median days from flag to first home visit;
   - % of SAM referrals appraised within 7 days;
-  - agreement between re-measurement and records;
-  - convergence of credibility-adjusted prevalence towards independent survey estimates.
+  - agreement between blinded re-measurement and records, including false-flag rates in remote, tribal and migrant AWCs;
+  - worker time spent and worker-reported burden, which must not rise;
+  - completed treatment, not just closed tasks.
 - **Scale path:** the layer is national by construction, using the same app, standards and hierarchy in every state. What changes per state is the policy file and the escalation timelines.
 
 **References** (all accessed 4 Oct 2026):

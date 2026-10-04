@@ -22,7 +22,7 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-CONTRACT_VERSION = "0.1.0"
+CONTRACT_VERSION = "0.2.0"
 
 
 class Strict(BaseModel):
@@ -67,6 +67,7 @@ class Purpose(str, Enum):
     PUBLIC_REPORTING = "public_reporting"
     RESEARCH = "research"
     MODEL_TRAINING = "model_training"
+    EMPLOYMENT_ACTION = "employment_action"  # HR, pay, transfer, disciplinary use of any data — always denied (ADR 002)
     OTHER = "other"  # always denied
 
 

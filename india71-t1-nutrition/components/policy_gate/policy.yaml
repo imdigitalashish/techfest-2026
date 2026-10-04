@@ -5,6 +5,15 @@ default:
   legal_basis: null
   rationale: "Default deny: no ordered policy rule matched."
 rules:
+  - id: deny-employment-action
+    roles: [aww, asha, anm, ls, cdpo, mo_phc, dpo, dm, state, public, researcher, system]
+    purposes: [employment_action]
+    data_categories: [identified_child, pseudonymous_child, risk_score, health_record, aggregate]
+    scope: any
+    decision: deny
+    transform: none
+    legal_basis: null
+    rationale: "ADR 002: measurement diagnostics and task data may never be used for HR, pay, transfer or disciplinary action against frontline workers."
   - id: deny-other-purpose
     roles: [aww, asha, anm, ls, cdpo, mo_phc, dpo, dm, state, public, researcher, system]
     purposes: [other]
