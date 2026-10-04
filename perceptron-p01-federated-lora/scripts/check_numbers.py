@@ -31,6 +31,15 @@ def load(tag: str) -> dict:
     return canon
 
 
+def external() -> dict:
+    """deliverables/external_numbers.tsv: numbers quoted from outside our results, each with its source."""
+    p = ROOT / "deliverables" / "external_numbers.tsv"
+    if not p.exists():
+        return {}
+    rows = [l.split("\t", 1) for l in p.read_text().splitlines() if l.strip() and not l.startswith("#")]
+    return {k.strip(): v.strip() for k, v in rows}
+
+
 def match(val: float, decimals: int, pct: bool, canon: dict) -> list[str]:
     tol = 0.5 * 10 ** (-decimals) + 1e-12
     hits = []
@@ -47,6 +56,7 @@ def main() -> None:
     ap.add_argument("--tag", default="v2")
     args = ap.parse_args()
     canon = load(args.tag)
+    ext = external()
     bad = 0
     for f in args.files:
         text = Path(f).read_text().split("\n---\n")[0]
@@ -58,6 +68,9 @@ def main() -> None:
                 continue
             hits = match(float(num), decimals, pct, canon)
             shown = f"{sign}{num}{'%' if pct else ''}"
+            if not hits and shown.lstrip("+-−±") in ext:
+                print(f"  EXT  {shown:>10}  ← {ext[shown.lstrip('+-−±')]}")
+                continue
             if hits:
                 print(f"  OK   {shown:>10}  ← {hits[0]}" + (f" (+{len(hits) - 1} more)" if len(hits) > 1 else ""))
             else:
