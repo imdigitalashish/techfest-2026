@@ -1,0 +1,25 @@
+# NullahNet dashboard: design system (small)
+
+- **Feel:** a calm, daylight-readable control room, with one accent colour (water blue). Risk colours appear only where something needs attention.
+- **Type:** the system UI stack plus Noto Sans Devanagari for Marathi and Hindi. Body text is 14 px, headings 16–20 px, and every number uses tabular figures.
+- **Colour tokens (in `site/styles.css` `:root`):**
+  - ink `#152028`, muted `#56646e`, line `#d9e0e4`
+  - surface `#fff` on background `#f1f4f5`
+  - water `#0b6a8c`
+  - alert `#b23c17`, warn `#8a5a00`, ok `#2b6b47`
+  - SIMULATED values get a grey diagonal hatch, plus a text tag wherever they appear.
+- **Layout:** a 7:5 two-column grid. The left column holds the brief and actions; the right holds the map and site list. Below them, at full width, come the site detail, then claims, then plans and camera side by side, then sources. Everything sits in a single column below 900 px.
+  - Grid tracks are `minmax(0, …)` and long tokens (hashes, commands, URLs) wrap, so the page never scrolls sideways.
+- **Components:**
+  - action row: kind badge, title, time, facts, buttons, and a "Why?" disclosure
+  - site row as a toggle button
+  - claim row with a claimed-vs-supported bar
+  - the four-row chart (rain, tide, fill, escape) drawn in SVG at the measured width with a hover read-out
+- **Avoid:**
+  - hero-number tiles
+  - cards inside cards
+  - coloured side stripes
+  - gradient text
+  - modals
+  - tables as the first view (the full claims table is opt-in)
+- **Motion:** none beyond 120 ms colour and opacity transitions, and those are off when `prefers-reduced-motion` is set.
