@@ -1,0 +1,2 @@
+timestamp_ist	commit	candidate	hypothesis	score	delta_vs_best	kept	notes
+2026-10-04 07:26	602192a	cand_000_naive.json	Baseline: Bonferroni rolling KS (alpha=1e-3, window 600 s, subsample 10, persist 3, cooldown 1800 s)	47.6667	—	baseline	From eval/results/baseline.json (ks_refit detector; identical RollingKS config and reference): dev alarms 48/48/48; the FOMC 2023-11-01 'hit' (delay 1263 s) is the periodic cooldown alarm landing in the window by chance; false 48/47/48
