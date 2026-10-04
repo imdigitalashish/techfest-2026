@@ -10,8 +10,17 @@ bash eval/taubench/fetch.sh                                   # pinned clone int
 .venv/bin/python -m eval.taubench.run --split test            # held-out (run once on frozen configs)
 .venv/bin/python -m eval.taubench.run --split test --sample 300                       # same guards, 300-call sample
 nice -n 10 .venv/bin/python -m eval.taubench.run --guards llm_judge,cascade_fast --split test --sample 300   # Qwen3-1.7B
-.venv/bin/python -m eval.taubench.frontier                    # matched comparison table
+# Frontier-model baselines (Azure OpenAI gpt-4.1-mini 2025-04-14; key only in the environment, never in a file):
+export AZURE_OPENAI_ENDPOINT=... AZURE_OPENAI_DEPLOYMENT=gpt-4.1-mini AZURE_OPENAI_API_KEY="$(az cognitiveservices account keys list -n <resource> -g <rg> --query key1 -o tsv)"
+.venv/bin/python -m eval.taubench.run --guards llm_judge_aoai,cascade_aoai --split test --sample 300
+.venv/bin/python -m eval.taubench.frontier                    # matched comparison table (both judges)
+.venv/bin/python -m eval.taubench.cost                        # $ per guarded call (Azure Retail Prices API)
 ```
+
+## Baselines and cascades on the 300-call sample
+- `llm_judge` (Qwen3-1.7B, local) and `llm_judge_aoai` (gpt-4.1-mini, temperature 0) get the same prompt: the retail policy, the transcript up to the proposal, and the proposed call. Each returns allow / block / escalate plus a 0–100 risk score. `frontier.py` thresholds that score to trace each judge's whole curve and reads it at our configs' good-call stop rates. Choosing that threshold on the test sample favours the judges.
+- `cascade_fast` / `cascade_aoai`: `t0_balanced` first. Only its *unverifiable* checks go to the model. A verdict counts only if the quoted words are found verbatim in a USER turn or TOOL RESULT and are more than a bare confirmation.
+- **Cost:** `cascade_aoai` tokens are as reported by the API. `llm_judge_aoai` prompt tokens are counted offline with `tiktoken` o200k_base (validated: within 0.94% of the cascade's measured usage). Price: Azure Retail Prices API, Sweden Central, Global, $0.0004/1K input and $0.0016/1K output.
 
 ## Labels (`replay.py`)
 For each proposed write we rebuild the DB exactly as it was at that moment, by re-executing the trajectory's earlier tool calls with τ-bench's own tool code. Each proposal gets one of three labels:

@@ -17,6 +17,8 @@ Frozen configurations (chosen on DEV before the test split was run):
   t0_lenient   adapter v1, as balanced but item options too (the field where summaries leak harm on dev)
   cascade_fast t0_balanced + Tier 1 (Qwen3-1.7B) on its unverifiable checks only, verified quotes (taubench_cascade.py)
   llm_judge    Qwen3-1.7B shown the policy, the full transcript and the call (risk score kept for a frontier)
+  llm_judge_aoai  same prompt and transcript, Azure OpenAI gpt-4.1-mini (2025-04-14), temperature 0
+  cascade_aoai    t0_balanced + gpt-4.1-mini on its unverifiable checks only, verified quotes (Tier 2)
 """
 from __future__ import annotations
 
@@ -149,11 +151,16 @@ def memory_ok(low: int = 25, high: int = 30, poll_s: int = 60) -> None:
     print(f"  [watchdog] memory {level()}%: resuming", file=sys.stderr, flush=True)
 
 
-def judge(it: dict, policy: str) -> tuple[Decision, str]:
-    from components.checker import llm
-    memory_ok()
+def judge(it: dict, policy: str, backend: str = "mlx") -> tuple[Decision, str]:
     user = f"STORE POLICY:\n{policy}\n\nCONVERSATION SO FAR:\n{transcript(it)}\n\nPROPOSED CALL: {it['tool']}({json.dumps(it['args'])})"
-    out, _ = llm.chat(llm.FAST, JUDGE_SYS, user, max_tokens=160)
+    if backend == "aoai":
+        from components.checker import aoai
+        out, _ = aoai.chat(JUDGE_SYS, user, max_tokens=160)
+    else:
+        from components.checker import llm
+        memory_ok()
+        out, _ = llm.chat(llm.FAST, JUDGE_SYS, user, max_tokens=160)
+    from components.checker import llm
     j = llm.parse_json(out)
     d = str(j.get("decision", "")).upper()
     if not d:  # truncated or malformed JSON: read the fields directly
@@ -178,6 +185,13 @@ def decide(guard: str, it: dict, data: dict, schemas: dict, policy: str) -> tupl
     elif guard == "llm_judge":
         d, raw = judge(it, policy)
         return d, [raw]
+    elif guard == "llm_judge_aoai":
+        d, raw = judge(it, policy, backend="aoai")
+        return d, [raw]
+    elif guard == "cascade_aoai":
+        from components.checker import aoai, taubench_cascade as tc
+        d, checks, n, _ = tc.resolve(it, data, transcript(it), lambda system, user: aoai.chat(system, user, max_tokens=160))
+        return d, [f"{c.status.value}:{c.check_id}:{c.message[:160]}" for c in checks if c.status.value != "pass" or c.tier] + [f"model_calls={n}"]
     elif guard == "cascade_fast":
         from components.checker import llm, taubench_cascade as tc
 
@@ -207,6 +221,26 @@ def run(guard: str, split: str, n_sample: int | None = None) -> dict:
             r = json.loads(line)
             done[r["item_id"]] = r
     t0 = time.time()
+    if guard.endswith("_aoai"):  # network-bound API calls: run concurrently, checkpoint each row under a lock
+        import threading
+        from concurrent.futures import ThreadPoolExecutor
+        lock = threading.Lock()
+        todo = [it for it in items if it["item_id"] not in done]
+
+        def one(it):
+            data = {"orders": it["db"]["orders"], "users": it["db"]["users"], "products": products}
+            t = time.perf_counter()
+            d, reasons = decide(guard, it, data, schemas, policy)
+            row = {"item_id": it["item_id"], "model": it["model"], "task_id": it["task_id"], "tool": it["tool"], "kind": it["kind"],
+                   "decision": d.value, "latency_ms": round((time.perf_counter() - t) * 1000, 3), "reasons": reasons}
+            with lock:
+                done[it["item_id"]] = row
+                with ckpt.open("a") as fh:
+                    fh.write(json.dumps(row) + "\n")
+                if len(done) % 25 == 0:
+                    print(f"  [{tag}] {len(done)}/{len(items)} {time.time() - t0:.0f}s", file=sys.stderr, flush=True)
+        with ThreadPoolExecutor(max_workers=2) as ex:  # stay under the deployment's tokens-per-minute quota
+            list(ex.map(one, todo))
     with ckpt.open("a") as fh:
         for k, it in enumerate(items):
             if it["item_id"] in done:
@@ -218,14 +252,19 @@ def run(guard: str, split: str, n_sample: int | None = None) -> dict:
                    "decision": d.value, "latency_ms": round((time.perf_counter() - t) * 1000, 3), "reasons": reasons}
             done[it["item_id"]] = row
             fh.write(json.dumps(row) + "\n")
-            if guard in ("llm_judge", "cascade_fast"):
+            if guard in ("llm_judge", "cascade_fast", "llm_judge_aoai", "cascade_aoai"):
                 fh.flush()
                 if k % 10 == 0:
                     print(f"  [{tag}] {len(done)}/{len(items)} {time.time() - t0:.0f}s", file=sys.stderr, flush=True)
     rows = [done[i["item_id"]] for i in items]
     head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
     dirty = subprocess.run(["git", "status", "--porcelain", "--", "components", "eval/taubench"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
-    out = {"guard": guard, "split": split, "sample": n_sample, "commit": head + ("-dirty" if dirty else ""),
+    usage = None
+    if guard.endswith("_aoai"):
+        from components.checker import aoai
+        usage = dict(aoai.USAGE, deployment=__import__("os").environ.get("AZURE_OPENAI_DEPLOYMENT", "gpt-4.1-mini"),
+                     api_version=aoai.API_VERSION, note="usage counts only calls made in this process (not resumed rows)")
+    out = {"guard": guard, "split": split, "sample": n_sample, "commit": head + ("-dirty" if dirty else ""), "api_usage": usage,
            "wall_s": round(time.time() - t0, 1),
            "source": "sierra-research/tau-bench@59a200c historical_trajectories (gpt-4o, sonnet-35-new; retail)",
            "metrics": metrics(rows), "rows": rows}

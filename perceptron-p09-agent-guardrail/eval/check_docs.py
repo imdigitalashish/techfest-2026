@@ -37,6 +37,10 @@ def pc(k: int, n: int, nd: int = 0) -> str:
     return f"{v:.{nd}f}%" if nd else f"{int(v + 0.5)}%"
 
 
+def pc_f(x: float) -> str:
+    return f"{int(100 * x + 0.5)}%"
+
+
 def ci(c: list[float]) -> str:
     return f"{int(100 * c[0] + 0.5)}–{int(100 * c[1] + 0.5)}"
 
@@ -45,6 +49,11 @@ def claims() -> list[tuple[Path, str]]:
     v0, bal = counts(T / "t0_v0__test.json"), counts(T / "t0_balanced__test.json")
     dev, sch = counts(T / "t0_balanced__dev.json"), counts(T / "schema__test.json")
     bs, jd = counts(T / "t0_balanced__test__sample300.json"), counts(T / "llm_judge__test__sample300.json")
+    ss, j4 = counts(T / "t0_strict__test__sample300.json"), counts(T / "llm_judge_aoai__test__sample300.json")
+    ca = counts(T / "cascade_aoai__test__sample300.json")
+    cost = j(T / "cost__test__sample300.json")
+    fm = j(T / "frontier__test__sample300.json")["llm_judge_aoai_matched"]["t0_strict"]
+    assert abs(fm["our_good_stop"] - ss["good_stop"] / ss["good"]) < 1e-9
     astra = counts(R / "first_run" / "t0__test__astra_redteam.json")
     synth = counts(R / "t0__test.json")
     audit = (ROOT / "eval" / "taubench" / "audit-test-misses.md").read_text()
@@ -62,8 +71,14 @@ def claims() -> list[tuple[Path, str]]:
         (ABSTRACT, f"stopping **{pc(bal['stop'], bal['bad'])} ({ci(bal['m']['ci95_cluster_bootstrap']['catch_harmful'])})**"),
         (ABSTRACT, f"**{bal['m']['latency_ms_p95']:.1f} ms** at p95"),
         (ABSTRACT, f"Only {bal['hard']} of its stops are hard blocks"),
-        (ABSTRACT, f"at almost the same good-call stop rate ({pc(jd['good_stop'], jd['good'])} vs our {pc(bs['good_stop'], bs['good'])})"),
-        (ABSTRACT, f"the judge stops {pc(jd['stop'], jd['bad'])} of harmful calls and ours {pc(bs['stop'], bs['bad'])}"),
+        (ABSTRACT, f"gpt-4.1-mini stops {pc(j4['stop'], j4['bad'])} of harmful calls but hard-blocks {pc(j4['fb'], j4['good'])} of good calls"),
+        (ABSTRACT, f"a local Qwen3-1.7B, {pc(jd['stop'], jd['bad'])} and {pc(jd['fb'], jd['good'])}"),
+        (ABSTRACT, f"gpt-4.1-mini stops {pc_f(fm['judge_catch_at_same_stop'])} at the good-call stop rate ({pc(ss['good_stop'], ss['good'])}) "
+                   f"where our strict setting stops {pc(ss['stop'], ss['bad'])}"),
+        (ABSTRACT, f"holds on good calls fall from {pc(bs['hold'], bs['good'])} to {pc(ca['hold'], ca['good'])} at "
+                   f"{pc(ca['fb'], ca['good'], 1)} false blocks, still stopping {pc(ca['stop'], ca['bad'])} of harmful calls"),
+        (ABSTRACT, f"for ${cost['cascade_aoai']['usd_per_guarded_call']:.5f} per guarded call versus "
+                   f"${cost['llm_judge_aoai']['usd_per_guarded_call']:.4f} to judge every call"),
         (ABSTRACT, f"{n_user} were explicitly requested"),
         (ABSTRACT, f"{n_entity} were wrong-entity choices"),
         (ABSTRACT, f"{astra['n']} cases written by a different model family"),
@@ -78,8 +93,8 @@ def claims() -> list[tuple[Path, str]]:
     ok_block = sum(c[i]["decision"] == "block" and b[i]["kind"] == "bad_harmful" for i in settled)
     bad_block = sum(c[i]["decision"] == "block" and b[i]["kind"] == "good" for i in settled)
     released = sum(c[i]["decision"] == "allow" for i in settled)
-    out.append((ABSTRACT, f"settled {len(settled)} of {len(held)} held calls ({ok_block} harmful correctly blocked, "
-                          f"{bad_block} good calls wrongly blocked) and released {'none' if released == 0 else released}"))
+    assert released == 0
+    out.append((ABSTRACT, f"A 1.7B resolver settled {len(settled)} of {len(held)} holds, {bad_block} wrongly"))
     return out
 
 

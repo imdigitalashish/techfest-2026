@@ -14,7 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 RES = ROOT / "eval" / "results" / "taubench"
-GUARDS = ["none", "schema", "t0_v0", "t0_strict", "t0_balanced", "t0_lenient", "cascade_fast", "llm_judge"]
+GUARDS = ["none", "schema", "t0_v0", "t0_strict", "t0_balanced", "t0_lenient", "cascade_fast", "cascade_aoai", "llm_judge", "llm_judge_aoai"]
 
 
 def load(g: str) -> dict | None:
@@ -57,13 +57,15 @@ def main():
         s["latency_ms_p50"], s["latency_ms_p95"] = d["metrics"]["latency_ms_p50"], d["metrics"]["latency_ms_p95"]
         s["commit"] = d["commit"]
         out["guards"][g] = s
-    if "llm_judge" in out["guards"]:
-        rows = load("llm_judge")["rows"]
+    for jname in ("llm_judge", "llm_judge_aoai"):
+        if jname not in out["guards"]:
+            continue
+        rows = load(jname)["rows"]
         curve = judge_curve(rows)
-        out["llm_judge_curve"] = curve
-        out["llm_judge_risk_parsed"] = sum(risk_of(r) is not None for r in rows) / len(rows)
+        out[f"{jname}_curve"] = curve
+        out[f"{jname}_risk_parsed"] = sum(risk_of(r) is not None for r in rows) / len(rows)
         matched = {}
-        for g in ("t0_v0", "t0_strict", "t0_balanced", "t0_lenient", "cascade_fast"):
+        for g in ("t0_v0", "t0_strict", "t0_balanced", "t0_lenient", "cascade_fast", "cascade_aoai"):
             if g not in out["guards"]:
                 continue
             budget = out["guards"][g]["good_stop"]
@@ -72,14 +74,15 @@ def main():
             matched[g] = {"our_good_stop": budget, "our_catch": out["guards"][g]["catch_harmful"],
                           "judge_catch_at_same_stop": best["catch_harmful"] if best else 0.0,
                           "judge_threshold": best["threshold"] if best else None}
-        out["llm_judge_matched"] = matched
+        out[f"{jname}_matched"] = matched
     (RES / "frontier__test__sample300.json").write_text(json.dumps(out, indent=1))
     print("| guard | catch (harmful) | false-block | escalation | good-call stop | p95 latency |")
     print("|---|---|---|---|---|---|")
     for g, s in out["guards"].items():
         print(f"| {g} | {s['catch_harmful']:.1%} | {s['false_block']:.1%} | {s['escalation']:.1%} | {s['good_stop']:.1%} | {s['latency_ms_p95']:.1f} ms |")
-    for g, m in out.get("llm_judge_matched", {}).items():
-        print(f"matched to {g}: ours {m['our_catch']:.1%} vs judge {m['judge_catch_at_same_stop']:.1%} at good-stop <= {m['our_good_stop']:.1%} (threshold {m['judge_threshold']})")
+    for jname in ("llm_judge", "llm_judge_aoai"):
+        for g, m in out.get(f"{jname}_matched", {}).items():
+            print(f"{jname} matched to {g}: ours {m['our_catch']:.1%} vs judge {m['judge_catch_at_same_stop']:.1%} at good-stop <= {m['our_good_stop']:.1%} (threshold {m['judge_threshold']})")
 
 
 if __name__ == "__main__":

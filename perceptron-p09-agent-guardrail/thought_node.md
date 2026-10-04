@@ -10,46 +10,38 @@
 - _(none)_
 
 ## Now
-- **Phase:** ACTIVE again since 10:48 IST, 4 Oct (slot freed). The 12 Oct Perceptron pick is open between P7 and P9; real evidence decides. Updated 11:12 IST.
-- **Supervisor's definition of done (10:48):**
-  1. τ-bench real-error replay on a held-out split vs no-guard/schema/LLM-judge, with CIs: **deterministic part done**; LLM judge running.
-  2. Independent red-team suite by a different model: **gpt-6-astra session running**.
-  3. Final abstract + diagram + `check_docs`: **drafted** (`deliverables/round1-abstract.v1.md`).
-  4. Reviews: **gpt-6-sol code/eval running**; gpt-6-astra abstract review next.
-  5. Final memo, thought node, push.
-- **Headline evidence: real agent errors.**
-  - **Set:** τ-bench retail held-out test = 991 real write proposals from gpt-4o and Claude-3.5-Sonnet (702 good, 167 harmful, 122 env-rejected). Labels by DB-effect equivalence with ground truth. Frozen configs, one-shot test, 95% CIs clustered by task. Details: `eval/taubench/README.md`.
+- **Phase:** ACTIVE (resumed 10:48 IST, 4 Oct). Definition-of-done items 1–3 done; item 4: sol review done, astra abstract review running; item 5: this update. Updated 11:52 IST.
+- **GPU pause (Supervisor, ~11:47):** Namma Space needs the GPU. My only MLX job (the `cascade_fast` test run) had just completed, so there was no PID to pause. No local-model job runs until "GPU free", and none is needed for the definition of done.
+- **Headline evidence: real agent errors** (`eval/taubench/README.md`).
+  - **Set and protocol:**
+    - 991 held-out τ-bench write calls from gpt-4o and Claude-3.5-Sonnet (702 good, 167 harmful, 122 rejected); frozen configs; 95% CIs clustered by task.
+    - The test was **re-run once after the sol code review fixed six bugs**. The first run is archived in `eval/results/first_run/`.
 
-    | Config (full test) | Catch harmful | False-block | Escalation | p95 |
-    |---|---|---|---|---|
-    | none / schema-only | 0% | 0% | 0% | — |
-    | v0 (policy-only, untuned) | **67.7%** [57.1, 77.3] | 7.3% [3.7, 11.4] | 55.8% | 0.2 ms |
-    | strict | 43.1% | 1.8% | 32.8% | 0.2 ms |
-    | **balanced (primary)** | **35.9%** [24.2, 48.8] | **1.8%** [0.5, 3.6] | 25.1% [19.7, 30.7] | 0.2 ms |
-    | lenient | 20.4% | 1.8% | 15.7% | 0.2 ms |
+    | Config (full test, post-review) | Stops harmful (block or hold) | Hard blocks | False-block | Holds on good | p95 |
+    |---|---|---|---|---|---|
+    | none / schema-only | 0% | 0 | 0% | 0% | — |
+    | v0 (policy-only, untuned) | **67.7%** [56.9, 77.2] | 6 | 7.3% | 55.8% | 0.3 ms |
+    | strict | 44.9% | 3 | 2.0% | 36.5% | 0.4 ms |
+    | **balanced (primary)** | **40.7%** [28.3, 55.1] | 3 | **2.0%** [0.6, 4.0] | 30.3% | 0.4 ms |
+    | lenient | 26.4% | 3 | 2.0% | 18.2% | 0.6 ms |
 
-  - **Honest read:** dev tuning cut false blocks (7.3% → 1.8%) and escalations, but also catch. The untuned v0 has the best test score. The guard is a dial, not a free lunch.
-  - **Miss audit (20 random balanced misses, `eval/taubench/audit-test-misses.md`):**
-    - 8 user-requested: invisible to any transcript check;
-    - 8 wrong-entity resolutions: the spike's target;
+  - **300-call sample** (120 good / 120 harmful / 60 rejected):
+    - balanced: 47.5% stopped, 1.7% false blocks, 25.8% holds.
+    - **LLM judge** (Qwen3-1.7B, same transcript + policy): 28.3% stopped, 26.7% false blocks (all hard blocks), 2.6 s median. Its risk score is uninformative.
+    - **cascade_fast** (Tier 1 on balanced's holds, verified quotes): settled 11 of 85 holds (6 harmful correctly blocked, 5 good wrongly blocked) and released none. That is a negative first result: the careful tier needs a stronger model.
+  - **Miss audit** (20, first run):
+    - 8 requested by the simulated user (no transcript check can catch these);
+    - 8 wrong-entity resolutions;
     - 3 policy sequencing / incomplete action;
     - 1 caused by a rule I removed during tuning.
-- **Desk domain (secondary; self-authored unless noted):**
-  - Synthetic suite: 100% catch, 0% false blocks.
-  - Independent Claude black-box set (134): 94.3% catch, 0% false blocks before fixes; 98.9% / 0% after, in-sample.
-  - White-box (41): 21 of 27 bypasses still pass.
-  - LLM judge (1.7B, full desk test): 70.8% catch, 61.1% false blocks.
-- **Rule change (Supervisor, ~11:03):** local-model runs are allowed when `kern.memorystatus_level` ≥ 25%. The swap-free metric is stuck (stale pages in dynamically sized swap). Conditions: Qwen3-1.7B only, `nice -n 10`, chunked and resumable with a checkpoint per call, a watchdog that pauses below 25% and resumes above 30%, one LLM job at a time. Implemented in `eval/taubench/run.py::memory_ok`.
-- **Doing:**
-  - LLM judge on the 300-call test sample (background); next, `cascade_fast` on the same sample.
-  - Child sessions (max 2): **P9 independent red team (astra)** and **P9 code/eval review (sol)**.
+- **Independent red team** (`eval/external/astra/`, gpt-6-astra, never saw the rules; 160 cases): first run, **82.0% stopped [73.3, 88.3], 8.3% false blocks, 20.0% holds**. Re-run after the review fixes (now in-sample): 82.0% / 8.3% / 23.3%.
+- **Desk domain** (self-authored, secondary): synthetic 100% / 0% (after relabelling 6 P-1.2 seeds); Claude independent set 100% / 0% with 10.9% holds; white-box 7/27 bypasses now stopped.
+- **Reviews** (`reviews/ledger.tsv`): gpt-6-sol code/eval raised 11 issues, all 11 accepted (2 in part). gpt-6-astra hostile judge on the abstract: running.
+- **Rule (Supervisor, ~11:03):** local-model runs only when `kern.memorystatus_level` ≥ 25% (watchdog pauses below 25%, resumes at 30%), Qwen3-1.7B only, `nice -n 10`, chunked and resumable, one LLM job at a time; plus the GPU pause above.
 - **Next:**
-  1. Frontier table (judge at matched good-call stop rate).
-  2. Cascade end-to-end.
-  3. Run the guard on the astra suite.
-  4. Final abstract + `eval/check_docs.py`.
-  5. Astra abstract review (after the red-team session ends).
-  6. Ledger, memo, push, then "DONE — slot free".
+  1. Act on the astra review (ledger) and adjust the abstract.
+  2. Final memo, push, then "DONE — slot free".
+  3. After Round 1: scenario-grouped holdout, stronger careful model, consent/policy relabelling, live LangGraph demo.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section of the abstract (placeholders now).
 - **Risks:** (1) synthetic-suite optimism, since the same author wrote templates and rules → τ-bench replay + paraphrase family; (2) paraphrase brittleness of regex mention parsing → LLM resolver, escalation rate tracked; (3) local LLM latency/memory on a shared Mac (8B not measured tonight); (4) close 2026 work (ActGov, ContrAgent, closed-world resolution) → precise novelty claim (argument-value provenance, three-way verdict, verified-quote residue resolution, frontier evaluation).
 
@@ -115,21 +107,41 @@ Full contracts: [architecture/components.md](architecture/components.md) · pyda
 | 14 | Audit log | Verdict → JSONL | logging | | partial | completeness |
 
 ## Selection memo
-_Final, 4 Oct 2026 (v2, replaces the 07:35 v1, which scored 4.6 on synthetic evidence only). Scored 1–5 against real-error evidence; every number is in `eval/results/` and checked by `eval/check_docs.py`._
+_Final, 4 Oct 2026 (v3; replaces v1 from 07:35, which scored 4.6 on synthetic evidence alone). Scored 1–5 against the real-error evidence after the gpt-6-sol review fixes. Every number is in `eval/results/` and checked by `eval/check_docs.py`._
 
 - **Winnability — 4.**
-  - For: Round 1 is judged on the plan, and evaluation rigour (15%) plus technical soundness (25%) are where we are strongest. We have a one-shot held-out test on 991 real gpt-4o and Claude-3.5-Sonnet write calls from τ-bench, with clustered CIs, against no-guard, schema and LLM-judge baselines, plus a 160-case red team by a different model family.
-  - The obvious baseline loses clearly. On the same 300 calls, a Qwen3-1.7B judge catches 28% of harmful calls while blocking 27% of good ones; our balanced setting catches 42.5% with 1.7% false blocks, at about 0.2 ms.
-  - Against: the absolute catch on real errors is modest (36% [24–49] at 1.8% false blocks and 25% escalation; 68% if we accept 56% escalation). A team with a flashy 100% toy demo may look stronger to a quick read.
-- **Innovation headroom — 4.** Argument-level provenance with a separate *unverifiable* state, and quote-verified model resolution of that residue only. The miss audit gives the spike a falsifiable target: 8 of 20 misses are wrong-entity resolutions ("like my other order") that need the model tier. Nearest 2026 work (ActGov, ContrAgent, closed-world resolution, Cedar gates) checks policies or schemas, not argument values against a source.
-- **Feasibility — 5.** Everything is built and runs on the M5 with open local models and no paid APIs. The τ-bench data is MIT-licensed, 65 MB, and the replay is fully reproducible. Remaining work (model tier on the residue, calibrated thresholds, live LangGraph demo) fits before 17 Nov.
-- **Demo strength — 4.** The live desk demo is crisp (invented ticker, ×10, side flip and injected transfer stopped in under 1 ms with the clause cited), and the frontier chart against the LLM judge is a strong slide. The modest real-error catch must be framed as an honest frontier.
-- **Fit with the user's strengths — 5.** Agent infrastructure, evaluation at scale and frontier models. Microsoft's Prompt Shields, groundedness and task-adherence features are among the shipped baselines we position against.
-- **Biggest risk:** judges reading "36% catch" as weak. Mitigation: lead with the frontier and the judge comparison at matched cost, the pre-trade analogy (hard block / soft alert / manual review), and the miss taxonomy showing that 8 of 20 misses are invisible to any transcript-based check.
-- **One-line pitch:** *Pre-trade risk checks for AI agents: every argument must cite its source, and on real agent errors that beats an LLM judge by catching more harmful calls (42.5% vs 28%) while wrongly blocking 15× fewer good ones (1.7% vs 27%).*
-- **Overall: 4.4 / 5.** Recommendation: P9 is a sound Perceptron pick if P7's spike stays unreplicated. Its claims are modest but survive a pre-registered held-out test and an independent red team.
+  - **For:** Round 1 judges the plan, and our strongest criteria carry the most weight: evaluation rigour (15%) and technical soundness (25%). The evidence base:
+    - a held-out test on 991 *real* gpt-4o and Claude-3.5-Sonnet write calls from τ-bench, with task-clustered CIs;
+    - no-guard, schema and LLM-judge baselines;
+    - a 160-case red team by a different model family (82% stopped, 8% false blocks);
+    - two cross-model reviews.
+  - **The obvious baseline loses clearly.** On the same 300 calls, at almost the same good-call stop rate (27% vs 28%), a Qwen3-1.7B judge stops 28% of harmful calls and our balanced checker 48%. The judge's stops are all hard blocks (26.7% of good calls blocked) against our 1.7%. Ours runs in under 1 ms.
+  - **Against:** the absolute catch on real errors is modest: 40.7% [28–55] at 2.0% false blocks and 30% holds, or 68% if one accepts 56% holds. The first model-tier attempt (1.7B) released no holds. A team with a 100% toy demo may read better on a quick skim.
+- **Innovation headroom — 4.** Argument-level provenance with an explicit *unverifiable* state, and quote-verified model resolution of only that residue. The miss audit makes the spike falsifiable: 8 of 20 misses are wrong-entity resolutions that the careful tier must fix. The nearest 2026 work (ActGov, ContrAgent, closed-world resolution, Cedar gates) checks policies or schemas, not argument values against a source.
+- **Feasibility — 5.** Built end to end on the M5 with open local models and no paid APIs; the τ-bench replay is MIT-licensed, about 65 MB and reproducible with one command. Remaining work fits before 17 Nov: stronger careful tier, scenario-grouped holdout, live LangGraph demo.
+- **Demo strength — 4.** The desk demo is crisp: an invented ticker, a ×10 order, a side flip and an injected transfer are stopped in under 1 ms with the clause cited. The frontier chart against the judge makes a strong slide. The modest real-error catch has to be framed as the hard-block / soft-alert / manual-review trade-off a trading desk already lives with.
+- **Fit with the user's strengths — 5.** Agent infrastructure, evaluation at scale, frontier models. Microsoft's own agent guardrails (Prompt Shields, groundedness, task adherence) are among the shipped baselines.
+- **Biggest risk:** "41% catch" read as weak. Mitigation: lead with the frontier and the matched judge comparison, and show that 8 of 20 misses are invisible to any transcript-based check (the simulated user asked for them).
+- **One-line pitch:** *Pre-trade risk checks for AI agents: every argument must cite its source. On real agent errors, at the same good-call stop rate, this stops 48% of harmful calls where an LLM judge stops 28%, while hard-blocking 15× fewer good calls (1.7% vs 26.7%).*
+- **Overall: 4.4 / 5.** Recommendation: P9 is a sound Perceptron pick, with claims that are modest but survive a held-out test, an independent red team and two cross-model reviews.
 
 ## Log
+### 2026-10-04 11:52 IST — Reviews in, fixes, held-out re-run, final abstract
+- **11:13** gpt-6-astra red-team suite landed (160 cases, never saw the rules). First run: 82.0% stopped, 8.3% false blocks, 20.0% holds. Session archived.
+- **11:26** gpt-6-sol code/eval review: 11 issues (1 critical, 8 major, 2 minor), all raw numbers reproduced, all accepted (2 in part). Main bugs:
+  - replay passed the agent's *current* message as the "confirmed summary";
+  - no retail schema gate (empty or partial writes passed);
+  - "I'm not sure" read as a yes;
+  - option substring matching;
+  - address scope;
+  - synthetic labels contradicting P-1.2;
+  - CI clusters split tasks across models.
+- **Fixes:** the replay build now fails closed and verifies 2,018/2,018 labels against full hashing.
+- **Re-run:** the held-out test was re-run once on the same frozen configs (declared in the abstract); the first run is archived. Balanced moved from 35.9% → 40.7% stopped, false blocks 1.8% → 2.0%, holds 25.1% → 30.3%.
+- **LLM judge** (300-call sample) and **cascade first try**: numbers in *Now*.
+- **11:48** final abstract (876 words) pushed with `eval/check_docs.py` (18 claims verified; part of pytest). Started the astra hostile-judge review of the abstract.
+- **GPU pause request** (Supervisor): no MLX job of mine was running (the cascade had completed); none will start until "GPU free".
+
 ### 2026-10-04 11:10 IST — Resumed; τ-bench held-out results, audit, reviews launched
 - **10:48 Supervisor:** resume with a five-point definition of done. Child sessions only (max 2), no `task` sub-agents.
 - **Child sessions launched:** `P9 independent red team (astra)` (gpt-6-astra, max; may read only the KB data, tool specs and contracts) and `P9 code/eval review (sol)` (gpt-6-sol, max).
