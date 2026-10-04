@@ -10,24 +10,28 @@
 - _(none)_
 
 ## Now
-- **Phase:** active batch (Supervisor, 09:55). The definition of done has 6 items: E2E pipeline · viewer + POIs + search + path · abstract + video script + setup · drop-in script · memo + journal · cross-model review of the Round-1 deliverable.
-- **Plan:** E2E on raw drjohnson photos (own SfM → Brush → align → NavGrid → package → site → eval v3) → POIs + site + viewer measurement (S_V) → fill the abstract → cross-model reviews as sessions (gpt-6-astra: deliverable; gpt-6-sol: eval code + headline numbers) → DONE message.
-- **Doing:**
-  - lead: E2E run (Brush training since 10:12, slowed by swap thrashing); abstract v0.9 updated with the review fixes; ⟨pending⟩ slots wait for this run.
-  - child sessions (2/2): [companies research](ghapp://sessions/f288d1bd-555c-428d-800f-15071f60f1bc), [SOTA nav/POI/AR/viewer](ghapp://sessions/4eb75b17-eb5d-4b07-9a64-ad9b17993992).
-- **E2E status (13:16):** run 1 was killed after 3 h 03 min without an export (swap thrashing: swap 23.5 of 24.5 GB, Brush RSS 3.6 MB). Restarted at 13:16 with baseline settings (15k steps, 2M max splats) and no nice, because memory level was 44 (≥40); this rule was agreed with the Supervisor. Cached ingest + posing were reused. ETA ≈13:55–14:10 if the GPU is uncontended.
-- **Next:** fill numbers → reviews → DONE. After DONE, only work that needs the user's capture: process it with `./process_capture.sh`, deploy, measure S_T / S_V.
+- **Phase:** active batch (Supervisor, 09:55), closing. Definition-of-done status:
+  1. ✅ E2E from raw photos: held-out PSNR **29.56 dB / SSIM 0.929**, trajectory error 0.07% of scene size, 45.8 min on the M5 (`eval/results/drjohnson_e2e_report.json`).
+  2. ✅ Viewer + POIs + search + paths: frozen benchmark S_V 1.49 (walking p95 22.4 ms at 60 fps; load-bound at 7.45 s / 40 Mbit/s); 6 POIs placed by ray-cast.
+  3. ✅ Abstract v0.9 (numbers filled), video script, README / setup / test_data.
+  4. ✅ Drop-in `process_capture.sh` (+ Azure deploy).
+  5. ✅ Memo v3 + journal (this refresh).
+  6. ✅ Cross-model reviews: gpt-6-sol (code, 10:50), gpt-6-astra (Round-1 deliverable, 11:30); **delta checks on the final numbers in progress** (same sessions).
+- **Doing:** delta reviews (astra + sol sessions). The CC BY-SA library-demo SfM retry (exhaustive + incremental) runs on CPU. It's an extra and doesn't gate DONE: the first attempt was correctly stopped by the pose-sanity gate (edited tour video with cuts).
+- **Next (after DONE):** the user's home capture → `./process_capture.sh` → public link (needs approval) → S_T / S_V on the owned scene. Spike E: SPZ + `.RAD` paged LoD to beat the 7.45 s load. Spike D′ evaluator. R2 baselines (splat-transform collision + Recast arm; ARKitScenes real-geometry benchmark).
 - **Needs from user:**
   1. Register by 15 Oct (team ≤4; teammates' names).
-  2. **Capture your home with [`deliverables/capture-sop.md`](deliverables/capture-sop.md)** (≈15–20 min). Print [`deliverables/assets/marker_aruco_4x4_id0_150mm.pdf`](deliverables/assets/marker_aruco_4x4_id0_150mm.pdf) at 100%. Time yourself with a stopwatch. Note the phone model (LiDAR or not). Hand off the originals via AirDrop/cable plus `capture.json`, then run `./process_capture.sh <folder> home` (or drop the folder path in the Inbox).
-  3. Azure GPU quota is 0 for modern GPU families: request e.g. 8 vCPU "Standard NCASv3_T4 Family" or 36 vCPU "NVadsA10v5" (Central India / East US).
-  4. OK to host the home twin publicly on an Azure static website (needed for the R1 link; anyone with the link sees your home).
-  5. Optional: sign the ScanNet++ terms for a second real-geometry benchmark.
+  2. **Capture your home with [`deliverables/capture-sop.md`](deliverables/capture-sop.md)** (v1.1, ≈15–20 min). Print [`deliverables/assets/marker_aruco_4x4_id0_150mm.pdf`](deliverables/assets/marker_aruco_4x4_id0_150mm.pdf) at 100%. Use a stopwatch, note the phone model, send the originals via AirDrop/cable plus `capture.json`, then run `./process_capture.sh <folder> home` or drop the path in the Inbox.
+  3. Azure GPU quota (e.g. 8 vCPU NCASv3_T4 or 36 vCPU NVadsA10v5).
+  4. OK to host the home twin publicly (Azure static website).
+  5. Optional: ScanNet++ terms for a real-geometry benchmark.
+  6. Quit the VM / CapCut when we train: memory pressure caused swap thrashing and an out-of-memory kill today.
 - **Risks:**
-  - R1 depends on the user's capture (SOP untested in the field).
-  - Viewer hitching while walking (p95 105 ms vs a 20 ms budget).
-  - Path safety: ≈50% of routes come within 0.275 m of dense geometry (sparse map misses thin obstacles).
-  - No CUDA; dataset licences (drjohnson is non-commercial: never host it).
+  - R1 depends on the user's capture (SOP untested in the field; the demo video shows that non-SOP footage fails the gate).
+  - Load time 7.45 s at 40 Mbit/s.
+  - Path safety: 47–55% collision-free routes vs the dense proxy (sparse map misses thin obstacles).
+  - No CUDA.
+  - Shared-machine memory.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Namma Space — Techfest IIT Bombay. Teams that complete the full pipeline including AR navigation are considered for full-time roles at Juspay. Prize pool ₹1,50,000 (top 3).
@@ -77,12 +81,12 @@
 
 ## Selection memo
 _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (portfolio prioritisation). Score each 1–5 with one line of evidence._
-- **Winnability: 4/5.** The rubric rewards a complete pipeline. One command now runs from raw photos to a deployable site on a laptop: own SfM 99.6% registered, splats on Metal, alignment, NavGrid, viewer (`components/orchestrator/run_pipeline.py`). The threat is teams wrapping commercial apps (Polycam/Luma) for visual polish.
-- **Innovation headroom: 3/5.** After two independent reviews and a leak-free re-evaluation, the v1 spike (walkable space from capture evidence) showed **no measurable gain**: eval v3, all 406–435 pairs, CFC 0.45–0.50 for every variant; paired sign tests p ≥ 0.06. ADR 001 v2 moves the spikes to **D′ quality-qualified capture→twin turnaround** (on-site QA + streaming; S_T scalar) and **E fidelity-constrained viewer delivery** (S_V scalar). Both are measurable and judge-weighted, but more engineering than novel.
-- **Feasibility by the deadline: 4/5.** No CUDA needed for R1. SfM 6 min + Brush ≈37 min on the shared M5; CPU navigation in seconds. R2 by 17 Nov is realistic; AR is the stretch.
-- **Demo strength: 5/5.** Walk the twin, search "sofa", follow the route; on Day 1, "capture → link in under 90 min" is itself the demo.
-- **Fit with the user's strengths: 3/5.** Systems and frontier models map onto pipeline orchestration, cloud turnaround and VLM-based POIs. 3D vision itself is new territory.
-- **Biggest risk:** (1) R1 depends on the user's own capture (phone unknown; SOP untested in the field). (2) Viewer hitching while walking (p95 105 ms vs a 20 ms budget). (3) Path safety: about half of the routes pass within 0.275 m of dense geometry, because the sparse-point map misses thin obstacles. R2 fix: dense-splat obstacles, judged on a real-geometry scene.
+- **Winnability: 4/5.** A fully automatic run from raw photos gives a **29.56 dB / 0.929 SSIM** held-out twin in 45.8 min on a laptop, and the viewer walks at 60 fps (p95 22.4 ms). R1 still hinges on our own capture.
+- **Innovation headroom: 3/5.** The v1 spike (walkable space from capture evidence) showed no gain once leakage was removed (eval v3). The spikes are now D′ (quality-qualified turnaround) and E (fidelity-constrained delivery): measurable and judge-weighted, but engineering more than novelty. A practical contribution: the **pose-sanity gate**. It caught two degenerate reconstructions automatically that registration rate and reprojection error missed (drjohnson with sequential matching: 99.6% registered, 0.66 px, but trajectory error 34% of the scene; the edited library tour).
+- **Feasibility by the deadline: 4/5.** No CUDA needed for R1. Posing 12.3 min (CPU) + training 33.1 min (Metal); the user's capture is the gating item.
+- **Demo strength: 5/5.** Walk, search, route, auto-walk; on Day 1, "capture → link in under 90 min".
+- **Fit with the user's strengths: 3/5.** Pipeline/systems engineering and evaluation rigour are the core work; 3D vision is new territory.
+- **Biggest risk:** (1) the user's own capture (only SOP-disciplined footage passes the gate); (2) load time 7.45 s at 40 Mbit/s (fix: SPZ + LoD); (3) path safety ~50% collision-free vs dense geometry (R2: dense-splat obstacles + real-geometry benchmark).
 - **One-line pitch:** "Walk your space once with a phone. Within the hour, anyone can walk it from a link, search it and be routed around the sofa — and on-site, follow arrows through the camera."
 
 ## Log
@@ -153,3 +157,18 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **eval v3 corrected** (gpt-6-sol H1/H2: margin cell·√2/2, no reference corner-cutting) and re-run: CFC 0.443–0.490 for every variant; **camera-level bootstrap 95% CI ≈0.30–0.69** (pair-level Wilson ±0.05 was too narrow); refusals 0% among 29/33 and 30/33 eligible endpoints; paired sign tests p ≥ 0.06 (no evidence of a difference, not equivalence).
 - **Supervisor alignment (11:15):** agreed — the abstract leads with what R1 scores; walkable space is an R2 baseline with a frozen evaluator; the 0.788 → 0.970 result is dropped (leakage); path safety is a known gap with a fix plan.
 - **E2E run:** Brush has been training for 82+ min (37 min when the machine was quieter). Likely GPU contention (CapCut ≈65% CPU plus other sessions). Waiting; the stage cache keeps SfM.
+
+### 2026-10-04 15:15 IST — Posing failure found and fixed; E2E succeeds from raw photos; frozen viewer benchmark; public demo stopped by the gate
+- **OOM kill root cause** (not the PSNR step): our first own-SfM (sequential matching on an unordered photo set) was **degenerate**. 30/262 cameras were up to 2 km away, and even inliers were off by 34% of the scene, yet it reported 99.6% registered at 0.66 px. Alignment then failed and the walkable grid's min/max bounds became 4.8 km × 1.4 km (2.7e9 zero cells; kernel message "killing largest compressed process … 101341 MB").
+- **Fixes:**
+  - exhaustive matching for photo sets;
+  - pose-sanity gate (v2: trajectory continuity for video, outlier/spread for photos; calibrated good 0.0038 vs degenerate 0.29);
+  - incremental-mapper fallback;
+  - outlier-robust alignment with an `ok` flag;
+  - extent/memory guards in walkable + eval v3;
+  - Brush output streamed to disk;
+  - adoption of completed exports.
+- **E2E (own poses, exhaustive):** 263/263 registered, 0.91 px, trajectory error 0.0072 reference units (0.07% of extent). Brush 15k steps in 33.1 min (6.94 GB peak), **held-out 29.56 dB / 0.929** (33 views; the degenerate poses gave 18.3 dB). Alignment OK (61% floor inliers). Navigable 28.7 m² (95% of camera positions on it). Package 32 MB. Nav v3 CFC 0.466 / 0.554 (A/B). Total 45.8 min. `eval/results/drjohnson_e2e_report.json`.
+- **Viewer, frozen protocol** (3 cold runs, 40 Mbit/s): walking p95 22.4 ms at 60 fps, idle p95 17.5 ms, T_visible 7.45 s → S_V 1.49 (load-bound). `eval/results/viewer_bench_drjohnson_e2e.json`.
+- **Public demo:** Deichman library walkthrough (Wikimedia Commons, CC BY-SA 4.0, Asav; licence recorded in `test_data/public_demo/SOURCE.md`). The video path works (168 frames from 90 s of Theora in 10 s). Posing was **stopped by the gate**: 85/168 registered, jump fraction 0.19; it's an edited tour with cuts. Retrying with exhaustive + incremental; doesn't gate DONE.
+- **Supervisor (15:12):** agreed on Now/memo refresh and not gating on the demo. Reviews already ran at 10:50 / 11:30, so delta checks go to the same sessions. Port 8080 stays up for the user's viewer panel.

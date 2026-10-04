@@ -1,7 +1,7 @@
 # Namma Space — Technical Abstract (Round 1)
 **Phone capture → navigable, photoreal 3D web twin** · Techfest 2026 × Juspay · DRAFT v0.9 (4 Oct 2026)
 
-> Every measured number cites a committed result file. **[public]** = Deep Blending *drjohnson* (a multi-room house, 263 photos; non-commercial research licence; used for evaluation only). **[home]** = our own capture, added after recording. ⟨…⟩ = pending. The pipeline is implemented end-to-end; validation on our own home is pending.
+> Every measured number cites a committed result file. **[public]** = Deep Blending *drjohnson* (a multi-room house, 263 photos; non-commercial research licence; used for evaluation only). **[home]** = our own capture: values are added after recording. The pipeline is implemented end-to-end; validation on our own home is pending.
 
 ## 1. Goal
 One phone video of an indoor space should become, automatically and with no 3D modelling, a link that anyone can open to:
