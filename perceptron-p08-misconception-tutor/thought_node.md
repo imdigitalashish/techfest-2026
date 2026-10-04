@@ -22,9 +22,9 @@
   - **Fixes done and pushed by me:**
     - L3-only effort claims (`6db0c9cd`);
     - Kaggle-only names removed from code; `diagnosis.json` byte-identical (`42f8aeeb`).
-  - **Fixes 1–3 and 5–9 sit with the builder**, child "P8 demo builder" (`45c59b05`). It was told at 23:37 to stop after its current atomic step, push only finished work that passes smoke, and report what is pushed vs in progress. Its reply was pending at pause time; read it first.
+  - **Fixes 1–3 and 5–9 sit with the builder**, child "P8 demo builder" (`45c59b05`). It stopped at 23:38 and is idle. **Nothing new was pushed** (the last demo commit is still `69eb602e`). Its fixes are **uncommitted work in progress** in its worktree `.worktrees/imdigitalashish-symmetrical-engine`: `demo/live.py`, `demo/server.py`, `demo/web/index.html`. No demo server is running.
 - **Resume point (in order):**
-  1. Read the builder's pause reply and `git log origin/main -- perceptron-p08-misconception-tutor/demo`.
+  1. Ask the builder to resume from its uncommitted work (live.py, server.py, index.html) and check its state.
   2. Let it finish the remaining fixes:
      - stateful continuation, plus the 3-answer falsification climax in smoke and SCRIPT;
      - slider drag;
