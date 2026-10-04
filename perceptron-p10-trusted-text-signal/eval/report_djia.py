@@ -37,7 +37,8 @@ L += ["", f"Model-family check (linear quantile regression): improvement {s['mea
       f"open-to-close return (Spearman gap vs y: train {g['train']['spearman_gap_vs_y']:.2f}, test {g['test']['spearman_gap_vs_y']:.2f}; "
       f"the open equals the previous close on {pc(g['test']['frac_open_equals_prev_close'])} of test days). This pattern is consistent with "
       "stale index opening prints (the mechanism is UNVERIFIED: no source opened), so absolute intraday predictability here is not a "
-      "tradeable claim. Both arms include the gap, so the text comparison is unaffected.", "",
+      "tradeable claim. Both arms include the gap, so the registered comparison is fair *conditional on the open*; without the gap "
+      "(exploratory B below) the estimate changes sign and size but stays null.", "",
       "",
       "## Timing qualification (after review; registered result unchanged)",
       "The registration called the target \"tradeable at the open\", but two price features (gap, |gap|) use the next session's official "
@@ -57,6 +58,6 @@ L += ["",
       "## Reading", "- One index, ≈500 test days: a null result is \"no evidence\", not proof that text never helps.",
       "- Together with StockNet (fusion ≈ price-only on pinball and coverage), we found no setting where text measurably improved "
       "calibrated intervals. The pitch is therefore reframed (see the abstract): trust and coverage guarantees for a text channel, "
-      "with dropping text as the k = ∞ end of the price-of-robustness curve."]
+      "with the separately fitted price-only model as the zero-exposure alternative (not the k = ∞ end of the curve)."]
 Path("eval/results/text_utility_djia_v1.md").write_text("\n".join(L) + "\n")
 print("\n".join(L[9:13]))

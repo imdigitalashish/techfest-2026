@@ -19,7 +19,7 @@ Model-family check (linear quantile regression): improvement -0.176, one-sided p
 
 ## Exploratory (after the run; no decision weight)
 - Volatility channel: Spearman correlation of |y| with each text feature on the test period: sent_mean +0.046, sent_std +0.088, frac_bear +0.066, abs_max +0.100, novelty +0.045.
-- Why price-only is so strong (IC 0.36): the overnight gap continues into the open-to-close return (Spearman gap vs y: train 0.34, test 0.40; the open equals the previous close on 4.4% of test days). This pattern is consistent with stale index opening prints (the mechanism is UNVERIFIED: no source opened), so absolute intraday predictability here is not a tradeable claim. Both arms include the gap, so the text comparison is unaffected.
+- Why price-only is so strong (IC 0.36): the overnight gap continues into the open-to-close return (Spearman gap vs y: train 0.34, test 0.40; the open equals the previous close on 4.4% of test days). This pattern is consistent with stale index opening prints (the mechanism is UNVERIFIED: no source opened), so absolute intraday predictability here is not a tradeable claim. Both arms include the gap, so the registered comparison is fair *conditional on the open*; without the gap (exploratory B below) the estimate changes sign and size but stays null.
 
 
 ## Timing qualification (after review; registered result unchanged)
@@ -39,4 +39,4 @@ B: text does not help even when the model cannot see the open (so the gap was no
 
 ## Reading
 - One index, ≈500 test days: a null result is "no evidence", not proof that text never helps.
-- Together with StockNet (fusion ≈ price-only on pinball and coverage), we found no setting where text measurably improved calibrated intervals. The pitch is therefore reframed (see the abstract): trust and coverage guarantees for a text channel, with dropping text as the k = ∞ end of the price-of-robustness curve.
+- Together with StockNet (fusion ≈ price-only on pinball and coverage), we found no setting where text measurably improved calibrated intervals. The pitch is therefore reframed (see the abstract): trust and coverage guarantees for a text channel, with the separately fitted price-only model as the zero-exposure alternative (not the k = ∞ end of the curve).

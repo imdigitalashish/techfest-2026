@@ -16,3 +16,11 @@ Verified against `main` at `adb5d6b` after rebasing from the prior review. Paths
 **NEW blocking findings: none.** One **non-blocking** wording inconsistency remains in generated `eval/results/text_utility_djia_v1.md:22,42` / `eval/report_djia.py:40,60`: the gap allegedly leaves the text comparison "unaffected" although the exploratory pre-open result changes its magnitude/sign, and price-only is still called the `k=∞` endpoint despite being a separately fitted model. Qualify the first sentence and call the latter a separate zero-exposure alternative.
 
 **Verdict:** All five original fixes and the warning fix are verified in the stated scope; the numerical certificate still warrants a formal bound review before an unrestricted guarantee.
+
+---
+## Lead decisions (P10 lead, 4 Oct 2026 ~13:55 IST)
+| # | Item | Decision | What changed |
+|---|---|---|---|
+| Non-blocking | DJIA report: "unaffected" and "k = ∞ endpoint" wording | ACCEPTED | `eval/report_djia.py` now says "fair *conditional on the open*; without the gap the estimate changes sign and size but stays null", and calls price-only "the separately fitted zero-exposure alternative (not the k = ∞ end)". Report re-rendered; drift check passes. |
+| Note | Round-off budget needs a formal bound review before an unrestricted guarantee | ACCEPTED | Stated in `research/components/robust_conformal.md`. The abstract claims only "a derived round-off margin". |
+| Repro | v2 MiniLM reproduced (1,156/1,156 non-timing fields) | — | Abstract now reads: "An independent reviewer reproduced the v2 StockNet and pre-registered DJIA results exactly (all non-timing fields)." |

@@ -21,7 +21,7 @@
   4. Final Round-1 abstract rendered from committed results, a doc-drift check script, and the architecture diagram.
   5. Cross-model reviews as child sessions (PLAYBOOK §10, at most 2 at a time): `gpt-6-astra` (max) as hostile judge on the abstract and spike; `gpt-6-sol` (max) on code and eval, including reproducing the headline numbers. Record them in `reviews/` and `ledger.tsv`.
   6. Final selection memo, thought node current, everything pushed, then message the Supervisor.
-- **Doing:** definition of done met, everything pushed. Only gpt-6-sol's verification of the v2 fixes, with a reproduction of `text_minilm_v2`, is still open; its file is recorded on arrival. Then "DONE — slot free" to the Supervisor.
+- **Doing:** ✅ **DONE (4 Oct ~13:55 IST).** Definition of done met; everything pushed; Supervisor messaged "DONE — slot free". Next work, after the 12 Oct selection: edit budget, FNSPID pre-registration, formal round-off review, demo.
 - **Machine rules:** start heavy jobs only when `sysctl -n kern.memorystatus_level` ≥ 30 (pause below 25); always `nice -n 10`, one job at a time; CPU only; small requests; poll long jobs at ≥ 10-minute intervals; no FinBERT download (MiniLM is cached).
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section. Optional: a Kaggle API token (`~/.kaggle/kaggle.json`).
 - **Risks:**
@@ -53,7 +53,8 @@ Headline run: StockNet with the MiniLM scorer, [`eval/results/text_minilm_v2.md`
 - **Cross-model reviews** (`reviews/`, `ledger.tsv`):
   - gpt-6-astra: 64/100 on the near-final abstract, with 5 blocking issues, all fixed.
   - gpt-6-sol: every headline number reproduced exactly; 3 blocking findings, all fixed.
-  - A re-score and a fix verification are in progress.
+  - Re-score of the final abstract: gpt-6-astra **74/100** (0 former blockers left).
+  - gpt-6-sol verified all fixes and reproduced `text_minilm_v2` exactly (1,156/1,156 non-timing fields).
 
 ## Phase 0 — what the judges must be able to see (lead, 4 Oct 03:00 IST)
 **The crux in our words.** Three things interact: (1) the text signal is weak and noisy, and probably says more about *how much* a price will move than *which way*; (2) daily returns are not exchangeable (volatility clustering, regime shifts), so a split-conformal interval is valid only on average and can under-cover exactly when it matters; (3) an adversary who injects or edits text moves the input at test time, which no standard conformal guarantee covers — the interval can be narrow, shifted and confidently wrong. "Meaningful" therefore has to be operationalised, not asserted.
@@ -225,3 +226,8 @@ Added `tests/` (43 pass): DST-safe 16:00 ET alignment, contract rejection, brute
 - **v2 reruns** (`baseline_v2`, `text_minilm_v2`): headline numbers unchanged at reported precision; v1→v2 deltas committed (no-text days got tighter because v1's margin straddled thresholds at 0). Ratchet re-baselined (SCORE 4.566). Prior-art search log completed (R2 §2.5).
 - **Final abstract:** v2, 890 words, rendered and drift-checked. astra re-score **3.70/5 (74/100)**: 0 former blockers left; 1 new wording blocker, fixed.
 - **Final selection memo:** P7 first, P10 a close second (best hostile abstract score among the memos read, but a weaker finals story), and the Theme-6 pick over P9.
+
+### 2026-10-04 13:55 IST — Fix verification; DONE
+- gpt-6-sol verified B1–B3, N1–N2 and the warning fix. It reproduced `text_minilm_v2` exactly (1,156/1,156 non-timing fields), found no new blockers, and raised one non-blocking DJIA-report wording issue (fixed).
+- The abstract's reproduction sentence now states what was reproduced: v2 StockNet and the DJIA results.
+- Definition of done met → messaged the Supervisor "DONE — slot free".
