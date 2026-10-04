@@ -4,7 +4,20 @@ Owner: child session "T3 detection + flux". Contracts: `../../architecture/contr
 (`FrameDetections` for C5, `FluxEstimate` for C6). Research note: `../../research/components/detection.md`.
 
 ## Results (2026-10-04, overnight run)
-RESULTS_PLACEHOLDER
+All numbers are from committed code; reproduce commands are in each JSON file. **The trained YOLO11n baseline did not
+finish overnight** (A1: the shared M5 was thrashing and the trainer could not complete one batch in 11 minutes). The
+numbers below are therefore a **ZERO-SHOT, class-agnostic** reference: COCO-pretrained YOLO11n, no TUD-GV training.
+
+| What | Split | Result | File |
+|---|---|---|---|
+| C5 zero-shot (COCO YOLO11n, class-agnostic) | TUD-GV **test** (254 img, 1,563 boxes, held out) | **mAP50 0.394 · mAP50-95 0.209 · P 0.756 / R 0.140 @ score≥0.25** · 1,087 ms/img median on the thrashing M5 (upper bound) | `results/metrics.json` |
+| same, frozen `eval.py` | Groningen cross-site (63 img) | mAP50 0.405 (boot SE 0.026) · R@0.25 0.010 | `results/zeroshot_groningen_eval.json` |
+| C6 flux, zero-shot detector + ByteTrack + line | **SYNTHETIC** seq02 (120 frames, 12 crossings) | counted 3 of 12 → **count error 75%** | `results/flux_synthetic.json` |
+| Autoresearch ratchet | val | not run (compute); harness ready | `autoresearch/` |
+
+Reading: the zero-shot model ranks litter-like boxes reasonably (mAP50 ≈ 0.39, from very low-score detections), but at
+an operational threshold it finds only 14% of items. That is why the counter misses 75%. **Fine-tuning is required**:
+the training command below is ready; on an idle machine or Azure it takes about 1 h.
 
 ## Dataset
 **TUD-GV floating-litter subset** — Jia, de Vries, Kapelan, van Emmerik, Taormina (2024), *Detecting floating litter in
