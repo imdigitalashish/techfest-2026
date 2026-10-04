@@ -19,7 +19,7 @@
   4. Cross-model reviews as child sessions: gpt-6-astra (max) as hostile judge on abstract + spike; gpt-6-sol (max) on code/eval, reproducing the headline numbers → `reviews/` + `reviews/ledger.tsv`.
   5. Final selection memo; push; message the Supervisor "DONE — slot free".
 - **Plan:** protocol → runner (`eval/run_llm_gaps.py`; responses saved to committed JSONL so scoring reproduces offline) → runs (bounded; tokens and cost logged per part) → analysis → pitch/abstract/memo → 2 reviews → triage → DONE.
-- **Doing:** lead (Opus 5.5) writing the pre-registration. No child sessions (cap 2; reviewers come last). No background jobs.
+- **Doing:** lead running the pre-registered LLM-gap parts (real done; inversion, tracing, prob_pack in a background job). No child sessions yet.
 - **Rules in force:** no `task` sub-agents; ≤2 child sessions; never `git stash`/`--autostash`; timestamps from `TZ=Asia/Kolkata date`; heavy jobs `nice -n 10`, CPU only, start only when `kern.memorystatus_level` ≥ 30; small API batches; poll long jobs ≥10 min apart; Azure keys in env only.
 - **Needs from user:**
   - Register by 15 Oct (after the 12 Oct selection).
@@ -133,3 +133,14 @@ Model API returned "408 Timed out reading request body" for most agents (network
 
 ### 2026-10-04 15:00 IST — Resumed by the Supervisor (batch slot)
 - 14:58 message: P8 active again; definition of done = LLM-gap experiments (pre-registered) → re-framed pitch → final abstract with rendered numbers + doc-drift check → gpt-6-astra / gpt-6-sol reviews → final memo → "DONE — slot free". Now rewritten.
+
+### 2026-10-04 15:38 IST — LLM-gap experiments: pre-registered, real-data part done
+- **Pre-registration:** `eval/llm_gap_protocol.md` + `eval/run_llm_gaps.py` committed at 15:21:41 IST, before any main-run call. Addendum A (prob_pack) committed at 15:29:52 IST. Dry runs (no API) only revealed the executable side's own numbers. Smoke tests (3 items × part × model) were reused by the main run, as registered.
+- **Real data (`python -m eval.run_llm_gaps --part real_negatives`):** 131 positives (29 evaluable), 152 same-domain negatives (evaluable arithmetic distractors labelled with other misconceptions), 21 related labels (sensitivity only).
+  - EXEC: accuracy on P 19.1%, false-claim rate on N 0.0%, balanced accuracy 59.5%.
+  - gpt-4.1-mini (with a NONE option): P 55.7%, false claims 15.8% (CI 10.5–21.7) → **H1 gap and H2 hybrid gain (+8.3 BA points, CI 4.9–11.9)**.
+  - gpt-5.4-mini: P 69.5%, false claims **0.0%**; gpt-5.5: P 79.4%, false claims **0.0%** → **H1 and H2 fail**; the gated hybrid is slightly *worse* (−0.8 BA points, CI −1.9 to 0.0).
+  - **Pre-registered conclusion:** on real data, the strongest LLMs tested show no weakness that the executable path fixes; the gap exists only against gpt-4.1-mini.
+  - Also: adding a NONE option dropped gpt-4.1-mini from 86.0% (forced choice) to 55.7% on positives.
+  - Cost: $2.42 total; gpt-5.5 $0.0065 per item.
+- Synthetic parts (inversion, tracing) and prob_pack are running; their results are secondary by registration.
