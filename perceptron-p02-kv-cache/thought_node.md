@@ -98,10 +98,14 @@ _v2 source of truth: [deliverables/selection-memo.md](deliverables/selection-mem
 - **R2 mechanism T1** (RoD): keep 0.1: block hit 0.88, accuracy given hit 0.98, 4/7 wrong answers name another needle's value; keep 0.25: block hit 1.00, accuracy given hit 0.55, 16/20 wrong answers name another needle's value; keep 0.5: block hit 1.00, accuracy given hit 0.53, 10/19 wrong answers name another needle's value
 - **R2 mechanism T2** (RoD): keep 0.1: block hit 0.85, accuracy given hit 0.82, 0/15 wrong answers name another needle's value; keep 0.25: block hit 0.93, accuracy given hit 0.59, 10/20 wrong answers name another needle's value; keep 0.5: block hit 1.00, accuracy given hit 0.35, 15/26 wrong answers name another needle's value
 - **S3** (primary replicated on T2 paraphrase): +0.375 (95% CI +0.23 to +0.54, 12 contexts) → replicated
+- **S4** (halo 64 − halo 0, RoD, keep 0.1, T1): +0.000 (95% CI +0.00 to +0.00, 12 contexts)
+- **S4** (halo 64 − halo 0, RoD, keep 0.25, T1): -0.083 (95% CI -0.17 to +0.00, 12 contexts)
+- **S4** (halo 64 − halo 0, RoD, keep 0.5, T1): -0.062 (95% CI -0.17 to +0.04, 12 contexts)
 - **S5** (RoD − baseline, keep 0.1, T1): StreamingLLM (ours) +0.833 (95% CI +0.71 to +0.94, 12 contexts); SnapKV-variant (ours, +4 sinks) +0.854 (95% CI +0.73 to +0.96, 12 contexts); H2O-style (ours) +0.854 (95% CI +0.73 to +0.96, 12 contexts); RoD-lexical (control) +0.417 (95% CI +0.31 to +0.52, 12 contexts); kvpress ExpectedAttention +0.854 (95% CI +0.73 to +0.96, 12 contexts)
 - **S5** (RoD − baseline, keep 0.5, T1): StreamingLLM (ours) +0.167 (95% CI +0.02 to +0.31, 12 contexts); SnapKV-variant (ours, +4 sinks) +0.375 (95% CI +0.21 to +0.56, 12 contexts); H2O-style (ours) +0.333 (95% CI +0.15 to +0.50, 12 contexts); RoD-lexical (control) +0.000 (95% CI -0.08 to +0.08, 12 contexts); kvpress ExpectedAttention not run
 - **Byte check T1**: RoD answer-time bytes > a baseline's stored bytes in 0 of 36 (context, keep) cells
 - **Byte check T2**: RoD answer-time bytes > a baseline's stored bytes in 0 of 36 (context, keep) cells
+- **S4 pairing**: 12 contexts; context lengths identical to T1's: yes
 <!-- p2:verdicts:end -->
 
 ## Log

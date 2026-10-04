@@ -16,10 +16,14 @@ Pre-registration: [`PREREG.md`](PREREG.md). Engine parity: [`results/parity_torc
 - **R2 mechanism T1** (RoD): keep 0.1: block hit 0.88, accuracy given hit 0.98, 4/7 wrong answers name another needle's value; keep 0.25: block hit 1.00, accuracy given hit 0.55, 16/20 wrong answers name another needle's value; keep 0.5: block hit 1.00, accuracy given hit 0.53, 10/19 wrong answers name another needle's value
 - **R2 mechanism T2** (RoD): keep 0.1: block hit 0.85, accuracy given hit 0.82, 0/15 wrong answers name another needle's value; keep 0.25: block hit 0.93, accuracy given hit 0.59, 10/20 wrong answers name another needle's value; keep 0.5: block hit 1.00, accuracy given hit 0.35, 15/26 wrong answers name another needle's value
 - **S3** (primary replicated on T2 paraphrase): +0.375 (95% CI +0.23 to +0.54, 12 contexts) → replicated
+- **S4** (halo 64 − halo 0, RoD, keep 0.1, T1): +0.000 (95% CI +0.00 to +0.00, 12 contexts)
+- **S4** (halo 64 − halo 0, RoD, keep 0.25, T1): -0.083 (95% CI -0.17 to +0.00, 12 contexts)
+- **S4** (halo 64 − halo 0, RoD, keep 0.5, T1): -0.062 (95% CI -0.17 to +0.04, 12 contexts)
 - **S5** (RoD − baseline, keep 0.1, T1): StreamingLLM (ours) +0.833 (95% CI +0.71 to +0.94, 12 contexts); SnapKV-variant (ours, +4 sinks) +0.854 (95% CI +0.73 to +0.96, 12 contexts); H2O-style (ours) +0.854 (95% CI +0.73 to +0.96, 12 contexts); RoD-lexical (control) +0.417 (95% CI +0.31 to +0.52, 12 contexts); kvpress ExpectedAttention +0.854 (95% CI +0.73 to +0.96, 12 contexts)
 - **S5** (RoD − baseline, keep 0.5, T1): StreamingLLM (ours) +0.167 (95% CI +0.02 to +0.31, 12 contexts); SnapKV-variant (ours, +4 sinks) +0.375 (95% CI +0.21 to +0.56, 12 contexts); H2O-style (ours) +0.333 (95% CI +0.15 to +0.50, 12 contexts); RoD-lexical (control) +0.000 (95% CI -0.08 to +0.08, 12 contexts); kvpress ExpectedAttention not run
 - **Byte check T1**: RoD answer-time bytes > a baseline's stored bytes in 0 of 36 (context, keep) cells
 - **Byte check T2**: RoD answer-time bytes > a baseline's stored bytes in 0 of 36 (context, keep) cells
+- **S4 pairing**: 12 contexts; context lengths identical to T1's: yes
 
 ## T1 — literal needles, seed 0
 
@@ -118,6 +122,18 @@ torch-cpu · Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz · torch 2.10.0+cpu �
 | SnapKV, question-aware (oracle) | 0.50 | 0.417 | 0.29–0.54 | 64.7 | 2.0× | 64.7 | 1.27 |  |
 | **RoD (ours)** | 0.50 | 0.458 | 0.38–0.54 | 32.8 | 4.0× | 63.0 | 5.89 | 1.00 |
 | RoD-lexical (control) | 0.50 | 0.396 | 0.29–0.48 | 32.4 | 4.0× | 63.3 | 5.58 | 0.95 |
+
+## S4 — RoD with halo 64, seed 0
+
+`python eval/kvbench_torch.py --ctx 4096 --n 12 --needles 4 --seed 0 --fracs 0.1,0.25,0.5 --methods rod --style literal --rod_layer 5 --rod_bits 4 --rod_scorer softmax_lift --rod_qsel content --lex_qsel content --kvp_fracs 0.1,0.25 --halo 64 --threads 8 --name S4_halo64_s0`
+
+torch-cpu · Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz · torch 2.10.0+cpu · 8 threads · wall 696.6 s · 12 contexts × 4 questions · mean context 4123 tokens
+
+| Method | Keep | Recall | 95% CI | Stored KV MiB | Compression | Answer-time MiB | s/answer (CPU) | Needle-block hit |
+|---|---|---|---|---|---|---|---|---|
+| **RoD (ours)** | 0.10 | 0.854 | 0.73–0.96 | 7.1 | 18.2× | 11.1 | 1.32 | 0.88 |
+| **RoD (ours)** | 0.25 | 0.500 | 0.35–0.65 | 16.7 | 7.7× | 30.8 | 3.01 | 1.00 |
+| **RoD (ours)** | 0.50 | 0.542 | 0.40–0.67 | 32.6 | 4.0× | 62.7 | 5.70 | 1.00 |
 
 ## Recall drop vs the full cache (T1, paired by context; MVP)
 
