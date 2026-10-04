@@ -113,6 +113,11 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 20:29 IST — P6 demo done (3 demos)
+- **P6 DEMO DONE (74075ed):** smoke 31/31 in my clone (42.9 s, including headless Chrome). Astra demo review plus a re-review, all items fixed.
+  - Crazy element: "race the machine". The judge's measured reaction time is scored by the committed simulator against compiled LEV, timed live.
+  - Latency knob 10 µs–100 ms on a real Tardis BTC slice. The full-day counters equal the committed walk-forward (V0) and strict (V1) totals.
+- Slot → P3 demo ("the evaluator that says I don't know", on real OBD logs).
 ### 2026-10-04 20:04 IST — Sweep
 - P9: a demo-prep probe found an order-id laundering bypass in the retail guard. Fixed with regression tests; I checked that the committed τ-bench decisions are identical (991/991).
 - India@71 T1: eval_v2 (infant gate) → rule 0.473 vs programme 0.413 vs ML 0.430, disclosed in the proposal. The PDF is re-rendered at 6 pages and check_docs passes 20/20.

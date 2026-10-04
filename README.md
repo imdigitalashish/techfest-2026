@@ -16,10 +16,10 @@ Private monorepo: one folder per problem statement, each run by its own project-
 |---|---|---|---|---|---|
 | [perceptron-p01-federated-lora](perceptron-p01-federated-lora/thought_node.md) | ✅ Completed · 🎬 demo being built | Perceptron (IITB × Optiver) | Cheap fine-tuning across weak, scattered devices | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p02-kv-cache](perceptron-p02-kv-cache/thought_node.md) | ✅ Completed · 🎬 demo ready | Perceptron | Squeezing long-context inference into less memory | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p03-off-policy-eval](perceptron-p03-off-policy-eval/thought_node.md) | ✅ Completed · 🎬 demo queued | Perceptron | Did the policy actually work? (off-policy evaluation) | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p03-off-policy-eval](perceptron-p03-off-policy-eval/thought_node.md) | ✅ Completed · 🎬 demo being built | Perceptron | Did the policy actually work? (off-policy evaluation) | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p04-lob-regimes](perceptron-p04-lob-regimes/thought_node.md) | ✅ Completed · 🎬 demo queued | Perceptron | Order-book forecasting under regime shifts | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p05-impact-execution](perceptron-p05-impact-execution/thought_node.md) | ✅ Completed · 🎬 demo queued | Perceptron | Market-impact-aware execution | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p06-stat-arb](perceptron-p06-stat-arb/thought_node.md) | ✅ Completed · 🎬 demo being built | Perceptron | Cross-asset statistical arbitrage with latency budgets | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p06-stat-arb](perceptron-p06-stat-arb/thought_node.md) | ✅ Completed · 🎬 demo ready | Perceptron | Cross-asset statistical arbitrage with latency budgets | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p07-multi-agent-allocation](perceptron-p07-multi-agent-allocation/thought_node.md) | ✅ Completed · 🎬 demo being built | Perceptron | Splitting a shared resource when demand keeps changing | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p08-misconception-tutor](perceptron-p08-misconception-tutor/thought_node.md) | ✅ Completed · 🎬 demo queued | Perceptron | A tutor that finds the real reason you're stuck | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p09-agent-guardrail](perceptron-p09-agent-guardrail/thought_node.md) | ✅ Completed · 🎬 demo being built | Perceptron | Catching an agent before it acts on a bad idea | Abstract · 31 Oct | 15–18 Dec |
