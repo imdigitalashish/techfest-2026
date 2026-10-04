@@ -12,7 +12,9 @@
 ## Now
 - **Phase:** 4–5. The walking skeleton and eval harness run end-to-end with real numbers on the M5; the AnchorLoRA spike pilot beats the starter baseline (1 seed); the ratchet is scaffolded. Morning package complete (08:00 IST).
 - **Plan:** (1) replicate (seed 1 running, then ≥5 seeds) → (2) close the antithesis gaps (stronger baselines, de-confounded design, Sybil and leave-one-out tests) → (3) Flower adapter + kill-a-node demo → (4) standard datasets (finance sentiment, Dolly-15k) → (5) 0.5B–1.1B runs on Azure → abstract final by 31 Oct.
-- **Doing:** `eval.run_matrix` v1 still running in two attached processes: clean `anchor_naive`/`anchor_full` seed 0, then seed 1 of all strategies in both scenarios (≈10–15 min per run on the contended GPU). Results append to `eval/results/v1_*.jsonl`; regenerate the table with `python -m eval.summarize --tag v1`.
+- **Doing (07:55 IST):**
+  - Replication: 3 attached processes. (1) clean `anchor_naive`/`anchor_full` seed 0, then seed 1; (2) dropout seed 1 for all strategies; (3) dropout `anchor_full` seed 1 alone. Each run takes ≈30+ min at load average ≈ 80. Results append to `eval/results/v1_*.jsonl`; regenerate with `python -m eval.summarize --tag v1`.
+  - Agents (network recovered for agents; PyPI ≈ 176 KB/s, so `flwr` 1.39.0 is now installed): `c10-flower-adapter` (builds `components/flower_adapter/`) · `r5c-companies` → `research/raw/companies.md` · `r46-frameworks-benchmarks` → `research/raw/frameworks_benchmarks.md` · `r1c-fedlora-frontier` → `research/raw/fedlora_frontier.md` (incl. the prior-art verdict on frozen A + nested ranks).
 - **Next:**
   1. Re-run research threads r1–r6 + first principles when the network recovers, to fill the company section and verify every UNVERIFIED item.
   2. Install `flwr` (blocked: `grpcio` not downloadable overnight) and build C10.
