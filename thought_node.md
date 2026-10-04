@@ -6,16 +6,16 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (12:45 IST, 4 Oct)
+## Now (12:52 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
   - Namma Space: Brush E2E is thrashing on memory; kill/restart decision at 13:15.
-  - P9: applying the astra review of its abstract.
   - P1: GPU queue resumed 12:31.
   - P4: gpt-6-sol reproduction of the v2 holdout is running.
   - P10: resumed 12:44 into InnovateX T1's slot.
-- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1.
-- **Queue:** APCTT (when the 10 Oct data lands) → P5 → P3 → EV C1 → India@71 T3 → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
+  - P5: resumed 12:52 into P9's slot.
+- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9.
+- **Queue:** APCTT (when the 10 Oct data lands) → P3 → EV C1 → India@71 T3 → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
 - **Needs you today:**
   - free memory (see *Mac memory* below);
   - a 2-min mini-SOP test clip for Namma Space;
@@ -45,6 +45,10 @@
   - one timed rehearsal using `presenter-card.pdf`;
   - a pilot contact or letter (e.g. DJB, as the rainwater-harvesting nodal agency);
   - supplier quotes for the parts in `prototype-plan.md`.
+- [ ] **P9 agent guardrail (✅ Completed — please review `perceptron-p09-agent-guardrail/deliverables/`):**
+  - decide the 12 Oct Perceptron pick (one problem per team): P7 and P9 are done; P1, P4, P10 and P5 are finishing;
+  - teammates' names for the [TEAM] placeholders;
+  - if you keep the Azure OpenAI resource `rg-tf26-p08`, P9's frontier baseline can be re-run from it.
 ## Portfolio (08:18 IST) — package = landscape, components, contracts, ADR, deliverables, eval, memo
 | Project | Package | Memo (self-score) | Last push | Note |
 |---|---|---|---|---|
@@ -80,6 +84,16 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 12:52 IST — P9 completed
+- **P9 DONE (2462e64), verified on main:** check_docs 22/22; 7 tests pass; abstract 877 words.
+  - On 991 held-out real τ-bench write calls (a re-run after the code-review fixes, labelled exploratory), the tuned checker stops 41% [28–55] of harmful calls, blocks 2.0% of good calls and holds 30%.
+  - A gpt-4.1-mini judge on a 300-call sample stops 35% while blocking 11.7% of good calls.
+  - Blinded astra red team: 82/100 stopped.
+  - Reviews: sol 11/11; astra hostile judge 3.10/5, 21/21 accepted. Memo 3.8/5.
+- P5 resumed into the slot.
+- PLAYBOOK §6: no `git stash` / `--autostash`, since worktrees share one stash list.
+  - P9 had popped P7's leftover autostash. That entry is a stale 10:57 partial of `phase-v2c/episodes.csv`; main has the complete file (10:58), so nothing was lost.
+
 ### 2026-10-04 12:45 IST — InnovateX T1 completed; 408 storm; memory
 - **InnovateX T1 DONE (8c183b9), verified on main:**
   - Zonal deck (9 + 5 backup slides, PDF/PPTX), presenter card, 28-question Q&A prep, offline demo and Round-2 prototype plan (₹11,166/node).
