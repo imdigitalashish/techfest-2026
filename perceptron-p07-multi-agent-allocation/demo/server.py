@@ -3,7 +3,9 @@
     .venv/bin/python -m demo.server [--port 8707] [--no-open] [--t0 EPOCH_SECONDS]
 
 Binds 127.0.0.1 only and needs no network at run time.
-  POST /api/live/new    {L, P, rule, brain, drift, seed}  -> new live city (warm-up to 04:00)
+  POST /api/live/new    {scenario, L, P, rule, brain, drift, seed} -> new live city: synthetic (warmed to 04:00)
+                        or nyc (fast-forwarding to 21:15 on 4 July in the background)
+  POST /api/live/warm   {sid, from}                       -> fast-forward time-lapse frames; snapshot when done
   POST /api/live/step   {sid, n}                          -> next n simulated minutes (frames)
   POST /api/live/shock  {sid, zone, size}                 -> unannounced shock from the current minute
   POST /api/run         {kind: week|nyc|shock-day, seed}  -> recompute a committed episode in the background
@@ -50,15 +52,30 @@ def health() -> dict:
 
 
 def live_new(b: dict) -> dict:
+    scenario = str(b.get("scenario", "synthetic"))
     run = LiveRun(L=int(b.get("L", 1)), P=int(b.get("P", 10)), rule=str(b.get("rule", "auto")),
                   brain=str(b.get("brain", "mpc-ewma")), drift=bool(b.get("drift", False)),
-                  seed=int(b.get("seed", DEMO_SEED)))
+                  seed=int(b.get("seed", DEMO_SEED)), scenario=scenario)
     sid = secrets.token_hex(6)
     with LOCK:
         LIVE[sid] = run
         while len(LIVE) > 6:
             LIVE.popitem(last=False)
-    return dict(sid=sid, config=run.describe(), snapshot=run.snapshot(), stats=run.stats())
+    if scenario == "nyc":   # fast-forward to 21:15 on 4 July in the background; the page plays the time-lapse
+        threading.Thread(target=run.warm, kwargs=dict(every=10), daemon=True).start()
+        return dict(sid=sid, config=run.describe(), snapshot=run.snapshot(), warming=True)
+    run.warm()
+    return dict(sid=sid, config=run.describe(), snapshot=run.snapshot(), stats=run.stats(), warming=False)
+
+
+def live_warm(b: dict) -> dict:
+    run, k = live_get(b), int(b.get("from", 0))
+    fr = run.warm_frames[k:k + 300]
+    out = dict(frames=fr, next=k + len(fr), t=run.t, target=run.start, done=run.warmed and k + len(fr) >= len(run.warm_frames),
+               error=run.error)
+    if out["done"]:
+        out.update(snapshot=run.snapshot(), stats=run.stats())
+    return out
 
 
 def live_get(b: dict) -> LiveRun:
@@ -194,6 +211,8 @@ class Handler(BaseHTTPRequestHandler):
             b = json.loads(self.rfile.read(n) or b"{}") if n else {}
             if u.path == "/api/live/new":
                 return self._json(live_new(b))
+            if u.path == "/api/live/warm":
+                return self._json(live_warm(b))
             if u.path == "/api/live/step":
                 run = live_get(b)
                 frames = run.advance(min(256, int(b.get("n", 1))))

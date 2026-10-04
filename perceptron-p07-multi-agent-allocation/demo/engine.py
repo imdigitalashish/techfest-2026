@@ -33,6 +33,7 @@ RESULTS = P7 / "eval" / "results"
 NYC_EXPORT = DATA / "nyc_jul03-04_r200.npz"
 SHOCK = SCENARIOS["shock"]   # committed shock shape: shock_size^2 block, +shock_extra x zone-mean rate, shock_duration steps
 DEMO_SEED = 7000             # demo seeds 7000+ appear in no committed result or registration
+NYC_START = 1440 + 21 * 60 + 15   # the July 4th tab opens live at 21:15 on 4 July (the night window is 21:30-23:30)
 N_AGENTS = 40
 CELLS_L, CELLS_P = (1, 2, 4, 8), (3, 10)   # the committed (L, P) grid (eval/results/phase-v2)
 RULES = ("greedy", "reactive", "static")
@@ -116,7 +117,7 @@ class Panel:
 
     def retarget(self, trace: DemandTrace) -> None:
         c = self.core
-        tmp = DispatchCore(trace, n_agents=c.K, patience=c.P, move_steps_per_hop=c.hop_steps)
+        tmp = DispatchCore(trace, n_agents=c.K, patience=c.P, move_steps_per_hop=c.hop_steps, init_shares=np.ones(c.Z))
         for z in range(c.Z):   # FIFO pointers only cover requests that arrived before the injection step
             n = int(c.tail[z])
             if not (np.array_equal(tmp.times_z[z][:n], c.times_z[z][:n])
@@ -148,25 +149,62 @@ class Panel:
 
 # ---------------------------------------------------------------- live city: the judge's shocks
 class LiveRun:
+    """scenario 'synthetic': the committed parametric city (stationary or drift), warmed up to `start` (04:00).
+    scenario 'nyc': the committed NYC replay (replicate 200, L=1, P=10, the reactive rule = best rule on nyc-v2 by
+    mean), fast-forwarded to `start` (21:15 on 4 July) while a sparse time-lapse is kept for the UI."""
+
     def __init__(self, L: int = 1, P: int = 10, rule: str = "auto", brain: str = "mpc-ewma", drift: bool = False,
-                 seed: int = DEMO_SEED, start: int = 240, horizon: int = 1440):
-        if L not in CELLS_L or P not in CELLS_P:
-            raise ValueError("L and P must be a committed grid cell")
-        if rule == "auto":
-            rule = "reactive" if drift else best_rules()[(L, P)]   # drift: the pre-registered shock+drift reference
+                 seed: int = DEMO_SEED, start: int | None = None, horizon: int = 1440, scenario: str = "synthetic"):
+        self.scenario, self.info = scenario, {}
+        if scenario == "nyc":
+            trace, meta, self.info = load_nyc()
+            L, P, drift, seed = 1, 10, False, self.info["seed"]
+            rule = "reactive" if rule == "auto" else rule
+            self.grid, self.total_rate, self.name = int(meta["grid"]), 10.0, self.info["scenario"]
+            self.valid = np.asarray(meta["hist_shares"]) > 1e-6   # cells that contain a taxi zone
+            self.event = list(NYC[self.name][2])
+            start = NYC_START if start is None else start
+        elif scenario == "synthetic":
+            if L not in CELLS_L or P not in CELLS_P:
+                raise ValueError("L and P must be a committed grid cell")
+            if rule == "auto":
+                rule = "reactive" if drift else best_rules()[(L, P)]   # drift: the pre-registered shock+drift reference
+            cfg = replace(SCENARIOS["drift" if drift else "stationary"], horizon=horizon)
+            trace = build_trace(cfg, int(seed))
+            meta = episode_meta(cfg, trace)
+            self.grid, self.total_rate, self.name = cfg.grid, cfg.total_rate, cfg.name
+            self.valid = np.ones(cfg.grid ** 2, dtype=bool)
+            self.event = None
+            start = 240 if start is None else start
+        else:
+            raise ValueError("unknown scenario")
         if rule not in RULES or brain not in BRAINS:
             raise ValueError("unknown rule or brain")
         self.L, self.P, self.rule, self.brain, self.drift, self.seed = L, P, rule, brain, bool(drift), int(seed)
-        self.cfg = replace(SCENARIOS["drift" if drift else "stationary"], horizon=horizon)
-        self.trace = build_trace(self.cfg, self.seed)
-        meta = episode_meta(self.cfg, self.trace)
+        self.trace = trace
         meta.update(hop_steps=L, patience=P)
-        self.panels = [Panel(rule, self.trace, meta, self.seed, L, P), Panel(brain, self.trace, meta, self.seed, L, P)]
+        self.panels = [Panel(rule, trace, meta, self.seed, L, P), Panel(brain, trace, meta, self.seed, L, P)]
         self.shocks: list[dict] = []
         self.lock = threading.Lock()
-        self.t = 0
-        for _ in range(start):   # warm up to the start clock (04:00 by default) without frames
-            self._step()
+        self.t, self.start = 0, int(start)
+        self.warm_frames: list[dict] = []
+        self.warmed, self.error = False, None
+
+    def warm(self, every: int = 0) -> "LiveRun":
+        """Fast-forward to the start clock; every `every` minutes keep a time-lapse frame (units, queues, totals)."""
+        try:
+            with self.lock:
+                cum = np.zeros((2, 3), np.int64)
+                while self.t < self.start:
+                    infos = self._step()
+                    t = self.t - 1
+                    cum += [[i.served.sum(), i.lost.sum(), i.arrivals.sum()] for i in infos]
+                    if every and (t % every == every - 1 or self.t == self.start):
+                        self.warm_frames.append(dict(t=t, cum=cum.tolist(), panels=[p.units() for p in self.panels]))
+        except Exception as e:
+            self.error = repr(e)
+        self.warmed = True
+        return self
 
     @property
     def done(self) -> bool:
@@ -183,6 +221,8 @@ class LiveRun:
         return dict(t=self.t, panels=[p.units() for p in self.panels])
 
     def advance(self, n: int) -> list[dict]:
+        if not self.warmed:
+            raise ValueError("still fast-forwarding")
         frames = []
         with self.lock:
             for _ in range(max(0, int(n))):
@@ -195,12 +235,16 @@ class LiveRun:
         return frames
 
     def shock(self, zone: int, size: float = 1.0) -> dict:
+        if not self.warmed:
+            raise ValueError("still fast-forwarding")
         with self.lock:
-            G, s = self.cfg.grid, SHOCK.shock_size
+            G, s = self.grid, SHOCK.shock_size
             r, c = divmod(int(zone), G)
             r0, c0 = min(max(r, 0), G - s), min(max(c, 0), G - s)
-            zones = [(r0 + i) * G + (c0 + j) for i in range(s) for j in range(s)]
-            extra = float(size) * SHOCK.shock_extra * self.cfg.total_rate / (G * G)
+            zones = [z for z in ((r0 + i) * G + (c0 + j) for i in range(s) for j in range(s)) if self.valid[z]]
+            if not zones:
+                raise ValueError("no taxi zone in that block")
+            extra = float(size) * SHOCK.shock_extra * self.total_rate / (G * G)
             t0 = self.t
             rng = np.random.default_rng([self.seed, 99, t0, zones[0], len(self.shocks)])
             new = inject_shock(self.trace, t0, zones, extra, SHOCK.shock_duration, rng)
@@ -223,11 +267,16 @@ class LiveRun:
         if self.shocks:
             a = self.shocks[0]["t0"]
             out["lost_since_first_shock"] = [int(p.lost[a:t].sum()) for p in self.panels]
+        if self.event and t > self.event[0]:
+            a, b = self.event
+            out["event"] = dict(window=self.event, lost=[int(p.lost[a:min(t, b)].sum()) for p in self.panels],
+                                complete=t >= b, injected=bool(self.shocks and self.shocks[0]["t0"] < b))
         return out
 
     def describe(self) -> dict:
         return dict(L=self.L, P=self.P, rule=self.rule, brain=self.brain, drift=self.drift, seed=self.seed,
-                    horizon=self.trace.horizon, grid=self.cfg.grid, n_agents=N_AGENTS, scenario=self.cfg.name,
+                    horizon=self.trace.horizon, grid=self.grid, n_agents=N_AGENTS, scenario=self.name,
+                    start=self.start, event=self.event, info=self.info,
                     shock=dict(size=SHOCK.shock_size, extra=SHOCK.shock_extra, duration=SHOCK.shock_duration, window=WIN))
 
 
