@@ -7,12 +7,11 @@
 - _(empty)_
 
 ## Now (16:44 IST, 4 Oct)
-- **Mode:** batch of up to 5. The queue holds only APCTT (gated on the 10 Oct data), so 3 leads are active.
+- **Mode:** batch of up to 5. The queue holds only APCTT (gated on the 10 Oct data), so 2 leads are active.
 - **Active:**
   - P2: primary passed (+0.396 vs StreamingLLM at 25% KV). Identity checks I1–I3 pass, so the loss at 25/50% is real, not plumbing; mechanism under test. Selection memo v2.
-  - P8: final abstract (check_docs 118 claims OK); astra and sol reviews running. Honest headline: no gap vs GPT-5.5 on real data; the exact-first cascade halves LLM calls and cost on tutor-native items; the engine is deterministic (GPT-5.5 changed 2/40 answers across 3 runs).
   - InnovateX T3: final package v1; astra review running; YOLO11n baseline on the GPU.
-- **Completed — awaiting your review (16):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6 · InnovateX T2 · India@71 T2.
+- **Completed — awaiting your review (17):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6 · InnovateX T2 · India@71 T2 · P8.
 - **Azure running now:** P2's VM `p02-kv-1` (D16ds_v5) and P8's pay-per-token OpenAI resource.
 - **Memory:** level 25–32%, swap 28–30 GB. Your VM and the open 3D-viewer panel are the big consumers.
 ## User action items
@@ -31,7 +30,7 @@
   - Namma will also host a public scene, labelled "viewer demo on a public dataset — not our capture", as an extra; it never replaces the owned link.
 - [ ] **Azure GPU quota:** both subscriptions have 0 quota for T4/A10/A100/H100 families. Request e.g. *Standard NCASv3_T4 Family* (8 vCPU) or *NVadsA10v5* (36 vCPU) in Central India or East US. Needed mainly by Namma Space (3D reconstruction); the others run on the M5.
 - [ ] **Accounts that unlock better data:** Kaggle login (official Eedi data for P8) · DHS Program account (NFHS-5 microdata for India@71 T1) · Open Charge Map API key (free; EV C1).
-- [ ] **Azure resource created overnight (FYI, costs money):** P8 provisioned Azure OpenAI `tf26-p08-aoai-1004` (resource group `rg-tf26-p08`, Sweden Central, gpt-4.1-mini). Delete the resource group if P8 isn't pursued.
+- [ ] **Azure OpenAI `tf26-p08-aoai-1004` (rg `rg-tf26-p08`, pay-per-token; idle costs nothing):** P8 is done (total API spend $19.75) and recommends against itself. If you don't pick P8, delete it with `az group delete -n rg-tf26-p08`. P9's frontier baselines also used it, so deleting it only stops future re-runs.
 - [ ] **If P8 is chosen:** its stretch goal needs a ~30-learner pilot in November.
 
 - [ ] **Mac memory (updated 12:45):**
@@ -59,7 +58,7 @@
   - one timed rehearsal using `presenter-card.pdf`;
   - a pilot contact or letter (e.g. DJB, as the rainwater-harvesting nodal agency);
   - supplier quotes for the parts in `prototype-plan.md`.
-- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1, P4, P10, P5, P3 and P6 are ✅ Completed and ready for your review; P2 and P8 are still running.
+- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1, P4, P10, P5, P3, P6 and P8 are ✅ Completed and ready for your review; P2 is still running.
   - **P7 multi-agent allocation:** planning beats the best rule, +3.7 pp under shock and +5.5 pp under shock+drift (30/30 seeds, pre-registered). Its detector spike failed replication. astra hostile score 71/100.
   - **P9 agent guardrail:** on held-out real agent errors, 41% of harmful calls stopped at 2.0% of good calls blocked (30% held for review). astra 62/100; memo 3.8/5.
   - **P1 federated LoRA:** the only method that improves every domain (macro −0.081 vs the starter), at a stated cost on the data-rich domain. astra 68/100 on the draft before its fixes; memo 4.2/5.
@@ -68,6 +67,7 @@
   - **P5 impact-aware execution:** its headline failed a strict pre-registered replication on 400 fresh seeds (−0.013 bps, CI [−0.029, +0.003]). The abstract is now honestly about measuring your own market impact. astra 3.45/5; P5 recommends against itself.
   - **P3 off-policy evaluation:** on real Open Bandit data (pre-registered), it shows the deployed policy drifted and that a "did it work" dashboard overstated the effect by 29%. Its overlap gate refuses to answer where the logs can't support one. astra 69/100; memo 3.6/5. P3 recommends P7, narrowly.
   - **P6 cross-asset stat arb:** its pre-registered 12-day test passed (+$299/day simulated, 12/12), but only about a quarter of the gain survives strict fills, and it's within noise once shared liquidity is removed. astra 62/100. P6 recommends P7 and offers itself as the fallback for the 4/5/6 group.
+  - **P8 misconception tutor:** six pre-registered experiments found no gap vs GPT-5.5 on real data; the exact engine's edge is determinism and modest cost savings. astra 62/100 before revision. P8 recommends against itself.
   - **Note:** P4, P5 and P6 are a "choose exactly one" group, and P4 and P5 both recommend against themselves.
   - The astra scores were given at different stages and the memos are self-scored, so treat them as rough, not a ranking.
   - Whichever you pick: teammates' names for the [TEAM] placeholders, then register by 15 Oct.
@@ -106,6 +106,13 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 17:18 IST — P8 completed
+- **P8 DONE (1a2b1b4), verified on main:** check_docs 143 claims OK; 10 tests.
+  - Reviews: astra 23/23, sol 12/12.
+  - No gap vs GPT-5.5 (pre-registered). Cascade cost $7.32 → $5.08 per 1,000 diagnoses on tutor-native items.
+  - Memo recommends against P8. API spend $19.75.
+- 2 leads remain: P2 and InnovateX T3.
+
 ### 2026-10-04 16:47 IST — India@71 T2 completed
 - **T2 DONE (4c073af), verified on main:** check_docs 17/17; 67 tests; PDF 6 pp Arial.
   - Reviews: astra 24/25 + re-score, sol 12/12.
