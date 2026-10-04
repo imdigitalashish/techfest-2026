@@ -23,7 +23,7 @@ command -v python3 >/dev/null || { echo "run.sh: python3 is required" >&2; exit 
 ARGS=(--port "$PORT")
 if [ "$LIVE" = 1 ]; then
   ARGS+=(--live "${EXTRA[@]+"${EXTRA[@]}"}")
-  python3 -c "import torch, transformers, safetensors" 2>/dev/null \
+  python3 -c "import importlib.util as u, sys; sys.exit(0 if all(u.find_spec(m) for m in ('torch', 'transformers', 'safetensors')) else 1)" \
     || echo "run.sh: LIVE needs torch, transformers and safetensors in python3; REPLAY still works" >&2
   python3 - "$HERE" <<'PY' || echo "run.sh: LIVE needs the one-time fetch first: demo/fetch.sh  (REPLAY works now)" >&2
 import sys; sys.path.insert(0, sys.argv[1]); import common
