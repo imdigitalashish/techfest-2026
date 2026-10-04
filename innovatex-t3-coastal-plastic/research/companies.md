@@ -21,3 +21,44 @@ Owner: T3 research worker (tech + companies). All web sources opened on **2026-1
 - Mr. Trash Wheel site: "Sustainably powered and built to withstand the biggest storms, Mr. Trash Wheel uses a unique blend of solar and hydro power to collect 500 tons of litter and debris each year before it can enter the Chesapeake Bay and Atlantic Ocean" *(operator claim; US tons)*; described as "part of the semiautonomous trash interceptor family in the Baltimore Harbor"; has a 24/7 live webcam. https://www.mrtrashwheel.com/
 - Manufacturer site https://www.clearwatermills.com/ was **unreachable** on 2026-10-04 (DNS/TLS failure from curl and web_fetch) → unit cost, deployments outside Baltimore: **NOT FOUND** this session.
 - **Borrow:** booms funnel to a fixed collection point, conveyor lifts into a swappable dumpster (no in-water labour); public webcam + persona drives civic engagement. **Beat:** a wheel is a fixed, expensive civil structure for one outfall; Mumbai has many small nullah outfalls where a light boom + camera + crew dispatch is cheaper (cost data to be sourced — see interception-hardware.md).
+
+## Practitioner critiques and social signal (evidence log)
+- **The Revelator (Aug 2026), "Why the Ocean Cleanup hasn't solved the plastic pollution crisis"** — states experts "have long been skeptical of Slat's model"; after failed ocean prototypes "the team pivoted in 2019 toward a new model that was first suggested by critics and skeptics as an alternative in 2015. Now they mostly intercept plastic when it first leaves rivers and enters the ocean". https://therevelator.org/why-ocean-cleanup-has-not-solved-plastic-pollution/
+- **Hacker News thread on that article (20 Aug 2026, 97 points)** https://news.ycombinator.com/item?id=49374036 — critique: high-profile interventions "distract from real unsexy solutions like grab the plastic in rivers BEFORE they make it to the ocean" (https://news.ycombinator.com/item?id=49375433); reply: "They pivoted to mostly river cleanup (interceptors) many years ago ... Ocean cleanup is last step, river grab is the step before that and having proper garbage collection would be best" (https://news.ycombinator.com/item?id=49375766); counter-critique that collection/recycling is itself a deflection and source reduction matters more (https://news.ycombinator.com/item?id=49377389).
+- **Take-away for the pitch:** judges who know the field will ask "why intercept rather than fix collection?" → our answer must include the *ward hotspot feedback loop* (source reduction) and position interception as measured last-line-of-defence, not the solution.
+
+### The Great Bubble Barrier (NL) — compressed-air bubble curtain
+- DutchNews (17 Sep 2024), citing an official City of Amsterdam report: the Westerdok Bubble Barrier "was launched in 2019 and since then has caught some 190,000 pieces of plastic waste a year, weighing around one tonne"; city waterways chief: "We expect the Bubble Barrier to catch 86% of floating plastic before it heads for the IJ waterway" *(expectation, not a measured independent figure in this article)*; "a 60m punctured pipe that runs along the bottom of the channel ... thanks to its diagonal positioning and the river current, the bubbles push pieces of plastic ... to one side, where it can be collected"; expansion to five more sites "at a cost of €600,000, plus €50,000 a year in operating costs"; "the impact on migrating fish still needs to be assessed". https://www.dutchnews.nl/2024/09/amsterdams-bubble-barrier-to-collect-canal-plastic-is-a-success/
+- Company site https://thegreatbubblebarrier.com/en/ timed out (curl + web_fetch) on 2026-10-04 → India/Asia presence **NOT FOUND**.
+- **Borrow:** no obstruction to boats/flow (a flood-safe idea for drains); diagonal deflection to a bank-side catch point. **Beat:** needs continuous compressed air (mains power) and a current to deflect; at tidal Mumbai outfalls the flow reverses twice a day, so a fixed diagonal curtain works only on the ebb (inference, to verify) — our tide-aware design handles both directions.
+
+### Clearbot (HK/India) — autonomous electric surface-cleaning boats
+- Site lists boat specs (e.g. "Upto 8 Hours", "5 Kms", "4.04m (L) x 2.3m (W) x 1.68m (H)"), "Cleans water surface trash up to 500 kg in a single deployment", "Collects 200 kg of trash in a go", "1080p resolution camera", "Provides data of the collected waste"; projects listed include **"Jawaharlal Nehru Port Authority (JNPA) Mumbai – Trash Removal"**, "Lohagarh Fort, Bharatpur – 4,691 kgs of waste removed", Veolia Hong Kong hyacinth removal "Collected 260 tons of hyacinth in 2 weeks" *(vendor claims)*. https://www.clearbot.dev/ (note: clearbot.io is an unrelated US company)
+- **Borrow:** onboard camera + per-trip waste data; Mumbai port customer shows an Indian buyer exists. **Beat:** boats chase litter already in open water; we stop it at the outfall and tell the crew *when* to go (tide/forecast), which also tells a boat operator when to deploy.
+
+### RanMarine (NL) — WasteShark drones
+- WasteShark+ page: "Up to 5 km of Radio Controlled Guidance, including camera visibility"; "coverage of up to 5,000 m² (1.2 acres) daily. The 160-litre basket capacity and quick deployment/retrieval system"; "Easy in-water charging"; case studies in London and Zaanstad (NL) *(vendor claims)*. India presence: **NOT FOUND**. https://www.ranmarine.io/wasteshark/
+- **Beat:** a 160-litre basket is small against monsoon pulses at a Mumbai nullah; useful only as a mop-up tool behind a boom.
+
+### Seabin (AU) — marina bins → "Nature-Data Intelligence Platform"
+- Homepage now pitches data: "Seabin has been working 24/7 since 2020 to monitor, reduce and remove plastic pollution in Sydney Harbour. Our environmental impact data is also used for prevention and legislation purposes"; "We upload the data into our dashboard for partners to access on demand." Unit counts/kg totals: live counters JS-rendered → **NOT FOUND**. https://seabinproject.com/
+- **Borrow:** the pivot from hardware to *data-as-product* (dashboards for councils/sponsors) is exactly our MRV angle.
+
+### CleanHub (DE) — verified collection funded by brands
+- Homepage: "Fund TÜV SÜD-verified collection from coastal and river communities across the globe"; "Over 2 billion people lack access to waste collection"; brands fund collection. India sites: locations page timed out → **UNVERIFIED** this session. https://cleanhub.com/
+- **Borrow:** third-party (TÜV SÜD) verification as the product brands pay for. **Beat:** verification is of *collected* kg; we add *in-water interception evidence* (camera counts at the outfall) so a brand can prove "ocean-bound", not just "collected".
+
+### Greyparrot (UK) — AI waste analytics in sorting plants
+- Homepage: "Unlock the power of AI waste analytics"; products "Greyparrot Analyzer" and "Sync" for "smart" recovery facilities. Scale numbers JS-rendered → **NOT FOUND** this session. https://www.greyparrot.ai/
+- **Borrow:** camera-over-conveyor composition analytics → we apply the same idea over *water* at the boom and over the tipping floor at handover (composition per kg for EPR).
+
+### AMP (US) — AI sortation
+- "AMP designs, builds, and operates advanced, cost-competitive facilities to process single-stream recycling and municipal solid waste using artificial intelligence"; product lines "Jet High-volume air-jet sortation", "MicroJet", "Delta Reliable robotic arm sortation". https://ampsortation.com/
+- **Relevance:** downstream of us (MRF), not a competitor; shows AI vision is bankable in waste when tied to an operations contract.
+
+### Indian circular-economy players
+- **Saahas Zero Waste** (Bengaluru): "Since 2013, Saahas Zero Waste has been offering professional waste management services across India, specializing in EPR compliance, Zero Waste Programs and recycled products"; "50+ Sites". https://saahaszerowaste.com/
+- **Banyan Nation** (Hyderabad): "a top player in India's FMCG bottle-to-bottle recycling industry"; "produces human contact safe, traceable rPE resins"; helps brands meet "Extended Producer Responsibility (EPR) obligations". https://www.banyannation.com/
+- **Skrap** (Mumbai): "helps businesses and brands adopt sustainable practices and zero waste solutions" — zero-waste offices, events, shoots. https://www.skrap.in/
+- **Recykal** https://recykal.com/ and **ReCircle** https://recircle.in/ homepages are JS-rendered (only titles readable: "Recykal | Sustainable Circularity"; "ReCircle Waste Management & Recycling Services in India") → details below if found, else **NOT FOUND**.
+- **Sampurn(e)arth** https://sampurnearth.com/ timed out → **NOT FOUND** this session.
