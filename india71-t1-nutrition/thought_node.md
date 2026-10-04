@@ -162,3 +162,16 @@ Rendered `deliverables/round1-proposal.md` to PDF (Playwright; A4, 1-inch margin
 - **Agent V2** (CMAM protocol timelines) was still running at pause; its output file is the first resume step.
 - **Paused** on Supervisor instruction at 09:55.
 
+### 2026-10-04 ~10:20 IST — (paused) agent V2 result saved, not yet applied
+[`research/sources/V2-cmam-timelines.md`](research/sources/V2-cmam-timelines.md), from 4 primary sources (CMAM Protocol 2023, Poshan 2.0 guidelines 2022, HBYC handbook, NRC guidelines 2011).
+
+Against our `protocol.yaml` assumptions:
+- SAM medical appraisal is **3–5 days**, not 7.
+- The AWW 2-day step is confirmed, but as information-sharing with ASHA/ANM.
+- The day-7 LS and day-14 CDPO/MO triggers are **UNVERIFIED**; confirmed are only monthly LS/CDPO oversight and a monthly DM-led SAM review.
+- MAM fortnightly re-measure is confirmed; the 30-day LS rule is unverified (official triggers: 2 weeks / 3 months).
+- Growth faltering: HBYC says **5 days** for severe (downward-curve) cases.
+- NRC: discharge at 15% weight gain; stay 10–15 days; follow-up at 2 weeks, then monthly.
+
+Apply at resume step 2.
+
