@@ -16,7 +16,7 @@
 | **Std III, rural government schools: can do at least subtraction** | **27.6 % (2024)**; 20.2 % (2022) | ASER 2024, same page ("from 20.2% to 27.6% — in government schools") |
 | Std III, rural private schools: can read a Std II text | 35.5 % (2024) | ASER 2024 ("from 33.1% to 35.5%") |
 | Grade 3 numeracy, Foundational Learning Study 2022 | 37 % limited, 42 % sufficient, 10 % superior skills (~86,000 Grade 3 students, 10,000 schools, 20 languages) | Rajya Sabha AU3224: https://sansad.in/getFile/annex/259/AU3224.pdf?source=pqars |
-| PARAKH Rashtriya Sarvekshan 2024, Grade 3 national results | **UNVERIFIED** (PIB release returned 403; national PDFs on disk contain sample items only). Reports: https://parakh.ncert.gov.in/prs | — |
+| PARAKH Rashtriya Sarvekshan 2024, Grade 3 (21,15,022 children in 74,229 schools, 781 districts) | average score language / maths: boys 63/60, girls 65/60, rural 64/60, urban 63/59; SC 64/60, **ST 61/57**, OBC 63/60, others 66/61 | PARAKH national report pp. 1–4, https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_India_IND.pdf (via `sources/official-data.md`) |
 
 **Reading the gap.** The scorecard counts enrolment and inputs (ANER 96.5 %, PTR 18) and the mission sets a 2026-27 deadline; the independent measure says fewer than one in four Grade 3 children in rural government schools can read a Grade 2 text. 2026-27 is the current school year.
 
@@ -67,7 +67,7 @@ Detail: [`sources/methods-sota.md`](sources/methods-sota.md), [`sources/methods-
 | Student-wise records | UDISE+ (since 2022-23) | Keying everything on UDISE+ codes, LGD codes and salted pseudonyms of the student ID |
 
 ## 6. Open questions (to close before 12 Oct)
-- PARAKH 2024 Grade 3 national and state results at a primary source (PIB/NCERT) — **UNVERIFIED** today.
+- PARAKH 2024 state- and district-level tables (national report lists "50 High Performing Districts (Grade 3)", p. 13) — extract for the real-data ASER-vs-PARAKH comparison.
 - Whether NIPUN's goal grade is "end of Grade III" (2021 document) or "Grade 2" (2024 parliamentary answer) in current guidelines.
 - VSK architecture and stack at a government source (cQube/Sunbird adoption by state).
 - Independent accuracy of AI oral-reading scoring in Indian languages.

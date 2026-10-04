@@ -14,13 +14,13 @@
 
 **The measurable gap.** *Share of Grade 3 children in government schools who meet the Grade 3 reading and numeracy goals*: mission target 100 % in 2026-27 [2]; independently measured ≈ 23 % (reading) and ≈ 28 % (subtraction) [3].
 
-**The underserved group.** Children in Grades 1–3 of rural government schools — 68.9 % of India's 14.71 lakh schools are government schools [4] — and, within them, those the data system sees least well: children in **1,04,125 single-teacher schools (33.8 lakh enrolled)** [4], Scheduled Tribe and Scheduled Caste children, and children whose home language is not the language of instruction.
+**The underserved group.** Children in Grades 1–3 of rural government schools — 68.9 % of India's 14.71 lakh schools are government schools [4] — and, within them, those the data system sees least well: children in **1,04,125 single-teacher schools (33.8 lakh enrolled)** [4], Scheduled Tribe children — the lowest-scoring social group in PARAKH 2024 Grade 3 (maths 57 % vs 61 % for others) [7] — Scheduled Caste children, and children whose home language is not the language of instruction.
 
 **The implementation gap — five breaks.** The brief is right that data is not missing. UDISE+ has collected student-wise records with "more than 60 fields for each student" since 2022-23 [4]; states run census-style FLN assessments; Vidya Samiksha Kendras (VSKs) run dashboards. Yet for a struggling child the chain *recorded → believed → acted on → rechecked* breaks at five points:
 
 | Break | Today | Consequence |
 |---|---|---|
-| **Commensurability** | ASER levels, PARAKH scale scores and state tests use different constructs and scales | Teacher, block and state see different pictures |
+| **Commensurability** | PARAKH 2024 reports Grade 3 children answering ~64 % of language items correctly [7]; ASER 2024 reports 23.4 % of government-school Std III children reading a Std II text [3]. Both are right — they measure different things — but no system links them | Teacher, block and state see different pictures |
 | **Trust** | Census-style tests are often "proctored and graded by teachers in the same school"; Madhya Pradesh's Pratibha Parv (~6–7 million students) was shown to "mislead inferences about learning levels" [5] | Officials cannot tell progress from reporting pressure |
 | **Granularity** | Trustworthy surveys (ASER, PARAKH) are samples | Silent about a block, a school, a child |
 | **Actionability** | Outputs are averages and "% NIPUN" | Nobody is told *which children, which skill, which activity, this week* |
@@ -33,7 +33,7 @@
 | ASER 2024 (rural, household, one-on-one oral test) | Std III govt: reading Std II text 20.9 % (2018) → 16.3 % (2022) → 23.4 % (2024); subtraction 20.2 % (2022) → 27.6 % (2024) | [3] |
 | Foundational Learning Study 2022 (NCERT; ~86,000 Grade 3 students, 10,000 schools, 20 languages) | Numeracy: 37 % limited, 42 % sufficient, 10 % superior skills | [6] |
 | UDISE+ 2024-25 | 14,71,473 schools; 24.69 crore students; 1.01 crore teachers; PTR at primary 20; 7,993 schools with zero enrolment | [4] |
-| PARAKH Rashtriya Sarvekshan 2024 | Grade 3 national/state results — *to be added from the official release (not yet verified at source)* | [7] |
+| PARAKH Rashtriya Sarvekshan 2024 (21,15,022 children, 74,229 schools, 781 districts; Grade 3: 5,99,026 students) | Grade 3 average score, language / maths: rural 64 % / 60 %; **ST children lowest at 61 % / 57 %** vs 66 % / 61 % for others; weakest maths competencies (shapes, money) at 50 % | [7] |
 | **Official-data audit, Madhya Pradesh** (re-test in 283 schools) | Official census scores inflated by **+38.9 pp (maths)** and **+33.8 pp (Hindi)** over independent re-test levels of 25.1 % and 37.9 %; in Andhra Pradesh, paper tests inflated by 16–20 pp, while tablet-based tests (≈ US$0.50 per test) mostly removed the distortion | [5] |
 | Diagnostic feedback to teachers, Andhra Pradesh (RCT) | Reports on their pupils' results alone: no detectable learning gain | [13] |
 | School-governance reform, Madhya Pradesh (RCT, 1,774 schools) | High compliance with ratings and improvement plans; learning effects null (maths +0.031 SD, Hindi +0.004 SD) | [14] |
@@ -121,7 +121,7 @@ Honest limits: in a single-seed run on a small district (120 schools, 12 re-test
 4. Ministry of Education. *UDISE+ 2024-25* report, pp. 10, 28–32. https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf
 5. Singh, A. (2020). *Myths of Official Measurement: Auditing and Improving Administrative Data in Developing Countries*. RISE Working Paper 20/042, pp. 1–5. https://riseprogramme.org/sites/default/files/2020-11/RISE_WP-042-Singh.pdf
 6. Rajya Sabha Unstarred Question 3224 (Foundational Learning Study 2022). https://sansad.in/getFile/annex/259/AU3224.pdf?source=pqars
-7. NCERT PARAKH. *Rashtriya Sarvekshan 2024* reports. https://parakh.ncert.gov.in/prs
+7. NCERT PARAKH (2025). *PARAKH Rashtriya Sarvekshan 2024 — National Report*, pp. 1–4. https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_India_IND.pdf
 8. J-PAL. *Teaching at the Right Level to improve learning* (case study). https://www.povertyactionlab.org/case-study/teaching-right-level-improve-learning
 9. Careers360 (citing Gujarat officials). https://news.careers360.com/focus-on-quality-learning-fund-allocation-have-transformed-gujarats-education-sector-officials
 10. Haryana Saksham, Gujarat Gunotsav and UP NIPUN verification sources: see `research/sources/methods-sae-audit.md`.
