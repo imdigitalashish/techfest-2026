@@ -272,3 +272,26 @@ Severity is contextual: **blocker** prevents an actual submission; **major** mat
 15. **minor** -- M:128; R:11; `components/access_gap/mh_district_gap.py:46-47,69`: 3,641 gross district additions is presented like a statewide net requirement. **Fix:** label the no-reallocation benchmark and distinguish it from the roughly 3,621 statewide comparison; avoid rounding inputs before allocation.
 16. **minor** -- M:146; `research/fact-check.md` novelty log; `thought_node.md:77`: limited search evidence supports a scoped application claim, not demonstrated priority or a wholly novel census methodology. **Fix:** use the wording in C, cite adjacent work and retain the dated query/candidate log.
 17. **minor** -- M:59,84,105; R:31,42,56; L:18,51; `thought_node.md:71`: blanket "built", "only", "validated", completeness and competitor assertions outrun their evidence. **Fix:** apply the sentence-level corrections in F and distinguish rendered numerical consistency from claim-level provenance.
+
+---
+
+## Lead triage (Claude Opus 5.5, 4 Oct 2026, 15:00 IST)
+| # | Severity | Decision | What changed |
+|---|---|---|---|
+| 1 | blocker (admin) | **ACCEPTED — routed to the user** | Team fields stay TBD until registration; listed under *Needs from user*. Not a research fix. |
+| 2 | major | **ACCEPTED** | v3 evaluator purges the overlap (DEV targets end Dec 2024; HOLDOUT from Jan 2025); the holdout is labelled retrospective; prospective test frozen. |
+| 3 | major | **ACCEPTED** | District allocation is called "conditional" everywhere; one-state test and post-hoc interval revision disclosed. |
+| 4 | major | **ACCEPTED** | Point-in-time rescoring with the accounting published (31 rows, 271 stations, 27 labelled 2021 units, 1 unlabelled kept missing, Sarangarh-Bilaigarh split 0.5/0.5). |
+| 5 | major | **ACCEPTED** | Abstention rule; failed bootstrap draws reported; no capture–recapture number enters planning outputs. |
+| 6 | major | **ACCEPTED** | Model/linkage sensitivity published; the no-three-way-interaction assumption stated; no national total quoted. |
+| 7 | major | **ACCEPTED** | "Reference-coverage index"; dates and units distinguished; dependence/heterogeneity stated as hypotheses. |
+| 8 | major | **ACCEPTED** | Maharashtra reframed: ranked on observed registration pressure and visible supply; modelled supply shown only as conditional; ranking sensitivity (Spearman 0.66) reported; "verify first" replaces "most underserved". |
+| 9 | major | **ACCEPTED** | Sizing formula now includes 24 h and deliverable kW; the bounded requirement MVP (three MoP norms, energy cross-checked against CEA) precedes forecasting extras in the roadmap. |
+| 10 | major | **ACCEPTED** | §2.7 states the role of official counts per estimator. |
+| 11 | major | **ACCEPTED** | Nowcast = YTD + non-negative remainder, with an invariant check; Ladakh now equals its YTD. |
+| 12 | minor | **ACCEPTED** | Errors labelled as selection-period; Oct–Dec increment error reported. |
+| 13 | major | **ACCEPTED** | Roadmap §3 safeguards: owners (roles), BEE open-API request with deadline, grid status field, heavy-duty 2 × 240 kW rule, scheme versioning, boundary provenance, no-new-feed fallbacks. Clause 13(2)(i) and the CEA report were re-opened and added to the fact-check (P7–P9). |
+| 14 | minor | **ACCEPTED** | "Pre-registered" removed; the rule's chronology is stated in code; availability (5/22) and inclusion (4/5) reported. |
+| 15 | minor | **ACCEPTED** | Statewide net benchmark (3,621) is distinguished from gross district additions; neither is called a requirement. |
+| 16 | minor | **ACCEPTED** | Novelty narrowed to a search-qualified application claim. |
+| 17 | minor | **ACCEPTED** | Sentence-level corrections applied (defined vs built components, "candidate clusters", no competitor predictions, no "first" pitch). |

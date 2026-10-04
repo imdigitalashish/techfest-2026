@@ -6,7 +6,7 @@
  "share_km_with_NH_ref_pct": 88.9,
  "oneway_km_share_pct": 56.2,
  "norm_stations_required": 1853,
- "hw_accessible_open_sites": 170,
+ "hw_accessible_open_sites": 171,
  "coverage_pct_lower_bound": 11.7,
  "gap_stations_upper_bound": 1637,
  "params": {

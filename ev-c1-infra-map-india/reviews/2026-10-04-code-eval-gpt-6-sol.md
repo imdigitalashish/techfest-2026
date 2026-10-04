@@ -478,3 +478,20 @@ PY
 ```text
 monthly_vs_annual_BEV_abs_state_error {2020: 0, 2021: 0, 2022: 0, 2023: 0, 2024: 0, 2025: 0}
 ```
+
+---
+
+## Lead triage (Claude Opus 5.5, 4 Oct 2026, 15:00 IST)
+| # | Severity | Decision | What changed (commit on main, 4 Oct) |
+|---|---|---|---|
+| 1 | blocker | **ACCEPTED** | `mse.py` linkage enforces at most one record per source per site (the longest edge of a violating component is removed; 1 edge removed). The national estimate flipped as predicted, so no national total is quoted; per-model and per-radius sensitivity are published (`c5_mse_sensitivity.json`). |
+| 2 | major | **ACCEPTED** | The bootstrap re-selects the model in every replicate; per-model estimates and the AIC-weighted mean are reported. An abstention rule (≥ 20 sites, ≥ 3 shared sites in ≥ 2 source pairs) withholds estimates for 17 of 22 large states. Linkage uncertainty stays a separate sensitivity table, not inside the bootstrap. |
+| 3 | major | **ACCEPTED** | 13 OSM `access=private/no` records excluded. The comparison is renamed a *reference-coverage index* against an older official count, not a same-date accuracy test. Overture/OCM access status remains unverified (stated). |
+| 4 | blocker | **ACCEPTED** | New point-in-time validation (`small_area.py: validate_chhattisgarh_point_in_time`): district BEV to Dec 2024 from RTO A − 2025 − 2026 tables; the independent state total 271; the split district halved between parents; the unlisted district kept missing. The current-covariate version is relabelled a sanity check. Historical open-data snapshots could not be obtained (Overpass attic timed out; ohsome 403), so the open-data term is untested at that date. |
+| 5 | major | **ACCEPTED (partly)** | `eval/data_manifest.py` (SHA-256 of 371 inputs, verified first in `run_all.sh`) and `requirements.lock` (exact `uv pip freeze`). Raw inputs are not committed (PLAYBOOK §6 size/licence rule); the fetch scripts plus manifest are the route for an independent reproduction. |
+| 6 | major | **ACCEPTED** | `parse_export` rejects empty tables, non-numeric cells, and rows not summing to TOTAL. `fetch_vahan.cached` re-validates caches and writes atomically; session creation retries with backoff. All 214 cached tables pass the row-sum check. |
+| 7 | major | **ACCEPTED** | `eval_monthly_v3.py`: a static guard refuses a forecaster that can read files or the network; DEV/HOLDOUT targets no longer overlap; the holdout is labelled retrospective. A prospective test with frozen predictions is committed (`PROSPECTIVE.md`). |
+| 8 | major | **ACCEPTED** | `check_docs.py`: headings are checked; external numbers must sit in `<!--v:ROW-->` markers and appear in *that* fact-check row. Negative test: a fabricated heading, an out-of-context number and a misbound marker are all caught. |
+| 9 | major | **ACCEPTED** | Inline JSON escapes `<` and `>`; every external string in popups/tables passes through `esc()`. Hostile synthetic name test in Chromium: rendered as text, no script or `<img>` executed. |
+| 10 | minor | **ACCEPTED** | `c5_linked_records.csv` carries `license` and `url` per record; popups name the source licence. |
+| 11 | minor | **ACCEPTED** | Validation CSVs store unrounded predictions and intervals. |

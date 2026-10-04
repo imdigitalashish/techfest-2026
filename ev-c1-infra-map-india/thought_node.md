@@ -19,7 +19,7 @@
   - **Facts:** fact-check of 11 claims + MoP/PM E-DRIVE norms verified at primary sources.
   - **C9:** month-wise VAHAN, forecast ratchet, 2026 nowcast with backtest.
   - **C5:** Overture as third source; capture–recapture (fails state validation, reported as such).
-  - **Supply:** validated small-area allocation (Chhattisgarh district truth).
+  - **Supply:** small-area allocation tested at a past date on Chhattisgarh's official district counts (conditional; one state).
   - **Maharashtra:** district gap on LGD-based boundaries incl. Palghar; dashboard v1 checked in a browser.
   - **Docs:** Round-1 docs v2 with numbers rendered from runs; drift/unverified-number check passes.
 - **Rules in force:** child sessions only (≤ 2); never stash or autostash; heavy jobs under `nice -n 10` with memory ≥ 30.
@@ -52,7 +52,7 @@
 - 2026-10-04 — [ADR 001](architecture/adr/001-spike.md): Spike 1 completeness-aware census (C4+C5); Spike 2 forecast + requirement (C9+C11).
 - 2026-10-04 13:30 — C9 v2: monthly frozen eval; pooled EV-share logit trend selected (held-out WAPE <!--n:c9_hold_logit-->0.157<!--/n--> vs naive <!--n:c9_hold_naive-->0.223<!--/n-->); YoY nowcast for 2026.
 - 2026-10-04 13:45 — Third charger list = Overture places (category + strict EV-name rule); AllThePlaces has no Indian charging-operator spiders.
-- 2026-10-04 13:45 — Capture–recapture **fails** the pre-registered state check → used as a coverage audit only; district supply = small-area allocation validated on Chhattisgarh (Supervisor 13:25 proposal, refined). [ADR 001 addendum](architecture/adr/001-spike.md).
+- 2026-10-04 13:45 — Capture–recapture **fails** the stated state check → used as a coverage audit only; district supply = small-area allocation validated on Chhattisgarh (Supervisor 13:25 proposal, refined). [ADR 001 addendum](architecture/adr/001-spike.md).
 - 2026-10-04 13:50 — Government-facing maps draw no third-party basemap; boundaries are LGD-aligned (geoBoundaries ADM2 2021) and labelled as not SoI-certified.
 - 2026-10-04 14:00 — Documents render run-derived numbers from `eval/results/latest.json`; `eval/check_docs.py` fails on drift or on any unverified number in the Round-1 docs.
 

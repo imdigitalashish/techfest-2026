@@ -1,0 +1,1494 @@
+{
+ "provenance": {
+  "osm_overpass_base": "2026-10-04T00:26:35Z",
+  "ocm_export_commit": "8e3bedca48ca94807d96b2f5e7ee02cffe63ae54 (2026-04-22)",
+  "overture_release": "2026-09-23.1",
+  "vahan": "fetched 2026-10-04 (per-table fetched_at in .data/vahan/raw/*.json)"
+ },
+ "files": {
+  ".data/vahan/raw/nat_state_fuel_2020.csv": {
+   "sha256": "bd3582518ebdd46f3b9d95d04794a6833cd66bcd043be62d87e19a574cc764c3",
+   "bytes": 4467
+  },
+  ".data/vahan/raw/nat_state_fuel_2021.csv": {
+   "sha256": "4a758b222663bdfc7cec23aa34eac77197abe76c998fa56a8d0ed662b1455f83",
+   "bytes": 4475
+  },
+  ".data/vahan/raw/nat_state_fuel_2022.csv": {
+   "sha256": "9ce33457c2d63dd940ce69ab8e2c4f8fe0affcdee128ce638ddd9948faf5bb3d",
+   "bytes": 4540
+  },
+  ".data/vahan/raw/nat_state_fuel_2023.csv": {
+   "sha256": "6b31c17fc2769c242e2d25dfe24cffadc86c6f59a9ebc46f8e6cea263b444be8",
+   "bytes": 4690
+  },
+  ".data/vahan/raw/nat_state_fuel_2024.csv": {
+   "sha256": "7fe5011b8c5c6f2355a0d766938cc2841b7f53182b449c99f178eb5c3a82690d",
+   "bytes": 4885
+  },
+  ".data/vahan/raw/nat_state_fuel_2025.csv": {
+   "sha256": "6c2b4566fbe036a5eaa370fdf76785bbcb9441bd88b5c13e00b3b0effa095420",
+   "bytes": 5107
+  },
+  ".data/vahan/raw/nat_state_fuel_2026.csv": {
+   "sha256": "4c3230d14750fe33b732b3663e20e99bcb53bf8153e2a133de08ea353789dbd4",
+   "bytes": 5088
+  },
+  ".data/vahan/raw/nat_state_fuel_A.csv": {
+   "sha256": "78e6c07825ce4cc7d532abb211e0ad2cc074e22000cf178774030963e1de76fd",
+   "bytes": 5824
+  },
+  ".data/vahan/raw/nat_state_month_all_2019.csv": {
+   "sha256": "413bb2e08fa6409007e249f6920cb3d4b0c6c95cd3b0b303e28373e6e9a4fa79",
+   "bytes": 3162
+  },
+  ".data/vahan/raw/nat_state_month_all_2020.csv": {
+   "sha256": "c18f0307c64806a59485a6351ba56daa7952818b7cba85ef47f9f499146a5e43",
+   "bytes": 3050
+  },
+  ".data/vahan/raw/nat_state_month_all_2021.csv": {
+   "sha256": "f7600485ba9eed27bf9919b04bff3767b5b912c3dff4b6b61a0f8cb50055efbb",
+   "bytes": 3093
+  },
+  ".data/vahan/raw/nat_state_month_all_2022.csv": {
+   "sha256": "d507d0e2931bdfcce2b4d2f97d1e80e072b696e494c502a770bfb5f47675b175",
+   "bytes": 3132
+  },
+  ".data/vahan/raw/nat_state_month_all_2023.csv": {
+   "sha256": "f62aeb74f6fc9b2a6a43fde23aa0691842547ba274baf6f9dcaaed8e42ba01b6",
+   "bytes": 3146
+  },
+  ".data/vahan/raw/nat_state_month_all_2024.csv": {
+   "sha256": "4460a000f23aa6c95e42c89567bda4cf721dc1b85c64eba6855148386d8c44f4",
+   "bytes": 3163
+  },
+  ".data/vahan/raw/nat_state_month_all_2025.csv": {
+   "sha256": "f6689c794f734d90d3868e154c8995fb9d060a3be2bbdd8ee5c6b96118873777",
+   "bytes": 3179
+  },
+  ".data/vahan/raw/nat_state_month_all_2026.csv": {
+   "sha256": "95af9291298fb5257b167365b5a2bb208dc60c6ef22da2d630067e8b4f8fbd0f",
+   "bytes": 2729
+  },
+  ".data/vahan/raw/nat_state_month_bev_2019.csv": {
+   "sha256": "950ee200a93a1bf85a98a34a76e6f329d069f12e6faf5b82194137ee3c5dfb44",
+   "bytes": 1950
+  },
+  ".data/vahan/raw/nat_state_month_bev_2020.csv": {
+   "sha256": "e9986294259cfea4dcfa2f48e216f062a603a0ffb39e09f39fa178eb7dd8c1d4",
+   "bytes": 1886
+  },
+  ".data/vahan/raw/nat_state_month_bev_2021.csv": {
+   "sha256": "d555aae7bd6a1968fe8fb1a4929be24fdf098e42f6fa72208b4914270d9da7d2",
+   "bytes": 2110
+  },
+  ".data/vahan/raw/nat_state_month_bev_2022.csv": {
+   "sha256": "5a3cf29cb4aeae21fe0a02e31539f405a9d7e5fb3713f5e7afac13405962833e",
+   "bytes": 2329
+  },
+  ".data/vahan/raw/nat_state_month_bev_2023.csv": {
+   "sha256": "9bd722531d5e7e9492972510badea0a777713397ed0e5f583b855bbf9dc4fd51",
+   "bytes": 2395
+  },
+  ".data/vahan/raw/nat_state_month_bev_2024.csv": {
+   "sha256": "009bc3ed258ac0057daea5464ec951b649d4418c528e2cf7b2dede6e7d96aa3c",
+   "bytes": 2495
+  },
+  ".data/vahan/raw/nat_state_month_bev_2025.csv": {
+   "sha256": "72216382968935f8c44348b4a5d53ba032bb0993883f6c90023271111093b818",
+   "bytes": 2525
+  },
+  ".data/vahan/raw/nat_state_month_bev_2026.csv": {
+   "sha256": "7b8638add9684e357e921a1ae0c88d32cb2f1e57685b2b2ba4cca107f17f083d",
+   "bytes": 2262
+  },
+  ".data/vahan/raw/rto_CG_10_class_fuel_2025.csv": {
+   "sha256": "3d982963eba0a81660ad7a8e1f442e07e41a0605171b27de4585319f23552d35",
+   "bytes": 2944
+  },
+  ".data/vahan/raw/rto_CG_10_class_fuel_2026.csv": {
+   "sha256": "03705f426114bfefffde39eff61e9c2020facf8a1553cb57058c459cf6aa304c",
+   "bytes": 3283
+  },
+  ".data/vahan/raw/rto_CG_10_class_fuel_A.csv": {
+   "sha256": "53c32ab53fd98bf2c35d9f9207bf6a3c87f2c0c1711f1721f3a5bff737bcf14b",
+   "bytes": 5396
+  },
+  ".data/vahan/raw/rto_CG_11_class_fuel_2025.csv": {
+   "sha256": "f046e7e8adbcd6ad5ed1e2c98609b44ccc2d64ebd04ff339cfe5fb4e2dd6ebbd",
+   "bytes": 3184
+  },
+  ".data/vahan/raw/rto_CG_11_class_fuel_2026.csv": {
+   "sha256": "066df2b0c6b88ee65e549887c8fe3dbc4ca76771da9026e2fa8eb6d55c29287f",
+   "bytes": 2896
+  },
+  ".data/vahan/raw/rto_CG_11_class_fuel_A.csv": {
+   "sha256": "ce1743ebbce91c8895d6ddc775777c4a9bf98d1bd6bef4cf663f449d73694ee3",
+   "bytes": 4525
+  },
+  ".data/vahan/raw/rto_CG_12_class_fuel_2025.csv": {
+   "sha256": "d3d99c73c168ebb670f4753b6dfb2de59ed943bcaf51121c184f5df431f3a65a",
+   "bytes": 3176
+  },
+  ".data/vahan/raw/rto_CG_12_class_fuel_2026.csv": {
+   "sha256": "d21b3e966e78a0e7a9a234b32b84523e1ed8385a447e4d61bf67eb8f211808cf",
+   "bytes": 3186
+  },
+  ".data/vahan/raw/rto_CG_12_class_fuel_A.csv": {
+   "sha256": "df07284c412a043b508a2de4997ec0bb9d0948c8edcc066e4bcb40c03187702b",
+   "bytes": 4946
+  },
+  ".data/vahan/raw/rto_CG_13_class_fuel_2025.csv": {
+   "sha256": "4f670684cd1a5a4d750a03020b8e570aee94f65d2ff29119e45e2f8aa524d98b",
+   "bytes": 3541
+  },
+  ".data/vahan/raw/rto_CG_13_class_fuel_2026.csv": {
+   "sha256": "6ad3693969356d5dbdf44c8ef40354eb8f309fe174ca82fd99d292cc66a9681d",
+   "bytes": 3167
+  },
+  ".data/vahan/raw/rto_CG_13_class_fuel_A.csv": {
+   "sha256": "41680540ec5c62c68c45c3551cee754026401bad29d2f9863ec002edb10d3823",
+   "bytes": 4898
+  },
+  ".data/vahan/raw/rto_CG_14_class_fuel_2025.csv": {
+   "sha256": "89924f5de3fcf9991df956aec1832c8797fc4d98c3293aa67b3664112f5a0607",
+   "bytes": 2703
+  },
+  ".data/vahan/raw/rto_CG_14_class_fuel_2026.csv": {
+   "sha256": "a0f4dff3f725e977aaebe4e1646ac7e96f710a6f6abe4597852439d8858330bc",
+   "bytes": 2596
+  },
+  ".data/vahan/raw/rto_CG_14_class_fuel_A.csv": {
+   "sha256": "a704f181f557831ac02852ac86098d5e8c4bc4093d476f5eb40584708c4526d6",
+   "bytes": 4222
+  },
+  ".data/vahan/raw/rto_CG_15_class_fuel_2025.csv": {
+   "sha256": "e610248a95f9b1b8b7034b2eb6ad969ced3bad2295951b48dbf2681cb3b6df7b",
+   "bytes": 3176
+  },
+  ".data/vahan/raw/rto_CG_15_class_fuel_2026.csv": {
+   "sha256": "6c80f6457c127afaae7cfbc040002c62d5e265f983b073aebf2e0f65e4e76ae1",
+   "bytes": 2630
+  },
+  ".data/vahan/raw/rto_CG_15_class_fuel_A.csv": {
+   "sha256": "3a02bb5dc2feb43ad8948abf26fc4247bb4029d84c1727114f8bfb3f3d90e4d3",
+   "bytes": 4620
+  },
+  ".data/vahan/raw/rto_CG_16_class_fuel_2025.csv": {
+   "sha256": "7366e2e66caa3e7fe67f648ce66a1cbf701afaed172927530c628708f7b7168f",
+   "bytes": 2667
+  },
+  ".data/vahan/raw/rto_CG_16_class_fuel_2026.csv": {
+   "sha256": "625b7d2c3b642e79904ece02b7114d88c90d945f9c253c375b18bc1f8f7904e6",
+   "bytes": 2493
+  },
+  ".data/vahan/raw/rto_CG_16_class_fuel_A.csv": {
+   "sha256": "4cd90dbec642908495776c1df7ecb0cc9d1cf07073f3c064cd707137e731ef4c",
+   "bytes": 4613
+  },
+  ".data/vahan/raw/rto_CG_17_class_fuel_2025.csv": {
+   "sha256": "5c56ea3c28f38e5f382a77c0c41f0acc2d349dd0dfc12050cafbffb86b8862a7",
+   "bytes": 2790
+  },
+  ".data/vahan/raw/rto_CG_17_class_fuel_2026.csv": {
+   "sha256": "cabb866b6ed576b699a27eaddbb0ab6f2fb9168eae265cb05c3ce19559815330",
+   "bytes": 2900
+  },
+  ".data/vahan/raw/rto_CG_17_class_fuel_A.csv": {
+   "sha256": "5a86777530b999bd4454abd8a27fd8696602e8491fceeae85b6026454d0c4e2a",
+   "bytes": 4741
+  },
+  ".data/vahan/raw/rto_CG_18_class_fuel_2025.csv": {
+   "sha256": "53fd7c705773f8bdbf3d8c1115fc9653defcb8ab3e65e2b96ac9bffae876818d",
+   "bytes": 2672
+  },
+  ".data/vahan/raw/rto_CG_18_class_fuel_2026.csv": {
+   "sha256": "f1476a9ff6321a63cbc0d8f6dd436d27072b299ca4dae182373295fb7bf44c59",
+   "bytes": 2676
+  },
+  ".data/vahan/raw/rto_CG_18_class_fuel_A.csv": {
+   "sha256": "e1f6ee2da484f95e0d5598dbdcfedc9849ecd0fc757d6de7da5bca6a4ddfd23b",
+   "bytes": 3888
+  },
+  ".data/vahan/raw/rto_CG_19_class_fuel_2025.csv": {
+   "sha256": "5b806019877d018e76ed12635cf45b0854e8d60df81a06201b6e9056c715b9b0",
+   "bytes": 2490
+  },
+  ".data/vahan/raw/rto_CG_19_class_fuel_2026.csv": {
+   "sha256": "5b41e5ab06707934c414fb36d3d0bcc703ff385e061ee99eacb5de7aa26850e9",
+   "bytes": 2490
+  },
+  ".data/vahan/raw/rto_CG_19_class_fuel_A.csv": {
+   "sha256": "c7d8179e03bb4e8e9971681608553b730ec91730306b066258952facb2d39e4d",
+   "bytes": 4257
+  },
+  ".data/vahan/raw/rto_CG_20_class_fuel_2025.csv": {
+   "sha256": "3768806a91bb26be13c94c0c48d33f3fc584b89eb3560ff3b27f8fb9923b9310",
+   "bytes": 2006
+  },
+  ".data/vahan/raw/rto_CG_20_class_fuel_2026.csv": {
+   "sha256": "f689ae7ba095fd9c663ef33eac5b41f67642c0cdb2c5bf9a96b29e5045eac5db",
+   "bytes": 1745
+  },
+  ".data/vahan/raw/rto_CG_20_class_fuel_A.csv": {
+   "sha256": "f0798db4cc00f0a5ef3bce7a83b4d07b3a27b1e1a4d6807312b99d7fbbc82f01",
+   "bytes": 2819
+  },
+  ".data/vahan/raw/rto_CG_21_class_fuel_2025.csv": {
+   "sha256": "aa00db5a0b6d95eb36f88d50c70dedb70806ff5db47287b89ac0b14500f2dcd9",
+   "bytes": 2091
+  },
+  ".data/vahan/raw/rto_CG_21_class_fuel_2026.csv": {
+   "sha256": "e26240b2de89a7133e5fed5980a33035a982c986be91ac04ade145043d9b67ec",
+   "bytes": 1455
+  },
+  ".data/vahan/raw/rto_CG_21_class_fuel_A.csv": {
+   "sha256": "e83c694f345ca53097125db40307c375c272cf2dcf443ef1e47bbf00a0cfc3b7",
+   "bytes": 2966
+  },
+  ".data/vahan/raw/rto_CG_22_class_fuel_2025.csv": {
+   "sha256": "1c5da41efebe7ae70f585149a67f327651548bc290b8496d87162069e6fecc6e",
+   "bytes": 3246
+  },
+  ".data/vahan/raw/rto_CG_22_class_fuel_2026.csv": {
+   "sha256": "72b4cb13d3dd8a564b5d11890c7e8e10a5c71f1b3bdd6f1767914b2693222c2e",
+   "bytes": 3431
+  },
+  ".data/vahan/raw/rto_CG_22_class_fuel_A.csv": {
+   "sha256": "fd13db289378099f1bf914b558964b5c3fd3d9a7919146edf3c78d8b2ac3ae17",
+   "bytes": 4399
+  },
+  ".data/vahan/raw/rto_CG_23_class_fuel_2025.csv": {
+   "sha256": "fc009fe24a906d57c32571d13f6ed1112d93ceef6bb97c7a93a52c6d341df784",
+   "bytes": 2475
+  },
+  ".data/vahan/raw/rto_CG_23_class_fuel_2026.csv": {
+   "sha256": "ce066861686fcb57def9ea08d62abd78eff982db6ba77979b2aaa1a50fe25e42",
+   "bytes": 2276
+  },
+  ".data/vahan/raw/rto_CG_23_class_fuel_A.csv": {
+   "sha256": "e12d980f2dd7edc2c27c75be7274c3430b9fe5d20a1674b9c3339ddf4aa33606",
+   "bytes": 3616
+  },
+  ".data/vahan/raw/rto_CG_24_class_fuel_2025.csv": {
+   "sha256": "b8a801c507da5bea648e4c03e91dfa2a57d1c3fa6e241d96806cb4fddd931549",
+   "bytes": 2945
+  },
+  ".data/vahan/raw/rto_CG_24_class_fuel_2026.csv": {
+   "sha256": "b5158d2a11b510a69e47a4010958fe1a5d2ee34b40606fa0d4150a95c6f0bbe7",
+   "bytes": 2296
+  },
+  ".data/vahan/raw/rto_CG_24_class_fuel_A.csv": {
+   "sha256": "bd9792d368b2df3bc47475fb6cfedb450566035ed11b52491bece59f9b9ea585",
+   "bytes": 4175
+  },
+  ".data/vahan/raw/rto_CG_25_class_fuel_2025.csv": {
+   "sha256": "d7f801e046a111cea8e087c4525d5377cfbfa073aaf6ea9dff5d6e96d4843c41",
+   "bytes": 2692
+  },
+  ".data/vahan/raw/rto_CG_25_class_fuel_2026.csv": {
+   "sha256": "576faecacd0f4af20e5749a65ca32f0474a54137ec994838d47519a0c2e93431",
+   "bytes": 2582
+  },
+  ".data/vahan/raw/rto_CG_25_class_fuel_A.csv": {
+   "sha256": "615df347e23c40be6250a60f5cac6bab2c8b81ca044fe4f4ccc3a957970047bf",
+   "bytes": 3628
+  },
+  ".data/vahan/raw/rto_CG_26_class_fuel_2025.csv": {
+   "sha256": "e24b879b62b2df23047d40ef1c8d648b4f062a58f15499df5a05646796dffbdd",
+   "bytes": 1924
+  },
+  ".data/vahan/raw/rto_CG_26_class_fuel_2026.csv": {
+   "sha256": "55e0a2ea17f4d5467f6155093b9822d823c0a1d72c6ac0ef14a64ecd2403bedd",
+   "bytes": 1728
+  },
+  ".data/vahan/raw/rto_CG_26_class_fuel_A.csv": {
+   "sha256": "834d618d1a6115b809af7396b0a08883a1c9638ec069307b25b9348aac7ae3a9",
+   "bytes": 3014
+  },
+  ".data/vahan/raw/rto_CG_27_class_fuel_2025.csv": {
+   "sha256": "7ea8a92270ba20a5150e2ecc7eb2c104bed14befd3f5767d12de8c8626001e6c",
+   "bytes": 2572
+  },
+  ".data/vahan/raw/rto_CG_27_class_fuel_2026.csv": {
+   "sha256": "b217ffff7f04534073cad022ab70d294127e828eaae9548de6cfdcfc1b498793",
+   "bytes": 2574
+  },
+  ".data/vahan/raw/rto_CG_27_class_fuel_A.csv": {
+   "sha256": "de3a1a8dcafb83e9c3ac98c0046713bde82c1f447785053063433038c07e018f",
+   "bytes": 3588
+  },
+  ".data/vahan/raw/rto_CG_28_class_fuel_2025.csv": {
+   "sha256": "52f4629d08befd0ad04458a7bf9f3d3d07b6448370901cf983676ffcced2ef9e",
+   "bytes": 2493
+  },
+  ".data/vahan/raw/rto_CG_28_class_fuel_2026.csv": {
+   "sha256": "db82819e49c96dc0efad99f927f48271e3a2df04bf605a199694735bae59f135",
+   "bytes": 2397
+  },
+  ".data/vahan/raw/rto_CG_28_class_fuel_A.csv": {
+   "sha256": "7fbce09eee2fd07e6bab8d87d7c2d0652972cedd49f3d0b9d6aa059f5479b3b2",
+   "bytes": 3802
+  },
+  ".data/vahan/raw/rto_CG_29_class_fuel_2025.csv": {
+   "sha256": "8e3b5a46bdafaff517a502d26434d9bd40409913c27c902d874663e28a4fa522",
+   "bytes": 2738
+  },
+  ".data/vahan/raw/rto_CG_29_class_fuel_2026.csv": {
+   "sha256": "4e4b7d2ed119a76a5de717351499ffa4a4d1ac4be94efade06ccba595efeefa6",
+   "bytes": 2732
+  },
+  ".data/vahan/raw/rto_CG_29_class_fuel_A.csv": {
+   "sha256": "fb6204e3098e04fc15226be392f196788b6ef7ec44229e8a22820a9bdf0c4bff",
+   "bytes": 4105
+  },
+  ".data/vahan/raw/rto_CG_30_class_fuel_2025.csv": {
+   "sha256": "566b3354ad04021df2f8959b7442f533018a14e1819ab84a97f200e1bc44f7c4",
+   "bytes": 2205
+  },
+  ".data/vahan/raw/rto_CG_30_class_fuel_2026.csv": {
+   "sha256": "c852ccb2fbf27e81640213c9023d123c13664cbac8bbaf70dc777cc9d258636a",
+   "bytes": 2099
+  },
+  ".data/vahan/raw/rto_CG_30_class_fuel_A.csv": {
+   "sha256": "7d54a9f3c26ce60b47908f8af0cdef1c441b52188e4ec1cbfdea412adbd4e2f4",
+   "bytes": 3404
+  },
+  ".data/vahan/raw/rto_CG_31_class_fuel_2025.csv": {
+   "sha256": "b520bc9e8337619d214d08e4b705407863d6e0c086bb2aae5c16722336f6a473",
+   "bytes": 2563
+  },
+  ".data/vahan/raw/rto_CG_31_class_fuel_2026.csv": {
+   "sha256": "b87d73e518b7c3f01661b7174bf8709e6a18a6b46a748d330d6dc6ca72f2c984",
+   "bytes": 2382
+  },
+  ".data/vahan/raw/rto_CG_31_class_fuel_A.csv": {
+   "sha256": "43e3efc9a5b7938ec5eca6008894f226fadbdb29295fd2dfad438faa7670675d",
+   "bytes": 3288
+  },
+  ".data/vahan/raw/rto_CG_4_class_fuel_2025.csv": {
+   "sha256": "857c9b88fd02ad0c4a75461f79d305ba37a4bf9ff73036cd57e655f88395f84a",
+   "bytes": 4195
+  },
+  ".data/vahan/raw/rto_CG_4_class_fuel_2026.csv": {
+   "sha256": "0ebee91496873bac7f737e806f5320b499fa2aa4384a99467460eaf1190c8bb6",
+   "bytes": 3754
+  },
+  ".data/vahan/raw/rto_CG_4_class_fuel_A.csv": {
+   "sha256": "879838867b9451f8ae44d68cbe488cd661602dde8c2b522c23cc9d8d847b90db",
+   "bytes": 6502
+  },
+  ".data/vahan/raw/rto_CG_5_class_fuel_2025.csv": {
+   "sha256": "237457afb2dd621796855161dbf5836363cc2f16f4e25b1bbcbb801a8a794dd1",
+   "bytes": 2514
+  },
+  ".data/vahan/raw/rto_CG_5_class_fuel_2026.csv": {
+   "sha256": "3c212f68ef61aedf62eda4c3a1d96445cf7286f0bc46301b7b418d0c89d541d0",
+   "bytes": 2597
+  },
+  ".data/vahan/raw/rto_CG_5_class_fuel_A.csv": {
+   "sha256": "835b3e9b116b5f91062cdc7d75100b8f1518b6a066ca0e8a1683763db67b6ce6",
+   "bytes": 4491
+  },
+  ".data/vahan/raw/rto_CG_6_class_fuel_2025.csv": {
+   "sha256": "83153c8c9c94518f84129fb80d0e2ed89e1778c0d95ce45193d7d10070e966d3",
+   "bytes": 2703
+  },
+  ".data/vahan/raw/rto_CG_6_class_fuel_2026.csv": {
+   "sha256": "f5d1c7074576482daa93efe261563a689ab8b53b79be27120dda8d6e93536190",
+   "bytes": 2305
+  },
+  ".data/vahan/raw/rto_CG_6_class_fuel_A.csv": {
+   "sha256": "7614a8c692994d66d1247e8ebc0a2ccfd7c1c2959d15ff5f08c2316a88de8de2",
+   "bytes": 4036
+  },
+  ".data/vahan/raw/rto_CG_7_class_fuel_2025.csv": {
+   "sha256": "5d05488eaff039548012c255a504b863f80a1afd00379735783fa8bbd8e286e3",
+   "bytes": 3544
+  },
+  ".data/vahan/raw/rto_CG_7_class_fuel_2026.csv": {
+   "sha256": "ceb3edd6f63ed81d5efe85eea8c70e170099ac7eff7a9ca3483e660f6dd96259",
+   "bytes": 3675
+  },
+  ".data/vahan/raw/rto_CG_7_class_fuel_A.csv": {
+   "sha256": "bc6b1b013de0a0d2a6ebe755a13456e8d57aa7eb339f95bdbdaf17948d749d8e",
+   "bytes": 5608
+  },
+  ".data/vahan/raw/rto_CG_8_class_fuel_2025.csv": {
+   "sha256": "069b9ac6a559745f4929ba99e07524fed1eceb45da967c9c79128429c0601bc8",
+   "bytes": 3094
+  },
+  ".data/vahan/raw/rto_CG_8_class_fuel_2026.csv": {
+   "sha256": "be0e39824c1fc927a3c55a69f6996329327492ae2b8706abb1ae26e1b0d8a746",
+   "bytes": 2902
+  },
+  ".data/vahan/raw/rto_CG_8_class_fuel_A.csv": {
+   "sha256": "f0b70ac2607a46ccef3badfa681136b2a369f747196c742ea93f28f2b750d469",
+   "bytes": 4618
+  },
+  ".data/vahan/raw/rto_CG_998_class_fuel_A.csv": {
+   "sha256": "a1b6d1c330694e1d146fe93e9936733dc4c4d5d107741a6038d4c60e9359c814",
+   "bytes": 515
+  },
+  ".data/vahan/raw/rto_CG_99_class_fuel_A.csv": {
+   "sha256": "a1b6d1c330694e1d146fe93e9936733dc4c4d5d107741a6038d4c60e9359c814",
+   "bytes": 515
+  },
+  ".data/vahan/raw/rto_CG_9_class_fuel_2025.csv": {
+   "sha256": "68dcbae84dce5d21debac4a214bdc4dbe9fb9e986edc80b19490031cb40c176c",
+   "bytes": 2594
+  },
+  ".data/vahan/raw/rto_CG_9_class_fuel_2026.csv": {
+   "sha256": "d2ec42cefada8a3b6ccec04fdd204610323ef53a40d06f5a0ea40538ac536b18",
+   "bytes": 2658
+  },
+  ".data/vahan/raw/rto_CG_9_class_fuel_A.csv": {
+   "sha256": "88db3e05052010bb131f481d06d70b3b4a4fe5c4aaa4faf6693b8b6405b0d1cd",
+   "bytes": 4218
+  },
+  ".data/vahan/raw/rto_MH_10_class_fuel_2025.csv": {
+   "sha256": "f66ce065757aa3dc9506daa61b635dcc30cf875f7852188bc7304a3571889caf",
+   "bytes": 2895
+  },
+  ".data/vahan/raw/rto_MH_10_class_fuel_2026.csv": {
+   "sha256": "2657914f3cfd071be557121db783d93726b1259a49e9c09c67e41e8bc215f5ba",
+   "bytes": 3011
+  },
+  ".data/vahan/raw/rto_MH_10_class_fuel_A.csv": {
+   "sha256": "7067000939da6ac6969f7fdfc78961ea6069073c5997d8fd764361b183a23494",
+   "bytes": 5868
+  },
+  ".data/vahan/raw/rto_MH_11_class_fuel_2025.csv": {
+   "sha256": "427233399d60410b03d78f6629f226bd0e35190e74914a86095e7b8763d0c426",
+   "bytes": 3566
+  },
+  ".data/vahan/raw/rto_MH_11_class_fuel_2026.csv": {
+   "sha256": "3120e9dee094021d4bf28e836fd1b0fb62500aafea0c93ee7cb38840af8bfc60",
+   "bytes": 3081
+  },
+  ".data/vahan/raw/rto_MH_11_class_fuel_A.csv": {
+   "sha256": "1e22bd423df6c0590a8f79274d2c268e7ec489d6b3f0cb368ce3a0c6dfc11ae1",
+   "bytes": 5788
+  },
+  ".data/vahan/raw/rto_MH_12_class_fuel_2025.csv": {
+   "sha256": "0cb62c06d7fa60e7f00611db780cfb4589d1e77f062e06f62a7c521aef4a2753",
+   "bytes": 4230
+  },
+  ".data/vahan/raw/rto_MH_12_class_fuel_2026.csv": {
+   "sha256": "bac661f8886d74487ac9d41ae43843bc8d88c05d32bd6ad038b73e46cb2c9dc5",
+   "bytes": 4592
+  },
+  ".data/vahan/raw/rto_MH_12_class_fuel_A.csv": {
+   "sha256": "23238cb72017d3f089b54e68d36227e562aee8ccf181e139bd249779ed16f5b9",
+   "bytes": 7198
+  },
+  ".data/vahan/raw/rto_MH_13_class_fuel_2025.csv": {
+   "sha256": "509bf86ee04626b7c57a5051f922787497894aa99c8da88f4a417da1ebf49eb2",
+   "bytes": 3122
+  },
+  ".data/vahan/raw/rto_MH_13_class_fuel_2026.csv": {
+   "sha256": "ece76df2c2c5f773226fa10f481b15fe1955337f91df45aa2b2756f26d673fd3",
+   "bytes": 3073
+  },
+  ".data/vahan/raw/rto_MH_13_class_fuel_A.csv": {
+   "sha256": "8f6e99d2157724a6883ca25b66faa9c1c6b9ae1704c6a2c07f951d4ba0832d9e",
+   "bytes": 5725
+  },
+  ".data/vahan/raw/rto_MH_14_class_fuel_2025.csv": {
+   "sha256": "805fbbe5973e488fd6e289398d4276e60e22c69ddb2330319f0be4f3b4f25327",
+   "bytes": 3933
+  },
+  ".data/vahan/raw/rto_MH_14_class_fuel_2026.csv": {
+   "sha256": "576e6a170e0e1daa09424a5aef0cabf77fca3a072fd5d70e5e3db9074493d4ca",
+   "bytes": 3753
+  },
+  ".data/vahan/raw/rto_MH_14_class_fuel_A.csv": {
+   "sha256": "4f5389a573680ab21a1cb9a10e2d26a7bce9b19c788a12ab200748d1a8e7c1be",
+   "bytes": 6676
+  },
+  ".data/vahan/raw/rto_MH_15_class_fuel_2025.csv": {
+   "sha256": "b34c2c0b798dea1a3be4350edf5e29ef4a79639600eb99f5c50d71b2f4789f29",
+   "bytes": 3794
+  },
+  ".data/vahan/raw/rto_MH_15_class_fuel_2026.csv": {
+   "sha256": "14c2a79dd45e37332d05af84d6a2a72126bb24294153d8cfe10855ed53010993",
+   "bytes": 3903
+  },
+  ".data/vahan/raw/rto_MH_15_class_fuel_A.csv": {
+   "sha256": "8acd97d50ac59d453cec62b94d97358e2ceb190df5ebb98e965b5094029d2b4b",
+   "bytes": 6515
+  },
+  ".data/vahan/raw/rto_MH_16_class_fuel_2025.csv": {
+   "sha256": "52bc2207847d6dd13bb1c7b0efb93473b5d35979c2efca54d06ecff66b2c6ecb",
+   "bytes": 3088
+  },
+  ".data/vahan/raw/rto_MH_16_class_fuel_2026.csv": {
+   "sha256": "eb3f2f1cb8a0e1cc6193922713b6022dcd242e4bef8e3ab8d6cba3fc22aa23eb",
+   "bytes": 2444
+  },
+  ".data/vahan/raw/rto_MH_16_class_fuel_A.csv": {
+   "sha256": "515bdc5f3e10615407c9175546279f68b6aa21cd3f6996576ab2425c22022f33",
+   "bytes": 5674
+  },
+  ".data/vahan/raw/rto_MH_17_class_fuel_2025.csv": {
+   "sha256": "35b907712a89afdd101adceadb84946470a062ad6ad11585937fb3db1c22945c",
+   "bytes": 2796
+  },
+  ".data/vahan/raw/rto_MH_17_class_fuel_2026.csv": {
+   "sha256": "ca898a5a7f9819bf6c972b25dd3174bd0529ef3f93621fcd6836322af744edbc",
+   "bytes": 2610
+  },
+  ".data/vahan/raw/rto_MH_17_class_fuel_A.csv": {
+   "sha256": "a6c1d1bbf3cc1dedb24b969d6bc8d4f4e8a0dea6543aee1e9532369700bd02b0",
+   "bytes": 5909
+  },
+  ".data/vahan/raw/rto_MH_18_class_fuel_2025.csv": {
+   "sha256": "0bf56c3a8a4eeaf5d96552f3b2b64244b871cea6942ffdd4d9ecfcbfbbd502ed",
+   "bytes": 3094
+  },
+  ".data/vahan/raw/rto_MH_18_class_fuel_2026.csv": {
+   "sha256": "49df1a233364d521e28c628d1928741d9362b96c814711dadb58811dd6238caa",
+   "bytes": 2788
+  },
+  ".data/vahan/raw/rto_MH_18_class_fuel_A.csv": {
+   "sha256": "cb1b48e488539c13de5a4dcf823817413cb699ddd19c61f620ca9196c858e6af",
+   "bytes": 5465
+  },
+  ".data/vahan/raw/rto_MH_19_class_fuel_2025.csv": {
+   "sha256": "f68c39f9852f50efebbb103d3c56373b4fdf254554ba1a2c7ac915811fc4b999",
+   "bytes": 2916
+  },
+  ".data/vahan/raw/rto_MH_19_class_fuel_2026.csv": {
+   "sha256": "b62250aecf1a48cd1c68445cae06dc7a49337f7b4cc6c67c06b1f32738a93c1f",
+   "bytes": 3097
+  },
+  ".data/vahan/raw/rto_MH_19_class_fuel_A.csv": {
+   "sha256": "46a129da6779e444a38d413c9c8839c24e57f83faee7c4cd18fff18230ba320e",
+   "bytes": 6056
+  },
+  ".data/vahan/raw/rto_MH_1_class_fuel_2025.csv": {
+   "sha256": "00429226b5b5e1038620ae48ce99aa3fd1ec74f2dc4bcb3a7d53366bd9d21a91",
+   "bytes": 3810
+  },
+  ".data/vahan/raw/rto_MH_1_class_fuel_2026.csv": {
+   "sha256": "7b9ea3d935ac16d2088b9742d2cb645863b2ccc69bfd2906bf74be07b64121f6",
+   "bytes": 3188
+  },
+  ".data/vahan/raw/rto_MH_1_class_fuel_A.csv": {
+   "sha256": "4bf45b3f443004e63899ec7d55e61e467f64f6e2e119a819657df79c9054d7da",
+   "bytes": 6403
+  },
+  ".data/vahan/raw/rto_MH_202_class_fuel_2025.csv": {
+   "sha256": "a1b6d1c330694e1d146fe93e9936733dc4c4d5d107741a6038d4c60e9359c814",
+   "bytes": 515
+  },
+  ".data/vahan/raw/rto_MH_202_class_fuel_A.csv": {
+   "sha256": "a1b6d1c330694e1d146fe93e9936733dc4c4d5d107741a6038d4c60e9359c814",
+   "bytes": 515
+  },
+  ".data/vahan/raw/rto_MH_203_class_fuel_2025.csv": {
+   "sha256": "a1b6d1c330694e1d146fe93e9936733dc4c4d5d107741a6038d4c60e9359c814",
+   "bytes": 515
+  },
+  ".data/vahan/raw/rto_MH_203_class_fuel_A.csv": {
+   "sha256": "a1b6d1c330694e1d146fe93e9936733dc4c4d5d107741a6038d4c60e9359c814",
+   "bytes": 515
+  },
+  ".data/vahan/raw/rto_MH_20_class_fuel_2025.csv": {
+   "sha256": "03dab53490597947d5aba6be99008a0a2fdc17f27c0d0c9709353baaa5736b34",
+   "bytes": 3051
+  },
+  ".data/vahan/raw/rto_MH_20_class_fuel_2026.csv": {
+   "sha256": "f1f84d53c799ea3e9a4b56c6f2c7e8e545ebbe8a04944bb9c52fce855832c535",
+   "bytes": 3574
+  },
+  ".data/vahan/raw/rto_MH_20_class_fuel_A.csv": {
+   "sha256": "5a6b001dc5401cbf9e5a6e3c47237fcd900fb8942bf8075d26391fb287e2d23c",
+   "bytes": 6222
+  },
+  ".data/vahan/raw/rto_MH_21_class_fuel_2025.csv": {
+   "sha256": "9934db9cddb0e64d95aa6ecb7fbafbebad4baf659e03b5a35a6b862b9925275e",
+   "bytes": 2594
+  },
+  ".data/vahan/raw/rto_MH_21_class_fuel_2026.csv": {
+   "sha256": "a1c34d822420c237b4a316b2e00d55a6c0fd0723740407414ec49df43e5db63f",
+   "bytes": 2547
+  },
+  ".data/vahan/raw/rto_MH_21_class_fuel_A.csv": {
+   "sha256": "3618e7afc50d1e9fb8181d031903078b474e69a5afc4d04c5b0e457f423aa132",
+   "bytes": 4892
+  },
+  ".data/vahan/raw/rto_MH_22_class_fuel_2025.csv": {
+   "sha256": "97e0d4da2c88ad7f593df7ec8d2fd4156ebf9eab264c733179d360c6a007dde0",
+   "bytes": 2626
+  },
+  ".data/vahan/raw/rto_MH_22_class_fuel_2026.csv": {
+   "sha256": "7b5e79eadaab6de76d71a1089e10a9fd6a934f59bcb0ad5f009037b5f39eb181",
+   "bytes": 2792
+  },
+  ".data/vahan/raw/rto_MH_22_class_fuel_A.csv": {
+   "sha256": "42ba27da8a7cbcb90f8100a55d5a594b7c7cc6d51dacbfa23d9a53e1bb9e212a",
+   "bytes": 4795
+  },
+  ".data/vahan/raw/rto_MH_23_class_fuel_2025.csv": {
+   "sha256": "7fe73aca7352aa9b23536cc4ca55ecb543f294a0af084fd8763bed252836e2a2",
+   "bytes": 3107
+  },
+  ".data/vahan/raw/rto_MH_23_class_fuel_2026.csv": {
+   "sha256": "5801c28637c08621cdae2527e2b20b23c9bc437a2c8d8060b5736c91d01834d6",
+   "bytes": 2418
+  },
+  ".data/vahan/raw/rto_MH_23_class_fuel_A.csv": {
+   "sha256": "1aa9eebc5b8698630a0f4f56ceca1907bcf2dc719c0e0533c48a0d47ab6677e8",
+   "bytes": 5082
+  },
+  ".data/vahan/raw/rto_MH_24_class_fuel_2025.csv": {
+   "sha256": "d898870b0158a6940a4940f10611c68565417b42ad745a90f5826a68ebbc4f86",
+   "bytes": 2718
+  },
+  ".data/vahan/raw/rto_MH_24_class_fuel_2026.csv": {
+   "sha256": "989d660c250fe2dc7b0452f6c03902468c6c6afdfa67e06c3aced9eaa5731a8c",
+   "bytes": 2233
+  },
+  ".data/vahan/raw/rto_MH_24_class_fuel_A.csv": {
+   "sha256": "b6009dc749d5b002ac6ce4fbc68689bb53716695491a4526b2283bfc7c94183b",
+   "bytes": 4992
+  },
+  ".data/vahan/raw/rto_MH_25_class_fuel_2025.csv": {
+   "sha256": "88c47daa1dfe2a4f2178b6ab0ee5d1d6eecc1a736bb16bee9465846ac0f430c8",
+   "bytes": 2713
+  },
+  ".data/vahan/raw/rto_MH_25_class_fuel_2026.csv": {
+   "sha256": "98f28e4e4068613ca35ba29f4f8780c048ea7c7382afb5181f001a94dc824e2c",
+   "bytes": 2591
+  },
+  ".data/vahan/raw/rto_MH_25_class_fuel_A.csv": {
+   "sha256": "e7a7211730a1c10093186b74b5b3bc6688666205408195db278344502de674bc",
+   "bytes": 5540
+  },
+  ".data/vahan/raw/rto_MH_26_class_fuel_2025.csv": {
+   "sha256": "7f2e3178e27535d310ad40ee95f5d583e803a26997761df992c3c07582f89b8a",
+   "bytes": 2823
+  },
+  ".data/vahan/raw/rto_MH_26_class_fuel_2026.csv": {
+   "sha256": "a9a4572ae176b25727d3bb5dc215f05a1bfe49c211af5e8710c80b710152da94",
+   "bytes": 2619
+  },
+  ".data/vahan/raw/rto_MH_26_class_fuel_A.csv": {
+   "sha256": "a3d91f341eedc149f9fec7c6cec71cb755b4b32811bec6839f5acb35d2c12039",
+   "bytes": 5187
+  },
+  ".data/vahan/raw/rto_MH_27_class_fuel_2025.csv": {
+   "sha256": "8b010f5aaf4f224f740b1ffe76e765fc2844b061c3fdb694ae5032561e3bb02b",
+   "bytes": 2981
+  },
+  ".data/vahan/raw/rto_MH_27_class_fuel_2026.csv": {
+   "sha256": "75488cc8a610e42c914de46c3002aeb621effce2b3a3d293bffa7630f08973f8",
+   "bytes": 2823
+  },
+  ".data/vahan/raw/rto_MH_27_class_fuel_A.csv": {
+   "sha256": "a92bedc34b7bd914144726fa50f13e6ddbf8a48df8d2c28c5ed5deba14da3490",
+   "bytes": 5654
+  },
+  ".data/vahan/raw/rto_MH_28_class_fuel_2025.csv": {
+   "sha256": "80e488b0270be74ef18e614bca6f1d87bef4af16bca70c27786c56692253f920",
+   "bytes": 2800
+  },
+  ".data/vahan/raw/rto_MH_28_class_fuel_2026.csv": {
+   "sha256": "e1d0d1a0852f4f45081cf2783c918b7a1d36261856e46bef9f9b1da2fc6bc54d",
+   "bytes": 2589
+  },
+  ".data/vahan/raw/rto_MH_28_class_fuel_A.csv": {
+   "sha256": "85658c89943121e6ef5559965139cc9cb5912ec4a1b42d120ca8f376c7a82097",
+   "bytes": 5216
+  },
+  ".data/vahan/raw/rto_MH_29_class_fuel_2025.csv": {
+   "sha256": "3148f8d47228709a8c35f4f0749b960cc07980e8a6d64a8b49ab91963b189c38",
+   "bytes": 3292
+  },
+  ".data/vahan/raw/rto_MH_29_class_fuel_2026.csv": {
+   "sha256": "1ae71f4ab19031de8a8d8d4b7d5306ae117152ef522aecda0dd60ab985a4b4f5",
+   "bytes": 2883
+  },
+  ".data/vahan/raw/rto_MH_29_class_fuel_A.csv": {
+   "sha256": "fe61a1af11b4f95de63df9a6dc4e433267596cd02b26f816f174acbbea7ddd35",
+   "bytes": 5238
+  },
+  ".data/vahan/raw/rto_MH_2_class_fuel_2025.csv": {
+   "sha256": "e2a5bb8c5b43cdca6fc646651b0235d78c28daf88305e034ec1b5a788a91f609",
+   "bytes": 3443
+  },
+  ".data/vahan/raw/rto_MH_2_class_fuel_2026.csv": {
+   "sha256": "805a4de883e7ec47df8d19331495c32cc18c9eb180c5b4f1606b14f60e74bd84",
+   "bytes": 2741
+  },
+  ".data/vahan/raw/rto_MH_2_class_fuel_A.csv": {
+   "sha256": "ba06f08656a57408ed6cc75986fd225398b8dbf0508173f11416a49779dc6368",
+   "bytes": 6379
+  },
+  ".data/vahan/raw/rto_MH_30_class_fuel_2025.csv": {
+   "sha256": "9377a11be6967fcee20b1ad75f116f362413967504b809faa963109ef3111c3c",
+   "bytes": 2689
+  },
+  ".data/vahan/raw/rto_MH_30_class_fuel_2026.csv": {
+   "sha256": "4e45ea5b826f519c11f8df23b32c547d3f40dc10aa2c5de7d6482d2a6938017e",
+   "bytes": 2712
+  },
+  ".data/vahan/raw/rto_MH_30_class_fuel_A.csv": {
+   "sha256": "14aac93a6562375011f0d5d5b008f15141537690210cc726f957afcd839d1806",
+   "bytes": 5458
+  },
+  ".data/vahan/raw/rto_MH_31_class_fuel_2025.csv": {
+   "sha256": "f29db832941f31b5eb217da5ba5fe5f7b19c6c4b3589d6db1056396d96ab4085",
+   "bytes": 3182
+  },
+  ".data/vahan/raw/rto_MH_31_class_fuel_2026.csv": {
+   "sha256": "fc23d7646fc813e7cf0edb21feead7f158c84647a21e5ab6f0f44ea610b85d5d",
+   "bytes": 3283
+  },
+  ".data/vahan/raw/rto_MH_31_class_fuel_A.csv": {
+   "sha256": "4909aec81ddbe0b50b005b5717f25b8c62c4c7a0fb00ad9e124a06944e868f8a",
+   "bytes": 6045
+  },
+  ".data/vahan/raw/rto_MH_32_class_fuel_2025.csv": {
+   "sha256": "f5ad4804955999a7d5df70ea81a266a8b32afc0bf500eaf6e372dde58c0a092e",
+   "bytes": 2680
+  },
+  ".data/vahan/raw/rto_MH_32_class_fuel_2026.csv": {
+   "sha256": "5e94f52ca9aa1d23399c2c10a5b99e7a8ddcd56e8d4db7c359af6a68863fc52e",
+   "bytes": 2490
+  },
+  ".data/vahan/raw/rto_MH_32_class_fuel_A.csv": {
+   "sha256": "5aa4fd31d46b10d0752524525d9bd06e5ccd28d380d3f6a93b80bd793ad75920",
+   "bytes": 5066
+  },
+  ".data/vahan/raw/rto_MH_33_class_fuel_2025.csv": {
+   "sha256": "bcdae068a8a64bd13a7e4b54933e41d9d9e8f5b994ed581f94e6b546b928562a",
+   "bytes": 2784
+  },
+  ".data/vahan/raw/rto_MH_33_class_fuel_2026.csv": {
+   "sha256": "df6b5fb75372ae20671218d0775be02175c84761dbb61ed5cebf638b5893eb65",
+   "bytes": 2661
+  },
+  ".data/vahan/raw/rto_MH_33_class_fuel_A.csv": {
+   "sha256": "0c0b47618babad4e7eeb3c1a366470a832ab7358c88f9cbb6bb428357f9ab3b5",
+   "bytes": 5014
+  },
+  ".data/vahan/raw/rto_MH_34_class_fuel_2025.csv": {
+   "sha256": "2797768c718bb456563f11a0df4404b0dd2b5ad6de612d485b922a9bd0542efd",
+   "bytes": 3272
+  },
+  ".data/vahan/raw/rto_MH_34_class_fuel_2026.csv": {
+   "sha256": "f25ceac6b17428f6462a217db8ed4e961ec6b63288b34add1b6817d71642c5d5",
+   "bytes": 3119
+  },
+  ".data/vahan/raw/rto_MH_34_class_fuel_A.csv": {
+   "sha256": "4d12962125b77e0ee8042f7cbd333ae97741ef3be2621599e0ab5b1c3784d0fb",
+   "bytes": 5876
+  },
+  ".data/vahan/raw/rto_MH_35_class_fuel_2025.csv": {
+   "sha256": "7421efe8dc08c9ccb1a1d1b8a1c98fd1e65a8bb74309ca05c709bd661b904bc1",
+   "bytes": 2879
+  },
+  ".data/vahan/raw/rto_MH_35_class_fuel_2026.csv": {
+   "sha256": "4f0138035b829ef6814787a2d6269b6a5e323c86ff2287d49bbd5666b34f3100",
+   "bytes": 2591
+  },
+  ".data/vahan/raw/rto_MH_35_class_fuel_A.csv": {
+   "sha256": "572f6ecc952eaec13ee4d292c1f742f885e4be5bf8ff6dafa89dd7c5cd7914d4",
+   "bytes": 4456
+  },
+  ".data/vahan/raw/rto_MH_36_class_fuel_2025.csv": {
+   "sha256": "149ac9f995b603f8168731498872a42cb9268ebc5cb29f7aaa923cc8c319bbcd",
+   "bytes": 2494
+  },
+  ".data/vahan/raw/rto_MH_36_class_fuel_2026.csv": {
+   "sha256": "95e641c3dad720e658f94b27a2eef0450a1d979adaf48287a9605afca4e60d29",
+   "bytes": 2393
+  },
+  ".data/vahan/raw/rto_MH_36_class_fuel_A.csv": {
+   "sha256": "133543e0502880c478df95dd9ac382f59b05e1537bdbaae8b74fb95c8745a17a",
+   "bytes": 5034
+  },
+  ".data/vahan/raw/rto_MH_37_class_fuel_2025.csv": {
+   "sha256": "789412bdead61ea13b91792c7fbfb4b691eccb5217ce845babebad7982a6a854",
+   "bytes": 2615
+  },
+  ".data/vahan/raw/rto_MH_37_class_fuel_2026.csv": {
+   "sha256": "dca1d25bf1f1b19164afb13746520b6d6f6490813aa4fb678ffecebe1f80e966",
+   "bytes": 2327
+  },
+  ".data/vahan/raw/rto_MH_37_class_fuel_A.csv": {
+   "sha256": "1ca242352fb4e35f9a70acaeb8c8e47b5794e98a531a7a3b69b7c0d9d86b781b",
+   "bytes": 4689
+  },
+  ".data/vahan/raw/rto_MH_38_class_fuel_2025.csv": {
+   "sha256": "107930eb9386f3aceb8815f591d0e0feeb2a74be306fb900ae8e90a10f87f9ea",
+   "bytes": 2604
+  },
+  ".data/vahan/raw/rto_MH_38_class_fuel_2026.csv": {
+   "sha256": "e2b6014544365e2772fe8a23b1c50168cc25cb0125c44407b1ed4a99605dbbee",
+   "bytes": 2401
+  },
+  ".data/vahan/raw/rto_MH_38_class_fuel_A.csv": {
+   "sha256": "c1bc7e3ff773dad38b76d9f603cf949f2c14ba47b4ca061986a914a54357d5a6",
+   "bytes": 4319
+  },
+  ".data/vahan/raw/rto_MH_39_class_fuel_2025.csv": {
+   "sha256": "8b4ec3c54cbb5eab000c937b3e2c6373630cb449fe1f21913c7d0cdedf12ef7b",
+   "bytes": 2591
+  },
+  ".data/vahan/raw/rto_MH_39_class_fuel_2026.csv": {
+   "sha256": "6dea1a2a83dbc14bcfceb41c91506502239f9a5f4e9f6f2191ee536e9600464d",
+   "bytes": 2790
+  },
+  ".data/vahan/raw/rto_MH_39_class_fuel_A.csv": {
+   "sha256": "ef69b1b3d44e3cec1cfcf928dd8781dbb95d75bab99e697ff7449798ceb15fc6",
+   "bytes": 4596
+  },
+  ".data/vahan/raw/rto_MH_3_class_fuel_2025.csv": {
+   "sha256": "ed64405d2c186cacec07b5d08d72ef40cd3a29d3e2bf79173b27a023a1a7422c",
+   "bytes": 2972
+  },
+  ".data/vahan/raw/rto_MH_3_class_fuel_2026.csv": {
+   "sha256": "0bf19667506ab513dbf904ebb6d3d130f67d245c041608ccadcdd7c2afb56a3e",
+   "bytes": 2788
+  },
+  ".data/vahan/raw/rto_MH_3_class_fuel_A.csv": {
+   "sha256": "726a09afd348406ca5f4af1a5e456e1afefab353190527ae67dffc068de66146",
+   "bytes": 6185
+  },
+  ".data/vahan/raw/rto_MH_40_class_fuel_2025.csv": {
+   "sha256": "97d4314a621e98d18c4162ff3d04b469ddb02f551c3c204a50e1a8a563518294",
+   "bytes": 3359
+  },
+  ".data/vahan/raw/rto_MH_40_class_fuel_2026.csv": {
+   "sha256": "968b27a32c73c2f01e1ec608895360d1daa2f5b0af8251ad087182275cca24f3",
+   "bytes": 3085
+  },
+  ".data/vahan/raw/rto_MH_40_class_fuel_A.csv": {
+   "sha256": "602569824de540cdf188a8f2434fb8877e0e953a4c273a76bcb05ce909a868b2",
+   "bytes": 6282
+  },
+  ".data/vahan/raw/rto_MH_41_class_fuel_2025.csv": {
+   "sha256": "d0b19539de222c1a74a6969d6d7494daef894e83415546214e42e24b462fdc0b",
+   "bytes": 2495
+  },
+  ".data/vahan/raw/rto_MH_41_class_fuel_2026.csv": {
+   "sha256": "78427accbdd1fbe6d3838dedf2bafb602cf9298c439dd5899bdd92584cbf5f50",
+   "bytes": 2679
+  },
+  ".data/vahan/raw/rto_MH_41_class_fuel_A.csv": {
+   "sha256": "9099a3524fbe3e243d36c96e6ef99529b330a718813ef10003d668430bedb54a",
+   "bytes": 5316
+  },
+  ".data/vahan/raw/rto_MH_42_class_fuel_2025.csv": {
+   "sha256": "ceb3d27bd20c9eb8bb5ab821265352b5ae251e824b0560db2916ecd0c0350f68",
+   "bytes": 2694
+  },
+  ".data/vahan/raw/rto_MH_42_class_fuel_2026.csv": {
+   "sha256": "6d6f68c6f8b08182697eb5228bab3b89abab4be4b16b5a2c0a5556fb1e1832ca",
+   "bytes": 3207
+  },
+  ".data/vahan/raw/rto_MH_42_class_fuel_A.csv": {
+   "sha256": "36a608251c6580a1c0a82762165744eea18de32bfbec897e644e491b7f396c2e",
+   "bytes": 6029
+  },
+  ".data/vahan/raw/rto_MH_43_class_fuel_2025.csv": {
+   "sha256": "473c3bc7a1bdf557e67155bc57b917a737143132a282ade56195f1ca8af8caea",
+   "bytes": 3214
+  },
+  ".data/vahan/raw/rto_MH_43_class_fuel_2026.csv": {
+   "sha256": "0ce8e9b4b4592463e62b549bc8230def90c539782d412c18b980edcdd5c771ec",
+   "bytes": 3111
+  },
+  ".data/vahan/raw/rto_MH_43_class_fuel_A.csv": {
+   "sha256": "80e40fbfc72cd598cfc560e2a64d425bc71940ff42b6426171e592afe951c4e4",
+   "bytes": 6069
+  },
+  ".data/vahan/raw/rto_MH_44_class_fuel_2025.csv": {
+   "sha256": "d1354d84eb977c5b229c4ecaf5d4a2464a88ba98f110d97d781d220e19b9c094",
+   "bytes": 2415
+  },
+  ".data/vahan/raw/rto_MH_44_class_fuel_2026.csv": {
+   "sha256": "693c596c1684f71912edf92e9b36ffcae05939e8d33015d4f3569dc7d11f10ea",
+   "bytes": 2238
+  },
+  ".data/vahan/raw/rto_MH_44_class_fuel_A.csv": {
+   "sha256": "d493fe0779ad58d1e6eb918337f4588537e6bd33639edd99b940eee1c56527d8",
+   "bytes": 4660
+  },
+  ".data/vahan/raw/rto_MH_45_class_fuel_2025.csv": {
+   "sha256": "641feb48df0b0814e7dfeba77a036434183637dc6c5aa0462cf745637649a1fe",
+   "bytes": 3144
+  },
+  ".data/vahan/raw/rto_MH_45_class_fuel_2026.csv": {
+   "sha256": "0f70eef56fdbf8a8e3f62d6c055a7115d5d0cfa43e88ad795a84e36a8cba887c",
+   "bytes": 2743
+  },
+  ".data/vahan/raw/rto_MH_45_class_fuel_A.csv": {
+   "sha256": "51db4b84f8895dc2fe518734eadcbca085ec20e438b39f7b7e1b5c7fa0b95283",
+   "bytes": 5338
+  },
+  ".data/vahan/raw/rto_MH_46_class_fuel_2025.csv": {
+   "sha256": "b81c9a0153b2f67ab28117b9e23162a34a47a12ab158183b59aab4384fdd5f07",
+   "bytes": 3613
+  },
+  ".data/vahan/raw/rto_MH_46_class_fuel_2026.csv": {
+   "sha256": "117668095fe59d36f7345647767d17fc7f558b826bca030446e65cfebe4ffe0b",
+   "bytes": 3658
+  },
+  ".data/vahan/raw/rto_MH_46_class_fuel_A.csv": {
+   "sha256": "11e848bf011f15b9eaec2bdaa315d115db1bd08b2e6f290ca63c3d446731ff08",
+   "bytes": 6290
+  },
+  ".data/vahan/raw/rto_MH_47_class_fuel_2025.csv": {
+   "sha256": "e5d6615e8717edc7471f4f8c6dc8cb985b67df2f7eb1b0a3b59363360d7679d0",
+   "bytes": 3033
+  },
+  ".data/vahan/raw/rto_MH_47_class_fuel_2026.csv": {
+   "sha256": "4368b5cb9c3d085c5c8bbfb99a6c2f0aa172c8b12890ead3d9232488a1dbb072",
+   "bytes": 3158
+  },
+  ".data/vahan/raw/rto_MH_47_class_fuel_A.csv": {
+   "sha256": "9c14f6216cd6f0b4b01ad5153c434ec0b4f4daaddc9d5d0646ab245afe28e1a7",
+   "bytes": 5530
+  },
+  ".data/vahan/raw/rto_MH_48_class_fuel_2025.csv": {
+   "sha256": "94832411196b717568f9258856046d883491b14285a41cd1bc1294f8c89936c3",
+   "bytes": 3373
+  },
+  ".data/vahan/raw/rto_MH_48_class_fuel_2026.csv": {
+   "sha256": "466f8109260d22440e65e27b9adb462e761615bb47bbba3e632c0612102e1c0b",
+   "bytes": 3125
+  },
+  ".data/vahan/raw/rto_MH_48_class_fuel_A.csv": {
+   "sha256": "6cdcc4795fa74776c70b4f85309ae2b69b417dc937c02292644d09ac113cb4b1",
+   "bytes": 6405
+  },
+  ".data/vahan/raw/rto_MH_49_class_fuel_2025.csv": {
+   "sha256": "6d4c210660b8ef56e7e68c1771261d22a3fa3d73774de3f647935f556d6d37dc",
+   "bytes": 2980
+  },
+  ".data/vahan/raw/rto_MH_49_class_fuel_2026.csv": {
+   "sha256": "b27f14c5210e4a762c49d9205006f7d9d4a6731b24030d0bc8f4d4c53769bdc4",
+   "bytes": 2819
+  },
+  ".data/vahan/raw/rto_MH_49_class_fuel_A.csv": {
+   "sha256": "f5fef6f73d6f0553d85ba62edc4531c4c03429e6ee2233d33948568dbe582333",
+   "bytes": 5668
+  },
+  ".data/vahan/raw/rto_MH_4_class_fuel_2025.csv": {
+   "sha256": "0ba6e23081d4daa2835eec30881ad1c67ebf9c72b73dc8d23bde480894ee350b",
+   "bytes": 3892
+  },
+  ".data/vahan/raw/rto_MH_4_class_fuel_2026.csv": {
+   "sha256": "c7a62310d598906f8a37f6fc84be4b1fa23c70cf042dc6db654448c362f44b27",
+   "bytes": 3805
+  },
+  ".data/vahan/raw/rto_MH_4_class_fuel_A.csv": {
+   "sha256": "f04bc139aded03b9bd7843b7fc54f6589357be6ae08995cef20d8a1ff2a5de81",
+   "bytes": 6463
+  },
+  ".data/vahan/raw/rto_MH_50_class_fuel_2025.csv": {
+   "sha256": "783f63cae1f3bc7588b6cf7e6ed538fed4648ecfd100dd22289f43d5c47af78e",
+   "bytes": 2577
+  },
+  ".data/vahan/raw/rto_MH_50_class_fuel_2026.csv": {
+   "sha256": "67b07f8aab40df22907841dec476f7bd153cb9a1694d4098cbd74fa14dc4842b",
+   "bytes": 2302
+  },
+  ".data/vahan/raw/rto_MH_50_class_fuel_A.csv": {
+   "sha256": "195623bd6869baefc73fbc37c3600a00b82b5687c345841f56df0b494ce2e2cc",
+   "bytes": 5124
+  },
+  ".data/vahan/raw/rto_MH_51_class_fuel_2025.csv": {
+   "sha256": "fa6463d45e6b66757f1576d764a487f2bdef284b61018a68c289669d6c0149df",
+   "bytes": 2810
+  },
+  ".data/vahan/raw/rto_MH_51_class_fuel_2026.csv": {
+   "sha256": "d75d0dd3edb459031b318465585467ffb351609eb63b471643b861dd5c379d4d",
+   "bytes": 2697
+  },
+  ".data/vahan/raw/rto_MH_51_class_fuel_A.csv": {
+   "sha256": "84ee606651cb1327645d904b3a997a2fa42d40454df2f8c72eea9e8b207f0dd3",
+   "bytes": 5684
+  },
+  ".data/vahan/raw/rto_MH_52_class_fuel_2025.csv": {
+   "sha256": "83865306799b10d3632045beab3df197404752e7d8f72888a12087b9d0ee6152",
+   "bytes": 2181
+  },
+  ".data/vahan/raw/rto_MH_52_class_fuel_2026.csv": {
+   "sha256": "a3d9f1e2a44b988ee38fba96eaf6ed2ebdbbbb18e65b5d11394befecd3915871",
+   "bytes": 1999
+  },
+  ".data/vahan/raw/rto_MH_52_class_fuel_A.csv": {
+   "sha256": "4f13462a8636fc428034542dc9030468e218cb2cfc0b40b2270050d4e4fdeae4",
+   "bytes": 3746
+  },
+  ".data/vahan/raw/rto_MH_53_class_fuel_2025.csv": {
+   "sha256": "8c3b2a722dae430deb6c2ec27970f658790afa2f83699505a0c941275016adb7",
+   "bytes": 2788
+  },
+  ".data/vahan/raw/rto_MH_53_class_fuel_2026.csv": {
+   "sha256": "e4a944d49d1c11d80d74d644c212ebeb3f65f7c4da65c67813672eb9e90e7cc8",
+   "bytes": 2310
+  },
+  ".data/vahan/raw/rto_MH_53_class_fuel_A.csv": {
+   "sha256": "5b56606ddebf88c116a4bcf416e7426099830d4eb9c43bf8b66c53f9842f39cf",
+   "bytes": 4566
+  },
+  ".data/vahan/raw/rto_MH_54_class_fuel_2025.csv": {
+   "sha256": "99ad0c89fdfe1808925a6533468e560a1e53d0eaf886a02f601c0dcff235af70",
+   "bytes": 2297
+  },
+  ".data/vahan/raw/rto_MH_54_class_fuel_2026.csv": {
+   "sha256": "3cf428a29e3d4bc1353677d0cc88f5178087d45619e7d21df53c5fb410be29e6",
+   "bytes": 2481
+  },
+  ".data/vahan/raw/rto_MH_54_class_fuel_A.csv": {
+   "sha256": "d33b60ac8e8849aa332a9932e15712149bf9fde463921da622af95144e505f6a",
+   "bytes": 4549
+  },
+  ".data/vahan/raw/rto_MH_55_class_fuel_2025.csv": {
+   "sha256": "ca9bd9a9c9d759afbd721b5f76d09a961ec0ba64cbb2652aafeb4a05eaa5b792",
+   "bytes": 2502
+  },
+  ".data/vahan/raw/rto_MH_55_class_fuel_2026.csv": {
+   "sha256": "640eb5307df2fe5af2d26bf33914992f6af1ade23381e70b5e9233736e00c985",
+   "bytes": 2007
+  },
+  ".data/vahan/raw/rto_MH_55_class_fuel_A.csv": {
+   "sha256": "1c439e0d5fcb02869c0e18ae9b859b8518d414184e724452c0af601a1620dc03",
+   "bytes": 4452
+  },
+  ".data/vahan/raw/rto_MH_56_class_fuel_2025.csv": {
+   "sha256": "7a4a195353b330706aa9250f395ea4299025d7ff2d4ce3013b3c7a32afa33793",
+   "bytes": 2886
+  },
+  ".data/vahan/raw/rto_MH_56_class_fuel_2026.csv": {
+   "sha256": "200bfde5475a73a6f6e584494858bb676e1445b7b9a40919c7701ef5e11a0c91",
+   "bytes": 2575
+  },
+  ".data/vahan/raw/rto_MH_56_class_fuel_A.csv": {
+   "sha256": "765d67403aebca3ad5506c63df1a41a4e642eabd609e5fa8564424fdd482076d",
+   "bytes": 4532
+  },
+  ".data/vahan/raw/rto_MH_57_class_fuel_2025.csv": {
+   "sha256": "f69df1cc70eaca915adf1aa9ff52421b520e0c3d591ca8621f163faa3a52feb6",
+   "bytes": 2403
+  },
+  ".data/vahan/raw/rto_MH_57_class_fuel_2026.csv": {
+   "sha256": "91f0814c31b32b90f3dff19b66eb3cef4d79a8e22060a7b824a6039b17784663",
+   "bytes": 2300
+  },
+  ".data/vahan/raw/rto_MH_57_class_fuel_A.csv": {
+   "sha256": "1275bc517cfa7a650fc362feb19fdda6d9f5ed89437e1423179df88a31b18505",
+   "bytes": 4093
+  },
+  ".data/vahan/raw/rto_MH_58_class_fuel_2025.csv": {
+   "sha256": "ee519794030fe78f5ff0324f70beaf2ce2bb3c9aadc3554a88cc656480cd19d4",
+   "bytes": 2681
+  },
+  ".data/vahan/raw/rto_MH_58_class_fuel_2026.csv": {
+   "sha256": "531b348dccae2717b57cfca8a154874339535a5ee230f179c79ce1574ed2843a",
+   "bytes": 2121
+  },
+  ".data/vahan/raw/rto_MH_58_class_fuel_A.csv": {
+   "sha256": "287aa4c5cbbd4063a8672c99c2bcc48c2a6165924d8589bceca4cb7cfa7f12c7",
+   "bytes": 4879
+  },
+  ".data/vahan/raw/rto_MH_5_class_fuel_2025.csv": {
+   "sha256": "3a77539361568df941cf7a628ab9b0b1fa16a4fa636c617b8b089ae71a77df5e",
+   "bytes": 2997
+  },
+  ".data/vahan/raw/rto_MH_5_class_fuel_2026.csv": {
+   "sha256": "d993e3b96020d7777005cfe1dbf38303033189b6aca9b719f60255432453949a",
+   "bytes": 2629
+  },
+  ".data/vahan/raw/rto_MH_5_class_fuel_A.csv": {
+   "sha256": "62d0b7a649fec9d9f4bde562d13523f3a0414a6cbc1382a0f72f2e9bf25b6a57",
+   "bytes": 5395
+  },
+  ".data/vahan/raw/rto_MH_6_class_fuel_2025.csv": {
+   "sha256": "c7a2ebbc44d22c24bb40562b7f203e17ca8e44cf7e1b666e5fd58dbe7bc30932",
+   "bytes": 2733
+  },
+  ".data/vahan/raw/rto_MH_6_class_fuel_2026.csv": {
+   "sha256": "40ce9623d7b1f4d428114b3ea7a99a408eeb7c6000add665ced25ecb5adfb950",
+   "bytes": 3104
+  },
+  ".data/vahan/raw/rto_MH_6_class_fuel_A.csv": {
+   "sha256": "ee39d8306af6ec69d5c0b4f13ab030c501502905a492880cfb43cfb151264baa",
+   "bytes": 5567
+  },
+  ".data/vahan/raw/rto_MH_7_class_fuel_2025.csv": {
+   "sha256": "ddd16fb2f5b450bff5990904fe2c2cc6c8e46f2fc0f5c1866fe6a938489a71f5",
+   "bytes": 2576
+  },
+  ".data/vahan/raw/rto_MH_7_class_fuel_2026.csv": {
+   "sha256": "2e3cfca5121242eefe46ad77588f820a4e332d414f2ce6e94371ad8b9bead44a",
+   "bytes": 2409
+  },
+  ".data/vahan/raw/rto_MH_7_class_fuel_A.csv": {
+   "sha256": "638b5a81fc5765a8ddb954b9d7fd7dea0f96992ec36320da5060dce178eb8062",
+   "bytes": 5481
+  },
+  ".data/vahan/raw/rto_MH_8_class_fuel_2025.csv": {
+   "sha256": "496c051815ff2b7c04183843bc8866dec6d52c14c910903bb09839e67e87cbbd",
+   "bytes": 3067
+  },
+  ".data/vahan/raw/rto_MH_8_class_fuel_2026.csv": {
+   "sha256": "0df81c729dfad241683caf92e34526ec0a39307ac920bc698629ddb6c07d15db",
+   "bytes": 2776
+  },
+  ".data/vahan/raw/rto_MH_8_class_fuel_A.csv": {
+   "sha256": "6225e6be4838cdb67e3d934a84b658382594763ddee26cc4dd2c9e709ee7f46d",
+   "bytes": 5754
+  },
+  ".data/vahan/raw/rto_MH_99_class_fuel_2025.csv": {
+   "sha256": "a1b6d1c330694e1d146fe93e9936733dc4c4d5d107741a6038d4c60e9359c814",
+   "bytes": 515
+  },
+  ".data/vahan/raw/rto_MH_99_class_fuel_A.csv": {
+   "sha256": "a1b6d1c330694e1d146fe93e9936733dc4c4d5d107741a6038d4c60e9359c814",
+   "bytes": 515
+  },
+  ".data/vahan/raw/rto_MH_9_class_fuel_2025.csv": {
+   "sha256": "ddc8a022c486370884faf30415d243bdbbcaed34177d66a9868bb1595f5e9880",
+   "bytes": 3027
+  },
+  ".data/vahan/raw/rto_MH_9_class_fuel_2026.csv": {
+   "sha256": "a2622dbc95b53a314e032dbc475f2a4822326b260518852bcee8138330479884",
+   "bytes": 2915
+  },
+  ".data/vahan/raw/rto_MH_9_class_fuel_A.csv": {
+   "sha256": "0de242236dcfb35c36c38557216a30c7a0a1e420d789bfaaf73725b59e2bbcdc",
+   "bytes": 6206
+  },
+  ".data/vahan/raw/rto_list_CG.csv": {
+   "sha256": "792cc14af85bc74c474a38214c02f95367d5539e71bbe1346a56984104db7761",
+   "bytes": 1225
+  },
+  ".data/vahan/raw/rto_list_MH.csv": {
+   "sha256": "c94e81f2c0416aacf7132fa5bdb44768546e3e925adfbc5ac6cd7814f1d23ae1",
+   "bytes": 2277
+  },
+  ".data/vahan/raw/state_AN_class_fuel_A.csv": {
+   "sha256": "7e995425fb2a7846531597c1b875fa7a96ca04911723a853c64a7fe934d600bc",
+   "bytes": 5548
+  },
+  ".data/vahan/raw/state_AP_class_fuel_A.csv": {
+   "sha256": "fd3ea7cef47ec7b3155e427741cf527cc589a2d7e532c1abcda88e6ba88d8d4a",
+   "bytes": 7815
+  },
+  ".data/vahan/raw/state_AR_class_fuel_A.csv": {
+   "sha256": "42ca28cdaabeda4861565e0fe2ff211951af43c307987276bf254536ccb45746",
+   "bytes": 6444
+  },
+  ".data/vahan/raw/state_AS_class_fuel_A.csv": {
+   "sha256": "2a57e7f132ac6ce0f5d8eecf17d01e2702d98e12ad962dcdc159ad4506142299",
+   "bytes": 6866
+  },
+  ".data/vahan/raw/state_BR_class_fuel_A.csv": {
+   "sha256": "38803b6d33aea2019e4339cb922f795857e3c2b479b3c2abf92454124aeb0bbf",
+   "bytes": 6716
+  },
+  ".data/vahan/raw/state_CG_class_fuel_A.csv": {
+   "sha256": "c715c01db7dda747c29859b0b8648ab7a5c042d808c15d2dc506252c3eb7531b",
+   "bytes": 7130
+  },
+  ".data/vahan/raw/state_CH_class_fuel_A.csv": {
+   "sha256": "7ee718ab9278e57d3cccc5ddc811cb6ae8fc04ebc06f5af6ddb761b3fd6b5182",
+   "bytes": 4363
+  },
+  ".data/vahan/raw/state_DD_class_fuel_A.csv": {
+   "sha256": "7d4504c2581cbf6268df7e8400f9638c87bf81dddf2e04f7a0e89f011a23d8e9",
+   "bytes": 6031
+  },
+  ".data/vahan/raw/state_DL_class_fuel_A.csv": {
+   "sha256": "12b4efce0c3994c7c2936dc8d89922734a4da5c67fb4f4a59b5c43a36438d81f",
+   "bytes": 4601
+  },
+  ".data/vahan/raw/state_GA_class_fuel_A.csv": {
+   "sha256": "6db3c313dbd903b06e8050e5ab0144827069331a0d9eb39b1c85c9ff23812bae",
+   "bytes": 6719
+  },
+  ".data/vahan/raw/state_GJ_class_fuel_A.csv": {
+   "sha256": "c493cad3e4f6fd0354932996f5aa625138a3896b25c926e7ab00a7a44f5da8c3",
+   "bytes": 8057
+  },
+  ".data/vahan/raw/state_HP_class_fuel_A.csv": {
+   "sha256": "94970a6c54344ae33dd03d8806651d002c18825343784ed76f5a375891efaab2",
+   "bytes": 6587
+  },
+  ".data/vahan/raw/state_HR_class_fuel_A.csv": {
+   "sha256": "13f1ce03758bd642308cdf26e57dc374cecd8c0cd38a38436f6b87b4ca598fb2",
+   "bytes": 7675
+  },
+  ".data/vahan/raw/state_JH_class_fuel_A.csv": {
+   "sha256": "63e94c7f0b28c40b56395fbc2e705c6c7186012da7cc84afc9913b828cbc3bcb",
+   "bytes": 6421
+  },
+  ".data/vahan/raw/state_JK_class_fuel_A.csv": {
+   "sha256": "e9cffec32087508f4c262636822dd41246c2b0d0e30133ef06012ca531f26e44",
+   "bytes": 6431
+  },
+  ".data/vahan/raw/state_KA_class_fuel_A.csv": {
+   "sha256": "8cda809f73c52cb7fd1931b31b3cb0c2b20d40b0067b889caf21262ba68d5a9f",
+   "bytes": 8227
+  },
+  ".data/vahan/raw/state_KL_class_fuel_A.csv": {
+   "sha256": "136ebbfef5f7c98ae60e41c0e3e99c6eeda532e7ac9e0a7fc23cf32f46a6c7a9",
+   "bytes": 7861
+  },
+  ".data/vahan/raw/state_LA_class_fuel_A.csv": {
+   "sha256": "0bf106c35183900af03956901973b305ec39bd057641861516403097f771f259",
+   "bytes": 4902
+  },
+  ".data/vahan/raw/state_LD_class_fuel_A.csv": {
+   "sha256": "9a364452e57a6d94850aa37c2a78df648e8cdca4e02abe4c5958aa6e93aa1fa9",
+   "bytes": 4200
+  },
+  ".data/vahan/raw/state_MH_class_fuel_A.csv": {
+   "sha256": "8b69fc11947807b854094b31522a46a7837d4600016ee0e1ab8ae8f37ec41712",
+   "bytes": 8245
+  },
+  ".data/vahan/raw/state_ML_class_fuel_A.csv": {
+   "sha256": "dd2ed5e8f160a8b75c4a1a96f150b813c8d0121b1fff1b77ce2b9315d2e5f524",
+   "bytes": 5652
+  },
+  ".data/vahan/raw/state_MN_class_fuel_A.csv": {
+   "sha256": "bc4b874e6571d4af7f369c013405a0774006b48b27591d8cf68827f8a65fd4c8",
+   "bytes": 4996
+  },
+  ".data/vahan/raw/state_MP_class_fuel_A.csv": {
+   "sha256": "de07901e0f4c8dfb7fd2533f464ce4ace71377833af6d6db63e1b35e9e02613c",
+   "bytes": 7569
+  },
+  ".data/vahan/raw/state_MZ_class_fuel_A.csv": {
+   "sha256": "60de92fa16be3da1676d84b3eab47d5666bcf6edab456bcd1e843cb137b03afb",
+   "bytes": 5185
+  },
+  ".data/vahan/raw/state_NL_class_fuel_A.csv": {
+   "sha256": "355afb909736c7aafdda95f33606d626a8d6a0ecc64f64471cab3292f3af8064",
+   "bytes": 4615
+  },
+  ".data/vahan/raw/state_OR_class_fuel_A.csv": {
+   "sha256": "a7ee12efe4696a958a9dd60fca10e9ecfcaf8bee7db7fbc7eb7e05626de28b8a",
+   "bytes": 7478
+  },
+  ".data/vahan/raw/state_PB_class_fuel_A.csv": {
+   "sha256": "ec5c95618fe938b0d9182b9c01164bf41c2980570c19c2040686135f39a62302",
+   "bytes": 7312
+  },
+  ".data/vahan/raw/state_PY_class_fuel_A.csv": {
+   "sha256": "2d51f2c67c24076415e29ac09a312b16a2bf81245a41f4ee17b7d441397a11e4",
+   "bytes": 6024
+  },
+  ".data/vahan/raw/state_RJ_class_fuel_A.csv": {
+   "sha256": "1b062d6f01170968de471fa1e89937956b1b565421b8def78352e378533380c5",
+   "bytes": 7701
+  },
+  ".data/vahan/raw/state_SK_class_fuel_A.csv": {
+   "sha256": "f50508fd21be6021cbd48d44ca0083309afd69bb3c314683c113a53cb80ecaea",
+   "bytes": 3195
+  },
+  ".data/vahan/raw/state_TG_class_fuel_A.csv": {
+   "sha256": "30ba3d8c439aa1825c665642c4759b9c71a3ce1e36def381a7a74842bf3dd737",
+   "bytes": 6005
+  },
+  ".data/vahan/raw/state_TN_class_fuel_A.csv": {
+   "sha256": "df631a1931317618158d2a4f9c0dd265e574ccc839ab29d596d5ed6dda66c244",
+   "bytes": 7824
+  },
+  ".data/vahan/raw/state_TR_class_fuel_A.csv": {
+   "sha256": "74762315750cfde21cb6aabe4c2f7a87f9f738901ae814c5939d9f4facf46358",
+   "bytes": 5535
+  },
+  ".data/vahan/raw/state_UK_class_fuel_A.csv": {
+   "sha256": "ab75bf4fcc141745232cf10940feab3c32e472b7a78295957c4c2b21076278df",
+   "bytes": 6584
+  },
+  ".data/vahan/raw/state_UP_class_fuel_A.csv": {
+   "sha256": "8d69e588cbe6e5155ad2ae7b8b9f15f3becd9125c3765deec7f90d730431d637",
+   "bytes": 7956
+  },
+  ".data/vahan/raw/state_WB_class_fuel_A.csv": {
+   "sha256": "04b49f561873e4e9f3e477662f9d2610c57f0beb1ded24a033ea35cec6279fdb",
+   "bytes": 7687
+  },
+  ".data/chargers/osm_india.csv": {
+   "sha256": "20ec695824e20416b11ec05c4ad34032ce2f562e7bbc335f63901661d859983b",
+   "bytes": 83576
+  },
+  ".data/chargers/ocm_india.csv": {
+   "sha256": "e06d43bbdc70dd1c8dfb162fcbd99716bb97f4e5b6c52e216fc45402e479c2c4",
+   "bytes": 469501
+  },
+  ".data/chargers/overture_india.csv": {
+   "sha256": "6b76d272092bbc8f3131bed27ec7b5c30d72a956ef75be4ac0c63cadb656171b",
+   "bytes": 266605
+  },
+  ".data/chargers/osm_india_raw.json": {
+   "sha256": "535fc94f67626b4314c600329e6205ef0308c05994e5dcd912585355a1f5874f",
+   "bytes": 190973
+  },
+  ".data/geo/ind_adm1.geojson": {
+   "sha256": "4c63fe43294a391e8f2de4e9f86f3edb60f8688275b9fee90c61fb2aa0c26061",
+   "bytes": 5103747
+  },
+  ".data/geo/ind_adm2.geojson": {
+   "sha256": "d68db39cd3e2d0892af268e2b0454166368ce3b5b8a78fcda63069ec92a641db",
+   "bytes": 7979916
+  },
+  ".data/roads/mh_motorway_trunk.json": {
+   "sha256": "0d5c284fb8fb8d2fbe2f83e03ed31c5921366d8bde96006615e2ba34654f1661",
+   "bytes": 20149428
+  },
+  ".cache/sources/049e811e2930.html": {
+   "sha256": "67ebc6a04e1b55cfd53de111a756d337b9ed271466425b7e23a97932d82571a0",
+   "bytes": 314278
+  },
+  ".cache/sources/1751624e9d63.html": {
+   "sha256": "4102e8e2d62c1c31d74199642fbeeb7e99b4c1d846c751023c167bec5ed8879f",
+   "bytes": 100705
+  },
+  ".cache/sources/196a5e80cd92.html": {
+   "sha256": "b0ecec8217fd8b9a19dcf1b29ddd4405728a6dabc1ba69ce26cb1915fa6c2bd2",
+   "bytes": 357964
+  },
+  ".cache/sources/20ef79e2a159.html": {
+   "sha256": "557f40351773e2694d6a53fa6ebb689f746d1b963c587eeb90a4e857b5ca7044",
+   "bytes": 291497
+  },
+  ".cache/sources/24616c0992f1.html": {
+   "sha256": "4b3f732f9b25d9b0e40032b597c2d44a54ab981ae9a7cc74236cdc4050e6f121",
+   "bytes": 184764
+  },
+  ".cache/sources/4fe62ae6895a.html": {
+   "sha256": "38ac4433eb1652fe7c1104b05fc097e42c73ae56f1ffc89041d923bb6abe6dfd",
+   "bytes": 255376
+  },
+  ".cache/sources/556e70400579.html": {
+   "sha256": "e765aaad9d1829b4e01e676de29ec0a9c307c10e4bacb58ea58620989b7aa675",
+   "bytes": 119740
+  },
+  ".cache/sources/55f54f44b68c.html": {
+   "sha256": "367c3cc21695d08398cd83a8a80e802eb7f72d63ddc1e44bbd73902b4ca8e332",
+   "bytes": 3205
+  },
+  ".cache/sources/5cc3d7ff76dc.html": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  ".cache/sources/6b9e0faa68a9.html": {
+   "sha256": "1c27bd65cc7c53fbd6fbac0ed232726f80bc31a366886745035812a2c5830e02",
+   "bytes": 31
+  },
+  ".cache/sources/78a2f05cc085.html": {
+   "sha256": "64acfa28309eb9d2725f5e4e32f75cd65285f42c24ea48c2501946314cca17da",
+   "bytes": 95837
+  },
+  ".cache/sources/7f1051cfae5b.html": {
+   "sha256": "e639fc13816d18164cd7e8a988778a499bcdb3953767e1e9863c2089764ef0ab",
+   "bytes": 268072
+  },
+  ".cache/sources/9668485b792d.html": {
+   "sha256": "5084fac955c2f3b08cea4e1f589bd86f55ceb28524d1f71f088eb6a77d50c6b9",
+   "bytes": 22390
+  },
+  ".cache/sources/9f8028e0285b.html": {
+   "sha256": "df18abe362ba9379e37e4d4ea44e375c412f81d3034d465c77d1a8249e9ab023",
+   "bytes": 71891
+  },
+  ".cache/sources/a47c300a6f31.html": {
+   "sha256": "39a4cde0d3e48c96d6fe4e74bf6ba2ede444e1ba960e0cf1109e49d3e2b2bf4f",
+   "bytes": 128979
+  },
+  ".cache/sources/ab32da036441.html": {
+   "sha256": "3e945a64c8d7d791017452f8ce18df35ee942af2220e113d5122c260d79a46a4",
+   "bytes": 87946
+  },
+  ".cache/sources/ab3c3d5cc12f.html": {
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "bytes": 0
+  },
+  ".cache/sources/aefecff203d8.html": {
+   "sha256": "6fae2aa8f3d4feca7a2bb9f39d92b928b991d65e081c512c7cde6b67d0011544",
+   "bytes": 720031
+  },
+  ".cache/sources/b35f6e8f415f.html": {
+   "sha256": "b259cd87f8116210562ba8ea30fab57ca57f1c0f0dc615b94073db8b766f2e9d",
+   "bytes": 13780
+  },
+  ".cache/sources/bc0991f1f59a.html": {
+   "sha256": "9698238b0f32a7d1bf0d40fd1ac91dbe0c87fa82828150bd5abbc1f69db622af",
+   "bytes": 23415
+  },
+  ".cache/sources/c659b28763ad.html": {
+   "sha256": "6b90c33c76358bce2a9c51397b8dca35468133f3e1f0ee644bc99ee7abbdaf47",
+   "bytes": 380458
+  },
+  ".cache/sources/c9d860b71d52.html": {
+   "sha256": "ad093fb39c6399dff7070313832f64b8fb6b5c2963c3046209f24de410bba3a2",
+   "bytes": 15008
+  },
+  ".cache/sources/d1e10d2933c7.html": {
+   "sha256": "25fb23868ebf48348f9e438e00cb9b9d9b3a054f32482a781c762cc4f9cc6393",
+   "bytes": 548
+  },
+  ".cache/sources/d5c79e0fbb8a.html": {
+   "sha256": "b25b31297610ad489d31257d03778a785c2b1ed94f196d501dafaccb0216d1b5",
+   "bytes": 161971
+  },
+  ".cache/sources/e06371a91777.html": {
+   "sha256": "c099a24cb29c84ed1158f60629118c182e05b56ca67f57f167b38606989e9d21",
+   "bytes": 123906
+  },
+  ".cache/sources/e63fd1d6c63a.html": {
+   "sha256": "9e745ba403d9989c99f6a221c56d452a5c406e2f5df46bd3359b0e18256f34b9",
+   "bytes": 20405
+  },
+  ".cache/sources/e7b31a7e56c3.html": {
+   "sha256": "f5e0af56f5970113a12e8cd5075d41e208d0011320e74aa50829ff4d7ceaedf4",
+   "bytes": 121289
+  },
+  ".cache/sources/eb47e7729294.html": {
+   "sha256": "24362e10cf13ecb996d000ff504f146c145fa23a05590ba414f8044e1a53efce",
+   "bytes": 4558
+  },
+  ".cache/sources/f0e091637d62.html": {
+   "sha256": "d13b1a5d1aff392aa99bbc21caa6a40524b3d884a2962a2639d6af928be02050",
+   "bytes": 179864
+  },
+  ".cache/sources/f110dbc46345.html": {
+   "sha256": "cb8a30e50724f61aaa660b1eae21f13eef668391d86f1b70f9bf7673ff667795",
+   "bytes": 5699
+  },
+  ".cache/sources/f1a5983347d4.html": {
+   "sha256": "123b360f60b33653b04604c12b83eccf50aab165de250ac029a200cac21dfa4e",
+   "bytes": 376313
+  },
+  ".cache/sources/f378fff19acc.html": {
+   "sha256": "ac0b32582d5a7f8a35d40a1c80573d5706efd5c84575bf01ddb33ee91c5f38f2",
+   "bytes": 363778
+  },
+  ".cache/sources/f788681941ba.html": {
+   "sha256": "4ccf4e590fc38d7c3ed7490e0645e2afd7a62e8e324ad321cab747f7aeea852c",
+   "bytes": 60255
+  },
+  ".cache/sources/f9b055a1ff23.html": {
+   "sha256": "82276ace7800c67d1c9c24abc244f344085f250d4e95a7f981e74ec454a89781",
+   "bytes": 294195
+  },
+  ".cache/sources/fd8aef84558d.html": {
+   "sha256": "5e6e136ed3edf98118227f54c7e440d30944e05af84bd6ffd8ef2eea2b843ced",
+   "bytes": 11765
+  },
+  ".cache/sources/fdd0f25dfec5.html": {
+   "sha256": "85b2c49c3fa20fdbb74ec366e36864951ef80b379c978d3bfdf842e634383e7d",
+   "bytes": 235714
+  }
+ }
+}

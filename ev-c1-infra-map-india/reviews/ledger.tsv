@@ -1,1 +1,3 @@
 date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	code+eval (all components, docs tooling, map)	gpt-6-sol	max	11 (2 blocker, 7 major, 2 minor)	11 (1 partly)	0	Reproduced all headline numbers byte-identically from copied inputs; linkage chaining flipped the national C5 estimate; CG validation used future covariates; fixes in commits after 7629918
+2026-10-04	ADR 001 + Round-1 methodology/roadmap v2	gpt-6-astra	max	17 (1 admin blocker, 11 major, 5 minor)	17 (1 routed to user)	0	Round-1 score 70/100 (8/6/7/7/7); led to purged forecast split, point-in-time CG test, reframed Maharashtra ranking, roadmap safeguards, narrower claims

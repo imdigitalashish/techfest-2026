@@ -52,7 +52,7 @@ Green = running on real data tonight. ★ = spike (see [ADR 001](adr/001-spike.m
 
 ## Error modes and SLOs (summary)
 - **C1:** dashboard redeploy changes JSF widget ids → the client fails loudly at the first request; registrations ≠ stock (no deregistration feed) → C7 applies survival curves; a few VAHAN offices are not migrated (dashboard shows 1,468 of 1,469). SLO: full national refresh < 2 h, polite rate (≤ 3 concurrent sessions, ≥ 0.4 s between requests).
-- **C2–C4:** sources disagree on the unit (site vs charger vs connector): the canonical unit is the *site* with a connector list. Coordinates outside India or outside the stated state → quarantined, never silently dropped.
+- **C2–C4:** sources differ in the unit (site vs charger vs connector): the canonical unit is the *site* with a connector list. Coordinates outside India or outside the stated state → quarantined, never silently dropped.
 - **C5:** capture–recapture assumes independent sources; CPO feeds and OSM are positively dependent (mappers copy apps) → log-linear models with interaction terms, validated against official totals.
 - **C10/C11:** every gap and recommendation carries ranked reasons (`drivers`) and the parameter-set id, so a planner can see *why*.
 
