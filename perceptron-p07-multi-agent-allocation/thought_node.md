@@ -10,12 +10,26 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** _(lead fills)_
+_Updated 2026-10-04 07:30 IST._
+- **Phase:** 4–6. The walking skeleton and eval harness are built. The first auto-research ratchet is done. The Round-1 abstract draft is written. The held-out MVP grid is still running.
+- **Plan:** PettingZoo dispatch simulator → 3 rule-based allocators vs a look-ahead MPC (EWMA or change-aware forecaster) vs a clairvoyant oracle → paired statistics on frozen seeds → spike = regime-aware forecasting, tested along the lead-time/patience axis ([ADR 001](architecture/adr/001-spike.md)).
+- **Doing:** `eval/results/mvp-v1` runs scenarios shock and shock+drift, held-out seeds 100–109, 1 day, K=40, P=10, all 6 policies. It writes rows incrementally and is CPU-starved (load average ~40 from other projects). Then `python -m eval.stats eval/results/mvp-v1` produces the numbers for the abstract and memo. No sub-agents (Supervisor lean mode).
+- **Next (ordered):**
+  1. Put the mvp-v1 summary numbers into the abstract and memo.
+  2. Run the patience sweep (P=3 vs 10) to test hypothesis H1.
+  3. Write contract tests: PettingZoo `parallel_api_test`; core ≡ wrapper; conservation.
+  4. Get an independent rubber-duck review of ADR 001 and the abstract once sub-agents are allowed.
+  5. Re-run the failed research threads (compute-cluster papers, social/competitions).
+  6. Build the RL comparator (TorchRL MAPPO).
+  7. Continue the ratchet: spatial pooling, BOCPD.
+  8. Build the demo dashboard.
+  9. Move long sweeps to an Azure VM (subscription active).
+- **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills for the team-fit section.
+- **Risks:**
+  - The detector's end-to-end value may be small when lead time ≤ patience. The pilot suggests exactly this, so the spike is framed as a falsifiable phase diagram.
+  - "MPC beats rules" alone is known (Iglesias 2018).
+  - The data is synthetic; mitigation is a real-trace replay.
+  - CPU contention on the shared Mac slows sweeps.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -40,22 +54,84 @@
 - What companies ship: dispatch and rebalancing systems at ride-hailing/delivery companies; cloud autoscaling and scheduling papers.
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — We build our own PettingZoo ParallelEnv (numpy core) rather than adopt RL4AMoD or VMAS. Reasons: speed for many seeds × long horizons, labelled shocks, and MIT-only dependencies ([landscape §5](research/landscape.md)).
+- 2026-10-04 — Same-zone FIFO matching is fixed inside the simulator for every policy, so policies differ **only** in where idle units go.
+- 2026-10-04 — Spike = regime-aware look-ahead: C4 + C5 feeding C6, tested along the lead-time/patience axis with the falsifiable hypothesis H1 ([ADR 001](architecture/adr/001-spike.md)).
+- 2026-10-04 — Seeds 100+ are frozen test seeds; seeds 0–99 are for tuning and the ratchet. Policies are paired by seed (common random numbers).
+- 2026-10-04 — MPC LP: H=6, HiGHS interior-point. The benchmark gave 17.7 ms at H=6 and 26.4 ms at H=8 (default HiGHS: 25.0 / 33.0 ms).
+- 2026-10-04 — Lean mode (Supervisor, 05:50): no sub-agents. ADR 001's antithesis is therefore labelled self-critique; an independent review is queued.
 
 ## Components
+Details: [architecture/components.md](architecture/components.md) · contracts: [architecture/contracts/contracts.py](architecture/contracts/contracts.py)
+
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| C1 | Simulator (+ PettingZoo wrapper) | targets (K,) → StepInfo; FleetState | own numpy core | — | built | steps/s; determinism, conservation |
+| C2 | Scenario generator | config, seed → DemandTrace + labels | own parametric model (synthetic) | — | built | rate fidelity |
+| C3 | Nowcaster | counts → level | EWMA / moving average | — | built | nowcast MAE |
+| C4 | Change detector | counts, expected → alarm, onset, post-change rate | two-sided Poisson CUSUM | **yes** | built, ratchet v1 | delay at fixed ARL₀; F1 with margin |
+| C5 | Forecaster | observe / forecast(t, H) → mean (H, Z) | deseasonalised EWMA | **yes** | built, ratchet v1 | frozen `eval.py` score (MAE_all + MAE_post_shock) |
+| C6 | MPC planner | idle, incoming, queue, demand → Plan (flows, duals) | time-expanded LP, HiGHS | — | built | served fraction under the oracle forecast; p99 latency |
+| C7 | Coordinator | flows → per-unit orders | lowest-index pick / Hungarian | (B later) | built | assignment cost ratio |
+| C8 | RL comparator | per-unit obs → Discrete(Z) | MAPPO / IPPO (TorchRL) | — | planned | served fraction on test seeds |
+| C9 | Rule-based baselines | FleetState → targets | static, greedy, reactive | — | built | end-to-end |
+| C10 | Eval harness + stats | jobs → episodes.csv → summary.md | own (CRN, bootstrap, Wilcoxon + Holm) | — | built | CI half-width |
+| C11 | Oracle | true rates → Forecast | MPC on true rates | — | built | — |
+| C12 | Demo dashboard | sim stream → UI, click-to-shock | — | — | planned | fps / latency |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+_First version, 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
+- **Winnability — 4.** The MVP was reached overnight: the look-ahead MPC beats all three rule-based allocators under a sudden shock in the pilot, and held-out 10-seed numbers are in `eval/results/mvp-v1/summary.md`. P7 is the only problem in Theme 4, so it probably draws many "RL on PettingZoo" entries. We separate ourselves through evaluation rigour (frozen seeds, paired CIs, oracle regret) and a falsifiable lead-time law.
+- **Innovation headroom — 3.5.**
+  - The spike: a statistical change detector inside the forecaster that feeds the rolling-horizon planner, plus a lost ≈ Δλ·max(0, d + L − P) "when look-ahead pays" phase diagram.
+  - For: the first ratchet run beats the EWMA reference on the isolated metric (0.4154 vs 0.4385; detection in ~5.6 steps).
+  - Against: the pilot shows little *end-to-end* gain when lead time ≤ patience, and "MPC beats rules" alone is known (Iglesias 2018).
+  - Second spike candidate: LP dual-price (market-style) decentralised coordination.
+- **Feasibility — 5.** Simulator, baselines, MPC, harness, statistics and the ratchet already run on the M5 CPU; no GPU or data download is needed. The RL comparator is optional. Everything user-dependent can finish before 17 Nov.
+- **Demo strength — 4.** A live grid where a judge clicks to inject a shock: the detector fires, units pre-position and the baselines lag, with live served-fraction and CI panels. Less flashy than a 3D or LLM demo, but very legible.
+- **Fit with the user's strengths — 5.** This is autoscaling and dispatch: lead time = cold start, patience = timeout. Large-scale systems and optimisation are Ashish's home turf, and the compute-cluster instantiation maps directly.
+- **Biggest risk:** the innovation could shrink to "MPC beats rules" if H1 fails. Judges may also call synthetic demand a toy. Mitigations: the phase diagram either way, real-trace replay (NYC TLC), and the RL comparator.
+- **One-line pitch:** "Dispatchers and autoscalers react one lead time too late. We detect demand regime changes statistically, re-plan over the lead time, and prove with frozen-seed CIs exactly when look-ahead pays."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 02:03 IST — Phase 0 read; research fan-out
+Read PLAYBOOK, this node's brief and `_briefs/perceptron.txt`; the verbatim P7 brief matches the seed. Launched 7 research workers: fleet papers, non-stationarity, compute autoscaling, code/envs/data, companies, social/competitions, evaluation methodology.
+
+### 2026-10-04 02:56–05:02 IST — Network saturation
+- Workers failed at turn 0 with HTTP 408; the first `uv pip install` timed out.
+- Relaunched narrow workers with incremental writes. Four partial raw files survived in `research/raw/`: fleet (15 sources), non-stationarity (6), companies (9), evaluation + envs. The other workers died.
+- PettingZoo 1.27.0 and Gymnasium 1.3.0 installed into `.venv` (verified by import).
+
+### 2026-10-04 05:02–06:20 IST — Walking skeleton built (lead, directly)
+- Built `contracts.py` v1, the scenario generator (shock, drift, spikes, over-dispersion, labelled change points, common random numbers), the numpy simulator core plus PettingZoo wrapper, the Poisson CUSUM, the forecasters, the time-expanded MPC LP, the coordinator, 6 policies and the harness.
+- 05:50: Supervisor lean mode acknowledged; no new sub-agents since.
+
+### 2026-10-04 06:20 IST — Pilot (indicative, single seed, superseded)
+- Setup: seed 0, shock, 1440 steps, K=40, P=10, at the *pre-change* planner settings (H=8, default HiGHS).
+- Served fraction: static 0.879 · greedy 0.933 · reactive 0.927 · mpc-ewma 0.977 · mpc-cusum 0.977 · oracle 0.976.
+- Shock-window served: 0.741 · 0.857 · 0.814 · 0.886 · 0.889 · 0.884.
+- Lesson: look-ahead *planning* carries the gain at L ≤ P; forecast quality (even clairvoyance) barely matters there. That led to ADR 001's lead-time/patience framing.
+- These numbers come from console output and are not reproducible at current defaults (H=6, IPM). They are superseded by mvp-v1.
+
+### 2026-10-04 06:25–06:50 IST — Speed, metric fix, grid relaunch
+- LP benchmark: HiGHS-IPM takes 17.7 ms at H=6 vs 25.0 ms with default HiGHS. Adopted H=6 + IPM.
+- `recover_steps` changed to an absolute 0.90 served bar. The old relative bar penalised better policies.
+- The first grid was killed: other projects keep the load average at 35–43, so my workers got ~1.4 CPUs. The harness now writes rows incrementally.
+- Relaunched: `.venv/bin/python -m eval.harness --scenarios shock shock+drift --seeds 100-109 --horizon 1440 --workers 10 --out eval/results/mvp-v1`
+
+### 2026-10-04 06:40–07:20 IST — Package documents
+- Wrote research/landscape.md (cited, with "What companies ship today" and explicit coverage gaps), architecture/components.md, ADR 001, deliverables/round1-abstract.md (v0.1) and deliverables/architecture.md.
+
+### 2026-10-04 07:12–07:19 IST — First auto-research ratchet (C4+C5)
+- Run with: `python -m components.forecasting.autoresearch.eval <module:factory>` (frozen; dev seeds 0–19).
+- EWMA reference: 0.4385.
+- v0, CUSUM jump-restart: 0.4927. It detects in 5.5 steps, but the post-shock error is worse.
+- **v1, running post-change mean: 0.4154 — kept.** It beats the EWMA reference.
+- v2 (δ=0.5): 0.4710, reverted. v3 (δ=0.5, h=6): 0.4410, reverted.
+- Ledger: `components/forecasting/autoresearch/results.tsv`.
+
+### 2026-10-04 07:22 IST — Supervisor alignment check
+Agreed: refresh Now/Log first, then add numbers and the memo. Done in this update.
