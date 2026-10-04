@@ -67,7 +67,11 @@ def static_checks(P: dict) -> None:
     ok("every src/href in index.html exists locally", not missing, str(srcs))
     prov = json.load(open(os.path.join(A, "provenance.json")))
     bad_md5 = [f for f, v in prov["outputs"].items() if md5(os.path.join(A, f)) != v["md5"]]
-    ok("assets match provenance md5", not bad_md5, f"{len(prov['outputs'])} files; built at {prov['built_at_ist']} from commit {prov['commit'][:7]}")
+    ok("assets match provenance md5", not bad_md5, f"{len(prov['outputs'])} files; built at {prov['built_at_ist']}")
+    blob = lambda f: subprocess.run(["git", "hash-object", f], cwd=ROOT, capture_output=True, text=True).stdout.strip()  # noqa: E731
+    stale = [f for f, h in prov.get("source_blobs", {}).items() if blob(f) != h]
+    ok("assets were built by the current code (git blob of builder + components)", bool(prov.get("source_blobs")) and not stale,
+       f"{len(prov.get('source_blobs', {}))} source files" + (f"; changed since build: {stale}" if stale else ""))
     total = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(DEMO) for f in fs if "__pycache__" not in dp)
     big = [f for dp, _, fs in os.walk(DEMO) for f in fs if os.path.getsize(os.path.join(dp, f)) > 20e6]
     ok("demo/ size ≤ 10.5 MB and no file > 20 MB", total <= 10.5e6 and not big, f"{total / 1e6:.2f} MB")

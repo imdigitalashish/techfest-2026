@@ -67,6 +67,11 @@ OC = {"none": 0, "sell_only": 1, "buy_only": 2, "both": 3}
 SIMS = ("frozen", "strict")
 CACHE_F, CACHE_S = ".cache/falsification", ".cache/sensitivity"
 CHECKS: list[dict] = []
+# git blob hashes of these are recorded in provenance.json (rebase-proof); demo/smoke.py checks they still match
+SOURCES = ["demo/build_assets.py", "components/feed/normalize.py", "components/detector/cross.py", "components/decay/survival.py",
+           "components/decision/policies.py", "components/decision/lev.py", "components/decision/autoresearch/rules.py",
+           "components/decision/autoresearch/build_cells.py", "components/decision/compiled.py", "components/sim/fills.py",
+           "components/sim/strict.py", "components/costs/fees.py", "eval/run_baseline.py", "eval/falsification.py"]
 
 
 def log(*a):
@@ -434,6 +439,7 @@ def main() -> None:
     prov = {"built_at_ist": subprocess.run(["date", "+%Y-%m-%d %H:%M:%S IST"], capture_output=True, text=True,
                                            env={**os.environ, "TZ": "Asia/Kolkata"}).stdout.strip(),
             "commit": git("rev-parse", "HEAD"), "builder_unmodified_vs_commit": git("status", "--porcelain", "demo/build_assets.py") == "",
+            "source_blobs": {f: git("hash-object", f) for f in SOURCES},
             "command": "eval/run_guarded.sh .venv/bin/python -m demo.build_assets", "runtime_s": round(time.time() - t_all, 1),
             "python": sys.version.split()[0], "platform": platform.platform(),
             "packages": {"numpy": np.__version__, "polars": pl.__version__, "scikit-learn": sklearn.__version__, "numba": numba.__version__,
