@@ -106,3 +106,18 @@ Otherwise the spike is reported as failed and the deliverable rests on the plann
    - per-zone uncertainty shrinkage from rolling forecast residuals;
    - the original per-zone/neighbour alarm gate.
 3. **Unchanged:** seeds 300–329, cells, endpoint, two-sided Wilcoxon, paired bootstrap CIs, reporting of every cell. The success criterion of Addendum B applies to comparators (b) and (c).
+
+---
+
+## Correction — stated times vs commit times (appended 2026-10-04 17:28 IST; registered text above left unedited)
+
+The times written in the headers above were estimated, not read from the clock. Each is 2–11 minutes later than its git commit, and **the commit is the evidence** (PLAYBOOK §6). Actual times, from `git log --date=format-local` (IST), with run start = config.json mtime − wall_s:
+
+| Section | Stated time | Commit (IST) | First run it governs (IST) | Order OK? |
+|---|---|---|---|---|
+| Main pre-registration (mvp-v2) | 10:15 | **10:10:38** (6e58813) | mvp-v2 started 10:11:01 | yes — registered 23 s before the run |
+| Addendum A (phase-v2) | 10:27 | **10:25:33** (a5eb3f0) | phase-v2 started 10:32:25 | yes |
+| Addendum B (trust spike) | 11:05 | **10:59:23** (9390333) | not yet run (seeds 300–329 unused; max seed in any result = 229) | yes |
+| Amendment B1 | 11:25 | **11:14:31** (72426fc) | not yet run | yes |
+
+No registered content changes. Future registrations take their time from `TZ=Asia/Kolkata date`.
