@@ -17,7 +17,8 @@
   - Died without output: r1a, r2, r4, r6/r6a/r6b, r1b1.
   - The first-principles physics agent never reported.
 - **Next (ordered):**
-  1. Autoresearch ratchet on C5. Baseline dev event MdAPE is 11.8 %. The weak spots are fake recall (0.2) and the false-implausible rate (0.31). See `components/recharge_verifier/autoresearch/program.md`.
+  1. Evaluator v2, a model-mismatch check: non-linear (orifice) drains and gauge-rain mismatch. The v1 numbers are an upper bound because the simulator and verifier share the linear-reservoir assumption.
+  2. C8 static dashboard: real DWLR map plus a simulated pit storyline, for the zonal demo.
   2. C4 QC module on real DWLR data, with fault-injection F1.
   3. Autoresearch loop on C5's MdAPE.
   4. Static dashboard.
@@ -68,7 +69,7 @@ Full table, contracts and graph: [architecture/components.md](architecture/compo
 | C2 | edge-firmware | RawSample → UplinkFrame | fixed-interval DWLR (2/day) | — | design | mAh/day at equal error |
 | C3 | telemetry-link | UplinkFrame → DeliveryReport | GPRS | — | design | % events ≤24 h |
 | C4 | ingest-qc | frames / WRIS JSON → Series + QCReport | range/flatline | ★2 | real-data profile done | fault F1; % usable |
-| C5 | recharge-verifier | Series + structure → RechargeEvent | self-certification | ★1 | **baseline 11.8 % MdAPE (dev, sim)** | event-volume MdAPE |
+| C5 | recharge-verifier | Series + structure → RechargeEvent | self-certification | ★1 | **ratchet v1: holdout MdAPE 3.0 % (sim)** | event-volume MdAPE |
 | C6 | hydro-twin | Series → HeadModelFit, RechargeEstimate | Pastas TFN | — | planned | holdout NSE |
 | C7 | inspection-queue | events/QC → InspectionTicket | complaints | — | planned | precision@k |
 | C8 | dashboard | all → HTML | ThingSpeak/Blynk | — | planned | 5-task time |
@@ -150,3 +151,21 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
   Logged in `results.tsv`. The holdout run (monsoon 2024) is in progress.
 - **Reading:** volumes are already decent per event. The weak spots are the verdicts: fake detection, and honest pits flagged as implausible. That is the first ratchet target, ideas 1 and 6 in `program.md`.
+
+### 2026-10-04 08:20 IST — First autoresearch ratchet on C5 (kept, holdout-confirmed)
+- **Diagnosis** of the baseline (`/tmp` script, not committed):
+  - All false "implausible" verdicts were light-rain events (<1 mm, ~0.05 m³). The rule "rain <1 mm ⇒ implausible" is physically wrong: 0.6 mm × 300 m² × 0.75 ≈ 0.14 m³.
+  - Big multi-storm events underestimated infiltration about 2×. A single log-linear k fit spanned disjoint recession limbs and flattened the slope.
+- **Fixes**, each run as a separate ablation in parallel temp trees and logged in `components/recharge_verifier/autoresearch/results.tsv`:
+  - exp1: within-limb (fixed-effects) k fit;
+  - exp2: rain-consistency implausibility test;
+  - exp3: one-minute jump test against rain in ±5 min.
+- **Results (simulated pits, real rain):**
+
+  | Split | Event MdAPE | Season-total error | Fake recall | False-implausible | Clogging P/R |
+  |---|---|---|---|---|---|
+  | Dev | 11.8 % → **3.9 %** | 61 % → 4.8 % | 0.2 → 1.0 | 0.31 → 0 | — |
+  | Holdout (monsoon 2024) | 10.3 % → **3.0 %** | 65 % → 7.6 % | 0.3 → 1.0 | 0.25 → 0 | 0.63/1.0 → 0.83/1.0 |
+
+- **Honesty note:** the simulator and verifier share the linear-reservoir model, so these numbers are an upper bound. Evaluator v2 (model mismatch) comes next; the physical rig is the real test.
+- Corrected the ledger and README timestamps to the actual run times.
