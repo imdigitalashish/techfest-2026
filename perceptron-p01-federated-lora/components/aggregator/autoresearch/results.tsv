@@ -1,1 +1,5 @@
 timestamp	commit	hypothesis	metric_final_macro_loss	delta_vs_best	kept	notes
+2026-10-04T07:15+05:30	e6b17ac	REF starter fedavg_ab_homo (seed 0 only, from v1 matrix; not eval.py)	2.7346	—	ref	dropout scenario, 12 rounds
+2026-10-04T07:15+05:30	e6b17ac	REF fedavg_ab_het (seed 0 only, v1 matrix)	2.7046	—	ref	agg error 0.254
+2026-10-04T07:15+05:30	e6b17ac	REF anchor_naive (seed 0 only, v1 matrix)	2.7616	—	ref	exact but n_k weights; c0 share 1.00
+2026-10-04T07:15+05:30	e6b17ac	ITER-0 anchor_full = loop baseline (seed 0 only, v1 matrix)	2.6651	0	baseline	all domains improve vs base; eval.py 2-seed metric pending (seed 1 running)
