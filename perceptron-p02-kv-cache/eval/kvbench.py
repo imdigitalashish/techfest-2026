@@ -37,10 +37,12 @@ from pathlib import Path
 
 import mlx.core as mx
 from mlx_lm import load
+from mlx_lm.utils import dequantize_model
 
 ROOT = Path(__file__).resolve().parents[1]
 MODEL_ID = "mlx-community/Llama-3.2-1B-Instruct-4bit"
 N_SINK, N_RECENT, WIN = 4, 64, 64
+KV_DTYPE = mx.float16  # the 4-bit model computes in fp16; KV stored as fp16 whatever the compute dtype
 ADJ = ("amber azure bold brisk calm coral crimson dusty eager fuzzy gentle golden hollow icy jade keen "
        "lunar misty noble olive proud quiet rapid rusty silent silver solar tidal urban velvet vivid wild").split()
 NOUN = ("otter falcon maple harbor lantern meadow comet canyon willow beacon cobra glacier heron island "
@@ -166,12 +168,14 @@ class Engine:
             k = at.k_proj(h).reshape(1, L, self.nkv, self.hd).transpose(0, 2, 1, 3)
             v = at.v_proj(h).reshape(1, L, self.nkv, self.hd).transpose(0, 2, 1, 3)
             q, k = at.rope(q, offset=pos0), at.rope(k, offset=pos0)
+            k, v = k.astype(KV_DTYPE), v.astype(KV_DTYPE)
             pk, pv = cache.kv(li)
             S0 = 0 if pk is None else pk.shape[2]
             kk = k if pk is None else mx.concatenate([pk, k], axis=2)
             vv = v if pv is None else mx.concatenate([pv, v], axis=2)
             cache.append(li, k, v)
             mask = (mx.arange(S0 + L)[None, :] <= (S0 + mx.arange(L))[:, None]) if L > 1 else None
+            kk, vv = kk.astype(q.dtype), vv.astype(q.dtype)
             o = mx.fast.scaled_dot_product_attention(q, kk, vv, scale=self.scale, mask=mask)
             if capture:
                 caps[li] = q[:, :, -capture:, :]
@@ -222,7 +226,7 @@ def avgpool(x, k=5):
 def window_scores(qw, Kl, scale, causal):
     nkv, S, w = Kl.shape[1], Kl.shape[2], qw.shape[2]
     g = qw.shape[1] // nkv
-    s = ((qw * scale).reshape(1, nkv, g, w, -1) @ Kl[:, :, None].swapaxes(-1, -2)).astype(mx.float32)
+    s = ((qw * scale).reshape(1, nkv, g, w, -1) @ Kl.astype(qw.dtype)[:, :, None].swapaxes(-1, -2)).astype(mx.float32)
     if causal:
         s = mx.where(mx.arange(S)[None, :] <= (S - w + mx.arange(w))[:, None], s, -mx.inf)
     return avgpool(mx.softmax(s, axis=-1).sum(axis=(2, 3))[0])
@@ -279,7 +283,7 @@ def rod_answer(E, st, q_ids, block=64, halo=0):
     else:
         _, caps = E.forward(q_ids, T, Cache(st["Kr"], st["Vr"]), capture=len(q_ids))
         qq, g = caps[st["layer"]], E.nh // E.nkv
-        sk = st["sketch"].dense()
+        sk = st["sketch"].dense().astype(qq.dtype)
         rel = ((qq * E.scale).reshape(1, E.nkv, g, qq.shape[2], E.hd) @ sk[:, :, None].swapaxes(-1, -2)).astype(mx.float32)
         r = mx.softmax(rel, axis=-1).sum(axis=(0, 2, 3)).max(axis=0)
         rb = mx.pad(r, [(0, nb * block - En)]).reshape(nb, block).max(axis=1)
@@ -333,6 +337,8 @@ def main():
     ap.add_argument("--rod_bits", type=int, default=2)
     ap.add_argument("--halo", type=int, default=0)
     ap.add_argument("--device", default="gpu", choices=["gpu", "cpu"])
+    ap.add_argument("--weights", default="q4", choices=["q4", "bf16", "fp32"],
+                    help="q4 = 4-bit weights as shipped; bf16/fp32 = the same weights dequantised (faster on CPU)")
     ap.add_argument("--name", default=None)
     a = ap.parse_args()
     if a.device == "cpu":
@@ -342,6 +348,9 @@ def main():
     outdir.mkdir(parents=True, exist_ok=True)
     paras = (ROOT / ".data" / "haystack.txt").read_text(encoding="utf-8").split("\n")
     model, tok = load(MODEL_ID)
+    if a.weights != "q4":
+        model = dequantize_model(model)
+        model.set_dtype(mx.float32 if a.weights == "fp32" else mx.bfloat16)
     E = Engine(model, tok)
     weights_bytes = mx.get_active_memory()
     rng = random.Random(a.seed)
@@ -437,12 +446,12 @@ def main():
                 deltas.append({"frac": f, "a": A, "b": Bm, "delta_acc": round(sum(d) / len(d), 4), "ci95_ctx_boot": boot_delta(d)})
     meta = {"name": name, "model": MODEL_ID, "kv_bytes_per_token": 2 * E.nl * E.nkv * E.hd * 2, "ctx_target": a.ctx,
             "n_contexts": a.n, "needles": a.needles, "seed": a.seed, "style": a.style, "fracs": fracs,
-            "rod_layer": a.rod_layer, "rod_bits": a.rod_bits, "halo": a.halo, "device": a.device,
+            "rod_layer": a.rod_layer, "rod_bits": a.rod_bits, "halo": a.halo, "device": a.device, "weights": a.weights, "kv_dtype": str(KV_DTYPE),
             "weights_active_bytes": weights_bytes, "mlx": mx.__version__, "machine": platform.platform(),
             "wall_s": round(time.time() - t0, 1),
             "command": f"python eval/kvbench.py --ctx {a.ctx} --n {a.n} --needles {a.needles} --seed {a.seed} --fracs {a.fracs} "
                        f"--methods {a.methods} --style {a.style} --rod_layer {a.rod_layer} --rod_bits {a.rod_bits} "
-                       f"--halo {a.halo} --device {a.device} --name {name}"}
+                       f"--halo {a.halo} --device {a.device} --weights {a.weights} --name {name}"}
     (outdir / f"{name}.json").write_text(json.dumps({"meta": meta, "table": table, "paired_deltas": deltas}, indent=1))
     with open(outdir / f"{name}.rows.jsonl", "w") as fh:
         for r in rows:

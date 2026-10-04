@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Run eval/kvbench.py on an Azure CPU VM (MLX CPU backend, Linux wheels) when the shared Mac is saturated.
+# Run eval/kvbench_torch.py (PyTorch CPU) on an Azure VM. (MLX's Linux CPU backend measured 3.5 GFLOP/s fp32 GEMM vs
+# torch's 599 GFLOP/s on this VM, so measurements use the torch twin; setup_torch.sh installs it and exports weights.)
 # Usage: eval/azure/run_on_azure.sh create|setup|run "<kvbench args>"|status|fetch|delete
 # Defaults: one Standard_D8ds_v5 (8 vCPU, 32 GiB) in centralindia; delete the resource group after use.
 # The SSH key is project-local and gitignored (.data/azure_p02), never committed.
@@ -26,10 +27,11 @@ case "${1:-}" in
       && cd p02 && ~/venv/bin/python eval/fetch_haystack.py' ;;
   run)
     H="azureuser@$(ip)"; shift
-    scp $OPTS "$ROOT/eval/kvbench.py" "$H:p02/eval/"
-    ssh $OPTS "$H" "cd p02 && nohup ~/venv/bin/python -u eval/kvbench.py --device cpu $* > run_\$(date +%s).log 2>&1 &" ;;
+    scp $OPTS "$ROOT"/eval/kvbench_torch.py "$ROOT"/eval/parity_torch.py "$H:p02/eval/"
+    N=$(echo "$*" | sed -n 's/.*--name \([^ ]*\).*/\1/p'); N=${N:-$(date +%s)}
+    ssh $OPTS "$H" "cd p02 && HF_HUB_OFFLINE=1 nohup ~/venv/bin/python -u eval/kvbench_torch.py $* > run_$N.log 2>&1 < /dev/null &" < /dev/null ;;
   status)
-    H="azureuser@$(ip)"; ssh $OPTS "$H" 'cd p02 && for f in run_*.log; do echo "== $f"; grep -v clean_up "$f" | tail -4; done; uptime' ;;
+    H="azureuser@$(ip)"; ssh $OPTS "$H" 'cd p02 && for f in run_*.log; do echo "== $f"; grep -v clean_up "$f" | tail -3; done; uptime' < /dev/null ;;
   fetch)
     H="azureuser@$(ip)"; mkdir -p "$ROOT/eval/results"
     scp $OPTS "$H:p02/eval/results/*" "$ROOT/eval/results/" ;;
