@@ -1,0 +1,22 @@
+{
+ "scenarios": [
+  "shock",
+  "shock+drift"
+ ],
+ "policies": [
+  "static",
+  "greedy",
+  "reactive",
+  "mpc-ewma",
+  "mpc-cusum",
+  "oracle"
+ ],
+ "seeds": "100-109",
+ "n_agents": 40,
+ "patience": 10,
+ "horizon": 1440,
+ "workers": 10,
+ "out": "eval/results/mvp-v1",
+ "n_jobs": 120,
+ "wall_s": 2521.656785964966
+}

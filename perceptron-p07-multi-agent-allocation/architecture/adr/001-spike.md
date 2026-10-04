@@ -8,18 +8,20 @@
 - The MVP requires a rule-based allocator plus one RL or planning agent that beats it when demand suddenly shifts. The stretch goals are shock + drift in one run, and long horizons.
 - "MPC on a demand forecast" for fleet rebalancing is established (Iglesias et al., ICRA 2018: wait time cut "by up to 89.6%"). Bi-level RL + LP is the research frontier (Gammelli et al. 2021–2025).
 - Production systems use forecast + optimiser + **reactive guardrails** with fixed thresholds (Knative panic at 200% of capacity; AWS and Azure predictive scaling is scale-out only). See [landscape](../../research/landscape.md).
-- **Evidence from our own runs** — smoke test, `eval/harness.py`, seed 0, shock scenario, 1 day, K=40 units; reproduce with the snippet in the thought-node Log, 06:20 entry:
+- **Evidence from our own runs** (held-out seeds 100–109, 1440 steps, K=40, P=10; `eval/results/mvp-v1/summary.md`; reproduce with `.venv/bin/python -m eval.harness --scenarios shock shock+drift --seeds 100-109 --horizon 1440 --out eval/results/mvp-v1 && .venv/bin/python -m eval.stats eval/results/mvp-v1`). Mean served fraction [95% bootstrap CI], and requests lost in the 120 steps after shock onset:
 
-  | policy | served_frac | served in 120-step shock window |
-  |---|---|---|
-  | static | 0.879 | 0.741 |
-  | greedy | 0.933 | 0.857 |
-  | reactive | 0.927 | 0.814 |
-  | mpc-ewma | 0.977 | 0.886 |
-  | mpc-cusum | 0.977 | 0.889 |
-  | oracle | 0.976 | 0.884 |
+  | policy | shock: served | shock: lost after onset | shock+drift: served | shock+drift: lost after onset |
+  |---|---|---|---|---|
+  | static | 0.866 [0.862, 0.870] | 559 | 0.753 [0.741, 0.768] | 786 |
+  | greedy | 0.910 [0.904, 0.919] | 355 | 0.739 [0.715, 0.769] | 665 |
+  | reactive | 0.904 [0.898, 0.911] | 412 | 0.882 [0.873, 0.890] | 455 |
+  | mpc-ewma | 0.950 [0.942, 0.958] | 274 | 0.936 [0.927, 0.945] | 334 |
+  | mpc-cusum (v0 detector) | 0.949 [0.941, 0.956] | 274 | 0.934 [0.924, 0.942] | 351 |
+  | oracle | 0.948 [0.941, 0.956] | 277 | 0.935 [0.926, 0.943] | 336 |
 
-  Look-ahead planning gives the large gain. **Forecast quality — even clairvoyance — adds almost nothing in this regime.** Single seed, so indicative only; the 10-seed held-out grid is in `eval/results/mvp-v1/`.
+  - **Look-ahead beats the best rule on 10/10 seeds in both scenarios.** Shock: +3.9 pp, paired CI [+3.3, +4.6]. Shock+drift: +5.4 pp [+5.2, +5.7]. Wilcoxon p = 0.002 for each.
+  - **Forecast quality (even clairvoyance) adds nothing measurable at P = 10.** The MPC policies above used the un-ratcheted v0 detector, and mpc-cusum is slightly worse than mpc-ewma on lost-after-onset under shock+drift (351 vs 334).
+  - A single-seed pilot at H=8 (thought node Log, 06:20) showed the same pattern.
 
 ## Options scored (1–5: impact on judged criteria · novelty vs SOTA · feasibility by 15 Dec · measurability · demoability)
 
@@ -32,7 +34,7 @@
 | E. MCTS planner instead of the LP | 3 | 2 | 3 | 4 | 3 | 15 |
 
 ## Six Thinking Hats (on option A)
-- **White (facts).** The smoke test above shows planner gain ≫ forecaster gain at lead time ≤ patience. The CUSUM costs O(Z) per step; the MPC LP takes 17.7 ms at H=6 with HiGHS-IPM (benchmarked). In our partial search we found no work coupling a change detector to a rolling-horizon allocator.
+- **White (facts).** The held-out grid above shows planner gain ≫ forecaster gain at lead time ≤ patience (P=10). The CUSUM costs O(Z) per step; the MPC LP takes 17.7 ms at H=6 with HiGHS-IPM (benchmarked). In our partial search we found no work coupling a change detector to a rolling-horizon allocator.
 - **Red (gut, judges).** A live demo where a judge clicks to create a shock, the detector fires, units pre-position and the baseline lags is memorable. A falsifiable phase diagram appeals to professors. Measured false-alarm rates and paired CIs appeal to Optiver.
 - **Black (risks).** The detector may add ~nothing (today's evidence!). The CUSUM could fire on transient spikes and send units the wrong way. Synthetic data invites "toy" criticism. LP latency limits sweep size under CPU contention.
 - **Yellow (benefits).** Each piece has an isolated metric (detection delay at fixed ARL₀; forecast error post-shock; planner served fraction under the oracle forecast). It transfers to compute clusters, where lead time = cold start, which is the user's systems strength.

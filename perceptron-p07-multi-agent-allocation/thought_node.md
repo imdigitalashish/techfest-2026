@@ -11,11 +11,10 @@
 
 ## Now
 _Updated 2026-10-04 07:30 IST._
-- **Phase:** 4–6. The walking skeleton and eval harness are built. The first auto-research ratchet is done. The Round-1 abstract draft is written. The held-out MVP grid is still running.
+- **Phase:** 4–6. The walking skeleton and eval harness are built, and there are **held-out MVP numbers**: look-ahead beats the best rule on 10/10 seeds under shock and under shock+drift. The first ratchet is done. Abstract v0.2 is written (896 words).
 - **Plan:** PettingZoo dispatch simulator → 3 rule-based allocators vs a look-ahead MPC (EWMA or change-aware forecaster) vs a clairvoyant oracle → paired statistics on frozen seeds → spike = regime-aware forecasting, tested along the lead-time/patience axis ([ADR 001](architecture/adr/001-spike.md)).
-- **Doing:** `eval/results/mvp-v1` runs scenarios shock and shock+drift, held-out seeds 100–109, 1 day, K=40, P=10, all 6 policies. It writes rows incrementally and is CPU-starved (load average ~40 from other projects). Then `python -m eval.stats eval/results/mvp-v1` produces the numbers for the abstract and memo. No sub-agents (Supervisor lean mode).
+- **Doing:** morning package complete and pushed. Next is the P=3 patience sweep to test H1. No sub-agents (Supervisor lean mode).
 - **Next (ordered):**
-  1. Put the mvp-v1 summary numbers into the abstract and memo.
   2. Run the patience sweep (P=3 vs 10) to test hypothesis H1.
   3. Write contract tests: PettingZoo `parallel_api_test`; core ≡ wrapper; conservation.
   4. Get an independent rubber-duck review of ADR 001 and the abstract once sub-agents are allowed.
@@ -81,7 +80,7 @@ Details: [architecture/components.md](architecture/components.md) · contracts: 
 
 ## Selection memo
 _First version, 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
-- **Winnability — 4.** The MVP was reached overnight: the look-ahead MPC beats all three rule-based allocators under a sudden shock in the pilot, and held-out 10-seed numbers are in `eval/results/mvp-v1/summary.md`. P7 is the only problem in Theme 4, so it probably draws many "RL on PettingZoo" entries. We separate ourselves through evaluation rigour (frozen seeds, paired CIs, oracle regret) and a falsifiable lead-time law.
+- **Winnability — 4.** The MVP was reached overnight. On held-out seeds 100–109, the look-ahead MPC beats the best rule on 10/10 seeds: +3.9 pp served under shock (CI [+3.3, +4.6]) and +5.4 pp under shock+drift ([+5.2, +5.7]), losing 82–121 fewer requests in the two hours after the shock (`eval/results/mvp-v1/summary.md`). P7 is the only problem in Theme 4, so it probably draws many "RL on PettingZoo" entries. We separate ourselves through evaluation rigour (frozen seeds, paired CIs, oracle regret) and a falsifiable lead-time law.
 - **Innovation headroom — 3.5.**
   - The spike: a statistical change detector inside the forecaster that feeds the rolling-horizon planner, plus a lost ≈ Δλ·max(0, d + L − P) "when look-ahead pays" phase diagram.
   - For: the first ratchet run beats the EWMA reference on the isolated metric (0.4154 vs 0.4385; detection in ~5.6 steps).
@@ -135,3 +134,18 @@ Read PLAYBOOK, this node's brief and `_briefs/perceptron.txt`; the verbatim P7 b
 
 ### 2026-10-04 07:22 IST — Supervisor alignment check
 Agreed: refresh Now/Log first, then add numbers and the memo. Done in this update.
+
+### 2026-10-04 07:40–07:55 IST — Held-out MVP results (mvp-v1)
+- Reproduce: `.venv/bin/python -m eval.harness --scenarios shock shock+drift --seeds 100-109 --horizon 1440 --workers 10 --out eval/results/mvp-v1 && .venv/bin/python -m eval.stats eval/results/mvp-v1`. Settings: K=40, P=10, H=6, 25 zones.
+- **shock**, served fraction: static 0.866 · greedy 0.910 · reactive 0.904 · mpc-ewma 0.950 · mpc-cusum 0.949 · oracle 0.948.
+  - mpc-ewma vs the best rule (greedy): +3.9 pp [+3.3, +4.6], 10/10 seeds, Wilcoxon p=0.002.
+  - Requests lost in the 120 steps after onset: 355 → 274.
+- **shock+drift**, served fraction: static 0.753 · greedy 0.739 · reactive 0.882 · mpc-ewma 0.936 · mpc-cusum 0.934 · oracle 0.935.
+  - Against the best rule (reactive): +5.4 pp [+5.2, +5.7] (mpc-ewma) and +5.2 pp [+5.0, +5.4] (mpc-cusum), 10/10 seeds each.
+  - Lost after onset: 455 → 334 / 351.
+- **Interpretation:**
+  - The look-ahead *planner* carries the gain.
+  - At P=10, forecasts don't matter: oracle ≈ EWMA ≈ CUSUM. This supports ADR 001's antithesis and the lead-time/patience framing.
+  - The greedy local rule collapses under drift (0.739), a nice multi-agent coordination point.
+- **Statistics caveat:** with n=10, Holm correction over all 28 paired tests per scenario gives a smallest adjusted p of 0.068. The pre-registered primary test (served fraction, look-ahead vs best rule) has p=0.002. ≥20 test seeds are needed for family-wide significance; that is planned.
+- Updated: abstract v0.2 (numbers in, 896 words), ADR 001 evidence table, selection memo.
