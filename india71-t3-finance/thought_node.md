@@ -10,13 +10,11 @@
 - _(none)_
 
 ## Now
-- **Phase:** RESUMED 2026-10-04 13:53 IST (Supervisor; batch slot). Finishing T3 to its definition of done. T1 is ✅ completed and the default India@71 pick; this project must make an honest case for or against T3.
-- **Definition of done (Supervisor, 13:52):** (1) final proposal PDF `deliverables/India71_100_[TeamID].pdf` — ≤ 6 A4 pages, all text ≥ 11 pt, fonts embedded; (2) verify the remaining UNVERIFIED facts at primary sources (browser where fetchers are blocked); (3) evidence honesty — beat the best-arm rule in a **pre-registered** test or ship the transparent rule with the model as a gated challenger; every SYNTHETIC result labelled; numbers rendered from committed results with a doc-drift check (`eval/check_docs.py`); (4) cross-model reviews as child sessions (gpt-6-astra max: hostile judge on the proposal; gpt-6-sol max: code + eval incl. reproducing headline numbers) → `reviews/` + `reviews/ledger.tsv`; (5) final selection memo; push; message "DONE — slot free".
-- **Plan (in order):** ~~pre-register C6 v0.2~~ (14:00) → ~~run~~ (H1/H2 pass; gate 0/10) → ~~`eval/check_docs.py`~~ (23/23) → ~~verification pass~~ → ~~proposal v1.0 + PDF~~ (PASS) → child-session reviews (running) → apply accepted fixes → final memo → DONE.
-- **Doing:** waiting on two child-session reviews (≤ 2 at a time): **T3 code review (gpt-6-sol, max)** — code + eval + reproduction; **T3 proposal judge (gpt-6-astra, max)** — hostile judge incl. T1-vs-T3 ranking. Then: mark items ACCEPTED/REJECTED → `reviews/ledger.tsv`, apply fixes (net-neutral length; PDF is at 6 pages), final memo, DONE.
-- **Rules in force:** child sessions only (no `task`), ≤ 2 at a time; no `git stash`/`--autostash` (push helper fixed); clock timestamps; heavy jobs `nice -n 10`, one at a time, only when `kern.memorystatus_level` ≥ 30; no GPU; small requests.
-- **Needs from user:** (1) Theme choice by 15 Oct (Supervisor default: T1). (2) If T3: team name/ID, up to 4 members, and 3–5 short field conversations (BC agent / BC Sakhi, rural branch manager, Lead District Manager) before 1 Nov.
-- **Risks:** account-level results are SYNTHETIC; learned targeting currently trails the best-arm rule (0.33 vs 0.37); NPCI/PIB block automated fetchers.
+- **Phase:** finishing (resumed 13:52). Definition of done items 1–3 and 5 complete; item 4 (cross-model reviews) done, with a short fix-verification pass running. 2026-10-04 15:14 IST.
+- **Done:** final PDF `deliverables/India71_100_[TeamID].pdf` (6 pp, Arial only, ≥ 11 pt, fonts embedded — `deliverables/check_pdf.py` PASS), generated from committed results (`deliverables/render_numbers.py`; `eval/check_docs.py` 28/28); verification pass (AePS, mapper consent/routing, BC Sakhi, MuleHunter, FI-Index weights, DEPA, DPDP Rules r.16, June 2025 BC re-KYC, NSFI 2025-30, P4 URL); C6 pre-registered twice (v0.2 at 14:00; corrected v0.3 at 14:57 after review — H1 +0.086, H2, H3 pass; SYNTHETIC); reviews: gpt-6-astra (15 issues) and gpt-6-sol (18 issues) → all accepted except the PDF rename (`reviews/2026-10-04-decisions.md`, `reviews/ledger.tsv`).
+- **Doing:** fix-verification addenda from both reviewer child sessions (≤ 2); then DONE message to the Supervisor.
+- **Needs from user:** (1) Theme choice by 15 Oct — recommendation **T1** (see memo). (2) If T3: team name/ID (rename the PDF), up to 4 members, a partner bank's FI head, and 3–5 field conversations (BC / BC Sakhi, rural branch manager, Lead District Manager) before 1 Nov.
+- **Risks:** account-level evidence is SYNTHETIC; cross-bank person counts need an identity-translation service nobody has authorised; per-BC task cap not implemented; checkpoint publication is a production requirement, not built.
 
 ## Brief → what we must be able to show (Phase 0, 02:55 IST)
 Hard constraints: one theme per team, fixed at registration (15 Oct); team ≤4; Round 1 = ≤6 pages A4, 1-inch margins, Arial ≥11 pt, single PDF `India71_100_[Team ID].pdf` via Google Form by 1 Nov; must be a concrete technical architecture (targeting model / interoperable access layer / governance dashboard), not a financial product; original work. Round 2 (16–18 Dec): 10-min talk + 5-min Q&A.
@@ -68,30 +66,39 @@ Context from the statement: PMJDY brought over 56 crore people into the formal s
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
 | C1 | Usage feature extractor | CBS ledger → `AccountMonth` | bank MIS | — | contract; fed by simulator | feed conformance |
-| C2 | Usage-state classifier | `AccountMonth` → `AccountUsage` | RBI inoperative rule | — | **built** (rules v0) | macro-F1 vs truth |
+| C2 | Usage-state classifier | `AccountMonth` → `AccountUsage` | RBI inoperative rule | — | **built** (behavioural `no_use_24m` vs legal `regulatory_inoperative`, DBT-purpose exemption) | macro-F1 vs truth |
 | C3 | Tokeniser + person linker | accounts + identity ref → `PersonUsage` | NPCI mapper | — | **built** (HMAC, purpose-scoped) | pairwise linkage F1 |
 | C4 | Regulated clean room | encrypted inputs → approved outputs | DEPA / cloud clean rooms (UNVERIFIED) | — | designed | red-team leaks |
-| C5 | Purpose & policy engine + audit | `AccessRequest` → `AccessDecision` | AA consent artefact | — | **built v0** (22/22 scenarios, 0 false allows; tamper 65/65 with checkpoint) | scenario accuracy |
-| C6 | Targeting engine | `PersonUsage` + budget → plan | blanket drives | **A** | **built** (T-learner + Lagrangian allocation) | normalised policy value |
+| C5 | Purpose & policy engine + audit | `AccessRequest` → `AccessDecision` | AA consent artefact | — | **built v0.2** (29/29 scenarios, 0 false allows; 89/89 log attacks; basis codes; own-customer scope; decide-and-log) | scenario accuracy |
+| C6 | Targeting engine | `PersonUsage` + budget → plan | blanket drives | **A** | **v0.3** (rule default + gated challenger; registered: +0.086 [0.057, 0.115], H1–H3 pass; SYNTHETIC) | share of reference gain |
 | C7 | Fraud & safety gate | plan + risk → allow/verify/hold | bank AML; MuleHunter.AI (UNVERIFIED) | — | designed | mule recall @1% FPR |
 | C8 | Last-mile orchestrator | plan → tasks → events | camps, bulk SMS | — | designed | completions per BC-day |
 | C9 | Outcome & experiment service | events + usage → `EffectEstimate` | before/after counts | — | simulated pilot in C14 | effect RMSE, CI coverage |
-| C10 | Usage scorecard & attribution | persons + effects → `ScorecardRow` | SLBC enrolment tables | **B** | **built v0** (holdout incremental, EB, gaming flag); ρ 0.90 SYNTHETIC | Spearman ρ under gaming |
-| C11 | DP publisher | rows → `DPRelease` | small-cell suppression | — | **built v0** (Laplace, budget ledger, suppression) | MAE at ε = 1 |
+| C10 | Usage scorecard & attribution | persons + effects → `ScorecardRow` | SLBC enrolment tables | **B** | **built v0** (holdout incremental, insufficient-data status, no BC-level release); ρ 0.90 SYNTHETIC, IID stylised | Spearman ρ under gaming |
+| C11 | DP publisher | rows → `DPRelease` | small-cell suppression | — | **built v0.2** (secret noise, validated persistent composed ledger) | MAE at ε = 1 |
 | C12 | Dashboards | releases → views | PMJDY reports | — | designed | data latency |
 | C13 | Public-data gap mapper | public data → gap rows | national averages | — | **partial** (state inoperative data parsed) | coverage |
 | C14 | Simulator (eval only) | config → synthetic world | — | — | **built** | calibration error |
 
-## Selection memo
-_First version 4 Oct 2026 07:55 IST; final by 12 Oct. Scores 1–5._
-- **Winnability — 4.** The gap rests on the Ministry's own Parliament answers (inoperative share 14.1% → 26.4% while the FI-Index rose; breakdowns "not centrally maintained"), which maps exactly onto the challenge's "scorecard vs lived reality" question; we answer all three sub-questions with a concrete architecture. Risk: a policy jury may reward simpler, ground-validated proposals.
-- **Innovation headroom — 4.** Spike A replaces blanket dormancy-first outreach with uplift-based, budget- and equity-constrained allocation with holdouts (SYNTHETIC, 3 seeds, corrected evaluator: status quo captures 4% of achievable gain above random, risk ranking −7%, our learner 33% after one ratchet iteration, best-arm rule 37%, oracle 100%). Spike B turns enrolment counts into person-level, causal, DP-protected usage accountability (SYNTHETIC test with 20% gaming units: Spearman ρ with true contribution 0.90 vs 0.04 for enrolments and 0.16 for account-level operative share).
-- **Feasibility — 5.** Round 1 needs only a proposal; the skeleton runs on the Mac; little user time before 1 Nov (review + interviews); finals after the 19–25 Nov exams.
-- **Demo strength — 4.** Real state data + a live policy comparison and a district scorecard; weakness: account-level data is synthetic.
-- **Fit with the user's strengths — 4.** Large-scale data systems, privacy engineering and ML; confidential computing is close to the user's Microsoft/Azure context.
-- **Biggest risk:** account-level claims rest on a simulator and several ecosystem facts are still UNVERIFIED tonight; mitigation: verification pass, public uplift benchmarks, 3–5 field conversations, and pilot design with a randomised holdout.
-- **Overall — 4.2** (mean of the five scores). Candid comparison for the one-theme choice: T2 also reports 4.2. T3's edge is a hard, primary-source gap (the Ministry's own Parliament answers) and a governance architecture that answers all three sub-questions; its weakness is that account-level results are SYNTHETIC and several ecosystem facts are still UNVERIFIED. Recommend deciding on 12 Oct after both themes finish their verification passes.
-- **One-line pitch:** "Jan Dhan opened 59 crore accounts; one in four now lies unused and the State cannot say whose. Sakriya governs the data banks already hold to find the people behind those accounts, reach them at the least cost, and hold implementers accountable for usage — without a central surveillance database."
+## Selection memo (FINAL — 2026-10-04 15:14 IST; theme decision 12 Oct, registration by 15 Oct)
+_Honest case for or against T3 against T1 (✅ completed, 4.2/5, the default pick). Scores 1–5, one line of evidence each._
+- **Winnability — 3.5/5.** The gap is primary-sourced and is a *data-governance* gap — the theme's own framing:
+  - inoperative PMJDY accounts rose from 14.1% to 26.4% (Parliament answers);
+  - DBT-purpose accounts are exempt from RBI's flag;
+  - the NPCI mapper routes DBT to the last-seeded bank;
+  - breakdowns are "not centrally maintained".
+  But the hostile judge (gpt-6-astra) scored v1.0 at 7/7/6/5/4/5 out of 10 on the six criteria and ranked **T1 higher**. The fixes (bank-local first, explicit legal gates, rights capsule) make v1.1 narrower and safer, but it has not been re-reviewed.
+- **Innovation headroom — 4/5.** Transparent targeting rule with a learned challenger behind a gate; after the code review, a corrected pre-registered test (SYNTHETIC, seeds 20–29) gave challenger − rule = +0.086 (95% CI 0.057–0.115, 9/10 worlds), rule − best-arm-only = +0.16, floors/budgets/holdout held; the gate certified the challenger in 1/10 worlds. Usage accountability resists gaming in a stylised test (ρ 0.90 vs 0.04 for enrolment counts, SYNTHETIC). C5 policy engine: 29/29 governance scenarios, 0 false allows, 89/89 log attacks detected (scenarios written with the rules — fidelity, not legality).
+- **Feasibility by the deadline — 5/5.** The final-format PDF exists today and its checks pass. Round 1 needs no more user time beyond team details and optional field conversations.
+- **Demo strength at finals — 3/5.**
+  - Have: real state-level and Findex analyses, reproducible command-line evaluations, the registered tests.
+  - Missing: a dashboard UI; all account-level evidence is SYNTHETIC.
+  - T1's end-to-end demo is stronger today.
+- **Fit with the user's strengths — 4/5.** Data systems, privacy engineering, causal ML; Azure confidential computing for a later clean-room phase.
+- **Overall — 3.9/5** (mean of the five) vs **T1 4.2**.
+- **Biggest risk:** the institutional ask. A partner bank must own the pilot, and cross-bank person counts need an identity-translation service nobody has authorised. Jurors may also read targeting as exclusion.
+- **Recommendation: keep T1.** T3 is a credible reserve if the user prefers finance and can secure a partner bank and real (consented, bank-internal) data before 1 Nov.
+- **One-line pitch:** "Jan Dhan counts 15 crore inoperative accounts but cannot say whose they are. Sakriya starts inside each bank: it counts customers, not accounts, sends scarce field visits where they change behaviour, and holds banks and districts to usage, not enrolment — with person lists never leaving the bank."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -146,3 +153,10 @@ Batch slot freed; resumed with a five-point definition of done (see *Now*). Remo
 
 ### 2026-10-04 14:20 IST — C5 policy engine built (closing a design-only gap)
 The proposal described a purpose/policy engine with a hash-chained audit log that existed only as a contract. Built v0 (`components/policy_engine/engine.py`): deny-by-default allow rules and explicit denials, each citing a verified source (Aadhaar Act s.29, UIDAI ADV, DPDP s.17(2)(b) + Rules r.16, RBI/2023-24/105), and 22 scenarios from the governance matrix (`scenarios.json`). Result (`eval/policy_engine_eval.py` → `eval/results/policy_engine.json`): 22/22 correct, 0 false allows. Caveat recorded in the file: the scenarios were written alongside the rules, so this shows the engine implements the published matrix, not that the matrix is lawful. The tamper test caught a real gap: a hash chain alone missed deletion of the newest entry (64/65). Fixed with a published checkpoint (length + head hash) → 65/65. Also verified the DPDP Rules 2025 (G.S.R. 846(E)) rule 16 + Second Schedule standards for the statistics exemption [P23]. check_docs 24/24; 9/9 tests.
+
+### 14:32–15:14 IST — Cross-model reviews, fixes, corrected pre-registration, proposal v1.1
+- **gpt-6-astra (hostile judge, max):** 15 issues, 3 blocking — cross-bank identity premise (UIDAI vaults are entity-segregated; Aadhaar hashing banned as reference keys — I verified para 7(a), 7(k)), legal boundary described by recipient, and my renderer silently dropping the team block. Scores 7/7/6/5/4/5 of 10; **ranks T1 above T3**. All accepted (PDF rename rejected: no Team ID yet).
+- **gpt-6-sol (code + eval, max):** reproduced every headline number exactly; 18 issues, 4 blocking — v0.2 challenger ≠ its registered description in seeds 12/15; DP noise invertible (public seed); women's floor off on the deployable rule; C5 customer-scope bypass. All accepted (BC task cap deferred; checkpoint publication qualified).
+- **Fixes:** C2 behavioural vs legal status; observable proxies with error; PMJDY cohort/calibration; C6 v0.3 (identical plans except whom to upgrade, stratified floors, holdout, same-model gate, cheapest-not-harmful stage 1 after dev showed small-pilot collapses); C11 secret noise + composed persistent ledger; C10 insufficient-data status; C5 v0.2 (basis codes, scope at all granularities, no BC-level tables, decide-and-log, HMAC chain, anchored/unanchored verification); reference allocator replaces "oracle".
+- **Corrected pre-registration** 14:57 IST (`c6_v03.md`, pushed `28c80bb` before the run), seeds 20–29, 50k persons, 30% pilot: H1 +0.086 (0.057–0.115, 9/10), H2 +0.161, H3 pass, gate 1/10, perfect-linkage +0.102 (`c6_v03_results.md`). v0.2 results keep a dated caveat.
+- **Proposal v1.1** (bank-local phase 1, per-flow legal table, two measures not one label, rights capsule, RACI + gates + power calc 6,507/arm, NSFI 2025-30, June 2025 BC re-KYC) generated from committed results; PDF PASS. Verified new sources: RBI/2025-26/51 and /52, NSFI 2025-30, PIB backgrounder URL, UIDAI 7(a)/7(k).
