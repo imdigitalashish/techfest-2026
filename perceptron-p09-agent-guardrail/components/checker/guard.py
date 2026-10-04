@@ -15,7 +15,7 @@ import time
 from architecture.contracts.models import (CheckResult, CheckStatus as S, Decision, Evidence, GuardRequest,
                                            Trust, Verdict)
 from components.checker import llm
-from components.checker.provenance import extract_mentions
+from components.checker.provenance import TOOL_INTENT, extract_mentions
 from components.checker.rules import CHECKS, C
 from components.kb.kb import ReferenceKB
 from components.tools.desk import TOOL_SPECS, WRITE
@@ -212,9 +212,16 @@ class CascadeGuard(Tier0Guard):
             out, _ = llm.chat(model, RESOLVE_SYS, user, max_tokens=140)
             j = llm.parse_json(out)
             verdict, quote = str(j.get("verdict", "")), _norm(str(j.get("quote", "")))
-            src_text = req.context.user_request if j.get("source") == "request" else self.kb.clauses.get(str(j.get("clause_id")), None)
+            source = str(j.get("source", ""))
+            # Only the client's words can ground intent or an argument value; policy text can never support them.
+            allowed = {"request"} if c.check_id.startswith("provenance.") else {"request", "policy"}
+            src_text = req.context.user_request if source == "request" else self.kb.clauses.get(str(j.get("clause_id")), None)
             src_text = src_text.text if hasattr(src_text, "text") else src_text
-            verified = bool(quote) and len(quote) >= 3 and src_text is not None and quote in _norm(src_text)
+            verified = (source in allowed and bool(quote) and len(quote) >= 3 and src_text is not None
+                        and quote in _norm(src_text))
+            if verified and verdict == "supported" and c.check_id == "provenance.intent":
+                # an intent quote must itself contain a verb that asks for this tool
+                verified = bool(re.search(TOOL_INTENT.get(req.call.tool, r"$^"), quote))
             if verified and verdict in ("supported", "contradicted"):
                 c.status = S.PASS if verdict == "supported" else S.FAIL
                 c.tier = tier

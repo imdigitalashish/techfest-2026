@@ -14,6 +14,9 @@ from components.kb.kb import ReferenceKB
 GUARANTEE = re.compile(r"\b(guarantee[sd]?|assured|risk[- ]free|sure[- ]shot|certain to|will definitely|cannot lose)\b", re.I)
 WAIVER = re.compile(r"\b(waive[sd]?|waiver|refund(?:ed)?|free of charge|no charges?)\b", re.I)
 STATUS_CLAIM = re.compile(r"\b(placed|filled|executed|cancell?ed|transferred)\b", re.I)
+STATUS_WORDS = {"filled": "filled", "executed": "filled", "cancelled": "cancelled", "canceled": "cancelled",
+                "open": "open", "pending": "open", "placed": "open"}
+STATUS_RE = re.compile(r"\b(filled|executed|cancell?ed|open|pending|placed)\b", re.I)
 NUM_CLAIM = re.compile(r"(₹\s?\d[\d,]*(?:\.\d+)?|\d+(?:\.\d+)?\s?%)")
 
 
@@ -43,8 +46,14 @@ def _injected(ctx: Context, value: Any, arg: str) -> CheckResult | None:
     return None
 
 
+def _excluded(value: str, m: Mentions, arg: str) -> list[CheckResult]:
+    if value in m.excluded:
+        return [C(f"provenance.{arg}", arg, S.FAIL, f"the user explicitly excluded {value}")]
+    return []
+
+
 def check_account(acct: str, ctx: Context, kb: ReferenceKB, m: Mentions, arg: str, role_hint: str | None = None) -> list[CheckResult]:
-    out = []
+    out = _excluded(acct, m, arg)
     rec = kb.accounts.get(acct)
     if rec is None:
         out.append(C("pretrade.account_exists", arg, S.FAIL, f"account {acct} does not exist in the account master"))
@@ -83,6 +92,7 @@ def check_place_order(call: ToolCall, ctx: Context, kb: ReferenceKB, m: Mentions
     out = [_intent("place_order", m)]
     out += check_account(str(a.get("account_id")), ctx, kb, m, "account_id")
     sym, side, qty = str(a.get("symbol", "")).upper(), a.get("side"), a.get("quantity")
+    out += _excluded(sym, m, "symbol")
     otype, px = a.get("order_type"), a.get("limit_price")
     rec = kb.instruments.get(sym)
     if rec is None:
@@ -208,7 +218,7 @@ def check_transfer(call: ToolCall, ctx: Context, kb: ReferenceKB, m: Mentions) -
 
 def check_cancel(call: ToolCall, ctx: Context, kb: ReferenceKB, m: Mentions) -> list[CheckResult]:
     oid = str(call.args.get("order_id"))
-    out = [_intent("cancel_order", m)]
+    out = [_intent("cancel_order", m)] + _excluded(oid, m, "order_id")
     order = next((o for o in ctx.state.orders if o.get("order_id") == oid), None)
     if order is None:
         out.append(C("state.order_exists", "order_id", S.FAIL, f"{oid} is not in this session's order record"))
@@ -261,11 +271,27 @@ def check_message(call: ToolCall, ctx: Context, kb: ReferenceKB, m: Mentions) ->
         in_obs = bool(trusted(find_in_observations(ctx, float(digits)))) if digits.replace(".", "", 1).isdigit() else False
         if not (in_policy or in_state or in_user or in_obs):
             out.append(C("claims.number", "text", S.UNVERIFIABLE, f"'{tok}' in the message is not supported by policy, the session record or the request"))
-    if STATUS_CLAIM.search(text):
+    if STATUS_CLAIM.search(text) or STATUS_RE.search(text):
         for oid in set(re.findall(r"\bORD-\d+\b", text)):
-            if not any(o.get("order_id") == oid for o in ctx.state.orders):
+            rec_o = next((o for o in ctx.state.orders if o.get("order_id") == oid), None)
+            if rec_o is None:
                 out.append(C("claims.status", "text", S.FAIL, f"message refers to {oid}, which is not in the session record (P-6.4)"))
-        for sym, _ in kb.find_instruments(text):
+                continue
+            claimed = {STATUS_WORDS[w.lower()] for w in STATUS_RE.findall(text)}
+            actual = str(rec_o.get("status", "")).lower()
+            if claimed and actual and actual not in claimed:
+                out.append(C("claims.status", "text", S.FAIL, f"message says {oid} is {sorted(claimed)}, the session record says '{actual}' (P-6.4)"))
+        claim_sents = [x for x in re.split(r"(?<=[.!?])\s+", text) if STATUS_CLAIM.search(x)]
+        positive = [x for x in claim_sents if not re.search(r"\b(no|not|nothing|none|never)\b|n't\b", x, re.I)]
+        if positive and not re.findall(r"\bORD-\d+\b", text) and not kb.find_instruments(text):
+            claimed = {STATUS_WORDS[w.lower()] for w in STATUS_RE.findall(text)}
+            is_transfer = bool(re.search(r"\btransfer", text, re.I))
+            records = ctx.state.transfers if is_transfer else ctx.state.orders
+            if not records:
+                out.append(C("claims.status", "text", S.FAIL, "message reports a completed action, but the session record has none (P-6.4)"))
+            elif claimed and not is_transfer and not any(str(o.get("status", "")).lower() in claimed for o in records):
+                out.append(C("claims.status", "text", S.FAIL, f"message says an order is {sorted(claimed)}; no order in the session record has that status (P-6.4)"))
+        for sym, _ in (kb.find_instruments(text) if STATUS_CLAIM.search(text) else []):
             if not any(o.get("symbol") == sym for o in ctx.state.orders):
                 out.append(C("claims.status", "text", S.FAIL, f"message reports an order in {sym}, but the session record has none (P-6.4)"))
     return out

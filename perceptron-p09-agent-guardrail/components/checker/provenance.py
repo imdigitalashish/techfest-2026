@@ -19,10 +19,10 @@ TOOL_INTENT = {
     "place_order": r"\b(buy|sell|purchase|order|add|exit|trim|accumulate|acquire|offload|liquidate|reduce|want out of|get out of|dump|load up on|get into)\b",
     "cancel_order": r"\b(cancel|withdraw|pull|kill|revoke)\b",
     "transfer_funds": r"\b(transfer|move|shift|wire|send)\b.*\b(funds?|money|cash|₹|rs\.?|inr|lakh|crore|\d)",
-    "send_client_message": r"\b(tell|inform|message|notify|email|let .* know|reply|write to|confirm to)\b",
+    "send_client_message": r"\b(tell|inform|message|notify|email|let .* know|reply|write to|confirm to|text me|send me|send a|note|update me|sms|whatsapp|ping me|confirmation)\b",
 }
 _NUM = re.compile(
-    r"(?P<cur>₹|rs\.?\s?|inr\s?)?(?P<num>\d[\d,]*(?:\.\d+)?)\s?(?P<mult>k\b|lakh\b|lakhs\b|lac\b|l\b|crore\b|cr\b)?",
+    r"(?P<cur>₹|rs\.?\s?|inr\s?)?(?P<num>\d[\d,]*(?:\.\d+)?)\s?(?P<mult>k\b|lakh\b|lakhs\b|lac\b|l\b(?!&)|crore\b|cr\b)?",
     re.I,
 )
 _MULT = {"k": 1e3, "lakh": 1e5, "lakhs": 1e5, "lac": 1e5, "l": 1e5, "crore": 1e7, "cr": 1e7}
@@ -63,6 +63,15 @@ class NumberMention:
     text: str
 
 
+NEG = re.compile(r"\b(not|don'?t|do not|never|except|excluding|leave|keep|without|no need to)\b[^.;,]*$", re.I)
+
+
+def negated(text: str, start: int) -> bool:
+    """True if the mention at `start` sits in a clause that negates/excludes it ("do not touch ORD-23")."""
+    clause = re.split(r"[.;]|\bbut\b|\band\b", text[max(0, start - 40):start])[-1]
+    return bool(NEG.search(clause))
+
+
 @dataclass
 class Mentions:
     """Everything the user's own words commit to."""
@@ -75,6 +84,7 @@ class Mentions:
     side: str | None = None  # buy | sell | None (absent or ambiguous)
     market: bool = False
     tool_intents: set[str] = field(default_factory=set)
+    excluded: set[str] = field(default_factory=set)  # instruments/accounts/orders the user explicitly excluded
 
 
 def parse_numbers(text: str, protected: list[tuple[int, int]]) -> list[NumberMention]:
@@ -117,19 +127,25 @@ def parse_numbers(text: str, protected: list[tuple[int, int]]) -> list[NumberMen
 
 def extract_mentions(text: str, kb: ReferenceKB) -> Mentions:
     low = text.lower()
-    accounts = [(m.group(0), m.span()) for m in ACCOUNT_RE.finditer(text)]
-    orders = [(m.group(0), m.span()) for m in ORDER_RE.finditer(text)]
-    protected = [s for _, s in accounts + orders]
+    accounts_all = [(m.group(0), m.span()) for m in ACCOUNT_RE.finditer(text)]
+    orders_all = [(m.group(0), m.span()) for m in ORDER_RE.finditer(text)]
+    ins_all = kb.find_instruments(text)
+    protected = [s for _, s in accounts_all + orders_all]
+    excluded = {v for v, sp in accounts_all + orders_all + ins_all if negated(text, sp[0])}
+    accounts = [(v, sp) for v, sp in accounts_all if v not in excluded]
+    orders = [(v, sp) for v, sp in orders_all if v not in excluded]
+    instruments = [(v, sp) for v, sp in ins_all if v not in excluded]
     buy, sell = bool(re.search(BUY_WORDS, low)), bool(re.search(SELL_WORDS, low))
     return Mentions(
         text=text,
         numbers=parse_numbers(text, protected),
-        instruments=kb.find_instruments(text),
+        instruments=instruments,
         accounts=accounts,
         orders=orders,
         side="buy" if buy and not sell else "sell" if sell and not buy else None,
-        market=bool(re.search(r"\b(at market|market order|at the market|mkt)\b", low)),
+        market=bool(re.search(r"\b(at market|market order|at the market|mkt)\b|(?<!stock )\bmarket\b(?!\s*(cap|value|price of|hours|opens?|closes?))", low)),
         tool_intents={t for t, rx in TOOL_INTENT.items() if re.search(rx, low)},
+        excluded=excluded,
     )
 
 

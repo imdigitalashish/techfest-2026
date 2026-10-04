@@ -30,8 +30,8 @@ SUITE = ROOT / "data" / "suite.jsonl"
 RES = ROOT / "results"
 
 
-def load(split: str) -> list[SuiteItem]:
-    items = [SuiteItem.model_validate_json(l) for l in SUITE.read_text().splitlines() if l.strip()]
+def load(split: str, suite: Path = SUITE) -> list[SuiteItem]:
+    items = [SuiteItem.model_validate_json(l) for l in suite.read_text().splitlines() if l.strip()]
     return [i for i in items if split == "all" or i.split == split]
 
 
@@ -62,10 +62,10 @@ def metrics(rows: list[dict]) -> dict:
     return {k: (round(v, 4) if isinstance(v, float) else v) for k, v in m.items()}
 
 
-def run(guard_name: str, split: str, limit: int | None = None, every: int = 1, out_dir: Path = RES) -> dict:
+def run(guard_name: str, split: str, limit: int | None = None, every: int = 1, out_dir: Path = RES, suite: Path = SUITE) -> dict:
     kb = ReferenceKB()
     guard = make(guard_name, kb)
-    items = load(split)[::every]
+    items = load(split, suite)[::every]
     items = items[:limit] if limit else items
     rows = []
     t0 = time.time()
@@ -80,10 +80,10 @@ def run(guard_name: str, split: str, limit: int | None = None, every: int = 1, o
     code_dirty = subprocess.run(["git", "status", "--porcelain", "--", "../components", "../architecture", "run_eval.py", "data"],
                                 capture_output=True, text=True, cwd=ROOT).stdout.strip()
     commit = head + ("-dirty" if code_dirty else "")
-    out = {"guard": guard_name, "split": split, "every": every, "suite": str(SUITE.relative_to(ROOT.parent)), "commit": commit,
+    out = {"guard": guard_name, "split": split, "every": every, "suite": str(suite.resolve().relative_to(ROOT.parent)), "commit": commit,
            "wall_s": round(time.time() - t0, 1), "metrics": metrics(rows), "rows": rows}
     out_dir.mkdir(parents=True, exist_ok=True)
-    tag = f"__every{every}" if every > 1 else ""
+    tag = (f"__every{every}" if every > 1 else "") + ("" if suite == SUITE else f"__{suite.stem}")
     (out_dir / f"{guard_name.replace(':', '_')}__{split}{tag}.json").write_text(json.dumps(out, indent=1))
     return out
 
@@ -94,9 +94,10 @@ if __name__ == "__main__":
     ap.add_argument("--split", default="test", choices=["dev", "test", "all"])
     ap.add_argument("--limit", type=int)
     ap.add_argument("--every", type=int, default=1, help="stratified subsample: every k-th item (suite is ordered by family)")
+    ap.add_argument("--suite", type=Path, default=SUITE)
     a = ap.parse_args()
     for g in a.guards.split(","):
-        o = run(g, a.split, a.limit, a.every)
+        o = run(g, a.split, a.limit, a.every, suite=a.suite.resolve())
         m = o["metrics"]
         print(f"{g:24s} {a.split:4s} n={m['n']:3d} catch={m['catch_rate']:.3f} false_block={m['false_block_rate']:.3f} "
               f"escalate={m['escalation_rate']:.3f} auto={m['auto_rate']:.3f} score={m['score']:.3f} "
