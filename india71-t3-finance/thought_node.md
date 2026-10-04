@@ -170,3 +170,13 @@ The proposal described a purpose/policy engine with a hash-chained audit log tha
 
 ### 2026-10-04 22:22 IST — Demo phase started (Supervisor)
 Read PLAYBOOK §11. Inbox empty. Plan: one demo-builder child session (proposal → my approval → build), then a gpt-6-astra demo review, clean-checkout verification, DEMO DONE.
+
+### 2026-10-04 22:54 IST — Demo plan approved (child session "T3 demo builder")
+Crazy element: **"Try to break Sakriya"**, a live red-team console against the committed code.
+- (A) A BC Sakhi claims another bank's customer: C5 refuses with D5 and logs it; erasing the log breaks the HMAC seal.
+- (B) "One more statistic": the C11 ledger refuses it; two forums racing for the last ε, exactly one wins; the spend persists across restarts.
+- (C) "Ship the smarter model": +0.086 [0.057, 0.115], but certified in 1/10 worlds, so the rule ships. A point-estimate toggle would ship it in 4/10, including world 23 where it was worse (I re-derived 4/10 and loose 0.488 vs gated 0.469 vs rule 0.462).
+- (D, optional) Scorecard gaming: ρ 0.04 vs 0.90.
+Screens: REAL tile grid first (USQ 4090) → SYNTHETIC registered results plus a women's-floor knob → one person end to end, with C7/C8 as labelled PROTOTYPES → live/replay attacks. Offline page; stdlib backend only for live attacks; replay from file://.
+My corrections: screen-1 headline says "as accounts, not people" instead of "nobody can say whose"; bank-local honesty (registered worlds link across banks, a Phase-2 assumption; the drill-down and funnel are same-bank); RBI's FI-Index dates (53.9 = Mar 2021); no "exactly" without a computed equality; no browser download over 200 MB; ASSUMPTION labels on the C7/C8 values.
+Note: I used plan mode for the approval gate and then switched the builder to autopilot (the Supervisor asked for autopilot; plan mode only enforces the "approve before build" rule).
