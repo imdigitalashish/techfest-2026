@@ -63,7 +63,7 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
 <section id="replay">
   <h2>2 · Replay a real day <span class="chip c-live">live-computed</span> <span id="building"></span></h2>
   <div class="mut">The committed code (<code>run_episode</code>, context built from the 2023 training days) runs on this machine. Prices are drawn as 10-minute candles; losses as 10-minute bin means. Day choice rule: <span id="rule"></span>.</div>
-  <div class="tabs" id="day-tabs" style="margin-top:8px"></div>
+  <div class="tabs" id="day-tabs" style="margin-top:8px"></div><div class="mut" id="rp-showing" aria-live="polite"></div>
   <div class="legend" id="rp-legend"></div>
   <canvas id="rp" height="620"></canvas>
   <table id="rp-totals" style="margin-top:8px"><thead><tr><th>policy (this day)</th><th class="num">log-loss, live</th><th class="num">committed per-day value</th><th>honesty check</th><th class="num">alarms</th></tr></thead><tbody></tbody></table>
@@ -136,8 +136,9 @@ const POLS = [["static_snorm","Static model","--static"],["static_enorm","One EW
   ["ks_refit","Textbook KS → refit (dial)","--ks"],["regime_gated","Regime gate","--gate"],["spike_gate","Gate + CUSUM shrinkage","--shrink"]];
 let SB=null, SW=null, RP={}, DAY=null, STOP="naive_3", status=null, firstPaint=performance.now();
 
-function ctx2d(cv){const r=window.devicePixelRatio||1,w=cv.clientWidth,h=+cv.getAttribute("height");
-  cv.width=w*r;cv.height=h*r;cv.style.height=h+"px";const g=cv.getContext("2d");g.setTransform(r,0,0,r,0,0);g.font="11px -apple-system,Helvetica,Arial";return [g,w,h];}
+// Logical CSS height is fixed once (data-h); the backing store is always logical size x DPR, never re-read.
+function ctx2d(cv){if(!cv.dataset.h)cv.dataset.h=cv.getAttribute("height");const r=window.devicePixelRatio||1,h=+cv.dataset.h;
+  cv.style.height=h+"px";const w=cv.clientWidth;cv.width=Math.round(w*r);cv.height=Math.round(h*r);const g=cv.getContext("2d");g.setTransform(r,0,0,r,0,0);g.font="11px -apple-system,Helvetica,Arial";return [g,w,h];}
 
 /* ---------- 1. scoreboard ---------- */
 function drawScoreboard(){
@@ -174,19 +175,31 @@ function drawScoreboard(){
 function dayTabs(){const t=$("#day-tabs");t.innerHTML="";
   for (const r of SB.replay_days){const b=document.createElement("button");const st=status&&status.days?status.days[r.day]:null;
     b.innerHTML=`${r.day} <span class="mut" style="font-size:11px">${r.role}${st&&st!=="ready"?" · "+st:""}</span>`;
-    b.className=r.day===DAY?"on":"";b.onclick=()=>{DAY=r.day;loadDay();dayTabs();};t.appendChild(b);}
+    b.className=r.day===DAY?"on":"";b.onclick=()=>selectDay(r.day);t.appendChild(b);}
   $("#rp-legend").innerHTML=POLS.map(([k,n,c])=>`<span><i class="sw" style="background:${C(c)}"></i>${n}</span>`).join("")+
    `<span><i class="sw" style="background:#6cb6ff"></i><i class="sw" style="background:#f0b429"></i><i class="sw" style="background:#ff6b6b"></i>active head: low / mid / high vol</span>`;}
 
-async function loadDay(){ if(RP[DAY]){drawReplay();return;}
-  try{const r=await fetch(`.cache/replay_${DAY}.json`,{cache:"no-store"});if(!r.ok)throw 0;RP[DAY]=await r.json();}catch(e){drawReplay();return;}
-  drawReplay();drawDial();}
+function selectDay(day){DAY=day;dayTabs();drawReplay();drawDial();loadDay(day);}
+// Fetch one replay day. The requested key is captured before any await; the payload must carry the same day;
+// it is rendered only if that day is still the selected one (out-of-order responses are stored, never shown).
+const RP_ERR={};
+async function loadDay(day){const key=day;
+  if(RP[key]){if(key===DAY){drawReplay();drawDial();}return;}
+  try{const r=await fetch(`.cache/replay_${key}.json`,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);
+    const d=await r.json();if(d.day!==key)throw new Error(`payload day ${d.day} != requested ${key}`);RP[key]=d;delete RP_ERR[key];}
+  catch(e){RP_ERR[key]=String(e.message||e);}
+  if(key===DAY){drawReplay();drawDial();}}
 
 function hhmm(s){s=((s%86400)+86400)%86400;return String(Math.floor(s/3600)).padStart(2,"0")+":"+String(Math.floor(s%3600/60)).padStart(2,"0");}
 
 function drawReplay(){
-  const cv=$("#rp"),[g,w,h]=ctx2d(cv);const d=RP[DAY];g.fillStyle=C("--panel");g.fillRect(0,0,w,h);
-  if(!d){g.fillStyle=C("--acc");g.font="15px -apple-system,Helvetica,Arial,sans-serif";g.fillText(`Building ${DAY} with the committed code… (the scoreboard and dial sweep above are already live)`,20,40);
+  const cv=$("#rp"),[g,w,h]=ctx2d(cv);const d=dayData(DAY);g.fillStyle=C("--panel");g.fillRect(0,0,w,h);
+  const tbl=$("#rp-totals");tbl.dataset.selectedDay=DAY;tbl.dataset.payloadDay=d?d.day:"";tbl.dataset.refDay="";
+  $("#rp-showing").textContent=d?`Showing ${d.day}`:"";
+  if(!d){g.font="15px -apple-system,Helvetica,Arial,sans-serif";
+    if(RP_ERR[DAY]){g.fillStyle=C("--ks");g.fillText(`Replay for ${DAY} failed: ${RP_ERR[DAY]}`,20,40);g.fillStyle=C("--mut");
+      g.fillText("The committed scoreboard, dial sweep and fee panels still work. Screenshots: demo/fallback/. Rebuild: demo/run.sh",20,64);}
+    else{g.fillStyle=C("--acc");g.fillText(`Building ${DAY} with the committed code… (the scoreboard and dial sweep are already live)`,20,40);}
     $("#rp-totals tbody").innerHTML="";return;}
   const L=64,R=w-14,nb=d.n_bins,X=b=>L+(b+.5)/nb*(R-L),bw=(R-L)/nb;
   const panes=[["price (10-min OHLC)",0,170],["alarms",178,92],["head",278,34],["log-loss (10-min mean)",320,170],["cum. Δ vs static",498,112]];
@@ -224,14 +237,21 @@ function drawReplay(){
   g.strokeStyle="#555";g.beginPath();g.moveTo(L,Y2(0));g.lineTo(R,Y2(0));g.stroke();
   cum.forEach(([arr,col,k])=>{g.strokeStyle=col;g.lineWidth=k==="regime_gated"||k==="ks_refit"?2:1.2;g.beginPath();arr.forEach((v,b)=>b?g.lineTo(X(b),Y2(v)):g.moveTo(X(b),Y2(v)));g.stroke();g.lineWidth=1;});
   g.fillStyle=C("--mut");g.fillText("worse ↑ / better ↓ than static (sum of 10-min bin Δ)",L+4,516);
-  // totals table
-  const tb=$("#rp-totals tbody");tb.innerHTML="";
-  POLS.forEach(([k,n,c])=>{const p=k==="ks_refit"?{...d.policies[k],...(stop||{})}:d.policies[k];const com=k==="ks_refit"&&stop?stop.committed_sweep:p.committed;
+  // totals table: the reference is looked up by the SELECTED day in the committed files, never taken from the payload
+  const tb=$("#rp-totals tbody");tb.innerHTML="";tbl.dataset.refDay=DAY;
+  POLS.forEach(([k,n,c])=>{const p=k==="ks_refit"?{...d.policies[k],...(stop||{})}:d.policies[k];const com=committedFor(k,DAY);
     const nal=k==="ks_refit"?(stop?stop.alarm_s.length:0):Object.values(p.alarms||{}).reduce((a,x)=>a+x.length,0);
     const src=k==="ks_refit"?"sweep":"committed";
     const chk=com==null?`<span class="mut">dev day: no held-out value (illustrative)</span>`:(Math.abs(com-p.logloss)<1e-9?`<span class="ok">✓ live = ${src} (|Δ| &lt; 1e-9)</span>`:`<span class="bad">✗ mismatch</span>`);
     tb.insertAdjacentHTML("beforeend",`<tr><td><i class="sw" style="background:${C(c)}"></i>${k==="ks_refit"?"KS → refit at "+stopLabel(STOP):n}</td><td class="num">${p.logloss.toFixed(6)} ${chip("live-computed")}</td><td class="num">${com==null?"—":com.toFixed(6)}</td><td>${chk}</td><td class="num">${nal}</td></tr>`);});
 }
+
+// The replay payload for `day`, or null. A payload whose own day differs from the key is never used.
+function dayData(day){const d=RP[day];return d&&d.day===day?d:null;}
+function stopAlarmCount(st){return st.alarm_bins?st.alarm_bins.reduce((a,b)=>a+b,0):st.alarm_s.length;}
+function committedFor(k,day){
+  if(k==="ks_refit"){const s=SW&&SW.stops.find(x=>x.id===STOP);const v=s&&s.per_day[day];return v?v.logloss:null;}
+  const r=SB.rows.find(x=>x.policy===k);const v=r&&r.per_day[day];return v==null?null:v;}
 
 /* ---------- 3. dial ---------- */
 let ORDER=[];
@@ -250,7 +270,7 @@ function calBtns(){const el=$("#cal-btns");el.innerHTML="";SW.stops.filter(s=>s.
 function drawDial(){
   if(!SW){$("#dial-readout").textContent="sweep file missing: run demo/build_sweep.py";return;}
   const s=SW.stops.find(x=>x.id===STOP),gate=SW.refs.regime_gated,sep=SW.separation.log10_prob;
-  const d=RP[DAY],ds=d&&d.stops[STOP];
+  const d=dayData(DAY),ds=d&&d.stops[STOP];
   const v=s.vs_static_snorm,vg=s.vs_regime_gated;
   $("#dial-readout").innerHTML=`${stopLabel(STOP)}: ${ds?`<span style="color:var(--ks)">${ds.alarm_s.length} alarms on ${DAY}</span> ${chip("live-computed")} · `:""}`+
     `${s.alarms_per_day.toFixed(1)} alarms/day over 22 held-out days ${chip("post-hoc demo sweep")}`;
@@ -300,7 +320,7 @@ function drawDial(){
 function dialVerdict(){
   const st=SW.stops,best=st.reduce((a,b)=>a.vs_regime_gated.mean<b.vs_regime_gated.mean?a:b);
   const beats=st.filter(s=>s.vs_regime_gated.ci97_5[1]<0),anyMean=st.filter(s=>s.vs_regime_gated.mean<0);
-  const n30=st.find(s=>s.id==="naive_30");const d=RP[DAY],a30=d&&d.stops.naive_30?d.stops.naive_30.alarm_s.length:null;
+  const n30=st.find(s=>s.id==="naive_30");const d=dayData(DAY),a30=d&&d.stops.naive_30?d.stops.naive_30.alarm_s.length:null;
   let txt;
   if(beats.length===0&&anyMean.length===0){txt=`<b>No setting of the dial makes "detect → retrain" beat conditioning on state.</b> The best of ${st.length} stops is ${stopLabel(best.id)}, still ${f4(best.vs_regime_gated.mean)} [${f4(best.vs_regime_gated.ci97_5[0])}, ${f4(best.vs_regime_gated.ci97_5[1])}] worse than the regime gate (better on ${best.vs_regime_gated.days_better}/22 days).`;}
   else{txt=`<b>Some dial settings match or beat the regime gate:</b> ${(beats.length?beats:anyMean).map(s=>stopLabel(s.id)+" "+f4(s.vs_regime_gated.mean)).join("; ")}. The demo shows this as it is.`;}
@@ -334,7 +354,7 @@ async function poll(){
   try{const r=await fetch(".cache/status.json",{cache:"no-store"});if(r.ok){status=await r.json();}}catch(e){}
   const b=status&&status.days?Object.entries(status.days).filter(([d,s])=>s!=="ready"):[["?","building"]];
   $("#building").textContent=status&&status.phase==="done"&&!b.length?"":(status?`building replay cache (${status.phase}): ${Object.values(status.days).filter(s=>s==="ready").length}/${Object.keys(status.days).length} days ready`:"waiting for demo/run.sh to start the replay build");
-  dayTabs();if(!RP[DAY]&&status&&status.days&&status.days[DAY]==="ready")await loadDay();
+  dayTabs();if(!RP[DAY]&&status&&status.days&&status.days[DAY]==="ready")await loadDay(DAY);
   if(!(status&&status.phase==="done"&&RP[DAY]))setTimeout(poll,2000);
 }
 async function boot(){
@@ -378,9 +398,14 @@ function spKnobs(){
   knob5($("#sp-tau"),SPI.taus_h.map(hh=>[hh,String(hh).padStart(2,"0")+":00"]),()=>SPH,v=>SPH=v);
 }
 function knob5(el,opts,get,set){el.innerHTML="";opts.forEach(([v,l])=>{const b=document.createElement("button");b.className="btn"+(get()===v?" on":"");b.textContent=l;b.onclick=()=>{set(v);spKnobs();drawSplice();};el.appendChild(b);});}
-async function spLoad(name){if(!SP[name]){const r=await fetch(".cache/"+name,{cache:"no-store"});SP[name]=await r.json();}return SP[name];}
+async function spLoad(name){if(!SP[name]){const r=await fetch(".cache/"+name,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status+" for "+name);SP[name]=await r.json();}return SP[name];}
+const spName=(dir,hh)=>`splice_${dir}_${String(hh).padStart(2,"0")}.json`;
 async function drawSplice(){
-  if(!SPI)return;const name=`splice_${SPDIR}_${String(SPH).padStart(2,"0")}.json`;const d=await spLoad(name);
+  if(!SPI)return;const dir=SPDIR,hh=SPH,name=spName(dir,hh);let d;
+  try{d=await spLoad(name);if(d.direction!==dir||d.splice_utc_s!==hh*3600)throw new Error(`payload ${d.direction}@${d.splice_utc_s} != requested ${dir}@${hh*3600}`);}
+  catch(e){if(spName(SPDIR,SPH)===name)$("#sp-method").innerHTML=`<span class="bad">Splice ${name} unavailable: ${e.message}</span>. Screenshot: <code>demo/fallback/</code>. Rebuild: <code>demo/run.sh</code>.`;return;}
+  if(spName(SPDIR,SPH)!==name)return;  // the selection changed while loading: never render a stale splice
+  $("#splice").dataset.shown=name;
   const ck=d.checks,ok=v=>v?'<span class="ok">✓</span>':'<span class="bad">✗</span>';
   $("#sp-method").innerHTML=`<b>Method.</b> Real held-out order books, spliced: every snapshot of <b>${d.day_a}</b> received before ${hhmm(d.splice_utc_s)} UTC, then every snapshot of <b>${d.day_b}</b> from the same time of day. Day B's prices are shifted <b>additively</b> by ${d.shift_ticks.toLocaleString()} ticks (${d.shift_usd>=0?"+":"−"}$${Math.abs(d.shift_usd).toLocaleString()}) so the mid is continuous at the splice. Sizes are unchanged. The spliced book then goes through the same committed features, labels and policies (2023 training context). `+
     `Integrity checks: features before the splice equal the unspliced day ${ok(ck.causal_features_pre)}; labels before it equal the unspliced day ${ok(ck.causal_labels_pre)}; labels after it equal day B's own labels on every real move ${ok(ck.labels_shift_invariant_post)} (${ck.n_post_labels_compared.toLocaleString()} steps). Exact decimal ties whose sign comes from floating-point rounding in the committed labeler: ${ck.n_float_noise_ties}, of which ${ck.n_float_noise_ties_flipped} flipped.`;
