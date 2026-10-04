@@ -106,10 +106,17 @@ def _item_bank() -> pd.DataFrame:
 
 
 def make_world(seed: int, cfg: Optional[dict] = None) -> World:
+    """Vectorised simulator (same distributions as the original loop version; different RNG stream).
+
+    cfg["inflation_need_corr"] (default 0.0): if > 0, schools with lower true performance are more
+    likely to inflate (logit P(inflate) = logit(p_inflating_schools) - corr * z, where z is the
+    standardised school mean reading ability). Used only for the allocation stress test.
+    """
     cfg = {
         "n_blocks": 6, "n_clusters": 40, "n_schools": 600,
         "target_read_goal": 0.25, "target_math_goal": 0.30,
         "p_inflating_schools": 0.30, "survey_schools": 20, "survey_children_per_school": 10,
+        "inflation_need_corr": 0.0,
         **(cfg or {}),
     }
     rng = np.random.default_rng(seed)
@@ -127,88 +134,110 @@ def make_world(seed: int, cfg: Optional[dict] = None) -> World:
     rural = rng.random(n_schools) < 0.82
     share_sc = rng.beta(2.3, 6.0, n_schools)
     share_st = rng.beta(1.3, 10.0, n_schools)
-    udise_codes = [f"2701{i:07d}" for i in range(1, n_schools + 1)]
+    udise_codes = np.array([f"2701{i:07d}" for i in range(1, n_schools + 1)])
+    block_of_school = np.array([c_to_b[c] for c in school_cluster])
     schools = pd.DataFrame({
         "school_id": [f"S{i+1:04d}" for i in range(n_schools)], "udise_code": udise_codes,
         "school_name": [f"Synthetic GPS {i+1:04d}" for i in range(n_schools)],
         "state_lgd": "27", "district_lgd": "2701",
-        "block_lgd": [c_to_b[c] for c in school_cluster], "cluster_id": school_cluster,
+        "block_lgd": block_of_school, "cluster_id": school_cluster,
         "management": "government", "rural": rural, "n_teachers": n_teachers,
         "single_teacher": single, "grade3_enrolment": grade3, "share_sc": share_sc,
         "share_st": share_st, "ptr": ptr, "infra_index": infra,
     })
     block_re = {b: rng.normal(0, 0.35) for b in blocks}
     school_re = rng.normal(0, 0.45, n_schools)
-    child_rows = []
-    for i, s in schools.iterrows():
-        n = int(s.grade3_enrolment)
-        base_read = block_re[s.block_lgd] + school_re[i] + 0.7 * s.infra_index - 0.018 * max(s.ptr - 25, 0) - (0.35 if s.single_teacher else 0)
-        base_math = 0.1 + block_re[s.block_lgd] * 0.9 + school_re[i] * 0.8 + 0.55 * s.infra_index - 0.015 * max(s.ptr - 25, 0) - (0.28 if s.single_teacher else 0)
-        p_cat = np.array([s.share_sc, s.share_st, max(0.0, 0.45 - s.share_sc / 2), max(0.0, 1 - s.share_sc - s.share_st - max(0.0, 0.45 - s.share_sc / 2))], dtype=float)
-        cats = rng.choice(["sc", "st", "obc", "general"], size=n, p=p_cat / p_cat.sum())
-        for j in range(n):
-            home = bool(rng.random() < 0.78)
-            disadv = (-0.18 if cats[j] in ("sc", "st") else 0.0) + (0.10 if home else -0.12)
-            child_rows.append({
-                "student_raw_id": f"raw_{s.udise_code}_{j+1:03d}", "udise_code": s.udise_code, "grade": 3,
-                "gender": rng.choice(["f", "m", "x"], p=[0.49, 0.50, 0.01]), "social_category": cats[j],
-                "home_language_matches_medium": home,
-                "theta_read": float(base_read + disadv + rng.normal(0, 0.9)),
-                "theta_math": float(base_math + disadv * 0.6 + rng.normal(0, 0.85)),
-            })
-    children = pd.DataFrame(child_rows)
+    bre = np.array([block_re[b] for b in block_of_school])
+    excess_ptr = np.maximum(ptr - 25, 0)
+    base_read = bre + school_re + 0.7 * infra - 0.018 * excess_ptr - np.where(single, 0.35, 0.0)
+    base_math = 0.1 + bre * 0.9 + school_re * 0.8 + 0.55 * infra - 0.015 * excess_ptr - np.where(single, 0.28, 0.0)
+    # children: one row per enrolled Grade-3 child
+    sch_idx = np.repeat(np.arange(n_schools), grade3)
+    n_child = int(grade3.sum())
+    j_in_school = np.concatenate([np.arange(1, int(k) + 1) for k in grade3])
+    p_obc = np.maximum(0.0, 0.45 - share_sc / 2)
+    p_cat = np.stack([share_sc, share_st, p_obc, np.maximum(0.0, 1 - share_sc - share_st - p_obc)], axis=1)
+    p_cat = p_cat / p_cat.sum(axis=1, keepdims=True)
+    cdf = np.cumsum(p_cat, axis=1)[sch_idx]
+    cat_idx = (rng.random(n_child)[:, None] > cdf).sum(axis=1).clip(0, 3)
+    cats = np.array(["sc", "st", "obc", "general"])[cat_idx]
+    home = rng.random(n_child) < 0.78
+    gender = rng.choice(np.array(["f", "m", "x"]), size=n_child, p=[0.49, 0.50, 0.01])
+    disadv = np.where(np.isin(cats, ["sc", "st"]), -0.18, 0.0) + np.where(home, 0.10, -0.12)
+    theta_read = base_read[sch_idx] + disadv + rng.normal(0, 0.9, n_child)
+    theta_math = base_math[sch_idx] + disadv * 0.6 + rng.normal(0, 0.85, n_child)
+    child_udise = udise_codes[sch_idx]
+    children = pd.DataFrame({
+        "student_raw_id": [f"raw_{u}_{j:03d}" for u, j in zip(child_udise, j_in_school)],
+        "udise_code": child_udise, "grade": 3, "gender": gender, "social_category": cats,
+        "home_language_matches_medium": home, "theta_read": theta_read, "theta_math": theta_math,
+    })
     children["true_read_level"], read_thr = _levels(children.theta_read.to_numpy(), float(cfg["target_read_goal"]), 4)
     children["true_math_level"], math_thr = _levels(children.theta_math.to_numpy(), float(cfg["target_math_goal"]), 3)
     children["read_goal"] = children.true_read_level >= 4
     children["math_goal"] = children.true_math_level >= 3
 
-    inflating = rng.random(n_schools) < float(cfg["p_inflating_schools"])
+    p0 = float(cfg["p_inflating_schools"]); corr = float(cfg["inflation_need_corr"])
+    if corr > 0:
+        z = pd.Series(theta_read).groupby(sch_idx).mean().reindex(range(n_schools)).fillna(0).to_numpy()
+        z = (z - z.mean()) / max(z.std(), 1e-9)
+        logit = np.log(p0 / (1 - p0)) - corr * z
+        p_infl = 1 / (1 + np.exp(-logit))
+        p_infl = p_infl * (p0 / p_infl.mean())
+        inflating = rng.random(n_schools) < np.clip(p_infl, 0, 1)
+    else:
+        inflating = rng.random(n_schools) < p0
     q = np.where(inflating, rng.uniform(0.35, 0.85, n_schools), rng.uniform(0.02, 0.08, n_schools))
     k = np.where(inflating, rng.integers(1, 3, n_schools), 0)
-    school_infl = dict(zip(schools.udise_code, inflating))
-    school_q = dict(zip(schools.udise_code, q)); school_k = dict(zip(schools.udise_code, k))
-    reports = []
-    for _, ch in children.iterrows():
-        for subj, col in [("language", "true_read_level"), ("numeracy", "true_math_level")]:
-            lvl = int(ch[col]); u = ch.udise_code
-            if school_infl[u] and rng.random() < school_q[u]:
-                lvl = min(4, lvl + int(school_k[u]))
-                if lvl == 3 and rng.random() < 0.45: lvl = 4 if subj == "language" else 3
-            elif (not school_infl[u]) and rng.random() < school_q[u]:
-                lvl = int(np.clip(lvl + rng.choice([-1, 1]), 0, 4))
-            reports.append({"student_raw_id": ch.student_raw_id, "udise_code": u, "subject": subj, "reported_level": lvl, "assessed_on": date(2026, 9, 15), "source": "state_assessment"})
-    teacher_reports = pd.DataFrame(reports)
+    rep_frames = []
+    for subj, col in [("language", "true_read_level"), ("numeracy", "true_math_level")]:
+        lvl = children[col].to_numpy().astype(int).copy()
+        infl_c = inflating[sch_idx]; q_c = q[sch_idx]; k_c = k[sch_idx]
+        u1 = rng.random(n_child); u2 = rng.random(n_child); sign = rng.choice(np.array([-1, 1]), size=n_child)
+        up = infl_c & (u1 < q_c)
+        lvl_up = np.minimum(4, lvl + k_c)
+        if subj == "language":
+            lvl_up = np.where((lvl_up == 3) & (u2 < 0.45), 4, lvl_up)
+        noise = (~infl_c) & (u1 < q_c)
+        new = np.where(up, lvl_up, np.where(noise, np.clip(lvl + sign, 0, 4), lvl))
+        rep_frames.append(pd.DataFrame({"student_raw_id": children.student_raw_id.to_numpy(), "udise_code": child_udise, "subject": subj,
+                                        "reported_level": new.astype(int), "assessed_on": date(2026, 9, 15), "source": "state_assessment"}))
+    teacher_reports = pd.concat(rep_frames, ignore_index=True)
 
     item_bank = _item_bank()
-    resp = []
-    for _, ch in children.iterrows():
-        for _, it in item_bank.iterrows():
-            theta = ch.theta_read if it.subject == "language" else ch.theta_math
-            p = 1.0 / (1.0 + np.exp(-float(it.irt_a) * (theta - float(it.irt_b))))
-            resp.append({"student_raw_id": ch.student_raw_id, "udise_code": ch.udise_code, "grade": 3, "item_id": it.item_id,
-                         "subject": it.subject, "score": float(rng.random() < p), "administered_by": "teacher", "assessed_on": date(2026, 9, 20)})
-    item_responses = pd.DataFrame(resp)
+    resp_frames = []
+    for subj, theta in [("language", theta_read), ("numeracy", theta_math)]:
+        bank = item_bank[item_bank.subject == subj]
+        a = bank.irt_a.to_numpy(); b = bank.irt_b.to_numpy()
+        p = 1.0 / (1.0 + np.exp(-a[None, :] * (theta[:, None] - b[None, :])))
+        score = (rng.random(p.shape) < p).astype(float)
+        resp_frames.append(pd.DataFrame({
+            "student_raw_id": np.repeat(children.student_raw_id.to_numpy(), len(bank)),
+            "udise_code": np.repeat(child_udise, len(bank)), "grade": 3,
+            "item_id": np.tile(bank.item_id.to_numpy(), n_child), "subject": subj,
+            "score": score.ravel(), "administered_by": "teacher", "assessed_on": date(2026, 9, 20)}))
+    item_responses = pd.concat(resp_frames, ignore_index=True)
 
-    sample_schools = rng.choice(schools.udise_code, size=min(int(cfg["survey_schools"]), n_schools), replace=False)
+    sample_schools = rng.choice(udise_codes, size=min(int(cfg["survey_schools"]), n_schools), replace=False)
     survey = []
     for u in sample_schools:
-        kids = children[children.udise_code == u].sample(n=min(int(cfg["survey_children_per_school"]), int((children.udise_code == u).sum())), random_state=int(rng.integers(1e9)))
-        for _, ch in kids.iterrows():
-            for subj, col, goal in [("language", "true_read_level", 4), ("numeracy", "true_math_level", 3)]:
-                obs = int(ch[col])
-                if rng.random() < 0.05: obs = int(np.clip(obs + rng.choice([-1, 1]), 0, 4))
-                survey.append({"student_raw_id": ch.student_raw_id, "udise_code": u, "subject": subj, "observed_level": obs,
-                               "meets_goal": bool(obs >= goal), "source": "aser_anchor", "assessed_on": date(2026, 9, 25)})
-    survey_anchor = pd.DataFrame(survey)
+        kids = children[children.udise_code == u]
+        kids = kids.sample(n=min(int(cfg["survey_children_per_school"]), len(kids)), random_state=int(rng.integers(1e9)))
+        for subj, col, goal in [("language", "true_read_level", 4), ("numeracy", "true_math_level", 3)]:
+            obs = kids[col].to_numpy().astype(int)
+            flip = rng.random(len(obs)) < 0.05
+            obs = np.where(flip, np.clip(obs + rng.choice(np.array([-1, 1]), size=len(obs)), 0, 4), obs)
+            survey.append(pd.DataFrame({"student_raw_id": kids.student_raw_id.to_numpy(), "udise_code": u, "subject": subj, "observed_level": obs,
+                                        "meets_goal": obs >= goal, "source": "aser_anchor", "assessed_on": date(2026, 9, 25)}))
+    survey_anchor = pd.concat(survey, ignore_index=True)
     udise = schools[["udise_code", "school_name", "state_lgd", "district_lgd", "block_lgd", "cluster_id", "management", "rural", "n_teachers", "single_teacher", "grade3_enrolment", "share_sc", "share_st", "ptr", "infra_index"]].copy()
-    trows = []
-    for u, g in children.groupby("udise_code"):
-        rep = teacher_reports[teacher_reports.udise_code == u]
-        trows.append({"udise_code": u, "true_read_goal_rate": float(g.read_goal.mean()), "true_math_goal_rate": float(g.math_goal.mean()),
-                      "inflating_school": bool(school_infl[u]), "inflation_q": float(school_q[u]), "inflation_k": int(school_k[u]),
-                      "reported_read_goal_rate": float((rep[rep.subject == "language"].reported_level >= 4).mean()),
-                      "reported_math_goal_rate": float((rep[rep.subject == "numeracy"].reported_level >= 3).mean())})
-    truth_school = pd.DataFrame(trows)
+    tr = children.groupby("udise_code", sort=True).agg(true_read_goal_rate=("read_goal", "mean"), true_math_goal_rate=("math_goal", "mean"))
+    rr = teacher_reports.assign(g=lambda d: np.where(d.subject == "language", d.reported_level >= 4, d.reported_level >= 3)).groupby(["udise_code", "subject"]).g.mean().unstack()
+    truth_school = tr.join(rr.rename(columns={"language": "reported_read_goal_rate", "numeracy": "reported_math_goal_rate"})).reset_index()
+    meta = pd.DataFrame({"udise_code": udise_codes, "inflating_school": inflating, "inflation_q": q.astype(float), "inflation_k": k.astype(int)})
+    truth_school = truth_school.merge(meta, on="udise_code")[["udise_code", "true_read_goal_rate", "true_math_goal_rate", "inflating_school", "inflation_q", "inflation_k", "reported_read_goal_rate", "reported_math_goal_rate"]]
+    truth_school["true_read_goal_rate"] = truth_school.true_read_goal_rate.astype(float)
+    truth_school["true_math_goal_rate"] = truth_school.true_math_goal_rate.astype(float)
     truth_block = schools.merge(truth_school, on="udise_code").groupby("block_lgd").agg(
         n_children=("grade3_enrolment", "sum"), true_read_goal_rate=("true_read_goal_rate", "mean"), true_math_goal_rate=("true_math_goal_rate", "mean"),
         inflating_rate=("inflating_school", "mean")).reset_index()

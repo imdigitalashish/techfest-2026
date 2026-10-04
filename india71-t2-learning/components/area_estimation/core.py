@@ -33,39 +33,45 @@ def aggregate_blocks(school_est: pd.DataFrame, value_col="estimate", se_col: str
         rows.append({"block_lgd":b,"estimate":est,"se":max(se,0.01),"n_children":int(g.grade3_enrolment.sum())})
     return pd.DataFrame(rows)
 
-ANCHOR_DEFF = 2.0  # ASSUMPTION: design effect of the clustered survey anchor (schools x children); documented in eval/README.md
+ANCHOR_DEFF = 2.0  # ASSUMPTION used only by the legacy path when no cluster variance is available
+
+
+def fh_benchmark_arrays(y, V, X, wts, p_anchor: float, var_anchor: float):
+    """Fay-Herriot empirical-Bayes block estimates + precision-weighted benchmarking to an anchor.
+
+    y: direct block estimates; V: their variances; X: block covariates (B x p); wts: children per block.
+    With few blocks (~6 per district) only a couple of covariates are used. The anchor pulls the district
+    aggregate only in proportion to its relative precision; its variance is propagated into every block SE.
+    Returns (theta, se).
+    """
+    y = np.asarray(y, float); V = np.maximum(np.asarray(V, float), 1e-6); X = np.asarray(X, float); wts = np.asarray(wts, float)
+    B = len(y); wbar = float(np.average(y, weights=wts))
+    if B >= 4:
+        mu = X.mean(axis=0); sd = X.std(axis=0); sd[sd == 0] = 1.0
+        pred = Ridge(alpha=1.0).fit((X - mu) / sd, y).predict((X - mu) / sd)
+        pred = np.nan_to_num(pred, nan=wbar, posinf=wbar, neginf=0.0)
+    else:
+        pred = np.full(B, wbar)
+    A = max(0.0, float(np.var(y - pred, ddof=min(3, B - 1)) - np.mean(V))) if B > 3 else 0.0
+    gamma = A / (A + V) if A > 0 else np.zeros_like(V)
+    theta = gamma * y + (1 - gamma) * pred
+    se = np.sqrt(gamma * V + (1 - gamma) ** 2 * np.maximum(A, 1e-4) + (1 - gamma) ** 2 * np.mean(V) / max(B, 1))
+    if np.isfinite(p_anchor) and np.isfinite(var_anchor):
+        w = wts / wts.sum()
+        agg = float(np.sum(w * theta)); var_agg = float(np.sum((w * se) ** 2))
+        k = var_agg / (var_agg + var_anchor)
+        theta = np.clip(theta + k * (p_anchor - agg), 0, 1)
+        se = np.sqrt(se ** 2 + (k ** 2) * var_anchor)
+    return theta, se
 
 
 def fay_herriot_benchmark(public_world, school_est: pd.DataFrame, subject="language") -> pd.DataFrame:
-    """Fay-Herriot empirical-Bayes block estimates + precision-weighted benchmarking to the survey anchor.
-
-    With ~6 blocks per district only two block covariates are used (single-teacher share, infrastructure index).
-    The anchor pulls the district aggregate only in proportion to its relative precision, and its variance
-    (with an assumed design effect) is propagated into every block SE, because a shared anchor error is common to all blocks.
-    """
+    """Legacy DataFrame path (kept for the dashboard); the calibrated path is components.trust_audit.assurance."""
     blk=aggregate_blocks(school_est,"estimate","school_se")
     cov=public_world.schools.groupby("block_lgd").agg(single_teacher=("single_teacher","mean"),infra_index=("infra_index","mean"),n_children=("grade3_enrolment","sum")).reset_index()
     d=blk.merge(cov,on=["block_lgd","n_children"],how="left")
-    X=d[["single_teacher","infra_index"]].astype(float).fillna(0)
-    y=d.estimate.to_numpy(float); V=np.maximum(d.se.to_numpy(float)**2,1e-5)
-    wbar=float(np.average(y,weights=d.n_children))
-    if len(d) >= 4:
-        mu = X.mean(axis=0); sd = X.std(axis=0).replace(0, 1.0)
-        pred = Ridge(alpha=1.0).fit((X-mu)/sd, y).predict((X-mu)/sd)
-        pred = np.nan_to_num(pred, nan=wbar, posinf=wbar, neginf=0.0)
-    else:
-        pred=np.full(len(d),wbar)
-    A=max(0.0, float(np.var(y-pred, ddof=min(3,len(d)-1)) - np.mean(V))) if len(d)>3 else 0.0
-    gamma=A/(A+V) if A>0 else np.zeros_like(V)
-    theta=gamma*y+(1-gamma)*pred
-    se=np.sqrt(gamma*V + (1-gamma)**2*np.maximum(A,1e-4) + (1-gamma)**2*np.mean(V)/max(len(d),1))
     p_anchor,se_anchor,_=survey_anchor(public_world.survey_anchor,subject)
-    if np.isfinite(p_anchor):
-        w=d.n_children.to_numpy(float); w=w/w.sum()
-        agg=float(np.sum(w*theta)); var_agg=float(np.sum((w*se)**2)); var_anchor=ANCHOR_DEFF*se_anchor**2
-        k=var_agg/(var_agg+var_anchor)
-        theta=np.clip(theta+k*(p_anchor-agg),0,1)
-        se=np.sqrt(se**2 + (k**2)*var_anchor)
+    theta,se=fh_benchmark_arrays(d.estimate.to_numpy(float), d.se.to_numpy(float)**2, d[["single_teacher","infra_index"]].astype(float).fillna(0).to_numpy(), d.n_children.to_numpy(float), p_anchor, ANCHOR_DEFF*se_anchor**2 if np.isfinite(se_anchor) else float("nan"))
     d["estimate"]=theta; d["se"]=se
     return d[["block_lgd","estimate","se","n_children"]]
 

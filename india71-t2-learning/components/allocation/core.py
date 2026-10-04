@@ -31,3 +31,19 @@ def evaluate_allocation(world, decisions: list[AllocationDecision], effect_pp:fl
     chosen={d.area_code for d in decisions}
     df=world.schools[["udise_code","grade3_enrolment"]].merge(world.truth_school[["udise_code","true_read_goal_rate"]],on="udise_code")
     return float((df[df.udise_code.isin(chosen)].grade3_enrolment*(1-df[df.udise_code.isin(chosen)].true_read_goal_rate)*effect_pp).sum())
+
+
+def target_schools(schools: pd.DataFrame, p_goal: pd.Series, R: int) -> list[str]:
+    """Top-R schools by equity-weighted below-goal children, given estimated school goal rates (udise-indexed)."""
+    df = schools[["udise_code", "grade3_enrolment", "share_st", "share_sc", "single_teacher"]].copy()
+    df["p_goal"] = df["udise_code"].map(p_goal).fillna(p_goal.mean())
+    df["equity_weight"] = 1.0 + 0.45 * df.share_st.fillna(0) + 0.30 * df.share_sc.fillna(0) + 0.20 * df.single_teacher.astype(float)
+    df["score"] = df.grade3_enrolment * (1 - df.p_goal) * df.equity_weight
+    return df.sort_values(["score", "grade3_enrolment"], ascending=False).head(int(R)).udise_code.tolist()
+
+
+def below_goal_children_reached(world, chosen: list[str], subject: str = "language") -> float:
+    """Effect-free targeting metric: true number of below-goal children in the targeted schools."""
+    col = "read_goal" if subject == "language" else "math_goal"
+    c = world.children[world.children.udise_code.isin(set(chosen))]
+    return float((~c[col].astype(bool)).sum())

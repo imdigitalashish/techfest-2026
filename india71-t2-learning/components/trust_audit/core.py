@@ -134,21 +134,32 @@ def select_audit(schools: pd.DataFrame, risk: pd.DataFrame, budget_schools: int,
     return out
 
 
-def retest(world, selected: pd.DataFrame, children_per_school: int = 12, subject: str = "language", seed: int | None = None) -> pd.DataFrame:
-    """Independent re-test simulator; intentionally the only trust/audit function using hidden truth."""
+def retest(world, selected: pd.DataFrame, children_per_school: int = 12, subject: str = "language", seed: int | None = None,
+           double_check_frac: float = 0.2, error_rate: float = 0.03) -> pd.DataFrame:
+    """Independent re-test simulator; intentionally the only trust/audit function using hidden truth.
+
+    Each re-tested child's goal status is misrecorded with probability `error_rate` (assessor error).
+    A random `double_check_frac` of re-tested children is assessed again by a second, independent assessor
+    (same error rate), so the system can estimate the assessor error rate from disagreements.
+    """
     rng = np.random.default_rng(seed if seed is not None else getattr(world, "seed", 0) + 1000)
     goal_col = "read_goal" if subject == "language" else "math_goal"
     rows = []
+    kids_by_school = world.children.groupby("udise_code")
     for u in selected.loc[selected["selected_for_audit"], "udise_code"]:
-        kids = world.children[world.children["udise_code"].eq(u)]
-        if kids.empty or goal_col not in kids:
+        if u not in kids_by_school.groups or goal_col not in world.children:
             continue
+        kids = kids_by_school.get_group(u)
         take = min(int(children_per_school), len(kids))
         idx = rng.choice(kids.index.to_numpy(), size=take, replace=False)
         truth = kids.loc[idx, goal_col].astype(bool).to_numpy()
-        obs = np.where(rng.random(take) < 0.03, ~truth, truth)
-        rows.append({"udise_code": u, "audited_pct_meeting_goal": float(obs.mean()), "n_audited_children": int(take)})
-    return pd.DataFrame(rows)
+        obs = np.where(rng.random(take) < error_rate, ~truth, truth)
+        nd = int(round(double_check_frac * take))
+        dbl = rng.choice(take, size=nd, replace=False) if nd > 0 else np.array([], dtype=int)
+        obs2 = np.where(rng.random(nd) < error_rate, ~truth[dbl], truth[dbl])
+        rows.append({"udise_code": u, "audited_pct_meeting_goal": float(obs.mean()), "n_audited_children": int(take),
+                     "n_meeting_goal_obs": int(obs.sum()), "n_double": int(nd), "n_disagree": int((obs2 != obs[dbl]).sum())})
+    return pd.DataFrame(rows, columns=["udise_code", "audited_pct_meeting_goal", "n_audited_children", "n_meeting_goal_obs", "n_double", "n_disagree"])
 
 
 def adjust(schools: pd.DataFrame, risk: pd.DataFrame, audit_sample: pd.DataFrame, selected: pd.DataFrame, subject: str = "language") -> list[TrustAssessment]:
