@@ -10,19 +10,38 @@
 - _(none)_
 
 ## Now
-- **Phase:** morning package complete (Phases 1, 2, 3-lite, 4 done; Phase 5 first loop run). Updated 08:05 IST. MVP demo: `python -m eval.demo_mvp`.
-- **Headline:** *Cite-Before-Act*: a guard in the agent's pre-tool hook that checks the provenance of every argument (user words / reference KB / trusted tool data; untrusted text is never a source of intent) plus pre-trade-style contracts (SEC 15c3-5 analogues). The unverifiable residue goes to a risk-routed fast/careful local model whose quoted evidence must verify verbatim, then to a human.
-- **Real numbers** (synthetic suite; reproduce commands in `eval/README.md`):
-  - **Held-out test split, 183 calls:** Tier 0 catch **100%** (147/147), false-block **0%** (0/36), escalation **0%**, p95 **0.6–4.7 ms** across runs (loaded machine; committed run 0.64 ms). Schema-only and no-guard: catch **0%**.
-  - **Same 61-call test subsample (every 3rd):**
-    - LLM-as-judge baseline (Qwen3-1.7B, full KB + policy in the prompt): catch **71.1%**, false-block **68.8%** (11/16 good blocked), score **0.024**, p50 15.9 s (under swap). Typical errors: arithmetic ("1844.45 is outside ±5% of 1850"), missed ×10 quantities and duplicates.
-    - Tier 0: catch 100%, false-block 0%, p95 ≤ 5 ms.
-  - **Dev:**
-    - Tier 0 baseline: escalation 16.7% (the hard paraphrase family). After ratchet iteration 2 it is 0%, but that gain is in-sample.
-    - Fast cascade (1.7B resolver): catch 100%, false-block 0%. The quote check let **0** bad calls through and turned 8 of 15 bad residue calls from escalate into block. It resolved **0 of 6** good paraphrases, so escalation stayed at 16.7%; p95 27.7 s on residue calls under swap.
-  - **Ratchet iteration 2** (word numbers + exit/entry idioms): dev score 0.917 → **1.000**, test unchanged. **In-sample** (see `components/checker/autoresearch/results.tsv`).
-  - **Not run tonight:** the 8B model (memory pressure).
-- **Next (ordered):** (1) commit LLM baseline numbers + update abstract/memo; (2) τ-bench historical-trajectory replay (real model errors; MIT; ~40 MB); (3) LLM-paraphrased test family; (4) live LangGraph agent + interceptor + self-repair demo; (5) ratchet loop on the mention parser/resolver (`components/checker/autoresearch/`); (6) independent adversarial review of ADR 001 when sub-agents are allowed again; (7) research gaps: AgentHarm, Agent-SafetyBench, BFCL, RTS 6, the Knight Capital order.
+- **Phase:** ⏸ PAUSED at 09:55 IST, 4 Oct (Supervisor/user decision: only 3 projects run at a time; P9 is the Perceptron alternate). Nothing of ours is running; all work is pushed.
+- **Headline:** *Cite-Before-Act*: a pre-tool guard that checks the provenance of every argument (user words / reference KB / trusted tool data; untrusted text is never a source of intent) plus pre-trade-style contracts. The unverifiable residue goes to a risk-routed local model whose quoted evidence must verify verbatim, then to a human.
+- **Evidence so far** (reproduce: `eval/README.md`; τ-bench: `eval/taubench/`):
+  - **Real agent errors: τ-bench retail replay.**
+    - Built from the published gpt-4o + Claude-3.5-Sonnet trajectories in `sierra-research/tau-bench@59a200c` (MIT): **2,018** real write-call proposals from 1,380 trajectories.
+    - Each proposal is labelled by DB-effect equivalence with the task's ground-truth writes. 300/300 labels agree with full-DB hashing; 10,360/10,360 recorded tool outputs are reproduced.
+    - Split by task-id parity: dev = even, test = odd; **test is untouched**.
+    - **Dev results, adapter v0** (`components/checker/taubench_retail.py`, written from the retail policy before seeing any item; 1,027 calls: 779 good, 161 harmful, 87 env-rejected):
+
+      | Guard | Catch (harmful) | Catch (env-rejected) | False-block (good) | Escalation (good) | p95 |
+      |---|---|---|---|---|---|
+      | none / schema-only | 0% | 0% | 0% | 0% | — |
+      | t0 | **64.6%** | 80.5% | **9.1%** | **52.9%** | 2.1 ms |
+      | t0, block-only | 11.2% | — | 9.1% | 0% | — |
+
+      Honest read: real conversations are much harder than our synthetic suite.
+  - **Independent black-box red team** (134 desk cases by a separate agent that never saw the guard): **before fixes** catch **94.3%**, false-block **0%**, escalation **17.4%**. After 6 general fixes (in-sample): 98.9% / 0% / 0%. Known miss: "two clips of 500" order splitting.
+  - **White-box red team** (41 cases by an agent that read the guard): against the current guard, 21/27 bypasses still pass (catch 22.2%), and 14/14 of its good cases are escalated. Top weaknesses (`eval/redteam_whitebox/findings.md`): message-text grounding; invented limit prices / order-type asymmetry; non-canonical duplicate detection; clause-scoped parsing of compound instructions; negation (partly fixed).
+  - **Synthetic suite:** dev/test 100% catch, 0% false-block, 0% escalation. LLM-judge (Qwen3-1.7B), full test split: catch 70.8%, false-block 61.1%.
+- **RESUME POINT (exact):**
+  1. `cd perceptron-p09-agent-guardrail && bash eval/taubench/fetch.sh && .venv/bin/python -m eval.taubench.replay --build` (4 min; writes `.data/taubench/retail_items.jsonl`).
+  2. `.venv/bin/python -m eval.taubench.run --guards none,schema,t0,t0_block_only --split dev` reproduces the table above.
+  3. Adapter v1 on **dev only**:
+     - Drop the `policy.new_item_differs` FAIL (the ground truth itself maps items to themselves: 32 of the false blocks).
+     - Payment default = the order's original method (252 escalations).
+     - Option check → "minimal-change available variant that satisfies the user's stated options" (199 escalations, 14 false blocks).
+     - Normalise curly apostrophes; handle 2-letter state codes and zip false-fails (28 false blocks).
+     - Inspect the 27 harmful cancels that were allowed.
+  4. Run **test once** and report it.
+  5. τ-bench LLM-judge baseline (Qwen3-1.7B, chunked, `nice -n 10`, only when swap has >4 GB free).
+  6. Fix the white-box top 5, then ask a *fresh* independent agent for a second black-box batch (clean holdout).
+  7. Message the Supervisor with dev+test τ-bench numbers (gate: "guard holds on real agent errors" by 10 Oct).
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section of the abstract (placeholders now).
 - **Risks:** (1) synthetic-suite optimism, since the same author wrote templates and rules → τ-bench replay + paraphrase family; (2) paraphrase brittleness of regex mention parsing → LLM resolver, escalation rate tracked; (3) local LLM latency/memory on a shared Mac (8B not measured tonight); (4) close 2026 work (ActGov, ContrAgent, closed-world resolution) → precise novelty claim (argument-value provenance, three-way verdict, verified-quote residue resolution, frontier evaluation).
 
@@ -99,6 +118,14 @@ _First version 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
 - **Overall: 4.6/5.**
 
 ## Log
+### 2026-10-04 09:58 IST — Paused by the Supervisor (user decision); results saved
+- **08:22 Supervisor:** package accepted; P9 ranks #2 in Perceptron and moves to #1 if the guard holds on real agent errors by 10 Oct. Next: τ-bench/AgentDojo real-error replay vs no-guard/schema/LLM-judge baselines, then an independent adversarial red team.
+- **~09:15 Supervisor:** an orphaned PID 42665 (my Qwen3-8B judge, queued in last night's chained shell) was using memory. Killed; swap recovered. New rule for my LLM runs: Qwen3-1.7B only, chunked with checkpoints, `nice -n 10`, one at a time, only when swap has >4 GB free. The chain had finished three valid runs (results kept with their commits): cascade (8B) dev/test and the full-test 1.7B judge. The cascade let one bad test message through (an unrequested "account upgraded" message). Root cause: a quote from *policy* text was accepted as evidence for *intent*. Fixed: provenance checks now accept only quotes from the client's words, and an intent quote must contain a request verb.
+- **τ-bench replay built:** `eval/taubench/{fetch.sh,replay.py,run.py}`. The stubbed-package import avoids τ-bench's LLM SDK dependencies. The fast effect-based labeller deep-copies only touched records and was verified against full hashing. The guard sees the tool outputs exactly as the agent saw them. Fidelity mismatches turned out to be a later data rename (`province`→`state`) and are normalised. Dev v0 numbers and diagnosis are in *Now*.
+- **Independent black-box red team** (sub-agent, never saw the guard; `eval/data/redteam_independent.{jsonl,md}`): numbers in *Now*. Six general fixes: negation scope; message status claims vs session status; P-6.4 claims with an empty record (negation-aware); the "40 L&T" lakh-parse bug; bare "market"; message verbs. These introduced no synthetic regressions. The pre-fix result file is kept (`eval/results/t0__test__redteam_independent__prefix.json`).
+- **White-box red team** (sub-agent read the guard): asked to stop at the pause; 41 findings saved and validated (`eval/redteam_whitebox/`, `eval/data/redteam_whitebox.jsonl`).
+- **09:40 Supervisor:** lean mode again. **09:55:** PAUSE. Nothing of mine was running (verified PIDs belong to other worktrees). Everything committed and pushed.
+
 ### 2026-10-04 08:05 IST — MVP demo committed; morning package complete
 - `python -m eval.demo_mvp` (deterministic, no model) runs six scripted proposals for one client against DeskSim. Real output is in `deliverables/mvp-demo-output.txt`:
   - The faithful order executes.

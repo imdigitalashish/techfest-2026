@@ -75,10 +75,15 @@ def _validate(schema: dict, args: dict) -> list[str]:
         types = types if isinstance(types, list) else [types]
         ok_type = any((t == "string" and isinstance(v, str)) or (t == "integer" and isinstance(v, int) and not isinstance(v, bool))
                       or (t == "number" and isinstance(v, (int, float)) and not isinstance(v, bool)) or (t == "null" and v is None)
+                      or (t == "boolean" and isinstance(v, bool)) or (t == "object" and isinstance(v, dict))
+                      or (t == "array" and isinstance(v, list)) or t is None
                       for t in types)
         if not ok_type:
             errs.append(f"{k} has wrong type")
             continue
+        if isinstance(v, list) and isinstance(p.get("items"), dict) and p["items"].get("type") == "string" \
+                and not all(isinstance(x, str) for x in v):
+            errs.append(f"{k} items have wrong type")
         if "enum" in p and v not in p["enum"]:
             errs.append(f"{k} not in {p['enum']}")
         if "pattern" in p and isinstance(v, str) and not re.match(p["pattern"], v):
