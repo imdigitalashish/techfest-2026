@@ -41,3 +41,6 @@ The bottleneck isn't city-level measurement (47 reference stations, going to 60)
 - Build `components/attribution/` with a frozen replay evaluator. Background = real CPCB 15-min PM10 (OpenAQ archive); wind = ERA5 / station wind; plumes = Gaussian model with known emission schedules; sensor errors = slope, offset, RH growth, noise, drift. All labelled SIMULATED.
 - **Primary metric:** increment MAE (µg/m³) on held-out days. **Secondary:** CSI for "site increment > threshold" events, and abstention rate. Baseline to beat: single-pair subtraction without self-calibration.
 - If S1 fails the replay (e.g. MAE no better than baseline in calm conditions), fall back to S2 + S4 as the pitch spike. Record that in ADR 002.
+
+## First result (4 Oct 07:57 IST, replay v0, single seed)
+Real background (monitor 6929) + real ERA5 wind; SIMULATED site, plumes and sensors. Held-out Jan–Sep 2026, MAE over all hours (abstentions scored as 0): fixed pair **77.0** → wind-resolved ring **62.1** → ring + idle-hour self-calibration **36.2 µg/m³** (coverage 0.95; CSI for > 50 µg/m³: 0.33 → 0.55 → 0.72). The direction holds on dev (86.0 → 45.3 → 30.1). Not yet multi-seed, and not field data. Ledger: `components/attribution/autoresearch/results.tsv`.
