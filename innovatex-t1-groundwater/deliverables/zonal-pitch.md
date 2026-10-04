@@ -71,7 +71,7 @@
 - On the harsher stress test, the error is 13.0 %. The fixes we tried improve the stress test but worsen the ideal case, so they are not adopted yet. Saying so builds trust.
 
 **8. Cost and model (8:00–9:00).**
-- **Cost:** BOM target **< ₹6,000 per node** at prototype quantities (deliverables/prototype-plan.md; part prices to be confirmed) vs ≈ ₹38,000 for a CGWA-style DWLR (Acorn listing).
+- **Cost:** node parts ≈ ₹10,100 per node at single-unit retail prices verified 4 Oct 2026 (MS5837 ₹1,199 + RAK3172 ₹1,672.80 + BME280 ₹3,089 + Li-SOCl₂ D-cell ₹879 + IP enclosure ₹3,250.87 + PG7 gland ₹10 = ₹10,100.67; excludes stilling tube, cable and potting; + tipping-bucket gauge ₹3,729 → ₹13,829.67). Source: `research/bom-prices.md`, vs ≈ ₹38,000 for a CGWA-style DWLR (Acorn listing). Don't quote a volume price until we have a quote.
 - **Who pays:** pilot with RWAs and institutional campuses that want the rebate or need to show compliance. Then DJB's restoration programme (1,000 systems) as a verification layer.
 - **Model:** device + ₹/year verification service, and the rebate-linked verdict feeds DJB billing.
 - **Scale:** every Indian city with an RWH bylaw. The DWLR twin works for any state on India-WRIS.

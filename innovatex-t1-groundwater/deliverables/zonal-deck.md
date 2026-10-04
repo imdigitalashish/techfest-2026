@@ -63,7 +63,7 @@ India-WRIS public API, 483,253 Delhi readings (fetched 4 Oct 2026):
 
 # JalSakshi: one witness per recharge pit
 
-**Node (≈ ₹6k target):**
+**Node (≈ ₹10k in parts at retail, verified 4 Oct):**
 - sealed pressure sensor in a slotted stilling tube at the pit bottom
 - barometer, MCU, LoRaWAN/NB-IoT radio and a signed log in the lid
 - optional rain gauge
@@ -125,7 +125,7 @@ Harsher stress test (non-linear drains + imperfect rain gauge): v1 median error 
 
 # Cost, model, scale
 
-- **Node BOM target < ₹6,000** (prices being confirmed) vs ≈ **₹38,000** for a CGWA-style DWLR (Acorn listing)
+- **Node parts ≈ ₹10,100** at single-unit retail (verified 4 Oct; ₹13,830 with a rain gauge) vs ≈ **₹38,000** for a CGWA-style DWLR (Acorn listing). Volume pricing will be lower (not yet quoted).
 - **Who pays first:** campuses and RWAs that want the rebate or need proof. Then DJB's restoration drive.
 - **Model:** device + per-year verification service. Verdicts feed DJB billing (rebate / penalty).
 - **Scale:**

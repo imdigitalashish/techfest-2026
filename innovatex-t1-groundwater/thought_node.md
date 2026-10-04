@@ -10,31 +10,45 @@
 - _(none)_
 
 ## Now
-- **Phase:** 4–5: walking skeleton running end-to-end. The real DWLR profile, C0 simulator, C5 baseline and frozen evaluator all work. The baseline is in the ledger and the ratchet starts next. Phases 0–3 were done in lean mode (Supervisor directive 05:49: no new sub-agents).
-- **Plan:** the hero is **JalSakshi RechargeMeter**: measured, not self-declared, recharge from Delhi's rainwater-harvesting (RWH) pits. Spikes: C5 recharge-verifier + C4 ingest-qc ([ADR 001](architecture/adr/001-spike.md)). A city twin on real India-WRIS DWLR data is the outcome layer.
-- **Doing:** lead only.
-  - Still running from before lean mode: r3 hardware/prices (no output yet).
-  - Died without output: r1a, r2, r4, r6/r6a/r6b, r1b1.
-  - The first-principles physics agent never reported.
-- **Next (ordered):**
-  1. Evaluator v2, a model-mismatch check: non-linear (orifice) drains and gauge-rain mismatch. The v1 numbers are an upper bound because the simulator and verifier share the linear-reservoir assumption.
-  2. C8 static dashboard: real DWLR map plus a simulated pit storyline, for the zonal demo.
-  2. C4 QC module on real DWLR data, with fault-injection F1.
-  3. Autoresearch loop on C5's MdAPE.
-  4. Static dashboard.
-  5. Close the landscape gaps: CGWB 2024/25 Delhi assessment PDF, NAQUIM Sy/T, DJB tariffs, BOM prices.
-  6. Rehearse Q&A against a hostile judge.
+- **Phase:** ⏸ **PAUSED by the Supervisor at 09:55 IST, 4 Oct (user's decision: only 3 projects run at a time).** Queued: by 7 Oct the Supervisor picks the Delhi-zonal theme (this one or T2 AQI) from the memos and decks on main, then resumes the chosen lead to finish the deck by 9 Oct.
+- **State on main:**
+  - landscape, components + contracts v0.3.0, ADR 001, selection memo v1 (4.0/5);
+  - zonal pitch notes, Marp deck draft (`deliverables/zonal-deck.md` + `figures/`), prototype plan with a verified BOM;
+  - real DWLR profile and the C0 simulator;
+  - C5 verifier v1 (holdout MdAPE 3.0 %; harsher evaluator v2: 13.0 %).
+- **Nothing is running.** No background jobs, no sub-agents. All results are saved.
+- **Resume point (in order):**
+  1. **Ratchet v2 on C5.** Target: `eval_v2.py` dev MdAPE (v1 = 13.03 %) without worsening `eval.py` dev (3.902 %). Next idea: practical-significance threshold `|b−1| > max(2·SE, 0.15)`. Start from `components/recharge_verifier/autoresearch/candidates/v2_exp3_verifier.py`, copy it over `verifier.py`, and edit the beta-selection line. Run one job at a time:
+
+     ```
+     cd innovatex-t1-groundwater/components/recharge_verifier/autoresearch
+     nice -n 10 ../../../.venv/bin/python eval.py --split dev
+     nice -n 10 ../../../.venv/bin/python eval_v2.py --split dev
+     ```
+
+     Each run takes ~3–9 min under load. Keep a change only under the rule in `program.md`, then confirm with `--split holdout`.
+  2. **C4 ingest-qc module.** Fault-injection F1 on the real DWLR snapshot.
+  3. **C8 static dashboard** (offline HTML): real DWLR map + simulated pit storyline.
+  4. **Deck polish.** Export with Marp (`npx @marp-team/marp-cli deliverables/zonal-deck.md --pdf`, needs approval to install), fill team details, rehearse Q&A against a hostile judge.
+  5. **Close gaps.** Primary source for ₹204.46 cr (currently secondary: HT citing DJB data); NAQUIM Sy/T for Delhi; DJB tariffs and tanker prices.
+- **Data regeneration:**
+
+  ```
+  innovatex-t1-groundwater/.venv/bin/python innovatex-t1-groundwater/components/data-ingest/fetch_delhi.py
+  ```
+
+  This restores `.data/delhi_weather_hourly.csv`, which the simulator needs. The venv needs pandas, numpy, scipy, pydantic, matplotlib, pastas and tqdm.
 - **Needs from user:**
   - (a) Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct.
   - (b) Team name, Team ID and members for slide 1.
-  - (c) A pilot site: an RWA or campus with a recharge pit for November trials (IIT Delhi campus?).
-  - (d) Later: approve the prototype purchase, about ₹6k per node (BOM prices still to be confirmed).
+  - (c) A pilot site: an RWA or campus recharge pit (IIT Delhi?).
+  - (d) Approve the prototype purchase. Verified retail: about ₹10.1k per node (₹13.8k with a rain gauge), a ₹33.6k shared gateway and a ₹14.5k PPK2 bench tool (`research/bom-prices.md`).
 - **Risks:**
-  1. No real pit data until the rig is built. Tonight's pit numbers will be simulated and labelled as such.
-  2. BOM prices are unverified; vendor pages blocked us.
-  3. Few storms in Delhi in Oct–Nov, so the rig and fill tests carry the evidence.
-  4. Owner incentive: the device can cost an owner their rebate. We pilot where incentives align.
-  5. Research gaps are listed in `research/landscape.md`.
+  1. Pit numbers are simulation only until the physical rig exists.
+  2. The v1 verifier assumes a linear drain; the harsher evaluator shows a 13 % error.
+  3. Node cost is ≈ ₹10.1k at retail, above the earlier ₹6k target.
+  4. Owner incentives and DJB adoption.
+  5. ₹204.46 cr is secondary-sourced.
 
 ## Phase 0 — what we must show (from the official statement, `_briefs/innovatex.txt`)
 **Hard constraints.** Team ≤4, students, one theme per team, original work (not patented/published). Round 1 = 10-min in-person pitch at the zonal, nothing submitted online; must cover team info (name, Team ID, theme no., contacts), precise problem, background + why existing solutions fall short, proposed solution + technology + how it works, impact & scalability. Top 5 per zonal advance. Round 2: report + working prototype by 1 Dec (solution description, prototype evidence, cost & market viability, implementation plan, scalability plan, impact assessment); finals 15–18 Dec at IIT Bombay. Only the team leader submits online. Queries only via the portal's Doubt section.
@@ -96,7 +110,7 @@ _v1, 4 Oct 2026, 07:55 IST. The final is due 7 Oct, 12:00. Scores are 1–5, wit
 - **Fit with the user's strengths — 3/5.** Systems and data engineering (ingest, QC at scale, contracts, cloud) fit well. Frontier models play only a minor role (optional QC/anomaly models).
 - **Biggest risk:** owner incentives (the device can cost an owner the rebate) and DJB adoption.
   - Mitigation: pilot with campuses and RWAs that need proof, and position this as a verification service for DJB's restoration drive.
-  - Second risk: BOM prices are unverified tonight.
+  - Second risk: cost. Verified retail is ≈ ₹10.1k per node, above my earlier ₹6k target, though still about ¼ of the ₹38k CGWA-style DWLR.
 - **One-line pitch:** *"Delhi has paid ₹204 crore for rainwater harvesting it never checked. JalSakshi puts a low-cost IoT witness in every recharge pit and turns each storm into measured, auditable recharge evidence — measured, not self-declared."*
 
 ## Log
@@ -169,3 +183,15 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
 - **Honesty note:** the simulator and verifier share the linear-reservoir model, so these numbers are an upper bound. Evaluator v2 (model mismatch) comes next; the physical rig is the real test.
 - Corrected the ledger and README timestamps to the actual run times.
+
+### 2026-10-04 10:05 IST — Ratchet v2 (not kept), primary-source fixes, verified BOM, then PAUSE
+- **Ratchet v2 on C5:**
+  - Built the frozen evaluator v2 (drain law h^β with β ~ U(0.5, 1.5), plus a gauge factor and lag). The kept v1 verifier scores 13.03 % there; v1 on the original evaluator is unchanged at 3.902 %.
+  - Three drain-law variants reached 4.86–5.28 % on v2 but worsened the original evaluator by 15–31 % relative. Under the keep rule in `program.md`, none was kept; all are logged in `results.tsv`. The verifier was reverted to v1, and the last candidate is saved under `autoresearch/candidates/`.
+- **Primary-source checker** (`research/primary-source-checks.md`):
+  - **CGWB 2025 (primary):** Delhi's stage of extraction is 92.10 %; 10 of 34 tehsils are over-exploited (337.44 km²).
+  - The 2023 figure (617.25 km²) was higher, so the deck now says "still over-exploited", not "worsening".
+  - ₹204.46 cr, the RWH rules and the NGT borewell figures are confirmed at secondary sources only.
+- **BOM price verifier** (`research/bom-prices.md`): verified retail is ≈ ₹10,100.67 per node (MS5837 path), ₹13,829.67 with a rain gauge. My earlier "< ₹6,000" target was wrong and is corrected in the deck, pitch, plan and memo.
+- Deck draft and figures added: `deliverables/zonal-deck.md`, `deliverables/make_figures.py`, `deliverables/figures/*.png` (map coordinates fixed).
+- **Supervisor PAUSE at 09:55:** saved everything, no jobs running. Resume point is under *Now*.

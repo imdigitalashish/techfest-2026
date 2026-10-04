@@ -23,20 +23,26 @@
   - **Always:** heartbeats and tamper events.
 - **Cloud (C4–C8):** Python services behind the typed contracts (`architecture/contracts/`). They run on any VM (Azure available) or a laptop for the demo. The dashboard is static HTML and works offline.
 
-## 2. Bill of materials (per node, prototype quantities)
-| Part | Spec | Source / price status |
-|---|---|---|
-| Pressure sensor | MS5837-30BA (I²C, 0–30 bar abs, 0.2 mbar resolution class) or 4–20 mA SS hydrostatic probe 0–5 m | MS5837 vendor pages blocked/timed out tonight (robu.in 403, element14 timeout) → **UNVERIFIED**. A search summary suggested ₹2,600–7,500 for MS5837 breakouts and ₹6,000–10,000 for 4–20 mA probes: **UNVERIFIED leads** |
-| LoRa module | RAK3172 (STM32WLE5CC) | product page opened (RAKwireless store); price not captured → **UNVERIFIED** |
-| Barometer | BME280 breakout | **UNVERIFIED** |
-| Battery | Li-SOCl₂ D-cell, ~19 Ah class | **UNVERIFIED** |
-| Enclosure + glands | IP67/68 polycarbonate, PG7/PG9 glands, desiccant | **UNVERIFIED** |
-| Stilling tube + stand | 50 mm PVC, slotted, geotextile sock, SS weight | local hardware; **UNVERIFIED** |
-| Rain gauge (optional) | tipping bucket, 0.2–0.5 mm/tip | **UNVERIFIED** |
-| Gateway (shared) | 8-channel LoRaWAN indoor/outdoor gateway (IN865) | **UNVERIFIED** |
-| **Target total** | **< ₹6,000 per node** excluding gateway | **ESTIMATE**: confirm by 9 Oct |
-| *Comparator* | CGWA-compliant piezometer/DWLR (Acorn PZM-24B, 2 readings/day, ±0.5 % FS, optional GPRS) | **≈ ₹38,000 / piece** — https://www.acorncontrols.com/piezometer.html (opened 2026-10-04) |
-| *Comparator* | Pride CGWA telemetry flow meter / piezometer telemetry | **≈ ₹38,900 / piece** — https://www.pridecontrols.co.in/telemetry-flow-meter.html (opened 2026-10-04) |
+## 2. Bill of materials (per node, single-unit retail; prices VERIFIED on vendor pages 4 Oct 2026 — `research/bom-prices.md` has URLs)
+| Part | Choice | Vendor | Price (₹) |
+|---|---|---|---|
+| Pressure sensor | TE MS5837-30BA (bare sensor; needs potting + cable — unpriced) | robu.in | 1,199.00 |
+| LoRa module | RAK3172 (STM32WLE5CC, runs firmware standalone) | electronicscomp.com | 1,672.80 |
+| Barometer | BME280 breakout | robu.in | 3,089.00 |
+| Battery | Li-SOCl₂ D-cell ~19 Ah class | robu.in | 879.00 |
+| Enclosure | IP-rated junction box | (see bom-prices.md #7a) | 3,250.87 |
+| Cable gland | PG7 | (see bom-prices.md #7b) | 10.00 |
+| **Node subtotal** | | | **10,100.67** |
+| Rain gauge (optional) | tipping bucket, 0.28 mm/tip (listed as currently unavailable) | see #8 | 3,729.00 → **13,829.67 with gauge** |
+| Alt. sensor | 4–20 mA SS hydrostatic probe 0–5 m (more robust, pricier) | amazon.in | 17,500.00 |
+| Alt. MCU (prototype) | ESP32-C6/S3 dev board | robu.in | 1,099.00 |
+| Shared gateway | Dragino LPS8N 8-ch LoRaWAN (IN865 variant not confirmed on page) | amazon.in | 33,559.00 |
+| Bench tool | Nordic PPK2 power profiler | amazon.in | 14,500.00 |
+| Unpriced | stilling tube (50 mm slotted PVC), geotextile sock, SS weight/stand, potting, cable | local | **UNVERIFIED** |
+| *Comparator* | Acorn PZM-24B CGWA piezometer/DWLR (2 readings/day, ±0.5 % FS) | acorncontrols.com | ≈ 38,000 |
+| *Comparator* | Pride CGWA telemetry flow meter / piezometer telemetry | pridecontrols.co.in | ≈ 38,900 |
+
+The earlier "< ₹6,000" target does **not** hold at single-unit retail. The biggest line items are the branded BME280 breakout (₹3,089) and the enclosure (₹3,251). Generic parts and volume quotes are the cost-down path; they are unquoted, so we make no claim.
 
 ## 3. Power budget (method; inputs to be bench-measured)
 E/day = I_sleep·24 h + N_samples·Q_sample + N_uplinks·Q_uplink + N_storm_min·Q_burst.
