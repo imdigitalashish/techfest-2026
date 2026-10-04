@@ -1,0 +1,84 @@
+{
+ "feed_tardis_collector_ms": {
+  "binance-futures:BTCUSDT": {
+   "p50": 1.826,
+   "p99": 4.081
+  },
+  "binance:BTCUSDT": {
+   "p50": 2.45,
+   "p99": 3.273
+  },
+  "bitstamp:BTCUSD": {
+   "p50": 33.999,
+   "p99": 60.164
+  },
+  "bybit:BTCUSDT": {
+   "p50": 37.2,
+   "p99": 39.527
+  },
+  "coinbase:BTC-USD": {
+   "p50": 39.668,
+   "p99": 129.506
+  },
+  "deribit:BTC-PERPETUAL": {
+   "p50": 8.728,
+   "p99": 201.075
+  },
+  "kraken:BTC/USD": {
+   "p50": 7.511,
+   "p99": 33.024
+  },
+  "okex-swap:BTC-USDT-SWAP": {
+   "p50": 4.76,
+   "p99": 10.908
+  },
+  "okex:BTC-USDT": {
+   "p50": 4.445,
+   "p99": 11.969
+  }
+ },
+ "compute_us": {
+  "detector_amortised": 0.08651200614480503,
+  "decision_p50": 6.083333333333333,
+  "decision_p99": 41.45875000000008,
+  "total_p50": 6.1698453394781385,
+  "total_p99": 41.54526200614489
+ },
+ "breakeven_oneway_ms": {
+  "f0": {
+   "naive": "> 100",
+   "threshold_pair": "> 100",
+   "ev_kmpair": "> 100",
+   "lev": "> 100"
+  },
+  "f1": {
+   "naive": "4.6",
+   "threshold_pair": "> 100",
+   "ev_kmpair": "53.7",
+   "lev": "92.9"
+  },
+  "f2": {
+   "naive": "7.8",
+   "threshold_pair": "> 100",
+   "ev_kmpair": "> 100",
+   "lev": "96.5"
+  },
+  "f5": {
+   "naive": "69.2",
+   "threshold_pair": "10.6",
+   "ev_kmpair": "89.3",
+   "lev": "93.4"
+  }
+ },
+ "feed_mac_india_p05_ms": {
+  "binance-futures:BTCUSDT": 90.241,
+  "coinbase:BTC-USD": 106.683,
+  "kraken:BTC/USD": 78.473,
+  "deribit:BTC-PERPETUAL": 69.362,
+  "okex:BTC-USDT": 25.018,
+  "okex-swap:BTC-USDT-SWAP": 23.775,
+  "bybit:BTCUSDT": -8.893
+ },
+ "commit": "9cadff6",
+ "command": ".venv/bin/python -m eval.latency_budget"
+}

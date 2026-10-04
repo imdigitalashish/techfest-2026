@@ -1,0 +1,69 @@
+{
+ "machine": {
+  "platform": "macOS-26.2-arm64-arm-64bit",
+  "processor": "arm",
+  "ns_per_tick": 41.666666666666664
+ },
+ "model": {
+  "n_trees": 200,
+  "n_nodes": 12200,
+  "train_rows": 15870,
+  "features": [
+   "log_edge",
+   "log_age_other_ms",
+   "updater_is_sell",
+   "spread_sum_bps",
+   "log_vol",
+   "sell_is_perp",
+   "buy_is_perp",
+   "edge0_bps",
+   "net0_bps",
+   "log_size",
+   "pair_id",
+   "L_ms",
+   "fee_bps"
+  ]
+ },
+ "exactness_max_abs_err_bps": 0.0,
+ "test_rows": 12780,
+ "acts": 4550,
+ "decision_in_kernel_ns": {
+  "p50": 6083.333333333333,
+  "p90": 10500.0,
+  "p99": 41458.75000000008,
+  "p999": 510168.33333333733,
+  "mean": 9062.47391757955,
+  "n": 63900,
+  "tick_resolution_ns": 41.666666666666664
+ },
+ "decision_from_python_ns": {
+  "p50": 8083.0,
+  "p90": 16042.0,
+  "p99": 62333.01000000001,
+  "p999": 637710.5839999723,
+  "n": 200000
+ },
+ "detector": [
+  {
+   "date": "2026-10-01",
+   "n_legs": 5,
+   "events": 5835887,
+   "episodes": 102075,
+   "wall_s_best_of_3": 0.5048742920043878,
+   "ns_per_event": 86.51200614480503,
+   "events_per_s": 11559089.247406721
+  },
+  {
+   "date": "2026-10-01",
+   "n_legs": 9,
+   "events": 9181230,
+   "episodes": 345890,
+   "wall_s_best_of_3": 0.7574508750112727,
+   "ns_per_event": 82.49993465050682,
+   "events_per_s": 12121221.7226145
+  }
+ ],
+ "note": "Machine shared with other jobs (load not controlled); figures are upper bounds for a dedicated core.",
+ "commit": "9cadff6",
+ "command": "eval/run_guarded.sh .venv/bin/python -m eval.decision_timing"
+}
