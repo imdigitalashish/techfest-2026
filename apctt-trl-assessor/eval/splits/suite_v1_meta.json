@@ -1,0 +1,33 @@
+{
+ "snapshot_sha256": "5b817a88eb78498903e896a6c5a4aecc38ac903ea354eaa0cdd53db5e4d25f63",
+ "label": "trl_current",
+ "seed": 20261004,
+ "n_rows": 8009,
+ "n_groups": 6891,
+ "n_multi_member_groups": 793,
+ "n_train": 6326,
+ "n_test": 1683,
+ "n_papers": 204,
+ "n_paper_projects": 98,
+ "trl_sentences_dropped": 1567,
+ "docs_with_trl_statement": 1083,
+ "test_by_source": {
+  "sbir": 882,
+  "internal": 801
+ },
+ "train_by_source": {
+  "sbir": 3530,
+  "internal": 2796
+ },
+ "test_label_dist": {
+  "1": 25,
+  "2": 155,
+  "3": 519,
+  "4": 451,
+  "5": 216,
+  "6": 207,
+  "7": 77,
+  "8": 21,
+  "9": 12
+ }
+}

@@ -1,0 +1,2 @@
+run_id	commit	dirty	hypothesis	shifted_mean_qwk	delta	p_pos	verdict	in_dist_qwk	in_dist_mae	s2i_qwk	i2s_qwk	crop60_qwk	papers_qwk	papers_mae	fit_s	ms_doc
+20261004T094955	e5a8f8f	True	E0 baseline: hashed D4096 ridge rounded (skeleton features)	0.1334	+0.0000	1.000	baseline	0.2727	1.0969	0.0959	0.0860	0.1377	0.2140	1.0294	42.2	1.47
