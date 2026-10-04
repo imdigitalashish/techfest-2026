@@ -11,7 +11,16 @@
 
 ## Now
 - **Phase:** 6 — deliverables **complete for the Delhi zonal** (Supervisor's definition of done, 4 Oct 12:45 IST). Next lead work comes after the zonal: the Round-2 build (`deliverables/prototype-plan.md`).
-- **Active again (2026-10-04 23:26 IST):** demo upgrade to PLAYBOOK §11 ("the winning demo"), Supervisor request. The child session **Demo builder · JalSakshi** is building `innovatex-t1-groundwater/demo/`: run.sh, SCRIPT.md, fallback/, smoke.sh; REAL first; knobs = pulse size incl. an honest 20 L miss, gauge unplug → deferred, a twice-daily-logger baseline. Next: verify from a clean checkout → gpt-6-astra "judge watching the demo" review → fixes → "DEMO DONE".
+- **⏸ PAUSED 2026-10-04 23:39 IST (user directive, via Supervisor 23:36): resume tomorrow.** The demo upgrade to PLAYBOOK §11 is in progress and **not verified**. No "DEMO DONE" sent.
+  - **The child session "Demo builder · JalSakshi"** is told to stop after its current atomic step, push only finished passing work, leave WIP uncommitted in its worktree (`.worktrees/imdigitalashish-verbose-invention`), stop its jobs, and reply with its resume point. Its reply goes in the Log.
+  - **Resume point (lead), in order:**
+    1. Read the builder's reply; message it to resume (it has the full brief plus my 23:27 "size × WHEN" addition).
+    2. When it reports done, run `/tmp/t1_verify_clean.sh` (recreate if /tmp was cleared). It does: clean worktree of origin/main → `demo/run.sh` timed → `demo/smoke.sh`. Cross-check scenario outcomes against the reference table in the 23:27 Log entry.
+    3. Spawn the gpt-6-astra (max) "judge watching the demo" review; the brief is drafted at `/tmp/t1_demo_review_prompt.md` (recreate from the Log if lost). Keep ≤ 2 child sessions.
+    4. Disposition the review → `reviews/ledger.tsv`, builder fixes, re-verify.
+    5. Update slide 5 / presenter card / talk-track paths to `demo/`.
+    6. Message the Supervisor "DEMO DONE".
+  - Nothing of mine is running. The 4 Python servers on :8085–8088 belong to another project (`zamana-ios-app`), not this one.
 - **Definition of done (due 9 Oct 18:00 IST):**
   1. ✅ Final deck: `deliverables/zonal-deck.md` → `zonal-deck.pdf` / `.pptx`. 9 main slides + 5 backups, speaker notes with timing, 9:15 route + 45 s reserve.
   2. ✅ Q&A: `deliverables/qa-prep.md`, 28 questions.
@@ -223,3 +232,20 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - a twice-daily-logger baseline sits beside our 1-min event sampling.
 - Spawned one child session, "Demo builder · JalSakshi", with a complete brief. Package path `demo/`; the builder must not modify the verifier, simulator, evaluators or results.
 - Rules passed on: CPU only, `nice -n 10`, memory guard (start ≥ 30, pause < 25; it read 31 at start), IST timestamps, no git stash.
+
+### 2026-10-04 23:27 IST — Lead cross-check of pulse scenarios (committed verifier; demo pit 250 m² roof / 2.25 m²; demo rain seed 7; reference for verifying the builder)
+
+| Pulse | Empty pit in the 61-h dry spell (inject 20 Jul 01:30) | Pit still draining after a storm (26 Jul 15:00) | During heavy rain (21 Aug 03:51) |
+|---|---|---|---|
+| 20 L | no event | — | — |
+| 100 L | implausible | **verified (missed)** | — |
+| 500 L | implausible | implausible | **verified (missed)** |
+| 1,200 L | implausible | implausible | **verified (missed)** |
+| 500 L trickle over 30 min | implausible | **verified (missed)** | — |
+
+- Sent to the builder as a lead-approved addition: a pulse knob of size × WHEN (quiet pit / draining pit / during a storm), with misses shown as honestly as catches.
+- Script: `/tmp/t1_pulse_check.py` (scratch, not committed).
+
+### 2026-10-04 23:39 IST — PAUSE (user directive)
+- Supervisor: stop for tonight.
+- Told the builder to stop after its current atomic step and push only passing work. My session has no servers or jobs running. Resume point is under *Now*.
