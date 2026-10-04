@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 1 — SOTA research (running) + data path for the walking skeleton (in progress). Phase 0 done (see *Phase 0 — constraints* below).
-- **Plan:** research fan-out → choose the pollution source + spike (ADR 001) → components + contracts → walking skeleton on real CPCB data (OpenAQ public S3 archive) + Open-Meteo meteorology → forecasting/attribution eval with real numbers → zonal pitch + prototype plan → selection memo. All by 08:30 IST.
-- **Doing:** 4 research agents (companies/products, sensors + calibration + fence-line methods, hardware BOM with Indian prices, dust-suppression evidence). Lead: Delhi station discovery in the OpenAQ archive, then data pipeline.
-- **Next:** (1) ingest Delhi CPCB hourly PM + meteorology; (2) baseline forecasts (persistence, climatology, gradient boosting) on a time-ordered split; (3) components.md + contracts; (4) ADR 001; (5) deliverables.
-- **Needs from user:** Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Hardware purchases for the prototype come later. Optional: a free OpenAQ API key (explore.openaq.org) would simplify live ingestion; not blocking (we use the public S3 archive).
-- **Risks:** (1) Network uplink saturated by ~20 parallel sessions: 5 of 8 research agents died with HTTP 408 at turn 0; mitigation: ≤4 concurrent agents, short prompts, shared brief file, lead does targeted searches itself. (2) Forecasting PM in Delhi winter is a crowded space (IITM's operational systems) — the spike must sit where incumbents don't. (3) Low-cost optical sensors under-read coarse dust (to verify) — matters if the source is construction dust.
+- **Phase:** 2–4 — components + contracts, ADR 001 and pitch drafts done; walking skeleton (forecast harness on real Delhi data) running; attribution replay harness next. Lean mode until 08:30 (no sub-agents).
+- **Plan:** source = **construction & demolition dust, Delhi-NCR**. Product = **DustLedger**: 3–4-node fence-line ring + wind → the site's own PM10 increment → misting only when the site is the cause → tamper-evident ledger → regulator ranking ("let clean sites work"). Spike = attribution with self-calibration (ADR 001).
+- **Doing:** lead: walk-forward forecast eval (`eval/forecast_walkforward.py`, running under machine load ~110).
+- **Next:** (1) record walk-forward numbers; (2) C6 attribution replay harness (real 15-min background + real wind + SIMULATED plumes and faults) + baseline single-pair method → `components/attribution/autoresearch/` ratchet; (3) source BOM prices (vendor pages, with URL and date); (4) independent adversarial review of ADR 001 (`rubber-duck`) once sub-agents are allowed; (5) re-run the dead research threads: dust-suppression evidence, alternative sources, construction's share of Delhi PM (IIT Kanpur 2016), CAQM direction text, BMC Mumbai rules.
+- **Needs from user:** (a) decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct; (b) team names/skills: an embedded/hardware teammate helps a lot; (c) by ~25 Oct: a pilot construction site (IIT Delhi campus works?) or permission for a short reference co-location next to a DPCC/CPCB monitor or an IIT Delhi reference instrument; (d) later: hardware purchase (BOM in `deliverables/prototype-plan.md`). Optional: a free OpenAQ API key for live ingestion.
+- **Risks:** (1) low-cost optical sensors under-read coarse construction dust (CSTEP calls them qualitative) → differential design + reference co-location; (2) calm winter winds break attribution → abstain + report the rate; (3) health objection: combustion matters more than dust → pitch fairness and economics, not city AQI; (4) no field site by mid-Nov → controlled dust-source trial; (5) BOM prices still UNVERIFIED; (6) the OpenAQ archive for our 4 stations starts Feb 2025, so there's only one winter of history (fetch older CPCB data from another source).
 
 ## Phase 0 — constraints (from `_briefs/innovatex.txt`, read 4 Oct 02:10 IST)
 - **Round 1 (Delhi zonal, 10 Oct, 10 min, in person, no online submission):** team info · precise problem within the theme · background and why existing solutions fall short · proposed solution and technology · impact and scalability. Top 5 per zonal advance; results the same day.
@@ -56,21 +56,38 @@
 - What companies ship: urban air-quality networks and forecasting products — check recent launches and city deployments.
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — City = Delhi-NCR; pollution source = construction & demolition dust; product = DustLedger (site-level attribution, not city AQI). Evidence: blanket bans in WAP 2026-27 and GRAP, flat fines, 1.38 M registered workers, no vendor attributes a site's own increment ([landscape](research/landscape.md)).
+- 2026-10-04 — Spike = C6 attribution + inter-node self-calibration; second spike = C8 closed-loop misting; forecasting stays best-practice ([ADR 001](architecture/adr/001-spike.md)).
+- 2026-10-04 — Real data via the OpenAQ public S3 archive (no key) + Open-Meteo (ERA5, CAMS). Everything simulated is labelled `provenance="SIMULATED"`.
 
 ## Components
+Full map, contracts and metrics: [architecture/components.md](architecture/components.md) · [contracts.py](architecture/contracts/contracts.py).
+
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| C1 | Fence-line node | air → NodeReading | SPS30-class + ESP32 | | designed (hardware Nov) | inter-unit CV of 1-min PM10 |
+| C2 | Wind station | air → WindReading | cup + vane | | designed | direction error (°) |
+| C3 | Gateway | readings → batches | ESP32 + LTE, SD buffer | | designed | delivery ratio after outage |
+| C4 | Ingest + QA | batches → CleanReading | range/stuck checks | | designed | F1 on injected faults |
+| C5 | Calibration | CleanReading → CalibratedReading | linear + RH, weekly re-fit | part of spike (self-cal) | designed | RMSE/R² vs reference (held out) |
+| **C6** | **Attribution** | Calibrated + Wind → SiteIncrement | single-pair subtraction | **yes** | replay harness next | **increment MAE (replay, SIMULATED plumes)** |
+| C7 | Background forecast | public data → BackgroundForecast | persistence; IITM AQEWS | | **running on real data** | MAE skill vs persistence |
+| C8 | Suppression controller | SiteIncrement + forecast → ActuationCommand | timer anti-smog gun | 2nd spike | designed | µg·h avoided per kL (sim) |
+| C9 | Misting actuator | command → ActuationLog | relay + pump | | designed | latency; litres logged vs metered |
+| C10 | Evidence ledger | records → LedgerEntry, report | CCTV + self-audit | | designed | tamper detection rate |
+| C11 | Work-window advisor | forecast → advice | none | | designed | dusty hours moved (replay) |
+| C12 | Dashboards | all → UI | DPCC portal forms | | designed | time-to-answer (scripted) |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 7 Oct, 12:00 IST (one theme is pitched at the Delhi zonal on 10 Oct). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+_v1, 4 Oct 08:00 IST. Final by 7 Oct, 12:00 IST._ **Average 4.0 / 5.**
+- **Winnability — 4:** a Delhi panel lives this problem: WAP 2026-27 restricts dusty construction Nov 1–Jan 31 with a total ban Dec 10–Jan 20; GRAP-3 stopped sites for 16 days in 2025; tankers were filmed spraying a reference monitor (Oct 2025). That's strong bonus-points material. Risk: AQI will be the most crowded theme at the Delhi zonal, so we must not look like "another IoT AQI monitor + ML forecast".
+- **Innovation headroom — 4:** none of the Indian vendors we checked (Airveda, Prana Air, Oizom pages) attributes a site's *own* increment; they stream absolute PM to the DPCC cloud. Fence-line attribution exists for mines and refineries (Envirosuite, Aeroqual, EPA rings). Our novelty is adapting it to low-cost construction sites, with self-calibration from idle hours, abstention, tamper signatures and closed-loop misting.
+- **Feasibility by 1 Dec — 4:** software replay works on real Delhi data on the M5 now (pipeline + harness in `eval/`). Hardware is commodity (ESP32 + SPS30-class + LTE). The dependency is a field site or reference co-location by mid-Nov; nothing user-dependent falls in exam week 19–25 Nov.
+- **Demo strength at finals — 5:** a live ring around a dust source on stage; only the downwind nodes light up, and the mister fires automatically. Visceral and hard to fake.
+- **Fit with the user's strengths — 3:** data pipeline, attribution modelling, ratchet loops and dashboards fit large-scale systems and ML well. Embedded hardware and field trials don't; we'd want an embedded teammate.
+- **Biggest risk:** sensor fidelity for coarse dust plus calm-wind attribution. If the replay shows the ring can't beat simple subtraction in calm conditions, the spike shifts to closed-loop misting + tamper evidence (ADR 001 fallback).
+- **Real numbers so far** (`eval/results/forecast_walkforward.json`; monthly expanding window, test Nov 2025–Sep 2026, 4 Delhi CPCB/DPCC monitors, real data): next-day daily-mean **persistence** PM2.5 MAE **23.8 µg/m³** (r 0.91, n = 1,034; Nov–Feb MAE 42.9), PM10 MAE **45.1** (r 0.86). Gradient boosting with ERA5 meteorology adds at most +4 % (PM2.5, perfect-prog met) and +6 % (PM10) MAE skill overall, is *worse* than persistence in winter, and catches fewer severe days (CSI 0.34 vs 0.48). CAMS as served at one city point: PM2.5 MAE 53.6, PM10 177.8 (reference only). Reading: next-day city PM is hard to beat with one year of history; the state already forecasts it. That's why forecasting isn't our spike.
+- **One-line pitch:** "Delhi stops every construction site every winter because it can't tell which ones are dusty. DustLedger measures each site's own dust with a low-cost, self-calibrating fence-line ring, mists only when the site is the cause, and gives regulators a tamper-proof ranking so clean sites can keep working."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -80,3 +97,10 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - Read PLAYBOOK, this brief and `_briefs/innovatex.txt`; wrote *Phase 0 — constraints* (judging → evidence map, assumptions A1–A4).
 - Research fan-out: 8 agents launched at 02:10; a truncated launch call plus model-API timeouts (HTTP 408, "timed out reading request body", turn 0) killed 5 of them. Relaunched with a shared brief (`research/raw/_AGENT_BRIEF.md`) and short prompts. Running: companies/products, sensors + calibration + fence-line, hardware BOM, dust-suppression evidence. Partial notes kept from the dead grounding agent: `research/raw/delhi-grounding.md` (unverified until re-checked).
 - Data: the OpenAQ v3 API needs a key (HTTP 401), but the public S3 archive works unsigned. Verified: location 235 = "Anand Vihar, New Delhi - DPCC", 15-min PM10 on 2025-11-01. Open-Meteo archive (ERA5, incl. boundary-layer height) and air-quality (CAMS) APIs answer without a key. Scanning OpenAQ IDs 1–15000 for stations in the Delhi bbox (`components/ingest/discover_openaq_delhi.py`).
+
+### 2026-10-04 07:55 IST — Morning package v1 pushed (lean mode, no sub-agents)
+- **Network:** the session died on a model 408 at 06:17; resumed 07:11 on the Supervisor's call. All 8 research agents died on 408s; 4 left partial notes (`research/raw/`: companies-products, papers-sensors-calibration, social-signal, delhi-grounding), 4 left stubs (alt-sources, dust-suppression-evidence, hardware-bom; papers-forecasting none). The lead verified the Delhi Winter Action Plan 2026-27 construction ban directly (The News Mill, Sept 2026).
+- **Decisions:** source = C&D dust in Delhi; product = DustLedger; spike = wind-resolved ring attribution with self-calibration (ADR 001). Antithesis written by the lead; the independent `rubber-duck` review is pending.
+- **Shipped:** `research/landscape.md` (cited; "What companies ship today"; UNVERIFIED list) · `architecture/components.md` (12 components, isolated metrics, mermaid) · `architecture/contracts/contracts.py` + 11 JSON Schemas · `architecture/adr/001-spike.md` · `deliverables/zonal-pitch.md` (10 slides, notes, 15 judge Q&As) · `deliverables/prototype-plan.md` (**BOM prices UNVERIFIED**: vendor sites returned 403/429) · selection memo v1 (avg 4.0).
+- **Real numbers:** data = OpenAQ public S3 archive (Anand Vihar 235, R K Puram 17, ITO 5613, Major Dhyan Chand Stadium 6929; ~12.8–13.1k hourly rows each) + ERA5/CAMS via Open-Meteo (26,352 hourly rows, Oct 2023–Oct 2026). **Lesson:** the archive for these stations starts in **Feb 2025**, so the first fixed split (train Oct 2024–Sep 2025) had no winter and its GBM numbers are invalid (kept in `forecast_baseline.json` as a documented failure; its persistence and CAMS rows are unaffected). The walk-forward eval is the valid one: persistence PM2.5 MAE 23.8 / PM10 45.1 µg/m³; GBM ≤ +6 % skill overall and worse in winter; CAMS 2–4× worse. Reproduce: `cd eval && OMP_NUM_THREADS=1 python forecast_walkforward.py` (needs `.data/` from `components/ingest/fetch_openaq_archive.py --ids 235 17 5613 6929 --start 2024-10-01 --end 2026-09-30` and `fetch_openmeteo.py`).
+- **Ops note:** sklearn's HistGradientBoosting stalls under load ~110 (OpenMP oversubscription). Always run with `OMP_NUM_THREADS=1`.
