@@ -89,13 +89,13 @@ def main() -> None:
     scenarios = load_scenarios()
     commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
     # mark the run dirty if any input (code, data, scenarios) differs from HEAD; generated outputs are excluded
-    dirty = subprocess.run(["git", "status", "--porcelain", "--", "components", "data", "eval/eval.py"],
+    dirty = subprocess.run(["git", "status", "--porcelain", "--", "components/lca_engine", "data", "eval/eval.py"],
                            capture_output=True, text=True, cwd=ROOT).stdout.strip()
     if dirty:
         commit += "-dirty"
-    # rebase-stable identity of the inputs: git object ids of components/, data/ and eval/eval.py at HEAD
+    # rebase-stable identity of the inputs that determine results: git object ids of the engine, data and this file
     ids = [subprocess.run(["git", "rev-parse", f"HEAD:./{p}"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
-           for p in ("components", "data", "eval/eval.py")]
+           for p in ("components/lca_engine", "data", "eval/eval.py")]
     import hashlib
     inputs_id = hashlib.sha1("".join(ids).encode()).hexdigest()[:10] + ("-dirty" if dirty else "")
     results = {sid: run_scenario(db, sc, n=N, seed=SEED) for sid, sc in scenarios.items()}
@@ -116,7 +116,7 @@ def main() -> None:
     (out / "scenarios_full.json").write_text(json.dumps(results, indent=1, default=float))
     d = report["db"]
     L = [f"# Eval results (harness v2, inputs id {inputs_id}, run at commit {commit}, n={N}, seed={SEED})", "",
-         "The inputs id hashes the git trees of components/, data/ and eval/eval.py — stable across rebases.",
+         "The inputs id hashes the git trees of components/lca_engine/, data/ and eval/eval.py — stable across rebases.",
          "Reproduce: `python3 eval/eval.py` from `ev-c2-green-auto-lca/`. Unit: g per vehicle-km (GHG indicator; see gas-basis flags).",
          f"Database: {d['records']} records ({d['by_status']}), {d['sources']} sources.", "",
          "## Arithmetic implementation verification (NOT validation: same source supplies inputs and targets)", "",
