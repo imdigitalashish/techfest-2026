@@ -10,19 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ RESUMED 2026-10-04 15:23 IST (Supervisor: batch slot freed) — finishing to the Supervisor's definition of done, then "DONE — slot free".
-- **Context:** one India@71 theme per team. T1 (nutrition) ✅ is the provisional pick; T3 (finance) ✅ recommends T1. Our memo must make an honest case for or against T2.
-- **Definition of done (Supervisor, 15:24):**
-  1. Interval calibration: 90 % intervals cover only 27 % → bootstrap through `trust_audit` into the Fay–Herriot benchmark, ≥ 0.85 coverage on **held-out** blocks; coverage test **pre-registered and committed before the run**.
-  2. Evidence honesty: SYNTHETIC labels; allocation gain shown or plainly "not shown"; verify DPDP Rules 2025, NDEAR/VSK and the three agent-cited papers at primary sources (else UNVERIFIED).
-  3. Final proposal in the brief's format: `deliverables/India71_100_[TeamID].pdf`, ≤ 6 pages, Arial ≥ 11 pt, fonts embedded, all required sections; numbers rendered from committed results with a doc-drift check (`eval/check_docs.py`, T1's model).
-  4. Cross-model reviews as child sessions (≤ 2 at a time): `gpt-6-astra` (max) hostile judge on the proposal; `gpt-6-sol` (max) on code + eval incl. reproducing headline numbers → `reviews/` + `reviews/ledger.tsv`.
-  5. Final selection memo vs T1 and T3; thought node current; push; message the Supervisor.
-- **Plan (order):** (a) profile + speed up the simulator so evaluations take minutes, not half an hour; (b) pre-register the coverage test → commit; (c) implement bootstrap calibration → run → record; (d) allocation: test once with need-correlated inflation, report either way; (e) primary-source verification; (f) results JSON → proposal → `check_docs.py` → PDF; (g) reviews (astra on the proposal, sol on code) → address → ledger; (h) memo vs T1/T3 → DONE.
-- **Doing:** lead alone (no child sessions yet).
-- **Machine rules:** heavy jobs `nice -n 10`, one at a time, only when `kern.memorystatus_level` ≥ 30; no GPU without asking the Supervisor; small requests; poll long jobs ≥ 10 min apart; never `git stash`/`--autostash`; timestamps from `TZ=Asia/Kolkata date`.
-- **Needs from user:** Register by 15 Oct for one India@71 theme. Teammates (≤ 4): names and skills.
-- **Risks:** coverage may need a model change, not just a bootstrap (between-block variance of inflation); allocation gain may not exist in our simulator — say so; review findings may force proposal changes late.
+- **Phase:** finishing — definition of done items 1–3 complete; reviews (item 4) in progress; memo (item 5) drafted.
+- **Done since resume:** (1) **pre-registered interval test PASS** — held-out coverage 0.967 of nominal 0.90 (conservative), ±6.0 pp, block MAE 2.16 vs 4.31 pp; allocation gain **not shown**; (2) primary-source verification (DPDP Rules 2025 + commencement, VSK AU349, three agent-cited papers; NDEAR unreachable → UNVERIFIED); (3) proposal v1.0 + `deliverables/India71_100_[TeamID].pdf` (6 pages, Arial embedded, ≥ 11 pt; `check_docs` 16/16); (4) hostile-judge review of v0.3 (gpt-6-astra, 25 issues, 24 accepted).
+- **Doing:** child sessions — `T2 code review (sol)` (gpt-6-sol max: reproduce headline numbers, leakage, correctness) · `T2 hostile judge (astra)` re-scoring v1.0.
+- **Next:** address review findings → regenerate results if code changes → `check_docs` → PDF → ledger → final memo → push → message Supervisor "DONE — slot free".
+- **Needs from user:** Register by 15 Oct for one India@71 theme (memo below recommends T1). Teammates (≤ 4): names and skills; team name, Team ID, institution, contact for the PDF header.
+- **Risks:** a code-review finding could move the headline numbers (then they are regenerated and `check_docs` enforces consistency); the hostile judge may still score T2 below T3.
 
 ## Phase 0 extraction (from `_briefs/india71.txt`, verified 4 Oct 02:10 IST)
 **Hard constraints**
@@ -64,7 +57,10 @@ The statement expects a concrete technical architecture grounded in these datase
 - What others ship: state FLN dashboards and ed-tech/NGO tools in use in government schools — find published evaluations.
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — [ADR 001](architecture/adr/001-spike.md): two loops — Spike 1 classroom loop (C4 → C7 → C11), Spike 2 non-punitive measurement assurance (C5 + C6). Addendum v3 (16:0x): learning-support record replaces the case/cure register; dominant-strategy claim withdrawn; allocation demoted (pre-registered: no gain).
+- 2026-10-04 — Interval method frozen and pre-registered before held-out data ([pre-registration](eval/preregistration/2026-10-04-coverage.md), author time 15:44:58 IST): misclassification correction from a double-assessed subsample, children-weighted HT stratum bias, Fay–Herriot model on the bias, precision-weighted same-construct anchor, full-pipeline parametric bootstrap.
+- 2026-10-04 — Benchmark only to a same-construct, same-population, same-term survey; never to PARAKH scale scores or old ASER rounds (hostile-judge issue 6).
+- 2026-10-04 — Simulator vectorised (1.6 s vs ~90 s per district; distributions matched to the loop version over 9 vs 40 seeds); all results regenerated.
 
 ## Components
 Full specs: [architecture/components.md](architecture/components.md) · contracts: [architecture/contracts/fln_contracts.py](architecture/contracts/fln_contracts.py)
@@ -74,13 +70,13 @@ Full specs: [architecture/components.md](architecture/components.md) · contract
 | C1 | Source connectors | sources → raw rows + Provenance | state ETL / VSK ingestion | no | spec | ingest validation pass rate |
 | C2 | Canonical model & identity | raw → School/Student/Response | Ed-Fi/CEDS-style, UDISE+/LGD codes | no | built (first pass) | validation pass rate; linkage F1 |
 | C3 | Competency framework & crosswalk | docs/items → Competency/Item (Q-matrix) | SCERT expert mapping | no | built (first pass) | κ vs expert Q-matrix |
-| C4 | Diagnostic engine | Responses → ChildDiagnosis | ASER highest-level rule | **spike 1** | built; baseline 0.551 @8 items | level accuracy; items to P≥0.9 |
-| C5 | Measurement assurance | reported results → TrustAssessment | Gunotsav / Saksham verification | **spike 2** | built; 4.09 → 2.34 pp @10 % | block MAE (pp) at 10 % audit budget |
-| C6 | Linking + small-area estimation | TrustAssessment + anchors → AreaEstimate | direct averages | candidate | built (first pass) | block RMSE; CI coverage |
-| C7 | Teacher point-of-use | ChildDiagnosis → TeacherPlan | state apps / chatbots | **spike 1** | built; 659 B, 3 SMS | payload bytes; SMS segments |
+| C4 | Diagnostic engine | Responses → ChildDiagnosis | ASER highest-level rule | **spike 1** | built; CAT@8 0.546 vs full 0.597 vs ASER rule 0.472 (seeds 101–105) | exact level accuracy at 8 items |
+| C5 | Measurement assurance | reported results → block estimates + intervals | Gunotsav / Saksham verification | **spike 2** | **pre-registered PASS**: coverage 0.967 (nominal 0.90), MAE 2.16 vs 4.31 pp (held-out 101–130) | block MAE s.t. coverage ≥ 0.85 |
+| C6 | Linking + small-area estimation | bias residuals + anchor → block estimates | direct averages | part of spike 2 | Fay–Herriot on the bias + precision-weighted benchmark | coverage; MAE |
+| C7 | Teacher point-of-use | ChildDiagnosis → TeacherPlan | state apps / chatbots | **spike 1** | built; 755 B Hindi, 3 SMS, IVR; printed default | payload bytes; SMS segments |
 | C8 | CRC visit planner | AreaEstimate + trust → VisitPlan | rota | no | spec | need-weighted coverage |
-| C9 | Allocation & policy feedback | AreaEstimate → AllocationDecision | enrolment-proportional | candidate | built (first pass) | expected extra children vs oracle |
-| C10 | Dashboards | estimates → HTML/JSON | VSK dashboards | no | built (first pass) | disclosure pass rate; KB |
+| C9 | Allocation & policy feedback | estimates → AllocationDecision | enrolment-proportional | demoted | **no gain shown** (pre-registered; worse at 5 % budget) | below-goal children reached vs raw / oracle |
+| C10 | Dashboards | estimates → HTML/JSON | VSK dashboards | no | rebuilt: block estimates + intervals, no school labels | disclosure pass rate; KB |
 | C11 | Action ledger & outcome loop | ActionRecord → effects | none | no | spec | % actions with outcome in 6 wks |
 | C12 | Governance & access | AccessRequest → AccessDecision | role portals | no | built; 36/36 | policy suite pass rate |
 
@@ -123,3 +119,12 @@ Antithesis (rubber-duck) argued the audit spike is asserted-not-demonstrated, re
 - **Eval (seeds 1–5, synthetic, calibrated to ASER 2024 govt Std III 23.4 % / 27.6 %; `nice -n 10 python3 eval/run_eval.py`, completed before 09:52):** block MAE teacher-reported 4.04 ± 0.32 pp → moderated (risk-PPS, 10 % budget) 2.46 ± 0.69 pp; detection AUC 0.767 ± 0.009; block RMSE raw 4.13 → audit-adjusted 2.71 → Fay–Herriot benchmarked 2.75 pp; 90 % CI coverage 0.00 / 0.30 / 0.27 (**under-covered**); |aggregate − anchor| 2.34 pp; allocation raw 444.3, moderated 443.5, oracle 447.5 children (**no targeting gain**). Proposal demo table updated.
 - **First-principles review returned** (bottleneck = recorded → owned; prevalence targets punish honesty) → ADR 001 synthesis v2: a learning-case register (notify → owner → verified cure → missing cases), borrowing the TB programme's notification logic (NSP for TB Elimination 2017–25, p. 34, verified: incentives "to promote TB case notification, ensure treatment adherence and treatment completion"). Added to the proposal as "Accountability that rewards finding, not hiding"; removed the GEEAP row to stay within 6 pages.
 - **Paused** per Supervisor 09:55. Resume point in *Now*.
+
+### 2026-10-04 16:06 IST — Resumed: pre-registered calibration PASS; proposal v1.0; reviews
+- Simulator vectorised (1.6 s vs ~90 s per district); distribution check vs the loop version over 9 vs 40 seeds (inflation gap 0.1530 vs 0.1532; item p 0.445 vs 0.436).
+- Interval work on dev seeds 1–30 only: legacy 0.27 coverage traced to (i) clipping of misclassification-corrected re-test shares at 0 (truncation bias in low strata), (ii) school- instead of children-weighted bias, (iii) block-level deviations of reporting bias (a district-wide model over-corrects honest high-performing blocks; errors up to −10 pp). Fix: Fay–Herriot model on the bias + full-pipeline parametric bootstrap with block effects (adjusted likelihood keeps τ² > 0). Dev 1–30: coverage 0.928, MAE 2.30 vs 4.08 pp.
+- **Pre-registration** committed 15:44:58 IST (`eval/preregistration/2026-10-04-coverage.md`), pushed before any held-out run. Held-out 101–130 (180 blocks): **coverage 0.967** (Wilson 0.929–0.985), MAE 2.16 vs 4.31 pp, half-width 5.97 pp → PASS. Secondaries: numeracy 0.928; budget 5 % ±8.34 pp / 20 % ±4.24 pp; need-correlated inflation 0.967. Allocation (effect-free metric): **gain not shown** in any scenario; at 5 % budget moderated targeting is worse (−13.4 children, CI −20.8 to −6.0); even the oracle beats raw by only ~1.2–1.5 % because school size dominates the score.
+- Exploratory (labelled): 55 % of blocks' intervals sit clearly above/below the district average, 100 % on the correct side; true within-district spread ≈ 25 pp — answers the Supervisor's "does ±6 pp separate blocks?".
+- Hostile judge (gpt-6-astra, max) on v0.3: 25 issues (4 blocking), scores 4/6/4/4/3/3. Accepted 24 (rejected only invented rupee prices) → proposal v1.0: ASER as proxies not NIPUN attainment; same-construct anchoring only; learning-support record + firewall replaces case/cure; verified DPDP timeline and exemption; responsibility chain + phase-0 gates; cluster-randomised phase 1; allocation demoted.
+- Verified at primary sources: DPDP G.S.R. 843(E) and Rules 2025 Rule 12/Fourth Schedule; VSK (AU349: "working in silos"); Johnson & Parrado; Berry et al. (via authors' VoxDev summary); Aiyar & Bhattacharya (publisher abstract). NDEAR: UNVERIFIED (hosts unreachable).
+- Final PDF `deliverables/India71_100_[TeamID].pdf`: 6 pages, A4 595×842, Arial only, embedded, min glyph 11 pt (`python3 deliverables/build_pdf.py --check`); Chromium had been shrinking pages 2.5 % because of unbreakable URLs — fixed.

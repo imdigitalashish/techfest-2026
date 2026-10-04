@@ -15,7 +15,7 @@
 | **Std III, rural government schools: can read a Std II text** | **23.4 % (2024)**; 16.3 % (2022); 20.9 % (2018) | ASER 2024 national report, p. 24 of text ("increased from 16.3% in 2022 to 23.4%"): https://asercentre.org/wp-content/uploads/2022/12/ASER_2024_Final-Report_13_2_24-1.pdf |
 | **Std III, rural government schools: can do at least subtraction** | **27.6 % (2024)**; 20.2 % (2022) | ASER 2024, same page ("from 20.2% to 27.6% — in government schools") |
 | Std III, rural private schools: can read a Std II text | 35.5 % (2024) | ASER 2024 ("from 33.1% to 35.5%") |
-| Grade 3 numeracy, Foundational Learning Study 2022 | 37 % limited, 42 % sufficient, 10 % superior skills (~86,000 Grade 3 students, 10,000 schools, 20 languages) | Rajya Sabha AU3224: https://sansad.in/getFile/annex/259/AU3224.pdf?source=pqars |
+| Foundational Learning Study 2022 | ~86,000 Grade 3 students, 10,000 schools, 20 languages (answer); the 37/42/10 % numeracy split appears only in the question text — not used in deliverables | Rajya Sabha AU3224: https://sansad.in/getFile/annex/259/AU3224.pdf?source=pqars |
 | PARAKH Rashtriya Sarvekshan 2024, Grade 3 (21,15,022 children in 74,229 schools, 781 districts) | average score language / maths: boys 63/60, girls 65/60, rural 64/60, urban 63/59; SC 64/60, **ST 61/57**, OBC 63/60, others 66/61 | PARAKH national report pp. 1–4, https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_India_IND.pdf (via `sources/official-data.md`) |
 
 **Reading the gap.** The scorecard counts enrolment and inputs (ANER 96.5 %, PTR 18) and the mission sets a 2026-27 deadline; the independent measure says fewer than one in four Grade 3 children in rural government schools can read a Grade 2 text. 2026-27 is the current school year.
@@ -73,6 +73,14 @@ Detail: [`sources/methods-sota.md`](sources/methods-sota.md), [`sources/methods-
 | Dashboards in a state command centre | VSKs | Showing moderated, interval-backed numbers that add up across levels; no school-level blame labels (ADR 001) |
 | Tamper-resistant, AI-scored oral reading | Vaachan Samiksha | Treating AI scores as one more instrument in the competency crosswalk, validated per language before use |
 | Student-wise records | UDISE+ (since 2022-23) | Keying everything on UDISE+ codes, LGD codes and salted pseudonyms of the student ID |
+
+## 5b. Verified this afternoon (details: [`sources/verification-2026-10-04-pm.md`](sources/verification-2026-10-04-pm.md))
+- MoE (Rajya Sabha AU349, 20 Jul 2022): UDISE, NAS, NIPUN Bharat, DIKSHA "are efficient systems working in silos"; States/UTs advised to set up VSKs; Rs 2–5 crore each; one objective is "to enhance the accountability of teachers".
+- Johnson & Parrado (2021): NAS 2017 state averages "likely artificially high"; ASER "less reliable" for district averages.
+- Berry et al. (2020): CCE frequent-assessment RCT — "no impact on language and maths skills"; paperwork burden.
+- Aiyar & Bhattacharya (2016): block officials see themselves as "disempowered cogs".
+- DPDP: s. 9 commences 18 months after 13 Nov 2025 (G.S.R. 843(E)); Rules 2025 Rule 12 + Fourth Schedule item 3 conditionally exempt educational institutions from s. 9(1), 9(3).
+- NDEAR principles/building blocks: **UNVERIFIED** (official hosts unreachable).
 
 ## 6. Open questions (to close before 12 Oct)
 - PARAKH 2024 state- and district-level tables (national report lists "50 High Performing Districts (Grade 3)", p. 13) — extract for the real-data ASER-vs-PARAKH comparison.
