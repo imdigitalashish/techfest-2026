@@ -81,3 +81,31 @@ def test_intervals_contain_point():
     phi = np.random.default_rng(0).normal(1.0, 1.0, 500)
     for ci in (wald(phi), bootstrap(phi, B=200)):
         assert ci.lo <= ci.point <= ci.hi
+
+
+def test_new_knobs_leave_frozen_bank_worlds_unchanged():
+    # S1 of the frozen bank v0 (eval/results/sim_bank_summary.md): V_before(old)=0.3435, V_after(old)=0.2133, V_after(new)=0.2886
+    cfg = ScenarioConfig(name="S1", n_before=10_000, n_after=10_000, response_drift=-1.0, mix_shift=0.5,
+                         new_policy_quality=0.7, old_policy_quality=0.3)
+    t = ground_truth(World(cfg), n_mc=200_000)
+    assert (round(t.v_before_old, 4), round(t.v_after_old, 4), round(t.v_after_new, 4)) == (0.3435, 0.2133, 0.2886)
+    assert t.v_after_old_cf == pytest.approx(t.v_after_old)  # no feedback => same users either way
+
+
+def test_shapley_identities(sim):
+    from components.decomposer.decompose import shapley
+    w = sim.world
+    sh = shapley(sim.before, sim.after, ActionDist(probs=w.policy(sim.before.X, "new"), policy="new"),
+                 ActionDist(probs=w.policy(sim.after.X, "old"), policy="old"))
+    assert sh.naive == pytest.approx(sh.policy.point + sh.env)
+    assert sh.interaction.point == pytest.approx(sh.effect_after.point - sh.effect_before.point)
+    assert sh.policy.point == pytest.approx(0.5 * (sh.effect_after.point + sh.effect_before.point))
+    t = sim.truth
+    assert t.naive_expected == pytest.approx(t.shapley_policy + t.shapley_env)
+
+
+def test_feedback_separates_direct_and_total_effect():
+    cfg = ScenarioConfig(name="fb", feedback=1.0, response_drift=-1.0, new_policy_quality=0.7, old_policy_quality=0.3)
+    t = ground_truth(World(cfg), n_mc=50_000)
+    assert abs(t.feedback_population_effect) > 1e-3
+    assert t.total_effect == pytest.approx(t.policy_effect_after + t.feedback_population_effect)

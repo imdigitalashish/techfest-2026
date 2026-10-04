@@ -7,6 +7,12 @@ World: K actions, d-dim contexts. P(R=1 | x, a, period, u) = sigmoid(bias_a + x.
 - `hidden_confounding` = kappa > 0: an unobserved u ~ U(-1, 1) tilts the deployed new policy's actions by
   exp(kappa*u*z_a) (an unlogged manual override) while u also raises the reward of z-aligned actions; the logged
   propensities are then the nominal ones (wrong).
+- `feedback` = f: the policy shapes its own audience. After the switch, users shift by f * fb_dir only because the NEW
+  policy runs (fb_dir points at the context region where the new policy's favourite action pays). Had the old policy been
+  kept, they would not have shifted (common random numbers give that counterfactual exactly).
+- `nonlinearity` = lam: adds lam * (s_a * (x0^2 - 1) + c_a * sin(2 x1)) to every logit, which the linear-logistic
+  reward model cannot represent (misspecification test).
+New random draws are taken after the original ones, so worlds with feedback = nonlinearity = 0 are unchanged.
 """
 from __future__ import annotations
 
@@ -36,14 +42,21 @@ class World:
         self.w_old = cfg.old_policy_quality * self.theta + (1 - cfg.old_policy_quality) * n_old
         self.w_new = cfg.new_policy_quality * self.theta + (1 - cfg.new_policy_quality) * n_new
         self.z = np.where(np.arange(K) % 2 == 0, 1.0, -1.0)
+        self.s_nl, self.c_nl = rng.normal(0, 1, K), rng.normal(0, 1, K)
+        fav = int(np.argmax(self.policy(rng.normal(0, 1, (4000, d)), "new").mean(0)))
+        self.fb_dir = self.theta[fav] / np.linalg.norm(self.theta[fav])
 
-    def contexts(self, n: int, period: int, rng):
+    def contexts(self, n: int, period: int, rng, new_policy_running: bool = False):
         X = rng.normal(0, 1, (n, self.cfg.dim)) + self.cfg.mix_shift * period * self.mix_dir
+        if new_policy_running and period == 1:
+            X = X + self.cfg.feedback * self.fb_dir
         u = rng.uniform(-1, 1, n)
         return X, u
 
     def reward_prob(self, X, u, period: int):
         logit = X @ self.theta.T + self.bias + self.cfg.response_drift * period + U_REWARD * u[:, None] * self.z
+        if self.cfg.nonlinearity:
+            logit = logit + self.cfg.nonlinearity * (np.outer(X[:, 0] ** 2 - 1, self.s_nl) + np.outer(np.sin(2 * X[:, 1]), self.c_nl))
         return _sigmoid(logit)
 
     def policy(self, X, which: str):
@@ -79,7 +92,8 @@ class SimOutput:
 def ground_truth(world: World, n_mc: int = 400_000) -> GroundTruth:
     rng = np.random.default_rng(world.cfg.world_seed + 99)
     Xb, ub = world.contexts(n_mc, 0, rng)
-    Xa, ua = world.contexts(n_mc, 1, rng)
+    Xa, ua = world.contexts(n_mc, 1, rng, new_policy_running=True)
+    Xa_cf = Xa - world.cfg.feedback * world.fb_dir  # the same users had the old policy been kept (no feedback shift)
     qb, qa, q_mix = world.reward_prob(Xb, ub, 0), world.reward_prob(Xa, ua, 1), world.reward_prob(Xa, ua, 0)
     v = lambda P, q: float((P * q).sum(1).mean())
     p_nom, p_act = world.policy(Xa, "new"), world.deployed(Xa, ua, "new")
@@ -92,6 +106,7 @@ def ground_truth(world: World, n_mc: int = 400_000) -> GroundTruth:
         v_after_new=v(p_act, qa),
         v_mix_old=v(world.policy(Xa, "old"), q_mix),
         gamma_true=float(np.maximum(ratio, 1 / ratio).max()),
+        v_after_old_cf=v(world.policy(Xa_cf, "old"), world.reward_prob(Xa_cf, ua, 1)),
     )
 
 
@@ -100,7 +115,7 @@ def simulate(cfg: ScenarioConfig, truth: GroundTruth | None = None) -> SimOutput
     rng = np.random.default_rng(1_000_003 * (cfg.seed + 1))
     logs = []
     for period, which, n in ((0, "old", cfg.n_before), (1, "new", cfg.n_after)):
-        X, u = world.contexts(n, period, rng)
+        X, u = world.contexts(n, period, rng, new_policy_running=(which == "new"))
         P_act = world.deployed(X, u, which)
         A = _draw(P_act, rng)
         R = (rng.random(n) < world.reward_prob(X, u, period)[np.arange(n), A]).astype(float)

@@ -129,6 +129,20 @@ class Decomposition(_M):
     env_change: float
     mix_shift: float
     response_drift: float
+    mix_method: str = "DM"  # "DM" (reward model only) or "DR" (reward model + context density ratio)
+
+
+class ShapleyDecomposition(_M):
+    """2x2 attribution over {policy, environment}; OPE fills the two unobserved cells V(before,new), V(after,old).
+
+    naive = policy + env exactly; policy = mean of the two orderings; interaction = effect_after - effect_before."""
+
+    naive: float
+    policy: Interval  # Shapley: 0.5 * (effect_before + effect_after)
+    env: float  # naive - policy
+    interaction: Interval  # effect_after - effect_before
+    effect_after: Interval  # environment-first ordering (the v0 decomposer's policy term)
+    effect_before: Interval  # policy-first ordering
 
 
 # C10 Report ---------------------------------------------------------------------------------
@@ -154,6 +168,8 @@ class ScenarioConfig(_M):
     temperature: float = 1.0  # softmax inverse temperature of both policies
     epsilon: float = 0.1  # uniform exploration mixed into both policies (overlap)
     hidden_confounding: float = 0.0  # strength of an unobserved u tilting the deployed policy's actions (unlogged override)
+    feedback: float = 0.0  # policy-induced mix shift: after the switch, users move by feedback * fb_dir only because the NEW policy runs
+    nonlinearity: float = 0.0  # adds a reward term the linear-logistic reward model cannot represent (misspecification test)
     world_seed: int = 7  # fixes the world (true reward weights, policies) across sampling seeds
     seed: int = 0
 
@@ -165,6 +181,32 @@ class GroundTruth(_M):
     v_after_new: float
     v_mix_old: float  # old policy on after-period users with before-period response: isolates the mix shift
     gamma_true: float = 1.0  # max odds ratio between actual and logged propensities (1 = no hidden confounding)
+    v_after_old_cf: Optional[float] = None  # old policy on the users who would have arrived had the old policy been kept
+
+    @property
+    def total_effect(self) -> float:
+        """What the switch did, including the users it attracted or lost (not identified from after-period logs alone)."""
+        return self.v_after_new - (self.v_after_old if self.v_after_old_cf is None else self.v_after_old_cf)
+
+    @property
+    def feedback_population_effect(self) -> float:
+        return self.total_effect - self.policy_effect_after
+
+    @property
+    def policy_effect_before(self) -> float:
+        return self.v_before_new - self.v_before_old
+
+    @property
+    def shapley_policy(self) -> float:
+        return 0.5 * (self.policy_effect_before + self.policy_effect_after)
+
+    @property
+    def shapley_env(self) -> float:
+        return self.naive_expected - self.shapley_policy
+
+    @property
+    def interaction(self) -> float:
+        return self.policy_effect_after - self.policy_effect_before
 
     @property
     def naive_expected(self) -> float:
