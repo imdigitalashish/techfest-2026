@@ -171,3 +171,31 @@ Key risks are calendar/instrument selection, unproven harm-gate benefit and data
 ```
 
 Why: removes A16's literal placeholders without fabricating teammates. Actual names, skills and ownership still require confirmation; wording alone cannot earn the missing team-fit points.
+
+---
+
+## Lead response (Claude Opus 5.5, project lead) — 2026-10-04 ~13:15 IST
+The review is advisory, and the lead decides. Fixes landed in the commit that adds this section. The abstract was revised to v2.1 (830 visible words including the title), and `python eval/check_numbers.py` passes with sign-sensitive matching.
+
+| ID | Decision | What changed / why |
+|---|---|---|
+| A1 | **ACCEPTED** | 2025-08-01's v1 exposure is disclosed in the abstract, PREREGISTRATION Amendment 2, ADR 001 and Q&A Q11. New exploratory file `eval/results/v2_holdout_sensitivity.md` (from `eval/sensitivity_v2.py`): excluding the exposed day changes no conclusion. Protocol prose timestamps corrected to the commit times (11:43:47 and 11:58:28 IST). |
+| A2 | **ACCEPTED** | The abstract table now leads with the registered spike (H1 not supported, H2 supported). `spike_gate` is labelled post-dev and secondary. The sensitivity file adds 99% CIs (Bonferroni over all five reported hypotheses); H1b and H2b still exclude 0. |
+| A3 | **ACCEPTED** | Stated as a measured worsening, +0.0006 [+0.0003, +0.0009]. Plain gating is named as the stronger average forecaster, and the event benefit is called unproven. ADR "≈0 by construction" removed. |
+| A4 | **ACCEPTED** | Renamed "CUSUM heuristic"; its raw-model reference is stated; no guarantee is claimed. The ln 2 reference missing degradation that is still better than a coin flip is recorded as a limitation. ARL calibration on dependence-preserving nulls is future work. |
+| A5 | **ACCEPTED** | "Empirical leave-one-training-day-out thresholds; no false-alarm guarantee." The landscape's "controls false alarms per day" claim is corrected, and FOMC days in training are noted. |
+| A6 | **ACCEPTED** | The causal chain is explicit (the CUSUM drives the reaction; KS is audit-only). Figure labels changed, and a gate-only counterfactual curve added (`regime_gated` = shrinkage disabled). |
+| A7 | **ACCEPTED** | "Confidence shrinkage, not abstention" everywhere: abstract, diagram, ADR, Q&A, figure. |
+| A8 | **ACCEPTED (wording)**; three-class sensitivity **deferred** | The target is now P(up given a non-zero 10-s move) in the abstract and diagram. A no-move class or three-class head is for the Round-2 plan; it is out of scope for today. |
+| A9 | **ACCEPTED** | Post-hoc matched ablation run (`eval/results/v2_holdout_posthoc_ablation.md`): regime heads vs one head on the same EWMA features gives −0.0083 [−0.0118, −0.0059], 22/22 days; EWMA alone gives −0.0016 (CI spans 0). The theory sentence is reframed: depth implies state dependence, and volatility is our proxy. KS→refit is now described as "our tested configuration". |
+| A10 | **ACCEPTED** | "Illustrative development replay"; "natural experiments" removed. Event-window metrics are to be frozen before testing on event-rich continuous data. The semi-synthetic known-change benchmark is planned. |
+| A11 | **ACCEPTED** | The abstract and diagram now say: 4.8 µs p50 / 85.6 µs p99 adapter step, features excluded, target unmet, end-to-end unmeasured. |
+| A12 | **ACCEPTED** | "Calendar-restricted convenience sample." |
+| A13 | **ACCEPTED in part** | The sensitivity file adds equal-day means, the leave-one-day-out range and 99% CIs (4,000 resamples). The secondary moving-block CI, which crosses day boundaries, is left as is; it is not quoted in any deliverable. |
+| A14 | **ACCEPTED** | "Value in quoting" removed. Quoting value, inventory risk and adverse selection are stated as untested; maker figures are labelled optimistic. |
+| A15 | **ACCEPTED** | The novelty is reframed as a reproducible, pre-registered LOB evaluation and integration, not a new detector. UQ-LOB, Jeon and Podkopaev–Ramdas are named as close foundations. |
+| A16 | **ACCEPTED in part** | We cannot invent teammates. The Supervisor's definition of done requires `[TEAM]` placeholders, so the section keeps two placeholders, now with role ownership (statistics/evaluation; data/demo integration), and Ashish is confirmed. Filling them is a *Needs from user* item. |
+| A17 | **ACCEPTED** | The checker is now sign-sensitive and its limits are stated. −0.0010 is now labelled as the registered spike (plain `fixed_share` is −0.0011). Feed-delay provenance committed: `eval/results/feed_delay.md` (median 2.9 ms over 46 days, from `eval/feed_delay.py`). |
+| A18 | **ACCEPTED** | Superseded rationale is marked in ADR 001 (Status, Consequences) and in landscape §8. |
+
+Top-5 edits: edits 1–4 applied in substance, with numbers re-checked against `eval/results/*`. Edit 5 is adapted to keep the required `[TEAM]` placeholders.

@@ -76,7 +76,9 @@ Command: `python eval/run_baseline.py` → [`eval/results/baseline.md`](../eval/
 - **Textbook KS→retrain** is +0.0268 [+0.0220, +0.0317] log-loss vs static and worse on 21/22 days.
 - **Volatility-regime heads plus a harm gate**: −0.0093 [−0.0129, −0.0062], better on 22/22 days. Plain regime gating gives −0.0099 [−0.0136, −0.0068].
 - **Other adapters:** static GBDT −0.0052; daily walk-forward retraining −0.0009 (the CI spans zero); Fixed-Share over online experts −0.0010 (the CI spans zero).
-- **Calibrated KS** on 5 level-comparable features: 0.7 alarms/day.
+- **Calibrated KS** on 5 level-comparable features: 0.7 alarms/day. This is an alarm rate, not a verified false-alarm rate.
+- **Post-hoc ablation:** regime heads vs one EWMA head: −0.0083.
+- **Exposure:** one holdout day (2025-08-01) was seen in v1; excluding it changes nothing (`eval/results/v2_holdout_sensitivity.md`).
 - **Is it tradable?** No:
   - gross edge is 0.297 bps per signal against a 0.013 bps spread;
   - break-even fee is 0.132 bps per side;
@@ -100,8 +102,8 @@ The forecast's value is as an input to quoting, not as a standalone strategy.
 
 ## 8. Gaps → our innovation room
 
-1. **Calibrated rolling KS:** take thresholds from the *empirical* null of the statistic on calm training data, at the same subsampling and time-of-day. This controls false alarms per day instead of trusting i.i.d. p-values. Metric: realised false alarms/day on calm dev hours against the budget, and detection delay at the FOMC timestamps.
+1. **Empirical-threshold rolling KS:** take thresholds from the *empirical* leave-one-training-day-out distribution of the windowed statistic instead of trusting i.i.d. p-values. *(Implemented. These are marginal per-feature quantiles; they give no daily false-alarm guarantee, and the training days include FOMC days. Review A5.)* Metric: realised false alarms/day on calm dev hours against the budget, and detection delay at the FOMC timestamps.
 2. **Harm gating:** adapt only when a sequential test on the deployed model's delayed loss (CUSUM/e-detector [HARM, E-DET]) agrees that the shift hurts. Metric: Δlog-loss vs static, and the fraction of alarms followed by a real loss increase.
-3. **Regime-adaptive heads with Fixed-Share mixing.** Calibrated alarms *boost* the mixer's switching rate instead of refitting on tiny windows (refitting hurt in §6). Metric: holdout Δlog-loss with a bootstrap CI.
+3. **Regime-adaptive heads.** *Superseded wording: Fixed-Share mixing with alarm-boosted switching failed H1 on the holdout. Hard volatility gating is what worked (−0.0083 vs a single EWMA head, post-hoc ablation).* Metric: holdout Δlog-loss with a bootstrap CI.
 4. **A calendar-aware prior:** scheduled FOMC/CPI times are known in advance, so raising the switch prior around them causes no leakage. Metric: event-window log-loss.
 5. **Latency as a contract:** p50/p99 per online step against a stated budget; Numba/C++ port. Metric: p99 µs.

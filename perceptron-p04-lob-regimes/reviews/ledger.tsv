@@ -1,1 +1,3 @@
 date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	round1-abstract + spike (ADR 001, prereg, v2 results)	gpt-6-astra	max	18	18 (3 in part: A8, A13, A16)	0	Verdict before fixes 2.65/5. Blockers A1 (holdout exposure), A2 (post-dev headline), A16 (team placeholders, kept per Supervisor) addressed; post-hoc ablation + sensitivity committed; abstract v2.1.
+2026-10-04	v2 holdout reproduction + eval code	gpt-6-sol	max	5	5	0	Exact reproduction (17/17 summaries, 374/374 per-day records). Fixed edge field semantics, label-availability guard, stale-exit mask, sign-sensitive number check; S1 disclosed with sensitivity.

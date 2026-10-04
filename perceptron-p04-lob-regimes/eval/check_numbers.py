@@ -3,9 +3,12 @@
     cd perceptron-p04-lob-regimes && python eval/check_numbers.py
 
 A "precise number" is any decimal with >= 3 decimals (log-loss, AUC, deltas, CI bounds) or any
-decimal followed by "bps". Each must occur, after normalising the minus sign, in eval/results/*.md,
-or equal (to its printed precision) a value in eval/results/*.json. The script exits non-zero and
-lists every unmatched number; the doc is then fixed, not the check.
+decimal followed by "bps". Each must occur in eval/results/*.md or equal (to its printed precision)
+a value in eval/results/*.json. Signs are checked: an explicitly signed figure ("−0.0093", "+0.0006")
+must match a result of the same sign; an unsigned figure in prose ("cut by 0.0093") may match either.
+Limits (stated, per review A17/S5): this is a lexical provenance check over all result files — it does
+not bind a figure to a specific policy/field, and it ignores integers, times and 1–2-decimal numbers
+unless followed by "bps". The script exits non-zero and lists every unmatched number.
 """
 from __future__ import annotations
 
@@ -23,7 +26,9 @@ NUM = re.compile(r"(?<![\w.])[+\-−]?\d+\.\d{3,}(?![\d])|(?<![\w.])[+\-−]?\d+
 
 
 def norm(x: str) -> str:
-    return x.replace("−", "-").lstrip("+")
+    """Canonical signed form: '-x' for negatives, 'x' for positives (an explicit '+' is dropped)."""
+    x = x.replace("−", "-")
+    return x[1:] if x.startswith("+") else x
 
 
 def json_values(obj, out: set) -> None:
@@ -45,8 +50,7 @@ def main() -> int:
         pool_md.update(norm(m.group(0)) for m in re.finditer(r"[+\-−]?\d+\.\d+", p.read_text()))
     for p in (ROOT / "eval" / "results").glob("*.json"):
         json_values(json.loads(p.read_text()), pool_json)
-    pool_md |= {x.lstrip("-") for x in pool_md}
-    pool_json |= {x.lstrip("-") for x in pool_json}
+    pool = pool_md | pool_json
     allow = set()
     allow_path = ROOT / "eval" / "check_numbers_allow.tsv"
     if allow_path.exists():
@@ -69,7 +73,9 @@ def main() -> int:
                 v = norm(m.group(0))
                 if re.fullmatch(r"\d{4}\.\d{4,5}", v) or v in CONSTANTS or (doc, m.group(0)) in allow:
                     continue  # arXiv IDs, math constants, numbers quoted from external sources
-                if v in pool_md or v in pool_json or v.lstrip("-") in pool_md or v.lstrip("-") in pool_json:
+                raw = m.group(0).replace("−", "-")
+                signed = raw[0] in "+-"
+                if (signed and v in pool) or (not signed and (v in pool or "-" + v in pool)):
                     continue
                 bad.append(f"{doc}:{ln_no}: {m.group(0)}  …{line.strip()[:90]}")
     print(f"checked {n} quoted numbers in {len(DOCS)} docs against eval/results/*")

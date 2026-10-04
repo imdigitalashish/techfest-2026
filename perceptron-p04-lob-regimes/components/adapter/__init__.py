@@ -163,6 +163,9 @@ def refit_context(prior: list[tuple[FeatureFrame, Labels]], base: Context, strid
 
 def run_episode(policy: str, frame: FeatureFrame, labels: Labels, ctx: Context,
                 spec: dict | None = None) -> EpisodeResult:
+    # The loop consumes y[t-H] at step t; valid only for fixed availability t+H (Labels contract).
+    if not np.array_equal(labels.avail_step, np.arange(frame.X.shape[0]) + labels.h_steps):
+        raise ValueError("run_episode supports only Labels with avail_step == t + h_steps")
     spec = spec or POLICIES[policy]
     cfg = ctx.cfg
     norm = spec.get("norm", "ewma")

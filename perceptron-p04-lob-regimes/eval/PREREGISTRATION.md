@@ -1,6 +1,6 @@
 # Pre-registration — v2 evaluation of the P4 spike
 
-- **Written:** 2026-10-04 ~12:00 IST, before any v2 result (dev or holdout) existed. The commit that adds this file is the pre-registration commit (its hash appears in `git log -- eval/PREREGISTRATION.md`).
+- **Written:** 2026-10-04, committed 11:43:47 IST (`d9ad7a9`), before any v2 result (dev or holdout) existed. *(The original line said "~12:00 IST"; corrected in Amendment 2 from the commit metadata.)* The commit that adds this file is the pre-registration commit (its hash appears in `git log -- eval/PREREGISTRATION.md`).
 - **Code at registration:** `components/` and `eval/run_v2.py`, `eval/config_v2.py`, `eval/tuning_v2.json` at the same commit.
 - **Amendments** are appended at the bottom, dated, and committed *before* the run they affect.
 
@@ -92,7 +92,7 @@ Walk-forward policies (`*_wf`) refit scalers and heads for each evaluated day on
 
 ## Amendments
 
-### Amendment 1 — 2026-10-04 ~12:10 IST (after the dev runs; the holdout had not been run or read)
+### Amendment 1 — committed 2026-10-04 11:58:28 IST (`a9b310b`), after the dev runs; the v2 holdout had not been run
 1. **Selection by the registered rule (§8).** Results in `eval/results/v2_dev.md`. H = 10 and B = 600 had the lowest dev pooled log-loss among the 6 variants (0.6562). They are written into `CFG_V2` and apply to every Fixed-Share + harm policy: `spike`, `spike_wf`, `spike_gbdt`, `fs_coin_harm`.
 2. **What dev showed** (dev only):
    - Plain volatility-regime gating reached 0.6489, −0.0125 vs static, better on 12/12 days.
@@ -115,3 +115,25 @@ Walk-forward policies (`*_wf`) refit scalers and heads for each evaluated day on
    Also reported: `regime_gated` against all references.
 5. **Holdout policy list** gains `spike_gate`, `spike_gate_wf` and `regime_gated_wf`. Thresholds τ for the top-decile rule come from the dev runs (`tau_alias` in `CFG_V2`). Policies without a dev counterpart (`spike_gbdt`) get no top-decile rule.
 6. **Nothing else changed.** H1 and H2 (the registered `spike`) remain the primary hypotheses.
+
+### Amendment 2 — 2026-10-04 ~13:10 IST (AFTER the holdout run; disclosures and exploratory analyses only)
+The holdout run finished at 12:02:51 IST (commit `a9b310b`, clean tree). The cross-model reviews (`reviews/2026-10-04-*`) found the following. Nothing below changes the registered analysis or its numbers.
+
+1. **Prior exposure (review A1/S1).** 2025-08-01, one of the 22 holdout days, had been evaluated and read in the overnight v1 run (`eval/results/baseline.md`, v1 holdout), before v2 was registered. Two other v1 holdout days, 2024-05-01 and 2024-11-01, are v2 dev days. So "the holdout had not been … read" in Amendment 1 holds for 21 of the 22 days, not all of them.
+
+   Exploratory sensitivity analysis (`eval/sensitivity_v2.py` → `eval/results/v2_holdout_sensitivity.md`):
+   - excluding 2025-08-01 changes no conclusion;
+   - the same holds under 99% CIs (Bonferroni over the five reported hypotheses), equal-day weighting, and leave-one-day-out.
+2. **Hypothesis family (A2).** The 97.5% Bonferroni level covers only H1 and H2. H1b, H2b and H3 were added after dev, so they are secondary. At 99% (five hypotheses), H1b and H2b still exclude 0, and H3 still shows a small worsening.
+3. **Post-hoc ablation (A9, exploratory).** `static_enorm` (one head, EWMA features) vs `regime_gated` (three heads, EWMA features) isolates the regime heads from the normalisation (`eval/results/v2_holdout_posthoc_ablation.md`): −0.0083 [−0.0118, −0.0059], better on 22/22 days. EWMA alone vs static: −0.0016, CI spans 0.
+4. **Code fixes after the holdout; the registered results were not re-run.**
+   - S2: `score()` now also reports `edge_bps_all_signals`. The existing `edge_bps` is non-tie, i.e. conditional on a move; the edge table was always all-signal.
+   - S3: `run_episode` rejects Labels whose availability differs from t + h.
+   - S4: exits after the day's last quote are excluded. This affects at most one signal per day in the edge table.
+   - S5: the number check is now sign-sensitive.
+5. **Wording corrections (A3–A8).**
+   - λ = 0.5 is *confidence shrinkage*, not abstention.
+   - The CUSUM is a heuristic without ARL calibration under dependent losses, and it monitors the *raw* gated model.
+   - KS thresholds are empirical marginal quantiles, not daily false-alarm control.
+   - The forecast target is P(up | non-zero 10-s move).
+

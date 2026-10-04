@@ -1,6 +1,10 @@
 # ADR 001 — Spike components: the calibrated, harm-aware shift monitor (C6) and the regime-adaptive head mixer (C7)
 
-- **Status:** accepted, **revised 2026-10-04 by the pre-registered v2 evaluation** (see *v2 outcome* below). The spike is now C6 (calibrated KS audit + harm gate) + C7 (volatility-regime gate). The Fixed-Share mixer is demoted to an ablation. Revisit after the 12 Oct selection and at the 1 Dec midway check.
+- **Status:** accepted, **revised 2026-10-04 by the pre-registered v2 evaluation and the cross-model reviews** (see *v2 outcome* below). The spike is now:
+  - C7, the volatility-regime gate (the source of the gain);
+  - C6, a KS covariate audit (no action) plus a delayed-loss CUSUM that triggers confidence shrinkage (no average gain; benefit unproven).
+
+  The Fixed-Share mixer is demoted to an ablation. Sections below *v2 outcome* are the original rationale and are **superseded** where they conflict. Revisit after the 12 Oct selection and at the 1 Dec midway check.
 - **Deciders:** project lead. Lean mode was in force overnight, so there was no independent adversarial sub-agent. The antithesis below was written by the lead against its own proposal, and an independent `rubber-duck` review is scheduled once the network allows (see *Follow-ups*).
 - **Evidence:** [`eval/results/baseline.md`](../../eval/results/baseline.md), [`eval/results/calibrated_ks.md`](../../eval/results/calibrated_ks.md), [`research/landscape.md`](../../research/landscape.md).
 
@@ -12,13 +16,15 @@ Protocol: [`eval/PREREGISTRATION.md`](../../eval/PREREGISTRATION.md), including 
 - **Post-dev `spike_gate`** (regime gate + harm-gated shrink toward 0.5 + calibrated KS as audit; Amendment 1):
   - vs static: −0.0093 [−0.0129, −0.0062], 22/22 (H1b supported);
   - vs KS→refit: −0.0361 [−0.0404, −0.0326], 22/22 (H2b supported);
-  - vs plain regime gating: +0.0006 [+0.0003, +0.0009], better on only 4/22 days. H3 is not supported: on average the harm gate costs a little, as Amendment 1 predicted from dev.
+  - vs plain regime gating: +0.0006 [+0.0003, +0.0009], better on only 4/22 days. H3 is not supported: this is a **measured average worsening**, and plain gating is the stronger average forecaster. λ = 0.5 is confidence shrinkage, not abstention; under sign trading it leaves the trade direction unchanged.
+- **Post-hoc ablation (review A9, exploratory; `eval/results/v2_holdout_posthoc_ablation.md`).** Regime heads vs a single head on the *same* EWMA features: −0.0083 [−0.0118, −0.0059], 22/22 days. EWMA normalisation alone gives −0.0016 (CI spans 0). So the gain really comes from the regime heads.
+- **Disclosure (review A1/S1).** One holdout day (2025-08-01) was seen in the v1 run. Excluding it changes no conclusion (`eval/results/v2_holdout_sensitivity.md`).
 - **The "GBDT ≈ regime heads" antithesis was tested.** Static GBDT reaches −0.0052 vs static, but plain regime gating beats it on 21/22 days (Δ GBDT − gate = +0.0047 [+0.0024, +0.0076]).
 - **Daily retraining is not the answer.** Walk-forward static gives −0.0009 [−0.0029, +0.0012]. The gain comes from *conditioning on the volatility regime*, not from refreshing a stale model.
 - **Detector rates.** The calibrated KS on the 5 level-comparable features raised 0.7 alarms/day on the holdout (16 over 22 days); the textbook KS raised 48/day. On the dev FOMC day (2024-05-01, 18:00 UTC statement), the calibrated KS fired at 18:09:32 and the harm gate at 18:17:43. No verified scheduled event falls on a holdout day, so holdout detection delay is unmeasured.
 - **Lessons.**
   1. Mixing many online experts dilutes a good conditional model.
-  2. A harm gate's value lives in rare windows, so its average effect is ≈0 by construction. Judge it on event windows, which needs more event days.
+  2. The shrinkage trigger worsened average loss slightly (+0.0006). Any value it has lies in rare harmful windows, and that is **unproven**: there is one dev event, none on holdout days, and no ARL calibration under dependent losses. It must be judged prospectively on event-rich data, against a stated average-loss budget.
   3. Calibrating the KS was necessary but not sufficient. Choosing *which* features to monitor (levels that drift month to month vs comparable ones) mattered more.
 
 ## Context
@@ -70,7 +76,7 @@ The question is which one or two components should carry the innovation.
 
 Order-flow imbalance moves prices with a slope ∝ 1/depth (Cont, Kukanov & Stoikov 2014). A liquidity shock therefore changes the *coefficient* (a concept shift), while a volatility burst changes feature *scales* (a covariate shift). The cheapest robust design removes the scale drift label-free (EWMA normaliser C4), conditions on the state variables the theory names (depth-normalised OFI in C2, volatility/depth regimes in C7), and keeps statistical alarms (C6) for what is left. An alarm is only worth acting on if it predicts higher loss.
 
-## Consequences
+## Consequences *(original, partly superseded by the v2 outcome: the Fixed-Share mixer and alarm-modulated switching are now ablations)*
 
 - C6 and C7 get `autoresearch/` ratchets (frozen `eval.py`, `results.tsv`). The first ledger is under `components/shift_detector/autoresearch/`.
 - C5 stays logistic for the Round-1 plan. GBDT/DeepLOB heads are best-practice additions, not the pitch.

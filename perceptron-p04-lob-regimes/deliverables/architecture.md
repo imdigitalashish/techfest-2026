@@ -7,14 +7,14 @@ flowchart TB
     CAL["Macro calendar<br/>(FOMC / CPI times, known in advance)"]
   end
 
-  subgraph HOT["Online loop — one step per 1 s tick · budget ≤ 50 µs p99 compiled (Python reference: 4.8 µs p50)"]
+  subgraph HOT["Online loop — one step per 1 s tick · target ≤ 50 µs p99 compiled (Python adapter step today: 4.8 µs p50 / 85.6 µs p99, features excluded — target unmet)"]
     F["C2 Causal features<br/>OFI L1 and L1–5 over 1/5/30 s ÷ depth · queue/depth imbalance<br/>micro-price · spread · realised volatility"]
     N["C4 EWMA normaliser<br/>(label-free scale adaptation)"]
     G["C7 Regime gate ⚡<br/>trailing 10-min volatility → 1 of 3 logistic heads<br/>(low / mid / high vol; fitted on training days)"]
-    H["C6a Harm gate ⚡<br/>CUSUM of delayed (log-loss − ln 2)<br/>alarm → shrink p toward 0.5 for 5 min"]
-    K["C6b Calibrated rolling KS ⚡ (audit)<br/>5 level-comparable features<br/>empirical leave-one-day-out null"]
+    H["C6a Shrinkage trigger ⚡<br/>CUSUM heuristic on raw gated model's delayed (log-loss − ln 2)<br/>alarm → p moved halfway to 0.5 for 5 min (confidence shrinkage, not abstention)"]
+    K["C6b Rolling KS — covariate audit only (no action)<br/>5 level-comparable features<br/>empirical leave-one-day-out thresholds (no false-alarm guarantee)"]
     Y["Delayed label y(t − 10 s)<br/>(observable only now)"]
-    P(["P(mid up in 10 s)"])
+    P(["P(mid up | mid moves within 10 s)"])
   end
 
   subgraph OFF["Offline — training days only, then frozen"]
@@ -40,13 +40,11 @@ flowchart TB
 ```
 
 **Reading the diagram.**
-- **Typed contracts.** Every arrow is a typed contract (`components/contracts.py`).
-- **Label delay.** The label for step *t* reaches the harm gate only at *t* + 10 s, when it would be observed live.
-- **The spike components (⚡):**
-  - the **regime gate** decides *which* model applies to the current state, conditioning on the variable the theory names (volatility);
-  - the **harm gate** decides *whether to trust it right now*: it abstains while the model is demonstrably worse than a coin flip;
-  - the **calibrated KS** is the label-free audit trail of covariate shift.
-- **What we rejected.** Refitting on tiny post-alarm windows (textbook KS→retrain) made held-out log-loss worse on 21 of 22 days. Mixing many online experts (Fixed-Share) did not beat a static model. Both remain in the code as baselines and ablations (`eval/results/v2_holdout.md`).
-- **Not drawn yet.** The calendar prior (dashed) is planned and not built yet.
+- Every arrow is a typed contract (`components/contracts.py`).
+- The label for step *t* reaches the CUSUM only at *t* + 10 s, when it would be observed live.
+- **The regime gate (⚡) is what improves forecasts.** It beats one head on the same EWMA features by −0.0083 on held-out log-loss, better on 22/22 days (post-hoc ablation).
+- **The CUSUM shrinkage trigger** makes forecasts less confident while the raw model is losing more than a coin flip. On average it costs +0.0006, and any benefit during events is unproven.
+- **The rolling KS** is a label-free audit trail. It never changes a forecast.
+- **What we rejected.** Refitting on post-alarm windows (KS→refit) made held-out loss worse on 21/22 days. A Fixed-Share mixture of online experts did not beat static. Both remain baselines and ablations (`eval/results/v2_holdout.md`). The dashed calendar prior is planned.
 
-**Replay of a FOMC day (dev split, 2024-05-01):** ![FOMC day](figures/day_2024-05-01.png)
+**Illustrative replay of a FOMC day (dev split, 2024-05-01; gate-only curve shown for attribution):** ![FOMC day](figures/day_2024-05-01.png)

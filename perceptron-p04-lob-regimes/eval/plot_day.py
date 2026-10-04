@@ -42,7 +42,7 @@ def rolling_mean(x: np.ndarray, w: int) -> np.ndarray:
 def main(day: str) -> None:
     ctx = build_context([load_day(d) for d in SPLIT_V2["train"]], CFG_V2)
     f, l = load_day(day)
-    res = {n: run_episode(n, f, l, ctx, POLICIES[n]) for n in ("static_snorm", "ks_refit", "spike_gate")}
+    res = {n: run_episode(n, f, l, ctx, POLICIES[n]) for n in ("static_snorm", "ks_refit", "regime_gated", "spike_gate")}
     hours = (f.grid_us - f.grid_us[0]) / 3.6e9 + (f.grid_us[0] % 86_400_000_000) / 3.6e9
     fig, ax = plt.subplots(4, 1, figsize=(12, 10), sharex=True, gridspec_kw={"height_ratios": [2, 1, 2, 2]})
     ax[0].plot(hours, f.mid, lw=0.6, color="k")
@@ -54,7 +54,7 @@ def main(day: str) -> None:
     for row, (name, color) in enumerate((("ks_refit", "tab:gray"), ("spike_gate", "tab:blue"))):
         for al in res[name].alarms:
             ax[1].plot(hours[al.step], row + (0.3 if al.detector == "harm_cusum" else 0), "|", color=color, ms=10)
-    ax[1].set_yticks([0, 1, 1.3], ["textbook KS (refits)", "calibrated KS (audit)", "harm gate (abstain)"])
+    ax[1].set_yticks([0, 1, 1.3], ["textbook KS (triggers refit)", "calibrated KS (audit only, no action)", "harm CUSUM (triggers shrink)"])
     ax[1].set_ylim(-0.5, 1.8)
     rv = f.col("rv_600s_bps")
     regime = np.searchsorted(ctx.regime_edges, rv, side="right")
@@ -64,14 +64,16 @@ def main(day: str) -> None:
     twin = ax[2].twinx()
     twin.plot(hours, rv, lw=0.5, color="tab:gray", alpha=0.6)
     twin.set_ylabel("rv 10 min (bps)", color="tab:gray")
-    for name, color in (("static_snorm", "tab:orange"), ("ks_refit", "tab:gray"), ("spike_gate", "tab:blue")):
+    for name, color in (("static_snorm", "tab:orange"), ("ks_refit", "tab:gray"), ("regime_gated", "tab:green"),
+                        ("spike_gate", "tab:blue")):
         ll = pointwise_logloss(res[name].p_up, l.y)
         ax[3].plot(hours, rolling_mean(ll, 1800), lw=0.9, color=color, label=name)
     ax[3].axhline(np.log(2), color="k", lw=0.8, ls=":", label="coin flip (ln 2)")
     ax[3].set_ylabel("30-min rolling log-loss")
     ax[3].set_xlabel("hour (UTC)")
     ax[3].legend(loc="upper left", fontsize=8)
-    fig.suptitle(f"{day}: static model vs textbook KS→refit vs regime heads + harm gate (trained on 2023 only)", fontsize=11)
+    fig.suptitle(f"{day} (dev day, illustrative): static vs textbook KS→refit vs regime gate vs regime gate + harm shrink "
+                 "(trained on 2023 only)", fontsize=10)
     fig.tight_layout()
     out = ROOT / "deliverables" / "figures" / f"day_{day}.png"
     out.parent.mkdir(parents=True, exist_ok=True)

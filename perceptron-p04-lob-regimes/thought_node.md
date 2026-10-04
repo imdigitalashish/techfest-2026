@@ -10,15 +10,29 @@
 - _(none)_
 
 ## Now
-- **Phase:** 6 — final deliverables + cross-model reviews (resumed 11:16 IST, slot freed by P7). The v2 pre-registered evaluation is done.
-- **Plan:** the spike is C7 (volatility-regime gate) + C6 (harm gate: CUSUM of delayed loss − ln 2 → shrink toward 0.5; calibrated KS as audit). See ADR 001 *v2 outcome*.
-- **Doing:** cross-model reviews as child sessions: `gpt-6-astra` (max) hostile judge on the abstract and spike; `gpt-6-sol` (max) reproducing the headline numbers. Then the ledger, fixes, and DONE to the Supervisor.
-- **Results:**
-  - Held-out (22 days, 2025-01…2026-10, trained on 2023): static 0.6518; KS→retrain 0.6786; regime gate 0.6419; spike_gate 0.6425.
-  - Edge: break-even fee 0.132 bps/side vs taker fees 1.7–5.0 bps, so not tradable as a taker. Details: [`eval/results/v2_holdout.md`](eval/results/v2_holdout.md).
-- **Next (after DONE):** more event days (Binance continuous bookTicker 2023-05…2024-03 includes CPI/FOMC days, ~150–370 MB/day); calendar prior; spread head; compiled online step; LOBSTER transfer.
-- **Needs from user:** register by 15 Oct if P4 is chosen; teammates' names and skills for the `[TEAM]` placeholders in `deliverables/round1-abstract.md`.
-- **Risks:** small effects; the harm gate is unproven on the holdout (no events on free days); one instrument; latency measured on a shared machine.
+- **Phase:** ✅ Definition of done met (2026-10-04 13:20 IST). Waiting for the 12 Oct selection.
+- **State:**
+  - Pre-registered v2 evaluation done and independently reproduced; reviews triaged (23 accepted, 3 of them in part, 0 rejected).
+  - Abstract v2.1 is final (830 words; `[TEAM]` placeholders).
+  - Memo re-scored to 3.4/5.
+- **Key numbers** (held-out, 22 days; Δ log-loss vs static; [`eval/results/v2_holdout.md`](eval/results/v2_holdout.md)):
+
+  | Policy | Δ vs static | Days better |
+  |---|---|---|
+  | Textbook KS→refit | +0.0268 | 1/22 |
+  | Regime gate | −0.0099 | 22/22 |
+  | Gate + shrinkage | −0.0093 | 22/22 |
+  | Registered Fixed-Share spike | −0.0010 (H1 not supported) | 10/22 |
+
+  Break-even fee is 0.132 bps/side against taker fees of 1.7–5.0 bps, so it is not tradable as a taker.
+- **Next (only if P4 is selected):**
+  1. Event-rich continuous data (Binance bookTicker 2023-05…2024-03, ~150–370 MB/day) with event-window metrics frozen before testing.
+  2. ARL calibration of the CUSUM on dependence-preserving nulls.
+  3. A spread or no-move head.
+  4. A compiled online step with end-to-end latency measured.
+  5. A known-change replay demo with the gate on and off.
+- **Needs from user:** if P4 is chosen, register by 15 Oct and fill the two `[TEAM]` placeholders (statistics/evaluation owner; data/demo owner) in `deliverables/round1-abstract.md`.
+- **Risks:** novelty judged incremental; shrinkage benefit unproven; one instrument on a calendar-restricted sample; latency target unmet (85.6 µs p99 Python step).
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -69,19 +83,30 @@ Full contracts: [architecture/components.md](architecture/components.md) · code
 
 ## Selection memo
 _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-**Final version — 2026-10-04 12:40 IST.** Evidence: pre-registered held-out run on 22 real days ([`eval/results/v2_holdout.md`](eval/results/v2_holdout.md)); protocol and amendment committed before the run ([`eval/PREREGISTRATION.md`](eval/PREREGISTRATION.md)). Supersedes the 07:18 v1 memo (4.2/5), which rested on 6 days.
+**Final version — 2026-10-04 13:20 IST, re-scored after the cross-model reviews** (`reviews/`). It supersedes the 12:40 version (3.8/5) and the 07:18 v1 memo (4.2/5).
+
+Evidence:
+- the pre-registered holdout, 22 real days ([`eval/results/v2_holdout.md`](eval/results/v2_holdout.md)), **reproduced exactly** by an independent `gpt-6-sol` session;
+- the post-hoc sensitivity and ablation ([`eval/results/v2_holdout_sensitivity.md`](eval/results/v2_holdout_sensitivity.md));
+- the hostile `gpt-6-astra` review, which scored the pre-fix abstract 2.65/5.
+
+Scores:
 - **Winnability: 3/5.**
-  - For: rigour and realism, which Optiver judges probe. Pre-registration; day-cluster CIs; receive-time clock; fees from Binance's official page. A measured, non-obvious failure of the textbook baseline: KS→retrain is +0.0268 [+0.0220, +0.0317] log-loss and worse on 21/22 held-out days.
-  - Against: the effect is small (best adapter −0.0099 vs static, ≈1.5% of log-loss), and the signal is not tradable after fees. Round 1 (plan-judged) looks strong; a top-3 finish at the finals is less likely.
-- **Innovation headroom: 3/5.**
-  - What survived: conditioning on the volatility regime (−0.0093 [−0.0129, −0.0062] with the harm gate, 22/22 days), which is a known idea. The registered Fixed-Share spike failed H1 (−0.0010, CI spans 0). The harm gate adds nothing on average (+0.0006); its value is event windows, and no scheduled event falls on a free holdout day.
-  - Room left: more event days (Binance's continuous bookTicker archive covers 2023-05…2024-03, including CPI/FOMC days), calendar-aware priors, a spread head.
-- **Feasibility: 5/5.** Built and evaluated. The whole pipeline runs on the M5 laptop (22 held-out days in ~4 min); data is free and MD5-pinned. The MVP is already met. The stretch work (compiled step, live replay) fits before 17 Nov.
-- **Demo strength: 4/5.** An FOMC replay (`deliverables/figures/day_2024-05-01.png`): the textbook KS fires every 30 min all day; the calibrated KS fires 9.5 min after the 18:00 UTC statement; the harm gate fires at 18:17; regime-head switching; rolling loss against a coin flip. Plus an "is it tradable?" table with official fees. Weakness: modest effect sizes; a live demo would need a live event.
-- **Fit with user's strengths: 4/5.** Streaming systems, typed contracts, latency budgets, rigorous evaluation. Little frontier-model work.
-- **Biggest risk:** judges see "regime-switching logistic heads" as incremental, while the parts that are genuinely new (harm gate, calibrated monitor) lack held-out evidence of benefit, for lack of event days in the free data.
-- **One-line pitch:** "On 22 held-out days, the textbook 'KS → retrain' made a BTC order-book forecaster worse on 21; volatility-conditioned heads with a calibrated, harm-aware monitor made it better on all 22. Official fees show why the signal belongs in quoting, not taking."
-- **Overall: 3.8/5** (mean of the five scores).
+  - For: the strongest Round-1 criteria for us are soundness (25%) and evaluation rigour (15%). We have pre-registration, an exact independent reproduction, a receive-time clock, official fees, and a non-obvious measured failure of the textbook baseline: KS→refit is worse on 21/22 held-out days.
+  - Against: innovation (20%) is weak (astra 2/5), and the team section (10%) is unfilled.
+  - My estimate for the revised abstract is ~3.3/5 (UNVERIFIED; there was no second review). A top-3 finish at the finals is unlikely with effects this small.
+- **Innovation headroom: 2/5.**
+  - The gain comes from conditioning on volatility regime. That is known, though confirmed here: −0.0083 vs one EWMA head, 22/22 days.
+  - The genuinely new parts (CUSUM confidence shrinkage, KS audit) show no held-out benefit; shrinkage costs +0.0006.
+  - The remaining headroom depends on event-rich data that has not been tested yet: Binance's continuous bookTicker archive, 2023-05…2024-03.
+- **Feasibility: 5/5.** Built, tested (9 contract/leakage tests), evaluated and reproduced. Runs on the laptop; free, MD5-pinned data.
+- **Demo strength: 3/5.** The FOMC replay shows the textbook KS firing every 30 min against a quiet audit and a CUSUM trigger, with a gate-only counterfactual. But the visible effect is small, and an honest demo cannot promise protection during events.
+- **Fit with user's strengths: 4/5.** Streaming systems, contracts, latency, rigorous evaluation.
+- **Biggest risk:** judges see "volatility-regime logistic heads" as incremental, and the spike's distinctive parts are unproven.
+- **One-line pitch:** "On 22 held-out days, the textbook 'KS → retrain' made a BTC order-book forecaster worse on 21; conditioning on the volatility regime made it better on all 22. The result is pre-registered, independently reproduced, and priced with real exchange fees."
+- **Overall: 3.4/5** (mean of the five scores).
+
+**Lead's recommendation to the Supervisor:** P4 is an honest, rigorous and reproducible submission, but its novelty is its weak spot. Prefer P7 (or P9/P1) if that project's innovation evidence is stronger. Pick P4 if the panel weights rigour and realism above novelty.
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -164,3 +189,22 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Cross-model reviews spawned** (PLAYBOOK §10, 2 child sessions):
   - `gpt-6-astra` (max): hostile judge and methodology on the abstract, spike and pre-registration → `reviews/2026-10-04-abstract-and-spike-gpt-6-astra.md`.
   - `gpt-6-sol` (max): reproduction of the holdout numbers and code review → `reviews/2026-10-04-repro-and-code-gpt-6-sol.md`. It uses a symlink to this worktree's `.data`, so there is no re-download.
+
+### 2026-10-04 12:50–13:20 IST — Cross-model reviews, triage, fixes
+- **`gpt-6-sol` (max), reproduction:** exact match on all 17 policy summaries and 374/374 per-day records; tests and the number check pass. Five issues; all accepted:
+  - S1: 2025-08-01 was in the v1 holdout;
+  - S2: `score().edge_bps` excludes ties;
+  - S3: `avail_step` is not enforced;
+  - S4: stale midnight exit quote;
+  - S5: the number check is sign-blind.
+- **`gpt-6-astra` (max), hostile judge:** 2.65/5 before fixes. 18 issues, with blockers A1 (holdout exposure), A2 (post-dev headline) and A16 (team). All accepted (A8, A13 and A16 in part).
+- **Fixes:**
+  - Abstract v2.1: registered failure shown first; shrinkage ≠ abstention; conditional target; honest latency; convenience sample; novelty reframed; no quoting-value claim.
+  - Amendment 2 (post-holdout disclosures); ADR and landscape superseded markers; architecture wording; Q&A Q11.
+  - Code: S2–S5 (9 tests pass).
+- **New committed analyses** (exploratory, post-hoc):
+  - `eval/results/v2_holdout_sensitivity.md`: 21 clean days, 99% CIs, equal-day means, leave-one-day-out. No conclusion changes.
+  - `eval/results/v2_holdout_posthoc_ablation.md`: regime heads vs one EWMA head −0.0083 [−0.0118, −0.0059], 22/22 days, so the gain is the regime heads, not the normaliser.
+  - `eval/results/feed_delay.md`: median 2.9 ms over 46 days.
+- **Ledger:** `reviews/ledger.tsv` has 2 lines. Memo re-scored to 3.4/5.
+

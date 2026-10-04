@@ -180,3 +180,21 @@ def test_harm_cusum_fires_only_when_worse_than_coin_flip():
     assert sum(a is not None for a in good) <= 1
     bad = [a for t, x in enumerate(rng.normal(LN2 + 0.05, 0.3, 3000), start=20000) if (a := h.update(t, x))]
     assert bad and bad[0].step < 20000 + 1000
+
+
+def test_edge_fields_and_contract_guard():
+    from components.contracts import FeatureFrame, Labels
+    y = np.array([1.0, np.nan, 0.0, np.nan] * 25)
+    mv = np.array([2.0, 0.0, -2.0, 0.0] * 25)
+    p = np.array([0.7, 0.6, 0.3, 0.4] * 25)
+    s = score(p, y, mv)
+    assert abs(s["edge_bps"] - 2.0) < 1e-12                # non-tie (conditional) edge
+    assert abs(s["edge_bps_all_signals"] - 1.0) < 1e-12    # ties count as zero moves
+    import pytest
+    from components.adapter import POLICIES, run_episode
+    T = 50
+    f = FeatureFrame("BTCUSDT", "x", 1_000_000, DAY0 + np.arange(T, dtype=np.int64) * 1_000_000, ("a",),
+                     np.zeros((T, 1)), np.full(T, 100.0), np.ones(T))
+    bad = Labels(10, np.zeros(T), np.arange(T) + 3, np.zeros(T))
+    with pytest.raises(ValueError):
+        run_episode("static_snorm", f, bad, None, POLICIES["static_snorm"])

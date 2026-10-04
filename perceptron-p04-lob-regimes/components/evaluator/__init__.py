@@ -36,8 +36,15 @@ def score(p: np.ndarray, y: np.ndarray, move_bps: np.ndarray | None = None, mask
         "base_rate": float(yy.mean()),
     }
     if move_bps is not None:
-        s = np.sign(pp - 0.5)
-        out["edge_bps"] = float((s * move_bps[m]).mean())
+        # edge_bps (kept for v1 comparability): mean signed move over NON-TIE steps only, i.e. conditional
+        # on the mid moving; it overstates per-signal edge. edge_bps_all_signals counts every step with a
+        # defined horizon, ties as zero moves, and no trade when p == 0.5 (same convention as trading_edge).
+        sg = np.sign(pp - 0.5)
+        out["edge_bps"] = float((sg * move_bps[m]).mean())
+        ma = ~np.isnan(move_bps) & (np.sign(p - 0.5) != 0)
+        if mask is not None:
+            ma &= mask
+        out["edge_bps_all_signals"] = float((np.sign(p[ma] - 0.5) * move_bps[ma]).mean()) if ma.any() else float("nan")
     return out
 
 
@@ -118,6 +125,7 @@ def exec_arrays(recv_us: np.ndarray, bid0: np.ndarray, ask0: np.ndarray, grid_us
     i_in = np.searchsorted(recv_us, grid_us + dt, side="right") - 1
     i_out = np.searchsorted(recv_us, grid_us + h_steps * step_us + dt, side="right") - 1
     out_ok = (np.arange(T) + h_steps < T)  # exit must fall inside the same day's grid
+    out_ok &= (grid_us + h_steps * step_us + dt) <= recv_us[-1]  # ... and before the day's last quote (no stale fill)
     nan = np.full(T, np.nan)
     bo, ao = nan.copy(), nan.copy()
     bo[out_ok], ao[out_ok] = bid0[i_out[out_ok]], ask0[i_out[out_ok]]
