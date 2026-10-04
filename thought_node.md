@@ -6,21 +6,27 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (15:12 IST, 4 Oct)
+## Now (15:24 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - Namma Space: E2E from raw photos succeeded (PSNR 29.56 dB, SSIM 0.929, 45.8 min); viewer walking p95 22.4 ms, cold load 7.45 s at 40 Mbit/s. Asked to launch its two R1 reviews now; the CC BY-SA demo must not gate DONE.
-  - India@71 T3: the code review found the v0.2 challenger didn't match its registration, so a corrected test, C6 v0.3, was registered 14:57:58 on fresh seeds 20–29 and is running (v0.2 stands as reported, with the caveat).
-  - P6: 12-day pre-registered walk-forward passed; Amendment 1 sensitivity code committed before its runs; exploratory LEV-vs-GBM ablations.
-  - P2: PyTorch CPU twin on its Azure VM; asked to use reference baseline code (e.g. kvpress) and analytic plus measured KV memory.
-  - P8: LLM-gap study (pre-registration first), on Azure OpenAI pay-per-token.
-- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1.
-- **Queue:** APCTT (when the 10 Oct data lands) → India@71 T2 → InnovateX T2 → InnovateX T3.
+  - India@71 T3: corrected test C6 v0.3 passed (+0.086 [0.057, 0.115], SYNTHETIC; registered first); proposal v1.1; re-reviews in. Its memo scores T3 3.9 and recommends T1.
+  - P6: 12-day pre-registered walk-forward passed; Amendment 1 sensitivity runs; exploratory LEV ablations.
+  - P2: pre-registered 15:14:58 (frozen best-of-322 config); confirmatory runs on its Azure VM; Amendment 1 (synonym-alias T3) 15:18:09, before any test result.
+  - P8: LLM-gap study on Azure OpenAI.
+  - India@71 T2: resumed 15:23 into Namma's slot.
+- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space.
+- **Queue:** APCTT (when the 10 Oct data lands) → InnovateX T2 → InnovateX T3.
+- **GPU:** free.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
 - [ ] **By 15 Oct:** register Perceptron (one problem), EV (one track), Namma Space, India@71 (one theme) — after the 12 Oct selection memos.
 - [ ] **Teammates:** names and skills for every "team fit" section (Perceptron ≤3 · APCTT 1–3 · EV 2–5 · Namma Space ≤4 · India@71 ≤4 · InnovateX ≤4).
+- [ ] **Namma Space (✅ Completed — please review `namma-space/`):** the full automatic pipeline works from raw photos.
+  - Held-out PSNR 29.56 dB / SSIM 0.929; trajectory error 0.07% of the scene; 45.8 min on this Mac.
+  - Viewer: walking p95 22.4 ms at 60 fps; cold load 7.45 s at 40 Mbit/s; 6 POIs with search and routes.
+  - **Needs from you:** your own capture (home, or a hostel room or lab) with the tape-measure checks; the demo video; the Drive master doc and PDF; approval to host your twin publicly.
+  - Close the viewer side panel when you're done; it renders on the GPU, and Namma's `http.server 8080` feeds it.
 - [ ] **Namma Space capture (ready now):** follow [namma-space/deliverables/capture-sop.md](namma-space/deliverables/capture-sop.md) (~15–20 min for a 2–3 room home): 4K30 video, HDR off, AE/AF lock; print the ArUco marker at 100% scale or measure the camera height; say room/object names aloud while filming; fill `capture.json`; transfer originals by AirDrop/cable (not WhatsApp); note phone model and LiDAR yes/no.
   - **Required for Round 1:** the brief says to map *your own* home or a similarly accessible indoor space, so a public dataset can't be the judges' link.
   - If your home capture fails the quality check, capture another space you can access (hostel room, lab or common room, with permission). It takes ~20 min, any day before 31 Oct.
@@ -94,6 +100,12 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 15:24 IST — Namma Space completed
+- **Namma DONE (7be832f), verified on main:** no ⟨⟩ slots; E2E, viewer and degenerate-posing evidence files present.
+  - 5 review rows ledgered (astra ADR and R1, sol code, plus sol and astra delta checks).
+  - Tests via its venv: marker_scale 2/2, and the nav_eval_v3 contract test OK. Its venv has no pytest, and system Python lacks pycolmap.
+- India@71 T2 resumed into the slot.
+
 ### 2026-10-04 15:12 IST — Sweep
 - `watch.py` now skips STALLED for a lead with a live compute job (Python/Brush/COLMAP) running from its project folder; http servers are excluded. This stops false alarms while a lead waits on its own run.
 - India@71 T3 v0.3 corrected test registered 14:57 (commit 14:57:58), before its run.
