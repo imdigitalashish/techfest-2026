@@ -59,3 +59,22 @@ def test_ia_limit_never_beyond_max_levels():
                           [(99990, 50), (99980, 500)], [(100000, 80)], [])
     orders = pol.decide(ctx)
     assert all(o.kind == "LMT" and o.price == 99990 for o in orders)
+
+
+def _excess_at_steady_state(ref_mode):
+    dt_ns = 30_000_000_000
+    n = 40
+    pol = ImpactAwarePolicy(n, 30.0, 0.005, 0.0059, 60.0, ref_mode=ref_mode)
+    rate = 4000 / n
+    k = 30
+    fills = [(i * dt_ns, 99990, int(rate)) for i in range(k)]
+    ctx = DecisionContext(k * dt_ns, k, n, [i * dt_ns for i in range(n)], 4000, int(rate) * k, "SELL",
+                          [(99990, 100)], [(100000, 100)], fills)
+    decay = np.exp(-30.0 / 60.0)
+    ref = rate * 0.0059 / (1 - decay) * (decay if ref_mode == "pre_trade" else 1.0)
+    return (pol.own_impact(ctx) - ref) / ref
+
+
+def test_feedback_reference_modes():
+    assert abs(_excess_at_steady_state("pre_trade")) < 0.01
+    assert abs(_excess_at_steady_state("post_trade") - (np.exp(-0.5) - 1)) < 0.01  # documented legacy bias

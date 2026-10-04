@@ -13,7 +13,7 @@
 - **Phase:** Morning package delivered (07:45 IST). Phases 1–4 v0 done; Phase 5 (ratchet) is next. Still in Supervisor LEAN MODE.
 - **Plan:** Make the spike real: (1) RNG-synchronised twins (C2) with NSR measured before/after; (2) a ghost-book estimator (C4) scored by RMSE vs the twin; (3) the agent ratchet on val seeds; (4) n = 200 test seeds for the abstract.
 - **Doing:** E6 confirmation (pre-registered H1, 200 fresh test seeds 1060–1259, synced twins, nice 10). Lead alone. From 08:30: up to 2 sub-agents; heavy jobs one at a time under `nice -n 10`.
-- **Next:** (1) E6 → confirm or refute H1. (2) Realism scorecard: a size sweep for the square-root exponent and decay, naive vs synced. (3) The autoresearch ratchet on val seeds with sync (`components/execution_agent/autoresearch/eval.py --rng-sync per_wakeup`). (3) Size sweep (square-root check). (4) Re-verify the UNVERIFIED company sources (LOXM, Aiden, BestEx, Proof, SEC 605) and the classics (Almgren–Chriss, Obizhaeva–Wang, Perold). (5) Independent rubber-duck pass on ADR 001 once sub-agents work again.
+- **Next:** (1) E6 → confirm or refute H1. (2) E8 ablation on val seeds 100–199 (synced): TWAP / QP_only / IA_sched_only (legacy feedback) / IA_sched_fixed / TWAP_legacy_fb, to attribute the gain (`eval/policies/e8_ablation.json`). (3) Realism scorecard: a size sweep for the square-root exponent and decay (`eval/realism.py`). (3) The autoresearch ratchet on val seeds with sync (`components/execution_agent/autoresearch/eval.py --rng-sync per_wakeup`). (3) Size sweep (square-root check). (4) Re-verify the UNVERIFIED company sources (LOXM, Aiden, BestEx, Proof, SEC 605) and the classics (Almgren–Chriss, Obizhaeva–Wang, Perold). (5) Independent rubber-duck pass on ADR 001 once sub-agents work again.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills (the abstract has placeholders).
 - **Risks:** (1) **Twin decorrelation:** naive same-seed twins diverge (Δmid std 33¢ at 20 min vs 3–5¢ mean impact). Impact claims are noise-limited until C2 is fixed. (2) The agent's win so far comes mostly from the touch-limit tactic, not from impact-aware scheduling. Report it honestly; the ratchet must show schedule/feedback value. (3) Machine load (load avg 40–98 tonight) makes sims ~10× slower than idle. (4) ABIDES realism of impact is untested (square-root exponent unknown).
 
@@ -75,7 +75,7 @@ _v1, 4 Oct 07:45 IST (final by 12 Oct). Each item scored 1–5 with one line of 
 - **Feasibility by the deadline: 5/5.** ABIDES runs on the M5 (0.9 s/day idle) with no GPU. Skeleton, twins, TCA, calibration and 3 policies were built overnight. Week-by-week plan avoids 19–25 Nov.
 - **Demo strength: 4/5.** Side-by-side real book vs ghost book, live IS decomposition bars, "who absorbed our order" chart. Sim-only (no live market), but the judges asked for a simulator.
 - **Fit with the user's strengths: 4/5.** Large-scale simulation (10⁴–10⁵ paired runs), systems engineering, a rigorous eval harness. Frontier models are optional (PPO challenger; MarS on Azure).
-- **Biggest risk:** the effect is small (0.05 bps ≈ 10% of TWAP's 0.52-bps shortfall in this sim) and not yet confirmed on fresh seeds (E6 pending). The ABIDES impact realism (square-root exponent) is still untested, so a judge could ask "is the impact physics even right?". Mitigation: the realism scorecard and a size sweep next.
+- **Biggest risk:** the effect is small (0.05 bps ≈ 10% of TWAP's 0.52-bps shortfall in this sim) and not yet confirmed on fresh seeds (E6 pending). Its mechanism is unattributed: code review found that the feedback term acts as a constant ~1.2× speed-up, not a brake (E8 will separate the effects). The ABIDES impact realism (square-root exponent) is still untested, so a judge could ask "is the impact physics even right?". Mitigation: the realism scorecard and a size sweep next.
 - **One-line pitch:** *"We run twin markets, one with our order and one without, synchronised so their only difference is our footprint; then we train an execution agent to shrink it. First result: −16% own impact vs TWAP on held-out seeds (confirmation pending)."*
 
 ## Log
@@ -157,3 +157,22 @@ No sub-agents until 08:30; small requests; push at least every 30 min. Proceedin
 - Reading: the impact-aware *schedule* (propagator QP + own-impact feedback) is what reduces own impact. The touch-limit tactic saves spread but resting orders delay fills (worse timing) and don't reduce own impact. **Caveat:** 4 comparisons; with Bonferroni (α = 0.0125) nothing is significant, and IA_sched_only was singled out after seeing E5.
 - **Pre-registered H1** (written before E6 results): on fresh test seeds 1060–1259 (n = 200) with synced twins, IA_sched_only has mean paired ΔIS vs TWAP < 0 (one-sided α = 0.05, bootstrap). Secondary: own_impact Δ < 0. Policies are frozen as in `eval/policies/confirm.json`. Command: `.venv/bin/python eval/run_experiment.py --exp E6_confirm_sync --seeds 1060:1260 --qty 4000 --policies eval/policies/confirm.json --workers 9 --rng-sync per_wakeup` (reniced to 10).
 - Supervisor 08:22 (Inbox via message): package and correction accepted; lean mode lifts at 08:30 with limits (≤ 2 sub-agents; heavy jobs one at a time under nice 10). E5 reported in the memo and abstract as asked.
+
+### 2026-10-04 09:25 IST — Code review (sub-agent) and source verification (sub-agent)
+- **Code review: one real bug.** In `ImpactAwarePolicy`, the feedback compared pre-trade own impact with the *post*-trade steady state. At average-rate trading, excess = e^{−dt/τ} − 1 ≈ −0.39, so the "slow down while displaced" rule almost never braked (0.02–0.04% of 4,560 decisions in E3/E5). In practice it was a ~1.2–1.3× systematic speed-up.
+  - Consequence: E3/E5 numbers are valid measurements *of the code as written*, but the "impact-aware feedback" explanation was wrong. IA_sched_only = propagator-QP schedule + systematic front-loading. E6 (pre-registered) tests the same frozen policy, so it stays a valid test of that policy, but not of the feedback idea.
+  - Fix: `ref_mode="pre_trade"` (steady-state excess = 0, unit-tested). The legacy `post_trade` stays the default so the E3–E6 configs reproduce exactly. E8 (val seeds) will separate the QP schedule, the legacy speed-up and the corrected feedback.
+- **Checked correct by the review:**
+  - Twins diverge only after our first order (global RNG use, deterministic latency, message/order-id ties).
+  - `_synchronise_rng` closures and wrapper binding; no seed collisions in 1000–1259.
+  - Fill attribution: no overfill, cancel processed before the query.
+  - TCA identity to 1.2e-5 bps; sign conventions; paired bootstrap; train/test seed disjointness; no leakage.
+- **Source verification:** all items are recorded in `research/raw/source-verification-2026-10-04.md`.
+  - Almgren–Chriss (*J. Risk* 3(2)) and Obizhaeva–Wang (*JFM* 16(1)): verified at primary.
+  - Gatheral 2010 and Gatheral–Schied–Slynko 2012: verified via Crossref (no arXiv versions).
+  - Perold 1988 (*JPM* 14(3), 4–9): bibliographic record only.
+  - BestEx "Pulse" futures impact model (Sep 2025) and Proof "Rejecting the Black Box" (Oct 2021): verified.
+  - LOXM: press only (MIT Tech Review, 2017).
+  - SEC Rule 605: adopted 6 Mar 2024; compliance extended to 1 Aug 2026.
+  - `landscape.md` is updated accordingly.
+- `inst_cost` = 0.005 ¢/share² (frozen) is checked by `eval/derive_inst_cost.py`: derived 0.00486 from E1.

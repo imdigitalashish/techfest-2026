@@ -133,12 +133,19 @@ class ImpactAwarePolicy(Policy):
     3. Tactic: marketable limit order that takes at most `max_levels` price levels
        of the opposite book; the unfilled rest posts at that price until the next slot.
     The final slot sweeps the remainder with a market order (forced completion).
+
+    ref_mode: "post_trade" (legacy, used in E3-E6) compares the pre-trade own impact with the
+    *post*-trade steady state, so at average-rate trading excess = exp(-dt/tau) - 1 (about -0.39 at
+    dt = 30 s, tau = 60 s): the rule acts as a ~1.2x speed-up, not a brake (code review, 4 Oct).
+    "pre_trade" compares like with like (steady-state excess = 0).
     """
     name = "IA"
 
     def __init__(self, n_slots: int, dt_s: float, inst_cost: float, g_tr: float, tau_s: float,
                  beta: float = 0.5, max_levels: int = 1, use_qp: bool = True, use_feedback: bool = True,
-                 use_limit: bool = True, catchup_tol: float = 0.15):
+                 use_limit: bool = True, catchup_tol: float = 0.15, ref_mode: str = "post_trade"):
+        assert ref_mode in ("post_trade", "pre_trade")
+        self.ref_mode = ref_mode
         self.p = dict(inst_cost=inst_cost, g_tr=g_tr, tau_s=tau_s, beta=beta, max_levels=max_levels,
                       use_qp=use_qp, use_feedback=use_feedback, use_limit=use_limit, catchup_tol=catchup_tol)
         w = propagator_qp_schedule(n_slots, dt_s, inst_cost, g_tr, tau_s) if use_qp else np.full(n_slots, 1.0 / n_slots)
@@ -161,7 +168,10 @@ class ImpactAwarePolicy(Policy):
             # Reference: steady-state own impact when trading at the average rate.
             rate = ctx.quantity / ctx.n_slots
             dt = (ctx.slot_times_ns[1] - ctx.slot_times_ns[0]) / 1e9
-            ref = rate * self.g_tr / max(1e-9, 1 - np.exp(-dt / self.tau_s))
+            decay = np.exp(-dt / self.tau_s)
+            ref = rate * self.g_tr / max(1e-9, 1 - decay)
+            if self.ref_mode == "pre_trade":
+                ref *= decay
             excess = (self.own_impact(ctx) - ref) / max(ref, 1e-9)
             behind = (target - ctx.filled) / ctx.quantity
             mult = 1.0 - self.beta * float(np.clip(excess, -1.0, 1.0))
