@@ -1,3 +1,5 @@
+> **Status:** partial, unverified research-agent output (4 Oct 2026, died mid-run). Not cited; verified counts are in [fact-check.md](fact-check.md).
+
 # Social signal, news and prior work for EV Infra Map India (2025–2026)
 
 Accessed: 2026-10-04
