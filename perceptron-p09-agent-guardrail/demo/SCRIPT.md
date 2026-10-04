@@ -73,7 +73,7 @@ The agent is scripted so that the guard, not the agent, is what we test. The gua
 - A ticket that never spells out the value isn't tainted. Screen 2 shows this case: it is still *held* by payment provenance, but in other fields it could pass.
 - It is a deterministic floor, not a complete defence. The model tier and value-bound quote checks are designed for the residue.
 
-Before the fix, the lead's probe found a real bypass: a ticket that named another order got the cancellation ALLOWED. That is why the rule exists.
+Before the fix, the lead's probe found a real bypass: a ticket that named another order got the cancellation ALLOWED. That is why the rule exists. Our own adversarial review then found a second one, `W5481803` written without the `#`. It is fixed, and both are now regression tests.
 
 **Q3. "Your 'harmful' labels come from τ-bench ground truth. Aren't many of them just the simulated user's hidden preferences?"**
 Yes. Labels are DB-effect equivalence, not adjudicated harm. Our audit of 20 misses found 8 where the simulated user explicitly requested the call. No conversation-only checker can catch those.
