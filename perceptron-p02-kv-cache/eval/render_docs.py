@@ -148,6 +148,13 @@ def get(tab, m, f):
     return next((t for t in tab or [] if t["m"] == m and abs(t["f"] - f) < 1e-9), None)
 
 
+def trunc_stats(rows, m, f):
+    """Wrong answers of method m at keep f: how many contain no 7-digit number and look cut off (>= 30 chars)."""
+    rs = [r for r in rows if r["method"] == m and abs(r["frac"] - f) < 1e-9 and not r["correct"]]
+    nonum = [r for r in rs if not re.search(r"\d{7}", r["answer"].replace(",", ""))]
+    return {"wrong": len(rs), "no_number": len(nonum), "cut": sum(len(r["answer"]) >= 30 for r in nonum)}
+
+
 def mech(rows, m):
     vals = defaultdict(set)
     for r in rows:
@@ -246,6 +253,16 @@ def verdicts(V):
         x = V["R1"]
         out.append(f"- **R1** (replication on T2: RoD − full at keep 0.10, margin −0.15): {fmt_d(x)} → "
                    + ("**replicated** (lower bound > −0.15)" if x["lo"] > -0.15 else "**not replicated**"))
+    if V.get("T2"):
+        tr, trr = trunc_stats(load("T2")["rows"], "full", 1.0), trunc_stats(load("T2")["rows"], "rod", 0.1)
+        out.append(f"- **R1 caveat (amendment 5):** of the full cache's {tr['wrong']} wrong T2 answers, {tr['no_number']} contain no 7-digit number "
+                   f"({tr['cut']} cut off by the 10-token limit); RoD at 0.10: {trr['no_number']} of {trr['wrong']} ({trr['cut']} cut off). "
+                   "'RoD exceeds full on T2' is confounded by answer truncation.")
+    e6 = RES / "e6_maxnew32_T2.json"
+    if e6.exists():
+        S = json.loads(e6.read_text())["summary"]
+        out.append("- **E6 (exploratory, T2, max_new=32; lenient / strict first-number):** "
+                   + "; ".join(f"{k} {v['lenient']:.3f} / {v['strict']:.3f}" for k, v in S.items()))
     for k, mm in (V.get("R2") or {}).items():
         out.append(f"- **R2 mechanism {k}** (RoD): " + "; ".join(
             f"keep {f}: block hit {d['hit_rate']:.2f}, accuracy given hit {d['acc_given_hit']:.2f}, "
@@ -293,9 +310,15 @@ def headline(V):
          f"{pc(rod10)} (baselines ≤{max(base10):.0%})")
     r1, t2 = V.get("R1"), V.get("T2")
     if r1 is not None and t2:
-        s += (f"; on fresh contexts with paraphrased templates it recalls {pc(get(t2, 'rod', 0.1))} vs the full cache's "
-              f"{pc(get(t2, 'full', 1.0))} ({r1['d']:+.2f}, 95% CI {r1['lo']:+.2f} to {r1['hi']:+.2f}), consistent with fewer recalled "
-              f"blocks also hiding look-alike records")
+        tr = trunc_stats(load("T2")["rows"], "full", 1.0)
+        s += (f"; on fresh paraphrased contexts it recalls {pc(get(t2, 'rod', 0.1))} vs the full cache's {pc(get(t2, 'full', 1.0))} "
+              f"({r1['d']:+.2f}, 95% CI {r1['lo']:+.2f} to {r1['hi']:+.2f}), but {tr['cut']} of the full cache's {tr['wrong']} misses are "
+              f"answers cut off by our 10-token limit")
+        e6 = RES / "e6_maxnew32_T2.json"
+        if e6.exists():
+            S = json.loads(e6.read_text())["summary"]
+            s += (f" (with 32 tokens and first-number scoring: full {S['full@1.0']['strict']:.0%}, RoD {S['rod@0.1']['strict']:.0%}; "
+                  f"exploratory)")
     return s + "."
 
 
@@ -334,7 +357,7 @@ def memo_scores(V):
     rows = [
         ("Winnability", win, f"Pre-registered primary {'passed' if p['lo'] > 0 else 'failed'}: RoD − StreamingLLM {p['d']:+.2f} (95% CI {p['lo']:+.2f} to {p['hi']:+.2f}) at 25% memory, "
          f"and RoD beats all nine tested query-agnostic baselines there, including NVIDIA kvpress's reference presses. Non-inferiority vs the full cache at 25% was not shown. "
-         + ("The 10% observation replicated on fresh contexts (R1)." if rep else ("The 10% observation did not replicate (R1)." if r1 is not None else "R1 replication pending."))),
+         + ("The 10% observation replicated on fresh contexts (R1), though T2's full-cache ceiling is depressed by a 10-token answer limit (amendment 5)." if rep else ("The 10% observation did not replicate (R1)." if r1 is not None else "R1 replication pending."))),
         ("Innovation headroom", inn, "A narrow but real combination: token-backed selective recomputation guided by a single-layer 4-bit key index with a contrastive scorer. Its constituents are prior art "
          f"(hostile judge: 3/5). At 10% memory the sketch beats a lexical index over the same ids by {lex10['d']:+.2f} (95% CI {lex10['lo']:+.2f} to {lex10['hi']:+.2f}). "
          "Headroom: precision-first recall, a streamed scorer, per-channel sketches, multi-turn."),

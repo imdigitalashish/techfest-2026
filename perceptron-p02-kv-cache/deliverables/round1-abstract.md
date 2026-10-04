@@ -46,7 +46,7 @@ Query-scored key indices (Quest, ArkVale) and token recomputation (CacheBlend, H
 - **Unit of analysis:** 12 held-out contexts, with context-clustered bootstrap CIs. Scorer tuning used only development seeds (an exploratory best of 322 variants).
 - **Metrics:** recall, retained bytes, needle-block hit rate, latency.
 - **Preliminary results:** <!-- p2:headline:begin -->
-On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. At 25% of the KV memory, ten query-agnostic baselines recall 0%–35% and RoD 58%: +0.40 over StreamingLLM (95% CI +0.25 to +0.54; pre-registered), yet 0.25 below the full cache. At 10% memory RoD recalls 85% (baselines ≤6%); on fresh contexts with paraphrased templates it recalls 69% vs the full cache's 46% (+0.23, 95% CI +0.10 to +0.38), consistent with fewer recalled blocks also hiding look-alike records.
+On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. At 25% of the KV memory, ten query-agnostic baselines recall 0%–35% and RoD 58%: +0.40 over StreamingLLM (95% CI +0.25 to +0.54; pre-registered), yet 0.25 below the full cache. At 10% memory RoD recalls 85% (baselines ≤6%); on fresh paraphrased contexts it recalls 69% vs the full cache's 46% (+0.23, 95% CI +0.10 to +0.38), but 12 of the full cache's 26 misses are answers cut off by our 10-token limit.
 <!-- p2:headline:end -->
 - **Controls:** <!-- p2:caveats:begin -->
 RoD minus a lexical index over the same ids at 25%: +0.04 (-0.04 to +0.12) on literal needles, +0.27 (+0.10 to +0.44) on paraphrased ones; accuracy given a recalled needle falls from 98% at 10% to 55% at 25% memory, mostly by naming another needle's value; CPU answer time 6.2× StreamingLLM's.

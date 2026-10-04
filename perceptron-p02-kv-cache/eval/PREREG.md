@@ -139,3 +139,14 @@ Committed after T1's results were seen (16:18) and before any T2 outcome had bee
 - **E5 (exploratory, T1 contexts).** RoD with recall capped at **2 blocks** at keep 0.25 and 0.50 ("precision-first recall"). Added to the post-hoc job, which has not started.
 - **Reporting.** The 0.10 result is reported with its status: exploratory on T1, and replicated or not on T2 under R1. It is never presented as the pre-registered primary.
 
+### Amendment 5: 2026-10-04 17:39 IST (post hoc; added after T2's results were seen)
+- **Issue** (Supervisor 17:37). On T2 the full cache often restates the question ("The seven-digit code issued to …") and is cut off by the harness's 10-token answer limit before the number.
+  - Of the full cache's 26 wrong T2 answers, 17 contain no 7-digit number; 12 of those are cut-off preambles. Only 8 name another needle's value.
+  - RoD at keep 0.10 has 9 of 15 wrong answers without a number (4 cut off) and 0 naming another needle.
+  - T1 is unaffected: all 8 of the full cache's wrong answers name another needle's value.
+- **R1 stays as registered** (it passes). But "RoD exceeds the full cache on T2" is **confounded by answer truncation**. The interpretation "fewer recalled blocks hide look-alike records" is withdrawn for T2. R2's T1 evidence (other-needle values) is unaffected.
+- **E6 (exploratory, post hoc):** re-answer T2's contexts with `max_new=32` for full, StreamingLLM (0.10, 0.25), the question-aware SnapKV oracle (0.25) and RoD (0.10, 0.25).
+  - Scoring: the registered lenient rule (the value appears anywhere) and a strict rule (the first 7-digit number equals the value).
+  - Script: `components/recall_on_demand/posthoc_maxnew.py`, queued after the post-hoc job.
+  - It is reported as a sensitivity analysis and cannot change any registered verdict.
+
