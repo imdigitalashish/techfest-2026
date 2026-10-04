@@ -18,7 +18,7 @@ import argparse
 import json
 import os
 import time
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import replace
 
 import numpy as np
@@ -106,10 +106,15 @@ def main():
             for sc in a.scenarios for sd in parse_seeds(a.seeds) for p in a.policies]
     os.makedirs(a.out, exist_ok=True)
     t0 = time.time()
+    csv = os.path.join(a.out, "episodes.csv")
+    rows = []
     with ProcessPoolExecutor(a.workers) as ex:
-        rows = list(ex.map(run_episode, jobs, chunksize=1))
-    df = pd.DataFrame(rows)
-    df.to_csv(os.path.join(a.out, "episodes.csv"), index=False)
+        futs = [ex.submit(run_episode, j) for j in jobs]
+        for f in as_completed(futs):
+            rows.append(f.result())
+            pd.DataFrame(rows).to_csv(csv, index=False)   # incremental: partial grids survive interruption
+    df = pd.DataFrame(rows).sort_values(["scenario", "policy", "seed"])
+    df.to_csv(csv, index=False)
     with open(os.path.join(a.out, "config.json"), "w") as f:
         json.dump(dict(vars(a), n_jobs=len(jobs), wall_s=time.time() - t0), f, indent=1)
     print(df.groupby(["scenario", "policy"])[["served_frac", "lost_frac", "mean_wait", "empty_per_srv"]].mean().round(4))
