@@ -75,7 +75,11 @@ flowchart LR
 - Workers see the same diagnostics, can annotate them ("scale broken since the 12th") and can appeal.
 - Using any of this data for HR, pay, transfer or disciplinary action is **denied in the policy code itself** and in the data-sharing agreement.
 - Remote, tribal and migrant-serving AWCs are compared only with similar AWCs. No diagnostic is shown below a minimum sample size.
-- *Privacy by design:* purpose-bound access, data minimisation, small-cell suppression or differential privacy for public dashboards, and no profiling beyond service delivery. These follow the DPDP Act 2023 provisions on children's data and State services, and ABDM's consent model. Each rule carries its legal citation in the policy code, to be confirmed against the notified Rules.
+- *Privacy by design, mapped to the law:*
+  - Every beneficiary is a "child" under the DPDP Act 2023 (s.2(f)), so s.9 applies: verifiable parental consent, and no tracking or behavioural monitoring unless exempted. The DPDP Rules 2025 (notified 13 Nov 2025; most operative rules in force from 13 May 2027) exempt processing "in the interests of a child" under law, State benefits to children, and health services by clinical establishments (Rule 12, Fourth Schedule).
+  - Each rule in our policy code cites its basis: State function under law (s.7(c)); research only where no decision is taken about an individual (s.17(2)(b)); and the State-processing standards of purpose limitation and minimisation (Second Schedule).
+  - **s.8(3) requires "completeness, accuracy and consistency" when data drive decisions about a person or are shared with another fiduciary.** The measurement diagnostics are how the State meets that duty.
+  - Public dashboards use small-cell suppression or differential privacy.
 
 **4.4 Decision rights and accountability (sub-area 2).**
 | Role | Sees | When | Must act / escalates to |

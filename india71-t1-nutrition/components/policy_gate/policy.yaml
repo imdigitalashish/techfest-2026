@@ -1,4 +1,4 @@
-version: "0.1.0"
+version: "0.2.0"
 default:
   decision: deny
   transform: none
@@ -32,7 +32,7 @@ rules:
       consent_artefact_id: missing
     decision: deny
     transform: none
-    legal_basis: "DPDP Act 2023 / ABDM consent requirement (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.6 consent; ABDM HIE-CM consent artefact (ABDM text UNVERIFIED). V1 row 5'
     rationale: "Health record access requires consent unless care coordination under an open referral applies."
   - id: aww-own-awc-service-identified
     roles: [aww]
@@ -41,7 +41,7 @@ rules:
     scope: contains
     decision: allow
     transform: none
-    legal_basis: "DPDP Act 2023 s.7(b) — State benefit/service (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.7(b) State service to the child (needs prior consent for the service or a Centre-notified database; Rules 2025 r.5 + Second Schedule); s.9(1),(3) exempt via Rules 2025 r.12 + Fourth Schedule Part B(2) (in force 13 May 2027). Source: research/sources/V1-dpdp-verified.md rows 1, 13, 15'
     rationale: "AWW may see identified children in her own AWC for direct service delivery."
   - id: asha-anm-open-task-care-identified
     roles: [asha, anm]
@@ -52,7 +52,7 @@ rules:
       has_open_task: true
     decision: allow
     transform: none
-    legal_basis: "DPDP Act 2023 s.7(b) care/referral coordination for State service (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.7(c) function of the State under law (statutory ICDS anchor: VERIFY); s.9(1),(3) exempt via DPDP Rules 2025 r.12 + Fourth Schedule Part B(1) "in the interests of a child" (in force 13 May 2027); health services: Fourth Schedule Part A(1). V1 rows 1, 13'
     rationale: "ASHA/ANM may see an identified child only when an open referral or joint-visit task exists."
   - id: mo-open-referral-care-identified
     roles: [mo_phc]
@@ -63,7 +63,7 @@ rules:
       has_open_task: true
     decision: allow
     transform: none
-    legal_basis: "DPDP Act 2023 s.7(b) medical referral for State service (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.7(c) (VERIFY statutory anchor); s.9 exempt via DPDP Rules 2025 Fourth Schedule Part A(1) clinical establishment / healthcare professional, restricted to health services for the child (in force 13 May 2027). V1 row 13'
     rationale: "MO-PHC may see identified child data for an open referral."
   - id: health-record-open-referral-care
     roles: [asha, anm, mo_phc]
@@ -74,7 +74,7 @@ rules:
       has_open_task: true
     decision: allow
     transform: none
-    legal_basis: "DPDP Act 2023 s.7(b) + health referral exception/ABDM workflow note (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.7(c) (VERIFY anchor) + Rules 2025 Fourth Schedule Part A(1) health services; ABDM consent flow UNVERIFIED. V1 rows 5, 13'
     rationale: "Health record is allowed for care coordination when an open referral exists."
   - id: health-record-with-consent
     roles: [aww, asha, anm, ls, cdpo, mo_phc]
@@ -85,7 +85,7 @@ rules:
       consent_artefact_id: present
     decision: allow
     transform: none
-    legal_basis: "ABDM consent artefact (HIE-CM) (VERIFY)"
+    legal_basis: 'ABDM HIE-CM consent artefact (ABDM text UNVERIFIED); DPDP Act 2023 s.6. V1 row 5'
     rationale: "Consent-gated health record access."
   - id: ls-sector-supervision-pseudonymous
     roles: [ls]
@@ -94,7 +94,7 @@ rules:
     scope: contains
     decision: allow_transformed
     transform: pseudonymise
-    legal_basis: "DPDP Act 2023 s.7(b) supportive supervision for State service (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.7(c) function of the State under law (statutory ICDS anchor: VERIFY); s.8(3) accuracy duty for data used in decisions; pseudonymised view. V1 rows 1, 6'
     rationale: "LS supervision uses pseudonymous child-level records in sector."
   - id: ls-escalated-identified
     roles: [ls]
@@ -105,7 +105,7 @@ rules:
       escalated: true
     decision: allow
     transform: none
-    legal_basis: "DPDP Act 2023 s.7(b) escalation handling for State service (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.7(c) function of the State under law (statutory ICDS anchor: VERIFY); s.9(1),(3) exempt via DPDP Rules 2025 r.12 + Fourth Schedule Part B(1) "in the interests of a child" (in force 13 May 2027). V1 rows 1, 13'
     rationale: "LS may see identified details for escalated tasks in her sector."
   - id: cdpo-project-monitoring-aggregates
     roles: [cdpo]
@@ -114,7 +114,7 @@ rules:
     scope: contains
     decision: allow_transformed
     transform: aggregate
-    legal_basis: "DPDP Act 2023 s.7(b) programme administration (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.7(c) function of the State under law (statutory ICDS anchor: VERIFY); aggregate output only. V1 row 1'
     rationale: "CDPO receives project-level aggregates for monitoring."
   - id: cdpo-escalated-identified
     roles: [cdpo]
@@ -125,7 +125,7 @@ rules:
       escalated: true
     decision: allow
     transform: none
-    legal_basis: "DPDP Act 2023 s.7(b) escalation handling for State service (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.7(c) function of the State under law (statutory ICDS anchor: VERIFY); s.9(1),(3) exempt via DPDP Rules 2025 r.12 + Fourth Schedule Part B(1) "in the interests of a child" (in force 13 May 2027). V1 rows 1, 13'
     rationale: "CDPO may see identified details for escalated tasks in project."
   - id: district-monitoring-aggregates
     roles: [dpo, dm]
@@ -134,7 +134,7 @@ rules:
     scope: contains
     decision: allow_transformed
     transform: suppress_small_cells
-    legal_basis: "DPDP Act 2023 s.7(b) district programme monitoring (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.7(c) function of the State under law (statutory ICDS anchor: VERIFY); small-cell-suppressed aggregates. V1 row 1'
     rationale: "District leaders receive aggregate monitoring with small-cell suppression."
   - id: state-monitoring-aggregates
     roles: [state]
@@ -143,7 +143,7 @@ rules:
     scope: contains
     decision: allow_transformed
     transform: suppress_small_cells
-    legal_basis: "DPDP Act 2023 s.7(b) State programme monitoring (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.7(c) function of the State under law (statutory ICDS anchor: VERIFY); aggregates. V1 row 1'
     rationale: "State receives aggregate monitoring data."
   - id: public-reporting-dp-aggregates
     roles: [public]
@@ -152,7 +152,7 @@ rules:
     scope: any
     decision: allow_transformed
     transform: dp_noise
-    legal_basis: "DPDP Act 2023 public transparency / anonymised statistics note (VERIFY)"
+    legal_basis: 'No specific DPDP clause; DP-noised aggregates intended to be non-personal data (anonymisation standard: VERIFY). V1 row 4'
     rationale: "Public outputs are aggregate only and protected with DP noise."
   - id: researcher-approved-pseudonymous
     roles: [researcher]
@@ -163,7 +163,7 @@ rules:
       approval_id: present
     decision: allow_transformed
     transform: pseudonymise
-    legal_basis: "DPDP Act 2023 s.17(2)(b) research exemption (VERIFY)"
+    legal_basis: 'DPDP Act 2023 s.17(2)(b) research/statistics, only if "not to be used to take any decision specific to a Data Principal"; standards Rules 2025 r.16 + Second Schedule. V1 row 2'
     rationale: "Approved research receives pseudonymous child-level data only."
   - id: model-training-pseudonymous-only
     roles: [researcher, system]
@@ -172,5 +172,5 @@ rules:
     scope: contains
     decision: allow_transformed
     transform: pseudonymise
-    legal_basis: "DPDP Act 2023 data minimisation / research-model development note (VERIFY)"
+    legal_basis: 'DPDP Rules 2025 Second Schedule cl.(c) processing limited to necessary data; pseudonymised model training under s.17(2)(b) conditions (no individual decisions). V1 rows 2, 3'
     rationale: "Model training may use only pseudonymous data."

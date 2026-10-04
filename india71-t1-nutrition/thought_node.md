@@ -10,20 +10,22 @@
 - _(none)_
 
 ## Now
-- **Phase:** 5–6. Morning package delivered (08:02, accepted by the Supervisor at 08:22). Since then: hostile-judge review → ADR 002 redesign of spike A; proposal v0.2; first auto-research iterations (1 rejected as overfit, 1 kept for design reasons); end-to-end walking skeleton.
-- **Plan (next):**
-  1. Fold in the DPDP verification (`V1`, running) and replace every (VERIFY) tag, or change the design.
-  2. Verify ABDM consent-artefact details and the CMAM protocol timelines.
-  3. Evaluator v2 for spike A (audit value of diagnostics: PPV at a fixed re-measurement budget; remote-AWC false-positive rate; robustness across simulator variants).
-  4. Early-warning evaluator v1 (real-decline episodes) and a ratchet loop.
-  6. Re-run the failed research threads one at a time (≤2 concurrent agents).
-- **Doing:** lead + research agent V1 (DPDP Act/Rules verification).
-- **Needs from user:** (a) register by 15 Oct for one India@71 theme (after the 12 Oct memo); (b) teammates (≤4): names, skills, contacts; (c) any state WCD / district contact for a read-only pilot extract (on the Supervisor's list); (d) later, ideally an introduction to an Anganwadi workers' union or worker-rights NGO for co-design (ADR 002 makes this a pilot prerequisite).
+- **Phase:** ⏸ **PAUSED at 09:55 IST, 4 Oct** (Supervisor: only 3 projects run at a time; India@71 is queued after the InnovateX zonal deck). The morning package is complete and pushed; this project is in Phase 5–6.
+- **Resume point** (do in order):
+  1. `git fetch origin && git rebase origin/main`; read the Inbox.
+  2. Check `research/sources/V2-cmam-timelines.md`, written by the CMAM verification agent that was still running at pause. Fold verified timelines into `components/action_router/protocol.yaml` (remove its 22 VERIFY tags or change the timelines) and into proposal §4.4.
+  3. Re-render the proposal (`.cache/proposal_preview.html` → Playwright PDF; the snippet is in Log 08:05) and check it is still ≤6 A4 pages after the 09:50 legal paragraph. It was 6 pages before that addition, so trim §2/§3 if needed.
+  4. Spike A evaluator v2 (ADR 002 consequences): PPV of flagged AWCs at a fixed re-measurement budget, false-positive rate in remote AWCs, robustness across `holdout_check.py` worlds. Then continue the ratchet. Ledger: `components/credibility_engine/autoresearch/results.tsv`.
+  5. Early-warning evaluator v1 (episodes with a real decline) + velocity-z feature.
+  6. Verify ABDM consent-artefact fields and NFSA 2013 s.5(2) at primary sources (India Code was timing out).
+  7. Re-run failed research threads one at a time: DQ methods, deployed-global, NFHS-5 subgroup tables.
+- **No background jobs running** (nothing to restart). Reproduce any result with the commands in `eval/results/*.json` docstrings: `.venv/bin/python -m components.<name>.eval`, `-m eval.run_pipeline`, `-m components.action_router.sim`, `-m components.credibility_engine.autoresearch.holdout_check`.
+- **Needs from user:** (a) register by 15 Oct for one India@71 theme (after the 12 Oct memo); (b) teammates (≤4): names, skills, contacts; (c) any state WCD / district contact for a read-only pilot extract; (d) later, an introduction to an Anganwadi workers' union or worker-rights NGO for co-design (ADR 002 prerequisite).
 - **Risks:**
   1. All model metrics are SYNTHETIC.
-  2. The legal basis for child-level scoring is unconfirmed (go/no-go gate in ADR 002).
+  2. DPDP operative rules (incl. the Rule 12 child exemptions) commence only on 13 May 2027, and whether the Act's ss.4–17 are in force is UNVERIFIED. The legal go/no-go gate (ADR 002) stays.
   3. Worker and union acceptance.
-  4. Metric gaming in the auto-research loops (anti-gaming holdout in place; it already caught one overfit).
+  4. Proposal page budget (6/6).
 
 ## Phase 0 — what the judges must be able to see (from `_briefs/india71.txt`)
 | Criterion (official) | What we must show | Evidence we will produce |
@@ -91,7 +93,7 @@ Context from the statement: Poshan Tracker already tracks growth-monitoring and 
 | C6 | action_router | RiskScore/Alert → Task | monthly review | | built | ops SIMULATION: 83.6% within SLA (ladder, alerts ≤ capacity) vs 15.6% (monthly review); 14.9% when alerts exceed capacity |
 | C7 | frontline_worklist | Task → Worklist | PT home-visit scheduler | | built | payload bytes, % SMS ≤160 |
 | C8 | aggregate_publisher | events → AggregateCell | static dashboards | | contract | relative error at ε |
-| C9 | policy_gate | AccessRequest → AccessDecision | RBAC | | built | 31/31 red-team (incl. employment-use denial), 0 false allows |
+| C9 | policy_gate | AccessRequest → AccessDecision | RBAC | | built; legal citations verified (v0.2.0) | 31/31 red-team (incl. employment-use denial), 0 false allows |
 | C10 | audit_ledger | event → AuditEntry | DB audit | | built | tamper detection 100/100 |
 
 ## Selection memo (v1, 4 Oct 2026 — final by 12 Oct)
@@ -147,4 +149,16 @@ Rendered `deliverables/round1-proposal.md` to PDF (Playwright; A4, 1-inch margin
   - alerts above capacity (5/week, [`_overload.json`](eval/results/action_router_sim_overload.json)): **14.9%**, with 28% escalated.
 - **Learned:** escalation ladders only help if alert volume is capped at capacity. This is the quantitative case for spike B's top-k-per-AWC design.
 - **Proposal v0.2** renders to 6 A4 pages, with 29 words on page 6. Inside the limit, but trim before adding team details.
+
+### 2026-10-04 09:30–09:55 IST — legal layer verified; paused
+- **Agent V1 verified the DPDP texts at primary sources** ([`research/sources/V1-dpdp-verified.md`](research/sources/V1-dpdp-verified.md)):
+  - s.2(f): every ICDS beneficiary is a "child".
+  - s.7(b) is *conditional* (prior consent, or a Centre-notified database), so supervisory and monitoring uses move to s.7(c), State function under law.
+  - s.8(3): accuracy duty when data drive decisions or are shared. This is now the legal rationale for spike A.
+  - s.17(2)(b): research only with no individual decisions.
+  - DPDP Rules 2025 (G.S.R. 846(E), 13 Nov 2025): Rules 3 and 5–16 commence on 13 May 2027. Rule 12 + Fourth Schedule exempt from s.9(1),(3): Part A(1) health services by clinical establishments; Part B(1) functions "in the interests of a child, under any law"; Part B(2) State benefits to children.
+- **Applied.** `policy.yaml` → v0.2.0: all 14 legal-basis strings replaced with verified citations; 0 "(VERIFY)" left on DPDP items (ABDM consent details and the NFSA statutory anchor still UNVERIFIED); tests pass. Also updated the proposal §4.3 privacy paragraph and landscape §4.
+- **NFSA 2013 s.5(2)** ("identified through the local anganwadi"): primary text not reachable (India Code timeouts; dfpd/PRS URLs returned HTML/404), so it stays UNVERIFIED.
+- **Agent V2** (CMAM protocol timelines) was still running at pause; its output file is the first resume step.
+- **Paused** on Supervisor instruction at 09:55.
 

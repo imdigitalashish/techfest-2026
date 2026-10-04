@@ -52,7 +52,14 @@ From [`L9`](sources/L9-poshan-tracker.md) (primary: PIB Research factsheet, 8 Ju
   - **No published study on matching Indic-script and transliterated names** was found, so that is open room for us.
   - DP tooling: OpenDP and Tumult Analytics are active.
   - Audit: Trillian is in maintenance mode (use Tessera); FHIR AuditEvent; Open Policy Agent (~12.3k★) for policy-as-code.
-- **Law and standards.** Both research agents (DPDP Act/Rules; ABDM/NDGFP) failed on infrastructure timeouts. **Every legal citation in our design is marked (VERIFY) until checked against the primary texts.** This is the first research task for 5 Oct.
+- **Law and standards** (verified by agent V1 at primary texts; [`V1-dpdp-verified.md`](sources/V1-dpdp-verified.md)):
+  - DPDP Act 2023: s.2(f) "child" = under 18, so every ICDS beneficiary is covered. s.9(1)–(5): verifiable parental consent; no detrimental processing; no tracking, behavioural monitoring or targeted advertising.
+  - s.7(b) is *conditional*: it needs prior consent for that benefit or a Centre-notified database. s.7(c) (State function "under any law") fits supervisory and monitoring uses better.
+  - s.8(3) accuracy duty when data drive decisions or are disclosed; s.17(2)(b) research only if "not to be used to take any decision specific to a Data Principal".
+  - DPDP Rules 2025 (G.S.R. 846(E), 13 Nov 2025): Rule 1 commencement, with Rules 3 and 5–16 in force 18 months after notification, i.e. 13 May 2027. Rule 10 covers verifiable parental consent. Rule 12 + Fourth Schedule: Part A(1) clinical establishments/healthcare professionals (health services to the child); Part B(1) functions "in the interests of a child, under any law"; Part B(2) State benefits to children. Rule 5 + Second Schedule set standards for State processing.
+  - Whether the Act's ss.4–17 are already in force is **UNVERIFIED** (secondary trackers cite G.S.R. 843(E)).
+  - The statutory ICDS anchor (National Food Security Act 2013 s.5(2), "identified through the local anganwadi") is seen only in secondary text, so it is **UNVERIFIED** at primary.
+  - ABDM consent-artefact details are still **UNVERIFIED**.
 
 ## 5. What is deployed today
 | System / initiative | Owner · scale | What it does | Data → action | Evidence | Where we borrow / beat |
