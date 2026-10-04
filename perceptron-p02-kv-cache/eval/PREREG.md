@@ -96,3 +96,14 @@ Committed while T1 was running, before any test-split result had been seen.
   ```
   T3: python eval/kvbench_torch.py --ctx 4096 --n 12 --needles 4 --seed 2 --style alias --fracs 0.1,0.25 --kvp_fracs 0.1,0.25 --methods full,streaming,snapkv,kvp_expected,rod,rodlex $R --name T3_alias_s2
   ```
+
+### Amendment 2: 2026-10-04 15:30 IST
+Committed while T1 was still running; no test-split result had been seen. It responds to the gpt-6-sol static review (`reviews/2026-10-04-code-eval-gpt-6-sol.md`). No run, seed, method or config changes; only how results are analysed and worded.
+- **Analysis source.** Every registered contrast is computed by `eval/render_docs.py` from the per-question rows, joined by sample index across runs. This covers S1 vs `kvp_tova` and S4 (halo-64 rows from run S4 paired with the halo-0 RoD rows of T1, which share seed and contexts).
+- **S5 scope.** The kvpress presses were registered only at keep 0.10 and 0.25, so S5 at 0.50 covers our own baselines only. Unrun cells are marked "not run", never omitted.
+- **Memory wording.** "Answer-time bytes" means the **persistent store plus recalled KV**, not process peak memory. RoD's scoring pass also holds a transient, unchunked working set (dense sketch, score tensors), which is reported analytically and separately. No peak-memory-equality claim is made.
+- **Byte check.** For every (context, keep fraction), RoD's answer-time bytes must be ≤ each baseline's stored bytes. Violations are counted and reported.
+- **Development number.** The dev hit@3 of 0.95 was computed with the sweep's simplified budget (2-bit sketch, no window-query cost). It is reported only as "exploratory, best of 322 under the sweep budget". A production-budget dev table may be added after the test runs, as exploratory information; it cannot change the frozen config.
+- **Protocol wording.** Results speak of *independent questions answered after one query-agnostic compression*, not sequential multi-turn chat.
+- **Labels.** Our local `snapkv` is a sink-augmented variant (it pools over all keys and forces 4 sinks plus the window); `kvp_snapkv` is the reference.
+
