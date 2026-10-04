@@ -105,6 +105,13 @@ def same_effect(data: dict, e1: dict, e2: dict) -> bool:
     return True
 
 
+RENAMES = {"province": "state"}  # τ-bench data/tool rename after these trajectories were recorded
+
+
+def gt_kwargs(kw: dict) -> dict:
+    return {RENAMES.get(k, k): v for k, v in kw.items()}
+
+
 def _calls(msg: dict) -> list[tuple[str, dict]]:
     out = []
     for tc in msg.get("tool_calls") or []:
@@ -170,7 +177,14 @@ def iter_items(models=("gpt-4o", "sonnet-35-new"), split: str = "all", stats: Co
             if split != "all" and sp != split:
                 continue
             stats["trajectories"] += 1
-            gt_writes = [a for a in r["info"]["task"]["actions"] if a["name"] in WRITE]
+            gt_writes = [{"name": a["name"], "kwargs": gt_kwargs(a["kwargs"])} for a in r["info"]["task"]["actions"] if a["name"] in WRITE]
+            if verify and r["trial"] == 0:  # schema-drift check: GT writes must execute from the initial DB
+                g_data = mutable_copy(base)
+                for g in [{"name": a["name"], "kwargs": gt_kwargs(a["kwargs"])} for a in r["info"]["task"]["actions"]]:
+                    res = run_tool(tools, g_data, g["name"], g["kwargs"])
+                    if "TypeError" in res:
+                        stats["gt_signature_error"] += 1
+                        print(f"[drift] {model} t{r['task_id']} {g['name']}: {res[:120]}", file=sys.stderr)
             data = mutable_copy(base)
             users: list[str] = []
             assists: list[str] = []

@@ -1,11 +1,13 @@
 """Tier-0 guard for τ-bench retail: per-argument provenance against the user's words and the live DB, plus the
 retail policy's preconditions. Same verdict semantics as the desk guard (pass / fail / unverifiable / needs_approval).
 
-Written from tau_bench/envs/retail/wiki.md only, before looking at any replay item (v0). The verifiable sources
+v0 was written from tau_bench/envs/retail/wiki.md only, before looking at any replay item. v1 (this file) was tuned on
+the DEV split only (even task ids); see eval/taubench/README.md for the change list. The verifiable sources
 are (a) the authenticated user's own messages and (b) the database at the moment of the proposal.
 """
 from __future__ import annotations
 
+import json
 import re
 import time
 from typing import Any
@@ -27,12 +29,14 @@ INTENT = {
 NEEDS_DELIVERED = {"return_delivered_order_items", "exchange_delivered_order_items"}
 NEEDS_PENDING = {"cancel_pending_order", "modify_pending_order_address", "modify_pending_order_items", "modify_pending_order_payment"}
 YES = re.compile(r"\b(yes|yeah|yep|yup|confirm(ed)?|go ahead|proceed|sure|correct|that'?s right|please do|do it|ok(ay)?|sounds good|absolutely|definitely)\b", re.I)
-NO = re.compile(r"\b(no|don'?t|do not|wait|hold on|stop|not yet|actually)\b", re.I)
+NO = re.compile(r"(^\s*no\b(?! longer)|\b(don'?t|do not) (proceed|do it|go ahead|cancel|change|return|exchange)|\bwait\b|\bhold on\b|\bstop\b|\bnot yet\b|\bnot (correct|right)\b)", re.I)
 ALL_ITEMS = re.compile(r"\b(all|every|everything|entire|whole|both)\b", re.I)
 REASONS = {
     "no longer needed": re.compile(r"(no longer need|don'?t need|do not need|not needed|no need|longer needed|changed my mind|don'?t want|do not want)", re.I),
     "ordered by mistake": re.compile(r"(by mistake|mistaken|accident|wrong(ly)? order|ordered the wrong|didn'?t mean to|did not mean to)", re.I),
 }
+# Fields whose value may be grounded by the agent's summary + the user's explicit "yes" (ablated on dev).
+SUMMARY_FIELDS = {"item", "option", "payment", "reason", "address"}
 GENERIC = {"the", "and", "with", "for", "set", "kit", "pack", "item", "new", "pro", "max", "mini", "smart", "size"}
 
 
@@ -63,11 +67,41 @@ def obs_text(observations: list[dict]) -> str:
     return " ".join(str(o.get("result", "")) for o in observations if not str(o.get("result", "")).startswith("Error"))
 
 
-def check(tool: str, args: dict, user_turns: list[str], observations: list[dict], auth: str | None, data: dict) -> list[CheckResult]:
+def norm_quotes(t: str) -> str:
+    return str(t).replace("\u2019", "'").replace("\u2018", "'").replace("\u201c", '"').replace("\u201d", '"')
+
+
+def known_addresses(observations: list[dict]) -> list[dict]:
+    """Complete address records present in trusted tool results (the user's profile or their other orders)."""
+    out = []
+
+    def walk(o):
+        if isinstance(o, dict):
+            if {"address1", "city", "zip"} <= set(o):
+                out.append(o)
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+    for ob in observations:
+        r = str(ob.get("result", ""))
+        if r.startswith("Error"):
+            continue
+        try:
+            walk(json.loads(r))
+        except (json.JSONDecodeError, TypeError):
+            pass
+    return out
+
+
+def check(tool: str, args: dict, user_turns: list[str], observations: list[dict], auth: str | None, data: dict,
+          assistant_texts: list[str] | None = None) -> list[CheckResult]:
+    assistant_texts = assistant_texts or []
     if tool not in WRITE:
         return [C("scope.read_tool", None, S.PASS, "read-only tool")]
     out: list[CheckResult] = []
-    utext = " ".join(user_turns)
+    utext = norm_quotes(" ".join(user_turns))
     un = norm(utext)
     otext = obs_text(observations)
     orders, users, products = data["orders"], data["users"], data["products"]
@@ -75,9 +109,13 @@ def check(tool: str, args: dict, user_turns: list[str], observations: list[dict]
     # authentication and confirmation (policy: authenticate first; explicit "yes" before consequential actions)
     if not auth:
         out.append(C("policy.authenticated", None, S.UNVERIFIABLE, "no user was authenticated before this write"))
-    last = user_turns[-1] if user_turns else ""
-    if not (YES.search(last) and not (NO.search(last) and not YES.search(last.split(".")[0]))):
+    last = norm_quotes(user_turns[-1] if user_turns else "")
+    confirmed = bool(YES.search(last)) and not NO.search(last)
+    if not confirmed:
         out.append(C("policy.confirmation", None, S.NEEDS_APPROVAL, f"the user's last message is not an explicit confirmation: {last[:80]!r}"))
+    # the agent's confirmation request the user just answered (policy: list the details, get an explicit yes)
+    summary = norm_quotes(assistant_texts[-1]) if (confirmed and assistant_texts) else ""
+    sn = norm(summary)
     # intent: did the user ask for this kind of action at all?
     if re.search(INTENT[tool], utext, re.I):
         out.append(C("provenance.intent", None, S.PASS, f"user asked for {tool}"))
@@ -123,6 +161,8 @@ def check(tool: str, args: dict, user_turns: list[str], observations: list[dict]
                 continue
             if mentioned(it["name"], un) or all_ok:
                 out.append(C("provenance.item", "item_ids", S.PASS, f"user mentioned {it['name']}"))
+            elif "item" in SUMMARY_FIELDS and sn and (mentioned(it["name"], sn) or iid in summary):
+                out.append(C("provenance.item", "item_ids", S.PASS, f"{it['name']} listed in the summary the user confirmed"))
             else:
                 out.append(C("provenance.item", "item_ids", S.UNVERIFIABLE, f"user never mentioned {it['name']} ({iid})"))
         new_ids = [str(x) for x in args.get("new_item_ids") or []]
@@ -136,7 +176,7 @@ def check(tool: str, args: dict, user_turns: list[str], observations: list[dict]
                 out.append(C("kb.new_item", "new_item_ids", S.FAIL, f"{nid} is not a variant of {it['name']}"))
                 continue
             if nid == iid:
-                out.append(C("policy.new_item_differs", "new_item_ids", S.FAIL, f"new item {nid} is the same as the old item"))
+                continue  # no-op mapping: τ-bench ground truth itself contains these
             if not var.get("available", False):
                 out.append(C("kb.new_item_available", "new_item_ids", S.FAIL, f"{nid} is not available"))
             space: dict[str, set[str]] = {}
@@ -153,6 +193,8 @@ def check(tool: str, args: dict, user_turns: list[str], observations: list[dict]
                 elif desired:
                     out.append(C("provenance.option", "new_item_ids", S.FAIL,
                                  f"{it['name']}: user asked for {k} in {sorted(desired)}, call picks {newv}"))
+                elif "option" in SUMMARY_FIELDS and sn and (mentioned(str(newv), sn) or nid in summary):
+                    out.append(C("provenance.option", "new_item_ids", S.PASS, f"{it['name']}: {k}={newv} listed in the summary the user confirmed"))
                 else:
                     out.append(C("provenance.option", "new_item_ids", S.UNVERIFIABLE, f"{it['name']}: {k} changed {oldv}->{newv} but the user never asked for {newv}"))
 
@@ -185,6 +227,13 @@ def check(tool: str, args: dict, user_turns: list[str], observations: list[dict]
                     out.append(C("provenance.payment", "payment_method_id", S.PASS, f"user asked for {src}"))
             elif asked:
                 out.append(C("provenance.payment", "payment_method_id", S.FAIL, f"user asked for {sorted(asked)}, call uses {src}"))
+            elif pm == original:
+                out.append(C("provenance.payment", "payment_method_id", S.PASS, "the order's original payment method (DB record)"))
+            elif len(methods) == 1:
+                out.append(C("provenance.payment", "payment_method_id", S.PASS, "the user's only payment method"))
+            elif "payment" in SUMMARY_FIELDS and sn and (pm in summary or (re.search(kinds[src], summary, re.I) and (not methods[pm].get("last_four") or methods[pm]["last_four"] in summary
+                                                                                    or sum(v["source"] == src for v in methods.values()) == 1))):
+                out.append(C("provenance.payment", "payment_method_id", S.PASS, f"{src} listed in the summary the user confirmed"))
             else:
                 out.append(C("provenance.payment", "payment_method_id", S.UNVERIFIABLE, "user never said which payment method to use"))
 
@@ -196,6 +245,8 @@ def check(tool: str, args: dict, user_turns: list[str], observations: list[dict]
             out.append(C("provenance.reason", "reason", S.PASS, f"user gave reason '{reason}'"))
         elif stated:
             out.append(C("provenance.reason", "reason", S.FAIL, f"user's reason is {sorted(stated)}, call says '{reason}'"))
+        elif "reason" in SUMMARY_FIELDS and sn and reason in summary.lower():
+            out.append(C("provenance.reason", "reason", S.PASS, f"reason '{reason}' listed in the summary the user confirmed"))
         else:
             out.append(C("provenance.reason", "reason", S.UNVERIFIABLE, f"user never stated the reason '{reason}'"))
 
@@ -204,14 +255,23 @@ def check(tool: str, args: dict, user_turns: list[str], observations: list[dict]
         if tool == "modify_user_address" and auth and str(args.get("user_id")) != auth:
             out.append(C("kb.user_owner", "user_id", S.FAIL, f"user_id {args.get('user_id')} is not the authenticated user {auth}"))
         default_req = re.search(r"\b(default|profile|account|on file|same as)\b.{0,20}\baddress", utext, re.I)
-        user_zips = set(re.findall(r"\b\d{5}\b", utext))
-        for f in ("address1", "address2", "city", "state", "country", "zip"):
+        auth_zips = {str(o.get("args", {}).get("zip")) for o in observations if o.get("tool") == "find_user_id_by_name_zip"}
+        user_zips = set(re.findall(r"\b\d{5}\b", utext)) - auth_zips
+        fields = ("address1", "address2", "city", "state", "country", "zip")
+        known = [a for a in known_addresses(observations)
+                 if all(norm(a.get(f, "") or "") == norm(args.get(f, "") or "") for f in ("address1", "address2", "city", "zip"))]
+        if known:
+            out.append(C("provenance.address", None, S.PASS, "address matches one already on file for this user (tool data)"))
+            fields = ()
+        for f in fields:
             val = str(args.get(f, "") or "")
             if not val.strip():
                 continue
             if mentioned(val, un):
                 continue
             if default_req and val in otext:
+                continue
+            if "address" in SUMMARY_FIELDS and sn and mentioned(val, sn):
                 continue
             if f == "zip" and user_zips and val not in user_zips:
                 out.append(C("provenance.address", f, S.FAIL, f"user gave zip {sorted(user_zips)}, call has {val}"))
@@ -232,10 +292,10 @@ def decide(checks: list[CheckResult], strict_confirmation: bool = True) -> Decis
 
 
 def guard(tool: str, args: dict, user_turns: list[str], observations: list[dict], auth: str | None, data: dict,
-          mode: str = "t0") -> tuple[Decision, list[CheckResult], float]:
+          mode: str = "t0", assistant_texts: list[str] | None = None) -> tuple[Decision, list[CheckResult], float]:
     """mode: t0 (fail->block, unverifiable/approval->escalate) | t0_block_only (only contradictions stop a call)."""
     t = time.perf_counter()
-    checks = check(tool, args, user_turns, observations, auth, data)
+    checks = check(tool, args, user_turns, observations, auth, data, assistant_texts)
     d = decide(checks)
     if mode == "t0_block_only":
         d = Decision.BLOCK if any(c.status == S.FAIL for c in checks) else Decision.ALLOW
