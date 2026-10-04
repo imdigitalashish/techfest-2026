@@ -128,7 +128,10 @@ Nagpur has <!--n:nagpur_bev-->113,736<!--/n--> BEV registrations, <!--n:nagpur_3
 
 To match Karnataka's density (<!--n:ka_bev_per_pcs-->152.4<!--/n--> BEV per station), Maharashtra would need <!--n:mh_shortfall_ka-->3,641<!--/n--> more stations. This is a benchmark comparison, not yet a demand model.
 
-### 2.6 Requirement estimation and recommendations (Round 2; designed, not yet built)
+### 2.6 Requirement estimation and recommendations (corridor norm prototype built; the rest in Round 2)
+**Built: the MoP corridor norm, applied to Maharashtra.** OSM motorway and trunk roads give <!--n:cor_side_km-->37,065<!--/n--> carriageway-side km; <!--n:cor_nh_ref_pct-->88.9%<!--/n--> of their length carries an NH or NE reference, which confirms that OSM's "trunk" means national highways here. A station every 20 km on both sides requires <!--n:cor_norm_stations-->1,853<!--/n--> stations. Open data shows only <!--n:cor_hw_sites-->170<!--/n--> sites within 500 m of these corridors, and <!--n:cor_cov_lb-->11.7%<!--/n--> of side-km have one within 10 km. These are lower bounds on coverage, because open data sees a small share of stations. The district needing the most corridor stations is <!--n:cor_top1_name-->Solapur<!--/n--> (<!--n:cor_top1_need-->118<!--/n--> stations; <!--n:cor_top1_cov-->8.6%<!--/n--> visibly covered).
+
+**Designed, for Round 2:**
 - **Demand by segment and charging mode:** stock (registrations with survival curves) × daily km × Wh/km × the public share of energy (vs home, depot or swap). Every parameter is sourced, with a range, and shown in a sensitivity chart.
 - **Two requirement views per district and corridor:**
   - energy-based: chargers by class = public kWh per day ÷ (kW × utilisation), with a queueing check at peak;

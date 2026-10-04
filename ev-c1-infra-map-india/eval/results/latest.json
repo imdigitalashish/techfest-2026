@@ -1109,6 +1109,51 @@
   "text": "24%",
   "source": "eval/results/mh_district_gap.csv"
  },
+ "cor_side_km": {
+  "value": 37065,
+  "text": "37,065",
+  "source": "eval/results/mh_corridor_summary.json"
+ },
+ "cor_nh_ref_pct": {
+  "value": 88.9,
+  "text": "88.9%",
+  "source": "eval/results/mh_corridor_summary.json"
+ },
+ "cor_norm_stations": {
+  "value": 1853,
+  "text": "1,853",
+  "source": "eval/results/mh_corridor_summary.json"
+ },
+ "cor_hw_sites": {
+  "value": 170,
+  "text": "170",
+  "source": "eval/results/mh_corridor_summary.json"
+ },
+ "cor_cov_lb": {
+  "value": 11.7,
+  "text": "11.7%",
+  "source": "eval/results/mh_corridor_summary.json"
+ },
+ "cor_gap_ub": {
+  "value": 1637,
+  "text": "1,637",
+  "source": "eval/results/mh_corridor_summary.json"
+ },
+ "cor_top1_name": {
+  "value": "Solapur",
+  "text": "Solapur",
+  "source": "eval/results/mh_corridor_summary.json"
+ },
+ "cor_top1_need": {
+  "value": 118.5,
+  "text": "118",
+  "source": "eval/results/mh_corridor_summary.json"
+ },
+ "cor_top1_cov": {
+  "value": 8.6,
+  "text": "8.6%",
+  "source": "eval/results/mh_corridor_summary.json"
+ },
  "c9_dev_naive": {
   "value": 0.2315,
   "text": "0.232",

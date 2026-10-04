@@ -49,7 +49,11 @@ def maharashtra():
               "properties": {"n": len(r.srcs.split(",")), "s": r.srcs, "name": (r.name if isinstance(r.name, str) else "")[:60]}}
              for r in sites.itertuples()]
     summ = json.load(open(f"{RES}/mh_district_gap_summary.json"))
-    return json.loads(g.to_json()), {"type": "FeatureCollection", "features": feats}, summ
+    summ["corridor"] = json.load(open(f"{RES}/mh_corridor_summary.json"))
+    cp = pd.read_csv(f"{R}/.data/roads/mh_corridor_points.csv").iloc[::6]  # every 6th 1-km sample point
+    corr = {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [r.lon, r.lat]},
+            "properties": {"c": int(bool(r.covered))}} for r in cp.itertuples()]}
+    return json.loads(g.to_json()), {"type": "FeatureCollection", "features": feats}, summ, corr
 
 
 def main():
@@ -57,12 +61,12 @@ def main():
     os.makedirs(os.path.join(HERE, "dist"), exist_ok=True)
     sts, sites, unmatched = national()
     mse = json.load(open(f"{RES}/c5_mse_summary.json")); c9 = json.load(open(f"{RES}/c9_summary.json"))
-    html = (tpl.replace("__MODE__", "national").replace("__AREAS__", J(sts)).replace("__SITES__", J(sites))
+    html = (tpl.replace("__MODE__", "national").replace("__AREAS__", J(sts)).replace("__SITES__", J(sites)).replace("__CORR__", J({"type": "FeatureCollection", "features": []}))
                .replace("__META__", J({"mse": mse, "c9": {"nowcast_2026_national": c9["nowcast_2026_national"]["yoy"],
                                                            "actual_2025": c9["actual_2025_national"]}})))
     open(os.path.join(HERE, "dist", "index.html"), "w").write(html)
-    mh, mh_sites, summ = maharashtra()
-    html = (tpl.replace("__MODE__", "maharashtra").replace("__AREAS__", J(mh)).replace("__SITES__", J(mh_sites)).replace("__META__", J(summ)))
+    mh, mh_sites, summ, corr = maharashtra()
+    html = (tpl.replace("__MODE__", "maharashtra").replace("__AREAS__", J(mh)).replace("__SITES__", J(mh_sites)).replace("__META__", J(summ)).replace("__CORR__", J(corr)))
     open(os.path.join(HERE, "dist", "maharashtra.html"), "w").write(html)
     print(f"national: {len(sts['features'])} states (unmatched {unmatched}), {len(sites['features'])} sites; "
           f"maharashtra: {len(mh['features'])} districts, {len(mh_sites['features'])} sites; "

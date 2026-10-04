@@ -1,0 +1,45 @@
+{
+ "osm_base": "2026-10-04T08:28:20Z",
+ "ways": 20440,
+ "road_km_motorway_trunk": 25782,
+ "side_km": 37065,
+ "share_km_with_NH_ref_pct": 88.9,
+ "oneway_km_share_pct": 56.2,
+ "norm_stations_required": 1853,
+ "hw_accessible_open_sites": 170,
+ "coverage_pct_lower_bound": 11.7,
+ "gap_stations_upper_bound": 1637,
+ "params": {
+  "spacing_km": 20.0,
+  "access_m": 500.0,
+  "cover_km": 10.0,
+  "crs": "EPSG:7755"
+ },
+ "top_districts_by_norm": [
+  [
+   "Solapur",
+   118.5,
+   8.6
+  ],
+  [
+   "Pune",
+   106.2,
+   34.5
+  ],
+  [
+   "Ahilyanagar",
+   95.6,
+   20.2
+  ],
+  [
+   "Nashik",
+   93.0,
+   10.2
+  ],
+  [
+   "Buldhana",
+   84.3,
+   0.0
+  ]
+ ]
+}

@@ -12,6 +12,7 @@ $PY components/census_completeness/mse.py > eval/results/c5_mse_run.log
 $PY components/census_completeness/mse_sensitivity.py > /dev/null
 $PY components/access_gap/small_area.py > eval/results/small_area_run.log
 $PY components/access_gap/mh_district_gap.py > /dev/null
+$PY components/requirement_siting/corridor_norm.py > /dev/null
 $PY components/census_completeness/autoresearch/eval.py --holdout
 $PY components/adoption_forecast/autoresearch/eval.py --holdout
 $PY components/adoption_forecast/autoresearch/eval_monthly.py --holdout

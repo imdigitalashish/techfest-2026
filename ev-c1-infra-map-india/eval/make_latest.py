@@ -112,6 +112,13 @@ def main():
     put("nagpur_lo", float(ng["est_lo"]), f0(float(ng["est_lo"])), "eval/results/mh_district_gap.csv")
     put("nagpur_hi", float(ng["est_hi"]), f0(float(ng["est_hi"])), "eval/results/mh_district_gap.csv")
     put("nagpur_3w_pct", round(100 * float(ng["bev_3W"]) / float(ng["bev_total"])), f"{100 * float(ng['bev_3W']) / float(ng['bev_total']):.0f}%", "eval/results/mh_district_gap.csv")
+    cr = j("mh_corridor_summary.json"); src = "eval/results/mh_corridor_summary.json"
+    put("cor_side_km", cr["side_km"], source=src); put("cor_nh_ref_pct", cr["share_km_with_NH_ref_pct"], f"{cr['share_km_with_NH_ref_pct']:.1f}%", src)
+    put("cor_norm_stations", cr["norm_stations_required"], source=src); put("cor_hw_sites", cr["hw_accessible_open_sites"], source=src)
+    put("cor_cov_lb", cr["coverage_pct_lower_bound"], f"{cr['coverage_pct_lower_bound']:.1f}%", src)
+    put("cor_gap_ub", cr["gap_stations_upper_bound"], source=src)
+    td = cr["top_districts_by_norm"]
+    put("cor_top1_name", td[0][0], td[0][0], src); put("cor_top1_need", td[0][1], f0(td[0][1]), src); put("cor_top1_cov", td[0][2], f"{td[0][2]:.1f}%", src)
     c9 = j("c9_summary.json"); src = "eval/results/c9_summary.json"
     fc = c9["forecast_12m_dev_holdout"]
     for k, short in (("naive12", "naive"), ("pooled_growth_nat_0.5", "pooled"), ("share_logit_k2_0.5", "logit"), ("ensemble_pg+sl", "ensemble")):

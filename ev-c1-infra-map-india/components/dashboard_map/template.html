@@ -20,10 +20,11 @@
 <div class="sub" id="subtitle"></div><div class="kpi" id="kpi"></div>
 <h2>Map layer</h2><div id="layers"></div><div class="legend" id="legend"></div>
 <label><input type="checkbox" id="tSites" checked> Charging sites in open data <span class="sw" style="background:#0f766e;border-radius:50%;width:9px;height:9px"></span> 2–3 sources <span class="sw" style="background:#94a3b8;border-radius:50%;width:9px;height:9px"></span> 1 source</label>
+<div id="corrBox" style="display:none"><label><input type="checkbox" id="tCorr" checked> National-highway corridors, MoP 20 km norm: <span class="sw" style="background:#2563eb;border-radius:50%;width:9px;height:9px"></span> visible station within 10 km <span class="sw" style="background:#dc2626;border-radius:50%;width:9px;height:9px"></span> none visible</label><div class="sub" id="corrNote"></div></div>
 <h2 id="rankTitle"></h2><table id="rank"></table>
 <div class="note" id="note"></div></div>
 <script>
-const MODE="__MODE__", AREAS=__AREAS__, SITES=__SITES__, META=__META__;
+const MODE="__MODE__", AREAS=__AREAS__, SITES=__SITES__, META=__META__, CORR=__CORR__;
 const fmt=(n,d=0)=>n==null||Number.isNaN(n)?'—':Number(n).toLocaleString('en-IN',{maximumFractionDigits:d});
 const C=['#e9f4ef','#bfe0d0','#f6d58e','#f2a65a','#e0683c','#b3261e'], CC=['#b3261e','#e0683c','#f2a65a','#f6d58e','#bfe0d0','#5aa78a'];
 let LAYERS;
@@ -67,9 +68,14 @@ map.on('load',()=>{
  map.addLayer({id:'fill',type:'fill',source:'areas',paint:{'fill-color':expr(LAYERS[0]),'fill-opacity':0.85}});
  map.addLayer({id:'line',type:'line',source:'areas',paint:{'line-color':'#475569','line-width':0.7}});
  map.addLayer({id:'hl',type:'line',source:'areas',paint:{'line-color':'#111827','line-width':2.4},filter:['==',['get',MODE==='national'?'shapeName':'district'],'']});
+ map.addSource('corr',{type:'geojson',data:CORR});
+ map.addLayer({id:'corr',type:'circle',source:'corr',paint:{'circle-radius':1.7,'circle-color':['case',['==',['get','c'],1],'#2563eb','#dc2626'],'circle-opacity':0.75}});
  map.addLayer({id:'pts',type:'circle',source:'sites',paint:{'circle-radius':['case',['>=',['get','n'],2],3.4,2.4],'circle-color':['case',['>=',['get','n'],2],'#0f766e','#94a3b8'],'circle-stroke-width':0.5,'circle-stroke-color':'#fff'}});
  legend(LAYERS[0]);
  document.querySelectorAll('input[name=lyr]').forEach(r=>r.onchange=e=>{const L=LAYERS[+e.target.value];map.setPaintProperty('fill','fill-color',expr(L));legend(L);});
+ if(MODE!=='national'){const c=META.corridor;document.getElementById('corrBox').style.display='block';
+  document.getElementById('corrNote').textContent=`${fmt(c.side_km)} carriageway-side km of OSM motorway/trunk (${c.share_km_with_NH_ref_pct}% NH-referenced) → ${fmt(c.norm_stations_required)} stations at one per 20 km per side; ${fmt(c.hw_accessible_open_sites)} visible sites within 500 m; ≥ ${c.coverage_pct_lower_bound}% of side-km covered (open data sees few stations, so coverage is a lower bound).`;
+  document.getElementById('tCorr').onchange=e=>map.setLayoutProperty('corr','visibility',e.target.checked?'visible':'none');}
  document.getElementById('tSites').onchange=e=>map.setLayoutProperty('pts','visibility',e.target.checked?'visible':'none');
  const tip=document.getElementById('tip'), nm=p=>MODE==='national'?p.shapeName:p.district;
  map.on('mousemove','fill',e=>{map.getCanvas().style.cursor='pointer';tip.style.display='block';tip.style.left=(e.point.x+12)+'px';tip.style.top=(e.point.y+12)+'px';tip.textContent=nm(e.features[0].properties);});
