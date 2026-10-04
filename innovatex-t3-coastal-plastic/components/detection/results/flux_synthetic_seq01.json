@@ -1,0 +1,37 @@
+{
+ "label": "SYNTHETIC",
+ "sequence": "seq01",
+ "frames": 300,
+ "fps": 5.0,
+ "gt_crossings": 24,
+ "items_crossed": 28,
+ "count_error_pct": 16.67,
+ "detector_model_id": "baseline_yolo11n_640/best.pt#sha256:a5157292e2c0",
+ "device": "mps",
+ "tracker": "bytetrack.yaml (ultralytics defaults)",
+ "conf": 0.1,
+ "imgsz": 640,
+ "reproduce": "python -m t3det.synth --out ../../.data/detection/synth/seq01 --frames 300 --items 24 --seed 7 --speed 4.0 9.0 && python -m t3det.run_flux --weights ../../.data/detection/runs/baseline_yolo11n_640/weights/best.pt --seq ../../.data/detection/synth/seq01",
+ "flux_estimate": {
+  "site_id": "SYNTHETIC-seq01",
+  "t_start": "2026-10-04T00:00:00Z",
+  "t_end": "2026-10-04T00:01:00Z",
+  "items_crossed": 28,
+  "items_per_min": 28.0,
+  "by_label": {
+   "litter": 28
+  },
+  "est_kg": 0.532,
+  "est_kg_ci90": [
+   0.2099,
+   0.8541
+  ],
+  "method": "YOLO detector + ByteTrack (ultralytics, conf>=0.1) + line-crossing count, one count per track id; mass = items x 19.0 g/item (sd 37.0 g; assumption: van Emmerik et al. 2019 Sci Rep (Saigon), PMC6753078: 1.9e-2 kg per visually counted item, sd 3.7e-2; transfer to Mumbai assumed); CI90 = n*mean +/- 1.645*sd*sqrt(n)",
+  "provenance": {
+   "kind": "synthetic",
+   "source": "component:detection/t3det.synth seed=7",
+   "retrieved_at": "2026-10-04T11:31:16.461334Z",
+   "notes": "SYNTHETIC: real TUD-GV test-split litter crops pasted on an inpainted TUD-GV water frame; mass factor is an ASSUMPTION transferred from the Saigon River (van Emmerik et al. 2019)"
+  }
+ }
+}

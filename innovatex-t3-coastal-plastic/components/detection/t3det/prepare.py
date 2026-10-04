@@ -103,7 +103,7 @@ def main() -> None:
     summary = {"dataset": "TUD-GV floating litter subset (zenodo 13730228)", "seed": SEED, "grouping": "experiment id"}
     for s, v in split.items():
         (YOLO / f"{s}.txt").write_text("\n".join(str(all_paths[n]) for n in v) + "\n")
-        n_ann = sum(len(labs[Path(n).stem].read_text().split("\n")) for n in v if labs[Path(n).stem].read_text().strip())
+        n_ann = sum(len(labs[Path(n).stem].read_text().strip().splitlines()) for n in v)
         summary[s] = {"images": len(v), "annotations": n_ann, "experiments": sorted({experiment_of(n) for n in v})}
     (YOLO / "tudgv.yaml").write_text(
         f"path: {YOLO}\ntrain: train.txt\nval: val.txt\ntest: test.txt\nnames:\n  0: {CLASSES[0]}\n")

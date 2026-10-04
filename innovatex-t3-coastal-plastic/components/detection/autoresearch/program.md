@@ -32,3 +32,5 @@ was estimated at 5–14 min, so the val passes could not fit before the 08:10 pu
 header. Nothing was faked. The harness is complete and was smoke-tested end to end: `eval.py` ran on the Groningen split with
 COCO YOLO11n (mAP50 0.4053, see `results/zeroshot_groningen_eval.json`). Next run, on an idle machine or Azure:
 `bash run_after_train.sh B <best.pt>`.
+
+Update 2026-10-04 17:05 IST: the trained baseline now exists (`results/metrics.json`: test mAP50 0.857; val 0.929). The ratchet has not been run; it starts from this checkpoint on the lead's go.
