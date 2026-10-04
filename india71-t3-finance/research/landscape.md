@@ -97,6 +97,8 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 
 - Real data: the two CSVs above (reproduce with `python eval/public_data/parse_ls4090.py`).
 - Synthetic targeting benchmark (C14 simulator → C2 → C3 → C6): [`eval/results/c6_*.json`](../eval/results/) and the ledger [`components/targeting/autoresearch/results.tsv`](../components/targeting/autoresearch/results.tsv); all account-level data there is **SYNTHETIC**, calibrated to the 23% inoperative share above.
+- **C6 v0.2 pre-registered test** (SYNTHETIC; `eval/preregistration/c6_v02.md` → `c6_v02_results.md`): transparent rule 0.38, learned who-only challenger 0.46 (+0.079, 95% CI 0.058–0.100, 10/10 seeds); gate never deployed it; ADR 002 ships the rule with the model as a gated challenger.
+- **C5 policy engine:** 22/22 governance scenarios, 0 false allows; audit-log tampering detected 65/65 with a published checkpoint (`eval/results/policy_engine.json`).
 - **Real-RCT check of the C6 learner** [P9] (`python eval/hillstrom_eval.py --seeds 0 1 2` → [`hillstrom_uplift.json`](../eval/results/hillstrom_uplift.json); retail e-mail, not banking): incremental visits per 1,000 customers vs no e-mail, IPW on held-out halves, mean of 3 splits — at a 10% budget: random 6.4, best arm to a random subset 8.1, our learner 10.6; at 20%: 13.2 / 15.5 / 18.7; at 100%: 63.6 / 80.7 / 77.5. The learner wins when contacts are scarce (who to contact) and loses at full coverage (which message), where per-person arm choice is noisy; the 95% CIs of the paired difference include zero in 2 of 3 splits at 10–20%.
 - Findex 2025 India extract: [`findex2025_india_account_inactive.csv`](../eval/public_data/derived/findex2025_india_account_inactive.csv).
 

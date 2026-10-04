@@ -7,6 +7,7 @@
 - **Baseline in production:** blanket outreach — alerts before inoperativity and quarterly letters/SMS to all inoperative holders [P2]; campaign drives to re-KYC inactive accounts [P1, P2].
 - **Our baseline (built):** T-learner uplift (one gradient-boosted classifier per arm) + Lagrangian multiple-choice knapsack under a rupee budget, women's-share floor via a bonus term, 10% holdout (contract `InterventionPlanRow`).
 - **Measured (SYNTHETIC, 3 seeds, corrected evaluator, `eval/results/c6_*.json`):** normalised policy value 0.30 ± 0.04 (T-learner), 0.33 ± 0.02 with shrinkage (kept), vs best-arm-for-all 0.37, status quo 0.04, risk ranking −0.07, oracle 1.0.
+- **v0.2 (pre-registered 14:00 IST, fresh SYNTHETIC seeds 10–19; `eval/preregistration/c6_v02_results.md`, ADR 002):** transparent rule 0.38 ± 0.19, learned who-only challenger 0.46 ± 0.19 (paired +0.079, 95% CI 0.058–0.100, 10/10), best-arm-only 0.29, status quo 0.03; the gate deployed the challenger in 0/10 worlds (~840 validation persons) and the rule collapsed in 2/10 worlds (pilot ranked arms wrongly). Deployed policy: the rule; the model is a gated challenger.
 - **Innovation room:** (1) noise-aware allocation — shrinkage toward arm means, lower-confidence-bound allocation for expensive arms (winner's-curse control); (2) policy *selection* by doubly-robust off-policy value on a pilot split, so the system never deploys a learned policy that loses to a simple rule; (3) adaptive experimentation (Thompson sampling over arms per segment) so the holdout keeps learning [L: Kasy & Sautmann 2021; Hadad et al. 2021]; (4) person-level (not account-level) allocation, which removes double-visits to multi-account holders; (5) fairness/equity constraints with reason codes for explainability [L: Athey & Wager 2021 policy learning; Kitagawa & Tetenov 2018].
 - **Metric:** normalised policy value at fixed budget, averaged over seeds; fresh-seed re-checks. Loop: [`../../components/targeting/autoresearch/`](../../components/targeting/autoresearch/).
 
@@ -22,6 +23,8 @@
 - **Innovation room:** a "DBT pass-through" state (credits cashed out within 7 days, no other use) that today counts as "operative"; gaming guard (token credits never count); publishing the rules so anyone can recompute. **Metric:** macro-F1 vs simulated truth; gaming inflation (pp per ₹ of token credits).
 
 ## C3 Tokeniser + person linker / C4 clean room / C5 policy engine
+
+- **C5 built v0** (`components/policy_engine/`): deny-by-default rules citing verified sources; 22/22 governance scenarios, 0 false allows; hash-chained audit log + published checkpoint, tampering detected 65/65 (`eval/results/policy_engine.json`). Scenarios were written with the rules — this shows fidelity to the published matrix, not legality.
 
 - **Baseline:** NPCI mapper and CKYC identify accounts for DBT and KYC [L]. **Built (C3):** purpose-scoped HMAC tokens — tokens for targeting cannot be joined with tokens for statistics (tested).
 - **Innovation room:** linkage *inside* a confidential-computing clean room [L: DEPA Training; cloud confidential clean rooms]; private set intersection for cross-bank duplicates [L]; policy-as-code purpose binding with a hash-chained audit log (C5) [L: Open Policy Agent; transparency logs]. **Metrics:** pairwise linkage F1; governance-scenario accuracy (C5); red-team leakage count (C4).
