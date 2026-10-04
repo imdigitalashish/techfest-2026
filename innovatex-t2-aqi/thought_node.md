@@ -131,3 +131,4 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
 ### 2026-10-04 10:00 IST — Paused (Supervisor 09:55)
 - Saved state: no compute jobs running; all results committed. Prototype plan points to the partial agent-sourced BOM listings (items 1–10). The memo now leads with the stress-tested replay numbers. *Now* holds the exact resume point and restart commands. Going idle; only the `bom-prices` agent's completion will be saved and pushed.
+- 10:05 — `bom-prices` agent finished: all 16 BOM items have vendor listings with ₹ (incl. GST), stock and URL in `research/raw/hardware-bom.md`, plus datasheet quotes for 5 sensors. Caveats: no low-cost anemometer + vane in stock; SX1262 IN865 band unconfirmed. The lead spot-check and §2 fill remain resume step (2). Idle again.
