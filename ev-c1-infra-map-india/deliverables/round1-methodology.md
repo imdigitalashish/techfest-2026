@@ -37,10 +37,9 @@ They link into <!--n:linked_sites-->3,336<!--/n--> distinct sites, which is <!--
 - <!--n:nat_bev_2025-->2,356,971<!--/n--> in calendar 2025, which is <!--n:nat_bev_share_2025-->8.05%<!--/n--> of all registrations;
 - a nowcast of <!--n:nowcast_2026_m-->3.60 million<!--/n--> for 2026 (+<!--n:nowcast_growth-->53%<!--/n-->; §2.4).
 
-**First gap signal.** There are <!--n:nat_bev_per_pcs-->360<!--/n--> BEV registrations per official public station. Large states range from <!--n:state_bev_per_pcs_karnataka-->152<!--/n--> (Karnataka) through <!--n:state_bev_per_pcs_uttar_pradesh-->792<!--/n--> (Uttar Pradesh) and <!--n:state_bev_per_pcs_bihar-->1,085<!--/n--> (Bihar) to <!--n:state_bev_per_pcs_assam-->1,123<!--/n--> (Assam). We treat the ratio as a *signal, not an answer*:
-- registrations are not on-road stock;
-- the official counts are 14 months older than the registrations;
-- most e-2W/3W charge at home or depots, or swap batteries.
+**First gap signal, with dates aligned.** BEV registered by July 2025 (<!--n:nat_bev_jul2025-->6,919,965<!--/n-->) against the official stations of 1 August 2025 gives <!--n:nat_bev_jul2025_per_pcs-->236<!--/n--> BEV per public station nationally. With today's registrations it is <!--n:nat_bev_per_pcs-->360<!--/n-->. Among large states (date-aligned) the range runs from <!--n:state_bev_jul2025_per_pcs_karnataka-->99<!--/n--> (Karnataka) through <!--n:state_bev_jul2025_per_pcs_uttar_pradesh-->565<!--/n--> (Uttar Pradesh) and <!--n:state_bev_jul2025_per_pcs_bihar-->736<!--/n--> (Bihar) to <!--n:state_bev_jul2025_per_pcs_assam-->759<!--/n--> (Assam).
+
+Registrations are a fair proxy for the on-road BEV fleet: <!--n:bev_since_2020_pct-->95.3%<!--/n--> were registered in 2020 or later and <!--n:bev_since_2022_pct-->90.8%<!--/n--> in 2022 or later. Survival curves matter mainly for the <!--n:bev_before_2020-->500,459<!--/n--> older registrations. We still treat the ratio as a *signal, not an answer*, because most e-2W/3W charge at home or depots, or swap batteries; segment-aware demand is §2.6.
 
 **Policy anchors (verified at the source).**
 - **MoP Guidelines 2024** (No. 12/2/2018-EV, 17 Sep 2024), clause 11(1):
@@ -62,6 +61,7 @@ We built 14 components with typed contracts and an isolated metric each ([archit
 - **VAHAN ingest** replays the public dashboard's own requests: state, RTO, vehicle class, fuel and month, with no browser and no third-party mirror. The sum over RTOs equals the state total exactly: error <!--n:mh_reconciliation_err-->0.0<!--/n--> across Maharashtra's <!--n:mh_rtos-->61<!--/n--> offices, and likewise for Chhattisgarh.
 - **Charger sources** are each normalised to one model: a *site* with connectors (type, count, kW), operator, status and as-on date. Every record keeps its source and licence (OSM: ODbL; Overture: CDLA-Permissive-2.0 / Apache-2.0 / CC0; OCM: per provider).
 - **Linkage:** records are matched across sources by mutual nearest neighbour within `150 m`, then grouped into connected components (sites). Next: a Fellegi–Sunter matcher (Splink) on distance, name, operator and connectors, scored by pairwise F1 on hand-labelled pairs.
+- **Overture category is incomplete.** Many Indian chargers are filed under other categories, so we add a strict EV-name rule. In a random sample of 30 name-matched places, all were charging sites; one lay outside India and is removed by the polygon clip ([sample](../research/data/overture_name_rule_sample.csv)).
 - **Free-text fields are unreliable.** 156 Open Charge Map entries carry a state name that contradicts their own coordinates, so every record is placed by point-in-polygon, never by text.
 
 ### 2.2 How complete is the census? (spike 1)
@@ -72,7 +72,8 @@ We treat each source as an independent "capture" of the true set of sites. A log
 - **State validation** against the official counts, which the estimator never sees (<!--n:mse_states-->17<!--/n--> states with ≥ 100 stations):
   - the median estimate is <!--n:mse_median_ratio-->0.58<!--/n-->× the official count, against <!--n:union_median_ratio-->0.094<!--/n-->× for the raw union;
   - the 90% CI contains the official count in only <!--n:mse_ci_coverage-->47%<!--/n--> of states.
-- The estimator therefore **<!--n:mse_passes-->fails<!--/n-->** our pre-registered pass rule (median error within 25% *and* CI coverage ≥ 80%). The causes are thin overlaps and heterogeneous capture: every list finds the same easy, branded, urban sites.
+- The estimator therefore **<!--n:mse_passes-->fails<!--/n-->** our pre-registered pass rule (median error within 25% *and* CI coverage ≥ 80%).
+- **Robustness:** across 4 model-selection rules and 3 linkage radii (<!--n:mse_sens_runs-->6<!--/n--> variants), the national estimate ranges from <!--n:mse_nat_min_model-->21,339<!--/n--> to <!--n:mse_nat_max_model-->80,833<!--/n-->. <!--n:mse_sens_any_pass-->none<!--/n--> of the variants passes (best CI coverage <!--n:mse_sens_cov_max-->47%<!--/n-->). The causes are thin overlaps and heterogeneous capture: every list finds the same easy, branded, urban sites.
 - **What we use instead:** the per-state *open-data coverage* (open sites ÷ official count) is shown on the map, so a planner sees where the data is too thin to trust. The estimator is re-run whenever a denser list arrives (operator feeds, UEI on Beckn, the BEE database).
 
 ### 2.3 District supply: small-area allocation, validated
@@ -115,7 +116,7 @@ Indicators per district:
 - stations needed to reach a benchmark density;
 - ranked plain-language reasons.
 
-Today, Maharashtra averages <!--n:mh_bev_per_pcs-->285<!--/n--> BEV per station. <!--n:mh_zero_open_districts-->17<!--/n--> of <!--n:mh_districts-->35<!--/n--> district units have no site in any open source. The thinnest districts:
+Today, Maharashtra averages <!--n:mh_bev_per_pcs-->285<!--/n--> BEV per station (date-aligned: <!--n:state_bev_jul2025_per_pcs_maharashtra-->188<!--/n-->). District BEV shares are applied to the state total, so date alignment rescales every district equally and does not change the ranking. <!--n:mh_zero_open_districts-->17<!--/n--> of <!--n:mh_districts-->35<!--/n--> district units have no site in any open source. The thinnest districts:
 
 | District | BEV per estimated station (90% range) |
 |---|---|
@@ -159,7 +160,7 @@ To match Karnataka's density (<!--n:ka_bev_per_pcs-->152.4<!--/n--> BEV per stat
 
 ## 5. Limitations (what a jury should challenge)
 - Registrations ≠ vehicles on the road.
-- Official counts are as of 2024–25, and the sources differ in definitions.
+- Official counts are as of 2024–25 (we align dates where we can), and the sources differ in definitions.
 - Open data is sparse and urban-biased.
 - Capture–recapture fails validation today.
 - District supply rests on a model tested in one state.

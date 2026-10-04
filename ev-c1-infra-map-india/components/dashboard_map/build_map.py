@@ -21,7 +21,7 @@ def national():
     gap = pd.read_csv(f"{RES}/state_gap_baseline.csv"); gap["k"] = gap.vahan_state.map(key)
     mse = pd.read_csv(f"{RES}/c5_mse_by_state.csv").rename(columns={"state_key": "k"})
     now = pd.read_csv(f"{RES}/c9_nowcast_2026.csv"); now["k"] = now.state.map(key)
-    st = adm.merge(gap[["k", "bev_cum", "bev_2025", "pcs_total", "bev_per_pcs", "bev_share_2025_pct"]], on="k", how="left")
+    st = adm.merge(gap[["k", "bev_cum", "bev_2025", "pcs_total", "bev_per_pcs", "bev_share_2025_pct", "bev_cum_jul2025", "bev_jul2025_per_pcs"]], on="k", how="left")
     st = st.merge(mse[["k", "n_osm", "n_ocm", "n_ovt", "n_obs", "N_hat", "ci90_lo", "ci90_hi"]], on="k", how="left")
     st = st.merge(now[["k", "yoy", "ytd_jan_sep_2026"]].rename(columns={"yoy": "nowcast_2026"}), on="k", how="left")
     for c in ("n_osm", "n_ocm", "n_ovt", "n_obs"):
