@@ -1,0 +1,42 @@
+{
+ "label": "EXPLORATORY (PREREG amendment 3); T1 contexts, frozen RoD config",
+ "summary": {
+  "0.1": {
+   "n": 48,
+   "m_mean": 2.0,
+   "streamed_equal": 48,
+   "t1_recorded_equal": 48,
+   "rod_T1_acc": 0.8541666666666666,
+   "e2_exactkv_acc": 0.875,
+   "e3_oracleblk_acc": 0.9791666666666666,
+   "e23_both_acc": 1.0,
+   "e5_top2_acc": null
+  },
+  "0.25": {
+   "n": 48,
+   "m_mean": 7.083333333333333,
+   "streamed_equal": 48,
+   "t1_recorded_equal": 48,
+   "rod_T1_acc": 0.5833333333333334,
+   "e2_exactkv_acc": 0.8958333333333334,
+   "e3_oracleblk_acc": 0.5833333333333334,
+   "e23_both_acc": 0.8958333333333334,
+   "e5_top2_acc": 0.8541666666666666
+  },
+  "0.5": {
+   "n": 48,
+   "m_mean": 15.166666666666666,
+   "streamed_equal": 48,
+   "t1_recorded_equal": 48,
+   "rod_T1_acc": 0.6041666666666666,
+   "e2_exactkv_acc": 0.875,
+   "e3_oracleblk_acc": 0.6041666666666666,
+   "e23_both_acc": 0.875,
+   "e5_top2_acc": 0.8541666666666666
+  }
+ },
+ "max_abs_score_diff_streamed_vs_unchunked": 0.00011648982763290405,
+ "transient_bytes_streamed_chunk256_upper_bound": 775424,
+ "command": "HF_HUB_OFFLINE=1 ~/venv_kvp/bin/python components/recall_on_demand/posthoc_T1.py",
+ "wall_s": 924.8
+}

@@ -334,12 +334,15 @@ def caveats(V):
     rod, st = get(V["T1"], "rod", 0.25), get(V["T1"], "streaming", 0.25)
     mm = mech(load("T1")["rows"], "rod")
     parts = [f"RoD minus a lexical index over the same ids at 25%: {sh(V.get('S2_T1'))} on literal"
-             + (f" and {sh(V.get('S2_T2'))} on paraphrased needles" if V.get("T2") else " needles"),
-             f"accuracy given a recalled needle falls from {mm[0.1]['acc_given_hit']:.0%} at 10% to {mm[0.25]['acc_given_hit']:.0%} at 25% "
-             f"memory, mostly by naming another needle's value"]
-    if V.get("S4"):
-        x = V["S4"].get(0.25)
-        parts.append(f"recomputing blocks with 64 extra tokens of context does not help ({x['d']:+.2f}, {x['lo']:+.2f} to {x['hi']:+.2f})")
+             + (f" and {sh(V.get('S2_T2'))} on paraphrased needles" if V.get("T2") else " needles")]
+    ph = RES / "posthoc_T1.json"
+    mech_s = (f"accuracy given a recalled needle falls from {mm[0.1]['acc_given_hit']:.0%} (10%) to {mm[0.25]['acc_given_hit']:.0%} (25%), "
+              f"mostly naming another needle's value")
+    if ph.exists():
+        S = json.loads(ph.read_text())["summary"]["0.25"]
+        mech_s += (f"; exact KV for the same blocks gives {S['e2_exactkv_acc']:.0%} and recalling only the top-2 blocks "
+                   f"{S['e5_top2_acc']:.0%} (exploratory), so approximately recomputed extra blocks cause the loss")
+    parts.append(mech_s)
     if V.get("T3"):
         r3 = load("T3")["rows"]
         fc = get(V["T3"], "full", 1.0)

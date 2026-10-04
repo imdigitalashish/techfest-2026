@@ -220,6 +220,16 @@ torch-cpu · Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz · torch 2.10.0+cpu �
 
 Positions, masks, cache assembly and block bookkeeping reproduce the full cache whenever the evicted KV is restored exactly or recomputed with its true prefix, so RoD's recall loss is not a plumbing artifact.
 
+## Exploratory post-hoc analyses on T1 contexts (PREREG amendment 3; not confirmatory)
+
+`HF_HUB_OFFLINE=1 ~/venv_kvp/bin/python components/recall_on_demand/posthoc_T1.py` · streamed vs unchunked max |Δscore| 1.16e-04 · streamed transient set ≤ 0.74 MiB
+
+| Keep | Questions | Recall blocks m | E1 streamed = unchunked | Unchunked = T1 recorded | RoD (T1) | E2 exact-KV oracle | E3 oracle block | E2+E3 | E5 top-2 only |
+|---|---|---|---|---|---|---|---|---|---|
+| 0.10 | 48 | 2.0 | 48/48 | 48/48 | 0.854 | 0.875 | 0.979 | 1.000 | n/a |
+| 0.25 | 48 | 7.1 | 48/48 | 48/48 | 0.583 | 0.896 | 0.583 | 0.896 | 0.854 |
+| 0.50 | 48 | 15.2 | 48/48 | 48/48 | 0.604 | 0.875 | 0.604 | 0.875 | 0.854 |
+
 ## RoD's transient scoring working set (analytic, T1 mean context)
 
 | Keep | Recall blocks m | Evicted tokens E | Persistent store MiB | Transient scoring set MiB (unchunked upper bound) |

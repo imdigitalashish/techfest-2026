@@ -27,7 +27,7 @@ A question's *own* layer-5 queries score evicted 64-token blocks against the ind
 Both run today (results below).
 
 ## Stretch ambitions
-- **Modify a method:** RoD extends StreamingLLM; its scorer is tuned by an automated keep-only-if-better loop on development seeds.
+- **Modify a method:** RoD extends StreamingLLM, with its scorer tuned by a keep-only-if-better loop on development seeds.
 - **2+ baselines:** our implementations plus kvpress's StreamingLLM, SnapKV, ObservedAttention (H2O), Knorm, ExpectedAttention and TOVA.
 - **Next:** multi-turn chat, KVzip baseline, 16–32k contexts, memory-bounded prefill.
 
@@ -49,12 +49,12 @@ Query-scored key indices (Quest, ArkVale) and token recomputation (CacheBlend, H
 On 12 held-out ~4k-token contexts (48 questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. At 25% of the KV memory, ten query-agnostic baselines recall 0%–35% and RoD 58%: +0.40 over StreamingLLM (95% CI +0.25 to +0.54; pre-registered), yet 0.25 below the full cache. At 10% memory RoD recalls 85% (baselines ≤6%); on fresh paraphrased contexts it recalls 69% vs the full cache's 46% (+0.23, 95% CI +0.10 to +0.38), but 12 of the full cache's 26 misses are answers cut off by our 10-token limit.
 <!-- p2:headline:end -->
 - **Controls:** <!-- p2:caveats:begin -->
-RoD minus a lexical index over the same ids at 25%: +0.04 (-0.04 to +0.12) on literal and +0.27 (+0.10 to +0.44) on paraphrased needles; accuracy given a recalled needle falls from 98% at 10% to 55% at 25% memory, mostly by naming another needle's value; recomputing blocks with 64 extra tokens of context does not help (-0.08, -0.17 to +0.00); synonym-aliased keys defeat even the full cache (10%), so meaning-based retrieval is untested (RoD's block hit there is 23% vs 73% for lexical); CPU answer time 6.2× StreamingLLM's.
+RoD minus a lexical index over the same ids at 25%: +0.04 (-0.04 to +0.12) on literal and +0.27 (+0.10 to +0.44) on paraphrased needles; accuracy given a recalled needle falls from 98% (10%) to 55% (25%), mostly naming another needle's value; exact KV for the same blocks gives 90% and recalling only the top-2 blocks 85% (exploratory), so approximately recomputed extra blocks cause the loss; synonym-aliased keys defeat even the full cache (10%), so meaning-based retrieval is untested (RoD's block hit there is 23% vs 73% for lexical); CPU answer time 6.2× StreamingLLM's.
 <!-- p2:caveats:end -->
 
 ## Feasibility and risks
 - **Team:** three students [names to be added]: systems/inference (RoD store, demo), ML (attention scoring, quantisation), evaluation (benchmarks, statistics).
-- **Feasibility:** a CPU prototype already runs the pre-registered evaluation.
+- **Feasibility:** a CPU prototype runs everything today.
 - **Milestones:**
 
   | Weeks | Milestone |
