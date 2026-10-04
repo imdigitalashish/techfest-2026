@@ -18,7 +18,7 @@ FILES = {
     "mrv": "components/mrv_ledger/results/metrics.json",
     "mrvd": "components/mrv_ledger/results/eval_detail.json",
     "det": "components/detection/results/metrics.json",
-    "detzs": "components/detection/results/zeroshot_test_metrics.json",
+    "detzs": "components/detection/results/metrics_zeroshot.json",
     "gron": "components/detection/results/zeroshot_groningen_eval.json",
     "flux": "components/detection/results/flux_synthetic.json",
 }
@@ -86,6 +86,19 @@ ALIASES: dict[str, tuple[str, str, str]] = {
     "mrv_dens125": ("mrvd", "reconciliation.sensitivity.false_flag_rate_if_true_density_x1.25", "pct1"),
     "mrv_trunc_chain": ("mrvd", "tamper.truncate_tail.detected_chain_only", "pct0"),
     "mrv_trunc_anchor": ("mrvd", "tamper.truncate_tail.detected_with_anchor", "pct0"),
+    # --- detector (BUILT; public TUD-GV floating-litter images, not Mumbai) ---
+    "det_map50": ("det", "mAP50", "f3"),
+    "det_map5095": ("det", "mAP50_95", "f3"),
+    "det_p": ("det", "precision", "f3"),
+    "det_r": ("det", "recall", "f3"),
+    "det_n": ("det", "n_test_images", "int"),
+    "det_val_map50": ("det", "other_splits.val.mAP50", "f3"),
+    "det_gron_map50": ("det", "other_splits.groningen.mAP50", "f3"),
+    "det_gron_r": ("det", "other_splits.groningen.recall", "f3"),
+    "det_gron_n": ("det", "other_splits.groningen.n_images", "int"),
+    "det_zs_map50": ("detzs", "mAP50", "f3"),
+    "det_lat_mac": ("det", "latency_ms_mps.median", "int"),
+    "flux_err": ("flux", "count_error_pct", "int"),
 }
 
 
@@ -144,10 +157,11 @@ def _det_line() -> str:
                 f"mAP50 {d['mAP50']:.3f}, but recall {d['recall']:.3f} at score {d['precision_recall_at_score']}. "
                 "Off-the-shelf models miss most river litter; training on floating-litter data is required.")
     zs = _load("detzs")
-    gr = _load("gron")
-    return (f"YOLO11n trained on public floating-litter images (TUD-GV): held-out test mAP50 {d['mAP50']:.3f} "
-            f"(zero-shot: {zs['mAP50']:.3f}) on {n} images; precision {d['precision']:.3f}, recall {d['recall']:.3f} "
-            f"at score {d['precision_recall_at_score']}.")
+    g = d["other_splits"]["groningen"]
+    return (f"YOLO11n trained on public floating-litter images (TUD-GV): on {n} held-out test images, mAP50 "
+            f"{d['mAP50']:.3f} (off-the-shelf: {zs['mAP50']:.3f}), precision {d['precision']:.3f}, recall {d['recall']:.3f}. "
+            f"At another site's camera (Groningen, {g['n_images']} images) mAP50 falls to {g['mAP50']:.3f}: "
+            "it does not yet transfer, and Mumbai nullah film is untested.")
 
 
 COMPUTED = {"det_line": _det_line}

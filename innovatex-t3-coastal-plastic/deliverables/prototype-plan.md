@@ -121,7 +121,7 @@ Design month is July, Mumbai's darkest: 3.79 kWh/m²/day of insolation vs 7.09 i
   - vs an assumed fixed roster: −2.1% (range −12.5% to +1.5%), small and uncertain.
 - **SENSITIVITY:** fuse alone −0.1%; one-way pocket halving re-float −5.0%.
 - **SYNTHETIC:** evidence-record tests catch inflated claims at 71.6% with 4.7% false flags; tamper detection 100%.
-- **BUILT detector:** off-the-shelf (COCO-pretrained, zero-shot) YOLO11n on 254 held-out floating-litter test images: mAP50 0.394, but recall 0.140 at score 0.25. Off-the-shelf models miss most river litter; training on floating-litter data is required.
+- **BUILT detector:** YOLO11n trained on public floating-litter images (TUD-GV): on 254 held-out test images, mAP50 0.857 (off-the-shelf: 0.394), precision 0.845, recall 0.784. At another site's camera (Groningen, 63 images) mAP50 falls to 0.524: it does not yet transfer, and Mumbai nullah film is untested.
 - Reproduce commands: [`../eval/RESULTS.md`](../eval/RESULTS.md).
 
 ## 8. Field pilot (conditional: permission, safety plan, site survey)

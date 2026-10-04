@@ -147,7 +147,7 @@ DON'T SAY the pocket "cuts escape" as a fact. Say "if it retains half, the model
 
 # Evidence 3 · Sensing and records
 
-**Detector** <span class="tag">BUILT</span>: off-the-shelf (COCO-pretrained, zero-shot) YOLO11n on 254 held-out floating-litter test images: mAP50 0.394, but recall 0.140 at score 0.25. Off-the-shelf models miss most river litter; training on floating-litter data is required. Public river-litter images are not Mumbai nullah film; we treat detection as an aid, not proof.
+**Detector** <span class="tag">BUILT</span>: YOLO11n trained on public floating-litter images (TUD-GV): on 254 held-out test images, mAP50 0.857 (off-the-shelf: 0.394), precision 0.845, recall 0.784. At another site's camera (Groningen, 63 images) mAP50 falls to 0.524: it does not yet transfer, and Mumbai nullah film is untested. Public river-litter images are not Mumbai nullah film; we treat detection as an aid, not proof.
 
 **What measures fill:** the camera sees the mat area in the pocket; an ultrasonic sensor over open water gives water level. If the camera is degraded (night, rain, glare), fill is reported **unknown** and crews follow the roster.
 
@@ -229,6 +229,7 @@ Use if asked "show us the software". Walk: map → a site → rain + tide → fi
 | The pocket keeps its catch | A SENSITIVITY until the tow tank measures retention under reversal |
 | The boom cannot raise flood levels | The fail-open section's opening head, delay, fouling and reset are untested |
 | The camera counts all plastic | Night, rain, glare and submerged film; fill is "unknown" when the camera is degraded |
+| Item counts are accurate | On SYNTHETIC drifting-item video, the line-crossing counter over-counts by 33% (cause not yet diagnosed); counts are not used for kilograms |
 | Records stop fraud | Hashes make edits detectable; they cannot make inputs true; flags trigger review |
 | Drain plastic earns EPR certificates | Not found in the rules; upside only |
 

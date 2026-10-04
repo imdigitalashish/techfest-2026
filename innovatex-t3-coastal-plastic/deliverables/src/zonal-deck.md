@@ -228,6 +228,7 @@ Use if asked "show us the software". Walk: map → a site → rain + tide → fi
 | The pocket keeps its catch | A SENSITIVITY until the tow tank measures retention under reversal |
 | The boom cannot raise flood levels | The fail-open section's opening head, delay, fouling and reset are untested |
 | The camera counts all plastic | Night, rain, glare and submerged film; fill is "unknown" when the camera is degraded |
+| Item counts are accurate | On SYNTHETIC drifting-item video, the line-crossing counter over-counts by {{r:flux_err}}% (cause not yet diagnosed); counts are not used for kilograms |
 | Records stop fraud | Hashes make edits detectable; they cannot make inputs true; flags trigger review |
 | Drain plastic earns EPR certificates | Not found in the rules; upside only |
 

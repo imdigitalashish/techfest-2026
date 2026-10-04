@@ -64,7 +64,7 @@
 **10. "Can a camera see plastic at night, in rain, in black nullah water?"**
 - Not reliably.
 - Fill comes from the camera's view of the mat area in the pocket. When the camera is degraded, fill is reported "unknown" and crews follow the roster.
-- Detector status: off-the-shelf (COCO-pretrained, zero-shot) YOLO11n on 254 held-out floating-litter test images: mAP50 0.394, but recall 0.140 at score 0.25. Off-the-shelf models miss most river litter; training on floating-litter data is required.
+- Detector status: YOLO11n trained on public floating-litter images (TUD-GV): on 254 held-out test images, mAP50 0.857 (off-the-shelf: 0.394), precision 0.845, recall 0.784. At another site's camera (Groningen, 63 images) mAP50 falls to 0.524: it does not yet transfer, and Mumbai nullah film is untested.
 
 **11. "Show an empty pocket at high tide and a full pocket at low tide. What does your range sensor see?"**
 - The ultrasonic sensor sits over open water and measures water level (stage), not fill. A single downward range over a pocket would confuse tide, mat thickness and patchy cover.

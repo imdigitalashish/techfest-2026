@@ -1,11 +1,11 @@
 # Results — every number with its reproduce command
 
-Generated 2026-10-04 16:33 IST at commit `4a1312c` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
+Generated 2026-10-04 17:05 IST at commit `88b92ff` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
 
 ## detection — flux_synthetic.json
 
 Source: [`components/detection/results/flux_synthetic.json`](../components/detection/results/flux_synthetic.json)  
-Reproduce: `python -m t3det.synth --out ../../.data/detection/synth/seq02 --frames 120 --items 12 --seed 11 --speed 6.0 12.0 && python -m t3det.run_flux --weights ../../.data/detection/weights/yolo11n.pt --seq ../../.data/detection/synth/seq02`
+Reproduce: `python -m t3det.synth --out ../../.data/detection/synth/seq02 --frames 120 --items 12 --seed 11 --speed 6.0 12.0 && python -m t3det.run_flux --weights ../../.data/detection/runs/baseline_yolo11n_640/weights/best.pt --seq ../../.data/detection/synth/seq02`
 
 | Metric | Value |
 |---|---|
@@ -14,26 +14,58 @@ Reproduce: `python -m t3det.synth --out ../../.data/detection/synth/seq02 --fram
 | frames | 120 |
 | fps | 5 |
 | gt_crossings | 12 |
-| items_crossed | 3 |
-| count_error_pct | 75 |
-| detector_weights | yolo11n.pt |
+| items_crossed | 16 |
+| count_error_pct | 33.33 |
+| detector_model_id | baseline_yolo11n_640/best.pt#sha256:a5157292e2c0 |
+| device | mps |
 | tracker | bytetrack.yaml (ultralytics defaults) |
 | conf | 0.1 |
 | imgsz | 640 |
 | flux_estimate.site_id | SYNTHETIC-seq01 |
 | flux_estimate.t_start | 2026-10-04T00:00:00Z |
 | flux_estimate.t_end | 2026-10-04T00:00:24Z |
-| flux_estimate.items_crossed | 3 |
-| flux_estimate.items_per_min | 7.5 |
-| flux_estimate.by_label.traffic light | 1 |
-| flux_estimate.by_label.bird | 1 |
-| flux_estimate.by_label.kite | 1 |
-| flux_estimate.est_kg | 0.057 |
-| flux_estimate.est_kg_ci90 | [0.0, 0.1624] |
+| flux_estimate.items_crossed | 16 |
+| flux_estimate.items_per_min | 40 |
+| flux_estimate.by_label.litter | 16 |
+| flux_estimate.est_kg | 0.304 |
+| flux_estimate.est_kg_ci90 | [0.0605, 0.5475] |
 | flux_estimate.method | YOLO detector + ByteTrack (ultralytics, conf>=0.1) + line-crossing count, one count per track id; mass = items x 19.0 g/item (sd 37.0 g; assumption: van Emmerik et al. 2019 Sci Rep (Saigon), PMC6753078: 1.9e-2 kg per visually counted item, sd 3.7e-2; transfer to Mumbai assumed); CI90 = n*mean +/- 1.645*sd*sqrt(n) |
 | flux_estimate.provenance.kind | synthetic |
 | flux_estimate.provenance.source | component:detection/t3det.synth seed=11 |
-| flux_estimate.provenance.retrieved_at | 2026-10-04T02:24:00.379100Z |
+| flux_estimate.provenance.retrieved_at | 2026-10-04T11:31:01.042373Z |
+| flux_estimate.provenance.notes | SYNTHETIC: real TUD-GV test-split litter crops pasted on an inpainted TUD-GV water frame; mass factor is an ASSUMPTION transferred from the Saigon River (van Emmerik et al. 2019) |
+
+## detection — flux_synthetic_seq01.json
+
+Source: [`components/detection/results/flux_synthetic_seq01.json`](../components/detection/results/flux_synthetic_seq01.json)  
+Reproduce: `python -m t3det.synth --out ../../.data/detection/synth/seq01 --frames 300 --items 24 --seed 7 --speed 4.0 9.0 && python -m t3det.run_flux --weights ../../.data/detection/runs/baseline_yolo11n_640/weights/best.pt --seq ../../.data/detection/synth/seq01`
+
+| Metric | Value |
+|---|---|
+| label | SYNTHETIC |
+| sequence | seq01 |
+| frames | 300 |
+| fps | 5 |
+| gt_crossings | 24 |
+| items_crossed | 28 |
+| count_error_pct | 16.67 |
+| detector_model_id | baseline_yolo11n_640/best.pt#sha256:a5157292e2c0 |
+| device | mps |
+| tracker | bytetrack.yaml (ultralytics defaults) |
+| conf | 0.1 |
+| imgsz | 640 |
+| flux_estimate.site_id | SYNTHETIC-seq01 |
+| flux_estimate.t_start | 2026-10-04T00:00:00Z |
+| flux_estimate.t_end | 2026-10-04T00:01:00Z |
+| flux_estimate.items_crossed | 28 |
+| flux_estimate.items_per_min | 28 |
+| flux_estimate.by_label.litter | 28 |
+| flux_estimate.est_kg | 0.532 |
+| flux_estimate.est_kg_ci90 | [0.2099, 0.8541] |
+| flux_estimate.method | YOLO detector + ByteTrack (ultralytics, conf>=0.1) + line-crossing count, one count per track id; mass = items x 19.0 g/item (sd 37.0 g; assumption: van Emmerik et al. 2019 Sci Rep (Saigon), PMC6753078: 1.9e-2 kg per visually counted item, sd 3.7e-2; transfer to Mumbai assumed); CI90 = n*mean +/- 1.645*sd*sqrt(n) |
+| flux_estimate.provenance.kind | synthetic |
+| flux_estimate.provenance.source | component:detection/t3det.synth seed=7 |
+| flux_estimate.provenance.retrieved_at | 2026-10-04T11:31:16.461334Z |
 | flux_estimate.provenance.notes | SYNTHETIC: real TUD-GV test-split litter crops pasted on an inpainted TUD-GV water frame; mass factor is an ASSUMPTION transferred from the Saigon River (van Emmerik et al. 2019) |
 
 ## detection — flux_synthetic_zeroshot.json
@@ -74,42 +106,106 @@ Reproduce: `python -m t3det.synth --out ../../.data/detection/synth/seq02 --fram
 ## detection — metrics.json
 
 Source: [`components/detection/results/metrics.json`](../components/detection/results/metrics.json)  
-Reproduce: `cd innovatex-t3-coastal-plastic && bash components/detection/data/fetch_data.sh && cd components/detection && python3.11 -m t3det.prepare && curl -sSL -o ../../.data/detection/weights/yolo11n.pt https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt && python3.11 -m t3det.zeroshot --weights ../../.data/detection/weights/yolo11n.pt --split test`
+Reproduce: `cd innovatex-t3-coastal-plastic && bash components/detection/data/fetch_data.sh && cd components/detection && /opt/homebrew/bin/python3.11 -m t3det.prepare && curl -sSL -o ../../.data/detection/weights/yolo11n.pt https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt && T3DET_DEVICE=mps nice -n 10 /opt/homebrew/bin/python3.11 -m t3det.train --model yolo11n.pt --device mps --imgsz 640 --epochs 100 --time 0.9 --batch 8 --workers 2 --cache disk --name baseline_yolo11n_640 && IMGSZ=640 T3DET_DEVICE=mps bash run_after_train.sh A ../../.data/detection/runs/baseline_yolo11n_640/weights/best.pt`
 
 | Metric | Value |
 |---|---|
 | dataset | TUD-GV floating-litter subset (Jia et al. 2024, Water Research 266:122405), doi:10.5281/zenodo.13730228, CC BY 4.0 |
-| split | test (grouped by experiment id, seed 42; components/detection/data/splits/test.txt; held out) |
+| split | test (grouped by experiment id, seed 42; components/detection/data/splits/test.txt; held out: evaluated once, never used for training or selection) |
 | n_test_images | 254 |
-| n_test_boxes | 1309 |
-| mAP50 | 0.3935 |
-| mAP50_95 | 0.2091 |
-| precision | 0.7562 |
-| recall | 0.1398 |
-| precision_recall_at_score | 0.25 |
-| per_class.litter.AP50 | 0.3935 |
-| per_class.litter.AP50_95 | 0.2091 |
-| latency_ms_mps.median | 1087 |
-| latency_ms_mps.p90 | 4470 |
-| latency_ms_mps.n | 251 |
+| mAP50 | 0.8574 |
+| mAP50_95 | 0.5726 |
+| precision | 0.8452 |
+| recall | 0.7838 |
+| per_class.litter.AP50 | 0.8574 |
+| per_class.litter.AP50_95 | 0.5726 |
+| latency_ms_mps.median | 71.38 |
+| latency_ms_mps.p90 | 145.7 |
+| latency_ms_mps.n | 50 |
 | latency_ms_mps.batch | 1 |
 | latency_ms_mps.imgsz | 640 |
-| latency_ms_mps.note | end-to-end predict() on a shared, thrashing Apple M5 (load avg 63 on 10 cores, swap full): an upper bound, not the model's real speed |
-| model_id | yolo11n.pt#sha256:0ebbc80d4a76 (COCO-pretrained, zero-shot, class-agnostic) |
-| baseline_kind | ZERO-SHOT (no training on TUD-GV): COCO-pretrained YOLO11n, class-agnostic NMS, every COCO class counted as a litter candidate. The trained YOLO11n baseline was blocked by machine thrash (README A1); its command is in README. |
-| metric_impl | frozen matcher of autoresearch/eval.py: greedy IoU match, COCO-style 101-point AP; mAP50_95 = mean AP over IoU 0.50:0.05:0.95; precision/recall at score >= 0.25 |
-| evaluated_at | 2026-10-04T02:33:22+00:00 |
-| machine | arm64 macOS 26.2 (Apple M5, MPS) |
-| ap_by_iou.0.5 | 0.3935 |
-| ap_by_iou.0.55 | 0.3763 |
-| ap_by_iou.0.6 | 0.3463 |
-| ap_by_iou.0.65 | 0.3205 |
-| ap_by_iou.0.7 | 0.2725 |
-| ap_by_iou.0.75 | 0.2026 |
-| ap_by_iou.0.8 | 0.1219 |
-| ap_by_iou.0.85 | 0.0473 |
-| ap_by_iou.0.9 | 0.0104 |
-| ap_by_iou.0.95 | 0.0001 |
+| latency_ms_mps.device | mps |
+| latency_ms_mps.note | shared Apple M5 (1-min load avg 10 on 10 cores, process niced +10, another app using the GPU); includes JPEG decode of a 1280x720 image: an upper bound |
+| model_id | baseline_yolo11n_640/best.pt#sha256:a5157292e2c0 |
+| device | mps |
+| evaluated_at | 2026-10-04T17:00:19+05:30 |
+| code_commit | 9f861a0 |
+| machine | arm64 macOS 26.2 (Apple M5, 24 GB, shared) |
+| eval_settings.imgsz | 640 |
+| eval_settings.conf | 0.001 |
+| eval_settings.iou_nms | 0.7 |
+| eval_settings.nms_time_limit | lifted (see mps_patch.py) |
+| eval_settings.ap | ultralytics COCO-style 101-point; P/R at ultralytics' max-F1 confidence |
+| ultralytics_speed_ms.preprocess | 0.61 |
+| ultralytics_speed_ms.inference | 12.44 |
+| ultralytics_speed_ms.loss | 0 |
+| ultralytics_speed_ms.postprocess | 54.61 |
+| other_splits.val.split | val |
+| other_splits.val.n_images | 278 |
+| other_splits.val.mAP50 | 0.9288 |
+| other_splits.val.mAP50_95 | 0.6355 |
+| other_splits.val.precision | 0.9168 |
+| other_splits.val.recall | 0.8259 |
+| other_splits.val.per_class.litter.AP50 | 0.9288 |
+| other_splits.val.per_class.litter.AP50_95 | 0.6355 |
+| other_splits.val.ultralytics_speed_ms.preprocess | 0.63 |
+| other_splits.val.ultralytics_speed_ms.inference | 10.56 |
+| other_splits.val.ultralytics_speed_ms.loss | 0 |
+| other_splits.val.ultralytics_speed_ms.postprocess | 38.78 |
+| other_splits.groningen.split | groningen |
+| other_splits.groningen.n_images | 63 |
+| other_splits.groningen.mAP50 | 0.5237 |
+| other_splits.groningen.mAP50_95 | 0.2596 |
+| other_splits.groningen.precision | 0.9008 |
+| other_splits.groningen.recall | 0.4491 |
+| other_splits.groningen.per_class.litter.AP50 | 0.5237 |
+| other_splits.groningen.per_class.litter.AP50_95 | 0.2596 |
+| other_splits.groningen.ultralytics_speed_ms.preprocess | 2.29 |
+| other_splits.groningen.ultralytics_speed_ms.inference | 23.63 |
+| other_splits.groningen.ultralytics_speed_ms.loss | 0 |
+| other_splits.groningen.ultralytics_speed_ms.postprocess | 26.95 |
+| training.device | mps |
+| training.imgsz | 640 |
+| training.epochs_completed | 9 |
+| training.epoch_time_s.median | 386.9 |
+| training.epoch_time_s.mean | 361.5 |
+| training.epoch_time_s.first | 170 |
+| training.epoch_time_s.last | 327.9 |
+| training.train_loop_s | 3254 |
+| training.total_wall_clock_s | 3366 |
+| training.total_wall_clock_note | trainer process start to exit: dataset cache build + training + ultralytics' final val of best.pt; includes any guard pauses |
+| training.paused_s_approx | 210 |
+| training.hard_capped | 0 |
+| training.start_ist | 2026-10-04T16:03:26+05:30 |
+| training.end_ist | 2026-10-04T16:59:33+05:30 |
+| training.exit_code | 0 |
+| training.val_from_training_log.last_epoch.epoch | 9 |
+| training.val_from_training_log.last_epoch.mAP50 | 0.9288 |
+| training.val_from_training_log.last_epoch.mAP50_95 | 0.6354 |
+| training.val_from_training_log.max_mAP50_95_epoch.epoch | 9 |
+| training.val_from_training_log.max_mAP50_95_epoch.mAP50 | 0.9288 |
+| training.val_from_training_log.max_mAP50_95_epoch.mAP50_95 | 0.6354 |
+| training.recipe | yolo11n.pt (COCO-pretrained, ultralytics assets v8.3.0) fine-tuned on the TUD-GV grouped train split (969 images). ultralytics 8.4.12 defaults (SGD/AdamW auto, mosaic 1.0 with close_mosaic 10, warmup 3 epochs, hsv/flip augmentations) except: batch 8, workers 2, cache=disk, seed 42 deterministic, wall-clock budget `time` (ultralytics re-plans epochs and the LR schedule to fit). best.pt = best val fitness. MPS runs use the CPU label-assigner patch (README A3); NMS time limit lifted. |
+| training.command | nice -n 10 /opt/homebrew/bin/python3.11 -m t3det.train --model yolo11n.pt --device mps --imgsz 640 --epochs 100 --time 0.9 --batch 8 --workers 2 --cache disk --name baseline_yolo11n_640 |
+| frozen_matcher_test.what | test scored with autoresearch/eval.py (greedy IoU>=0.5 match, COCO-style 101-point AP) - the same code as results/metrics_zeroshot.json |
+| frozen_matcher_test.trained.mAP50 | 0.8559 |
+| frozen_matcher_test.trained.boot_se | 0.0112 |
+| frozen_matcher_test.trained.precision@0.25 | 0.7017 |
+| frozen_matcher_test.trained.recall@0.25 | 0.8571 |
+| frozen_matcher_test.trained.n_gt | 1309 |
+| frozen_matcher_test.zero_shot.mAP50 | 0.3935 |
+| frozen_matcher_test.zero_shot.precision@0.25 | 0.7562 |
+| frozen_matcher_test.zero_shot.recall@0.25 | 0.1398 |
+| frozen_matcher_test.zero_shot.file | results/metrics_zeroshot.json |
+| frozen_matcher_test.config.imgsz | 640 |
+| frozen_matcher_test.config.conf | 0.001 |
+| frozen_matcher_test.config.iou | 0.7 |
+| frozen_matcher_test.config.augment | False |
+| frozen_matcher_test.config.tiles | [1, 1] |
+| frozen_matcher_test.config.tile_overlap | 0.2 |
+| frozen_matcher_test.config.tile_plus_full | True |
+| frozen_matcher_test.config.merge_iou | 0.5 |
+| frozen_matcher_test.config.max_det | 300 |
 
 ## detection — metrics_zeroshot.json
 
