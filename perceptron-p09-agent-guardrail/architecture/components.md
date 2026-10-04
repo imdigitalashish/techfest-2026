@@ -48,7 +48,7 @@ flowchart LR
 | 14 | Audit log | Stores every verdict with its evidence for replay and review. | `Verdict` → JSONL | — | logging | completeness (every executed write has a verdict) | eval writes per-item rows |
 
 ## Error modes and SLOs (guard)
-- **Tier 0:** p95 ≤ 5 ms per call, no network, no model. Measured tonight: p95 2.06 ms on test (`eval/results/t0__test.json`).
+- **Tier 0:** p95 ≤ 5 ms per call, no network, no model. Measured tonight: p95 0.6–4.7 ms across runs on a heavily loaded laptop (`eval/results/t0__*.json`).
 - **Tier 1/2:** at most one model call per unverifiable check. Budget ≤ 2 s (fast) / ≤ 6 s (careful) on an M5 without memory pressure. Tonight's numbers are under heavy swap (see thought node).
 - **Fail-safe:** an exception, malformed model output or a quote that doesn't verify → the check stays `unverifiable` → `escalate`. The guard never fails open on a write tool.
 - **Read tools** pass Tier 0 without provenance checks (no side effects). Their outputs are trust-labelled for later checks.

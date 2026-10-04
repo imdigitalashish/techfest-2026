@@ -13,12 +13,12 @@
 - **Phase:** morning package ready (Phases 1, 2, 3-lite, 4 done; Phase 5 scaffolded). Updated 07:35 IST.
 - **Headline:** *Cite-Before-Act*: a guard in the agent's pre-tool hook that checks the provenance of every argument (user words / reference KB / trusted tool data; untrusted text is never a source of intent) plus pre-trade-style contracts (SEC 15c3-5 analogues). The unverifiable residue goes to a risk-routed fast/careful local model whose quoted evidence must verify verbatim, then to a human.
 - **Real numbers** (synthetic suite; reproduce commands in `eval/README.md`):
-  - **Held-out test split, 183 calls:** Tier 0 catch **100%** (147/147), false-block **0%** (0/36), escalation **0%**, p95 **2.06 ms**. Schema-only and no-guard: catch **0%**.
+  - **Held-out test split, 183 calls:** Tier 0 catch **100%** (147/147), false-block **0%** (0/36), escalation **0%**, p95 **0.6–4.7 ms** across runs (loaded machine; committed run 0.64 ms). Schema-only and no-guard: catch **0%**.
   - **Same 61-call test subsample (every 3rd):**
     - LLM-as-judge baseline (Qwen3-1.7B, full KB + policy in the prompt): catch **71.1%**, false-block **68.8%** (11/16 good blocked), score **0.024**, p50 15.9 s (under swap). Typical errors: arithmetic ("1844.45 is outside ±5% of 1850"), missed ×10 quantities and duplicates.
-    - Tier 0: catch 100%, false-block 0%, p95 0.90 ms.
+    - Tier 0: catch 100%, false-block 0%, p95 ≤ 5 ms.
   - **Dev:**
-    - Tier 0: escalation 16.7% (the hard paraphrase family).
+    - Tier 0 baseline: escalation 16.7% (the hard paraphrase family). After ratchet iteration 2 it is 0%, but that gain is in-sample.
     - Fast cascade (1.7B resolver): catch 100%, false-block 0%. The quote check let **0** bad calls through and turned 8 of 15 bad residue calls from escalate into block. It resolved **0 of 6** good paraphrases, so escalation stayed at 16.7%; p95 27.7 s on residue calls under swap.
   - **Ratchet iteration 2** (word numbers + exit/entry idioms): dev score 0.917 → **1.000**, test unchanged. **In-sample** (see `components/checker/autoresearch/results.tsv`).
   - **Not run tonight:** the 8B model (memory pressure).
