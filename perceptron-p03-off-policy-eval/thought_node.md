@@ -10,26 +10,25 @@
 - _(none)_
 
 ## Now
-- **Phase:** 4 — walking skeleton + eval harness (Phases 1–3 v1 done). LEAN MODE until 08:30: no sub-agents, small requests.
-- **Done:**
-  - [`research/landscape.md`](research/landscape.md), cited via the arXiv and GitHub APIs (evidence in `research/sources/`).
-  - [`architecture/components.md`](architecture/components.md) with 12 components and executable pydantic contracts in [`architecture/contracts/contracts.py`](architecture/contracts/contracts.py).
-  - [ADR 001](architecture/adr/001-spike.md): spikes are the C9 Decomposer and the C8+C7 Robustness Certificate.
-  - [Abstract draft](deliverables/round1-abstract.md) (894 words) and [architecture diagram](deliverables/architecture.md).
-  - Skeleton components: simulator, estimators (IPW/SNIPW/DM/DR/Switch-DR), Wald/bootstrap intervals, MSM sensitivity bounds, decomposer.
-- **Doing:** Finished the walking skeleton and eval harness, with real numbers committed:
-  - **Simulator bank v0** (SYNTHETIC; 30 seeds; [`eval/results/sim_bank_summary.md`](eval/results/sim_bank_summary.md); reproduce with `.venv/bin/python eval/run_sim_bank.py --seeds 30`). In S1 the naive before/after is −0.0558 against a true policy effect of +0.0752: the naive sign is wrong in 30/30 seeds. DR gives +0.0748 (RMSE 0.0058, Wald coverage 0.93). S2 mirrors it (naive +0.0892, truth −0.0837, DR −0.0822). In S4 (unlogged override) every estimator is biased (DR −0.069, coverage 0); MSM bounds contain the truth at Γ_true in 10/10 seeds, and Γ\* has median 1.25.
-  - **OBD sample** (REAL; [`eval/results/obd_sample_summary.md`](eval/results/obd_sample_summary.md); reproduce with `.venv/bin/python eval/run_obd.py`). On-policy BTS CTR is 0.00420 (CI 0.00293–0.00547). IPW and DR estimates from the Random logs, 0.00455–0.00521, all have CIs containing the truth: inconclusive at 10k rows. A diagnostic shows the deployed BTS ≠ the static obp prior.
-  - Contract tests: 8/8 pass (`.venv/bin/python -m pytest -q tests`).
-- **Next:**
-  1. Continue the C6 ratchet (backlog ideas 2–8; DR baseline nRMSE 0.21823; SNDR was not kept).
-  2. After lean mode: an independent rubber-duck review of ADR 001; dedicated research files for the spike components; check the OBP paper on how BTS propensities were generated; full OBD (26M rows) via Azure or a chunked download; a semi-synthetic OBD before/after with injected drift; a waterfall plot for the demo; the experimentation-vendor check (UNVERIFIED tonight).
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:**
-  - The network is saturated, so research fan-out is deferred.
-  - The OBD sample is tiny (38 clicks in 10k Random rows), so the real-data check is noisy until we have the full data.
-  - The mix/drift split depends on the reward model.
-  - Judges may see a simulator as rigged. Mitigation: the frozen bank includes a case where the naive number is right, plus a hidden-override case where OPE itself fails.
+- **Phase:** ⏸ **PAUSED** (Supervisor, 09:55 IST, user's decision: only 3 projects run at a time; P7 is the Perceptron pick unless the user overrides). No background jobs are running.
+- **Resume point (exact):**
+  1. **Larger real OBD slice.** Done: the full Random log (`random/all`, 1,374,327 rows, time-sorted) was read from the official zip by HTTP range requests and saved compactly to gitignored `.data/obd_slice/random/all/all.npz`. Regenerate: `.venv/bin/python eval/obd_zip_slice.py --member open_bandit_dataset/random/all/all.csv --budget_mb 30` (22.1 MB download).
+     Next: `nice -n 10 .venv/bin/python eval/obd_zip_slice.py --member open_bandit_dataset/bts/all/all.csv --budget_mb 100`. That reads a 100 MB time-ordered prefix of the 203.6 MB compressed BTS log (estimated 5.9M rows, about the first 3.4 days; the estimate assumes a constant compression ratio).
+     Then write `eval/run_obd_slice.py`:
+     - Restrict Random to the BTS time window; run IPW/SNIPW/DM/DR against the BTS on-policy CTR.
+     - Test whether the deployed BTS updated during the week by checking whether the logged propensity of a fixed (item, position) drifts over time. If it did, use logged-propensity reconstruction of the deployed BTS per batch as the evaluation policy.
+     - **Real before/after with real truth:** before = Random, days 1–2; after = BTS, days 3–4. Truth is the after-period effect, BTS minus the concurrent Random arm in days 3–4. The OPE estimate uses only the BTS logs and their propensities. Also run the reverse direction.
+  2. **Hostile review of the decomposer** (Supervisor 09:40). Points to address:
+     - (a) The policy term is the *direct* effect on after-period users. A policy-induced mix shift (feedback) is attributed to "environment"; add a simulator knob and quantify.
+     - (b) The attribution depends on order (index-number problem). Fix with a 2×2 Shapley decomposition: OPE fills both unobserved cells, V_before(new) and V_after(old). This also yields a policy × season interaction.
+     - (c) The reward model is well specified by construction; test the mix/drift split under misspecification.
+     - (d) The drift sweep must show where naive is right as well as wrong.
+     - (e) The naive number is a strawman versus A/B tests; answer: the brief asks for it, and logs are all you have once a policy is already deployed.
+  3. Optional reuse: P5's synchronised-twins RNG / `eval/nsr.py` for paired keep/revert decisions in the C6 ratchet.
+  4. C6 ratchet backlog ideas 2–8 (baseline nRMSE 0.21823).
+- **Needs from user:** Register by 15 Oct if P3 is chosen. Teammates' names and skills for the team-fit section.
+- **Risks:** The network is congested (HTTP 408s). The OBD sample result is still inconclusive until step 1 finishes.
+- **Morning package (done 08:05 IST; accepted by the Supervisor):** landscape, components + contracts, ADR 001, selection memo v1, abstract + architecture, skeleton + simulator bank v0 + OBD sample check, C6 ratchet (baseline + 1 iteration). Details are in the Log.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -146,3 +145,10 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
 ### 2026-10-04 08:03 IST — Demo asset
 - Waterfall charts for S1 and S2 in `deliverables/figures/`, rendered by `eval/plot_waterfall.py` from the committed `sim_bank_runs.csv` (SYNTHETIC). S1: the dashboard shows −0.056; the estimated split is policy +0.075, mix +0.016, season −0.146, each matching the truth to 3 decimals. Linked from `deliverables/architecture.md`.
+
+### 2026-10-04 09:58 IST — Resumed in lean mode, then PAUSED by the Supervisor
+- 09:40 Supervisor: lean mode again; next tasks are a larger real OBD slice and a hostile review of the decomposer.
+- **The OBD zip supports HTTP range requests** (`accept-ranges: bytes`; 412,931,917 bytes; last modified 20 Aug 2020). New tool `eval/obd_zip_slice.py` reads the central directory and streams one member, so no full download is needed.
+  - Member sizes, compressed (uncompressed): random/all 22.1 MB (695.5 MB); bts/all 203.6 MB (6,321 MB); random/men 6.4; random/women 12.4; bts/men 57.5; bts/women 110.9.
+- **Fetched the full Random log for the All campaign:** 1,374,327 rows, time-sorted, compact npz in gitignored `.data/obd_slice/`.
+- 09:55 Supervisor: **PAUSE** (only 3 projects run at a time). No jobs were running; the exact resume point is in *Now*. Going idle.
