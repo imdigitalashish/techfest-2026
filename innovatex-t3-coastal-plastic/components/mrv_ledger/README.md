@@ -28,6 +28,10 @@ The threshold is calibrated on 20 000 separate honest trips, aiming for 4.75 % f
 - **Honest limits.** Inflation below ×1.5 is mostly invisible (24 % recall) under 25 % density noise. At 5 % fraud prevalence, fewer than half of the flags are fraud, so a flag means *review*, not *penalise*. Density calibration dominates: if true density is 25 % above nominal, honest false flags rise from 4.7 % to **17.8 %**; at −20 %, they fall to 0.75 %. The fix is to recalibrate density per site from trips that carry a genuine weighbridge slip.
 - Status quo row: when the slip itself is forged, or matches a soaked load, a slip check catches nothing in this synthetic setup.
 
+- **Inflow during clearance.** Plastic keeps arriving while a crew works, so removed mass = fill drop + inflow. Without the inflow term, honest claims replayed on the twin ran about 1.4–1.6× the sensor estimate. With `reconcile(..., inflow_wet_kg=...)`, the honest median ratio is **1.006** (twin replay, 71 records, 30 days). In the field this term comes from the C6 flux counter.
+  - Twin replay (SYNTHETIC claims): 2/62 honest flagged; 5/8 inflated and 1/1 phantom flagged.
+  - Large booms are the weak spot: on the 60 m³ Mithi boom, ±3 % fill error alone is about ±230 dry kg. Large sites need finer fill sensing.
+
 Full numbers: `results/eval_detail.json`. Flat metrics for the dashboard: `results/metrics.json`.
 
 ## Use

@@ -40,7 +40,7 @@ Boom fill, escape and telemetry are `simulated` and drawn on a hatched backgroun
 ## Design decisions (assumptions, no user interview possible overnight)
 - **Operate mode.** Light, high-contrast theme for outdoor phone use in daylight. System sans with Devanagari fallback. One sea-teal accent. Semantic colours: ok green, review amber, reject red. SIMULATED is violet, dashed and hatched; SYNTHETIC is brown and dashed; real data has a solid ink badge.
 - **Phone.** Single column, a sticky section bar, tap targets of at least 44 px, and the site list ranked by risk so the map is optional.
-- **Verification.** It runs locally. SHA-256 uses WebCrypto, with a pure-JS fallback for phones on plain-http LAN, which is not a secure context. Ed25519 uses WebCrypto where supported; Chromium headless verified 73/73. "Edit one record (demo)" raises one claim by 25 % in memory, and the chain check pinpoints that record.
+- **Verification.** It runs locally. SHA-256 uses WebCrypto, with a pure-JS fallback for phones on plain-http LAN, which is not a secure context. Ed25519 uses WebCrypto where supported; Chromium headless verified 71/71. "Edit one record (demo)" raises one claim by 25 % in memory, and the chain check pinpoints that record.
 - **Map.** Leaflet 1.9.4 is vendored (BSD-2-Clause, `site/vendor/leaflet/LICENSE`), so everything except the base tiles works offline.
   - OSM tiles follow the [OSMF tile usage policy](https://operations.osmfoundation.org/policies/tiles/) (opened 2026-10-04): HTTPS URL, visible attribution, Referer sent, **no bulk prefetch**.
   - Offline tiles for field use therefore need a self-hosted extract (next step, UNVERIFIED).

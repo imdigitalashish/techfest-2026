@@ -247,7 +247,7 @@
   }
 
   function tamper() {
-    var i = Math.min(S.entries.length - 1, Math.floor(S.entries.length / 2));
+    var i = Math.min(S.entries.length - 1, 3);
     var e = JSON.parse(JSON.stringify(S.entries[i]));
     e.record.claimed_wet_kg = Math.round(e.record.claimed_wet_kg * 1.25 * 10) / 10;
     S.entries = S.entries.slice(); S.entries[i] = e;

@@ -36,7 +36,9 @@ def main() -> int:
                 pg.click("#tamper")
                 pg.wait_for_selector("#verifystatus.bad", timeout=20000)
                 out["tamper"] = pg.inner_text("#verifystatus")
-                pg.locator("#records").screenshot(path=str(HERE / "screenshot-tamper.jpg"), type="jpeg", quality=70)
+                pg.evaluate("document.querySelector('#records').scrollIntoView()")
+                pg.screenshot(path=str(HERE / "screenshot-tamper.jpg"), type="jpeg", quality=70,
+                              clip={"x": 0, "y": 0, "width": 1440, "height": 760})
             pg.close()
         b.close()
     srv.shutdown()

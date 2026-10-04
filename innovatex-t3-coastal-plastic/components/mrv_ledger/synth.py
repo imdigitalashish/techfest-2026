@@ -99,7 +99,8 @@ def twin_clearance_events(series: InterceptorSeries, capacity_m3: float) -> list
             pre = series.fill_fraction[i - 1] if i > 0 else series.fill_fraction[i]
             events.append({"site_id": series.site_id, "t_start": series.t[i], "t_end": series.t[j] + timedelta(hours=1),
                            "true_wet_kg": sum(series.cleared_kg[i:j + 1]), "pre": pre, "post": series.fill_fraction[j],
-                           "capacity_m3": capacity_m3})
+                           "capacity_m3": capacity_m3,
+                           "inflow_wet_kg": sum(series.captured_kg[i:j + 1]) - sum(series.refloated_kg[i:j + 1])})
             i = j + 1
         else:
             i += 1

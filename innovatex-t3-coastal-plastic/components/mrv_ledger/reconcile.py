@@ -54,7 +54,9 @@ def z_score(claimed_dry: float, sensor_dry: float, boom_capacity_m3: float, p: P
 
 
 def reconcile(record: ClearanceRecord, boom_capacity_m3: float, p: Params = DEFAULT,
-              twin_cleared_wet_kg: Optional[float] = None) -> Reconciliation:
+              twin_cleared_wet_kg: Optional[float] = None, inflow_wet_kg: Optional[float] = None) -> Reconciliation:
+    """inflow_wet_kg: plastic that reached the boom during the clearance window (C6 flux counter, or the
+    twin's captured - refloated). Removed mass = fill drop + inflow, so without it long clearances look inflated."""
     claimed_dry = record.claimed_wet_kg * (1.0 - p.moisture_fraction)
     reasons = ["basis=dry-equivalent kg (volume x ASSUMPTION density/moisture)"]
     if record.pre_fill_fraction is not None and record.post_fill_fraction is not None:
@@ -64,6 +66,9 @@ def reconcile(record: ClearanceRecord, boom_capacity_m3: float, p: Params = DEFA
                        f"volume removed {max(drop, 0) * boom_capacity_m3:.2f} m3")
         if drop < 2 * math.sqrt(2) * p.sigma_fill_abs:
             reasons.append("no detectable fill drop at the boom")
+        if inflow_wet_kg:  # removed = fill change + inflow; clip only the total (a rising fill cancels inflow)
+            sensor = max(0.0, drop * boom_capacity_m3 * p.dry_density_kg_m3 + max(0.0, inflow_wet_kg) * (1.0 - p.moisture_fraction))
+            reasons.append(f"+ inflow during clearance {max(0.0, inflow_wet_kg):.0f} wet kg (flux counter / twin)")
     elif twin_cleared_wet_kg is not None:
         sensor = twin_cleared_wet_kg * (1.0 - p.moisture_fraction)
         reasons.append("sensor side = digital-twin cleared_kg (SIMULATED)")

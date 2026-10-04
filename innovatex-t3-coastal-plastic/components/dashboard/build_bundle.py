@@ -122,8 +122,8 @@ def build_ledger(part: dict, seed: int = 2026, fraud_share: float = 0.2) -> tupl
             kind = "phantom"
         pre, post = ev["pre"], ev["post"]
         true_kg = ev["true_wet_kg"]
-        if kind == "phantom":
-            post = pre
+        if kind == "phantom":  # nothing removed: the boom keeps filling with the inflow
+            post = min(1.0, pre + max(0.0, ev["inflow_wet_kg"]) / (ev["capacity_m3"] * p.wet_bulk_density_kg_m3))
         claimed = true_kg * math.exp(rng.gauss(0, p.sigma_claim_rel)) * factor
         meas = [min(1.0, max(0.0, f + rng.gauss(0, p.sigma_fill_abs))) for f in (pre, post)]
         rec = ClearanceRecord(site_id=ev["site_id"], crew_id=crews[n % len(crews)], t_start=ev["t_start"], t_end=ev["t_end"],
@@ -131,7 +131,7 @@ def build_ledger(part: dict, seed: int = 2026, fraud_share: float = 0.2) -> tupl
                               post_fill_fraction=round(meas[1], 3),
                               photo_sha256=[_h(f"synthetic-photo-{n}-{j}") for j in range(2)],
                               gps_track_sha256=_h(f"synthetic-gps-{n}"))
-        e = chain.append(entries, rec, reconcile(rec, ev["capacity_m3"], p))
+        e = chain.append(entries, rec, reconcile(rec, ev["capacity_m3"], p, inflow_wet_kg=ev["inflow_wet_kg"]))
         truth.append({"seq": e.seq, "kind": kind, "factor": round(factor, 2), "true_wet_kg": round(true_kg, 1)})
     keys = {c: chain.demo_key(c) for c in crews}
     aux = {"anchor": chain.anchor(entries),
