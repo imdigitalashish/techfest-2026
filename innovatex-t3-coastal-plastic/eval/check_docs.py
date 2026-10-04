@@ -9,6 +9,7 @@
 6. Unmarked numbers: in templates, significant numbers (≥4 digits, a decimal, a comma group or a percentage) outside
    placeholders are flagged. Scoped exceptions: URLs; years, ISO dates, year ranges and clock/slide times; lines marked
    UNVERIFIED or ASSUMPTION; Marp image directives; the phrase "90% interval"; self-cited table rows (a row that carries its own URL and a 2026-10-0x access date).
+7. Exports: the deck PDF/PPTX and presenter card were built from the current rendered Markdown (exports-manifest.json).
 Usage: python3 innovatex-t3-coastal-plastic/eval/check_docs.py
 """
 from __future__ import annotations
@@ -105,6 +106,22 @@ def main() -> int:
     for s in STALE[:4]:
         if s in tn_current:
             problems.append(f"stale {s!r} in the current part of thought_node.md")
+
+    man = OUT / "exports-manifest.json"  # 7. exports built from the current rendered Markdown
+    if man.exists():
+        import hashlib
+        import json
+        m = json.loads(man.read_text())
+        for src, h in m.get("rendered_sources_sha256_16", {}).items():
+            cur = hashlib.sha256((OUT / src).read_bytes()).hexdigest()[:16] if (OUT / src).exists() else None
+            if cur != h:
+                problems.append(f"stale export: {src} changed since the PDF/PPTX/card were built; run deliverables/build.sh")
+        for ex, h in m.get("exports_sha256_16", {}).items():
+            cur = hashlib.sha256((OUT / ex).read_bytes()).hexdigest()[:16] if (OUT / ex).exists() else None
+            if cur != h:
+                problems.append(f"export {ex} does not match the manifest; run deliverables/build.sh")
+    else:
+        problems.append("exports-manifest.json missing; run deliverables/build.sh")
 
     for p in problems:
         print("FAIL", p)

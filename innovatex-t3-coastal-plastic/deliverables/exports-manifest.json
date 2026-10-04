@@ -1,0 +1,12 @@
+{
+  "built_at": "2026-10-04 17:13 IST",
+  "rendered_sources_sha256_16": {
+    "zonal-deck.md": "4582aa1c5986f107",
+    "presenter-card.md": "5e21c7e77e8663d0"
+  },
+  "exports_sha256_16": {
+    "zonal-deck.pdf": "449ebefbc75286e4",
+    "zonal-deck.pptx": "17e3f55dafaf5cd4",
+    "presenter-card.pdf": "437d8ae16b10397a"
+  }
+}
