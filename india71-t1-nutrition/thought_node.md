@@ -232,3 +232,10 @@ Apply at resume step 2.
   - the browser hash chain must reproduce the Python hashes byte for byte (checked by node in smoke.sh);
   - no worker-level scores; linkage framed as care coordination only.
 
+### 2026-10-04 18:30 IST — "real first, simulation second" (Supervisor + lead)
+- The user challenged reliance on simulation ("will this even win?"). The Supervisor proposed opening on real data. I agreed and amended the builder's brief:
+  - **MUST:** a state tile-grid cartogram (not a bordered India map: Survey-of-India boundary compliance; the only district GeoJSON at hand is unlicensed) + the 36/36 reported-vs-surveyed scatter + a 707-district strip.
+  - **SHOULD:** drill into Nandurbar or Amravati (Melghat), then "SIMULATED children, REAL district rates", with the simulator calibrated to the district's NFHS-5 wasting/stunting.
+  - **COULD:** district-calibrated eval_v1.
+- **V5:** the undocumented "12/12" district spot-check was redone. **24/24 exact** against IIPS district fact-sheet PDFs (4 random + 2 purposive districts). The compilation repo has no licence, so numbers are cited to IIPS and its files are not redistributed.
+
