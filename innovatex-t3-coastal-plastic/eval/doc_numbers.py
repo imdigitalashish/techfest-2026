@@ -185,8 +185,13 @@ def _det_line() -> str:
                 "Off-the-shelf models miss most river litter; training on floating-litter data is required.")
     zs = _load("detzs")
     g = d["other_splits"]["groningen"]
+    fm = d["frozen_matcher_test"]
+    # like-for-like: trained vs off-the-shelf both scored by the same frozen matcher (review gpt-6-sol #6)
+    assert abs(fm["zero_shot"]["mAP50"] - zs["mAP50"]) < 1e-4, "frozen-matcher zero-shot differs from metrics_zeroshot.json"
     return (f"YOLO11n trained on public floating-litter images (TUD-GV): on {n} held-out test images, mAP50 "
-            f"{d['mAP50']:.3f} (off-the-shelf: {zs['mAP50']:.3f}), precision {d['precision']:.3f}, recall {d['recall']:.3f}. "
+            f"{d['mAP50']:.3f}, precision {d['precision']:.3f}, recall {d['recall']:.3f} (Ultralytics evaluator). "
+            f"Scored with one shared matcher, the trained model reaches mAP50 {fm['trained']['mAP50']:.3f} against "
+            f"{fm['zero_shot']['mAP50']:.3f} off the shelf. "
             f"At another site's camera (Groningen, {g['n_images']} images) mAP50 falls to {g['mAP50']:.3f}: "
             "it does not yet transfer, and Mumbai nullah film is untested.")
 

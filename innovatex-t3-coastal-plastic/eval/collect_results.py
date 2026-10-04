@@ -38,7 +38,8 @@ def _flatten(d: dict, prefix: str = "") -> list[tuple[str, object]]:
     return rows
 
 
-def main() -> None:
+def render() -> str:
+    """The full RESULTS.md text (its 'Generated ...' line carries the time and commit)."""
     files = sorted(f for f in ROOT.glob("components/*/results/*.json")
                    if f.stat().st_size < 200_000 and '"reproduce"' in f.read_text())
     ist = dt.timezone(dt.timedelta(hours=5, minutes=30))
@@ -71,8 +72,19 @@ def main() -> None:
                 v = f"{v:.4g}"
             lines.append(f"| {k} | {str(v).replace('|', '/')} |")
         lines.append("")
-    OUT.write_text("\n".join(lines) + "\n")
-    print(f"wrote {OUT.relative_to(ROOT)} from {len(files)} metrics file(s)")
+    return "\n".join(lines) + "\n"
+
+
+def body(text: str) -> str:
+    """RESULTS.md without its 'Generated ...' line, for freshness comparison."""
+    return "\n".join(line for line in text.splitlines() if not line.startswith("Generated "))
+
+
+def main() -> None:
+    text = render()
+    OUT.write_text(text)
+    n = sum(1 for line in text.splitlines() if line.startswith("## "))
+    print(f"wrote {OUT.relative_to(ROOT)} from {n} metrics file(s)")
 
 
 if __name__ == "__main__":
