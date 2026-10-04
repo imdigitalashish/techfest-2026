@@ -1,0 +1,155 @@
+{
+ "part": "prob_pack",
+ "task": "gen",
+ "protocol": "eval/llm_gap_protocol.md (Addendum A)",
+ "counts": {
+  "EQUIPROB": 12,
+  "INDEP": 12,
+  "ADD_PROB": 12,
+  "INVERSE": 12,
+  "JENSEN": 12
+ },
+ "methods": {
+  "EXEC": {
+   "key_correct": 1.0,
+   "bug_correct": 1.0,
+   "both_correct": 1.0,
+   "note": "exact by construction"
+  },
+  "LLM:gpt-4.1-mini": {
+   "n": 60,
+   "key_correct": 0.4,
+   "key_ci": [
+    0.2833,
+    0.5333
+   ],
+   "bug_correct": 0.8833,
+   "bug_ci": [
+    0.8,
+    0.95
+   ],
+   "both_correct": 0.3667,
+   "both_ci": [
+    0.25,
+    0.4833
+   ],
+   "both_by_code": {
+    "EQUIPROB": 0.5,
+    "INDEP": 0.6667,
+    "ADD_PROB": 0.5,
+    "INVERSE": 0.0,
+    "JENSEN": 0.1667
+   }
+  },
+  "LLM:gpt-5.4-mini": {
+   "n": 60,
+   "key_correct": 0.9667,
+   "key_ci": [
+    0.9167,
+    1.0
+   ],
+   "bug_correct": 1.0,
+   "bug_ci": [
+    1.0,
+    1.0
+   ],
+   "both_correct": 0.9667,
+   "both_ci": [
+    0.9167,
+    1.0
+   ],
+   "both_by_code": {
+    "EQUIPROB": 1.0,
+    "INDEP": 1.0,
+    "ADD_PROB": 1.0,
+    "INVERSE": 0.9167,
+    "JENSEN": 0.9167
+   }
+  },
+  "LLM:gpt-5.5": {
+   "n": 60,
+   "key_correct": 1.0,
+   "key_ci": [
+    1.0,
+    1.0
+   ],
+   "bug_correct": 1.0,
+   "bug_ci": [
+    1.0,
+    1.0
+   ],
+   "both_correct": 1.0,
+   "both_ci": [
+    1.0,
+    1.0
+   ],
+   "both_by_code": {
+    "EQUIPROB": 1.0,
+    "INDEP": 1.0,
+    "ADD_PROB": 1.0,
+    "INVERSE": 1.0,
+    "JENSEN": 1.0
+   }
+  }
+ },
+ "usage": {
+  "gpt-4.1-mini": {
+   "calls": 60,
+   "errors": 0,
+   "prompt_tokens": 8568,
+   "completion_tokens": 1100,
+   "reasoning_tokens": 0,
+   "cost_usd_estimate": 0.0052
+  },
+  "gpt-5.4-mini": {
+   "calls": 60,
+   "errors": 0,
+   "prompt_tokens": 8508,
+   "completion_tokens": 7770,
+   "reasoning_tokens": 6109,
+   "cost_usd_estimate": 0.0413
+  },
+  "gpt-5.5": {
+   "calls": 60,
+   "errors": 0,
+   "prompt_tokens": 8508,
+   "completion_tokens": 7180,
+   "reasoning_tokens": 5520,
+   "cost_usd_estimate": 0.2579
+  }
+ },
+ "invalid": {
+  "gpt-4.1-mini": 0,
+  "gpt-5.4-mini": 0,
+  "gpt-5.5": 0
+ },
+ "decisions": {
+  "gpt-4.1-mini": {
+   "H7_both_correct": 0.3667,
+   "H7_ci": [
+    0.25,
+    0.4833
+   ],
+   "H7_gap": true
+  },
+  "gpt-5.4-mini": {
+   "H7_both_correct": 0.9667,
+   "H7_ci": [
+    0.9167,
+    1.0
+   ],
+   "H7_gap": false
+  },
+  "gpt-5.5": {
+   "H7_both_correct": 1.0,
+   "H7_ci": [
+    1.0,
+    1.0
+   ],
+   "H7_gap": false
+  }
+ },
+ "price_source": "Azure Retail Prices API, serviceName 'Foundry Models', swedencentral, Global meters (gpt 4.1 mini Inp/Outp glbl; 5.4 mini Inp/Opt Gl; 5.5 ShortCo inp/opt Gl), accessed 2026-10-04. Reasoning tokens are assumed to be billed as output tokens (assumption).",
+ "command": "python -m eval.run_prob_pack --task gen",
+ "total_cost_usd_estimate": 0.3044
+}

@@ -1,0 +1,180 @@
+{
+ "counts": {
+  "learners": 100,
+  "mean_held": 1.75
+ },
+ "methods": {
+  "TRACER": {
+   "n": 100,
+   "exact_set_acc": 0.64,
+   "exact_ci": [
+    0.54,
+    0.73
+   ],
+   "brier": 0.0655,
+   "brier_ci": [
+    0.0502,
+    0.0823
+   ],
+   "macro_f1": 0.8297
+  },
+  "LLM:gpt-4.1-mini": {
+   "n": 100,
+   "exact_set_acc": 0.16,
+   "exact_ci": [
+    0.09,
+    0.23
+   ],
+   "brier": 0.2472,
+   "brier_ci": [
+    0.216,
+    0.2813
+   ],
+   "macro_f1": 0.6355
+  },
+  "LLM:gpt-5.4-mini": {
+   "n": 100,
+   "exact_set_acc": 0.66,
+   "exact_ci": [
+    0.57,
+    0.75
+   ],
+   "brier": 0.0728,
+   "brier_ci": [
+    0.0522,
+    0.0947
+   ],
+   "macro_f1": 0.8478
+  },
+  "LLM:gpt-5.5": {
+   "n": 50,
+   "exact_set_acc": 0.6,
+   "exact_ci": [
+    0.46,
+    0.74
+   ],
+   "brier": 0.0756,
+   "brier_ci": [
+    0.049,
+    0.1036
+   ],
+   "macro_f1": 0.8363
+  }
+ },
+ "usage": {
+  "gpt-4.1-mini": {
+   "calls": 100,
+   "errors": 0,
+   "prompt_tokens": 52531,
+   "completion_tokens": 4983,
+   "reasoning_tokens": 0,
+   "cost_usd_estimate": 0.029
+  },
+  "gpt-5.4-mini": {
+   "calls": 100,
+   "errors": 0,
+   "prompt_tokens": 52431,
+   "completion_tokens": 348191,
+   "reasoning_tokens": 339364,
+   "cost_usd_estimate": 1.6062
+  },
+  "gpt-5.5": {
+   "calls": 50,
+   "errors": 0,
+   "prompt_tokens": 26188,
+   "completion_tokens": 238499,
+   "reasoning_tokens": 233458,
+   "cost_usd_estimate": 7.2859
+  }
+ },
+ "invalid": {
+  "gpt-4.1-mini": 0,
+  "gpt-5.4-mini": 0,
+  "gpt-5.5": 0
+ },
+ "decisions": {
+  "gpt-4.1-mini": {
+   "n_paired": 100,
+   "tracer_exact_on_same": 0.64,
+   "llm_exact": 0.16,
+   "H5_exact_tracer_minus_llm": 0.48,
+   "H5_ci": [
+    0.38,
+    0.58
+   ],
+   "H6_brier_llm_minus_tracer": 0.1817,
+   "H6_ci": [
+    0.1512,
+    0.2144
+   ],
+   "H5_gap": true,
+   "H6_gap": true
+  },
+  "gpt-5.4-mini": {
+   "n_paired": 100,
+   "tracer_exact_on_same": 0.64,
+   "llm_exact": 0.66,
+   "H5_exact_tracer_minus_llm": -0.02,
+   "H5_ci": [
+    -0.07,
+    0.03
+   ],
+   "H6_brier_llm_minus_tracer": 0.0073,
+   "H6_ci": [
+    -0.0049,
+    0.0185
+   ],
+   "H5_gap": false,
+   "H6_gap": false
+  },
+  "gpt-5.5": {
+   "n_paired": 50,
+   "tracer_exact_on_same": 0.66,
+   "llm_exact": 0.6,
+   "H5_exact_tracer_minus_llm": 0.06,
+   "H5_ci": [
+    -0.08,
+    0.2
+   ],
+   "H6_brier_llm_minus_tracer": 0.0122,
+   "H6_ci": [
+    -0.0004,
+    0.025
+   ],
+   "H5_gap": false,
+   "H6_gap": false
+  }
+ },
+ "part": "tracing",
+ "protocol": "eval/llm_gap_protocol.md",
+ "price_source": "Azure Retail Prices API, serviceName 'Foundry Models', swedencentral, Global meters (gpt 4.1 mini Inp/Outp glbl; 5.4 mini Inp/Opt Gl; 5.5 ShortCo inp/opt Gl), accessed 2026-10-04. Reasoning tokens are assumed to be billed as output tokens (assumption).",
+ "gpt55_subset": "first 50 learners",
+ "models": {
+  "gpt-4.1-mini": {
+   "effort": null,
+   "max_tokens": 300,
+   "price": [
+    0.4,
+    1.6
+   ]
+  },
+  "gpt-5.4-mini": {
+   "effort": "medium",
+   "max_tokens": 8000,
+   "price": [
+    0.75,
+    4.5
+   ]
+  },
+  "gpt-5.5": {
+   "effort": "high",
+   "max_tokens": 16000,
+   "price": [
+    5.0,
+    30.0
+   ]
+  }
+ },
+ "command": "python -m eval.run_llm_gaps --part tracing --models gpt-4.1-mini,gpt-5.4-mini,gpt-5.5",
+ "total_cost_usd_estimate": 8.9211
+}

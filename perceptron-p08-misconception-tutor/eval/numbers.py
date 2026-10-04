@@ -118,8 +118,57 @@ def claims() -> dict:
     tr = _load("llm_gaps_tracing.json")
     if tr.get("methods"):
         c["trace.tracer_exact"] = pct(tr["methods"]["TRACER"]["exact_set_acc"]) + "%"
+        c["trace.tracer_brier"] = f"{tr['methods']['TRACER']['brier']:.3f}"
         for k in tr.get("decisions", {}):
             c[f"trace.{k}.exact"] = pct(tr["methods"][f"LLM:{k}"]["exact_set_acc"]) + "%"
+            c[f"trace.{k}.brier"] = f"{tr['methods'][f'LLM:{k}']['brier']:.3f}"
+            d = tr["decisions"][k]
+            c[f"trace.{k}.paired_tracer"] = pct(d["tracer_exact_on_same"]) + "%"
+            c[f"trace.{k}.paired_llm"] = pct(d["llm_exact"]) + "%"
+    if inv.get("methods"):
+        for k in inv.get("decisions", {}):
+            mm = inv["methods"][f"LLM:{k}"]
+            c[f"inv.{k}.all"] = pct(mm["ALL"]["exact_set_acc"]) + "%"
+            u = inv["usage"][k]
+            c[f"inv.{k}.cost_per_item"] = f"${u['cost_usd_estimate'] / max(1, u['calls']):.3f}"
+            c[f"inv.{k}.reasoning_per_item"] = f"{round(u['reasoning_tokens'] / max(1, u['calls'])):,}"
+    if r.get("usage"):
+        for k, u in r["usage"].items():
+            c[f"real.{k}.cost1000"] = f"${1000 * u['cost_usd_estimate'] / max(1, u['calls']):.2f}"
+    pg = _load("llm_gaps_prob_pack.json")
+    if pg.get("decisions"):
+        for k in pg["decisions"]:
+            mm = pg["methods"][f"LLM:{k}"]
+            c[f"prob.gen.{k}.key"] = pct(mm["key_correct"]) + "%"
+            c[f"prob.gen.{k}.bug"] = pct(mm["bug_correct"]) + "%"
+            c[f"prob.gen.{k}.both"] = pct(mm["both_correct"]) + "%"
+    pdg = _load("llm_gaps_prob_diag.json")
+    if pdg.get("decisions"):
+        c["diag.engine_coverage"] = pct(pdg["engine_coverage"]) + "%"
+        for k, d in pdg["decisions"].items():
+            c[f"diag.{k}.llm_acc_all"] = pct(pdg["methods"][f"LLM:{k}"]["acc_all"]) + "%"
+            c[f"diag.{k}.cascade_acc_all"] = pct(pdg["methods"][f"CASCADE:{k}"]["acc_all"]) + "%"
+            c[f"diag.{k}.llm_acc_bug"] = pct(pdg["methods"][f"LLM:{k}"]["acc_bug"]) + "%"
+            c[f"diag.{k}.llm_slip_fa"] = pct(pdg["methods"][f"LLM:{k}"]["false_attribution_slip"]) + "%"
+            c[f"diag.{k}.cost1000_llm"] = f"${d['cost_usd_per_1000_llm_only']:.2f}"
+            c[f"diag.{k}.cost1000_cascade"] = f"${d['cost_usd_per_1000_cascade']:.2f}"
+            if d.get("latency_s_median_llm_call") is not None:
+                c[f"diag.{k}.latency_llm"] = f"{d['latency_s_median_llm_call']:.1f} s"
+    cons = _load("llm_consistency.json")
+    if cons.get("models"):
+        for k, v in cons["models"].items():
+            c[f"cons.{k}.agree"] = pct(v["all_runs_agree"]) + "%"
+            c[f"cons.{k}.disagree"] = str(v["n_disagree"])
+            if v.get("latency_s_median") is not None:
+                c[f"cons.{k}.latency"] = f"{v['latency_s_median']:.1f} s"
+        c["cons.n"] = str(cons["n_items"])
+        c["cons.engine_ms"] = f"{cons['engine']['latency_ms_median']:.2f} ms"
+    cr = _load("cascade_real.json")
+    if cr.get("models"):
+        c["casc.real.engine_answers"] = str(cr["engine_answers"])
+        c["casc.real.n"] = str(cr["n_items"])
+        for k, v in cr["models"].items():
+            c[f"casc.real.{k}.ba"] = pct(v["cascade"]["ba"]) + "%"
     return c
 
 
