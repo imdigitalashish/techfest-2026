@@ -36,35 +36,24 @@ The obvious entry applies StreamingLLM or H2O and plots a needle chart. We diffe
 We will state precisely how our design relates to the nearest prior work (ArkVale-style page recall, Quest page digests, CacheBlend selective recompute).
 
 ## Evaluation plan
-- **Main metric:** recall accuracy vs retained bytes, shown as a Pareto curve per method, 4 questions per context, paired across methods. Confidence intervals and paired tests on held-out seeds.
-- **Secondary metrics:**
-  - Steady-state vs answer-time bytes.
-  - Measured peak memory.
-  - Latency per answer, including recompute.
-  - Per-component metrics: needle-token retention at a fixed budget (scorer) and needle-block hit rate (recall tier).
-- **Controls:**
-  - Full cache (ceiling) and query-aware SnapKV (oracle-style reference).
-  - Non-literal needles (paraphrased questions), so a lexical matcher cannot game the task.
-  - A held-out split, so tuning cannot overfit.
+- **Main metric:** recall accuracy vs retained bytes (a Pareto curve per method), 4 questions per context, paired across methods, with confidence intervals on held-out seeds.
+- **Secondary metrics:** steady-state vs answer-time bytes; measured peak memory; latency per answer including recompute; needle-token retention (scorer) and needle-block hit rate (recall tier).
+- **Controls:** full cache (ceiling); query-aware SnapKV (reference); non-literal needles, so a lexical matcher cannot game the task; a held-out split against overfitting.
 
 ## Feasibility and risks
-**Team.** [names TBD]: (a) systems / inference engineering, (b) ML and attention mechanics, (c) evaluation and the demo. Everything runs on one 24 GB laptop with a 1B model and needs no paid GPU time.
+**Team.** [names TBD]: (a) systems / inference engineering, (b) ML and attention mechanics, (c) evaluation and the demo. Everything runs on one 24 GB laptop; no paid GPU time.
 
 **Milestones.**
-
-| Weeks | Dates | Milestone |
-|---|---|---|
-| 1 | 6–12 Oct | Baseline numbers (MVP) |
-| 2 | 13–19 Oct | Recall-on-Demand v1 and its tuning loop |
-| 3 | 20–26 Oct | Non-literal needles and QA; abstract |
-| 4–5 | 27 Oct–9 Nov | Second model; 16–32k contexts; latency |
-| 6 | 10–16 Nov | Demo app |
-| — | 17–28 Nov | Exams (automated runs only) |
-| — | 1 Dec | Midway report |
-| — | Early Dec | Ablations, rehearsal |
+- 6–12 Oct: baseline numbers (MVP).
+- 13–19 Oct: Recall-on-Demand v1 and its tuning loop.
+- 20–26 Oct: non-literal needles and QA; abstract.
+- 27 Oct–9 Nov: second model; 16–32k contexts; latency.
+- 10–16 Nov: demo app.
+- 17–28 Nov: exams (automated runs only).
+- 1 Dec: midway report.
 
 **Risks and mitigations.**
-- Recomputed blocks attend only to their local context. We ablate adding neighbour context.
-- One sketch layer may miss the needle. We tune the layer and vote across layers.
-- Two passes add latency. We report it, and recall stays adaptive.
-- A close prior art may exist. We will narrow the novelty claim and keep the evaluation contribution.
+- Recomputed blocks see only local context; we ablate adding neighbour context.
+- One sketch layer may miss the needle; we tune it and vote across layers.
+- The extra pass adds latency; we report it.
+- If close prior art exists, we narrow the novelty claim.
