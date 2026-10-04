@@ -114,7 +114,7 @@ Design month is July, Mumbai's darkest: {{f:F15|3.79 kWh/m²/day}} of insolation
 | 15–18 Dec | Finals: live tow-tank flume + dashboard | team |
 
 ## 7. What is real, what is simulated (status 4 Oct)
-- **Real:** hourly ERA5 rain; archived JMA forecasts; tide fitted to Open-Meteo Marine sea level (RMSE {{r:tide_rmse_mithi}} m at the Mithi); public detection data.
+- **Real:** hourly ERA5 rain; archived JMA forecasts; tide fitted to 2022–23 Open-Meteo Marine model sea level (out-of-sample RMSE {{r:tide_oos_rmse_mithi}} m at the Mithi on 2024–25); public detection data.
 - **SIMULATED:** every boom state and escaped kilogram at Mumbai sites. Held-out 2024–25, paired over {{r:n_draws}} draws:
   - full policy vs fill-fraction-ranked rule: {{r:p2p1_med}} escaped (central 90% scenario range {{r:p2p1_lo}} to {{r:p2p1_hi}});
   - vs an assumed fixed roster: {{r:p2p0_med}} (range {{r:p2p0_lo}} to {{r:p2p0_hi}}), small and uncertain.

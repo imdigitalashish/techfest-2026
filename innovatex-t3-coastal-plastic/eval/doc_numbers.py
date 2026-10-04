@@ -104,6 +104,8 @@ ALIASES: dict[str, tuple[str, str, str]] = {
     # --- twin: forcing quality ---
     "tide_rmse_mithi": ("twin", "tide_fit.mithi_mahim.rmse_m", "f2"),
     "tide_var_mithi": ("twin", "tide_fit.mithi_mahim.variance_explained", "pct1"),
+    "tide_oos_rmse_mithi": ("twin", "tide_fit.mithi_mahim.out_of_sample_2024_2025.rmse_m", "f2"),
+    "tide_oos_jjas_rmse_mithi": ("twin", "tide_fit.mithi_mahim.out_of_sample_jjas_2024_2025.rmse_m", "f2"),
     # --- evidence ledger (SYNTHETIC records) ---
     "mrv_recall": ("mrv", "recall_fraud_at_5pct_false_flags", "pct1"),
     "mrv_ff": ("mrv", "false_flag_rate_test", "pct1"),

@@ -1,12 +1,12 @@
 {
-  "built_at": "2026-10-04 17:52 IST",
+  "built_at": "2026-10-04 17:57 IST",
   "rendered_sources_sha256_16": {
-    "zonal-deck.md": "890956f5f6b01057",
+    "zonal-deck.md": "2eb70555693649bf",
     "presenter-card.md": "6311c69ca49570c0"
   },
   "exports_sha256_16": {
-    "zonal-deck.pdf": "84250120b9eeb082",
-    "zonal-deck.pptx": "ecd6e9652e5aac3f",
-    "presenter-card.pdf": "393946d640b0980f"
+    "zonal-deck.pdf": "143ac3d51e902e49",
+    "zonal-deck.pptx": "32a3e10e94336789",
+    "presenter-card.pdf": "4e12d292595350bc"
   }
 }

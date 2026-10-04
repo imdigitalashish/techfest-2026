@@ -19,15 +19,17 @@
   3. **Numbers rendered from committed results:** `eval/render_docs.py` + `eval/check_docs.py` (drift check); licences recorded in `README.md`.
   4. **Cross-model reviews as child sessions:** gpt-6-astra (max) as hostile judge on deck and pitch; gpt-6-sol (max) on code and eval, reproducing the headline numbers. Recorded in `reviews/` + `reviews/ledger.tsv`.
   5. **Final memo (honest T3 vs T1),** thought node current, all pushed → message "DONE — slot free".
-- **Doing (17:12):**
-  - *T3 code/eval review (sol)*: gpt-6-sol, max effort; reproducing the headline numbers, running tests, auditing the doc pipeline.
-  - Lead: the hostile-judge review is fully addressed (deck v3, Q&A 26, card, plan gates, memo v3, ledger).
-  - Children done and idle: twin (ablations, angle, entrainment split), detection (trained baseline), astra (review).
-  - Next: address the sol findings → final rebuild → "DONE — slot free" to the Supervisor.
+- **Status (17:57): definition of done complete; slot released to the Supervisor.**
+  - Evidence: detector trained (test mAP50 0.857; 0.856 vs 0.394 under one matcher). The twin was re-run on a leak-free tide fit: P2 vs P1 −5.2%, 39/40, all SIMULATED.
+  - Package: rendered from committed results, check_docs 0 problems. Hardened per the sol review (adversarial tests; RESULTS.md freshness; superseded-figure guard).
+  - Reviews: astra (hostile judge) and sol (code and eval) both addressed, with lead responses and ledger lines. The sol fixes landed through the MRV, twin and detection children.
+  - Dashboard redesigned as an actionable overview at the user's request, replaying the wettest 2025 week. It does not yet meet PLAYBOOK §11; the Supervisor will review demos in a later sweep.
+  - Added an illustrative per-boom estimate (`eval/impact_estimate.py`) and the twin's overtopping and bypass hours. The twin does not model street flooding, so we make no flood claim.
+  - **Resume point if reactivated:** a §11 demo (judge knob: sensor dropout or storm shock; `demo/run.sh`, SCRIPT.md, fallback/, smoke.sh, astra demo review). After that, a tabletop reversal test if a teammate is named.
 - **Rules now:** child sessions only, no `task` sub-agents. No `git stash` / `--autostash`. Timestamps from `TZ=Asia/Kolkata date`.
 - **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments, leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup's 2026 Interceptors cover the big Malad and Trombay creek mouths. NullahNet is the network layer for the rest:
   - pocket-fill sensing;
-  - tide-aware dispatch (Spike 1, support: −2.1% escaped in the twin);
+  - tide-aware dispatch (Spike 1, support in the twin: −5.2% escaped vs a fill-fraction rule, −1.9% vs an assumed roster);
   - a **fail-open fuse retrofit with an instrumented pocket** for BMC's steel-net booms (Spike 2, headline; flume-tested);
   - signed evidence records for pay per verified kg.
   See [ADR 001](architecture/adr/001-spike.md).
@@ -35,7 +37,7 @@
 - **Needs from user:**
   1. Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct.
   2. If T3 is chosen, name a teammate with fabrication skills. Ideally that teammate runs a ~2-hour tabletop reversed-flow flume test before 10 Oct (a box, a small pump, film pieces, phone video — see [prototype-plan](deliverables/prototype-plan.md) §3, T2/T3).
-  3. Approve purchases later: flume electronics ₹33,958 and field node ₹82,282, both sourced. The flume structure is not yet priced.
+  3. Approve purchases later: tow tank ₹39,222.11 in listed parts (electronics included) and a field node ₹83,481.98 in listed parts, each part with URL and date in the [prototype plan](deliverables/prototype-plan.md).
   4. Supply team name, Team ID and member details for slide 1.
 - **Risks:** (1) model-API congestion (HTTP 408) killed 13 research sub-agents overnight → work moved to resumable child sessions with small-context rules; tool round-trips take 5–8 min. (2) No public imagery of Mumbai nullahs → detector metrics are on a public proxy dataset; domain shift (black water, hyacinth, monsoon rain) is a known gap. (3) Simulator parameters are partly ASSUMPTION → we claim *relative* policy gains under Monte Carlo, not absolute tonnage.
 
@@ -81,7 +83,7 @@
 | C7 | Fill estimator | frame + range → `FillEstimate` | ultrasonic / ToF range | – | planned | fill MAE |
 | C8 | Edge telemetry | sensors → `SiteTelemetry` | MQTT over 4G / NB-IoT | – | planned | delivery rate, bytes/day |
 | C9 | Risk forecaster | rain fcst, tide, fill → `SiteForecast` | rain-threshold rule | candidate | building | Brier score |
-| C10 | Dispatch planner | states, forecasts, crews → `DispatchPlan` | fixed schedule (status quo) | Spike 1 (support) | **done (v0) + ratchet** | held-out escaped kg: −2.1% median vs P0 (SIMULATED) |
+| C10 | Dispatch planner | states, forecasts, crews → `DispatchPlan` | fixed schedule (status quo) | Spike 1 (support) | **done (v0) + ratchet** | held-out escaped kg: −1.9% median vs P0, −5.2% vs P1 (SIMULATED, after the leak-free tide refit) |
 | C11 | MRV ledger | clearance records → `LedgerEntry` | manual weighbridge slips | – (support) | **done (v0)** | recall 0.72 @ 4.7% false flags; precision 0.45 @ 5% prevalence (SYNTHETIC) |
 | C12 | Dashboard | `DashboardBundle` → UI | — | – | **done (v0)** | task time (later) |
 | C13 | Recovery & upcycling | `CatchComposition` → `RecoveryRoute` | kabadiwala + co-processing | – | planned | ₹/t, diversion rate |
@@ -89,19 +91,20 @@
 | C14 | Source attribution | outfall flux + catchments → `WardHotspot` | ward complaints | – | planned | rank correlation (sim) |
 
 ## Selection memo
-_FINAL v3, 4 Oct 2026, 17:10 IST, after the gpt-6-astra hostile-judge review ([review](reviews/2026-10-04-final-deck-gpt-6-astra.md); [lead response](reviews/2026-10-04-final-deck-lead-response.md)). **Context:** T1 JalSakshi was picked for the Delhi zonal by two independent judges. This memo is the honest case for and against T3 as the alternative. Scores are this memo's 1–5 judgments, not official-rubric totals or qualification odds. Sources: [fact-check](research/fact-check.md) · [results](eval/RESULTS.md)._
+_FINAL v4, 4 Oct 2026, 17:56 IST. v3 (17:10) followed the gpt-6-astra hostile-judge review ([review](reviews/2026-10-04-final-deck-gpt-6-astra.md); [lead response](reviews/2026-10-04-final-deck-lead-response.md)); v4 re-states every number after the gpt-6-sol code review fixes ([review](reviews/2026-10-04-code-eval-gpt-6-sol.md); [lead response](reviews/2026-10-04-code-eval-lead-response.md)): leak-free tide refit, fixed flux counter, calibrated MRV threshold. **Context:** T1 JalSakshi was picked for the Delhi zonal by two independent judges. This memo is the honest case for and against T3 as the alternative. Scores are this memo's 1–5 judgments, not official-rubric totals or qualification odds. Sources: [fact-check](research/fact-check.md) · [results](eval/RESULTS.md)._
 
 - **Winnability — 3/5.**
   - For: Mumbai-specific grounding, which the hostile judge scored 4/5. That covers The Ocean Cleanup's 2026 survey, BMC's boom expansion (a May 2025 report: 9 → 23 at about ₹1 crore each), a ₹14.5 crore two-year maintenance contract, the 2026 flood plan, and low-value packaging evidence.
   - Against: a named department with existing budget lines is *prospective* demand, not a commitment, and T1 also names a prospective customer. Strong incumbents (The Ocean Cleanup, Plastic Fischer) already operate at or near the named sites. A Delhi audience gets no home advantage.
 - **Innovation headroom — 2/5 on today's evidence.** Every result is *simulated*:
-  - The full dispatch policy beats a fill-fraction rule (−5.6%, lower in 39 of 40 parameter settings of one model). No single ingredient clears zero alone: tide timing −3.2%, forecasts −0.4%, kg ranking −2.0%.
-  - Against an assumed fixed roster the gain is small and uncertain (−2.1%).
-  - The hardware levers (angle −10% to −17%, pocket −5%) follow from capture curves we assumed. About half of modelled escape is an assumed still-water leak.
+  - The full dispatch policy beats a fill-fraction rule (−5.2%, central 90% scenario range −15.9% to −0.8%, lower in 39 of 40 parameter settings of one model). No single ingredient clears zero alone: tide timing −3.6%, forecasts −0.7%, kg ranking −2.1%.
+  - Against an assumed fixed roster the gain is small and uncertain (−1.9%, range −12.5% to +1.3%).
+  - The hardware levers (angle −10.5% to −17.8%, pocket −5.1%) follow from capture curves we assumed. About half of modelled escape (51%) is an assumed still-water leak.
+  - Illustrative per-boom arithmetic (reported catch × these ratios, `eval/impact_estimate.py`): retrofit a median 86–104 t less escaping per monsoon; timing alone 7.0–8.5 t with a range that includes no gain. This is arithmetic on assumptions, not a result.
   - Passive floating litter traps for tidal waterways are prior art (Bandalong); a one-way flap is described only in a search summary (UNVERIFIED).
   - A positive tow-tank test would reduce risk; it would not make a known trap concept novel.
-- **Feasibility by 1 Dec — 4/5.** A closed-loop bench rig needs no field permission: a tow tank (listed parts ₹39,222.11 incl. electronics), node, twin and records. The software is BUILT, the detector is trained (held-out test mAP50 0.857; cross-site 0.524), and the schedule avoids the exams. It needs a hands-on teammate, as T1 does.
-- **Demo strength — 3/5 now, 4/5 with the tow tank.**
+- **Feasibility by 1 Dec — 4/5.** A closed-loop bench rig needs no field permission: a tow tank (listed parts ₹39,222.11 incl. electronics), node, twin and records. The software is BUILT, the detector is trained (held-out test mAP50 0.857; scored with one matcher, 0.856 vs 0.394 off the shelf; cross-site 0.524), and the schedule avoids the exams. The synthetic flux counter over-counts by +15.9% (95% CI +6.1% to +28.0%) after the tracker fix. It needs a hands-on teammate, as T1 does.
+- **Demo strength — 3/5 now, 4/5 with the tow tank.** The dashboard now opens on actions (dispatch with crew messages, watch, claims to check, each with a "Why?") over a day-by-day replay of the wettest 2025 week; it does not yet meet PLAYBOOK §11 (no judge knob, run.sh, script or demo review).
 - **Fit with the user's strengths — 3/5.** Systems, data and evidence pipelines fit; hydraulics and fabrication need a teammate.
 - **Cost realism — unresolved.** A field node is ₹83,481.98 in *listed parts*, excluding installation, anchoring, the retrofit and servicing. Comparisons with T1's node price are not like-for-like; T1's rain gauge and shared gateway and T3's retrofit and service burden differ.
 - **Biggest risks:**
@@ -224,3 +227,18 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Lead re-verified more facts:** F07 (BMC: drains → sea → tide back), F09, F10, F11, F13, F14 (ITOPF PDF), F16 (Pinwheel HTML), F23 (scope error confirmed and fixed), F24.
 - **Deck v3:** concept drawing on slide 3; 10 main + 5 backup slides; `check_docs` 0 problems with 85 result aliases and 35 fact rows. Dashboard bundle rebuilt with the detection metrics.
 - **Lesson:** take every time from `TZ=Asia/Kolkata date`. I quoted "17:08" to the Supervisor without checking the clock, which read 17:04.
+
+### 2026-10-04 17:12–17:57 IST — Code review fixed, dashboard redesigned, DONE
+- **gpt-6-sol review (a35e257):** 13/18 headline numbers reproduced exactly; 6 issues raised, all accepted ([lead response](reviews/2026-10-04-code-eval-lead-response.md), ledger line).
+  - Fixes by the children: MRV calibrated threshold shipped plus crew-bound signatures (11b8954, 6564f17, c00faa0); leak-free tide refit (481f0d1); flux counter direction plus a persistent tracker (75943c6).
+  - The tracker fix showed the old 33% flux figure was an artefact. New figure: +15.9% (95% CI +6.1% to +28.0%), SYNTHETIC.
+  - Lead fixes: check_docs hardening with adversarial tests and RESULTS.md freshness (Supervisor's catch), the like-for-like detector line, and a superseded-figure guard (643e071 and later).
+- **Twin after the refit (SIMULATED):** P2 vs P1 −5.2% [−15.9, −0.8], 39/40; P2 vs P0 −1.9% [−12.5, +1.3]. All four deck statements still hold. Updated: ADR (17:53 update), memo v4, twin README line (Supervisor's catch), components row.
+- **Dashboard (user request, "actionable, not a data dump"):**
+  - Rebuilt around a morning brief (template, no LLM), ranked actions with "Why?" and copy-ready crew messages, a site chart with hover, claims needing attention with a tamper demo, plan comparison, camera check, and a sources panel.
+  - Day-by-day replay of the wettest 2025 week (twin export); `build_bundle.trim` now keeps the twin's replay window.
+  - No horizontal overflow at 1440 or 390 px; impeccable detector reports no findings; 0 JS errors (f339f14).
+- **Impact (promised to the user):**
+  - `eval/impact_estimate.py` gives an ILLUSTRATIVE per-boom estimate (reported catch × twin ratios): retrofit median 86–104 t less escaping per monsoon; dispatch 7.0–8.5 t, with a range that includes no gain.
+  - The twin's boom-overtopping hours are 88.0 (P2), 70.5 (P1) and 87.0 (P0) site-hours; bypass hours are 10 for every policy. We make no flood claim.
+- **Supervisor:** answered (a) on the §11 demo: DONE now, demo sweep later.

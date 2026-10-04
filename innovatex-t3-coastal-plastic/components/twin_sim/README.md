@@ -25,7 +25,7 @@ python -m twin_sim.analysis                         # SIMULATED escape causes, p
   - Telemetry: sensed fill hourly in the window, 6-hourly elsewhere.
   - Window: the wettest held-out week, 2025-08-14 → 08-20 UTC (`metrics["twin_sim.window"]`; see twin.md §9).
 - `results/metrics.json`: held-out and tuning comparisons, P2 knobs, tide-fit skill and the reproduce command.
-- `results/analysis.json` (about 20 KB, label SIMULATED): escape split by cause, paired per-draw differences (P2 vs P1: −5.6% [−15.8%, −0.3%], 39/40 draws), FWCE per policy, and the fail-open fuse / one-way pocket SENSITIVITY. See twin.md §6.
+- `results/analysis.json` (about 20 KB, label SIMULATED): escape split by cause, paired per-draw differences (P2 vs P1: −5.2% [−15.9%, −0.8%], 39/40 draws, after the 17:25 IST leak-free tide refit), FWCE per policy, and the fail-open fuse / one-way pocket SENSITIVITY. See twin.md §6.
 
 ## Headline (SIMULATED, held-out Jun–Sep 2024+2025, 40 sampled parameter settings)
 Each figure is escaped kg vs P0: the median reduction, then the central 90% scenario range across sampled parameter settings (p05–p95; not a confidence interval).

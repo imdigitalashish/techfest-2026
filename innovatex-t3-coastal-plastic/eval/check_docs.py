@@ -14,6 +14,8 @@
 9. Small quantities: an integer followed by a unit or count noun ("9 booms", "40 draws", "3 t") must be bound too
    (forecast-horizon definitions "24 h" / "48 h" are exempt).
 10. RESULTS.md equals a fresh eval/collect_results.py render (ignoring its 'Generated' line).
+11. Superseded twin figures (before the leak-free tide refit) do not appear in living documents: rendered deliverables,
+    README.md, architecture/components.md, components/twin_sim/README.md and the current part of thought_node.md.
 Binding (3) compares whole numeric tokens (so "5,000" does not match "15,000") and includes ₹-prefixed and small numbers.
 Usage: python3 innovatex-t3-coastal-plastic/eval/check_docs.py
 """
@@ -30,6 +32,7 @@ import collect_results  # noqa: E402
 
 STALE = ["2.2%", "2.2 %", "13.5%", "29 of 40", "29/40", "⟨FILL", "**[V", "[V]", "tamper-proof", "blockchain",
          "cannot flood", "can't flood"]
+SUPERSEDED = ["−5.6%", "-5.6%", "−15.8%", "92.5%", "−17.2%", "−23.4%"]  # pre-refit twin figures (review gpt-6-sol #2)
 NUM = re.compile(r"(?<![\w.\-/₹])(\d{1,3}(?:,\d{2,3})+(?:\.\d+)?|\d+\.\d+|\d{4,}|\d+(?:\.\d+)?\s?%)(?![\w])")
 EXEMPT_LINE = re.compile(r"UNVERIFIED|ASSUMPTION")
 SELF_CITED = re.compile(r"https?://\S+.*2026-10-0\d|2026-10-0\d.*https?://")
@@ -159,6 +162,13 @@ def main() -> int:
     for s in STALE[:4]:
         if s in tn_current:
             problems.append(f"stale {s!r} in the current part of thought_node.md")
+    living = {p: p.read_text() for p in [*current, ROOT / "README.md", ROOT / "architecture" / "components.md",
+                                         ROOT / "components" / "twin_sim" / "README.md"] if p.exists()}
+    living[ROOT / "thought_node.md"] = tn_current
+    for p, text in living.items():  # 11. superseded twin figures must not survive in living documents
+        for s in SUPERSEDED:
+            if s in text:
+                problems.append(f"superseded twin figure {s!r} in {p.relative_to(ROOT)}")
 
     man = OUT / "exports-manifest.json"  # 7. exports built from the current rendered Markdown
     if man.exists():

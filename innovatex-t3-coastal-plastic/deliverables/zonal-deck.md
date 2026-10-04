@@ -215,7 +215,7 @@ Use if asked "show us the software". Walk: morning brief → first dispatch → 
 
 # Backup · How the twin works and what it leaves out
 
-- **Inputs (real):** hourly ERA5 rain; JMA day-ahead forecasts as archived (the value issued 24 h before); tide from a UTide fit to Open-Meteo Marine model sea level. Fit RMSE 0.07 m at the Mithi is an in-sample residual against model data (fit window through Sep 2025), not gauge validation.
+- **Inputs (real):** hourly ERA5 rain; JMA day-ahead forecasts as archived (the value issued 24 h before); tide from a UTide fit to Open-Meteo Marine model sea level. The tide is fitted on 2022–23 sea level only; on the held-out 2024–25 hours it never saw, RMSE at the Mithi is 0.09 m (0.11 m in Jun–Sep), against model data, not a gauge.
 - **Process (assumed):** litter builds between storms and washes off with rain; capture falls with flow speed; pockets overflow; the flood tide lifts part of the catch; crews clear.
 - **Uncertainty:** the main process parameters are drawn across ranges in 40 settings; site geometry, crew rules and some structures are fixed. Policy tuning used 2019–2023 only.
 - **Circularity:** escaped kilograms come from the same assumed model the policies act on. Results guide experiments; they are not field evidence.

@@ -72,7 +72,26 @@ The theme asks us to monitor, intercept and reduce plastic leaking from Mumbai's
   - Spike 1: drop it if P2 does not beat P1 by more than the Monte Carlo spread on held-out years.
   - Spike 2: drop the "ratchet" claim if reversed-flow flume tests show no retention gain over an angled boom, or if the fuse cannot keep head rise under the cap.
 
-## Update 17:10 IST — ablations, the twin's leak decomposition, hostile review (SIMULATED / SENSITIVITY)
+## Update 17:53 IST — numbers after the leak-free tide refit (supersede the 16:25 and 17:10 figures; SIMULATED / SENSITIVITY)
+The code review (gpt-6-sol #2) found the tide fit used sea level from the held-out years. The twin child refitted the tide on 2022-11-23 to 2023-12-31 only (Mithi out-of-sample RMSE 0.09 m on 2024–25 model sea level, not a gauge) and re-ran `run.py` and `analysis.py` with nothing retuned (481f0d1). Every decision below is unchanged.
+- **Paired, held-out 2024–25, 40 parameter draws:**
+  - P2 vs P1: −5.2% (central 90% scenario range −15.9% to −0.8%), lower in 39 of 40.
+  - P2 vs P0: −1.9% (−12.5% to +1.3%).
+  - P1 vs P0: +3.0% (−0.1% to +5.7%).
+- **Ablations:** tide timing alone −3.6% (−15.1% to +0.5%); forecasts −0.7%; kg ranking −2.1% (−4.0% to +0.2%); P2 vs the kg-ranked rule −2.8% (−12.5% to +0.9%). None clears zero alone.
+- **Escape split (P2):**
+  - Under or through the boom: 93.1% of escaped. Of all escape, 51% is the assumed still-water leak and 40% is speed-driven.
+  - Overflow: 5.5%. Release: 0.5%.
+  - 14.1% of arriving plastic comes at high speed.
+- **Hardware SENSITIVITY:**
+  - Fuse alone −0.1%.
+  - Pocket ×0.5 −5.1% (−9.6% to −1.5%); pocket ×0.2 −9.3%.
+  - Angle 45° −10.5%, 30° −15.3%, 20° −17.8% (2.9× channel width); 20° + fuse + pocket −23.9%.
+- **FWCE:** P0 45.8%, P1 44.4%, P2 49.0%.
+
+All four deck statements still hold: (a) the full policy vs the fill-fraction rule clears zero; (b) no single ingredient does; (c) P2 vs P0 crosses zero; (d) escape under or through the boom dominates. Source: [`analysis.json`](../../components/twin_sim/results/analysis.json); the deck renders these from it.
+
+## Update 17:10 IST — ablations, the twin's leak decomposition, hostile review (SIMULATED / SENSITIVITY; numbers superseded by the 17:53 update)
 Sources: [`analysis.json`](../../components/twin_sim/results/analysis.json) (reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis`); [hostile review](../../reviews/2026-10-04-final-deck-gpt-6-astra.md); [lead response](../../reviews/2026-10-04-final-deck-lead-response.md).
 
 **Dispatch ablations (held-out 2024–25, paired):**
@@ -106,7 +125,7 @@ Passive floating litter traps for tidal waterways already exist. The Bandalong L
 - Spike 2's claim narrows to a **fail-open fuse retrofit** for Mumbai's existing steel-net conveyor booms, plus an **instrumented pocket** that feeds dispatch and evidence.
 - The flume must still show a retention gain under reversal; otherwise we adopt an off-the-shelf trap design and drop the retention claim.
 
-## Update 16:25 IST — escape split, paired comparisons, fuse/pocket sensitivity (SIMULATED)
+## Update 16:25 IST — escape split, paired comparisons, fuse/pocket sensitivity (SIMULATED; numbers superseded by the 17:53 update)
 Source: [`components/twin_sim/results/analysis.json`](../../components/twin_sim/results/analysis.json). Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis`. Same held-out years, draws, seed and crew budget as before; nothing retuned.
 
 **Findings:**
