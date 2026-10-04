@@ -190,7 +190,8 @@ const nOk = t => Math.round(t.acc * t.n);
 const verdict = prefix => (R.verdicts.find(v => v.startsWith(prefix)) || "").replace(/^- /, "");
 function caveat(rn) { // shown next to every place where RoD beats the full cache
   const full = tab(rn, "full", "100");
-  if (rn.key === "T2") return "Caveat: T2's full-cache ceiling is depressed by a 10-token answer limit (amendment 5; E6 sensitivity).";
+  if (rn.key === "T2") { const e6 = verdict("- **E6");
+    return "Caveat: T2's full-cache ceiling is depressed by a 10-token answer limit (amendment 5; E6 sensitivity)." + (e6 ? " " + md(e6) : ""); }
   if (rn.key === "T3") { const h = rn.mech.rod["10"], l = rn.mech.rodlex["10"];
     return `Caveat: aliased keys defeat even the full cache (recall ${full.md.acc}); at 10% RoD's needle-block hit rate is ${pct(h.hit_rate)} vs ${pct(l.hit_rate)} for RoD-lexical.`; }
   if (rn.key === "T1") {
