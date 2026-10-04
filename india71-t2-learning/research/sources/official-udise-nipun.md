@@ -1,33 +1,67 @@
 # Official UDISE+/NIPUN/FLS/SDG source notes
 
-Access date for all sources: 2026-10-04. ASER 2024 and PARAKH tables intentionally excluded.
+Access date for all sources: 2026-10-04. ASER 2024 and PARAKH tables intentionally excluded. Every verified number below was opened in this session; unresolved items are marked **UNVERIFIED**.
 
 ## Key facts table
 
 | # | Claim | Number | Source URL | Exact quote / page | Accessed |
 |---|---|---:|---|---|---|
-| 1 | UDISE+ 2024-25 total schools | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 2 | UDISE+ 2024-25 total students/enrolment | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 3 | UDISE+ 2024-25 total teachers | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 4 | UDISE+ government schools share | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 5 | UDISE+ single-teacher schools and enrolment | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 6 | UDISE+ zero-enrolment schools | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 7 | UDISE+ PTR at primary/foundational | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 8 | UDISE+ enrolment trend vs previous year | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 9 | UDISE+ student-wise data/PEN, attendance, learning levels | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 10 | NIPUN Bharat universal FLN target year | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 11 | NIPUN Bharat Lakshya Soochi Grade 1 reading/numeracy | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 12 | NIPUN Bharat Lakshya Soochi Grade 2 reading/numeracy | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 13 | NIPUN Bharat Lakshya Soochi Grade 3 reading/numeracy | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 14 | NIPUN Bharat 5-tier implementation structure | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 15 | NIPUN assessment and tech/data tracking | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 16 | NCERT FLS 2022 Grade 3 literacy minimum proficiency | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 17 | NCERT FLS 2022 Grade 3 numeracy minimum proficiency | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 18 | NCERT FLS benchmarks/sample | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 19 | NITI SDG India Index 2023-24 composite score | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 20 | NITI SDG India Index 2023-24 Goal 4 score and learning indicators | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
-| 21 | Official 2025-26 NIPUN progress/deadline statement | UNVERIFIED | UNVERIFIED | UNVERIFIED | 2026-10-04 |
+| 1 | UDISE+ 2024-25 total schools | 1,471,473 | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.28/Table 1: "Total Number of Schools 1471473" | 2026-10-04 |
+| 2 | UDISE+ 2024-25 total enrolment, pre-primary to higher secondary | 246,932,680 (24.69 crore) | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.28/Table 1: "Total Number of Enrolments (Pre-Primary to Higher Secondary) 246932680"; p.12: "Total of 24.69 Crore students are enrolled in the academic year 2024-25." | 2026-10-04 |
+| 3 | UDISE+ 2024-25 total teachers | 10,122,420 (1.01 crore) | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.28/Table 1: "Total Number of teachers 10122420" | 2026-10-04 |
+| 4 | Government schools share of schools | 68.9% (computed: 1,013,322 / 1,471,473) | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.28/Table 1: "Total Number of Schools 1471473" and "Total Government Schools 1013322" | 2026-10-04 |
+| 5 | UDISE+ single-teacher schools and enrolment in them | 104,125 schools; 3,376,769 enrolments | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.32/Table 2.2 India row: "Schools with Single Teachers 104125"; "Enrolments in Single Teacher Schools 3376769" | 2026-10-04 |
+| 6 | UDISE+ schools with zero enrolment and teachers in them | 7,993 schools; 20,817 teachers | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.32/Table 2.2 India row: "Schools with Zero Enrolments 7993"; "Teachers in schools having zero Enrolments 20817" | 2026-10-04 |
+| 7 | PTR at primary | 20 | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.29/Table 1: "PTR at Primary level 20" | 2026-10-04 |
+| 8 | Overall PTR | 24 | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.32/Table 2.2 India row: "Pupil Teacher Ratio 24" | 2026-10-04 |
+| 9 | UDISE+ enrolment trend vs previous year | **UNVERIFIED exact delta vs 2023-24** | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.11 says "2022-23, 2023-24 & 2024-25 are comparable"; no opened official table in this session gave a previous-year enrolment delta. | 2026-10-04 |
+| 10 | UDISE+ student-wise collection | Since 2022-23; >60 fields; >22 crore Aadhaar voluntarily provided; separate EID | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.10: "w.e.f., 2022-23, individual student wise data collection has been started"; "captures data on more than 60 fields for each student"; "a separate unique educational ID (EID) for every student". p.13: "Overall, more than 22 crore students voluntarily provided Aadhaar number" | 2026-10-04 |
+| 11 | UDISE+ PEN specifically | **UNVERIFIED** | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | Opened booklet verifies EID, not the term PEN: "a separate unique educational ID (EID)" (p.10). | 2026-10-04 |
+| 12 | UDISE+ attendance / learning levels | Enables monitoring; actual student attendance or learning-level fields **UNVERIFIED** | https://dashboard.udiseplus.gov.in/report-new-v.11-demo2025/static/media/UDISE+2024_25_Booklet_existing.118ba29d4773e6372f72.pdf | p.10: "Unique student wise data also ensures universal access... by monitoring students’ attendance, learning outcomes, health parameters etc." | 2026-10-04 |
+| 13 | NIPUN Bharat target year, guidelines launch deck | 2026-27; Grade 3 | https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf | p.2: "Achieving universal FLN in primary schools by 2026-27"; p.3: "by Grade 3 every child can..."; p.5: "by 2026-27 every child achieves the desired learning competencies... at the end of Grade III and not later than Grade V." | 2026-10-04 |
+| 14 | NIPUN Lakshya Soochi Grade 1 | Reading: small sentences of at least 4-5 simple words; Numeracy: numbers up to 99; simple addition/subtraction | https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf | p.12 Lakshyas graphic: "Reads small sentences consisting of at least 4-5 simple words in an age appropriate unknown text"; "Read and write numbers up to 99"; "Perform simple addition and subtraction" | 2026-10-04 |
+| 15 | NIPUN Lakshya Soochi Grade 2 | Reading: 45-60 words/min with meaning; Numeracy: numbers up to 999; subtract up to 99 | https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf | p.12: "Read with meaning • 45-60 words per minute"; "Read and write numbers up to 999"; "Subtract numbers up to 99" | 2026-10-04 |
+| 16 | NIPUN Lakshya Soochi Grade 3 | Reading: at least 60 words/min with meaning; Numeracy: numbers up to 9999; multiplication | https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf | p.12: "Read with meaning • at least 60 words per minute"; "Read and write numbers up to 9999"; "Solve simple multiplication problems" | 2026-10-04 |
+| 17 | NIPUN five-tier implementation structure | National-State-District-Block-School | https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf | p.24: "A five-tier Implementation mechanism... NATIONAL-STATE-DISTRICT-BLOCK-SCHOOL level" | 2026-10-04 |
+| 18 | NIPUN assessment approach | Continuous/comprehensive; SBA and large-scale assessment | https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf | p.14: "Assessment is vital to track children’s progress in a continuous and comprehensive manner"; p.15: "School Based Assessment (SBA)" and "Large-scale standardised assessment" | 2026-10-04 |
+| 19 | NIPUN tech/data tracking | IT-based child-wise monitoring; DIKSHA/UDISE+/NDEAR | https://static.pib.gov.in/WriteReadData/specificdocs/documents/2021/jul/doc20217531.pdf | p.29: "monitor Mission activities through IT based solutions which shall include field level child wise monitoring"; "leveraging the existing building blocks such as DIKSHA and UDISE+"; "standards set down by NDEAR" | 2026-10-04 |
+| 20 | NCERT FLS 2022 sample/benchmark | ~86,000 Grade 3 students; 10,000 schools; 20 languages; reading benchmarks per language | https://sansad.in/getFile/annex/259/AU3224.pdf?source=pqars | Rajya Sabha AU3224 p.1: "administered in March, 2022 by NCERT"; "20 different languages"; "Approximately 86,000 grade 3 students from 10,000 schools"; "benchmarks have been calculated distinctly for each of the 20 languages" | 2026-10-04 |
+| 21 | NCERT FLS 2022 numeracy: sufficient/superior skills | 42% sufficient; 10% superior; 52% at least sufficient/superior if combined | https://sansad.in/getFile/annex/259/AU3224.pdf?source=pqars | p.1 question text confirms: "37 per cent had limited skills, 42 per cent had sufficient skills, 10 percent had superior skills". The answer confirms FLS assessed "Reading with understanding and numeracy". | 2026-10-04 |
+| 22 | NCERT FLS 2022 literacy headline % meeting global minimum proficiency | **UNVERIFIED** | https://pib.gov.in/PressReleaseIframePage.aspx?PRID=1809133; https://sansad.in/getFile/annex/259/AU3224.pdf?source=pqars | PIB launch says study aimed "to set-up benchmarks for reading with comprehension in 22 Indian languages"; AU3224 confirms language-specific benchmarks, but no opened official text provided one national literacy percentage. | 2026-10-04 |
+| 23 | NITI SDG India Index composite score | 71 | https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2032857 | PIB: "Overall SDG score for the country is 71 for 2023-24, significant improvement from 66 in 2020-21 and 57 in 2018" | 2026-10-04 |
+| 24 | NITI SDG India Index Goal 4 score | 61 | https://static.pib.gov.in/WriteReadData/userfiles/image/image010QARO.jpeg | Official PIB image OCR: "2023-24 Score: 61" under "SDG 4 – Quality Education". | 2026-10-04 |
+| 25 | NITI SDG India Index Goal 4 indicators visible in PIB release | ANER elementary 96.5%; PTR 18; schools with electricity+drinking water 88.65%; gender parity higher education 100% | https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2032857 | PIB Goal 4 bullets: "Adjusted Net Enrolment Rate (ANER)... 96.5%"; "Pupil Teacher Ratio is 18"; "88.65% of schools have access to both electricity and drinking water"; "100% parity between females and males in Higher Education" | 2026-10-04 |
+| 26 | NITI Goal 4 learning-outcome indicator(s) | **UNVERIFIED / not visible in opened PIB release** | https://pib.gov.in/PressReleaseIframePage.aspx?PRID=2032857 | The opened PIB Goal 4 section lists ANER, PTR, infrastructure and higher-education parity; no learning-outcome indicator was visible in the text extracted. | 2026-10-04 |
+| 27 | 2024 official NIPUN deadline/progress statement | Grade 2 by 2026-27; DIKSHA FLN vertical content counts; ~45 lakh teachers completed NISHTHA online | local file: .data/nipun_parliament_AU523.txt (Rajya Sabha AU523, answered 07/02/2024) | AU523 p.1-2: "attains foundational literacy and numeracy by Grade 2 by 2026-27"; p.2: "This vertical carries 2409 contents"; "Around 45 lakh teachers have completed NISHTHA online training" | 2026-10-04 |
+| 28 | Official 2025-26 NIPUN progress statement | **UNVERIFIED** | UNVERIFIED | No opened 2025-26 PIB/parliament source found in this session; latest opened official progress/deadline source was AU523 answered 07/02/2024. | 2026-10-04 |
 
-## Research log
+## Short sections
 
-- File created quickly with UNVERIFIED placeholders; entries below are updated only after opening primary sources in-session.
+### UDISE+ 2024-25: decision-support implications
+
+The opened UDISE+ 2024-25 booklet gives a large school system baseline: 1,471,473 schools, 246,932,680 enrolments and 10,122,420 teachers (p.28). Government schools are 1,013,322 of 1,471,473 schools, about 68.9%. Operational stress points useful for FLN decision-support include 104,125 single-teacher schools with 3,376,769 enrolments, and 7,993 zero-enrolment schools with 20,817 teachers (p.32). Primary PTR is 20 (p.29). UDISE+ has collected individual student-wise data since 2022-23 and states that this enables monitoring of attendance and learning outcomes, but this session did not verify whether the released 2024-25 dataset contains actual attendance or learning-level fields.
+
+### NIPUN Bharat guidelines / Lakshya Soochi
+
+The 2021 MoE/PIB NIPUN launch document sets the mission around universal FLN by 2026-27 and desired Grade III competencies. The Lakshya graphic gives usable FLN thresholds: Grade 1 reading small 4-5 word sentences and numeracy to 99 with simple addition/subtraction; Grade 2 reading with meaning at 45-60 words/minute and numeracy to 999 with subtraction to 99; Grade 3 reading with meaning at least 60 words/minute and numeracy to 9999 with simple multiplication. Implementation is a five-tier National-State-District-Block-School structure, with assessment framed as continuous/comprehensive SBA plus large-scale standardized assessment, and monitoring through IT-based child-wise systems leveraging DIKSHA, UDISE+ and NDEAR.
+
+### NCERT Foundational Learning Study 2022
+
+Opened official parliament answer AU3224 confirms FLS was administered by NCERT in March 2022 across ~86,000 Grade 3 students from 10,000 schools and 20 languages. It verifies numeracy distribution: 11% lacking basic skills, 37% limited, 42% sufficient and 10% superior. A national literacy percentage meeting global minimum proficiency was not verified from an opened official text in this session; only language-specific benchmarking and the study purpose were verified.
+
+### SDG India Index 2023-24
+
+PIB verifies India’s overall SDG score as 71. The official PIB Goal 4 image gives Score: 61. The visible Goal 4 indicators in the PIB release are ANER for elementary education, PTR, schools with electricity and drinking water, and gender parity in higher education. No learning-outcome indicator was visible in the opened PIB text, so any claim that Goal 4 used direct learning-level indicators remains **UNVERIFIED** here.
+
+### 2025-26 NIPUN progress/deadline
+
+A local official parliament text (AU523, 07/02/2024) verifies a later statement that NIPUN Bharat aims for FLN by Grade 2 by 2026-27 and reports DIKSHA/NISHTHA implementation facts, including 2,409 FLN vertical contents and around 45 lakh teachers completing NISHTHA online training. A 2025-26 official progress statement was not verified in this session.
+
+## UNVERIFIED list
+
+- UDISE+ exact enrolment trend/delta vs 2023-24 from an opened official table.
+- UDISE+ use of the exact term PEN in the opened booklet; EID is verified instead.
+- Whether released UDISE+ 2024-25 data includes actual attendance or learning-level fields, beyond the booklet's statement that student-wise data enables monitoring attendance/learning outcomes.
+- NCERT FLS 2022 national literacy percentage meeting global minimum proficiency.
+- NITI Goal 4 direct learning-outcome indicator(s); not visible in opened PIB release.
+- Any official 2025-26 NIPUN progress statement beyond the opened 2024 parliament answer.
