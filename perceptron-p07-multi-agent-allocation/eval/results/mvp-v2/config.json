@@ -1,0 +1,29 @@
+{
+ "scenarios": [
+  "stationary",
+  "shock",
+  "drift",
+  "shock+drift",
+  "spikes",
+  "shock+drift+spikes"
+ ],
+ "policies": [
+  "static",
+  "greedy",
+  "reactive",
+  "mpc-myopic",
+  "mpc-queue",
+  "mpc-ewma",
+  "mpc-cusum-v1",
+  "oracle"
+ ],
+ "seeds": "200-229",
+ "n_agents": 40,
+ "patience": 10,
+ "horizon": 1440,
+ "workers": 8,
+ "out": "eval/results/mvp-v2",
+ "legacy": false,
+ "n_jobs": 1440,
+ "wall_s": 936.3435671329498
+}

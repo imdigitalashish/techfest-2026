@@ -1,46 +1,45 @@
-# Approach diagram (Round-1 optional 1-page architecture) — P7 shock-aware look-ahead allocator
+# Approach diagram (Round-1 optional 1-page architecture) — P7 regime-aware look-ahead allocator
 
 ```mermaid
 flowchart TB
-  subgraph WORLD["Multi-agent dispatch world (PettingZoo ParallelEnv, built)"]
-    D["Demand generator<br/>Poisson per zone x diurnal cycle<br/>+ abrupt shock + gradual drift + spikes<br/>(ground-truth change labels, common random numbers)"]
-    S["Simulator<br/>K resource units = agents on a zone grid<br/>travel 1 step/hop · FIFO queues · patience P · trips relocate units"]
+  subgraph WORLD["Multi-agent dispatch world (PettingZoo ParallelEnv, built and tested)"]
+    D["Demand<br/>synthetic: Poisson per zone x diurnal cycle + abrupt shocks + gradual drift + spikes<br/>(labelled change points)<br/>real: NYC TLC yellow-taxi trips, July 2025 (Manhattan, thinned)"]
+    S["Simulator: K units = agents on a 5x5 zone grid<br/>same-zone FIFO matching · patience P · trips relocate units<br/>repositioning lead time L steps per hop"]
     D --> S
   end
 
-  subgraph AGENT["Look-ahead allocator (one decision per step)"]
+  subgraph AGENT["Look-ahead allocator: centralised cooperative planning, per-unit execution"]
     N["Nowcaster<br/>observed arrivals per zone"]
-    CD["Change detector (spike)<br/>two-sided Poisson CUSUM to BOCPD<br/>alarm + onset + post-change rate<br/>tunable false-alarm rate"]
-    F["Forecaster (spike)<br/>learned time-of-day profile x level<br/>slow EWMA (drift) / restart on alarm (shock)<br/>+ conformal upper band (safety stock)"]
-    P["MPC planner<br/>time-expanded LP over H steps:<br/>hop flows · service flows via OD matrix · backlog<br/>max served - move cost - wait cost (HiGHS)"]
-    C["Coordinator<br/>zone flows to per-unit orders<br/>(LP dual prices for a decentralised / auction variant)"]
+    CD["Change detector (spike)<br/>two-sided Poisson CUSUM per zone<br/>alarm + onset + post-change rate"]
+    F["Forecaster (spike)<br/>learned time-of-day profile x level<br/>slow EWMA (drift) / restart at running post-change mean (shock)"]
+    P["MPC planner<br/>time-expanded LP over H = L + 6 steps:<br/>hop flows (arrive after L) · service flows via OD matrix<br/>backlog with fluid abandonment (1/P per step)<br/>HiGHS, warm-started each step"]
+    C["Coordinator<br/>zone flows to per-unit move orders"]
     N --> CD --> F --> P --> C
   end
 
-  S -- "fleet state: idle, en-route, queues" --> P
+  S -- "fleet state: idle, en-route ETAs, queues" --> P
   S -- "arrivals" --> N
-  C -- "move orders (one per idle agent)" --> S
+  C -- "one move order per idle agent" --> S
 
-  subgraph BASE["Baselines"]
-    R1["Static historical shares"]
-    R2["Greedy neighbour rule (decentralised)"]
-    R3["Reactive proportional rebalancing (30-min window)"]
-    RL["RL comparator: MAPPO/IPPO (stretch)"]
-    O["Oracle MPC on true rates (regret reference)"]
+  subgraph BASE["Baselines and ablations (same API, same seeds)"]
+    R["Rules: static shares · greedy neighbour (decentralised) · reactive proportional"]
+    AB["Same-LP ablations: myopic (H = L+1) · queue-only (no demand forecast) · EWMA (no detector)"]
+    O["True-rate MPC: fed the true expected rates<br/>(a perfect forecast, not an upper bound)"]
   end
-  BASE -. "same API, same seeds" .-> S
+  BASE -.-> S
 
-  subgraph EVAL["Evaluation harness"]
-    M["Served fraction · demand lost in 2 h after shock · time-to-recover<br/>wait p50/p95 · empty moves · planner latency<br/>per component: detection delay at fixed ARL0, post-shock forecast error"]
-    ST["Frozen test seeds ≥ 20 · paired bootstrap CIs · IQM · Wilcoxon + Holm<br/>scenarios: stationary / shock / drift / shock+drift / spikes<br/>sweep: lead time L vs patience P"]
+  subgraph EVAL["Evaluation (pre-registered)"]
+    M["Served fraction · requests lost per shock (2 h) · recovery (censored) · empty hops per served<br/>per component: detection delay, false alarms/zone-day, post-shock forecast error"]
+    ST["Fresh test seeds 200-229 · reference rule fixed on tuning seeds · paired bootstrap CIs · Wilcoxon + Holm<br/>(L, P) phase diagram · week and month horizons (one shock per day + drift + spikes) · NYC replay"]
   end
   S --> M --> ST
 ```
 
 **Reading guide.**
-- One step of the loop, in order: arrivals are observed; the detector updates; the forecaster restarts or smooths; the MPC solves an H-step LP using the units that will free up; only the first step of the plan is executed; then the loop repeats.
-- Rule-based baselines plug into the same API, which isolates the value of each layer:
-  - planner without forecast,
-  - forecast without detector,
-  - detector + forecast + planner,
-  - oracle.
+- **Each step:** arrivals are observed; the detector updates; the forecaster smooths (drift) or restarts (shock); the LP plans H steps ahead using known future supply (units about to free up); only the first step is executed. Then the loop repeats.
+- **What the ablations isolate:**
+  - *myopic* — the value of the planning horizon;
+  - *queue-only* — the value of any demand forecast;
+  - *EWMA* — the value of the change detector;
+  - *true-rate MPC* — the most a better forecast could add.
+- **The (L, P) sweep** shows where each layer pays.

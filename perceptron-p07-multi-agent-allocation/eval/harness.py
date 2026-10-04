@@ -64,6 +64,8 @@ def run_episode(job: dict) -> dict:
     if job.get("legacy") and (job["policy"].startswith("mpc") or job["policy"].startswith("oracle")):
         kw.update(backend="scipy", abandon_aware=False)   # reproduces runs made before 2026-10-04 10:15 IST
     pol = make_policy(job["policy"], **kw)
+    if not job["policy"].startswith("oracle"):
+        meta = dict(meta, rates=None)   # true (or proxy) rates reach only the oracle
     pol.reset(meta)
     T = trace.horizon
     served = np.zeros(T, np.int64); lost = np.zeros(T, np.int64); arr = np.zeros(T, np.int64)
@@ -83,7 +85,8 @@ def run_episode(job: dict) -> dict:
                patience=job["patience"], hop_steps=hop,
                arrivals=int(arr.sum()), served=int(S), served_frac=S / max(1, arr.sum()),
                lost_frac=lost.sum() / max(1, arr.sum()), mean_wait=float((wh * np.arange(wh.size)).sum() / max(1, S)),
-               p95_wait=int(np.searchsorted(cdf, 0.95)), empty_per_srv=empty / max(1, S), wall_s=wall)
+               p95_wait=int(np.searchsorted(cdf, 0.95)), empty_per_srv=empty / max(1, S), wall_s=wall,
+               pending_frac=int((core.tail - core.head).sum()) / max(1, arr.sum()))   # still waiting at the horizon
     if hasattr(pol, "planner"):
         out["planner_backend"] = pol.planner.backend
     if hasattr(pol, "solve_ms") and pol.solve_ms:

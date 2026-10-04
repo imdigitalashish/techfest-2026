@@ -1,2 +1,4 @@
 date	artifact	model	effort	issues	accepted	rejected	note
 2026-10-04	abstract-v0.2+ADR001+mvp-v1	rubber-duck (harness default)	default	15	14	1	hostile judge 48/100; age-indexed LP rejected for R1 (fluid abandonment instead); cross-zone matching deferred (counted as partial accept)
+2026-10-04	code+eval (simulator, planner, harness, stats, NYC)	gpt-6-sol	max	9	9	0	LP tau=0 mismatch + solver tie-break deferred (documented); rates/pending/long CI/@int fixed
+2026-10-04	spike ADR001 + phase-v1 (L,P) law	gpt-6-astra	max	8	7	1	equivalence analysis rejected for R1 (no margin); mechanism study deferred; addendum A pre-registered H1 replication

@@ -3,9 +3,8 @@
 python -m eval.long eval/results/long-week   -> writes summary.md + daily.png in that folder
 - Across seeds: mean served fraction per policy [95% bootstrap CI]; paired differences vs the best
   rule-based allocator, mpc-cusum-v1 vs mpc-ewma, and every policy vs the oracle (regret).
-- Within runs: per-day served fraction (batch means, 1 batch = 1 simulated day). For few seeds,
-  the batch-means 95% CI uses the t-distribution over days (days treated as ~independent batches;
-  check lag-1 autocorrelation, printed).
+- Within runs: per-day served fraction, descriptive only (days within a run share drift and are not
+  independent); inference is over whole seed trajectories (gpt-6-sol review, item 8).
 """
 from __future__ import annotations
 
@@ -50,18 +49,15 @@ def main(run: str) -> str:
         out.append(f"| {a} − {b} | {100*d.mean():+.2f} [{100*lo:+.2f}, {100*hi:+.2f}] | {int((d > 0).sum())}/{len(d)} | "
                    f"{(sl[a] - sl[b]).mean():+.1f} | {p:.3g} |")
     if "daily_served" in df:
-        out += ["", "## Per-day served fraction (batch means)", "",
-                "| policy | " + " | ".join(f"d{k+1}" for k in range(days)) + " | batch-means 95% CI (seed-avg days) | lag-1 autocorr |",
-                "|---|" + "---|" * (days + 2)]
+        out += ["", "## Per-day served fraction (descriptive; 95% CI = bootstrap over whole seed trajectories)", "",
+                "| policy | " + " | ".join(f"d{k+1}" for k in range(days)) + " | whole-run mean [95% CI over seeds] |",
+                "|---|" + "---|" * (days + 1)]
         traj = {}
         for p in sv.columns:
             M = np.array([json.loads(x) for x in df[df.policy == p].sort_values("seed").daily_served])  # seeds x days
             traj[p] = M
-            m = M.mean(0)
-            se = m.std(ddof=1) / np.sqrt(days)
-            h = st.t.ppf(0.975, days - 1) * se
-            ac = np.corrcoef(m[:-1], m[1:])[0, 1] if days > 2 else float("nan")
-            out.append(f"| {p} | " + " | ".join(f"{x:.3f}" for x in m) + f" | {m.mean():.4f} ± {h:.4f} | {ac:+.2f} |")
+            lo, hi = boot_ci(M.mean(1))
+            out.append(f"| {p} | " + " | ".join(f"{x:.3f}" for x in M.mean(0)) + f" | {M.mean():.4f} [{lo:.4f}, {hi:.4f}] |")
         try:
             import matplotlib
             matplotlib.use("Agg")

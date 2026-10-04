@@ -107,8 +107,9 @@ class ZeroForecaster:
 class MPCPolicy(_Base):
     def __init__(self, kind: str = "cusum", horizon: int | None = None, c_move: float = 0.05, c_wait: float = 0.02,
                  gamma: float = 0.97, alpha: float | None = None, delta: float = 1.0, h: float = 8.0,
-                 myopic: bool = False, backend: str = "auto", abandon_aware: bool = True):
+                 myopic: bool = False, backend: str = "auto", abandon_aware: bool = True, trust: float = 1.0):
         self.kind, self.H, self.myopic = kind, horizon, myopic
+        self.trust = float(trust)   # scales the demand forecast fed to the LP: 0 = queue-only, 1 = certainty equivalence
         self.kw = dict(c_move=c_move, c_wait=c_wait, gamma=gamma, backend=backend)
         self.alpha, self.delta, self.h, self.abandon_aware = alpha, delta, h, abandon_aware
         self.name = {"ewma": "mpc-ewma", "cusum": "mpc-cusum", "cusum1": "mpc-cusum-v1", "oracle": "oracle",
@@ -140,7 +141,7 @@ class MPCPolicy(_Base):
     def act(self, s: FleetState) -> np.ndarray:
         self.t = s.t
         fc = self.fc.forecast(s.t, self.Hrun)
-        plan = self.planner.solve(s.idle_count, s.incoming(self.Hrun)[: self.Hrun], s.queue_len, fc.mean)
+        plan = self.planner.solve(s.idle_count, s.incoming(self.Hrun)[: self.Hrun], s.queue_len, self.trust * fc.mean)
         self.solve_ms.append(plan.solve_ms)
         return flows_to_targets(plan.flows, s)
 
@@ -154,7 +155,8 @@ def make_policy(name: str, **kw):
         base, spec = name.split("@", 1)
         for item in spec.split(","):
             k, v = item.split("=")
-            kw[k] = float(v)
+            x = float(v)
+            kw[k] = int(x) if x.is_integer() and k in ("horizon",) else x
         pol = make_policy(base, **kw)
         pol.name = name
         return pol

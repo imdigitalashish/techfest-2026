@@ -19,7 +19,8 @@ from eval.stats import boot_ci, holm
 
 def paired(df, sc, a, b, metric="served_frac"):
     g = df[df.scenario == sc].pivot(index="seed", columns="policy", values=metric)
-    d = (g[a] - g[b]).dropna().to_numpy(float)
+    assert g[[a, b]].notna().all().all(), f"incomplete paired grid for {sc}: {a} vs {b}"
+    d = (g[a] - g[b]).to_numpy(float)
     lo, hi = boot_ci(d)
     p = float(wilcoxon(d).pvalue) if np.any(d != 0) else 1.0
     return d.mean(), lo, hi, int((d > 0).sum()), len(d), p
@@ -45,18 +46,21 @@ def main(run: str) -> str:
     for r, a in zip(rows, holm([r[-1] for r in rows])):
         out.append(f"| {r[0]} | {r[1]} | {100*r[2]:+.2f} [{100*r[3]:+.2f}, {100*r[4]:+.2f}] | {r[5]}/{r[6]} | {r[7]:.2g} | {a:.2g} |")
     for fam, pairs in pre["secondary"].items():
-        out += ["", f"## Secondary family {fam} (Holm within family)", "",
-                "| scenario | comparison | Δ served (pp) [95% CI] | seeds won | Δ lost per shock | Holm p |", "|---|---|---|---|---|---|"]
-        rows = []
-        for sc in scen:
-            for a, b in pairs:
-                if {a, b} <= set(df.policy):
-                    r = paired(df, sc, a, b)
-                    dl = paired(df, sc, a, b, "shock_lost")[0] if df[df.scenario == sc].shock_lost.notna().any() else float("nan")
-                    rows.append((sc, f"{a} − {b}", *r, dl))
-        adj = holm([r[7] for r in rows]) if rows else []
-        for r, a in zip(rows, adj):
-            out.append(f"| {r[0]} | {r[1]} | {100*r[2]:+.2f} [{100*r[3]:+.2f}, {100*r[4]:+.2f}] | {r[5]}/{r[6]} | {r[8]:+.1f} | {a:.2g} |")
+        for metric, scale, unit in (("served_frac", 100, "Δ served (pp)"), ("shock_lost", 1, "Δ lost per shock")):
+            out += ["", f"## Secondary family {fam} — {metric} (Holm within family and endpoint)", "",
+                    f"| scenario | comparison | {unit} [95% paired CI] | seeds with increase | Wilcoxon p | Holm p |",
+                    "|---|---|---|---|---|---|"]
+            rows = []
+            for sc in scen:
+                if metric == "shock_lost" and not df[df.scenario == sc].shock_lost.notna().any():
+                    continue
+                for a, b in pairs:
+                    if {a, b} <= set(df.policy):
+                        rows.append((sc, f"{a} − {b}", *paired(df, sc, a, b, metric)))
+            adj = holm([r[7] for r in rows]) if rows else []
+            for r, a in zip(rows, adj):
+                out.append(f"| {r[0]} | {r[1]} | {scale*r[2]:+.2f} [{scale*r[3]:+.2f}, {scale*r[4]:+.2f}] | {r[5]}/{r[6]} | "
+                           f"{r[7]:.2g} | {a:.2g} |")
     out += ["", "## Movement cost and shock recovery (means over seeds)", "",
             "| scenario | policy | empty hops / served | lost per shock (120 steps) | recovered ≤120 steps | recover steps (censored at 120) |",
             "|---|---|---|---|---|---|"]

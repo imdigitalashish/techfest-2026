@@ -27,10 +27,13 @@ POLICIES = ["greedy", "reactive", "mpc-ewma", "mpc-cusum-v1", "oracle"]
 RULES = ["greedy", "reactive"]
 PAIRS = [("mpc_vs_rule", "mpc-ewma", None), ("detector_vs_ewma", "mpc-cusum-v1", "mpc-ewma"),
          ("oracle_vs_ewma", "oracle", "mpc-ewma"), ("queue_vs_ewma", "mpc-queue", "mpc-ewma"),
-         ("myopic_vs_ewma", "mpc-myopic", "mpc-ewma")]
+         ("myopic_vs_ewma", "mpc-myopic", "mpc-ewma"),
+         ("detector_vs_matched_alpha", "mpc-cusum-v1", "mpc-ewma@alpha=0.01"),
+         ("detector_vs_ewma_fixedH", "mpc-cusum-v1@horizon=14", "mpc-ewma@horizon=14")]
 LABEL = {"mpc_vs_rule": "look-ahead vs best rule", "detector_vs_ewma": "detector vs EWMA",
          "oracle_vs_ewma": "true-rate forecast vs EWMA", "queue_vs_ewma": "queue-only (no forecast) vs EWMA",
-         "myopic_vs_ewma": "myopic (H=L+1) vs EWMA"}
+         "myopic_vs_ewma": "myopic (H=L+1) vs EWMA", "detector_vs_matched_alpha": "detector vs EWMA(α=0.01)",
+         "detector_vs_ewma_fixedH": "detector vs EWMA, both H=14"}
 
 
 def summarise(df: pd.DataFrame) -> pd.DataFrame:
@@ -38,7 +41,7 @@ def summarise(df: pd.DataFrame) -> pd.DataFrame:
     for (L, P), g in df.groupby(["hop_steps", "patience"]):
         sv = g.pivot(index="seed", columns="policy", values="served_frac").dropna()
         lo_ = g.pivot(index="seed", columns="policy", values="shock_lost").reindex(sv.index)
-        rule = sv[RULES].mean().idxmax()
+        rule = sv[[r for r in RULES if r in sv]].mean().idxmax()
         r = dict(L=int(L), P=int(P), n=len(sv), best_rule=rule, rule_served=sv[rule].mean(),
                  **{f"{p}_served": sv[p].mean() for p in sv.columns})
         for name, a, b in PAIRS:
@@ -111,12 +114,13 @@ def main():
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--out", default="eval/results/phase-v1")
     ap.add_argument("--summarise-only", action="store_true")
+    ap.add_argument("--legacy", action="store_true", help="reproduce phase-v1 (scipy backend, never-abandoning LP backlog)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     csv = os.path.join(a.out, "episodes.csv")
     if not a.summarise_only:
         jobs = [dict(policy=p, scenario=a.scenario, seed=s, n_agents=a.n_agents, patience=P, horizon=a.horizon,
-                     hop_steps=L) for L in a.hops for P in a.patience for s in parse_seeds(a.seeds) for p in a.policies]
+                     hop_steps=L, legacy=a.legacy) for L in a.hops for P in a.patience for s in parse_seeds(a.seeds) for p in a.policies]
         jobs.sort(key=lambda j: -j["hop_steps"])  # longest LPs first for better packing
         t0, rows = time.time(), []
         with ProcessPoolExecutor(a.workers) as ex:
