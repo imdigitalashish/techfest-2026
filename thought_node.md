@@ -6,14 +6,14 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (14:58 IST, 4 Oct)
+## Now (15:12 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - Namma Space: E2E from raw photos succeeded (held-out PSNR 29.56 dB, SSIM 0.929, 45.8 min). Viewer walking p95 22.4 ms. Now preparing a CC BY-SA public demo scene (labelled; not the R1 link).
-  - India@71 T3: proposal PDF v1.0, policy engine, both reviews in; triaging.
-  - P6: the pre-registered 12-day walk-forward passed (+$298.9/day simulated, 12/12; unseen-7 +$342.8, 7/7). Sensitivity Amendment 1 (strict fills, markouts) registered before running; LEV vs GBM ablations are exploratory.
-  - P2: PyTorch CPU twin on its Azure VM (logit parity passed); pre-registration next.
-  - P8: resumed 14:58 into EV C1's slot.
+  - Namma Space: E2E from raw photos succeeded (PSNR 29.56 dB, SSIM 0.929, 45.8 min); viewer walking p95 22.4 ms, cold load 7.45 s at 40 Mbit/s. Asked to launch its two R1 reviews now; the CC BY-SA demo must not gate DONE.
+  - India@71 T3: the code review found the v0.2 challenger didn't match its registration, so a corrected test, C6 v0.3, was registered 14:57:58 on fresh seeds 20–29 and is running (v0.2 stands as reported, with the caveat).
+  - P6: 12-day pre-registered walk-forward passed; Amendment 1 sensitivity code committed before its runs; exploratory LEV-vs-GBM ablations.
+  - P2: PyTorch CPU twin on its Azure VM; asked to use reference baseline code (e.g. kvpress) and analytic plus measured KV memory.
+  - P8: LLM-gap study (pre-registration first), on Azure OpenAI pay-per-token.
 - **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1.
 - **Queue:** APCTT (when the 10 Oct data lands) → India@71 T2 → InnovateX T2 → InnovateX T3.
 ## User action items
@@ -94,6 +94,11 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 15:12 IST — Sweep
+- `watch.py` now skips STALLED for a lead with a live compute job (Python/Brush/COLMAP) running from its project folder; http servers are excluded. This stops false alarms while a lead waits on its own run.
+- India@71 T3 v0.3 corrected test registered 14:57 (commit 14:57:58), before its run.
+- Namma deep round: launch the reviews now, refresh Now, and stop the leftover 8080 server.
+
 ### 2026-10-04 14:58 IST — EV C1 completed
 - **EV C1 DONE (9c9e1e3), verified on main:** check_docs OK (6 docs, 262 rendered keys, 28 fact rows).
   - Reviews: sol 11 items, astra 70/100 with 17 items, all accepted (1 routed to the user).
