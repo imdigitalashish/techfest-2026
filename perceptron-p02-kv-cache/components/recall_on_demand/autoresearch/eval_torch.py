@@ -77,8 +77,8 @@ def main():
     ap.add_argument("--out", default="dev_sweep")
     a = ap.parse_args()
     s0, s1 = map(int, a.seeds.split("-"))
-    if s0 <= 1 <= s1 or s0 <= 0 <= s1:
-        sys.exit("dev seeds must not include the test seeds 0-1")
+    if any(s0 <= s <= s1 for s in (0, 1, 2)):  # guard widened 2026-10-04 (gpt-6-sol #12): seed 2 became T3's test seed
+        sys.exit("dev seeds must not include the registered test seeds 0-2")
     torch.set_num_threads(torch.get_num_threads())
     snap = kb.glob.glob(kb.os.path.expanduser("~/.cache/huggingface/hub/models--mlx-community--Llama-3.2-1B-Instruct-4bit/snapshots/*"))[0]
     tok = kb.AutoTokenizer.from_pretrained(snap)

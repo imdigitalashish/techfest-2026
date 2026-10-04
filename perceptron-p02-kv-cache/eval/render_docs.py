@@ -344,7 +344,7 @@ def caveats(V):
     sh = lambda x: "pending" if x is None else f"{x['d']:+.2f} ({x['lo']:+.2f} to {x['hi']:+.2f})"
     rod, st = get(V["T1"], "rod", 0.25), get(V["T1"], "streaming", 0.25)
     mm = mech(load("T1")["rows"], "rod")
-    parts = [f"RoD minus a lexical index over the same ids at 25%: {sh(V.get('S2_T1'))} on literal"
+    parts = [f"RoD minus a lexical index over the same ids at 25% (equal bytes, so lexical recalls more blocks): {sh(V.get('S2_T1'))} on literal"
              + (f" and {sh(V.get('S2_T2'))} on paraphrased needles" if V.get("T2") else " needles")]
     ph = RES / "posthoc_T1.json"
     mech_s = (f"accuracy given a recalled needle falls from {mm[0.1]['acc_given_hit']:.0%} (10%) to {mm[0.25]['acc_given_hit']:.0%} (25%), "
