@@ -8,7 +8,7 @@
 ## 0. What exists today (demonstrated, 4 Oct) vs what we commit to (December)
 | Demonstrated now (in the repository, reproducible) | Committed for the Grand Finale (16–18 Dec) |
 |---|---|
-| Cited record store: 124 records from 19 opened sources; quote-presence verifier + value-in-quote check enforced by tests | Process/exchange layer with co-products and allocation; ≥ 300 records across all 8 data layers |
+| Cited record store: <!-- dbcounts:begin -->127 records (107 verified, 20 derived) from 20 opened sources<!-- dbcounts:end -->; quote-presence verifier + value-in-quote check enforced by tests | Process/exchange layer with co-products and allocation; ≥ 300 records across all 8 data layers |
 | Engine: parameterised stages, scenario inheritance, paired Monte Carlo, gas-basis flags | Elementary-flow inventory (CO2/CH4/N2O) characterised with AR6 GWP100; correlation groups |
 | Two case studies (2W, sedans) + sensitivities; arithmetic verification vs ICCT (0.06 %, 1.0 %); independent plausibility vs 3 Indian car LCAs | Spike D: one Indian material/component route comparison, end to end, with an independent technical review |
 | India grid CO2e (AR6, partial upstream), national, with margins as sensitivities | Harmonized national grid incl. remaining upstream (mining energy, rail, gas) or explicit bounds |

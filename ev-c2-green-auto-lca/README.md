@@ -6,7 +6,7 @@ Journal and current state: [`thought_node.md`](thought_node.md). Method: [`../PL
 ```bash
 bash eval/run_all.sh                                # tests -> eval -> render docs -> dashboard -> drift check
 open deliverables/dashboard/index.html              # offline, self-contained
-python3 data/fetch/fetch_sources.py                 # optional: re-download the 18 raw public files into .data/raw/ (gitignored)
+python3 data/fetch/fetch_sources.py                 # optional: re-download every raw public file into .data/raw/ (gitignored)
 python3 components/ingestion/autoresearch/eval.py   # spike-A quote verifier metric (needs the raw files)
 python3 components/ingestion/value_check.py         # every verified value appears in its own quote
 ```

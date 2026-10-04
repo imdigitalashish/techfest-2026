@@ -67,7 +67,32 @@ def headline(d: dict) -> str:
             f"(90 % intervals; inputs id `{k['inputs_id']}`).")
 
 
+def dbcounts(d: dict) -> str:
+    db = d["db"]
+    st = db["by_status"]
+    return (f"{db['records']} records ({st.get('verified', 0)} verified, {st.get('derived', 0)} derived) "
+            f"from {db['sources']} opened sources")
+
+
+def verifier_line() -> str | None:
+    vj, vc = ROOT / "eval/results/verifier.json", ROOT / "eval/results/value_check.txt"
+    if not vj.exists():
+        return None
+    v = json.loads(vj.read_text())
+    bound = 3 / v["n_negative"] if v["n_negative"] else float("nan")
+    fa = round(v["false_accept_rate"] * v["n_negative"])
+    line = (f"quote presence: {round(v['found_rate'] * v['n_positive'])}/{v['n_positive']} quotes found; {fa} observed false accepts in "
+            f"{v['n_negative']} synthetic digit-perturbed negatives (rule-of-three 95 % bound ≈ {100 * bound:.1f} %, not zero)")
+    if vc.exists():
+        line += "; " + vc.read_text().strip()
+    return line + f" (verifier {v['verifier_version']})"
+
+
 def render(text: str, d: dict) -> str:
+    vl = verifier_line()
+    if vl:
+        text = re.sub(r"(<!-- verifier:begin -->).*?(<!-- verifier:end -->)", lambda m: m.group(1) + vl + m.group(2), text, flags=re.S)
+    text = re.sub(r"(<!-- dbcounts:begin -->).*?(<!-- dbcounts:end -->)", lambda m: m.group(1) + dbcounts(d) + m.group(2), text, flags=re.S)
     text = re.sub(r"(<!-- results-table:begin -->\n).*?(\n<!-- results-table:end -->)", lambda m: m.group(1) + table(d) + m.group(2), text, flags=re.S)
     text = re.sub(r"(<!-- headline:begin -->).*?(<!-- headline:end -->)", lambda m: m.group(1) + headline(d) + m.group(2), text, flags=re.S)
     return text
