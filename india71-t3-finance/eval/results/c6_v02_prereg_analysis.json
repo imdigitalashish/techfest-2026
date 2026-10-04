@@ -1,0 +1,84 @@
+{
+ "H1_challenger_who_vs_rule": {
+  "comparison": "challenger_who - rule",
+  "mean_diff": 0.07915000000000001,
+  "ci95": [
+   0.05828894615436166,
+   0.10001105384563837
+  ],
+  "p_one_sided": 6.282746890447037e-06,
+  "seeds_positive": 10,
+  "n": 10
+ },
+ "H2_rule_vs_best_arm_only": {
+  "comparison": "rule - best_arm_only",
+  "mean_diff": 0.09211,
+  "ci95": [
+   0.05265075556856414,
+   0.13156924443143586
+  ],
+  "p_one_sided": 0.0002533602468045995,
+  "seeds_positive": 10,
+  "n": 10
+ },
+ "S1_rule_vs_status_quo": {
+  "comparison": "rule - status_quo",
+  "mean_diff": 0.34548,
+  "ci95": [
+   0.21625151115090413,
+   0.4747084888490959
+  ],
+  "p_one_sided": 9.551540796378616e-05,
+  "seeds_positive": 9,
+  "n": 10
+ },
+ "S2_challenger_model_arm_vs_rule": {
+  "comparison": "challenger - rule",
+  "mean_diff": 0.02559,
+  "ci95": [
+   -0.014842855050609893,
+   0.0660228550506099
+  ],
+  "p_one_sided": 0.09301051540074055,
+  "seeds_positive": 7,
+  "n": 10
+ },
+ "S3_gated_vs_rule": {
+  "comparison": "gated - rule",
+  "mean_diff": 0.0,
+  "ci95": [
+   0.0,
+   0.0
+  ],
+  "p_one_sided": NaN,
+  "seeds_positive": 0,
+  "n": 10
+ },
+ "gate_pass_count": 0,
+ "means": {
+  "random": 0.0,
+  "status_quo": 0.034809999999999994,
+  "risk_bc": -0.05565,
+  "best_arm_only": 0.28818,
+  "rule": 0.38029,
+  "uplift_v01": 0.30317,
+  "challenger": 0.40587999999999996,
+  "challenger_who": 0.45944,
+  "gated": 0.38029,
+  "oracle": 1.0
+ },
+ "sds": {
+  "random": 0.0,
+  "status_quo": 0.00895661766516803,
+  "risk_bc": 0.01436301190945378,
+  "best_arm_only": 0.13844323987348267,
+  "rule": 0.18669998184847855,
+  "uplift_v01": 0.05799038330236795,
+  "challenger": 0.16235060688385355,
+  "challenger_who": 0.19140099384393083,
+  "gated": 0.18669998184847855,
+  "oracle": 0.0
+ },
+ "H1_pass": true,
+ "H2_pass": true
+}

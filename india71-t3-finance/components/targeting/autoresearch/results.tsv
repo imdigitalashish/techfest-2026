@@ -5,3 +5,4 @@ timestamp	commit	hypothesis	metric	delta	kept	notes
 2026-10-04T08:22+05:30	(lead)	re-baseline: T-learner, no shrinkage (shrink=1.0)	0.2992	-	baseline	sd 0.043; best-arm rule 0.3655; status quo 0.0353; risk -0.0734; eval/results/c6_baseline.json
 2026-10-04T08:22+05:30	(lead)	exp1 re-measured: shrink per-person uplift toward arm ATE, kappa=0.5	0.3349	+0.0357	yes	sd 0.019; eval/results/c6_exp1.json
 2026-10-04T08:22+05:30	(lead)	exp2: per-arm shrink (IVR at its pilot ATE for all, expensive arms kappa=0.5) = hybrid policy	0.3496	+0.0147	no	sd 0.208 - not beyond noise: when the pilot IVR ATE estimate is <= 0 (seed 2) nobody gets IVR and value collapses; eval/results/c6_exp2.json
+2026-10-04T14:03+05:30	(lead)	PRE-REGISTERED C6 v0.2 (seeds 10-19, SYNTHETIC): challenger_who - rule = +0.079 [0.058, 0.100], p=6e-6, 10/10 (H1 PASS); rule - best_arm_only = +0.092 (H2 PASS); gate passed 0/10	0.4594	-	default=rule, model=gated challenger	eval/preregistration/c6_v02_results.md

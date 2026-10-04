@@ -1,0 +1,1490 @@
+{
+ "args": {
+  "seeds": [
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19
+  ],
+  "n": 20000,
+  "tag": "prereg"
+ },
+ "summary": {
+  "random": {
+   "normalised_mean": 0.0,
+   "normalised_sd": 0.0,
+   "value_mean": 38.5323,
+   "women_share_mean": 0.5859099999999999
+  },
+  "status_quo": {
+   "normalised_mean": 0.034809999999999994,
+   "normalised_sd": 0.00895661766516803,
+   "value_mean": 47.466499999999996,
+   "women_share_mean": 0.54836
+  },
+  "risk_bc": {
+   "normalised_mean": -0.05565,
+   "normalised_sd": 0.01436301190945378,
+   "value_mean": 24.2335,
+   "women_share_mean": 0.61063
+  },
+  "best_arm_only": {
+   "normalised_mean": 0.28818,
+   "normalised_sd": 0.13844323987348267,
+   "value_mean": 112.24510000000001,
+   "women_share_mean": 0.5814
+  },
+  "rule": {
+   "normalised_mean": 0.38029,
+   "normalised_sd": 0.18669998184847855,
+   "value_mean": 135.75730000000001,
+   "women_share_mean": 0.57977
+  },
+  "uplift_v01": {
+   "normalised_mean": 0.30317,
+   "normalised_sd": 0.05799038330236795,
+   "value_mean": 116.16040000000001,
+   "women_share_mean": 0.58728
+  },
+  "challenger": {
+   "normalised_mean": 0.40587999999999996,
+   "normalised_sd": 0.16235060688385355,
+   "value_mean": 142.33790000000002,
+   "women_share_mean": 0.58533
+  },
+  "challenger_who": {
+   "normalised_mean": 0.45944,
+   "normalised_sd": 0.19140099384393083,
+   "value_mean": 156.00889999999998,
+   "women_share_mean": 0.58533
+  },
+  "gated": {
+   "normalised_mean": 0.38029,
+   "normalised_sd": 0.18669998184847855,
+   "value_mean": 135.75730000000001,
+   "women_share_mean": 0.57977
+  },
+  "oracle": {
+   "normalised_mean": 1.0,
+   "normalised_sd": 0.0,
+   "value_mean": 295.0736,
+   "women_share_mean": 0.58424
+  }
+ },
+ "runs": [
+  {
+   "seed": 10,
+   "n_persons": 20000,
+   "eligible": 11302,
+   "budget_inr": 113020.0,
+   "pilot_n": 4106,
+   "stage1_arm": "sms_ivr",
+   "upgrade_arm": "bc_visit",
+   "gate": {
+    "pass": false,
+    "ipw_diff": -0.011580830430279633,
+    "lower_bound_90": -0.029354842084340242,
+    "n_validation": 837
+   },
+   "policies": {
+    "random": {
+     "value": 40.673,
+     "spend": 112998,
+     "treated": 1650,
+     "women_share": 0.5976,
+     "mix": {
+      "sms_ivr": 416,
+      "bc_visit": 419,
+      "upi_onboard": 385,
+      "incentive": 430
+     },
+     "normalised": 0.0,
+     "per_lakh": 35.99
+    },
+    "status_quo": {
+     "value": 50.592,
+     "spend": 113000,
+     "treated": 1127,
+     "women_share": 0.5359,
+     "mix": {
+      "bc_visit": 1127
+     },
+     "normalised": 0.0375,
+     "per_lakh": 44.77
+    },
+    "risk_bc": {
+     "value": 21.617,
+     "spend": 113000,
+     "treated": 1130,
+     "women_share": 0.7088,
+     "mix": {
+      "bc_visit": 1130
+     },
+     "normalised": -0.072,
+     "per_lakh": 19.13
+    },
+    "best_arm_only": {
+     "value": 134.954,
+     "spend": 33906,
+     "treated": 11302,
+     "women_share": 0.5877,
+     "mix": {
+      "sms_ivr": 11302
+     },
+     "normalised": 0.3563,
+     "per_lakh": 398.02
+    },
+    "rule": {
+     "value": 171.3,
+     "spend": 112961,
+     "treated": 11302,
+     "women_share": 0.5877,
+     "mix": {
+      "sms_ivr": 10487,
+      "bc_visit": 815
+     },
+     "normalised": 0.4937,
+     "per_lakh": 151.65
+    },
+    "uplift_v01": {
+     "value": 117.679,
+     "spend": 112956,
+     "treated": 6721,
+     "women_share": 0.5902,
+     "mix": {
+      "sms_ivr": 5622,
+      "bc_visit": 522,
+      "upi_onboard": 187,
+      "incentive": 390
+     },
+     "normalised": 0.291,
+     "per_lakh": 104.18
+    },
+    "challenger": {
+     "value": 174.457,
+     "spend": 113009,
+     "treated": 11302,
+     "women_share": 0.5877,
+     "mix": {
+      "sms_ivr": 10308,
+      "bc_visit": 511,
+      "upi_onboard": 68,
+      "incentive": 415
+     },
+     "normalised": 0.5056,
+     "per_lakh": 154.37
+    },
+    "challenger_who": {
+     "value": 194.956,
+     "spend": 112961,
+     "treated": 11302,
+     "women_share": 0.5877,
+     "mix": {
+      "sms_ivr": 10487,
+      "bc_visit": 815
+     },
+     "normalised": 0.5831,
+     "per_lakh": 172.59
+    },
+    "gated": {
+     "value": 171.3,
+     "spend": 112961,
+     "treated": 11302,
+     "women_share": 0.5877,
+     "mix": {
+      "sms_ivr": 10487,
+      "bc_visit": 815
+     },
+     "normalised": 0.4937,
+     "per_lakh": 151.65
+    },
+    "oracle": {
+     "value": 305.279,
+     "spend": 112968,
+     "treated": 5445,
+     "women_share": 0.5928,
+     "mix": {
+      "sms_ivr": 4401,
+      "bc_visit": 941,
+      "incentive": 103
+     },
+     "normalised": 1.0,
+     "per_lakh": 270.23
+    }
+   },
+   "secs": 4.9
+  },
+  {
+   "seed": 11,
+   "n_persons": 20000,
+   "eligible": 11612,
+   "budget_inr": 116120.0,
+   "pilot_n": 4130,
+   "stage1_arm": "sms_ivr",
+   "upgrade_arm": "bc_visit",
+   "gate": {
+    "pass": false,
+    "ipw_diff": 0.011241852243469425,
+    "lower_bound_90": -0.006092508362831501,
+    "n_validation": 889
+   },
+   "policies": {
+    "random": {
+     "value": 37.061,
+     "spend": 116063,
+     "treated": 1661,
+     "women_share": 0.5713,
+     "mix": {
+      "sms_ivr": 416,
+      "bc_visit": 413,
+      "upi_onboard": 427,
+      "incentive": 405
+     },
+     "normalised": 0.0,
+     "per_lakh": 31.93
+    },
+    "status_quo": {
+     "value": 48.541,
+     "spend": 116100,
+     "treated": 1154,
+     "women_share": 0.5373,
+     "mix": {
+      "bc_visit": 1154
+     },
+     "normalised": 0.0435,
+     "per_lakh": 41.81
+    },
+    "risk_bc": {
+     "value": 26.201,
+     "spend": 116100,
+     "treated": 1161,
+     "women_share": 0.677,
+     "mix": {
+      "bc_visit": 1161
+     },
+     "normalised": -0.0411,
+     "per_lakh": 22.57
+    },
+    "best_arm_only": {
+     "value": 127.936,
+     "spend": 34836,
+     "treated": 11612,
+     "women_share": 0.5823,
+     "mix": {
+      "sms_ivr": 11612
+     },
+     "normalised": 0.344,
+     "per_lakh": 367.25
+    },
+    "rule": {
+     "value": 159.487,
+     "spend": 116025,
+     "treated": 11612,
+     "women_share": 0.5823,
+     "mix": {
+      "sms_ivr": 10775,
+      "bc_visit": 837
+     },
+     "normalised": 0.4634,
+     "per_lakh": 137.46
+    },
+    "uplift_v01": {
+     "value": 96.325,
+     "spend": 116041,
+     "treated": 6055,
+     "women_share": 0.5823,
+     "mix": {
+      "sms_ivr": 4677,
+      "bc_visit": 301,
+      "upi_onboard": 195,
+      "incentive": 882
+     },
+     "normalised": 0.2243,
+     "per_lakh": 83.01
+    },
+    "challenger": {
+     "value": 144.858,
+     "spend": 116043,
+     "treated": 11612,
+     "women_share": 0.5823,
+     "mix": {
+      "sms_ivr": 10391,
+      "bc_visit": 203,
+      "upi_onboard": 132,
+      "incentive": 886
+     },
+     "normalised": 0.408,
+     "per_lakh": 124.83
+    },
+    "challenger_who": {
+     "value": 179.434,
+     "spend": 116025,
+     "treated": 11612,
+     "women_share": 0.5823,
+     "mix": {
+      "sms_ivr": 10775,
+      "bc_visit": 837
+     },
+     "normalised": 0.5389,
+     "per_lakh": 154.65
+    },
+    "gated": {
+     "value": 159.487,
+     "spend": 116025,
+     "treated": 11612,
+     "women_share": 0.5823,
+     "mix": {
+      "sms_ivr": 10775,
+      "bc_visit": 837
+     },
+     "normalised": 0.4634,
+     "per_lakh": 137.46
+    },
+    "oracle": {
+     "value": 301.24,
+     "spend": 116097,
+     "treated": 5345,
+     "women_share": 0.5897,
+     "mix": {
+      "sms_ivr": 4274,
+      "bc_visit": 986,
+      "incentive": 85
+     },
+     "normalised": 1.0,
+     "per_lakh": 259.47
+    }
+   },
+   "secs": 7.9
+  },
+  {
+   "seed": 12,
+   "n_persons": 20000,
+   "eligible": 11145,
+   "budget_inr": 111450.0,
+   "pilot_n": 4044,
+   "stage1_arm": "incentive",
+   "upgrade_arm": "bc_visit",
+   "gate": {
+    "pass": false,
+    "ipw_diff": 0.03514740784932894,
+    "lower_bound_90": -9.096976149238343e-05,
+    "n_validation": 824
+   },
+   "policies": {
+    "random": {
+     "value": 39.685,
+     "spend": 111413,
+     "treated": 1596,
+     "women_share": 0.5927,
+     "mix": {
+      "sms_ivr": 411,
+      "bc_visit": 405,
+      "upi_onboard": 412,
+      "incentive": 368
+     },
+     "normalised": 0.0,
+     "per_lakh": 35.62
+    },
+    "status_quo": {
+     "value": 46.132,
+     "spend": 111400,
+     "treated": 1113,
+     "women_share": 0.5427,
+     "mix": {
+      "bc_visit": 1113
+     },
+     "normalised": 0.0245,
+     "per_lakh": 41.41
+    },
+    "risk_bc": {
+     "value": 19.952,
+     "spend": 111400,
+     "treated": 1114,
+     "women_share": 0.5395,
+     "mix": {
+      "bc_visit": 1114
+     },
+     "normalised": -0.075,
+     "per_lakh": 17.91
+    },
+    "best_arm_only": {
+     "value": 35.298,
+     "spend": 111430,
+     "treated": 2026,
+     "women_share": 0.5711,
+     "mix": {
+      "incentive": 2026
+     },
+     "normalised": -0.0167,
+     "per_lakh": 31.68
+    },
+    "rule": {
+     "value": 35.576,
+     "spend": 111430,
+     "treated": 2026,
+     "women_share": 0.5745,
+     "mix": {
+      "incentive": 2026
+     },
+     "normalised": -0.0156,
+     "per_lakh": 31.93
+    },
+    "uplift_v01": {
+     "value": 99.927,
+     "spend": 111432,
+     "treated": 4274,
+     "women_share": 0.5756,
+     "mix": {
+      "sms_ivr": 2784,
+      "bc_visit": 393,
+      "upi_onboard": 53,
+      "incentive": 1044
+     },
+     "normalised": 0.2291,
+     "per_lakh": 89.68
+    },
+    "challenger": {
+     "value": 48.251,
+     "spend": 111430,
+     "treated": 2026,
+     "women_share": 0.6175,
+     "mix": {
+      "incentive": 2026
+     },
+     "normalised": 0.0326,
+     "per_lakh": 43.3
+    },
+    "challenger_who": {
+     "value": 48.251,
+     "spend": 111430,
+     "treated": 2026,
+     "women_share": 0.6175,
+     "mix": {
+      "incentive": 2026
+     },
+     "normalised": 0.0326,
+     "per_lakh": 43.3
+    },
+    "gated": {
+     "value": 35.576,
+     "spend": 111430,
+     "treated": 2026,
+     "women_share": 0.5745,
+     "mix": {
+      "incentive": 2026
+     },
+     "normalised": -0.0156,
+     "per_lakh": 31.93
+    },
+    "oracle": {
+     "value": 302.618,
+     "spend": 111449,
+     "treated": 5271,
+     "women_share": 0.576,
+     "mix": {
+      "sms_ivr": 4228,
+      "bc_visit": 920,
+      "incentive": 123
+     },
+     "normalised": 1.0,
+     "per_lakh": 271.53
+    }
+   },
+   "secs": 7.5
+  },
+  {
+   "seed": 13,
+   "n_persons": 20000,
+   "eligible": 10954,
+   "budget_inr": 109540.0,
+   "pilot_n": 4123,
+   "stage1_arm": "sms_ivr",
+   "upgrade_arm": "bc_visit",
+   "gate": {
+    "pass": false,
+    "ipw_diff": 0.011625333060053289,
+    "lower_bound_90": -0.0058274695857058285,
+    "n_validation": 850
+   },
+   "policies": {
+    "random": {
+     "value": 36.113,
+     "spend": 109460,
+     "treated": 1556,
+     "women_share": 0.599,
+     "mix": {
+      "sms_ivr": 380,
+      "bc_visit": 392,
+      "upi_onboard": 400,
+      "incentive": 384
+     },
+     "normalised": 0.0,
+     "per_lakh": 32.99
+    },
+    "status_quo": {
+     "value": 46.087,
+     "spend": 109500,
+     "treated": 1111,
+     "women_share": 0.5473,
+     "mix": {
+      "bc_visit": 1111
+     },
+     "normalised": 0.0409,
+     "per_lakh": 42.09
+    },
+    "risk_bc": {
+     "value": 23.366,
+     "spend": 109500,
+     "treated": 1095,
+     "women_share": 0.642,
+     "mix": {
+      "bc_visit": 1095
+     },
+     "normalised": -0.0523,
+     "per_lakh": 21.34
+    },
+    "best_arm_only": {
+     "value": 118.683,
+     "spend": 32862,
+     "treated": 10954,
+     "women_share": 0.5819,
+     "mix": {
+      "sms_ivr": 10954
+     },
+     "normalised": 0.3385,
+     "per_lakh": 361.16
+    },
+    "rule": {
+     "value": 147.543,
+     "spend": 109492,
+     "treated": 10954,
+     "women_share": 0.5819,
+     "mix": {
+      "sms_ivr": 10164,
+      "bc_visit": 790
+     },
+     "normalised": 0.4568,
+     "per_lakh": 134.75
+    },
+    "uplift_v01": {
+     "value": 118.185,
+     "spend": 109442,
+     "treated": 6134,
+     "women_share": 0.5888,
+     "mix": {
+      "sms_ivr": 4894,
+      "bc_visit": 557,
+      "upi_onboard": 23,
+      "incentive": 660
+     },
+     "normalised": 0.3364,
+     "per_lakh": 107.99
+    },
+    "challenger": {
+     "value": 158.978,
+     "spend": 109455,
+     "treated": 10954,
+     "women_share": 0.5819,
+     "mix": {
+      "sms_ivr": 9875,
+      "bc_visit": 448,
+      "upi_onboard": 5,
+      "incentive": 626
+     },
+     "normalised": 0.5036,
+     "per_lakh": 145.25
+    },
+    "challenger_who": {
+     "value": 174.576,
+     "spend": 109492,
+     "treated": 10954,
+     "women_share": 0.5819,
+     "mix": {
+      "sms_ivr": 10164,
+      "bc_visit": 790
+     },
+     "normalised": 0.5676,
+     "per_lakh": 159.44
+    },
+    "gated": {
+     "value": 147.543,
+     "spend": 109492,
+     "treated": 10954,
+     "women_share": 0.5819,
+     "mix": {
+      "sms_ivr": 10164,
+      "bc_visit": 790
+     },
+     "normalised": 0.4568,
+     "per_lakh": 134.75
+    },
+    "oracle": {
+     "value": 280.07,
+     "spend": 109500,
+     "treated": 4983,
+     "women_share": 0.583,
+     "mix": {
+      "sms_ivr": 3960,
+      "bc_visit": 919,
+      "incentive": 104
+     },
+     "normalised": 1.0,
+     "per_lakh": 255.77
+    }
+   },
+   "secs": 5.4
+  },
+  {
+   "seed": 14,
+   "n_persons": 20000,
+   "eligible": 10372,
+   "budget_inr": 103720.0,
+   "pilot_n": 4104,
+   "stage1_arm": "sms_ivr",
+   "upgrade_arm": "bc_visit",
+   "gate": {
+    "pass": false,
+    "ipw_diff": 0.0003828939464438265,
+    "lower_bound_90": -0.02433291029650512,
+    "n_validation": 797
+   },
+   "policies": {
+    "random": {
+     "value": 39.72,
+     "spend": 103707,
+     "treated": 1469,
+     "women_share": 0.5759,
+     "mix": {
+      "sms_ivr": 344,
+      "bc_visit": 365,
+      "upi_onboard": 375,
+      "incentive": 385
+     },
+     "normalised": 0.0,
+     "per_lakh": 38.3
+    },
+    "status_quo": {
+     "value": 48.837,
+     "spend": 103700,
+     "treated": 1041,
+     "women_share": 0.5495,
+     "mix": {
+      "bc_visit": 1041
+     },
+     "normalised": 0.0359,
+     "per_lakh": 47.09
+    },
+    "risk_bc": {
+     "value": 26.353,
+     "spend": 103700,
+     "treated": 1037,
+     "women_share": 0.6663,
+     "mix": {
+      "bc_visit": 1037
+     },
+     "normalised": -0.0527,
+     "per_lakh": 25.41
+    },
+    "best_arm_only": {
+     "value": 127.969,
+     "spend": 31116,
+     "treated": 10372,
+     "women_share": 0.5881,
+     "mix": {
+      "sms_ivr": 10372
+     },
+     "normalised": 0.3478,
+     "per_lakh": 411.26
+    },
+    "rule": {
+     "value": 161.844,
+     "spend": 103672,
+     "treated": 10372,
+     "women_share": 0.5881,
+     "mix": {
+      "sms_ivr": 9624,
+      "bc_visit": 748
+     },
+     "normalised": 0.4813,
+     "per_lakh": 156.11
+    },
+    "uplift_v01": {
+     "value": 127.367,
+     "spend": 103656,
+     "treated": 5578,
+     "women_share": 0.606,
+     "mix": {
+      "sms_ivr": 4492,
+      "bc_visit": 512,
+      "upi_onboard": 114,
+      "incentive": 460
+     },
+     "normalised": 0.3454,
+     "per_lakh": 122.87
+    },
+    "challenger": {
+     "value": 170.753,
+     "spend": 103644,
+     "treated": 10372,
+     "women_share": 0.5881,
+     "mix": {
+      "sms_ivr": 9348,
+      "bc_visit": 388,
+      "upi_onboard": 28,
+      "incentive": 608
+     },
+     "normalised": 0.5164,
+     "per_lakh": 164.75
+    },
+    "challenger_who": {
+     "value": 186.861,
+     "spend": 103672,
+     "treated": 10372,
+     "women_share": 0.5881,
+     "mix": {
+      "sms_ivr": 9624,
+      "bc_visit": 748
+     },
+     "normalised": 0.5799,
+     "per_lakh": 180.24
+    },
+    "gated": {
+     "value": 161.844,
+     "spend": 103672,
+     "treated": 10372,
+     "women_share": 0.5881,
+     "mix": {
+      "sms_ivr": 9624,
+      "bc_visit": 748
+     },
+     "normalised": 0.4813,
+     "per_lakh": 156.11
+    },
+    "oracle": {
+     "value": 293.459,
+     "spend": 103661,
+     "treated": 4755,
+     "women_share": 0.5882,
+     "mix": {
+      "sms_ivr": 3787,
+      "bc_visit": 868,
+      "incentive": 100
+     },
+     "normalised": 1.0,
+     "per_lakh": 283.09
+    }
+   },
+   "secs": 7.2
+  },
+  {
+   "seed": 15,
+   "n_persons": 20000,
+   "eligible": 11180,
+   "budget_inr": 111800.0,
+   "pilot_n": 4089,
+   "stage1_arm": "bc_visit",
+   "upgrade_arm": null,
+   "gate": {
+    "pass": false,
+    "ipw_diff": -0.028992449882843014,
+    "lower_bound_90": -0.046387919812548827,
+    "n_validation": 835
+   },
+   "policies": {
+    "random": {
+     "value": 40.223,
+     "spend": 111752,
+     "treated": 1630,
+     "women_share": 0.5595,
+     "mix": {
+      "sms_ivr": 409,
+      "bc_visit": 438,
+      "upi_onboard": 364,
+      "incentive": 419
+     },
+     "normalised": 0.0,
+     "per_lakh": 35.99
+    },
+    "status_quo": {
+     "value": 44.83,
+     "spend": 111800,
+     "treated": 1113,
+     "women_share": 0.5166,
+     "mix": {
+      "bc_visit": 1113
+     },
+     "normalised": 0.018,
+     "per_lakh": 40.1
+    },
+    "risk_bc": {
+     "value": 24.591,
+     "spend": 111800,
+     "treated": 1118,
+     "women_share": 0.4964,
+     "mix": {
+      "bc_visit": 1118
+     },
+     "normalised": -0.061,
+     "per_lakh": 22.0
+    },
+    "best_arm_only": {
+     "value": 59.521,
+     "spend": 111800,
+     "treated": 1118,
+     "women_share": 0.5769,
+     "mix": {
+      "bc_visit": 1118
+     },
+     "normalised": 0.0753,
+     "per_lakh": 53.24
+    },
+    "rule": {
+     "value": 61.201,
+     "spend": 111800,
+     "treated": 1118,
+     "women_share": 0.5572,
+     "mix": {
+      "bc_visit": 1118
+     },
+     "normalised": 0.0818,
+     "per_lakh": 54.74
+    },
+    "uplift_v01": {
+     "value": 110.16,
+     "spend": 111769,
+     "treated": 5212,
+     "women_share": 0.5746,
+     "mix": {
+      "sms_ivr": 3783,
+      "bc_visit": 394,
+      "upi_onboard": 63,
+      "incentive": 972
+     },
+     "normalised": 0.2729,
+     "per_lakh": 98.56
+    },
+    "challenger": {
+     "value": 89.801,
+     "spend": 111800,
+     "treated": 1118,
+     "women_share": 0.5698,
+     "mix": {
+      "bc_visit": 1118
+     },
+     "normalised": 0.1934,
+     "per_lakh": 80.32
+    },
+    "challenger_who": {
+     "value": 89.801,
+     "spend": 111800,
+     "treated": 1118,
+     "women_share": 0.5698,
+     "mix": {
+      "bc_visit": 1118
+     },
+     "normalised": 0.1934,
+     "per_lakh": 80.32
+    },
+    "gated": {
+     "value": 61.201,
+     "spend": 111800,
+     "treated": 1118,
+     "women_share": 0.5572,
+     "mix": {
+      "bc_visit": 1118
+     },
+     "normalised": 0.0818,
+     "per_lakh": 54.74
+    },
+    "oracle": {
+     "value": 296.529,
+     "spend": 111748,
+     "treated": 5296,
+     "women_share": 0.578,
+     "mix": {
+      "sms_ivr": 4266,
+      "bc_visit": 940,
+      "incentive": 90
+     },
+     "normalised": 1.0,
+     "per_lakh": 265.36
+    }
+   },
+   "secs": 5.6
+  },
+  {
+   "seed": 16,
+   "n_persons": 20000,
+   "eligible": 11075,
+   "budget_inr": 110750.0,
+   "pilot_n": 4038,
+   "stage1_arm": "sms_ivr",
+   "upgrade_arm": "incentive",
+   "gate": {
+    "pass": false,
+    "ipw_diff": -0.018246183707897174,
+    "lower_bound_90": -0.041646533731374356,
+    "n_validation": 822
+   },
+   "policies": {
+    "random": {
+     "value": 39.718,
+     "spend": 110742,
+     "treated": 1590,
+     "women_share": 0.5956,
+     "mix": {
+      "sms_ivr": 384,
+      "bc_visit": 411,
+      "upi_onboard": 381,
+      "incentive": 414
+     },
+     "normalised": 0.0,
+     "per_lakh": 35.87
+    },
+    "status_quo": {
+     "value": 52.218,
+     "spend": 110700,
+     "treated": 1126,
+     "women_share": 0.5693,
+     "mix": {
+      "bc_visit": 1126
+     },
+     "normalised": 0.0477,
+     "per_lakh": 47.17
+    },
+    "risk_bc": {
+     "value": 23.816,
+     "spend": 110700,
+     "treated": 1107,
+     "women_share": 0.5384,
+     "mix": {
+      "bc_visit": 1107
+     },
+     "normalised": -0.0607,
+     "per_lakh": 21.51
+    },
+    "best_arm_only": {
+     "value": 134.152,
+     "spend": 33225,
+     "treated": 11075,
+     "women_share": 0.5755,
+     "mix": {
+      "sms_ivr": 11075
+     },
+     "normalised": 0.3602,
+     "per_lakh": 403.77
+    },
+    "rule": {
+     "value": 142.789,
+     "spend": 110705,
+     "treated": 11075,
+     "women_share": 0.5755,
+     "mix": {
+      "sms_ivr": 9585,
+      "incentive": 1490
+     },
+     "normalised": 0.3932,
+     "per_lakh": 128.98
+    },
+    "uplift_v01": {
+     "value": 143.42,
+     "spend": 110645,
+     "treated": 8319,
+     "women_share": 0.5755,
+     "mix": {
+      "sms_ivr": 6985,
+      "bc_visit": 302,
+      "upi_onboard": 42,
+      "incentive": 990
+     },
+     "normalised": 0.3956,
+     "per_lakh": 129.62
+    },
+    "challenger": {
+     "value": 169.135,
+     "spend": 110667,
+     "treated": 11075,
+     "women_share": 0.5755,
+     "mix": {
+      "sms_ivr": 9829,
+      "bc_visit": 245,
+      "upi_onboard": 25,
+      "incentive": 976
+     },
+     "normalised": 0.4937,
+     "per_lakh": 152.83
+    },
+    "challenger_who": {
+     "value": 154.111,
+     "spend": 110705,
+     "treated": 11075,
+     "women_share": 0.5755,
+     "mix": {
+      "sms_ivr": 9585,
+      "incentive": 1490
+     },
+     "normalised": 0.4364,
+     "per_lakh": 139.21
+    },
+    "gated": {
+     "value": 142.789,
+     "spend": 110705,
+     "treated": 11075,
+     "women_share": 0.5755,
+     "mix": {
+      "sms_ivr": 9585,
+      "incentive": 1490
+     },
+     "normalised": 0.3932,
+     "per_lakh": 128.98
+    },
+    "oracle": {
+     "value": 301.875,
+     "spend": 110673,
+     "treated": 5181,
+     "women_share": 0.5783,
+     "mix": {
+      "sms_ivr": 4146,
+      "bc_visit": 918,
+      "incentive": 117
+     },
+     "normalised": 1.0,
+     "per_lakh": 272.76
+    }
+   },
+   "secs": 8.8
+  },
+  {
+   "seed": 17,
+   "n_persons": 20000,
+   "eligible": 11360,
+   "budget_inr": 113600.0,
+   "pilot_n": 3952,
+   "stage1_arm": "sms_ivr",
+   "upgrade_arm": "bc_visit",
+   "gate": {
+    "pass": false,
+    "ipw_diff": 0.021161136210209274,
+    "lower_bound_90": -0.00856831282131173,
+    "n_validation": 813
+   },
+   "policies": {
+    "random": {
+     "value": 35.234,
+     "spend": 113512,
+     "treated": 1612,
+     "women_share": 0.6117,
+     "mix": {
+      "sms_ivr": 394,
+      "bc_visit": 372,
+      "upi_onboard": 440,
+      "incentive": 406
+     },
+     "normalised": 0.0,
+     "per_lakh": 31.04
+    },
+    "status_quo": {
+     "value": 44.814,
+     "spend": 113600,
+     "treated": 1124,
+     "women_share": 0.5596,
+     "mix": {
+      "bc_visit": 1124
+     },
+     "normalised": 0.0377,
+     "per_lakh": 39.45
+    },
+    "risk_bc": {
+     "value": 21.858,
+     "spend": 113600,
+     "treated": 1136,
+     "women_share": 0.5634,
+     "mix": {
+      "bc_visit": 1136
+     },
+     "normalised": -0.0526,
+     "per_lakh": 19.24
+    },
+    "best_arm_only": {
+     "value": 124.07,
+     "spend": 34080,
+     "treated": 11360,
+     "women_share": 0.5886,
+     "mix": {
+      "sms_ivr": 11360
+     },
+     "normalised": 0.3495,
+     "per_lakh": 364.06
+    },
+    "rule": {
+     "value": 154.323,
+     "spend": 113523,
+     "treated": 11360,
+     "women_share": 0.5886,
+     "mix": {
+      "sms_ivr": 10541,
+      "bc_visit": 819
+     },
+     "normalised": 0.4685,
+     "per_lakh": 135.94
+    },
+    "uplift_v01": {
+     "value": 98.889,
+     "spend": 113557,
+     "treated": 6577,
+     "women_share": 0.6038,
+     "mix": {
+      "sms_ivr": 5389,
+      "bc_visit": 562,
+      "upi_onboard": 104,
+      "incentive": 522
+     },
+     "normalised": 0.2504,
+     "per_lakh": 87.08
+    },
+    "challenger": {
+     "value": 162.399,
+     "spend": 113571,
+     "treated": 11360,
+     "women_share": 0.5886,
+     "mix": {
+      "sms_ivr": 10312,
+      "bc_visit": 476,
+      "upi_onboard": 55,
+      "incentive": 517
+     },
+     "normalised": 0.5002,
+     "per_lakh": 142.99
+    },
+    "challenger_who": {
+     "value": 183.018,
+     "spend": 113523,
+     "treated": 11360,
+     "women_share": 0.5886,
+     "mix": {
+      "sms_ivr": 10541,
+      "bc_visit": 819
+     },
+     "normalised": 0.5813,
+     "per_lakh": 161.22
+    },
+    "gated": {
+     "value": 154.323,
+     "spend": 113523,
+     "treated": 11360,
+     "women_share": 0.5886,
+     "mix": {
+      "sms_ivr": 10541,
+      "bc_visit": 819
+     },
+     "normalised": 0.4685,
+     "per_lakh": 135.94
+    },
+    "oracle": {
+     "value": 289.443,
+     "spend": 113551,
+     "treated": 5247,
+     "women_share": 0.5921,
+     "mix": {
+      "sms_ivr": 4202,
+      "bc_visit": 966,
+      "incentive": 79
+     },
+     "normalised": 1.0,
+     "per_lakh": 254.9
+    }
+   },
+   "secs": 8.4
+  },
+  {
+   "seed": 18,
+   "n_persons": 20000,
+   "eligible": 11419,
+   "budget_inr": 114190.0,
+   "pilot_n": 4093,
+   "stage1_arm": "sms_ivr",
+   "upgrade_arm": "bc_visit",
+   "gate": {
+    "pass": false,
+    "ipw_diff": -0.04351150101513474,
+    "lower_bound_90": -0.07255612080103359,
+    "n_validation": 864
+   },
+   "policies": {
+    "random": {
+     "value": 38.825,
+     "spend": 114155,
+     "treated": 1632,
+     "women_share": 0.5705,
+     "mix": {
+      "sms_ivr": 410,
+      "bc_visit": 402,
+      "upi_onboard": 425,
+      "incentive": 395
+     },
+     "normalised": 0.0,
+     "per_lakh": 34.01
+    },
+    "status_quo": {
+     "value": 47.378,
+     "spend": 114100,
+     "treated": 1163,
+     "women_share": 0.5641,
+     "mix": {
+      "bc_visit": 1163
+     },
+     "normalised": 0.0336,
+     "per_lakh": 41.52
+    },
+    "risk_bc": {
+     "value": 32.162,
+     "spend": 114100,
+     "treated": 1141,
+     "women_share": 0.6766,
+     "mix": {
+      "bc_visit": 1141
+     },
+     "normalised": -0.0262,
+     "per_lakh": 28.19
+    },
+    "best_arm_only": {
+     "value": 133.206,
+     "spend": 34257,
+     "treated": 11419,
+     "women_share": 0.5854,
+     "mix": {
+      "sms_ivr": 11419
+     },
+     "normalised": 0.3708,
+     "per_lakh": 388.84
+    },
+    "rule": {
+     "value": 165.166,
+     "spend": 114185,
+     "treated": 11419,
+     "women_share": 0.5854,
+     "mix": {
+      "sms_ivr": 10595,
+      "bc_visit": 824
+     },
+     "normalised": 0.4964,
+     "per_lakh": 144.65
+    },
+    "uplift_v01": {
+     "value": 124.839,
+     "spend": 114168,
+     "treated": 6420,
+     "women_share": 0.5855,
+     "mix": {
+      "sms_ivr": 5231,
+      "bc_visit": 478,
+      "upi_onboard": 178,
+      "incentive": 533
+     },
+     "normalised": 0.3379,
+     "per_lakh": 109.35
+    },
+    "challenger": {
+     "value": 155.152,
+     "spend": 114186,
+     "treated": 11419,
+     "women_share": 0.5854,
+     "mix": {
+      "sms_ivr": 10352,
+      "bc_visit": 341,
+      "upi_onboard": 140,
+      "incentive": 586
+     },
+     "normalised": 0.457,
+     "per_lakh": 135.88
+    },
+    "challenger_who": {
+     "value": 179.901,
+     "spend": 114185,
+     "treated": 11419,
+     "women_share": 0.5854,
+     "mix": {
+      "sms_ivr": 10595,
+      "bc_visit": 824
+     },
+     "normalised": 0.5542,
+     "per_lakh": 157.55
+    },
+    "gated": {
+     "value": 165.166,
+     "spend": 114185,
+     "treated": 11419,
+     "women_share": 0.5854,
+     "mix": {
+      "sms_ivr": 10595,
+      "bc_visit": 824
+     },
+     "normalised": 0.4964,
+     "per_lakh": 144.65
+    },
+    "oracle": {
+     "value": 293.364,
+     "spend": 114096,
+     "treated": 5501,
+     "women_share": 0.5877,
+     "mix": {
+      "sms_ivr": 4442,
+      "bc_visit": 945,
+      "incentive": 114
+     },
+     "normalised": 1.0,
+     "per_lakh": 257.12
+    }
+   },
+   "secs": 6.7
+  },
+  {
+   "seed": 19,
+   "n_persons": 20000,
+   "eligible": 11597,
+   "budget_inr": 115970.0,
+   "pilot_n": 4038,
+   "stage1_arm": "sms_ivr",
+   "upgrade_arm": "bc_visit",
+   "gate": {
+    "pass": false,
+    "ipw_diff": 0.00011641815150942288,
+    "lower_bound_90": -0.02365405169305074,
+    "n_validation": 853
+   },
+   "policies": {
+    "random": {
+     "value": 38.071,
+     "spend": 115871,
+     "treated": 1664,
+     "women_share": 0.5853,
+     "mix": {
+      "sms_ivr": 412,
+      "bc_visit": 412,
+      "upi_onboard": 419,
+      "incentive": 421
+     },
+     "normalised": 0.0,
+     "per_lakh": 32.86
+    },
+    "status_quo": {
+     "value": 45.236,
+     "spend": 115900,
+     "treated": 1174,
+     "women_share": 0.5613,
+     "mix": {
+      "bc_visit": 1174
+     },
+     "normalised": 0.0288,
+     "per_lakh": 39.03
+    },
+    "risk_bc": {
+     "value": 22.419,
+     "spend": 115900,
+     "treated": 1159,
+     "women_share": 0.5979,
+     "mix": {
+      "bc_visit": 1159
+     },
+     "normalised": -0.0629,
+     "per_lakh": 19.34
+    },
+    "best_arm_only": {
+     "value": 126.662,
+     "spend": 34791,
+     "treated": 11597,
+     "women_share": 0.5765,
+     "mix": {
+      "sms_ivr": 11597
+     },
+     "normalised": 0.3561,
+     "per_lakh": 364.07
+    },
+    "rule": {
+     "value": 158.344,
+     "spend": 115883,
+     "treated": 11597,
+     "women_share": 0.5765,
+     "mix": {
+      "sms_ivr": 10761,
+      "bc_visit": 836
+     },
+     "normalised": 0.4834,
+     "per_lakh": 136.64
+    },
+    "uplift_v01": {
+     "value": 124.813,
+     "spend": 115947,
+     "treated": 8734,
+     "women_share": 0.5905,
+     "mix": {
+      "sms_ivr": 7469,
+      "bc_visit": 521,
+      "upi_onboard": 8,
+      "incentive": 736
+     },
+     "normalised": 0.3487,
+     "per_lakh": 107.65
+    },
+    "challenger": {
+     "value": 149.595,
+     "spend": 115964,
+     "treated": 11597,
+     "women_share": 0.5765,
+     "mix": {
+      "sms_ivr": 10378,
+      "bc_visit": 388,
+      "upi_onboard": 5,
+      "incentive": 826
+     },
+     "normalised": 0.4483,
+     "per_lakh": 129.0
+    },
+    "challenger_who": {
+     "value": 169.18,
+     "spend": 115883,
+     "treated": 11597,
+     "women_share": 0.5765,
+     "mix": {
+      "sms_ivr": 10761,
+      "bc_visit": 836
+     },
+     "normalised": 0.527,
+     "per_lakh": 145.99
+    },
+    "gated": {
+     "value": 158.344,
+     "spend": 115883,
+     "treated": 11597,
+     "women_share": 0.5765,
+     "mix": {
+      "sms_ivr": 10761,
+      "bc_visit": 836
+     },
+     "normalised": 0.4834,
+     "per_lakh": 136.64
+    },
+    "oracle": {
+     "value": 286.859,
+     "spend": 115934,
+     "treated": 5368,
+     "women_share": 0.5766,
+     "mix": {
+      "sms_ivr": 4298,
+      "bc_visit": 982,
+      "incentive": 88
+     },
+     "normalised": 1.0,
+     "per_lakh": 247.43
+    }
+   },
+   "secs": 7.0
+  }
+ ]
+}
