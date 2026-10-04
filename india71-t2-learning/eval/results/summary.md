@@ -2,12 +2,16 @@
 Command: `python3 eval/run_eval.py`
 | Metric | mean ± sd |
 |---|---:|
-| Trust risk-PPS block MAE @10% audit (pp) | 2.335 ± 1.087 |
-| Raw reported block MAE @10% audit row (pp) | 4.092 ± 0.324 |
-| Inflation detection AUC | 0.766 ± 0.012 |
-| Area FH benchmarked block RMSE (pp) | 4.484 ± 3.516 |
-| Area 90% CI coverage | 0.500 ± 0.425 |
-| Aggregate-anchor abs diff (pp) | 0.000 ± 0.000 |
-| Allocation raw children reached | 441.090 ± 11.192 |
-| Allocation adjusted children reached | 441.150 ± 10.741 |
-| Allocation oracle children reached | 444.000 ± 10.461 |
+| Trust risk-PPS block MAE @10% audit (pp) | 2.460 ± 0.692 |
+| Raw reported block MAE @10% audit row (pp) | 4.042 ± 0.319 |
+| Inflation detection AUC | 0.767 ± 0.009 |
+| Area raw direct block RMSE (pp) | 4.127 ± 0.339 |
+| Area raw direct 90% CI coverage | 0.000 ± 0.000 |
+| Area audit-adjusted direct block RMSE (pp) | 2.706 ± 0.679 |
+| Area audit-adjusted direct 90% CI coverage | 0.300 ± 0.183 |
+| Area FH benchmarked block RMSE (pp) | 2.751 ± 0.663 |
+| Area 90% CI coverage | 0.267 ± 0.190 |
+| Aggregate-anchor abs diff (pp) | 2.338 ± 1.958 |
+| Allocation raw children reached | 444.300 ± 12.154 |
+| Allocation adjusted children reached | 443.520 ± 10.093 |
+| Allocation oracle children reached | 447.450 ± 10.411 |

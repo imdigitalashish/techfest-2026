@@ -101,11 +101,6 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 <td>+0.121 SD numeracy; SMS alone +0.024 SD (not significant)</td>
 <td>[16]</td>
 </tr>
-<tr>
-<td>Global Education Evidence Advisory Panel (2023)</td>
-<td>"Targeting teaching instruction by learning level, not grade" is a <em>Great Buy</em></td>
-<td>[17]</td>
-</tr>
 </tbody>
 </table>
 <p><strong>Our real-data check (27 states).</strong> We linked ASER 2024 and PARAKH 2024 state results. The two national instruments rank states very differently: Spearman ρ = 0.44 for reading/language and 0.26 for arithmetic/maths, with a mean rank gap of ~7 places; Rajasthan is 4th of 27 on PARAKH Grade 3 language (70 %) [22] but 23rd on ASER (12.1 % of government-school Std III children read a Std II text) [3]. Using PARAKH to predict ASER cuts out-of-sample error only from 10.5 to 9.2 points (reading) and 7.9 to 7.6 (maths). The instruments measure different things — so a crosswalk with explicit uncertainty must come before either drives decisions.</p>
@@ -151,9 +146,10 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 <h2>4. Proposed solution — "one picture, two loops"</h2>
 <p>Ek Tasveer is <strong>not a new app</strong>: a thin decision layer on what states already run (UDISE+, the state assessment app, the VSK, DIKSHA, WhatsApp/SMS/IVR) that adds the five missing links through 12 components with typed, open contracts (JSON Schema) — adoptable one component at a time.</p>
 <p><img src="architecture.png" style="width:100%;max-height:8.5cm;object-fit:contain"></p>
-<p><strong>Loop 1 — the classroom, weekly.</strong> A teacher runs a few-minute oral check per child on the NIPUN-aligned ladder (letter → word → Grade 1 text → Grade 2 text; numbers → subtraction → division). An adaptive engine stops as soon as it is ≥ 90 % sure of the child's level and returns a <strong>Monday plan</strong>: TaRL groups, one activity per group from the state's own content, and the competency to recheck in four weeks — as one WhatsApp message, ≤ 3 SMS, or an IVR call in the local language. Names stay on the teacher's phone; the system holds only pseudonyms.</p>
-<p><strong>Loop 2 — the system, termly ("measurement assurance").</strong> Exam boards already <em>moderate</em> school-assessed marks against independent evidence — e.g. NSW's NESA and Queensland's QCAA, which reviews "a selected sample" from every school [21]. We adapt that idea, plus survey back-checks and small-area estimation, to FLN census data, using the sample to <em>calibrate</em>, not to grade. Each term a small, rotating sample of schools — chosen by statistical uncertainty and decision value, always with a random component, so every school has a known inclusion probability — is re-tested by the cluster coordinator during the regular academic-support visit, who then coaches that group. A model-assisted estimator calibrates every school's reported results; small-area estimation with UDISE+ covariates then gives <strong>block numbers with intervals that add up to the PARAKH/ASER anchor</strong>. No school-level "trust label" is published: the aim is a true picture, not blame.</p>
+<p><strong>Loop 1 — the classroom, weekly.</strong> A teacher runs a few-minute oral check per child on the NIPUN-aligned ladder (letter → word → Grade 1 text → Grade 2 text; numbers → subtraction → division). An adaptive engine stops once ≥ 90 % sure of the level and returns a <strong>Monday plan</strong>: TaRL groups, one activity per group from the state's own content, and a recheck date — one WhatsApp message, ≤ 3 SMS or an IVR call, in the local language. Names stay on the teacher's phone.</p>
+<p><strong>Loop 2 — the system, termly ("measurement assurance").</strong> Exam boards already <em>moderate</em> school-assessed marks against independent evidence — e.g. Queensland's QCAA reviews "a selected sample" from every school [21]. We adapt that idea, plus survey back-checks and small-area estimation, to FLN census data, using the sample to <em>calibrate</em>, not to grade. Each term a small, rotating sample of schools — chosen by statistical uncertainty and decision value, always with a random component, so every school has a known inclusion probability — is re-tested by the cluster coordinator during the regular academic-support visit, who then coaches that group. A model-assisted estimator calibrates every school's reported results; small-area estimation with UDISE+ covariates then gives <strong>block numbers with intervals that add up to the PARAKH/ASER anchor</strong>. No school-level "trust label" is published: the aim is a true picture, not blame.</p>
 <p><strong>Decisions it feeds.</strong> CRC weekly visit plans; block/district allocation of remedial camps and training, ranked by expected children helped and weighted for single-teacher schools and SC/ST share; a one-page pictorial summary for each School Management Committee; interval-backed evidence for district Samagra Shiksha plans.</p>
+<p><strong>Accountability that rewards finding, not hiding.</strong> A "% NIPUN" target punishes honesty. Like India's TB programme, which incentivises <em>notification</em> and treatment completion [23], each child found below level is notified to an owner with a recheck date; a "cure" counts only when someone other than the teacher verifies it; and survey-anchored prevalence × UDISE+ enrolment − notified children estimates <strong>missing cases</strong>. Inaction, not low levels, becomes the visible failure.</p>
 <p><strong>Governance and standards.</strong> Keys: UDISE+ school code, LGD codes, a salted pseudonym of the student ID; competency codes from the NIPUN Lakshya Soochi. Role- and purpose-bound access: child-level data only on the teacher's device; cells with &lt; 10 children suppressed; school-level moderation data only for the moderation team. The DPDP Act 2023 requires verifiable parental consent for children's data and bars "tracking or behavioural monitoring of children" unless rules exempt a class of processing (s. 9) [18]; the design holds either way, with pseudonymised, purpose-bound server records and consent captured at enrolment where required. NIPUN asks for "IT based solutions … field level child wise monitoring" built on DIKSHA, UDISE+ and NDEAR standards [2] — this is that layer.</p>
 <p><strong>Working demo (real runs; synthetic children — no real child data used).</strong> A simulated district (6 blocks, ~600 government primary schools) in which ~30 % of schools inflate teacher-reported results; code, seeds and commands in the repository (<code>eval/run_eval.py</code>, <code>components/*/evaluate.py</code>).</p>
 <table>
@@ -169,12 +165,12 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 <td>0.551 — baseline for the auto-research loop</td>
 </tr>
 <tr>
-<td>Monday plan for a class of 60, Hindi WhatsApp</td>
-<td>659 bytes; SMS version 3 segments; IVR script</td>
+<td>Monday plan, class of 60, Hindi WhatsApp</td>
+<td>659 bytes; 3 SMS segments; IVR script</td>
 </tr>
 <tr>
-<td>Block error of "% meeting goal", teacher-reported vs moderated (10 % of schools re-tested; 5 seeds)</td>
-<td>4.09 ± 0.32 pp → 2.34 ± 1.09 pp</td>
+<td>Block error, "% meeting goal": reported vs moderated (10 % re-tested; 5 seeds; ASER-calibrated)</td>
+<td>4.04 ± 0.32 pp → 2.46 ± 0.69 pp</td>
 </tr>
 <tr>
 <td>Detecting inflating schools (AUC) from public signals only</td>
@@ -186,7 +182,7 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 </tr>
 </tbody>
 </table>
-<p><strong>Honest limits.</strong> In a small district (120 schools, 12 re-tested; one seed) moderation <em>increased</em> block error (5.4 → 7.7 pp) and intervals under-covered, so the minimum effective sample and calibrated intervals are our next targets; allocation gains are not yet shown. The 5-seed figures used the simulator's default calibration (25 % / 30 %); the ASER-calibrated re-run (23.4 % / 27.6 %) is pending.</p>
+<p><strong>Honest limits.</strong> In a small district (120 schools, 12 re-tested; one seed) moderation <em>increased</em> block error (5.4 → 7.7 pp) and intervals under-covered — minimum sample size and interval calibration are next (90 % intervals cover only 27 % of true block values); allocation gains are not yet shown.</p>
 <h2>5. Feasibility and implementation roadmap</h2>
 <table>
 <thead>
@@ -240,10 +236,10 @@ p { margin: 4pt 0; } ol, ul { margin: 4pt 0 4pt 16pt; padding: 0; } hr { display
 <li>Muralidharan &amp; Singh. <em>Improving Public Sector Management at Scale?</em> NBER WP 28129. https://www.nber.org/system/files/working_papers/w28129/w28129.pdf</li>
 <li>Banerjee et al. (2016). <em>Mainstreaming an Effective Intervention: TaRL in India</em>. https://www.povertyactionlab.org/sites/default/files/research-paper/TaRL_Paper_August2016.pdf</li>
 <li>Angrist, Bergman &amp; Matsheng (2022). <em>Nature Human Behaviour</em>. https://www.nature.com/articles/s41562-022-01381-z.pdf</li>
-<li>GEEAP (2023). <em>Smart Buys</em>. https://documents1.worldbank.org/curated/en/099008110232520373/pdf/IDU-9401bfdd-f4ff-486b-84b4-570be4f65543.pdf</li>
 <li><em>Digital Personal Data Protection Act, 2023</em>, s. 9.</li>
 <li>Govt. of Gujarat. <em>Gunotsav — About</em>. https://gunotsav.gujarat.gov.in/aboutus.html</li>
 <li>UP NIPUN external assessment RFP (GeM). https://bidplus.gem.gov.in/bidding/bid/downloadBuyerDoc/5579037/17001372817746.pdf</li>
-<li>NESA, <em>HSC assessment moderation</em>: https://www.nsw.gov.au/education-and-training/nesa/hsc/exams-and-marking/assessment-moderation ; QCAA, <em>Confirmation</em>: https://www.qcaa.qld.edu.au/senior/assessment/quality-assurance/confirmation</li>
+<li>QCAA, <em>Confirmation</em>. https://www.qcaa.qld.edu.au/senior/assessment/quality-assurance/confirmation</li>
 <li>NCERT (2025). <em>PRS 2024 State Report: Rajasthan</em>, p. 14 (+34 state reports). https://parakh.ncert.gov.in/sites/default/files/2025-07/REPORT_Rajasthan_IND008.pdf</li>
+<li>MoHFW, <em>NSP for TB Elimination 2017–25</em>, p. 34. https://extranet.who.int/cpcd/sites/default/files/public_file_repository/IND_India_National-Strategic-Plan-for-TB-Elimination_2017-2025.pdf</li>
 </ol></body></html>

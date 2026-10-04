@@ -54,8 +54,23 @@ Best alternative offered: the C3 → C4 → C7 → C11 action loop, measured by 
    - The question C5/C6 must answer: *does modest external moderation materially improve block estimates and targeting beyond the simple baseline?* If not at realistic budgets, B is dropped to best practice.
 3. Both loops share C2 identifiers and C3 competency codes — that shared spine is what makes the teacher's, the block's and the state's pictures consistent (engagement area 1).
 
-## First-principles review
-_Pending — appended when the `First Prinicipals Agent` reports._
+## First-principles review (`First Prinicipals Agent`, returned 09:50 IST; condensed)
+1. **Chain:** present → validly observed → honestly recorded → **owned** (a named person with a lever) → instruction changes (right level, protected time, enough weeks) → independently verified.
+2. **Bottleneck = recorded → owned.** A recorded non-reader obligates no one — no owner, deadline, protected time or independent check. Every tier completes its own task (test, upload, review) and the child's day is unchanged. Consistent with our verified evidence: diagnostic feedback alone had no effect; MP school-improvement plans produced compliance with null learning effects; a dedicated TaRL hour worked (`research/sources/evidence-base.md`).
+3. **Assumption that fails first:** "the indicator turns green only if the child does." On teacher-reported data, pressure moves the cheapest margin — a click, not a term of teaching. One number cannot serve diagnosis (low stakes) and accountability (high stakes) at once.
+4. **Spike advice:** run C5 *as a visit, not a statistic* — re-test a few random children, reconcile the result with the teacher, model one group activity, log it. Minimum viable combination: C5 + C7 + C8 + C11 on a baseline C4, plus a state order protecting a daily level-grouped hour. Keep C5's estimation error as a guardrail, not the goal.
+5. **Non-obvious insight — account for children the way a disease-control programme accounts for patients:**
+   - **Notify:** every child found below level gets an owner and a group within a fixed window; *finding* a struggling child earns credit.
+   - **Cure:** counts only when verified by someone other than the teacher.
+   - **Missing cases:** survey-anchored prevalence (C6) × UDISE+ enrolment − notified children = the estimated number of struggling children nobody has notified.
+   Prevalence targets ("% NIPUN") punish honesty — each truthfully reported non-reader lowers the score. Notification + verified cure + missing-case estimation makes truthful reporting the dominant strategy and makes *inaction*, not low levels, the visible failure. A cohort register also keeps a child owned after promotion, which a Grade 3 snapshot does not.
+   _Citations the agent gave that we have not opened (UNVERIFIED): Aiyar & Bhattacharya (2016) on the block-level "post office" bureaucracy; Berry et al. (2020) on continuous and comprehensive evaluation in Haryana; Johnson & Parrado (2021) comparing NAS 2017 and ASER._
+
+## Synthesis v2 (09:55 IST) — what changes
+- **Accountability unit changes from prevalence to cases.** C11 becomes a *learning-case register*: child (pseudonym) → owner → group → start date → recheck date → verified status. Officials' headline indicators: (a) case-finding rate = notified ÷ estimated struggling children (C6 × UDISE+), (b) verified-cure rate (re-tested by a CRC or third party, C5), (c) overdue cases. "% NIPUN" stays an outcome measure, estimated with intervals — not a target any tier self-reports.
+- **C5 is run as a visit.** The moderation sample doubles as a cure-verification and missed-case check, ending with the CRC coaching one group (already in synthesis v1).
+- **Minimum viable pilot** = C4 (baseline ladder) + C7 + C8 + C11 + C5, plus a state order protecting a daily level-grouped hour; C6 and C9 follow once case data flows.
+- **Metrics:** C5's block MAE stays a guardrail; the pilot's primary metrics are case-finding rate, verified-cure rate and time-to-owner.
 
 ## Consequences
 - Auto-research loop 1 runs on C5 first (its frozen evaluator exists: `components/trust_audit/autoresearch/`), loop 2 on C4 (`components/diagnostics/autoresearch/`).
