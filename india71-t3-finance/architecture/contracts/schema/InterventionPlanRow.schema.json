@@ -1,0 +1,68 @@
+{
+  "$defs": {
+    "Arm": {
+      "enum": [
+        "none",
+        "sms_ivr",
+        "bc_visit",
+        "upi_onboard",
+        "incentive"
+      ],
+      "title": "Arm",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "person_token": {
+      "title": "Person Token",
+      "type": "string"
+    },
+    "account_token": {
+      "title": "Account Token",
+      "type": "string"
+    },
+    "bank_id": {
+      "title": "Bank Id",
+      "type": "string"
+    },
+    "arm": {
+      "$ref": "#/$defs/Arm"
+    },
+    "expected_uplift": {
+      "title": "Expected Uplift",
+      "type": "number"
+    },
+    "cost_inr": {
+      "minimum": 0,
+      "title": "Cost Inr",
+      "type": "number"
+    },
+    "priority_rank": {
+      "minimum": 1,
+      "title": "Priority Rank",
+      "type": "integer"
+    },
+    "in_holdout": {
+      "title": "In Holdout",
+      "type": "boolean"
+    },
+    "reason_codes": {
+      "title": "Reason Codes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "person_token",
+    "account_token",
+    "bank_id",
+    "arm",
+    "expected_uplift",
+    "cost_inr",
+    "priority_rank",
+    "in_holdout",
+    "reason_codes"
+  ],
+  "title": "InterventionPlanRow",
+  "type": "object"
+}

@@ -1,0 +1,12 @@
+# india71-t3-finance — pinned minimal stack (Python 3.11). Install: uv venv .venv && uv pip install -r requirements.txt
+numpy>=2.2,<3
+pandas>=2.3,<3
+scipy>=1.14
+scikit-learn>=1.6
+pydantic>=2.10,<3
+plotly>=6.0
+pytest>=8.0
+requests>=2.32
+openpyxl>=3.1
+pdfplumber>=0.11
+lightgbm>=4.5

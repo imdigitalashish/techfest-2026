@@ -1,0 +1,81 @@
+{
+  "$defs": {
+    "Arm": {
+      "enum": [
+        "none",
+        "sms_ivr",
+        "bc_visit",
+        "upi_onboard",
+        "incentive"
+      ],
+      "title": "Arm",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "arm": {
+      "$ref": "#/$defs/Arm"
+    },
+    "segment": {
+      "title": "Segment",
+      "type": "string"
+    },
+    "implementer_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Implementer Id"
+    },
+    "ate": {
+      "title": "Ate",
+      "type": "number"
+    },
+    "se": {
+      "minimum": 0,
+      "title": "Se",
+      "type": "number"
+    },
+    "ci_low": {
+      "title": "Ci Low",
+      "type": "number"
+    },
+    "ci_high": {
+      "title": "Ci High",
+      "type": "number"
+    },
+    "n_treated": {
+      "minimum": 0,
+      "title": "N Treated",
+      "type": "integer"
+    },
+    "n_control": {
+      "minimum": 0,
+      "title": "N Control",
+      "type": "integer"
+    },
+    "method": {
+      "title": "Method",
+      "type": "string"
+    }
+  },
+  "required": [
+    "arm",
+    "segment",
+    "ate",
+    "se",
+    "ci_low",
+    "ci_high",
+    "n_treated",
+    "n_control",
+    "method"
+  ],
+  "title": "EffectEstimate",
+  "type": "object"
+}

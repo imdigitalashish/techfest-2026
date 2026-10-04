@@ -1,0 +1,32 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "account_token": {
+      "title": "Account Token",
+      "type": "string"
+    },
+    "decision": {
+      "pattern": "^(allow|verify|hold)$",
+      "title": "Decision",
+      "type": "string"
+    },
+    "risk_score": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Risk Score",
+      "type": "number"
+    },
+    "reasons": {
+      "title": "Reasons",
+      "type": "string"
+    }
+  },
+  "required": [
+    "account_token",
+    "decision",
+    "risk_score",
+    "reasons"
+  ],
+  "title": "SafetyDecision",
+  "type": "object"
+}

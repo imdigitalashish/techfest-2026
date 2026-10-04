@@ -1,0 +1,89 @@
+{
+  "$defs": {
+    "Obligations": {
+      "additionalProperties": false,
+      "properties": {
+        "dp_epsilon": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dp Epsilon"
+        },
+        "min_cell_size": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Min Cell Size"
+        },
+        "retention_days": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Retention Days"
+        },
+        "masked_fields": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Masked Fields",
+          "type": "array"
+        }
+      },
+      "title": "Obligations",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "allow": {
+      "title": "Allow",
+      "type": "boolean"
+    },
+    "obligations": {
+      "$ref": "#/$defs/Obligations"
+    },
+    "rule_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Rule Ids",
+      "type": "array"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    }
+  },
+  "required": [
+    "request_id",
+    "allow",
+    "obligations",
+    "rule_ids",
+    "reason"
+  ],
+  "title": "AccessDecision",
+  "type": "object"
+}

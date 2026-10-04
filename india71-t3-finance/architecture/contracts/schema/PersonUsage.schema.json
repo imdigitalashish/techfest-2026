@@ -1,0 +1,91 @@
+{
+  "$defs": {
+    "AgeBand": {
+      "enum": [
+        "18-25",
+        "26-40",
+        "41-60",
+        "60+"
+      ],
+      "title": "AgeBand",
+      "type": "string"
+    },
+    "Gender": {
+      "enum": [
+        "F",
+        "M",
+        "O"
+      ],
+      "title": "Gender",
+      "type": "string"
+    },
+    "UsageState": {
+      "enum": [
+        "inoperative",
+        "dormant_risk",
+        "pass_through",
+        "basic",
+        "meaningful"
+      ],
+      "title": "UsageState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "person_token": {
+      "title": "Person Token",
+      "type": "string"
+    },
+    "n_accounts": {
+      "minimum": 1,
+      "title": "N Accounts",
+      "type": "integer"
+    },
+    "best_state": {
+      "$ref": "#/$defs/UsageState"
+    },
+    "dbt_account_token": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dbt Account Token"
+    },
+    "any_meaningful": {
+      "title": "Any Meaningful",
+      "type": "boolean"
+    },
+    "district_code": {
+      "title": "District Code",
+      "type": "integer"
+    },
+    "gender": {
+      "$ref": "#/$defs/Gender"
+    },
+    "age_band": {
+      "$ref": "#/$defs/AgeBand"
+    },
+    "rural": {
+      "title": "Rural",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "person_token",
+    "n_accounts",
+    "best_state",
+    "any_meaningful",
+    "district_code",
+    "gender",
+    "age_band",
+    "rural"
+  ],
+  "title": "PersonUsage",
+  "type": "object"
+}

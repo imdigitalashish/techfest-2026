@@ -1,0 +1,138 @@
+{
+  "$defs": {
+    "AgeBand": {
+      "enum": [
+        "18-25",
+        "26-40",
+        "41-60",
+        "60+"
+      ],
+      "title": "AgeBand",
+      "type": "string"
+    },
+    "Gender": {
+      "enum": [
+        "F",
+        "M",
+        "O"
+      ],
+      "title": "Gender",
+      "type": "string"
+    },
+    "UsageState": {
+      "enum": [
+        "inoperative",
+        "dormant_risk",
+        "pass_through",
+        "basic",
+        "meaningful"
+      ],
+      "title": "UsageState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "person_token": {
+      "title": "Person Token",
+      "type": "string"
+    },
+    "account_token": {
+      "title": "Account Token",
+      "type": "string"
+    },
+    "bank_id": {
+      "title": "Bank Id",
+      "type": "string"
+    },
+    "district_code": {
+      "title": "District Code",
+      "type": "integer"
+    },
+    "gender": {
+      "$ref": "#/$defs/Gender"
+    },
+    "age_band": {
+      "$ref": "#/$defs/AgeBand"
+    },
+    "rural": {
+      "title": "Rural",
+      "type": "boolean"
+    },
+    "state": {
+      "$ref": "#/$defs/UsageState"
+    },
+    "mus": {
+      "title": "Mus",
+      "type": "number"
+    },
+    "n_accounts": {
+      "title": "N Accounts",
+      "type": "integer"
+    },
+    "months_since_last_customer_txn": {
+      "title": "Months Since Last Customer Txn",
+      "type": "integer"
+    },
+    "kyc_due": {
+      "title": "Kyc Due",
+      "type": "boolean"
+    },
+    "is_dbt_account": {
+      "title": "Is Dbt Account",
+      "type": "boolean"
+    },
+    "dbt_monthly": {
+      "title": "Dbt Monthly",
+      "type": "boolean"
+    },
+    "share_dbt_withdrawn_7d": {
+      "title": "Share Dbt Withdrawn 7D",
+      "type": "number"
+    },
+    "has_phone": {
+      "title": "Has Phone",
+      "type": "boolean"
+    },
+    "smartphone": {
+      "title": "Smartphone",
+      "type": "boolean"
+    },
+    "literate": {
+      "title": "Literate",
+      "type": "boolean"
+    },
+    "dist_bc_km": {
+      "title": "Dist Bc Km",
+      "type": "number"
+    },
+    "bc_sakhi_present": {
+      "title": "Bc Sakhi Present",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "person_token",
+    "account_token",
+    "bank_id",
+    "district_code",
+    "gender",
+    "age_band",
+    "rural",
+    "state",
+    "mus",
+    "n_accounts",
+    "months_since_last_customer_txn",
+    "kyc_due",
+    "is_dbt_account",
+    "dbt_monthly",
+    "share_dbt_withdrawn_7d",
+    "has_phone",
+    "smartphone",
+    "literate",
+    "dist_bc_km",
+    "bc_sakhi_present"
+  ],
+  "title": "TargetingFeatures",
+  "type": "object"
+}

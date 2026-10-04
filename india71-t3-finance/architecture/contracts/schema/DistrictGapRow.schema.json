@@ -1,0 +1,82 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "state": {
+      "title": "State",
+      "type": "string"
+    },
+    "district": {
+      "title": "District",
+      "type": "string"
+    },
+    "women_own_account_use_nfhs5": {
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Women Own Account Use Nfhs5",
+      "type": "number"
+    },
+    "women_own_account_use_nfhs4": {
+      "anyOf": [
+        {
+          "maximum": 100,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Women Own Account Use Nfhs4"
+    },
+    "change_pp": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Change Pp"
+    },
+    "women_mobile_own_use_nfhs5": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Women Mobile Own Use Nfhs5"
+    },
+    "women_literate_nfhs5": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Women Literate Nfhs5"
+    },
+    "gap_rank": {
+      "minimum": 1,
+      "title": "Gap Rank",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "state",
+    "district",
+    "women_own_account_use_nfhs5",
+    "gap_rank"
+  ],
+  "title": "DistrictGapRow",
+  "type": "object"
+}

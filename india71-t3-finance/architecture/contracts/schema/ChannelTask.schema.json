@@ -1,0 +1,63 @@
+{
+  "$defs": {
+    "Arm": {
+      "enum": [
+        "none",
+        "sms_ivr",
+        "bc_visit",
+        "upi_onboard",
+        "incentive"
+      ],
+      "title": "Arm",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "account_token": {
+      "title": "Account Token",
+      "type": "string"
+    },
+    "arm": {
+      "$ref": "#/$defs/Arm"
+    },
+    "channel": {
+      "title": "Channel",
+      "type": "string"
+    },
+    "assigned_bc_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Assigned Bc Id"
+    },
+    "language": {
+      "title": "Language",
+      "type": "string"
+    },
+    "due_date": {
+      "title": "Due Date",
+      "type": "string"
+    }
+  },
+  "required": [
+    "task_id",
+    "account_token",
+    "arm",
+    "channel",
+    "language",
+    "due_date"
+  ],
+  "title": "ChannelTask",
+  "type": "object"
+}

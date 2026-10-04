@@ -1,0 +1,84 @@
+{
+  "$defs": {
+    "UsageState": {
+      "enum": [
+        "inoperative",
+        "dormant_risk",
+        "pass_through",
+        "basic",
+        "meaningful"
+      ],
+      "title": "UsageState",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "account_token": {
+      "title": "Account Token",
+      "type": "string"
+    },
+    "bank_id": {
+      "title": "Bank Id",
+      "type": "string"
+    },
+    "as_of_month": {
+      "pattern": "^\\d{4}-\\d{2}$",
+      "title": "As Of Month",
+      "type": "string"
+    },
+    "state": {
+      "$ref": "#/$defs/UsageState"
+    },
+    "mus": {
+      "description": "Meaningful Usage Score",
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Mus",
+      "type": "number"
+    },
+    "frequency": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Frequency",
+      "type": "number"
+    },
+    "diversity": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Diversity",
+      "type": "number"
+    },
+    "retention": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Retention",
+      "type": "number"
+    },
+    "protection": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Protection",
+      "type": "number"
+    },
+    "reason_codes": {
+      "description": "semicolon-separated rule ids",
+      "title": "Reason Codes",
+      "type": "string"
+    }
+  },
+  "required": [
+    "account_token",
+    "bank_id",
+    "as_of_month",
+    "state",
+    "mus",
+    "frequency",
+    "diversity",
+    "retention",
+    "protection",
+    "reason_codes"
+  ],
+  "title": "AccountUsage",
+  "type": "object"
+}

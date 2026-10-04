@@ -1,0 +1,21 @@
+{
+  "_doc": "Calibration targets and assumptions for the C14 simulator. status: VERIFIED = value taken from a cited public source (see research/evidence-numbers.md); PENDING = expected from a public source, not yet verified in this repo; ASSUMPTION = modelling choice. All simulator output is SYNTHETIC.",
+  "params": {
+    "women_share": {"value": 0.556, "status": "PENDING", "source": "PMJDY share of accounts held by women (pmjdy.gov.in / PIB)"},
+    "rural_share": {"value": 0.667, "status": "PENDING", "source": "PMJDY rural + semi-urban share of accounts"},
+    "inoperative_target": {"value": 0.23, "status": "PENDING", "source": "official statement: 'roughly a quarter' of PMJDY accounts inactive; exact share from Parliament answers"},
+    "district_use_mean": {"value": 0.786, "status": "PENDING", "source": "NFHS-5 India: women having a bank or savings account they themselves use"},
+    "district_use_sd": {"value": 0.09, "status": "ASSUMPTION", "source": "spread of district values; replace with real NFHS-5 district distribution"},
+    "women_phone_own": {"value": 0.54, "status": "PENDING", "source": "NFHS-5: women having a mobile phone they themselves use"},
+    "men_phone_own": {"value": 0.85, "status": "ASSUMPTION", "source": "modelling choice"},
+    "age_probs": {"value": [0.2, 0.4, 0.28, 0.12], "status": "ASSUMPTION", "source": "age mix 18-25/26-40/41-60/60+"},
+    "accounts_per_person_probs": {"value": [0.72, 0.22, 0.06], "status": "ASSUMPTION", "source": "share of persons with 1/2/3 accounts"},
+    "migrated_share": {"value": 0.08, "status": "ASSUMPTION", "source": "persons away from home district (x2 for rural men 18-40)"},
+    "deceased_share_60p": {"value": 0.06, "status": "ASSUMPTION", "source": "holders aged 60+ who died while the account stays open"},
+    "women_ct_district_share": {"value": 0.6, "status": "ASSUMPTION", "source": "share of districts with a monthly cash transfer to women"},
+    "bc_sakhi_district_share": {"value": 0.5, "status": "ASSUMPTION", "source": "share of districts with active BC Sakhis"},
+    "kyc_due_share_old": {"value": 0.5, "status": "ASSUMPTION", "source": "accounts opened 2014-2016 still pending periodic KYC update"},
+    "arm_costs_inr": {"value": {"none": 0, "sms_ivr": 3, "bc_visit": 100, "upi_onboard": 120, "incentive": 55}, "status": "ASSUMPTION", "source": "cost per contact in Rs"},
+    "data_quality_flip": {"value": 0.02, "status": "ASSUMPTION", "source": "accounts whose official inoperative flag disagrees with the ledger"}
+  }
+}

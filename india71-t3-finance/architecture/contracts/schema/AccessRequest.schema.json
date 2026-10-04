@@ -1,0 +1,83 @@
+{
+  "$defs": {
+    "Granularity": {
+      "enum": [
+        "account",
+        "person",
+        "bc_area",
+        "branch",
+        "block",
+        "district",
+        "state",
+        "national"
+      ],
+      "title": "Granularity",
+      "type": "string"
+    },
+    "Role": {
+      "enum": [
+        "bank",
+        "bc",
+        "npci",
+        "dbt_mission",
+        "dfs",
+        "rbi",
+        "slbc",
+        "ldm",
+        "state_govt",
+        "researcher",
+        "public"
+      ],
+      "title": "Role",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "requester_role": {
+      "$ref": "#/$defs/Role"
+    },
+    "requester_id": {
+      "title": "Requester Id",
+      "type": "string"
+    },
+    "purpose": {
+      "title": "Purpose",
+      "type": "string"
+    },
+    "data_elements": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Data Elements",
+      "type": "array"
+    },
+    "granularity": {
+      "$ref": "#/$defs/Granularity"
+    },
+    "legal_basis": {
+      "title": "Legal Basis",
+      "type": "string"
+    },
+    "own_customers_only": {
+      "default": false,
+      "title": "Own Customers Only",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "request_id",
+    "requester_role",
+    "requester_id",
+    "purpose",
+    "data_elements",
+    "granularity",
+    "legal_basis"
+  ],
+  "title": "AccessRequest",
+  "type": "object"
+}

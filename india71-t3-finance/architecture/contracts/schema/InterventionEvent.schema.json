@@ -1,0 +1,53 @@
+{
+  "$defs": {
+    "Arm": {
+      "enum": [
+        "none",
+        "sms_ivr",
+        "bc_visit",
+        "upi_onboard",
+        "incentive"
+      ],
+      "title": "Arm",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "task_id": {
+      "title": "Task Id",
+      "type": "string"
+    },
+    "account_token": {
+      "title": "Account Token",
+      "type": "string"
+    },
+    "arm": {
+      "$ref": "#/$defs/Arm"
+    },
+    "status": {
+      "pattern": "^(delivered|contacted|completed|failed)$",
+      "title": "Status",
+      "type": "string"
+    },
+    "timestamp": {
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "cost_inr": {
+      "minimum": 0,
+      "title": "Cost Inr",
+      "type": "number"
+    }
+  },
+  "required": [
+    "task_id",
+    "account_token",
+    "arm",
+    "status",
+    "timestamp",
+    "cost_inr"
+  ],
+  "title": "InterventionEvent",
+  "type": "object"
+}

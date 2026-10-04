@@ -1,0 +1,184 @@
+{
+  "$defs": {
+    "AgeBand": {
+      "enum": [
+        "18-25",
+        "26-40",
+        "41-60",
+        "60+"
+      ],
+      "title": "AgeBand",
+      "type": "string"
+    },
+    "Gender": {
+      "enum": [
+        "F",
+        "M",
+        "O"
+      ],
+      "title": "Gender",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "account_token": {
+      "title": "Account Token",
+      "type": "string"
+    },
+    "bank_id": {
+      "title": "Bank Id",
+      "type": "string"
+    },
+    "month": {
+      "pattern": "^\\d{4}-\\d{2}$",
+      "title": "Month",
+      "type": "string"
+    },
+    "district_code": {
+      "title": "District Code",
+      "type": "integer"
+    },
+    "is_pmjdy": {
+      "title": "Is Pmjdy",
+      "type": "boolean"
+    },
+    "gender": {
+      "$ref": "#/$defs/Gender"
+    },
+    "age_band": {
+      "$ref": "#/$defs/AgeBand"
+    },
+    "rural": {
+      "title": "Rural",
+      "type": "boolean"
+    },
+    "n_branch": {
+      "minimum": 0,
+      "title": "N Branch",
+      "type": "integer"
+    },
+    "n_bc_aeps": {
+      "minimum": 0,
+      "title": "N Bc Aeps",
+      "type": "integer"
+    },
+    "n_atm": {
+      "minimum": 0,
+      "title": "N Atm",
+      "type": "integer"
+    },
+    "n_pos": {
+      "minimum": 0,
+      "title": "N Pos",
+      "type": "integer"
+    },
+    "n_upi": {
+      "minimum": 0,
+      "title": "N Upi",
+      "type": "integer"
+    },
+    "n_customer_txn": {
+      "minimum": 0,
+      "title": "N Customer Txn",
+      "type": "integer"
+    },
+    "dbt_credit_count": {
+      "minimum": 0,
+      "title": "Dbt Credit Count",
+      "type": "integer"
+    },
+    "dbt_credit_amount": {
+      "minimum": 0,
+      "title": "Dbt Credit Amount",
+      "type": "number"
+    },
+    "share_dbt_withdrawn_7d": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Share Dbt Withdrawn 7D",
+      "type": "number"
+    },
+    "eom_balance": {
+      "title": "Eom Balance",
+      "type": "number"
+    },
+    "months_since_last_customer_txn": {
+      "minimum": 0,
+      "title": "Months Since Last Customer Txn",
+      "type": "integer"
+    },
+    "kyc_due": {
+      "title": "Kyc Due",
+      "type": "boolean"
+    },
+    "official_inoperative": {
+      "title": "Official Inoperative",
+      "type": "boolean"
+    },
+    "rupay_active_90d": {
+      "title": "Rupay Active 90D",
+      "type": "boolean"
+    },
+    "has_pmjjby": {
+      "title": "Has Pmjjby",
+      "type": "boolean"
+    },
+    "has_pmsby": {
+      "title": "Has Pmsby",
+      "type": "boolean"
+    },
+    "has_apy": {
+      "title": "Has Apy",
+      "type": "boolean"
+    },
+    "token_credit_count": {
+      "description": "credits <= Rs 10 not initiated by the customer",
+      "minimum": 0,
+      "title": "Token Credit Count",
+      "type": "integer"
+    },
+    "last_bc_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Last Bc Id"
+    }
+  },
+  "required": [
+    "account_token",
+    "bank_id",
+    "month",
+    "district_code",
+    "is_pmjdy",
+    "gender",
+    "age_band",
+    "rural",
+    "n_branch",
+    "n_bc_aeps",
+    "n_atm",
+    "n_pos",
+    "n_upi",
+    "n_customer_txn",
+    "dbt_credit_count",
+    "dbt_credit_amount",
+    "share_dbt_withdrawn_7d",
+    "eom_balance",
+    "months_since_last_customer_txn",
+    "kyc_due",
+    "official_inoperative",
+    "rupay_active_90d",
+    "has_pmjjby",
+    "has_pmsby",
+    "has_apy",
+    "token_credit_count"
+  ],
+  "title": "AccountMonth",
+  "type": "object"
+}

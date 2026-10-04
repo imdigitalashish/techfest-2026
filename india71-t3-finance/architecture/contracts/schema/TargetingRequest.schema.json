@@ -1,0 +1,54 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "budget_inr": {
+      "exclusiveMinimum": 0,
+      "title": "Budget Inr",
+      "type": "number"
+    },
+    "arm_costs_inr": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Arm Costs Inr",
+      "type": "object"
+    },
+    "min_share_women": {
+      "default": 0.0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Min Share Women",
+      "type": "number"
+    },
+    "max_tasks_per_bc": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Max Tasks Per Bc"
+    },
+    "holdout_fraction": {
+      "default": 0.1,
+      "exclusiveMaximum": 1,
+      "minimum": 0,
+      "title": "Holdout Fraction",
+      "type": "number"
+    },
+    "seed": {
+      "default": 0,
+      "title": "Seed",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "budget_inr",
+    "arm_costs_inr"
+  ],
+  "title": "TargetingRequest",
+  "type": "object"
+}

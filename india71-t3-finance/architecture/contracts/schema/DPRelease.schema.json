@@ -1,0 +1,46 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "table": {
+      "title": "Table",
+      "type": "string"
+    },
+    "epsilon": {
+      "exclusiveMinimum": 0,
+      "title": "Epsilon",
+      "type": "number"
+    },
+    "mechanism": {
+      "title": "Mechanism",
+      "type": "string"
+    },
+    "min_cell_size": {
+      "minimum": 0,
+      "title": "Min Cell Size",
+      "type": "integer"
+    },
+    "rows": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Rows",
+      "type": "array"
+    },
+    "budget_spent_total": {
+      "minimum": 0,
+      "title": "Budget Spent Total",
+      "type": "number"
+    }
+  },
+  "required": [
+    "table",
+    "epsilon",
+    "mechanism",
+    "min_cell_size",
+    "rows",
+    "budget_spent_total"
+  ],
+  "title": "DPRelease",
+  "type": "object"
+}

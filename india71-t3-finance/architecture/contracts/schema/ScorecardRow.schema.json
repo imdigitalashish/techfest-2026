@@ -1,0 +1,76 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "unit_type": {
+      "pattern": "^(district|bank|branch|bc)$",
+      "title": "Unit Type",
+      "type": "string"
+    },
+    "unit_id": {
+      "title": "Unit Id",
+      "type": "string"
+    },
+    "period": {
+      "title": "Period",
+      "type": "string"
+    },
+    "persons": {
+      "minimum": 0,
+      "title": "Persons",
+      "type": "integer"
+    },
+    "mu_rate": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Mu Rate",
+      "type": "number"
+    },
+    "inactive_rate": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Inactive Rate",
+      "type": "number"
+    },
+    "gender_gap_pp": {
+      "title": "Gender Gap Pp",
+      "type": "number"
+    },
+    "enrolments": {
+      "minimum": 0,
+      "title": "Enrolments",
+      "type": "integer"
+    },
+    "incremental_usage": {
+      "title": "Incremental Usage",
+      "type": "number"
+    },
+    "incremental_ci_low": {
+      "title": "Incremental Ci Low",
+      "type": "number"
+    },
+    "incremental_ci_high": {
+      "title": "Incremental Ci High",
+      "type": "number"
+    },
+    "gaming_flags": {
+      "title": "Gaming Flags",
+      "type": "string"
+    }
+  },
+  "required": [
+    "unit_type",
+    "unit_id",
+    "period",
+    "persons",
+    "mu_rate",
+    "inactive_rate",
+    "gender_gap_pp",
+    "enrolments",
+    "incremental_usage",
+    "incremental_ci_low",
+    "incremental_ci_high",
+    "gaming_flags"
+  ],
+  "title": "ScorecardRow",
+  "type": "object"
+}

@@ -1,0 +1,39 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "seq": {
+      "title": "Seq",
+      "type": "integer"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "decision": {
+      "title": "Decision",
+      "type": "boolean"
+    },
+    "payload_sha256": {
+      "title": "Payload Sha256",
+      "type": "string"
+    },
+    "prev_hash": {
+      "title": "Prev Hash",
+      "type": "string"
+    },
+    "entry_hash": {
+      "title": "Entry Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "seq",
+    "request_id",
+    "decision",
+    "payload_sha256",
+    "prev_hash",
+    "entry_hash"
+  ],
+  "title": "AuditEntry",
+  "type": "object"
+}
