@@ -90,15 +90,17 @@ def _body(messages, model, temperature, max_tokens, json_mode, seed, reasoning_e
 
 def chat_full(messages: list[dict], model: str = "openai/gpt-4.1-mini", temperature: float = 0.0,
               max_tokens: int = 400, json_mode: bool = False, seed: int = 0, reasoning_effort: str | None = None,
-              max_wait_s: float = 120.0) -> dict:
-    """Returns {"content", "usage", "finish_reason", "cached"}; raises RateLimited / requests.HTTPError."""
+              max_wait_s: float = 120.0, use_cache: bool = True) -> dict:
+    """Returns {"content", "usage", "finish_reason", "cached", "latency_s"}; raises RateLimited / requests.HTTPError.
+    use_cache=False forces a fresh call (for run-to-run consistency) and does not overwrite the cache."""
     body = _body(messages, model, temperature, max_tokens, json_mode, seed, reasoning_effort)
     key = hashlib.sha256(json.dumps({"backend": backend(), **body}, sort_keys=True).encode()).hexdigest()
     path = CACHE / f"{key}.json"
-    if path.exists():
+    if use_cache and path.exists():
         d = json.loads(path.read_text())
         return {"content": d["content"], "usage": d.get("usage"), "finish_reason": d.get("finish_reason"), "cached": True}
     waited = 0.0
+    t0 = time.perf_counter()
     for attempt in range(8):
         r = _request(body, model)
         if r.status_code == 429 or r.status_code >= 500:
@@ -124,9 +126,11 @@ def chat_full(messages: list[dict], model: str = "openai/gpt-4.1-mini", temperat
         usage = {k: v for k, v in (j.get("usage") or {}).items() if k != "latency_checkpoint"}
         rec = {"backend": backend(), "model": model, "content": content, "usage": usage,
                "finish_reason": choice.get("finish_reason"), "ts": datetime.now(timezone.utc).isoformat()}
-        CACHE.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(rec))
-        return {"content": content, "usage": usage, "finish_reason": rec["finish_reason"], "cached": False}
+        latency = round(time.perf_counter() - t0 - waited, 3)
+        if use_cache:
+            CACHE.mkdir(parents=True, exist_ok=True)
+            path.write_text(json.dumps(rec))
+        return {"content": content, "usage": usage, "finish_reason": rec["finish_reason"], "cached": False, "latency_s": latency}
     raise RateLimited("exhausted retries")
 
 

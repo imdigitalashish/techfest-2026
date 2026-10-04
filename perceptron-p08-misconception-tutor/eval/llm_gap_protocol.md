@@ -140,7 +140,7 @@ For each misconception, estimate the probability that this student holds it. Rep
 ```
 
 ## Deviations
-_(none yet)_
+- 2026-10-04 15:51 IST — `components/llm.py` gained a `use_cache` flag (default True) and a `latency_s` field on fresh calls, for Addendum B. Request bodies and cache keys for default calls are unchanged. The `inversion` process had already imported the old client; `tracing` imports the new one. Effect on registered parts 1–3: none (logging only).
 
 ## Addendum A — Part 4 `prob_pack` (registered 2026-10-04 15:29 IST, before any prob_pack API call)
 - **Why:** this is the probability / expected-value domain relevant to Optiver. The question is whether an LLM-only generator would ship wrong answer keys or wrong distractors for misconception-targeted practice problems.
@@ -169,4 +169,46 @@ Misconception: {desc}
 
 Give (1) the exact correct answer and (2) the exact answer that a student holding this misconception would give. Write each as an integer or a fraction a/b in lowest terms.
 Reply with JSON only: {"correct": "...", "misconception_answer": "..."}
+```
+
+## Addendum B — cascade (confirmatory on prob_pack) + run-to-run consistency (registered 2026-10-04 15:51 IST, before any call for these tasks)
+Proposed by the Supervisor at 15:42 IST, after the real_negatives result (no gap versus the reasoning models).
+
+- **B1. Cascade rule** (one rule everywhere; it is the engine's existing abstention behaviour):
+  - The engine **claims** misconception c iff it can evaluate the item and exactly one executable misconception reproduces the student's answer. Otherwise it **abstains** and the LLM decides.
+  - CASCADE:m = engine claim, else LLM:m. On real data this is the pre-registered secondary method HYB:m (§2.1).
+- **B2. `prob_diag` — confirmatory check of the cascade** (`python -m eval.run_prob_pack --task diag`; SYNTHETIC, engine-native items):
+  - Items: the 60 Addendum-A problems, each paired with (a) the targeted misconception's answer (gold = that code) and (b) a careless-slip answer, numerator ± 1 or ± 2, ≠ key, ≠ bug (gold = NONE). That gives 120 items, with engine coverage 0.5 by design.
+  - Models: all three, all 120 items, settings as in §2; prompt P_PDIAG below (verbatim).
+  - Metrics: accuracy on bug answers; false attribution on slips; overall accuracy (95% CI); LLM calls, tokens, cost and median latency per 1,000 diagnoses for LLM-only vs CASCADE.
+  - **H8:** the cascade is *confirmed* for model m if (a) overall accuracy of CASCADE:m ≥ LLM:m **and** (b) the cascade makes ≤ 550 LLM calls per 1,000 diagnoses.
+  - **Stated up front:** on engine-native items, (a) holds *by construction* unless the engine's executable answers are wrong, because the engine defines each misconception's answer. The informative outputs are the LLM-only errors on bug-explained answers that the cascade removes, and the cost and latency saving.
+- **B3. Real-data cascade — POST HOC** (`python -m eval.run_cascade --task cascade_real`; the items have been seen):
+  - Computed offline from the committed real_negatives responses: accuracy, false claims, LLM calls / cost / latency per 1,000 diagnoses vs LLM-only.
+  - Labelled post hoc everywhere it is reported.
+- **B4. Run-to-run consistency** (`python -m eval.run_cascade --task consistency`; REAL items):
+  - Subset: 40 fixed real_negatives items, namely the first 20 positives and the first 20 negatives ordered by sha256(item_id). No outputs were used to choose them.
+  - Repeats: gpt-5.5 is re-asked twice, and gpt-4.1-mini and gpt-5.4-mini once each. These are fresh calls (cache bypassed) with identical prompts and settings; the main-run answer is run 1.
+  - Metrics (descriptive, no threshold): share of items whose code is identical across all runs; accuracy per run; wall-clock latency per fresh call (median, p90).
+  - The engine is deterministic; its latency per diagnosis is timed on the same items.
+- **Order:** the main parts 1–3 finish first. Then prob_pack gen, prob_pack diag, consistency, and cascade_real (offline).
+- **Estimated added spend:** < USD 5. The USD 60 cap still applies.
+
+P_PDIAG (`{descs}` = the five Addendum-A descriptions, one per line as "- CODE: description"):
+```
+A student answered a probability problem incorrectly. Decide whether ONE of the five misconceptions below explains this exact wrong answer. If none of them explains it, answer NONE.
+
+Problem: {stem}
+Correct answer: {key}
+Student's answer: {answer}
+
+Misconceptions:
+- EQUIPROB: Thinks every possible total is equally likely.
+- INDEP: Ignores that the first counter is not put back, treating both draws as having the same probability.
+- ADD_PROB: Adds the probabilities of the separate attempts to get the probability of at least one success.
+- INVERSE: Confuses P(positive test | has condition) with P(has condition | positive test), so answers with the test's detection rate.
+- JENSEN: Squares the expected value of the number shown instead of finding the expected value of the square.
+- NONE: none of the five explains this exact wrong answer (a different misconception or a careless slip).
+
+Reply with JSON only: {"code": "<EQUIPROB|INDEP|ADD_PROB|INVERSE|JENSEN|NONE>"}
 ```
