@@ -2,7 +2,7 @@
 
 **Goal:** make the certified interval narrower without giving up coverage, clean or attacked.
 
-**Metric (frozen, `eval.py`):** `SCORE` = mean CR-ACI width (k = 3, α = 0.1) on clean validation data (2015-01-02 → 2015-06-30), plus a penalty of 50 × shortfall if clean or pump-attacked coverage < 0.895. Lower is better. Train 2014-01 → 2014-09, calibration 2014-10 → 2014-12. The reported test period (2015-07 → 2016-03) is never touched by the loop; the lead re-checks kept changes there with `eval/run_baselines.py`.
+**Metric (frozen, `eval.py` v2 from 4 Oct 13:00):** `SCORE` = mean CR-ACI width (k = 3, α = 0.1) on clean validation data, plus a penalty of 50 × shortfall if clean or pump-attacked coverage < 0.895. Lower is better. v2 splits are all inside 2014 — train Jan–Jun, calibration Jul–Sep, validation Oct–Dec — so the loop never touches the main calibration (H1-2015) or test (Jul 2015 → Mar 2016) periods (fix after the rubber-duck review: v1 validated on H1-2015, the main calibration set). Kept changes are re-checked on the test period at most once per batch, and every look is counted in `results.tsv`.
 
 **Allowed edits:** `config.json` (text feature subset, LightGBM params, ACI γ) and implementation inside `components/fusion`, `components/aggregator`, `components/robust_conformal` — contract tests must still pass and every text feature must keep an exact deletion-range rule. Never edit `eval.py`, `eval/metrics.py` or the splits.
 

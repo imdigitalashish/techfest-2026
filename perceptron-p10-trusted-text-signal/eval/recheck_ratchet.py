@@ -16,6 +16,7 @@ from components.conformal.methods import aci_from_bounds, cqr_offset
 from components.fusion.lgbm_quantile import TEXT_COLS, TS_COLS, QuantileFusion
 from components.robust_conformal.certify import CertifiedCQR, docs_lookup, features_from_docs
 from components.text_scorer.vader import VaderScorer
+from components.trust_scorer.heuristic import trust_of
 from eval.run_baselines import ALPHA, split
 
 K = 3
@@ -32,7 +33,7 @@ def main(cfg_path: str):
     X, Xc = test[m.cols].to_numpy(float), cal[m.cols].to_numpy(float)
     ti = [m.cols.index(c) for c in text_cols]
     pump = float(VaderScorer().score([PUMP_TEMPLATE.format(cashtag="$XYZ")])["compound"].iloc[0])
-    adocs = [inject(s, w, K, pump, 0.05) for s, w in tdocs]
+    adocs = [inject(s, w, K, pump, float(trust_of(0, 1.0, False, 1)[0])) for s, w in tdocs]
     Xa = X.copy()
     if ti:
         Xa[:, ti] = np.stack([features_from_docs(s, w) for s, w in adocs])[:, [TEXT_COLS.index(c) for c in text_cols]]

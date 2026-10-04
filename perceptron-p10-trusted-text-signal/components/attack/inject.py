@@ -28,3 +28,18 @@ def oracle_variants(k: int):
 def attacked_text_features(docs, variant) -> np.ndarray:
     j, sv, tv = variant
     return np.stack([features_from_docs(*inject(s, w, j, sv, tv)) for s, w in docs])
+
+
+def inject_seq(s: np.ndarray, w: np.ndarray, sents, trusts) -> tuple[np.ndarray, np.ndarray]:
+    """Append documents with the given per-document sentiments and trusts (mixed attacks allowed)."""
+    return np.concatenate([s, np.asarray(sents, float)]), np.concatenate([w, np.asarray(trusts, float)])
+
+
+def oracle_grid(k: int) -> list[tuple[tuple, tuple]]:
+    """Plain-CQR oracle grid within budget k: homogeneous j <= k copies at sentiment {-1,-.5,0,.5,1} x
+    trust {0.05,.5,1}, plus mixed-sign sets (+-1 combinations, and -1/0/+1) at trust 0.05 and 1."""
+    sents, trusts = (-1.0, -0.5, 0.0, 0.5, 1.0), (0.05, 0.5, 1.0)
+    grid = [((sv,) * j, (tv,) * j) for j in range(1, k + 1) for sv in sents for tv in trusts]
+    mixed = [(1.0, -1.0), (1.0, 1.0, -1.0), (1.0, -1.0, -1.0), (-1.0, 0.0, 1.0)]
+    grid += [(m, (tv,) * len(m)) for m in mixed if len(m) <= k for tv in (0.05, 1.0)]
+    return grid

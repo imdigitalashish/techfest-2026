@@ -9,6 +9,7 @@ stretch). Embeddings are cached by text hash in .cache/emb_minilm.parquet.
 from __future__ import annotations
 
 import hashlib
+import os
 from pathlib import Path
 
 import numpy as np
@@ -33,7 +34,7 @@ class MiniLMEncoder:
     def _load(self):
         import torch
         from transformers import AutoModel, AutoTokenizer
-        self._dev = self._device or ("mps" if torch.backends.mps.is_available() else "cpu")
+        self._dev = self._device or os.environ.get("P10_DEVICE") or ("mps" if torch.backends.mps.is_available() else "cpu")
         self._tok = AutoTokenizer.from_pretrained(ENCODER)
         self._mdl = AutoModel.from_pretrained(ENCODER).to(self._dev).eval()
 

@@ -44,7 +44,7 @@ class FinBertScorer:
     def _load(self):
         import torch
         from transformers import AutoModelForSequenceClassification, AutoTokenizer
-        dev = self._device or ("mps" if torch.backends.mps.is_available() else "cpu")
+        dev = self._device or os.environ.get("P10_DEVICE") or ("mps" if torch.backends.mps.is_available() else "cpu")
         self._tok = AutoTokenizer.from_pretrained(self.model_name)
         self._mdl = AutoModelForSequenceClassification.from_pretrained(self.model_name).to(dev).eval()
         self._dev = dev

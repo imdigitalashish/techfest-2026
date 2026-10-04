@@ -2,10 +2,12 @@
 
     cd perceptron-p10-trusted-text-signal
     bash eval/fetch_data.sh                    # clone StockNet into .data/ (gitignored)
-    PYTHONPATH=. .venv/bin/python eval/prepare.py
-    PYTHONPATH=. .venv/bin/python eval/run_baselines.py
+    PYTHONPATH=. nice -n 10 .venv/bin/python eval/prepare.py [--scorer minilm]
+    PYTHONPATH=. nice -n 10 .venv/bin/python eval/run_baselines.py --tag baseline_v1 [--scorer minilm]
+    PYTHONPATH=. .venv/bin/python eval/report.py baseline_v1
 
-Writes eval/results/baseline_v0.json and eval/results/baseline_v0.md.
+Writes eval/results/<tag>.json (render to Markdown with eval/report.py). Forecasts are issued after the
+16:00 ET close of day t for the close-to-close log return of day t+1.
 """
 from __future__ import annotations
 
@@ -19,11 +21,12 @@ import pandas as pd
 from mapie.regression import ConformalizedQuantileRegressor
 from scipy.stats import spearmanr
 
-from components.attack.inject import PUMP_TEMPLATE, attacked_text_features, inject, oracle_variants
+from components.attack.inject import PUMP_TEMPLATE, inject_seq, oracle_grid
 from components.conformal.methods import _frame, aci_from_bounds, cqr, cqr_aci, cqr_offset, split_cp
 from components.fusion.lgbm_quantile import FEATURE_SETS, TEXT_COLS, QuantileFusion, pinball
 from components.robust_conformal.certify import CertifiedCQR, docs_lookup, ensemble_bounds, features_from_docs
 from components.text_scorer.vader import VaderScorer
+from components.trust_scorer.heuristic import trust_of
 from eval.metrics import evaluate
 
 ALPHA, SEED = 0.1, 0
@@ -50,7 +53,16 @@ def sym_cqr_frame(model, test, X_override=None, method="cqr_sym", Q=None):
     return _frame(test, p["q_lo"] - Q, p["q_hi"] + Q, p["q_med"], method), p
 
 
-def main(tag: str = "baseline_v0", suffix: str = "", scorer_name: str = "vader+fin", oracle: bool = True):
+def template_sentiment(scorer: str) -> float:
+    """Sentiment the deployed scorer assigns to the pump template."""
+    t = [PUMP_TEMPLATE.format(cashtag="$XYZ")]
+    if scorer == "minilm":
+        from components.text_scorer.minilm import MiniLMSentimentScorer
+        return float(MiniLMSentimentScorer().score(t)["compound"].iloc[0])
+    return float(VaderScorer().score(t)["compound"].iloc[0])
+
+
+def main(tag: str = "baseline_v1", suffix: str = "", scorer_name: str = "vader+fin", oracle: bool = True, scorer: str = "vader"):
     t0 = time.time()
     OUT.mkdir(parents=True, exist_ok=True)
     panel = pd.read_parquet(f".cache/panel{suffix}.parquet")
@@ -73,13 +85,15 @@ def main(tag: str = "baseline_v0", suffix: str = "", scorer_name: str = "vader+f
              "ic_spearman": float(spearmanr(p["q_med"], y).statistic),
              "ic_spearman_tweet_days": float(spearmanr(p["q_med"][has], y[has]).statistic),
              "cqr_offset_Q": Q}
+        st = {}
         ivs = {"split": split_cp(m, cal, test), "cqr_mapie": cqr(m, cal, test),
-               "cqr_sym": sym_cqr_frame(m, test, Q=Q)[0], "cqr_aci": cqr_aci(m, cal, test, gamma=0.01)}
+               "cqr_sym": sym_cqr_frame(m, test, Q=Q)[0], "cqr_aci": cqr_aci(m, cal, test, gamma=0.01, stats=st)}
         for meth, iv in ivs.items():
             r[meth] = evaluate(iv, test, ALPHA, G)
+        r["cqr_aci_stats"] = st
         res["ablation"][name] = r
-        print(name, {k: round(v["coverage"], 4) for k, v in r.items() if isinstance(v, dict)},
-              {k: round(v["mean_width"], 3) for k, v in r.items() if isinstance(v, dict)}, flush=True)
+        ev = {k: v for k, v in r.items() if isinstance(v, dict) and "coverage" in v}
+        print(name, {k: round(v["coverage"], 4) for k, v in ev.items()}, {k: round(v["mean_width"], 3) for k, v in ev.items()}, flush=True)
 
     # cross-check own symmetric CQR against MAPIE symmetric_correction=True
     fm = models["fusion"]
@@ -108,82 +122,108 @@ def main(tag: str = "baseline_v0", suffix: str = "", scorer_name: str = "vader+f
         res["spike"][f"clean_k{k}"] = evaluate(iv, test, ALPHA, G)
         print("certified clean k", k, round(res["spike"][f"clean_k{k}"]["coverage"], 4), round(res["spike"][f"clean_k{k}"]["mean_width"], 3), flush=True)
 
-    # ---- attacks (budget k=3) ----
+    # ---- attacks (budget k=3). Forecasts are issued after the 16:00 ET close of day t for close t+1. ----
     K = 3
     y = test["y"].to_numpy()
+    dates = test["trade_date"].to_numpy()
+    cc = CertifiedCQR(fm, Q, K)
     base_iv, base_p = sym_cqr_frame(fm, test, Q=Q)
     base_cov_mask = (y >= base_iv["lo"].to_numpy()) & (y <= base_iv["hi"].to_numpy())
-    pump_sent = float(VaderScorer().score([PUMP_TEMPLATE.format(cashtag="$XYZ")])["compound"].iloc[0])
-    pump_trust = 0.05
-    att_docs = [inject(s, w, K, pump_sent, pump_trust) for s, w in test_docs]
-    Xa = X.copy()
-    Xa[:, ti] = np.stack([features_from_docs(s, w) for s, w in att_docs])
-    ta = test.copy()
-    ta[fm.cols] = Xa
+
+    def attacked(sv, tv):
+        adocs = [inject_seq(s, w, sv, tv) for s, w in test_docs]
+        Xv = X.copy()
+        Xv[:, ti] = np.stack([features_from_docs(*d) for d in adocs])
+        tv_ = test.copy()
+        tv_[fm.cols] = Xv
+        return adocs, Xv, tv_
+
+    def certified_under(adocs, Xv, name, pred_med):
+        lb, ub = cc.raw_bounds(Xv, adocs)
+        iv = _frame(test, lb - Q, ub + Q, pred_med, name)
+        ok = (y >= lb - Q) & (y <= ub + Q)
+        return lb, ub, evaluate(iv, test, ALPHA, G), bool(np.all(ok[base_cov_mask]))
+
+    # pump: K bullish posts from fresh accounts; sentiment and trust from the deployed scorers
+    pump_sent = template_sentiment(scorer)
+    pump_trust = float(trust_of(0, 1.0, False, 1)[0])
+    att_docs, Xa, ta = attacked((pump_sent,) * K, (pump_trust,) * K)
     van_iv, van_p = sym_cqr_frame(fm, test, X_override=ta, Q=Q, method="cqr_sym_pump")
-    cc = CertifiedCQR(fm, Q, K)
-    lo, hi = cc.intervals(Xa, att_docs)
-    cert_iv = _frame(test, lo, hi, van_p["q_med"], "certified_pump")
-    # soundness 3: clean features lie inside the box computed from attacked docs
+    crk_lb_a, crk_ub_a, cert_eval, floor_ok = certified_under(att_docs, Xa, "certified_pump", van_p["q_med"])
     blo, bhi = cc.boxes(Xa, att_docs)
-    inside = np.all((X[:, ti] >= blo[:, ti] - 1e-9) & (X[:, ti] <= bhi[:, ti] + 1e-9), axis=1)
+    inside = np.all((X[:, ti] >= blo[:, ti]) & (X[:, ti] <= bhi[:, ti]), axis=1)
     res["attack"]["pump"] = {"k": K, "pump_sentiment": pump_sent, "pump_trust": pump_trust,
                              "median_shift_mean": float(np.mean(van_p["q_med"] - base_p["q_med"])),
                              "median_shift_p95_abs": float(np.quantile(np.abs(van_p["q_med"] - base_p["q_med"]), 0.95)),
-                             "clean_features_inside_box_frac": float(inside.mean()),
-                             "vanilla_cqr": evaluate(van_iv, test, ALPHA, G), "certified": evaluate(cert_iv, test, ALPHA, G)}
-    # oracle adversary over all variants within budget K
-    van_ok = np.ones(len(test), bool)
-    cert_ok = np.ones(len(test), bool)
-    for v in (oracle_variants(K) if oracle else []):
-        Xv = X.copy()
-        Xv[:, ti] = attacked_text_features(test_docs, v)
-        tv = test.copy()
-        tv[fm.cols] = Xv
-        ivv, _ = sym_cqr_frame(fm, test, X_override=tv, Q=Q)
-        van_ok &= (y >= ivv["lo"].to_numpy()) & (y <= ivv["hi"].to_numpy())
-        adocs = [inject(s, w, v[0], v[1], v[2]) for s, w in test_docs]
-        lo, hi = cc.intervals(Xv, adocs)
-        cert_ok &= (y >= lo) & (y <= hi)
-    res["attack"]["oracle"] = {"skipped": True} if not oracle else {"k": K, "n_variants": len(oracle_variants(K)),
-                               "clean_cqr_coverage": float(base_cov_mask.mean()),
-                               "vanilla_cqr_adversarial_coverage": float(van_ok.mean()),
-                               "certified_adversarial_coverage": float(cert_ok.mean()),
-                               "certified_clean_width": res["spike"][f"clean_k{K}"]["mean_width"],
-                               "vanilla_clean_width": float(np.mean(base_iv.hi - base_iv.lo))}
+                             "clean_features_inside_box_frac": float(inside.mean()), "floor_holds": floor_ok,
+                             "vanilla_cqr": evaluate(van_iv, test, ALPHA, G), "certified": cert_eval}
 
-    # ---- spike config: certified box + ACI (CR-ACI), clean and under the pump attack ----
-    dates = test["trade_date"].to_numpy()
+    # oracle over a richer grid (plain CQR); the adversary knows y and picks the worst variant per row
+    grid = oracle_grid(K) if oracle else []
+    van_ok = np.ones(len(test), bool)
+    per_variant = []
+    for sv, tv in grid:
+        _, _, tv_ = attacked(sv, tv)
+        ivv, pv_ = sym_cqr_frame(fm, test, X_override=tv_, Q=Q)
+        ok = (y >= ivv["lo"].to_numpy()) & (y <= ivv["hi"].to_numpy())
+        van_ok &= ok
+        per_variant.append({"sents": list(sv), "trusts": list(tv), "vanilla_coverage": float(ok.mean()),
+                            "median_shift_mean_abs": float(np.mean(np.abs(pv_["q_med"] - base_p["q_med"])))})
+    per_variant.sort(key=lambda r: r["vanilla_coverage"])
+    worst = []
+    for r in per_variant[:3]:
+        adocs, Xv, tv_ = attacked(r["sents"], r["trusts"])
+        ivv, pv_ = sym_cqr_frame(fm, test, X_override=tv_, Q=Q)
+        lb_w, ub_w, ev, fl = certified_under(adocs, Xv, "certified_worst", pv_["q_med"])
+        worst.append({**r, "vanilla_width": float(np.mean(ivv.hi - ivv.lo)), "certified_coverage": ev["coverage"],
+                      "certified_width": ev["mean_width"], "floor_holds": fl})
+        if len(worst) == 1:
+            worst_bounds = (lb_w, ub_w, np.minimum(pv_.q_lo, pv_.q_hi).to_numpy(), np.maximum(pv_.q_lo, pv_.q_hi).to_numpy())
+    res["attack"]["oracle"] = {"skipped": True} if not oracle else {
+        "k": K, "grid_size": len(grid), "clean_cqr_coverage": float(base_cov_mask.mean()),
+        "vanilla_cqr_oracle_coverage": float(van_ok.mean()),
+        "certified_guaranteed_floor": float(base_cov_mask.mean()),
+        "vanilla_clean_width": float(np.mean(base_iv.hi - base_iv.lo)),
+        "certified_clean_width": res["spike"][f"clean_k{K}"]["mean_width"],
+        "worst3": worst, "all_variants": per_variant}
+
+    # ---- CR-ACI (certified box + our own ACI loop): clean, pump on every day, worst variant in bursts ----
     yc = cal["y"].to_numpy(float)
     Xc = cal[fm.cols].to_numpy(float)
-    pc = fm.predict(cal)
-    pv = fm.predict(test)
+    pc, pv = fm.predict(cal), fm.predict(test)
     c_lb, c_ub = np.minimum(pc.q_lo, pc.q_hi).to_numpy(), np.maximum(pc.q_lo, pc.q_hi).to_numpy()
     v_lb, v_ub = np.minimum(pv.q_lo, pv.q_hi).to_numpy(), np.maximum(pv.q_lo, pv.q_hi).to_numpy()
     va_lb, va_ub = np.minimum(van_p.q_lo, van_p.q_hi).to_numpy(), np.maximum(van_p.q_lo, van_p.q_hi).to_numpy()
-    cal_docs = docs_lookup(docs, cal)
-    crk_lb_c, crk_ub_c = cc.raw_bounds(Xc, cal_docs)
+    crk_lb_c, crk_ub_c = cc.raw_bounds(Xc, docs_lookup(docs, cal))
     crk_lb, crk_ub = cc.raw_bounds(X, test_docs)
-    crk_lb_a, crk_ub_a = cc.raw_bounds(Xa, att_docs)
     runs = {"cqr_aci_clean": (c_lb, c_ub, v_lb, v_ub), "cqr_aci_pump": (c_lb, c_ub, va_lb, va_ub),
             "cr_aci_clean": (crk_lb_c, crk_ub_c, crk_lb, crk_ub), "cr_aci_pump": (crk_lb_c, crk_ub_c, crk_lb_a, crk_ub_a)}
-    res["spike"]["cr_aci"] = {}
+    burst_days = np.unique(dates)[np.r_[20:30, 80:90, 140:150]]  # pre-specified: three 10-day bursts
+    burst = np.isin(dates, burst_days)
+    if oracle:
+        w_lb, w_ub, wv_lb, wv_ub = worst_bounds
+        runs["cqr_aci_burst_worst"] = (c_lb, c_ub, np.where(burst, wv_lb, v_lb), np.where(burst, wv_ub, v_ub))
+        runs["cr_aci_burst_worst"] = (crk_lb_c, crk_ub_c, np.where(burst, w_lb, crk_lb), np.where(burst, w_ub, crk_ub))
+    res["spike"]["cr_aci"], res["spike"]["aci_stats"] = {}, {}
+    gb = {**G, "burst": pd.Series(np.where(burst, "attacked", "clean"), index=pd.MultiIndex.from_frame(test[["ticker", "trade_date"]]))}
     for nm, (a, b, c_, d_) in runs.items():
-        lo, hi = aci_from_bounds(a, b, yc, c_, d_, y, dates, ALPHA, 0.01)
-        res["spike"]["cr_aci"][nm] = evaluate(_frame(test, lo, hi, pv["q_med"], nm), test, ALPHA, G)
+        st = {}
+        lo, hi = aci_from_bounds(a, b, yc, c_, d_, y, dates, ALPHA, 0.01, stats=st)
+        res["spike"]["cr_aci"][nm] = evaluate(_frame(test, lo, hi, pv["q_med"], nm), test, ALPHA, gb)
+        res["spike"]["aci_stats"][nm] = st
         print(nm, round(res["spike"]["cr_aci"][nm]["coverage"], 4), round(res["spike"]["cr_aci"][nm]["mean_width"], 3), flush=True)
     res["meta"]["runtime_s"] = round(time.time() - t0, 1)
     (OUT / f"{tag}.json").write_text(json.dumps(res, indent=2))
-    print(json.dumps(res["attack"]["oracle"], indent=2))
+    print(json.dumps({k: v for k, v in res["attack"]["oracle"].items() if k not in ("all_variants", "worst3")}, indent=2))
     print(json.dumps({k: v for k, v in res["spike"].items() if not isinstance(v, dict)}, indent=2))
     print("runtime", res["meta"]["runtime_s"])
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--tag", default="baseline_v0")
+    ap.add_argument("--tag", default="baseline_v1")
     ap.add_argument("--scorer", choices=["vader", "minilm", "finbert"], default="vader")
     ap.add_argument("--no-oracle", action="store_true")
     a = ap.parse_args()
     sfx = "" if a.scorer == "vader" else f"_{a.scorer}"
-    main(a.tag, sfx, {"vader": "vader+fin", "minilm": "MiniLM-L6 + LR (TFNS)", "finbert": "ProsusAI/finbert"}[a.scorer], not a.no_oracle)
+    main(a.tag, sfx, {"vader": "vader+fin", "minilm": "MiniLM-L6 + LR (TFNS)", "finbert": "ProsusAI/finbert"}[a.scorer], not a.no_oracle, a.scorer)
