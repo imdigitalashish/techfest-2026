@@ -1,0 +1,416 @@
+# Car layer (India, sedan segment) — case study 2. Schema: architecture/agent-brief.md
+# Source opened: ICCT White Paper (Bieker, July 2021) "A global comparison of the life-cycle GHG emissions of combustion
+# engine and electric passenger cars" — India chapter + Appendix; and the companion ICCT India fact sheet (Sept 2021).
+- id: vehicle.car.sedan.mass.in.fy2019_20
+  layer: vehicle
+  name: Average mass of new sedan-segment cars, India FY2019-20
+  value: 998
+  unit: kg
+  quantity: mass
+  gas_basis: n/a
+  boundary: "Segment average (ICCT, data from Segment Y Automotive Intelligence); same mass applied to all powertrains."
+  geography: IN
+  reference_year: "FY2019-20"
+  technology: sedan segment, all powertrains
+  source_id: icct-global-lca-2021
+  locator: "Appendix A.1, p. 64"
+  quote: "sedan, and SUV segment cars registered in FY 2019–20 was 876 kg, 998 kg, and 1,377 kg, respectively"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 3, geographical: 1, technological: 2}
+  status: verified
+- id: vehicle.car.production_intensity.gasoline.icct2021
+  layer: vehicle
+  name: Glider + powertrain production and recycling GHG per tonne of vehicle — gasoline ICEV
+  value: 5.2
+  unit: kg CO2e/kg
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Production + recycling (time-sensitive hybrid of cut-off and avoided burden, Ricardo AEA), excl. battery; t CO2e per t vehicle."
+  geography: EU
+  reference_year: "2019"
+  technology: lower-medium car, EU + UK (Ricardo AEA / Hill et al. 2020), applied by mass
+  source_id: icct-global-lca-2021
+  locator: "Table A.1, p. 64"
+  quote: "Gasoline ICEV 7.2 5.2"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 4, technological: 2}
+  status: verified
+  notes: "European proxy (no India value): India steel/aluminium routes and a coal-heavy grid likely make Indian production more GHG-intensive — data gap."
+- id: vehicle.car.production_intensity.diesel.icct2021
+  layer: vehicle
+  name: Glider + powertrain production and recycling GHG per tonne of vehicle — diesel ICEV
+  value: 5.2
+  unit: kg CO2e/kg
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "As gasoline record."
+  geography: EU
+  reference_year: "2019"
+  technology: lower-medium car, EU + UK, applied by mass
+  source_id: icct-global-lca-2021
+  locator: "Table A.1, p. 64"
+  quote: "Diesel ICEV 7.2 5.2"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 4, technological: 2}
+  status: verified
+- id: vehicle.car.production_intensity.cng.icct2021
+  layer: vehicle
+  name: Glider + powertrain production and recycling GHG per tonne of vehicle — CNG ICEV
+  value: 5.5
+  unit: kg CO2e/kg
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "As gasoline record (includes the CNG tank)."
+  geography: EU
+  reference_year: "2019"
+  technology: lower-medium car, EU + UK, applied by mass
+  source_id: icct-global-lca-2021
+  locator: "Table A.1, p. 64"
+  quote: "CNG ICEV 7.6 5.5"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 4, technological: 2}
+  status: verified
+- id: vehicle.car.production_intensity.bev_wo_battery.icct2021
+  layer: vehicle
+  name: Glider + powertrain production and recycling GHG per tonne of vehicle — BEV without battery
+  value: 4.7
+  unit: kg CO2e/kg
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "As gasoline record; traction battery accounted separately."
+  geography: EU
+  reference_year: "2019"
+  technology: lower-medium car, EU + UK, applied by mass
+  source_id: icct-global-lca-2021
+  locator: "Table A.1, p. 64"
+  quote: "BEV (without battery) 6.5 4.7"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 4, technological: 2}
+  status: verified
+- id: battery.li_ion.production_intensity.in.icct2021_car
+  layer: battery
+  name: Li-ion (NMC622-graphite) battery production GHG used for cars in India (China factor)
+  value: 68
+  unit: kg CO2e/kWh
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Cradle-to-gate battery pack (GREET 2020, regionally adjusted); no second life or recycling."
+  geography: CN
+  reference_year: "2021"
+  technology: NMC622-graphite, China-weighted production
+  source_id: icct-global-lca-2021
+  locator: "Section 2.4, pp. 9-10 (Table 2.3 and text)"
+  quote: "while 68 kg CO2 eq. /kWh are considered for new cars in China and India"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 3, technological: 3}
+  status: verified
+  notes: "Indian e-car packs increasingly LFP (e.g. Tata) — LFP values in Table 2.3 are lower; chemistry share is a data gap."
+- id: battery.car.sedan.capacity.icct2021
+  layer: battery
+  name: Battery capacity of the representative Indian BEV sedan (Mahindra e-Verito, total capacity)
+  value: 23.0
+  unit: kWh
+  quantity: other
+  gas_basis: n/a
+  boundary: "Total pack capacity (declared usable 21.2 kWh assumed ~7% below total)."
+  geography: IN
+  reference_year: "2021"
+  technology: BEV sedan
+  source_id: icct-global-lca-2021
+  locator: "Table 2.4, p. 10"
+  quote: "Sedan 23.0 1.6"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 3, geographical: 1, technological: 2}
+  status: verified
+- id: vehicle.car.lifetime_km.in.icct2021
+  layer: vehicle
+  name: Lifetime mileage of hatchback and sedan cars registered in India in 2021 (15 years, annual mileage falling 3%/yr)
+  value: 165000
+  unit: km
+  quantity: lifetime
+  gas_basis: n/a
+  boundary: "Same for all powertrains."
+  geography: IN
+  reference_year: "2021"
+  technology: hatchback and sedan cars
+  source_id: icct-global-lca-2021
+  locator: "India chapter, p. 43"
+  quote: "mileage of about 165,000 km for hatchback and sedan segment cars"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+  notes: "Model-based (ICCT India Emissions Model), 'about' in the source."
+- id: use.car.sedan.gasoline.l_per_100km.icct2021
+  layer: use
+  name: Real-world fuel consumption, gasoline sedan, India (MIDC x 1.34)
+  value: 6.8
+  unit: L/100km
+  quantity: consumption
+  gas_basis: n/a
+  boundary: "Segment average MIDC FY2019-20 scaled by 34% real-world deviation (assumed from Europe/China)."
+  geography: IN
+  reference_year: "FY2019-20"
+  technology: gasoline sedan
+  source_id: icct-global-lca-2021
+  locator: "Table A.8, p. 70"
+  quote: "Table A.8. Average real-world fuel and electricity consumption values for cars registered in India ... Gasoline ICEV 6.4 L 6.8 L 8.2 L"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 2, temporal: 3, geographical: 1, technological: 1}
+  status: verified
+  notes: "The 34% real-world uplift is borrowed from Europe/China — Indian on-road data is a gap."
+- id: use.car.sedan.diesel.l_per_100km.icct2021
+  layer: use
+  name: Real-world fuel consumption, diesel sedan, India (MIDC x 1.34)
+  value: 6.0
+  unit: L/100km
+  quantity: consumption
+  gas_basis: n/a
+  boundary: "As gasoline record."
+  geography: IN
+  reference_year: "FY2019-20"
+  technology: diesel sedan
+  source_id: icct-global-lca-2021
+  locator: "Table A.8, p. 70"
+  quote: "Table A.8. Average real-world fuel and electricity consumption values for cars registered in India ... Diesel ICEV 6.0 L 6.0 L 7.9 L"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 2, temporal: 3, geographical: 1, technological: 1}
+  status: verified
+- id: use.car.sedan.cng.kg_per_100km.icct2021
+  layer: use
+  name: Real-world CNG consumption, sedan, India (Maruti Dzire MIDC x 1.34)
+  value: 5.0
+  unit: kg/100km
+  quantity: consumption
+  gas_basis: n/a
+  boundary: "Representative model (few CNG sedans in FY2019-20)."
+  geography: IN
+  reference_year: "FY2019-20"
+  technology: CNG sedan
+  source_id: icct-global-lca-2021
+  locator: "Table A.8, p. 70"
+  quote: "Table A.8. Average real-world fuel and electricity consumption values for cars registered in India ... CNG ICEV 5.2 kg 5.0 kg 5.1 kg"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 1, technological: 2}
+  status: verified
+- id: use.car.sedan.bev.kwh_per_100km.icct2021
+  layer: use
+  name: Real-world electricity consumption at the plug, BEV sedan, India (e-Verito; range -30%, +15% charging losses)
+  value: 19.2
+  unit: kWh/100km
+  quantity: consumption
+  gas_basis: n/a
+  boundary: "At the plug: includes 15% charging losses."
+  geography: IN
+  reference_year: "FY2019-20"
+  technology: BEV sedan (Mahindra e-Verito)
+  source_id: icct-global-lca-2021
+  locator: "Table A.8, p. 70"
+  quote: "Table A.8. Average real-world fuel and electricity consumption values for cars registered in India ... BEV 16.6 kWh 19.2 kWh 15.9 kWh"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 1, technological: 3}
+  status: verified
+  notes: "Check: 21.2 kWh / (181 km x 0.7) x 1.15 = 19.24 kWh/100 km (reproduces). The e-Verito is a dated, low-efficiency fleet model; 2026 Indian e-sedans/SUVs differ — data gap."
+- id: fuels.gasoline.in.wtt.icct2021_car
+  layer: fuels
+  name: Gasoline blend well-to-tank GHG, India, lifetime of 2021 cars (ethanol 5% -> 20% by 2040)
+  value: 0.64
+  unit: kg CO2e/L
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Well-to-tank incl. ethanol production and ILUC per ICCT Tables A.15-A.17."
+  geography: IN
+  reference_year: "2021-2036 lifetime average"
+  technology: Indian gasoline blend
+  source_id: icct-global-lca-2021
+  locator: "Table A.9, p. 71"
+  quote: "Gasoline 5–20 0.64 0.61 2.15 1.99"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+- id: fuels.gasoline.in.ttw.icct2021_car
+  layer: fuels
+  name: Gasoline blend tank-to-wheel GHG, India, lifetime of 2021 cars
+  value: 2.15
+  unit: kg CO2e/L
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Tank-to-wheel; biogenic CO2 of ethanol share excluded."
+  geography: IN
+  reference_year: "2021-2036 lifetime average"
+  technology: Indian gasoline blend
+  source_id: icct-global-lca-2021
+  locator: "Table A.9, p. 71"
+  quote: "Gasoline 5–20 0.64 0.61 2.15 1.99"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+- id: fuels.diesel.in.wtt.icct2021_car
+  layer: fuels
+  name: Diesel blend well-to-tank GHG, India, lifetime of 2021 cars
+  value: 0.78
+  unit: kg CO2e/L
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Well-to-tank incl. biodiesel/HVO share 0% -> 5%."
+  geography: IN
+  reference_year: "2021-2036 lifetime average"
+  technology: Indian diesel blend
+  source_id: icct-global-lca-2021
+  locator: "Table A.9, p. 71"
+  quote: "India Diesel 0–5 0.78 0.78 2.57 2.51"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+- id: fuels.diesel.in.ttw.icct2021_car
+  layer: fuels
+  name: Diesel blend tank-to-wheel GHG, India, lifetime of 2021 cars
+  value: 2.57
+  unit: kg CO2e/L
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Tank-to-wheel."
+  geography: IN
+  reference_year: "2021-2036 lifetime average"
+  technology: Indian diesel blend
+  source_id: icct-global-lca-2021
+  locator: "Table A.9, p. 71"
+  quote: "India Diesel 0–5 0.78 0.78 2.57 2.51"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+- id: fuels.natural_gas.in.wtt.icct2021_car
+  layer: fuels
+  name: Natural gas (CNG) blend well-to-tank GHG per kg, India, lifetime of 2021 cars
+  value: 0.92
+  unit: kg CO2e/kg
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Well-to-tank incl. methane leakage at 100-year GWP (the 20-year view is reported separately by ICCT); biomethane 0% -> 10%."
+  geography: IN
+  reference_year: "2021-2036 lifetime average"
+  technology: Indian natural gas mix (50:50 domestic/LNG per ICCT Table A.19)
+  source_id: icct-global-lca-2021
+  locator: "Table A.9, p. 71"
+  quote: "Natural gas 0–10 0.92 0.94 2.76 2.64"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+- id: fuels.natural_gas.in.ttw.icct2021_car
+  layer: fuels
+  name: Natural gas (CNG) tank-to-wheel GHG per kg, India, lifetime of 2021 cars
+  value: 2.76
+  unit: kg CO2e/kg
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Tank-to-wheel."
+  geography: IN
+  reference_year: "2021-2036 lifetime average"
+  technology: CNG
+  source_id: icct-global-lca-2021
+  locator: "Table A.9, p. 71"
+  quote: "Natural gas 0–10 0.92 0.94 2.76 2.64"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+- id: energy.electricity.in.icct2021_car_lifetime_steps
+  layer: energy
+  name: India electricity life-cycle GHG, lifetime average for cars registered 2021 (15 yr, IEA STEPS, incl. T&D)
+  value: 0.746
+  unit: kg CO2e/kWh
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Life-cycle (IPCC technology factors) incl. T&D losses, averaged over the vehicle lifetime with falling annual mileage."
+  geography: IN
+  reference_year: "2021-2036 average"
+  technology: projected Indian grid (IEA STEPS)
+  source_id: icct-global-lca-2021
+  locator: "Table A.21, p. 73"
+  quote: "India 15 years 746 561 545 259 35"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+- id: energy.electricity.in.icct2021_car_lifetime_sds
+  layer: energy
+  name: India electricity life-cycle GHG, lifetime average for cars registered 2021 (IEA SDS)
+  value: 0.561
+  unit: kg CO2e/kWh
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "As STEPS record, Sustainable Development Scenario."
+  geography: IN
+  reference_year: "2021-2036 average"
+  technology: projected Indian grid (IEA SDS)
+  source_id: icct-global-lca-2021
+  locator: "Table A.21, p. 73"
+  quote: "India 15 years 746 561 545 259 35"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 2, geographical: 1, technological: 2}
+  status: verified
+- id: use.car.sedan.maintenance.gasoline.icct2021
+  layer: use
+  name: Maintenance GHG per km, gasoline sedan, India (tyres, aftertreatment, fluids)
+  value: 0.0050
+  unit: kg CO2e/km
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "In-service replacement of consumables (ICCT Table 2.1 scope)."
+  geography: IN
+  reference_year: "2021"
+  technology: gasoline sedan
+  source_id: icct-india-lca-factsheet-2021
+  locator: "Figure 1, p. 2 (digitized)"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 3, technological: 2}
+  status: derived
+  derivation: "Maintenance segment of the gasoline bar, digitized from the PDF vector drawing: 5.0 g/km (data/benchmarks/icct_india_factsheet_2021_fig1_sedan.yaml via data/fetch/digitize_icct_factsheet_2021_fig1.py)"
+- id: use.car.sedan.maintenance.diesel.icct2021
+  layer: use
+  name: Maintenance GHG per km, diesel sedan, India (incl. urea)
+  value: 0.0070
+  unit: kg CO2e/km
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "As gasoline record."
+  geography: IN
+  reference_year: "2021"
+  technology: diesel sedan
+  source_id: icct-india-lca-factsheet-2021
+  locator: "Figure 1, p. 2 (digitized)"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 3, technological: 2}
+  status: derived
+  derivation: "Maintenance segment of the diesel bar, digitized: 7.0 g/km"
+- id: use.car.sedan.maintenance.cng.icct2021
+  layer: use
+  name: Maintenance GHG per km, CNG sedan, India
+  value: 0.0050
+  unit: kg CO2e/km
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "As gasoline record."
+  geography: IN
+  reference_year: "2021"
+  technology: CNG sedan
+  source_id: icct-india-lca-factsheet-2021
+  locator: "Figure 1, p. 2 (digitized)"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 3, technological: 2}
+  status: derived
+  derivation: "Maintenance segment of the CNG bar, digitized: 5.0 g/km"
+- id: use.car.sedan.maintenance.bev.icct2021
+  layer: use
+  name: Maintenance GHG per km, BEV sedan, India
+  value: 0.0040
+  unit: kg CO2e/km
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "As gasoline record (fewer consumables)."
+  geography: IN
+  reference_year: "2021"
+  technology: BEV sedan
+  source_id: icct-india-lca-factsheet-2021
+  locator: "Figure 1, p. 2 (digitized)"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 3, technological: 2}
+  status: derived
+  derivation: "Maintenance segment of the BEV bar, digitized: 4.0 g/km"

@@ -11,3 +11,4 @@ get .data/raw/fuels/ipcc2006_v2_ch1.pdf   "https://www.ipcc-nggip.iges.or.jp/pub
 get .data/raw/fuels/unsd_conv.pdf         "https://unstats.un.org/unsd/energystats/pubs/yearbook/2020/09ii.pdf"
 get .data/raw/benchmarks/icct_2w_fc_2021.pdf "https://theicct.org/wp-content/uploads/2021/12/fuel-consumption-2w-india-aug2021.pdf"
 get .data/raw/benchmarks/icct_india_2021.pdf "https://theicct.org/wp-content/uploads/2021/12/lca-ghg-emissions-ice-evs-india-sept21_0.pdf"
+get .data/raw/benchmarks/icct_global_lca_2021.pdf "https://theicct.org/wp-content/uploads/2021/07/Global-Vehicle-LCA-White-Paper-A4-revised-v2.pdf"

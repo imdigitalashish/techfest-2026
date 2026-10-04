@@ -203,7 +203,42 @@
   uncertainty: {distribution: none, low: null, high: null, note: ""}
   source_id: icct-2w-fc-india-2021
   locator: "Table 1 header (p. 3)"
-  quote: "ICE scooter (109.5 cc) Electric scooter (2.9 kWh)"
+  quote: "ICE scooter scooter Type (97.2 cc) (3.5 kWh) (2.7 kWh) (109.5 cc) (2.9 kWh)"
   accessed: 2026-10-04
   pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 1}
   status: verified
+- id: use.2w.scooter_ice.maintenance.icct2021
+  layer: use
+  name: Maintenance GHG per km, petrol scooter, India (registered 2021)
+  value: 0.0010
+  unit: kg CO2e/km
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "In-service replacement of consumables. Not in ICCT Briefing Table 1 (which has no maintenance row) but shown in the fact sheet Figure 2."
+  geography: IN
+  reference_year: "2021"
+  technology: 110 cc petrol scooter
+  source_id: icct-india-lca-factsheet-2021
+  locator: "Figure 2, p. 3 (digitized)"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 3, technological: 2}
+  status: derived
+  derivation: "Maintenance segment of the 2021 ICE scooter bar, digitized: 1.0 g/km (data/benchmarks/icct_india_factsheet_2021_fig2.yaml)"
+  notes: "Explains why the fact-sheet totals (61.9 / 38.6 g/km) exceed Briefing Table 1 (60.9 / 37.5) by ~1 g/km."
+- id: use.2w.scooter_ev.maintenance.icct2021
+  layer: use
+  name: Maintenance GHG per km, electric scooter, India (registered 2021)
+  value: 0.0010
+  unit: kg CO2e/km
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "As petrol scooter record."
+  geography: IN
+  reference_year: "2021"
+  technology: 2.9 kWh electric scooter
+  source_id: icct-india-lca-factsheet-2021
+  locator: "Figure 2, p. 3 (digitized)"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 3, geographical: 3, technological: 2}
+  status: derived
+  derivation: "Maintenance segment of the 2021 electric scooter bar, digitized: 1.0 g/km (data/benchmarks/icct_india_factsheet_2021_fig2.yaml)"

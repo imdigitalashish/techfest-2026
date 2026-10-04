@@ -68,3 +68,12 @@
   type: software
   accessed: 2026-10-04
   notes: "version_1 and version_2 uncertainty-factor tables; sigma = sqrt(sum(ln(U_i)^2))/2 including the basic uncertainty factor. Last push 2022-06-16."
+- id: icct-global-lca-2021
+  title: "A global comparison of the life-cycle greenhouse gas emissions of combustion engine and electric passenger cars (ICCT White Paper), G. Bieker"
+  publisher: International Council on Clean Transportation (ICCT)
+  year: 2021
+  url: https://theicct.org/wp-content/uploads/2021/07/Global-Vehicle-LCA-White-Paper-A4-revised-v2.pdf
+  type: grey-literature
+  accessed: 2026-10-04
+  local_copy: .data/raw/benchmarks/icct_global_lca_2021.pdf
+  notes: "India chapter (pp. 43-46) and Appendix A (Tables A.1, A.8, A.9, A.21; Table 2.4). Totals for India sedans quoted in the text; stage values in the companion fact sheet Figure 1 (digitized)."

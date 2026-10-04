@@ -1,0 +1,15 @@
+# Digitized from ICCT fact sheet (Sept 2021) Figure 1 vector drawing (gridline-calibrated, about +-0.5 g/km).
+# BEV bars use the IEA STEPS-based lifetime electricity mix (upper end of the error bar).
+# The 'methane_20yr_gwp_extra' segment is the extra impact when methane is counted at 20-year GWP; totals exclude it.
+source_id: icct-india-lca-factsheet-2021
+locator: "Figure 1, p. 2"
+unit: g CO2e/km
+calibration: {gridlines: 6, g_per_pt: 1.5416}
+results:
+  - {vehicle: gasoline, vehicle_production: 30.98, maintenance: 5.0, fuel_consumption_ttw: 147.92, fuel_production_wtt: 43.98, total_gwp100: 227.88}
+  - {vehicle: diesel, vehicle_production: 30.98, maintenance: 7.0, fuel_consumption_ttw: 159.92, fuel_production_wtt: 46.98, total_gwp100: 244.88}
+  - {vehicle: cng, vehicle_production: 32.98, maintenance: 5.0, fuel_consumption_ttw: 141.93, fuel_production_wtt: 45.98, methane_20yr_gwp_extra: 35.98, total_gwp100: 225.89}
+  - {vehicle: bev_grid_steps, vehicle_production: 27.99, battery_production: 9.99, maintenance: 4.0, electricity_production_wtt: 142.93, total_gwp100: 184.91}
+  - {vehicle: bev_renewable, vehicle_production: 27.99, battery_production: 9.99, maintenance: 4.0, electricity_production_wtt: 6.0, total_gwp100: 47.98}
+  - {vehicle: fcev_natural_gas_h2, vehicle_production: 27.99, hydrogen_system: 20.99, maintenance: 4.0, fuel_production_wtt: 137.93, methane_20yr_gwp_extra: 22.99, total_gwp100: 190.91}
+  - {vehicle: fcev_renewable_h2, vehicle_production: 27.99, hydrogen_system: 20.99, maintenance: 4.0, fuel_production_wtt: 18.99, total_gwp100: 71.97}
