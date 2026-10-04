@@ -1,4 +1,4 @@
 timestamp	commit	hypothesis	metric(reproduction_dev)	delta	kept	notes
-2026-10-04T07:15+05:30	6fb8398~1	baseline: first parseable math segment	0.1552	-	baseline	dev 9/58; holdout 0.1690; parsed_dev 0.4138; wrong_attr 0; false_claim 0.0182 (n=165)
+2026-10-04T07:15+05:30	a35df8e~1	baseline: first parseable math segment	0.1552	-	baseline	dev 9/58; holdout 0.1690; parsed_dev 0.4138; wrong_attr 0; false_claim 0.0182 (n=165)
 2026-10-04T07:17+05:30	-	iter1: try all segments, prefer one whose clean key equals Eedi correct answer	0.1552	0.0000	no (reverted)	neutral on dev; false_claim 0.0161 (n=186)
-2026-10-04T07:21+05:30	6fb8398	iter2: strip trailing =/=?/? and rewrite leading minus-before-bracket as (-1)x(...)	0.1897	+0.0345	yes	dev 11/58; holdout 0.1690 (no change); parsed_dev 0.4483; wrong_attr 0; false_claim 0.0171 (n=175)
+2026-10-04T07:21+05:30	a35df8e	iter2: strip trailing =/=?/? and rewrite leading minus-before-bracket as (-1)x(...)	0.1897	+0.0345	yes	dev 11/58; holdout 0.1690 (no change); parsed_dev 0.4483; wrong_attr 0; false_claim 0.0171 (n=175)

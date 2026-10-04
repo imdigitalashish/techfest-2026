@@ -24,6 +24,8 @@ The brief's MVP has two parts: (1) classify a wrong answer into one of 3–5 mis
   - On 129 real Eedi distractors labelled with our five misconceptions, the bug programs reproduce the exact labelled wrong answer in 16.3% of cases overall, and in 39.6% when our LaTeX parser recovers the expression. They **never** attribute a distractor to the wrong one of our five (0.0%).
   - On 165 distractors labelled with *other* misconceptions they claim a pack misconception 1.8% of the time. 2 of those 3 cases are Eedi labels that state the same rule in other words ("Multiplies by the index" vs SQ_DOUBLE).
   - Exec→TF-IDF hybrid: **45.7%** closed-set accuracy, vs TF-IDF 38.0% and majority class 30.2%.
+  - **The LLM baseline is strong:** GPT-4.1-mini zero-shot gets **86.0%** (95% bootstrap CI 79.8–91.5); exec→LLM hybrid 86.8% (81.4–92.2) — a gain of one item, not significant. When the executable path fires it is right 21/21 (LLM 20/21 on those items).
+  - LLM-only *generation* (GPT-4.1-mini, 40 calls) produced **40/40** items with correct keys whose target bug fires. On simple arithmetic the generation edge is control and verification, not validity.
   - Generator: 400/400 items verified by SymPy, target fires in all of them, all discriminative — **true by construction**, so the interesting comparison is the LLM-only baseline (pending, see below).
   - Simulation (SYNTHETIC): EIG + named feedback leaves 5.5% of initial misconceptions after 4 sessions, vs 58.4% for random practice + generic feedback.
   - Prior art: executable mal-rules exist (MalruleLib, ACL 2026: 101 mal-rules over 498 templates; Sleeman's LMS). LLMs are weak at anticipating real students' errors (UMass 2024).
@@ -51,6 +53,7 @@ The brief's MVP has two parts: (1) classify a wrong answer into one of 3–5 mis
   4. The headline learning result is simulated.
   5. MalruleLib already did executable misconceptions at scale.
 - **Synthesis.**
+  - **Post-baseline update (07:45 IST):** the LLM-only baselines are strong on this pack (86.0% classification; 40/40 valid generation). Spike A's value therefore lies in *exactness* (21/21 when it fires), *auditability*, *zero-cost offline operation*, and being the substrate for spike B. It is not raw accuracy. Spike B (set-level tracing + information gain), plus evaluation on harder packs (word problems, probability), carries the innovation claim.
   - Make the *hybrid* the product: executable where we can verify, LLM retrieval where we can't, and say which applied in every diagnosis ("evidence: bug_exact" vs "retrieval").
   - Claim novelty only where the sources leave room: validation against real distractors, discriminative verified generation, joint set-level tracing with EIG, slip abstention.
   - Grow coverage with the LLM bug compiler (F), whose output is *checked* against Eedi distractors rather than trusted.

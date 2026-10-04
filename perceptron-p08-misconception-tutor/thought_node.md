@@ -10,12 +10,29 @@
 - _(none)_
 
 ## Now
-- **Phase:** 4 — walking skeleton built (contract tests 8/8 pass); evals + morning-package docs in progress. LEAN MODE (Supervisor, 05:45): no new sub-agents, small requests.
-- **Plan:** Misconceptions as **executable bug switches** on one exact interpreter → (1) exact-likelihood diagnosis, (2) SymPy-verified *discriminative* item generation, (3) Bayesian tracer over *sets* of misconceptions across sessions with EIG item selection; evaluate on real Eedi data + simulated learners (labelled synthetic).
-- **Doing (lead, sequential):** eval scripts (generation validity, diagnosis, simulation A/B) → landscape.md → components.md → ADR 001 → selection memo → round-1 abstract + architecture.md.
-- **Next:** independent adversarial review of the spike (rubber-duck) once the network recovers; LLM bug-compiler on the Eedi catalogue; Eedi option-level data for real multi-session tracking.
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section. A Kaggle account login to download the official Eedi 2024 competition files (we use a community HF mirror meanwhile; fidelity UNVERIFIED).
-- **Risks:** (1) synthetic-learner results only show the policy works under our assumptions; (2) the executable pack covers 5 arithmetic misconceptions, not Eedi's long tail (LLM retrieval covers that); (3) Eedi 2024 data via an unofficial mirror; (4) GitHub Models rate limits for the LLM baselines.
+- **Phase:** 4–5. Morning package delivered (07:50 IST). Walking skeleton + eval harness with real numbers; first autoresearch loop on C3 running (2 iterations, 1 kept).
+- **Plan:** Misconceptions as **executable bug switches** on one exact interpreter → exact diagnosis with slip abstention → SymPy-verified *discriminative* generation → set-level Bayesian tracer with information-gain item choice. LLM (Azure GPT-4.1-mini) + retrieval for everything the library doesn't cover. Evaluated on real Eedi distractors + labelled-synthetic learners; pilot before finals.
+- **Doing:** — (lean mode; no agents running). Azure OpenAI `tf26-p08-aoai-1004` stays up for the next steps.
+- **Next (ordered):**
+  1. Independent adversarial review of ADR 001 (rubber-duck) and re-verification of the landscape's top claims, once the Supervisor lifts lean mode.
+  2. Close the research gaps (Kaggle leaderboard scores, verified-generation literature, MATHia/ALEKS/Indian ed-tech, RCTs).
+  3. Harder packs where LLM-only may fail (word problems, probability/EV) → rerun both LLM baselines.
+  4. LLM bug compiler (Eedi text → program, accepted only if it reproduces distractors).
+  5. Real option-level tracing on Eedi response data.
+  6. Web UI + teacher heat-map.
+  7. Pilot design (consent, pre/post isomorphic items, random-practice control).
+- **Needs from user:**
+  - Register by 15 Oct (after the 12 Oct selection).
+  - Teammates' names and skills for the team-fit section (abstract has [TEAM] placeholders).
+  - A Kaggle login to download the official Eedi 2024 files and confirm the mirror's fidelity.
+  - In Nov: ~30 learners for a consented pilot.
+  - FYI: an Azure OpenAI resource was created in the VS Enterprise subscription (rg `rg-tf26-p08`); delete it when no longer needed.
+- **Risks:**
+  1. The LLM baseline is strong on the MVP pack (86.0% classification, 40/40 generation), so the innovation case rests on tracing/information gain, verification and harder packs.
+  2. Simulated learning ≠ real learning.
+  3. LaTeX parser covers ~45% of real items.
+  4. Eedi 2024 data via an unofficial mirror.
+  5. Network interception of AI endpoints (GitHub Models stub; Azure flaky 06:40–07:06).
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -51,10 +68,10 @@
 |---|---|---|---|---|---|---|
 | C1 | Catalogue | id → Misconception | Eedi graph (CC BY) | — | built | link coverage 5/5 |
 | C2 | Normaliser | raw → NormalizedAnswer | Fraction parsing | — | built | canonicalisation acc 8/8 cases |
-| C3 | Bug library | Item → PredictedAnswer[] | mal-rules (Sleeman, MalruleLib) | **A** | built (5 bugs) | real-distractor reproduction 16.3% (39.6% parsed); wrong attribution 0% |
-| C4 | Diagnoser | DiagnosisRequest → Diagnosis | LLM zero-shot; retrieval+rerank | **A** | built | closed-set acc (real, n=129): hybrid 45.7% vs TF-IDF 38.0% vs majority 30.2% |
+| C3 | Bug library | Item → PredictedAnswer[] | mal-rules (Sleeman, MalruleLib) | **A** | built (5 bugs); autoresearch loop | reproduction_dev 0.155 → 0.190 (loop iter 2); wrong attribution 0% |
+| C4 | Diagnoser | DiagnosisRequest → Diagnosis | LLM zero-shot; retrieval+rerank | **A** | built | closed-set acc (real, n=129): LLM 86.0%, exec→LLM 86.8%, exec→TF-IDF 45.7%, TF-IDF 38.0%, majority 30.2% |
 | C5 | Verifier | Item → VerificationReport | none / LLM self-check | — | built | fault detection (mutation suite: to do) |
-| C6 | Generator | GenerationRequest → GeneratedItem[] | LLM-only | **A** | built | verified-targeted yield 400/400 (by construction); LLM-only: running |
+| C6 | Generator | GenerationRequest → GeneratedItem[] | LLM-only | **A** | built | verified-targeted yield: ours 400/400 (by construction); LLM-only 40/40 |
 | C7 | Learner model | state+obs → LearnerState | BKT / pyKT | **B** | built | exact-set acc 0.836 (synthetic) |
 | C8 | Policy | NextItemRequest → NextItemDecision | random practice | **B** | built | misconceptions still held after 4 sessions: 5.5% vs 58.4% (synthetic) |
 | C9 | Feedback | Diagnosis → text | generic "answer is X" | — | template built | rubric pass rate (to define) |
@@ -64,8 +81,8 @@
 
 ## Selection memo
 _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-- **Winnability: 4/5.** We already have a differentiated, working, evaluated core on day 1. It runs end to end on a laptop (`components/tutor/cli.py`) and has real-data numbers on Eedi distractors (`eval/results/diagnosis.json`). Theme 5 has a single problem, so competition is spread differently (UNVERIFIED how many teams pick it).
-- **Innovation headroom: 4/5.** Spike = executable misconceptions validated on *real* distractors → discriminative, SymPy-verified generation → set-level Bayesian tracing with information-gain item choice and slip abstention. The obvious LLM-prompt baseline can't verify its items or tell a slip from a misconception. Not 5, because executable mal-rules exist (MalruleLib ACL 2026; Sleeman), so the claim must stay narrow.
+- **Winnability: 3/5** (revised 07:45 from 4 after the LLM baselines). We already have a differentiated, working, evaluated core on day 1. It runs end to end on a laptop (`components/tutor/cli.py`) and has real-data numbers on Eedi distractors (`eval/results/diagnosis.json`). Theme 5 has a single problem, so competition is spread differently (UNVERIFIED how many teams pick it).
+- **Innovation headroom: 3/5** (revised 07:45 from 4). GPT-4.1-mini zero-shot already gets 86.0% on our real 5-category set, and LLM-only generation was 40/40 valid on simple arithmetic, so the edge must come from set-level tracing + information gain, exactness/verification, and harder packs. Spike = executable misconceptions validated on *real* distractors → discriminative, SymPy-verified generation → set-level Bayesian tracing with information-gain item choice and slip abstention. The obvious LLM-prompt baseline can't verify its items or tell a slip from a misconception. Also, executable mal-rules exist (MalruleLib ACL 2026; Sleeman), so the claim must stay narrow.
 - **Feasibility by the deadline: 5/5.** ms per turn on the M5, no GPU. The LLM is used only for the open-set leg and the bug compiler (Azure OpenAI now provisioned). 12 components behind tested contracts. Exams 19–25 Nov fall after the core milestones.
 - **Demo strength at the finals: 5/5.** A judge types a wrong answer; the tutor names the exact rule ("1/8 is what adding tops and bottoms gives"), asks the most informative next question, and shows a verified item and a teacher heat-map. A quant pack (probability/EV misconceptions) speaks to Optiver.
 - **Fit with the user's strengths: 3/5.** Evaluation rigour, LLM pipelines and Azure fit. Less large-scale-systems depth than P1/P2. Microsoft ships adjacent products (Math Progress, Study and Learn Agent), which is useful context.
@@ -99,3 +116,11 @@ Model API returned "408 Timed out reading request body" for most agents (network
 - **Simulation** (`python -m eval.run_simulation --seeds 3 --learners 150`, SYNTHETIC): share of initial misconceptions still held after 4×8 items — random+generic 58.4%, random+named 32.2%, EIG+generic 27.4%, **EIG+named 5.5%**, oracle 1.1%. Pessimistic setting (naming no better): EIG 28.0% vs random 58.4%.
 - **Docs:** landscape.md, components.md, 12 per-component research docs, ADR 001 (six hats, thesis/antithesis/synthesis; independent adversarial review pending), deliverables (abstract v1 + architecture), tutor CLI demo across sessions.
 - **Network:** GitHub Models stub (see correction above). Azure OpenAI provisioned 06:40; connections aborted until 07:06, then OK.
+
+### 2026-10-04 07:50 IST — LLM baselines, autoresearch, honest re-scoring
+- Azure OpenAI reachable from 07:06. `python -m eval.run_diagnosis --llm-n 129` (with `AZURE_OPENAI_ENDPOINT` set; responses cached in `.cache/llm`): on the real 5-category set, **GPT-4.1-mini zero-shot 86.0%** (95% bootstrap CI 79.8–91.5); exec→LLM hybrid 86.8% (81.4–92.2); exec→TF-IDF 45.7%; TF-IDF 38.0%; majority 30.2%. The exec path is right 21/21 when it fires (LLM 20/21 on those).
+- `python -m eval.run_generation --n 40 --llm-n 8`: LLM-only generation 40/40 valid, targeted and discriminative on this simple pack.
+- **Lesson:** on simple arithmetic the LLM baseline is strong. Re-scored the selection memo (winnability 4→3, innovation 4→3); updated the abstract's novelty to claim exactness, competitor separation, set-level tracing + information gain, and slip abstention — not accuracy over the LLM.
+- Autoresearch C3 (`components/bugs/autoresearch/`): baseline reproduction_dev 0.1552 → iter 1 (prefer key-matching segment) neutral, reverted → iter 2 (trailing "=?", leading minus before a bracket) **0.1897**, kept; holdout unchanged 0.1690; guards OK.
+- Abstract v1 trimmed to ≤900 words (by word count).
+

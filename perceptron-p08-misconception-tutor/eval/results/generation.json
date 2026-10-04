@@ -10,7 +10,7 @@
    "mean_bugs_firing": 1,
    "unique_items": 40,
    "tries_per_item": 2.425,
-   "ms_per_item": 2.0256468749721535,
+   "ms_per_item": 57.96449894987745,
    "example": "Work out 7 \u2212 (\u22125) \u00d7 6"
   },
   "LTR/discriminative": {
@@ -22,7 +22,7 @@
    "mean_bugs_firing": 1.825,
    "unique_items": 40,
    "tries_per_item": 1.225,
-   "ms_per_item": 0.4432770743733272,
+   "ms_per_item": 19.94820937543409,
    "example": "Work out (\u22125)\u00b2 \u2212 (\u22128) \u00d7 2"
   },
   "SQ_DOUBLE/isolated": {
@@ -34,7 +34,7 @@
    "mean_bugs_firing": 1,
    "unique_items": 40,
    "tries_per_item": 6.375,
-   "ms_per_item": 0.9672301996033639,
+   "ms_per_item": 19.6838989504613,
    "example": "Work out 5\u00b2 + 3"
   },
   "SQ_DOUBLE/discriminative": {
@@ -46,7 +46,7 @@
    "mean_bugs_firing": 1.975,
    "unique_items": 40,
    "tries_per_item": 1.025,
-   "ms_per_item": 0.6983541505178437,
+   "ms_per_item": 28.677805200277362,
    "example": "Work out 8 \u2212 (\u22122) \u00d7 5\u00b2"
   },
   "SUB_NEG/isolated": {
@@ -58,7 +58,7 @@
    "mean_bugs_firing": 1,
    "unique_items": 40,
    "tries_per_item": 1.35,
-   "ms_per_item": 0.37203542451607063,
+   "ms_per_item": 20.2028718762449,
    "example": "Work out 8 \u2212 (\u22122)"
   },
   "SUB_NEG/discriminative": {
@@ -70,7 +70,7 @@
    "mean_bugs_firing": 1,
    "unique_items": 40,
    "tries_per_item": 1.35,
-   "ms_per_item": 0.3146083254250698,
+   "ms_per_item": 29.59911667421693,
    "example": "Work out 8 \u2212 (\u22122)"
   },
   "FRAC_ADD/isolated": {
@@ -82,7 +82,7 @@
    "mean_bugs_firing": 1,
    "unique_items": 40,
    "tries_per_item": 2.1,
-   "ms_per_item": 0.42642710031941533,
+   "ms_per_item": 47.02057707472704,
    "example": "Work out (1/8 + 5/6) \u00d7 9"
   },
   "FRAC_ADD/discriminative": {
@@ -94,7 +94,7 @@
    "mean_bugs_firing": 1,
    "unique_items": 40,
    "tries_per_item": 2.1,
-   "ms_per_item": 0.41735832492122427,
+   "ms_per_item": 42.46381039993139,
    "example": "Work out (1/8 + 5/6) \u00d7 9"
   },
   "NEG_TIMES_NEG/isolated": {
@@ -106,7 +106,7 @@
    "mean_bugs_firing": 1,
    "unique_items": 40,
    "tries_per_item": 3.125,
-   "ms_per_item": 0.466691650217399,
+   "ms_per_item": 23.973052074143197,
    "example": "Work out (\u22123) \u00d7 (\u22128) + 11"
   },
   "NEG_TIMES_NEG/discriminative": {
@@ -118,7 +118,7 @@
    "mean_bugs_firing": 1.8,
    "unique_items": 40,
    "tries_per_item": 1.125,
-   "ms_per_item": 0.31058229942573234,
+   "ms_per_item": 22.49401147419121,
    "example": "Work out (\u22125)\u00b2 \u2212 (\u22122) \u00d7 6"
   }
  },
@@ -126,33 +126,69 @@
   "model": "openai/gpt-4.1-mini",
   "per_code": {
    "LTR": {
-    "calls": 0,
-    "parse_ok": 0,
-    "key_correct": 0,
-    "target_fires": 0,
-    "llm_bug_answer_matches": 0,
-    "valid_targeted": 0,
-    "discriminative": 0
+    "calls": 8,
+    "parse_ok": 8,
+    "key_correct": 8,
+    "target_fires": 8,
+    "llm_bug_answer_matches": 8,
+    "valid_targeted": 8,
+    "discriminative": 8
+   },
+   "SQ_DOUBLE": {
+    "calls": 8,
+    "parse_ok": 8,
+    "key_correct": 8,
+    "target_fires": 8,
+    "llm_bug_answer_matches": 8,
+    "valid_targeted": 8,
+    "discriminative": 8
+   },
+   "SUB_NEG": {
+    "calls": 8,
+    "parse_ok": 8,
+    "key_correct": 8,
+    "target_fires": 8,
+    "llm_bug_answer_matches": 8,
+    "valid_targeted": 8,
+    "discriminative": 8
+   },
+   "FRAC_ADD": {
+    "calls": 8,
+    "parse_ok": 8,
+    "key_correct": 8,
+    "target_fires": 8,
+    "llm_bug_answer_matches": 8,
+    "valid_targeted": 8,
+    "discriminative": 8
+   },
+   "NEG_TIMES_NEG": {
+    "calls": 8,
+    "parse_ok": 8,
+    "key_correct": 8,
+    "target_fires": 8,
+    "llm_bug_answer_matches": 8,
+    "valid_targeted": 8,
+    "discriminative": 8
    }
   },
   "totals": {
-   "calls": 0,
-   "parse_ok": 0,
-   "key_correct": 0,
-   "target_fires": 0,
-   "llm_bug_answer_matches": 0,
-   "valid_targeted": 0,
-   "discriminative": 0
+   "calls": 40,
+   "parse_ok": 40,
+   "key_correct": 40,
+   "target_fires": 40,
+   "llm_bug_answer_matches": 40,
+   "valid_targeted": 40,
+   "discriminative": 40
   },
   "rates": {
-   "parse_ok": null,
-   "key_correct": null,
-   "target_fires": null,
-   "llm_bug_answer_matches": null,
-   "valid_targeted": null,
-   "discriminative": null
+   "parse_ok": 1.0,
+   "key_correct": 1.0,
+   "target_fires": 1.0,
+   "llm_bug_answer_matches": 1.0,
+   "valid_targeted": 1.0,
+   "discriminative": 1.0
   },
   "failure_examples": [],
-  "stopped_early": "unparseable response: HTTP 200 text/plain"
+  "stopped_early": null
  }
 }

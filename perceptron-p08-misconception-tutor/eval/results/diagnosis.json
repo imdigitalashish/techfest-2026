@@ -1,5 +1,5 @@
 {
- "command": "python -m eval.run_diagnosis --llm-n 60",
+ "command": "python -m eval.run_diagnosis --llm-n 129",
  "A_open_set": {
   "n_test": 904,
   "n_train": 3466,
@@ -45,10 +45,10 @@
   "exec_reproduced_rate_given_parsed": 0.39622641509433965,
   "exec_wrong_attribution": 0.0,
   "tfidf_acc": 0.3798449612403101,
-  "llm_acc": null,
-  "llm_n": 0,
-  "hybrid_acc": null,
-  "tfidf_acc_on_llm_subset": null,
+  "llm_acc": 0.8604651162790697,
+  "llm_n": 129,
+  "hybrid_acc": 0.8682170542635659,
+  "tfidf_acc_on_llm_subset": 0.3798449612403101,
   "negatives_parsed_with_key_agreement": 165,
   "negatives_false_claim_rate": 0.01818181818181818,
   "negatives_false_claims": [
@@ -75,8 +75,8 @@
    }
   ],
   "llm": {
-   "calls": 0,
-   "stopped_early": "unparseable response: HTTP 200 text/plain"
+   "calls": 129,
+   "stopped_early": null
   },
   "rows": [
    {
@@ -86,7 +86,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "27_B",
@@ -95,7 +96,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "38_B",
@@ -104,7 +106,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "FRAC_ADD",
-    "hybrid": null
+    "llm": "FRAC_ADD",
+    "hybrid": "FRAC_ADD"
    },
    {
     "qid": "65_B",
@@ -113,7 +116,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "67_D",
@@ -122,7 +126,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "86_A",
@@ -133,6 +138,7 @@
      "FRAC_ADD"
     ],
     "tfidf": "SUB_NEG",
+    "llm": "FRAC_ADD",
     "hybrid": "FRAC_ADD"
    },
    {
@@ -144,6 +150,7 @@
      "FRAC_ADD"
     ],
     "tfidf": "SUB_NEG",
+    "llm": "FRAC_ADD",
     "hybrid": "FRAC_ADD"
    },
    {
@@ -153,7 +160,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "119_A",
@@ -162,7 +170,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "136_A",
@@ -171,7 +180,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "139_B",
@@ -180,7 +190,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "189_D",
@@ -189,7 +200,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "202_D",
@@ -198,7 +210,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "FRAC_ADD",
+    "hybrid": "FRAC_ADD"
    },
    {
     "qid": "233_A",
@@ -207,7 +220,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "254_B",
@@ -216,7 +230,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "FRAC_ADD",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "270_D",
@@ -225,7 +240,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "290_C",
@@ -234,7 +250,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "290_D",
@@ -243,7 +260,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "295_B",
@@ -252,7 +270,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "296_D",
@@ -261,7 +280,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "304_A",
@@ -270,7 +290,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "306_A",
@@ -279,7 +300,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "328_B",
@@ -290,6 +312,7 @@
      "FRAC_ADD"
     ],
     "tfidf": "FRAC_ADD",
+    "llm": "FRAC_ADD",
     "hybrid": "FRAC_ADD"
    },
    {
@@ -299,7 +322,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "329_D",
@@ -308,7 +332,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "351_B",
@@ -317,7 +342,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "354_B",
@@ -326,7 +352,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "361_D",
@@ -335,7 +362,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "426_B",
@@ -346,6 +374,7 @@
      "SQ_DOUBLE"
     ],
     "tfidf": "SUB_NEG",
+    "llm": "SQ_DOUBLE",
     "hybrid": "SQ_DOUBLE"
    },
    {
@@ -355,7 +384,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "435_A",
@@ -364,7 +394,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "435_C",
@@ -373,7 +404,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "466_B",
@@ -382,7 +414,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "511_B",
@@ -391,7 +424,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "FRAC_ADD",
-    "hybrid": null
+    "llm": "FRAC_ADD",
+    "hybrid": "FRAC_ADD"
    },
    {
     "qid": "525_C",
@@ -400,7 +434,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "FRAC_ADD",
-    "hybrid": null
+    "llm": "FRAC_ADD",
+    "hybrid": "FRAC_ADD"
    },
    {
     "qid": "534_A",
@@ -409,7 +444,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "534_B",
@@ -418,7 +454,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "534_C",
@@ -427,7 +464,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "550_B",
@@ -436,7 +474,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "564_B",
@@ -445,7 +484,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "582_C",
@@ -454,7 +494,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "604_B",
@@ -463,7 +504,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "644_B",
@@ -472,7 +514,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "655_C",
@@ -481,7 +524,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "686_C",
@@ -490,7 +534,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "695_C",
@@ -501,6 +546,7 @@
      "LTR"
     ],
     "tfidf": "LTR",
+    "llm": "LTR",
     "hybrid": "LTR"
    },
    {
@@ -510,7 +556,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "FRAC_ADD",
+    "hybrid": "FRAC_ADD"
    },
    {
     "qid": "727_C",
@@ -519,7 +566,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "728_A",
@@ -528,7 +576,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "728_B",
@@ -537,7 +586,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "728_C",
@@ -546,7 +596,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "746_A",
@@ -555,7 +606,8 @@
     "key_agrees": true,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "789_A",
@@ -566,6 +618,7 @@
      "FRAC_ADD"
     ],
     "tfidf": "SUB_NEG",
+    "llm": "FRAC_ADD",
     "hybrid": "FRAC_ADD"
    },
    {
@@ -577,6 +630,7 @@
      "FRAC_ADD"
     ],
     "tfidf": "SUB_NEG",
+    "llm": "FRAC_ADD",
     "hybrid": "FRAC_ADD"
    },
    {
@@ -588,6 +642,7 @@
      "SQ_DOUBLE"
     ],
     "tfidf": "SQ_DOUBLE",
+    "llm": "SQ_DOUBLE",
     "hybrid": "SQ_DOUBLE"
    },
    {
@@ -599,6 +654,7 @@
      "SUB_NEG"
     ],
     "tfidf": "SUB_NEG",
+    "llm": "SUB_NEG",
     "hybrid": "SUB_NEG"
    },
    {
@@ -608,7 +664,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "858_A",
@@ -617,7 +674,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "865_B",
@@ -626,7 +684,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "867_D",
@@ -635,7 +694,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "872_C",
@@ -646,6 +706,7 @@
      "SQ_DOUBLE"
     ],
     "tfidf": "SQ_DOUBLE",
+    "llm": "SQ_DOUBLE",
     "hybrid": "SQ_DOUBLE"
    },
    {
@@ -655,7 +716,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "897_A",
@@ -664,7 +726,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "899_B",
@@ -673,7 +736,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "919_A",
@@ -682,7 +746,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "919_C",
@@ -691,7 +756,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "925_C",
@@ -700,7 +766,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "936_C",
@@ -709,7 +776,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "972_B",
@@ -718,7 +786,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1032_A",
@@ -729,6 +798,7 @@
      "LTR"
     ],
     "tfidf": "LTR",
+    "llm": "LTR",
     "hybrid": "LTR"
    },
    {
@@ -738,7 +808,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "1053_B",
@@ -747,7 +818,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "1055_A",
@@ -756,7 +828,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "FRAC_ADD",
-    "hybrid": null
+    "llm": "FRAC_ADD",
+    "hybrid": "FRAC_ADD"
    },
    {
     "qid": "1165_D",
@@ -765,7 +838,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "1195_B",
@@ -776,6 +850,7 @@
      "SQ_DOUBLE"
     ],
     "tfidf": "LTR",
+    "llm": "LTR",
     "hybrid": "SQ_DOUBLE"
    },
    {
@@ -785,7 +860,8 @@
     "key_agrees": true,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1229_C",
@@ -794,7 +870,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1294_B",
@@ -805,6 +882,7 @@
      "SUB_NEG"
     ],
     "tfidf": "SUB_NEG",
+    "llm": "SUB_NEG",
     "hybrid": "SUB_NEG"
    },
    {
@@ -814,7 +892,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1315_A",
@@ -823,7 +902,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "1343_C",
@@ -834,6 +914,7 @@
      "LTR"
     ],
     "tfidf": "LTR",
+    "llm": "LTR",
     "hybrid": "LTR"
    },
    {
@@ -843,7 +924,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1373_B",
@@ -852,7 +934,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "1383_C",
@@ -861,7 +944,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "1385_B",
@@ -870,7 +954,8 @@
     "key_agrees": true,
     "matched": [],
     "tfidf": "FRAC_ADD",
-    "hybrid": null
+    "llm": "FRAC_ADD",
+    "hybrid": "FRAC_ADD"
    },
    {
     "qid": "1386_C",
@@ -879,7 +964,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "FRAC_ADD",
+    "hybrid": "FRAC_ADD"
    },
    {
     "qid": "1390_B",
@@ -890,6 +976,7 @@
      "LTR"
     ],
     "tfidf": "SUB_NEG",
+    "llm": "LTR",
     "hybrid": "LTR"
    },
    {
@@ -899,7 +986,8 @@
     "key_agrees": true,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "FRAC_ADD",
+    "hybrid": "FRAC_ADD"
    },
    {
     "qid": "1402_C",
@@ -908,7 +996,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1402_D",
@@ -917,7 +1006,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1430_D",
@@ -928,6 +1018,7 @@
      "FRAC_ADD"
     ],
     "tfidf": "SUB_NEG",
+    "llm": "FRAC_ADD",
     "hybrid": "FRAC_ADD"
    },
    {
@@ -939,6 +1030,7 @@
      "LTR"
     ],
     "tfidf": "NEG_TIMES_NEG",
+    "llm": "LTR",
     "hybrid": "LTR"
    },
    {
@@ -948,7 +1040,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1456_B",
@@ -957,7 +1050,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1463_B",
@@ -966,7 +1060,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "1463_D",
@@ -975,7 +1070,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "1465_B",
@@ -986,6 +1082,7 @@
      "LTR"
     ],
     "tfidf": "LTR",
+    "llm": "LTR",
     "hybrid": "LTR"
    },
    {
@@ -995,7 +1092,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1481_C",
@@ -1004,7 +1102,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1488_B",
@@ -1013,7 +1112,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1491_A",
@@ -1022,7 +1122,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "1493_C",
@@ -1031,7 +1132,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1496_A",
@@ -1040,7 +1142,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1508_C",
@@ -1051,6 +1154,7 @@
      "LTR"
     ],
     "tfidf": "LTR",
+    "llm": "LTR",
     "hybrid": "LTR"
    },
    {
@@ -1060,7 +1164,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1512_D",
@@ -1069,7 +1174,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1526_C",
@@ -1078,7 +1184,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "FRAC_ADD",
-    "hybrid": null
+    "llm": "FRAC_ADD",
+    "hybrid": "FRAC_ADD"
    },
    {
     "qid": "1529_B",
@@ -1087,7 +1194,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1533_C",
@@ -1096,7 +1204,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "1540_A",
@@ -1105,7 +1214,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "1545_C",
@@ -1114,7 +1224,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1547_B",
@@ -1123,7 +1234,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1583_A",
@@ -1132,7 +1244,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1599_C",
@@ -1141,7 +1254,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1615_B",
@@ -1150,7 +1264,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "NEG_TIMES_NEG",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1652_C",
@@ -1159,7 +1274,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "SUB_NEG",
+    "hybrid": "SUB_NEG"
    },
    {
     "qid": "1699_A",
@@ -1168,7 +1284,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1706_B",
@@ -1177,7 +1294,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1718_A",
@@ -1186,7 +1304,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "1728_B",
@@ -1197,6 +1316,7 @@
      "LTR"
     ],
     "tfidf": "SUB_NEG",
+    "llm": "LTR",
     "hybrid": "LTR"
    },
    {
@@ -1206,7 +1326,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "1757_D",
@@ -1215,7 +1336,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "LTR",
+    "hybrid": "LTR"
    },
    {
     "qid": "1758_B",
@@ -1224,7 +1346,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "LTR",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1783_B",
@@ -1233,7 +1356,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1783_C",
@@ -1242,7 +1366,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SQ_DOUBLE",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1804_C",
@@ -1251,7 +1376,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1844_D",
@@ -1260,7 +1386,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "NEG_TIMES_NEG",
+    "hybrid": "NEG_TIMES_NEG"
    },
    {
     "qid": "1848_B",
@@ -1269,7 +1396,8 @@
     "key_agrees": false,
     "matched": [],
     "tfidf": "SUB_NEG",
-    "hybrid": null
+    "llm": "SQ_DOUBLE",
+    "hybrid": "SQ_DOUBLE"
    },
    {
     "qid": "1866_D",
@@ -1280,6 +1408,7 @@
      "LTR"
     ],
     "tfidf": "LTR",
+    "llm": "LTR",
     "hybrid": "LTR"
    }
   ]

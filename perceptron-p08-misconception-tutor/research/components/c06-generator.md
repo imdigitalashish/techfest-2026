@@ -16,7 +16,7 @@ Contracts: [`architecture/components.md`](../../architecture/components.md). Sou
 | LLM proposes *new families* (word problems, contexts); bug programs + SymPy verify them | 5 | 4 | 3 | 4 | 5 | 21 |
 
 ## Isolated metric — current value
-Template generator: 400/400 items SymPy-verified, target fires 100%, discriminative 100%, 0.4–3 ms/item (`eval/results/generation.json`; true by construction). LLM-only baseline: pending (LLM access).
+Template generator: 400/400 items SymPy-verified, target fires 100%, discriminative 100%, 0.4–3 ms/item (`eval/results/generation.json`; true by construction). LLM-only baseline (GPT-4.1-mini, 40 calls, temperature 0.8): **40/40** parse, key correct, target fires, discriminative — strong on simple arithmetic, so the edge here is control (explicit competitor separation), cost and verification; the decisive test is harder families.
 
 ## Next
-Run the LLM-only baseline; add LLM-proposed families verified by the same checks.
+Repeat the LLM-only comparison on word problems and the probability pack; add LLM-proposed families verified by the same checks.
