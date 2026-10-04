@@ -1,6 +1,6 @@
 # Fact-check table — every cited number used in the Round-1 deliverables
 
-> Owner: project lead. Rule (enforced by [`../eval/check_docs.py`](../eval/check_docs.py)): a deliverable may cite a fact only as `{{f:ID|text}}`, and every number in `text` must appear in that row below. Numbers from our own runs use `{{r:alias}}` instead (aliases in [`../eval/numbers.py`](../eval/numbers.py)).
+> Owner: project lead. Rule (enforced by [`../eval/check_docs.py`](../eval/check_docs.py)): a deliverable may cite a fact only as `{{f:ID|text}}`, and every number in `text` must appear in that row below. Numbers from our own runs use `{{r:alias}}` instead (aliases in [`../eval/doc_numbers.py`](../eval/doc_numbers.py)).
 >
 > **Opened by:** "lead" = opened by the project lead on 2026-10-04 (IST time window shown). "research" = opened by a research child session on 2026-10-04; the exact quote and context live in the research file named. **Derived** rows (D…) are our arithmetic on fact rows, shown with the formula.
 
