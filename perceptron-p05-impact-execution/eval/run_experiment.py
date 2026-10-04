@@ -33,7 +33,7 @@ def run_seed(job):
     from execution_agent.policies import make_policy
     from sim_env.twins import run_null, run_treatment
     from sim_env.world import ns_at
-    from tca import decompose_is, impact_path, implementation_shortfall
+    from tca import decompose_fill_time, decompose_is, impact_path, implementation_shortfall, pre_window_exact
 
     seed, specs, qty, out_dir, rng_sync = job
     c = CFG
@@ -56,13 +56,16 @@ def run_seed(job):
         rec = tr.agent_record
         is_ = implementation_shortfall(rec["fills"], arrival, c["side"])
         dec = decompose_is(rec["fills"], [d[0] for d in rec["decisions"]], arrival, c["side"], tr, null)
+        dec.update(decompose_fill_time(rec["fills"], [d[0] for d in rec["decisions"]], arrival, c["side"], tr))
         path = impact_path(tr, null, grid, c["side"])
         pre_eq = bool(np.allclose(tr.mid_at(pre_grid), null.mid_at(pre_grid), equal_nan=True))
         hold = {f"dpos_{k}": tr.holdings_by_type.get(k, 0) - null.holdings_by_type.get(k, 0)
                 for k in set(tr.holdings_by_type) | set(null.holdings_by_type)}
         row = dict(seed=seed, label=label, qty=qty, rng_sync=rng_sync, filled=rec["filled"], n_fills=len(rec["fills"]),
                    arrival=arrival, arrival_treat=float(tr.mid_at(np.array([start_ns]))[0]),
-                   pre_window_identical=pre_eq, window_volume_null=float(slot_vol.sum()),
+                   pre_window_identical=pre_eq, pre_window_exact=pre_window_exact(tr, null, start_ns),
+                   arrival_exact=bool(arrival == float(tr.mid_at(np.array([start_ns]))[0])),
+                   window_volume_null=float(slot_vol.sum()),
                    impact_end_cents=float(path[1200]), impact_post5_cents=float(path[1500]),
                    impact_post10_cents=float(path[1800]), impact_mean_cents=float(np.nanmean(path[:1201])),
                    wall_s=round(time.time() - t1, 2), avg_px=is_["avg_px"], is_cents=is_["is_cents"], is_bps=is_["is_bps"], **dec, **hold)

@@ -38,3 +38,19 @@ Slippage for a SELL = (exogenous drift) + (our own displacement of the mid) + (s
 ## Consequences
 - Next build items: `rng_sync="per_wakeup"` in C1/C2 (patch each background agent's `wakeup` to re-key `random_state` from (seed, agent_id, wakeup_count)); NSR measurement; C4 trained against synchronised twins; the C10 attribution plot.
 - Evaluation always reports IS **decomposed** (drift / own impact / instant) and paired ΔIS with 95% CIs.
+
+## Addendum, 2026-10-04 13:19 IST: what the evidence and two cross-model reviews changed
+Sources: `eval/preregistration.md` (E7–E12 and amendment A1); `reviews/2026-10-04-*-decisions.md` (gpt-6-sol: 7 issues accepted; gpt-6-astra: 16 accepted).
+- **The spike as an instrument holds, with narrower wording.**
+  - Synchronised twins reduced paired dispersion about 6× (E4) and paired-CI width about 7.7× (E3 vs E5).
+  - That is a *common-random-numbers coupling*. The counterfactual is conditional on the simulator and the coupling. Whether the coupling preserves market statistics is tested in E11.
+  - "Bit-identical" is withdrawn: the committed check compares 1-s sampled mids with ≈1¢ tolerance. An exact event-level check is used from E12 on.
+- **The ghost book is renamed the "counterfactual-mid estimator" and is unresolved.**
+  - E9, on the registered split, gives held-out R² +0.15 (TWAP) and −0.02 (random slicing).
+  - For a SELL the no-order mid = observed mid + Î (an earlier diagram had the sign wrong).
+- **The policy story changes.**
+  - The E6 winner is "propagator-QP schedule + legacy front-loading, market orders". The "brake while displaced" mechanism never fired (code review).
+  - E8 (validation) did not reproduce E6; E10 (strict replication, n = 400) decides.
+  - E7 found ABIDES rmsc04 impact near-linear (resolved-size slope 0.87 [0.57, 1.35]) and fully transient. That is a first-principles reason why scheduling gains over TWAP are tiny in this simulator.
+- **Correction to "First principles" above:** the sentence saying only the last two terms are controllable is withdrawn (astra #5). Drift *exposure* depends on the policy's timing even though the null path is exogenous. The three terms are decision-time accounting components, not causal mechanisms.
+- **Revised spike priority:** (1) a realism gate (recalibrate the agent mix toward concave, partly permanent impact, or use MarS) before any optimisation claim; (2) the coupling's market-law check (E11); (3) the estimator. The touch-limit tactic is the only robust lever measured so far, and it is offset by timing losses (E12 quantifies how).

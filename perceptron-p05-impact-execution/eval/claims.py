@@ -51,6 +51,13 @@ def g_h1(c):
     fm, flo, fhi, _ = _paired(df, "IA_full", "TWAP", "is_bps")
     c["touch_dis"], c["touch_dis_lo"], c["touch_dis_hi"] = f"{fm:+.3f}", f"{flo:+.3f}", f"{fhi:+.3f}"
     c["twap_controllable"] = f"{O['TWAP'].mean() + I['TWAP'].mean():.2f}"
+    px = float(df.arrival.mean())                # cents per share (≈ 100,000)
+    qty = float(df.qty.iloc[0])
+    cents = -m * 1e-4 * px                       # ¢/share saved
+    c["h1_cents"], c["h1_usd"] = f"{cents:.2f}", f"{cents * qty / 100:.0f}"
+    c["h1_usd_lo"], c["h1_usd_hi"] = f"{-hi * 1e-4 * px * qty / 100:.0f}", f"{-lo * 1e-4 * px * qty / 100:.0f}"
+    c["parent_usd_m"] = f"{px * qty / 100 / 1e6:.0f}"
+    c["h1_ticks"] = f"{cents:.2f}"                # tick = 1¢
     c["h1_share_of_controllable"] = f"{100 * -m / (O['TWAP'].mean() + I['TWAP'].mean()):.0f}"
 
 

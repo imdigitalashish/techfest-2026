@@ -13,8 +13,8 @@ from execution_agent.policies import DecisionContext, ImpactAwarePolicy, TwapPol
 class _W:  # minimal WorldResult stand-in: piecewise-constant mid
     def __init__(self, t, mid):
         self.t, self.m = np.asarray(t), np.asarray(mid, float)
-    def mid_at(self, q):
-        i = np.searchsorted(self.t, np.asarray(q), side="right") - 1
+    def mid_at(self, q, strictly_before=False):
+        i = np.searchsorted(self.t, np.asarray(q), side="left" if strictly_before else "right") - 1
         return self.m[np.clip(i, 0, len(self.m) - 1)]
 
 
@@ -78,3 +78,17 @@ def _excess_at_steady_state(ref_mode):
 def test_feedback_reference_modes():
     assert abs(_excess_at_steady_state("pre_trade")) < 0.01
     assert abs(_excess_at_steady_state("post_trade") - (np.exp(-0.5) - 1)) < 0.01  # documented legacy bias
+
+
+def test_fill_time_split_sums_to_instant():
+    from tca.metrics import decompose_fill_time
+    rs = np.random.RandomState(1)
+    t = np.arange(0, 200)
+    twin = _W(t, 100000 + rs.randn(200).cumsum())
+    treat = _W(t, twin.m - np.linspace(0, 6, 200))
+    dts = [10, 60, 110, 160]
+    fills = [(d + 7, int(treat.mid_at([d + 3])[0] - 1), 50) for d in dts] + [(d + 1, int(treat.mid_at([d])[0]) - 2, 25) for d in dts]
+    arr = 100000.0
+    dec = decompose_is(fills, dts, arr, "SELL", treat, twin)
+    ft = decompose_fill_time(fills, dts, arr, "SELL", treat)
+    assert abs(dec["instant_bps"] - (ft["delay_bps"] + ft["at_fill_bps"])) < 1e-9

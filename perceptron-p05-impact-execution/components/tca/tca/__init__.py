@@ -1,1 +1,2 @@
-from .metrics import decompose_is, implementation_shortfall, impact_path  # noqa: F401
+from .metrics import (decompose_fill_time, decompose_is, impact_path,  # noqa: F401
+                      implementation_shortfall, pre_window_exact)

@@ -12,6 +12,7 @@ from claims import compute  # noqa: E402
 MEMO = ("<!-- memo:begin (rendered from deliverables/selection-memo.template.md; edit the template) -->",
         "<!-- memo:end -->")
 DOCS = [("deliverables/round1-abstract.template.md", "deliverables/round1-abstract.md", None),
+        ("deliverables/architecture.template.md", "deliverables/architecture.md", None),
         ("deliverables/selection-memo.template.md", "thought_node.md", MEMO)]
 PH = re.compile(r"\{\{([a-zA-Z0-9_]+)\}\}")
 

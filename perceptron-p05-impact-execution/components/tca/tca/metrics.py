@@ -52,6 +52,38 @@ def decompose_is(fills, decision_times: Sequence[int], arrival_mid: float, side:
                 instant_bps=float(f * (w * inst).sum()))
 
 
+def decompose_fill_time(fills, decision_times: Sequence[int], arrival_mid: float, side: str, treat) -> Dict:
+    """Split the decision-time cost term into delay + at-fill cost (reviews sol #2, astra #5).
+
+    delay   = s*(m(t_d) - m(t_f-))   mid move between decision and fill (passive fills: timing / adverse selection)
+    at_fill = s*(m(t_f-) - p)         execution price vs the mid just before the fill
+    delay + at_fill = s*(m(t_d) - p), the "instant" term of decompose_is.
+    """
+    if not fills:
+        return dict(delay_bps=np.nan, at_fill_bps=np.nan)
+    s = _sign(side)
+    dts = np.asarray(sorted(decision_times), dtype=np.int64)
+    ft = np.array([f[0] for f in fills], dtype=np.int64)
+    fp = np.array([f[1] for f in fills], dtype=float)
+    fq = np.array([f[2] for f in fills], dtype=float)
+    k = np.clip(np.searchsorted(dts, ft, side="right") - 1, 0, len(dts) - 1)
+    md = treat.mid_at(dts[k])
+    mf = treat.mid_at(ft, strictly_before=True)
+    w = fq / fq.sum()
+    f = 1e4 / arrival_mid
+    return dict(delay_bps=float(f * (w * s * (md - mf)).sum()), at_fill_bps=float(f * (w * s * (mf - fp)).sum()))
+
+
+def pre_window_exact(treat, twin, start_ns: int) -> bool:
+    """Event-level identity of the logged top-of-book before start_ns (review sol #5, astra #4)."""
+    a, b = treat.t < start_ns, twin.t < start_ns
+    if a.sum() != b.sum():
+        return False
+    return bool(np.array_equal(treat.t[a], twin.t[b])
+                and all(np.array_equal(getattr(treat, x)[a], getattr(twin, x)[b], equal_nan=True)
+                        for x in ("bid", "ask", "bid_q", "ask_q")))
+
+
 def impact_path(treat, twin, grid_ns: np.ndarray, side: str) -> np.ndarray:
     """Own-impact path in cents, sign-adjusted (positive = price moved against us)."""
     return _sign(side) * (twin.mid_at(grid_ns) - treat.mid_at(grid_ns))
