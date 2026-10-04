@@ -46,7 +46,7 @@ DON'T SAY "we built a prototype". The software is built; the hardware is PLANNED
 <!--
 TIME 0:30–1:40 (70 s).
 SAY: "The 5-million-kilogram figure in the problem statement comes from The Ocean Cleanup's 2026 survey of Mumbai. An independent global model puts Malad Creek alone among the top 30 river mouths on Earth. The plastic reaches the sea through drains like these: about 186 outfalls, built for modest rain at low tide."
-LINE TO LAND: "In July 2026, BMC pulled 2,498.66 t of waste off seven beaches in 11 days. That is the sea handing back what the drains gave it."
+LINE TO LAND: "In July 2026, BMC pulled 2,498.66 t of waste off seven beaches in 11 days. BMC itself said the rain washed it from drains into the sea, and the high tides carried it back."
 DON'T SAY the tonnage was measured. It is a survey estimate. If asked, the model (Meijer) and the survey disagree on exact tonnage; both put Mumbai among the largest urban sources.
 -->
 
@@ -79,7 +79,7 @@ DON'T SAY "pickers never collect film". The source says companies disregard low-
 | **The Ocean Cleanup + Plastic Fischer** | Interceptors at Malad and Trombay creeks, MCGM permits, MPCB MoU | 61 to 92 tonnes a year expected from the first systems ≈ 1.2–1.8 % of the estimated leak |
 | **Plastic Fischer** (elsewhere) | Low-tech TrashBooms; kilograms verified by third-party software | 3.2 million kg, 71 booms, 8 sites in India and Indonesia |
 
-**The gap:** the booms have no sensors, clearance follows the contract rather than the tide or the rain, and payment follows claimed loads. In the Mithi desilting case, the SIT's FIR cites a ₹65.54 crore loss to BMC (allegations under investigation; The Hindu, May 2025).
+**The gap:** the booms have no sensors, clearance follows the contract rather than the tide or the rain, and payment follows claimed loads. In the Mithi desilting case, the police SIT's FIR alleges a wrongful loss to BMC of more than ₹65.54 crore (under investigation; The Hindu, May 2025).
 
 <!--
 TIME 2:30–3:30 (60 s).
