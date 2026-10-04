@@ -363,3 +363,19 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - **P2:** at round 6 the starter's manpages is above untuned (+0.076 to +0.140) and above AnchorLoRA's (−0.026 to −0.040).
   - **P3:** the unplug's own effect at round 6 is larger for the starter (+0.009 to +0.029 vs −0.002 to +0.008).
 - **Honest read, agreed with the builder:** most of the round-6 gap is the starter's domination, visible in the no-unplug ghost. The unplug's own effect is small but points the same way in all 5 seeds. The talk track must say exactly that.
+
+### 2026-10-04 21:10 IST — Lead: demo built; clean-checkout verification PASS; astra demo review started
+- **Builder delivered** `demo/` (main through c194e83; components/ untouched; 19 tests):
+  - `run.sh`: the replay works on system python3 alone; live mode needs `fetch.sh` once.
+  - `server.py`, `web/` (offline vanilla JS/SVG), `live_engine.py`, `validate.py` and `validation/`, `export_replay.py`, `render_fallback.py`.
+  - `fallback/`: PNG frames, a GIF and a recorded live run that replays in-page, labelled RECORDED.
+  - `smoke.sh`, `SCRIPT.md`, `README.md`.
+- **Lead verification from a clean clone of origin/main** (10209ca, `/tmp/p1_demo_verify`):
+  - `fetch.sh` succeeded offline from local caches.
+  - `smoke.sh` PASS in 67 s, including:
+    - a fresh live run bit-identical to the committed ghost and unplug runs;
+    - Flower path == in-process harness, max |diff| 0.0;
+    - the tablet unplugged in both grids, with AnchorLoRA reusing its last update at age 1/4.
+  - `run.sh` gave a first visual in 0.6 s.
+  - Browser check at 1440×900: tab 1 opens on the REAL committed 5-seed per-domain bars with Bonferroni whiskers, a paired-CI ledger and file·key provenance on every number. Tab 3's live panel carries the reduced-config, in-process-kill and pre-recorded-ghost labels. Server stopped by PID afterwards.
+- Started child session **"P1 review: demo (gpt-6-astra)"** (max): a hostile judge watching the demo. The builder stays idle for fixes.
