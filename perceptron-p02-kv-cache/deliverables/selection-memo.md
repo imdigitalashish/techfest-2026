@@ -58,17 +58,20 @@ The brief allows a team to submit only **one of Problem 1 or Problem 2**; this m
 - **P1** (federated LoRA, overall 4.2/5):
   - its spike *replicated* across 5 paired seeds with bit-identical reruns;
   - every one of its 5 domains improved (Bonferroni);
-  - it is cross-model reviewed (code 13/14, abstract 12/12 accepted);
+  - cross-model reviewed (code 13/14, abstract 12/12 accepted);
+  - its hostile-judge score was 3.40/5 (68/100) on abstract v2, before fixes;
   - but it is a systems recipe with close prior art (innovation 3/5).
-- **P2** has:
-  - a pre-registered primary that passed with a large effect, plus wins over NVIDIA's own reference implementations;
-  - a dramatic 10%-memory result whose status is given by R1 above;
-  - the more visual demo.
+- **P2** (overall 4.2/5 by the pre-fixed rules):
+  - the pre-registered primary passed and replicated on a second split (+0.40, +0.375), beating NVIDIA's own reference presses;
+  - an independent Azure reproduction matched 320/320 rows bit for bit;
+  - its final abstract scored 70/100 with the hostile judge, every number reproduced;
+  - a working demo, verified from a clean clone.
 
-  But its evidence base is smaller: one pre-registered split per question and 12 contexts. It also failed non-inferiority at its registered budget.
-- **Lead's recommendation:**
-  - If R1 replicated: P2 matches P1 on winnability and beats it on demo and innovation headroom, while P1 has the more mature evidence. That is a close call.
-  - If R1 did not replicate: **P1**.
+  Against it: it is **not near-lossless** at the registered 25% budget (−0.25 vs full). The striking 10% result matches the full cache on T1, but on T2 the edge over full is not established (E6: +0.08, CI includes 0). The evidence is 12 synthetic contexts per split, and the precision-first fix is exploratory.
+- **Lead's recommendation:** a close call.
+  - Choose **P2** if the panel values a visual, falsifiable systems result: replicated, pre-registered, reference baselines, a live demo.
+  - Choose **P1** if it values broader replication: 5 seeds, every domain improved.
+  - The tie-breaker is the team. P2 needs inference-systems skills (KV-cache internals, kernels); P1 needs distributed-training skills.
 
 ## One-line pitch
 <!-- p2:memo-pitch:begin -->
