@@ -1,98 +1,98 @@
 {
- "metric": "escaped_kg summed over 4 sites and the held-out monsoons (Jun-Sep 2024+2025); relative reduction vs P0 per Monte Carlo draw; median and 90% interval (p05-p95)",
+ "metric": "escaped_kg summed over 4 sites and the held-out monsoons (Jun-Sep 2024+2025); relative reduction vs P0 per sampled parameter setting (Monte Carlo draw); median and central 90% scenario range across sampled parameter settings (p05-p95; not a confidence interval)",
  "n_draws": 40,
  "seed": 20261004,
  "crew_budget": "2 crews x 8 h/day, all policies",
  "heldout_2024_2025": {
   "P0": {
-   "escaped_kg_median": 428336.0,
-   "escaped_kg_p05": 144443.0,
-   "escaped_kg_p95": 961537.0,
+   "escaped_kg_median": 427312.0,
+   "escaped_kg_p05": 144044.0,
+   "escaped_kg_p95": 959175.0,
    "reduction_vs_P0_median": 0.0,
    "reduction_vs_P0_p05": 0.0,
    "reduction_vs_P0_p95": 0.0,
    "draws_better_than_P0": 0,
-   "captured_fraction_median": 0.4612,
-   "cleared_kg_median": 435726.0,
-   "overflow_site_hours_median": 90.5,
-   "bypass_site_hours_median": 13.0,
+   "captured_fraction_median": 0.4589,
+   "cleared_kg_median": 438862.0,
+   "overflow_site_hours_median": 87.0,
+   "bypass_site_hours_median": 10.0,
    "crew_hours": 3904.0,
    "load_kg_median": 964381.0
   },
   "P1": {
-   "escaped_kg_median": 455001.0,
-   "escaped_kg_p05": 151216.0,
-   "escaped_kg_p95": 980895.0,
-   "reduction_vs_P0_median": -0.0314,
-   "reduction_vs_P0_p05": -0.0602,
-   "reduction_vs_P0_p95": -0.0001,
-   "draws_better_than_P0": 2,
-   "captured_fraction_median": 0.4437,
-   "cleared_kg_median": 424964.0,
-   "overflow_site_hours_median": 74.5,
-   "bypass_site_hours_median": 13.0,
+   "escaped_kg_median": 448760.0,
+   "escaped_kg_p05": 150020.0,
+   "escaped_kg_p95": 979493.0,
+   "reduction_vs_P0_median": -0.03,
+   "reduction_vs_P0_p05": -0.0574,
+   "reduction_vs_P0_p95": 0.0007,
+   "draws_better_than_P0": 3,
+   "captured_fraction_median": 0.4455,
+   "cleared_kg_median": 428278.0,
+   "overflow_site_hours_median": 70.5,
+   "bypass_site_hours_median": 10.0,
    "crew_hours": 3904.0,
    "load_kg_median": 964381.0
   },
   "P2": {
-   "escaped_kg_median": 411619.0,
-   "escaped_kg_p05": 147549.0,
-   "escaped_kg_p95": 917790.0,
-   "reduction_vs_P0_median": 0.0214,
-   "reduction_vs_P0_p05": -0.0149,
-   "reduction_vs_P0_p95": 0.1251,
+   "escaped_kg_median": 410977.0,
+   "escaped_kg_p05": 144559.0,
+   "escaped_kg_p95": 914316.0,
+   "reduction_vs_P0_median": 0.0195,
+   "reduction_vs_P0_p05": -0.0132,
+   "reduction_vs_P0_p95": 0.1254,
    "draws_better_than_P0": 28,
-   "captured_fraction_median": 0.4916,
-   "cleared_kg_median": 480425.0,
-   "overflow_site_hours_median": 87.0,
-   "bypass_site_hours_median": 13.0,
+   "captured_fraction_median": 0.4906,
+   "cleared_kg_median": 483638.0,
+   "overflow_site_hours_median": 88.0,
+   "bypass_site_hours_median": 10.0,
    "crew_hours": 3904.0,
    "load_kg_median": 964381.0
   }
  },
  "tuning_2019_2023": {
   "P0": {
-   "escaped_kg_median": 1121494.0,
-   "escaped_kg_p05": 380019.0,
-   "escaped_kg_p95": 2419938.0,
+   "escaped_kg_median": 1117061.0,
+   "escaped_kg_p05": 373144.0,
+   "escaped_kg_p95": 2412958.0,
    "reduction_vs_P0_median": 0.0,
    "reduction_vs_P0_p05": 0.0,
    "reduction_vs_P0_p95": 0.0,
    "draws_better_than_P0": 0,
-   "captured_fraction_median": 0.4432,
-   "cleared_kg_median": 1091391.0,
-   "overflow_site_hours_median": 249.5,
-   "bypass_site_hours_median": 158.0,
+   "captured_fraction_median": 0.4414,
+   "cleared_kg_median": 1104403.0,
+   "overflow_site_hours_median": 243.5,
+   "bypass_site_hours_median": 147.0,
    "crew_hours": 9760.0,
    "load_kg_median": 2407299.0
   },
   "P1": {
-   "escaped_kg_median": 1167738.0,
-   "escaped_kg_p05": 407874.0,
-   "escaped_kg_p95": 2474235.0,
-   "reduction_vs_P0_median": -0.0315,
-   "reduction_vs_P0_p05": -0.0588,
-   "reduction_vs_P0_p95": -0.0032,
-   "draws_better_than_P0": 1,
-   "captured_fraction_median": 0.4224,
-   "cleared_kg_median": 1054822.0,
-   "overflow_site_hours_median": 231.0,
-   "bypass_site_hours_median": 158.0,
+   "escaped_kg_median": 1151592.0,
+   "escaped_kg_p05": 400114.0,
+   "escaped_kg_p95": 2472754.0,
+   "reduction_vs_P0_median": -0.0305,
+   "reduction_vs_P0_p05": -0.0582,
+   "reduction_vs_P0_p95": -0.005,
+   "draws_better_than_P0": 2,
+   "captured_fraction_median": 0.4217,
+   "cleared_kg_median": 1057644.0,
+   "overflow_site_hours_median": 229.5,
+   "bypass_site_hours_median": 147.0,
    "crew_hours": 9760.0,
    "load_kg_median": 2407299.0
   },
   "P2": {
-   "escaped_kg_median": 1066698.0,
-   "escaped_kg_p05": 385340.0,
-   "escaped_kg_p95": 2314529.0,
-   "reduction_vs_P0_median": 0.0152,
-   "reduction_vs_P0_p05": -0.0111,
-   "reduction_vs_P0_p95": 0.1083,
-   "draws_better_than_P0": 30,
-   "captured_fraction_median": 0.4642,
-   "cleared_kg_median": 1177326.0,
-   "overflow_site_hours_median": 285.0,
-   "bypass_site_hours_median": 158.0,
+   "escaped_kg_median": 1063106.0,
+   "escaped_kg_p05": 379975.0,
+   "escaped_kg_p95": 2308130.0,
+   "reduction_vs_P0_median": 0.0143,
+   "reduction_vs_P0_p05": -0.0087,
+   "reduction_vs_P0_p95": 0.1028,
+   "draws_better_than_P0": 31,
+   "captured_fraction_median": 0.4668,
+   "cleared_kg_median": 1178599.0,
+   "overflow_site_hours_median": 284.0,
+   "bypass_site_hours_median": 147.0,
    "crew_hours": 9760.0,
    "load_kg_median": 2407299.0
   }
@@ -115,22 +115,143 @@
  },
  "tide_fit": {
   "mithi_mahim": {
-   "variance_explained": 0.9924,
-   "rmse_m": 0.079
+   "fit_period": [
+    "2022-11-23 00:00:00+00:00",
+    "2023-12-31 23:00:00+00:00"
+   ],
+   "variance_explained": 0.9949,
+   "rmse_m": 0.065,
+   "flat_keys_are": "in-sample fit residual (fit window); see out_of_sample_2024_2025",
+   "in_sample": {
+    "n_hours": 9696,
+    "rmse_m": 0.0651,
+    "variance_explained": 0.9949,
+    "bias_m": -0.0,
+    "label": "in-sample fit residual vs Open-Meteo Marine MODEL sea level (fit window)"
+   },
+   "out_of_sample_2024_2025": {
+    "n_hours": 14904,
+    "rmse_m": 0.0945,
+    "variance_explained": 0.9903,
+    "bias_m": 0.0305,
+    "period": [
+     "2024-01-01 00:00:00+00:00",
+     "2025-09-30 23:00:00+00:00"
+    ],
+    "label": "out-of-sample vs Open-Meteo Marine MODEL sea level (not a tide gauge); fit never saw these hours"
+   },
+   "out_of_sample_jjas_2024_2025": {
+    "n_hours": 5688,
+    "rmse_m": 0.1101,
+    "variance_explained": 0.9887,
+    "bias_m": 0.0547,
+    "label": "out-of-sample vs Open-Meteo Marine MODEL sea level (not a tide gauge); fit never saw these hours; Jun-Sep only"
+   }
   },
   "oshiwara_malad": {
-   "variance_explained": 0.9932,
-   "rmse_m": 0.078
+   "fit_period": [
+    "2022-11-23 00:00:00+00:00",
+    "2023-12-31 23:00:00+00:00"
+   ],
+   "variance_explained": 0.9954,
+   "rmse_m": 0.065,
+   "flat_keys_are": "in-sample fit residual (fit window); see out_of_sample_2024_2025",
+   "in_sample": {
+    "n_hours": 9696,
+    "rmse_m": 0.065,
+    "variance_explained": 0.9954,
+    "bias_m": -0.0,
+    "label": "in-sample fit residual vs Open-Meteo Marine MODEL sea level (fit window)"
+   },
+   "out_of_sample_2024_2025": {
+    "n_hours": 14904,
+    "rmse_m": 0.0934,
+    "variance_explained": 0.9913,
+    "bias_m": 0.0302,
+    "period": [
+     "2024-01-01 00:00:00+00:00",
+     "2025-09-30 23:00:00+00:00"
+    ],
+    "label": "out-of-sample vs Open-Meteo Marine MODEL sea level (not a tide gauge); fit never saw these hours"
+   },
+   "out_of_sample_jjas_2024_2025": {
+    "n_hours": 5688,
+    "rmse_m": 0.1079,
+    "variance_explained": 0.9901,
+    "bias_m": 0.0543,
+    "label": "out-of-sample vs Open-Meteo Marine MODEL sea level (not a tide gauge); fit never saw these hours; Jun-Sep only"
+   }
   },
   "dahisar_mouth": {
-   "variance_explained": 0.9933,
-   "rmse_m": 0.08
+   "fit_period": [
+    "2022-11-23 00:00:00+00:00",
+    "2023-12-31 23:00:00+00:00"
+   ],
+   "variance_explained": 0.9954,
+   "rmse_m": 0.067,
+   "flat_keys_are": "in-sample fit residual (fit window); see out_of_sample_2024_2025",
+   "in_sample": {
+    "n_hours": 9696,
+    "rmse_m": 0.0665,
+    "variance_explained": 0.9954,
+    "bias_m": -0.0,
+    "label": "in-sample fit residual vs Open-Meteo Marine MODEL sea level (fit window)"
+   },
+   "out_of_sample_2024_2025": {
+    "n_hours": 14904,
+    "rmse_m": 0.0953,
+    "variance_explained": 0.9914,
+    "bias_m": 0.0305,
+    "period": [
+     "2024-01-01 00:00:00+00:00",
+     "2025-09-30 23:00:00+00:00"
+    ],
+    "label": "out-of-sample vs Open-Meteo Marine MODEL sea level (not a tide gauge); fit never saw these hours"
+   },
+   "out_of_sample_jjas_2024_2025": {
+    "n_hours": 5688,
+    "rmse_m": 0.111,
+    "variance_explained": 0.99,
+    "bias_m": 0.055,
+    "label": "out-of-sample vs Open-Meteo Marine MODEL sea level (not a tide gauge); fit never saw these hours; Jun-Sep only"
+   }
   },
   "trombay_mahul": {
-   "variance_explained": 0.9924,
-   "rmse_m": 0.079
+   "fit_period": [
+    "2022-11-23 00:00:00+00:00",
+    "2023-12-31 23:00:00+00:00"
+   ],
+   "variance_explained": 0.9949,
+   "rmse_m": 0.065,
+   "flat_keys_are": "in-sample fit residual (fit window); see out_of_sample_2024_2025",
+   "in_sample": {
+    "n_hours": 9696,
+    "rmse_m": 0.0651,
+    "variance_explained": 0.9949,
+    "bias_m": -0.0,
+    "label": "in-sample fit residual vs Open-Meteo Marine MODEL sea level (fit window)"
+   },
+   "out_of_sample_2024_2025": {
+    "n_hours": 14904,
+    "rmse_m": 0.0945,
+    "variance_explained": 0.9903,
+    "bias_m": 0.0305,
+    "period": [
+     "2024-01-01 00:00:00+00:00",
+     "2025-09-30 23:00:00+00:00"
+    ],
+    "label": "out-of-sample vs Open-Meteo Marine MODEL sea level (not a tide gauge); fit never saw these hours"
+   },
+   "out_of_sample_jjas_2024_2025": {
+    "n_hours": 5688,
+    "rmse_m": 0.1101,
+    "variance_explained": 0.9887,
+    "bias_m": 0.0547,
+    "label": "out-of-sample vs Open-Meteo Marine MODEL sea level (not a tide gauge); fit never saw these hours; Jun-Sep only"
+   }
   }
  },
+ "tide_fit_note": "UTide fit on Open-Meteo Marine model sea level 2022-11-23..2023-12-31 only (no held-out-year data); P2 knobs were tuned on 2019-2023 with the superseded fit (2022-11..2025-09) and are kept unchanged",
  "reproduce": "cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run",
- "git_sha_at_run": "312eae6"
+ "git_sha_at_run": "ffe7d44"
 }

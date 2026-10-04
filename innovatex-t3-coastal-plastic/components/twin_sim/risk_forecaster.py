@@ -67,6 +67,7 @@ def season_forecast(year: int) -> dict:
     out["capacity_kg"] = p1["capacity_kg"]
     out["clear_rate"] = float(p1["clear_rate_kg_h"][0])
     out["t"] = ph["t"]
+    out["_state"] = {"stock": ph["stock"][:, 0], "q": ph["q"][:, 0], "tide": tide, "fcr": fcr, "p1": p1}
     _CACHE[year] = out
     return out
 
@@ -92,3 +93,49 @@ def site_forecasts(fc: dict, d: int, fill_obs: np.ndarray, site_ids: list) -> li
         provenance=C.Provenance(kind="model_output", source=SRC,
                                 notes="inputs: archived real NWP forecast + SIMULATED fill sensor"))
         for i, sid in enumerate(site_ids)]
+
+
+def horizon_forecasts(fc: dict, d: int, fill_obs: np.ndarray, site_ids: list, horizon: int,
+                      fc2: np.ndarray | None = None) -> list:
+    """Dashboard export (policies are unaffected). horizon 24: the policy forecaster above. horizon 48: hours 0-23
+    use precipitation_previous_day1 and hours 24-47 use precipitation_previous_day2 (predicted 48 h before valid
+    time), so every input was issued before 00 UTC of day d."""
+    if horizon == 24:
+        return site_forecasts(fc, d, fill_obs, site_ids)
+    st = fc["_state"]
+    p1, tide = st["p1"], st["tide"]
+    dtide = np.gradient(tide, axis=0)
+    alpha, qb = HY.reservoir_alpha(p1), HY.base_flow_m3s(p1)
+    t0, T = d * 24, tide.shape[0]
+    hz = min(horizon, T - t0)
+    r = np.concatenate([st["fcr"][t0:t0 + 24], fc2[t0 + 24:t0 + hz]])[:hz]
+    M = st["stock"][t0]
+    q = st["q"][t0 - 1] if t0 > 0 else qb
+    qs = np.empty((hz, r.shape[1]))
+    for i in range(hz):
+        q = HY.runoff_step(q, r[i], p1, alpha, qb)
+        qs[i] = q
+    lev, v = HY.flow_state(qs, tide[t0:t0 + hz], dtide[t0:t0 + hz], p1)
+    R = r.sum(0)
+    arr = M * (1 - np.exp(-p1["kw_per_mm"] * R)) + p1["k_dry_per_h"] * M * hz
+    zq = (qs.max(0) / p1["q_bypass_m3s"] - 1) / 0.15
+    zl = (lev.max(0) - p1["bypass_level_m"]) / 0.1
+    p_byp = 1 - (1 - _sig(zq)) * (1 - _sig(zl))
+    eff, ebb = IC.efficiency(v, p1), v > 0
+    e_cap = np.where(ebb.any(0), (eff * ebb).sum(0) / np.maximum(ebb.sum(0), 1), p1["e_max"])
+    cap = fc["capacity_kg"]
+    ef = (fill_obs * cap + e_cap * arr) / cap
+    p = 1 - (1 - _sig((ef - 1.0) / 0.15)) * (1 - p_byp)
+    t0d = fc["t"][t0].to_pydatetime()
+    return [C.SiteForecast(
+        site_id=sid, issued_at=t0d, horizon_h=horizon, p_overflow=float(np.clip(p[i], 0, 1)),
+        expected_arrival_kg=float(round(arr[i], 1)), expected_fill_fraction=float(round(max(ef[i], 0), 3)),
+        drivers={"rain_mm_next_24h_fc": float(round(r[:24, i].sum(), 1)),
+                 "rain_mm_next_48h_fc": float(round(R[i], 1)),
+                 "max_tide_m_next_48h": float(round(tide[t0:t0 + hz, i].max(), 2)),
+                 "p_bypass_48h": float(round(p_byp[i], 3)), "sensed_fill": float(round(fill_obs[i], 3))},
+        provenance=C.Provenance(kind="model_output", source=SRC,
+                                notes="48 h: day-1 + day-2 archived JMA GSM forecasts (both issued before 00 UTC); "
+                                      "dashboard export only, not used by the P2 policy"))
+        for i, sid in enumerate(site_ids)]
+
