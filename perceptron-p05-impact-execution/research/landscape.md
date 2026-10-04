@@ -1,0 +1,79 @@
+# Landscape: market-impact-aware execution (state of the art, 4 Oct 2026)
+
+> Scope: Perceptron 2026 Problem 5. Build an execution agent that beats a TWAP/VWAP baseline on slippage in an open simulator by accounting for its own market impact. Stretch goals: a counterfactual "book without our order" and a multi-step feedback-loop analysis.
+> **Method note (lean mode).** All six research sub-agents died at 0 turns (network 408s), so the lead wrote this alone, sequentially. Every arXiv claim below comes from the arXiv API listing/abstract that was **opened on 2026-10-04**; raw dumps are committed in [`raw/arxiv-abstracts-2026-10-04.md`](raw/arxiv-abstracts-2026-10-04.md) and [`raw/arxiv-listings-2026-10-04.txt`](raw/arxiv-listings-2026-10-04.txt). Company claims come from [`raw/company-snippets-2026-10-04.md`](raw/company-snippets-2026-10-04.md). **Abstract-level reads** are marked (abs); full-text claims are not made unless stated. Anything not opened tonight is marked **UNVERIFIED**.
+
+## 1. The frontier in ten bullets
+1. **The impact law is settled at the macro level.** The square-root law I(Q) ∝ Q^δ with δ ≈ 1/2 was confirmed as *strictly universal* across all liquid Tokyo Stock Exchange stocks over eight years, at both the stock and trader level, using account-level data (Sato & Kanazawa, PRL 135, 257401 (2025); arXiv:2411.13965, abs). A 2026 replication on AAPL ITCH data calibrates I/σ_D = c·(Q/V_D)^{1/2} (arXiv:2606.24019, abs; single-author independent research).
+2. **Why it holds is still contested, and agent-based models are now used to test mechanisms.** A 2026 ABM calibrated to the TSE benchmark (⟨δ⟩ = 0.489) reproduces ⟨δ⟩ = 0.539 ± 0.048. Its counterfactual ablations show that order splitting *and* market-maker liquidity replenishment are jointly necessary: removing splitting collapses δ to 0.324, removing replenishment drops it to 0.386 (arXiv:2607.04280, abs). Theory: core-vs-reaction Hawkes flow pins impact and volatility on one persistence statistic (Muhle-Karbe, Ouazzani Chahdi, Rosenbaum, arXiv:2601.23172, abs). Linear impact for small orders crosses over to square-root for larger ones (Bucci et al., PRL 122, 108302 (2019); arXiv:1811.05230, abs).
+3. **Impact is transient, through a propagator.** Price = sum of past trade impacts weighted by a decaying kernel, balancing persistent market-order flow against mean-reverting limit orders (Bouchaud, Gefen, Potters, Wyart, Quant. Finance 4 (2004); arXiv:cond-mat/0307332, abs). Liquidity is a "V-shaped" latent book that vanishes at the price, which forces metaorder fragmentation (Tóth et al., PRX 1, 021006 (2011); arXiv:1105.1694, abs).
+4. **Optimal-execution theory has moved to games, uncertainty and passive impact.** Examples: N-trader equilibria under Obizhaeva–Wang transient impact (Campbell & Nutz, arXiv:2501.09638, abs); convergence rates for regularised OW execution (Nutz & Voss, arXiv:2608.29468, abs); passive (limit-order) impact with exponentially decaying fill probability (Barzykin, Boyce, Neuman, arXiv:2607.28323, abs, July 2026).
+5. **Learning-based execution is moving from replay to reactive simulators.** Replay can't answer "what if I had traded differently". Queue-reactive simulators (Espana, Hafsi, Lillo, arXiv:2511.15262, abs: DDQN "outperforming standard approaches"), reactive ABMs (Olby et al., ICAIF 2025, arXiv:2510.22206, abs: decompose slippage into "market impact and execution risk" and evaluate on the Almgren–Chriss efficient frontier) and ABIDES-based work (Hafsi & Vittori, arXiv:2411.06389, abs) are the 2024–25 pattern.
+6. **Endogenous liquidity breaks exogenous-impact strategies.** ABIDES-MARL (Cheridito, Dupret et al., arXiv:2511.02016, abs, Nov 2025) extends ABIDES-Gym to multiple learning agents. It reports that strategies optimised under fixed exogenous impact "perform poorly once market makers adapt strategically", and that market makers exploit predictable execution. This is the closest prior art to our feedback-loop stretch goal.
+7. **Multi-agent RL execution produces collusion-like outcomes.** Independent PPO agents in a two-player Almgren–Chriss game reach supra-competitive costs, with a learned punishment mechanism (Koulouris & Campajola, arXiv:2610.00619, 30 Sep 2026, abs; also arXiv:2605.20348).
+8. **Generative market simulators claim impact realism.** MarS (Microsoft Research, ICLR 2025) is an order-level "Large Market Model" claiming "robust and practicable realism in controlled generation with market impact" (arXiv:2409.07486, abs). Code and 2M/5M/10M order models are released, with a "Market Impact Analysis" example (MarS README, opened). LOB-Bench (ICML 2025) benchmarks the realism of generative LOB data (arXiv:2502.09172, abs). JAX-LOB gives GPU-parallel LOB simulation for large-scale RL (Frey et al., arXiv:2308.13289, abs).
+9. **Agent-based sims are now used to make ground truth that real data lacks.** ABIDES was used to create time-resolved ground truth for "crumbling quotes" (ICLR 2026 workshop, arXiv:2604.21993, abs). The 1906.12010 ICML-2019 workshop paper (Balch et al.) frames the core evaluation dilemma: market replay "does not substantially adapt" to the strategy, while interactive agent-based simulation does (abs).
+10. **What's open, and where a student team can still win:** (a) *Measuring* own impact cleanly inside a stochastic simulator. Our run shows naive same-seed twins in ABIDES decorrelate chaotically (§5), and we found no paper that quantifies this or fixes it with random-number synchronisation (searched arXiv titles/abstracts tonight; absence is **UNVERIFIED** beyond those searches). (b) A **deployable** counterfactual-impact estimator validated against exact twins. (c) Causal attribution of *who* absorbs or amplifies our order (by agent type), i.e. a feedback-loop analysis.
+
+## 2. Impact models: the toolbox we use
+| Model | Form (as used in our code) | What it captures | Source status |
+|---|---|---|---|
+| Almgren–Chriss (2000) | Linear permanent γ·v plus temporary η·v impact, mean–variance objective; risk-neutral optimum = TWAP | Baseline schedule; efficient frontier | Classic; **not re-opened tonight (UNVERIFIED details)**. Olby et al. 2025 (abs) use the AC efficient frontier as the yardstick |
+| Obizhaeva–Wang (2013) | Block-shaped book with exponential resilience ρ; optimum = blocks at start/end + constant rate | Resilience / transient impact | **UNVERIFIED (not opened)**; used as the base model by arXiv:2501.09638 and 2608.29468 (abs, opened) |
+| Propagator / transient impact | I(t) = Σ_{t_i≤t} q_i·G(t−t_i) | Decaying impact of each child order | Bouchaud et al. 2004 (abs, opened) |
+| Square-root law | I = Y·σ·(Q/V)^δ, δ ≈ 1/2 | Peak impact vs size | 2411.13965, 1811.05230, 2606.24019 (abs, opened) |
+| **Ours (fitted)** | G(τ) = g_perm + g_tr·e^{−τ/τ_r}, fitted to *twin-measured* impact paths on train seeds | Exogenous drift removed from the regression target | `components/impact_model/`, `eval/results/calibration.json` |
+
+## 3. Learning-based and adaptive execution (newest first)
+| Paper | Method | Environment | Claim (abstract) | Code |
+|---|---|---|---|---|
+| Koulouris & Campajola 2026 (2610.00619) | Independent PPO, 2 players | AC liquidation game | Supra-competitive costs; learned punishment | n/a in abs |
+| TT-DAC-PS 2026 (2606.08379) | Deterministic actor-critic (TD3-style) | AC impact + LOB data, 10 US stocks | Compared vs PPO/SAC/A2C and TWAP/VWAP/AC | n/a in abs |
+| de Witt & Pakkanen 2026 (2601.22113) | MAP-Elites quality-diversity over schedules | Regimes by liquidity/vol | Specialists +8–10% in niches; others degrade; baseline PPO | n/a in abs |
+| Espana, Hafsi, Lillo 2025 (2511.15262) | DDQN; state = time, inventory, price, depth | Queue-reactive LOB model | Outperforms standard approaches | n/a in abs |
+| ABIDES-MARL 2025 (2511.02016) | Multi-agent RL | ABIDES (extends Gym) | Exogenous-impact-optimal strategies fail vs adaptive MMs | framework (abs) |
+| Olby et al. ICAIF 2025 (2510.22206) | RL | Reactive ABM | Near AC frontier; decomposes slippage into impact vs risk | n/a in abs |
+| Hafsi & Vittori 2024 (2411.06389) | RL, custom MDP, LOB features, high frequency | ABIDES | "RL agent outperforms standard strategies" | n/a in abs |
+| Micheli & Monod 2024 (2410.13493) | DDPG | Transient impact, general decay kernels | Approximates the optimal non-Markovian strategy | n/a in abs |
+| Macrì & Lillo 2024 (2402.12049) | DDQN | Latent time-varying liquidity | Learns optimal policies when liquidity is unobserved | n/a in abs |
+| Fang et al. AAAI 2021 (2103.10860) | Oracle policy distillation | Historical data | Universal policy | yes (seqml.github.io, per abs) |
+| Karpe et al. ICAIF 2020 (2006.05574) | DDQL | ABIDES (historical order-book sim) | "In some scenarios, our RL agent converges towards a TWAP strategy" | n/a in abs |
+| Ning, Lin, Jaimungal 2018 (1812.06600) | Double DQN, LOB features | Data-driven | Model-free execution | n/a in abs |
+
+*Takeaway for us:* "RL beats TWAP in a simulator" is no longer novel by itself. Credibility now comes from (i) a reactive simulator, (ii) a decomposition of where the savings come from, and (iii) robustness when other agents adapt. We design for all three.
+
+## 4. Simulators (what we can build on, on an M5 Mac tonight)
+| Simulator | What drives prices | Our verified notes |
+|---|---|---|
+| **ABIDES** (J.P. Morgan; Byrd, Hybinette, Balch 2019; arXiv:1904.12066) + **ABIDES-Gym** (Amrouni et al. 2021; arXiv:2110.14771) | Agent-based: exchange, noise, value, adaptive MMs, momentum (rmsc04) | Repo `jpmorganchase/abides-jpmc-public`, HEAD f9cbe51, last commit **2023-12-13**, BSD-3 (cloned). Pins numpy 1.22 / pandas 1.2.4 / pomegranate 0.14.5 / gym 0.18 / ray 1.7. **Runs on Python 3.11 + numpy 2.2 + pandas 2.3** with our 40-line pomegranate shim (no gym/ray needed). One 35-min rmsc04 day takes 0.9 s on an idle M5 and ~10 s under tonight's load (measured). Gym execution env defaults: parent 1,000 shares, 10-min window, 60-s steps, BUY (`markets_execution_environment_v0.py`). |
+| MarS (Microsoft Research, ICLR 2025) | Generative order model (LMM) | Code plus released order models 2M/5M/10M on Hugging Face; Docker devcontainer; a market-impact example (README). Platform badge says Linux, so Azure is better than the Mac. |
+| JAX-LOB (Oxford, 2023) | Replay/ABM in JAX on GPU | Large-scale parallel RL (abs). Needs LOBSTER-format data. |
+| Queue-reactive models | State-dependent order-flow intensities | Used as a counterfactual-capable simulator for RL execution (2511.15262, abs). |
+| Qlib RL (Microsoft) | Data-driven backtest + RL | Ships single- and multi-asset order-execution tasks (Qlib docs, opened). |
+
+## 5. Our own first measurements (real, committed runs; ABIDES rmsc04)
+- **Market (seeds 1–3, `/tmp` stats run, reproduced in E1):** mid ≈ 100,000¢ ($1,000); median spread 1 tick (1¢ = 0.1 bp); touch depth ≈ 100–130 shares; ≈ 50–58k shares traded per 30–35 min.
+- **Twin integrity (E1, 40 train seeds × 2 policies):** the treatment and its null twin are **bit-identical before our first order in 80/80 runs**. Arrival mid is identical by construction.
+- **Twin divergence:** after our first child order the twin difference Δmid has mean ≈ +1.5¢ at 60 s and +3.2¢ at 300 s (adverse, as expected), but its **std grows from 4.7¢ (60 s) to 33¢ (1,200 s) to 64¢ (1,800 s)**. Naive same-seed twins decorrelate chaotically. The systematic own impact is real but small compared with the decorrelation noise, and the propagator fitted on 20 train seeds has out-of-sample R² < 0 on 20 held-out seeds (`eval/results/calibration.json`). **This is the main methodological gap we will close** (ADR 001).
+
+## 6. What companies ship today
+| Who | What ships (public) | Impact/AI technique | Verified? | How we borrow / beat |
+|---|---|---|---|---|
+| **Optiver** (judges) | Global market maker: "a leading technology- and research-driven trading firm". Teams "apply probabilistic reasoning to order flow, volatility, risk and dynamic market structure". "10M+ trades executed every day. At this volume, a 1% improvement is large enough to measure and fast enough to act on." | Research-driven trading at scale | **Opened** optiver.com (snippets file) | Pitch measurability: paired seeds, CIs, a decomposition, not anecdotes. Optiver is the *liquidity provider* our order hits, so the feedback-loop analysis of how market makers respond speaks their language |
+| **Microsoft Research** | MarS generative simulator with released models and a market-impact example; Qlib RL order execution (single- and multi-asset) | Generative order model; RL execution toolkit | **Opened** README and Qlib docs | Secondary environment for robustness (stretch); a Qlib-style execution task structure |
+| **J.P. Morgan AI Research** | ABIDES / ABIDES-Gym open source (BSD-3) | Agent-based simulation | **Opened** repo (local clone) | Our primary simulator |
+| J.P. Morgan (LOXM), RBC (Aiden), BestEx Research, Proof Trading | Broker AI/RL execution algos and published algo-design notes | RL execution (LOXM, Aiden); published impact models (BestEx, Proof) | **UNVERIFIED.** Pages 404'd (rbccm.com/en/technology/aiden.page) or are JS-only (bestexresearch.com/platform, prooftrading.com); not opened tonight | To verify by 12 Oct. Our transparent, decomposed TCA mirrors Proof's publish-the-design ethos (lead only) |
+| Regulators | SEBI circular SEBI/HO/MIRSD/MIRSD-PoD/P/CIR/2025/0000013 (4 Feb 2025), "Safer participation of retail investors in Algorithmic trading" | Algo governance (India) | **Opened** (title, number and date only) | Context for the Indian relevance paragraph. SEC Rule 605 amendments: **UNVERIFIED** (page not readable tonight) |
+
+## 7. Implications for our design
+1. Use **ABIDES rmsc04** (verified to run) as the primary reactive simulator. MarS on Azure is a stretch robustness check.
+2. Treat **counterfactual twins** as a first-class evaluation primitive, *and fix their variance*. This is our spike (ADR 001).
+3. Report IS **decomposed** into drift, own impact and instantaneous cost. Olby et al. 2025 decompose "impact vs risk"; our twin-based split isolates our *own* impact exactly per seed.
+4. Test robustness to **adaptive market makers**: ABIDES-MARL shows exogenous-impact optima break. Ablate agent types (MM adaptivity, momentum) in rmsc04.
+5. Baselines must include **AC/OW-style schedules**, not just TWAP/VWAP, and a tactic-only ablation, so the "impact-aware" claim is attributable.
+6. Check the simulator against **stylised impact facts** (square-root size scaling, decay after completion) before trusting any strategy result (2607.04280 shows ABM mechanisms matter).
+
+## Sources opened on 2026-10-04
+arXiv API abstracts (all opened via export.arxiv.org, ids): 2610.00619 · 2608.29468 · 2609.27786 · 2607.28323 · 2607.04280 · 2606.24019 · 2606.08379 · 2604.21993 · 2603.29086 · 2601.23172 · 2601.22113 · 2511.15262 · 2511.02016 · 2510.22206 · 2502.09172 · 2501.09638 · 2411.13965 · 2411.06389 · 2410.13493 · 2409.07486 · 2402.12049 · 2308.13289 · 2110.14771 · 2103.10860 · 2006.05574 · 1906.12010 · 1904.12066 · 1812.06600 · 1811.05230 · 1105.1694 · cond-mat/0307332 · 2609.31260 · 2605.20348 (listing only).
+Web: https://github.com/jpmorganchase/abides-jpmc-public (cloned, f9cbe51) · https://raw.githubusercontent.com/microsoft/MarS/main/README.md · https://optiver.com/ · https://qlib.readthedocs.io/en/latest/component/rl/overall.html · https://www.sebi.gov.in/legal/circulars/feb-2025/safer-participation-of-retail-investors-in-algorithmic-trading_91614.html.
+Tried, not readable tonight (claims marked UNVERIFIED): rbccm.com Aiden (404), bestexresearch.com/platform (JS), prooftrading.com/offerings/proof-algo (JS), sec.gov press release 2024-32 (blocked), kaggle.com Optiver competition (JS).
