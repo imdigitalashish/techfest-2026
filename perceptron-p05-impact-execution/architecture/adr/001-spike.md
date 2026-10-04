@@ -33,7 +33,7 @@
 - **Synthesis:** (1) keep the agent at the centre of the pitch: the twins *train and certify* a **deployable** ghost-book estimator that uses only observables, which is exactly what a live desk could run; (2) report the C1 realism scorecard (impact vs size exponent, decay) next to every claim; (3) show the agent beats TWAP on paired test seeds under both naive and synchronised twins.
 
 ## First principles
-Slippage for a SELL = (exogenous drift) + (our own displacement of the mid) + (spread and book walking). Only the last two are controllable, and only the middle one is "market impact". You can't optimise what you can't measure: with naive twins, the middle term's per-seed noise (~1.3 bps std) is more than 10× the size of the term itself (~0.1 bps mean, E1). The bottleneck is the measurement, not the policy class.
+Slippage for a SELL = (exogenous drift) + (our own displacement of the mid) + (spread and book walking). Only the last two are controllable, and only the middle one is "market impact". You can't optimise what you can't measure: with naive twins, the middle term's per-seed noise (~1.36 bps std) is ≈ 11× its mean (~0.12 bps) for TWAP in E1. The bottleneck is the measurement, not the policy class.
 
 ## Consequences
 - Next build items: `rng_sync="per_wakeup"` in C1/C2 (patch each background agent's `wakeup` to re-key `random_state` from (seed, agent_id, wakeup_count)); NSR measurement; C4 trained against synchronised twins; the C10 attribution plot.
