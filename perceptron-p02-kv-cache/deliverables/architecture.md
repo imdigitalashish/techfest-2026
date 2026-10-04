@@ -2,37 +2,40 @@
 
 ```mermaid
 flowchart TB
-  subgraph Prefill["Once per document / chat history"]
-    D[Long context tokens] --> P[Prefill: frozen Llama-3.2-1B, MLX]
-    P --> S[Score tokens: StreamingLLM sinks+recent or SnapKV]
-    S --> R[(Resident KV<br/>~10% of tokens, fp16 or 4-bit)]
-    P --> X[(Index: 2-bit keys of 1 layer<br/>~160 B/token = 0.5%)]
-    D --> I[(Backing store: token IDs<br/>4 B/token)]
+  subgraph Prefill["Once per document / chat history (query-agnostic)"]
+    D[Long context: token ids] --> P[Prefill: frozen Llama-3.2-1B-Instruct]
+    P --> R[(Resident KV<br/>4 sinks + recent window<br/>half of the KV budget)]
+    P --> X[(Sketch: 4-bit keys of layer 5<br/>288 B/token = 0.88% of KV)]
+    P --> W[(Context-window queries<br/>last 64 tokens, layer 5: 256 KiB)]
+    D --> I[(Backing store: int32 token ids<br/>4 B/token)]
   end
-  subgraph Ask["Per question (may arrive any time later)"]
-    Q[Question] --> QP[Run question on resident KV<br/>take its own attention queries]
+  subgraph Ask["Per question (any time later; not seen at compression)"]
+    Q[Question] --> QP[Run the question on the resident KV;<br/>take its own layer-5 queries]
     R --> QP
-    QP --> M[Match queries against the 2-bit index<br/>score evicted 64-token blocks]
+    QP --> M[softmax_lift: question attention over the sketch<br/>minus the context window's attention<br/>-> score evicted 64-token blocks]
     X --> M
-    M --> RP[Re-prefill top blocks from token IDs<br/>at original positions]
+    W --> M
+    M --> RP[Re-prefill the top blocks from token ids<br/>at their original positions, attending to sinks + block]
     I --> RP
     RP --> A[Answer over resident + recalled KV]
     R --> A
-    A --> F[Drop recalled KV: steady state = resident only]
+    A --> F[Drop recalled KV: steady state = resident + sketch + ids]
   end
-  subgraph Eval["Evaluation harness (eval/kvbench.py)"]
-    E1[RULER-style multi-needle tasks, WikiText-103 text] --> E2[Same 4 questions to every method, paired]
-    E2 --> E3[Recall accuracy, Wilson 95% CI]
-    E2 --> E4[Every byte counted: KV + scales + sketch + IDs; peak memory; latency]
+  subgraph Eval["Evaluation (eval/kvbench_torch.py, pre-registered in eval/PREREG.md)"]
+    E1[RULER-style needles in WikiText-103; literal / paraphrased / synonym-aliased keys] --> E2[Same 4 questions per context to every method, paired]
+    E2 --> E3[Recall, context-bootstrap 95% CIs, paired deltas]
+    E2 --> E4[Every stored byte counted; RoD's extras charged to its own KV budget]
+    E2 --> E5[Baselines: StreamingLLM, H2O, SnapKV, K-norm, int8/4/2, and NVIDIA kvpress reference presses]
   end
 ```
 
-| Tier | What it holds | Bytes/token (Llama-3.2-1B) | Lifetime |
+| Tier | What it holds | Bytes (Llama-3.2-1B, fp16 KV) | Lifetime |
 |---|---|---|---|
-| Full cache (baseline) | K,V for every layer and head, fp16 | 32,768 | whole chat |
-| Resident (ours) | K,V for the kept tokens | 32,768 × keep fraction | whole chat |
-| Index (ours) | 2-bit keys, 1 layer, 8 KV heads, group-64 scales | ≈ 160 | whole chat |
-| Backing store (ours) | token IDs | 4 | whole chat |
-| Recalled (ours) | re-prefilled K,V of chosen blocks | 32,768 × recalled tokens | one answer |
+| Full cache (baseline) | K, V for every layer and head | 32,768 per token | whole chat |
+| Resident (ours) | K, V for 4 sinks + the most recent tokens | 32,768 × resident tokens | whole chat |
+| Sketch (ours) | 4-bit keys of layer 5, 8 KV heads, group-64 fp16 scale + bias | 288 per token | whole chat |
+| Window queries (ours) | layer-5 queries of the context's last 64 tokens (32 heads × 64 dims, fp16) | 262,144 per context | whole chat |
+| Backing store (ours) | int32 token ids | 4 per token | whole chat |
+| Recalled (ours) | re-prefilled K, V of the chosen blocks | 32,768 × recalled tokens | one answer |
 
-Byte figures are analytic from the model config ([`research/landscape.md` §1](../research/landscape.md)); measured numbers will come from `eval/results/`.
+Byte figures are analytic from the model config and equal the retained tensors' bytes (asserted in the harness). RoD's sketch, window queries and ids are charged to its own KV budget, so its answer-time bytes never exceed a baseline's at the same keep fraction. Measured results: [`../eval/RESULTS.md`](../eval/RESULTS.md).

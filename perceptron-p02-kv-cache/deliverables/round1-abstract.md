@@ -1,59 +1,67 @@
-# Round-1 abstract (draft v1, 4 Oct 2026) — Perceptron Hackathon 2026, Theme 1, Problem 2
+# Round-1 abstract — Perceptron Hackathon 2026, Theme 1, Problem 2
 
-**Title:** *Recall-on-Demand: making KV-cache eviction safe for long-chat recall*
+**Title:** *Recall-on-Demand: treating the KV cache as a cache, so that eviction stops causing forgetting*
 
 ## Problem & theme chosen
-Theme 1 (Efficient AI at Scale), Problem 2: *Squeezing Long-Context Inference into Less Memory*. A 1-billion-parameter model such as Llama-3.2-1B stores 32 KiB of key/value (KV) cache for every token it has read. At 32k tokens that is 1 GiB, more than its 4-bit weights. Long documents and chat histories therefore hit a memory wall first, and that wall decides whether long-context AI can run on laptops and phones or only in data centres.
+Theme 1 (Efficient AI at Scale), Problem 2: *Squeezing Long-Context Inference into Less Memory*. Llama-3.2-1B keeps 32 KiB of key/value (KV) cache per token, so a 32k-token chat holds 1 GiB of cache, more than its 4-bit weights. As builders of inference systems, we care because this limit decides whether long-context assistants can run on laptops and phones.
 
 ## Understanding of the challenge
-Shrinking the cache is easy; shrinking it *without forgetting* is the hard part. Eviction methods (StreamingLLM, H2O, SnapKV) must decide which tokens to delete before they know what will be asked, and a deleted token can never be recovered. When the question is known up front, observation-window methods such as SnapKV select the right tokens. In a real chat, though, the 2nd, 3rd and 10th questions target content nobody scored highly at compression time. SCBench reports exactly this: memory-saving methods "suffer in multi-turn scenarios". Quantisation (KIVI, 2-bit) never deletes, but its saving stops at about 4–8×. Keep-everything methods (Quest) recover accuracy but do not reduce the bytes held. The crux is high compression **and** robustness to questions that arrive *after* compression.
+Shrinking the cache is easy; shrinking it *without forgetting* is hard. Eviction methods (StreamingLLM, H2O, SnapKV) must choose what to delete **before the question exists**, and a deleted token is gone for good. In a chat, later questions target content nobody scored highly at compression time; SCBench reports such methods "suffer in multi-turn scenarios". Quantisation never deletes, but its saving is bounded by bit-width. Keep-everything selection (Quest) leaves the full cache resident. The crux: high compression **and** robustness to questions that arrive after compression.
 
 ## Proposed approach
-We treat the KV cache as a *cache*, not a *store*, with three tiers:
-1. **Resident tier:** a small compressed KV cache (StreamingLLM sinks + recent window, or SnapKV top-k), optionally 4-bit quantised.
-2. **Index tier:** for evicted spans, a 2-bit quantised copy of the keys of a single layer. That is about 160 B/token, or 0.5% of the full cache.
-3. **Backing store:** the raw token IDs, at 4 B/token.
+**Recall-on-Demand (RoD)** turns eviction into a *cache miss*. Per context we keep three tiers:
+1. A small **resident** KV cache: StreamingLLM's sinks plus recent tokens.
+2. A **sketch**: 4-bit keys of one layer (layer 5, chosen on development data; 288 B/token, 0.88% of the cache) plus the context's last 64 queries (256 KiB).
+3. The **token ids** (4 B/token).
 
-When a question arrives, we run it against the resident cache, take its *own* attention queries at the index layer, score the evicted 64-token blocks against the sketch, and **re-prefill** (recompute) only the top blocks at their original positions. The question is then answered over the resident and recalled KV, and the recalled KV is dropped afterwards. Eviction becomes a cache miss that costs a little compute, instead of permanent data loss.
+When a question arrives, its *own* layer-5 queries score evicted 64-token blocks against the sketch. The score is contrastive: question attention minus the context's generic attention, which cancels sink-like tokens. The top blocks are **re-prefilled** from ids at their original positions, the model answers, and the recalled KV is dropped.
 
-Tools: Apple MLX on an M5 laptop, with our own explicit-cache forward pass over frozen `Llama-3.2-1B-Instruct` weights (a 3B model and Qwen2.5 as second models), and NVIDIA kvpress as a reference implementation of the baselines. The data are RULER-style multi-key needle tasks built from WikiText-103 text, plus LongBench-style QA.
+- **Model:** frozen Llama-3.2-1B-Instruct (Qwen2.5-3B next).
+- **Data:** RULER-style needles in WikiText-103 with literal, paraphrased and synonym-aliased keys; LongBench QA for breadth.
+- **Tools:** PyTorch, Apple MLX for the laptop demo, NVIDIA kvpress for the published baselines.
 
 ## Minimum Viable mapping
-1. *Apply an existing technique and measure memory savings:* StreamingLLM, H2O, SnapKV and 2/4/8-bit per-token group quantisation (KIVI's per-channel key scheme as a stretch baseline) run in one harness. "Memory" counts every retained byte (KV, quantisation scales, indices, sketches, token IDs) plus measured peak memory, against the uncompressed baseline.
-2. *Show the accuracy drop on a small long-context recall task:* recall accuracy with 95% Wilson intervals at 2×, 4× and 10× compression, for 4k–16k contexts and needle depths from 5% to 95%.
+1. **Existing techniques with measured memory savings:** StreamingLLM, H2O, SnapKV, K-norm and int8/4/2 KV run in one harness. Every stored byte (KV, scales, sketch, ids) is counted analytically and checked against the retained tensors.
+2. **Accuracy drop on a recall task:** recall with 95% CIs at 50%, 25% and 10% memory on 4k-token contexts, needles at 5–95% depth.
+
+Both run today (results below).
 
 ## Stretch ambitions
-- **Modification of an existing method:** Recall-on-Demand on top of StreamingLLM and SnapKV, tuned by an automated keep-only-if-better loop over sketch layer, sketch bit-width, block size and recall budget.
-- **Benchmark against 2+ baselines:** StreamingLLM, H2O, SnapKV, K-norm and quantisation; a query-aware SnapKV serves as the upper reference.
-- **Stretch beyond the brief:** a live chat demo with a memory meter, and a second model.
+- **Modify a method:** RoD extends StreamingLLM, and its scorer is tuned by an automated keep-only-if-better loop on development seeds.
+- **2+ baselines:** our implementations plus kvpress's reference StreamingLLM, SnapKV, ObservedAttention (H2O), Knorm, ExpectedAttention and TOVA.
+- **Next:** multi-turn cache updates, 16–32k contexts, per-channel quantised sketches, and a live laptop demo with a memory meter.
 
 ## Novelty / differentiation
-The obvious entry applies StreamingLLM or H2O and plots a needle chart. We differ in three ways:
-1. **No evicted KV is kept anywhere.** Offload methods move it to CPU memory; we keep only token IDs and a 0.5% sketch, and recompute on demand.
-2. **Retrieval uses the model's own question-time attention queries,** so it needs no external embedding model.
-3. **The evaluation is query-agnostic and multi-question.** We compress once, then ask several questions, compare methods at *equal answer-time bytes*, and count every byte.
-
-We will state precisely how our design relates to the nearest prior work (Quest's per-page key digests, ShadowKV's low-rank keys with offloaded values, CacheBlend's KV reuse for retrieved chunks, ArkVale-style page recall).
+The obvious entry plots StreamingLLM or H2O on a needle test. Offload systems (InfiniGen, ShadowKV; ArkVale per its README) park evicted KV in CPU memory. RoD keeps **no KV** for evicted tokens, only ids and a one-layer sketch, and recomputes exactly the blocks the live question needs. To our knowledge, after checking 19 papers, this combination is unpublished. The evaluation is also stricter than usual:
+- Compression happens before any question is seen.
+- RoD pays for its sketch from its own memory budget.
+- A lexical-index control, a question-aware oracle, and paraphrase/alias splits test whether retrieval is mere word matching.
 
 ## Evaluation plan
-- **Main metric:** recall accuracy vs retained bytes (a Pareto curve per method), 4 questions per context, paired across methods, with confidence intervals on held-out seeds.
-- **Secondary metrics:** steady-state vs answer-time bytes; measured peak memory; latency per answer including recompute; needle-token retention (scorer) and needle-block hit rate (recall tier).
-- **Controls:** full cache (ceiling); query-aware SnapKV (reference); non-literal needles, so a lexical matcher cannot game the task; a held-out split against overfitting.
+- **Design:** pre-registered before running (`eval/PREREG.md`). The primary comparison is RoD vs StreamingLLM at 25% memory on 12 held-out contexts (48 questions), with context-clustered bootstrap CIs. Secondary comparisons cover every baseline, the paraphrased and aliased splits, and a recompute-context ablation. Scorer tuning used only development seeds (an exploratory best of 322 variants).
+- **Metrics:** recall, stored and answer-time bytes, compression ratio, needle-block hit rate and latency overhead.
+- **Preliminary results:** <!-- p2:headline:begin -->
+_Measured results pending (pre-registered runs in progress)._
+<!-- p2:headline:end -->
+- **Controls:** <!-- p2:caveats:begin -->
+_Controls pending._
+<!-- p2:caveats:end -->
 
 ## Feasibility and risks
-**Team.** [names TBD]: (a) systems / inference engineering, (b) ML and attention mechanics, (c) evaluation and the demo. Everything runs on one 24 GB laptop; no paid GPU time.
+- **Team:** three students [names to be added]: systems/inference (RoD store, demo), ML (attention scoring, quantisation), evaluation (benchmarks, statistics).
+- **Feasibility:** the harness and the pre-registered evaluation already run on a single CPU VM.
+- **Milestones:**
 
-**Milestones.**
-- 6–12 Oct: baseline numbers (MVP).
-- 13–19 Oct: Recall-on-Demand v1 and its tuning loop.
-- 20–26 Oct: non-literal needles and QA; abstract.
-- 27 Oct–9 Nov: second model; 16–32k contexts; latency.
-- 10–16 Nov: demo app.
-- 17–28 Nov: exams (automated runs only).
-- 1 Dec: midway report.
-
-**Risks and mitigations.**
-- Recomputed blocks see only local context; we ablate adding neighbour context.
-- One sketch layer may miss the needle; we tune it and vote across layers.
-- The extra pass adds latency; we report it.
-- If close prior art exists, we narrow the novelty claim.
+  | Weeks | Milestone |
+  |---|---|
+  | 1–2 | 3B model and QA |
+  | 3–4 | Multi-turn protocol and 16k contexts |
+  | 5–6 | Cheaper sketches and latency |
+  | 7 | MLX demo |
+  | Before exams (19–25 Nov) | Freeze |
+  | December | Ablations and rehearsal |
+- **Risks and mitigations:**
+  - Recompute adds latency per question. *Mitigation:* we report it.
+  - Re-prefilled blocks see only sinks plus themselves. *Mitigation:* the halo ablation measures the cost.
+  - Literal needles flatter retrieval. *Mitigation:* the aliased split and the lexical control.
+  - A close prior system may appear. *Mitigation:* we narrow the claim to the store design and the evaluation.

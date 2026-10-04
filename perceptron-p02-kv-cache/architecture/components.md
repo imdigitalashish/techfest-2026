@@ -1,6 +1,6 @@
 # Components and contracts — Perceptron P2 (KV-cache compression)
 
-Every component has one job, typed I/O (see [`contracts/contracts.py`](contracts/contracts.py)) and an **isolated scalar metric**, so it can be swapped or auto-improved alone. The baseline implementations live in [`eval/kvbench.py`](../eval/kvbench.py) today; each will move to `components/<name>/` as it gets its own tests. Shapes: `T` = context tokens, `nkv` = KV heads (8), `hd` = head_dim (64), `L` = layers (16) for Llama-3.2-1B.
+Every component has one job, typed I/O (see [`contracts/contracts.py`](contracts/contracts.py)) and an **isolated scalar metric**, so it can be swapped or auto-improved alone. The baseline implementations live in [`eval/kvbench_torch.py`](../eval/kvbench_torch.py) (PyTorch, used for every measured number) and its MLX twin [`eval/kvbench.py`](../eval/kvbench.py) (Apple silicon) today; each will move to `components/<name>/` as it gets its own tests. Shapes: `T` = context tokens, `nkv` = KV heads (8), `hd` = head_dim (64), `L` = layers (16) for Llama-3.2-1B.
 
 | # | Component | Input → Output | Baseline (existing) | Spike? | Isolated metric |
 |---|---|---|---|---|---|
@@ -24,7 +24,7 @@ flowchart LR
   C2 -->|layer-l keys, token ids| C7S[C7a Sketch builder]
   C6 -->|resident cache| C8[C8 Answerer]
   C1 -->|question| C7[C7b Question-time retriever + re-prefill]
-  C7S -->|2-bit sketch| C7
+  C7S -->|4-bit layer-5 sketch + window queries| C7
   C6 -->|resident cache| C7 -->|recalled blocks| C8
   C8 -->|answer| C10[C10 Evaluator]
   C6 & C7 -->|bytes| C9[C9 Memory meter] --> C10

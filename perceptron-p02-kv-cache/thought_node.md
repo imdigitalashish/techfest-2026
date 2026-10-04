@@ -10,19 +10,23 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ **RESUMED 14:36 IST** (Supervisor: P3 freed a batch slot). Goal: definition of done (Supervisor 14:36) → measured numbers → final abstract → cross-model reviews → final memo (P2 vs P1, honestly) → push → deallocate VM → "DONE — slot free".
-- **Plan (in order):**
-  1. Start Azure VM `p02-kv-1` (D8ds_v5, centralindia, CPU only); speed probe (4-bit vs dequantised fp32 forward).
-  2. Harness: `--dequant` for CPU compute, KV stored in bf16 (so bytes match a GPU deployment); smoke run on the VM.
-  3. **Pre-register** the main comparison in `eval/PREREG.md` and commit it *before* the grid runs.
-  4. Grid on the VM, one job at a time: main (literal needles) → paraphrase needles → halo ablation (re-prefill context).
-  5. Final Round-1 abstract with numbers rendered from committed results + `eval/check_docs.py` doc-drift check + diagram.
-  6. Cross-model reviews (child sessions, ≤ 2 at once): `gpt-6-astra` max = hostile judge (spike + abstract); `gpt-6-sol` max = code/eval + reproduce headline numbers. Record in `reviews/` + `reviews/ledger.tsv`.
-  7. Final selection memo, thought node, push; deallocate VM; message Supervisor.
-- **Doing:** VM starting; harness CPU changes.
-- **Rules now in force:** child sessions only (no `task` sub-agents), ≤ 2 at a time; no `git stash`/`--autostash`; timestamps from `TZ=Asia/Kolkata date`; local heavy jobs only with `nice -n 10` and `kern.memorystatus_level` ≥ 30 (prefer the VM); poll VM jobs at ≥ 10-min intervals; fetch only results.
-- **Needs from user:** register by 15 Oct (if P2 is chosen over P1 — the brief allows only one of P1/P2). Teammates' names and skills for the team-fit section.
-- **Risks:** (1) MLX CPU speed on the VM is unknown — may force 2k contexts. (2) Re-prefilled blocks see only sinks + the block (approximate KV) — halo ablation. (3) Lexical needles flatter retrieval — paraphrase style + `rodlex` control. (4) CPU timings ≠ GPU timings — latency reported as relative only. (5) Novelty hedged ("to our knowledge").
+- **Phase:** ▶ RESUMED 14:36 IST → measuring. Pre-registration committed 15:14 IST ([eval/PREREG.md](eval/PREREG.md); amendment 1 at 15:18 adds T3 with synonym-aliased keys).
+- **Doing:**
+  - **VM** `p02-kv-1`, resized to D16ds_v5: T1 (literal, seed 0) is running, about 6.3 min per context, ETA 16:31. Then T2 (paraphrase, seed 1) → S4 (halo 64) → T3 (alias, seed 2), one job at a time; ETA about 18:30.
+  - **Reviewers** (child sessions): [P2 review · code+eval (gpt-6-sol)](ghapp://sessions/377140bc-8a99-47d1-bed3-2b53e4b22b70) (static review now, reproduction after `grid2.done`); [P2 review · hostile judge (gpt-6-astra)](ghapp://sessions/97e5f61d-3add-4e44-9c65-d77e119bfb8a) (spike + PREREG now, final abstract later).
+- **Done since resume:**
+  - MLX CPU too slow (3.5 GFLOP/s), so I pivoted to a PyTorch twin harness on the same weights. It passes logit parity (2e-5 with fp32 KV); the MLX vs torch difference is 5e-5.
+  - Dev sweep of 322 scorer variants: `softmax_lift`/content/4-bit/layer 5 reached hit@3 0.95, vs 0.24 for the a-priori config and 0.91 for lexical (exploratory).
+  - kvpress 0.5.5 presses run on CPU as reference baselines.
+  - Final abstract skeleton (761 words plus rendered blocks, about 873 in total).
+  - `render_docs.py` / `check_docs.py` / `wordcount.py`.
+- **Next:** fetch T1 → render → astra phase 2 on the abstract → memo v2 (P2 vs P1, honest) → T2/S4/T3 → final render → sol reproduction → ledger → deallocate VM → "DONE — slot free".
+- **Needs from user:** register by 15 Oct (if P2 is chosen over P1; the brief allows only one of P1/P2). Teammates' names and skills for the team-fit section.
+- **Risks:**
+  1. Re-prefilled blocks see only sinks + the block (approximate KV); S4 measures this.
+  2. Lexical needles flatter retrieval; T3 and `rodlex` test this.
+  3. CPU timings ≠ GPU timings: only relative overhead is reported.
+  4. Novelty hedged ("to our knowledge"; ArkVale's mechanism is UNVERIFIED).
 
 ## Phase 0 — what the judges need to see (from `_briefs/perceptron.txt`)
 - **MVP bullets → evidence:** (a) one existing method applied + memory saved vs uncompressed → a table of *retained KV bytes* (counting every index/scale byte) and measured peak memory, per method and ratio; (b) accuracy drop on a small long-context recall task → needle-recall accuracy with 95% Wilson CIs vs the full cache.
@@ -61,17 +65,16 @@
 See [architecture/components.md](architecture/components.md). C1 workload · C2 prefill engine · C3 scorer (spike B) · C4 budget · C5 selector · C6 KV codec · **C7 recall-on-demand (spike A)** · C8 answerer · C9 memory meter · C10 evaluator. All are baseline-implemented in `eval/kvbench.py`; status: written, not yet measured.
 
 ## Selection memo
-_First version 08:10 IST, 4 Oct; final by 12 Oct. Score 1–5, one line of evidence each._
-- **Winnability — 3/5.** A well-trodden problem: kvpress alone ships 48 press classes ([README, opened](research/raw/src_kvpress_readme.md)), so the "obvious" entry (StreamingLLM/H2O on a 1B model plus a needle chart) will be common. We win only on the spike and on evaluation rigour (query-agnostic multi-question protocol, every byte counted, 95% CIs).
-- **Innovation headroom — 4/5.** The spike is *recall-on-demand* (RoD): eviction becomes a cache *miss*, not data loss. For evicted spans we keep token IDs (4 B/token) plus a 2-bit key sketch of one layer (≈160 B/token, about 0.5% of the 32 KiB/token fp16 KV). The question's own queries pick evicted blocks to re-prefill. It targets the failure SCBench documents: "sub-O(n) memory methods suffer in multi-turn scenarios" ([2412.10319, opened](research/raw/arxiv_abstracts.md)). Prior-art check (ArkVale, Quest, CacheBlend) is pending.
-- **Feasibility by the deadline — 5/5.** Everything runs on the M5 in MLX with a 4-bit 1B model already on disk and local WikiText. The harness is written ([eval/kvbench.py](eval/kvbench.py)). No GPU, data access or user action is needed before the 19–25 Nov exams.
-- **Demo strength — 4/5.** A live laptop chat over a long document with a memory meter: StreamingLLM forgets the needle and RoD recalls it at the same answer-time bytes, plus a recall-vs-bytes Pareto chart.
-- **Fit with the user's strengths — 5/5.** It is a systems problem: a cache hierarchy (resident KV / sketch index / backing store of token IDs, recompute on miss), matching large-scale-systems and frontier-model inference experience.
-- **Biggest risk:**
-  1. Novelty: a close prior art may exist (keep-and-recall designs such as ArkVale; "evict + recompute" papers from 2025–26). Verify by 12 Oct.
-  2. Recompute latency per question.
-  3. No measured numbers yet: tonight's smoke run was starved by machine-wide memory pressure (16% free, ~42 GB swap per the Supervisor). First numbers come after 08:30.
-- **One-line pitch:** "Treat the KV cache as a cache, not a store: keep a 0.5% sketch plus the raw token IDs, and when a question arrives, recompute only the passages it needs. StreamingLLM-level memory, aiming at full-cache recall."
+_v2 (final for the 12 Oct gate) will be written to [deliverables/selection-memo.md](deliverables/selection-memo.md) once the pre-registered runs finish; its numbers are rendered from committed results by `eval/render_docs.py`._
+- **v1 (4 Oct, 08:10; superseded):** winnability 3 · innovation 4 · feasibility 5 · demo 4 · fit 5. At the time there were no measured numbers; v1 described the RoD design before tuning.
+- **Pre-registered results so far:**
+<!-- p2:verdicts:begin -->
+- **Primary** (RoD − StreamingLLM, keep 0.25, T1): pending → pending
+- **S1** (RoD vs each query-agnostic baseline, keep 0.25, T1): pending
+- **S2** (RoD − RoD-lexical, keep 0.25, T1 literal): pending
+- **S2** (RoD − RoD-lexical, keep 0.25, T2 paraphrase): pending
+- **S3** (primary replicated on T2 paraphrase): pending
+<!-- p2:verdicts:end -->
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -129,3 +132,33 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
   Docs: "KIVI-style" corrected to "per-token group quantisation" in the abstract, `components.md` and the component scan.
 - **Prior art** (research agent; `research/components/recall-on-demand-prior-art.md`, 19 papers opened). No paper found combines all three of: zero KV kept for evicted tokens, a single-layer 2-bit sketch used only to score, and re-prefill of flagged blocks at original positions. Recall elsewhere means fetching offloaded KV (ArkVale, InfiniGen, ShadowKV, RetroInfer, SpeCache…). Recompute from tokens appears in CacheBlend (RAG fusion) and as a costly baseline in HCache. Gaps: ArkVale's digest mechanism is UNVERIFIED (OpenReview blocked); SpeCache's sketch scope is unconfirmed. The novelty claim stays hedged: "to our knowledge".
+
+### 2026-10-04 15:27 IST: Resumed; harness ported to PyTorch; dev sweep; pre-registration; reviewers
+- **14:36.** Supervisor resumed P2 (P3 freed a batch slot). Definition of done: measured numbers on the Azure VM, honesty (halo, paraphrase, CPU timings), final abstract with rendered numbers and a doc-drift check, cross-model reviews, final memo, VM deallocated.
+- **VM.** Started `p02-kv-1`.
+  - MLX on Linux CPU is unusable: 4-bit forward of 512 tokens unfinished after 4.5 min; fp32 GEMM 3.5 GFLOP/s.
+  - PyTorch CPU reaches 599 GFLOP/s. Ported the harness to `eval/kvbench_torch.py` on the *same* weights (MLX 4-bit, dequantised → fp16 safetensors).
+  - KV stored fp16 (the MLX model computes in fp16, not bf16 as I first assumed).
+  - Parity: engine vs HF 2e-5 (fp32 KV) / 0.011 (fp16 KV); MLX vs torch 5e-5.
+  - Pinned the chat-template date: the Llama 3.2 template inserts today's date.
+  - Resized the VM to D16ds_v5 (quota 20 vCPU/region).
+- **Smoke (seed 0, 1k tokens, 2 needles; disclosed in PREREG).** full/int8/int4/oracle 2/2; int2 0/2 (garbage); StreamingLLM 1/2 (answered with the visible needle's value). The **a-priori RoD failed 0/2:** block 0 (system prompt) soaked up the sketch attention.
+- **Dev sweep** (seeds 100–109, 80 evicted-needle questions; frozen evaluator `components/recall_on_demand/autoresearch/eval_torch.py`):
+  - Best of 322: `softmax_lift`/content/4-bit/layer 5, hit@3 0.95 (a-priori 0.24; lexical 0.91).
+  - Layer 5 dominates; 2-bit sketches top out at 0.60.
+  - Logged in `results.tsv`. Exploratory, so selection-biased; the test seeds decide.
+- **Supervisor 14:56** (use kvpress reference baselines; report memory both analytic and measured): agreed and done.
+  - kvpress 0.5.5 needs transformers < 5.3, so it lives in a separate venv `~/venv_kvp`; mlx-lm 0.32 conflicts with it.
+  - All six presses run on CPU through the same answer path.
+  - Memory: analytic bytes equal the retained tensor bytes (asserted for the full cache); peak RSS is reported as context.
+- **Pre-registration 15:14 IST** (`eval/PREREG.md`, commit 3263e9f, time matches).
+  - Primary: RoD − StreamingLLM at keep 0.25 on T1.
+  - Why 0.25: at 0.10, RoD's charged extras leave about 2 recall blocks on 4k contexts.
+- **Supervisor 15:17 spot-check.** Agreed on exploratory labelling and confirmation on fresh seeds. Pushed back: T2 paraphrases only the templates, so lexical retrieval won't fall off there. **Amendment 1, 15:18:** T3 with synonym-aliased keys plus a lean method set; the code change is additive, and the T1/T2/S4 files are unchanged (md5 7402…).
+- **Chain on the VM:** T1 → T2 → S4 → T3 (`grid.sh`, `grid2.sh`), one job at a time. T1 takes about 6.3 min per context.
+- **Reviewers:** gpt-6-sol (code/eval + reproduction after `grid2.done`) and gpt-6-astra (hostile judge on spike + PREREG; abstract later).
+- **Docs.**
+  - ADR 001 v2 update.
+  - Final-design abstract: 761 words plus rendered blocks, about 873 in total.
+  - Architecture tiers updated (4-bit, layer 5, 288 B/token, window queries).
+  - `render_docs.py` / `check_docs.py` (drift + superseded-number check) / `wordcount.py`.
