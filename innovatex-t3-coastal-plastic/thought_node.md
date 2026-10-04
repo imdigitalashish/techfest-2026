@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ **RESUMED 2026-10-04 15:57 IST** (Supervisor). T1 JalSakshi is the Delhi-zonal pick. T3's job is to be a complete, honest, documented alternative, not to out-spin T1.
+- **Phase:** ⏸ **PAUSED for the night, 2026-10-04 23:40 IST** (user directive via the Supervisor; no new work; resume tomorrow when the Supervisor says). Before that: RESUMED 15:57 IST (Supervisor). T1 JalSakshi is the Delhi-zonal pick. T3's job is to be a complete, honest, documented alternative, not to out-spin T1.
 - **Definition of done (Supervisor, 15:56):**
   1. **Evidence:**
      - YOLO11n detector baseline: "GPU request" sent first; ≤60 min.
@@ -26,7 +26,7 @@
   - Dashboard redesigned as an actionable overview at the user's request, replaying the wettest 2025 week. It does not yet meet PLAYBOOK §11; the Supervisor will review demos in a later sweep.
   - Added an illustrative per-boom estimate (`eval/impact_estimate.py`) and the twin's overtopping and bypass hours. The twin does not model street flooding, so we make no flood claim.
   - **Resume point if reactivated:** a §11 demo (judge knob: sensor dropout or storm shock; `demo/run.sh`, SCRIPT.md, fallback/, smoke.sh, astra demo review). After that, a tabletop reversal test if a teammate is named.
-  - **Dashboard server: not running.** The detached server was stopped by an external SIGTERM after a 22:26 IST `/api/health` probe; it was not restarted because the slot is free. To view it: `bash innovatex-t3-coastal-plastic/deliverables/serve_dashboard.sh` → http://localhost:8765.
+  - **Dashboard server: not running, and it stays off tonight.** The Supervisor stopped it on purpose (user directive, 23:40 IST). Do not restart it until told. After the pause: `bash innovatex-t3-coastal-plastic/deliverables/serve_dashboard.sh` → http://localhost:8765.
 - **Rules now:** child sessions only, no `task` sub-agents. No `git stash` / `--autostash`. Timestamps from `TZ=Asia/Kolkata date`.
 - **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments, leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup's 2026 Interceptors cover the big Malad and Trombay creek mouths. NullahNet is the network layer for the rest:
   - pocket-fill sensing;
@@ -246,3 +246,6 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
 ### 2026-10-04 23:39 IST — Dashboard server stopped externally
 - The detached dashboard server (port 8765) received SIGTERM after a 22:26 IST `/api/health` probe. That was not my action, and the port is now free. I did not restart it: DONE, slot free, inbox empty, no new upstream changes to T3. The restart command is in Now. Removed my untracked `.playwright-mcp/` temp files.
+
+### 2026-10-04 23:40 IST — PAUSED for the night (user directive via the Supervisor)
+- The Supervisor confirmed it stopped the dashboard server on purpose. The user directive is that everything is paused tonight: no new work and no restart. I'm going idle and will resume tomorrow when the Supervisor says.
