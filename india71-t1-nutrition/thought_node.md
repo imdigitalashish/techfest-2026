@@ -10,31 +10,29 @@
 - _(none)_
 
 ## Now
-- **Phase:** 🎬 DEMO PHASE (Supervisor slot from 17:59 IST, 4 Oct; PLAYBOOK §11). Demo built and verified from a clean clone (19:25). The gpt-6-astra judge review (19:53) found 2 blocking + 6 major + 4 minor issues; all 12 accepted. Lead fixes are pushed (eval_v2 infant gate, router capacity gate); the builder fix round is in progress. The Round-1 package is complete (11:00). Now building the winning demo via one child session (the demo builder), then a gpt-6-astra "judge watching the demo" review. Started 2026-10-04 18:04 IST.
-- **Deliverables:**
-  - [`deliverables/India71_100_[TeamID].pdf`](deliverables/): 6 A4 pages, 1-inch margins, Arial ≥11 pt; source `round1-proposal.md` v0.3.
-  - [`deliverables/architecture.md`](deliverables/architecture.md).
-  - Selection memo final (below).
-  - Reviews in [`reviews/`](reviews/).
-  - Demo: `eval/run_pipeline.py` (SYNTHETIC).
-- **Next (after the 12 Oct selection, if this theme is picked):**
-  1. Fill the team header and Team ID; re-render (`deliverables/build_pdf.py` + Chromium print) and re-run `eval/check_docs.py`.
-  2. Optionally, a cross-model re-review of v0.3 via a session (v0.3 hasn't been re-reviewed; it applies the v0.2 review).
-  3. Spike A evaluator v2 (audit PPV at fixed re-measurement budget; remote-AWC false-positive rate) + ratchet.
-  4. Spike B ratchet against `eval_v1` (the model must beat the lowest-WHZ rule); repeated-alert burden metric.
-  5. Implement the three-clock fields in the `Task` contract (currently design only).
-  6. Finals deck and demo script (16–18 Dec).
+- **Phase:** ✅ DEMO DONE (2026-10-04 21:45 IST); Round-1 package complete (11:00). PLAYBOOK §11 bar met and verified from a clean clone. The India@71 pick is T1 unless the user overrides by 12 Oct.
+- **Demo:** `india71-t1-nutrition/demo/run.sh` (offline, first visual ≈0.2 s), 7 screens, REAL first:
+  - 36/36 states, then 706 districts from NFHS-5 fact sheets (24/24 spot-checked);
+  - then SIMULATED children at REAL district rates (Nandurbar, Amravati/Melghat): find every child across departments without pooling names (department-side encoding, honest matched-precision trade-off); first-onset example child; weekly K-slot worklist (transparent WHZ rule vs programme rule, infants routed to the protocol pathway); ≤80-char SMS with the capacity gate; break-it (policy deny, live hash chain, checkpoint).
+  - Talk track `demo/SCRIPT.md`; fallback `demo/fallback/`; `demo/smoke.sh`.
+- **Reviews:** gpt-6-astra demo review (12/12 accepted) + re-check (6/6 accepted), all fixed. Ledger lines 5–6.
+- **Next (if T1 is picked):**
+  1. Team header + Team ID → re-render the PDF (`deliverables/build_pdf.py`) + `eval/check_docs.py`.
+  2. Rehearse the 3-minute track aloud; projector test.
+  3. Native-speaker check of the Hindi SMS templates.
+  4. Finals deck.
+  5. Spike A evaluator v2 + ratchet.
 - **Needs from user:**
-  - (a) Register by 15 Oct for one India@71 theme. This memo recommends T1 at 4.2/5; compare with the T2 and T3 memos.
-  - (b) Teammates (≤4): names, institution, contacts, for the PDF header.
-  - (c) Any state WCD department or district contact for a read-only pilot extract.
-  - (d) An introduction to an Anganwadi workers' union or worker-rights NGO for co-design (a pilot prerequisite under ADR 002).
+  - (a) register by 15 Oct for one India@71 theme;
+  - (b) teammates (≤4): names, institution, contacts;
+  - (c) a state WCD / district contact for a read-only pilot extract;
+  - (d) an introduction to an Anganwadi workers' union or worker-rights NGO for co-design (ADR 002 prerequisite);
+  - (e) a Hindi-speaking reviewer for the SMS templates.
 - **Risks:**
-  1. All model metrics are SYNTHETIC.
-  2. The children's-data regime commences 13 May 2027, so pilot timing straddles it; the legal go/no-go gate stays.
-  3. Worker and union acceptance.
-  4. The ML worklist model loses to the transparent rule (handled: rule ships, ML gated).
-  5. Page budget: 6/6, with about 200 words of slack on page 6.
+  1. All child-level results are SYNTHETIC (state and district rates are REAL).
+  2. The DPDP children's-data regime commences 13 May 2027.
+  3. At matched precision, privacy-preserving linkage re-joins fewer children than pooling names (3,522 vs 4,063): its value is privacy, not accuracy.
+  4. Worker and union acceptance.
 
 ## Phase 0 — what the judges must be able to see (from `_briefs/india71.txt`)
 | Criterion (official) | What we must show | Evidence we will produce |
@@ -275,4 +273,9 @@ Apply at resume step 2.
   - Proposal §4.1/§5 and components C2 now say this. The F1-only row is replaced by the matched-precision row.
   - check_docs reads the demo's committed cell too (22/22). PDF re-rendered: 6 pp.
 - **Reviewer re-check requested** (gpt-6-astra session 400c4682).
+
+### 2026-10-04 21:45 IST — DEMO DONE
+- **Re-check (gpt-6-astra, acc3292):** 10/12 FIXED; residual R1 (false "unreachable" at 100% IDs), R2 (hidden false-link bars), R3 (in-sample operating-point wording), R4 (K10 roster), M5 (K1 cue). All accepted → builder 5d37434: `eval_linkage.precision_operating_point` with an IDs-only endpoint + tests; one count axis; wording; Details roster; SCRIPT cue.
+- **Lead final verification, fresh clone ff786b9:** smoke PASS 25 s (incl. districts and the encoded-boundary linkage re-run == committed); pytest passes; check_docs 22/22; run.sh OK; R1/R2 checked by eye. Decisions + ledger recorded.
+- Builder and reviewer sessions left idle (both pushed work).
 

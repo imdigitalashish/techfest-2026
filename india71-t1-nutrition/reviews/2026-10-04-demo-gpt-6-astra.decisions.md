@@ -35,3 +35,9 @@ Raw: [`2026-10-04-demo-gpt-6-astra.recheck.md`](2026-10-04-demo-gpt-6-astra.rech
 | R3 | "We operate at matched precision" overstates an in-sample, proposed policy; the child path uses 0.91 | **ACCEPTED** | **B:** SCRIPT and screen wording say "in-sample comparison; proposed operating policy"; the child-path threshold is aligned or disclosed |
 | R4 | K10 promises "+3 more slots below" that aren't accessible (minor) | **ACCEPTED** | **B:** full roster in Details, or "not shown" |
 | M5 (residual) | SCRIPT claims the K1 non-significance message without selecting K1 | **ACCEPTED** | **B:** add the K1 click and return to K5, or drop the claim |
+
+**Lead verification of the final round** (builder 5d37434; fresh clone ff786b9, 2026-10-04 21:45 IST):
+- Smoke PASS in 25 s, including the district re-derivation after the documented `eval/fetch_nfhs5.py` and the default linkage cell re-run through the encoded boundary, equal to `identity_linkage.json`.
+- pytest passes; check_docs 22/22; `demo/run.sh` OK.
+- R1/R2 verified by eye at 1280×720 (100% IDs, +40%): no "unreachable" text; "IDs only" endpoint shown; 48 false links visible as red on a single count axis.
+- §11 items 4 and 5 now judged **yes** by the lead (R1–R4 and M5 resolved). No further reviewer pass requested.
