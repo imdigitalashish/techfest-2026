@@ -59,7 +59,7 @@ rl = pd.read_csv(f"{RAW}/rto_list_MH.csv"); rows = []
 for _, r in rl.iterrows():
     for y in ("A", "2025"):
         p = f"{RAW}/rto_MH_{r.rto_code}_class_fuel_{y}.csv"
-        if not os.path.exists(p): continue
+        if not os.path.exists(p) or os.path.getsize(p) < 5: continue
         d = pd.read_csv(p); d["bev"] = bev(d); d["seg"] = d.row_label.map(seg)
         g = d.groupby("seg").bev.sum()
         rows.append({"rto_code": r.rto_code, "rto_label": r.rto_label, "year": y, "bev_total": int(d.bev.sum()), "all_total": int(d.TOTAL.sum()),

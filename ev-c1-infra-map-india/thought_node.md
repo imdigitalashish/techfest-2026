@@ -10,12 +10,12 @@
 - _(none)_
 
 ## Now
-- **Phase:** 1–4 in parallel, LEAN MODE (Supervisor 05:49: no sub-agents, small requests, push every 30 min).
-- **Plan:** real-data walking skeleton (VAHAN + OSM chargers + boundaries) for the national view and one demo state, **Maharashtra**; landscape → components + contracts → ADR 001 → selection memo → Round-1 drafts.
-- **Doing (lead, sequential):** VAHAN plain-HTTP client works (no browser): JSF partial-AJAX + Excel export, validated on the CY2025 State × Fuel table. Next: national pulls, OSM charger pull, docs.
-- **Next:** (1) push skeleton code; (2) research/landscape.md; (3) architecture/components.md + contracts; (4) ADR 001; (5) selection memo; (6) deliverables/round1-*.md; (7) gap analysis numbers + map.
-- **Needs from user:** Register by 15 Oct and pick one track (after the 12 Oct selection). Team of 2–5: names and skills. An Open Charge Map API key (free signup) would add a third charger source; meanwhile OSM is the open source.
-- **Risks:** (1) VAHAN registrations ≠ on-road stock (no deregistration feed); (2) open charger data is incomplete vs official counts → we measure and publish completeness per state; (3) RTO → district crosswalk is manual; (4) tonight's network saturation (most sub-agents died on model 408s).
+- **Phase:** Morning package pushed (08:05 IST): landscape v1, components + contracts, ADR 001, real-data baseline v0, selection memo v1. Round-1 drafts next. Lean Mode until 08:30.
+- **Plan:** Spike 1 = completeness-aware charger census (C4 + C5); Spike 2 = adoption forecast + requirement sizing (C9 + C11) — see [ADR 001](architecture/adr/001-spike.md). Demo geography: Maharashtra.
+- **Doing:** lead only (no sub-agents). Maharashtra RTO-level VAHAN fetch resuming in the background (34/61 offices done).
+- **Next:** (1) `deliverables/round1-methodology.md` + `round1-roadmap.md`; (2) finish MH RTOs → RTO→district crosswalk; (3) boundaries (Survey of India–consistent) + national map; (4) second charger source (OCM key) → first C4/C5 numbers; (5) C9 backtest (train ≤2024, test 2025) as the first auto-research loop; (6) independent adversarial review of ADR 001 + literature check on capture–recapture for charger data.
+- **Needs from user:** Register by 15 Oct and pick one track (after the 12 Oct selection). Team of 2–5: names and skills. A free Open Charge Map API key (openchargemap.org → My Profile → API keys) to add a second open charger source.
+- **Risks:** (1) open supply data covers ~2% of official stations → completeness estimation may lack source overlap (fallback: calibrate to official state totals); (2) registrations ≠ on-road stock; (3) VAHAN dashboard markup could change (client fails loudly); (4) operator data terms; (5) official counts are 14 months older than VAHAN.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** EV Infra & Green Mobility AI Challenge — Techfest IIT Bombay with the Ministry of Heavy Industries (MHI) and the International Centre for Automotive Technology (ICAT). Prize pool ₹2,00,000; top 3 teams per track.
@@ -37,21 +37,39 @@
 - What companies ship: charger-locator apps and siting-analytics products from charge-point operators, utilities and mapping companies.
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — Demo geography = Maharashtra (assumption, reversible; pipeline is state-agnostic).
+- 2026-10-04 — VAHAN via plain-HTTP replay of the public dashboard (no browser, no third-party mirror).
+- 2026-10-04 — Canonical supply unit = *site* with connector list; official PIB state totals are held-out ground truth, never training data.
+- 2026-10-04 — [ADR 001](architecture/adr/001-spike.md): Spike 1 completeness-aware census (C4+C5); Spike 2 forecast + requirement (C9+C11).
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| C1 | vahan_ingest | dashboard → RegistrationRecord | manual Excel export | | **real data** | Σ RTO vs state reconciliation error |
+| C2 | charger_ingest | sources → ChargerRecord | per-source scrapers | | OSM + official totals | schema-valid share; freshness |
+| C3 | charger_normalize | ChargerRecord → canonical | rule tables | | taxonomy drafted | field accuracy on labelled sample |
+| C4 | charger_resolve | ChargerRecord[] → Site[] | distance + name match | ★ | planned | pairwise F1 |
+| C5 | census_completeness | Site[] → CompletenessEstimate | raw counts | ★ | ground truth on disk | rel. error vs held-out official totals |
+| C6 | admin_geo | boundaries → AdminUnit, RTO↔district | Census-2011 shapes | | MH RTO list | % RTOs mapped |
+| C7 | ev_stock | registrations → StockEstimate | cumulative regs | | baseline | holdout error |
+| C8 | demand_model | stock → DemandEstimate | EVs-per-charger ratio | | planned | rank corr. vs observed sites |
+| C9 | adoption_forecast | series → future stock | CAGR | ★2 | data on disk | backtest sMAPE |
+| C10 | access_gap | sites + demand → GapRecord | EVs per charger | | **v0 real (state)** | backtest AUC |
+| C11 | requirement_siting | gaps → Recommendation | norm-based counts | ★2 | planned (spopt) | demand covered per charger |
+| C12 | platform_api | outputs → API | static CSV | | planned | p95 latency |
+| C13 | dashboard_map | API → map UI | static choropleth | | planned | planner task time |
+| C14 | eval | all → metrics | — | | v0 | — |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (the team registers for one EV track by 15 Oct). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+_v1, 4 Oct 08:05 IST — final by 12 Oct. Scores 1–5 with one line of evidence each. Overall **4.2 / 5**._
+- **Winnability — 4:** a real national pipeline already runs on day 1: VAHAN (36/36 states, RTO-level) + official state charger totals + OSM. Most teams will have static or synthetic data; ours updates from the public dashboard.
+- **Innovation headroom — 4:** measured completeness of the national charger census (open data shows 600 of 29,277 official stations = 2.05%), with CIs validated against held-out official totals, plus segment-aware requirement estimates. Novelty vs. literature still UNVERIFIED (check by 12 Oct).
+- **Feasibility — 4:** all inputs are public and small (VAHAN tables are KB-sized); an M5 Mac suffices; Azure is optional. Risk: second and third charger sources need a key or permission.
+- **Demo strength — 5:** a national map → Maharashtra drill-down → "where do the next N chargers go, and why" is live-demoable, with every number clickable to its source.
+- **Fit with the user's strengths — 4:** large-scale data systems, ingestion, geospatial, cloud. Frontier models are secondary (ER, NL queries), not central.
+- **Biggest risk:** supply-side data. Open sources are ~2% complete in India, so district-level supply depends on getting operator/OCM/UEI feeds; fallback is calibration to official state totals.
+- **One-line pitch:** India's first completeness-aware EV charging census. We fuse every public charger source, measure what is still missing, and tell each district how many chargers of which type it needs, and where, with an evidence trail for every number.
+- **Headline real numbers (from [`eval/results/state_gap_baseline.csv`](eval/results/state_gap_baseline.csv)):** 10,550,090 BEV registrations in VAHAN till today (`ELECTRIC(BOV)` + `PURE EV`, 36 states/UTs); 2,356,971 in CY2025 = 8.05% of all CY2025 registrations; 360 BEV registrations per official public charging station nationally (29,277 PCS, PIB 1 Aug 2025); BEV registrations per PCS run from 152 in Karnataka to 1,085 in Bihar and 1,123 in Assam.
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -64,4 +82,10 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - Open Charge Map API returns 403 without a key → use OSM `amenity=charging_station` (Overpass) as the open charger source tonight.
 - Decision (assumption, reversible): demo geography = **Maharashtra** (largest e-4W market, Mumbai–Pune–Nashik corridors, state EV Policy 2025); pipeline stays state-agnostic.
 - Switched to LEAN MODE per Supervisor.
+
+### 2026-10-04 08:05 IST — Morning package v1 (Lean Mode)
+- **Real data, reproducible:** VAHAN national pulls (State × Fuel for Till-Today and CY2020–2026; 36 states × vehicle class × fuel) and Maharashtra RTO tables (34/61 offices so far), plus OSM India chargers (600 features) and official state-wise PCS parsed from PIB 2151390 (36 states, sum 29,277 ✓) and PIB 2118894 (BEE, 26,367 ✓).
+- **Baseline v0 (C10 state level):** 10,550,090 BEV registrations till today; 360 per official PCS nationally; worst large states Assam 1,123, Bihar 1,085, UP 792; best Karnataka 152. Hypothesis: e-rickshaw-heavy states are over-flagged by the naive ratio → segment-aware demand (C8) is required.
+- **Found and fixed:** the PIB pages contain each table twice, which doubled the totals → dedupe plus a sum check against the stated totals. The baseline's summary JSON is still stale (an empty RTO table crashes the MH section); the state CSV is correct and the memo uses it.
+- Wrote research/landscape.md (only pages opened tonight; leads marked UNVERIFIED), architecture/components.md + contracts (pydantic + JSON Schemas), and ADR 001 (six hats, thesis/antithesis/synthesis, scores; the independent adversarial review is pending: no sub-agents in Lean Mode).
 
