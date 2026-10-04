@@ -1,0 +1,156 @@
+### ti:%22optimal%20execution%22
+2026-09-30 2610.00619v1 | Beyond Supra-Competitive Outcomes: Collusive Behaviour in Deep Reinforcement Learning for Optimal Execution Ga | Christos Spyridon Koulouris, Carlo Campajola
+2026-08-29 2608.29468v1 | The Convergence Rate of Stochastic Tracking with Application to Optimal Execution | Marcel Nutz, Moritz Voss
+2026-08-18 2609.27786v1 | Feasible Multi-Asset Optimal Execution under Cash Constraints | Ryuji Hashimoto, Namid R. Stillman
+2026-08-10 2608.10139v1 | AI Query Compilation for Unified and Optimized Execution | Yeounoh Chung, Helena Caminal, Fatma Ozcan
+2026-08-10 2608.09532v1 | Carnot: Interpretable, Interactive, and Optimized Execution of Deep Research Queries | Matthew Russo, Yash Agarwal, Tianyu Li
+2026-07-31 2607.29514v1 | Robust mean field control: an application to optimal execution under composite uncertainty | Huafu Liao, Shuhui Liu, Chenchen Mou
+2026-07-30 2607.28323v1 | Optimal Execution with Passive Market Impact | Alexander Barzykin, Robert Boyce, Eyal Neuman
+2026-06-30 2606.31387v2 | Signature-Based Optimal Execution for Statistical Arbitrage with Path-Dependent Trading Signals | Gianmarco Morbelli, Sven Karbach, Mike Derksen
+2026-05-22 2605.24242v2 | Explicit Signal-Adaptive Sequential Optimal Execution Quotes | Fenghui Yu
+2026-03-02 2603.01588v1 | Jump Like A Squirrel: Optimized Execution Step Order for Anytime Random Forest Inference | Daniel Biebert, Christian Hakert, Kay Heider
+2026-01-29 2601.22113v2 | Diverse Approaches to Optimal Execution Schedule Generation | Robert de Witt, Mikko S. Pakkanen
+2026-01-07 2601.03799v2 | Optimal execution on Uniswap v2/v3 under transient price impact | Bastien Baude, Damien Challet, Ioane Muni Toke
+2025-12-14 2512.12708v1 | Multi-Trajectory Physics-Informed Neural Networks for HJB Equations with Hard-Zero Terminal Inventory: Optimal | Anthime Valin
+2025-11-19 2511.15262v1 | Reinforcement Learning in Queue-Reactive Models: Application to Optimal Execution | Tomas Espana, Yadh Hafsi, Fabrizio Lillo
+2025-11-03 2511.02016v2 | ABIDES-MARL: A Multi-Agent Reinforcement Learning Environment for Optimal Execution with Endogenous Liquidity | Patrick Cheridito, Jean-Loup Dupret, Zhexin Wu
+2025-06-17 2506.14485v3 | Optimized Execution of FreeCHR | Sascha Rechenberger, Thom Frühwirth
+2025-06-13 2506.11813v2 | Optimal Execution under Liquidity Uncertainty | Etienne Chevalier, Yadh Hafsi, Vathana Ly Vath
+2025-06-06 2506.05755v1 | FlowOE: Imitation Learning with Flow Policy from Ensemble RL Experts for Optimal Execution under Heston Volati | Yang Li, Zhi Chen
+2025-05-21 2505.15611v1 | Shortermism and excessive risk taking in optimal execution with a target performance | Emilio Barucci, Yuheng Lan
+2025-04-14 2504.10282v2 | Optimal Execution in Intraday Energy Markets under Hawkes Processes with Transient Impact | Konstantinos Chatziandreou, Sven Karbach
+2025-04-09 2504.06717v2 | Optimal Execution and Macroscopic Market Making | Ivan Guo, Shijia Jin
+2025-03-11 2503.08833v2 | Randomization in Optimal Execution Games | Steven Campbell, Marcel Nutz
+2025-02-13 2502.09749v1 | Vote-Tree-Planner: Optimizing Execution Order in LLM-based Task Planning Pipeline via Voting | Chaoyuan Zhang, Zhaowei Li, Wentao Yuan
+2025-01-25 2501.15106v2 | Solving Optimal Execution Problems via In-Context Operator Networks | Tingwei Meng, Moritz Voß, Nils Detering
+2025-01-16 2501.09638v2 | Optimal Execution among $N$ Traders with Transient Price Impact | Steven Campbell, Marcel Nutz
+2024-12-28 2501.07581v2 | Optimal Execution Strategies Incorporating Internal Liquidity Through Market Making | Yusuke Morimoto
+2024-12-03 2412.02047v1 | Simplifying HPC resource selection: A tool for optimizing execution time and cost on Azure | Marco A. S. Netto, Wolfgang De Savador, Davide Vanzo
+2024-11-16 2411.10726v2 | Some Computations for Optimal Execution with Monotone Strategies | Yan Dolinsky
+2024-11-10 2411.06389v2 | Optimal Execution with Reinforcement Learning | Yadh Hafsi, Edoardo Vittori
+2024-11-07 2411.04616v2 | Optimal Execution under Incomplete Information | Etienne Chevalier, Yadh Hafsi, Vathana Ly Vath
+### abs:%22optimal%20execution%22%20AND%20abs:%22reinforcement%20learning%22
+2026-08-10 2608.09138v2 | SpeedTuning: Speeding Up Policy Execution with Lightweight Reinforcement Learning | David D. Yuan, Tony Z. Zhao, Kaylee Burns
+2026-07-01 2607.01415v1 | The Rollout Infrastructure Tax in Coding-Agent Reinforcement Learning | Daniel Thi Graviet, Lovre Pesut, Ivan Dagelic
+2026-06-07 2606.08379v1 | TT-DAC-PS: Twin-Target Deterministic Actor-Critic with Policy Smoothing for Optimal Trade Execution | Ilia Zaznov, Atta Badii, Julian Kunkel
+2026-05-19 2605.20348v1 | Memory-Induced Supra-Competitive Outcomes Between Deep Reinforcement Learning Agents in Optimal Trade Executio | Christos Spyridon Koulouris, Carlo Campajola
+2026-04-09 2604.09741v1 | ExecTune: Effective Steering of Black-Box LLMs with Guide Models | Vijay Lingam, Aditya Golatkar, Anwesan Pal
+2025-11-24 2512.00062v2 | SpeedAug: Policy Acceleration via Tempo-Enriched Policy and RL Fine-Tuning | Taewook Nam, Junmo Cho, Youngsoo Jang
+2025-11-19 2511.15262v1 | Reinforcement Learning in Queue-Reactive Models: Application to Optimal Execution | Tomas Espana, Yadh Hafsi, Fabrizio Lillo
+2025-11-03 2511.02016v2 | ABIDES-MARL: A Multi-Agent Reinforcement Learning Environment for Optimal Execution with Endogenous Liquidity | Patrick Cheridito, Jean-Loup Dupret, Zhexin Wu
+2025-10-30 2510.26438v2 | An Impulse Control Approach to Market Making in a Hawkes LOB Market | Konark Jain, Nick Firoozye, Jonathan Kochems
+2025-10-25 2510.22206v1 | Right Place, Right Time: Market Simulation-based RL for Execution Optimisation | Ollie Olby, Andreea Bacalum, Rory Baggott
+2025-10-06 2510.04952v2 | Safe and Compliant Cross-Market Trade Execution via Constrained RL and Zero-Knowledge Audits | Ailiya Borjigin, Cong He
+2025-09-19 2509.15965v2 | RLinf: Flexible and Efficient Large-scale Reinforcement Learning via Macro-to-Micro Flow Transformation | Chao Yu, Yuanqing Wang, Zhen Guo
+2025-08-14 2508.10691v1 | THERMOS: Thermally-Aware Multi-Objective Scheduling of AI Workloads on Heterogeneous Multi-Chiplet PIM Archite | Alish Kanani, Lukas Pfromm, Harsh Sharma
+2025-05-18 2505.12465v1 | Resolving Latency and Inventory Risk in Market Making with Reinforcement Learning | Junzhe Jiang, Chang Yang, Xinrun Wang
+2025-01-17 2501.10543v2 | An Innovative Data-Driven and Adaptive Reinforcement Learning Approach for Context-Aware Prescriptive Process  | Mostafa Abbasi, Maziyar Khadivi, Maryam Ahang
+2024-11-11 2411.06645v1 | Two Kinds of Learning Algorithms for Continuous-Time VWAP Targeting Execution | Xingyu Zhou, Wenbin Chen, Mingyu Xu
+2024-11-10 2411.06389v2 | Optimal Execution with Reinforcement Learning | Yadh Hafsi, Edoardo Vittori
+2024-10-17 2410.13493v1 | Deep Reinforcement Learning for Online Optimal Execution Strategies | Alessandro Micheli, Mélodie Monod
+2024-07-14 2407.21025v2 | Reinforcement Learning in High-frequency Market Making | Yuheng Zheng, Zihan Ding
+2024-06-19 2406.13223v2 | Act Better by Timing: A timing-Aware Reinforcement Learning for Autonomous Driving | Guanzhou Li, Jianping Wu, Yujing He
+2024-02-19 2402.12049v2 | Reinforcement Learning for Optimal Execution when Liquidity is Time-Varying | Andrea Macrì, Fabrizio Lillo
+2023-08-25 2308.13289v1 | JAX-LOB: A GPU-Accelerated limit order book simulator to unlock large scale reinforcement learning for trading | Sascha Frey, Kang Li, Peer Nagy
+2023-07-06 2307.03119v1 | Learning Multi-Agent Intention-Aware Communication for Optimal Multi-Order Execution in Finance | Yuchen Fang, Zhenggang Tang, Kan Ren
+2023-06-27 2306.15512v1 | Trajectory Generation, Control, and Safety with Denoising Diffusion Probabilistic Models | Nicolò Botteghi, Federico Califano, Mannes Poel
+2023-05-11 2305.07440v2 | Optimizing Memory Mapping Using Deep Reinforcement Learning | Pengming Wang, Mikita Sazanovich, Berkin Ilbeyi
+2023-04-29 2305.07466v1 | Systematic Review on Reinforcement Learning in the Field of Fintech | Nadeem Malibari, Iyad Katib, Rashid Mehmood
+2023-03-13 2303.07393v4 | Many learning agents interacting with an agent-based market model | Matthew Dicks, Andrew Paskaramoorthy, Tim Gebbie
+2022-10-13 2210.07184v2 | Towards Multi-Agent Reinforcement Learning driven Over-The-Counter Market Simulations | Nelson Vadori, Leo Ardon, Sumitra Ganesh
+2022-09-16 2209.07823v1 | Model-based gym environments for limit order book trading | Joseph Jerome, Leandro Sanchez-Betancourt, Rahul Savani
+2022-08-22 2208.10434v4 | A simple learning agent interacting with an agent-based market model | Matthew Dicks, Andrew Paskaramoorthy, Tim Gebbie
+### abs:%22square-root%22%20AND%20abs:%22impact%22
+2026-09-29 2609.37872v1 | A Generalized Langevin Model of Latent Liquidity and Concave Price Impact | Andrey Itkin
+2026-09-25 2609.31260v1 | Agentic Limit Order Books: Phase Transitions and Market Impact | Jan Rosenzweig
+2026-09-22 2609.26710v2 | Normalized fractional Hirsch Index and Modified Pareto Law | Asim Ghosh, Bikas K. Chakrabarti
+2026-09-12 2609.13715v1 | Event-Time Order-Flow Memory, Operational-Time Impact, and Subordinated Market Observables | Christopher Angstmann, Tim Gebbie
+2026-09-07 2609.07130v1 | Majoron-driven spontaneous leptogenesis in type-II seesaw model | Eung Jin Chun, Tae Hyun Jung, Jin Sun
+2026-09-02 2609.02447v1 | Price manipulation in nonlinear transient impact models: rigidity before memory and complete positivity after  | Minhyeok Lee
+2026-08-29 2608.29468v1 | The Convergence Rate of Stochastic Tracking with Application to Optimal Execution | Marcel Nutz, Moritz Voss
+2026-08-02 2608.00988v1 | Exactly solvable model for the diffusive price-dynamics paradox under long-range correlated market-order flow | Yuki Sato, Shunta Fujiwara, Kiyoshi Kanazawa
+2026-07-06 2607.05141v1 | Square-Root Price Impact Is Necessary for Endogenous Manipulation Cycles in Learning-Agent Markets | Yang Zhou, Jianwen Chen, Ruipeng Wei
+2026-07-05 2607.04280v1 | Order Splitting and Liquidity Replenishment Are Jointly Necessary for the Square-Root Law of Market Impact: | Yang Zhou, Jianwen Chen, Ruipeng Wei
+2026-06-29 2606.30455v1 | Curvature-Weighted Gradient Diversity: A Noise Measure for Geometry-Adaptive SGD Schedules | Muhammad Hamza, Ayush Goel
+2026-06-22 2606.24019v1 | Empirical Confirmation of the Square-Root Law of Market Impact in a U.S. Large-Cap Equity | Aniket Vasaikar
+2026-06-15 2606.16269v2 | Revisiting Trade-sign Long-memory and Square-root Law price impact | Chris Angstmann, Tim Gebbie
+2026-06-05 2606.07059v3 | Diffusive in plain sight: An inconspicuous law of market impact | Julius F. Bonart
+2026-05-13 2605.13569v1 | Exclusive dimuon production and coherent charmonium photoproduction at forward rapidity in ultra-peripheral Pb |  ALICE Collaboration
+2026-04-30 2604.27694v2 | The Satoshi Overhang: Why the Bear Case is Bounded | Karl T. Ulrich
+2026-04-29 2604.26282v1 | Rethinking Mutual Coupling in Movable Antenna MIMO Systems: Modeling and Optimization | Tianyi Liao, Wei Guo, Jun Qian
+2026-03-30 2603.29086v2 | Realistic Market Impact Modeling for Reinforcement Learning Trading Environments | Lucas Riera Abbade, Anna Helena Reali Costa
+2026-02-26 2602.22797v1 | Resonant grazing bifurcations revisited | David J. W. Simpson, Indranil Ghosh
+2026-01-30 2601.23172v2 | A unified theory of order flow, market impact, and volatility | Johannes Muhle-Karbe, Youssef Ouazzani Chahdi, Mathieu Rosenbaum
+2026-01-29 2601.22113v2 | Diverse Approaches to Optimal Execution Schedule Generation | Robert de Witt, Mikko S. Pakkanen
+2026-01-16 2601.11375v1 | Automated Liquidity: Market Impact, Cycles, and De-pegging Risk | B. K. Meister
+2026-01-15 2601.10705v3 | Distributed Perceptron under Bounded Staleness, Partial Participation, and Noisy Communication | Keval Jain, Anant Raj, Saurav Prakash
+2025-12-30 2512.24104v2 | Exceptional Points in the Scattering Resonances of a Sphere Dimer | Emanuele Corsaro, Filippo Capolino, Carlo Forestiere
+2025-12-18 2512.16551v3 | Decoupling perturbations from background in $f(Q)$ gravity: the square-root correction and the impact on the $ | Chunyu Li, Xin Ren, Yuhang Yang
+2025-11-11 2511.08571v1 | Forecast-to-Fill: Benchmark-Neutral Alpha and Billion-Dollar Capacity in Gold Futures (2015-2025) | Mainak Singha, Jose Aguilera-Toste, Vinayak Lahiri
+2025-11-07 2511.05211v1 | Mapping Research Productivity of BRICS Countries with Special Reference to Coronary Artery Disease (CAD): A Sc | Muneer Ahmad
+2025-10-26 2510.22828v1 | Efficiently Learning Synthetic Control Models for High-dimensional Disaggregated Data | Ye Shen, Rui Song, Alberto Abadie
+2025-10-17 2510.16218v1 | The VIVID function for numerically continuing periodic orbits arising from grazing bifurcations of hybrid dyna | Indranil Ghosh, David J. W. Simpson
+2025-10-12 2510.10391v3 | Breakdown of the Wiedemann-Franz law in an interacting quantum Hall metamaterial | Patrice Roche, Carles Altimiras, François D. Parmentier
+### abs:%22limit%20order%20book%22%20AND%20abs:%22simulat%2A%22%20AND%20abs:%22impact%22
+### abs:ABIDES
+2026-09-30 2609.39083v1 | MRI Super-Resolution with RCDM/WaveMix and Task-Aware Segmentation | Kavitha Viswanathan, Harsh Choudhary, Amit Sethi
+2026-09-28 2609.35405v1 | Reduce, Then Encode: Multiscale Volumetric Reduction for 2D Foundation Models in Brain MRI | Dexuan Ding, Yuankai Qi, Bogong Wang
+2026-09-28 2609.34611v1 | Beyond Site Agreement: Re-estimation for Brain Network Generalization | Yingxu Wang, Kunyu Zhang, Yanwu Yang3
+2026-09-28 2609.34284v2 | Over-Personalization Is a Decision Failure: Generation-Induced Apply Bias in LLMs | Haeun Jang, Yonghyun Jun, Hwanhee Lee
+2026-09-24 2609.30610v1 | Scientific Data Analysis for Class-Informatics in Computational Taxonomy | Thomas B. Michelon, Hsieh Fushing
+2026-09-24 2609.29932v1 | It's the Geometry, Not the Model: Effective Rank and Subspace Alignment in Functional Connectivity Classificat | Xiao Fan, Jingyuan Li, Yubo Han
+2026-09-17 2609.19755v1 | HyperAMS-Net: Adaptive Multi-Scale Spatial Hypergraph Network for Brain Disorder Classification | Proloy Kumar Mondal, Md Kamran Hussin Chowdhury, Hoi Leong Lee
+2026-09-15 2609.17400v1 | Nonlocal intrinsic Harnack estimates | Naian Liao
+2026-09-14 2609.15113v2 | Legislating World-Model-Based Planning with Legal Reasoning | Dylan Waldner, Yiannis Kantaros, Guido Governatori
+2026-08-31 2608.30418v1 | Benchmarking External Generalization of SPD Matrix Learning for Resting-State fMRI Connectome Prediction | Ce Ju, Antoine Collas, Florent Bouchard
+2026-08-31 2609.09186v1 | M2LG-DG: A Multi-modal Local-Global Domain Generalization Framework for Cross-site Major Depressive Disorder C | Muhammad Asif Hasan, Yanming Zhu, Xuefei Yin
+2026-08-21 2609.27882v1 | A Hybrid Spatial Statistical Learning Framework for Individualized Probability Estimation: Application to Mult | Montserrat Fuentes, Veronica B. Patterson
+2026-08-20 2609.27879v1 | Covariance Kernels on Unordered Pair Spaces: Theory and Applications to Network-Valued Data | Montserrat Fuentes
+2026-08-20 2608.19914v4 | Multi-Source Wasserstein Distributionally Robust Graph Learning | Chuansen Peng, Yifan Xia, Jinshan Zhong
+2026-08-19 2608.19290v1 | The Connectome and the Quest for the Functional Logic of the Drosophila Early Olfactory System | Aurel A. Lazar, Yiyin Zhou
+2026-08-15 2608.15266v1 | BrainLinear: A Linear Model for Brain Network Analysis in Sparse Tangent Subspaces | Sijing Wu, Dongyuan Li, Miaoting Huang
+2026-08-10 2608.10295v1 | Frozen Brain-MRI Foundation Models Are Site Fingerprints | Saman Rahbar
+2026-08-07 2608.07393v1 | FedDOSE: Federated Learning Framework Decomposing Site Effects for Modeling Brain Dynamic Functional Connectiv | Deepank Girish, Yi Hao Chan, Yubin Zheng
+2026-07-08 2607.07077v1 | Navigating Hierarchy: Hyperbolic Learning on Brain Graphs for Disorder Diagnosis | Yapeng Li, Bo Jiang, Ziyan Zhang
+2026-07-02 2607.01901v1 | SABER: A Semantic-Aligned Brain Network Analysis Framework via Multi-scale Hypergraphs | Yidan Xu, Xiangmin Han, Rundong Xue
+2026-06-29 2606.29695v1 | Progressive Self-Supervised Learning with Individualized Community Assignment for Brain Network Analysis | Hairui Chen, Yanwu Yang, Jianfeng Cao
+2026-06-28 2606.29200v1 | BrainRiem: Riemannian Prototype Learning for Source-Free Cross-Site Brain Network Diagnosis | Kunyu Zhang, Tianxiang Xu
+2026-05-07 2605.06050v2 | Learning beyond Site Bias for OOD Generalization in Brain Networks | Yingxu Wang, Kunyu Zhang, Yanwu Yang
+2026-05-02 2605.01240v3 | Rhamba: Region-Aware Hybrid Attention-Mamba Framework for Self-Supervised Learning in Resting-State fMRI | Pankaj Pandey, Ruthwik Reddy Doodipala, Pratheek Eranki
+2026-04-23 2604.21993v1 | When Quotes Crumble: Detecting Transient Mechanical Liquidity Erosion in Limit Order Books | Haohan Xu, Jason Bohne, Pawel Polak
+2026-04-20 2604.17713v1 | Modeling Higher-Order Brain Interactions via a Multi-View Information Bottleneck Framework for fMRI-based Psyc | Kunyu Zhang, Qiang Li, Vince D. Calhoun
+2026-04-16 2604.15059v1 | Attention-Gated Convolutional Networks for Scanner-Agnostic Quality Assessment | Chinmay Bakhale, Anil Sao
+2026-04-14 2604.12294v1 | The IQ-Motion Confound in Multi-Site Autism fMRI May Be Inflated by Site-Correlated Measurement Uncertainty | Kareem Soliman
+2026-03-27 2603.26971v1 | Graph Attention Network-Based Detection of Autism Spectrum Disorder | Abigail Kelly, Ramchandra Rimal, Arpan Sainju
+2026-03-16 2603.15168v1 | Multimodal Connectome Fusion via Cross-Attention for Autism Spectrum Disorder Classification Using Graph Learn | Ansar Rahman, Hassan Shojaee-Mend, Sepideh Hatamikia
+### abs:%22propagator%22%20AND%20abs:%22impact%22
+2026-09-30 2610.00477v1 | The impact of relativistic AGN jets on realistic galaxy cluster environments | K. Hervella-Seoane, M. Perucho, S. Planelles
+2026-09-30 2609.39608v1 | Is This Evidence Decision-Critical? Learning to Verify Rule-Governed Decisions | Haoyang Zhang, Jianpeng Zhao, Qi Hao
+2026-09-30 2609.39509v1 | Mathematical Exploration of Wave Motion due to Earth-Space Force (Ground Action) Consequences | Monday Sunday Adiaha, Oladiran Johnson Abimbola
+2026-09-29 2609.38169v1 | STEPQuant: When and Where Errors Matter in Delta-Rule Recurrent State Quantization | Bingchen Yao, Haobo Xu, Haokun Lin
+2026-09-29 2609.37306v1 | Communication-Oriented Channel Characteristics of Holographic Curvature-Reconfigurable Apertures | Hang Lin, Shu Sun, Hangsong Yan
+2026-09-29 2609.36433v1 | RA-CFGCache: From Branch-Level Criteria to Guided-Risk Control under Classifier-Free Guidance | Yiming Liu, Ben Wan, Tongxuan Liu
+2026-09-28 2609.36075v1 | Permeability and microcrack geometry: Dynamic loading induced evolution | Rigoberto Moncada, Efrem Vitali
+2026-09-28 2609.35645v1 | CoSE-E: A Benchmark for Code-switched Speech Evaluation in Enterprise Settings | Shama Gupta, Hoang H Nguyen, Chelsea Huang
+2026-09-28 2609.35644v1 | Energy-Driven Evaluation of Network Digital Twinning Applied to mmWave Beam Management | João Borges, Bruno Castro, Kleber Cardoso
+2026-09-28 2609.34993v1 | LIVE-RIS: A Comprehensive In-Flight Dataset for UAV-Mounted RIS Channel Measurements | David Müller, Kevin Weinberger, Aydin Sezgin
+2026-09-28 2609.34945v1 | Black holes with axion hair from cubic Riemann interactions | Roberto Casadio, Roldao da Rocha
+2026-09-28 2609.34668v1 | Covert Communications over Enormous Fluid Antenna Systems (E-FAS): Impact of Channel Hardening on Detection | Farshad Rostami Ghadi, Damoon Shahbaztabar, Kai-Kit Wong
+2026-09-28 2609.34356v1 | Predictive Semantic Safety: From Visual Physical Reasoning to Safety-Critical Control | Taekyung Kim, Salem Fradi, Yanning Dai
+2026-09-28 2609.34317v1 | The Construction of an Empirical Dataset of Incomplete Software Changes from Open Source Projects | Savira Ramadhanty, Profir-Petru Pârţachi, Yoshiya Ishida
+2026-09-27 2609.33739v1 | Error Performance Analysis of CFO-Impaired OFDM-Based Rate-Splitting SCMA | Minerva Priyadarsini, Kuntal Deka, Zilong Liu
+2026-09-27 2609.33384v2 | PulseQuant: Propagation-Guided Subspace Correction for 4-Bit Video Diffusion Transformers | Yutong Wang, Xingtong Ge, Enhuai Liu
+2026-09-27 2609.33344v1 | ReLoc: Rethinking Scene Coordinate Regression Architecture for Robust Outdoor LiDAR-based Localization | Heejoon Moon, Yurim Cho, Je Hyeong Hong
+2026-09-25 2609.31106v1 | Probing the cosmic web with fast radio bursts: II. Scintillation | Sharon Lapiner, Nir Mandelker, Paz Beniamini
+2026-09-24 2609.30523v1 | Containing Behavioral Cascades from Manipulated Claims in LLM-Powered Multi-Robot Systems | Waleed Bin Khalid, Byung-Cheol Min
+2026-09-24 2609.30408v1 | Machine Learning $β$-decay Half-lives and Their Application to $r$-Process Observables | Mengke Li, Flora Wang, Jonathan Engel
+2026-09-24 2609.31774v1 | Joint measurements of thermal Sunyaev-Zel'dovich and cosmic infrared background cross-correlations with cosmic | Amy Wayland, Adrien La Posta, David Alonso
+2026-09-24 2609.30129v1 | Study of Iterative Detection and Decoding for {Mixed Near- and Far-Field} XL-MIMO Systems | Nayyab Haider, Rodrigo C. de Lamare
+2026-09-24 2609.30011v1 | Gravitational spin Hall effect in the Reissner-Nordström black holes: evolution equations and charge effects | Zhan Liu, Jia-Hui Huang
+2026-09-24 2609.28947v1 | Why Does Misinformation Propagate Faster? An Algorithmic Perspective on X | Pan Li, Shuang Gao
+2026-09-23 2609.28001v1 | Stellar flares with Ariel: detection prospects and impacts on exoplanet spectroscopy | K. Vida, B. Seli, B. Edwards
+2026-09-22 2609.25657v1 | Targeted Review for AI-Assisted Biodiversity Surveys: Active Continuous-Score Occupancy Modeling | Timm Haucke, Lauren Harrell, Justin Kay
+2026-09-21 2609.24495v1 | Oblique kink waves in solar coronal streamers | Aleksandr V. Rubtsov, Valery M. Nakariakov, Dmitri Yu. Klimushkin
+2026-09-20 2609.23331v1 | Measurement-Based FR3 Urban Macrocell Channel Characterization and Coverage Analysis | Enrui Liu, Pan Tang, Haiyang Miao
+2026-09-18 2609.22044v1 | Asteroids Impacting the Solar System Planets and the Moon. II: Comparison with Observational Impact Records | Qifeng Cheng, Daniel Scolnic
+2026-09-18 2609.22042v1 | Asteroids Impacting the Solar System Planets and the Moon. I. Collision Rates from N-body Simulations | Qifeng Cheng, Daniel Scolnic

@@ -1,0 +1,2 @@
+[{"kind": "TWAP", "label": "TWAP"},
+ {"kind": "PROBE", "label": "PROBE", "probe_seed": 7}]

@@ -1,0 +1,3 @@
+[{"kind": "TWAP", "label": "TWAP"},
+ {"kind": "PROBE", "label": "PROBE", "probe_seed": 7},
+ {"kind": "IA", "label": "IA_default", "inst_cost": 0.05, "g_tr": 0.01, "tau_s": 60.0}]
