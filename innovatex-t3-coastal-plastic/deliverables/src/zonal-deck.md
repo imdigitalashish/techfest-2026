@@ -177,7 +177,7 @@ DON'T SAY "AI detects all plastic". Night, rain, glare and submerged film are re
 
 | Challenge | Design answer |
 |---|---|
-| Tides reverse the flow twice a day | Twin models each site's tide; dispatch uses tide windows; the one-way pocket stops the flood tide lifting the catch |
+| Tides reverse the flow twice a day | Twin models each site's tide; dispatch uses tide windows; the one-way pocket is designed to keep the catch when the flood tide arrives (tow-tank test T2) |
 | Monsoon surges | Fail-open fuse at a set head; the pocket sits outside the fuse path so stored catch stays |
 | Salt, silt, hyacinth | HDPE floats, SS316 fittings, node on a pole above the high-water mark (traps already use HDPE and marine-grade aluminium: {{f:F21|Bandalong}}) |
 | Monsoon power | Sized for July: {{f:F15|3.79 kWh/m²/day}} vs {{f:F15|7.09}} in May <span class="small">(NASA POWER)</span> |
@@ -197,7 +197,7 @@ DON'T SAY a payback period as fact. It depends on the effect size, which the pil
 - **Who pays:** BMC already funds booms and drains (budget {{f:F23|₹80,952.56 crore}} for 2026-27; roads and storm-water drains take more than half). Producers under EPR: Category II covers {{f:F22|"carry bags, plastic sachet or pouches"}}; low-value film can go to cement-kiln co-processing. *Whether drain-recovered plastic earns EPR certificates is not settled in the rules: we treat it as upside.* Verified-kilogram credits already sell (Plastic Fischer).
 - **Hook:** BMC's {{f:F24|₹13,000 crore}} flood plan (work from October 2026) adds {{f:F24|8 to 10 feet}} mesh screens and expands water-level sensors from {{f:F24|seven}} pilot sites. NullahNet is the measurement and dispatch layer for exactly such assets.
 - **Pilot ask:** 2–3 small outfalls in one ward (one gated, one open), away from the Interceptor sites.
-- **Roadmap:** Oct, reversed-flow flume + fuse tests → Nov, edge node on the flume (before exams) → 1 Dec, report + working prototype → Dec, live flume + dashboard demo.
+- **Roadmap:** Oct, tow-tank flume: boom angle, pocket retention, fuse tests → Nov, edge node on the flume (before exams) → 1 Dec, report + working prototype → Dec, live tow-tank + dashboard demo.
 
 <!--
 TIME 8:40–9:15 (35 s).

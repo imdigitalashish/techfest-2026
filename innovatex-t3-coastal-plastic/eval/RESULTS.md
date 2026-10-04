@@ -1,6 +1,6 @@
 # Results — every number with its reproduce command
 
-Generated 2026-10-04 16:32 IST at commit `495c407` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
+Generated 2026-10-04 16:33 IST at commit `4a1312c` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
 
 ## detection — flux_synthetic.json
 

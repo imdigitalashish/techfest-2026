@@ -68,7 +68,7 @@ Yes. Interception is the last line of defence. BMC itself estimated that 500 t/d
 Every site-specific input is configuration: tide, rain, geometry, and gated or open outfall. Tide and rain feeds are global. A new coastal city needs site surveys and its contractors on the records system, not new software.
 
 **19. "What will you have built by 1 December?"**
-A reversed-flow flume comparing a straight boom, an angled boom and the one-way pocket, with measured retention and head rise. An edge node over the flume streaming fill data into the twin. The dashboard and evidence records, live. Hardware is PLANNED today; we say so on every slide.
+A tow-tank flume comparing a straight boom, an angled boom and the one-way pocket, with measured capture, retention under reversal and head rise. An edge node over the flume streaming fill data into the twin. The dashboard and evidence records, live. Hardware is PLANNED today; we say so on every slide.
 
 **20. "Why these four sites?"**
 They are real outfalls located on OpenStreetMap: Mithi to Mahim Creek, Oshiwara to Malad Creek, the Dahisar mouth, and Trombay (approximate). They cover river mouths and creeks on both coasts. Flap-gated outfalls are not modelled yet, and we say so.
