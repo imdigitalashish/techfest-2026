@@ -17,7 +17,7 @@
 ## Why A beats the obvious baseline (first principles)
 - Exactness: with A fixed, ΔW_k = ΔB_k A is linear in the trained variable, so any weighted average of updates is the update of the weighted average — no cross terms, for any rank mix (proved trivially; unit-tested: `test_anchor_is_exact_for_mixed_ranks`).
 - Because the space is exact and linear, *classic* FL theory (FedNova's normalisation, MIFA's memory) applies to LoRA without approximation — which is what makes weak, intermittent devices count.
-- Communication: a rank-r_k device uploads r_k·d_out floats per layer (A regenerated from the seed): measured 0.4–2.9 MB/round vs 0.9–7.4 MB for FedAvgAB at the same ranks (smoke test, `eval/results`).
+- Communication: a rank-r_k device uploads r_k·d_out floats per layer (A regenerated from the seed), i.e. 2.5× less than A+B for q_proj/v_proj on SmolLM2-135M (r·768 vs r·1,920 floats per layer pair). Measured over 12 rounds of the dropout scenario with identical participation: anchor_naive 17.7 / 6.6 / 1.8 / 1.7 / 1.1 MB (c0…c4) vs fedavg_ab_het 44.2 / 16.6 / 4.6 / 4.1 / 2.8 MB (`eval/results/v1_summary.md`).
 - Cost: frozen A reduces expressiveness (RoLoRA's critique) → mitigations to test in the ratchet: larger r_max for strong devices, periodic A re-draw ("anchor refresh") merged into the base, or RoLoRA-style alternation on strong devices only.
 
 ## Ratchet backlog (program.md)

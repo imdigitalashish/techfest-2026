@@ -2,14 +2,14 @@
 
 **AnchorLoRA: federated LoRA that weak devices can join, dropouts can't derail, and no device can dominate**
 
-*Word count (body, section headings included, excluding this title and the notes at the end): 899. Pilot numbers are single-seed, 12-round results from our walking skeleton (`eval/results/v1_summary.md`). They motivate the plan; they are not the final evaluation.*
+*Word count (body, section headings included, excluding this title and the notes at the end): 897. Pilot numbers are single-seed, 12-round results from our walking skeleton (`eval/results/v1_summary.md`). They motivate the plan; they are not the final evaluation.*
 
 ### Problem & theme chosen
 Theme 1 (Efficient AI at Scale), Problem 1: *Cheap Fine-Tuning Across Weak, Scattered Devices.* Organisations hold text they cannot pool (trading desks across jurisdictions, hospital sites, staff phones). Fine-tuning one shared small model *in place* with LoRA, on devices of very different power, is the cheapest route to specialisation, and a systems problem disguised as an optimisation problem.
 
 ### Understanding of the challenge
 Three things break the obvious recipe (PEFT LoRA + Flower FedAvg):
-1. **LoRA updates are products.** A device's weight change is ΔW_k = B_k·A_k, so averaging A and B separately gives mean(B)·mean(A) ≠ mean(B·A), and zero-padding mixed ranks compounds the error. In our pilot, FedAvg misallocated 9–36% of each round's update.
+1. **LoRA updates are products.** A device's weight change is ΔW_k = B_k·A_k, so averaging A and B separately gives mean(B)·mean(A) ≠ mean(B·A), and zero-padding mixed ranks compounds the error. In our pilot, FedAvg's update was 5–36% off the true average.
 2. **Unequal work and dropouts bias the objective.** A phone that finishes 2 local steps, misses the deadline or vanishes for five rounds barely counts, so the model optimises for always-on, fast devices (FedNova's "objective inconsistency").
 3. **Sample-weighted averaging is a micro-average.** A device with 8× the data sets the direction. In our pilot under FedAvg, the data-rich device's influence share was ≈1.0: its own domain improved by 0.36 nats/token while **all four other domains ended worse than the untuned model**. The weak devices are not just ignored; they are harmed.
 
@@ -20,7 +20,7 @@ The brief's three goals are thus three properties of the *aggregation*: exact, u
 - **AnchorLoRA aggregator (our spike):**
   - **Shared anchor.** Every device regenerates the same frozen A from a public seed (never transmitted) and trains only the first r_k ∈ {2,…,16} columns of B, sized to its memory. Because A is shared, Σ_k w_k ΔB_k·A *is* the average of the devices' weight updates: exact for any rank mix, and a rank-2 device uploads only 2·d_out numbers per layer.
   - **Corrections on top of exactness.** Classic federated corrections now apply exactly: FedNova-style step normalisation, so partial work from deadline cut-offs is kept rather than discarded; memory of absent devices' last update for ≤4 rounds (MIFA-style); macro (per-device) weights with median-norm clipping.
-  - **Influence audit.** Each round we compute every device's share of the applied update, plus a leave-one-device-out ground truth, so "quiet domination" becomes a number on the dashboard.
+  - **Influence audit.** Each round we compute every device's share of the applied update, plus a leave-one-device-out ground truth: "quiet domination" becomes a dashboard number.
 - **Data:** five real-text domains, one per device (Wikipedia, Python, C headers, READMEs, man pages; pilot), then financial-sentiment classification and Dolly-15k categories split with Dirichlet α ∈ {0.1, 0.5}.
 
 ### Minimum Viable (what will exist and be demoable)

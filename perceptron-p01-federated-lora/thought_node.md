@@ -132,6 +132,6 @@ Folder, brief and journal created. The lead session starts Phase 0.
 
 **Antithesis.** The independent rubber-duck review raised 7 objections: confounded design; FedAvg-on-A,B as a straw man; planned-step scaling; prefix-rank ownership; stale replay; brittle clipping; an unbounded share metric. All are adopted as experiments in ADR 001's synthesis table.
 
-**Deliverables.** `research/landscape.md`, `architecture/components.md` + `contracts/*.schema.json`, `research/components/*.md` (10), `architecture/adr/001-spike.md`, `deliverables/round1-abstract.md` (899 words), `deliverables/architecture.md` (mermaid), the selection memo above.
+**Deliverables.** `research/landscape.md`, `architecture/components.md` + `contracts/*.schema.json`, `research/components/*.md` (10), `architecture/adr/001-spike.md`, `deliverables/round1-abstract.md` (897 words), `deliverables/architecture.md` (mermaid), the selection memo above.
 
 **Supervisor 07:22 alignment check.** Agreed (write ADR, deliverables, memo and Now/Log, pushing after each). Done, no reply needed.
