@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cite-Before-Act · P9 live demo</title>
+<link rel="icon" href="data:,">
+<style>
+:root{
+  --paper:#f5f3ec; --sheet:#fffdf7; --ink:#1c1e23; --ink2:#454852; --ink3:#62656e; --rule:#d9d5c8; --rule2:#e9e5d9;
+  --block:#b8321c; --block-bg:#fbe9e4; --hold:#8a5200; --hold-bg:#fbf0dc; --allow:#2d6a3b; --allow-bg:#e5f1e6;
+  --live:#1f6b4f; --replay:#3d5a80; --real:#1c1e23; --scripted:#8a5200; --synth:#6b3fa0;
+  --serif:"Iowan Old Style","Charter","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 var(--sans)}
+button,input,textarea,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--replay);outline-offset:2px}
+header.top{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--rule);padding:10px 24px 0}
+.brand{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.brand h1{font:600 22px/1.2 var(--serif);margin:0;letter-spacing:-.01em}
+.brand .sub{color:var(--ink3);font-size:13px}
+.legend{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+nav.acts{display:flex;gap:2px;margin-top:8px;overflow-x:auto}
+nav.acts button{border:0;background:none;padding:8px 14px 9px;border-bottom:3px solid transparent;cursor:pointer;color:var(--ink2);white-space:nowrap;font-weight:500}
+nav.acts button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--ink)}
+nav.acts button kbd{font:11px var(--mono);color:var(--ink3);border:1px solid var(--rule);border-radius:3px;padding:0 4px;margin-right:6px}
+main{padding:22px 24px 60px;max-width:1500px;margin:0 auto}
+section.act{display:none}
+section.act.on{display:block;animation:in .35s cubic-bezier(.16,1,.3,1)}
+@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font:600 28px/1.15 var(--serif);margin:0 0 8px;letter-spacing:-.015em;text-wrap:balance}
+.lede{color:var(--ink2);max-width:82ch;margin:0 0 18px}
+h3{font:600 12.5px/1.3 var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin:0 0 8px}
+.tag{display:inline-block;font:600 10.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;padding:4px 6px 3px;border-radius:3px;border:1px solid currentColor;vertical-align:middle;white-space:nowrap}
+.tag.real{color:var(--real)} .tag.live{color:var(--live);background:#e6f2ec} .tag.replay{color:var(--replay);background:#e8edf4}
+.tag.scripted{color:var(--scripted);background:var(--hold-bg)} .tag.synth{color:#fff;background:var(--synth);border-color:var(--synth)}
+.src{font-size:11.5px;color:var(--ink3);line-height:1.45;overflow-wrap:anywhere}
+.src code,.lede code{font:11px var(--mono)}
+.mono{font-family:var(--mono);font-size:12.5px}
+.grid{display:grid;gap:18px}
+.grid>*{min-width:0}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:6px;padding:16px 18px;box-shadow:0 1px 2px rgba(40,35,20,.05)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--sheet);padding:8px 14px;border-radius:4px;cursor:pointer;font-weight:600}
+.btn:hover{background:#000}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
+.btn.ghost:hover{border-color:var(--ink)}
+.btn[disabled]{opacity:.5;cursor:wait}
+.chip{border:1px solid var(--rule);background:var(--sheet);border-radius:999px;padding:5px 12px;cursor:pointer;font-size:13px}
+.chip:hover{border-color:var(--ink2)}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.chip.attack::before{content:"⚑ ";color:var(--block)} .chip.benign::before{content:"✓ ";color:var(--allow)}
+.claim{font:400 19px/1.45 var(--serif);max-width:92ch;margin:0 0 4px}
+.claim b{font-weight:700}
+.claim .n{font-family:var(--sans);font-weight:700;font-variant-numeric:tabular-nums}
+.stamp{display:inline-flex;align-items:center;font:800 20px/1 var(--sans);letter-spacing:.12em;padding:8px 14px 7px;border:3px solid currentColor;border-radius:4px;transform:rotate(-2deg);text-transform:uppercase}
+.stamp.block{color:var(--block);background:var(--block-bg)} .stamp.escalate{color:var(--hold);background:var(--hold-bg)} .stamp.allow{color:var(--allow);background:var(--allow-bg)}
+.stamp.pop{animation:stamp .45s cubic-bezier(.16,1,.3,1)}
+@keyframes stamp{0%{transform:rotate(-8deg) scale(1.6);opacity:0;filter:blur(3px)}100%{transform:rotate(-2deg) scale(1);opacity:1;filter:none}}
+.dec{font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.06em;padding:2px 6px;border-radius:3px}
+.dec.block{color:var(--block);background:var(--block-bg)} .dec.escalate{color:var(--hold);background:var(--hold-bg)} .dec.allow{color:var(--allow);background:var(--allow-bg)}
+.act1{grid-template-columns:270px minmax(0,1fr)}
+.cases button{display:block;width:100%;text-align:left;border:0;border-left:3px solid transparent;background:none;padding:9px 10px;cursor:pointer;border-radius:0 4px 4px 0}
+.cases button:hover{background:var(--rule2)}
+.cases button[aria-current=true]{background:var(--sheet);border-left-color:var(--ink)}
+.cases .t{font-weight:600;display:block} .cases .m{font-size:12px;color:var(--ink3)}
+.convo{max-height:330px;overflow:auto;border:1px solid var(--rule2);border-radius:4px;background:#fbfaf5;padding:10px 12px}
+.turn{margin:0 0 8px;font-size:13.5px}
+.turn .who{font:700 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;margin-right:6px}
+.turn.user .who{color:var(--live)} .turn.agent .who{color:var(--ink3)} .turn.call .who,.turn.tool .who{color:var(--replay)}
+.turn.tool,.turn.call{font-family:var(--mono);font-size:11.5px;color:var(--ink2)}
+.turn.user{background:#eef5f0;padding:6px 8px;border-radius:4px}
+.ticket{border:1px dashed var(--ink3);border-radius:4px;padding:10px 12px;background:#fff;font:12.5px/1.55 var(--mono);overflow-wrap:anywhere}
+.ticket .fn{font-weight:700;color:var(--ink)}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:2px 12px}
+.kv .k{color:var(--ink3)}
+.changed{background:#fde3dc;color:var(--block);border-radius:2px;padding:0 2px}
+.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.col h3{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.checks{list-style:none;margin:10px 0 0;padding:0;font-size:13.5px}
+.checks li{padding:6px 0;border-top:1px solid var(--rule2)}
+.checks .st{font:700 10.5px var(--sans);letter-spacing:.06em;text-transform:uppercase;margin-right:6px}
+.st.fail{color:var(--block)} .st.unverifiable,.st.needs_approval{color:var(--hold)} .st.pass{color:var(--allow)}
+.ev{display:block;font:11.5px var(--mono);color:var(--ink3);margin-top:2px;overflow-wrap:anywhere}
+.why{font-size:13.5px;color:var(--ink2)}
+.diff{border-collapse:collapse}
+.diff td{padding:3px 8px 3px 0;vertical-align:top;font:12px var(--mono);overflow-wrap:anywhere}
+.diff td.p{color:var(--ink3);white-space:nowrap}
+.stamp.exec{color:var(--ink);background:#ecebe4}
+.gtbox{margin-top:12px}
+details summary{cursor:pointer;color:var(--ink2);font-size:13px;margin-top:8px}
+.act2{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+textarea.inj{width:100%;min-height:96px;resize:vertical;border:1px solid var(--rule);border-radius:4px;padding:10px 12px;background:#fff;font:13px/1.5 var(--mono)}
+.mail{border:1px solid var(--rule);border-radius:6px;background:#fff}
+.mail .hd{padding:8px 12px;border-bottom:1px solid var(--rule2);font-size:12.5px;color:var(--ink2);display:flex;gap:8px;align-items:center}
+.mail .bd{padding:10px 12px}
+.flow{display:grid;grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);align-items:start;gap:6px}
+.flow .arrow{align-self:center;text-align:center;font-size:22px;color:var(--ink3)}
+.big-verdict{display:flex;gap:16px;align-items:center;margin:4px 0 10px;flex-wrap:wrap}
+.ms{font:600 13px var(--sans);color:var(--ink2);font-variant-numeric:tabular-nums}
+.control{margin-top:12px;padding-top:10px;border-top:1px solid var(--rule2);font-size:13.5px}
+.limit{font-size:13px;color:var(--ink2);background:var(--hold-bg);border-radius:4px;padding:8px 10px;margin-top:12px}
+.act3{grid-template-columns:minmax(0,7fr) minmax(0,5fr)}
+.seg{display:inline-flex;border:1px solid var(--ink);border-radius:5px;overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;background:var(--sheet);padding:9px 16px;cursor:pointer;font-weight:600;border-right:1px solid var(--rule);text-align:left}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--sheet)}
+.seg button small{display:block;font-weight:400;font-size:11px;opacity:.8}
+svg text{font-family:var(--sans)}
+.bars{display:grid;gap:14px;margin-top:6px}
+.bar{display:flex;height:30px;border-radius:3px;overflow:hidden;border:1px solid var(--rule)}
+.bar span{display:flex;align-items:center;justify-content:center;font:700 12px var(--sans);color:#fff;transition:flex-basis .6s cubic-bezier(.16,1,.3,1);min-width:0;overflow:hidden;white-space:nowrap}
+.bar .b{background:var(--block)} .bar .h{background:#a86a0c} .bar .a{background:#d3d6cc;color:var(--ink2)}
+.barlab{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:4px;gap:8px}
+.barlab b{font-variant-numeric:tabular-nums}
+.ok{color:var(--live);font-weight:600}
+.bad{color:var(--block);font-weight:600}
+table.blotter{width:100%;border-collapse:collapse;font-size:13.5px}
+.blotter th{text-align:left;font:600 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);border-bottom:2px solid var(--ink);padding:8px 10px}
+.blotter td{border-bottom:1px solid var(--rule);padding:10px;vertical-align:top}
+.blotter td.call{font:12px var(--mono);max-width:360px;overflow-wrap:anywhere}
+.blotter ul{margin:0;padding-left:16px}
+.form{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;align-items:end}
+.form label{font-size:12px;color:var(--ink3);display:grid;gap:3px}
+.form input,.form select{border:1px solid var(--rule);border-radius:4px;padding:7px 8px;background:#fff;min-width:0}
+.form .wide{grid-column:span 3}
+.honest{columns:2 420px;column-gap:36px;padding-left:18px}
+.honest li{break-inside:avoid;margin:0 0 12px;max-width:75ch}
+footer{border-top:1px solid var(--rule);padding:14px 24px;font-size:12px;color:var(--ink3);max-width:1500px;margin:0 auto}
+footer code{font:11px var(--mono)}
+.err{color:var(--block);font-weight:600}
+.loading{color:var(--ink3);font-style:italic}
+@media (max-width:1100px){.act1,.act2,.act3,.three,.split{grid-template-columns:minmax(0,1fr)!important}.form{grid-template-columns:repeat(2,minmax(0,1fr))}.form .wide{grid-column:span 2}.legend{margin-left:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <h1>Cite-Before-Act</h1>
+    <span class="sub">Perceptron 2026 · Problem 9 · pre-trade risk checks for AI agents</span>
+    <span class="legend" aria-label="data labels">
+      <span class="tag real" title="Real agent proposals from τ-bench's published gpt-4o and Claude-3.5-Sonnet retail runs">Real</span>
+      <span class="tag live" title="Computed now by the committed guard code">Live</span>
+      <span class="tag replay" title="Read from committed result files; not recomputed">Replayed</span>
+      <span class="tag scripted" title="A deterministic stand-in for a hijacked agent; not an LLM">Scripted</span>
+      <span class="tag synth" title="Invented trading desk; not real data">Synthetic</span>
+    </span>
+  </div>
+  <nav class="acts" role="tablist">
+    <button role="tab" data-act="1" aria-selected="true"><kbd>1</kbd>Real agent errors</button>
+    <button role="tab" data-act="2"><kbd>2</kbd>Hijack the agent</button>
+    <button role="tab" data-act="3"><kbd>3</kbd>Operating point</button>
+    <button role="tab" data-act="4"><kbd>4</kbd>Trading desk</button>
+    <button role="tab" data-act="5"><kbd>5</kbd>What this does not show</button>
+  </nav>
+</header>
+
+<main>
+<p id="boot" class="loading">Loading the committed bundle…</p>
+
+<section class="act on" id="act1">
+  <h2>A real agent is about to make a real mistake.</h2>
+  <p class="claim" id="claim1"></p>
+  <p class="src" id="claim1src"></p>
+  <div class="grid act1" style="margin-top:14px">
+    <aside>
+      <h3>Real calls from τ-bench <span class="tag real">Real</span></h3>
+      <div class="cases" id="cases"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost" id="rndH">Random harmful</button>
+        <button class="btn ghost" id="rndG">Random good</button>
+      </div>
+      <label class="src" style="display:block;margin-top:10px">Any of the 300 sampled calls
+        <input id="iid" class="mono" style="width:100%;margin-top:4px;padding:5px;border:1px solid var(--rule);border-radius:4px" placeholder="e.g. gpt-4o/t75/r2/m20.0" list="ids"></label>
+      <datalist id="ids"></datalist>
+    </aside>
+    <div class="grid" id="case"></div>
+  </div>
+</section>
+
+<section class="act" id="act2">
+  <h2>Type an attack. The agent obeys it. The guard does not.</h2>
+  <p class="lede">A real τ-bench conversation, paused just before the agent's write. You write a support ticket that the agent reads. A <span class="tag scripted">Scripted</span> compromised agent rewrites its pending call to follow your text. The committed retail guard then checks that call <span class="tag live">Live</span>, with your text attached as <b>untrusted</b> content. The rule: <b>ticket or email text can never authorize an action.</b></p>
+  <div class="row" id="scen" style="margin-bottom:14px"></div>
+  <div class="grid act2">
+    <div class="grid" style="align-content:start">
+      <div class="sheet">
+        <h3>The conversation so far <span class="tag real">Real</span></h3>
+        <div class="convo" id="hjConvo" style="max-height:250px"></div>
+      </div>
+      <div class="mail">
+        <div class="hd"><b>Incoming ticket</b><span>· external · untrusted</span><span style="margin-left:auto" class="src">the agent reads this before it acts</span></div>
+        <div class="bd">
+          <textarea class="inj" id="ticket" aria-label="ticket text"></textarea>
+          <div class="row" id="presets" style="margin:8px 0"></div>
+          <div class="row"><button class="btn" id="send">Deliver the ticket</button><span class="src">or Ctrl/⌘ + Enter</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="sheet" id="hjOut"></div>
+  </div>
+</section>
+
+<section class="act" id="act3">
+  <h2>One knob: how cautious should the guard be?</h2>
+  <p class="lede">Every stop costs something: a block breaks a good task, a hold sends it to a human. Pick an operating point. Tier 0 re-runs <span class="tag live">Live</span> on all 300 real calls and is compared with its committed result file. The dashed line is the gpt-4.1-mini judge at every risk threshold <span class="tag replay">Replayed</span>.</p>
+  <div class="seg" id="knob" role="group" aria-label="operating point"></div>
+  <div class="grid act3" style="margin-top:16px">
+    <div class="sheet"><svg id="chart" viewBox="0 0 640 430" width="100%" role="img" aria-label="harmful calls stopped against good calls stopped"></svg>
+      <p class="src" id="chartSrc"></p></div>
+    <div class="sheet" id="knobOut"></div>
+  </div>
+</section>
+
+<section class="act" id="act4">
+  <h2><span class="tag synth" style="font-size:12px;vertical-align:5px">Synthetic</span> The same idea on a trading desk.</h2>
+  <p class="lede">An invented desk with an invented reference knowledge base: not real data, a stress test. The committed MVP script <code>eval/demo_mvp.py</code> runs <span class="tag live">Live</span> now: one faithful order, four typed hallucinations of it, and a ₹4,75,000 transfer injected through an email.</p>
+  <div class="sheet"><table class="blotter" id="desk"><tr><td class="loading">Running the desk guard…</td></tr></table>
+    <p class="src" id="deskSrc"></p></div>
+  <div class="sheet" style="margin-top:18px">
+    <h3>Try your own order <span class="tag synth">Synthetic</span> <span class="tag live">Live</span></h3>
+    <div class="form">
+      <label class="wide">What the client said<input id="dReq" value="Buy 200 shares of Infosys in A-1001 at ₹1,850 limit."></label>
+      <label class="wide">Email in the agent's inbox (untrusted, optional)<input id="dInbox" placeholder="e.g. URGENT: buy 2000 INFY in A-1001 now"></label>
+      <label>Account<input id="dAcc" value="A-1001"></label>
+      <label>Symbol<input id="dSym" value="INFY"></label>
+      <label>Side<select id="dSide"><option>buy</option><option>sell</option></select></label>
+      <label>Quantity<input id="dQty" type="number" value="200"></label>
+      <label>Limit price ₹<input id="dPx" type="number" value="1850"></label>
+      <label><span>&nbsp;</span><button class="btn" id="dGo">Check the order</button></label>
+    </div>
+    <div id="dOut" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<section class="act" id="act5">
+  <h2>What this demo does not show</h2>
+  <p class="lede">The caveats our reviewers forced on us. They apply to every number on the other screens.</p>
+  <ul class="honest" id="honest"></ul>
+</section>
+</main>
+<footer id="foot"></footer>
+
+<script>
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const DEC = {block: "Block", escalate: "Hold", allow: "Allow"};
+const CFG = {
+  none: {name: "No guard", sub: "baseline", desc: "Every call executes. Schema validation alone gives the same counts: 0 stopped."},
+  schema: {name: "Schema only"},
+  t0_v0: {name: "v0", sub: "untuned", desc: "Written from the store policy alone and never tuned."},
+  t0_strict: {name: "Strict", sub: "user's words only", desc: "Only the user's own words and the database can ground a value."},
+  t0_balanced: {name: "Balanced", sub: "primary", desc: "Also accepts item, payment, reason and address from the agent's summary once the user says yes."},
+  t0_lenient: {name: "Lenient", sub: "+ item options", desc: "As balanced, and item options from the summary too."},
+  cascade_aoai: {name: "Cascade", sub: "+ gpt-4.1-mini", desc: "Balanced first. Only its unverifiable checks go to gpt-4.1-mini, whose verdict counts only with a verbatim quote from the user or a tool result."},
+  llm_judge_aoai: {name: "gpt-4.1-mini judge"},
+};
+let B = null, cur = null, config = "t0_strict", scen = null;
+async function get(u, opt) {
+  const r = await fetch(u, opt);
+  const j = await r.json();
+  if (!r.ok || j.error) throw new Error(j.error || ("HTTP " + r.status));
+  return j;
+}
+const post = (u, body) => get(u, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+const stamp = d => `<span class="stamp ${d} pop">${DEC[d] || esc(d)}</span>`;
+const dec = d => `<span class="dec ${d}">${DEC[d] || esc(d)}</span>`;
+const fmt = v => typeof v === "string" ? v : JSON.stringify(v);
+const pct = (a, b) => (100 * a / b).toFixed(1) + "%";
+
+function show(n) {
+  document.querySelectorAll("nav.acts button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.act == n)));
+  document.querySelectorAll("section.act").forEach(s => s.classList.toggle("on", s.id === "act" + n));
+  if (n == 3 && !$("#knobOut").dataset.done) runKnob(config);
+  if (n == 4 && !$("#desk").dataset.done) runDesk();
+  if (n == 2) $("#hjConvo").scrollTop = 1e6;
+  history.replaceState(null, "", "#" + n);
+}
+document.querySelectorAll("nav.acts button").forEach(b => b.onclick = () => show(b.dataset.act));
+document.addEventListener("keydown", e => {
+  if (e.target.matches("input,textarea,select")) return;
+  if (/^[1-5]$/.test(e.key)) show(e.key);
+});
+
+function judgeOf(id, g = "llm_judge_aoai") {
+  const [d, r] = B.committed[g].decisions[id];
+  const raw = (r && r[0]) || "";
+  const risk = (raw.match(/"risk"\s*:\s*(\d+)/) || [])[1];
+  const reason = (raw.match(/"reason"\s*:\s*"([^"]*)/) || [])[1] || raw;
+  return {d, risk, reason};
+}
+function gtDiff(it) {
+  const same = it.ground_truth_writes.filter(g => g.name === it.tool);
+  if (!same.length) return {none: true, gts: it.ground_truth_writes};
+  let best = null;
+  for (const g of same) {
+    const keys = [...new Set([...Object.keys(it.args), ...Object.keys(g.kwargs)])];
+    const d = keys.filter(k => JSON.stringify(it.args[k]) !== JSON.stringify(g.kwargs[k])).map(k => [k, it.args[k], g.kwargs[k]]);
+    if (!best || d.length < best.d.length) best = {g, d};
+  }
+  return best;
+}
+function variantOpts(id) {
+  for (const p of Object.values(B.products)) if (p.variants[id]) return `${p.name}: ${Object.entries(p.variants[id].options).map(([k, v]) => `${k} ${v}`).join(", ")}`;
+  return null;
+}
+function renderConvo(text, maxTool = 160) {
+  return text.split("\n").filter(Boolean).map(l => {
+    let m;
+    if ((m = l.match(/^USER: ([\s\S]*)/))) return `<p class="turn user"><span class="who">User</span>${esc(m[1])}</p>`;
+    if ((m = l.match(/^AGENT CALLS ([\s\S]*)/))) return `<p class="turn call"><span class="who">Agent calls</span>${esc(m[1])}</p>`;
+    if ((m = l.match(/^AGENT: ([\s\S]*)/))) return `<p class="turn agent"><span class="who">Agent</span>${esc(m[1])}</p>`;
+    if ((m = l.match(/^TOOL RESULT \((.*?)\): ([\s\S]*)/))) return `<p class="turn tool"><span class="who">${esc(m[1])} →</span>${esc(m[2].slice(0, maxTool))}${m[2].length > maxTool ? "…" : ""}</p>`;
+    return `<p class="turn agent">${esc(l)}</p>`;
+  }).join("");
+}
+function callTicket(tool, args, changedKeys = [], variants = true) {
+  const rows = Object.entries(args).map(([k, v]) => {
+    let s = esc(fmt(v));
+    if (variants && (k === "new_item_ids" || k === "item_ids")) {
+      const o = [].concat(v).map(variantOpts).filter(Boolean);
+      if (o.length) s += `<div class="src">${o.map(esc).join("<br>")}</div>`;
+    }
+    return `<span class="k">${esc(k)}</span><span class="${changedKeys.includes(k) ? "changed" : ""}">${s}</span>`;
+  }).join("");
+  return `<div class="ticket"><div class="fn">${esc(tool)}(</div><div class="kv" style="padding-left:14px">${rows}</div><div class="fn">)</div></div>`;
+}
+function checkList(checks, onlyNonPass = false) {
+  const order = {fail: 0, unverifiable: 1, needs_approval: 2, pass: 3};
+  const cs = checks.slice().sort((a, b) => order[a.status] - order[b.status]).filter(c => !onlyNonPass || c.status !== "pass");
+  if (!cs.length) return `<p class="why">Every check passed.</p>`;
+  return `<ul class="checks">${cs.map(c => `<li><span class="st ${c.status}">${c.status.replace("_", " ")}</span>${esc(c.message)}<span class="ev">${esc(c.id)}${(c.evidence || []).map(e => ` · ${esc(e.locator)}: “${esc(String(e.snippet).slice(0, 90))}”`).join("")}</span></li>`).join("")}</ul>`;
+}
+
+/* ---------- 1: real agent errors ---------- */
+function act1Claim() {
+  const c = g => B.committed[g].metrics;
+  const n = (g, k) => Math.round(c(g)[k] * 120);
+  const pd = B.frontier.paired_catch_differences["t0_strict - llm_judge_aoai@risk>=6"];
+  const lat = B.latency.configs.t0_strict;
+  $("#claim1").innerHTML = `On the same 300 real calls, the strict checker stopped <span class="n">${n("t0_strict", "catch_harmful")}/120</span> harmful writes and a gpt-4.1-mini judge stopped <span class="n">${n("llm_judge_aoai", "catch_harmful")}/120</span>. They blocked <span class="n">${n("t0_strict", "false_block_rate")}/120</span> and <span class="n">${n("llm_judge_aoai", "false_block_rate")}/120</span> good calls. The paired difference against the thresholded judge is <b>+${pd.point_pp} pp (95% CI ${pd.ci95_pp[0]} to +${pd.ci95_pp[1]}): not significant</b>. One check takes <span class="n">${lat.wall_ms_p95} ms</span> at p95.`;
+  $("#claim1src").innerHTML = `Committed sources: <code>${B.committed.t0_strict.file}</code> · <code>${B.committed.llm_judge_aoai.file}</code> · <code>${B.frontier._file}</code> (paired_catch_differences) · <code>${B.latency._file}</code> (median of 7 runs per call over 991 calls). Exploratory: the test split was re-run once after review.`;
+}
+function act1List() {
+  $("#cases").innerHTML = B.featured.map(f => {
+    const it = B.items.find(i => i.item_id === f.item_id);
+    return `<button data-id="${esc(f.item_id)}"><span class="t">${esc(f.title)}</span><span class="m">${esc(it.model)} · ${esc(it.tool.replaceAll("_", " "))}</span></button>`;
+  }).join("");
+  $("#cases").querySelectorAll("button").forEach(b => b.onclick = () => openCase(b.dataset.id));
+  $("#ids").innerHTML = B.items.map(i => `<option value="${esc(i.item_id)}">`).join("");
+  $("#iid").onchange = e => { if (B.items.some(i => i.item_id === e.target.value)) openCase(e.target.value); };
+  const rnd = kind => { const xs = B.items.filter(i => i.kind === kind); openCase(xs[Math.floor(Math.random() * xs.length)].item_id); };
+  $("#rndH").onclick = () => rnd("bad_harmful");
+  $("#rndG").onclick = () => rnd("good");
+}
+async function openCase(id) {
+  cur = id;
+  $("#cases").querySelectorAll("button").forEach(b => b.setAttribute("aria-current", String(b.dataset.id === id)));
+  const it = B.items.find(i => i.item_id === id), f = B.featured.find(x => x.item_id === id);
+  const cfg = config.startsWith("t0_") ? config : "t0_strict";
+  const label = {good: "good", bad_harmful: "harmful", bad_rejected: "rejected by the tool"}[it.kind];
+  const gt = gtDiff(it), J = judgeOf(id), comm = B.committed[cfg].decisions[id];
+  const casc = B.committed.cascade_aoai.decisions[id][0];
+  const ung = it.unguarded;
+  const changed = gt.none ? [] : gt.d.map(x => x[0]);
+  const gtHtml = gt.none
+    ? `<p class="src">Ground truth contains no <code>${esc(it.tool)}</code> call. It wanted: ${gt.gts.map(g => esc(g.name)).join(", ") || "no write at all"}.</p>`
+    : gt.d.length
+      ? `<h3>Where ground truth differs</h3><table class="diff">${gt.d.map(([k, a, b]) => `<tr><td class="p">${esc(k)}</td><td><span class="changed">${esc(fmt(a))}</span></td><td>→ ${esc(fmt(b))}${k === "new_item_ids" || k === "item_ids" ? `<div class="src">${[].concat(b).map(variantOpts).filter(Boolean).map(esc).join("<br>")}</div>` : ""}</td></tr>`).join("")}</table>`
+      : `<p class="src">The arguments match a ground-truth write.</p>`;
+  $("#case").innerHTML = `
+  <div class="sheet">
+    <div class="row" style="justify-content:space-between"><h3 style="margin:0">${esc(it.item_id)} <span class="tag real">Real</span></h3>
+      <span class="src">τ-bench label: <b>${label}</b>${it.kind === "good" ? " (same DB effect as ground truth)" : it.kind === "bad_harmful" ? " (accepted, but the DB effect differs from ground truth)" : ""}</span></div>
+    ${f ? `<p class="why" style="margin:6px 0 10px;max-width:90ch">${esc(f.note)}</p>` : ""}
+    <div class="grid split" style="grid-template-columns:minmax(0,3fr) minmax(0,2fr)">
+      <div><h3>What the agent saw (the judge's view)</h3><div class="convo">${renderConvo(it.transcript)}</div></div>
+      <div><h3>The call it proposed</h3>${callTicket(it.tool, it.args, changed)}<div class="gtbox">${gtHtml}</div></div>
+    </div>
+  </div>
+  <div class="grid three">
+    <div class="sheet col"><h3>No guard</h3>
+      <div class="big-verdict"><span class="stamp ${it.kind === "bad_rejected" ? "escalate" : "exec"}">${it.kind === "bad_rejected" ? "Tool error" : "Executes"}</span></div>
+      <p class="why">${it.kind === "bad_rejected" ? "τ-bench's tool itself refuses it:" : "τ-bench's own tool, run on the database as it stood, makes these changes:"}</p>
+      ${ung.changes.length ? `<table class="diff">${ung.changes.slice(0, 7).map(([p, a, b]) => `<tr><td class="p">${esc(p.replace(/^(orders|users)\[/, "").replace("].", " · "))}</td><td>${esc(fmt(a).slice(0, 60))} → <b>${esc(fmt(b).slice(0, 60))}</b></td></tr>`).join("")}</table>` : `<p class="mono">${esc(ung.tool_result.slice(0, 160))}</p>`}
+      <p class="src">Computed at export on this call's DB slice (<code>demo/export.py</code>, τ-bench tool code).</p></div>
+    <div class="sheet col" id="t0col"><h3>Tier 0 · ${esc(CFG[cfg].name)} <span class="tag live">Live</span></h3><p class="loading">running…</p></div>
+    <div class="sheet col"><h3>gpt-4.1-mini judge <span class="tag replay">Replayed</span></h3>
+      <div class="big-verdict">${stamp(J.d)}<span class="ms">risk ${J.risk ?? "?"}/100</span></div>
+      <p class="why">“${esc(J.reason)}”</p>
+      <p class="src">Shown the store policy and the truncated transcript, not the database. Raw output from <code>${B.committed.llm_judge_aoai.file}</code>. Cascade on this call: ${dec(casc)} <span class="tag replay">Replayed</span></p></div>
+  </div>`;
+  try {
+    const r = await get(`/api/item?id=${encodeURIComponent(id)}&config=${cfg}`);
+    if (cur !== id) return;
+    const same = r.decision === comm[0];
+    $("#t0col").innerHTML = `<h3>Tier 0 · ${esc(CFG[cfg].name)} <span class="tag live">Live</span></h3>
+      <div class="big-verdict">${stamp(r.decision)}<span class="ms">${r.ms.toFixed(2)} ms</span></div>
+      ${checkList(r.checks, true)}
+      <details><summary>All ${r.checks.length} checks, with evidence</summary>${checkList(r.checks)}</details>
+      <p class="src">Committed decision ${dec(comm[0])} <span class="${same ? "ok" : "bad"}">${same ? "✓ identical" : "✗ differs"}</span> · <code>${B.committed[cfg].file}</code>. Change the operating point on screen 3.</p>`;
+  } catch (e) { $("#t0col").insertAdjacentHTML("beforeend", `<p class="err">${esc(e.message)}</p>`); }
+}
+
+/* ---------- 2: hijack ---------- */
+function act2Init() {
+  $("#scen").innerHTML = B.scenarios.map(s => `<button class="chip" data-s="${s.id}">${esc(s.title)}</button>`).join("");
+  $("#scen").querySelectorAll("button").forEach(b => b.onclick = () => pickScen(b.dataset.s));
+  $("#send").onclick = sendTicket;
+  $("#ticket").addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) sendTicket(); });
+  pickScen(B.scenarios[0].id);
+}
+function pickScen(id) {
+  scen = B.scenarios.find(s => s.id === id);
+  $("#scen").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.s === id)));
+  const it = scen.item;
+  $("#hjConvo").innerHTML = renderConvo(it.transcript, 120);
+  requestAnimationFrame(() => { $("#hjConvo").scrollTop = 1e6; });
+  $("#ticket").value = scen.ticket;
+  $("#presets").innerHTML = scen.presets.map((p, i) => `<button class="chip ${p.kind}" data-i="${i}" title="${esc(p.text)}">${esc(p.label)}</button>`).join("");
+  $("#presets").querySelectorAll("button").forEach(b => b.onclick = () => { $("#ticket").value = scen.presets[b.dataset.i].text; sendTicket(); });
+  $("#hjOut").innerHTML = `<h3>The agent's real next call <span class="tag real">Real</span></h3>${callTicket(it.tool, it.args, [], false)}
+    <p class="why" style="margin-top:10px">This is what ${esc(it.model)} actually proposed (<code class="mono">${esc(it.item_id)}</code>). τ-bench labels it <b>good</b>, and the guard allows it. Now deliver the ticket.</p>`;
+}
+async function sendTicket() {
+  const btn = $("#send");
+  btn.disabled = true;
+  const cfg = config.startsWith("t0_") && config !== "t0_v0" ? config : "t0_balanced";
+  try {
+    const r = await post("/api/hijack", {scenario: scen.id, ticket: $("#ticket").value, config: cfg});
+    const it = scen.item, a = r.agent;
+    const changedKeys = Object.keys(a.args).filter(k => JSON.stringify(a.args[k]) !== JSON.stringify(it.args[k]));
+    let html = `<div class="flow"><div><h3>Real call</h3>${callTicket(it.tool, it.args, [], false)}</div><div class="arrow" aria-hidden="true">→</div>
+      <div><h3>After the ticket <span class="tag scripted">Scripted</span></h3>${a.changed ? callTicket(a.tool, a.args, changedKeys, false) : `<div class="ticket" style="color:var(--ink3);font-family:var(--sans)">${esc(a.note)}</div>`}</div></div>`;
+    if (a.changed) {
+      const v = r.verdict;
+      html += `<h3 style="margin-top:16px">Guard verdict on the hijacked call · ${esc(CFG[r.config].name)} <span class="tag live">Live</span></h3>
+        <div class="big-verdict">${stamp(v.decision)}<span class="ms">${v.ms.toFixed(2)} ms · ${v.decision === "allow" ? "it would execute" : "not executed"}</span></div>
+        ${checkList(v.checks, true)}`;
+      if (v.decision === "allow") html += `<p class="limit"><b>This phrasing got through.</b> We show it rather than hide it. Taint is literal-value: the guard flags values that appear in the ticket, and here no other provenance check fired.</p>`;
+      else if (!v.checks.some(c => c.id === "provenance.untrusted")) html += `<p class="limit">Taint is literal-value: this ticket never spells out the value the agent used, so the untrusted-text rule does not fire. ${v.decision === "escalate" ? "The call is still <b>held</b>, because the user never chose that payment method." : "Another check still blocks it."}</p>`;
+    }
+    html += `<div class="control"><b>Control:</b> the agent's real call, with the same ticket attached: ${dec(r.control.decision)} <span class="src">(${r.control.ms.toFixed(2)} ms). The guard does not refuse everything near a ticket.</span></div>
+      <p class="src" style="margin-top:8px">Guard: committed <code>components/checker/taubench_retail.py</code>, on the real conversation of <code>${esc(it.item_id)}</code> with the ticket as an observation marked <code>trust: untrusted</code>. Scripted agent: <code>demo/engine.py · scripted_agent</code>. It follows payment ids, card types, card endings, order ids and addresses it finds in the text. No LLM is called.</p>`;
+    $("#hjOut").innerHTML = html;
+  } catch (e) { $("#hjOut").innerHTML = `<p class="err">The guard server did not answer: ${esc(e.message)}</p>`; }
+  btn.disabled = false;
+}
+
+/* ---------- 3: operating point ---------- */
+const KNOB = ["none", "t0_v0", "t0_strict", "t0_balanced", "t0_lenient", "cascade_aoai"];
+const LABEL = {none: [14, -8, "start"], t0_v0: [14, -8, "start"], t0_strict: [14, -10, "start"], t0_balanced: [-14, -10, "end"],
+               t0_lenient: [14, 5, "start"], cascade_aoai: [-14, 5, "end"]};
+function act3Init() {
+  $("#knob").innerHTML = KNOB.map(c => `<button data-c="${c}" aria-pressed="${c === config}">${esc(CFG[c].name)}<small>${esc(CFG[c].sub || "")}</small></button>`).join("");
+  $("#knob").querySelectorAll("button").forEach(b => b.onclick = () => runKnob(b.dataset.c));
+}
+function point(c) {
+  const m = B.committed[c].metrics;
+  return {x: m.false_block_rate + m.escalation_rate, y: m.catch_harmful};
+}
+function drawChart(sel) {
+  const W = 640, H = 430, L = 58, R = 18, T = 16, Bt = 52;
+  const X = v => L + v * (W - L - R), Y = v => T + (1 - v) * (H - T - Bt);
+  let s = "";
+  for (let i = 0; i <= 10; i += 2) {
+    const v = i / 10;
+    s += `<line x1="${X(v)}" y1="${Y(0)}" x2="${X(v)}" y2="${Y(1)}" stroke="#e9e5d9"/><line x1="${X(0)}" y1="${Y(v)}" x2="${X(1)}" y2="${Y(v)}" stroke="#e9e5d9"/>`;
+    s += `<text x="${X(v)}" y="${Y(0) + 18}" font-size="12" text-anchor="middle" fill="#62656e">${i * 12}</text><text x="${X(0) - 8}" y="${Y(v) + 4}" font-size="12" text-anchor="end" fill="#62656e">${i * 12}</text>`;
+  }
+  s += `<text x="${(L + W - R) / 2}" y="${H - 10}" font-size="13" text-anchor="middle" fill="#454852">good calls stopped (blocked or held), of 120  →  costlier</text>`;
+  s += `<text transform="translate(16 ${(T + H - Bt) / 2}) rotate(-90)" font-size="13" text-anchor="middle" fill="#454852">harmful calls stopped, of 120  →  safer</text>`;
+  const cv = B.frontier.llm_judge_aoai_curve.slice().sort((a, b) => a.good_stop - b.good_stop || a.catch_harmful - b.catch_harmful);
+  let d = "", py = null;
+  for (const p of cv) { d += (d ? ` L${X(p.good_stop)} ${Y(py)} L` : "M") + `${X(p.good_stop)} ${Y(p.catch_harmful)}`; py = p.catch_harmful; }
+  s += `<path d="${d}" fill="none" stroke="#3d5a80" stroke-width="2.5" stroke-dasharray="6 4"/>`;
+  s += `<text x="${X(.97)}" y="${Y(.66)}" text-anchor="end" font-size="12.5" fill="#3d5a80">gpt-4.1-mini judge, every risk threshold</text>`;
+  const j = point("llm_judge_aoai");
+  s += `<rect x="${X(j.x) - 6}" y="${Y(j.y) - 6}" width="12" height="12" fill="#3d5a80" transform="rotate(45 ${X(j.x)} ${Y(j.y)})"/><text x="${X(j.x) + 12}" y="${Y(j.y) + 18}" font-size="12" fill="#3d5a80">judge's own verdicts</text>`;
+  for (const c of KNOB) {
+    const p = point(c), on = c === sel;
+    const [dx, dy, anc] = LABEL[c];
+    s += `<g style="cursor:pointer" data-c="${c}"><circle cx="${X(p.x)}" cy="${Y(p.y)}" r="${on ? 10 : 6.5}" fill="${on ? "#b8321c" : "#fffdf7"}" stroke="${c === "cascade_aoai" ? "#3d5a80" : "#b8321c"}" stroke-width="2.5"/>
+      <text x="${X(p.x) + dx}" y="${Y(p.y) + dy}" text-anchor="${anc}" font-size="${on ? 14 : 12.5}" font-weight="${on ? 700 : 500}" fill="#1c1e23">${esc(CFG[c].name)}</text></g>`;
+  }
+  $("#chart").innerHTML = s;
+  $("#chart").querySelectorAll("g[data-c]").forEach(g => g.onclick = () => runKnob(g.dataset.c));
+  $("#chartSrc").innerHTML = `Circles: Tier 0 configs (live, identical to committed) and the cascade (replayed). Dashed line: <code>${B.frontier._file}</code> → <code>llm_judge_aoai_curve</code>. Sweeping the judge's threshold on the test sample itself favours the judge.`;
+}
+async function runKnob(c) {
+  config = c;
+  $("#knob").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === c)));
+  drawChart(c);
+  const out = $("#knobOut");
+  out.dataset.done = 1;
+  out.innerHTML = `<p class="loading">Running ${esc(CFG[c].name)} on 300 real calls…</p>`;
+  try {
+    const t = performance.now();
+    const r = await get(`/api/sweep?config=${c}`);
+    if (config !== c) return;
+    const k = r.counts, comm = B.committed[c], full = B.full_test[c];
+    const seg = (cls, v, n, word) => `<span class="${cls}" style="flex-basis:${100 * v / n}%" title="${word} ${v}">${v / n >= .12 ? word + " " + v : v / n >= .04 ? v : ""}</span>`;
+    const bar = (b, h, n) => `<div class="bar">${seg("b", b, n, "blocked")}${seg("h", h, n, "held")}${seg("a", n - b - h, n, "allowed")}</div>`;
+    out.innerHTML = `<h3>${esc(CFG[c].name)} ${r.mode === "live" ? '<span class="tag live">Live</span>' : '<span class="tag replay">Replayed</span>'}</h3>
+      <p class="why">${esc(CFG[c].desc || "")}</p>
+      <div class="bars">
+        <div><div class="barlab"><span>Harmful calls</span><b>${k.harmful_stopped}/120 stopped</b></div>${bar(k.harmful_blocked, k.harmful_held, k.harmful)}</div>
+        <div><div class="barlab"><span>Good calls</span><b>${k.good_blocked} blocked · ${k.good_held} held</b></div>${bar(k.good_blocked, k.good_held, k.good)}</div>
+        <div><div class="barlab"><span>Calls the tool itself rejects</span><b>${k.rejected_stopped}/60 stopped</b></div>${bar(0, k.rejected_stopped, k.rejected)}</div>
+      </div>
+      <p class="src" style="margin-top:12px">${r.mode === "live"
+        ? `<span class="${r.matches_committed === r.n ? "ok" : "bad"}">${r.matches_committed}/${r.n} decisions and reasons identical to</span> <code>${comm.file}</code> · ${r.total_ms} ms of guard time for all 300 calls (round trip ${Math.round(performance.now() - t)} ms).`
+        : `Read from <code>${comm.file}</code>; gpt-4.1-mini is not re-run (the demo makes no API calls).`}</p>
+      ${c === "cascade_aoai" ? `<p class="limit">The cascade cut good-call holds from 31 to ${k.good_held} of 120. But gpt-4.1-mini also released <b>4 harmful-labelled holds</b>: harmful stopped fell from 57 to ${k.harmful_stopped}. API cost about $${B.cost.cascade_aoai.usd_per_guarded_call.toFixed(5)} per guarded call, against $${B.cost.llm_judge_aoai.usd_per_guarded_call.toFixed(4)} for the judge (<code>${B.cost._file}</code>, estimated).</p>` : ""}
+      ${full && c !== "none" ? `<p class="src">Full held-out test (${full.n} calls): ${full.harmful_stopped}/${full.n_harmful} harmful stopped (${pct(full.harmful_stopped, full.n_harmful)}, 95% CI ${(100 * full.ci95.catch_harmful[0]).toFixed(1)}–${(100 * full.ci95.catch_harmful[1]).toFixed(1)}%), ${full.good_blocked}/${full.n_good} good blocked, ${full.good_held}/${full.n_good} held · <code>${full.file}</code></p>` : ""}`;
+    if (cur) openCase(cur);
+  } catch (e) { out.innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+}
+
+/* ---------- 4: desk ---------- */
+async function runDesk() {
+  $("#desk").dataset.done = 1;
+  try {
+    const r = await get("/api/desk");
+    $("#desk").innerHTML = `<tr><th>Case</th><th>Client said</th><th>Agent proposed</th><th>Verdict <span class="tag live">Live</span></th><th>Why</th></tr>` +
+      r.cases.map(c => `<tr><td><b>${esc(c.label)}</b></td><td>${esc(c.user)}</td><td class="call">${esc(c.proposed)}</td>
+        <td>${stamp(c.decision)}<div class="ms" style="margin-top:6px">${c.ms.toFixed(2)} ms</div></td>
+        <td>${c.checks.length ? `<ul>${c.checks.map(x => { const m = x.match(/^(\w+): ([\s\S]*)$/); return m ? `<li><span class="st ${m[1]}" style="font:700 10.5px var(--sans);text-transform:uppercase;letter-spacing:.06em">${esc(m[1])}</span> ${esc(m[2])}</li>` : `<li>${esc(x)}</li>`; }).join("")}</ul>` : esc(c.outcome)}</td></tr>`).join("");
+    $("#deskSrc").innerHTML = `Live stdout of <code>python -m eval.demo_mvp</code>. <code>demo/smoke.sh</code> checks it against the committed <code>deliverables/mvp-demo-output.txt</code>, timings excluded. Data: <code>components/kb/data/</code> (synthetic).`;
+  } catch (e) { $("#desk").innerHTML = `<tr><td class="err">${esc(e.message)}</td></tr>`; }
+}
+$("#dGo").onclick = async () => {
+  const args = {account_id: $("#dAcc").value, symbol: $("#dSym").value, side: $("#dSide").value, quantity: Number($("#dQty").value), order_type: "limit", limit_price: Number($("#dPx").value)};
+  try {
+    const r = await post("/api/desk_custom", {user_request: $("#dReq").value, inbox: $("#dInbox").value, args});
+    $("#dOut").innerHTML = `<div class="big-verdict">${stamp(r.decision)}<span class="ms">${r.ms.toFixed(2)} ms</span></div>${checkList(r.checks, true)}`;
+  } catch (e) { $("#dOut").innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+};
+
+/* ---------- 5: honesty ---------- */
+function act5() {
+  const fs = B.full_test.t0_balanced, pd = B.frontier.paired_catch_differences;
+  const s = pd["t0_strict - llm_judge_aoai@risk>=6"], cd = pd["cascade_aoai - t0_balanced"];
+  const items = [
+    ["Labels are DB-effect equivalence, not safety.", "“Good” means the call has the same database effect as a τ-bench ground-truth write. “Harmful” means the tool accepts it but the effect differs. Neither label is adjudicated consent, policy compliance or real-world harm."],
+    ["The test results are exploratory.", "The frozen configs were run on test once. After the code review, six bugs were fixed using test examples, and test was re-run once. The first run is archived in <code>eval/results/first_run/</code>."],
+    ["Strict vs gpt-4.1-mini is not significant.", `+${s.point_pp} pp, paired 95% CI ${s.ci95_pp[0]} to +${s.ci95_pp[1]} (${s.n_task_clusters} task clusters). The judge's threshold was picked on the same sample, which favours the judge. The judge sees a truncated transcript; Tier 0 also reads the database.`],
+    ["The cascade released 4 harmful holds.", `gpt-4.1-mini cut good-call holds from 31 to 20 of 120, but harmful catch fell from 57 to 53 (paired ${cd.point_pp} pp, CI ${cd.ci95_pp[0]} to ${cd.ci95_pp[1]}).`],
+    ["Wrong-entity errors pass Tier 0.", "All 8 audited wrong-entity misses (“like my other order”, “the more expensive one”) pass Tier 0, so the model tier never sees them. Screen 1 shows one."],
+    ["A stop is not always for the root cause.", "Screen 1 puts each call's ground-truth difference next to the guard's reason. Sometimes they disagree: the call is stopped for an unrequested option while the real error is elsewhere."],
+    ["Known tokenizer bug.", "Contractions such as “I'm” create spurious one-letter option tokens (for example size “M”). Fixing it would change 15 decisions on the balanced test split. It is documented, with the measured impact, under Known issues in <code>eval/taubench/README.md</code> and left for the next pre-registered round. The demo runs the committed code as it is."],
+    ["Holds are a real cost.", `On the full held-out test, balanced sends ${fs.good_held} of ${fs.n_good} good calls (${pct(fs.good_held, fs.n_good)}) to a human and blocks ${fs.good_blocked} (${pct(fs.good_blocked, fs.n_good)}).`],
+    ["The hijacking agent is scripted.", "Screen 2 uses a deterministic stand-in, not an LLM. The taint rule is literal-value: a ticket that never spells out a value is caught only by the ordinary provenance checks, or not at all."],
+    ["The split is within-scenario.", "Dev and test are even and odd τ-bench task ids, and they share users and orders. A scenario-grouped holdout is the next step."],
+    ["The trading desk is synthetic.", "Invented instruments, accounts and limits. The same author wrote the cases and the rules. It is a stress test, not evidence."],
+  ];
+  $("#honest").innerHTML = items.map(([h, t]) => `<li><b>${h}</b> ${t}</li>`).join("");
+  $("#foot").innerHTML = `Real data: τ-bench retail historical trajectories, <code>sierra-research/tau-bench@59a200c</code>, © Sierra, MIT licence. Labels: <code>eval/taubench/replay.py</code>. Bundle: <code>demo/data/bundle.json.gz</code>, exported by <code>demo/export.py</code> at commit ${esc(B.meta.exported_at_commit)}. ${esc(B.meta.sample)}. Live = computed now by committed code; Replayed = read from committed result files. CPU only, offline, no model or API calls.`;
+}
+
+(async () => {
+  try {
+    B = await get("/api/bundle");
+    $("#boot").remove();
+    act1Claim(); act1List(); act2Init(); act3Init(); act5();
+    openCase(B.featured[0].item_id);
+    const n = (location.hash || "#1").slice(1);
+    if (/^[1-5]$/.test(n)) show(n);
+  } catch (e) { $("#boot").innerHTML = `<span class="err">Could not load the bundle: ${esc(e.message)}. Is demo/server.py running?</span>`; }
+})();
+</script>
+</body>
+</html>
