@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** ✅ the Supervisor's 11:10 definition of done is met (13:05 IST). GPU released at 12:57; the slot is free. Waiting for the 12 Oct Perceptron pick (P1 vs P7 vs P9).
+- **Phase:** DEMO (Supervisor 19:57 IST, PLAYBOOK §11). Child session "P1 demo builder" proposes the "crazy" element; the lead approves, then it builds `demo/`. After that: lead verification from a clean checkout → gpt-6-astra demo review → "DEMO DONE". (Earlier: the 11:10 definition of done was met at 13:05.)
 - **Headline** (5 paired seeds, dropout scenario, SmolLM2-135M, 12 rounds; `eval/results/v2_summary.md`):
 
   | Method | Macro loss | AnchorLoRA − method, 95 % CI |
@@ -317,3 +317,21 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Worst-domain cost is now significant:** +0.057 [+0.024, +0.089] vs the starter. Abstract and memo say so explicitly.
 - **New `scripts/check_claims.py`** asserts the 12 qualitative claims in the deliverables against `v2_canonical.json`; all pass. Abstract v3 re-rendered (889 words); memo re-rendered and synced.
 - **Supervisor messaged:** "DONE — slot free".
+
+### 2026-10-04 19:57 IST — Lead: demo phase started
+- Read PLAYBOOK §11.
+  - Bar: one-command `demo/run.sh`, first visual ≤ 60 s, offline, CPU only.
+  - Real first: real model, real text, committed runs; simulation second and labelled.
+  - Baseline side by side; one judge knob; every number from committed results or live code.
+  - Deliverables: `SCRIPT.md`, `fallback/`, `smoke.sh`, a gpt-6-astra demo review.
+- CPU feasibility, measured (nice 10, 4 threads):
+
+  | Operation | Time |
+  |---|---|
+  | Train step, batch 4×128 tokens | 1.32 s |
+  | Train step, batch 2×64 tokens | 0.28 s |
+  | Eval forward, 8×128 | 1.06 s |
+  | Full-fidelity 12-round run (estimate) | ≈ 11 min |
+
+  So any live element needs a reduced configuration, validated offline against the committed pattern.
+- Spawned child session **"P1 demo builder"** (autopilot). It has full context plus the Supervisor's suggestion ("unplug the tablet"), the memory and CPU rules, and the wording constraints from both reviews. Phase 1 is a proposal; it waits for lead approval.
