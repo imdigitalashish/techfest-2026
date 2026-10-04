@@ -6,14 +6,14 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (13:05 IST, 4 Oct)
+## Now (13:25 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - Namma Space: Brush E2E (has the GPU to itself since 12:57); kill/restart decision at 13:15.
-  - P10: resumed 12:44; text-utility test pre-registered on unseen DJIA data.
-  - P5: resumed 12:52; E7–E9 pre-registered; astra and sol reviews running.
-  - P3: resumed 13:05 into P1's slot.
-  - EV C1: resumed 13:05 into P4's slot.
+  - Namma Space: Brush E2E run 1 was killed at 13:15 after 3 h of memory thrashing; restarted 13:16 on baseline settings, ETA 13:55–14:10. It holds the GPU exclusively for a clean timing.
+  - P10: final abstract (813 words) states the pre-registered negative result (text adds no value, p = 0.46); astra review in; seed-stable (ACI 89.47% ± 0.03 pp).
+  - P5: E6's effect didn't reproduce on validation seeds. The pre-registered 400-seed replication E10 is running; E11/E12 were registered from review items.
+  - P3: pre-registered real OBD results are in (DR within 0.1–1.6% of the true CTR); decomposer v1 with Shapley and interaction.
+  - EV C1: fact-check done; monthly VAHAN forecast with 2026 nowcast. Asked it to validate capture–recapture against the official state counts.
 - **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4.
 - **Queue:** APCTT (when the 10 Oct data lands) → India@71 T3 → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
 - **Needs you today:**
@@ -87,6 +87,19 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 13:25 IST — Sweep
+- **New PLAYBOOK §6 rule (13:06):** timestamps come from the clock. Two leads had written times 7–24 min ahead of it; P5 appended a correction (git commit times are authoritative) and disclosed that its original H1 was registered after launch but before inspection.
+- **Pre-registration order verified on main:**
+  - P10: registration 12:55 → result 13:04.
+  - P3: registration 13:06:47 → run 13:10:59 → results 13:16:04.
+  - P5: amendment A1 at 13:13:18, while E10 was still running and unread.
+- **Namma:** run 1 killed at 3 h 03 m (memory thrash, no export); run 2 started 13:16 with the GPU held for it. P10 was asked to keep its scorers on CPU.
+- **Language audit for the user (read-only, nothing changed):**
+  - Python is the right main language in all 20 projects.
+  - Second languages are needed only for InnovateX node firmware (C/C++, not yet written) and optional iOS AR (Swift).
+  - InnovateX T3 uses Ultralytics YOLO, which is AGPL-3.0.
+  - 10 projects have no dependency manifest.
+
 ### 2026-10-04 13:05 IST — P1 and P4 completed
 - **P1 DONE (9b710f7), verified on main:**
   - 5 paired seeds with node dropout. AnchorLoRA's macro loss beats the starter by −0.081 [−0.093, −0.070], FFA-LoRA by −0.050 and FlexLoRA by −0.083.
