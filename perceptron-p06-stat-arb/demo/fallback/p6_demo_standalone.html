@@ -267,7 +267,7 @@ window.P6_DATA={"meta":{"test_day":"2026-10-01","train_day":"2026-09-01","legs":
       if (!s.ready) setTimeout(pollStatus, 700); else { refreshLive(); renderEvidence(); renderRaceRule(); }
     } catch (e) {
       S.live = false; setMode("offline", "OFFLINE · precomputed grid (same code, exported)");
-      if (++S.probes < 60) setTimeout(pollStatus, 3000);   // a backend started after the page still upgrades it
+      if (++S.probes < 24) setTimeout(pollStatus, 5000);   // a backend started up to 2 min after the page still upgrades it
     }
   }
   function setMode(cls, txt) { const m = $("mode"); m.className = "mode " + cls; m.textContent = txt; }

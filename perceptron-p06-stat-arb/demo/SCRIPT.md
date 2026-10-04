@@ -10,7 +10,11 @@ uv venv .venv --python 3.11 && uv pip install --python .venv/bin/python -r requi
 - The page renders immediately from `demo/assets/`. Within a few seconds the badge turns green, **LIVE**: Numba has compiled, and the decision step has been timed on this laptop.
 - If anything fails, open `demo/fallback/p6_demo_standalone.html`: one file, offline, the same page.
 
-**Check:** `demo/smoke.sh`, headless, about 10 s, exit 0 = all assertions pass.
+**Check:** `demo/smoke.sh`, headless, about 10–25 s on a warm venv; exit 0 = all assertions pass.
+- Run it once before going on stage: it also compiles bytecode.
+- Measured from a fresh clone with a brand-new venv on this shared Mac: the page was served 6.3 s after `run.sh` started and went LIVE at 48.9 s, while Python compiled numpy, polars, scikit-learn and numba for the first time.
+- On a warm venv: page 0.5 s, LIVE in 4–14 s, depending on machine load.
+- Adding `--compile-bytecode` to the `uv pip install` moves that compilation into setup.
 
 Before you start, set the browser to full screen at 1440 px or wider. Fee: 1 bp. Simulator: frozen. δ: 1 ms. Leave the replay paused; it opens just before the busiest 30 s of the window.
 
