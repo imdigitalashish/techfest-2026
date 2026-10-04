@@ -1,55 +1,80 @@
 # Prototype plan — DustLedger (working prototype due 1 Dec 2026)
 
-*Draft v1, 4 Oct 2026. Architecture: [`architecture/components.md`](../architecture/components.md). Spike: [ADR 001](../architecture/adr/001-spike.md).*
+*Rendered from `deliverables/src/prototype-plan.md`. Architecture: [`architecture/components.md`](../architecture/components.md). Spike: [ADR 001](../architecture/adr/001-spike.md). Prices: listings the lead opened in a browser on 4 Oct 2026, 15:34–15:35 IST (`deliverables/bom/bom.csv`). Power: datasheets the lead opened (`deliverables/bom/power_budget.py`).*
 
-> **Prices: UNVERIFIED.** The BOM research agent died on network errors, and Indian vendor sites blocked scripted lookups tonight (robu.in 403, robocraze 429, electronicscomp had no SPS30 listing). No price below is a fact yet. Each line names the part and where to buy it; filling sourced ₹ prices with URL and date is task #1 once lean mode lifts. We won't put a ₹ total on a slide until then.
->
-> **Update 4 Oct 10:00:** a browser-based research agent has collected vendor listings for items 1–10 (part, ₹ incl. GST, stock, URL, access time) in [`research/raw/hardware-bom.md`](../research/raw/hardware-bom.md), e.g. SPS30 ₹3,599 and SDS011 ₹2,739 (robu.in, incl. GST, in stock), plus a combined cup + vane head at ₹21k+ (no low-cost in-stock option found). These are agent-sourced: the lead spot-checks each URL before §2 is filled. Update 10:05: all 16 items now have listings (mostly robu.in, some amazon.in); there's no hobby-grade cup + vane kit in stock (cheapest combined head ₹14,810 on Amazon), and the SX1262 module's IN865 band is unconfirmed.
+## 1. What we build
+- **4 fence-line nodes** (C1) on the site boundary at ~2.5–3 m, one per side, so that whatever the wind direction, some nodes are upwind and some downwind. Each node: Sensirion SPS30 (PM1/2.5/4/10 + size bins), SHT30 temperature/RH, ESP32-S3, SX1262 LoRa radio, 10 W panel + LiFePO4 battery + MPPT charger, IP65 box (a radiation shield and inlet are still to be sourced).
+- **1 wind sensor** (C2), speed + direction in one head, on a 3–4 m mast clear of the building's wake.
+- **1 gateway** (C3): ESP32-S3 + SX1262 (receives the nodes) + A7670C LTE Cat-1 board (uploads), on site power (ASSUMPTION: site offices have mains power).
+- **1 misting line** (C8/C9): a 12 V misting kit (pump + 8 nozzles) switched by a relay, with a Hall-effect flow meter so every litre is logged. A 12 V solenoid valve is the option for mains-water sites.
+- **Software** (C4–C7, C10–C12): ingest + QA, calibration, attribution, controller, ledger and dashboards behind the typed contracts in `architecture/contracts/`.
 
-## 1. What we build (physical)
-- **4 fence-line nodes** (C1), on the site boundary at ~2.5–3 m height (breathing zone above hoarding level), placed at the four compass sectors, or at least one node upwind and two downwind of the prevailing winter wind (NW in Delhi winter: **UNVERIFIED**, to check from ERA5 on disk).
-- **1 wind station** (C2) on a 3–4 m mast, clear of the building's wake.
-- **1 gateway** (C3): LTE Cat-1 + SD buffer. The nodes talk to it over LoRa or Wi-Fi.
-- **1 misting controller** (C8/C9): relay/SSR → pump or solenoid on 1–2 misting lines along the dustiest boundary, with a flow meter.
-- **Software** (C4–C7, C10–C12): FastAPI ingest + Postgres/Parquet, attribution service, ledger, dashboard (web; supervisor view in Hindi/English).
+## 2. Parts list (one site kit)
+| Subsystem | Item | Part as listed | Qty | ₹ each (incl. GST) | Line ₹ | Stock seen | Vendor (link) |
+|---|---|---|---|---|---|---|---|
+| node | PM sensor | Sensirion SPS30, Particulate Matter Sensor, PM2.5, Range: 0–1,000 µg/m³ | 4 | 3,599 | 14,396 | InStock | [robu.in](https://robu.in/product/sensirion-particulate-matter-sensor-0-to-1000-%c2%b5g-m3-laser-i2c-uart-calibrated-4-5-to-5-5-v-supply/) |
+| node | T/RH sensor | Micro SHT30 sensor module + adapter board | 4 | 269 | 1,076 | InStock | [robu.in](https://robu.in/product/temperature-and-humidity-sensor-2/) |
+| node | MCU | ESP32 S3 Devkit (ESP32 S3 WROOM 1 N16R8) | 4 | 839 | 3,356 | InStock | [robu.in](https://robu.in/product/esp32-s3-devkit-esp32-s3-wroom-1-n16r8/) |
+| node | LoRa radio | IndieSemiC ISC-SX1262-B LoRa Module (868/915 MHz listed; IN865 suitability UNVERIFIED) | 4 | 549 | 2,196 | InStock | [robu.in](https://robu.in/product/indiesemic-isc-sx1262-b-an-advanced-lora-module-v0-1/) |
+| node | Solar panel 10 W | Loom 10-Watt Solar Panel (polycrystalline) | 4 | 949 | 3,796 | In stock | [amazon.in](https://www.amazon.in/Loom-Solar-10-Watt-Panel/dp/B07JF2B35T/) |
+| node | Battery | Pro-Range IFR 32650 12.8V 12000mAh 4S2P LiFePO4 pack | 4 | 3,359 | 13,436 | InStock | [robu.in](https://robu.in/product/pro-range-ifr-32650-lifepo4-12000mah-12-8v-4s2p-protected-battery-pack-3c/) |
+| node | Solar charger | Elejoy CN3791 12V MPPT Solar Charger Module | 4 | 199 | 796 | InStock | [robu.in](https://robu.in/product/cn3791-12v-mppt-solar-charger-module/) |
+| node | Enclosure | F1 195*115*75mm IP65 ABS junction box | 4 | 269 | 1,076 | InStock | [robu.in](https://robu.in/product/f1-19511575mm-ip65-abs-pcb-plastic-junction-box/) |
+| wind | Wind speed + direction | XS-WSDS01 Integrated Wind Speed Direction Sensor (RS485 Modbus per listing title) | 1 | 14,810 | 14,810 | not shown | [amazon.in](https://www.amazon.in/XS-WSDS01-Integrated-Direction-Anemometer-XS-WSDS01-0%EF%BD%9E5V/dp/B0DMNJGY3Y/) |
+| gateway | LTE Cat-1 board | SIM A7670C 4G LTE Development Board with 4G Flex Antenna | 1 | 1,859 | 1,859 | InStock | [robu.in](https://robu.in/product/sim-a7670c-4g-lte-development-board-with-4g-flex-antenna/) |
+| gateway | MCU | ESP32 S3 Devkit (ESP32 S3 WROOM 1 N16R8) | 1 | 839 | 839 | InStock | [robu.in](https://robu.in/product/esp32-s3-devkit-esp32-s3-wroom-1-n16r8/) |
+| gateway | LoRa radio | IndieSemiC ISC-SX1262-B LoRa Module | 1 | 549 | 549 | InStock | [robu.in](https://robu.in/product/indiesemic-isc-sx1262-b-an-advanced-lora-module-v0-1/) |
+| gateway | Enclosure | F1 195*115*75mm IP65 ABS junction box | 1 | 269 | 269 | InStock | [robu.in](https://robu.in/product/f1-19511575mm-ip65-abs-pcb-plastic-junction-box/) |
+| actuator | Misting kit | Fieldstar DIY Misting System Kit with Nozzles, Pump 12V, Pipe, Connectors (8 nozzles) | 1 | 1,999 | 1,999 | In stock | [amazon.in](https://www.amazon.in/Misting-System-Kit-Nozzles-Hydroponics/dp/B0F3DKV27D/) |
+| actuator | Flow sensor | YF-S201 Water Flow Sensor 1–30 L/min | 1 | 219 | 219 | InStock | [robu.in](https://robu.in/product/yf-s201-water-flow-measurement-sensor-with-1-30liter-min-flow-rate-2/) |
+| actuator | Relay | 5V 1 Channel Relay Module | 1 | 39 | 39 | OutOfStock | [robu.in](https://robu.in/product/1-channel-isolated-5v-relay-module-opto-coupler-for-arduino-pic-avr-dsp-arm/) |
+| actuator_option (not in total) | Solenoid valve (mains-water variant) | 12V DC 1/2in Electric Solenoid Water Air Valve (Normally Closed) | 1 | 269 | 269 | InStock | [robu.in](https://robu.in/product/dc12v-plastic-electric-12v-water-solenoid-valve-electric-solenoid-valve-magnetic-nc-water-air-inlet-flow-switch-nc-12/) |
+| alt_wind (not in total) | Wind (in-stock alternative) | FirstRate FST200-205 Wind Speed & Wind Direction Integrated Sensor (4–20 mA) | 1 | 21,759 | 21,759 | InStock | [robu.in](https://robu.in/product/firstrate-fst200-205-wind-speed-wind-direction-integrated-sensor/) |
+| alt_solar (not in total) | Solar panel (alternative) | 10W 12Volts 36-cell Solar Panel | 1 | 1,047 | 1,047 | OutOfStock | [robu.in](https://robu.in/product/10w-solar-panel-36-cell-solar-plate-high-quality-10-w-10-watts/) |
+| alt_pump (not in total) | Pump (alternative to kit pump) | 550 Diaphragm Pump 12V Water Pump | 1 | 399 | 399 | InStock | [robu.in](https://robu.in/product/550-diaphragm-pump-12v-water-pump-for-water-spray-fish-tank-reflux-pump/) |
 
-## 2. Bill of materials (per 4-node site kit)
-| Subsystem | Item | Part (candidate) | Qty | Key spec to verify (datasheet) | Unit ₹ | Source |
-|---|---|---|---|---|---|---|
-| Node ×4 | PM sensor | Sensirion SPS30 (or SEN55/SEN66), exposes number bins | 4 | PM10 measured or *estimated*? lifetime; fan cleaning | UNVERIFIED | robu.in / evelta.com / mouser.in |
-| Node ×4 | T/RH | Sensirion SHT40 | 4 | ±1.8 % RH | UNVERIFIED | same |
-| Node ×4 | MCU | ESP32-S3 dev board | 4 | deep-sleep current | UNVERIFIED | same |
-| Node ×4 | Radio | LoRa SX1262 module (IN865) or Wi-Fi | 4 | IN865 duty-cycle rules | UNVERIFIED | same |
-| Node ×4 | Power | 10 W solar panel + 12 V LiFePO4 + MPPT charger | 4 | autonomy in fog weeks | UNVERIFIED | same / amazon.in |
-| Node ×4 | Housing | IP65 ABS box + louvred radiation shield + inlet | 4 | 50 °C ambient | UNVERIFIED | local |
-| Wind | Anemometer + vane | cup anemometer + wind vane (pulse/analog) | 1 | start-up speed ≤ 0.5 m/s (needed for calm-wind abstention) | UNVERIFIED | robu.in / indiamart |
-| Gateway | LTE Cat-1 | SIMCom A7670C + ESP32 + microSD + RTC | 1 | Jio/Airtel band support | UNVERIFIED | same |
-| Actuator | Pump/solenoid + nozzles | 12/24 V misting pump or mains solenoid on site water; 0.2–0.3 mm nozzles; inline filter | 1 line | droplet size vs PM10 capture (to research) | UNVERIFIED | indiamart |
-| Actuator | Flow meter + relay | Hall-effect flow sensor + SSR/relay | 1 | ±3 % flow | UNVERIFIED | robu.in |
-| QA | Reference co-location | 1–2 weeks next to a DPCC/CPCB CAAQMS (permission needed) or IIT Delhi's reference instrument | — | — | — | **Needs from user** |
+**Kit parts total: ₹60,711** (4 nodes ₹40,128 · wind ₹14,810 · gateway ₹3,516 · misting ₹2,257). Single-unit retail, incl. GST. **Not included:** 5 V buck converters, cabling and glands, masts and mounting, radiation shields, SIM + data plan, gateway power supply, installation labour, reference co-location, maintenance. These are UNVERIFIED and must be priced before any "installed cost" claim. Notes: the relay listing was out of stock (any 5 V relay module works); the SX1262 module is listed for 868/915 MHz, so its suitability for India's IN865 band is UNVERIFIED; the wind sensor's stock status wasn't shown, and an in-stock alternative is listed at a higher price.
 
-**Commercial yardsticks** (from opened sources): CAQM's flat ₹5 lakh fine per large Delhi site, and ₹7,500 per missing anti-smog gun per 5,000 m² (landscape §2). Prices of commercial dust monitors (Aeroqual, Oizom, Airveda): **UNVERIFIED** (none public on the pages opened).
+**Commercial yardstick** (fact F6): one violation costs a large Delhi site a ₹5 lakh flat fine. The parts are 12% of one fine, which says nothing yet about lifetime cost.
 
-## 3. Power budget (to fill from datasheets)
-Per node: PM sensor fan at a duty cycle (e.g. 30 s on / 30 s off for 1-min means) + ESP32 + LoRa bursts. Solar sizing needs Delhi winter irradiance (fog and smog cut it): fetch NASA POWER or Global Solar Atlas values (**UNVERIFIED**). Until then, design for ≥ 3 days of battery autonomy.
+## 3. Power budget (per node)
+| Load | W (average) |
+|---|---|
+| SPS30, continuous measurement (5 V × 60 mA) | 0.300 |
+| ESP32-S3, modem-sleep 40 MHz idle (3.3 V × 13.2 mA) | 0.044 |
+| LoRa radio + SHT30 + misc (ASSUMPTION: 3.3 V × 5 mA average) | 0.017 |
 
-## 4. Build steps
-1. **Now – 12 Oct (software, no hardware):** replay harness for C6 attribution: real CPCB 15-min PM10 background (OpenAQ archive, on disk) + real wind + simulated plumes and sensor faults (labelled SIMULATED). Baseline: single-pair subtraction. Then the spike: ring + self-calibration + abstention + tamper flags, with an autoresearch ratchet on increment MAE.
-2. **13–25 Oct:** order parts; bench-build one node and the gateway; firmware for `NodeReading`/`WindReading` contracts with on-device signing.
-3. **26 Oct – 8 Nov:** build 4 nodes; a co-location week with all four side by side (inter-unit precision, metric C1); a reference co-location if a CAAQMS or IIT Delhi instrument is available.
-4. **9–17 Nov:** field trial at a partner construction site (or a controlled dust source: a sand pile + leaf blower on campus): ring + wind + misting line; record increment with misting off/on (alternating days) and water used. *(User exams 19–25 Nov: nothing user-dependent in that window.)*
-5. **26–30 Nov:** report: functionality evidence, cost, implementation and scalability plans, impact assessment from trial numbers.
-6. **15–18 Dec finals:** live demo: a ring around a dust source on stage (fan + talc or chalk dust in a box), the dashboard lighting up only for the downwind nodes, misting triggering automatically.
+Daily energy at the battery (÷ 0.85 DC-DC efficiency, ASSUMPTION): **10.2 Wh/day**. 10 W panel, solar derate 0.7 (ASSUMPTION): December 21.2 Wh/day → **2.09×** the load in the worst month. Battery 153.6 Wh nominal, 80% usable (ASSUMPTION) → **12.1 days** with no sun. NASA POWER is a 20-year all-sky climatology; smog/fog weeks are darker than the monthly mean. Bench-measure the real draw.
 
-## 5. What is simulated now (labelled)
-- Fence-line nodes, wind station and actuator: `provenance="SIMULATED"` generators that write the same contracts as the hardware will.
-- Site plumes (Gaussian dispersion with stability classes) and sensor faults (slope, offset, humidity growth, drift, spray events).
+Datasheet sources: Sensirion SPS30 v0.9 (60 mA average in measurement mode, fact F20), Espressif ESP32-S3 v2.1 (13.2 mA in modem-sleep at 40 MHz, fact F21), NASA POWER climatology for Delhi (December worst month, fact F22). Bench-measure the real draw in the first build week.
+
+## 4. Connectivity
+- Nodes → gateway: LoRa (SX1262). India's licence-exempt band is IN865; whether this module and our duty cycle comply is UNVERIFIED — check before deployment. Fallback: Wi-Fi from the gateway when nodes are within range.
+- Gateway → cloud: LTE Cat-1 (A7670C) with store-and-forward on the ESP32 flash, so outages backfill.
+
+## 5. Build steps and dates
+| When | Step | Evidence it produces |
+|---|---|---|
+| 5–12 Oct | Order parts from two vendors per item; replay ratchet continues on evaluator v2.1 (software only) | order receipts; `results.tsv` |
+| 13–25 Oct | Bench-build one node + gateway; firmware writes the `NodeReading` / `WindReading` contracts with on-device signing; measure real current draw | power bench log |
+| 26–31 Oct | Build 4 nodes; one week side by side (inter-node agreement, metric C1); reference co-location if a slot is granted | co-location dataset |
+| Before 1 Nov | Real construction-site trial window: Delhi prohibits dust-generating works from Nov 1 – Jan 31, so a real-site trial must happen before then or at a site permitted to operate | first real fence-line increments |
+| 1–17 Nov | Controlled dust-source trial on campus (sand or chalk dust + fan at a known spot): ring + wind + misting on alternate runs | increment, abstention rate, litres used, misting effect |
+| 18–25 Nov | No user-dependent work (IIT Delhi end-semester exams 19–25 Nov) | — |
+| 26–30 Nov | Report: functionality evidence, cost, implementation and scalability plans, impact from trial numbers only | final report |
+| 15–18 Dec | Finals demo: a live ring around a dust source on stage; only the downwind nodes light up; misting triggers | live demo |
+
+## 6. What is simulated now (labelled)
+- The construction site, its emissions, plumes, sensor faults and the neighbour/road confounders (`components/attribution/autoresearch/eval_v2.py`, `provenance = SIMULATED`).
 - **Real:** background PM (CPCB/DPCC monitors via the OpenAQ archive), meteorology (ERA5 via Open-Meteo), CAMS fields (reference only).
+- **Not modelled at all:** the misting effect on dust. No reduction figure exists until the trial.
 
-## 6. Risks and mitigations
+## 7. Risks and mitigations
 | Risk | Mitigation |
 |---|---|
-| Sensors under-read coarse construction dust | Differential use; check with a reference co-location; bins → size-aware correction; consider a PM10-specific sensor (OPC class) for one node |
-| Calm winds in winter | Abstain + report the abstention rate; ring geometry; night-time accumulation analysis |
-| No partner site by mid-Nov | Controlled dust-source trial on campus (labelled), still with real sensors |
-| Vendor delays | Order by 20 Oct; two vendors per part |
+| Optical sensors respond differently to coarse dust than to ambient air (CSTEP: qualitative) | Differential use; dust test + reference co-location before any claim; the size bins allow a size-aware correction |
+| Calm winter winds (ERA5: below 1 m/s in 16.2% of Nov–Jan hours, a lower bound) | Abstain and report the abstention rate; never treat "inconclusive" as clean |
+| No real site before 1 Nov | Controlled dust-source trial on campus (labelled) with the same hardware |
+| Panel soiling at a dusty site | Weekly wipe; solar derate assumption in the power budget; measure |
+| Vendor delays / stock-outs | Order by 12 Oct; alternatives listed in the parts table |
+| LoRa band compliance | Verify IN865 before field use; Wi-Fi fallback |

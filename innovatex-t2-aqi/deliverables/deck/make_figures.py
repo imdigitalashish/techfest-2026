@@ -51,25 +51,32 @@ def fig_attribution():
 
 def fig_timeseries():
     sys.path.insert(0, os.path.join(ROOT, "components", "attribution", "autoresearch"))
-    import eval as ev  # the frozen evaluator (load + simulate)
+    import eval_v2 as ev  # frozen evaluator v2.1 (load + simulate)
     import methods
     df = ev.load()
-    obs, truth = ev.simulate(df, np.random.default_rng(ev.SEED))
-    est_p, _ = methods.pair_fixed(obs, ev.GEOM)
-    est_r, ab = methods.ring_selfcal(obs, ev.GEOM)
+    obs, tmax, tdiff, geom = ev.simulate(df, np.random.default_rng(ev.DEV_SEEDS[0]), ev.SCENARIOS["medium"])
+    est_p, _ = methods.pair_fixed(obs, geom)
+    est_r, ab = methods.ring_selfcal(obs, geom)
     w = (obs.index >= "2025-11-17") & (obs.index < "2025-11-24")
     t = obs.index[w]
     fig, (a1, a2) = plt.subplots(2, 1, figsize=(11, 6.2), sharex=True, gridspec_kw={"height_ratios": [1, 1.4]})
     a1.plot(t, df["bg"].reindex(obs.index)[w], color=INK, lw=1.4)
     a1.set_ylabel("Delhi background\nPM10, µg/m³")
     a1.set_title("One week in Nov 2025: real Delhi background (top) vs a simulated site's own dust (bottom)", fontsize=13)
-    a2.fill_between(t, 0, truth[w], color=ACCENT, alpha=0.25, label="True site contribution (simulated)")
-    a2.plot(t, est_p[w], color=GREY, lw=1.2, label="Fixed pair estimate")
-    a2.plot(t, np.where(ab[w], np.nan, est_r[w]), color=ACCENT, lw=1.6, label="DustLedger estimate")
+    a2.fill_between(t, 0, tmax[w], color=ACCENT, alpha=0.25, label="True site contribution (simulated)")
+    a2.plot(t, est_p[w], color=GREY, lw=1.2, label="Fixed-pair estimate")
+    a2.plot(t, np.where(ab[w], np.nan, est_r[w]), color=ACCENT, lw=1.6, label="DustLedger estimate (gaps = 'inconclusive')")
     a2.axhline(0, color=GREY, lw=0.6)
+    top = 700.0
+    pk = float(np.nanmax(tmax[w]))
+    if pk > top:  # clip for readability and say so on the figure
+        a2.set_ylim(top=top)
+        tp = t[int(np.nanargmax(tmax[w]))]
+        a2.annotate(f"calm-wind peak {pk:,.0f} µg/m³ (clipped)", xy=(tp, top * 0.97), xytext=(tp + (t[-1] - t[0]) * 0.12, top * 0.82),
+                    fontsize=10, color=INK, ha="left", arrowprops=dict(arrowstyle="->", color=INK))
     a2.set_ylabel("Site's own PM10, µg/m³")
     a2.legend(loc="upper left", fontsize=10, frameon=False)
-    fig.text(0.01, 0.01, "Background = CPCB/DPCC monitor 6929 (real); wind = ERA5 (real); site + sensors SIMULATED (seed 20261004).", fontsize=9, color=WARN)
+    fig.text(0.01, 0.01, "Background = CPCB/DPCC monitor 6929 (real); wind = ERA5 (real); site + sensors SIMULATED (eval_v2.1, 'medium' scenario, seed 11).", fontsize=9, color=WARN)
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     fig.savefig(os.path.join(HERE, "fig_timeseries.png"), dpi=200)
 
