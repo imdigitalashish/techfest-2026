@@ -4,3 +4,8 @@ timestamp	commit	script	label	model	n_test	exact	within1	mae	qwk
 2026-10-04T07:49	d06a304	baseline_numpy	trl_current	thr_ridge_mode	1657	0.3090	0.6958	1.1509	0.2354
 2026-10-04T07:49	d06a304	baseline_numpy	trl_current	thr_ridge_median	1657	0.3120	0.7447	1.0422	0.3023
 2026-10-04T07:49	d06a304	baseline_numpy	trl_current	thr_ridge_expect	1657	0.3030	0.7544	1.0338	0.2978
+2026-10-04T07:55	d06a304	baseline_numpy	trl_begin	majority	1766	0.3573	0.7463	1.0085	0.0000
+2026-10-04T07:55	d06a304	baseline_numpy	trl_begin	ridge_round	1766	0.3596	0.8279	0.8596	0.2631
+2026-10-04T07:55	d06a304	baseline_numpy	trl_begin	thr_ridge_mode	1766	0.3805	0.7809	0.9083	0.2342
+2026-10-04T07:55	d06a304	baseline_numpy	trl_begin	thr_ridge_median	1766	0.3935	0.8222	0.8369	0.2505
+2026-10-04T07:55	d06a304	baseline_numpy	trl_begin	thr_ridge_expect	1766	0.3658	0.8335	0.8465	0.2348

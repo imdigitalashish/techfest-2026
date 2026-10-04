@@ -30,5 +30,20 @@ Raw outputs: `results/baseline_np_v0_<label>.json`, ledger `results/results_nump
 
 **Reading (v0).** Text-only proposal-style descriptions carry a real but weak ordinal signal: QWK ≈0.30 against 0.00 for the majority class, and MAE 1.03–1.05 against 1.11. Within-1 is already 0.70 for the majority class because labels cluster at TRL 3–5, so **QWK and MAE are the informative metrics here, not within-1**. Decoding moves metrics in opposite directions (mode → exact; expectation → MAE / within-1; rounded regression → QWK). This is why C5 (metric-aware decoding) is a spike: the choice must follow the official metric. These are deliberately weak hashed-ridge baselines. The sklearn TF-IDF + logistic / cumulative-logit run (`eval/baseline_tfidf.py`) is pending: the overloaded machine could not import scipy in time.
 
-## Results — `trl_begin`, `trl_end`
-Pending (run in progress); appended here when committed.
+## Results — `trl_begin` and `trl_end` (same script, run, split method and hyper-parameters)
+| Label | Model | Exact | Within-1 | MAE ↓ | QWK | Macro precision* |
+|---|---|---|---|---|---|---|
+| `trl_begin` (train 6,794 / test 1,766) | Majority (TRL 2) | 0.357 | 0.746 | 1.008 | 0.000 | 0.357 |
+| | Ridge, rounded | 0.360 | 0.828 | 0.860 | **0.263** | 0.296 |
+| | Threshold-ridge → mode | 0.381 | 0.781 | 0.908 | 0.234 | 0.313 |
+| | Threshold-ridge → median | **0.394** | 0.822 | **0.837** | 0.251 | 0.319 |
+| | Threshold-ridge → expectation | 0.366 | **0.834** | 0.847 | 0.235 | 0.372 |
+| `trl_end` (train 6,651 / test 1,719) | Majority (TRL 4) | 0.291 | 0.716 | 1.124 | 0.000 | 0.291 |
+| | Ridge, rounded | 0.289 | 0.749 | 1.042 | **0.319** | 0.310 |
+| | Threshold-ridge → mode | **0.328** | 0.691 | 1.138 | 0.258 | 0.294 |
+| | Threshold-ridge → median | 0.321 | 0.756 | 1.029 | 0.315 | 0.464 |
+| | Threshold-ridge → expectation | 0.289 | **0.767** | **1.024** | 0.297 | 0.471 |
+
+Fit 320.3 s (begin) / 141.9 s (end); predict 17.8 / 21.4 ms/doc (overloaded machine). The majority class is the training mode.
+
+**Reading.** All three label definitions show the same pattern: QWK ≈0.26–0.32 for text-only hashed ridge, a 0.12–0.17 MAE gain over the majority class, and decoding trading exact accuracy against MAE and QWK. `trl_begin` is the easiest by MAE because its labels concentrate at TRL 2–3. The primary label stays `trl_current` until the 10 Oct guide defines the target.

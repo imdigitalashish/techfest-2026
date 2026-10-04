@@ -1,0 +1,53 @@
+{
+ "label": "trl_end",
+ "n_train": 6651,
+ "n_test": 1719,
+ "commit": "d06a304",
+ "seed": 20261004,
+ "D": 4096,
+ "alpha": 1.0,
+ "fit_s": 141.92062902450562,
+ "predict_ms_per_doc": 21.36838692714476,
+ "models": {
+  "majority": {
+   "n": 1719,
+   "exact_acc": 0.29086678301337987,
+   "within1_acc": 0.7155322862129145,
+   "mae": 1.1244909831297265,
+   "qwk": 0.0,
+   "macro_precision_predicted_classes": 0.29086678301337987
+  },
+  "ridge_round": {
+   "n": 1719,
+   "exact_acc": 0.2891215823152996,
+   "within1_acc": 0.7492728330424665,
+   "mae": 1.0418848167539267,
+   "qwk": 0.31878014262272825,
+   "macro_precision_predicted_classes": 0.3099876578033138
+  },
+  "thr_ridge_mode": {
+   "n": 1719,
+   "exact_acc": 0.32809773123909247,
+   "within1_acc": 0.6905177428737638,
+   "mae": 1.1384525887143688,
+   "qwk": 0.2584313743173957,
+   "macro_precision_predicted_classes": 0.293712942711904
+  },
+  "thr_ridge_median": {
+   "n": 1719,
+   "exact_acc": 0.3205351948807446,
+   "within1_acc": 0.7562536358347877,
+   "mae": 1.0285049447353112,
+   "qwk": 0.3151842853450503,
+   "macro_precision_predicted_classes": 0.46426774815134275
+  },
+  "thr_ridge_expect": {
+   "n": 1719,
+   "exact_acc": 0.28853984874927285,
+   "within1_acc": 0.7667248400232693,
+   "mae": 1.024432809773124,
+   "qwk": 0.29714002615839885,
+   "macro_precision_predicted_classes": 0.47140210400587235
+  }
+ }
+}
