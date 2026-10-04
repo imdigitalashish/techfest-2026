@@ -28,25 +28,28 @@ FAMILY = "sm_expr_v0"
 CODES = ("LTR", "SQ_DOUBLE", "SUB_NEG", "FRAC_ADD", "NEG_TIMES_NEG")
 GRAPH_URL = "https://huggingface.co/datasets/Eedi/Eedi-Misconceptions-Graph"
 
-# Exact Eedi names (verified against the downloaded files on 2026-10-04).
+# Eedi links (verified against the downloaded files on 2026-10-04).
+# "kaggle2024": Kaggle "Eedi - Mining Misconceptions in Mathematics" corpus ids. Their names are NOT stored here
+#   when the wording is Kaggle-only (competition data, CC BY-NC 4.0, rules §7.B: no redistribution); code that
+#   needs them reads the local, gitignored corpus at runtime (see eval/run_diagnosis.py). Names that also appear
+#   verbatim in the CC BY 4.0 Eedi Misconceptions Graph are kept.
+# "graph": Eedi Misconceptions Graph v1.0 ids and names (CC BY 4.0, attributed in GRAPH_URL).
 EEDI_LINKS = {
     "LTR": {
-        "kaggle2024": {1507: "Carries out operations from left to right regardless of priority order",
-                       1005: "Carries out operations from left to right regardless of priority order, unless brackets are used"},
+        "kaggle2024": {1507: None, 1005: None},
         "graph": {21551: "Believes that mathematical operations should be performed strictly from left to right, ignoring the conventional or..."},
     },
     "SQ_DOUBLE": {
-        "kaggle2024": {2316: "Mixes up squaring and multiplying by 2 or doubling",
+        "kaggle2024": {2316: None,
                        2175: "Mixes up squaring and multiplying by 2 or doubling, and not square rooted"},
         "graph": {15012: "Mixes up squaring and multiplying by 2 or doubling, and not square rooted"},
     },
     "SUB_NEG": {
-        "kaggle2024": {2566: "When subtracting a negative number, subtracts the absolute value rather than adding it",
-                       1805: "Does not realise that subtracting a negative is the same as adding it's additive inverse"},
+        "kaggle2024": {2566: None, 1805: None},
         "graph": {},
     },
     "FRAC_ADD": {
-        "kaggle2024": {217: "When adding fractions, adds the numerators and denominators"},
+        "kaggle2024": {217: None},
         "graph": {},
     },
     "NEG_TIMES_NEG": {

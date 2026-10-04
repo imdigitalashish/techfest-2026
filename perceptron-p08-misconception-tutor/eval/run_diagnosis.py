@@ -118,7 +118,7 @@ def executable_match(question: str, correct: str, incorrect: str):
     return False, False, []
 
 
-def part_b(q: pd.DataFrame, llm_n: int) -> dict:
+def part_b(q: pd.DataFrame, llm_n: int, corpus: pd.DataFrame | None = None) -> dict:
     link = {i: cd for cd in CODES for i in EEDI_LINKS[cd]["kaggle2024"]}
     q = q.copy()
     q["code"] = q.mid.map(link)
@@ -137,7 +137,9 @@ def part_b(q: pd.DataFrame, llm_n: int) -> dict:
         parsed, key_ok, matched = executable_match(question, correct, incorrect)
         if parsed and key_ok:
             neg_rows.append({"mid": int(q.loc[qi, "mid"]), "name": q.loc[qi, "misconception_name"], "matched": matched})
-    texts = {cd: f"{MISCONCEPTIONS[cd].name}. {MISCONCEPTIONS[cd].description} " + " ".join(EEDI_LINKS[cd]["kaggle2024"].values()) for cd in CODES}
+    names = dict(zip(corpus.id_, corpus.text)) if corpus is not None else {}  # Kaggle-only names come from local .data/
+    texts = {cd: f"{MISCONCEPTIONS[cd].name}. {MISCONCEPTIONS[cd].description} "
+             + " ".join((n if n is not None else names[i].strip()) for i, n in EEDI_LINKS[cd]["kaggle2024"].items()) for cd in CODES}
     vec = TfidfVectorizer(ngram_range=(1, 2), sublinear_tf=True).fit(list(texts.values()) + [r["query"] for r in rows])
     S = (vec.transform([r["query"] for r in rows]) @ vec.transform(list(texts.values())).T).toarray()
     for r, srow in zip(rows, S):
@@ -215,7 +217,7 @@ def main() -> None:
     q = pd.read_parquet(DATA / "eedi2024/queries_w_rels.parquet")
     c = pd.read_parquet(DATA / "eedi2024/corpus.parquet")
     res = {"command": f"python -m eval.run_diagnosis --llm-n {a.llm_n}", "A_open_set": part_a(q, c),
-           "B_mvp_closed_set": part_b(q, a.llm_n), "C_identifiability_synthetic": part_c()}
+           "B_mvp_closed_set": part_b(q, a.llm_n, c), "C_identifiability_synthetic": part_c()}
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "diagnosis.json").write_text(json.dumps(res, indent=1, default=str))
     A, B = res["A_open_set"], res["B_mvp_closed_set"]
