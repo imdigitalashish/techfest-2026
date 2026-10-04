@@ -1,0 +1,31 @@
+# Demo script: Poshan Setu (India@71, Theme 1)
+
+Open: `demo/run.sh` (offline, no install). Keys: `→`/`←` next/previous, `1`–`7` jump. A 1440×900 window or larger; the page scales on a projector.
+Every number below is on screen with its source line. REAL screens use parliamentary annexures and NFHS-5 fact sheets; everything child-level is labelled SYNTHETIC or SIMULATED.
+
+## 3-minute talk track
+
+| Time | Screen (key) | Click | Say | Point at |
+|---|---|---|---|---|
+| 0:00–0:22 | **1 India** (REAL) | Toggle *Reported: Poshan Tracker*, then back to *Surveyed* | "This is what Poshan Tracker reports against the national survey. Wasting is lower in **all 36** States and UTs; India 19.3% surveyed, 5.46% reported. Stunting roughly agrees, so it's the weight-based numbers that diverge. Different years, ages and denominators: an *unexplained* discrepancy, and nobody can yet say where it comes from, district by district." | "36 of 36"; India 19.3% → 5.46% |
+| 0:22–0:42 | **2 Districts** (REAL) | Click the MH tile on screen 1, or press `2`; preset *Nandurbar*; then *Simulate Nandurbar's children →* | "Inside Maharashtra every dot is a district. Nandurbar: **30.7%** of children wasted, 13.5% severely, 45.8% stunted, straight from the NFHS-5 fact sheet. Melghat is in Amravati, 26.2%. From here on the children are simulated, but at Nandurbar's real rates." | Nandurbar 30.7%; the KPI card |
+| 0:42–1:20 | **3 Find every child** (SYNTHETIC) | Presets: *As simulated* → *No shared IDs* → *No IDs, +40% typos* | "To follow a child you first have to find her records across two ministries. Today that means a shared ID, copied into some Poshan Tracker records; we *assume* 35%. Take it to zero: the ID join finds nobody, which is true by definition. Now make the typing 40% worse. Our Bloom-filter linkage still re-joins **3,907 of 4,531** children, F1 **0.89**; pooled name matching drops to 0.70. And no names were pooled: only these 1,000-bit strings left each department. Green bits agree. Dice 0.97, so linked." | Bars 0.00 / 0.70 / 0.89; the two bit grids |
+| 1:20–1:45 | **4 One child** (SIMULATED children, REAL district rates) | none | "This is that child, in a cohort calibrated to Nandurbar: 30.7% and 45.8%, hit exactly. Severe wasting we did *not* fit, and it comes out lower; we show that. Birth weight 2.18 kg in RCH, a missed dose in U-WIN, and Poshan Tracker measurements: she was listed for a home visit **3 months before** wasting began. Most episodes are still missed (the rule catches 39%), and linking adds nothing to prediction. It's for coordination: the SAM list must reach the ASHA within 2 days." | Lead "3 months before"; "39.4%"; "0.384 vs 0.384" |
+| 1:45–2:15 | **5 This week** (SIMULATED) | `K`: 5 → 3 → 8, then *Reveal the next 3 months* | "Five home-visit slots per Anganwadi. Programme rule against ours, closest to the MAM line. Reveal: who actually became wasted. One month is noisy, so look at the curve: across 13,797 new episodes ours lists **39.4% vs 36.3%** at 5 slots, and 25.2% vs 22.2% squeezed to 3. Our committed reference district: 0.429 vs 0.365. The rule ships; a model must beat it on real pilot data first." | Right chart at K; CI line |
+| 2:15–2:35 | **6 SMS** (SIMULATED) | Scroll the phone | "What the worker gets: one SMS per task, at most 80 characters, no names. In Nandurbar this Anganwadi has 4 SAM and 11 MAM children, so 20 tasks for a list of 10. Protocol cases come first and our child's visit overflows, task 18. Nothing is dropped: on day 8 it moves to the ASHA." | "20 tasks", "task 18", "ASHA" |
+| 2:35–3:00 | **7 Break it** (SIMULATED) | *CDPO asks for the data to discipline a worker* → *Delete the last 3 entries* → *…and re-seal every later entry* | "Every read is purpose-bound: a CDPO asking for data to discipline a worker is **denied** by its own rule, and 39 of 39 red-team cases pass. Every action is hash-chained and re-verified live in this browser. Delete history and the chain alone still verifies. That's the honest limit. The checkpoint kept outside, in the district minutes, catches it." | DENIED stamp; the two check boxes |
+
+Numbers quoted for Nandurbar. With *Amravati (Melghat)* in the banner the same screens show that cohort: 39.8% vs 36.0% at 5 slots, 17 tasks, child PT-000062.
+
+## 30-second version (or if the laptop fails: show `fallback/01`, `05`, `06`, `09` and `find-every-child.gif`)
+
+"Poshan Tracker reports less wasting than the national survey in all 36 States/UTs: 5.46% against 19.3%. Poshan Setu sits behind the app. It finds a child's records across ministries without pooling names: with no shared IDs and 40% worse typing it still re-joins 0.89 F1 where the ID join finds nobody. In simulated children at Nandurbar's real wasting rate, a transparent rule lists 39% of new wasting episodes one to three months ahead. Every task becomes a short SMS that escalates if it's missed, and every data access is purpose-bound and tamper-evident. All child-level results are simulation checks; real validation is the pilot."
+
+## If asked
+
+- **Is any of this validated on real children?** No. Real Poshan Tracker microdata isn't public. Only the state and district rates are real; child-level screens are simulations, labelled. Validation is the pilot (a blinded re-measurement study).
+- **Why 35% of records with the RCH ID?** It's an assumption; the share isn't published. That's why it's a knob: the screen shows every value from 0% to 100%.
+- **Can the Bloom-filter bits be reversed?** Published pattern-mining and graph-matching attacks exist. Linkage stays inside the state identity vault with keyed hashing, and hardening is a pilot item.
+- **Why not machine learning?** In our evaluator a logistic model loses to the transparent rule (0.384 vs 0.429). ML is gated until it beats the rule on real pilot data (ADR 003).
+- **Does linkage improve prediction?** No (0.384 with vs 0.384 without). It's for care coordination: the SAM list must reach the ASHA and ANM within 2 days (CMAM 2023 p.20).
+- **Will supervisors use this against workers?** Employment use is denied by its own policy rule, the unit of diagnostics is never a worker (ADR 002), and the ban must also be written into the data-sharing agreement.
