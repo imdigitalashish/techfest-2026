@@ -1,0 +1,87 @@
+{
+  "source": "India-WRIS snapshot fetched 2026-10-04 (components/data-ingest/fetch_delhi.py)",
+  "stations_in_arcgis_layer": 382,
+  "stations_in_arcgis_by_agency": {
+    "CGWB": 279,
+    "Delhi SW GW": 103
+  },
+  "stations_in_arcgis_telemetry_flag": {
+    "1": 196,
+    "2": 186
+  },
+  "stations_with_level_data": 336,
+  "rows_by_mode": {
+    "Telemetric": 480428,
+    "Manual": 2825
+  },
+  "telemetric_stations_by_agency": {
+    "CGWB": 91,
+    "Delhi SW GW": 94
+  },
+  "telemetric_stations_reporting_in_2026": 46,
+  "telemetric_date_range": [
+    "2020-03-03 06:07:00",
+    "2026-06-04 00:00:00"
+  ],
+  "manual_date_range": [
+    "2015-01-05 06:00:00",
+    "2022-11-30 06:00:00"
+  ],
+  "telemetric_median_interval_h": 6.0,
+  "telemetric_data_quality": {
+    "rows": 480428,
+    "exact_zero_share": 0.23278618232076398,
+    "implausible_abs_gt_200m_share": 0.004048473444511977,
+    "spike_step_gt_2m_in_6h_share": 0.0025037774856400997,
+    "flatline_ge_8_identical_share": 0.004238420710985528,
+    "missing_6h_slots_share": 0.17423504087728403,
+    "stations_with_gt_50pct_zero": 65,
+    "usable_share_after_zero_and_implausible_removed": 0.763165344234724
+  },
+  "sign_convention": {
+    "stations_resolved_by_manual_overlap": 0,
+    "stations_negative_convention": 66,
+    "stations_positive_convention": 55
+  },
+  "hydrology": {
+    "stations_analysed": 117,
+    "stations_with_plausible_depth_0_80m": 117,
+    "median_depth_mbgl_quantiles": {
+      "0.1": 2.61,
+      "0.5": 7.72,
+      "0.9": 26.88
+    },
+    "monsoon2025_rise_m_quantiles": {
+      "0.1": 0.8,
+      "0.5": 2.51,
+      "0.9": 8.08
+    },
+    "n_with_monsoon2025_rise": 79,
+    "trend_m_per_yr_quantiles": {
+      "0.1": -1.32,
+      "0.5": 0.0,
+      "0.9": 0.86
+    },
+    "share_deepening": 0.4954954954954955,
+    "diurnal_amp_m_quantiles": {
+      "0.1": 0.006,
+      "0.5": 0.02,
+      "0.9": 0.113,
+      "0.99": 0.463
+    },
+    "by_district_median_depth": {
+      "CENTRAL": 2.5,
+      "EAST": 8.3,
+      "NEW DELHI": 7.4,
+      "NORTH": 9.0,
+      "NORTH EAST": 5.5,
+      "NORTH WEST": 3.6,
+      "Nazul Land": 5.3,
+      "SOUTH": 38.4,
+      "SOUTH WEST": 9.5,
+      "Shahdara": 25.7,
+      "South East Delhi": 10.3,
+      "WEST": 9.2
+    }
+  }
+}
