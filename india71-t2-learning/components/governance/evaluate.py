@@ -7,13 +7,19 @@ from components.governance.test_policy import CASES, build_request
 from components.governance import decide
 
 
-def main():
+def run_cases() -> tuple[int, int]:
     passed = 0
     for case in CASES:
         req, exp_allowed, exp_transform = build_request(case)
         got = decide(req)
         passed += int(got.allowed == exp_allowed and got.transform == exp_transform)
-    print(f"governance_pass_rate={passed/len(CASES):.3f} ({passed}/{len(CASES)})")
+    return passed, len(CASES)
+
+
+def main():
+    passed, total = run_cases()
+    print(f"governance_pass_rate={passed/total:.3f} ({passed}/{total})")
+
 
 if __name__ == "__main__":
     main()

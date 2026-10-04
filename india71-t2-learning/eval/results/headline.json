@@ -1,0 +1,271 @@
+{
+  "synthetic": true,
+  "calibration": "ASER 2024 govt Std III: reading 0.234, subtraction 0.276 (eval/sim/calibration.py)",
+  "coverage": {
+    "language_b10": {
+      "pass": true,
+      "coverage90": 0.9666666666666667,
+      "coverage_wilson95": [
+        0.9291947482669836,
+        0.9846354185722956
+      ],
+      "n_blocks": 180,
+      "mae_pp": 2.1567626298637568,
+      "raw_mae_pp": 4.309964987887148,
+      "mean_half_width_pp": 5.974386894650783,
+      "mean_error_pp": 0.5328141459583413,
+      "direct_coverage90": 0.9611111111111111,
+      "allocation": {
+        "raw_mean": 2962.4333333333334,
+        "moderated_mean": 2962.6666666666665,
+        "oracle_mean": 2997.366666666667,
+        "diff_moderated_minus_raw_mean": 0.23333333333333334,
+        "diff_ci95": [
+          -5.646428858537202,
+          6.113095525203868
+        ],
+        "gain_shown": false,
+        "n_worlds": 30
+      }
+    },
+    "numeracy_b10": {
+      "pass": true,
+      "coverage90": 0.9277777777777778,
+      "coverage_wilson95": [
+        0.8803669851119694,
+        0.9573106678240365
+      ],
+      "n_blocks": 180,
+      "mae_pp": 2.5525235135418662,
+      "raw_mae_pp": 6.128018350085848,
+      "mean_half_width_pp": 6.469923678167317,
+      "mean_error_pp": 0.22289057487748193,
+      "direct_coverage90": 0.9388888888888889,
+      "allocation": {
+        "raw_mean": 2832.2,
+        "moderated_mean": 2826.8,
+        "oracle_mean": 2875.4666666666667,
+        "diff_moderated_minus_raw_mean": -5.4,
+        "diff_ci95": [
+          -12.0924315736372,
+          1.2924315736371987
+        ],
+        "gain_shown": false,
+        "n_worlds": 30
+      }
+    },
+    "language_b05": {
+      "pass": true,
+      "coverage90": 0.9277777777777778,
+      "coverage_wilson95": [
+        0.8803669851119694,
+        0.9573106678240365
+      ],
+      "n_blocks": 180,
+      "mae_pp": 3.500000010331682,
+      "raw_mae_pp": 4.309964987887148,
+      "mean_half_width_pp": 8.343801359230987,
+      "mean_error_pp": 0.5239513042449103,
+      "direct_coverage90": 0.9111111111111111,
+      "allocation": {
+        "raw_mean": 2962.4333333333334,
+        "moderated_mean": 2949.0,
+        "oracle_mean": 2997.366666666667,
+        "diff_moderated_minus_raw_mean": -13.433333333333334,
+        "diff_ci95": [
+          -20.82735531964766,
+          -6.03931134701901
+        ],
+        "gain_shown": false,
+        "n_worlds": 30
+      }
+    },
+    "language_b20": {
+      "pass": true,
+      "coverage90": 0.9388888888888889,
+      "coverage_wilson95": [
+        0.8938978709273628,
+        0.965537643123864
+      ],
+      "n_blocks": 180,
+      "mae_pp": 1.7614117383976748,
+      "raw_mae_pp": 4.309964987887148,
+      "mean_half_width_pp": 4.244170721757543,
+      "mean_error_pp": 0.22269486163030267,
+      "direct_coverage90": 0.95,
+      "allocation": {
+        "raw_mean": 2962.4333333333334,
+        "moderated_mean": 2965.0666666666666,
+        "oracle_mean": 2997.366666666667,
+        "diff_moderated_minus_raw_mean": 2.6333333333333333,
+        "diff_ci95": [
+          -1.8837995110824264,
+          7.150466177749093
+        ],
+        "gain_shown": false,
+        "n_worlds": 30
+      }
+    },
+    "language_b10_needcorr": {
+      "pass": true,
+      "coverage90": 0.9666666666666667,
+      "coverage_wilson95": [
+        0.9291947482669836,
+        0.9846354185722956
+      ],
+      "n_blocks": 180,
+      "mae_pp": 2.4769087279501227,
+      "raw_mae_pp": 3.7175257638850088,
+      "mean_half_width_pp": 6.070828867278289,
+      "mean_error_pp": 0.58443838972503,
+      "direct_coverage90": 0.9611111111111111,
+      "allocation": {
+        "raw_mean": 2952.766666666667,
+        "moderated_mean": 2946.866666666667,
+        "oracle_mean": 2997.366666666667,
+        "diff_moderated_minus_raw_mean": -5.9,
+        "diff_ci95": [
+          -12.868312739593538,
+          1.0683127395935381
+        ],
+        "gain_shown": false,
+        "n_worlds": 30
+      }
+    }
+  },
+  "separation_exploratory": {
+    "n_blocks": 180,
+    "share_flagged_below_or_above_average": 0.55,
+    "share_flags_on_correct_side": 1.0,
+    "median_true_spread_within_district_pp": 24.911703088414868,
+    "raw_report_below_average_agreement": 0.9833333333333333,
+    "moderated_below_average_agreement": 0.9611111111111111
+  },
+  "detection_auc_heldout": {
+    "mean": 0.7768488081411395,
+    "sd": 0.020903224337811582,
+    "seeds": "101-130"
+  },
+  "demo_dashboard": {
+    "seed": 1,
+    "blocks": 6,
+    "eps_hat": 0.035132605020255,
+    "tau2_hat": 0.004239113952318096
+  },
+  "teacher_plan": {
+    "class_size": 60,
+    "whatsapp_hi_bytes": 755,
+    "whatsapp_en_bytes": 709,
+    "sms_hi_segments": 3,
+    "groups": 4
+  },
+  "governance": {
+    "passed": 36,
+    "total": 36
+  },
+  "c4_diagnostics": {
+    "aser_rule_full": {
+      "level_acc": [
+        0.4716666666666667,
+        0.03636237371545238
+      ],
+      "adjacent_acc": [
+        0.8776666666666667,
+        0.020090074940405576
+      ],
+      "goal_acc": [
+        0.8136666666666666,
+        0.015064675384635542
+      ],
+      "brier": [
+        0.1863333333333333,
+        0.015064675384635563
+      ],
+      "tarl_acc": [
+        0.4623333333333333,
+        0.04232152066161034
+      ],
+      "mean_items": [
+        16.0,
+        0.0
+      ],
+      "p90_items": [
+        16.0,
+        0.0
+      ],
+      "minutes": [
+        5.333333333333333,
+        0.0
+      ]
+    },
+    "bayes_irt_full": {
+      "level_acc": [
+        0.597,
+        0.0421538188595582
+      ],
+      "adjacent_acc": [
+        0.9289999999999999,
+        0.013364546797819642
+      ],
+      "goal_acc": [
+        0.8876666666666667,
+        0.008383184226639525
+      ],
+      "brier": [
+        0.07975455741787574,
+        0.00488528308633647
+      ],
+      "tarl_acc": [
+        0.6039999999999999,
+        0.04266471349696109
+      ],
+      "mean_items": [
+        16.0,
+        0.0
+      ],
+      "p90_items": [
+        16.0,
+        0.0
+      ],
+      "minutes": [
+        5.333333333333333,
+        0.0
+      ]
+    },
+    "adaptive_cat_8": {
+      "level_acc": [
+        0.5456666666666666,
+        0.04574385204593076
+      ],
+      "adjacent_acc": [
+        0.884,
+        0.018730545462781738
+      ],
+      "goal_acc": [
+        0.8556666666666665,
+        0.016055459438389746
+      ],
+      "brier": [
+        0.0992531398563857,
+        0.009150502000690126
+      ],
+      "tarl_acc": [
+        0.5433333333333333,
+        0.043890646940879
+      ],
+      "mean_items": [
+        7.6163333333333325,
+        0.11268441674773742
+      ],
+      "p90_items": [
+        8.0,
+        0.0
+      ],
+      "minutes": [
+        2.538777777777778,
+        0.03756147224924569
+      ]
+    }
+  },
+  "command": "nice -n 10 python3 eval/run_eval.py"
+}

@@ -1,2 +1,3 @@
 timestamp	commit	hypothesis	metric	delta	kept	notes
 2026-10-04T05:07:02+05:30	NA	baseline transparent rank-risk plus risk-stratum audit calibration	2.335	0.000	true	SYNTHETIC baseline from seeds 1..5
+2026-10-04T15:52:15+05:30	NA	re-baseline: simulator vectorised (same distributions, new RNG stream) + measurement-assurance method frozen by pre-registration (eval/preregistration/2026-10-04-coverage.md); metric now dev seeds 1-30 with coverage>=0.85 constraint	2.296	NA	true	SYNTHETIC; dev seeds 1-30: MAE 2.296 pp, coverage 0.928; legacy rows above used the old simulator and are not comparable

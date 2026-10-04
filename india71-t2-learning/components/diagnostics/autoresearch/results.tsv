@@ -1,2 +1,3 @@
 timestamp	commit	hypothesis	metric	delta	kept	notes
 2026-10-04T05:33:31+05:30	no-git	baseline adaptive_test capped at 8 items	c4_level_acc_at_8_items=0.551	0.000	true	Baseline from python3 components/diagnostics/evaluate.py on seeds 101..105; no git run per lead instruction.
+2026-10-04T15:52:15+05:30	NA	re-baseline after simulator vectorisation (same distributions, new RNG stream)	c4_level_acc_at_8_items=0.546	NA	true	SYNTHETIC; python3 components/diagnostics/evaluate.py, seeds 101-105; previous row used the old simulator and is not comparable

@@ -1,79 +1,154 @@
+"""End-to-end SYNTHETIC demo + the single source of headline numbers.
+
+Usage (from india71-t2-learning/):  nice -n 10 python3 eval/run_eval.py
+Writes eval/results/headline.json, eval/results/summary.md, deliverables/demo/block_dashboard.html (+ JSON) and
+deliverables/demo/teacher_plan_*.txt. Headline numbers come from:
+  - pre-registered held-out coverage runs (eval/results/coverage_heldout*.json, eval/preregistration/2026-10-04-coverage.md)
+  - exploratory separation analysis on the same held-out outputs (labelled exploratory)
+  - risk-score detection AUC on held-out seeds 101-130
+  - C4 diagnostics evaluator (components/diagnostics/evaluate.py, seeds 101-105)
+  - C7 teacher plan for one synthetic class; C12 policy suite.
+All child-level data are SYNTHETIC (eval/sim/world.py), calibrated to ASER 2024 (eval/sim/calibration.py).
+"""
 from __future__ import annotations
-import json, sys
+
+import json
+import sys
+from datetime import date
 from pathlib import Path
-ROOT=Path(__file__).resolve().parents[1]
+
+ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-import numpy as np, pandas as pd
 
-from eval.sim.world import make_world
-from eval.sim.calibration import ASER2024_GOVT_STD3
-from components.trust_audit import forensic_flags, select_audit, retest, adjust
-from components.trust_audit.evaluate import evaluate_seed
-from components.area_estimation import estimate_areas, evaluate_area, survey_anchor
-from components.allocation import allocate_camps, evaluate_allocation
+import numpy as np
+import pandas as pd
+
 from components.dashboard import build_dashboard
+from components.diagnostics.engine import adaptive_test
+from components.diagnostics.evaluate import evaluate_seeds
+from components.teacher_view.planner import make_plan, render_ivr_script, sms_segments
+from components.trust_audit.assurance import Design, run_assurance
+from components.trust_audit.core import detection_auc, forensic_flags, retest, select_audit
+from eval.sim.calibration import ASER2024_GOVT_STD3
+from eval.sim.world import make_world
 
-SEEDS=[1,2,3,4,5]
+RES = ROOT / "eval" / "results"
+DEMO = ROOT / "deliverables" / "demo"
+HELDOUT = list(range(101, 131))
 
-def _mean_sd(xs): return f"{np.mean(xs):.3f} ± {np.std(xs,ddof=1):.3f}" if len(xs)>1 else f"{xs[0]:.3f}"
 
-def pipeline(seed:int, write_demo=False, world=None, risk=None):
-    w=world if world is not None else make_world(seed, dict(ASER2024_GOVT_STD3)); pub=w.public_view()
-    try:
-        __import__("components.diagnostics"); __import__("components.teacher_view")
-    except Exception:
-        pass
-    risk=risk if risk is not None else forensic_flags(pub.teacher_reports,pub.schools,pub.item_responses,pub.item_bank)
-    sel=select_audit(pub.schools,risk,max(1,round(0.10*len(pub.schools))),"risk_pps",seed=seed+17)
-    audit=retest(w,sel,12,seed=seed+31)
-    trust=adjust(pub.schools,risk,audit,sel)
-    areas=estimate_areas(pub,trust)
-    area_metrics=evaluate_area(w,areas["fh_benchmarked"])
-    for name in ("baseline_direct","audit_adjusted_direct"):
-        m=evaluate_area(w,areas[name]); area_metrics[f"{name}_block_rmse_pp"]=m["block_rmse_pp"]; area_metrics[f"{name}_coverage90"]=m["coverage90"]
-    raw_alloc=allocate_camps(pub,trust,None,"baseline_raw")
-    adj_alloc=allocate_camps(pub,trust,None,"audit_adjusted")
-    oracle_alloc=allocate_camps(pub,trust,None,"oracle",truth_school=w.truth_school)
-    alloc_metrics={"allocation_raw_children":evaluate_allocation(w,raw_alloc),"allocation_adjusted_children":evaluate_allocation(w,adj_alloc),"allocation_oracle_children":evaluate_allocation(w,oracle_alloc)}
-    out={"seed":seed,"trust":trust,"areas":areas,"allocations":adj_alloc,"schools":pub.schools,"metrics":{**area_metrics,**alloc_metrics}}
-    if write_demo:
-        m={"area_block_rmse_pp":f"{area_metrics['block_rmse_pp']:.2f} pp","allocation_gain_children":f"{alloc_metrics['allocation_adjusted_children']:.1f}"}
-        build_dashboard({**out,"metrics":m},ROOT/"deliverables/demo")
-    return {"seed":seed,**area_metrics,**alloc_metrics}
+def coverage_results() -> dict:
+    out = {}
+    for key, f in [("language_b10", "coverage_heldout"), ("numeracy_b10", "coverage_heldout_numeracy"), ("language_b05", "coverage_heldout_b05"),
+                   ("language_b20", "coverage_heldout_b20"), ("language_b10_needcorr", "coverage_heldout_needcorr")]:
+        d = json.loads((RES / f"{f}.json").read_text())
+        out[key] = {"pass": d["primary"]["pass"], **d["summary"]["fh"], "direct_coverage90": d["summary"]["direct"]["coverage90"],
+                    "allocation": d["summary"]["allocation"]}
+    return out
 
-def main():
-    resdir=ROOT/"eval/results"; resdir.mkdir(parents=True,exist_ok=True)
-    trust_rows=[]; rows=[]
-    for s in SEEDS:
-        w=make_world(s, dict(ASER2024_GOVT_STD3)); pub=w.public_view(); risk=forensic_flags(pub.teacher_reports,pub.schools,pub.item_responses,pub.item_bank)
-        for bf in (0.05,0.10,0.20):
-            trust_rows.append(evaluate_seed(s,bf,world=w,risk=risk))
-        rows.append(pipeline(s,write_demo=(s==SEEDS[0]),world=w,risk=risk))
-    trust_df=pd.DataFrame(trust_rows)
-    df=pd.DataFrame(rows)
-    metric=float(trust_df[trust_df.budget_frac.eq(0.10)].risk_pps_block_mae_pp.mean())
-    baseline={"synthetic":True,"seeds":SEEDS,"trust_audit":json.loads(trust_df.to_json(orient="records")),"pipeline":rows,"block_mae_pp_at_10pct_budget":metric}
-    (resdir/"baseline.json").write_text(json.dumps(baseline,indent=2),encoding="utf-8")
-    summary=[]; summary.append("# SYNTHETIC FLN evaluation summary\n"); summary.append("Command: `python3 eval/run_eval.py`\n")
-    summary.append("| Metric | mean ± sd |\n|---|---:|\n")
-    summary.append(f"| Trust risk-PPS block MAE @10% audit (pp) | {_mean_sd(trust_df[trust_df.budget_frac.eq(0.10)].risk_pps_block_mae_pp.tolist())} |\n")
-    summary.append(f"| Raw reported block MAE @10% audit row (pp) | {_mean_sd(trust_df[trust_df.budget_frac.eq(0.10)].raw_block_mae_pp.tolist())} |\n")
-    summary.append(f"| Inflation detection AUC | {_mean_sd(trust_df[trust_df.budget_frac.eq(0.10)].risk_auc.tolist())} |\n")
-    summary.append(f"| Area raw direct block RMSE (pp) | {_mean_sd(df.baseline_direct_block_rmse_pp.tolist())} |\n")
-    summary.append(f"| Area raw direct 90% CI coverage | {_mean_sd(df.baseline_direct_coverage90.tolist())} |\n")
-    summary.append(f"| Area audit-adjusted direct block RMSE (pp) | {_mean_sd(df.audit_adjusted_direct_block_rmse_pp.tolist())} |\n")
-    summary.append(f"| Area audit-adjusted direct 90% CI coverage | {_mean_sd(df.audit_adjusted_direct_coverage90.tolist())} |\n")
-    summary.append(f"| Area FH benchmarked block RMSE (pp) | {_mean_sd(df.block_rmse_pp.tolist())} |\n")
-    summary.append(f"| Area 90% CI coverage | {_mean_sd(df.coverage90.tolist())} |\n")
-    summary.append(f"| Aggregate-anchor abs diff (pp) | {_mean_sd(df.aggregate_anchor_abs_diff_pp.tolist())} |\n")
-    summary.append(f"| Allocation raw children reached | {_mean_sd(df.allocation_raw_children.tolist())} |\n")
-    summary.append(f"| Allocation adjusted children reached | {_mean_sd(df.allocation_adjusted_children.tolist())} |\n")
-    summary.append(f"| Allocation oracle children reached | {_mean_sd(df.allocation_oracle_children.tolist())} |\n")
-    (resdir/"summary.md").write_text("".join(summary),encoding="utf-8")
-    print(f"METRIC block_mae_pp_at_10pct_budget={metric:.3f}")
-    print("SYNTHETIC seeds=1..5")
-    print("trust_risk_pps_mae_pp_10pct",_mean_sd(trust_df[trust_df.budget_frac.eq(0.10)].risk_pps_block_mae_pp.tolist()))
-    print("area_block_rmse_pp",_mean_sd(df.block_rmse_pp.tolist()))
-    print("allocation_adjusted_children",_mean_sd(df.allocation_adjusted_children.tolist()))
-    print(f"wrote {resdir/'baseline.json'} {resdir/'summary.md'} {ROOT/'deliverables/demo/block_dashboard.html'}")
-if __name__=="__main__": main()
+
+def separation_exploratory() -> dict:
+    """EXPLORATORY (not pre-registered): can +/-6 pp intervals tell blocks apart within a district?"""
+    b = pd.read_csv(RES / "coverage_heldout.blocks.csv")
+    b = b[b.method == "fh"].copy()
+    b["dist_est"] = b.groupby("seed").estimate.transform("mean")
+    b["dist_true"] = b.groupby("seed")["true"].transform("mean")
+    below = b.hi < b.dist_est; above = b.lo > b.dist_est
+    flagged = below | above
+    correct = (below & (b["true"] < b.dist_true)) | (above & (b["true"] > b.dist_true))
+    spread = b.groupby("seed")["true"].agg(lambda x: x.max() - x.min())
+    raw_below = b.raw < b.groupby("seed").raw.transform("mean")
+    true_below = b["true"] < b.dist_true
+    return {"n_blocks": int(len(b)), "share_flagged_below_or_above_average": float(flagged.mean()),
+            "share_flags_on_correct_side": float(correct[flagged].mean()) if flagged.any() else float("nan"),
+            "median_true_spread_within_district_pp": float(spread.median() * 100),
+            "raw_report_below_average_agreement": float((raw_below == true_below).mean()),
+            "moderated_below_average_agreement": float(((b.estimate < b.dist_est) == true_below).mean())}
+
+
+def demo_dashboard(seed: int = 1) -> dict:
+    w = make_world(seed, dict(ASER2024_GOVT_STD3)); pub = w.public_view()
+    risk = forensic_flags(pub.teacher_reports, pub.schools, pub.item_responses, pub.item_bank)
+    b = round(0.10 * len(pub.schools))
+    sel = select_audit(pub.schools, risk, b, "risk_pps", seed=seed + 17)
+    aud = retest(w, sel, 12, seed=seed + 31)
+    ctx, fit, iv = run_assurance(pub, risk, sel, aud, Design(budget=b), k_strata=4, R=200, seed=seed + 53, bias_model="mean")
+    fh = iv[iv.method == "fh"].copy()
+    raw = risk.assign(x=risk.reported_pct_meeting_goal * risk.grade3_enrolment).groupby("block_lgd").apply(lambda g: g.x.sum() / g.grade3_enrolment.sum(), include_groups=False)
+    sch = pub.schools.groupby("block_lgd").agg(n_schools=("udise_code", "size"), children=("grade3_enrolment", "sum"))
+    ret = sel.groupby("block_lgd").selected_for_audit.sum().rename("n_retested_schools")
+    blocks = fh[["block_lgd", "estimate", "lo", "hi"]].join(raw.rename("raw"), on="block_lgd").join(sch, on="block_lgd").join(ret, on="block_lgd")
+    meta = {"title": "Moderated block estimates — Grade 3 reading (SYNTHETIC)",
+            "indicator": "Indicator: share of Grade 3 children who can read a Std II-level text (ASER-style proxy; not NIPUN attainment). "
+                         "Moderated = teacher-reported census calibrated by an independent re-test of 10 % of schools; conservative 90 % intervals.",
+            "footer": f"Synthetic district (seed {seed}), calibrated to ASER 2024 government-school Std III levels. No school-level labels are shown by design."}
+    build_dashboard(blocks, meta, DEMO)
+    return {"seed": seed, "blocks": int(len(blocks)), "eps_hat": fit.eps, "tau2_hat": fit.extras["tau2"]}
+
+
+def held_out_auc() -> dict:
+    aucs = []
+    for s in HELDOUT:
+        w = make_world(s, dict(ASER2024_GOVT_STD3)); pub = w.public_view()
+        risk = forensic_flags(pub.teacher_reports, pub.schools, pub.item_responses, pub.item_bank)
+        aucs.append(detection_auc(risk, w.truth_school))
+    return {"mean": float(np.mean(aucs)), "sd": float(np.std(aucs, ddof=1)), "seeds": "101-130"}
+
+
+def teacher_plan_demo(seed: int = 7) -> dict:
+    w = make_world(seed, {**ASER2024_GOVT_STD3, "n_schools": 30, "n_clusters": 3})
+    code = w.children.udise_code.value_counts().index[0]
+    kids = w.children[w.children.udise_code == code]
+    diags, roster = [], {}
+    for i, (_, ch) in enumerate(kids.iterrows()):
+        d, _used = adaptive_test(ch.student_raw_id, ch.udise_code, 3, "language", w.item_responses, w.item_bank, w.cfg["read_thresholds"])
+        diags.append(d); roster[d.student] = f"Roll {i + 1}"
+    hi = make_plan(diags, roster, date(2026, 10, 5), channel="whatsapp", language="hi")
+    en = make_plan(diags, roster, date(2026, 10, 5), channel="whatsapp", language="en")
+    sms = make_plan(diags, roster, date(2026, 10, 5), channel="sms", language="hi")
+    hdr = "SYNTHETIC — simulated class calibrated to ASER 2024 government-school Std III levels\n\n"
+    (DEMO / "teacher_plan_hi.txt").write_text(hdr + hi.message_text + "\n", encoding="utf-8")
+    (DEMO / "teacher_plan_en.txt").write_text(hdr + en.message_text + "\n", encoding="utf-8")
+    (DEMO / "teacher_plan_sms_hi.txt").write_text(hdr + sms.message_text + "\n", encoding="utf-8")
+    (DEMO / "teacher_plan_ivr.txt").write_text(hdr + render_ivr_script(sms) + "\n", encoding="utf-8")
+    return {"class_size": int(len(kids)), "whatsapp_hi_bytes": hi.payload_bytes, "whatsapp_en_bytes": en.payload_bytes,
+            "sms_hi_segments": sms_segments(sms), "groups": len(hi.groups)}
+
+
+def governance() -> dict:
+    from components.governance.evaluate import run_cases
+    passed, total = run_cases()
+    return {"passed": passed, "total": total}
+
+
+def c4() -> dict:
+    r = evaluate_seeds()
+    return {k: {m: [float(v[0]), float(v[1])] for m, v in d.items()} for k, d in r.items()}
+
+
+def main() -> int:
+    RES.mkdir(parents=True, exist_ok=True); DEMO.mkdir(parents=True, exist_ok=True)
+    head = {"synthetic": True, "calibration": "ASER 2024 govt Std III: reading 0.234, subtraction 0.276 (eval/sim/calibration.py)",
+            "coverage": coverage_results(), "separation_exploratory": separation_exploratory(), "detection_auc_heldout": held_out_auc(),
+            "demo_dashboard": demo_dashboard(), "teacher_plan": teacher_plan_demo(), "governance": governance(), "c4_diagnostics": c4(),
+            "command": "nice -n 10 python3 eval/run_eval.py"}
+    (RES / "headline.json").write_text(json.dumps(head, indent=2) + "\n")
+    cv = head["coverage"]; sep = head["separation_exploratory"]; c = head["c4_diagnostics"]
+    lines = ["# SYNTHETIC evaluation summary", "", f"Command: `{head['command']}` (coverage runs: see `eval/preregistration/2026-10-04-coverage.md`).", "",
+             "| Run (held-out seeds 101-130, 180 blocks) | 90% coverage | Wilson 95% | MAE moderated (pp) | MAE raw (pp) | mean half-width (pp) | allocation gain shown |",
+             "|---|---:|---:|---:|---:|---:|---|"]
+    for k, v in cv.items():
+        lines.append(f"| {k} | {v['coverage90']:.3f} | {v['coverage_wilson95'][0]:.3f}–{v['coverage_wilson95'][1]:.3f} | {v['mae_pp']:.2f} | {v['raw_mae_pp']:.2f} | {v['mean_half_width_pp']:.2f} | {v['allocation']['gain_shown']} |")
+    lines += ["", f"Exploratory separation (not pre-registered): {sep['share_flagged_below_or_above_average']:.2f} of blocks have intervals entirely below/above the district average; "
+              f"{sep['share_flags_on_correct_side']:.2f} of those are on the correct side; median true within-district spread {sep['median_true_spread_within_district_pp']:.1f} pp.",
+              f"Detection AUC (held-out): {head['detection_auc_heldout']['mean']:.3f} ± {head['detection_auc_heldout']['sd']:.3f}.",
+              f"C4 (seeds 101-105): CAT@8 exact level accuracy {c['adaptive_cat_8']['level_acc'][0]:.3f}; full-test Bayesian IRT {c['bayes_irt_full']['level_acc'][0]:.3f}; ASER rule {c['aser_rule_full']['level_acc'][0]:.3f}.",
+              f"C7: Hindi WhatsApp plan {head['teacher_plan']['whatsapp_hi_bytes']} bytes for a class of {head['teacher_plan']['class_size']}; SMS {head['teacher_plan']['sms_hi_segments']} segments.",
+              f"C12: {head['governance']['passed']}/{head['governance']['total']} policy cases pass."]
+    (RES / "summary.md").write_text("\n".join(lines) + "\n")
+    print("\n".join(lines))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

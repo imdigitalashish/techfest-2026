@@ -1,0 +1,7 @@
+SYNTHETIC — simulated class calibrated to ASER 2024 government-school Std III levels
+
+Week 2026-10-05: Grade 3 language TaRL groups
+Level 0 (9): Roll 6, Roll 16, Roll 18, Roll 19, Roll 20, Roll 21, Roll 51, Roll 56, Roll 60. Activity: picture talk and print-rich corner [L0_PRINT_RICH]
+Level 1 (4): Roll 31, Roll 37, Roll 50, Roll 57. Activity: letter-sound cards [L1_LETTER_CARDS]; match akshar to sound [L1_AKSHAR_MATCH]
+Level 2 (17): Roll 3, Roll 4, Roll 5, Roll 12, Roll 13, Roll 24, Roll 25, Roll 28, Roll 33, Roll 34, Roll 38, Roll 43 … (+5 more). Activity: word building with syllable cards [L2_WORD_BUILD]
+Level 4 (30): Roll 1, Roll 2, Roll 7, Roll 8, Roll 9, Roll 10, Roll 11, Roll 14, Roll 15, Roll 17, Roll 22, Roll 23 … (+18 more). Activity: read-aloud + 3 questions [L4_STORY_Q]
