@@ -150,3 +150,16 @@ The detector's job shifts from "restart the level" to "gate how much the plan tr
 - The abstract leads with the robust claim plus the finding "a better forecast can make a certainty-equivalent planner serve fewer people".
 - Innovation headroom in the memo is lowered to 3, with an honest note.
 - The RL comparator and decentralised price coordination remain stretch goals.
+
+## Update 2026-10-04 11:00 IST — paired planner sensitivity (`eval/results/phase-v2c/summary.md`, same seeds 200–219)
+
+**Under the legacy queue-chasing backlog (never abandons), the phase-v1 pattern replicates on fresh seeds.**
+- True-rate − EWMA: +0.99 / +1.88 / +3.63 / +1.13 pp at (2,3) / (4,3) / (8,3) / (8,10), 20/20 seeds each.
+- Detector − EWMA: +0.45 (18/20) / +1.28 (20/20) / +2.63 (20/20) / +0.70 (18/20).
+- Null at (1,3), (2,10) and (4,10); slight harm at (1,10).
+
+**Under the abandonment-aware backlog the same comparisons are negative** at long lead times.
+
+**Neither base planner dominates with EWMA.** Legacy − new = +0.30 at (1,3) and +0.88 at (8,10), but −0.57 at (4,3) and −1.66 at (8,3).
+
+**Conclusion.** The value of a better forecast, and of the change detector, is a property of the *forecast–planner pair*. It is not a property of forecast accuracy, nor of (L, P) alone. This strengthens the decision-aware trust spike (A″): trust must be tuned on the decision outcome for the planner actually deployed. The pre-registered falsification test (Addendum B) will cover both planner variants.
