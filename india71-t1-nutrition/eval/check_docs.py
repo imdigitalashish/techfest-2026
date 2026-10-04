@@ -33,7 +33,6 @@ def claims() -> list[tuple[Path, str]]:
     out = [
         (PROPOSAL, f"**{gs['value']} z**"),
         (PROPOSAL, f"{gs['n_points']:,} points"),
-        (PROPOSAL, f"**{f2(lk['ids_only']['f1'])} / {f2(lk['plaintext_probabilistic']['f1'])} / {f2(lk['pprl_bloom']['f1'])}**"),
         (PROPOSAL, f"{lk['n_true_children']:,} children"),
         (PROPOSAL, f"**{f2(cr['auroc_nongood'])} / {f2(cr['auroc_fabricating'])}**"),
         (PROPOSAL, f"**{f2(rule)} ({f2(ci[0])}–{f2(ci[1])}) / {f2(m['logistic_anthro_plus_linked_health']['episode_recall'])} / "
@@ -59,6 +58,14 @@ def claims() -> list[tuple[Path, str]]:
     out.append((PROPOSAL, f"**all {below} States/UTs**" if below == len(states) else f"**{below} of {len(states)} States/UTs**"))
     mh = next(r for r in rows if r["state"] == "Maharashtra")
     out.append((PROPOSAL, f"Maharashtra {float(mh['pt_jun2025_wasted_pct']):.2f}% vs {float(mh['nfhs5_wasted_pct']):.1f}%"))
+    demo_js = (ROOT / "demo" / "data" / "demo_data.js").read_text()
+    demo = json.loads(demo_js[demo_js.index("{"):demo_js.rindex("}") + 1])
+    cell = demo["linkage"]["cells"][demo["linkage"]["default"]]
+    mp = cell["pprl_bloom_precision_matched"]
+    assert abs(cell["pprl_bloom"]["f1"] - lk["pprl_bloom"]["f1"]) < 1e-12  # demo default cell == committed eval
+    out.append((PROPOSAL, f"{cell['gold_pairs']:,} in both registries"))
+    out.append((PROPOSAL, f"at {100 * mp['target_precision']:.1f}% precision"))
+    out.append((PROPOSAL, f"**{cell['ids_only']['true_links']:,} / {cell['plaintext_probabilistic']['true_links']:,} / {mp['true_links']:,}**"))
     cal = j("cohort_calibration.json")
     out.append((PROPOSAL, f"at-birth wasting is {round(100 * cal['at_birth_wasting'], 1)}%"))
     return out

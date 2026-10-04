@@ -264,3 +264,15 @@ Apply at resume step 2.
   - Task contract v0.3.0 (`blocked`, three-clock fields) + `router.mark_undelivered` capacity gate, tested.
 - **Builder fix round:** B1 department-side PPRL encoding (`pprl.py`, no plaintext reaches the matcher, identical F1); B2 1280×720 layout; M3–M6; N1–N4; re-export on eval_v2 + capacity gate.
 
+### 2026-10-04 20:55 IST — builder fix round verified; linkage claim corrected everywhere
+- **Builder fix round** (d0dd7e4, 4377d35, ad9f42b), all 12 review items:
+  - B1: `pprl.py` department-side encoding. The matcher sees only CLK bits + keyed tokens and fails closed on other columns; 8 tests, identical F1.
+  - B2: 1280×720 slides with a Details drawer; no scrolling, checked in 18 states.
+  - M1–M6 and N1–N4 as decided.
+- **Lead re-verification, fresh clone 0481ac9:** smoke PASS in 42 s; with the documented `eval/fetch_nfhs5.py` (2 s), smoke also re-derives the 706 districts (Nandurbar/Amravati == V5); pytest passes; check_docs 20/20 before this edit.
+- **Honest M4 finding:** at matched precision (99.8%), the encoded linkage re-joins **3,522** children vs **4,063** for pooled names vs **1,565** for shared IDs (default cell).
+  - The privacy-preserving path costs some recall; its value is that names never leave the department.
+  - Proposal §4.1/§5 and components C2 now say this. The F1-only row is replaced by the matched-precision row.
+  - check_docs reads the demo's committed cell too (22/22). PDF re-rendered: 6 pp.
+- **Reviewer re-check requested** (gpt-6-astra session 400c4682).
+

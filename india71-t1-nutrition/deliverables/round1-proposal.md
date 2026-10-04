@@ -68,7 +68,7 @@ flowchart TB
 
 **4.1 Interoperability and data flow (sub-area 1).**
 - Nightly deltas from Poshan Tracker and RCH/U-WIN, plus ABDM health records under consent artefacts that fix purpose and duration [10], land in a state **identity vault**.
-- Records are linked on shared IDs where they exist. Otherwise we use probabilistic matching tuned for Indian names ("Lakshmi/Laxmi", "Baby of Sunita", DOB recorded as the 1st), or keyed Bloom-filter encodings so departments can link without exchanging names.
+- Records are linked on shared IDs where they exist. Otherwise we use probabilistic matching tuned for Indian names ("Lakshmi/Laxmi", "Baby of Sunita", DOB recorded as the 1st), or keyed Bloom-filter encodings computed inside each department, so names never leave it. At equal precision this recovers somewhat fewer links than pooling names would (§5); that is the price of privacy.
 - Only a pseudonymous `child_key` leaves the vault. The SAM list reaches the ASHA/ANM within the protocol's 2 days [11].
 - **Minimum deployment contract:** source record and version, child reference, action, owner, due date, blocked-input status, acknowledgement. These fields come from existing exports and the worker's own app.
 
@@ -111,7 +111,7 @@ Every number below comes from a committed run in our repository. **SYNTHETIC row
 | Component | Check | Result |
 |---|---|---|
 | WHO z-scores (real WHO tables) | Max error vs WHO's published tables, 87,408 points at ±4 SD | **0.003 z** |
-| Record linkage (SYNTHETIC, 5,000 children) | F1: shared IDs only / probabilistic / privacy-preserving Bloom filter | **0.51 / 0.94 / 0.97** |
+| Record linkage (SYNTHETIC, 5,000 children; 4,531 in both registries) | Children re-joined at 99.8% precision: shared IDs / pooled names / encoded, names never pooled | **1,565 / 4,063 / 3,522** |
 | Measurement diagnostics (SYNTHETIC, 120 AWCs, 3 seeds) | AUROC: any unreliable AWC / copy-forward AWCs. A tuning change that hit 0.95 failed a different fabrication pattern and was rejected | **1.00 / 0.69** |
 | Weekly worklists (SYNTHETIC, 9,107 new episodes in children ≥6 months, 5 slots per AWC per month) | Episodes flagged ≥1 month ahead: WHZ rule (95% CI) / ML / programme rule / random | **0.47 (0.46–0.49) / 0.43 / 0.41 / 0.29** |
 | End-to-end weekly run (SYNTHETIC, 120 AWCs, 5,307 children) | Tasks → worklists; SMS length; escalated after 8 days (70% on time assumed); audit chain | **1,685 → 140; ≤80 chars; 482; verified** |
