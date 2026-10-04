@@ -1,0 +1,6 @@
+timestamp_ist	candidate	hypothesis	score	delta_vs_best	kept	mae_all	mae_post_shock	false_alarms_per_zone_day	detect_delay	notes
+2026-10-04T07:12	refs:ewma_005	reference: deseasonalised EWMA alpha=0.05 (look-ahead without detector)	0.43846	-	ref	0.1041	0.3344	0.0000	120.0	no detector: delay capped at window (120)
+2026-10-04T07:12	candidate_v0:make	baseline spike: CUSUM(delta=1,h=8) jump-restart + slow EWMA alpha=0.01	0.49266	-	baseline	0.0808	0.4119	0.3440	5.5	detects fast but post-shock error worse than EWMA: jump estimate from few steps then stale
+2026-10-04T07:16	candidate_v1:make	restart with running post-change mean: alpha_eff=max(alpha,1/n_since_onset)	0.41536	-0.07730	YES	0.0764	0.3390	0.2300	5.6	best so far; beats EWMA ref by 0.0231
+2026-10-04T07:19	candidate_v2:make	v1 + delta=0.5 (catch <2x changes in busy zones)	0.47100	+0.05564	no	0.0734	0.3975	0.1660	9.3	slower detection outweighs
+2026-10-04T07:19	candidate_v3:make	v1 + delta=0.5, h=6	0.44100	+0.02564	no	0.0754	0.3656	0.4880	5.95	more false alarms; worse post-shock
