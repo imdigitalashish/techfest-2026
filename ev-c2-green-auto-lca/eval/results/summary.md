@@ -1,4 +1,4 @@
-# Eval results (harness v2, code commit c86cef7, n=10000, seed=20261004)
+# Eval results (harness v2, code commit 1325820, n=10000, seed=20261004)
 
 Reproduce: `python3 eval/eval.py` from `ev-c2-green-auto-lca/`. Unit: g per vehicle-km (GHG indicator; see gas-basis flags).
 Database: 124 records ({'verified': 104, 'derived': 20}), 19 sources.
