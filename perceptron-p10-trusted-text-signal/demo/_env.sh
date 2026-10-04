@@ -2,7 +2,6 @@
 DEMO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJ="$(dirname "$DEMO")"
 export PYTHONPATH="$PROJ${PYTHONPATH:+:$PYTHONPATH}" HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 P10_DEVICE=cpu
-export PYTHONDONTWRITEBYTECODE=1
 
 now() { perl -MTime::HiRes=time -e 'printf "%.2f\n", time'; }
 
@@ -16,8 +15,8 @@ resolve_python() {
   command -v uv >/dev/null || { echo "[demo] no usable Python: set P10_PYTHON, or install uv (https://docs.astral.sh/uv/)" >&2; exit 1; }
   echo "[demo] creating $DEMO/.venv with uv (offline wheel cache first)…"
   uv venv -q --python 3.11 "$DEMO/.venv"
-  uv pip install -q --python "$DEMO/.venv/bin/python" --offline -r "$DEMO/requirements.txt" 2>/dev/null \
-    || uv pip install -q --python "$DEMO/.venv/bin/python" -r "$DEMO/requirements.txt"
+  uv pip install -q --compile-bytecode --python "$DEMO/.venv/bin/python" --offline -r "$DEMO/requirements.txt" 2>/dev/null \
+    || uv pip install -q --compile-bytecode --python "$DEMO/.venv/bin/python" -r "$DEMO/requirements.txt"
   PY="$DEMO/.venv/bin/python"
 }
 

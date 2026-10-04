@@ -112,6 +112,8 @@ def handle(path: str, q: dict, body: dict):
         return {"trust": e.trust(float(body.get("followers", 0)), float(body.get("age_days", 1)),
                                  bool(body.get("verified", False)), int(body.get("n_cashtags", 1)))}
     if path == "/api/score":
+        if SCORER is None:
+            raise RuntimeError("scorer is still warming up")
         texts = [str(t)[:500] for t in body.get("texts", [])][:20]
         return SCORER.score(texts)
     with ENGINE_LOCK:
@@ -177,12 +179,12 @@ def main():
     ap.add_argument("--port", type=int, default=int(os.environ.get("P10_PORT", 8710)))
     ap.add_argument("--host", default="127.0.0.1")
     a = ap.parse_args()
-    SCORER = Scorer()
     srv = ThreadingHTTPServer((a.host, a.port), H)
     threading.Thread(target=srv.serve_forever, daemon=True).start()
     from engine import Engine
     ENGINE = Engine()
     META = ENGINE.meta()
+    SCORER = Scorer()  # started after the engine so the first visual is not slowed by the torch warm-up
     print(f"[demo] engine ready in {time.time() - T0:.1f} s (live ACI {META['aci_clean_live']['coverage']:.4%}, "
           f"committed {META['committed']['aci_cov']:.4%})", flush=True)
     print(f"[demo] READY http://{a.host}:{a.port}/", flush=True)
@@ -191,7 +193,8 @@ def main():
     except KeyboardInterrupt:
         pass
     finally:
-        SCORER.proc.terminate()
+        if SCORER:
+            SCORER.proc.terminate()
         srv.shutdown()
 
 
