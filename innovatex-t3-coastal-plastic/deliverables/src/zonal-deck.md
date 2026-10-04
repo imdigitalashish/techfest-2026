@@ -203,10 +203,10 @@ RESERVE 45 s for overrun.
 
 ![h:400](../components/dashboard/screenshot-desktop.jpg)
 
-<span class="small">Real rain (ERA5) and tide (harmonic fit) with provenance badges; boom fill and escape hatched SIMULATED; Marathi and Hindi labels; runs offline except map tiles.</span>
+<span class="small">The dashboard opens on today's actions: crews to send (each with a crew message ready to copy), uncovered sites to watch, and claims to check, each with a "Why?". Real rain (ERA5) and tide (harmonic fit); boom fill and escape hatched SIMULATED; claims SYNTHETIC. It replays the wettest 2025 week day by day and runs offline except map tiles.</span>
 
 <!--
-Use if asked "show us the software". Walk: map → a site → rain + tide → fill and escape (SIMULATED) → tomorrow's plan → ledger tab with signature check → tamper demo.
+Use if asked "show us the software". Walk: morning brief → first dispatch → "Why?" (inputs, what the fill-threshold rule and the roster would do, simulation evidence) → Copy crew message → the site's rain, tide and fill chart → claims that need checking → Tamper demo → ‹ › to another replay day.
 -->
 
 ---

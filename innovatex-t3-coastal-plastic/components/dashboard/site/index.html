@@ -22,6 +22,7 @@
 </header>
 
 <main class="layout">
+  <div class="maincol">
   <section id="brief" class="panel" aria-labelledby="h-brief">
     <h2 id="h-brief" data-i18n="brief">Morning brief</h2>
     <div id="briefbody" class="brief"></div>
@@ -35,13 +36,22 @@
     <p id="calm" class="calm" hidden></p>
     <details id="donebox" class="donebox" hidden><summary id="donesum"></summary><ol id="donelist" class="actions done"></ol></details>
   </section>
+  </div>
+
+  <div class="sidecol">
 
   <section id="sites" class="panel" aria-labelledby="h-sites">
     <h2 id="h-sites" data-i18n="map">Outfall sites</h2>
     <div id="map" aria-label="Map of the four outfall sites"></div>
     <ul id="sitelist" class="sitelist"></ul>
-    <p class="note">Risk = forecast chance that a boom overflows in the next 24 h. Fill = boom sensor (SIMULATED).</p>
+    <p class="note">Risk = forecast chance that a boom overflows or is bypassed in the next 24 h. Fill = boom sensor (SIMULATED).</p>
   </section>
+  <section id="plans" class="panel" aria-labelledby="h-plans">
+    <h2 id="h-plans" data-i18n="plans">Plan comparison</h2>
+    <div id="plancols" class="plancols"></div>
+    <p id="planevidence" class="note"></p>
+  </section>
+  </div>
 
   <section id="detail" class="panel span" aria-labelledby="h-detail">
     <div class="sechead"><h2 id="h-detail">Site</h2><dl id="facts" class="facts"></dl></div>
@@ -62,13 +72,8 @@
     <p id="anchorline" class="note"></p>
   </section>
 
-  <section id="plans" class="panel" aria-labelledby="h-plans">
-    <h2 id="h-plans" data-i18n="plans">Plan comparison</h2>
-    <div id="plancols" class="plancols"></div>
-    <p id="planevidence" class="note"></p>
-  </section>
 
-  <section id="detection" class="panel" aria-labelledby="h-det">
+  <section id="detection" class="panel span" aria-labelledby="h-det">
     <h2 id="h-det" data-i18n="detection">Camera check</h2>
     <div id="detbody"></div>
   </section>

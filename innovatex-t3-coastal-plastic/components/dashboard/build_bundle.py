@@ -62,14 +62,16 @@ def flatten(d: dict, prefix: str = "") -> dict[str, float | str]:
     return out
 
 
-def trim(part: dict, past_h: int, ahead_h: int = 48, tel_per_site: int = 24, plans_kept: int = 3) -> dict:
-    """Keep a dashboard-sized window around 'now' (latest forecast issue time, else series end)."""
-    issued = [_dt(f["issued_at"]) for f in part.get("forecasts", [])]
-    ends = [_dt(s["t"][-1]) for s in part.get("forcing", []) if s.get("t")]
-    if not issued and not ends:
-        return part
-    now = max(issued) if issued else max(ends)
-    lo, hi = now - timedelta(hours=past_h), now + timedelta(hours=ahead_h)
+def replay_window(part: dict) -> tuple[datetime, datetime] | None:
+    """The twin's published replay window (metrics['twin_sim.window'] start_utc/end_utc), if any."""
+    w = (part.get("metrics") or {}).get("twin_sim.window") or {}
+    try:
+        return _dt(w["start_utc"]), _dt(w["end_utc"])
+    except (KeyError, TypeError, ValueError):
+        return None
+
+
+def _cut_series(part: dict, lo: datetime, hi: datetime) -> None:
     for key in ("forcing", "interceptor"):
         for s in part.get(key, []):
             n = len(s["t"])
@@ -77,6 +79,29 @@ def trim(part: dict, past_h: int, ahead_h: int = 48, tel_per_site: int = 24, pla
             for f, v in list(s.items()):
                 if isinstance(v, list) and len(v) == n:
                     s[f] = [v[i] for i in idx]
+
+
+def trim(part: dict, past_h: int, ahead_h: int = 48, tel_per_site: int = 24, plans_kept: int = 3,
+         window: tuple[datetime, datetime] | None = None, now: datetime | None = None) -> dict:
+    """Keep a dashboard-sized slice. With `window`, keep every series hour, forecast, plan and telemetry
+    reading inside it (the multi-day replay); otherwise keep `past_h` hours around 'now' (default: latest
+    forecast issue time, else series end) with only the latest forecasts and plans."""
+    if window is not None:
+        lo, hi = window
+        _cut_series(part, lo, hi)
+        part["forecasts"] = [f for f in part.get("forecasts", []) if lo <= _dt(f["issued_at"]) <= hi]
+        part["plans"] = sorted((p for p in part.get("plans", []) if lo <= _dt(p["issued_at"]) <= hi),
+                               key=lambda p: (_dt(p["issued_at"]), p["policy_id"]))
+        part["telemetry"] = sorted((m for m in part.get("telemetry", []) if lo <= _dt(m["t"]) <= hi),
+                                   key=lambda m: (m["site_id"], _dt(m["t"])))
+        return part
+    issued = [_dt(f["issued_at"]) for f in part.get("forecasts", [])]
+    ends = [_dt(s["t"][-1]) for s in part.get("forcing", []) if s.get("t")]
+    if not issued and not ends:
+        return part
+    now = now or (max(issued) if issued else max(ends))
+    lo, hi = now - timedelta(hours=past_h), now + timedelta(hours=ahead_h)
+    _cut_series(part, lo, hi)
     latest: dict = {}
     for f in part.get("forecasts", []):
         k = (f["site_id"], f["horizon_h"])
@@ -192,8 +217,10 @@ def build(mock: bool = False, out_site: Path = HERE / "site", past_h: int = 144,
     use_twin = TWIN.exists() and not mock
     raw = json.loads(TWIN.read_text()) if use_twin else mock_inputs.make_bundle_part(now=now)
     raw = {k: raw.get(k, []) if k != "metrics" else raw.get(k, {}) for k in PART_KEYS}
-    entries, aux = build_ledger(trim(copy.deepcopy(raw), ledger_days * 24))
-    part = trim(raw, past_h)
+    win = replay_window(raw)
+    # ledger: the `ledger_days` before the end of the replay window (else before the latest forecast)
+    entries, aux = build_ledger(trim(copy.deepcopy(raw), ledger_days * 24, ahead_h=0, now=win[1] if win else None))
+    part = trim(raw, past_h, window=win)
     assert chain.verify(entries, aux["anchor"]).ok
     assert chain.verify_signatures(entries, aux["signatures"], aux["key_registry"], aux["delegations"]).ok
     metrics = {k: flatten(v) for k, v in (part.get("metrics") or {}).items()}

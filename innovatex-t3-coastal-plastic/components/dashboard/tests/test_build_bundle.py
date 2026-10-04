@@ -80,3 +80,16 @@ const a = require({json.dumps(str(out / 'aux.json'))});
 }})();"""
     r = json.loads(subprocess.run(["node", "-e", script], capture_output=True, text=True, check=True).stdout)
     assert r == {"ok": True, "bad": False, "badSeqs": [2], "cut": False}
+
+
+def test_trim_keeps_whole_replay_window():
+    t = [f"2026-10-0{d}T00:00:00Z" for d in range(1, 8)]
+    part = {"forcing": [{"t": t, "rain_mm_h": list(range(7))}],
+            "forecasts": [{"site_id": "X", "horizon_h": h, "issued_at": x} for x in t for h in (24, 48)],
+            "plans": [{"policy_id": p, "issued_at": x, "assignments": []} for x in t for p in ("P0", "P2")],
+            "telemetry": [{"site_id": "X", "t": x} for x in t],
+            "metrics": {"twin_sim.window": {"start_utc": "2026-10-03T00:00Z", "end_utc": "2026-10-05T23:00Z"}}}
+    out = build_bundle.trim(part, past_h=48, window=build_bundle.replay_window(part))
+    assert out["forcing"][0]["t"] == t[2:5] and out["forcing"][0]["rain_mm_h"] == [2, 3, 4]
+    assert len(out["forecasts"]) == 6 and len(out["plans"]) == 6 and len(out["telemetry"]) == 3
+    assert build_bundle.replay_window({"metrics": {}}) is None

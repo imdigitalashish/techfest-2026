@@ -40,10 +40,10 @@ pre { white-space: pre-wrap; background: var(--soft); border-radius: 6px; paddin
 .lang button[aria-pressed="true"] { background: var(--water); color: #fff; }
 
 /* layout */
-.layout { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "brief sites" "actions sites" "detail detail" "records records" "plans det" "sources sources"; gap: 16px; max-width: 1380px; margin: 0 auto; padding: 16px 20px 8px; align-items: start; }
-#brief { grid-area: brief; } #actions { grid-area: actions; } #sites { grid-area: sites; align-self: stretch; } #detail { grid-area: detail; }
-#records { grid-area: records; } #plans { grid-area: plans; } #detection { grid-area: det; } #sources { grid-area: sources; }
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; min-width: 0; }
+.layout { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "main side" "detail detail" "records records" "det det" "sources sources"; gap: 16px; max-width: 1380px; margin: 0 auto; padding: 16px 20px 8px; align-items: start; }
+.maincol { grid-area: main; } .sidecol { grid-area: side; } .maincol, .sidecol { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+#detail { grid-area: detail; } #records { grid-area: records; } #detection { grid-area: det; } #sources { grid-area: sources; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; min-width: 0; scroll-margin-top: 72px; }
 .sechead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 8px; }
 .sechead h2 { margin: 0; }
 .count { color: var(--muted); font-size: 13px; }
@@ -146,7 +146,7 @@ tr.badrow td { background: var(--alert-soft); }
 .plancol .tot { color: var(--muted); font-size: 12.5px; margin-top: 4px; }
 
 /* detection */
-.detgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.detgrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
 .detgrid figure { position: relative; margin: 0; }
 .detgrid img { display: block; width: 100%; height: auto; border-radius: 6px; }
 .detgrid svg { position: absolute; inset: 0; width: 100%; height: calc(100% - 20px); }
@@ -169,9 +169,15 @@ tr.badrow td { background: var(--alert-soft); }
 .leaflet-container { font: inherit; }
 
 @media (max-width: 900px) {
-  .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "brief" "actions" "sites" "detail" "records" "plans" "det" "sources"; padding: 12px; gap: 12px; }
-  .topbar { padding: 8px 12px; gap: 8px 12px; }
+  .layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "main" "side" "detail" "records" "det" "sources"; padding: 12px; gap: 12px; }
+  .maincol, .sidecol { gap: 12px; }
+  .topbar { position: static; padding: 8px 12px; gap: 8px 10px; }
+  .brand { margin-right: 0; flex: 1 1 auto; }
   .brand span { display: none; }
+  .lang { order: 2; }
+  .daynav { order: 3; flex: 1 1 100%; justify-content: space-between; }
+  .pill { order: 4; flex: 1 1 100%; text-align: center; }
+  .detgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .daytext { min-width: 120px; }
   .panel { padding: 14px; }
   #map { height: 200px; }
