@@ -6,27 +6,20 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (22:31 IST, 4 Oct)
-- **Mode:** play to WIN. Every project gets a PLAYBOOK §11 demo, and demos open on real data. At most 5 running at once.
-- **Round 1: 19 of 20 done.** APCTT is gated on its 10 Oct data and needs your registration by 9 Oct.
-- **Demos done (7), all re-verified by me:**
-  - P10 "Break the band".
-  - P2: memory slider.
-  - P6: "race the machine".
-  - P7: real NYC July-4 surge.
-  - P9: "hijack the agent".
-  - India@71 T1: "find every child" on real NFHS-5.
-  - P1: "pull the plug".
-- **Demos running (5):**
-  - P3: real OBD; astra review 12/12 accepted.
-  - P8: "ask it again"; smoke 49/49 + 53/53 from clean clones; astra review running.
-  - P4: real Binance alarm dial plus a semi-synthetic splice; astra review running.
-  - P5: "ghost market", SIMULATED-labelled; clean-worktree verified.
-  - India@71 T3: "try to break it"; just started.
-- **Demo queue:** empty.
-- **Next:** I check the 7 existing demos myself (InnovateX T1–T3, EV C1/C2, India@71 T2, Namma) as slots free.
-- **Estimate:** done around 00:30–01:30.
-- **Open item:** P6's demo commits a raw Tardis slice. Check the terms before the repo goes public.
+## Now (23:38 IST, 4 Oct) — PAUSED by you; resume tomorrow
+- **Round 1:** 19 of 20 done. APCTT is gated on its 10 Oct data and needs your registration by 9 Oct.
+- **Demos done (8), all re-verified by me:** P10, P2, P6, P7, P9, India@71 T1, P1, P5.
+- **Paused mid-demo (5):**
+  - P3: review fixes pushed; clean-checkout verify next.
+  - P8: astra review triaged.
+  - P4: review fixes landing.
+  - India@71 T3: building.
+  - InnovateX T1: §11 upgrade just started; zonal 10 Oct.
+- **Still to upgrade to §11:** EV C1, Namma, India@71 T2, EV C2, InnovateX T2, InnovateX T3.
+- **At pause:**
+  - All Playwright Chrome instances, Playwright MCP servers in Techfest worktrees, demo servers (including InnovateX T3's :8765) and polling sleeps were killed.
+  - All leads and demo builders were told STOP.
+  - The 2-min watch automation is cleared.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -119,6 +112,10 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 23:38 IST — Paused by user
+- STOP sent to 5 leads (P3, P8, P4, India@71 T3, InnovateX T1) and 4 demo builders.
+- Killed by explicit PID: 6 Playwright Chrome roots (all helpers gone), 15 Playwright MCP servers in Techfest worktrees, P7's leftover demo processes, InnovateX T3's dashboard server, and the pollers.
+- The watch automation is cleared. Resume tomorrow: re-create the automation, verify DEMO DONE for P3/P8/P4/India@71 T3/InnovateX T1, then the §11 upgrades.
 ### 2026-10-04 23:23 IST — P5 demo done (8 demos); verify phase begins
 - **P5 DEMO DONE (7817564):** smoke PASSED in my clone (replay checks; READY in 0.7 s). The live ABIDES lane was skipped in my clone (ABIDES not fetched there); the lead verified it from a clean worktree. Astra review 13/13.
   - Every screen is labelled SIMULATED (ABIDES).
