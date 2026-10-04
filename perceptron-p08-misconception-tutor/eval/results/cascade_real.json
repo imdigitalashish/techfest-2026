@@ -1,0 +1,63 @@
+{
+ "label": "POST HOC (items seen before this analysis); cascade = pre-registered secondary method HYB",
+ "n_items": 304,
+ "composition": {
+  "P": 131,
+  "N": 152,
+  "S_related": 21,
+  "P_evaluable": 29
+ },
+ "engine_answers": 26,
+ "llm_calls_per_1000": 914.4737,
+ "models": {
+  "gpt-4.1-mini": {
+   "llm_only": {
+    "acc_P": 0.5573,
+    "fcr_N": 0.1579,
+    "ba": 0.6997
+   },
+   "cascade": {
+    "acc_P": 0.5878,
+    "fcr_N": 0.1579,
+    "ba": 0.7149
+   },
+   "cost_usd_per_1000_llm_only": 0.1418,
+   "cost_usd_per_1000_cascade": 0.1297,
+   "latency_s_per_diagnosis_llm_only": 1.621,
+   "latency_s_per_diagnosis_cascade": 1.4825
+  },
+  "gpt-5.4-mini": {
+   "llm_only": {
+    "acc_P": 0.6947,
+    "fcr_N": 0.0,
+    "ba": 0.8473
+   },
+   "cascade": {
+    "acc_P": 0.7023,
+    "fcr_N": 0.0,
+    "ba": 0.8511
+   },
+   "cost_usd_per_1000_llm_only": 1.301,
+   "cost_usd_per_1000_cascade": 1.1897,
+   "latency_s_per_diagnosis_llm_only": 2.464,
+   "latency_s_per_diagnosis_cascade": 2.2534
+  },
+  "gpt-5.5": {
+   "llm_only": {
+    "acc_P": 0.7939,
+    "fcr_N": 0.0,
+    "ba": 0.8969
+   },
+   "cascade": {
+    "acc_P": 0.7939,
+    "fcr_N": 0.0,
+    "ba": 0.8969
+   },
+   "cost_usd_per_1000_llm_only": 6.5023,
+   "cost_usd_per_1000_cascade": 5.9462,
+   "latency_s_per_diagnosis_llm_only": 3.088,
+   "latency_s_per_diagnosis_cascade": 2.824
+  }
+ },
+ "command": "python -m eval.run_cascade --task cascade_real"
+}
