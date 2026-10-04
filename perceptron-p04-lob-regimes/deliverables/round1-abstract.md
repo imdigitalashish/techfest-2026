@@ -28,7 +28,7 @@ Microstructure theory explains why the model breaks. Order-flow imbalance (OFI) 
 
 ## Stretch ambitions
 - **Multiple regime-adaptive heads.** Already prototyped: on held-out 2024–25 days, volatility-regime heads cut log-loss by 0.013 (CI 0.012–0.015) against a static model, and were best in both FOMC windows.
-- **Latency benchmarking.** Budget: ≤ 50 µs p99 for the whole online step, compiled. That is far below the 2.9 ms median exchange-to-receive delay we measured on the same feed. Our Python reference already predicts in 2–4 µs (p50).
+- **Latency benchmarking.** Budget: ≤ 50 µs p99 for the whole online step, compiled. That is far below the 2.9 ms median exchange-to-receive delay we measured on the same feed. Our Python reference already predicts in 2.5–3.4 µs (p50, single head).
 
 ## Novelty / differentiation
 1. We show quantitatively that the obvious baseline hurts, and why.
