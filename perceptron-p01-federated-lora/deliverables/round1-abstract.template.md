@@ -2,7 +2,7 @@
 
 **AnchorLoRA: exact mixed-rank federated LoRA in which weak, intermittent devices still count**
 
-*Body 600–900 words. Every number is rendered from committed results (`eval/results/v2_canonical.json`, 5 paired seeds) by `scripts/render_deliverable.py` and verified by `scripts/check_numbers.py`. Edit the template (`round1-abstract.template.md`), not this file.*
+*Body 600–900 words. Every number is rendered from committed results (`eval/results/v2_canonical.json`; AnchorLoRA/starter n = {{dropout.anchor_full.n|d}}/{{dropout.fedavg_ab_homo.n|d}}, FFA-LoRA n = {{dropout.ffa_lora.n|d}}, FlexLoRA n = {{dropout.flexlora.n|d}} paired seeds) by `scripts/render_deliverable.py` and verified by `scripts/check_numbers.py`. Edit the template (`round1-abstract.template.md`), not this file.*
 
 ### Problem & theme chosen
 Theme 1 (Efficient AI at Scale), Problem 1: *Cheap Fine-Tuning Across Weak, Scattered Devices.* Trading desks across jurisdictions, hospital sites and staff phones hold text that cannot be pooled; fine-tuning one shared small model in place with LoRA is the cheapest way to specialise it. It is a systems problem disguised as an optimisation problem.
