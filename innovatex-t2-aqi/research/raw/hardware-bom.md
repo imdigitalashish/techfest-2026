@@ -26,27 +26,33 @@ Accessed: 2026-10-04 (IST), research session started ~08:33 IST.
 
 ## (4) Nova SDS011
 
-_pending_
+- **Nova PM Sensor SDS011, High Precision Laser PM2.5 Air Quality Detection Sensor** · Robu.in · **₹2,739.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/nova-pm-sensor-sds011-high-precision-laser-pm2-5-air-quality-detection-sensor/ · accessed 2026-10-04 ~08:48 IST (Playwright).
 
 ## (5) Sensirion SHT40 breakout (or SHT31)
 
-_pending_
+- **SENSIRION SHT40-AD1B-R2 Humidity & Temperature Sensor, 0–100%RH, −40°C to +125°C, ±1.8%RH, I2C** (bare SMD IC, not a breakout board) · Robu.in · **₹201.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/sensirion-sht40-ad1b-r2-humidity-and-temperature-sensor-i2c-1-8/ · accessed 2026-10-04 ~08:52 IST (Playwright).
+- **SHT30 Temperature and Humidity Sensor with adapter board** (true pin-header breakout, SHT31-class part) · Robu.in · **₹269.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/temperature-and-humidity-sensor-2/ · accessed 2026-10-04 ~08:53 IST (Playwright).
+- Note: an "Unwelded GY-SHT40 Digital Temperature and Humidity Sensor" breakout also exists on Robu (/product/unwelded-gy-sht40-digital-temperature-and-humidity-sensor/) but was shown **Out of Stock** on the search grid; price not opened (prioritized in-stock items given time budget).
 
 ## (6) ESP32-S3 dev board
 
-_pending_
+- **ESP32 S3 Devkit (ESP32-S3-WROOM-1 N16R8 | 16MB Flash + 8MB PSRAM)** · Robu.in · **₹839.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/esp32-s3-devkit-esp32-s3-wroom-1-n16r8/ · accessed 2026-10-04 ~08:57 IST (Playwright).
+- **ROBOTICSSIGN ESP32-S3-DevKitC-1-N16R8, Type-C, 16MB Flash** · Amazon.in · **₹1,190** (M.R.P. ₹1,999, "40% off" — GST inclusion not separately labelled, Amazon.in consumer prices are GST-inclusive by default) · search-result buy-box price shown (implies in stock; product page itself not opened) · https://www.amazon.in/ROBOTICSSIGN-ESP32-S3-Devkitc-1-N16R8-Development-Bluetooth-microprocessor/dp/B0DRSG541Z/ · accessed 2026-10-04 ~09:00 IST (Playwright; direct web_fetch to amazon.in returned 503).
 
 ## (7) SIMCom A7670C 4G LTE Cat-1 module/board
 
-_pending_
+- **SIM A7670C 4G LTE Development Board with 4G Flex Antenna** · Robu.in · **₹1,859.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/sim-a7670c-4g-lte-development-board-with-4g-flex-antenna/ · accessed 2026-10-04 ~09:04 IST (Playwright).
 
 ## (8) SX1262 LoRa module (865 MHz) or RAK3172
 
-_pending_
+- **IndieSemiC ISC-SX1262-B LoRa Module — Semtech SX1262 Sub-GHz Transceiver, 868/915 MHz, LoRaWAN, External Antenna, Made in India, WPC ETA Certified** · Robu.in · **₹549.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/indiesemic-isc-sx1262-b-an-advanced-lora-module-v0-1/ · accessed 2026-10-04 ~09:06 IST (Playwright). Caveat: listed band is 868/915 MHz, not exactly the India 865–867 MHz ISM sub-band — "Made in India, WPC ETA Certified" suggests local regulatory compliance but the exact in-band center frequency for the India 865 MHz allocation was not independently confirmed on this page.
+- **RakWireless RAK3172 Evaluation Board** also found on Robu.in (/product/rakwireless-rak3172-evaluation-board/) but shown **Out of Stock** on the search grid; price not opened.
 
 ## (9) Cup anemometer + wind vane kit
 
-_pending_
+- **FirstRate FST200-205 Wind Speed & Wind Direction Integrated Sensor** (cup anemometer + vane in one head), Output 4–20 mA, Range 0–50 m/s, 0–360° · Robu.in · **₹21,759.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/firstrate-fst200-205-wind-speed-wind-direction-integrated-sensor/ · accessed 2026-10-04 ~09:14 IST (Playwright). Industrial/pro-grade price point, not hobby-grade.
+- **Wind Speed Sensor Current Type (4–20 mA) Anemometer Kit (Waterproof & Industrial)** — cup anemometer, wind-speed only (no vane) · Robu.in · **₹4,749.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/wind-speed-sensor-current-type4-to-20ma-anemometer-kit-waterproof-industrial/ · accessed 2026-10-04 ~09:16 IST (Playwright). Cheaper, but would need a separate wind-vane sensor to get direction (Robu's "Wind Speed Sensor Voltage Type (0-5V)" vane-less sibling and most dedicated wind-direction units in the same Robu category, e.g. SN-3000-FXJT-I20-16 and SN-3000-FXA series, were shown **Out of Stock** on the category page: https://robu.in/product-category/wind-speed-and-direction-sensors/).
+- No low-cost (<₹3,000) hobby/Arduino-style cup+vane weather-station sensor set was found in stock on Robu in the time budget — the only in-stock combined unit is the industrial FST200-205 above.
 
 ## (10) 10 W 12 V solar panel
 

@@ -119,3 +119,6 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - Ratchet r2 (top-2 downwind nodes): DEV −0.20 µg/m³, below the noise bar → not kept, reverted, logged.
 - `rubber-duck` review: the spike holds, but lead with the decision gap + ring + abstention. The self-calibration gain is partly simulation-shaped; the evaluator v2 plan is in ADR 001. Eight overclaims fixed in the pitch; the Q&A was rewritten around what's real vs simulated.
 - Running: `bom-prices` research agent (browser-based vendor listings). Next: build the near-final deck (`deliverables/deck/`, figures from committed results), then evaluator v2.
+
+### 2026-10-04 09:10 IST — Near-final zonal deck v1
+- `deliverables/deck/DustLedger_zonal.pptx`: 10 slides + 2 backup, speaker notes on every slide, figures generated from committed results (`make_figures.py`; simulated parts labelled on the figures). Rebuild: `cd deliverables/deck && OMP_NUM_THREADS=1 python make_figures.py && python make_deck.py`. Team name/ID/members are blanks for the user. Not visually QA'd in PowerPoint yet (no headless renderer); a heuristic overflow check passed.
