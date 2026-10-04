@@ -53,10 +53,12 @@ def levers() -> None:
     ]
     angle = AN.get("boom_angle_sensitivity_P2")
     if isinstance(angle, dict):
-        for key, label in (("theta_30", "Boom angled at 30°"), ("theta_20", "Boom angled at 20°")):
-            r = angle.get(key, {}).get("escaped_rel_vs_90") if isinstance(angle.get(key), dict) else None
-            if isinstance(r, dict):
-                rows.append((label, r, "SENSITIVITY"))
+        cur = angle.get("a_current_release", {})
+        pk = angle.get("c_fuse_refloat_x0.5", {})
+        if "theta30" in cur:
+            rows.append(("Boom angled at 30° (vs square-on)", cur["theta30"]["escaped_rel_vs_theta90"], "SENSITIVITY"))
+        if "theta30" in pk:
+            rows.append(("30° + fuse + pocket (vs today)", pk["theta30"]["escaped_rel_vs_current_a_theta90"], "SENSITIVITY"))
     fig, ax = plt.subplots(figsize=(8.8, 6.0))
     for i, (label, r, kind) in enumerate(rows):
         y = len(rows) - 1 - i
