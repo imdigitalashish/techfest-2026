@@ -1,0 +1,86 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<title>JalSakshi — 60-second offline demo</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+:root{--bg:#0f1419;--panel:#161d24;--ink:#e8eef2;--mute:#8aa0ad;--ok:#3fb950;--warn:#f0a020;--bad:#f85149;--rain:#58a6ff;--line:#2d3a45}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+header{display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--line)}
+header h1{font-size:20px;margin:0}header .tag{color:var(--mute)}
+.ctrl{margin-left:auto;display:flex;gap:8px;align-items:center}button{background:#21303b;color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 12px;font-size:14px;cursor:pointer}
+button:hover{background:#2a3c49}main{display:grid;grid-template-columns:420px 1fr;gap:14px;padding:14px 20px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.prov{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:5px;margin-right:6px}
+.real{background:#123d22;color:#7ee2a0}.sim{background:#3d2e10;color:#ffcf70}
+h2{font-size:15px;margin:6px 0 8px}.big{font-size:26px;font-weight:700}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.kpi{background:#0f1419;border:1px solid var(--line);border-radius:8px;padding:6px 8px}.kpi small{color:var(--mute);display:block;font-size:11px}
+svg{display:block;width:100%}.legend{font-size:12px;color:var(--mute)}.caption{font-size:12px;color:var(--mute);margin-top:6px}
+#ticket{position:fixed;right:24px;bottom:24px;width:380px;background:#2b1a0e;border:1px solid var(--warn);border-radius:12px;padding:12px 14px;display:none;box-shadow:0 8px 30px #000a}
+#ticket.badf{background:#2b1012;border-color:var(--bad)}#ticket h3{margin:0 0 4px;font-size:15px}
+.step{color:var(--mute);font-size:13px}.step b{color:var(--ink)}
+</style></head><body>
+<header><h1>JalSakshi</h1><span class="tag">measured, not self-declared · recharge-pit verification for Delhi</span>
+<div class="ctrl"><span class="step" id="step"></span><button id="play">▶ Play (space)</button><button id="restart">↺ Restart (r)</button><button id="fast">2×</button></div></header>
+<main>
+<section class="panel"><span class="prov real">REAL DATA</span><span class="legend">India-WRIS public API · fetched 4 Oct 2026</span>
+<h2>Delhi's telemetric groundwater monitors (DWLR)</h2>
+<div class="kpis"><div class="kpi"><small>telemetric stations</small><span class="big" id="k1"></span></div>
+<div class="kpi"><small>reported in 2026</small><span class="big" id="k2"></span></div>
+<div class="kpi"><small>readings exactly 0.000 m</small><span class="big" id="k3"></span></div></div>
+<svg id="map" viewBox="0 0 400 400"></svg>
+<div class="legend">dot colour = share of readings exactly 0.000 m (green 0 % → red 100 %) · white ring = reported in 2026 · hover for names</div>
+<div class="caption">The city's own monitoring needs verification too. Our QC flags zeros, gaps and sign errors before any analysis.</div>
+</section>
+<section class="panel"><span class="prov sim">SIMULATED PIT</span><span class="prov real">REAL RAIN</span>
+<span class="legend">ERA5 hourly rain, central Delhi, 1 Jul – 31 Aug 2025 · 250 m² roof → 2.25 m² recharge pit · verdicts from our verifier v1</span>
+<h2 id="clock">One recharge pit through the 2025 monsoon</h2>
+<svg id="chart" viewBox="0 0 900 435"></svg>
+<div class="legend"><span style="color:var(--ok)">■ verified</span> &nbsp; <span style="color:var(--warn)">■ clogged</span> &nbsp; <span style="color:var(--bad)">■ implausible (a sudden rise the rain at that moment can't explain)</span> &nbsp; · lower panel: clogging index (orange = volume-weighted mean of last 3 storms ≥ 0.5 m³; dots = per storm; grey dashes = simulation truth); ticket when the trend &lt; 0.5</div>
+<div class="caption" id="tally"></div>
+</section>
+</main>
+<div id="ticket"><h3 id="tt"></h3><div id="tb"></div><div class="caption">Advisory only: an inspector can override any verdict; no bill changes automatically.</div></div>
+<script>
+const S = __STATIONS__, P = __PIT__;
+const $ = id => document.getElementById(id);
+$('k1').textContent = S.total; $('k2').textContent = S.live2026; $('k3').textContent = Math.round(S.zero_share*100)+'%';
+(function(){const m=$('map'),pts=S.points;const la=pts.map(p=>p.lat),lo=pts.map(p=>p.lon);
+const a=Math.min(...la),b=Math.max(...la),c=Math.min(...lo),d=Math.max(...lo),k=Math.cos(28.6*Math.PI/180);
+const sx=360/Math.max((d-c)*k,(b-a));let h='';
+for(const p of pts){const x=20+(p.lon-c)*k*sx,y=380-(p.lat-a)*sx;const r=Math.round(60+180*p.zero),g=Math.round(190-150*p.zero);
+h+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="rgb(${r},${g},70)" stroke="${p.last>='2026-01-01'?'#fff':'none'}" stroke-width="1.6"><title>${p.name} (${p.agency}) · zeros ${(p.zero*100).toFixed(0)}% · last ${p.last}</title></circle>`;}
+h+=`<text x="10" y="396" fill="#8aa0ad" font-size="11">${S.mapped} of ${S.total} stations have usable coordinates · ${S.rows.toLocaleString()} readings</text>`;m.innerHTML=h;})();
+const X0=50,X1=880,H=P.hours;const xs=t=>X0+(X1-X0)*t/H;
+const yR=v=>70-60*Math.min(v,12)/12, yS=v=>300-200*Math.min(v,1.6)/1.6, yC=v=>415-80*Math.max(0,Math.min(v,1.2))/1.2;
+const col={verified:'#3fb950',clogged:'#f0a020',implausible:'#f85149'};
+function axes(){let h=`<text x="8" y="40" fill="#8aa0ad" font-size="11">rain</text><text x="8" y="200" fill="#8aa0ad" font-size="11">pit m</text><text x="8" y="380" fill="#8aa0ad" font-size="11">clog</text>`;
+for(const v of [0,0.5,1.0,1.5]) h+=`<line x1="${X0}" x2="${X1}" y1="${yS(v)}" y2="${yS(v)}" stroke="#22303b"/><text x="${X0-6}" y="${yS(v)+4}" fill="#5c7080" font-size="10" text-anchor="end">${v}</text>`;
+h+=`<line x1="${X0}" x2="${X1}" y1="${yC(0.5)}" y2="${yC(0.5)}" stroke="#f85149" stroke-dasharray="5 4"/><text x="${X1}" y="${yC(0.5)-4}" fill="#f85149" font-size="10" text-anchor="end">maintenance threshold 0.5</text>`;
+for(let dd=0;dd<=H/24;dd+=7){const x=xs(dd*24);const dt=new Date(Date.parse(P.t0)+dd*864e5);h+=`<text x="${x}" y="432" fill="#5c7080" font-size="10" text-anchor="middle">${dt.getDate()} ${dt.toLocaleString('en',{month:'short'})}</text>`;}
+return h;}
+let tNow=0,playing=false,speed=1,shown=new Set(),tk=null;
+function draw(){let h=axes();
+for(const e of P.events){if(e.t1>tNow)continue;h+=`<rect x="${xs(e.t0)}" y="95" width="${Math.max(2,xs(e.t1)-xs(e.t0))}" height="210" fill="${col[e.verdict]}" opacity="0.2"><title>${e.label} · ${e.verdict} · rain ${e.rain} mm · infiltrated est ${e.est} m³ (sim truth ${e.true})</title></rect>`;}
+for(let i=0;i<P.rain.length&&i<=tNow;i++){if(P.rain[i]>0)h+=`<rect x="${xs(i)}" y="${yR(P.rain[i])}" width="1.6" height="${70-yR(P.rain[i])}" fill="#58a6ff"/>`;}
+const n=Math.min(P.stage.length,Math.floor(tNow/P.stage_dt_h));let pth='';for(let i=0;i<n;i+=2){pth+=(i?'L':'M')+xs(i*P.stage_dt_h).toFixed(1)+','+yS(P.stage[i]).toFixed(1);}
+h+=`<path d="${pth}" fill="none" stroke="#e8eef2" stroke-width="1.1"/>`;
+let kt='';for(let d=0;d<P.k_true.length&&d*24<=tNow;d++){kt+=(d?'L':'M')+xs(d*24+23).toFixed(1)+','+yC(P.k_true[d]).toFixed(1);}
+h+=`<path d="${kt}" fill="none" stroke="#8aa0ad" stroke-width="1" stroke-dasharray="3 3"/>`;
+const ci=P.events.filter(e=>e.ci!==null&&e.t1<=tNow&&e.verdict!=='implausible');h+=ci.map(e=>`<circle cx="${xs(e.t1)}" cy="${yC(e.ci)}" r="2" fill="#f0a02077"/>`).join('');
+const tr=P.trend.filter(p=>p.t<=tNow);let cp='';tr.forEach((p,i)=>{cp+=(i?'L':'M')+xs(p.t).toFixed(1)+','+yC(p.ci).toFixed(1);});
+h+=`<path d="${cp}" fill="none" stroke="#f0a020" stroke-width="2"/>`;
+h+=`<line x1="${xs(tNow)}" x2="${xs(tNow)}" y1="10" y2="415" stroke="#ffffff55"/>`;$('chart').innerHTML=h;
+const dt=new Date(Date.parse(P.t0)+tNow*36e5);$('clock').textContent='One recharge pit through the 2025 monsoon — '+dt.toDateString().slice(4);
+const done=P.events.filter(e=>e.t1<=tNow);const c=v=>done.filter(e=>e.verdict===v).length;const ok=done.filter(e=>e.verdict!=='implausible');
+$('tally').textContent=`events: ${done.length} · verified ${c('verified')} · clogged ${c('clogged')} · implausible ${c('implausible')} · infiltrated (verifier) ${ok.reduce((s,e)=>s+e.est,0).toFixed(1)} m³ vs simulation truth ${ok.reduce((s,e)=>s+e.true,0).toFixed(1)} m³`;
+for(const k of P.tickets){if(k.t>tNow||shown.has(k.kind+k.label))continue;shown.add(k.kind+k.label);
+if(k.kind==='implausible')ticket(true,'⚠ Implausible event — '+k.label,`A sudden rise that the rain at that moment (${k.rain} mm over the event) cannot explain: possible bucket fill or bypass. Recommended: random inspection. (Scripted fake in this SIMULATION.)`);
+else ticket(false,'🛠 Maintenance due — '+k.label,`Clogging trend (volume-weighted, last 3 storms ≥ 0.5 m³) fell to ${k.ci} × as-built drain rate. Recommended: clean the filter media, then a metered fill test.`);}}
+function ticket(bad,t,b){$('ticket').className=bad?'badf':'';$('tt').textContent=t;$('tb').textContent=b;$('ticket').style.display='block';clearTimeout(tk);tk=setTimeout(()=>{$('ticket').style.display='none'},5200);}
+function lab(){$('step').innerHTML=playing?`<b>${Math.round(100*tNow/H)}%</b> of the season`:'paused';}
+let last=null;function loop(ts){if(playing){if(last!==null)tNow=Math.min(H,tNow+(ts-last)/1000*(H/45)*speed);last=ts;draw();lab();if(tNow>=H){playing=false;$('play').textContent='▶ Play (space)';}}else last=null;requestAnimationFrame(loop);}
+$('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'⏸ Pause (space)':'▶ Play (space)';lab();};
+$('restart').onclick=()=>{tNow=0;shown.clear();$('ticket').style.display='none';draw();lab();};
+$('fast').onclick=()=>{speed=speed===1?2:1;$('fast').textContent=speed===1?'2×':'1×';};
+document.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();$('play').click();}if(e.key==='r')$('restart').click();});
+draw();lab();requestAnimationFrame(loop);
+</script></body></html>

@@ -1,0 +1,23 @@
+{
+  "split": "holdout",
+  "pits": 40,
+  "rain_period": [
+    "2024-06-15",
+    "2024-09-30 23:00"
+  ],
+  "rain_total_mm": 990.2000000000002,
+  "events_scored": 952,
+  "event_mdape": 14.456619223465736,
+  "event_ape_p90": 60.68678244492878,
+  "season_total_abs_pct_err": 9.01030504594952,
+  "coverage": 0.9839114796446511,
+  "clogging_precision": 0.6,
+  "clogging_recall": 0.9,
+  "fake_recall": 1.0,
+  "fakes": 10,
+  "false_implausible_rate": 0.012975778546712802,
+  "blocked_recall": 0.8333333333333334,
+  "blocked_pits": 6,
+  "evaluator": "v3 (v2 + KIT0139-class offset/drift/quantisation)",
+  "runtime_s": 38.4
+}

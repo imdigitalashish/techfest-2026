@@ -16,6 +16,12 @@ Access date for all rows: 2026-10-04 (IST).
 | 9 | 8-channel LoRaWAN gateway for IN865 (RAK7268V2 / RAK7289 / Dragino LPS8N) | Robocraze LPS8N Indoor LoRaWAN Gateway | amazon.in | 33559.00 | INR | 1 unit | https://www.amazon.in/Robocraze-Multi-Channel-Indoor-Gateway-Lorawan-LPS8N/dp/B0DP91M6BZ | 2026-10-04 | VERIFIED | Page showed ₹33,559.00 and “Only 2 left in stock.” IN865 variant not confirmed on page. |
 | 10 | Nordic PPK2 power profiler (bench measurement tool) | NRF-PPK2 Power Profiler Kit II, Current Measurement Tool, Nordic Development Kits | amazon.in | 14500.00 | INR | 1 unit | https://www.amazon.in/NRF-PPK2-Profiler-Current-Measurement-Development/dp/B0GVMSX4NZ | 2026-10-04 | VERIFIED | Page showed ₹14,500.00 and “Only 1 left in stock.” |
 
+> **Lead correction (4 Oct 2026, 10:45 IST, after the zonal-pick reviews):**
+> - The "Per-node subtotal" below (₹32,428.67) is **not a per-node price**. It summed *both* sensor options: the 30-bar MS5837 *and* the ₹17,500 0–5 m probe.
+> - Row 1, the MS5837-30BA ("30 bar … Sealed Gauge"), is the wrong range for a 0–3 m pit and has been removed from the design.
+> - The design now uses the DFRobot KIT0139 0–5 m probe at Rs. 4,254.51 (element14 India, accessed 2026-10-04).
+> - The authoritative per-node BOM and arithmetic (₹11,166.18 for verified rows) is in `deliverables/prototype-plan.md` §3.
+
 ## Per-node subtotal (VERIFIED parts only)
 
 Assumption for “per-node”: includes node/deployment hardware rows #1–#8 plus enclosure row #7a and one PG7 gland row #7b; excludes shared gateway #9 and bench tool #10.

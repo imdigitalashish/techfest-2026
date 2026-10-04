@@ -10,45 +10,31 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED by the Supervisor at 09:55 IST, 4 Oct (user's decision: only 3 projects run at a time).** Queued: by 7 Oct the Supervisor picks the Delhi-zonal theme (this one or T2 AQI) from the memos and decks on main, then resumes the chosen lead to finish the deck by 9 Oct.
-- **State on main:**
-  - landscape, components + contracts v0.3.0, ADR 001, selection memo v1 (4.0/5);
-  - zonal pitch notes, Marp deck draft (`deliverables/zonal-deck.md` + `figures/`), prototype plan with a verified BOM;
-  - real DWLR profile and the C0 simulator;
-  - C5 verifier v1 (holdout MdAPE 3.0 %; harsher evaluator v2: 13.0 %).
-- **Nothing is running.** No background jobs, no sub-agents. All results are saved.
-- **Resume point (in order):**
-  1. **Ratchet v2 on C5.** Target: `eval_v2.py` dev MdAPE (v1 = 13.03 %) without worsening `eval.py` dev (3.902 %). Next idea: practical-significance threshold `|b−1| > max(2·SE, 0.15)`. Start from `components/recharge_verifier/autoresearch/candidates/v2_exp3_verifier.py`, copy it over `verifier.py`, and edit the beta-selection line. Run one job at a time:
-
-     ```
-     cd innovatex-t1-groundwater/components/recharge_verifier/autoresearch
-     nice -n 10 ../../../.venv/bin/python eval.py --split dev
-     nice -n 10 ../../../.venv/bin/python eval_v2.py --split dev
-     ```
-
-     Each run takes ~3–9 min under load. Keep a change only under the rule in `program.md`, then confirm with `--split holdout`.
-  2. **C4 ingest-qc module.** Fault-injection F1 on the real DWLR snapshot.
-  3. **C8 static dashboard** (offline HTML): real DWLR map + simulated pit storyline.
-  4. **Deck polish.** Export with Marp (`npx @marp-team/marp-cli deliverables/zonal-deck.md --pdf`, needs approval to install), fill team details, rehearse Q&A against a hostile judge.
-  5. **Close gaps.** Primary source for ₹204.46 cr (currently secondary: HT citing DJB data); NAQUIM Sy/T for Delhi; DJB tariffs and tanker prices.
-- **Data regeneration:**
-
-  ```
-  innovatex-t1-groundwater/.venv/bin/python innovatex-t1-groundwater/components/data-ingest/fetch_delhi.py
-  ```
-
-  This restores `.data/delhi_weather_hourly.csv`, which the simulator needs. The venv needs pandas, numpy, scipy, pydantic, matplotlib, pastas and tqdm.
+- **Phase:** 6, deliverables. **ACTIVE again since 10:20 IST, 4 Oct: picked as the InnovateX Delhi-zonal theme.** Both cross-model judges (gpt-6-astra max, grok-4.7 xhigh) chose JalSakshi over T2 DustLedger.
+- **Definition of done (Supervisor), by 9 Oct 18:00 IST:**
+  1. Final deck ✅ `deliverables/zonal-deck.md` (slides + notes + timing; team details to fill)
+  2. Q&A ✅ `deliverables/qa-prep.md` (25 questions)
+  3. 60-s offline demo ✅ `deliverables/demo/jalsakshi-demo.html`
+  4. Round-2 plan ✅ `deliverables/prototype-plan.md` (verified BOM ₹11,166.18 per node, exam-aware schedule, hardware-teammate tasks)
+  5. Second hostile cross-model review of the final deck ⏳ (child session, gpt-6-astra max)
+  6. Memo final, journal, push ⏳
+- **Doing:** lead + 1 child session (hostile deck review). No `task` sub-agents. A pre-lean r3 research agent is still running; I can't stop it.
+- **Next:**
+  1. Run the hostile review session.
+  2. Mark ACCEPTED/REJECTED in `reviews/`, update `ledger.tsv`, fix the deck.
+  3. Message the Supervisor "DONE — slot free".
 - **Needs from user:**
-  - (a) Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct.
-  - (b) Team name, Team ID and members for slide 1.
-  - (c) A pilot site: an RWA or campus recharge pit (IIT Delhi?).
-  - (d) Approve the prototype purchase. Verified retail: about ₹10.1k per node (₹13.8k with a rain gauge), a ₹33.6k shared gateway and a ₹14.5k PPK2 bench tool (`research/bom-prices.md`).
+  - (a) **Register for the Delhi zonal by 9 Oct** (South Asian University, 10 Oct), and send the team name, Team ID, members and contacts for slide 1.
+  - (b) **A hardware teammate**: ~4–6 h/week, 11 Oct–16 Nov, for the node, the pour rig and the power measurements (prototype plan §9).
+  - (c) A pilot partner (DJB zone, campus or RWA) and permission to instrument 1–3 pits. A short pilot email or letter would answer the "no committed buyer" attack.
+  - (d) Two short interviews with RWH maintenance officers or empanelled service providers.
+  - (e) After the zonal, approve parts: ≈ ₹11.2k per node + ₹33.6k gateway + ₹14.5k PPK2.
 - **Risks:**
-  1. Pit numbers are simulation only until the physical rig exists.
-  2. The v1 verifier assumes a linear drain; the harsher evaluator shows a 13 % error.
-  3. Node cost is ≈ ₹10.1k at retail, above the earlier ₹6k target.
-  4. Owner incentives and DJB adoption.
-  5. ₹204.46 cr is secondary-sourced.
+  1. All pit numbers are simulation until the rig exists. The deck leads with 13.1 %.
+  2. Probe settle time decides battery vs solar.
+  3. Buyer unproven: no pilot letter yet.
+  4. ₹204.46 cr is secondary-sourced (HT citing DJB data).
+  5. The C7 ticket rule v0 is a heuristic, not yet validated at fleet level.
 
 ## Phase 0 — what we must show (from the official statement, `_briefs/innovatex.txt`)
 **Hard constraints.** Team ≤4, students, one theme per team, original work (not patented/published). Round 1 = 10-min in-person pitch at the zonal, nothing submitted online; must cover team info (name, Team ID, theme no., contacts), precise problem, background + why existing solutions fall short, proposed solution + technology + how it works, impact & scalability. Top 5 per zonal advance. Round 2: report + working prototype by 1 Dec (solution description, prototype evidence, cost & market viability, implementation plan, scalability plan, impact assessment); finals 15–18 Dec at IIT Bombay. Only the team leader submits online. Queries only via the portal's Doubt section.
@@ -89,29 +75,22 @@ Full table, contracts and graph: [architecture/components.md](architecture/compo
 | C8 | dashboard | all → HTML | ThingSpeak/Blynk | — | planned | 5-task time |
 
 ## Selection memo
-_v1, 4 Oct 2026, 07:55 IST. The final is due 7 Oct, 12:00. Scores are 1–5, with one line of evidence each. **Overall: 4.0/5** (mean of the five scores)._
-- **Winnability — 4/5.** The problem is specific and very local, with dated sources:
-  - DJB paid ₹204.46 cr in RWH rebates in 2017–24, and moved to self-certification in Apr 2026.
-  - The minister said there was "no real checking" (HT, 21 Apr 2026).
-  - 1,000 government RWH systems are non-functional (IE 2026).
-  - Our own India-WRIS run shows 23 % zero readings across 185 telemetric stations.
-
-  This hits the local-depth bonus squarely. Typical rival teams pitch ESP32 + ultrasonic sensor + dashboard.
-- **Innovation headroom — 4/5.** The spike is a per-storm pit water balance that outputs infiltrated volume with an uncertainty band, a clogging index and fake detection. It turns a rebate rule into evidence.
-  - The incumbents are self-certification or manual inspection.
-  - CGWA-style DWLRs log 2 readings a day and cost about ₹38k (Acorn).
-  - Not yet proven on real pits: simulation only tonight; the rig comes in October.
-- **Feasibility by the deadline — 4/5.**
-  - The hardware is cheap and shallow (≤3 m), and a drum-and-drain rig gives ground truth.
-  - The software runs on the M5 Mac with no GPU.
-  - Post-monsoon storms are scarce, so fill tests and the rig carry the Round-2 evidence.
-  - User work is concentrated before 17 Nov, avoiding the 19–25 Nov exams.
-- **Demo strength at the finals — 5/5.** Pour water into a pit model on stage and the event, verdict and clogging alert appear live. Pour without "rain" and it's flagged implausible. A real Delhi DWLR map sits behind it.
-- **Fit with the user's strengths — 3/5.** Systems and data engineering (ingest, QC at scale, contracts, cloud) fit well. Frontier models play only a minor role (optional QC/anomaly models).
-- **Biggest risk:** owner incentives (the device can cost an owner the rebate) and DJB adoption.
-  - Mitigation: pilot with campuses and RWAs that need proof, and position this as a verification service for DJB's restoration drive.
-  - Second risk: cost. Verified retail is ≈ ₹10.1k per node, above my earlier ₹6k target, though still about ¼ of the ₹38k CGWA-style DWLR.
-- **One-line pitch:** *"Delhi has paid ₹204 crore for rainwater harvesting it never checked. JalSakshi puts a low-cost IoT witness in every recharge pit and turns each storm into measured, auditable recharge evidence — measured, not self-declared."*
+_FINAL v2, 4 Oct 2026, 11:00 IST. **Outcome: picked for the Delhi zonal** by the Supervisor, after independent cross-model reviews (`reviews/`). Scores are 1–5 with one line of evidence each; mean **3.6/5** (v1's 4.0 was too generous on demo and cost)._
+- **Winnability — 4/5.** It is specific, local and current, and both judges agreed.
+  - Delhi has mandated RWH since 2001 (IE). It paid ₹204.46 cr in rebates in 2017–24 (HT, citing DJB data).
+  - Certificates come only after inspection; self-disclosure is still being planned (HT).
+  - DJB is restoring 1,000 non-functional government systems (IE).
+  - Our India-WRIS analysis adds evidence: 185 telemetric stations, only 46 reporting in 2026, 23 % of readings exactly zero.
+- **Innovation headroom — 4/5.** A per-storm drain-rate/clogging verdict plus infiltrated volume ± band turns the rebate rule into evidence. Today there is inspection, or one CGWA DWLR (Acorn) logging twice a day at ≈ ₹38k. Honest accuracy (simulation): 13.1 % stress, 14.5 % with a realistic probe, 3.0 % best case.
+- **Feasibility by 1 Dec — 4/5.**
+  - One node and a drum pour rig with weighed-water ground truth.
+  - Verified BOM ₹11,166 per node.
+  - The schedule avoids the 19–25 Nov exams.
+  - Needs a hardware teammate.
+- **Demo strength — 3/5 now; 5/5 once the pour rig exists.** Today's demo is an offline replay: real Delhi DWLR data plus a simulated pit with tickets.
+- **Fit with the user's strengths — 3/5.** Data and systems engineering (ingest, QC at scale, contracts, evaluators) fit; frontier models are marginal.
+- **Biggest risk:** no committed buyer yet. Mitigation: target DJB's Phase-I government restorations through its 59 empanelled service providers; verdicts rank inspections; inspectors can override. Second risk: probe power and settle time.
+- **One-line pitch:** *"Delhi pays for rainwater harvesting it cannot check. JalSakshi puts a witness in every recharge pit that turns each storm into a drain-rate and infiltration verdict — measured, not self-declared."*
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -195,3 +174,25 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **BOM price verifier** (`research/bom-prices.md`): verified retail is ≈ ₹10,100.67 per node (MS5837 path), ₹13,829.67 with a rain gauge. My earlier "< ₹6,000" target was wrong and is corrected in the deck, pitch, plan and memo.
 - Deck draft and figures added: `deliverables/zonal-deck.md`, `deliverables/make_figures.py`, `deliverables/figures/*.png` (map coordinates fixed).
 - **Supervisor PAUSE at 09:55:** saved everything, no jobs running. Resume point is under *Now*.
+
+### 2026-10-04 11:00 IST — Activated as the InnovateX pick; review fixes; final deliverables
+- **Supervisor (10:20):** both cross-model judges picked JalSakshi.
+  - Response written: `reviews/2026-10-04-lead-response.md`.
+  - Ledger: `reviews/ledger.tsv` has 2 lines. 28 T1 items accepted; the ₹47,389 figure from one item was rejected as not reproducible.
+- **Source re-check:** I re-opened HT (21 Apr 2026) and IE myself.
+  - HT: self-disclosure "being planned"; 1.5× penalty "may attract"; certificates "issued after inspection".
+  - IE: mandatory since 2001; 7,596 of 9,148 government buildings have RWH; DJB to restore 1,000 + build 500 (Phase I, 30 Jun 2026 target); 733 M L/yr is an *estimated* potential; DJB portal planned; 59 empanelled service providers.
+- **Sensor fix.** The MS5837-30BA (30 bar) is out; the DFRobot KIT0139 0–5 m probe is in.
+  - Price: Rs. 4,254.51 at element14 India, verified with the browser.
+  - Datasheet (farnell 3708809): 0.5 % overall accuracy, 12–36 V, IP68.
+  - Verified per-node subtotal: ₹11,166.18. The ₹32,428.67 in `bom-prices.md` is corrected (it summed both sensor options).
+- **New frozen evaluator v3** (probe offset, drift, quantisation). Kept v1 verifier:
+  - holdout 14.5 %, dev 16.0 %;
+  - v2 stress holdout 13.1 %.
+- **Two auto-zero candidates, not kept** under pre-registered rules:
+  - c1 improved v3 to 13.9 % but pushed the v1 evaluator to 4.35 % (> 4.29 bound);
+  - c2 improved v3 by only 0.11.
+- **Offline demo built and browser-tested.**
+  - Fixed two honesty bugs: the ticket text wrongly said "no rain", and noisy tiny-storm clogging alerts were firing.
+  - C7 rule v0: volume-weighted clogging index of the last 3 storms ≥ 0.5 m³.
+- **Rewritten:** deck (rebate opening, borewells moved to backup, 13 % first, buyer = DJB restorations, inspector override), `zonal-pitch.md` talk track, `qa-prep.md` (25 questions), `prototype-plan.md` (Round-2 plan), selection memo v2 (3.6/5).

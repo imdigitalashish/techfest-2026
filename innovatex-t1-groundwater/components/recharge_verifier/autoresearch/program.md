@@ -18,3 +18,9 @@
 7. Fit the drain law per structure: estimate beta from log(-dh/dt) vs log(h) on clean recession limbs (pooled over events), then integrate outflow = k·A·h_ref·(h/h_ref)^beta instead of k·A·h.
 8. Clogging index under a non-linear drain: compare outflow rate at a reference stage (0.5 m) rather than k alone.
 9. Gauge mismatch: learn a per-structure runoff×gauge factor from verified events (robust median of inflow/rain), and widen the jump-test margin by the learned spread.
+
+## Ratchet v3 — sensor realism (pre-registered 4 Oct 2026, 10:50 IST, before any v3 candidate was run)
+- **Target:** `eval_v3.py --split dev` event_mdape (v1 verifier = 15.991 %).
+- **Keep rule:** keep a candidate only if (a) its eval_v3 dev MdAPE improves by > 0.5 points, (b) its `eval.py` dev MdAPE and `eval_v2.py` dev MdAPE each worsen by ≤ 10 % relative (v1 ≤ 4.292, v2 ≤ 14.336), and (c) fake_recall stays ≥ 0.9 and false_implausible_rate ≤ 0.05 on all three. Then confirm on holdout for all three evaluators.
+- **Candidate 1 (auto-zero):** subtract a slowly varying dry-floor baseline (rolling 72 h, 2nd percentile of 10-min medians) before event detection, so a constant sensor offset is removed.
+- **Compute:** one run at a time under `nice -n 10` (Supervisor lean rule).

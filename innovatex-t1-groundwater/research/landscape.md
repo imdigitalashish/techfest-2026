@@ -45,7 +45,7 @@ The **cheapest loop to close with IoT, cooperatively and measurably, is loop 2**
 | Who | What ships | Measures / cadence | Price (opened page) | Gap for urban Delhi |
 |---|---|---|---|---|
 | **CGWB + Delhi state GW (India-WRIS)** [S2, S3] | GPRS DWLR piezometers | Level, every 6 h | — | Public stream is 23 % zeros and stale (§1); no recharge accounting; nothing at RWH structures |
-| **Acorn Controls**, PZM-24B "CGWA-compliant" piezometer/DWLR [S18] | Hydrostatic SS sensor, logger, optional GPRS/4G, "MeitY-approved cloud – updates twice daily" | Level, ±0.5 % FS, 365 × 2 readings/day memory, 5+ yr battery claimed | **≈ ₹38,000 / piece** | Built for compliance on extraction wells. Two readings a day cannot resolve storm recharge events, which take hours |
+| **Acorn Controls**, PZM-24B "CGWA-compliant" piezometer/DWLR [S18] (one product; not every CGWA logger) | Hydrostatic SS sensor, logger, optional GPRS/4G, "MeitY-approved cloud – updates twice daily" | Level, ±0.5 % FS, 365 × 2 readings/day memory, 5+ yr battery claimed | **≈ ₹38,000 / piece** | Built for compliance on extraction wells. Two readings a day cannot resolve storm recharge events, which take hours |
 | **Pride Controls**, CGWA piezometer/flow-meter telemetry [S19] | GSM telemetry, IP67, 24 V AC | Flow / level for CGWA NOC holders | **≈ ₹38,900 / piece** | Mains powered and industrial; meters extraction, not recharge |
 | **Solinst** (pro loggers) [S16] | Vented cable transducers | Level | not published on page opened | Their own guidance: "The biggest worry is keeping the vent tube dry… dampness [causes] erroneous barometric compensation." We avoid this with a sealed absolute sensor plus a well-head barometer |
 | **RAKwireless RAK3172** [S20] | STM32WLE5CC LoRa/LoRaWAN module, LoRaWAN 1.0.3 Class A/B/C, works with TTN/ChirpStack | — | not shown in excerpt (UNVERIFIED) | Commodity radio we can use |
@@ -73,7 +73,7 @@ The **cheapest loop to close with IoT, cooperatively and measurably, is loop 2**
 
 ## 5. Hardware, power and connectivity (what's established vs what we assume)
 
-- **Sensing.** A sealed absolute pressure sensor in a stilling tube in the pit, plus a barometer at the lid, avoids vent-tube moisture failures [S16]. Pit stage needs 0–3 m of range. A ±0.5 % FS industrial probe (Acorn's spec class [S18]) gives ±15 mm on 3 m FS. Over a 2.25 m² pit footprint (1.5 × 1.5 m, **assumed** geometry) that is ±0.034 m³ per reading, under 1 % of the 4 m³ event below.
+- **Sensing (updated 4 Oct after the reviews).** A 0–5 m 4–20 mA stainless steel throw-in probe (DFRobot KIT0139). Datasheet: "Overall Accuracy: 0.5%", 12–36 V supply, IP68, 316L stainless steel (https://www.farnell.com/datasheets/3708809.pdf). Price Rs. 4,254.51 at element14 India (accessed 2026-10-04). That is ±25 mm per reading, or ±0.11 m³ worst case on a 2.25 m² pit's stage rise. Vent-tube moisture is a known failure mode of vented probes [S16]. An earlier draft used a 30-bar MS5837; that part is the wrong range and has been dropped.
 - **Event scale (arithmetic, assumptions labelled).** A 100 m² roof (the RWH threshold [S11]) in a 50 mm storm with runoff coefficient 0.8 (**assumed**) yields 100 × 0.05 × 0.8 = **4.0 m³**.
 - **Connectivity underground.** Antenna performance drops sharply below ground [S17]. Pits sit at grade under a lid, so we put the radio and antenna in the lid-mounted housing, store-and-forward locally, and uplink on LoRaWAN (RAK3172 [S20]) or NB-IoT/LTE-M. A link budget for Delhi needs measurement: **UNVERIFIED**, a Round-2 field test.
 - **Power.** A community LoRa node built on the same radio class measured a 220 µA sleep floor and about 11 mAh/day [S22]. Our design target is much lower (MCU deep sleep, 15 min idle sampling, burst sampling only during rain). The battery-life estimate in `deliverables/prototype-plan.md` is labelled as an estimate.
@@ -134,7 +134,7 @@ Scores are 1–5 for judged impact, novelty, feasibility by 1 Dec, measurability
 ## Gaps / UNVERIFIED (to close before 9 Oct)
 - ~~CGWB 2025 assessment for Delhi~~ closed: 92.10 % stage of extraction [S23]. Still open: primary DJB/Assembly source for the ₹204.46 cr figure, which is only secondary (HT citing DJB data). See `research/primary-source-checks.md`.
 - Delhi aquifer parameters (Sy, T) from the CGWB NAQUIM report. They are needed for WTF recharge in mm.
-- Prices for our own BOM parts (vendor pages blocked or timed out tonight). The BOM marks them UNVERIFIED.
+- ~~BOM prices~~ closed: verified per-node subtotal ₹11,166.18 (`deliverables/prototype-plan.md` §3). Still unpriced: tube, sock, potting, cable, boost converter, antenna.
 - What RWH-monitoring products really do: open the zbotic/JIIT/Kritsnam/FluxGen pages.
 - DJB tariff slabs and tanker prices, to value water in ₹.
 - X/Twitter: worker searches with `site:x.com` returned no relevant results; no X posts are cited.
