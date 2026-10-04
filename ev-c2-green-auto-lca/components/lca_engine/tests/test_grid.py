@@ -34,6 +34,9 @@ def test_every_state_resolves_and_is_above_busbar(db):
         assert g.value > 0.675
 
 
-def test_co2e_is_refused_until_upstream_data_exists(db):
+def test_co2e_adds_partial_upstream(db):
+    co2 = grid_factor(db, GridFactorQuery(gas_basis="CO2", delivery="busbar")).value
+    co2e = grid_factor(db, GridFactorQuery(gas_basis="CO2e", delivery="busbar")).value
+    assert 0.675 == co2 < co2e < 0.675 * 1.06      # combustion CH4/N2O + coal-mine CH4 add a few per cent
     with pytest.raises(NotImplementedError):
-        grid_factor(db, GridFactorQuery(gas_basis="CO2e"))
+        grid_factor(db, GridFactorQuery(gas_basis="CO2e", method="build_margin"))

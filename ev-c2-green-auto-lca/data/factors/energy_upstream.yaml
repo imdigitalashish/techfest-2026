@@ -1,0 +1,575 @@
+- id: energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries
+  layer: energy
+  name: Coal stationary-combustion CH4 emission factor, energy industries (IPCC Tier 1 default)
+  value: 1.0
+  unit: kg CH4/TJ fuel NCV
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Stationary combustion in energy industries; CH4 only; excludes upstream fuel chain, coal-mine methane, plant construction, and T&D losses."
+  geography: GLO
+  reference_year: "2006"
+  technology: coal-fired electricity and heat production (IPCC 1.A.1 energy industries)
+  uncertainty: {distribution: range, low: 0.3, high: 3.0, note: "IPCC Table 2.2 lower and upper values for coal ranks in energy industries."}
+  source_id: ipcc-2006-v2-ch2-stationary-combustion
+  locator: "Table 2.2, p. 2.16, row Other Bituminous Coal; same CH4 default for Anthracite, Coking Coal, Sub-Bituminous Coal and Lignite"
+  quote: "Other Bituminous Coal 94 600 89 500 99 700 1 0.3 3 r 1. 5 0.5 5"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: verified
+  notes: "Native-gas factor, not CO2e. Apply a fossil CH4 GWP100 record separately."
+- id: energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries
+  layer: energy
+  name: Coal stationary-combustion N2O emission factor, energy industries (IPCC Tier 1 default)
+  value: 1.5
+  unit: kg N2O/TJ fuel NCV
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Stationary combustion in energy industries; N2O only; excludes upstream fuel chain, plant construction, and T&D losses."
+  geography: GLO
+  reference_year: "2006"
+  technology: coal-fired electricity and heat production (IPCC 1.A.1 energy industries)
+  uncertainty: {distribution: range, low: 0.5, high: 5.0, note: "IPCC Table 2.2 lower and upper values for coal ranks in energy industries."}
+  source_id: ipcc-2006-v2-ch2-stationary-combustion
+  locator: "Table 2.2, p. 2.16, row Other Bituminous Coal; same N2O default for Anthracite, Coking Coal, Sub-Bituminous Coal and Lignite"
+  quote: "Other Bituminous Coal 94 600 89 500 99 700 1 0.3 3 r 1. 5 0.5 5"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: verified
+  notes: "Native-gas factor, not CO2e. Apply an N2O GWP100 record separately."
+- id: energy.upstream.stationary_combustion.natural_gas.ch4.ipcc2006.energy_industries
+  layer: energy
+  name: Natural gas stationary-combustion CH4 emission factor, energy industries (IPCC Tier 1 default)
+  value: 1.0
+  unit: kg CH4/TJ fuel NCV
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Stationary combustion in energy industries; CH4 only; excludes upstream gas supply, plant construction, and T&D losses."
+  geography: GLO
+  reference_year: "2006"
+  technology: natural-gas-fired electricity and heat production (IPCC 1.A.1 energy industries)
+  uncertainty: {distribution: range, low: 0.3, high: 3.0, note: "IPCC Table 2.2 lower and upper values."}
+  source_id: ipcc-2006-v2-ch2-stationary-combustion
+  locator: "Table 2.2, p. 2.16, row Natural Gas"
+  quote: "Natural Gas 56 100 54 300 58 300 1 0.3 3 0.1 0.03 0.3"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: verified
+  notes: "Native-gas factor, not CO2e. Apply a fossil CH4 GWP100 record separately."
+- id: energy.upstream.stationary_combustion.natural_gas.n2o.ipcc2006.energy_industries
+  layer: energy
+  name: Natural gas stationary-combustion N2O emission factor, energy industries (IPCC Tier 1 default)
+  value: 0.1
+  unit: kg N2O/TJ fuel NCV
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Stationary combustion in energy industries; N2O only; excludes upstream gas supply, plant construction, and T&D losses."
+  geography: GLO
+  reference_year: "2006"
+  technology: natural-gas-fired electricity and heat production (IPCC 1.A.1 energy industries)
+  uncertainty: {distribution: range, low: 0.03, high: 0.3, note: "IPCC Table 2.2 lower and upper values."}
+  source_id: ipcc-2006-v2-ch2-stationary-combustion
+  locator: "Table 2.2, p. 2.16, row Natural Gas"
+  quote: "Natural Gas 56 100 54 300 58 300 1 0.3 3 0.1 0.03 0.3"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: verified
+  notes: "Native-gas factor, not CO2e. Apply an N2O GWP100 record separately."
+- id: energy.upstream.coal_mining.underground.ch4.ipcc2006.average
+  layer: energy
+  name: Underground coal mining CH4 emission factor (IPCC Tier 1 average)
+  value: 18.0
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 during underground coal mining only; excludes post-mining handling and combustion."
+  geography: GLO
+  reference_year: "2006"
+  technology: underground coal mining
+  uncertainty: {distribution: range, low: 10.0, high: 25.0, note: "IPCC Tier 1 low/average/high values."}
+  source_id: ipcc-2006-v2-ch4-fugitive-emissions
+  locator: "Equation 4.1.3, p. 4.11"
+  quote: "Low CH4 Emission Factor = 10 m3 tonne-1 Average CH4 Emission Factor =18 m3 tonne-1 High CH4 Emission Factor = 25 m3 tonne-1"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: verified
+  notes: "Global fallback; prefer India BUR-4 country-specific factors where possible."
+- id: energy.upstream.coal_mining.underground_post_mining.ch4.ipcc2006.average
+  layer: energy
+  name: Underground coal post-mining CH4 emission factor (IPCC Tier 1 average)
+  value: 2.5
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 from post-mining handling after underground coal production; excludes mining and combustion."
+  geography: GLO
+  reference_year: "2006"
+  technology: underground coal post-mining handling
+  uncertainty: {distribution: range, low: 0.9, high: 4.0, note: "IPCC Tier 1 low/average/high values."}
+  source_id: ipcc-2006-v2-ch4-fugitive-emissions
+  locator: "Equation 4.1.4, p. 4.12"
+  quote: "Low CH4 Emission Factor = 0.9 m3 tonne-1 Average CH4 Emission Factor =2.5 m3 tonne-1 High CH4 Emission Factor = 4.0 m3 tonne-1"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: verified
+  notes: "Global fallback; prefer India BUR-4 country-specific factors where possible."
+- id: energy.upstream.coal_mining.surface.ch4.ipcc2006.average
+  layer: energy
+  name: Surface coal mining CH4 emission factor (IPCC Tier 1 average)
+  value: 1.2
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 during surface coal mining only; excludes post-mining handling and combustion."
+  geography: GLO
+  reference_year: "2006"
+  technology: surface coal mining
+  uncertainty: {distribution: range, low: 0.3, high: 2.0, note: "IPCC Tier 1 low/average/high values."}
+  source_id: ipcc-2006-v2-ch4-fugitive-emissions
+  locator: "Equation 4.1.7, p. 4.18"
+  quote: "Low CH4Emission Factor = 0.3 m3 tonne-1 Average CH4 Emission Factor = 1.2 m3 tonne-1 High CH4 Emission Factor = 2.0 m3 tonne-1"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: verified
+  notes: "Global fallback; prefer India BUR-4 country-specific factors where possible."
+- id: energy.upstream.coal_mining.surface_post_mining.ch4.ipcc2006.average
+  layer: energy
+  name: Surface coal post-mining CH4 emission factor (IPCC Tier 1 average)
+  value: 0.1
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 from post-mining handling after surface coal production; excludes mining and combustion."
+  geography: GLO
+  reference_year: "2006"
+  technology: surface coal post-mining handling
+  uncertainty: {distribution: range, low: 0.0, high: 0.2, note: "IPCC Tier 1 low/average/high values."}
+  source_id: ipcc-2006-v2-ch4-fugitive-emissions
+  locator: "Equation 4.1.8, p. 4.19"
+  quote: "Low CH4 Emission Factor = 0 m3 tonne-1 Average CH4 Emission Factor = 0.1 m3 tonne-1 High CH4 Emission Factor = 0.2 m3 tonne-1"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 5, geographical: 3, technological: 1}
+  status: verified
+  notes: "Global fallback; prefer India BUR-4 country-specific factors where possible."
+- id: energy.upstream.coal_mining.ch4_density.ipcc2006
+  layer: energy
+  name: Methane density conversion for coal-mining fugitive emissions
+  value: 0.67
+  unit: kg CH4/m3 CH4
+  quantity: other
+  gas_basis: n/a
+  boundary: "Conversion from methane volume to methane mass at 20 °C and 1 atmosphere."
+  geography: GLO
+  reference_year: "2006"
+  technology: methane volume-to-mass conversion
+  uncertainty: {distribution: none, low: null, high: null, note: "IPCC gives a point density conversion factor."}
+  source_id: ipcc-2006-v2-ch4-fugitive-emissions
+  locator: "p. 4.11, conversion factor text repeated for coal-mining equations"
+  quote: "This is the density of CH4 and converts volume of CH4 to mass of CH4. The density is taken at 20˚C and 1 atmosphere pressure and has a value of 0.67 ● 10-6 Gg m-3."
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 5, geographical: 1, technological: 1}
+  status: verified
+  notes: "0.67 × 10^-6 Gg/m3 = 0.67 kg/m3."
+- id: energy.upstream.coal_mining.surface.ch4.in.bur4
+  layer: energy
+  name: India surface coal mining CH4 emission factor (BUR-4 country-specific)
+  value: 1.18
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 during surface coal mining; excludes post-mining handling and combustion."
+  geography: IN
+  reference_year: "2017-2020 inventory factors; report published 2024"
+  technology: surface coal mining
+  uncertainty: {distribution: none, low: null, high: null, note: "BUR-4 publishes point country-specific factors."}
+  source_id: india-bur4-2024
+  locator: "Table 2.13, p. 84"
+  quote: "Mining 1.18 2.91 13.08 23.64"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+  notes: "Preferred India value over IPCC global Tier 1 default."
+- id: energy.upstream.coal_mining.surface_post_mining.ch4.in.bur4
+  layer: energy
+  name: India surface coal post-mining CH4 emission factor (BUR-4 country-specific)
+  value: 0.15
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 from post-mining handling after surface coal production; excludes mining and combustion."
+  geography: IN
+  reference_year: "2017-2020 inventory factors; report published 2024"
+  technology: surface coal post-mining handling
+  uncertainty: {distribution: none, low: null, high: null, note: "BUR-4 publishes point country-specific factors."}
+  source_id: india-bur4-2024
+  locator: "Table 2.13, p. 84"
+  quote: "Post Mining (Handling) 0.15 0.98 2.15 3.12"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+  notes: "Preferred India value over IPCC global Tier 1 default."
+- id: energy.upstream.coal_mining.underground_degree_i.ch4.in.bur4
+  layer: energy
+  name: India underground Degree-I coal mining CH4 emission factor (BUR-4 country-specific)
+  value: 2.91
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 during underground Degree-I coal mining; excludes post-mining handling and combustion."
+  geography: IN
+  reference_year: "2017-2020 inventory factors; report published 2024"
+  technology: underground coal mining, Degree-I gassiness class
+  uncertainty: {distribution: none, low: null, high: null, note: "BUR-4 publishes point country-specific factors."}
+  source_id: india-bur4-2024
+  locator: "Table 2.13, p. 84"
+  quote: "Mining 1.18 2.91 13.08 23.64"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_mining.underground_degree_i_post_mining.ch4.in.bur4
+  layer: energy
+  name: India underground Degree-I coal post-mining CH4 emission factor (BUR-4 country-specific)
+  value: 0.98
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 from post-mining handling after underground Degree-I coal production."
+  geography: IN
+  reference_year: "2017-2020 inventory factors; report published 2024"
+  technology: underground coal post-mining handling, Degree-I gassiness class
+  uncertainty: {distribution: none, low: null, high: null, note: "BUR-4 publishes point country-specific factors."}
+  source_id: india-bur4-2024
+  locator: "Table 2.13, p. 84"
+  quote: "Post Mining (Handling) 0.15 0.98 2.15 3.12"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_mining.underground_degree_ii.ch4.in.bur4
+  layer: energy
+  name: India underground Degree-II coal mining CH4 emission factor (BUR-4 country-specific)
+  value: 13.08
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 during underground Degree-II coal mining; excludes post-mining handling and combustion."
+  geography: IN
+  reference_year: "2017-2020 inventory factors; report published 2024"
+  technology: underground coal mining, Degree-II gassiness class
+  uncertainty: {distribution: none, low: null, high: null, note: "BUR-4 publishes point country-specific factors."}
+  source_id: india-bur4-2024
+  locator: "Table 2.13, p. 84"
+  quote: "Mining 1.18 2.91 13.08 23.64"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_mining.underground_degree_ii_post_mining.ch4.in.bur4
+  layer: energy
+  name: India underground Degree-II coal post-mining CH4 emission factor (BUR-4 country-specific)
+  value: 2.15
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 from post-mining handling after underground Degree-II coal production."
+  geography: IN
+  reference_year: "2017-2020 inventory factors; report published 2024"
+  technology: underground coal post-mining handling, Degree-II gassiness class
+  uncertainty: {distribution: none, low: null, high: null, note: "BUR-4 publishes point country-specific factors."}
+  source_id: india-bur4-2024
+  locator: "Table 2.13, p. 84"
+  quote: "Post Mining (Handling) 0.15 0.98 2.15 3.12"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_mining.underground_degree_iii.ch4.in.bur4
+  layer: energy
+  name: India underground Degree-III coal mining CH4 emission factor (BUR-4 country-specific)
+  value: 23.64
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 during underground Degree-III coal mining; excludes post-mining handling and combustion."
+  geography: IN
+  reference_year: "2017-2020 inventory factors; report published 2024"
+  technology: underground coal mining, Degree-III gassiness class
+  uncertainty: {distribution: none, low: null, high: null, note: "BUR-4 publishes point country-specific factors."}
+  source_id: india-bur4-2024
+  locator: "Table 2.13, p. 84"
+  quote: "Mining 1.18 2.91 13.08 23.64"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_mining.underground_degree_iii_post_mining.ch4.in.bur4
+  layer: energy
+  name: India underground Degree-III coal post-mining CH4 emission factor (BUR-4 country-specific)
+  value: 3.12
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 from post-mining handling after underground Degree-III coal production."
+  geography: IN
+  reference_year: "2017-2020 inventory factors; report published 2024"
+  technology: underground coal post-mining handling, Degree-III gassiness class
+  uncertainty: {distribution: none, low: null, high: null, note: "BUR-4 publishes point country-specific factors."}
+  source_id: india-bur4-2024
+  locator: "Table 2.13, p. 84"
+  quote: "Post Mining (Handling) 0.15 0.98 2.15 3.12"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_mining.production_by_gassiness.in.bur4.2020
+  layer: energy
+  name: India coal production by surface and underground gassiness class used in BUR-4 inventory
+  value: {surface: 724.45, underground_degree_i: 26.76, underground_degree_ii: 7.05, underground_degree_iii: 0.47}
+  unit: million tonne raw coal/year
+  quantity: mass
+  gas_basis: n/a
+  boundary: "Coal production activity data for coal-mining methane inventory; surface plus underground Degree-I/II/III categories."
+  geography: IN
+  reference_year: "2020"
+  technology: coal mining, all India
+  uncertainty: {distribution: none, low: null, high: null, note: "BUR-4 publishes point activity data."}
+  source_id: india-bur4-2024
+  locator: "Table 2.14, p. 84, row Mining and handling (2020)"
+  quote: "Mining and handling (2020) 724.45 26.76 7.05 0.47"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 3, geographical: 1, technological: 1}
+  status: verified
+  notes: "Use only if a 2020 BUR inventory-consistent weighted coal-mine methane factor is acceptable; newer Coal Directory OC/UG shares do not split UG by degree."
+- id: energy.upstream.coal_mining.opencast_share.in.coal_directory.fy2023_24
+  layer: energy
+  name: India open-cast share of raw coal production
+  value: 0.9656
+  unit: fraction of raw coal production
+  quantity: share
+  gas_basis: n/a
+  boundary: "All-India raw coal production by mining method; open-cast share."
+  geography: IN
+  reference_year: "2023-24"
+  technology: open-cast coal mining
+  uncertainty: {distribution: none, low: null, high: null, note: "Coal Directory publishes point production and share values."}
+  source_id: coal-directory-india-2024-25
+  locator: "Table 3.19, p. 70, row 2023-24"
+  quote: "2023-24 747.785 64.090 963.495 96.56 ▲12.25% 26.021 5.931 34.331 3.44 ▼01.48% 997.826 ▲11.71%"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_mining.underground_share.in.coal_directory.fy2023_24
+  layer: energy
+  name: India underground share of raw coal production
+  value: 0.0344
+  unit: fraction of raw coal production
+  quantity: share
+  gas_basis: n/a
+  boundary: "All-India raw coal production by mining method; underground share."
+  geography: IN
+  reference_year: "2023-24"
+  technology: underground coal mining
+  uncertainty: {distribution: none, low: null, high: null, note: "Coal Directory publishes point production and share values."}
+  source_id: coal-directory-india-2024-25
+  locator: "Table 3.19, p. 70, row 2023-24"
+  quote: "2023-24 747.785 64.090 963.495 96.56 ▲12.25% 26.021 5.931 34.331 3.44 ▼01.48% 997.826 ▲11.71%"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_mining.opencast_share.in.coal_directory.fy2024_25
+  layer: energy
+  name: India open-cast share of raw coal production
+  value: 0.9696
+  unit: fraction of raw coal production
+  quantity: share
+  gas_basis: n/a
+  boundary: "All-India raw coal production by mining method; open-cast share."
+  geography: IN
+  reference_year: "2024-25"
+  technology: open-cast coal mining
+  uncertainty: {distribution: none, low: null, high: null, note: "Coal Directory publishes point production and share values."}
+  source_id: coal-directory-india-2024-25
+  locator: "Table 3.19, p. 70, row 2024-25"
+  quote: "2024-25 755.613 64.199 1015.665 96.96 ▲05.41% 25.442 4.807 31.858 3.04 ▼07.20% 1047.523 ▲04.98%"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_mining.underground_share.in.coal_directory.fy2024_25
+  layer: energy
+  name: India underground share of raw coal production
+  value: 0.0304
+  unit: fraction of raw coal production
+  quantity: share
+  gas_basis: n/a
+  boundary: "All-India raw coal production by mining method; underground share."
+  geography: IN
+  reference_year: "2024-25"
+  technology: underground coal mining
+  uncertainty: {distribution: none, low: null, high: null, note: "Coal Directory publishes point production and share values."}
+  source_id: coal-directory-india-2024-25
+  locator: "Table 3.19, p. 70, row 2024-25"
+  quote: "2024-25 755.613 64.199 1015.665 96.96 ▲05.41% 25.442 4.807 31.858 3.04 ▼07.20% 1047.523 ▲04.98%"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_power.gross_heat_rate.coal.cea_v22_default
+  layer: energy
+  name: CEA default gross heat rate for coal power stations
+  value: 2500.0
+  unit: kcal/kWh gross generation
+  quantity: energy_intensity
+  gas_basis: n/a
+  boundary: "Station-level default assumption for gross generation where station data are unavailable; not an observed all-India annual average."
+  geography: IN
+  reference_year: "2025-26 database version; standing default assumption"
+  technology: coal-fired power stations
+  uncertainty: {distribution: none, low: null, high: null, note: "CEA publishes a point default assumption."}
+  source_id: cea-co2-baseline-v22-upstream
+  locator: "Appendix B, p. 26, Assumptions for CO2 Emission Calculations"
+  quote: "Gross Heat Rate (gross) 2,500 2,713 2,013 3150 2,117 1,975 3,213 2,117 n/a n/a"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 1, geographical: 1, technological: 1}
+  status: verified
+  notes: "Use as a fallback to scale per-tonne upstream coal factors; measured per-station workbook data would be better."
+- id: energy.upstream.coal_power.gcv.coal.cea_v22_default
+  layer: energy
+  name: CEA default gross calorific value for coal power-station fuel
+  value: 3755.0
+  unit: kcal/kg coal
+  quantity: energy_intensity
+  gas_basis: n/a
+  boundary: "Station-level default fuel GCV assumption where station data are unavailable; not an observed all-India annual average."
+  geography: IN
+  reference_year: "2025-26 database version; standing default assumption"
+  technology: coal-fired power-station fuel
+  uncertainty: {distribution: none, low: null, high: null, note: "CEA publishes a point default assumption."}
+  source_id: cea-co2-baseline-v22-upstream
+  locator: "Appendix B, p. 26, Assumptions for CO2 Emission Calculations"
+  quote: "GCV kcal /kg (or m3) 3,755 n/a 8,800 n/a 10,100 10,500 10,500 11,300 n/a n/a"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 3, temporal: 1, geographical: 1, technological: 1}
+  status: verified
+  notes: "Use with gross heat rate to derive a fallback kg coal/kWh gross value."
+- id: energy.upstream.coal_power.specific_coal_consumption.cea_v22_default
+  layer: energy
+  name: Derived CEA default specific coal consumption for coal power generation
+  value: 0.666
+  unit: kg coal/kWh gross generation
+  quantity: consumption
+  gas_basis: n/a
+  boundary: "Derived from CEA default gross heat rate and GCV; gross generation basis; not an observed all-India annual average."
+  geography: IN
+  reference_year: "2025-26 database version; standing default assumption"
+  technology: coal-fired power stations
+  uncertainty: {distribution: none, low: null, high: null, note: "No source range; inherits uncertainty from default input assumptions."}
+  source_id: cea-co2-baseline-v22-upstream
+  locator: "derived from Appendix B, p. 26"
+  quote: ""
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 1, geographical: 1, technological: 1}
+  status: derived
+  derivation: "energy.upstream.coal_power.gross_heat_rate.coal.cea_v22_default / energy.upstream.coal_power.gcv.coal.cea_v22_default = 2500 kcal/kWh / 3755 kcal/kg = 0.666 kg/kWh"
+  notes: "Use only as fallback until an all-India measured kg coal/kWh series or station-level weighted calculation is added."
+- id: method.gwp100.ch4_fossil.ipcc_ar6
+  layer: method
+  name: IPCC AR6 GWP100 for fossil methane
+  value: 29.8
+  unit: kg CO2e/kg CH4
+  quantity: other
+  gas_basis: CO2e-AR6-GWP100
+  boundary: "100-year global warming potential for fossil methane; includes carbon-cycle responses."
+  geography: GLO
+  reference_year: "2021"
+  technology: climate metric
+  uncertainty: {distribution: normal, low: 18.8, high: 40.8, note: "Reported as 29.8 ± 11 in IPCC AR6 Table 7.15; stored low/high as central ± uncertainty for sampler compatibility."}
+  source_id: ipcc-ar6-wg1-ch7
+  locator: "Table 7.15, p. 1016"
+  quote: "CH4-fossil 11.8 ± 1.8 5.7 ± 1.4 ×10–4 82.5 ± 25.8 29.8 ± 11 10.0 ± 3.8"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+- id: method.gwp100.n2o.ipcc_ar6
+  layer: method
+  name: IPCC AR6 GWP100 for nitrous oxide
+  value: 273.0
+  unit: kg CO2e/kg N2O
+  quantity: other
+  gas_basis: CO2e-AR6-GWP100
+  boundary: "100-year global warming potential for nitrous oxide; includes carbon-cycle responses."
+  geography: GLO
+  reference_year: "2021"
+  technology: climate metric
+  uncertainty: {distribution: normal, low: 143.0, high: 403.0, note: "Reported as 273 ± 130 in IPCC AR6 Table 7.15; stored low/high as central ± uncertainty for sampler compatibility."}
+  source_id: ipcc-ar6-wg1-ch7
+  locator: "Table 7.15, p. 1016"
+  quote: "N2O 109 ± 10 2.8 ± 1.1 ×10–3 273 ± 118 273 ± 130 130 ± 64"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 2, geographical: 1, technological: 1}
+  status: verified
+- id: method.gwp100.ch4_non_fossil.no_ccfb.ipcc_ar5
+  layer: method
+  name: IPCC AR5 GWP100 for methane without climate-carbon feedbacks (base CH4 row)
+  value: 28.0
+  unit: kg CO2e/kg CH4
+  quantity: other
+  gas_basis: CO2e-AR5-GWP100
+  boundary: "100-year global warming potential for methane without climate-carbon feedbacks; base CH4 row before fossil-methane oxidation adjustment."
+  geography: GLO
+  reference_year: "2013"
+  technology: climate metric
+  uncertainty: {distribution: none, low: null, high: null, note: "AR5 Table 8.7 gives point metric values."}
+  source_id: ipcc-ar5-wg1-ch8
+  locator: "Table 8.7, p. 714"
+  quote: "CH4b 12.4 a No cc fb 84 28 67 4 With cc fb 86 34 70 11"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 4, geographical: 1, technological: 1}
+  status: verified
+- id: method.gwp100.ch4_fossil_adjustment.ipcc_ar5
+  layer: method
+  name: IPCC AR5 fossil methane GWP100 adjustment for methane oxidation CO2
+  value: 2.0
+  unit: kg CO2e/kg CH4 added to GWP100
+  quantity: other
+  gas_basis: CO2e-AR5-GWP100
+  boundary: "Adjustment for fossil methane relative to the base CH4 GWP100 because CO2 from methane oxidation is fossil carbon."
+  geography: GLO
+  reference_year: "2013"
+  technology: climate metric
+  uncertainty: {distribution: none, low: null, high: null, note: "AR5 footnote gives point adjustment values."}
+  source_id: ipcc-ar5-wg1-ch8
+  locator: "Table 8.7 footnote b, p. 714"
+  quote: "These values do not include CO2 from methane oxidation. Values for fossil methane are higher by 1 and 2 for the 20 and 100 year metrics, respectively (Table 8.A.1)."
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 4, geographical: 1, technological: 1}
+  status: verified
+- id: method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5
+  layer: method
+  name: IPCC AR5 GWP100 for fossil methane without climate-carbon feedbacks
+  value: 30.0
+  unit: kg CO2e/kg CH4
+  quantity: other
+  gas_basis: CO2e-AR5-GWP100
+  boundary: "100-year global warming potential for fossil methane, without climate-carbon feedbacks; derived from AR5 Table 8.7 base CH4 plus footnote-b fossil adjustment."
+  geography: GLO
+  reference_year: "2013"
+  technology: climate metric
+  uncertainty: {distribution: none, low: null, high: null, note: "Derived from AR5 point metric and footnote adjustment."}
+  source_id: ipcc-ar5-wg1-ch8
+  locator: "derived from Table 8.7 and footnote b, p. 714"
+  quote: ""
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 4, geographical: 1, technological: 1}
+  status: derived
+  derivation: "method.gwp100.ch4_non_fossil.no_ccfb.ipcc_ar5 + method.gwp100.ch4_fossil_adjustment.ipcc_ar5 = 28 + 2 = 30 kg CO2e/kg CH4"
+- id: method.gwp100.n2o.no_ccfb.ipcc_ar5
+  layer: method
+  name: IPCC AR5 GWP100 for nitrous oxide without climate-carbon feedbacks
+  value: 265.0
+  unit: kg CO2e/kg N2O
+  quantity: other
+  gas_basis: CO2e-AR5-GWP100
+  boundary: "100-year global warming potential for nitrous oxide without climate-carbon feedbacks."
+  geography: GLO
+  reference_year: "2013"
+  technology: climate metric
+  uncertainty: {distribution: none, low: null, high: null, note: "AR5 Table 8.7 gives point metric values."}
+  source_id: ipcc-ar5-wg1-ch8
+  locator: "Table 8.7, p. 714"
+  quote: "N2O 121.0a No cc fb 264 265 277 234 With cc fb 268 298 284 297"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 4, geographical: 1, technological: 1}
+  status: verified

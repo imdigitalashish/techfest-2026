@@ -1,0 +1,30 @@
+- id: teri-lca-rating-4w-india-2026
+  title: "Life Cycle Assessment Based Rating Framework for Four-Wheeler Passenger Vehicles"
+  publisher: The Energy and Resources Institute (TERI)
+  year: 2026
+  url: https://www.teriin.org/sites/default/files/files/Life_Cycle_Emission_Report.pdf
+  type: grey-literature
+  accessed: 2026-10-04
+  license: "© The Energy and Resources Institute, 2026; no open license stated"
+  local_copy: .data/raw/benchmarks_independent/teri_lca_rating_2023.pdf
+  notes: "Opened PDF. Reports cradle-to-grave kg CO2-eq for 59 Indian 4W passenger vehicles, by material/use/OEM logistics stages."
+- id: iitg-vehicle-lca-thesis-2025
+  title: "Life Cycle Analysis (LCA) of Vehicles Powered by Clean Energy: An Indian Perspective"
+  publisher: Indian Institute of Technology Guwahati
+  year: 2025
+  url: https://gyan.iitg.ac.in/server/api/core/bitstreams/cb958d64-560c-4cd8-88e1-8e0e25e44a91/content
+  type: thesis
+  accessed: 2026-10-04
+  license: "No open license stated"
+  local_copy: .data/raw/benchmarks_independent/iitg_vehicle_lca_thesis_2025.pdf
+  notes: "Opened PDF. Chapter 2 reports Indian gasoline, battery-electric, and hybrid hatchback/compact-SUV LCA; Chapter 3 is published in International Journal of Hydrogen Energy 2025."
+- id: iitk-lca-tco-cars-india-2023
+  title: "LCA and TCO Analyses of BEVs, HEVs, and ICEVs"
+  publisher: Engine Research Laboratory, Indian Institute of Technology Kanpur
+  year: 2023
+  url: https://iitk.ac.in/erl/Life%20Cycle%20Assessment%20and%20Total%20Cost%20of%20Ownership%20Analyses%20of%20BEVs,%20HEVs%20and%20ICEVs.pdf
+  type: institutional-report
+  accessed: 2026-10-04
+  license: "© Engine Research Laboratory, IIT Kanpur 2023; reproducing without prior permission prohibited"
+  local_copy: .data/raw/benchmarks_independent/iitk_lca_tco_2023.pdf
+  notes: "Opened PDF. GREET-based cradle-to-grave Indian passenger car LCA with BEV/HEV/ICEV totals and sensitivity analyses."

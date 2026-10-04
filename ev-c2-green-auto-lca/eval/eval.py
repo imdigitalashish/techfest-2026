@@ -41,6 +41,34 @@ def verification(res: dict, ref: dict) -> dict:
     return out
 
 
+INDEP_KEYS = ("derived_total_gco2e_per_km", "total_gco2e_per_km", "total_gco2eq_per_km")
+PT_MAP = {"petrol": "petrol_ice", "diesel": "diesel_ice", "cng": "cng_ice", "bev": "battery_electric"}
+
+
+def independent_crosscheck(res: dict) -> dict:
+    """Plausibility band, NOT validation: independent (non-ICCT) Indian car LCAs cover different vehicles, lifetimes
+    (150,000-200,000 km), boundaries and grid years. Reports whether our central value sits inside their range."""
+    pts: dict[str, list] = {}
+    for f in sorted((ROOT / "data/benchmarks").glob("*.yaml")):
+        d = yaml.safe_load(f.read_text())
+        if not isinstance(d, dict) or not d.get("independent_of_icct"):
+            continue
+        for r in d.get("results", []):
+            v = next((r[k] for k in INDEP_KEYS if r.get(k) is not None), None)
+            if v is not None:
+                pts.setdefault(r["powertrain"], []).append({"study": f.stem, "vehicle": r["vehicle"], "g_per_km": float(v)})
+    out = {}
+    for pid, pt in PT_MAP.items():
+        if pid not in res["products"] or pt not in pts:
+            continue
+        p, vals = res["products"][pid], [x["g_per_km"] for x in pts[pt]]
+        lo, hi = min(vals), max(vals)
+        out[pid] = {"ours": round(p["total"], 1), "ours_90pct": [round(p["mc_total"]["p05"], 1), round(p["mc_total"]["p95"], 1)],
+                    "independent_range": [lo, hi], "n_independent": len(vals), "inside": lo <= p["total"] <= hi,
+                    "interval_overlaps": p["mc_total"]["p05"] <= hi and p["mc_total"]["p95"] >= lo, "points": pts[pt]}
+    return out
+
+
 def summarise(r: dict) -> dict:
     prods = {pid: {"label": p["label"], "total": round(p["total"], 2),
                    "p05": round(p["mc_total"]["p05"], 2), "p95": round(p["mc_total"]["p95"], 2),
@@ -67,6 +95,9 @@ def main() -> None:
         if sc.kind == "replication" and sc.reference:
             report["verification"][sid] = verification(results[sid], sc.reference)
         report["scenarios"][sid] = summarise(results[sid])
+    report["independent_crosscheck"] = {"scenario": "car_in2026_avg_co2e",
+                                        "note": "plausibility band, not validation (different vehicles, lifetimes, boundaries, grid years)",
+                                        "results": independent_crosscheck(results["car_in2026_avg_co2e"])}
     report["headline"] = {"verification_mape_pct_2w": report["verification"]["icct2021_implied"]["mape_pct"],
                           "verification_mape_pct_car": report["verification"]["car_icct2021_replication"]["mape_pct"]}
     out = ROOT / "eval" / "results"
@@ -97,7 +128,12 @@ def main() -> None:
                 pl = f"{c['p_lower']:.3f}" if c else ""
                 L.append(f"| {p['label']} | {p['total']:.1f} [{p['p05']:.1f} – {p['p95']:.1f}] | {cmp} | {pl} | {p['dq_score']} |")
             L.append("")
-    L += ["Pedigree score = elasticity-weighted mean pedigree score (1 best … 5 worst), a screening indicator.",
+    L += ["## Independent plausibility check — Indian cars (NOT validation)", "",
+          "Our central sedan case (`car_in2026_avg_co2e`) against independent, non-ICCT Indian car LCAs (TERI 2026, IIT Guwahati 2025, IIT Kanpur 2023): different vehicles, lifetimes (150,000–200,000 km), boundaries and grid years.", "",
+          "| Powertrain | Ours [90 %] | Independent range (n) | Central inside? |", "|---|---|---|---|"]
+    for pid, x in report["independent_crosscheck"]["results"].items():
+        L.append(f"| {pid} | {x['ours']} [{x['ours_90pct'][0]} – {x['ours_90pct'][1]}] | {x['independent_range'][0]} – {x['independent_range'][1]} ({x['n_independent']}) | {'yes' if x['inside'] else 'NO'} |")
+    L += ["", "Pedigree score = elasticity-weighted mean pedigree score (1 best … 5 worst), a screening indicator.",
           "Importance = normalized squared Spearman rank correlation (screening, not a variance decomposition) — see latest.json."]
     (out / "summary.md").write_text("\n".join(L) + "\n")
     print(json.dumps(report["headline"]))

@@ -1,0 +1,121 @@
+study:
+  id: teri-lca-rating-4w-india-2026
+  source_id: teri-lca-rating-4w-india-2026
+  citation: "Aparna Sajeev, Debesh Kumar Panda, Rumi Azim, Souvik Bhattacharjya, Sharif Qamar. Life Cycle Assessment Based Rating Framework for Four-Wheeler Passenger Vehicles. The Energy and Resources Institute (TERI), 2026."
+  locator: "Executive Summary, p. 1; Table 5, pp. 54-55"
+  functional_unit: "per vehicle over 150,000 km; derived g CO2e/km values use reported kg CO2e per vehicle / 150,000 km"
+  unit: "kg CO2-eq per vehicle; derived g CO2-eq/km"
+  boundary: "Full cradle-to-grave: material extraction, manufacturing, energy production, vehicle use, maintenance, constrained end-of-life. Results table reports material, use phase, OEM manufacturing/logistics, and total."
+  geography: IN
+  reference_year: "vehicles available in Indian automotive market as of March 2025; report copyright 2026"
+  gwp_note: "GWP100 (IPCC AR6)."
+  license: "Copyright TERI, 2026; no open license stated."
+independent_of_icct: true
+inputs_stated:
+  lifetime_km:
+    value: 150000
+    unit: km
+    locator: "Executive Summary, p. 1"
+    quote: "Each passenger four-wheeler is assumed to operate over a total driving distance of 150,000 km"
+  gwp_basis:
+    value: "GWP100 IPCC AR6"
+    locator: "Executive Summary, p. 1"
+    quote: "Using GWP100 (IPCC AR6) as the assessment metric"
+  system_boundary:
+    value: "cradle-to-grave"
+    locator: "Executive Summary, p. 1"
+    quote: "full cradle-to-grave perspective, capturing greenhouse gas (GHG) emissions from material extraction"
+  vehicle_population:
+    value: "representative sample of 59 Indian 4W passenger vehicles"
+    locator: "Table 5, p. 54"
+    quote: "Table 5: Life cycle emission assessment of a sample of 59 4-wheeler passenger vehicles in India"
+  grid_emission_factor: {status: UNVERIFIED, notes: "Not transcribed in this pass; use-phase emissions are reported directly by vehicle."}
+  fuel_or_electricity_consumption: {status: UNVERIFIED, notes: "Not transcribed in this pass; use-phase emissions are reported directly by vehicle."}
+  battery_capacity: {status: UNVERIFIED, notes: "Not transcribed in this pass; material-stage emissions are reported directly by vehicle."}
+  battery_production_factor: {status: UNVERIFIED, notes: "Not transcribed in this pass; material-stage emissions are reported directly by vehicle."}
+  vehicle_mass_or_production_factor: {status: UNVERIFIED, notes: "Material emissions are reported directly; masses/factors not transcribed in this pass."}
+results:
+  - vehicle: "Citroen C3 Petrol"
+    powertrain: petrol_ice
+    functional_unit: "150,000 km lifetime"
+    material_kgco2e: 3856.99
+    use_phase_kgco2e: 29861.37
+    oem_manufacturing_logistics_kgco2e: 1117.40
+    total_kgco2e: 34835.76
+    derived_total_gco2e_per_km: 232.2
+    locator: "Table 5, p. 54"
+    quote: "Citroen        C3 Petrol          3856.99            29861.37         1117.40           34835.76"
+  - vehicle: "Hyundai Exter CNG"
+    powertrain: cng_ice
+    functional_unit: "150,000 km lifetime"
+    material_kgco2e: 3993.81
+    use_phase_kgco2e: 26231.16
+    oem_manufacturing_logistics_kgco2e: 1144.76
+    total_kgco2e: 31369.74
+    derived_total_gco2e_per_km: 209.1
+    locator: "Table 5, p. 54"
+    quote: "Hyundai        Exter CNG          3993.81            26231.16         1144.76           31369.74"
+  - vehicle: "Hyundai Creta Diesel"
+    powertrain: diesel_ice
+    functional_unit: "150,000 km lifetime"
+    material_kgco2e: 5080.22
+    use_phase_kgco2e: 34281.03
+    oem_manufacturing_logistics_kgco2e: 1362.04
+    total_kgco2e: 40723.30
+    derived_total_gco2e_per_km: 271.5
+    locator: "Table 5, p. 54"
+    quote: "Hyundai        Creta Diesel       5080.22            34281.03         1362.04           40723.30"
+  - vehicle: "Hyundai Creta EV"
+    powertrain: battery_electric
+    functional_unit: "150,000 km lifetime"
+    material_kgco2e: 13267.89
+    use_phase_kgco2e: 23477.86
+    oem_manufacturing_logistics_kgco2e: 2999.58
+    total_kgco2e: 39745.32
+    derived_total_gco2e_per_km: 265.0
+    locator: "Table 5, p. 54"
+    quote: "Hyundai        Creta EV           13267.89           23477.86         2999.58           39745.32"
+  - vehicle: "MSIL Celerio Petrol"
+    powertrain: petrol_ice
+    functional_unit: "150,000 km lifetime"
+    material_kgco2e: 3128.11
+    use_phase_kgco2e: 23438.72
+    oem_manufacturing_logistics_kgco2e: 971.62
+    total_kgco2e: 27538.46
+    derived_total_gco2e_per_km: 183.6
+    locator: "Table 5, p. 54"
+    quote: "MSIL           Celerio Petrol     3128.11            23438.72         971.62            27538.46"
+  - vehicle: "MSIL Celerio CNG"
+    powertrain: cng_ice
+    functional_unit: "150,000 km lifetime"
+    material_kgco2e: 3458.40
+    use_phase_kgco2e: 20695.97
+    oem_manufacturing_logistics_kgco2e: 1037.68
+    total_kgco2e: 25192.05
+    derived_total_gco2e_per_km: 167.9
+    locator: "Table 5, p. 54"
+    quote: "MSIL           Celerio CNG        3458.40            20695.97         1037.68           25192.05"
+  - vehicle: "MG Comet EV"
+    powertrain: battery_electric
+    functional_unit: "150,000 km lifetime"
+    material_kgco2e: 5438.30
+    use_phase_kgco2e: 17413.63
+    oem_manufacturing_logistics_kgco2e: 1433.66
+    total_kgco2e: 24285.60
+    derived_total_gco2e_per_km: 161.9
+    locator: "Table 5, p. 54"
+    quote: "MG             Comet EV           5438.30            17413.63         1433.66           24285.60"
+  - vehicle: "Tata Nexon EV"
+    powertrain: battery_electric
+    functional_unit: "150,000 km lifetime"
+    material_kgco2e: 11819.25
+    use_phase_kgco2e: 21432.04
+    oem_manufacturing_logistics_kgco2e: 2709.85
+    total_kgco2e: 35961.13
+    derived_total_gco2e_per_km: 239.7
+    locator: "Table 5, p. 55"
+    quote: "Tata           Nexon EV           11819.25           21432.04           2709.85           35961.13"
+quotes:
+  - locator: "Executive Summary, p. 1"
+    quote: "The demonstration uses total life cycle GHG emissions (expressed in kg CO₂-eq per vehicle over its assumed lifetime, i.e., 1,50,000 kilometer) derived from the cradle-to-grave LCA described in earlier chapters."
+notes: "Strong held-out Indian car benchmark because it is non-ICCT, India-specific, and reports stage-by-stage kg CO2e for many current petrol/diesel/CNG/BEV passenger cars. Comparable to the planned Indian sedan case after converting to g/km, but lifetime is 150,000 km, not ~165,000 km. Not useful for 2W scooter validation. Some key inventory assumptions were not transcribed in this pass and are marked UNVERIFIED."

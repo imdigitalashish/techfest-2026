@@ -1,29 +1,30 @@
 {
   "harness": "v2",
-  "commit": "8d71b2a",
+  "commit": "c86cef7",
   "n": 10000,
   "seed": 20261004,
   "db": {
-    "records": 88,
-    "sources": 9,
+    "records": 124,
+    "sources": 19,
     "by_status": {
-      "verified": 73,
-      "derived": 15
+      "verified": 104,
+      "derived": 20
     },
     "by_layer": {
-      "energy": 44,
-      "fuels": 12,
+      "energy": 73,
+      "fuels": 13,
+      "method": 7,
       "vehicle": 10,
       "battery": 4,
-      "use": 17,
-      "method": 1
+      "use": 17
     },
     "by_gas_basis": {
-      "CO2": 7,
-      "n/a": 57,
+      "CO2": 8,
+      "n/a": 85,
+      "CO2e-AR6-GWP100": 2,
+      "CO2e-AR5-GWP100": 22,
       "CO2e-CH4-GWP20": 5,
-      "CO2e-unspecified": 2,
-      "CO2e-AR5-GWP100": 17
+      "CO2e-unspecified": 2
     }
   },
   "verification": {
@@ -238,9 +239,9 @@
       }
     },
     "in2026_cea_average": {
-      "label": "India 2026-grid, attributional \u2014 CEA FY2025-26 average (legacy 2021 ICCT vehicle data)",
+      "label": "Sensitivity \u2014 CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): lower bound for the EV",
       "case": "2W \u2014 petrol vs electric scooter",
-      "kind": "decision",
+      "kind": "sensitivity",
       "harmonized": false,
       "gas_basis_families": [
         "CO2-only",
@@ -308,12 +309,11 @@
       }
     },
     "in2026_cea_operating_margin": {
-      "label": "Sensitivity \u2014 EV charging at CEA operating margin (fossil-dominated proxy, upper bound)",
+      "label": "Sensitivity \u2014 EV charging at CEA operating margin, CO2e (fossil-dominated proxy, upper bound)",
       "case": "2W \u2014 petrol vs electric scooter",
       "kind": "sensitivity",
       "harmonized": false,
       "gas_basis_families": [
-        "CO2-only",
         "GWP100",
         "GWP20(CH4)",
         "unspecified"
@@ -322,8 +322,8 @@
         "ice_scooter": {
           "label": "Petrol scooter 110 cc class",
           "total": 64.29,
-          "p05": 59.96,
-          "p95": 68.86,
+          "p05": 60.06,
+          "p95": 68.97,
           "dq_score": 2.1,
           "india_weighted_share": 0.96,
           "gas_basis_shares": {
@@ -334,51 +334,50 @@
         },
         "ev_scooter": {
           "label": "Electric scooter 2.9 kWh",
-          "total": 52.61,
-          "p05": 49.56,
-          "p95": 55.81,
+          "total": 53.88,
+          "p05": 50.96,
+          "p95": 57.54,
           "dq_score": 1.75,
-          "india_weighted_share": 0.94,
+          "india_weighted_share": 0.95,
           "gas_basis_shares": {
-            "GWP20(CH4)": 0.08,
-            "GWP100": 0.031,
-            "unspecified": 0.019,
-            "CO2-only": 0.87
+            "GWP20(CH4)": 0.078,
+            "GWP100": 0.903,
+            "unspecified": 0.019
           }
         }
       },
       "comparisons": {
         "ev_scooter": {
           "vs": "ice_scooter",
-          "reduction_central": 0.1816,
+          "reduction_central": 0.162,
           "reduction_90pct": [
-            0.1047,
-            0.2508
+            0.0778,
+            0.2316
           ],
-          "p_lower": 1.0,
+          "p_lower": 0.9993,
           "top_importance": [
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.317
+              0.309
             ],
             [
               "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity",
-              0.259
+              0.261
             ],
             [
               "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity",
-              0.231
+              0.222
             ],
             [
               "energy.electricity.in.grid_om.fy2025_26",
-              0.14
+              0.135
             ]
           ]
         }
       }
     },
     "in2026_cea_build_margin": {
-      "label": "Sensitivity \u2014 EV charging at CEA build margin (recent-capacity proxy)",
+      "label": "Sensitivity \u2014 EV charging at CEA build margin, CO2-only (recent-capacity proxy; no CO2e adder: BM fuel mix unknown)",
       "case": "2W \u2014 petrol vs electric scooter",
       "kind": "sensitivity",
       "harmonized": false,
@@ -462,8 +461,8 @@
         "ice_scooter": {
           "label": "Petrol scooter 110 cc class",
           "total": 66.86,
-          "p05": 62.4,
-          "p95": 71.78,
+          "p05": 62.35,
+          "p95": 71.82,
           "dq_score": 2.31,
           "india_weighted_share": 0.36,
           "gas_basis_shares": {
@@ -475,44 +474,111 @@
         },
         "ev_scooter": {
           "label": "Electric scooter 2.9 kWh",
-          "total": 38.92,
-          "p05": 36.73,
-          "p95": 41.26,
+          "total": 39.79,
+          "p05": 37.69,
+          "p95": 42.42,
           "dq_score": 1.78,
-          "india_weighted_share": 0.92,
+          "india_weighted_share": 0.93,
           "gas_basis_shares": {
-            "GWP20(CH4)": 0.108,
-            "GWP100": 0.042,
-            "unspecified": 0.026,
-            "CO2-only": 0.824
+            "GWP20(CH4)": 0.106,
+            "GWP100": 0.869,
+            "unspecified": 0.025
           }
         }
       },
       "comparisons": {
         "ev_scooter": {
           "vs": "ice_scooter",
-          "reduction_central": 0.4178,
+          "reduction_central": 0.4048,
           "reduction_90pct": [
-            0.3642,
-            0.4686
+            0.3455,
+            0.4552
           ],
           "p_lower": 1.0,
           "top_importance": [
             [
               "fuels.petrol.density.unsd2020",
-              0.257
+              0.258
             ],
             [
               "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity",
-              0.228
+              0.237
             ],
             [
               "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity",
-              0.223
+              0.217
             ],
             [
               "energy.electricity.in.grid_wavg_generation.fy2025_26",
-              0.132
+              0.112
+            ]
+          ]
+        }
+      }
+    },
+    "in2026_avg_co2e": {
+      "label": "India 2026-grid, attributional \u2014 CEA FY2025-26 average on CO2e (AR6 GWP100), partial upstream (legacy 2021 ICCT vehicle data)",
+      "case": "2W \u2014 petrol vs electric scooter",
+      "kind": "decision",
+      "harmonized": false,
+      "gas_basis_families": [
+        "GWP100",
+        "GWP20(CH4)",
+        "unspecified"
+      ],
+      "products": {
+        "ice_scooter": {
+          "label": "Petrol scooter 110 cc class",
+          "total": 64.29,
+          "p05": 60.06,
+          "p95": 68.97,
+          "dq_score": 2.1,
+          "india_weighted_share": 0.96,
+          "gas_basis_shares": {
+            "GWP20(CH4)": 0.073,
+            "unspecified": 0.016,
+            "GWP100": 0.911
+          }
+        },
+        "ev_scooter": {
+          "label": "Electric scooter 2.9 kWh",
+          "total": 39.79,
+          "p05": 37.7,
+          "p95": 42.45,
+          "dq_score": 1.78,
+          "india_weighted_share": 0.93,
+          "gas_basis_shares": {
+            "GWP20(CH4)": 0.106,
+            "GWP100": 0.869,
+            "unspecified": 0.025
+          }
+        }
+      },
+      "comparisons": {
+        "ev_scooter": {
+          "vs": "ice_scooter",
+          "reduction_central": 0.381,
+          "reduction_90pct": [
+            0.3199,
+            0.4316
+          ],
+          "p_lower": 1.0,
+          "top_importance": [
+            [
+              "fuels.gasoline.in.ttw.icct2021_car",
+              0.319
+            ],
+            [
+              "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity",
+              0.241
+            ],
+            [
+              "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity",
+              0.23
+            ],
+            [
+              "energy.electricity.in.grid_wavg_generation.fy2025_26",
+              0.126
             ]
           ]
         }
@@ -530,8 +596,8 @@
         "petrol": {
           "label": "Petrol sedan (6.8 L/100 km real-world)",
           "total": 226.17,
-          "p05": 202.65,
-          "p95": 254.48,
+          "p05": 202.18,
+          "p95": 254.11,
           "dq_score": 2.06,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -541,8 +607,8 @@
         "diesel": {
           "label": "Diesel sedan (6.0 L/100 km real-world)",
           "total": 239.45,
-          "p05": 214.02,
-          "p95": 268.07,
+          "p05": 214.21,
+          "p95": 269.13,
           "dq_score": 2.06,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -552,8 +618,8 @@
         "cng": {
           "label": "CNG sedan (5.0 kg/100 km real-world)",
           "total": 224.07,
-          "p05": 210.74,
-          "p95": 269.45,
+          "p05": 210.16,
+          "p95": 269.07,
           "dq_score": 2.22,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -563,8 +629,8 @@
         "bev": {
           "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
           "total": 185.14,
-          "p05": 158.05,
-          "p95": 218.44,
+          "p05": 158.21,
+          "p95": 218.95,
           "dq_score": 2.23,
           "india_weighted_share": 0.9,
           "gas_basis_shares": {
@@ -577,26 +643,26 @@
           "vs": "petrol",
           "reduction_central": -0.0587,
           "reduction_90pct": [
-            -0.234,
-            0.0963
+            -0.2378,
+            0.0983
           ],
-          "p_lower": 0.2863,
+          "p_lower": 0.2741,
           "top_importance": [
             [
               "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.4
-            ],
-            [
-              "use.car.sedan.gasoline.l_per_100km.icct2021",
               0.397
             ],
             [
+              "use.car.sedan.gasoline.l_per_100km.icct2021",
+              0.391
+            ],
+            [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.086
+              0.089
             ],
             [
               "fuels.diesel.in.ttw.icct2021_car",
-              0.077
+              0.086
             ]
           ]
         },
@@ -604,26 +670,26 @@
           "vs": "petrol",
           "reduction_central": 0.0093,
           "reduction_90pct": [
-            -0.2403,
-            0.1129
+            -0.2436,
+            0.1093
           ],
-          "p_lower": 0.3092,
+          "p_lower": 0.3028,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.371
+              0.361
             ],
             [
               "use.car.sedan.cng.kg_per_100km.icct2021",
-              0.331
+              0.336
             ],
             [
               "use.car.cng.methane_slip.icct2021",
-              0.12
+              0.122
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.08
+              0.083
             ]
           ]
         },
@@ -632,25 +698,25 @@
           "reduction_central": 0.1814,
           "reduction_90pct": [
             0.0024,
-            0.3281
+            0.3239
           ],
-          "p_lower": 0.9526,
+          "p_lower": 0.9522,
           "top_importance": [
             [
               "use.car.sedan.bev.kwh_per_100km.icct2021",
-              0.587
+              0.605
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.261
+              0.258
             ],
             [
               "energy.electricity.in.icct2021_car_lifetime_steps",
-              0.066
+              0.059
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.057
+              0.054
             ]
           ]
         }
@@ -668,8 +734,8 @@
         "petrol": {
           "label": "Petrol sedan (6.8 L/100 km real-world)",
           "total": 226.17,
-          "p05": 202.65,
-          "p95": 254.48,
+          "p05": 202.18,
+          "p95": 254.11,
           "dq_score": 2.06,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -679,8 +745,8 @@
         "diesel": {
           "label": "Diesel sedan (6.0 L/100 km real-world)",
           "total": 239.45,
-          "p05": 214.02,
-          "p95": 268.07,
+          "p05": 214.21,
+          "p95": 269.13,
           "dq_score": 2.06,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -690,8 +756,8 @@
         "cng": {
           "label": "CNG sedan (5.0 kg/100 km real-world)",
           "total": 224.07,
-          "p05": 210.74,
-          "p95": 269.45,
+          "p05": 210.16,
+          "p95": 269.07,
           "dq_score": 2.22,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -701,8 +767,8 @@
         "bev": {
           "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
           "total": 149.62,
-          "p05": 128.89,
-          "p95": 174.99,
+          "p05": 129.15,
+          "p95": 175.42,
           "dq_score": 2.24,
           "india_weighted_share": 0.87,
           "gas_basis_shares": {
@@ -715,26 +781,26 @@
           "vs": "petrol",
           "reduction_central": -0.0587,
           "reduction_90pct": [
-            -0.234,
-            0.0963
+            -0.2378,
+            0.0983
           ],
-          "p_lower": 0.2863,
+          "p_lower": 0.2741,
           "top_importance": [
             [
               "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.4
-            ],
-            [
-              "use.car.sedan.gasoline.l_per_100km.icct2021",
               0.397
             ],
             [
+              "use.car.sedan.gasoline.l_per_100km.icct2021",
+              0.391
+            ],
+            [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.086
+              0.089
             ],
             [
               "fuels.diesel.in.ttw.icct2021_car",
-              0.077
+              0.086
             ]
           ]
         },
@@ -742,26 +808,26 @@
           "vs": "petrol",
           "reduction_central": 0.0093,
           "reduction_90pct": [
-            -0.2403,
-            0.1129
+            -0.2436,
+            0.1093
           ],
-          "p_lower": 0.3092,
+          "p_lower": 0.3028,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.371
+              0.361
             ],
             [
               "use.car.sedan.cng.kg_per_100km.icct2021",
-              0.331
+              0.336
             ],
             [
               "use.car.cng.methane_slip.icct2021",
-              0.12
+              0.122
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.08
+              0.083
             ]
           ]
         },
@@ -769,35 +835,35 @@
           "vs": "petrol",
           "reduction_central": 0.3385,
           "reduction_90pct": [
-            0.1994,
-            0.4523
+            0.2004,
+            0.4499
           ],
           "p_lower": 0.9998,
           "top_importance": [
             [
               "use.car.sedan.bev.kwh_per_100km.icct2021",
-              0.551
+              0.569
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.283
-            ],
-            [
-              "energy.electricity.in.icct2021_car_lifetime_sds",
-              0.063
+              0.281
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.062
+              0.06
+            ],
+            [
+              "energy.electricity.in.icct2021_car_lifetime_sds",
+              0.056
             ]
           ]
         }
       }
     },
     "car_in2026_cea_average": {
-      "label": "India 2026-grid, attributional \u2014 CEA FY2025-26 average (legacy 2021 ICCT vehicle data)",
+      "label": "Sensitivity \u2014 CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): lower bound for the BEV",
       "case": "Car \u2014 sedan: petrol vs diesel vs CNG vs electric",
-      "kind": "decision",
+      "kind": "sensitivity",
       "harmonized": false,
       "gas_basis_families": [
         "CO2-only",
@@ -807,8 +873,8 @@
         "petrol": {
           "label": "Petrol sedan (6.8 L/100 km real-world)",
           "total": 226.17,
-          "p05": 201.93,
-          "p95": 253.71,
+          "p05": 202.06,
+          "p95": 253.96,
           "dq_score": 2.06,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -818,8 +884,8 @@
         "diesel": {
           "label": "Diesel sedan (6.0 L/100 km real-world)",
           "total": 239.45,
-          "p05": 214.22,
-          "p95": 269.33,
+          "p05": 214.46,
+          "p95": 268.76,
           "dq_score": 2.06,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -829,8 +895,8 @@
         "cng": {
           "label": "CNG sedan (5.0 kg/100 km real-world)",
           "total": 224.07,
-          "p05": 210.94,
-          "p95": 269.41,
+          "p05": 211.01,
+          "p95": 268.71,
           "dq_score": 2.22,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -840,8 +906,8 @@
         "bev": {
           "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
           "total": 199.25,
-          "p05": 170.58,
-          "p95": 234.42,
+          "p05": 170.49,
+          "p95": 234.57,
           "dq_score": 1.9,
           "india_weighted_share": 0.91,
           "gas_basis_shares": {
@@ -855,26 +921,26 @@
           "vs": "petrol",
           "reduction_central": -0.0587,
           "reduction_90pct": [
-            -0.2453,
-            0.0977
+            -0.2411,
+            0.0979
           ],
-          "p_lower": 0.2728,
+          "p_lower": 0.2743,
           "top_importance": [
             [
-              "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.401
+              "use.car.sedan.gasoline.l_per_100km.icct2021",
+              0.403
             ],
             [
-              "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.386
+              "use.car.sedan.diesel.l_per_100km.icct2021",
+              0.393
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.09
+              0.088
             ],
             [
               "fuels.diesel.in.ttw.icct2021_car",
-              0.087
+              0.08
             ]
           ]
         },
@@ -882,26 +948,26 @@
           "vs": "petrol",
           "reduction_central": 0.0093,
           "reduction_90pct": [
-            -0.2478,
-            0.1111
+            -0.2379,
+            0.1057
           ],
-          "p_lower": 0.297,
+          "p_lower": 0.3044,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.381
+              0.377
             ],
             [
               "use.car.sedan.cng.kg_per_100km.icct2021",
-              0.331
+              0.338
             ],
             [
               "use.car.cng.methane_slip.icct2021",
-              0.121
+              0.113
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.078
+              0.073
             ]
           ]
         },
@@ -909,46 +975,45 @@
           "vs": "petrol",
           "reduction_central": 0.1191,
           "reduction_90pct": [
-            -0.077,
-            0.2725
+            -0.0725,
+            0.274
           ],
-          "p_lower": 0.8532,
+          "p_lower": 0.8587,
           "top_importance": [
             [
               "use.car.sedan.bev.kwh_per_100km.icct2021",
-              0.619
+              0.635
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.265
+              0.253
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.059
+              0.064
             ],
             [
               "energy.electricity.in.grid_wavg_generation.fy2025_26",
-              0.032
+              0.024
             ]
           ]
         }
       }
     },
     "car_in2026_cea_operating_margin": {
-      "label": "Sensitivity \u2014 BEV charging at CEA operating margin (fossil-dominated proxy)",
+      "label": "Sensitivity \u2014 BEV charging at CEA operating margin, CO2e (fossil-dominated proxy)",
       "case": "Car \u2014 sedan: petrol vs diesel vs CNG vs electric",
       "kind": "sensitivity",
-      "harmonized": false,
+      "harmonized": true,
       "gas_basis_families": [
-        "CO2-only",
         "GWP100"
       ],
       "products": {
         "petrol": {
           "label": "Petrol sedan (6.8 L/100 km real-world)",
           "total": 226.17,
-          "p05": 201.93,
-          "p95": 253.71,
+          "p05": 202.2,
+          "p95": 253.89,
           "dq_score": 2.06,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -958,8 +1023,8 @@
         "diesel": {
           "label": "Diesel sedan (6.0 L/100 km real-world)",
           "total": 239.45,
-          "p05": 214.22,
-          "p95": 269.33,
+          "p05": 214.3,
+          "p95": 268.33,
           "dq_score": 2.06,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -969,8 +1034,8 @@
         "cng": {
           "label": "CNG sedan (5.0 kg/100 km real-world)",
           "total": 224.07,
-          "p05": 210.94,
-          "p95": 269.41,
+          "p05": 211.04,
+          "p95": 268.78,
           "dq_score": 2.22,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -979,14 +1044,13 @@
         },
         "bev": {
           "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
-          "total": 266.38,
-          "p05": 225.93,
-          "p95": 316.23,
+          "total": 272.57,
+          "p05": 232.2,
+          "p95": 325.39,
           "dq_score": 1.86,
           "india_weighted_share": 0.93,
           "gas_basis_shares": {
-            "GWP100": 0.157,
-            "CO2-only": 0.843
+            "GWP100": 1.0
           }
         }
       },
@@ -995,26 +1059,26 @@
           "vs": "petrol",
           "reduction_central": -0.0587,
           "reduction_90pct": [
-            -0.2453,
-            0.0977
+            -0.2375,
+            0.0992
           ],
-          "p_lower": 0.2728,
+          "p_lower": 0.2772,
           "top_importance": [
             [
-              "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.401
+              "use.car.sedan.gasoline.l_per_100km.icct2021",
+              0.403
             ],
             [
-              "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.386
+              "use.car.sedan.diesel.l_per_100km.icct2021",
+              0.389
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.09
+              0.089
             ],
             [
               "fuels.diesel.in.ttw.icct2021_car",
-              0.087
+              0.083
             ]
           ]
         },
@@ -1022,18 +1086,18 @@
           "vs": "petrol",
           "reduction_central": 0.0093,
           "reduction_90pct": [
-            -0.2478,
-            0.1111
+            -0.2361,
+            0.1067
           ],
-          "p_lower": 0.297,
+          "p_lower": 0.3146,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.381
+              0.376
             ],
             [
               "use.car.sedan.cng.kg_per_100km.icct2021",
-              0.331
+              0.336
             ],
             [
               "use.car.cng.methane_slip.icct2021",
@@ -1041,41 +1105,41 @@
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.078
+              0.079
             ]
           ]
         },
         "bev": {
           "vs": "petrol",
-          "reduction_central": -0.1778,
+          "reduction_central": -0.2051,
           "reduction_90pct": [
-            -0.4503,
-            0.0358
+            -0.4868,
+            0.0114
           ],
-          "p_lower": 0.091,
+          "p_lower": 0.06,
           "top_importance": [
             [
               "use.car.sedan.bev.kwh_per_100km.icct2021",
-              0.649
+              0.668
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.244
+              0.231
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.054
+              0.056
             ],
             [
               "energy.electricity.in.grid_om.fy2025_26",
-              0.034
+              0.023
             ]
           ]
         }
       }
     },
     "car_in2026_cea_build_margin": {
-      "label": "Sensitivity \u2014 BEV charging at CEA build margin (recent-capacity proxy)",
+      "label": "Sensitivity \u2014 BEV charging at CEA build margin, CO2-only (recent-capacity proxy)",
       "case": "Car \u2014 sedan: petrol vs diesel vs CNG vs electric",
       "kind": "sensitivity",
       "harmonized": false,
@@ -1087,8 +1151,8 @@
         "petrol": {
           "label": "Petrol sedan (6.8 L/100 km real-world)",
           "total": 226.17,
-          "p05": 201.93,
-          "p95": 253.71,
+          "p05": 202.06,
+          "p95": 253.96,
           "dq_score": 2.06,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -1098,8 +1162,8 @@
         "diesel": {
           "label": "Diesel sedan (6.0 L/100 km real-world)",
           "total": 239.45,
-          "p05": 214.22,
-          "p95": 269.33,
+          "p05": 214.46,
+          "p95": 268.76,
           "dq_score": 2.06,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -1109,8 +1173,8 @@
         "cng": {
           "label": "CNG sedan (5.0 kg/100 km real-world)",
           "total": 224.07,
-          "p05": 210.94,
-          "p95": 269.41,
+          "p05": 211.01,
+          "p95": 268.71,
           "dq_score": 2.22,
           "india_weighted_share": 0.92,
           "gas_basis_shares": {
@@ -1120,8 +1184,8 @@
         "bev": {
           "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
           "total": 145.87,
-          "p05": 126.57,
-          "p95": 169.89,
+          "p05": 126.41,
+          "p95": 169.74,
           "dq_score": 1.94,
           "india_weighted_share": 0.88,
           "gas_basis_shares": {
@@ -1135,26 +1199,26 @@
           "vs": "petrol",
           "reduction_central": -0.0587,
           "reduction_90pct": [
-            -0.2453,
-            0.0977
+            -0.2411,
+            0.0979
           ],
-          "p_lower": 0.2728,
+          "p_lower": 0.2743,
           "top_importance": [
             [
-              "use.car.sedan.diesel.l_per_100km.icct2021",
-              0.401
+              "use.car.sedan.gasoline.l_per_100km.icct2021",
+              0.403
             ],
             [
-              "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.386
+              "use.car.sedan.diesel.l_per_100km.icct2021",
+              0.393
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.09
+              0.088
             ],
             [
               "fuels.diesel.in.ttw.icct2021_car",
-              0.087
+              0.08
             ]
           ]
         },
@@ -1162,26 +1226,26 @@
           "vs": "petrol",
           "reduction_central": 0.0093,
           "reduction_90pct": [
-            -0.2478,
-            0.1111
+            -0.2379,
+            0.1057
           ],
-          "p_lower": 0.297,
+          "p_lower": 0.3044,
           "top_importance": [
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.381
+              0.377
             ],
             [
               "use.car.sedan.cng.kg_per_100km.icct2021",
-              0.331
+              0.338
             ],
             [
               "use.car.cng.methane_slip.icct2021",
-              0.121
+              0.113
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.078
+              0.073
             ]
           ]
         },
@@ -1189,29 +1253,317 @@
           "vs": "petrol",
           "reduction_central": 0.3551,
           "reduction_90pct": [
-            0.2198,
-            0.4611
+            0.2236,
+            0.4626
           ],
-          "p_lower": 1.0,
+          "p_lower": 0.9999,
           "top_importance": [
             [
               "use.car.sedan.bev.kwh_per_100km.icct2021",
-              0.567
+              0.58
             ],
             [
               "use.car.sedan.gasoline.l_per_100km.icct2021",
-              0.299
+              0.287
             ],
             [
               "fuels.gasoline.in.ttw.icct2021_car",
-              0.068
+              0.071
             ],
             [
               "energy.electricity.in.grid_bm.fy2025_26",
-              0.03
+              0.022
             ]
           ]
         }
+      }
+    },
+    "car_in2026_avg_co2e": {
+      "label": "India 2026-grid, attributional \u2014 CEA FY2025-26 average on CO2e (AR6 GWP100), partial upstream (legacy 2021 ICCT sedan data)",
+      "case": "Car \u2014 sedan: petrol vs diesel vs CNG vs electric",
+      "kind": "decision",
+      "harmonized": true,
+      "gas_basis_families": [
+        "GWP100"
+      ],
+      "products": {
+        "petrol": {
+          "label": "Petrol sedan (6.8 L/100 km real-world)",
+          "total": 226.17,
+          "p05": 202.2,
+          "p95": 253.89,
+          "dq_score": 2.06,
+          "india_weighted_share": 0.92,
+          "gas_basis_shares": {
+            "GWP100": 1.0
+          }
+        },
+        "diesel": {
+          "label": "Diesel sedan (6.0 L/100 km real-world)",
+          "total": 239.45,
+          "p05": 214.3,
+          "p95": 268.33,
+          "dq_score": 2.06,
+          "india_weighted_share": 0.92,
+          "gas_basis_shares": {
+            "GWP100": 1.0
+          }
+        },
+        "cng": {
+          "label": "CNG sedan (5.0 kg/100 km real-world)",
+          "total": 224.07,
+          "p05": 211.04,
+          "p95": 268.78,
+          "dq_score": 2.22,
+          "india_weighted_share": 0.92,
+          "gas_basis_shares": {
+            "GWP100": 1.0
+          }
+        },
+        "bev": {
+          "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
+          "total": 203.51,
+          "p05": 175.23,
+          "p95": 240.93,
+          "dq_score": 1.89,
+          "india_weighted_share": 0.91,
+          "gas_basis_shares": {
+            "GWP100": 1.0
+          }
+        }
+      },
+      "comparisons": {
+        "diesel": {
+          "vs": "petrol",
+          "reduction_central": -0.0587,
+          "reduction_90pct": [
+            -0.2375,
+            0.0992
+          ],
+          "p_lower": 0.2772,
+          "top_importance": [
+            [
+              "use.car.sedan.gasoline.l_per_100km.icct2021",
+              0.403
+            ],
+            [
+              "use.car.sedan.diesel.l_per_100km.icct2021",
+              0.389
+            ],
+            [
+              "fuels.gasoline.in.ttw.icct2021_car",
+              0.089
+            ],
+            [
+              "fuels.diesel.in.ttw.icct2021_car",
+              0.083
+            ]
+          ]
+        },
+        "cng": {
+          "vs": "petrol",
+          "reduction_central": 0.0093,
+          "reduction_90pct": [
+            -0.2361,
+            0.1067
+          ],
+          "p_lower": 0.3146,
+          "top_importance": [
+            [
+              "use.car.sedan.gasoline.l_per_100km.icct2021",
+              0.376
+            ],
+            [
+              "use.car.sedan.cng.kg_per_100km.icct2021",
+              0.336
+            ],
+            [
+              "use.car.cng.methane_slip.icct2021",
+              0.121
+            ],
+            [
+              "fuels.gasoline.in.ttw.icct2021_car",
+              0.079
+            ]
+          ]
+        },
+        "bev": {
+          "vs": "petrol",
+          "reduction_central": 0.1002,
+          "reduction_90pct": [
+            -0.1021,
+            0.2558
+          ],
+          "p_lower": 0.8058,
+          "top_importance": [
+            [
+              "use.car.sedan.bev.kwh_per_100km.icct2021",
+              0.638
+            ],
+            [
+              "use.car.sedan.gasoline.l_per_100km.icct2021",
+              0.253
+            ],
+            [
+              "fuels.gasoline.in.ttw.icct2021_car",
+              0.061
+            ],
+            [
+              "energy.electricity.in.grid_wavg_generation.fy2025_26",
+              0.022
+            ]
+          ]
+        }
+      }
+    }
+  },
+  "independent_crosscheck": {
+    "scenario": "car_in2026_avg_co2e",
+    "note": "plausibility band, not validation (different vehicles, lifetimes, boundaries, grid years)",
+    "results": {
+      "petrol": {
+        "ours": 226.2,
+        "ours_90pct": [
+          202.2,
+          253.9
+        ],
+        "independent_range": [
+          183.6,
+          247.0
+        ],
+        "n_independent": 6,
+        "inside": true,
+        "interval_overlaps": true,
+        "points": [
+          {
+            "study": "iitg_vehicle_lca_india_thesis_2025_ch2",
+            "vehicle": "MS Swift (HB)",
+            "g_per_km": 189.0
+          },
+          {
+            "study": "iitg_vehicle_lca_india_thesis_2025_ch2",
+            "vehicle": "Tata Nexon (CSUV)",
+            "g_per_km": 247.0
+          },
+          {
+            "study": "iitk_lca_tco_cars_india_2023",
+            "vehicle": "Foreign brand Set-1 ICEV",
+            "g_per_km": 242.0
+          },
+          {
+            "study": "iitk_lca_tco_cars_india_2023",
+            "vehicle": "Indian brand Set-2 ICEV-P",
+            "g_per_km": 244.0
+          },
+          {
+            "study": "teri_lca_rating_4w_india_2026",
+            "vehicle": "Citroen C3 Petrol",
+            "g_per_km": 232.2
+          },
+          {
+            "study": "teri_lca_rating_4w_india_2026",
+            "vehicle": "MSIL Celerio Petrol",
+            "g_per_km": 183.6
+          }
+        ]
+      },
+      "diesel": {
+        "ours": 239.5,
+        "ours_90pct": [
+          214.3,
+          268.3
+        ],
+        "independent_range": [
+          271.5,
+          271.5
+        ],
+        "n_independent": 1,
+        "inside": false,
+        "interval_overlaps": false,
+        "points": [
+          {
+            "study": "teri_lca_rating_4w_india_2026",
+            "vehicle": "Hyundai Creta Diesel",
+            "g_per_km": 271.5
+          }
+        ]
+      },
+      "cng": {
+        "ours": 224.1,
+        "ours_90pct": [
+          211.0,
+          268.8
+        ],
+        "independent_range": [
+          167.9,
+          209.1
+        ],
+        "n_independent": 2,
+        "inside": false,
+        "interval_overlaps": false,
+        "points": [
+          {
+            "study": "teri_lca_rating_4w_india_2026",
+            "vehicle": "Hyundai Exter CNG",
+            "g_per_km": 209.1
+          },
+          {
+            "study": "teri_lca_rating_4w_india_2026",
+            "vehicle": "MSIL Celerio CNG",
+            "g_per_km": 167.9
+          }
+        ]
+      },
+      "bev": {
+        "ours": 203.5,
+        "ours_90pct": [
+          175.2,
+          240.9
+        ],
+        "independent_range": [
+          156.0,
+          265.0
+        ],
+        "n_independent": 7,
+        "inside": true,
+        "interval_overlaps": true,
+        "points": [
+          {
+            "study": "iitg_vehicle_lca_india_thesis_2025_ch2",
+            "vehicle": "Tata Tiago EV (HB)",
+            "g_per_km": 156.0
+          },
+          {
+            "study": "iitg_vehicle_lca_india_thesis_2025_ch2",
+            "vehicle": "Tata Nexon EV (CSUV)",
+            "g_per_km": 184.0
+          },
+          {
+            "study": "iitk_lca_tco_cars_india_2023",
+            "vehicle": "Foreign brand Set-1 BEV",
+            "g_per_km": 240.0
+          },
+          {
+            "study": "iitk_lca_tco_cars_india_2023",
+            "vehicle": "Indian brand Set-2 BEV",
+            "g_per_km": 187.0
+          },
+          {
+            "study": "teri_lca_rating_4w_india_2026",
+            "vehicle": "Hyundai Creta EV",
+            "g_per_km": 265.0
+          },
+          {
+            "study": "teri_lca_rating_4w_india_2026",
+            "vehicle": "MG Comet EV",
+            "g_per_km": 161.9
+          },
+          {
+            "study": "teri_lca_rating_4w_india_2026",
+            "vehicle": "Tata Nexon EV",
+            "g_per_km": 239.7
+          }
+        ]
       }
     }
   },

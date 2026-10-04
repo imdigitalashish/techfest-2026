@@ -133,6 +133,10 @@ class Record(BaseModel):
         (taken as the median) with sigma from the pedigree scores."""
         import numpy as np
         v, u = float(self.value), self.uncertainty
+        if self.layer == "method":  # characterisation factors (GWP) are fixed by the LCIA method, not sampled
+            return np.full(n, v)
+        if u.distribution == "range" and u.low is not None and u.high is not None and u.low <= v <= u.high:
+            return rng.triangular(u.low, v, u.high, n)   # stated bounds around the published value
         if u.distribution in ("uniform", "range") and u.low is not None and u.high is not None:
             return rng.uniform(u.low, u.high, n)
         if u.distribution == "triangular" and u.low is not None and u.high is not None:

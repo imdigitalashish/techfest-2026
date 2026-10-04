@@ -1,0 +1,90 @@
+# India grid electricity on a CO2e (IPCC AR6 GWP100) basis — partial life cycle.
+# Composes CEA v22 busbar CO2 with combustion CH4/N2O (IPCC 2006 Tier 1) and coal-mine methane (India BUR-4).
+# Still EXCLUDED (data gaps): energy use in mining, coal rail transport, gas supply chain, plant/grid infrastructure.
+- id: energy.electricity.in.coal_lignite_share_net_generation.fy2025_26
+  layer: energy
+  name: Coal + lignite share of India's total net generation FY2025-26 (incl. RE, captive injection, imports in the denominator)
+  value: 0.6720
+  unit: fraction
+  quantity: share
+  gas_basis: n/a
+  boundary: "Station-level net generation of COAL + LIGN units (CEA workbook) / Annexure-I total net generation 1,761.28 BU. Captive coal injection is in the denominator but not the numerator (slight underestimate)."
+  geography: IN
+  reference_year: "2025-26"
+  technology: grid-connected coal and lignite stations
+  source_id: cea-co2-baseline-v22-xlsx
+  locator: "Data sheet, column '2025-26 Net Generation GWh', rows with UNIT_NO != 0; Annexure-I (User Guide p. 22)"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 2, temporal: 1, geographical: 1, technological: 1}
+  status: derived
+  derivation: "(1,156,872 + 26,702) GWh / 1,761,280 GWh = 0.6720 (python3 data/fetch/derive_cea_fuel_shares.py)"
+- id: energy.electricity.in.coal_lignite_share_fossil_generation.fy2025_26
+  layer: energy
+  name: Coal + lignite share of India's fossil (operating-margin set) net generation FY2025-26
+  value: 0.9794
+  unit: fraction
+  quantity: share
+  gas_basis: n/a
+  boundary: "COAL + LIGN / (COAL + LIGN + GAS + OIL + DIESEL) station net generation — proxy for the fuel mix behind CEA's operating margin."
+  geography: IN
+  reference_year: "2025-26"
+  technology: grid-connected fossil stations
+  source_id: cea-co2-baseline-v22-xlsx
+  locator: "Data sheet, column '2025-26 Net Generation GWh', rows with UNIT_NO != 0"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 2, temporal: 1, geographical: 1, technological: 2}
+  status: derived
+  derivation: "1,183,574 / (1,183,574 + 24,860) GWh = 0.9794 (python3 data/fetch/derive_cea_fuel_shares.py)"
+- id: fuels.coal.in.co2_per_energy_ncv.cea_v22
+  layer: fuels
+  name: Indian coal CO2 emission factor, NCV basis (CEA, from India's Initial National Communication)
+  value: 95.8
+  unit: g CO2/MJ
+  quantity: emission_factor
+  gas_basis: CO2
+  boundary: "Combustion CO2 per MJ net calorific value."
+  geography: IN
+  reference_year: "INC (2004) as used in CEA v22 (2026)"
+  technology: Indian (domestic) coal
+  source_id: cea-co2-baseline-v22
+  locator: "Appendix B — Assumptions for CO2 Emission Calculations, p. 27"
+  quote: "EF based on NCV gCO2 /MJ 95.8 89.5 106.2 54.3 75.5 72.6 69.3 0.0"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 4, geographical: 1, technological: 1}
+  status: verified
+- id: energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default
+  layer: energy
+  name: CEA default net heat rate of coal stations (used where station data were not provided)
+  value: 2717
+  unit: kcal/kWh
+  quantity: energy_intensity
+  gas_basis: n/a
+  boundary: "Net generation basis (after 8% auxiliary consumption)."
+  geography: IN
+  reference_year: "CEA v22 (2026)"
+  technology: Indian coal-fired station (default)
+  uncertainty: {distribution: range, low: 2400, high: 3100, note: "Assumed spread for station heat rates (lead's assumption; CEA gives only a default)."}
+  source_id: cea-co2-baseline-v22
+  locator: "Appendix B, 'Assumptions at Station Level', p. 27"
+  quote: "Net Heat Rate kcal /kWh (net) 2,717 3,014 2,075 3,182 2,193 2,047 3,330 2,193 n/a n/a"
+  accessed: 2026-10-04
+  pedigree: {reliability: 3, completeness: 3, temporal: 2, geographical: 1, technological: 2, rationale: "A CEA default, not a measured fleet average"}
+  status: verified
+- id: energy.upstream.coal_mining.ch4_weighted.in.bur4_2020
+  layer: energy
+  name: India production-weighted coal-mine methane factor (mining + post-mining), 2020 inventory weights
+  value: 1.565
+  unit: m3 CH4/t raw coal
+  quantity: emission_factor
+  gas_basis: n/a
+  boundary: "Fugitive CH4 from surface and underground mining incl. post-mining (handling), India BUR-4 country-specific factors."
+  geography: IN
+  reference_year: "2020"
+  technology: Indian coal mining mix (surface 95.5 %, underground degree I-III 4.5 % by 2020 production)
+  uncertainty: {distribution: range, low: 1.2, high: 2.5, note: "Lead's assumption around the weighted value; BUR-4 gives no range."}
+  source_id: india-bur4-2024
+  locator: "derived from BUR-4 coal-mining records in data/factors/energy_upstream.yaml"
+  accessed: 2026-10-04
+  pedigree: {reliability: 2, completeness: 2, temporal: 2, geographical: 1, technological: 2}
+  status: derived
+  derivation: "(724.45 x (1.18+0.15) + 26.76 x (2.91+0.98) + 7.05 x (13.08+2.15) + 0.47 x (23.64+3.12)) / (724.45+26.76+7.05+0.47) = 1187.6 / 758.73 = 1.565, using energy.upstream.coal_mining.production_by_gassiness.in.bur4.2020 and the *.in.bur4 mining / post-mining factors"

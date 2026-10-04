@@ -459,7 +459,7 @@
   value: 30
   unit: g CO2e/g CH4
   quantity: other
-  gas_basis: n/a
+  gas_basis: CO2e-AR5-GWP100
   boundary: "100-year global warming potential (AR5 value incl. for fossil methane as used by ICCT)."
   geography: GLO
   reference_year: "2013"

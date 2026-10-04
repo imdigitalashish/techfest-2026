@@ -1,0 +1,108 @@
+study:
+  id: iitg-vehicle-lca-india-thesis-2025-ch2
+  source_id: iitg-vehicle-lca-thesis-2025
+  citation: "Harshendra N. Shet K. Life Cycle Analysis (LCA) of Vehicles Powered by Clean Energy: An Indian Perspective. PhD thesis, Indian Institute of Technology Guwahati, June 2025. Chapter 2: Comparative Assessment of Global Warming Potential of Gasoline, Battery, and Hybrid Vehicles in India."
+  locator: "Chapter 2, Tables 2.1, 2.15, 2.16, 2.18; Appendix A 2.1-A 2.4"
+  functional_unit: "1 vehicle-km over 160,000 km lifetime"
+  unit: "g CO2-eq/km; kg CO2-eq by vehicle/fuel cycle"
+  boundary: "Vehicle cycle + fuel cycle (well-to-wheel); includes vehicle components, battery manufacturing, oils/fluids/adhesives, tyre/rim, ADR, WTT and TTW."
+  geography: IN
+  reference_year: "2022-23 present electricity mix; projected 2029-30 scenario also stated"
+  gwp_note: "CO2-equivalent; table reports GWP kg CO2-eq/kWh. Specific IPCC GWP characterization set not transcribed here."
+  license: "No open license stated in thesis PDF."
+independent_of_icct: true
+inputs_stated:
+  lifetime_km:
+    value: 160000
+    unit: km
+    locator: "Chapter 2, p. 71"
+    quote: "This study considers the lifetime distance travelled by any vehicle to be 1,60,000 km"
+  grid_emission_factor_2022_23:
+    value: 0.91
+    unit: kg CO2-eq/kWh
+    locator: "Table 2.18, p. 71"
+    quote: "GWP (kg CO2-eq.)                  0.91                      0.62"
+  grid_emission_factor_2029_30:
+    value: 0.62
+    unit: kg CO2-eq/kWh
+    locator: "Table 2.18, p. 71"
+    quote: "GWP (kg CO2-eq.)                  0.91                      0.62"
+  battery_capacity_kwh:
+    locator: "Table 2.1, p. 56"
+    quote: "Traction Battery (kWh)       -       24       0.48           -      40.5  0.072"
+    values: {tata_tiago_ev: 24, tata_nexon_ev: 40.5, ms_swift_hybrid: 0.48, ms_brezza_hybrid: 0.072}
+  battery_specific_energy:
+    locator: "Table 2.2, p. 58"
+    quote: "Li-Ion                      120 [9]"
+    values: {li_ion_wh_per_kg: 120, lead_acid_wh_per_kg: 40, ni_mh_wh_per_kg: 60}
+  battery_manufacturing_factor:
+    locator: "Table 2.4, p. 59"
+    quote: "CO2      79.67 kg/kWh          7.96 kg/kWh       1.03 kg/kg"
+    values: {li_ion_co2_kg_per_kwh: 79.67, ni_mh_co2_kg_per_kwh: 7.96, pb_acid_co2_kg_per_kg: 1.03}
+  fuel_electricity_consumption:
+    locator: "Tables 2.15-2.16, pp. 68-69"
+    quote: "Tata Tiago EV          13.13               -                 17927"
+    values:
+      ms_swift_petrol_km_per_l: 22.56
+      tata_nexon_petrol_km_per_l: 17.33
+      tata_tiago_ev_km_per_kwh: 13.13
+      tata_nexon_ev_km_per_kwh: 11.18
+      ms_swift_hybrid_km_per_l: 24.39
+      ms_brezza_hybrid_km_per_l: 19.80
+  vehicle_mass:
+    locator: "Table 2.1, p. 56"
+    quote: "Kerb Weight (kg)           875      1235       925         1252    1400    1220"
+    values: {ms_swift: 875, tata_tiago_ev: 1235, ms_swift_hybrid: 925, tata_nexon: 1252, tata_nexon_ev: 1400, ms_brezza_hybrid: 1220}
+results:
+  - vehicle: "MS Swift (HB)"
+    powertrain: petrol_ice
+    total_gco2e_per_km: 189
+    wtt_ttw_fuel_cycle_kgco2e: 24905
+    vehicle_cycle_kgco2e: 5285.56
+    total_kgco2e_approx: 30190.56
+    locator: "Appendix A 2.4, p. 96; A 2.2-A 2.3, p. 95"
+    quote: "MS Swift (HB)                189       189      189      189"
+  - vehicle: "Tata Tiago EV (HB)"
+    powertrain: battery_electric
+    total_gco2e_per_km: 156
+    wtt_ttw_fuel_cycle_kgco2e: 16323
+    vehicle_cycle_kgco2e: 8621.43
+    total_kgco2e_approx: 24944.43
+    locator: "Appendix A 2.4, p. 96; A 2.2-A 2.3, p. 95"
+    quote: "Tata Tiago EV (HB)           176       156      141      131             0"
+  - vehicle: "MS Swift hybrid (HB)"
+    powertrain: hybrid_petrol
+    total_gco2e_per_km: 179
+    wtt_ttw_fuel_cycle_kgco2e: 23042
+    vehicle_cycle_kgco2e: 5654.99
+    total_kgco2e_approx: 28696.99
+    locator: "Appendix A 2.4, p. 96; A 2.2-A 2.3, p. 95"
+    quote: "MS Swift hybrid (HB)         179       179      179      179"
+  - vehicle: "Tata Nexon (CSUV)"
+    powertrain: petrol_ice
+    total_gco2e_per_km: 247
+    wtt_ttw_fuel_cycle_kgco2e: 32398
+    vehicle_cycle_kgco2e: 7141.30
+    total_kgco2e_approx: 39539.30
+    locator: "Appendix A 2.4, p. 96; A 2.2-A 2.3, p. 95"
+    quote: "Tata Nexon (CSUV)            247       247      247      247"
+  - vehicle: "Tata Nexon EV (CSUV)"
+    powertrain: battery_electric
+    total_gco2e_per_km: 184
+    wtt_ttw_fuel_cycle_kgco2e: 19154
+    vehicle_cycle_kgco2e: 10338.51
+    total_kgco2e_approx: 29492.51
+    locator: "Appendix A 2.4, p. 96; A 2.2-A 2.3, p. 95"
+    quote: "Tata Nexon EV (CSUV)         208       184      167      155             0"
+  - vehicle: "MS Brezza hybrid (CSUV)"
+    powertrain: hybrid_petrol
+    total_gco2e_per_km: 222
+    wtt_ttw_fuel_cycle_kgco2e: 28366
+    vehicle_cycle_kgco2e: 7103.17
+    total_kgco2e_approx: 35469.17
+    locator: "Appendix A 2.4, p. 96; A 2.2-A 2.3, p. 95"
+    quote: "MS Brezza hybrid (CSUV)      222       222      222      222"
+quotes:
+  - locator: "Chapter 2, p. 78"
+    quote: "The results reveal that BEV has the least life cycle GHG emissions per kilometre (in g CO2-eq./km) compared with ICEV and HEV for both body types."
+notes: "Strong held-out Indian car benchmark, independent of ICCT. Most comparable to a small hatchback/compact SUV car case, not the 2W scooter case. Lifetime is 160,000 km, close to the planned ~165,000 km sedan assumption. Appendix A 2.4 gives base-case g/km at 30% coal TPP efficiency; 25/35/40% sensitivity columns are also reported for BEVs."

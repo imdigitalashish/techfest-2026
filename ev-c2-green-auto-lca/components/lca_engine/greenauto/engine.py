@@ -131,8 +131,9 @@ def gas_basis_shares(db: FactorDB, p: Product, stages_c: dict[str, float]) -> di
     total = sum(stages_c.values()) or 1.0
     shares: dict[str, float] = {}
     for st, v in stages_c.items():
-        fams = {db[rid].gas_family for rid in p.stage_params(st)
-                if db[rid].quantity == "emission_factor" and db[rid].gas_family}
+        gwp = {db[rid].gas_family for rid in p.stage_params(st) if rid.startswith("method.gwp") and db[rid].gas_family}
+        fams = gwp or {db[rid].gas_family for rid in p.stage_params(st)
+                       if db[rid].quantity == "emission_factor" and db[rid].gas_family}
         fam = fams.pop() if len(fams) == 1 else ("mixed" if fams else "none")
         shares[fam] = shares.get(fam, 0.0) + v / total
     return shares

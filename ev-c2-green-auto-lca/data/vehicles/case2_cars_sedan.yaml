@@ -85,8 +85,8 @@ scenarios:
 
   - id: car_in2026_cea_average
     base: car_icct2021_replication
-    kind: decision
-    label: "India 2026-grid, attributional — CEA FY2025-26 average (legacy 2021 ICCT vehicle data)"
+    kind: sensitivity
+    label: "Sensitivity — CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): lower bound for the BEV"
     description: "Illustrative 2026-grid case using legacy ICCT 2021 sedan assumptions (e-Verito-class BEV). Electricity = CEA v22 FY2025-26 weighted average (CO2 only, busbar) / (1 - 17.63 % T&D). Fuels = ICCT India blends (AR5 GWP100). NOT harmonized: grid is CO2-only (no CH4/N2O, no upstream); vehicle factors are European proxies."
     overrides:
       bev:
@@ -94,17 +94,37 @@ scenarios:
         stages: {electricity_production_wtt: "elec / 100 * ef_gen / (1 - td)"}
 
   - id: car_in2026_cea_operating_margin
-    base: car_in2026_cea_average
+    base: car_in2026_avg_co2e
     kind: sensitivity
-    label: "Sensitivity — BEV charging at CEA operating margin (fossil-dominated proxy)"
+    label: "Sensitivity — BEV charging at CEA operating margin, CO2e (fossil-dominated proxy)"
     description: "Decision sensitivity, not a consequential LCA (see case 1)."
     overrides:
-      bev: {params: {ef_gen: energy.electricity.in.grid_om.fy2025_26}}
+      bev: {params: {ef_gen: energy.electricity.in.grid_om.fy2025_26, coal_sh: energy.electricity.in.coal_lignite_share_fossil_generation.fy2025_26}}
 
   - id: car_in2026_cea_build_margin
     base: car_in2026_cea_average
     kind: sensitivity
-    label: "Sensitivity — BEV charging at CEA build margin (recent-capacity proxy)"
+    label: "Sensitivity — BEV charging at CEA build margin, CO2-only (recent-capacity proxy)"
     description: "Decision sensitivity (see case 1)."
     overrides:
       bev: {params: {ef_gen: energy.electricity.in.grid_bm.fy2025_26}}
+
+  - id: car_in2026_avg_co2e
+    base: car_in2026_cea_average
+    kind: decision
+    label: "India 2026-grid, attributional — CEA FY2025-26 average on CO2e (AR6 GWP100), partial upstream (legacy 2021 ICCT sedan data)"
+    description: "Central decision case for sedans: as case 1's CO2e grid; fuels and vehicle factors from ICCT (2021, AR5 GWP100). Excludes mining energy, coal transport, gas supply chain, infrastructure. BEV = e-Verito-class (19.2 kWh/100 km at the plug)."
+    overrides:
+      bev:
+        params:
+          ch4c: energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries
+          n2oc: energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries
+          co2c: fuels.coal.in.co2_per_energy_ncv.cea_v22
+          coal_sh: energy.electricity.in.coal_lignite_share_net_generation.fy2025_26
+          hr: energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default
+          gcv: energy.upstream.coal_power.gcv.coal.cea_v22_default
+          cmm: energy.upstream.coal_mining.ch4_weighted.in.bur4_2020
+          dens: energy.upstream.coal_mining.ch4_density.ipcc2006
+          gwp_ch4: method.gwp100.ch4_fossil.ipcc_ar6
+          gwp_n2o: method.gwp100.n2o.ipcc_ar6
+        stages: {electricity_production_wtt: "elec / 100 * (ef_gen * (1 + (ch4c * gwp_ch4 + n2oc * gwp_n2o) / (co2c * 1000)) + coal_sh * hr / gcv * cmm / 1000 * dens * gwp_ch4) / (1 - td)"}

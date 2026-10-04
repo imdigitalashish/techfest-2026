@@ -1,0 +1,80 @@
+study:
+  id: iitk-lca-tco-cars-india-2023
+  source_id: iitk-lca-tco-cars-india-2023
+  citation: "Avinash Kumar Agarwal. LCA and TCO Analyses of BEVs, HEVs, and ICEVs. Engine Research Laboratory, Indian Institute of Technology Kanpur, March 2023."
+  locator: "Chapter 2, pp. 14-33"
+  functional_unit: "1 vehicle-km over 200,000 km lifetime"
+  unit: "g CO2eq/km"
+  boundary: "Cradle-to-grave: fuel extraction/production, electricity generation/transmission, vehicle production/recycling, maintenance."
+  geography: IN
+  reference_year: "India electricity mix 2020-21"
+  gwp_note: "CO2, CH4, and N2O converted to CO2-equivalent using CO2=1, CH4=30, N2O=265."
+  license: "© Engine Research Laboratory, IIT Kanpur 2023; no open license stated."
+independent_of_icct: true
+inputs_stated:
+  functional_unit:
+    value: "per km"
+    locator: "p. 14"
+    quote: "The functional unit for this study was (on a per km basis) derived from the distance travelled by the vehicle till the end of its life."
+  lifetime_km:
+    value: 200000
+    unit: km
+    locator: "p. 14"
+    quote: "The lifetime of the vehicles was assumed to be 200,000 km."
+  gwp_basis:
+    locator: "Table 14, p. 29"
+    quote: "Eq. CO2 (g) = CO2 (g) * 1 + CH4 (g) * 30 + N2O (g) * 265"
+    values: {co2: 1, ch4: 30, n2o: 265}
+  grid_emission_factor_pan_india:
+    value: 271
+    unit: gCO2eq/MJ distributed electricity
+    locator: "Figure 20 text, p. 31"
+    quote: "GHG emissions for electricity Pan India was 271 gCO2eq./MJ."
+  battery_production_factor:
+    locator: "p. 20"
+    quote: "The GHG emissions from Li-ion batteries were 14.8 kgCO2eq./kg or 123 kgCO2eq./kWh"
+    values: {li_ion_kgco2eq_per_kg: 14.8, li_ion_kgco2eq_per_kwh: 123, pb_acid_kgco2eq_per_kg: 3.2, pb_acid_kgco2eq_per_kwh: 88.8}
+  fuel_or_electricity_consumption:
+    locator: "Table 8, p. 21"
+    quote: "The vehicle mileage for BEVs, HEVs, and ICEVs is given in Table 8 for both sets of vehicles"
+    notes: "Table image was opened in this session. Values visible: Tata Nexon EV actual mileage 12.58 kWh/100 km; Honda City petrol 7.70 L/100 km; Tata Nexon petrol 7.62 L/100 km; Hyundai Kona actual mileage 16.70 kWh/100 km. These table numbers are not in pdftotext and therefore were not quote-verified."
+  vehicle_mass_or_production_factor:
+    status: UNVERIFIED
+    notes: "Component weight tables are image-based in the PDF text extraction; not transcribed into verified YAML values."
+results:
+  - vehicle: "Foreign brand Set-1 BEV"
+    powertrain: battery_electric
+    total_gco2eq_per_km: 240
+    locator: "Figure 21 text, p. 32"
+    quote: "The life cycle GHG emissions for BEV, HEV, and ICEV were 240, 174, and 242 gCO2eq./km respectively"
+  - vehicle: "Foreign brand Set-1 HEV"
+    powertrain: hybrid_petrol
+    total_gco2eq_per_km: 174
+    locator: "Figure 21 text, p. 32"
+    quote: "The life cycle GHG emissions for BEV, HEV, and ICEV were 240, 174, and 242 gCO2eq./km respectively"
+  - vehicle: "Foreign brand Set-1 ICEV"
+    powertrain: petrol_ice
+    total_gco2eq_per_km: 242
+    locator: "Figure 21 text, p. 32"
+    quote: "The life cycle GHG emissions for BEV, HEV, and ICEV were 240, 174, and 242 gCO2eq./km respectively"
+  - vehicle: "Indian brand Set-2 BEV"
+    powertrain: battery_electric
+    total_gco2eq_per_km: 187
+    locator: "Figure 22 text, p. 33"
+    quote: "The life cycle GHG emissions for BEV, HEV, and ICEV-P were 187, 167, and 244 gCO2eq./km respectively"
+  - vehicle: "Indian brand Set-2 HEV"
+    powertrain: hybrid_petrol
+    total_gco2eq_per_km: 167
+    locator: "Figure 22 text, p. 33"
+    quote: "The life cycle GHG emissions for BEV, HEV, and ICEV-P were 187, 167, and 244 gCO2eq./km respectively"
+  - vehicle: "Indian brand Set-2 ICEV-P"
+    powertrain: petrol_ice
+    total_gco2eq_per_km: 244
+    locator: "Figure 22 text, p. 33"
+    quote: "The life cycle GHG emissions for BEV, HEV, and ICEV-P were 187, 167, and 244 gCO2eq./km respectively"
+quotes:
+  - locator: "p. 14"
+    quote: "The following system boundaries were considered in the LCA (Figure 4):"
+  - locator: "p. 14"
+    quote: "Fuel Extraction and Production. Electricity Generation and Transmission. Vehicle Production and Recycling. Maintenance."
+notes: "Useful held-out Indian car benchmark, independent of ICCT, but less directly comparable to a 165,000 km sedan because it assumes 200,000 km lifetime and reports grouped Set-1/Set-2 results rather than a sedan-only table in extractable text. Not useful for 2W validation. Stage breakdowns are in chart figures; exact stage values were not transcribed because they were not available as quote-verifiable text."

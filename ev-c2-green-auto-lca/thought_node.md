@@ -79,7 +79,7 @@ Read PLAYBOOK, seeded brief, official statement (`_briefs/ev-infra.txt`). Brief 
 ### 2026-10-04 05:52 IST — Resumed in LEAN MODE
 Supervisor directive: no sub-agents, small requests, push every 30 min. Committing skeleton now; doing research myself.
 
-### 2026-10-04 07:40 IST — Morning package built (lean mode, lead only)
+### 2026-10-04 07:34 IST — Morning package built (lean mode, lead only)
 - **Data:** opened and transcribed CEA CO2 Baseline v22.0 (Aug 2026: FY2025-26 average 0.675, OM 0.963, BM 0.446 t CO2/MWh; 13-yr series), Lok Sabha USQ 842 (T&D 17.63 % FY2023-24), IPCC 2006 gasoline defaults, UNSD density, ICCT 2021 India 2W briefing (Table 1 + footnote inputs) and fact sheet (Fig. 2 digitized from vector PDF; matches Table 1 to ≤0.03 g/km). 23 records / 8 sources, all with locator + quote or derivation.
 - **Learned:** ICCT footnote inputs don't reproduce its Table 1 (scooter 2.0 vs 2.2 L/100 km; e-scooter 4.13 vs 3.7 kWh/100 km, values look swapped) — saving 48.5 % vs published 38.4 %. Grid method dominates EV results; consumption data dominates parameter variance (65 %). Web-search summaries hallucinated ICCT values (claimed 90–100 g/km for petrol scooters; the source's axis tops at 80) — only opened PDFs used.
 - **Built:** `components/lca_engine` (pydantic record store, pedigree→lognormal, paired MC, elasticity-weighted DQI, variance-share data-gap ranking; 6 contract tests pass), `data/vehicles/case1_2w_scooters.yaml` (5 scenarios), frozen `eval/eval.py` (results in `eval/results/`), static dashboard `deliverables/dashboard/index.html` (verified in browser: values match engine; what-if break-even 1.138 kg CO2/kWh at generation).
@@ -90,7 +90,7 @@ Supervisor directive: no sub-agents, small requests, push every 30 min. Committi
 - Ledger (`results.tsv`): baseline v0 0.8125 → re-baseline 0.6875 after a **data fix** (OM/BM quotes did not contain their numbers — the eval caught my own transcription weakness) → v1 fragments-in-order **0.9375** (kept) → v2 600-char window: found 16/16 but **accepted a perturbed number** → scalar 0, reverted → v3 3-line table window **1.0**, FA 0/32 (kept). Overfit risk: only one quote uses the fallback; re-check on held-out records as sources grow.
 - Dashboard rebuilt with updated provenance; tests 6/6; eval unchanged (replication MAPE 0.06 %).
 
-### 2026-10-04 08:05 IST — Spike B baseline: grid-factor service + state T&D
+### 2026-10-04 08:02 IST — Spike B baseline: grid-factor service + state T&D
 - Parsed the Lok Sabha USQ 842 annex into **35 state/UT T&D-loss records** (`data/fetch/parse_state_td_losses.py`, FY2023-24; quotes verified by the spike-A verifier: held-out re-check 51/51 found, 0/102 false accepts).
 - `greenauto/grid.py`: GridFactorQuery → GridFactor with record ids + derivation. Logic: CEA says India runs one integrated grid (since Dec 2013), so the generation mix is national; the state part is T&D loss. Meter factors range **0.754 (Goa) – 1.300 kg CO2/kWh (J&K + Ladakh, 48 % losses incl. commercial)**; refuses CO2e until coal-upstream data exist. 10/10 tests pass.
 - Dashboard: charging-state selector in the what-if (verified in browser: All India 36.9 % saving = engine; Goa 41.2 %).

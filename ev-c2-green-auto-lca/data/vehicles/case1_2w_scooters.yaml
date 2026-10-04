@@ -51,8 +51,8 @@ scenarios:
       ev_scooter: {params: {elec: vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_footnote}}
 
   - id: in2026_cea_average
-    kind: decision
-    label: "India 2026-grid, attributional — CEA FY2025-26 average (legacy 2021 ICCT vehicle data)"
+    kind: sensitivity
+    label: "Sensitivity — CO2-only grid (CEA FY2025-26 average, no CH4/N2O or upstream): lower bound for the EV"
     description: "Illustrative 2026-grid case using legacy ICCT 2021 vehicle assumptions. Electricity = CEA v22 FY2025-26 weighted average (CO2 only, busbar) grossed up for all-India T&D losses 17.63 % (FY2023-24). Petrol WTT/TTW = ICCT India gasoline blend (AR5 GWP100). Consumption = uniform over the two values ICCT supports. Battery = 68 kg CO2e/kWh (ICCT, China/India, AR5 GWP100). Maintenance included. NOT harmonized: grid is CO2-only (no CH4/N2O, no upstream) and the 2W production factor is on ICCT's 20-year-methane basis."
     products:
       - id: ice_scooter
@@ -91,23 +91,23 @@ scenarios:
           electricity_production_wtt: "elec / 100 * ef_gen / (1 - td)"
 
   - id: in2026_cea_operating_margin
-    base: in2026_cea_average
+    base: in2026_avg_co2e
     kind: sensitivity
-    label: "Sensitivity — EV charging at CEA operating margin (fossil-dominated proxy, upper bound)"
+    label: "Sensitivity — EV charging at CEA operating margin, CO2e (fossil-dominated proxy, upper bound)"
     description: "Decision sensitivity, not a consequential LCA: EV electricity at the CEA FY2025-26 simple operating margin 0.963 kg CO2/kWh (excludes must-run hydro/nuclear/RE). An upper-bound proxy for added charging demand; a real marginal factor needs charging-time profiles and dispatch modelling."
     overrides:
-      ev_scooter: {params: {ef_gen: energy.electricity.in.grid_om.fy2025_26}}
+      ev_scooter: {params: {ef_gen: energy.electricity.in.grid_om.fy2025_26, coal_sh: energy.electricity.in.coal_lignite_share_fossil_generation.fy2025_26}}
 
   - id: in2026_cea_build_margin
     base: in2026_cea_average
     kind: sensitivity
-    label: "Sensitivity — EV charging at CEA build margin (recent-capacity proxy)"
+    label: "Sensitivity — EV charging at CEA build margin, CO2-only (recent-capacity proxy; no CO2e adder: BM fuel mix unknown)"
     description: "Decision sensitivity: EV electricity at the CEA FY2025-26 build margin 0.446 kg CO2/kWh (most recent 20 % of generation incl. RE) — indicates the direction of the grid, not a forecast."
     overrides:
       ev_scooter: {params: {ef_gen: energy.electricity.in.grid_bm.fy2025_26}}
 
   - id: in2026_petrol_e0
-    base: in2026_cea_average
+    base: in2026_avg_co2e
     kind: sensitivity
     label: "Sensitivity — petrol tailpipe as E0 fossil CO2 (IPCC 2006 defaults, no ethanol credit)"
     description: "Replaces the ethanol-blend tailpipe factor with IPCC 2006 E0 combustion CO2 (UNSD density): an upper bound for petrol tailpipe CO2. India's E20 blend needs its own WTW record (data gap)."
@@ -115,3 +115,23 @@ scenarios:
       ice_scooter:
         params: {dens: fuels.petrol.density.unsd2020, ncv: fuels.petrol.ncv.ipcc2006, ef: fuels.petrol.co2_per_energy.ipcc2006}
         stages: {tailpipe_ttw: "fuel / 100 * dens * ncv * ef / 1000"}
+
+  - id: in2026_avg_co2e
+    base: in2026_cea_average
+    kind: decision
+    label: "India 2026-grid, attributional — CEA FY2025-26 average on CO2e (AR6 GWP100), partial upstream (legacy 2021 ICCT vehicle data)"
+    description: "Central decision case. Electricity = CEA v22 FY2025-26 average CO2 + combustion CH4/N2O (IPCC 2006 Tier 1) + coal-mine methane (India BUR-4 factors, CEA default heat rate, coal+lignite share 0.672), all at AR6 GWP100, grossed up for 17.63 % T&D losses. Still excludes mining energy, coal rail transport, gas supply chain and infrastructure. Petrol = ICCT India blend (AR5 GWP100). 2W production factor is on ICCT's 20-year-methane basis (flagged)."
+    overrides:
+      ev_scooter:
+        params:
+          ch4c: energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries
+          n2oc: energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries
+          co2c: fuels.coal.in.co2_per_energy_ncv.cea_v22
+          coal_sh: energy.electricity.in.coal_lignite_share_net_generation.fy2025_26
+          hr: energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default
+          gcv: energy.upstream.coal_power.gcv.coal.cea_v22_default
+          cmm: energy.upstream.coal_mining.ch4_weighted.in.bur4_2020
+          dens: energy.upstream.coal_mining.ch4_density.ipcc2006
+          gwp_ch4: method.gwp100.ch4_fossil.ipcc_ar6
+          gwp_n2o: method.gwp100.n2o.ipcc_ar6
+        stages: {electricity_production_wtt: "elec / 100 * (ef_gen * (1 + (ch4c * gwp_ch4 + n2oc * gwp_n2o) / (co2c * 1000)) + coal_sh * hr / gcv * cmm / 1000 * dens * gwp_ch4) / (1 - td)"}

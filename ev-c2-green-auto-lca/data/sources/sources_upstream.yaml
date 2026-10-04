@@ -1,0 +1,63 @@
+- id: ipcc-2006-v2-ch2-stationary-combustion
+  title: "2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 2: Energy, Chapter 2: Stationary Combustion"
+  publisher: IPCC / IGES
+  year: 2006
+  url: https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/2_Volume2/V2_2_Ch2_Stationary_Combustion.pdf
+  type: standard
+  accessed: 2026-10-04
+  local_copy: .data/raw/upstream/ipcc2006_v2_ch2.pdf
+  notes: "Tier 1 default stationary-combustion factors; Table 2.2 gives kg gas/TJ on a net calorific value basis for energy industries."
+- id: ipcc-2006-v2-ch4-fugitive-emissions
+  title: "2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 2: Energy, Chapter 4: Fugitive Emissions"
+  publisher: IPCC / IGES
+  year: 2006
+  url: https://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/2_Volume2/V2_4_Ch4_Fugitive_Emissions.pdf
+  type: standard
+  accessed: 2026-10-04
+  local_copy: .data/raw/upstream/ipcc2006_v2_ch4.pdf
+  notes: "Tier 1 default coal-mining and post-mining methane factors and CH4 density conversion."
+- id: india-bur4-2024
+  title: "India: Fourth Biennial Update Report to the United Nations Framework Convention on Climate Change"
+  publisher: Ministry of Environment, Forest and Climate Change, Government of India
+  year: 2024
+  url: https://unfccc.int/sites/default/files/resource/India%20BUR-4.pdf
+  type: government-report
+  accessed: 2026-10-04
+  local_copy: .data/raw/upstream/india_bur4.pdf
+  notes: "Direct UNFCCC download was blocked by Incapsula in this environment; local copy was retrieved via a Wayback Machine snapshot of the same public UNFCCC PDF."
+- id: coal-directory-india-2024-25
+  title: "Coal Directory of India 2024-25"
+  publisher: Ministry of Coal, Office of the Coal Controller, Government of India
+  year: 2025
+  url: https://www.coalcontroller.gov.in/files/annual_coal_directories_document/28-11-2025a-stc.pdf
+  type: government-dataset
+  accessed: 2026-10-04
+  local_copy: .data/raw/upstream/coal_stats_28-11-2025a-stc.pdf
+  notes: "Table 3.19 provides all-India raw coal production by open-cast and underground mining."
+- id: cea-co2-baseline-v22-upstream
+  title: "CO2 Baseline Database for the Indian Power Sector — User Guide, Version 22.0"
+  publisher: Central Electricity Authority (CEA), Ministry of Power, Government of India
+  year: 2026
+  url: https://cea.nic.in/wp-content/uploads/baseline/2026/09/User_Guide__Version_22.0.pdf
+  type: government-dataset
+  accessed: 2026-10-04
+  local_copy: .data/raw/upstream/cea_ug_v22.pdf
+  notes: "Appendix B gives station-level default gross heat rate and GCV assumptions used where station data are unavailable."
+- id: ipcc-ar5-wg1-ch8
+  title: "Climate Change 2013: The Physical Science Basis, WG1 Chapter 8: Anthropogenic and Natural Radiative Forcing"
+  publisher: IPCC
+  year: 2013
+  url: https://www.ipcc.ch/site/assets/uploads/2018/02/WG1AR5_Chapter08_FINAL.pdf
+  type: standard
+  accessed: 2026-10-04
+  local_copy: .data/raw/upstream/ipcc_ar5_wg1_ch08.pdf
+  notes: "Table 8.7 gives AR5 GWP values with and without climate-carbon feedbacks; footnote b gives fossil-methane adjustment."
+- id: ipcc-ar6-wg1-ch7
+  title: "Climate Change 2021: The Physical Science Basis, WG1 Chapter 7: The Earth's Energy Budget, Climate Feedbacks and Climate Sensitivity"
+  publisher: IPCC
+  year: 2021
+  url: https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_Chapter07.pdf
+  type: standard
+  accessed: 2026-10-04
+  local_copy: .data/raw/upstream/ipcc_ar6_wg1_ch07.pdf
+  notes: "Table 7.15 gives AR6 GWP100 values; all values include carbon-cycle responses."
