@@ -102,7 +102,7 @@ Sources: [mumbai-context.md](../../research/mumbai-context.md), [companies.md](.
   - MCGM Storm Water Drain permits and an MPCB MoU (press release, 30 Apr 2026);
   - Plastic Fischer runs operations on the ground;
   - the first systems are expected to recover 61–92 t/yr.
-- **Scale.** 61–92 t/yr is about 1.2–1.8% of 5,000 t/yr (derived). Mumbai has many more outfalls; a report figure of ~186 **[V]** awaits citation.
+- **Scale.** 61–92 t/yr is about 1.2–1.8% of 5,000 t/yr (derived). Mumbai has 186 storm-water outfalls (BRIMSTOWAD, via a secondary summary — [mumbai-context.md](../../research/mumbai-context.md) S7). A press report on the same survey says the plastic leaks "through around 50 drains and nullahs" (S4).
 
 **Consequences:**
 - **(a) Spike 2 must target the long tail of small nullah outfalls**, not the big creek mouths, which are now Interceptor territory. A low-cost retrofit for existing BMC booms fits that.

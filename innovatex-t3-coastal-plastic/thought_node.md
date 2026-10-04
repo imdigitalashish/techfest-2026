@@ -20,7 +20,11 @@
   Details: [ADR 001](architecture/adr/001-spike.md).
 - **Doing:** child sessions — *T3 detection + flux*, *T3 digital twin + dispatch*, *T3 dashboard + MRV ledger*, *T3 research: Mumbai + policy*, *T3 research: tech + companies*. Lead: zonal-pitch.md, prototype-plan.md, then integrating results.
 - **Next:** detector metrics → RESULTS.md → final push by 08:15 → Supervisor note. After the morning package: fill-split analysis in the twin (entrainment, overflow, bypass), ratchet sensitivity, flume test before 10 Oct.
-- **Needs from user:** decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Nothing blocks tonight's work.
+- **Needs from user:**
+  1. Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct.
+  2. If T3 is chosen, name a teammate with fabrication skills. Ideally that teammate runs a ~2-hour tabletop reversed-flow flume test before 10 Oct (a box, a small pump, film pieces, phone video — see [prototype-plan](deliverables/prototype-plan.md) §3, T2/T3).
+  3. Approve purchases later: flume electronics ₹33,958 and field node ₹82,282, both sourced. The flume structure is not yet priced.
+  4. Supply team name, Team ID and member details for slide 1.
 - **Risks:** (1) model-API congestion (HTTP 408) killed 13 research sub-agents overnight → work moved to resumable child sessions with small-context rules; tool round-trips take 5–8 min. (2) No public imagery of Mumbai nullahs → detector metrics are on a public proxy dataset; domain shift (black water, hyacinth, monsoon rain) is a known gap. (3) Simulator parameters are partly ASSUMPTION → we claim *relative* policy gains under Monte Carlo, not absolute tonnage.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
