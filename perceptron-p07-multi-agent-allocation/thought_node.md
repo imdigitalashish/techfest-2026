@@ -10,23 +10,23 @@
 - _(none)_
 
 ## Now
-_Updated 2026-10-04 19:52 IST._
-- **Phase:** winning demo (PLAYBOOK §11). Built, verified from a fresh clone (smoke 31/31; first visual 38 s cold / 2.4 s warm), and reviewed by gpt-6-astra (7.5/10, 10 issues, all ACCEPTED).
-- **Doing:** [P7 demo builder](ghapp://sessions/244315d0-41b1-4804-89fd-4975e72ceaa5) is applying the review's fix batch:
-  - dead-knob handover;
-  - "seed #21" reworded as an intervention alongside 20 reference runs;
-  - 1280×720 stage layout;
-  - week segment in the script;
-  - LIVE / RECORDED / COMMITTED provenance;
-  - shock duration display;
-  - "bit-identical" wording;
-  - backend-loss recovery.
-  I fixed the NYC caption source bug (4356865).
-- **Next:** re-verify run.sh and smoke.sh from a fresh clone after the fixes, then message "DEMO DONE" to the Supervisor. October: the Addendum B/B1 trust test (grid tuning on seeds 0–49, test on 300–329).
-- **Needs from user:** register by 15 Oct; teammates' names and skills.
-- **Risks:**
-  - A stage laptop under CPU contention showed a rolling LP median of 12.8 ms in the review (fine).
-  - A live single intervention can go against the mean; it is labelled as an intervention, not a seed.
+_Updated 2026-10-04 21:10 IST._
+- **Phase:** winning demo **DONE** (PLAYBOOK §11), and "DEMO DONE" sent to the Supervisor.
+- **What it is:**
+  - `demo/run.sh` opens on real NYC July-4 trips. The best rule and the look-ahead planner run live on identical demand, beside the committed 20-replicate receipts.
+  - The judge then adds their own surge, on real demand or in the synthetic stress test. Committed reference runs are shown first; the judge's intervention lands among them, labelled as an intervention, not a seed.
+  - Also: a week segment and an honest panel.
+  - Fallback: 11 PNGs at 1280×720 plus an MP4 (6.4 MB).
+- **Verified by me from a fresh clone** (21:10): smoke 47/47 in 36 s; first visual 20 s cold / 0.8 s warm; tree stays clean.
+- **Review:** gpt-6-astra 7.5/10; all 10 issues accepted and applied (smoke 48/48 in the builder's worktree).
+- **Next (October, after the 12 Oct pick):**
+  1. The Addendum B/B1 trust test: grid tuning on seeds 0–49, test on 300–329.
+  2. The mechanism test for "a better forecast hurts".
+  3. The RL comparator.
+  4. Re-run the remaining research gaps.
+  5. Optionally, the frozen-protocol "seed 21" mode for the demo.
+- **Needs from user:** register by 15 Oct; teammates' names and skills (`[TEAM-1..3]` in the abstract).
+- **Risks:** the trust spike may fail criterion (b) (preview: no adaptive design beats the best fixed trust). Fallback claim: decision-tuned shrinkage.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -307,3 +307,8 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
   - "bit-identical" is broader than the checks;
   - there is no backend-loss recovery.
 - Decisions are recorded in the review file and the ledger. The fix batch has been sent to the builder.
+
+### 2026-10-04 21:10 IST — Demo fixes verified; DEMO DONE
+- The builder applied all 10 review items (bbe3c4c, 4d15714, 82d4f35; plus ea193bb regenerating evidence after my caption fix). Its smoke is 48/48, with 0 px overflow at 1280×720 in every state.
+- **My fresh-clone re-verification** (main at 10209ca): smoke 47/47 in 36 s; first visual 20 s cold, 0.8 s warm; no CDN; demo/ 7.9 MB; the tree stays clean. Retired phrases ("seed #21", "bit-identical") are absent and enforced by a smoke assert.
+- README demo section updated. "DEMO DONE" sent to the Supervisor.
