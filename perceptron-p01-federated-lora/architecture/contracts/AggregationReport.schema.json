@@ -1,0 +1,62 @@
+{
+  "description": "C6 output (returned with the new global LayerState).",
+  "properties": {
+    "round": {
+      "title": "Round",
+      "type": "integer"
+    },
+    "strategy": {
+      "title": "Strategy",
+      "type": "string"
+    },
+    "reporters": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Reporters",
+      "type": "array"
+    },
+    "used_memory_for": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Used Memory For",
+      "type": "array"
+    },
+    "weights": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Weights",
+      "type": "object"
+    },
+    "influence_share": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "description": "s_k = <c_k, P> / ||P||^2 in product (\u0394W) space; sums to 1 when aggregation is exact",
+      "title": "Influence Share",
+      "type": "object"
+    },
+    "aggregation_error": {
+      "description": "||P - \u03a3 c_k|| / ||\u03a3 c_k||; 0 for exact aggregation",
+      "title": "Aggregation Error",
+      "type": "number"
+    },
+    "update_norm": {
+      "title": "Update Norm",
+      "type": "number"
+    }
+  },
+  "required": [
+    "round",
+    "strategy",
+    "reporters",
+    "weights",
+    "influence_share",
+    "aggregation_error",
+    "update_norm"
+  ],
+  "title": "AggregationReport",
+  "type": "object"
+}

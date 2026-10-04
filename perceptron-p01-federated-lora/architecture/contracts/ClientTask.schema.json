@@ -1,0 +1,61 @@
+{
+  "description": "C7 \u2192 C4: the work one device does in one round.",
+  "properties": {
+    "round": {
+      "title": "Round",
+      "type": "integer"
+    },
+    "client_id": {
+      "title": "Client Id",
+      "type": "string"
+    },
+    "rank": {
+      "minimum": 1,
+      "title": "Rank",
+      "type": "integer"
+    },
+    "planned_steps": {
+      "minimum": 1,
+      "title": "Planned Steps",
+      "type": "integer"
+    },
+    "allowed_steps": {
+      "description": "< planned_steps when the deadline cuts the device off",
+      "minimum": 0,
+      "title": "Allowed Steps",
+      "type": "integer"
+    },
+    "batch_size": {
+      "minimum": 1,
+      "title": "Batch Size",
+      "type": "integer"
+    },
+    "lr": {
+      "exclusiveMinimum": 0,
+      "title": "Lr",
+      "type": "number"
+    },
+    "train_A": {
+      "description": "False when A is the frozen shared anchor",
+      "title": "Train A",
+      "type": "boolean"
+    },
+    "seed": {
+      "title": "Seed",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "round",
+    "client_id",
+    "rank",
+    "planned_steps",
+    "allowed_steps",
+    "batch_size",
+    "lr",
+    "train_A",
+    "seed"
+  ],
+  "title": "ClientTask",
+  "type": "object"
+}

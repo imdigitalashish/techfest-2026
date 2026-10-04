@@ -1,0 +1,65 @@
+{
+  "description": "C4 \u2192 C6 metadata accompanying the uploaded tensors.",
+  "properties": {
+    "round": {
+      "title": "Round",
+      "type": "integer"
+    },
+    "client_id": {
+      "title": "Client Id",
+      "type": "string"
+    },
+    "rank": {
+      "title": "Rank",
+      "type": "integer"
+    },
+    "planned_steps": {
+      "title": "Planned Steps",
+      "type": "integer"
+    },
+    "steps_done": {
+      "title": "Steps Done",
+      "type": "integer"
+    },
+    "n_examples": {
+      "title": "N Examples",
+      "type": "integer"
+    },
+    "train_loss": {
+      "title": "Train Loss",
+      "type": "number"
+    },
+    "upload_bytes": {
+      "title": "Upload Bytes",
+      "type": "integer"
+    },
+    "wall_s": {
+      "title": "Wall S",
+      "type": "number"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "partial",
+        "late_discarded",
+        "offline"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "round",
+    "client_id",
+    "rank",
+    "planned_steps",
+    "steps_done",
+    "n_examples",
+    "train_loss",
+    "upload_bytes",
+    "wall_s",
+    "status"
+  ],
+  "title": "ClientUpdate",
+  "type": "object"
+}

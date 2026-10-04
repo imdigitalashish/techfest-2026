@@ -1,0 +1,106 @@
+{
+  "description": "End-to-end metrics for one (strategy, scenario, seed) run.",
+  "properties": {
+    "strategy": {
+      "title": "Strategy",
+      "type": "string"
+    },
+    "scenario": {
+      "title": "Scenario",
+      "type": "string"
+    },
+    "seed": {
+      "title": "Seed",
+      "type": "integer"
+    },
+    "rounds": {
+      "title": "Rounds",
+      "type": "integer"
+    },
+    "base_macro_loss": {
+      "title": "Base Macro Loss",
+      "type": "number"
+    },
+    "final_macro_loss": {
+      "title": "Final Macro Loss",
+      "type": "number"
+    },
+    "final_worst_loss": {
+      "title": "Final Worst Loss",
+      "type": "number"
+    },
+    "final_min_rel_gain": {
+      "description": "min over domains of (base - final) / base",
+      "title": "Final Min Rel Gain",
+      "type": "number"
+    },
+    "final_per_domain_loss": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Final Per Domain Loss",
+      "type": "object"
+    },
+    "mean_macro_loss": {
+      "description": "mean macro loss over evaluated rounds (area under the curve)",
+      "title": "Mean Macro Loss",
+      "type": "number"
+    },
+    "max_spike": {
+      "description": "largest increase in macro loss between consecutive evaluations",
+      "title": "Max Spike",
+      "type": "number"
+    },
+    "dominance_c0": {
+      "description": "mean influence share of the data-rich device c0",
+      "title": "Dominance C0",
+      "type": "number"
+    },
+    "dominance_max": {
+      "description": "mean over rounds of max_k influence share",
+      "title": "Dominance Max",
+      "type": "number"
+    },
+    "weak_gain": {
+      "description": "mean loss reduction vs base on the weak devices' domains",
+      "title": "Weak Gain",
+      "type": "number"
+    },
+    "aggregation_error": {
+      "title": "Aggregation Error",
+      "type": "number"
+    },
+    "upload_mb": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Upload Mb",
+      "type": "object"
+    },
+    "wall_s": {
+      "title": "Wall S",
+      "type": "number"
+    }
+  },
+  "required": [
+    "strategy",
+    "scenario",
+    "seed",
+    "rounds",
+    "base_macro_loss",
+    "final_macro_loss",
+    "final_worst_loss",
+    "final_min_rel_gain",
+    "final_per_domain_loss",
+    "mean_macro_loss",
+    "max_spike",
+    "dominance_c0",
+    "dominance_max",
+    "weak_gain",
+    "aggregation_error",
+    "upload_mb",
+    "wall_s"
+  ],
+  "title": "RunSummary",
+  "type": "object"
+}

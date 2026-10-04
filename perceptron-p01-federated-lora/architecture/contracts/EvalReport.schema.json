@@ -1,0 +1,37 @@
+{
+  "description": "C9 output for one global-model snapshot.",
+  "properties": {
+    "round": {
+      "title": "Round",
+      "type": "integer"
+    },
+    "per_domain_loss": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Per Domain Loss",
+      "type": "object"
+    },
+    "macro_loss": {
+      "title": "Macro Loss",
+      "type": "number"
+    },
+    "worst_loss": {
+      "title": "Worst Loss",
+      "type": "number"
+    },
+    "worst_domain": {
+      "title": "Worst Domain",
+      "type": "string"
+    }
+  },
+  "required": [
+    "round",
+    "per_domain_loss",
+    "macro_loss",
+    "worst_loss",
+    "worst_domain"
+  ],
+  "title": "EvalReport",
+  "type": "object"
+}

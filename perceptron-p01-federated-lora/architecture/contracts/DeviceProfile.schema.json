@@ -1,0 +1,71 @@
+{
+  "description": "C2 \u2192 C3/C7: one simulated device and its budgets.",
+  "properties": {
+    "client_id": {
+      "title": "Client Id",
+      "type": "string"
+    },
+    "device_class": {
+      "description": "e.g. workstation, laptop, phone",
+      "title": "Device Class",
+      "type": "string"
+    },
+    "domain": {
+      "description": "dominant data domain held by the device",
+      "title": "Domain",
+      "type": "string"
+    },
+    "n_train_blocks": {
+      "description": "local training set size, in 128-token blocks",
+      "exclusiveMinimum": 0,
+      "title": "N Train Blocks",
+      "type": "integer"
+    },
+    "rank": {
+      "description": "LoRA rank the device can afford (memory budget)",
+      "minimum": 1,
+      "title": "Rank",
+      "type": "integer"
+    },
+    "local_steps": {
+      "description": "optimizer steps per round it can afford (compute budget)",
+      "minimum": 1,
+      "title": "Local Steps",
+      "type": "integer"
+    },
+    "p_offline": {
+      "default": 0.0,
+      "description": "P(device unavailable for a whole round)",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "P Offline",
+      "type": "number"
+    },
+    "p_cutoff": {
+      "default": 0.0,
+      "description": "P(round deadline cuts the device short)",
+      "maximum": 1,
+      "minimum": 0,
+      "title": "P Cutoff",
+      "type": "number"
+    },
+    "outage_rounds": {
+      "description": "rounds of a forced mid-run outage",
+      "items": {
+        "type": "integer"
+      },
+      "title": "Outage Rounds",
+      "type": "array"
+    }
+  },
+  "required": [
+    "client_id",
+    "device_class",
+    "domain",
+    "n_train_blocks",
+    "rank",
+    "local_steps"
+  ],
+  "title": "DeviceProfile",
+  "type": "object"
+}
