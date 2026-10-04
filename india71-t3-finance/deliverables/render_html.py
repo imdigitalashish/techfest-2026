@@ -12,7 +12,17 @@ import markdown
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 src = (ROOT / "deliverables" / "round1-proposal.md").read_text()
-src = re.sub(r"^> Draft status:.*?(?:\n(?!>).*?)?\n\n", "", src, count=1, flags=re.M | re.S)
+# Drop only the "> Draft status" blockquote lines (the old multiline regex also swallowed the team block — review issue 15)
+_lines, _out, _skip = src.split("\n"), [], False
+for _l in _lines:
+    if _l.startswith("> Draft status:"):
+        _skip = True
+        continue
+    if _skip and _l.startswith(">"):
+        continue
+    _skip = False
+    _out.append(_l)
+src = "\n".join(_out)
 blocks = []
 
 

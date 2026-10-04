@@ -1,0 +1,12 @@
+{
+ "baseline": 0.2,
+ "mde_pp": 2.0,
+ "alpha": 0.05,
+ "power": 0.8,
+ "n_per_arm_individual": 6507,
+ "icc": 0.02,
+ "cluster_size": 50,
+ "design_effect": 1.98,
+ "n_per_arm_clustered": 12884,
+ "clusters_per_arm": 258
+}

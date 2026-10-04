@@ -1,4 +1,6 @@
-# Sakriya — technical architecture (Round-1 companion, v0.1, 4 Oct 2026)
+# Sakriya — technical architecture (Round-1 companion, v1.1, 4 Oct 2026)
+
+> **Staging (v1.1, after the 4 Oct cross-model reviews).** **Phase 1 is bank-local:** C1, C2, C6, C7, C8, C9 and the C10 computations run inside one bank on its own customers (linked by the bank's customer IDs); only aggregates leave the bank, through C5 and C11. **The cross-bank clean room (C3/C4) shown below is a later phase**, entered only after a legal go/no-go that names the operator, fiduciary roles, processor contracts, notice and legal basis, and after an authorised identity-translation service exists: UIDAI requires each entity's Aadhaar Data Vault to be logically segregated and forbids hashing Aadhaar numbers into reference keys (Circular 14/2025, paras 7(a), 7(k)), so reference keys cannot link people across banks. The diagrams show the full target architecture; flows F1–F3 below are Phase 2+ only.
 
 Component contracts and metrics: [`../architecture/components.md`](../architecture/components.md) · typed contracts: [`../architecture/contracts/contracts.py`](../architecture/contracts/contracts.py) · spike decision: [`../architecture/adr/001-spike.md`](../architecture/adr/001-spike.md) · evidence: [`../research/landscape.md`](../research/landscape.md).
 
@@ -81,9 +83,9 @@ sequenceDiagram
 
 | Flow | From → to | Data | Granularity | Technique | Residual risk |
 |---|---|---|---|---|---|
-| F1 | Bank → clean room | usage features, state, KYC flag, DBT pattern | account (encrypted) | confidential computing; purpose-bound upload; retention limit | operator compromise → attestation, audit |
-| F2 | NPCI → clean room | identity reference → pseudonym | person | per-purpose HMAC keys held by token authority | linkage across purposes → separate keys |
-| F3 | Clean room → bank | target list with reason codes | own customers only | policy engine (C5) | re-identification of others → never released |
+| F1 (Phase 2+) | Bank → clean room | usage features, state, KYC flag, DBT pattern | account (encrypted) | confidential computing; purpose-bound upload; retention limit | operator compromise → attestation, audit |
+| F2 (Phase 2+) | Authorised translation service → clean room | identity reference → pseudonym | person | per-purpose HMAC keys held by token authority | linkage across purposes → separate keys |
+| F3 (Phase 2+; in Phase 1 the plan is computed inside the bank) | Clean room → bank | target list with reason codes | own customers only | policy engine (C5) | re-identification of others → never released |
 | F4 | Bank → BC | visit / call tasks | own customers in the BC's area | BC app, least-privilege fields | misuse by agent → fraud gate, logs |
 | F5 | Clean room → forums | usage rates, gaps, incremental effects | district, bank, BC (≥ cell size) | differential privacy (ε budget), small-cell suppression | small-area noise → CIs, pooling |
 | F6 | Forums → public | state-level usage table | state | DP | — |
@@ -93,7 +95,7 @@ Legal anchors (verified texts in [`../research/verification-law.md`](../research
 | Flow | Anchor | Design consequence |
 |---|---|---|
 | F1, F3, F4 (targeting) | A decision specific to a person — *not* covered by the DPDP statistics exemption (s. 17(2)(b)) | Person lists exist only inside the account-holding bank (data fiduciary for its own customers); clean-room copies purpose-bound and deleted after use |
-| F2 (identity) | Aadhaar Act s. 29; UIDAI Circular 14 of 2025 (Aadhaar Data Vault, Reference Key) | Only reference keys leave the vault, HMAC-ed per purpose; never Aadhaar numbers or biometrics |
+| F2 (identity) | Aadhaar Act s. 29; UIDAI Circular 14 of 2025 (entity-segregated vaults; no Aadhaar hashing as reference keys) | Only reference keys leave the vault, HMAC-ed per purpose; never Aadhaar numbers or biometrics |
 | F5, F6 (statistics) | DPDP s. 17(2)(b): statistical processing not used for person-specific decisions, per prescribed standards | Aggregate only, separate token key, differential privacy, small-cell suppression |
 | DBT-side data | DPDP s. 7(b): State processing to provide prescribed subsidies/benefits/services | To be examined with the DBT Mission |
 | Usage definitions | RBI/2023-24/105: DBT/scholarship accounts exempt from the inoperative flag | C2 usage states needed beside the official flag |
@@ -117,6 +119,13 @@ Legal anchors (verified texts in [`../research/verification-law.md`](../research
 ```
 cd india71-t3-finance
 uv venv .venv && uv pip install -r requirements.txt --python .venv/bin/python
-.venv/bin/python eval/public_data/parse_ls4090.py         # real: state-wise inoperative PMJDY accounts
-.venv/bin/python eval/targeting_eval.py --seeds 0 1 2 --n 20000   # SYNTHETIC: policy comparison
+.venv/bin/python eval/public_data/parse_ls4090.py                    # real: state-wise inoperative PMJDY accounts
+.venv/bin/python eval/policy_engine_eval.py                          # C5: governance scenarios + audit-log attacks
+nice -n 10 .venv/bin/python -u eval/targeting_v03_eval.py --seeds 20 21 22 23 24 25 26 27 28 29 --n 50000 --pilot 0.3 --tag prereg   # SYNTHETIC, registered
+.venv/bin/python eval/prereg_c6_v03_analysis.py
+.venv/bin/python eval/scorecard_eval.py --seeds 0 1 2 3 4            # SYNTHETIC accountability test
+.venv/bin/python deliverables/render_numbers.py && .venv/bin/python eval/check_docs.py
+.venv/bin/python -m pytest -q
 ```
+
+Release contract for C11 (v1.1): every person contributes to at most one row of each table; all tables released over the same population and quarter (bank, district, gender splits, months) are charged to **one** persistent privacy-budget ledger; noise is drawn from fresh secret entropy (never a published seed); cells below the minimum size are suppressed. C10 never publishes BC- or BC Sakhi-level scores (C5 rule D6).

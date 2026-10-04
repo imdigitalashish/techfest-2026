@@ -28,35 +28,42 @@ def pct(x: float) -> str:
 
 def claims() -> list[str]:
     out = []
-    # C6 v0.2 pre-registered test (SYNTHETIC)
-    r, a = j("c6_v02_prereg.json"), j("c6_v02_prereg_analysis.json")
-    runs, m, sd = r["runs"], a["means"], a["sds"]
-    for k in ["status_quo", "risk_bc", "best_arm_only", "rule", "challenger_who", "oracle"]:
-        v = round(float(np.mean([x["policies"][k]["value"] for x in runs])))
-        out.append(f"| {m[k]:.2f} ± {sd[k]:.2f} | {v} |".replace("-0.", "−0."))
-    h1, h2 = a["H1_challenger_who_vs_rule"], a["H2_rule_vs_best_arm_only"]
-    out += [f"in all {h1['seeds_positive']} worlds, by {h1['mean_diff']:.2f} of the achievable gain (95% CI {h1['ci95'][0]:.2f}–{h1['ci95'][1]:.2f})",
-            f"beat best-arm-only by {h2['mean_diff']:.2f}",
-            f"about {round(float(np.mean([x['gate']['n_validation'] for x in runs])), -1):.0f} validation persons per world",
-            f"in {sum(1 for x in runs if x['policies']['rule']['normalised'] < 0.1)} of 10 worlds the pilot (about {round(float(np.mean([x['pilot_n'] for x in runs])) / 5, -1):.0f} persons per arm)",
-            f"about {round(float(np.mean([x['pilot_n'] for x in runs])) / 5, -1):.0f} persons per arm can pick the wrong arm"]
-    assert a["H1_pass"] and a["H2_pass"] and a["gate_pass_count"] == 0, "registered verdicts changed — rewrite the text"
+    # C6 v0.3 pre-registered test (SYNTHETIC)
+    a, runs = j("c6_v03_prereg_analysis.json"), j("c6_v03_prereg.json")["runs"]
+    m, sd, v = a["means"], a["sds"], a["value_means"]
+    for k in ["status_quo", "risk_bc", "best_arm_only", "rule", "challenger", "reference"]:
+        out.append(f"| {m[k]:.2f} ± {sd[k]:.2f} | {v[k]:,.0f} |".replace("-0.", "−0."))
+    h1, h2, s3 = a["H1_challenger_vs_rule"], a["H2_rule_vs_best_arm_only"], a["S3_perfect_linkage_challenger_minus_rule"]
+    if a["H1_pass"]:
+        out.append(f"by {h1['mean_diff']:.2f} of the reference gain (95% CI {h1['ci95'][0]:.2f}–{h1['ci95'][1]:.2f}; positive in {h1['seeds_positive']} of {h1['n']} worlds)")
+    if a["H2_pass"]:
+        out.append(f"beat best-arm-only by {h2['mean_diff']:.2f}")
+    out += [f"deployed the challenger in {a['gate_pass_count']} of {h1['n']} worlds",
+            f"the challenger's margin was {s3['mean_diff']:.2f}",
+            f"about {int(round(a['pilot_train_mean'] / 5, -2)):,} pilot persons per arm"]
+    if a["H3_pass"]:
+        out.append("Women's floors, budgets and the holdout held in every world.")
     pe = j("policy_engine.json")
-    out.append(f"implemented and tested: {pe['correct']}/{pe['n_scenarios']} governance scenarios, {pe['false_allows']} false allows; "
-               f"tampering with the log detected in {pe['mutations_detected']}/{pe['n_mutations']} trials")
+    out.append(f"{pe['correct']}/{pe['n_scenarios']} governance scenarios, {pe['false_allows']} false allows; "
+               f"{pe['mutations_detected']}/{pe['n_mutations']} log-tampering attacks detected")
+    pc = j("power_calc.json")
+    out += [f"needs {pc['n_per_arm_individual']:,} persons per arm", f"about {pc['n_per_arm_clustered']:,} with BC clusters"]
     # Spike B (SYNTHETIC), four quarters of data
     sb = j("scorecard_spikeB.json")["runs"]["4"]
     rho = lambda k: float(np.mean([x["spearman_rho"][k] for x in sb]))
     out += [f"correlated {rho('M1_enrolments'):.2f} with their true contribution",
             f"\"operative\" share correlated {rho('M2_account_operative_share'):.2f}",
             f"incremental usage correlated **{rho('M4_sakriya_incremental'):.2f}**"]
+    top = float(np.mean([x["share_of_gamers_in_top20"]["M4_sakriya_incremental"] for x in sb]))
+    allg = sum(x["gaming_flags"]["gamers"] for x in sb) / (200 * len(sb))
+    out.append(f"gamers were {100 * top:.0f}% of its top 20 against {100 * allg:.1f}% overall")
     # Hillstrom real RCT
     h = j("hillstrom_uplift.json")["runs"]
     d = [float(np.mean([x["budgets"][b]["diff_shrunk_vs_best_arm"]["per_1000"] for x in h])) for b in ("0.1", "0.2")]
     out.append(f"by {d[0]:.1f}–{d[1]:.1f} responses per 1,000")
     # Real public data
     t = pd.read_csv(D / "pmjdy_inoperative_trend.csv").set_index("as_of")
-    out += [f"rose from {t.at['2021-03', 'inoperative_accounts_crore']:.2f} crore ({pct(t.at['2021-03', 'inoperative_share'])}, March 2021)",
+    out += [f"from {t.at['2021-03', 'inoperative_accounts_crore']:.2f} crore ({pct(t.at['2021-03', 'inoperative_share'])}, March 2021)",
             f"to {t.at['2025-12', 'inoperative_accounts_crore']:.2f} crore ({pct(t.at['2025-12', 'inoperative_share'])}, Lok Sabha answer of 8 December 2025)"]
     st = pd.read_csv(D / "pmjdy_inoperative_by_state_2025-07-31.csv")
     st["inoperative_share"] = st.inoperative_accounts / st.pmjdy_accounts  # exact, not the 4-dp rounded column
