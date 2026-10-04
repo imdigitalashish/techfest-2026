@@ -56,7 +56,7 @@ Point at: **300/300 identical** · the cascade note.
 - A ticket that never spells out a value is caught only by ordinary provenance checks, or not at all.
 - When the scripted agent doesn't act on a ticket, the guard wasn't tested. That is not a win.
 - Two real bypasses were found and fixed: the lead's own probe found one, and our adversarial review found the hashless order id. Both are regression tests now.
-- **False positives:** a benign ticket that repeats the order id the agent is acting on blocks the legitimate call. Screen 2 has that preset, labelled as a known false block.
+- **False positives:** benign notes that restate what the user grounded are exempt: an item they named, or an address they confirmed. A ticket naming the id of the order being acted on, when the user never stated that id, still blocks the legitimate call. Order identity is never exempt. Screen 2 has that preset, labelled as a known false block.
 
 **Q3. "Aren't many 'harmful' labels just the simulated user's hidden preferences?"**
 - Some are. The labels are DB-effect equivalence, not adjudicated harm.
