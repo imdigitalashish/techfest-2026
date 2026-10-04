@@ -6,7 +6,8 @@ s[tau, i] units serving requests in zone i (they reappear at destination j after
 with probability od[i, j] — a fluid approximation); b[tau, i] backlog carried to tau+1.
   conservation (=):  y + sum_out x + s - y[tau-1] - sum_in x[tau-1] - sum_k od[k,i] s[tau-trip[k,i], k]
                      = supply[tau, i]   (idle now at tau=0; known units freeing up at tau>=1)
-  demand (<=):       s + b - b[tau-1] <= D_hat[tau, i] (+ current queue at tau=0)
+  demand (<=):       s + b/rho - b[tau-1] <= D_hat[tau, i] (+ current queue at tau=0); rho = 1 - 1/P is the
+                     per-step survival of waiting demand (fluid abandonment), rho = 1 for the legacy planner
   objective (min):   sum_tau gamma^tau ( -s + c_wait*b + c_move*x )
 Only x[0] is executed (receding horizon). Structure matrices are built once; per call only the
 right-hand sides change. Solver: HiGHS via scipy.optimize.linprog. Dual prices of the tau=0
@@ -42,13 +43,17 @@ def grid_edges(grid: int) -> np.ndarray:
 
 class MPCPlanner:
     def __init__(self, grid: int, od_prob: np.ndarray, horizon: int = 6, c_move: float = 0.05,
-                 c_wait: float = 0.02, gamma: float = 0.97, hop_steps: int = 1, backend: str = "auto"):
+                 c_wait: float = 0.02, gamma: float = 0.97, hop_steps: int = 1, backend: str = "auto",
+                 patience: int | None = None):
         self.G, self.Z, self.H = grid, grid * grid, int(horizon)
         self.edges = grid_edges(grid)
         self.E = len(self.edges)
         self.trip = np.maximum(1, manhattan(grid))
         self.od = od_prob
         self.hop = int(hop_steps)
+        # fluid abandonment (Erlang-A style): a fraction 1/P of the backlog abandons each step, so the LP cannot plan to
+        # serve demand long after it would have left. patience=None reproduces the legacy (never-abandoning) backlog.
+        self.rho = 1.0 if not patience else max(0.0, 1.0 - 1.0 / float(patience))
         Z, E, H = self.Z, self.E, self.H
         self.B = E + 3 * Z
         n = H * self.B
@@ -77,7 +82,7 @@ class MPCPlanner:
         for t in range(H):
             for i in range(Z):
                 row = t * Z + i
-                r += [row, row]; c += [S(t, i), Bk(t, i)]; v += [1.0, 1.0]
+                r += [row, row]; c += [S(t, i), Bk(t, i)]; v += [1.0, 1.0 / self.rho if self.rho > 0 else 1e6]
                 if t > 0:
                     r.append(row); c.append(Bk(t - 1, i)); v.append(-1.0)
         self.A_ub = sp.csr_matrix((v, (r, c)), shape=(H * Z, n))

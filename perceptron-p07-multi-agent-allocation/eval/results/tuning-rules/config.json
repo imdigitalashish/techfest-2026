@@ -1,0 +1,24 @@
+{
+ "scenarios": [
+  "stationary",
+  "shock",
+  "drift",
+  "shock+drift",
+  "spikes",
+  "shock+drift+spikes"
+ ],
+ "policies": [
+  "static",
+  "greedy",
+  "reactive"
+ ],
+ "seeds": "0-19",
+ "n_agents": 40,
+ "patience": 10,
+ "horizon": 1440,
+ "workers": 4,
+ "out": "eval/results/tuning-rules",
+ "legacy": false,
+ "n_jobs": 360,
+ "wall_s": 191.93167805671692
+}

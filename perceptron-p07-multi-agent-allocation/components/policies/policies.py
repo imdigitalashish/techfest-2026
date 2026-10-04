@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from architecture.contracts.contracts import FleetState, StepInfo
+from architecture.contracts.contracts import FleetState, Forecast, StepInfo
 from components.coordinator.assign import flows_to_targets, transport_flows
 from components.forecasting.forecasters import (ChangeAwareForecaster, EWMAForecaster,
                                                 MovingAverageForecaster, OracleForecaster)
@@ -91,18 +91,38 @@ class GreedyPolicy(_Base):
         return flows_to_targets(flows, s)
 
 
+class ZeroForecaster:
+    """No demand model at all: the LP sees only the current queue (ablation 'mpc-queue')."""
+
+    def __init__(self, n_zones: int):
+        self.Z = n_zones
+
+    def observe(self, t, counts):
+        pass
+
+    def forecast(self, t, horizon):
+        return Forecast(mean=np.zeros((horizon, self.Z)))
+
+
 class MPCPolicy(_Base):
     def __init__(self, kind: str = "cusum", horizon: int | None = None, c_move: float = 0.05, c_wait: float = 0.02,
-                 gamma: float = 0.97, alpha: float | None = None, delta: float = 1.0, h: float = 8.0):
-        self.kind, self.H = kind, horizon
-        self.kw = dict(c_move=c_move, c_wait=c_wait, gamma=gamma)
-        self.alpha, self.delta, self.h = alpha, delta, h
-        self.name = {"ewma": "mpc-ewma", "cusum": "mpc-cusum", "cusum1": "mpc-cusum-v1", "oracle": "oracle"}[kind]
+                 gamma: float = 0.97, alpha: float | None = None, delta: float = 1.0, h: float = 8.0,
+                 myopic: bool = False, backend: str = "auto", abandon_aware: bool = True):
+        self.kind, self.H, self.myopic = kind, horizon, myopic
+        self.kw = dict(c_move=c_move, c_wait=c_wait, gamma=gamma, backend=backend)
+        self.alpha, self.delta, self.h, self.abandon_aware = alpha, delta, h, abandon_aware
+        self.name = {"ewma": "mpc-ewma", "cusum": "mpc-cusum", "cusum1": "mpc-cusum-v1", "oracle": "oracle",
+                     "queue": "mpc-queue"}[kind] if not myopic else "mpc-myopic"
 
     def reset(self, meta):
         super().reset(meta)
-        self.Hrun = self.H or (6 if self.hop == 1 else self.hop + 6)   # look-ahead must exceed the lead time
-        self.planner = MPCPlanner(meta["grid"], meta["od_prob"], horizon=self.Hrun, hop_steps=self.hop, **self.kw)
+        if self.myopic:  # same LP, shortest horizon in which a move can pay off (one step after arrival)
+            self.Hrun = self.hop + 1
+        else:
+            self.Hrun = self.H or (6 if self.hop == 1 else self.hop + 6)   # look-ahead must exceed the lead time
+        P = meta.get("patience") if self.abandon_aware else None
+        self.planner = MPCPlanner(meta["grid"], meta["od_prob"], horizon=self.Hrun, hop_steps=self.hop, patience=P,
+                                  **self.kw)
         prof, lvl = meta["profile"], meta["init_level"]
         if self.kind == "ewma":
             self.fc = EWMAForecaster(prof, lvl, alpha=self.alpha or 0.05)
@@ -111,6 +131,8 @@ class MPCPolicy(_Base):
             self.fc = RestartMeanForecaster(prof, lvl, alpha=self.alpha or 0.01, delta=self.delta, h=self.h)
         elif self.kind == "cusum":
             self.fc = ChangeAwareForecaster(prof, lvl, alpha=self.alpha or 0.01, delta=self.delta, h=self.h)
+        elif self.kind == "queue":
+            self.fc = ZeroForecaster(meta["n_zones"])
         else:
             self.fc = OracleForecaster(meta["rates"])
         self.t, self.solve_ms = 0, []
@@ -127,7 +149,18 @@ class MPCPolicy(_Base):
 
 
 def make_policy(name: str, **kw):
+    """'base@k=v,k2=v2' builds a variant of a base policy (e.g. 'mpc-ewma@c_move=0.5'); its name keeps the suffix."""
+    if "@" in name:
+        base, spec = name.split("@", 1)
+        for item in spec.split(","):
+            k, v = item.split("=")
+            kw[k] = float(v)
+        pol = make_policy(base, **kw)
+        pol.name = name
+        return pol
     return {"static": StaticPolicy, "greedy": GreedyPolicy, "reactive": ReactivePolicy,
+            "mpc-myopic": lambda **k: MPCPolicy("ewma", myopic=True, **k),
+            "mpc-queue": lambda **k: MPCPolicy("queue", **k),
             "mpc-ewma": lambda **k: MPCPolicy("ewma", **k), "mpc-cusum": lambda **k: MPCPolicy("cusum", **k),
             "mpc-cusum-v1": lambda **k: MPCPolicy("cusum1", **k),
             "oracle": lambda **k: MPCPolicy("oracle", **k)}[name](**kw)

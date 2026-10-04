@@ -20,6 +20,7 @@ import os
 import time
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import replace
+from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
@@ -29,6 +30,9 @@ from components.scenarios.scenarios import SCENARIOS, build_trace, diurnal_profi
 from components.simulator.core import DispatchCore
 
 WIN, ROLL = 120, 30
+# real-trace replay (NYC TLC yellow taxi, July 2025, Manhattan-internal trips, thinned): test days, train days, event window
+NYC = {"nyc-jul03-04": (["2025-07-03", "2025-07-04"], ["2025-07-01", "2025-07-02"],
+                        (1440 + 21 * 60 + 30, 1440 + 23 * 60 + 30))}   # observed July 4 21:30-23:30 surge (cause UNVERIFIED)
 
 
 def episode_meta(cfg, trace):
@@ -40,16 +44,26 @@ def episode_meta(cfg, trace):
 
 
 def run_episode(job: dict) -> dict:
-    cfg = SCENARIOS[job["scenario"]]
-    if job.get("horizon"):
-        cfg = replace(cfg, horizon=int(job["horizon"]))
-    trace = build_trace(cfg, job["seed"])
-    meta = episode_meta(cfg, trace)
+    if job["scenario"].startswith("nyc"):
+        from components.scenarios.nyc_tlc import build_nyc_trace
+        test_days, train_days, _ = NYC[job["scenario"]]
+        trace, meta = build_nyc_trace(test_days, train_days, seed=job["seed"])
+        cfg = SimpleNamespace(name=job["scenario"], day=1440)
+    else:
+        cfg = SCENARIOS[job["scenario"]]
+        if job.get("horizon"):
+            cfg = replace(cfg, horizon=int(job["horizon"]))
+        trace = build_trace(cfg, job["seed"])
+        meta = episode_meta(cfg, trace)
     hop = int(job.get("hop_steps", 1))
     meta["hop_steps"] = hop
+    meta["patience"] = int(job["patience"])
     core = DispatchCore(trace, n_agents=job["n_agents"], patience=job["patience"], init_seed=job["seed"],
                         init_shares=meta["hist_shares"], move_steps_per_hop=hop)
-    pol = make_policy(job["policy"], **job.get("policy_kw", {}))
+    kw = dict(job.get("policy_kw", {}))
+    if job.get("legacy") and (job["policy"].startswith("mpc") or job["policy"].startswith("oracle")):
+        kw.update(backend="scipy", abandon_aware=False)   # reproduces runs made before 2026-10-04 10:15 IST
+    pol = make_policy(job["policy"], **kw)
     pol.reset(meta)
     T = trace.horizon
     served = np.zeros(T, np.int64); lost = np.zeros(T, np.int64); arr = np.zeros(T, np.int64)
@@ -88,7 +102,10 @@ def run_episode(job: dict) -> dict:
             ok = np.flatnonzero(roll >= 0.90)
             rs.append(int(ok[0] + ROLL) if ok.size else WIN)
         out.update(shock_t=on[0].t, n_shocks=len(on), shock_lost=float(np.mean(sl)), shock_served=float(np.mean(ss)),
-                   recover_steps=float(np.mean(rs)))
+                   recover_steps=float(np.mean(rs)), recovered_frac=float(np.mean(np.array(rs) < WIN)))  # rs==WIN: censored
+    if job["scenario"] in NYC:
+        a, b = NYC[job["scenario"]][2]
+        out.update(event_lost=int(lost[a:b].sum()), event_served=served[a:b].sum() / max(1, arr[a:b].sum()))
     D = cfg.day
     if T // D >= 2:  # batch means for long runs: served fraction per simulated day
         out["daily_served"] = json.dumps([round(float(served[d * D:(d + 1) * D].sum() / max(1, arr[d * D:(d + 1) * D].sum())), 5)
@@ -115,8 +132,10 @@ def main():
     ap.add_argument("--horizon", type=int, default=0)
     ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 1))
     ap.add_argument("--out", default="eval/results/run")
+    ap.add_argument("--legacy", action="store_true", help="planner as before 10:15 IST 4 Oct (scipy, no abandonment)")
     a = ap.parse_args()
-    jobs = [dict(policy=p, scenario=sc, seed=sd, n_agents=a.n_agents, patience=a.patience, horizon=a.horizon)
+    jobs = [dict(policy=p, scenario=sc, seed=sd, n_agents=a.n_agents, patience=a.patience, horizon=a.horizon,
+                 legacy=a.legacy)
             for sc in a.scenarios for sd in parse_seeds(a.seeds) for p in a.policies]
     os.makedirs(a.out, exist_ok=True)
     t0 = time.time()

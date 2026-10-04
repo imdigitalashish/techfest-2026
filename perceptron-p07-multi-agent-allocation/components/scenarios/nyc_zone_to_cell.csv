@@ -1,0 +1,70 @@
+zone_id,zone_name,cell
+4,Alphabet City,8
+12,Battery Park,1
+13,Battery Park City,1
+24,Bloomingdale,16
+41,Central Harlem,17
+42,Central Harlem North,17
+43,Central Park,12
+45,Chinatown,2
+48,Clinton East,6
+50,Clinton West,10
+68,East Chelsea,5
+74,East Harlem North,18
+75,East Harlem South,13
+79,East Village,8
+87,Financial District North,2
+88,Financial District South,2
+90,Flatiron,6
+100,Garment District,6
+103,Governor's Island/Ellis Island/Liberty Island,0
+104,Governor's Island/Ellis Island/Liberty Island,0
+105,Governor's Island/Ellis Island/Liberty Island,2
+107,Gramercy,7
+113,Greenwich Village North,7
+114,Greenwich Village South,7
+116,Hamilton Heights,16
+120,Highbridge Park,21
+125,Hudson Sq,6
+127,Inwood,21
+128,Inwood Hill Park,21
+137,Kips Bay,8
+140,Lenox Hill East,13
+141,Lenox Hill West,13
+142,Lincoln Square East,11
+143,Lincoln Square West,10
+144,Little Italy/NoLiTa,7
+148,Lower East Side,8
+151,Manhattan Valley,11
+152,Manhattanville,16
+153,Marble Hill,22
+158,Meatpacking/West Village West,5
+161,Midtown Center,7
+162,Midtown East,7
+163,Midtown North,11
+164,Midtown South,7
+166,Morningside Heights,16
+170,Murray Hill,7
+186,Penn Station/Madison Sq West,6
+194,Randalls Island,19
+202,Roosevelt Island,14
+209,Seaport,2
+211,SoHo,6
+224,Stuy Town/Peter Cooper Village,8
+229,Sutton Place/Turtle Bay North,13
+230,Times Sq/Theatre District,6
+231,TriBeCa/Civic Center,1
+232,Two Bridges/Seward Park,3
+233,UN/Turtle Bay South,8
+234,Union Sq,7
+236,Upper East Side North,12
+237,Upper East Side South,12
+238,Upper West Side North,11
+239,Upper West Side South,10
+243,Washington Heights North,21
+244,Washington Heights South,21
+246,West Chelsea/Hudson Yards,5
+249,West Village,6
+261,World Trade Center,1
+262,Yorkville East,13
+263,Yorkville West,13
