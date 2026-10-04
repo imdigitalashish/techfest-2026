@@ -1,6 +1,6 @@
 # NullahNet — InnovateX 2026, Theme 3: Rising plastic pollution in coastal cities (Mumbai)
 
-A measured, tide-aware layer for Mumbai's existing nullah trash booms. It senses how full each boom pocket is, times clearance crews to the tide and the forecast, retrofits a one-way pocket and a fail-open fuse so a boom keeps its catch and never raises flood levels, and keeps signed evidence records so contractors are paid per verified kilogram.
+A measured, tide-aware layer for Mumbai's existing nullah trash booms. It senses how full each boom pocket is, times clearance crews to the tide and the forecast, proposes a retrofit (angled boom, one-way pocket, fail-open section) designed to keep the catch without raising flood levels, to be tested in a tow tank first, and keeps signed evidence records so clearances can be paid on evidenced kilograms.
 
 **Status:** a complete, documented *alternative* to the team's Delhi-zonal theme (Theme 1 was chosen).
 
