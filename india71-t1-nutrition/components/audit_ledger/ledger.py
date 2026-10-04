@@ -62,7 +62,7 @@ class Ledger:
 
     @classmethod
     def from_jsonl(cls, source: str | Path) -> "Ledger":
-        if isinstance(source, Path) or (isinstance(source, str) and Path(source).exists() and "\n" not in source):
+        if isinstance(source, Path) or (isinstance(source, str) and "\n" not in source and Path(source).exists()):
             text = Path(source).read_text(encoding="utf-8")
         else:
             text = str(source)

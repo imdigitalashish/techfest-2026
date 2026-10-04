@@ -32,8 +32,8 @@ def measure(cfg: SimConfig | None = None) -> dict:
         "at_birth_wasting": round(float(t[t.age_m == 0].wasted.mean()), 3),
     }
     # cumulative incidence by 24 m among children observed every month from birth to 24 m
-    full = t[t.age_m <= 24].groupby("child_key").agg(n=("age_m", "nunique"), ever=("wasted", "max"))
-    full = full[full.n >= 25]
+    full = t[t.age_m < 24].groupby("child_key").agg(n=("age_m", "nunique"), ever=("wasted", "max"))
+    full = full[full.n >= 24]
     res["cum_incidence_24m"] = round(float(full.ever.mean()), 3) if len(full) else None
     res["n_children_birth_to_24m"] = int(len(full))
     # recovery within 90 days: episodes starting at a month with wasted after not wasted

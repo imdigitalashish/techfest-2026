@@ -44,15 +44,15 @@ class SimConfig:
     p_maternal_short: float = 0.10
     p_migrant: float = 0.08
     # WLZ level and episode dynamics (tuned by calibrate.py; see calibration.yaml)
-    wlz_mean: float = -0.62
+    wlz_mean: float = -1.05
     wlz_child_sd: float = 0.55
     wlz_ar_sd: float = 0.32
     wlz_ar_phi: float = 0.6
-    lbw_wlz_shift: float = -1.25
-    birth_extra_sd: float = 0.55
-    episode_base_hazard: float = 0.035
+    lbw_wlz_shift: float = -1.45
+    birth_extra_sd: float = 0.62
+    episode_base_hazard: float = 0.05
     episode_depth: tuple = (0.7, 1.9)
-    recovery_keep: float = 0.55  # fraction of deficit kept each recovery month
+    recovery_keep: float = 0.72  # fraction of deficit kept each recovery month
     laz_mean_birth: float = -0.55
     laz_decline: float = 1.25
     laz_child_sd: float = 0.95

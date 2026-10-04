@@ -60,7 +60,9 @@ def stable_child_key(cluster_id: str, vault_key: bytes = DEFAULT_VAULT_KEY) -> s
 
 
 def records_from_frame(df: pd.DataFrame) -> list[IdentityRecord]:
-    rows = df.where(pd.notna(df), None).to_dict(orient="records")
+    rows = []
+    for row in df.to_dict(orient="records"):
+        rows.append({k: (v if isinstance(v, dict) or not pd.isna(v) else None) for k, v in row.items()})
     return [IdentityRecord.model_validate(row) for row in rows]
 
 

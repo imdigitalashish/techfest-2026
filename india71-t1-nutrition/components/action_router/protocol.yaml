@@ -1,0 +1,114 @@
+version: "0.1.0"
+assumptions: "Working timelines to verify against national CMAM protocol 2023 (VERIFY)."
+alerts:
+  sam:
+    - level: 0
+      owner_role: aww
+      action: "home_visit_and_referral"
+      due_days: 2
+      protocol_ref: "CMAM-2023-SAM-home-referral (VERIFY)"
+    - level: 1
+      owner_role: mo_phc
+      action: "medical_appraisal"
+      due_days: 7
+      protocol_ref: "CMAM-2023-SAM-medical-appraisal (VERIFY)"
+    - level: 2
+      owner_role: ls
+      action: "supervisor_follow_up_unappraised_sam"
+      due_days: 7
+      protocol_ref: "CMAM-2023-SAM-LS-day7 (VERIFY)"
+    - level: 3
+      owner_role: cdpo
+      action: "cdpo_mo_joint_escalation"
+      due_days: 14
+      protocol_ref: "CMAM-2023-SAM-day14 (VERIFY)"
+    - level: 4
+      owner_role: dpo
+      action: "monthly_district_review"
+      due_days: 30
+      protocol_ref: "CMAM-2023-SAM-district-review (VERIFY)"
+  mam:
+    - level: 0
+      owner_role: aww
+      action: "counselling_and_supplementary_nutrition"
+      due_days: 7
+      protocol_ref: "CMAM-2023-MAM-counselling-SNP (VERIFY)"
+    - level: 1
+      owner_role: aww
+      action: "remeasure_in_14_days"
+      due_days: 14
+      protocol_ref: "CMAM-2023-MAM-remeasure (VERIFY)"
+    - level: 2
+      owner_role: ls
+      action: "supervisor_review_not_improving"
+      due_days: 30
+      protocol_ref: "CMAM-2023-MAM-LS-day30 (VERIFY)"
+  growth_faltering:
+    - level: 0
+      owner_role: aww
+      action: "home_visit_and_counselling"
+      due_days: 7
+      protocol_ref: "Growth-monitoring-faltering-home-visit (VERIFY)"
+    - level: 1
+      owner_role: asha
+      action: "joint_visit_if_illness_flagged"
+      due_days: 7
+      protocol_ref: "Growth-monitoring-joint-ASHA-visit (VERIFY)"
+    - level: 2
+      owner_role: aww
+      action: "monthly_remeasure"
+      due_days: 30
+      protocol_ref: "Growth-monitoring-monthly-remeasure (VERIFY)"
+    - level: 3
+      owner_role: ls
+      action: "supervisor_review_still_faltering"
+      due_days: 30
+      protocol_ref: "Growth-monitoring-LS-day30 (VERIFY)"
+  risk_high:
+    - level: 0
+      owner_role: aww
+      action: "home_visit_and_counselling"
+      due_days: 7
+      protocol_ref: "Risk-high-home-visit (VERIFY)"
+    - level: 1
+      owner_role: asha
+      action: "joint_visit_if_illness_flagged"
+      due_days: 7
+      protocol_ref: "Risk-high-joint-ASHA-visit (VERIFY)"
+    - level: 2
+      owner_role: aww
+      action: "monthly_remeasure"
+      due_days: 30
+      protocol_ref: "Risk-high-monthly-remeasure (VERIFY)"
+    - level: 3
+      owner_role: ls
+      action: "supervisor_review_still_high_risk"
+      due_days: 30
+      protocol_ref: "Risk-high-LS-day30 (VERIFY)"
+  data_recheck:
+    - level: 0
+      owner_role: ls
+      action: "remeasure_random_sample_10_children"
+      due_days: 14
+      protocol_ref: "Data-quality-random-sample-remeasure (VERIFY)"
+    - level: 1
+      owner_role: cdpo
+      action: "equipment_check"
+      due_days: 30
+      protocol_ref: "Data-quality-equipment-check (VERIFY)"
+  health_signal:
+    - level: 0
+      owner_role: asha
+      action: "joint_health_follow_up"
+      due_days: 7
+      protocol_ref: "Health-signal-joint-follow-up (VERIFY)"
+    - level: 1
+      owner_role: mo_phc
+      action: "medical_appraisal"
+      due_days: 14
+      protocol_ref: "Health-signal-MO-review (VERIFY)"
+    - level: 2
+      owner_role: ls
+      action: "supervisor_review_pending_health_signal"
+      due_days: 30
+      protocol_ref: "Health-signal-LS-review (VERIFY)"
