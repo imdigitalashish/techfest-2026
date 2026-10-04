@@ -215,3 +215,10 @@ Apply at resume step 2.
 - IIPS NFHS-5 fact-sheet URLs return 404 (site reorganised). The NFHS-5 state values on disk come from pratapvardhan/NFHS-5 (CC-BY-4.0; Harvard Dataverse DOI 10.7910/DVN/42WNZF), to be cross-checked against a primary source before any on-screen use.
 - Next: spawn the demo builder; approve its "crazy" element; review; verify from a clean checkout; DEMO DONE.
 
+### 2026-10-04 18:09 IST — real-data layer for the demo verified (V4)
+- Spawned the demo builder: [T1 nutrition demo builder](ghapp://sessions/32ba9875-1517-4d14-a57f-4327e891a94d), session 32ba9875. It proposes its "crazy" element first; I approve before it builds.
+- Verified all 37 Poshan Tracker June 2025 state rows against the RS USQ 477 PDF.
+- Found a primary source for NFHS-5 state values: **Lok Sabha USQ 2668 (MWCD, 04.08.2023) Annexure**. The CC-BY compilation agrees on 35/36 states.
+- → `research/sources/state_gap_verified.csv` + [V4](research/sources/V4-state-gap-verified.md). **Poshan Tracker wasting < NFHS-5 wasting in 36/36 States/UTs** (REAL; caveated as an unexplained discrepancy).
+- Bonus datapoint: Poshan Tracker June 2023, ~7 crore measured, 7% wasted, 19% underweight (same LS answer).
+
