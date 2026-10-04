@@ -71,6 +71,20 @@ Command: `python eval/run_baseline.py` → [`eval/results/baseline.md`](../eval/
 - **Naive "rolling KS → refit" is worse than doing nothing:** Δlog-loss +0.0167 [+0.0115, +0.0220] dev and +0.0202 [+0.0157, +0.0247] holdout (95% moving-block bootstrap), with 48 alarms per day.
 - **Regime-adaptive heads help most:** −0.0133 [−0.0156, −0.0113] dev and −0.0132 [−0.0148, −0.0115] holdout. They are also the best policy in both FOMC windows (event −30 min … +60 min). For example, on 2024-05-01 log-loss is 0.7010 against 0.7329 for the static model.
 
+### 6b. Pre-registered v2 evaluation (46 days, holdout 2025-01 … 2026-10)
+- **Setup.** Protocol: [`eval/PREREGISTRATION.md`](../eval/PREREGISTRATION.md). Results: [`eval/results/v2_holdout.md`](../eval/results/v2_holdout.md). Train on 2023 (12 days), tune on 2024 (12), report 22 held-out days once. CIs are 97.5% paired day-cluster bootstraps.
+- **Textbook KS→retrain** is +0.0268 [+0.0220, +0.0317] log-loss vs static and worse on 21/22 days.
+- **Volatility-regime heads plus a harm gate**: −0.0093 [−0.0129, −0.0062], better on 22/22 days. Plain regime gating gives −0.0099 [−0.0136, −0.0068].
+- **Other adapters:** static GBDT −0.0052; daily walk-forward retraining −0.0009 (the CI spans zero); Fixed-Share over online experts −0.0010 (the CI spans zero).
+- **Calibrated KS** on 5 level-comparable features: 0.7 alarms/day.
+- **Is it tradable?** No:
+  - gross edge is 0.297 bps per signal against a 0.013 bps spread;
+  - break-even fee is 0.132 bps per side;
+  - Binance's published taker fees are 5.0 bps (Regular) and 1.7 bps (VIP 9);
+  - even the top-decile confidence rule (+0.414 bps taker) does not clear fees.
+
+The forecast's value is as an input to quoting, not as a standalone strategy.
+
 ## 7. What companies ship today (details: [`notes/industry-what-companies-ship.md`](notes/industry-what-companies-ship.md))
 
 | Org | What they ship or say (opened source) | Where we borrow or beat |
@@ -81,6 +95,7 @@ Command: `python eval/run_baseline.py` → [`eval/results/baseline.md`](../eval/
 | **Jane Street** | *Real-Time Market Data Forecasting*: "time series can be non-stationary": https://www.kaggle.com/competitions/jane-street-real-time-market-data-forecasting/overview. Top community thread on online CatBoost training: …/discussion/556544 | Borrow: online training as the default. |
 | **Two Sigma** | GMM on 17 factors gives four market regimes: https://www.twosigma.com/articles/a-machine-learning-approach-to-regime-modeling/ | Borrow: unsupervised regimes. Beat: our regimes are microstructural (volatility, depth) and switch in milliseconds, not months. |
 | **Tardis.dev** | Tick-level crypto order-book archives. First day of each month downloadable without a key (verified by download; other days return HTTP 401) | Our data source. |
+| **Binance (fee schedule)** | USDⓈ-M Futures fee table, Regular User USDT maker/taker 0.0200%/0.0500%, VIP 9 0.0000%/0.0170%: https://www.binance.com/en/fee/futureFee (opened in a rendered browser 2026-10-04); BTCUSDT tickSize 0.10 via https://fapi.binance.com/fapi/v1/exchangeInfo | The cost side of our edge table; decides "is it tradable?" |
 | Exchanges (Nasdaq Dynamic M-ELO, LULD bands, CME velocity logic) | Production rule-based regime detectors — **UNVERIFIED** tonight (the worker died before opening them) | Planned citation. Exchanges already run "shift detectors" with fixed rules; ours is learned and calibrated. |
 
 ## 8. Gaps → our innovation room

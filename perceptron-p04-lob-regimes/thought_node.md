@@ -10,17 +10,15 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED** (Supervisor, 09:55 IST, 4 Oct — user's decision: only 3 projects run at a time; P7 is the Perceptron pick unless the user overrides). The morning package is complete on `main`. No jobs are running.
-- **Plan (on resume):** "Invariance first, calibrated detection second, cheap adaptation third". Spikes: C6 shift monitor and C7 regime mixer ([ADR 001](architecture/adr/001-spike.md)).
-- **Resume point (exact, in order):**
-  1. Grow the data (resumes; skips days already on disk; batches of 5 files, each < 200 MB): `cd perceptron-p04-lob-regimes && data/fetch_batches.sh book_snapshot_5`. 9 of 46 first-of-month days (2023-01 … 2026-10) are on disk; 37 are missing.
-  2. Cost model for "is it tradable?": tick size verified (below); fee schedule still to open at the official Binance page (UNVERIFIED until then). Report gross mid-to-mid edge; taker edge net of crossing the spread, with an execution delay (book as of t + 50 ms); net of maker/taker fees; edge by confidence decile; break-even fee.
-  3. Harm gate (C6): one-sided CUSUM on ℓ_t − ln 2 using delayed labels, i.e. "the forecast is now worse than a coin flip". On alarm, shrink p toward 0.5. Evidence it targets real harm: the static model's log-loss in the FOMC windows is 0.7194 and 0.7329, above ln 2 = 0.6931 (`eval/results/baseline.md`). Calibrate H on dev; run the ratchet.
-  4. GBDT head: sklearn `HistGradientBoostingClassifier` on EWMA-normalised features (no download), as a static expert column in the Fixed-Share mixer; this tests the ADR antithesis "GBDT with volatility as a feature ≈ regime heads".
-  5. Split v2 (new flag, v1 stays reproducible): train 2023 · dev 2024 · holdout 2025–26. Add a walk-forward monthly-retrain baseline (fit on prior days only) and run all policies; workers should load days from cache to keep RAM low.
-  6. Refresh the abstract numbers, selection memo, landscape and this node; message the Supervisor only if the selection ranking changes.
-- **Needs from user:** Register by 15 Oct if P4 is chosen (the Supervisor currently recommends P7). Teammates' names and skills for the abstract's team section.
-- **Risks:** (a) Small edge (AUC 0.62–0.67): the story is robustness, not alpha. (b) The calibrated KS is either noisy (37/day) or quiet but blind (cand_003), so the harm gate is the next lever. (c) Data growth depends on network. (d) NFP dates are UNVERIFIED. (e) Latency was measured on a heavily shared machine.
+- **Phase:** 6 — final deliverables + cross-model reviews (resumed 11:16 IST, slot freed by P7). The v2 pre-registered evaluation is done.
+- **Plan:** the spike is C7 (volatility-regime gate) + C6 (harm gate: CUSUM of delayed loss − ln 2 → shrink toward 0.5; calibrated KS as audit). See ADR 001 *v2 outcome*.
+- **Doing:** cross-model reviews as child sessions: `gpt-6-astra` (max) hostile judge on the abstract and spike; `gpt-6-sol` (max) reproducing the headline numbers. Then the ledger, fixes, and DONE to the Supervisor.
+- **Results:**
+  - Held-out (22 days, 2025-01…2026-10, trained on 2023): static 0.6518; KS→retrain 0.6786; regime gate 0.6419; spike_gate 0.6425.
+  - Edge: break-even fee 0.132 bps/side vs taker fees 1.7–5.0 bps, so not tradable as a taker. Details: [`eval/results/v2_holdout.md`](eval/results/v2_holdout.md).
+- **Next (after DONE):** more event days (Binance continuous bookTicker 2023-05…2024-03 includes CPI/FOMC days, ~150–370 MB/day); calendar prior; spread head; compiled online step; LOBSTER transfer.
+- **Needs from user:** register by 15 Oct if P4 is chosen; teammates' names and skills for the `[TEAM]` placeholders in `deliverables/round1-abstract.md`.
+- **Risks:** small effects; the harm gate is unproven on the holdout (no events on free days); one instrument; latency measured on a shared machine.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -50,6 +48,9 @@
 - 2026-10-04 — **Split (frozen, `eval/config.py`):** train 2023-02-01, 2023-08-01 · dev 2023-09-01, 2023-11-01, 2023-12-01 · holdout 2024-05-01, 2024-11-01, 2025-08-01.
 - 2026-10-04 — **Primary metric:** prequential log-loss (proper scoring rule) with moving-block-bootstrap CIs; AUC/accuracy/edge secondary.
 - 2026-10-04 — **Spikes:** C6 shift monitor + C7 regime-adaptive mixer — see [ADR 001](architecture/adr/001-spike.md).
+- 2026-10-04 12:00 — **v2 protocol pre-registered** (`eval/PREREGISTRATION.md`, `d9ad7a9`). All 46 free days; train 2023, dev 2024, holdout 2025-01…2026-10; primary test is a 97.5% paired day-cluster bootstrap. Amendment 1 (`a9b310b`), made after dev and before the holdout, fixed H=10, B=600 and added `spike_gate`.
+- 2026-10-04 12:35 — **Spike revised by evidence.** The volatility-regime gate plus harm-gated abstention replaces the Fixed-Share mixer, which failed H1 on the holdout. The calibrated KS stays as a label-free audit (ADR 001 *v2 outcome*).
+- 2026-10-04 — **Costs:** Binance USDⓈ-M fees from the official page (Regular 2.0/5.0 bps, VIP 9 0.0/1.7 bps maker/taker). Taker edge is measured at +100 ms; maker figures are upper bounds.
 
 ## Components
 Full contracts: [architecture/components.md](architecture/components.md) · code `components/contracts.py`.
@@ -61,21 +62,26 @@ Full contracts: [architecture/components.md](architecture/components.md) · code
 | C3 | Labeler | `FeatureFrame` → `Labels` | raw sign of Δmid at h, ties dropped | | done | tie rate; leakage test |
 | C4 | Normaliser | X → Z | static z-score / EWMA z-score | | done | Δlog-loss vs static |
 | C5 | Forecaster heads | Z → P(up) | logistic regression | | done | log-loss, AUC |
-| C6 | Shift monitor | X, losses → `Alarm`s | rolling KS (Bonferroni), Page-Hinkley | **spike** | baseline done | false alarms/day on calm data · detection delay at events |
-| C7 | Adapter / mixer | heads, labels, alarms → p_t | static, periodic, SGD, refit-on-alarm, regime-gated, Fixed-Share | **spike** | baseline done | Δlog-loss vs static (CI) on holdout |
+| C6 | Shift monitor | X, losses → `Alarm`s | rolling KS (Bonferroni), Page-Hinkley | **spike** | v2 done: calibrated KS (audit, 0.7 alarms/day holdout) + harm gate (CUSUM loss − ln 2 → shrink) | alarms/day · detection delay at events · event-window loss |
+| C7 | Adapter / regime gate | heads, labels, alarms → p_t | static, periodic, SGD, refit-on-alarm, Fixed-Share, walk-forward, GBDT | **spike** | v2 done: regime gate −0.0099 vs static (22/22 holdout days) | Δlog-loss vs static, 97.5% day-cluster CI |
 | C8 | Evaluator | p, y, alarms → metrics | prequential, block bootstrap | | done | — |
 | C9 | Latency bench | step timings → p50/p99 | perf_counter_ns per step | | done (Python) | p99 µs vs budget |
 
 ## Selection memo
 _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-- **Winnability: 4/5** — The track is Optiver-sponsored and the judges are domain experts, which rewards measured realism. On day 1 we already have a leakage-tested pipeline on real Binance data and a non-obvious, evidence-backed finding: the textbook "rolling KS → retrain" fires 48 times a day and *raises* held-out log-loss by +0.020 [+0.016, +0.025]. Risk: P4 is the most "standard ML" of Theme 3, so expect crowding.
-- **Innovation headroom: 4/5** — The spike is a calibrated, harm-aware shift monitor (empirical null, plus a sequential loss test after Podkopaev & Ramdas, plus calendar priors). It drives a regime-adaptive head mixer whose switching rate rises on alarms instead of refitting on tiny windows. The 2026 frontier is adjacent but different: UQ-LOB (arXiv 2609.31491) calibrates forecasts from realised windows; Jeon (arXiv 2607.09230) classifies liquidity states around macro events. Neither does calibrated detection with adaptation inside a µs loop.
-- **Feasibility by the deadline: 5/5** — The end-to-end skeleton runs on the M5 Mac in about 3 minutes for 54 policy-days. No GPU is needed. The data is free (Tardis first-of-month days). Remaining work is incremental: more days, the harm gate, a GBDT head and a compiled step. Plan: MVP plus stretch done by 17 Nov, before the 19–25 Nov exams; the 1 Dec midway report needs no new work.
-- **Demo strength: 4/5** — Replay an FOMC day: price, alarm timeline (naive vs calibrated), mixer weights shifting to the high-volatility head at 18:00 UTC, rolling log-loss against the static model, and a latency panel. A live Binance websocket feed works at the venue (public, free). Weakness: the effect sizes are statistical (−0.013 log-loss), not dramatic PnL.
-- **Fit with the user's strengths: 4/5** — Streaming systems, typed contracts, latency budgets and evaluation rigour match large-scale systems work. There is less room for frontier-model work, though a small transformer head (TLOB-style) is optional.
-- **Biggest risk:** Small, noisy gains and only 8 days on disk. Judges may say "this edge is not tradable". Mitigation: grow to 24+ days, report bootstrap CIs, report edge in bps against the 1-tick spread and fees, and frame the work as *robustness and knowing when you're wrong*, which is what a market maker needs.
-- **One-line pitch:** "A 10-second BTC order-book forecaster that knows when the market has changed: calibrated shift alarms (the textbook KS fires 48×/day and hurts — we measured it) steer a microsecond-cheap mixture of regime-specific heads that stays sharp through FOMC releases."
-- **Overall: 4.2/5** (mean of the five scores).
+**Final version — 2026-10-04 12:40 IST.** Evidence: pre-registered held-out run on 22 real days ([`eval/results/v2_holdout.md`](eval/results/v2_holdout.md)); protocol and amendment committed before the run ([`eval/PREREGISTRATION.md`](eval/PREREGISTRATION.md)). Supersedes the 07:18 v1 memo (4.2/5), which rested on 6 days.
+- **Winnability: 3/5.**
+  - For: rigour and realism, which Optiver judges probe. Pre-registration; day-cluster CIs; receive-time clock; fees from Binance's official page. A measured, non-obvious failure of the textbook baseline: KS→retrain is +0.0268 [+0.0220, +0.0317] log-loss and worse on 21/22 held-out days.
+  - Against: the effect is small (best adapter −0.0099 vs static, ≈1.5% of log-loss), and the signal is not tradable after fees. Round 1 (plan-judged) looks strong; a top-3 finish at the finals is less likely.
+- **Innovation headroom: 3/5.**
+  - What survived: conditioning on the volatility regime (−0.0093 [−0.0129, −0.0062] with the harm gate, 22/22 days), which is a known idea. The registered Fixed-Share spike failed H1 (−0.0010, CI spans 0). The harm gate adds nothing on average (+0.0006); its value is event windows, and no scheduled event falls on a free holdout day.
+  - Room left: more event days (Binance's continuous bookTicker archive covers 2023-05…2024-03, including CPI/FOMC days), calendar-aware priors, a spread head.
+- **Feasibility: 5/5.** Built and evaluated. The whole pipeline runs on the M5 laptop (22 held-out days in ~4 min); data is free and MD5-pinned. The MVP is already met. The stretch work (compiled step, live replay) fits before 17 Nov.
+- **Demo strength: 4/5.** An FOMC replay (`deliverables/figures/day_2024-05-01.png`): the textbook KS fires every 30 min all day; the calibrated KS fires 9.5 min after the 18:00 UTC statement; the harm gate fires at 18:17; regime-head switching; rolling loss against a coin flip. Plus an "is it tradable?" table with official fees. Weakness: modest effect sizes; a live demo would need a live event.
+- **Fit with user's strengths: 4/5.** Streaming systems, typed contracts, latency budgets, rigorous evaluation. Little frontier-model work.
+- **Biggest risk:** judges see "regime-switching logistic heads" as incremental, while the parts that are genuinely new (harm gate, calibrated monitor) lack held-out evidence of benefit, for lack of event days in the free data.
+- **One-line pitch:** "On 22 held-out days, the textbook 'KS → retrain' made a BTC order-book forecaster worse on 21; volatility-conditioned heads with a calibrated, harm-aware monitor made it better on all 22. Official fees show why the signal belongs in quoting, not taking."
+- **Overall: 3.8/5** (mean of the five scores).
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor

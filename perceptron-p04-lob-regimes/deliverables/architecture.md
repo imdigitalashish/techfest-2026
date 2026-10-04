@@ -2,39 +2,51 @@
 
 ```mermaid
 flowchart TB
-  subgraph DATA["Market data (receive-time clock)"]
-    WS["Binance USD-M BTCUSDT<br/>5-level book + trades<br/>(Tardis archive replay / live websocket)"]
-    CAL["Macro calendar<br/>(FOMC/CPI release times,<br/>known in advance)"]
+  subgraph DATA["Market data — receive-time clock"]
+    WS["Binance USD-M BTCUSDT · 5-level book<br/>(Tardis replay or live websocket)"]
+    CAL["Macro calendar<br/>(FOMC / CPI times, known in advance)"]
   end
 
-  subgraph HOT["Online loop — one step per 1 s tick, budget ≤ 50 µs p99 (compiled)"]
-    F["C2 Causal features<br/>OFI L1 & L1-5 (1/5/30 s, ÷ depth)<br/>queue/depth imbalance · micro-price<br/>spread · realised vol · msg rate"]
+  subgraph HOT["Online loop — one step per 1 s tick · budget ≤ 50 µs p99 compiled (Python reference: 4.8 µs p50)"]
+    F["C2 Causal features<br/>OFI L1 and L1–5 over 1/5/30 s ÷ depth · queue/depth imbalance<br/>micro-price · spread · realised volatility"]
     N["C4 EWMA normaliser<br/>(label-free scale adaptation)"]
-    H["C5 Heads<br/>static · online SGD (fast/slow)<br/>periodic refit · regime heads<br/>(low / mid / high volatility)"]
-    M["C7 Fixed-Share mixer<br/>weights ∝ exp(−η·delayed loss)<br/>switch rate α ↑ on confirmed alarm"]
-    S["C6 Shift monitor ⚡<br/>① rolling KS, empirical-null thresholds<br/>② CUSUM / e-detector on delayed loss (harm gate)<br/>③ calendar prior"]
+    G["C7 Regime gate ⚡<br/>trailing 10-min volatility → 1 of 3 logistic heads<br/>(low / mid / high vol; fitted on training days)"]
+    H["C6a Harm gate ⚡<br/>CUSUM of delayed (log-loss − ln 2)<br/>alarm → shrink p toward 0.5 for 5 min"]
+    K["C6b Calibrated rolling KS ⚡ (audit)<br/>5 level-comparable features<br/>empirical leave-one-day-out null"]
+    Y["Delayed label y(t − 10 s)<br/>(observable only now)"]
     P(["P(mid up in 10 s)"])
   end
 
-  subgraph OFF["Offline (train days only — frozen)"]
-    TR["Fit scalers, heads per regime,<br/>KS reference + leave-one-day-out null"]
+  subgraph OFF["Offline — training days only, then frozen"]
+    TR["Scalers · regime edges and heads<br/>KS reference + empirical null"]
   end
 
-  subgraph EVAL["C8 Evaluation (prequential, label delay enforced)"]
-    E1["log-loss · AUC · edge bps vs spread+fees<br/>block-bootstrap CI · Diebold–Mariano"]
-    E2["false alarms / calm day @ fixed delay<br/>(FOMC timestamps, spliced streams)"]
-    E3["C9 latency p50/p99/p99.9"]
+  subgraph EVAL["C8 Evaluation — pre-registered, prequential, label delay enforced"]
+    E1["Log-loss (paired day-cluster bootstrap) · AUC<br/>vs static · textbook KS→retrain · daily retrain · GBDT"]
+    E2["Alarms per day · event-window loss<br/>(FOMC times from federalreserve.gov)"]
+    E3["Edge in bps: taker at +100 ms<br/>maker upper bound · official Binance fees"]
+    E4["C9 latency p50 / p99 per step"]
   end
 
-  WS --> F --> N --> H --> M --> P
-  F --> S
-  CAL --> S
-  M -- "delayed loss ℓ(t−h)" --> S
-  S -- "Alarm" --> M
-  TR -.-> N & H & S
-  P --> E1
-  S --> E2
-  M --> E3
+  WS --> F --> N --> G --> H --> P
+  F --> K
+  CAL -.-> K
+  Y -- "loss of the raw gated forecast" --> H
+  TR -.-> N & G & K
+  P --> E1 & E3
+  K --> E2
+  H --> E2
+  G --> E4
 ```
 
-**Reading the diagram.** Every arrow is a typed contract (`components/contracts.py`). The label for step *t* reaches the mixer and the harm gate only at *t + h*, which is when it would be observed live. The two ⚡ components are the spikes: the shift monitor decides *whether* the world changed in a way that hurts, and the mixer decides *how much* to trust each regime head. Neither ever refits on a tiny post-shift window; on our data that hurt (+0.020 held-out log-loss for KS→refit).
+**Reading the diagram.**
+- **Typed contracts.** Every arrow is a typed contract (`components/contracts.py`).
+- **Label delay.** The label for step *t* reaches the harm gate only at *t* + 10 s, when it would be observed live.
+- **The spike components (⚡):**
+  - the **regime gate** decides *which* model applies to the current state, conditioning on the variable the theory names (volatility);
+  - the **harm gate** decides *whether to trust it right now*: it abstains while the model is demonstrably worse than a coin flip;
+  - the **calibrated KS** is the label-free audit trail of covariate shift.
+- **What we rejected.** Refitting on tiny post-alarm windows (textbook KS→retrain) made held-out log-loss worse on 21 of 22 days. Mixing many online experts (Fixed-Share) did not beat a static model. Both remain in the code as baselines and ablations (`eval/results/v2_holdout.md`).
+- **Not drawn yet.** The calendar prior (dashed) is planned and not built yet.
+
+**Replay of a FOMC day (dev split, 2024-05-01):** ![FOMC day](figures/day_2024-05-01.png)

@@ -1,8 +1,25 @@
 # ADR 001 — Spike components: the calibrated, harm-aware shift monitor (C6) and the regime-adaptive head mixer (C7)
 
-- **Status:** accepted (first version, 2026-10-04). Revisit after the 12 Oct selection and again at the 1 Dec midway check.
+- **Status:** accepted, **revised 2026-10-04 by the pre-registered v2 evaluation** (see *v2 outcome* below). The spike is now C6 (calibrated KS audit + harm gate) + C7 (volatility-regime gate). The Fixed-Share mixer is demoted to an ablation. Revisit after the 12 Oct selection and at the 1 Dec midway check.
 - **Deciders:** project lead. Lean mode was in force overnight, so there was no independent adversarial sub-agent. The antithesis below was written by the lead against its own proposal, and an independent `rubber-duck` review is scheduled once the network allows (see *Follow-ups*).
 - **Evidence:** [`eval/results/baseline.md`](../../eval/results/baseline.md), [`eval/results/calibrated_ks.md`](../../eval/results/calibrated_ks.md), [`research/landscape.md`](../../research/landscape.md).
+
+## v2 outcome (pre-registered holdout, 2026-10-04)
+Protocol: [`eval/PREREGISTRATION.md`](../../eval/PREREGISTRATION.md), including Amendment 1, committed before the holdout run. Results: [`eval/results/v2_holdout.md`](../../eval/results/v2_holdout.md); 22 days, 2025-01 … 2026-10; models trained on 2023 only. Δ is pooled log-loss, negative is better; the CI is a 97.5% paired day-cluster bootstrap.
+
+- **H1 (registered spike = Fixed-Share + abstain expert + harm boost + calibrated KS < static): not supported.** −0.0010 [−0.0044, +0.0020]; better on 10/22 days.
+- **H2 (registered spike < textbook KS→refit): supported.** −0.0278 [−0.0316, −0.0245], 22/22.
+- **Post-dev `spike_gate`** (regime gate + harm-gated shrink toward 0.5 + calibrated KS as audit; Amendment 1):
+  - vs static: −0.0093 [−0.0129, −0.0062], 22/22 (H1b supported);
+  - vs KS→refit: −0.0361 [−0.0404, −0.0326], 22/22 (H2b supported);
+  - vs plain regime gating: +0.0006 [+0.0003, +0.0009], better on only 4/22 days. H3 is not supported: on average the harm gate costs a little, as Amendment 1 predicted from dev.
+- **The "GBDT ≈ regime heads" antithesis was tested.** Static GBDT reaches −0.0052 vs static, but plain regime gating beats it on 21/22 days (Δ GBDT − gate = +0.0047 [+0.0024, +0.0076]).
+- **Daily retraining is not the answer.** Walk-forward static gives −0.0009 [−0.0029, +0.0012]. The gain comes from *conditioning on the volatility regime*, not from refreshing a stale model.
+- **Detector rates.** The calibrated KS on the 5 level-comparable features raised 0.7 alarms/day on the holdout (16 over 22 days); the textbook KS raised 48/day. On the dev FOMC day (2024-05-01, 18:00 UTC statement), the calibrated KS fired at 18:09:32 and the harm gate at 18:17:43. No verified scheduled event falls on a holdout day, so holdout detection delay is unmeasured.
+- **Lessons.**
+  1. Mixing many online experts dilutes a good conditional model.
+  2. A harm gate's value lives in rare windows, so its average effect is ≈0 by construction. Judge it on event windows, which needs more event days.
+  3. Calibrating the KS was necessary but not sufficient. Choosing *which* features to monitor (levels that drift month to month vs comparable ones) mattered more.
 
 ## Context
 

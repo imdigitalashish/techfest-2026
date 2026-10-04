@@ -42,7 +42,7 @@ def rolling_mean(x: np.ndarray, w: int) -> np.ndarray:
 def main(day: str) -> None:
     ctx = build_context([load_day(d) for d in SPLIT_V2["train"]], CFG_V2)
     f, l = load_day(day)
-    res = {n: run_episode(n, f, l, ctx, POLICIES[n]) for n in ("static_snorm", "ks_refit", "spike")}
+    res = {n: run_episode(n, f, l, ctx, POLICIES[n]) for n in ("static_snorm", "ks_refit", "spike_gate")}
     hours = (f.grid_us - f.grid_us[0]) / 3.6e9 + (f.grid_us[0] % 86_400_000_000) / 3.6e9
     fig, ax = plt.subplots(4, 1, figsize=(12, 10), sharex=True, gridspec_kw={"height_ratios": [2, 1, 2, 2]})
     ax[0].plot(hours, f.mid, lw=0.6, color="k")
@@ -51,28 +51,27 @@ def main(day: str) -> None:
         for a in ax:
             a.axvline((e_us % 86_400_000_000) / 3.6e9, color="tab:red", ls="--", lw=1)
         ax[0].text((e_us % 86_400_000_000) / 3.6e9, f.mid.max(), f" {e_id}", color="tab:red", va="top", fontsize=8)
-    for row, (name, color) in enumerate((("ks_refit", "tab:gray"), ("spike", "tab:blue"))):
+    for row, (name, color) in enumerate((("ks_refit", "tab:gray"), ("spike_gate", "tab:blue"))):
         for al in res[name].alarms:
             ax[1].plot(hours[al.step], row + (0.3 if al.detector == "harm_cusum" else 0), "|", color=color, ms=10)
-    ax[1].set_yticks([0, 1, 1.3], ["textbook KS (all alarms)", "spike: calibrated KS", "spike: harm gate"])
+    ax[1].set_yticks([0, 1, 1.3], ["textbook KS (refits)", "calibrated KS (audit)", "harm gate (abstain)"])
     ax[1].set_ylim(-0.5, 1.8)
-    w = res["spike"].extra["w_trace"]
-    names = res["spike"].extra["head_names"]
-    th = hours[::60][: w.shape[0]]
-    groups = {"regime heads": [i for i, n in enumerate(names) if "regime" in n],
-              "abstain (p=0.5)": [i for i, n in enumerate(names) if "coin" in n],
-              "static / online / periodic": [i for i, n in enumerate(names) if "regime" not in n and "coin" not in n]}
-    ax[2].stackplot(th, *[w[: len(th), idx].sum(1) for idx in groups.values()], labels=list(groups), alpha=0.8)
-    ax[2].set_ylabel("spike mixer weight")
-    ax[2].legend(loc="upper left", fontsize=8)
-    for name, color in (("static_snorm", "tab:orange"), ("ks_refit", "tab:gray"), ("spike", "tab:blue")):
+    rv = f.col("rv_600s_bps")
+    regime = np.searchsorted(ctx.regime_edges, rv, side="right")
+    ax[2].plot(hours, regime, drawstyle="steps-post", lw=0.8, color="tab:blue")
+    ax[2].set_yticks([0, 1, 2], ["low-vol head", "mid-vol head", "high-vol head"])
+    ax[2].set_ylabel("active regime head")
+    twin = ax[2].twinx()
+    twin.plot(hours, rv, lw=0.5, color="tab:gray", alpha=0.6)
+    twin.set_ylabel("rv 10 min (bps)", color="tab:gray")
+    for name, color in (("static_snorm", "tab:orange"), ("ks_refit", "tab:gray"), ("spike_gate", "tab:blue")):
         ll = pointwise_logloss(res[name].p_up, l.y)
         ax[3].plot(hours, rolling_mean(ll, 1800), lw=0.9, color=color, label=name)
     ax[3].axhline(np.log(2), color="k", lw=0.8, ls=":", label="coin flip (ln 2)")
     ax[3].set_ylabel("30-min rolling log-loss")
     ax[3].set_xlabel("hour (UTC)")
     ax[3].legend(loc="upper left", fontsize=8)
-    fig.suptitle(f"{day}: static model vs textbook KS→refit vs spike (trained on 2023 only)", fontsize=11)
+    fig.suptitle(f"{day}: static model vs textbook KS→refit vs regime heads + harm gate (trained on 2023 only)", fontsize=11)
     fig.tight_layout()
     out = ROOT / "deliverables" / "figures" / f"day_{day}.png"
     out.parent.mkdir(parents=True, exist_ok=True)
