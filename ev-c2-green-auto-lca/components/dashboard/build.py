@@ -33,7 +33,7 @@ code{font-size:12px;background:#f1f3ef;padding:1px 4px;border-radius:4px}footer{
 <section class="row" id="cards"></section>
 <section><h2>What-if: grid emission factor for charging</h2>
 <p class="muted">Electricity stage = consumption (kWh/km) × grid factor at the meter. CEA FY2025-26 references: build margin 0.446 · average 0.675 · operating margin 0.963 kg CO<sub>2</sub>/kWh at generation (grossed up for 17.63% T&amp;D losses).</p>
-<input type="range" id="ef" min="0" max="1.4" step="0.005" style="width:60%"> <b id="efv"></b> kg CO<sub>2</sub>/kWh at generation
+Charging state (T&amp;D losses FY2023-24, Lok Sabha USQ 842): <select id="st"></select><br><input type="range" id="ef" min="0" max="1.4" step="0.005" style="width:60%"> <b id="efv"></b> kg CO<sub>2</sub>/kWh at generation
 <p id="whatif" class="big"></p><p id="breakeven" class="muted"></p></section>
 <section><h2>Where to collect Indian data next (share of rank-variance of the reduction)</h2><div id="gaps"></div>
 <p class="muted">Parameter uncertainty only (pedigree-derived lognormals, paired sampling). Scenario choices (average vs marginal grid) move the result far more — compare the scenarios above.</p></section>
@@ -69,13 +69,15 @@ function draw(){
  const ev=ps[c.bev];document.getElementById('ef').dataset.elec=ev.stages.electricity_production_wtt;whatif(true)}
 function whatif(reset){
  const r=R[sel.value],c=r.comparison,ev=r.products[c.bev],ice=r.products[c.ice];
- const elecRid=ev.params.elec,elec=DB.records[elecRid].value/100,td=0.1763;
+ const elecRid=ev.params.elec,elec=DB.records[elecRid].value/100,td=Number(document.getElementById('st').value);
  const slider=document.getElementById('ef');if(reset){slider.value=0.675}
  const g=Number(slider.value);document.getElementById('efv').textContent=fmt(g,3);
  const other=ev.total-ev.stages.electricity_production_wtt,evt=other+1000*elec*g/(1-td);
- document.getElementById('whatif').textContent=`EV ${fmt(evt)} vs petrol ${fmt(ice.total)} g/km → ${fmt(100*(1-evt/ice.total))}% lower`;
+ document.getElementById('whatif').textContent=`EV ${fmt(evt)} vs petrol ${fmt(ice.total)} g/km → ${fmt(100*(1-evt/ice.total))}% lower (meter factor ${fmt(g/(1-td),3)} kg CO2/kWh)`;
  const be=(ice.total-other)/1000/elec*(1-td);
- document.getElementById('breakeven').textContent=`Break-even grid factor (EV = petrol): ${fmt(be,3)} kg CO2/kWh at generation, i.e. ${fmt(be/(1-td),3)} at the meter. (Static what-if; production and petrol values fixed at this scenario's central values.)`}
+ document.getElementById('breakeven').textContent=`Break-even grid factor (EV = petrol): ${fmt(be,3)} kg CO2/kWh at generation, i.e. ${fmt(be/(1-td),3)} at the meter. (Static what-if; national generation mix — India runs one integrated grid — with the selected state's T&D losses, which include commercial losses; production and petrol values fixed at this scenario's central values.)`}
+const stSel=document.getElementById('st');const TD=Object.values(DB.records).filter(d=>d.id.endsWith('.td_loss_share.fy2023_24')).map(d=>[d.geography==='IN'?'All India':d.name.replace('T&D losses, ','').replace(' (share of energy available)',''),d.value]).sort((a,b)=>a[0]==='All India'?-1:b[0]==='All India'?1:a[0].localeCompare(b[0]));
+TD.forEach(([n,v])=>{const o=document.createElement('option');o.value=v;o.textContent=`${n} (${(100*v).toFixed(2)}%)`;stSel.appendChild(o)});stSel.onchange=()=>whatif(false);
 sel.onchange=draw;document.getElementById('ef').oninput=()=>whatif(false);window.onresize=draw;draw();
 </script></body></html>"""
 

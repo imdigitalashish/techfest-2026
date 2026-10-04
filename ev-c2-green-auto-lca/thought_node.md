@@ -51,7 +51,7 @@
 | C1 | Source registry + fetchers | SourceSpec → Source + raw file | sources.yaml + fetch_sources.sh | | built | % re-fetchable |
 | C2 | Factor store + validator | YAML → Record | pydantic schema | | built (23 records, 8 sources) | quote-verification rate |
 | C3 | Ingestion / extraction | Document → CandidateRecord | manual transcription | ★A | verifier built + ratchet 1 (0.6875→1.0, FA 0); extractor planned | field F1 vs gold set |
-| C4 | Grid-factor service | GridFactorQuery → GridFactor | CEA v22 national records | ★B | national built | reconstruction / back-test error |
+| C4 | Grid-factor service | GridFactorQuery → GridFactor | CEA v22 national records | ★B | baseline built: national margins + 35 state T&D (`greenauto/grid.py`, 4 tests) | reconstruction / back-test error |
 | C5 | Product-system builder | VehicleSpec → ProductSystem | case1 YAML (5 scenarios) | | built | % params resolved |
 | C6 | Calculation engine | ProductSystem → StageResult | engine.py | | built | replication MAPE (0.06 %) |
 | C7 | Uncertainty / sensitivity / DQI | → UncertaintyResult | pedigree lognormal, paired MC | | built | interval calibration |
@@ -89,3 +89,9 @@ Supervisor directive: no sub-agents, small requests, push every 30 min. Committi
 - Frozen `components/ingestion/autoresearch/eval.py`: gold = 16 `verified` records with local PDFs; negatives = the same quotes with one digit changed (32); scalar = found-rate, forced to 0 on any false accept.
 - Ledger (`results.tsv`): baseline v0 0.8125 → re-baseline 0.6875 after a **data fix** (OM/BM quotes did not contain their numbers — the eval caught my own transcription weakness) → v1 fragments-in-order **0.9375** (kept) → v2 600-char window: found 16/16 but **accepted a perturbed number** → scalar 0, reverted → v3 3-line table window **1.0**, FA 0/32 (kept). Overfit risk: only one quote uses the fallback; re-check on held-out records as sources grow.
 - Dashboard rebuilt with updated provenance; tests 6/6; eval unchanged (replication MAPE 0.06 %).
+
+### 2026-10-04 08:05 IST — Spike B baseline: grid-factor service + state T&D
+- Parsed the Lok Sabha USQ 842 annex into **35 state/UT T&D-loss records** (`data/fetch/parse_state_td_losses.py`, FY2023-24; quotes verified by the spike-A verifier: held-out re-check 51/51 found, 0/102 false accepts).
+- `greenauto/grid.py`: GridFactorQuery → GridFactor with record ids + derivation. Logic: CEA says India runs one integrated grid (since Dec 2013), so the generation mix is national; the state part is T&D loss. Meter factors range **0.754 (Goa) – 1.300 kg CO2/kWh (J&K + Ladakh, 48 % losses incl. commercial)**; refuses CO2e until coal-upstream data exist. 10/10 tests pass.
+- Dashboard: charging-state selector in the what-if (verified in browser: All India 36.9 % saving = engine; Goa 41.2 %).
+- DB now 58 records (51 verified, 7 derived), 8 sources.
