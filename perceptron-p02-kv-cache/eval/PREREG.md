@@ -127,3 +127,15 @@ Committed while T1 was still running; no test-split outcome had been seen. It re
   - Memory claims refer to **post-prefill retained state**: our prefill builds the full KV before compressing.
   - No absolute "first" or "zero footprint" claims; the sketch is KV-derived retained state.
 
+### Amendment 4: 2026-10-04 16:21 IST
+Committed after T1's results were seen (16:18) and before any T2 outcome had been seen: T2 started 16:18, and only its progress lines were read. Nothing registered above changes.
+- **Observation from T1 (exploratory, not confirmatory).** At keep 0.10, RoD recalls 0.854 vs the full cache's 0.833 (RoD − full +0.021, 95% CI −0.15 to +0.19). At the registered 0.25 it recalls 0.583 (S7 failed).
+  - Mechanism seen in T1's rows: the needle-block hit rate is 0.88 at 0.10 and 1.00 at 0.25, but accuracy given a hit falls from 0.98 to 0.55.
+  - 16 of RoD's 20 wrong answers at 0.25 name another needle's value. Recalling more needle-like blocks causes key–value confusion.
+- **R1: replication on T2** (fresh contexts, seed 1). RoD − full at keep 0.10, with a paired context bootstrap.
+  - "Replicated" means the lower 95% bound is > −0.15, i.e. within 15 recall points of the full cache.
+  - The margin is lenient because 12 contexts cannot resolve 5 points (T1's CI half-width is about 0.17). It is fixed now, before T2.
+- **R2: mechanism on T2 (descriptive).** RoD's accuracy given a needle-block hit at 0.10 vs 0.25, and the share of wrong answers naming another needle's value.
+- **E5 (exploratory, T1 contexts).** RoD with recall capped at **2 blocks** at keep 0.25 and 0.50 ("precision-first recall"). Added to the post-hoc job, which has not started.
+- **Reporting.** The 0.10 result is reported with its status: exploratory on T1, and replicated or not on T2 under R1. It is never presented as the pre-registered primary.
+
