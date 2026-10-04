@@ -10,12 +10,19 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 — Brief (not started)
-- **Plan:** _(lead fills)_
-- **Doing:** _(what, and which agents/sessions)_
-- **Next:** _(ordered)_
+- **Phase:** 0 done → 1 (research) + 4 (skeleton), in Supervisor LEAN MODE (05:51 IST): no sub-agents, small requests, no downloads > 200 MB.
+- **Plan:** Morning package in the order a→g: thought node → `research/landscape.md` → `architecture/components.md` + contracts → ADR 001 → selection memo → `deliverables/round1-abstract.md` + `deliverables/architecture.md` → ABIDES skeleton + paired-seed eval (TWAP/VWAP vs impact-aware agent), if the Python env installs.
+- **Doing:** Lead alone, sequentially.
+- **Next:** Install the minimal ABIDES runtime (numpy/pandas/scipy plus a local `pomegranate` shim), then write the landscape from primary sources while sims run.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** _(lead fills)_
+- **Risks:** (1) Network saturation: all 6 research sub-agents died at 0 turns with 408s and the first pip install timed out. (2) ABIDES pins 2021-era deps (numpy 1.22, pandas 1.2.4, pomegranate 0.14.5, gym 0.18, ray 1.7), so installing on Python 3.11/arm64 is risky; mitigation: skip gym/ray, shim pomegranate. (3) RL agents that "beat TWAP" often win only by capturing the spread, which Optiver judges will spot. So we report the decomposition: spread vs impact vs timing.
+
+### Phase 0 — what we must be able to show (from the Round-1 rubric)
+- Crux (20%): the agent's own trades move the price it later pays (transient + permanent impact, book resilience, other agents' reactions), so slippage is endogenous; a replay backtest can't see it.
+- Soundness (25%): a named simulator (ABIDES rmsc04), named baselines (TWAP, VWAP, Almgren–Chriss), a named impact model, and a fully specified metric (implementation shortfall in bps vs the arrival mid, with forced completion).
+- Novelty (20%): beyond "PPO beats TWAP": exact counterfactual twins (same seed, with vs without our order) used as ground truth for impact, and an impact estimate the agent can deploy.
+- Evaluation (15%): paired seeds (common random numbers), disjoint train/val/test seed sets, 95% bootstrap CIs, risk metrics (std, CVaR), and an IS decomposition.
+- Team fit (10%): week-by-week milestones that avoid 19–25 Nov.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -59,3 +66,12 @@ _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 02:05 IST — Phase 0 read; research fan-out; ABIDES cloned
+- Read PLAYBOOK, the seeded brief and `_briefs/perceptron.txt`. The brief matches the official text for Problem 5 (MV: TWAP/VWAP baseline plus one agent that beats it on slippage; stretch: counterfactual book, feedback loops).
+- Spawned 6 research sub-agents (papers · simulators · companies · social/competitions · data/empirics/eval · counterfactual/feedback). **All 6 failed at 0 turns** with "408 Timed out reading request body", so no output.
+- Cloned `jpmorganchase/abides-jpmc-public` into the gitignored `.cache/` (HEAD `f9cbe51`, last commit 2023-12-13, BSD-3). Read `abides-markets/abides_markets/configs/rmsc04.py`: 1 exchange, 1000 noise, 102 value, 2 adaptive market makers, 12 momentum agents, 09:30–10:00. Each agent's `RandomState` seed is drawn in sequence from the global `np.random` after `np.random.seed(seed)`. At runtime only the oracle's megashock draws use the global RNG. So appending our agent *after* the background agents leaves every background agent's random stream unchanged, which allows exact paired counterfactuals. One caveat: `config_add_agents` re-draws the latency model, so both twins must add an agent (ours vs a null agent).
+- The first `uv pip install` timed out (network).
+
+### 2026-10-04 05:51 IST — Supervisor: LEAN MODE
+No sub-agents until 08:30; small requests; push at least every 30 min. Proceeding sequentially in the order a→g.
