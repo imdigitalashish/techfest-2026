@@ -1,0 +1,61 @@
+{
+  "synthetic": true,
+  "seeds": "101-130",
+  "subject": "numeracy",
+  "budget_frac": 0.1,
+  "inflation_need_corr": 0.0,
+  "method": {
+    "k_strata": 4,
+    "bootstrap_R": 200,
+    "bias_model": "mean",
+    "children_per_school": 12,
+    "double_check_frac": 0.2,
+    "design": "risk_pps"
+  },
+  "primary": {
+    "metric": "coverage of nominal 90% intervals (method fh), true block share meeting the goal",
+    "threshold": 0.85,
+    "pass": true
+  },
+  "secondary_mae_pass": true,
+  "summary": {
+    "fh": {
+      "coverage90": 0.9277777777777778,
+      "coverage_wilson95": [
+        0.8803669851119694,
+        0.9573106678240365
+      ],
+      "n_blocks": 180,
+      "mae_pp": 2.5525235135418662,
+      "raw_mae_pp": 6.128018350085848,
+      "mean_half_width_pp": 6.469923678167317,
+      "mean_error_pp": 0.22289057487748193
+    },
+    "direct": {
+      "coverage90": 0.9388888888888889,
+      "coverage_wilson95": [
+        0.8938978709273628,
+        0.965537643123864
+      ],
+      "n_blocks": 180,
+      "mae_pp": 2.57041103935097,
+      "raw_mae_pp": 6.128018350085848,
+      "mean_half_width_pp": 6.5799125840922414,
+      "mean_error_pp": 0.39980900402038194
+    },
+    "allocation": {
+      "raw_mean": 2832.2,
+      "moderated_mean": 2826.8,
+      "oracle_mean": 2875.4666666666667,
+      "diff_moderated_minus_raw_mean": -5.4,
+      "diff_ci95": [
+        -12.0924315736372,
+        1.2924315736371987
+      ],
+      "gain_shown": false,
+      "n_worlds": 30
+    }
+  },
+  "runtime_s": 30.8,
+  "command": "python3 eval/coverage_test.py --seeds 101-130 --subject numeracy --out eval/results/coverage_heldout_numeracy.json"
+}
