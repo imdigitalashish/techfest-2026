@@ -1,4 +1,4 @@
-"""P2 demo backend: serves the offline page (demo/web/) and, for LIVE mode, runs the committed harness on this CPU.
+"""P2 demo backend: serves the offline page (demo/web/) and, with --live, runs the committed harness on this CPU.
 
 Every live number is computed by eval/kvbench_torch.py: Engine.prefill/forward/answer, stream_idx, topk_idx,
 window_scores, gather, rod_build, rod_answer, block_scores. Each method's store is built exactly as kvbench_torch.main()
@@ -6,13 +6,19 @@ builds it, BEFORE any question is seen. This file only assembles the document, c
 The X-ray heat replays rod_answer's own scoring lines (block_scores, softmax_lift on the 4-bit layer-5 sketch) and
 is checked to select the same blocks rod_answer recalled.
 
-Usage: nice -n 10 python3 demo/server.py [--port 8502] [--replay-only]
-Env:   DEMO_MEM_MIN (default 30): load the model only while `sysctl kern.memorystatus_level` >= this
+Memory: the model loads lazily on the first live request and is freed by /api/unload or on exit. Its 2-D weights stay
+fp16 in RAM (the exported tensors, exactly) and every matmul upcasts them to fp32 in a reused scratch buffer, so the
+arithmetic is the harness's fp32 arithmetic in ~2.8 GB instead of ~5.3 GB (--fp32 keeps kvbench_torch.load_model()).
+smoke.sh checks that this engine reproduces committed T1 rows exactly.
+
+Usage: nice -n 10 python3 demo/server.py [--port 8502] [--live] [--fp32]
+Env:   DEMO_MEM_MIN (default 30): load the model only if `sysctl kern.memorystatus_level` >= this
        DEMO_THREADS (default: torch's default)
 """
 from __future__ import annotations
 
 import argparse
+import gc
 import json
 import os
 import random
@@ -22,7 +28,6 @@ import threading
 import time
 import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
 
 import common
 
@@ -38,6 +43,64 @@ DEFAULTS = {"needle": "The judges' favourite dessert at Techfest 2026 is mango k
             "depth": 0.35, "doc_seed": 1, "ctx_tokens": 3000, "budget": 0.10}
 LABELS = {"full": "Full cache", "streaming": "StreamingLLM (ours)", "h2o": "H2O-style (ours)",
           "snapkv": "SnapKV-variant (ours, +4 sinks)", "rod": "RoD (ours)", "rodlex": "RoD-lexical (control)"}
+HEAD_CHUNK = 16384  # lm_head rows upcast per step; chunked == unchunked bitwise (checked on this Mac)
+
+
+def load_model_fp16(kb, torch, F):
+    """kvbench_torch.load_model with the 2-D weights kept fp16 and upcast to fp32 at each matmul (same arithmetic)."""
+    from safetensors.torch import load_file
+    from transformers import LlamaConfig, LlamaForCausalLM
+    cfg = json.loads(kb.CONFIG.read_text())
+    for k in ("quantization", "quantization_config"):
+        cfg.pop(k, None)
+    config = LlamaConfig(**cfg)
+    with torch.device("meta"):
+        model = LlamaForCausalLM(config)
+    sd = {k: (v if v.dim() == 2 else v.float()) for k, v in load_file(str(kb.WEIGHTS)).items()}
+    missing, unexpected = model.load_state_dict(sd, strict=False, assign=True)
+    assert not unexpected and set(missing) <= {"lm_head.weight"}, (missing, unexpected)
+    model.model.rotary_emb = type(model.model.rotary_emb)(config=config)
+    scratch = {}
+
+    def up(w):
+        b = scratch.get(tuple(w.shape))
+        if b is None:
+            b = scratch[tuple(w.shape)] = torch.empty(w.shape, dtype=torch.float32)
+        return b.copy_(w)
+
+    class UpLinear(torch.nn.Module):
+        def __init__(self, w):
+            super().__init__()
+            self.weight = w
+
+        def forward(self, x):
+            return F.linear(x, up(self.weight))
+
+    class UpHead(UpLinear):
+        def forward(self, x):
+            W = self.weight
+            return torch.cat([F.linear(x, up(W[i:i + HEAD_CHUNK])) for i in range(0, W.shape[0], HEAD_CHUNK)], -1)
+
+    class UpEmbedding(torch.nn.Module):
+        def __init__(self, w):
+            super().__init__()
+            self.weight = w
+
+        def forward(self, ids):
+            return F.embedding(ids, self.weight).float()
+
+    for layer in model.model.layers:
+        for parent, names in ((layer.self_attn, ("q_proj", "k_proj", "v_proj", "o_proj")), (layer.mlp, ("gate_proj", "up_proj", "down_proj"))):
+            for n in names:
+                lin = getattr(parent, n)
+                assert lin.bias is None and lin.weight.dtype == torch.float16, n
+                setattr(parent, n, UpLinear(lin.weight))
+    emb = model.model.embed_tokens.weight
+    model.model.embed_tokens = UpEmbedding(emb)
+    model.lm_head = UpHead(emb if "lm_head.weight" in missing else model.lm_head.weight)
+    for name, prm in model.named_parameters():
+        assert prm.dtype == (torch.float16 if prm.dim() == 2 else torch.float32), name
+    return model.eval()
 
 
 def mem_level():
@@ -48,32 +111,32 @@ def mem_level():
 
 
 class Live:
-    def __init__(self, replay_only=False):
-        self.state, self.detail, self.load_s, self.err = "starting", "", None, None
+    def __init__(self, allow=False, fp32=False):
+        self.allow, self.fp32 = allow, fp32
+        self.state, self.detail = ("idle", "the 1B model loads on the first live request") if allow else ("off", "replay-only: start demo/run.sh --live")
+        self.load_s = self.err = self.E = self.doc = self.busy = None
+        self.weights = None
         self.lock = threading.Lock()
-        self.busy = None
         self.rate = 140.0  # prefill tokens/s on the M5 (4 threads, measured); updated after every prefill
-        self.doc = None
-        if replay_only:
-            self.state, self.detail = "off", "replay-only mode (run.sh --replay)"
-        else:
-            threading.Thread(target=self._load, daemon=True).start()
 
-    # ---------------- model ----------------
-    def _load(self):
+    # ---------------- model (lazy) ----------------
+    def ensure(self):
+        if self.state == "ready":
+            return
+        if not self.allow:
+            raise RuntimeError("live mode is off: start the demo with demo/run.sh --live")
+        ok, why = common.data_ready()
+        if not ok:
+            self.state, self.detail = "nodata", why
+            raise RuntimeError(why)
+        lvl = mem_level()
+        if lvl is not None and lvl < MEM_MIN:
+            self.detail = f"memory pressure (kern.memorystatus_level {lvl} < {MEM_MIN}); the model was not loaded, try again later"
+            raise RuntimeError(self.detail)
+        self.state, self.detail = "loading", "loading Llama-3.2-1B-Instruct"
+        self.busy = {"what": "load", "t0": time.time(), "eta_s": 15}
+        t0 = time.time()
         try:
-            ok, why = common.data_ready()
-            if not ok:
-                self.state, self.detail = "nodata", why
-                return
-            while True:
-                lvl = mem_level()
-                if lvl is None or lvl >= MEM_MIN:
-                    break
-                self.state, self.detail = "waiting", f"memory pressure: kern.memorystatus_level {lvl} < {MEM_MIN}; retrying"
-                time.sleep(5)
-            self.state, self.detail = "loading", "loading Llama-3.2-1B-Instruct (fp32, CPU)"
-            t0 = time.time()
             import torch
             import torch.nn.functional as F
             import kvbench_torch as kb
@@ -81,20 +144,34 @@ class Live:
                 torch.set_num_threads(int(os.environ["DEMO_THREADS"]))
             self.torch, self.F, self.kb = torch, F, kb
             self.tok = common.load_tokenizer()
-            self.E = kb.Engine(kb.load_model(), self.tok)
+            model = kb.load_model() if self.fp32 else load_model_fp16(kb, torch, F)
+            self.E = kb.Engine(model, self.tok)
             self.paras = (common.DATA / "haystack.txt").read_text(encoding="utf-8").split("\n")
             self.per_tok = 2 * self.E.nl * self.E.nkv * self.E.hd * 2
+            self.weights = ("fp32 weights (kvbench_torch.load_model)" if self.fp32 else
+                            "fp16 weights in RAM, upcast to fp32 for every matmul (same arithmetic as the harness)")
             self.load_s = round(time.time() - t0, 1)
-            self.state, self.detail = "ready", f"Llama-3.2-1B-Instruct · fp32 on CPU · {torch.get_num_threads()} threads"
-        except Exception as e:  # surfaced on the page
+            self.state, self.detail = "ready", f"Llama-3.2-1B-Instruct · {self.weights} · {torch.get_num_threads()} CPU threads"
+        except Exception as e:
             self.state, self.detail, self.err = "error", f"{type(e).__name__}: {e}", traceback.format_exc()
+            raise
+
+    def unload(self, p=None):
+        self.E = self.doc = None
+        gc.collect()
+        if self.allow:
+            self.state, self.detail = "idle", "model freed; it loads again on the next live request"
+        return self.status()
+
+    def load(self, p=None):
+        return self.status()
 
     def status(self):
         b = None
         if self.busy:
             b = dict(self.busy, elapsed_s=round(time.time() - self.busy["t0"], 1))
         return {"state": self.state, "detail": self.detail, "load_s": self.load_s, "busy": b, "mem_level": mem_level(),
-                "mem_min": MEM_MIN, "has_doc": self.doc is not None, "defaults": DEFAULTS}
+                "mem_min": MEM_MIN, "has_doc": self.doc is not None, "defaults": DEFAULTS, "allow": self.allow, "weights": self.weights}
 
     # ---------------- document ----------------
     def _build_doc(self, needle, depth, doc_seed, ctx_tokens):
@@ -296,11 +373,12 @@ class Live:
         return {"run": run, "sample": sample, "T": T, "n": len(cmp), "n_same": sum(c["same"] for c in cmp), "rows": cmp}
 
     def run(self, name, p):
-        if self.state != "ready":
-            raise RuntimeError(f"live engine not ready ({self.state}: {self.detail})")
         if not self.lock.acquire(blocking=False):
             raise BlockingIOError("busy with another live request")
         try:
+            if name == "unload":
+                return self.unload()
+            self.ensure()
             t0 = time.time()
             r = getattr(self, name)(p)
             r["wall_s"] = round(time.time() - t0, 2)
@@ -339,7 +417,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         path = self.path.split("?")[0]
-        name = {"/api/compress": "compress", "/api/budget": "budget", "/api/ask": "ask", "/api/reproduce": "reproduce"}.get(path)
+        name = {"/api/compress": "compress", "/api/budget": "budget", "/api/ask": "ask", "/api/reproduce": "reproduce",
+                "/api/load": "load", "/api/unload": "unload"}.get(path)
         if name is None:
             return self._send(404, {"error": "not found"})
         try:
@@ -359,9 +438,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8502)
     ap.add_argument("--host", default="127.0.0.1")
-    ap.add_argument("--replay-only", action="store_true")
+    ap.add_argument("--live", action="store_true", help="allow LIVE mode (model loads lazily on the first live request)")
+    ap.add_argument("--fp32", action="store_true", help="hold fp32 weights (kvbench_torch.load_model) instead of fp16 + upcast")
     a = ap.parse_args()
-    Handler.live = Live(replay_only=a.replay_only)
+    Handler.live = Live(allow=a.live, fp32=a.fp32)
     srv = None
     for port in range(a.port, a.port + 20):
         try:

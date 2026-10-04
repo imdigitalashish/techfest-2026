@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Recall-on-Demand · P2 KV-cache demo</title>
+<link rel="icon" href="data:,">
 <style>
 :root{--bg:#fff;--panel:#f5f7fa;--ink:#12161c;--ink2:#434c58;--ink3:#5c6570;--line:#dce1e7;--rod:#0b57d0;--rodw:#d6e4fb;
 --amber:#f2a900;--amberink:#7a5100;--needle:#d93025;--ok:#137333;--okw:#cfe9d7;--bad:#b3261e;--badw:#f8dcd9;--gray:#9aa3ad;--grayw:#e3e7ec}
@@ -29,6 +30,8 @@ main{max-width:1640px;margin:0 auto;padding:18px 24px 40px}
 .seg span{display:block;padding:7px 14px;border-right:1px solid var(--line);color:var(--ink2);white-space:nowrap}
 .seg label:last-child span{border-right:0}
 .seg input:checked+span{background:var(--ink);color:#fff}
+.seg input:disabled+span{opacity:.35;cursor:not-allowed}
+.cav{color:var(--amberink)}
 .squeeze span{min-width:92px;text-align:center}
 .squeeze span b{display:block;font-size:17px;line-height:1.1}
 .squeeze span em{display:block;height:5px;margin:5px auto 0;border-radius:3px;background:currentColor;opacity:.55}
@@ -133,7 +136,7 @@ input[type=range]{width:100%;accent-color:var(--ink)}
     <div>
       <div class="panel" id="qcard"></div>
       <div class="panel tracks"><h2>What each method still holds for this context <small>hover a position to inspect a 64-token block</small></h2><div id="tracks"></div></div>
-      <div class="panel"><h2>Every method, same question, same budget <small>answers are the committed rows, verbatim</small></h2><table class="board" id="board"></table></div>
+      <div class="panel"><h2>Every method, same question, same budget <small>answers are the committed rows, verbatim</small></h2><table class="board" id="board"></table><p class="note cav" id="boardnote" style="margin:8px 0 0"></p></div>
     </div>
     <aside>
       <div class="panel"><h2>48 held-out questions <small>click one · stripes: Full · StreamingLLM · RoD</small></h2><div class="grid" id="grid"></div><div class="legend"><span><s class="c-ok"></s>answered right</span><span><s class="c-bad"></s>wrong</span></div></div>
@@ -185,10 +188,23 @@ const row = (rn, m, b, s, q) => { const t = idx(rn)[rkey(m, b)]; return t ? t.ge
 const tab = (rn, m, b) => { const f = FULLISH.has(m) ? 1 : (+b) / 100; return rn.table.find(t => t.m === m && Math.abs(t.f - f) < 1e-9) || null; };
 const nOk = t => Math.round(t.acc * t.n);
 const verdict = prefix => (R.verdicts.find(v => v.startsWith(prefix)) || "").replace(/^- /, "");
+function caveat(rn) { // shown next to every place where RoD beats the full cache
+  const full = tab(rn, "full", "100");
+  if (rn.key === "T2") return "Caveat: T2's full-cache ceiling is depressed by a 10-token answer limit (amendment 5; E6 sensitivity).";
+  if (rn.key === "T3") { const h = rn.mech.rod["10"], l = rn.mech.rodlex["10"];
+    return `Caveat: aliased keys defeat even the full cache (recall ${full.md.acc}); at 10% RoD's needle-block hit rate is ${pct(h.hit_rate)} vs ${pct(l.hit_rate)} for RoD-lexical.`; }
+  if (rn.key === "T1") {
+    const vals = s => rn.contexts[s].needles.map(n => n.value);
+    const wrong = [...idx(rn)["full|100"].values()].filter(r => !r.correct);
+    const other = wrong.filter(r => vals(r.s).some(v => v !== rn.contexts[r.s].needles[r.q].value && r.answer.replace(/,/g, "").includes(v)));
+    return `Caveat: ${md(verdict("- **S7** (RoD − full cache, keep 0.1"))}, not a significant difference. ${other.length} of the full cache's ${wrong.length} wrong T1 answers name another fact's value.`;
+  }
+  return "";
+}
 
 function controls() {
   const runs = $("#runs");
-  runs.innerHTML = R.runs.map((r, i) => `<label title="${esc(r.sub)}"><input type="radio" name="run" value="${i}" ${i === ST.run ? "checked" : ""}><span>${esc(r.label)}</span></label>`).join("");
+  runs.innerHTML = R.runs.map((r, i) => r.methods.includes("full") ? `<label title="${esc(r.sub)}"><input type="radio" name="run" value="${i}" ${i === ST.run ? "checked" : ""}><span>${esc(r.label)}</span></label>` : "").join("");
   runs.onchange = e => { ST.run = +e.target.value; ST.s = Math.min(ST.s, run().contexts.length - 1); render(); };
   const bs = $("#budgets");
   bs.innerHTML = ["100", "50", "25", "10"].map(b => `<label><input type="radio" name="b" value="${b}" ${b === ST.b ? "checked" : ""}><span><b>${b}%</b><em style="width:${Math.max(6, +b * 0.7)}px"></em></span></label>`).join("");
@@ -213,7 +229,8 @@ function thesis() {
     T1: b === "25" ? md(verdict("- **S7** (RoD − full cache, keep 0.25")) : md(verdict("- **Primary**")),
     T2: `The full cache itself is weak on paraphrased templates (${full.md.acc}), so RoD's 10% score above it means fewer look-alike records in view, not "better than full" in general. ` + md(verdict("- **R1**")),
   };
-  $("#runnote").innerHTML = notes[run().key] || "";
+  const rodB = b === "100" ? null : tab(rn, "rod", b);
+  $("#runnote").innerHTML = (rodB && rodB.acc > full.acc) || rn.key === "T3" ? `<span class="cav">${caveat(rn)}</span>` : (notes[rn.key] || "");
 }
 
 function qcard() {
@@ -337,6 +354,8 @@ function board() {
     }
   }
   $("#board").innerHTML = h;
+  const rr = row(rn, "rod", b, ST.s, ST.q);
+  $("#boardnote").innerHTML = rr && rr.correct && !fr.correct ? `RoD is right where the full cache is wrong on this question. ${caveat(rn)}` : "";
 }
 
 // ---------------- 48-question grid ----------------
@@ -428,10 +447,11 @@ function prov() {
 
 function syncControls() {
   for (const i of document.querySelectorAll('#runs input')) i.checked = +i.value === ST.run;
-  for (const i of document.querySelectorAll('#budgets input')) i.checked = i.value === ST.b;
+  for (const i of document.querySelectorAll('#budgets input')) { i.disabled = !run().fracs.includes(i.value); i.checked = i.value === ST.b; i.parentElement.title = i.disabled ? `${run().label}: no committed rows at ${i.value}%` : ""; }
 }
 function render() {
   if (!R) return;
+  if (!run().fracs.includes(ST.b)) ST.b = run().fracs.includes("10") ? "10" : run().fracs[0];
   syncControls(); thesis(); qcard(); replayTracks(); board(); grid(); chart(); mech(); prov();
   if (!$("#replay").hidden) history.replaceState(null, "", `#replay?run=${run().key}&b=${ST.b}&s=${ST.s}&q=${ST.q}`);
 }
@@ -455,12 +475,12 @@ async function api(path, body) {
 }
 function engineChip() {
   const s = LV.status || {}, el = $("#eng"), t = el.querySelector("span");
-  const txt = {ready: `live engine ready${s.load_s ? " · model loaded in " + s.load_s + " s" : ""}`, loading: "live engine: loading the 1B model…",
-    starting: "live engine: starting…", waiting: "live engine waiting: memory pressure", nodata: "live engine off: run demo/fetch.sh once",
-    off: "live engine off (replay-only)", offline: "live engine offline: start demo/run.sh", error: "live engine error"}[s.state] || s.state;
+  const txt = {ready: `live engine ready${s.load_s ? " · loaded in " + s.load_s + " s" : ""}`, loading: "live engine: loading the 1B model…",
+    idle: "live engine: off until first use", nodata: "live engine: run demo/fetch.sh once",
+    off: "replay mode · live off (run.sh --live)", offline: "replay mode · no live server", error: "live engine error"}[s.state] || s.state;
   t.textContent = s.busy ? `live engine busy: ${s.busy.what}…` : txt;
   el.title = s.detail || "";
-  el.className = "chip " + (s.busy ? "busy" : s.state === "ready" ? "ready" : ["error", "nodata", "offline"].includes(s.state) ? "err" : "busy");
+  el.className = "chip " + (s.busy ? "busy" : s.state === "ready" ? "ready" : ["error", "nodata"].includes(s.state) ? "err" : s.state === "loading" ? "busy" : "");
 }
 async function poll() {
   let s;
@@ -470,17 +490,27 @@ async function poll() {
   if (LV.busy && s.busy) progress(s.busy);
   if (LV.inited) { fillDefaults(); liveButtons(); }
 }
-function schedule() { clearTimeout(LV.pollT); const fast = !LV.status || LV.status.state !== "ready" || LV.busy; LV.pollT = setTimeout(async () => { await poll(); schedule(); }, fast ? 700 : 5000); }
+function schedule() { clearTimeout(LV.pollT); const fast = LV.busy || (LV.status && LV.status.state === "loading"); LV.pollT = setTimeout(async () => { await poll(); schedule(); }, fast ? 700 : 5000); }
 function progress(b) {
-  const what = {prefill: `Prefilling ${(b.T || 0).toLocaleString()} tokens on this CPU, then building every store before any question exists`,
+  const what = {load: "Loading the 1B model: fp16 weights into RAM (~3 GB), upcast to fp32 for every matmul", prefill: `Prefilling ${(b.T || 0).toLocaleString()} tokens on this CPU, then building every store before any question exists`,
     answer: "Answering with every method (RoD scores, recalls and re-prefills its blocks)", budget: "Rebuilding the stores at the new budget",
     reproduce: "Re-running a committed context"}[b.what] || b.what;
   $("#lprog").innerHTML = `<div class="prog"><i style="transform:scaleX(${Math.min(0.98, b.elapsed_s / Math.max(1, b.eta_s)).toFixed(3)})"></i></div><div class="kv">${esc(what)} · ${b.elapsed_s.toFixed(0)} s of ~${b.eta_s.toFixed(0)} s</div>`;
 }
 function liveButtons() {
-  const ready = LV.status && LV.status.state === "ready" && !LV.busy;
-  $("#lc").disabled = !ready; $("#la").disabled = !ready || !LV.lay;
-  if (!LV.lay) $("#ltracks").innerHTML = `<p class="empty">${ready ? "Plant a fact and press <b>Compress</b>: the model reads the document once and every method builds its memory before any question exists." : esc((LV.status && LV.status.detail) || "Waiting for the live engine…")}</p>`;
+  const st = (LV.status && LV.status.state) || "offline", ready = st === "ready" && !LV.busy, usable = (st === "ready" || st === "idle") && !LV.busy;
+  $("#lc").disabled = !usable; $("#la").disabled = !ready || !LV.lay;
+  const eng = {idle: `<b>off</b> · the 1B model loads on your first <i>Compress</i> (~7 s, ~3 GB RAM) <button class="btn ghost" id="lload">Load now</button>`,
+    loading: "<b>loading…</b>", ready: `<b>ready</b> · ${esc(LV.status.weights || "")} <button class="btn ghost" id="lunload">Stop and free memory</button>`,
+    off: "<b>off in this session</b> · restart with <code>demo/run.sh --live</code> to plant your own fact", offline: "<b>no live server</b> · start <code>demo/run.sh --live</code>",
+    nodata: `<b>needs a one-time fetch</b> · run <code>demo/fetch.sh</code> (${esc(LV.status.detail)})`, error: `<b class="warn">error</b> · ${esc(LV.status && LV.status.detail)}`}[st] || esc(st);
+  const el = $("#lengine");
+  if (el.dataset.k !== st + LV.busy) { el.dataset.k = st + LV.busy; el.innerHTML = `<span>live engine</span><span>${eng}</span>`;
+    const l = $("#lload"), u = $("#lunload");
+    if (l) l.onclick = () => withBusy(async () => { await api("/api/load", {}); });
+    if (u) u.onclick = () => withBusy(async () => { await api("/api/unload", {}); LV.lay = LV.ans = LV.lastQ = null; }); }
+  for (const b of el.querySelectorAll("button")) b.disabled = LV.busy;
+  if (!LV.lay) $("#ltracks").innerHTML = `<p class="empty">${usable ? "Plant a fact and press <b>Compress</b>: the model reads the document once and every method builds its memory before any question exists." : esc((LV.status && LV.status.detail) || "Waiting for the live engine…")}</p>`;
 }
 function fillDefaults() {
   const d = LV.status && LV.status.defaults; if (!d || LV.filled) return;
@@ -494,6 +524,7 @@ function liveInit() {
   LV.inited = true;
   $("#live").innerHTML = `<p class="thesis">Plant any fact in a ~3,000-token Wikipedia document, squeeze the KV memory, then ask a question the compressor never saw. Same model, same committed code as the evaluation, running on this laptop's CPU.</p>
   <div class="lcols"><div>
+    <div class="panel"><div class="kv" id="lengine"></div></div>
     <div class="panel step"><h2><b>1</b>Plant a fact</h2>
       <div class="field"><label for="ln"><span class="syn">SYNTHETIC</span>Fact sentence, planted in real WikiText-103 text</label><textarea id="ln" maxlength="400"></textarea></div>
       <div class="field"><label for="le">Answer to look for in each reply (case-insensitive)</label><input type="text" id="le" maxlength="80"></div>
@@ -599,17 +630,24 @@ function liveBoard() {
   $("#lfoot").innerHTML = `<span>question sent</span><b>“${esc(A.question)}”</b><span>RoD recalled</span><b>blocks [${r.chosen.join(", ")}]${r.needle_block != null ? ` · your fact is in block ${r.needle_block}: ${r.hit ? "recalled" : "not recalled"}` : " · your fact is resident"}</b>`
     + `<span>X-ray check</span><b>${r.consistent ? "the drawn scores select exactly the blocks RoD recalled" : "MISMATCH between drawn scores and RoD's choice"}</b><span>budget check</span><b>RoD at answer time ${MiB(A.answers.find(a => a.method === "rod").answer_time_bytes)} ≤ budget ${MiB(A.budget_bytes)} MiB</b>`
     + `<span>wall time</span><b>${A.wall_s} s for all six methods</b>`;
+  const full = A.answers.find(a => a.method === "full"), rodA = A.answers.find(a => a.method === "rod");
+  if (rodA.correct && !full.correct) $("#lfoot").innerHTML += `<span class="cav">caveat</span><b class="cav">RoD is right where the full cache is wrong in this single example; the harness stops every answer after 10 tokens. ${R.runs.some(r => r.key === "T2") ? caveat(R.runs.find(r => r.key === "T2")) : ""}</b>`;
 }
 function evidence() {
   const el = $("#levid"); if (!el) return;
   const bv = +$("#lb").value, cb = [10, 25, 50];
   const near = cb.includes(bv) ? [bv] : [Math.max(...cb.filter(c => c < bv)), Math.min(...cb.filter(c => c > bv))];
   let h = `<tr><td style="color:var(--ink3)">run · budget</td><td style="color:var(--ink3)">RoD</td><td style="color:var(--ink3)">StreamingLLM</td><td style="color:var(--ink3)">best baseline</td><td style="color:var(--ink3)">full cache (100%)</td></tr>`;
+  const cav = [];
   for (const rn of R.runs.filter(r => ["T1", "T2", "T3"].includes(r.key))) for (const b of near) {
     const t = m => tab(rn, m, String(b)), base = QA.map(m => t(m)).filter(Boolean).sort((x, y) => y.acc - x.acc)[0];
-    h += `<tr><td>${esc(rn.label)} · ${b}%</td><td><b style="color:var(--rod)">${t("rod").md.acc}</b></td><td>${t("streaming").md.acc}</td><td>${base.md.acc} <span style="color:var(--ink3)">${esc(nm(base.m))}</span></td><td>${tab(rn, "full", "100").md.acc}</td></tr>`;
+    if (!t("rod")) continue;
+    const beats = t("rod").acc > tab(rn, "full", "100").acc;
+    if (beats && !cav.includes(rn)) cav.push(rn);
+    h += `<tr><td>${esc(rn.label)} · ${b}%</td><td><b style="color:var(--rod)">${t("rod").md.acc}</b></td><td>${t("streaming") ? t("streaming").md.acc : "–"}</td><td>${base ? `${base.md.acc} <span style="color:var(--ink3)">${esc(nm(base.m))}</span>` : "–"}</td><td>${tab(rn, "full", "100").md.acc}${beats ? " †" : ""}</td></tr>`;
   }
-  el.innerHTML = h + (near.length > 1 ? `<tr><td colspan="5" style="color:var(--ink3)">no committed run at ${bv}%: nearest measured budgets shown</td></tr>` : "");
+  el.innerHTML = h + (near.length > 1 ? `<tr><td colspan="5" style="color:var(--ink3)">no committed run at ${bv}%: nearest measured budgets shown</td></tr>` : "")
+    + cav.map(rn => `<tr><td colspan="5" class="cav">† ${esc(rn.label)}: ${caveat(rn)}</td></tr>`).join("");
 }
 
 // ---------------- boot ----------------
