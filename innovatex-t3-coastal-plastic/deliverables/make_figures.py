@@ -78,8 +78,46 @@ def levers() -> None:
     plt.close(fig)
 
 
+def retrofit_concept() -> None:
+    """Top-view concept sketch of the retrofit. Not to scale; PLANNED; untested."""
+    from matplotlib.patches import FancyArrowPatch, Polygon, Rectangle, Wedge
+    fig, ax = plt.subplots(figsize=(10, 5.6))
+    ax.set_xlim(0, 10); ax.set_ylim(0, 6); ax.set_aspect("equal"); ax.axis("off")
+    ax.add_patch(Rectangle((0, 0), 10, 0.8, color="#b9a98c"))
+    ax.add_patch(Rectangle((0, 5.2), 10, 0.8, color="#b9a98c"))
+    ax.add_patch(Rectangle((0, 0.8), 10, 4.4, color="#d7e9f2"))
+    ax.text(0.15, 0.3, "near bank: crew access, existing conveyor", fontsize=10)
+    ax.text(0.15, 5.5, "far bank", fontsize=10)
+    ax.add_patch(FancyArrowPatch((0.6, 3.6), (2.4, 3.6), arrowstyle="-|>", mutation_scale=18, color="#1f6f8b", lw=2))
+    ax.text(0.6, 3.85, "ebb / storm flow → sea", fontsize=10, color="#1f6f8b")
+    ax.add_patch(FancyArrowPatch((2.4, 2.4), (0.6, 2.4), arrowstyle="-|>", mutation_scale=18, color="#7f8c8d", lw=2, ls="--"))
+    ax.text(0.6, 2.0, "flood tide (reverses)", fontsize=10, color="#7f8c8d")
+    ax.plot([8.6, 8.6], [0.8, 5.2], color="#999", lw=3, ls=":")
+    ax.text(8.7, 4.6, "today:\nsquare-on\nsteel-net boom", fontsize=9, color="#666")
+    ax.plot([3.6, 7.6], [5.2, 1.7], color="#c0392b", lw=4)
+    ax.text(5.9, 3.9, "retrofit: angled boom\n(normal velocity = u·sin θ)", fontsize=10, color="#c0392b", rotation=-41)
+    ax.plot([5.0, 5.75], [3.98, 3.32], color="#8e44ad", lw=6)
+    ax.add_patch(Wedge((5.0, 3.98), 0.75, 220, 300, color="#8e44ad", alpha=0.25))
+    ax.text(3.25, 3.0, "fail-open section:\nhinged, counterweighted;\nintended to open at a set head\n(opening head, delay, reset: to test)",
+            fontsize=9, color="#8e44ad")
+    ax.add_patch(Polygon([[7.6, 1.7], [9.4, 1.7], [9.4, 0.8], [7.6, 0.8]], closed=True, color="#f5cba7", ec="#e67e22", lw=2))
+    ax.text(7.7, 1.05, "bank pocket", fontsize=10)
+    for x in (7.65, 7.75, 7.85):
+        ax.plot([x, x + 0.18], [1.7, 1.95], color="#e67e22", lw=2)
+    ax.text(5.2, 0.95, "one-way flaps (retention\nunder reversal: to test)", fontsize=9, color="#e67e22")
+    ax.plot([9.6], [0.4], "s", color="#333", ms=10)
+    ax.add_patch(Wedge((9.6, 0.4), 1.6, 100, 160, color="#2c3e50", alpha=0.12))
+    ax.text(8.9, 0.62, "sensor pole", fontsize=8.5)
+    ax.text(4.55, 0.06, "camera: mat area in pocket (fill) · ultrasonic over open water (stage)\nif the camera is degraded: fill = unknown → crews follow the roster", fontsize=8.5, color="#2c3e50")
+    ax.text(0.15, 4.75, "CONCEPT · NOT TO SCALE · PLANNED · UNTESTED", fontsize=12, weight="bold", color="#555")
+    fig.tight_layout()
+    fig.savefig(FIG / "fig_retrofit_concept.png", dpi=150)
+    plt.close(fig)
+
+
 if __name__ == "__main__":
     FIG.mkdir(parents=True, exist_ok=True)
     escape_split()
     levers()
+    retrofit_concept()
     print("wrote", ", ".join(p.name for p in sorted(FIG.glob("*.png"))))

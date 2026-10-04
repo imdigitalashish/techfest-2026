@@ -16,6 +16,7 @@ FILES = {
     "twin": "components/twin_sim/results/metrics.json",
     "an": "components/twin_sim/results/analysis.json",
     "mrv": "components/mrv_ledger/results/metrics.json",
+    "mrvd": "components/mrv_ledger/results/eval_detail.json",
     "det": "components/detection/results/metrics.json",
     "detzs": "components/detection/results/zeroshot_test_metrics.json",
     "gron": "components/detection/results/zeroshot_groningen_eval.json",
@@ -81,6 +82,10 @@ ALIASES: dict[str, tuple[str, str, str]] = {
     "mrv_small": ("mrv", "recall_inflated_x1.2-1.5", "pct1"),
     "mrv_phantom": ("mrv", "recall_phantom", "pct0"),
     "mrv_wet": ("mrv", "recall_wetted_or_silted", "pct0"),
+    "mrv_infl": ("mrv", "recall_inflated_x1.2-3", "pct1"),
+    "mrv_dens125": ("mrvd", "reconciliation.sensitivity.false_flag_rate_if_true_density_x1.25", "pct1"),
+    "mrv_trunc_chain": ("mrvd", "tamper.truncate_tail.detected_chain_only", "pct0"),
+    "mrv_trunc_anchor": ("mrvd", "tamper.truncate_tail.detected_with_anchor", "pct0"),
 }
 
 

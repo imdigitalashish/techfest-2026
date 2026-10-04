@@ -108,7 +108,7 @@ _v2, 4 Oct 2026, 16:30 IST (after the afternoon evidence; final after the cross-
   - AGPL-3.0 on the detector stack for any commercial use;
   - "why not The Ocean Cleanup?"
 - **Verdict (honest):** **against switching.** T3's mean is ≈ 3.0 vs T1's 3.4 after hostile review. T3's strongest card (named buyer and budget, Mumbai specificity) does not outweigh its modest measured gains, a ~7× costlier node and a strong incumbent at the named sites. Keep T3 as a documented alternative. It becomes competitive only if a two-hour reversal test shows clear pocket retention before 10 Oct.
-- **One-line pitch:** *"Mumbai's trash booms leak in fast flow, are cleared on a fixed schedule and are paid on claimed loads. NullahNet retrofits them so crews clear at the right tide, the boom keeps its catch and never raises flood levels, and contractors are paid per verified kilogram."*
+- **One-line pitch:** *"Mumbai already clears its nullah trash booms daily under contract. NullahNet proposes to make them measurable: tide-timed clearance, a retrofit designed to keep the catch without raising flood levels (tested in a tow tank first), and pay on evidenced kilograms."*
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor

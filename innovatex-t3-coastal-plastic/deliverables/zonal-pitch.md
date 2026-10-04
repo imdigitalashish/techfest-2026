@@ -5,20 +5,20 @@ Status: complete as an **alternative** to the team's chosen Delhi-zonal theme (T
 
 | File | What it is |
 |---|---|
-| [`zonal-deck.md`](zonal-deck.md) → [`zonal-deck.pdf`](zonal-deck.pdf) · [`zonal-deck.pptx`](zonal-deck.pptx) | 10 main slides + 4 backups. Speaker notes per slide carry timing, what to say, the line to land and what not to say. The PPTX holds the notes. |
-| [`qa-prep.md`](qa-prep.md) | Twenty-one likely judge questions with answers; every number is bound to a source or a committed run |
+| [`zonal-deck.md`](zonal-deck.md) → [`zonal-deck.pdf`](zonal-deck.pdf) · [`zonal-deck.pptx`](zonal-deck.pptx) | 10 main slides + 5 backups. Speaker notes per slide carry timing, what to say, the line to land and what not to say. The PPTX holds the notes. |
+| [`qa-prep.md`](qa-prep.md) | Twenty-six likely judge questions with answers; every number is bound to a source or a committed run |
 | [`presenter-card.md`](presenter-card.md) → [`presenter-card.pdf`](presenter-card.pdf) | One A4 page: run of show, numbers to remember, fast answers, don't-say list |
 | [`prototype-plan.md`](prototype-plan.md) | Round-2 plan: tow-tank flume, edge node, tests T1–T6, three bills of materials with URL and date per part, schedule around the exams |
 | [`figures/`](figures/) | Deck figures, drawn from committed results by [`make_figures.py`](make_figures.py) |
 
-**One-line pitch:** Mumbai's trash booms leak in fast flow, are cleared on a fixed schedule and are paid on claimed loads. NullahNet retrofits them so crews clear at the right tide, the boom keeps its catch and never raises flood levels, and contractors are paid per verified kilogram.
+**One-line pitch:** Mumbai already clears its nullah trash booms daily under contract. NullahNet proposes to make them measurable: crews clear at the right tide, a retrofit designed to keep the catch without raising flood levels is tested in a tow tank first, and clearances are paid on evidenced kilograms.
 
 **Headline numbers (each bound to its source):**
 - 5 million kg a year leaks from the metro region (The Ocean Cleanup survey, 2026).
 - BMC is growing its boom network from 9 to 23 booms at ≈ ₹1 crore each.
-- In our twin (SIMULATED), 92.5% of escaped plastic slips under or through the boom.
-- Tide-aware dispatch vs clear-when-full: −5.6% escaped plastic, better in 39 of 40 draws (SIMULATED).
-- One sensor node costs ₹83,481.98, including the enclosure.
+- In our twin (SIMULATED, assumed capture curve), 92.5% of escaped plastic passes under or through the boom.
+- Full dispatch policy vs a fill-fraction rule: −5.6% escaped plastic, lower in 39 of 40 parameter settings of one model (SIMULATED).
+- One sensor node: ₹83,481.98 in listed parts with enclosure (installation and servicing extra).
 
 **How the package is built (no hand-typed numbers):**
 1. `python3 innovatex-t3-coastal-plastic/eval/render_docs.py` renders `src/*.md` with committed results.

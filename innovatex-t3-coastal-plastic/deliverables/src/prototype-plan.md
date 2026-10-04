@@ -2,28 +2,40 @@
 
 > Every price row carries its product URL and access date (2026-10-04). Subtotals are bound to `research/fact-check.md`, and results to committed runs. Labels: **SIMULATED**, **SYNTHETIC**, **SENSITIVITY**, **ASSUMPTION**, **PLANNED**. Architecture: [`../architecture/components.md`](../architecture/components.md). Spike rationale: [ADR 001](../architecture/adr/001-spike.md).
 
-## 1. What we demonstrate on 1 Dec and at the finals
+## 1. What we commit to by 1 Dec, and what is conditional
+**Committed (needs no field permission): a closed-loop bench rig.**
+
 1. **Tow-tank flume.** A clear channel in which a towing carriage pulls a model boom through still water at set speeds; towing back reverses the flow. On it we compare a straight boom, an angled boom, and the angled boom with the one-way pocket and fail-open fuse (Spike 2).
-2. **Edge sensor node over the pocket.** The same design as the field node: camera + ultrasonic range sensor + load cell. It sends `SiteTelemetry` (see contracts) to the cloud.
+2. **Edge sensor node over the pocket.** The same design as the field node: a camera over the pocket (mat area, i.e. fill), an ultrasonic sensor over open water (water level) and a load cell (mass). It sends `SiteTelemetry` (see contracts) to the cloud.
 3. **Cloud twin, dispatch, dashboard and evidence records** (BUILT today). The flume appears as a live site beside SIMULATED Mumbai outfalls, and each emptying of the pocket becomes a signed evidence record checked against the load cell.
+
+**Conditional:** field measurement at a real BMC boom happens only with permission, a safety plan and a site survey (§8).
 
 ## 2. Why a tow tank, and the design
 - **Why towing instead of pumping:** a pumped flume needs thousands of litres per hour to reach a few tenths of a metre per second, even in a narrow channel. Towing gives the same relative velocity with a small motor, exact speed control and free flow reversal. Large boom test facilities do this. Ohmsett tows equipment from {{f:F28|three movable bridges}} at up to {{f:F28|6 knots}} "to simulate ocean and river current flow".
 - **Channel:** one acrylic sheet cut into two walls and a floor, about 2.4 m long and 0.3 m wide, with about 0.15 m of water (ASSUMPTION: design targets; final dimensions follow the sheet thickness quoted).
 - **Carriage and speed:** a 12 V, 100 RPM geared motor winds a cord on a spool of about 0.1 m diameter. Full speed is π × 0.1 m × 100/60 ≈ 0.5 m/s (ASSUMPTION: unloaded speed; we calibrate the real speed from video). Runs straddle the boom escape speed of about {{f:F14|0.35 m/s}} (ITOPF).
-- **Boom models:** PVC-pipe floats with a nylon-mesh skirt, at four angles to the motion (90°, 45°, 30°, 20°). The **one-way pocket** sits at the bank end with HDPE flaps on SS 316 hinges. The **fail-open fuse** is a hinged boom section held by a counterweight, set to open at a chosen water-level difference; the pocket sits outside its path.
+- **Boom models:** PVC-pipe floats with a nylon-mesh skirt, at four angles to the motion (90°, 45°, 30°, 20°). The **one-way pocket** sits at the bank end with HDPE flaps on SS 316 hinges. The **fail-open section** is a hinged boom section held by a counterweight, *intended* to open at a chosen water-level difference. The pocket sits outside its path. Whether it opens in time, clears jams and resets is what T3 tests; nothing here guarantees flood safety.
 - **Test items:** real carry-bag and film pieces, multilayer sachets, small PET bottles and thermocol, colour-tagged by type, in a fixed mix per run (ASSUMPTION: mix proportions until a Mumbai composition survey is cited).
 - **Scaling:** we claim *comparative* behaviour between designs, not field efficiencies.
 
-## 3. Test protocol (each condition ≥5 runs; report mean ± s.d.)
+## 3. Test protocol and acceptance gates
+Design rules for every test:
+- paired and randomised: the same item batch for each design, in alternating, randomised order;
+- at least ten paired runs per condition;
+- report the paired mean difference with its 95% interval;
+- calibrate towing speed from video, discarding the acceleration and settling segments.
+
+Thresholds marked (A) are targets we set in advance (ASSUMPTION), not measured facts.
 | Test | What we vary | Scalar metric | Pass / kill |
 |---|---|---|---|
 | T1 Capture | design × speed (three levels) | items captured ÷ items met | — (characterisation) |
-| T2 Retention under reversal (Spike 2) | design × reversals (one, three, five) | items still held ÷ items captured | pocket beats the angled boom by more than run-to-run s.d.; else drop the retention claim |
-| T3 Head rise and fuse | blockage (none to full) × speed | water-level difference across the boom (two range sensors on the carriage); opening head; items lost when the fuse opens | head rise stays under a set cap; the pocket keeps its catch when the fuse opens |
-| T4 Fill alert (blinded) | fill states set by one teammate under glare, darkness, spray, occlusion | fill-% error; empty/half/full accuracy | — (feeds the fill estimator) |
+| T2 Retention under reversal (Spike 2) | design × reversals (one, three, five) | items still held ÷ items captured | the pocket's paired retention gain over the angled boom must exceed a minimum useful effect of fifteen percentage points (A), with the 95% interval above zero; else drop the retention claim |
+| T3 Head rise and release | blockage (none to full) × speed × debris (film, cloth tangles, grit) | water-level difference across the boom (two range sensors); opening head; opening delay; residual obstruction; reset after jams; items lost from the pocket at opening | the cap is set before testing at the head that overtops the unretrofitted model boom in T1 (A); the section must open below the cap in every run; report retention during release as measured |
+| T4 Fill estimate (blinded) | fill states set by one teammate × water level × glare, darkness, spray, occlusion | camera mat-area fill error vs the painted gauge; share of frames usable | fill error within ten percentage points and usable in nine of ten daylight frames (A); otherwise fill is "unknown" and dispatch falls back to the roster |
 | T5 Clearance | pocket design | seconds to empty; grams per person-minute (load cell) | — |
 | T6 Boom angle | angle × speed | capture vs speed across the boom | calibrates the twin's capture curve, which is an ASSUMPTION today |
+| T7 Power and outage | node duty cycle; power cut; network loss | measured watts; days of autonomy; records buffered and resent | measured load replaces the assumed load in the solar sizing; no record lost after a 24 h outage (A) |
 
 T2, T3 and T6 replace the twin's assumed retention and capture parameters with measured ones.
 
@@ -44,7 +56,14 @@ Prices are as listed on the product page on the access date. GST treatment diffe
 | 12 V → 5 V | SmartElex TPS5430 buck module 5 V 3 A (below the official 5 V/5 A, 27 W PSU rating — bench-test; upgrade if brown-outs) | 1 | 335.00 | 335.00 | https://robocraze.com/products/smartelex-tps5430-buck-module-5v-3a-dc-dc-converter | 2026-10-04 |
 
 Plus an IP66 enclosure: Polycarbonate Junction Box, IP66, 160x250x115 mm, ₹ 1,200/piece — https://www.indiamart.com/proddetail/polycarbonate-junction-box-2859133826973.html — accessed 2026-10-04.
-**Node total: {{f:D04|₹83,481.98}}** (electronics {{f:F26|₹82,281.98}} + enclosure). Not priced yet: SS 316 pole clamps, cable glands, rain gauge, lens wiper (UNVERIFIED). The battery is about half the node cost; the duty-cycled power profile needs a much smaller one (see sensing research).
+**Node total, listed parts only: {{f:D04|₹83,481.98}}** (electronics {{f:F26|₹82,281.98}} + enclosure). This excludes installation, anchoring, the retrofit itself, connectivity plans, servicing and waste handling.
+
+**Fix before procurement (from the research file's own flags):**
+- The 5 V / 3 A buck converter is below the Pi 5's rated supply; replace it with a 5 V / 5 A unit (part to be priced; UNVERIFIED).
+- LiFePO4 support in the PWM charge controller is UNVERIFIED; choose an MPPT controller with a LiFePO4 profile.
+- SS 316 pole clamps, cable glands, rain gauge and lens wiper are not priced yet (UNVERIFIED).
+
+The battery is about half the node cost; the duty-cycled power profile needs a much smaller one (see sensing research). Test T7 measures the real load.
 
 ### 4B. Flume electronics (bench, mains-powered)
 | Function | Item (as listed by retailer) | Qty | Unit ₹ | Line ₹ | Retailer page (opened 2026-10-04) | Accessed |
@@ -72,8 +91,9 @@ Plus an IP66 enclosure: Polycarbonate Junction Box, IP66, 160x250x115 mm, ₹ 1,
 | Weigh the catch (feeds the evidence record) | 5KG Load Cell - Weight Sensor | 1 | 131.00 | 131.00 | https://quartzcomponents.com/products/load-cell-5kg-with-hx711-a-d-module-weight-sensor | 2026-10-04 | quartzcomponents product data |
 | Load-cell amplifier | HX711 Load Cell Amplifier Module | 1 | 38.00 | 38.00 | https://quartzcomponents.com/products/hx711-load-cell-amplifier-module | 2026-10-04 | quartzcomponents product data |
 | Water-level changes (optional 'tide') | 12V Mini Submersible Water Pump – 10 L/min, 8W | 1 | 278.00 | 278.00 | https://robocraze.com/products/12v-mini-submersible-water-pump | 2026-10-04 | robocraze product data |
+| Second water-level sensor for head difference (T3) | Waterproof Ultrasonic Distance Transducer Sensor | 1 | 295.00 | 295.00 | https://quartzcomponents.com/products/waterproof-ultrasonic-distance-transducer-sensor | 2026-10-04 | quartzcomponents product data (re-confirmed 17:02 IST) |
 
-**Subtotal: {{f:D05|₹4,969.12}}.** Whole flume demonstrator (4B + 4C): **{{f:D06|₹38,927.11}}**. Not priced: acrylic solvent cement, silicone sealant, cord, a wooden carriage, SS 316 fasteners, a 12 V supply for the winch (UNVERIFIED). Test plastics are collected, not bought.
+**Subtotal: {{f:D05|₹5,264.12}}.** Whole flume demonstrator (4B + 4C): **{{f:D06|₹39,222.11}}**. Not priced: acrylic solvent cement, silicone sealant, cord, a wooden carriage, SS 316 fasteners, a 12 V supply for the winch (UNVERIFIED). Test plastics are collected, not bought.
 
 ### 4D. Software and cloud
 Open-source stack (Python, ultralytics, Leaflet). Free data APIs (Open-Meteo; NASA POWER). A static dashboard plus hourly batch jobs. Cloud cost per site is not estimated yet (UNVERIFIED).
@@ -96,21 +116,26 @@ Design month is July, Mumbai's darkest: {{f:F15|3.79 kWh/m²/day}} of insolation
 ## 7. What is real, what is simulated (status 4 Oct)
 - **Real:** hourly ERA5 rain; archived JMA forecasts; tide fitted to Open-Meteo Marine sea level (RMSE {{r:tide_rmse_mithi}} m at the Mithi); public detection data.
 - **SIMULATED:** every boom state and escaped kilogram at Mumbai sites. Held-out 2024–25, paired over {{r:n_draws}} draws:
-  - tide-aware vs clear-when-full: {{r:p2p1_med}} escaped (interval {{r:p2p1_lo}} to {{r:p2p1_hi}});
-  - vs the fixed schedule: {{r:p2p0_med}} (interval {{r:p2p0_lo}} to {{r:p2p0_hi}}).
+  - full policy vs fill-fraction-ranked rule: {{r:p2p1_med}} escaped (central 90% scenario range {{r:p2p1_lo}} to {{r:p2p1_hi}});
+  - vs an assumed fixed roster: {{r:p2p0_med}} (range {{r:p2p0_lo}} to {{r:p2p0_hi}}), small and uncertain.
 - **SENSITIVITY:** fuse alone {{r:fuse_med}}; one-way pocket halving re-float {{r:pk5_med}}.
 - **SYNTHETIC:** evidence-record tests catch inflated claims at {{r:mrv_recall}} with {{r:mrv_ff}} false flags; tamper detection {{r:mrv_tamper}}.
 - **BUILT detector:** {{r:det_line}}
 - Reproduce commands: [`../eval/RESULTS.md`](../eval/RESULTS.md).
 
-## 8. Field pilot (after the prototype; needs permission)
-2–3 small outfalls in one ward, one flap-gated and one open tidal, away from the Interceptor sites at Malad and Trombay. We would measure:
-- pocket fill (camera + range sensor);
-- weighbridge kg per clearance;
-- random sort samples for the dry-plastic fraction;
-- **tagged-item releases** upstream, to measure flux-weighted capture efficiency across tide and flow states.
+## 8. Field pilot (conditional: permission, safety plan, site survey)
+**First site:** one existing *open-tidal* BMC boom. A candidate is the ML Complex nullah boom in Dahisar, which a 2025 report says records the {{f:F12|highest volume}}. It is not yet surveyed or contacted, and its gate status is UNVERIFIED. We would record width, bank access, conveyor interface, gate status and the operator. Flap-gated outfalls come later, after the twin models them.
 
-MCGM Storm Water Drain department permission is required; The Ocean Cleanup obtained such permits for its sites. Crews do no work during red alerts and never enter flowing channels.
+**Measurement boundary (defined once, used everywhere):**
+- Unique incoming flexible-packaging plastic, dry-weight corrected; re-arrivals of re-floated debris excluded.
+- Cleared material, by weighbridge and random sort samples for the dry-plastic fraction and moisture.
+- Material still stored in the pocket (temporary retention, not diversion).
+- Documented final treatment, with a processor's receiving record.
+- Escape, estimated from the above against a matched baseline period at the same boom.
+
+**Capture-efficiency trials:** use only *recoverable* tagged items, counted out upstream and recovered by a temporary downstream containment net. They run only with permission, never in storms, and all items are retrieved. We do not release unrecoverable plastic.
+
+**Rules:** MCGM Storm Water Drain department permission is required; The Ocean Cleanup obtained such permits for its sites. Crews do no work during red alerts and never enter flowing channels; they use gloves, boots and the existing conveyor.
 
 ## 9. Risks
 | Risk | Mitigation |
@@ -124,5 +149,5 @@ MCGM Storm Water Drain department permission is required; The Ocean Cleanup obta
 
 ## 10. Needs from the user
 - A teammate with fabrication skills for the tow tank and the node.
-- Approval to buy 4B + 4C ({{f:D06|₹38,927.11}}) and, for a field pilot, one node ({{f:D04|₹83,481.98}}).
+- Approval to buy 4B + 4C ({{f:D06|₹39,222.11}}) and, for a field pilot, one node ({{f:D04|₹83,481.98}}).
 - Team details for the report.

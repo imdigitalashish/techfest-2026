@@ -29,7 +29,7 @@ SELF_CITED = re.compile(r"https?://\S+.*2026-10-0\d|2026-10-0\d.*https?://")
 YEARLIKE = re.compile(r"^(19|20)\d\d$")
 URL = re.compile(r"https?://\S+")
 IMG = re.compile(r"!\[[^\]]*\]")  # Marp image directives such as ![bg right:46% fit]
-INTERVAL_DEF = re.compile(r"\b90\s?% interval")
+INTERVAL_DEF = re.compile(r"\b(?:90|95)\s?% (?:interval|scenario range|confidence interval)")
 VERSIONS = re.compile(r"\bCC BY(?:-[A-Z]+)*\s\d+(?:\.\d+)+|\b[Vv]ersion\s\d+(?:\.\d+)+")  # licence/version strings
 TIMES = re.compile(r"\b\d{1,2}:\d{2}(?:[–-]\d{1,2}:\d{2})?\b|\b\d{4}-\d{2}-\d{2}\b|\b(?:19|20)\d\d[–-](?:19|20)?\d\d\b")
 
