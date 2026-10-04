@@ -1,6 +1,6 @@
 # Zonal pitch — InnovateX Theme 3 (Delhi zonal, 10 Oct 2026, 10 minutes)
 
-> Draft v1.1 (4 Oct 2026, 07:00 IST) by the project lead. Every number carries a source key; the source list is at the end and in [`../research/`](../research/).
+> Draft v1.2 (4 Oct 2026, 07:25 IST) by the project lead. Every number carries a source key; the source list is at the end and in [`../research/`](../research/).
 > - **[V]** = lead not yet verified at a primary source. Verify it or cut it before the pitch.
 > - **SIMULATED** = output of our digital twin, not field data.
 > - **⟨FILL⟩** = to be filled from a committed run or the sourced BOM. Never invent it.
@@ -80,12 +80,19 @@ Two Interceptors will soon guard two of Mumbai's creeks. NullahNet makes the lon
 
 ## Slide 8 — Evidence so far (6:45–7:45)
 All four results come from runs committed to our repo, each with a reproduce command (see [`../eval/RESULTS.md`](../eval/RESULTS.md)).
-- **Digital twin:** real ERA5 rainfall and real tide for ⟨FILL n⟩ Mumbai outfalls.
-  - Forecast-aware dispatch cut escaped plastic by ⟨FILL median %, 90% interval⟩ vs the fixed schedule, and ⟨FILL⟩ vs fill-threshold clearance, at equal crew-hours.
-  - Held out: monsoons 2024–25, which were never used for tuning.
-  - SIMULATED, relative to our stated process model.
+- **Digital twin (SIMULATED plastic, real forcing):**
+  - Inputs: 4 Mumbai outfalls; ERA5 rain; archived JMA day-ahead forecasts (so no hindsight); tide fitted with UTide to Open-Meteo Marine sea level (RMSE ≈ 0.08 m).
+  - Held-out monsoons 2024–25; 2 crews × 8 h/day for every policy; 40 Monte Carlo draws.
+  - Forecast- and tide-aware dispatch cut escaped plastic by a median **2.2%** vs the fixed schedule (90% interval −1.5% to +13.5%; better in 29 of 40 draws).
+  - Clearing whenever the pocket looks full did *worse* (+3.1% escaped).
+  - **Lesson:** timing alone is a small lever. About half the arriving plastic is not captured whatever the schedule. So the headline lever is capture physics at high flow, which is why we build the angled-boom ratchet pocket.
+  - Reproduce: `python -m twin_sim.run`.
 - **Detector:** YOLO11n on a public floating-litter dataset; held-out mAP50 = ⟨FILL⟩.
-- **Evidence records:** 100% tamper detection; inflated-claim recall ⟨FILL⟩ at ≤5% false flags. Tested on SYNTHETIC records.
+- **Evidence records (SYNTHETIC test data):**
+  - Tampering detected 100% of the time.
+  - 72% of inflated claims caught at a 4.7% false-flag rate. A simple claimed-vs-sensor ratio check catches 67%; today's slip check catches 0%.
+  - Precision is only 0.45 at 5% fraud prevalence. So flags trigger a *review*, never an automatic penalty.
+  - Reproduce: `python3 -m mrv_ledger.evaluate`.
 - **Flume:** ⟨FILL if run before 10 Oct⟩. A reversed-flow test shows the pocket's retention vs a straight boom.
 - **Speaker notes:** Say "simulated" out loud. Credibility matters more than the size of the number.
 
@@ -101,7 +108,7 @@ All four results come from runs committed to our repo, each with a reproduce com
 - **Speaker notes:** "Our wedge is pay-per-verified-kg. It saves the city money on the claims that cannot be verified. It is not another cost line."
 
 ## Slide 10 — Impact and scale (8:45–9:30)
-- **Per site:** kg diverted per monsoon and overflow hours avoided ⟨FILL from twin, SIMULATED, with interval⟩.
+- **Per site:** we will quote kg diverted only once the flume and a field pilot measure capture. The twin's job is to rank levers, not to promise tonnes. In the twin, dispatch alone moves escape by a few percent (SIMULATED); the capture hardware is the larger lever, still to be quantified.
 - **City:** same contracts, any number of outfalls; site configuration is data (gated or open, width, catchment).
 - **India:** any coastal city with tidal drains (e.g. Chennai, Kochi, Surat, Kolkata) — same software, local tide and rain feeds.
 - **Co-benefits:** fewer choked outfalls before high-tide storms, mangrove protection, data for source reduction by ward.
@@ -130,7 +137,7 @@ All four results come from runs committed to our repo, each with a reproduce com
    - They are relative comparisons under stated assumptions, with Monte Carlo over every assumed parameter.
    - Rain forecasts are archived ones, so the policy has no hindsight. Held-out years were never used for tuning.
    - Field calibration (tagged-item releases at real outfalls) is in the Round-2 plan.
-5. **"Did you use real forecasts or actual rainfall?"** Archived forecasts for decisions and observed or reanalysis rain for outcomes, where the archive covers the period. Otherwise a documented forecast-error model, labelled ⟨FILL from twin.md⟩.
+5. **"Did you use real forecasts or actual rainfall?"** Both, for different jobs. Decisions use the archived JMA day-ahead forecast as it was issued, which we checked is archived back to 2019. Outcomes use ERA5 rain. The policy never sees the future.
 6. **"Can a camera see plastic at night, in rain, in black nullah water?"**
    - Not reliably. That is why the primary reading is *pocket fill*: an area and range measurement that is robust to glare and supported by an IR camera and a range sensor.
    - Item counting is secondary. Detector metrics are on a public dataset ⟨FILL mAP⟩. Domain shift to Mumbai water is our first data-collection task.

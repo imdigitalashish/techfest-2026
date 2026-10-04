@@ -72,6 +72,27 @@ The theme asks us to monitor, intercept and reduce plastic leaking from Mumbai's
   - Spike 1: drop it if P2 does not beat P1 by more than the Monte Carlo spread on held-out years.
   - Spike 2: drop the "ratchet" claim if reversed-flow flume tests show no retention gain over an angled boom, or if the fuse cannot keep head rise under the cap.
 
+## Update 07:20 IST — first twin result: timing alone is a small lever (SIMULATED)
+Source: [`components/twin_sim/results/metrics.json`](../../components/twin_sim/results/metrics.json). Reproduce with `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run`.
+
+**Setup.**
+- 4 outfall sites; 2 crews × 8 h/day for every policy; 40 Monte Carlo draws over the ASSUMPTION parameters.
+- Real forcing: ERA5 rain, archived JMA day-ahead forecasts, and a UTide tide fit to Open-Meteo Marine sea level. The fit has RMSE ≈ 0.08 m at all four sites.
+- Held-out monsoons: 2024 and 2025.
+
+**Results (held-out):**
+- **P2 (forecast- and tide-aware) vs P0 (fixed schedule):** median **2.2% less escaped plastic**. The 90% interval runs from 1.5% *more* to 13.5% less. P2 is better in 29 of 40 draws.
+- **P1 (fill threshold) vs P0:** median 3.1% *more* escaped.
+- **Captured fraction:** 0.46 (P0) → 0.49 (P2).
+
+**Reading.** Under our process model, dispatch timing moves escape only a few percent. About half the arriving plastic is not captured whatever the schedule. This matches the first-principles review: the binding constraint is capture physics at high flow, not crew timing.
+
+**Decision.**
+- Spike 1 stays as a **support layer**, not the headline. Its kill criterion is not yet met: P2 beats P1 by about 5 percentage points at the median, but P2's own interval spans zero. The pitch will say "a few percent, uncertain".
+- The headline shifts to **Spike 2**: angled boom + ratchet pocket + fail-open fuse, the capture-physics lever.
+- The twin's next job is to quantify how escape splits between entrainment, overflow and bypass, and to run the ratchet SENSITIVITY.
+- Re-decide at the 7 Oct gate.
+
 ## Update 06:15 IST — The Ocean Cleanup is already in Mumbai (strengthens this decision)
 Sources: [mumbai-context.md](../../research/mumbai-context.md), [companies.md](../../research/companies.md).
 
