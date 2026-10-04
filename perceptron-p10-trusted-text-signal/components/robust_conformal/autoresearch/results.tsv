@@ -1,0 +1,2 @@
+timestamp	commit	hypothesis	SCORE	delta	kept	notes
+2026-10-04T07:36+05:30	6246bdd	baseline: 5 text features (log_n_docs, sent_mean, sent_trim, sent_std, trust_mean), default LightGBM, gamma 0.01	4.45448	0	yes	cov_clean 0.90897, cov_pump 0.91444, width_pump 4.504
