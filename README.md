@@ -14,8 +14,8 @@ Private monorepo: one folder per problem statement, each run by its own project-
 
 | Folder | Status | Competition | Problem | Round 1 | Finals (IIT Bombay) |
 |---|---|---|---|---|---|
-| [perceptron-p01-federated-lora](perceptron-p01-federated-lora/thought_node.md) | ✅ Completed · 🎬 demo queued | Perceptron (IITB × Optiver) | Cheap fine-tuning across weak, scattered devices | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p02-kv-cache](perceptron-p02-kv-cache/thought_node.md) | 🟢 Active | Perceptron | Squeezing long-context inference into less memory | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p01-federated-lora](perceptron-p01-federated-lora/thought_node.md) | ✅ Completed · 🎬 demo being built | Perceptron (IITB × Optiver) | Cheap fine-tuning across weak, scattered devices | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p02-kv-cache](perceptron-p02-kv-cache/thought_node.md) | ✅ Completed · 🎬 demo ready | Perceptron | Squeezing long-context inference into less memory | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p03-off-policy-eval](perceptron-p03-off-policy-eval/thought_node.md) | ✅ Completed · 🎬 demo queued | Perceptron | Did the policy actually work? (off-policy evaluation) | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p04-lob-regimes](perceptron-p04-lob-regimes/thought_node.md) | ✅ Completed · 🎬 demo queued | Perceptron | Order-book forecasting under regime shifts | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p05-impact-execution](perceptron-p05-impact-execution/thought_node.md) | ✅ Completed · 🎬 demo queued | Perceptron | Market-impact-aware execution | Abstract · 31 Oct | 15–18 Dec |

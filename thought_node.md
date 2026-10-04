@@ -116,6 +116,14 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 19:58 IST — P2 completed + demo done (19 of 20 Round-1; 2 demos)
+- **P2 DONE (5aeb88f), verified:**
+  - check_docs OK. Ledger: 2 sol reviews and 3 astra reviews.
+  - Sol reproduction 320/320 rows. Abstract 70/100 from astra. Memo 4.2: a close call vs P1, and only one of P1/P2 can be entered.
+  - VM `p02-kv-1` confirmed **deallocated** via az; the disk is kept.
+- **P2 DEMO DONE (4066d32):** the replay smoke passed in my clone in 10 s. Live checks need the 2.5 GB weights; the lead ran them from a clean clone (20/20 rows).
+  - Crazy element: a memory slider. At 10% memory, P2's method recalls a planted fact that the eviction baselines (StreamingLLM, SnapKV) forget. Shown with the honest caveat: on paraphrased questions, longer answers give full 32/48 vs RoD 36/48.
+- Slot → P1 demo ("unplug the tablet": a real Flower process kill).
 ### 2026-10-04 19:29 IST — P10 demo done (first of 20)
 - **P10 "Break the band" DEMO DONE (74e8dce):** I re-ran demo/smoke.sh and it passes all checks (62 PASS lines). Astra demo review: 78/100, "would lean in: yes".
   - Crazy element: a judge writes a fake pump post. One bot post breaks plain CQR, while the certified band holds.
