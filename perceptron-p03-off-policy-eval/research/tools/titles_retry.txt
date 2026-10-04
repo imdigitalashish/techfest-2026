@@ -1,0 +1,20 @@
+Doubly Robust Policy Evaluation and Learning
+Optimal and Adaptive Off-policy Evaluation in Contextual Bandits
+Doubly robust off-policy evaluation with shrinkage
+Off-Policy Evaluation for Large Action Spaces via Embeddings
+Large Action Spaces via Conjunct Effect Modeling
+Off-Policy Estimation with Pairs of Policies
+Open Bandit Dataset and Pipeline
+Anytime-valid off-policy inference for contextual bandits
+Empirical Likelihood for Contextual Bandits
+percentile bootstrap inverse probability weighting sensitivity
+Sharp Sensitivity Analysis Inverse Propensity Weighting Quantile Balancing
+Algorithmic Confounding Recommendation Systems Homogeneity
+Making Contextual Decisions with Low Technical Debt
+Top-K Off-Policy Correction REINFORCE Recommender
+Counterfactual Evaluation of Slate Recommendations Sequential Reward Interactions
+Risk-Return Tradeoff Off-Policy Evaluation
+Logarithmic Smoothing Pessimistic Off-Policy
+Optimal Baseline Corrections Off-Policy Contextual Bandits
+Attributing Performance Changes to Distribution Shifts
+Cascade Behavior Model ranking off-policy

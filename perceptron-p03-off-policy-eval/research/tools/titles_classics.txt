@@ -1,0 +1,29 @@
+Doubly Robust Policy Evaluation and Learning
+Optimal and Adaptive Off-policy Evaluation in Contextual Bandits
+Doubly robust off-policy evaluation with shrinkage
+Off-Policy Evaluation for Large Action Spaces via Embeddings
+Off-Policy Evaluation for Large Action Spaces via Conjunct Effect Modeling
+Off-Policy Estimation with Pairs of Policies
+Open Bandit Dataset and Pipeline Towards Realistic and Reproducible Off-Policy Evaluation
+Off-policy Confidence Sequences
+Anytime-valid off-policy inference for contextual bandits
+Empirical Likelihood for Contextual Bandits
+Confounding-Robust Policy Improvement
+Offline Recommender System Evaluation under Unobserved Confounding
+Sensitivity analysis for inverse probability weighting estimators via the percentile bootstrap
+Sharp Sensitivity Analysis for Inverse Propensity Weighting via Quantile Balancing
+How Algorithmic Confounding in Recommendation Systems Increases Homogeneity and Decreases Utility
+Making Contextual Decisions with Low Technical Debt
+Top-K Off-Policy Correction for a REINFORCE Recommender System
+Counterfactual Evaluation of Slate Recommendations with Sequential Reward Interactions
+Towards Assessing and Benchmarking Risk-Return Tradeoff of Off-Policy Evaluation
+Logarithmic Smoothing for Pessimistic Off-Policy Evaluation
+Optimal Baseline Corrections for Off-Policy Contextual Bandits
+Automated Off-Policy Estimator Selection via Supervised Learning
+Why did the Model Fail Attributing Performance Changes to Distribution Shifts
+Long Story Short Omitted Variable Bias in Causal Machine Learning
+Inferring causal impact using Bayesian structural time-series models
+Performative Prediction
+Doubly Robust Off-Policy Evaluation for Ranking Policies under the Cascade Behavior Model
+More Robust Doubly Robust Off-policy Evaluation
+Unbiased Offline Evaluation of Contextual-bandit-based News Article Recommendation Algorithms
