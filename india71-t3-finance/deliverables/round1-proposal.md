@@ -8,7 +8,7 @@
 
 ## 1. Problem identification — the gap and who it hurts
 
-India's scorecard says financial inclusion is rising: PMJDY accounts grew from 42.20 crore (March 2021) to 59.09 crore (August 2026), and the RBI Financial Inclusion Index rose from 53.9 (2018) to 67 [P1, P4]. The lived reality moved the other way: **inoperative PMJDY accounts — no customer-induced transaction for two years — rose from 5.94 crore (14.1% of accounts, March 2021) to 15.09 crore (26.4%, Lok Sabha answer of 8 December 2025)** [P1, P3]. Accounts grew 35%; inoperative accounts grew 154%.
+India's scorecard says financial inclusion is rising: PMJDY accounts grew from 42.20 crore (March 2021) to 59.09 crore (August 2026), and the RBI Financial Inclusion Index rose from 53.9 (2018) to 70.0 (March 2026); RBI attributes the latest year's rise "mainly" to an "uptick in Usage" [P4, P6]. The lived reality moved the other way: **inoperative PMJDY accounts — no customer-induced transaction for two years — rose from 5.94 crore (14.1% of accounts, March 2021) to 15.09 crore (26.4%, Lok Sabha answer of 8 December 2025)** [P1, P3]. Accounts grew 35%; inoperative accounts grew 154%.
 
 The people behind these accounts are overwhelmingly the scheme's intended beneficiaries: 55.7% of PMJDY accounts belong to women and 77.8% are in rural or semi-urban areas [P4]. Yet when asked in Parliament, the Ministry of Finance stated that inoperative accounts by gender and by rural/semi-urban area, the number of accounts holding less than ₹500, and credit extended to PMJDY holders are **"not centrally maintained"** [P1, P3]. The State cannot say *which* women, in *which* districts, hold an account they no longer use — so it cannot target help to them, and it cannot hold banks, Business Correspondents (BCs) or districts accountable for usage rather than openings.
 
@@ -21,6 +21,7 @@ The people behind these accounts are overwhelmingly the scheme's intended benefi
 | PMJDY accounts / women's accounts | 59.09 crore / 32.92 crore (19 Aug 2026) | [P4] |
 | Rural + semi-urban accounts | 45.95 crore of 59.09 crore (77.8%) | [P4] |
 | Deposits / RuPay cards issued | ₹3,16,514 crore / 41.29 crore (19 Aug 2026) | [P4] |
+| RBI FI-Index | 64.2 (Mar 2024) → 67.0 (Mar 2025) → 70.0 (Mar 2026); FY26 rise "mainly on account of uptick in Usage" | [P5, P6] |
 | Inoperative PMJDY accounts | 5.94 cr (Mar 2021) → 6.57 → 9.45 → 10.21 → 11.94 cr (Mar 2025) → 13.05 cr (Jul 2025) → 15.09 cr (Dec 2025) | [P1, P2, P3] |
 | Inoperative share, by state (31 Jul 2025) | 16.3% (West Bengal) to 39.0% (Goa); largest counts UP 2.75 cr (27.5%), Bihar 1.39 cr, MP 1.07 cr | [P2], our parse |
 | Overdraft availed | 35.99 lakh holders (≈ 0.6% of accounts), ₹393 crore outstanding (Mar 2025) | [P1] |
@@ -32,7 +33,7 @@ The trend survived a nationwide Gram Panchayat-level saturation campaign (1 July
 
 ## 3. Existing ecosystem — what exists and why the gap persists
 
-**What exists** (verified in the Ministry's answers [P1–P4]): zero-balance BSBD accounts with RuPay card, accident cover and overdraft; DBT credited directly to accounts — "even to the inactive accounts" [P2]; bank alerts before an account turns inoperative and quarterly letters/SMS to inoperative holders [P2]; reactivation by completing KYC at any time, with unclaimed balances moving to RBI's DEA Fund after ten years [P3]; saturation campaigns; 2,421 RBI Centres for Financial Literacy [P1]; and the RBI FI-Index for national monitoring [P4]. The payment and access rails — UPI and feature-phone UPI 123PAY, Aadhaar-enabled Payment System (AePS), the NPCI mapper for Aadhaar-based DBT, BC and BC Sakhi networks, and the Account Aggregator consent framework — are in production (details UNVERIFIED in this draft; to be cited).
+**What exists** (verified in the Ministry's answers [P1–P4]): zero-balance BSBD accounts with RuPay card, accident cover and overdraft; DBT credited directly to accounts — "even to the inactive accounts" [P2]; bank alerts before an account turns inoperative and quarterly letters/SMS to inoperative holders [P2]; reactivation by completing KYC at any time, with unclaimed balances moving to RBI's DEA Fund after ten years [P3]; saturation campaigns; 2,421 RBI Centres for Financial Literacy [P1]; and the RBI FI-Index for national monitoring [P5, P6]. The payment and access rails — UPI and feature-phone UPI 123PAY, Aadhaar-enabled Payment System (AePS), the NPCI mapper for Aadhaar-based DBT, BC and BC Sakhi networks, and the Account Aggregator consent framework — are in production (details UNVERIFIED in this draft; to be cited).
 
 **Why the gap persists** — five failures of data governance, not of infrastructure:
 1. **Counting accounts, not people; enrolment, not use.** Review forums see openings and totals; key breakdowns are not maintained [P1, P3]. A person with three accounts, one active, appears as two "inoperative" accounts; a person who only cashes out DBT appears "active".
@@ -114,5 +115,7 @@ Interpretation: blanket, dormancy-first outreach captures little of what the bud
 - [P2] Lok Sabha Unstarred Question 4090, Ministry of Finance (DFS), answered 18 Aug 2025, with state-wise annexure. sansad.in/getFile/loksabhaquestions/annex/185/AU4090_LCDFLT.pdf
 - [P3] Lok Sabha Unstarred Question 1333, Ministry of Finance (DFS), answered 8 Dec 2025. sansad.in/getFile/loksabhaquestions/annex/186/AU1333_viWPuz.pdf
 - [P4] Press Information Bureau, "12 Years of PM Jan Dhan Yojana: Banking for All, Empowerment for All", 27 Aug 2026 (URL to be added).
+- [P5] Reserve Bank of India, Press Release 2025-2026/759, "Financial Inclusion Index for March 2025", 22 Jul 2025. rbi.org.in (prid=60875)
+- [P6] Reserve Bank of India, Press Release 2026-2027/686, "Financial Inclusion Index for March 2026", 16 Jul 2026. rbi.org.in (prid=63164)
 - [S1] News reports (CNBC-TV18, Financial Express) of World Bank Global Findex 2025 — UNVERIFIED; replace with the Findex report.
 - Techfest 2026-27, The India @71/100 Challenge — problem statement.

@@ -53,7 +53,7 @@ Context from the statement: PMJDY brought over 56 crore people into the formal s
 - What others ship: bank and fintech reactivation programmes and DPI case studies — find published results.
 
 ## Key decisions
-- 2026-10-04 — **Gap:** inoperative PMJDY accounts 5.94 crore (14.1%, Mar 2021) → 15.09 crore (26.4%, Dec 2025) while the FI-Index rose to 67; gender/rural breakdowns "not centrally maintained" (Parliament answers). Community: rural, low-literacy and women account holders. ([landscape §1](research/landscape.md))
+- 2026-10-04 — **Gap:** inoperative PMJDY accounts 5.94 crore (14.1%, Mar 2021) → 15.09 crore (26.4%, Dec 2025) while the RBI FI-Index rose to 70.0 (Mar 2026, "mainly on account of uptick in Usage"); gender/rural breakdowns "not centrally maintained" (Parliament answers). Community: rural, low-literacy and women account holders. ([landscape §1](research/landscape.md))
 - 2026-10-04 — **Solution name and shape:** *Sakriya*, a usage-data governance, targeting and accountability layer on existing rails; no new financial product. ([components](architecture/components.md))
 - 2026-10-04 — **Spikes:** A = C6 targeting engine (uplift, budget, equity, holdout); B = C10 usage scorecard + attribution with C11 DP. ([ADR 001](architecture/adr/001-spike.md))
 - 2026-10-04 — **Evaluation data:** real public data for state/district layers; a labelled synthetic simulator (C14) calibrated to the official 23% inoperative share for account-level components. (Assumption: no account-level PMJDY/DBT data is public.)
@@ -110,3 +110,6 @@ Added contract tests (`tests/test_contracts.py`: simulator, C2, C3 incl. purpose
 
 ### 2026-10-04 08:02 IST — Ratchet loop, iteration 1 kept
 Experiment 1 (shrink per-person uplift toward each arm's pilot average, κ = 0.5): METRIC 0.3396 → 0.3514 (+0.012; seed s.d. 0.040 → 0.020), kept per `program.md` (> 0.01). The simple best-arm rule (0.3835) is still ahead; next: hybrid policy (cheap arm for all + targeted expensive arms) and policy selection by doubly-robust value. Ledger: `components/targeting/autoresearch/results.tsv`.
+
+### 2026-10-04 08:06 IST — FI-Index verified at RBI
+Opened RBI press releases 2025-2026/759 (22 Jul 2025: FI-Index 67.0 for March 2025 vs 64.2) and 2026-2027/686 (16 Jul 2026: **70.0 for March 2026**, "mainly on account of uptick in Usage"). Sharpens the gap: the national usage signal improved while inoperative PMJDY accounts rose from 11.94 crore (Mar 2025) to 15.09 crore (Dec 2025 answer). PIB's Aug 2026 backgrounder says "67 in 2026" — we use RBI's figure. Landscape, proposal, ADR updated; weights (Access 35 / Usage 45 / Quality 20) still UNVERIFIED at RBI.

@@ -6,7 +6,7 @@
 
 ## Context
 
-The measurable gap: inoperative PMJDY accounts rose from 5.94 crore (14.1%, Mar 2021) to 15.09 crore (26.4%, Dec 2025) while the FI-Index rose to 67, and the Ministry told Parliament that inoperative accounts by gender, by rural/semi-urban area, accounts under ₹500, and credit to PMJDY holders are "not centrally maintained" ([landscape §1](../../research/landscape.md)). Two things are missing: **knowing whom to help with scarce outreach**, and **holding implementers accountable for usage, not openings**. Everything else in the architecture uses existing rails and best practice.
+The measurable gap: inoperative PMJDY accounts rose from 5.94 crore (14.1%, Mar 2021) to 15.09 crore (26.4%, Dec 2025) while the RBI FI-Index rose to 70.0 (March 2026, "mainly on account of uptick in Usage"), and the Ministry told Parliament that inoperative accounts by gender, by rural/semi-urban area, accounts under ₹500, and credit to PMJDY holders are "not centrally maintained" ([landscape §1](../../research/landscape.md)). Two things are missing: **knowing whom to help with scarce outreach**, and **holding implementers accountable for usage, not openings**. Everything else in the architecture uses existing rails and best practice.
 
 ## Options (one per candidate spike)
 

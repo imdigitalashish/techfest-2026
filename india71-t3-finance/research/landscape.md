@@ -11,7 +11,7 @@ The scorecard says inclusion is rising; the ledger says usage is falling.
 | Indicator | Earlier | Latest | Source |
 |---|---|---|---|
 | PMJDY accounts | 42.20 crore (Mar 2021) | 59.09 crore (19 Aug 2026) | [P1] Annexure-II; [P4] |
-| RBI Financial Inclusion Index | 53.9 (2018) | 67 (2026, as stated by PIB) | [P4] |
+| RBI Financial Inclusion Index | 53.9 (2018) [P4]; 64.2 (Mar 2024) | 67.0 (Mar 2025) → **70.0 (Mar 2026)**, rise "mainly on account of uptick in Usage" | [P5], [P6] |
 | **Inoperative PMJDY accounts** | **5.94 crore = 14.1% (Mar 2021)** | **15.09 crore = 26.4% of 57.07 crore (Lok Sabha answer, 8 Dec 2025)** | [P1] Annexure-II; [P3] |
 
 Inoperative-account series from the Ministry of Finance's own Parliament answers ([`eval/public_data/derived/pmjdy_inoperative_trend.csv`](../eval/public_data/derived/pmjdy_inoperative_trend.csv)):
@@ -26,7 +26,7 @@ Inoperative-account series from the Ministry of Finance's own Parliament answers
 | 31 Jul 2025 | 56.04 | — | 13.05 | 23.3% | [P2] |
 | answered 8 Dec 2025 | 57.07 | — | 15.09 | 26.4% | [P3] |
 
-Accounts grew 35% (42.20 → 57.07 crore) while inoperative accounts grew 154% (5.94 → 15.09 crore). Caveat: the definition wording differs between answers — [P2] cites RBI's 2009 guideline ("no transactions in the account for over a period of two years"), [P3] says "no customer induced transactions ... over a period of two years" — and [P3] does not state the as-of date of its counts. Part of the late-2025 jump may be definitional; we present the series as reported.
+Accounts grew 35% (42.20 → 57.07 crore) while inoperative accounts grew 154% (5.94 → 15.09 crore). Over FY 2025-26 RBI reported that the FI-Index rose to 70.0 "mainly on account of uptick in Usage" [P6], while inoperative PMJDY accounts went from 11.94 crore (Mar 2025) to 15.09 crore (Dec 2025 answer) [P1, P3]. (The FI-Index covers all financial services nationally, so the two are not like-for-like — which is exactly the problem: the national usage signal cannot see Jan Dhan holders.) Note: PIB's Aug 2026 backgrounder [P4] says "67 in 2026", whereas RBI's own March 2026 value is 70.0 [P6]; we use RBI's figures. Caveat: the definition wording differs between answers — [P2] cites RBI's 2009 guideline ("no transactions in the account for over a period of two years"), [P3] says "no customer induced transactions ... over a period of two years" — and [P3] does not state the as-of date of its counts. Part of the late-2025 jump may be definitional; we present the series as reported.
 
 **The governance half of the gap.** Asked in Parliament, the Ministry said the following are *not centrally maintained*: gender-wise inoperative accounts and range-wise inoperative data [P1, footnote to Annexure-II]; institutional credit extended to PMJDY holders [P1]; inoperative accounts closed, by women and by rural/semi-urban area, and the number of accounts holding less than ₹500 [P3]. The State cannot currently say *who* is excluded — so it cannot target them or hold anyone accountable for reaching them.
 
@@ -48,7 +48,7 @@ What is in place (verified tonight from the Ministry's answers [P1–P3]):
 - **Products attached to the account:** RuPay card with accident cover (₹1 lakh; ₹2 lakh for accounts opened after Aug 2018), overdraft up to ₹10,000 per household, DBT, PMJJBY, PMSBY, APY, MUDRA eligibility [P4].
 
 Why the gap persists — root-cause tree (evidence status in brackets):
-1. **Measurement counts accounts, not people, and enrolment, not use.** Key breakdowns are "not centrally maintained" [P1, P3]; review forums therefore see openings and totals. Usage enters the national scorecard only through the composite FI-Index [P4] (Usage weight 45% per [S] ET/BusinessLine — UNVERIFIED at RBI), which is national, not district- or implementer-level [L].
+1. **Measurement counts accounts, not people, and enrolment, not use.** Key breakdowns are "not centrally maintained" [P1, P3]; review forums therefore see openings and totals. Usage enters the national scorecard only through the composite FI-Index [P5, P6] (Usage weight 45% per [S] ET/BusinessLine — UNVERIFIED at RBI), which is national, not district- or implementer-level [L].
 2. **One-size outreach.** Alerts and campaigns go to every inoperative account [P2]. Many inoperative accounts belong to people who use another account (duplicates), have migrated, or have died — reactivating those wastes visits; meanwhile persuadable users get the same SMS as everyone else. (Mechanism plausible; share **UNVERIFIED** — no public data; our simulator makes the assumption explicit.)
 3. **KYC friction.** Reactivation needs KYC [P3]; for a rural, low-literacy holder that means a branch or BC visit — the same friction that caused disuse. [L: RBI's 2024 inoperative-accounts circular and BC-based re-KYC — UNVERIFIED tonight.]
 4. **DBT as pass-through.** Benefits land and are withdrawn in cash, so accounts are "active" without meaningful use (no saving, insurance, digital payment) [mechanism; magnitude **UNVERIFIED** — needs bank data].
@@ -63,7 +63,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 | DFS + banks | Gram Panchayat saturation campaign incl. re-KYC of inactive PMJDY accounts, 1 Jul – 30 Sep 2025 | Ran; outcome numbers not opened tonight | [P1, P2] |
 | Banks | Pre-inoperative alerts; quarterly contact of inoperative holders (letter/e-mail/SMS) | Production | [P2] |
 | RBI | DEA Fund (unclaimed deposits after 10 years); KYC-based reactivation | Production | [P3] |
-| RBI | FI-Index (national composite, 0–100) | Annual; 67 (2026, per PIB) | [P4] |
+| RBI | FI-Index (national composite, 0–100), first published Aug 2021 | Annual; 70.0 for March 2026 | [P5, P6] |
 | RBI | 2,421 Centres for Financial Literacy | Production (31 Mar 2025) | [P1] |
 | NPCI | UPI, UPI 123PAY (feature-phone UPI), AePS, APBS/NPCI mapper for Aadhaar-based DBT | Production | [L] UNVERIFIED tonight |
 | MoRD / DAY-NRLM | BC Sakhi (women SHG members as Business Correspondents) | Production | [L] UNVERIFIED tonight |
@@ -92,13 +92,15 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 - **[P2]** Lok Sabha Unstarred Question 4090, answered 18 Aug 2025, Ministry of Finance (DFS), "Number of Jan Dhan accounts", incl. state-wise annexure. https://www.sansad.in/getFile/loksabhaquestions/annex/185/AU4090_LCDFLT.pdf?source=pqals — opened 2026-10-04.
 - **[P3]** Lok Sabha Unstarred Question 1333, answered 8 Dec 2025, Ministry of Finance (DFS), "Inoperative Jan Dhan accounts". https://www.sansad.in/getFile/loksabhaquestions/annex/186/AU1333_viWPuz.pdf?source=pqals — local copy retrieved overnight by our fetcher; text read 2026-10-04.
 - **[P4]** Press Information Bureau backgrounder "12 Years of PM Jan Dhan Yojana: Banking for All, Empowerment for All", 27 Aug 2026 (PDF, 6 pp.). Local copy retrieved overnight by our fetcher and read 2026-10-04; **its URL was not recorded — to re-record** (pib.gov.in).
+- **[P5]** Reserve Bank of India, Press Release 2025-2026/759, "Financial Inclusion Index for March 2025", 22 Jul 2025. https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=60875 — opened 2026-10-04.
+- **[P6]** Reserve Bank of India, Press Release 2026-2027/686, "Financial Inclusion Index for March 2026", 16 Jul 2026. https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=63164 — opened 2026-10-04.
 - **[P0]** Official problem statement, The India @71/100 Challenge, Techfest 2026-27 — `_briefs/india71.pdf`.
 - **[S]** News coverage seen in search results 2026-10-04, not checked against primaries: CNBC-TV18 and Financial Express on Global Findex 2025 (India 89% account ownership; 16% of account owners inactive); The Hindu BusinessLine and Economic Times on RBI FI-Index FY25 = 67.0 (from 64.2) and weights Access 35% / Usage 45% / Quality 20%.
 
 ## 7. Verification backlog (do before any number goes into the PDF)
 
 1. Global Findex 2025 India figures from the World Bank report/databank (incl. inactive-account share by gender).
-2. RBI FI-Index press release(s) for March 2025/2026 and the 2021 methodology note (weights, indicators).
+2. ~~FI-Index values~~ (done: [P5], [P6]); still to open: the Aug 2021 methodology release (weights, 97 indicators — currently [S]).
 3. NFHS-5 / NFHS-4: women having a bank or savings account they themselves use (national, state, district) — overnight download was truncated.
 4. RBI circular on inoperative accounts (Jan 2024) — DBT/scholarship account treatment, alert duties, BC/V-CIP activation.
 5. DPDP Act 2023 sections 7, 8, 10, 17 and the DPDP Rules commencement; Aadhaar Act s. 29; NPCI mapper consent rules.
