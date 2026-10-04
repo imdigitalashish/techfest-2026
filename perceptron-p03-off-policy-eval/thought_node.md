@@ -18,8 +18,11 @@
   4. **Cross-model reviews** as child sessions: gpt-6-astra (max) as hostile judge; gpt-6-sol (max) on code/eval, including reproducing the headline numbers. Recorded in `reviews/` and `reviews/ledger.tsv`.
   5. **Final selection memo** (an honest case versus P7, P9, P1 and P4), thought node current, pushed, then "DONE — slot free".
 - **Rules in force:** child sessions only (at most 2 at a time); never `git stash` or `--autostash`; start heavy jobs only when `kern.memorystatus_level` ≥ 30, under `nice -n 10`, one at a time, pausing below 25; keep network requests small.
-- **Doing:** Step 1. Pre-registration first (`eval/preregistration_obd.md`), then the 100 MB BTS range-read on its own.
-- **Next:** steps 2 → 3 → 4 → 5.
+- **Doing (13:45 IST):**
+  - Steps 1 and 2 are done, plus an overlap gate, and the abstract has been rendered from results.
+  - Step 4 is running: child sessions "P3 hostile judge (gpt-6-astra, max)" and "P3 code/eval reviewer (gpt-6-sol, max)". Both write only to `reviews/`.
+  - The lead is writing the selection memo, ADR addendum and ledger.
+- **Next:** process both reviews (ACCEPTED/REJECTED in `reviews/ledger.tsv`) → apply fixes → re-render, check_docs PASS → final memo → push → "DONE — slot free".
 - **Needs from user:** Register by 15 Oct if P3 is chosen. Teammates' names and skills for the team-fit section.
 - **Risks:**
   - On real data the BTS−Random difference may be too small, or IPW too noisy, to be conclusive. We report it either way, as pre-registered.
@@ -53,6 +56,13 @@
 - 2026-10-04 — **Spikes:** the C9 Decomposer and the C8+C7 Robustness Certificate (see [ADR 001](architecture/adr/001-spike.md)). The auto-research ratchet targets C6 (Δ-RMSE on the frozen bank). It is process, not pitch, because GrowthHacker (arXiv:2511.00802) is prior art.
 - 2026-10-04 — **Own numpy implementations behind contracts**, cross-checkable against obp later. Reason: obp's last release was 0.5.5 in June 2022 (GitHub API), and tonight's stack is pandas 3, numpy 2.4 and scikit-learn 1.9.
 - 2026-10-04 — **Assumption (no user input):** the team is Ashish plus two TBD teammates; the abstract says so.
+- 2026-10-04 13:06 — **Real-data analysis pre-registered** (`eval/preregistration_obd.md`, commit f88de64) before any BTS-slice result. DR was fixed as the primary estimator.
+- 2026-10-04 13:20 — **Disclosed deviation:** the pre-registered window started 47 ms after midnight, so day 2019-11-24 was excluded. A flagged deviation run adds it (`*_deviation_floor*`); both versions are reported.
+- 2026-10-04 13:39 — **Overlap gate (C10) adopted as a product feature** (Supervisor's suggestion; refined by the lead: multi-diagnostic, simulator-only calibration).
+  - Rule: abstain if ESS/n < 0.05, effective rewards < 0 or |mean-weight z| > 3; frozen in `eval/gate_rule.json` (commit b4e95ae) before being applied to OBD.
+  - The OBD check is labelled POST-HOC because its outcomes had been seen.
+- 2026-10-04 13:36 — **Decomposer v1:** a 2×2 Shapley attribution with an interaction term replaces the environment-first ordering as the headline. The mix term gets a doubly robust (density-ratio) option. v0 is kept for the frozen bank.
+- 2026-10-04 — **Identification limit stated:** with policy-induced audience change (feedback), the logs identify the direct effect only. The total effect is reported as not identified.
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
@@ -65,9 +75,9 @@
 | C6 | DeltaEstimator | → `DeltaEstimate` | V̂(new) − V̂(old) | ratchet target | DR baseline; ratchet live (`components/delta_estimator/autoresearch/`) | Δ-nRMSE on the mini bank (baseline 0.21823) |
 | C7 | Interval | influence → `Interval` | Wald, bootstrap | ★ (with C8) | baseline done | coverage + width |
 | C8 | Sensitivity | → `SensitivityCurve` | MSM Hajek bounds + bootstrap | ★ | v0 done (`components/sensitivity/msm.py`) | validity at Γ_true + width |
-| C9 | Decomposer | before/after → `Decomposition` | naive gap | ★ | v0 done | RMSE + sign of the policy term |
-| C10 | Report | → `Verdict` | dashboard number | | contract only | decision accuracy |
-| C11 | Simulator | config → logs + `GroundTruth` | obp synthetic | | done (`components/simulator/sim.py`) | truth MC precision |
+| C9 | Decomposer | before/after → `Decomposition`, `ShapleyDecomposition` | naive gap | ★ | v1: 2×2 Shapley + interaction, DR mix term | RMSE + sign of the policy term; Shapley coverage 0.95 (sim) |
+| C10 | Report + overlap gate | → `Verdict` (worked / hurt / can't tell) | dashboard number | ★ (gate) | gate v1 calibrated on sim (`components/report/gate.py`) | confident-wrong count; abstention rate |
+| C11 | Simulator | config → logs + `GroundTruth` | obp synthetic | | + feedback, nonlinearity, sparse rewards, MC propensity noise (v0 worlds unchanged, tested) | truth MC precision |
 | C12 | EvalHarness | bank × seeds → metrics | obp evaluate | | v0 running | — |
 
 ## Selection memo
@@ -148,3 +158,27 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Member sizes, compressed (uncompressed): random/all 22.1 MB (695.5 MB); bts/all 203.6 MB (6,321 MB); random/men 6.4; random/women 12.4; bts/men 57.5; bts/women 110.9.
 - **Fetched the full Random log for the All campaign:** 1,374,327 rows, time-sorted, compact npz in gitignored `.data/obd_slice/`.
 - 09:55 Supervisor: **PAUSE** (only 3 projects run at a time). No jobs were running; the exact resume point is in *Now*. Going idle.
+
+### 2026-10-04 13:45 IST — Resumed: real OBD pre-registered and run; decomposer review; overlap gate; abstract rendered; reviews spawned
+- **13:05** Resumed by the Supervisor; Now rewritten. Definition of done: see *Now*.
+- **13:06:47 Pre-registration committed** (f88de64) before any BTS-slice result. Then the BTS slice was range-read: 100 of 203.6 MB compressed, 6,058,425 rows, up to 2019-11-27 12:43 UTC.
+- **Bug found and fixed before the results run:** pandas 3 infers microsecond timestamps; the slicer now casts to ns, and the loader auto-detects old files.
+- **Real OBD results (pre-registered; `eval/results/obd_slice_summary.md`):**
+  - Window: 84 h; 660,904 Random rows and 5,956,296 BTS rows.
+  - (A1) The deployed BTS changed: 20/20 top cells moved ≥1.5× between 6-hour windows (median 16×).
+  - (A2) Random→V(BTS): DR is within 0.1% (static prior) or 0.9% (hourly reconstruction) of the on-policy CTR, IPW within 1.1–1.6%. All intervals contain the truth. DM is off by 3.5–5.2% with an overconfident interval.
+  - (A3, halves) Re-enacted deployment of BTS: the naive before/after is +1.62 per 1,000 vs a truth of +1.26 (+29%; naive's CI excludes the truth). DR gives +1.40 (consistent).
+  - Rollback direction: naive is exactly right, DR is noisier.
+- **Disclosed deviation** (whole days including 11-24): DR's interval missed the truth in 3/3 deploy-direction day pairs (2 distinct after-days; ESS/n down to 0.05%). Rollback direction 3/3 consistent.
+- **Pre-registered balance check** flagged TVD ≈ 0.36. A POST-HOC diagnostic shows a labelling artefact: one category has a different hash in each file; the label-free TVD is ≤ 0.0044.
+- **Verified first-party:** obp's OBD example evaluates the static ZOZOTOWN prior (`examples/obd/evaluate_off_policy_estimators.py`: `is_zozotown_prior=True`, single-round `compute_batch_action_dist`; `obp/policy/contextfree.py` line 18: "replicate the Bernoulli Thompson Sampling policy used in ZOZOTOWN production").
+- **Decomposer review (`eval/results/decomposer_review.md`, SYNTHETIC):**
+  - Drift sweep (13 levels): naive has the right sign for drift ≥ −0.25 and the wrong sign at ≤ −0.75. DR RMSE stays ≤ 0.006, while naive's reaches 0.262.
+  - Feedback: DR tracks the direct effect, but the total effect is not identified (gap 5.7 points at feedback 1.0).
+  - Misspecification along the mix axis: DM policy-term bias +1.58 points vs DR +0.09; DM-mix bias +0.57 vs DR-mix −0.01.
+  - Shapley coverage 0.95.
+- **Overlap gate** (`eval/gate_rule.json`, SIMULATOR ONLY; Supervisor's idea, refined):
+  - Calibration bank: 36 configs × 20 seeds. The chosen rule (abstain if ESS/n < 5%) answers 47% of cases with 0.96 coverage; the worst config without the gate covers 0.65.
+  - POST-HOC on OBD: 6/10 cases answered, 0 wrong; 3/3 DR failures abstained; 1 unnecessary abstention.
+- **Abstract** rendered from `eval/results/headline.json` (885 words). `eval/check_docs.py` shows 0 untraced numbers in the abstract; the memo is pending. Architecture diagram v2 includes Shapley and the gate.
+- **Child sessions spawned (2, the cap):** "P3 hostile judge (gpt-6-astra, max)" and "P3 code/eval reviewer (gpt-6-sol, max; reproduces the headline numbers)".
