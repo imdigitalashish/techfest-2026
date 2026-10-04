@@ -54,6 +54,8 @@ def eval_renders(export_dir, image_dir):
 
 def train(data_dir, out, steps=15000, max_splats=2_000_000, eval_every_n=8, seed=42, extra=()):
     os.makedirs(out, exist_ok=True)
+    for stale in glob.glob(os.path.join(out, "**", "*.png"), recursive=True) + glob.glob(os.path.join(out, "splat_*.ply")):
+        os.remove(stale)  # never mix renders/exports from an earlier run into this run's metrics
     cmd = ["/usr/bin/time", "-l", BRUSH, data_dir, "--total-steps", str(steps), "--max-splats", str(max_splats),
            "--eval-split-every", str(eval_every_n), "--eval-every", str(steps), "--eval-save-to-disk",
            "--export-every", str(steps), "--export-path", out, "--export-name", "splat_{iter}.ply",

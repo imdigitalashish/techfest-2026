@@ -95,6 +95,8 @@ class GridPlanner:
 
     def plan(self, start_xz, goal_xz):
         t0 = time.perf_counter()
+        if not self.N.any():
+            return {"ok": False, "ms": (time.perf_counter() - t0) * 1e3, "why": "empty navigable grid"}
         s, g = self.snap(self.to_ij(start_xz)), self.snap(self.to_ij(goal_xz))
         raw = self.astar(s, g)
         if raw is None:

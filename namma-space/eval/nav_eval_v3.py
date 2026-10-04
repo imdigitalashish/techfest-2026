@@ -135,6 +135,7 @@ def evaluate_one(d, ref, offset=0, buffer=2, holdout_every=8, use_carving=True, 
     k_col = n - k_ok - k_ref
     return {"n_heldout": int(test.sum()), "n_endpoints": len(cams), "n_pairs": n,
             "CFC": k_ok / n if n else None, "CFC_wilson95": wilson(k_ok, n),
+            "CFC_camera_bootstrap95": camera_bootstrap(outcomes) if n else None,
             "refusal_rate": k_ref / n if n else None, "collision_rate": k_col / n if n else None,
             "stretch_median": float(np.median(stretches)) if stretches else None,
             "stretch_p90": float(np.percentile(stretches, 90)) if stretches else None,
@@ -146,6 +147,25 @@ def compare(o1, o2):
     w = sum(o1[k] == "ok" and o2[k] != "ok" for k in keys)
     l = sum(o1[k] != "ok" and o2[k] == "ok" for k in keys)
     return {"pairs": len(keys), "wins": w, "losses": l, "sign_test_p": round(sign_test(w, l), 4)}
+
+
+def camera_bootstrap(outcomes, n_boot=2000, seed=0):
+    """95% CI for CFC that respects shared-endpoint dependence: resample endpoint CAMERAS with replacement and
+    weight each pair (a, b) by count(a) * count(b). Pair-level Wilson intervals are too narrow (gpt-6-sol review)."""
+    pairs = [tuple(int(x) for x in k.split("-")) + (v == "ok",) for k, v in outcomes.items()]
+    cams = sorted({c for a, b, _ in pairs for c in (a, b)})
+    pos = {c: i for i, c in enumerate(cams)}
+    A = np.array([pos[a] for a, _, _ in pairs])
+    B = np.array([pos[b] for _, b, _ in pairs])
+    ok = np.array([o for _, _, o in pairs], float)
+    rng = np.random.default_rng(seed)
+    vals = []
+    for _ in range(n_boot):
+        cnt = np.bincount(rng.integers(0, len(cams), len(cams)), minlength=len(cams)).astype(float)
+        w = cnt[A] * cnt[B]
+        if w.sum() > 0:
+            vals.append(float((w * ok).sum() / w.sum()))
+    return [round(float(np.percentile(vals, 2.5)), 4), round(float(np.percentile(vals, 97.5)), 4)]
 
 
 if __name__ == "__main__":

@@ -95,6 +95,8 @@ def main():
         res = fn()
         res = {"ok": True, "seconds": round(time.perf_counter() - t0, 1), **res}
         report["stages"][stage] = res
+        for later in STAGES[STAGES.index(stage) + 1:]:  # a re-run invalidates everything downstream
+            report["stages"].pop(later, None)
         json.dump(report, open(rp, "w"), indent=1)
         print(f"[{stage}] done in {res['seconds']} s", flush=True)
         return res

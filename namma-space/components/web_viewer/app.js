@@ -74,12 +74,17 @@ function move(dt) {
   const speed = keys.has("ShiftLeft") || keys.has("ShiftRight") ? 3.0 : 1.4;
   if (wish.lengthSq() > 0) wish.normalize().multiplyScalar(speed);
   vel.lerp(wish, 1 - Math.exp(-10 * dt)); // smooth acceleration and deceleration
-  const p = camera.position, nx = p.x + vel.x * dt, nz = p.z + vel.z * dt;
-  if (fly || !nav.isFreeXZ(p.x, p.z)) { p.x = nx; p.z = nz; } // never trap a user who starts off-grid
-  else if (nav.isFreeXZ(nx, nz)) { p.x = nx; p.z = nz; }
-  else if (nav.isFreeXZ(nx, p.z)) { p.x = nx; vel.z = 0; } // slide along walls
-  else if (nav.isFreeXZ(p.x, nz)) { p.z = nz; vel.x = 0; }
-  else vel.set(0, 0, 0);
+  const p = camera.position;
+  // sub-step so a fast step at a low frame rate can never tunnel through a one-cell (5 cm) wall
+  const steps = Math.max(1, Math.ceil((Math.hypot(vel.x, vel.z) * dt) / (nav.cell * 0.5)));
+  for (let s = 0; s < steps; s++) {
+    const nx = p.x + (vel.x * dt) / steps, nz = p.z + (vel.z * dt) / steps;
+    if (fly || !nav.isFreeXZ(p.x, p.z)) { p.x = nx; p.z = nz; } // never trap a user who starts off-grid
+    else if (nav.isFreeXZ(nx, nz)) { p.x = nx; p.z = nz; }
+    else if (nav.isFreeXZ(nx, p.z)) { p.x = nx; vel.z = 0; } // slide along walls
+    else if (nav.isFreeXZ(p.x, nz)) { p.z = nz; vel.x = 0; }
+    else { vel.set(0, vel.y, 0); break; }
+  }
   if (fly) p.y += vel.y * dt; else p.y = EYE;
 }
 

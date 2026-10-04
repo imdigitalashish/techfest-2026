@@ -14,17 +14,17 @@ export class NavGrid {
   inside(i, k) { return i >= 0 && k >= 0 && i < this.nx && k < this.nz; }
   free(i, k) { return this.inside(i, k) && this.nav[this.idx(i, k)] === 1; }
   isFreeXZ(x, z) { const [i, k] = this.toIJ(x, z); return this.free(i, k); }
-  snap(i, k) { // nearest navigable cell, searching square rings outward
+  snap(i, k) { // exact Euclidean-nearest navigable cell (matches planner.py's EDT snap)
     i = Math.min(this.nx - 1, Math.max(0, i)); k = Math.min(this.nz - 1, Math.max(0, k));
     if (this.free(i, k)) return [i, k];
+    let best = null, bd = Infinity;
+    const test = (a, b) => { if (this.free(a, b)) { const d = (a - i) ** 2 + (b - k) ** 2; if (d < bd) { bd = d; best = [a, b]; } } };
     for (let r = 1; r < Math.max(this.nx, this.nz); r++) {
-      let best = null, bd = 1e9;
-      const test = (a, b) => { if (this.free(a, b)) { const d = (a - i) ** 2 + (b - k) ** 2; if (d < bd) { bd = d; best = [a, b]; } } };
+      if (best && r > Math.sqrt(bd)) break; // cells on ring r are at least r away
       for (let a = i - r; a <= i + r; a++) { test(a, k - r); test(a, k + r); }
       for (let b = k - r + 1; b <= k + r - 1; b++) { test(i - r, b); test(i + r, b); }
-      if (best) return best;
     }
-    return null;
+    return best;
   }
   farthestFrom(x, z) {
     let best = null, bd = -1;
