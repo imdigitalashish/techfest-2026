@@ -2,11 +2,12 @@
 
 This repo holds 20 parallel projects for Techfest 2026 (IIT Bombay), one folder per problem statement. Every project follows the same method so the Supervisor and the user can read any project at a glance, and so components can be researched, swapped and auto-improved independently and in parallel.
 
-## 0. Overnight mode (active now)
+## 0. Operating mode (since 4 Oct 2026, 10:00 IST)
 
-- The user is asleep until morning. **Do not ask the user anything** (never call `ask_user`). Make the best decision, record the assumption in your thought node, and keep going.
+- **Batch mode (user directive):** at most 5 projects are active at a time; the rest are paused and idle. When an active project meets its definition of done, it messages the Supervisor "DONE — slot free". The Supervisor marks it ✅ Completed in README.md for the user to review, then resumes the next queued project.
+- **Do not ask the user anything** (never call `ask_user`). Make the best decision, record the assumption in your thought node, and keep going.
 - Real blockers (registrations, a physical phone capture, credentials, purchases) go under *Needs from user*. Work around them meanwhile with public datasets, simulations or mocks, clearly labelled.
-- **Morning package due 08:30 IST, 4 Oct 2026** — see §9.
+- The overnight morning package (§9) was delivered on 4 Oct 2026.
 - **Zero hallucination.** Every factual claim cites a source you actually opened. Every number comes from a run that is committed, with the command that reproduces it. Anything unverified is marked **UNVERIFIED**. Synthetic data and estimates are labelled as such.
 - Keep GitHub current: commit and push at every step (§6).
 
@@ -92,10 +93,10 @@ deliverables/              # round submissions, decks, scripts
 .data/  .cache/            # gitignored: datasets, weights, media
 ```
 
-## 4. Agents and sessions — no caps
-- Spawn as many sub-agents (`task`: `research`, `explore`, `general-purpose`, `rubber-duck`, `code-review`, `First Prinicipals Agent`) and child sessions (orchestrate skill) as the work benefits from.
-- A useful roster: SOTA researchers · company/product scouts · component mapper · per-component researchers · six-hats innovation agent · adversarial antithesis agent · component builders · auto-research loopers · fact-checkers · code reviewers.
-- Sub-agents suit research fan-out; child sessions suit long-running builds and auto-research loops.
+## 4. Delegation — child sessions, capped
+- **Delegate through child sessions with the orchestrate skill (`create_session`), not `task` sub-agents** (user directive, 4 Oct). Sessions are visible and steerable in the user's sidebar.
+- **At most 2 child sessions running at a time per active lead**, reviewers included. Many concurrent agents saturated this Mac's uplink overnight and model calls failed with HTTP 408.
+- A useful roster: SOTA researchers · company/product scouts · component builders · auto-research loopers · fact-checkers · cross-model reviewers (§10).
 - Every spawn gets complete context: this playbook's path, its component contract, metric, folder, definition of done, and how to report back.
 - A child session owns `<slug>/components/<component>/` (and `<slug>/research/components/<component>.md`). Only the lead edits `thought_node.md` and `architecture/`.
 - Relevant skills: `research`, `codebase-design`, `domain-modeling`, `first-principles-study`, `grilling`, `prototype`, `tdd`, `diagnosing-bugs`, `orchestrate`.
@@ -140,3 +141,17 @@ Each project, committed and pushed:
 7. Walking skeleton + eval harness with real baseline numbers. If the work is gated on hardware or the user, a simulation or mock with clearly labelled assumptions instead.
 8. Stretch: a first auto-research loop on a spike, with results in `results.tsv`.
 9. `thought_node.md` current; everything committed and pushed.
+
+## 10. Cross-model review (user directive, 4 Oct)
+Leads run on Claude Opus 5.5. Get second opinions from other model families, as child sessions with a model override: `create_session` with `kickoff: { prompt, mode: "autopilot", model, reasoning_effort }`.
+
+| Role | Model | Effort |
+|---|---|---|
+| Methodology, statistics/maths, novelty, hostile judge (default) | `gpt-6-astra` | `max` |
+| Code review, reproducibility, eval correctness | `gpt-6-sol` | `max` |
+| Third opinion on contested calls | `grok-4.7` | `xhigh` |
+| Long documents and PDFs, cheap reads | `gemini-3.8-flash` | default |
+
+- The role mapping follows Oct-2026 published comparisons (secondary sources: Opus 5.5 leads agentic coding; GPT-6 Astra leads reasoning and maths). Treat it as a hypothesis; the ledger decides.
+- **Minimum reviews:** the spike/ADR · the final Round-1 deliverable, before sending DONE · any headline number or claim.
+- **Feedback is advisory; the lead decides.** The reviewer writes its raw review to `<slug>/reviews/<YYYY-MM-DD>-<artifact>-<model>.md`. The lead marks each item ACCEPTED or REJECTED with a reason, and adds one line to `<slug>/reviews/ledger.tsv`: date · artifact · model · effort · issues · accepted · rejected · note.
