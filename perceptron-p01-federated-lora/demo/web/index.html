@@ -1,0 +1,177 @@
+<!doctype html>
+<!--
+THESIS: a test bench, not a slide deck. The page is an instrument a judge can read from two metres and touch:
+  committed evidence first, then a live federation they can sabotage by pulling a device's plug.
+  Refuses the category default (hero metrics + gradient charts + claims without sources).
+OWN-WORLD: bench-sheet light ground, graphite ink, hairline rules; one orange (starter) vs deep-teal (AnchorLoRA)
+  colour-blind-safe pair; every number carries its source key in small mono; device sockets on a power strip.
+STORY: (1) committed runs: who gains, with intervals; (2) the committed tablet outage; (3) LIVE: pull a plug and
+  watch both federations respond; (4) what AnchorLoRA costs. Real first, simulation labelled, sources everywhere.
+FIRST VIEWPORT: header with the truth strip; tab bar; the per-domain gain chart (left, dominant) beside the
+  results ledger (right). Primary action (Live tab, Start) one key press away ("3").
+FORM: instrument panel / lab ledger; staging: tabs that each fit one projector viewport.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AnchorLoRA · pull the plug · Perceptron P1</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <h1>AnchorLoRA</h1>
+    <p class="pitch">Federated LoRA fine-tuning where weak devices still count, devices can drop out mid-run, and one data-rich device cannot quietly dominate.</p>
+  </div>
+  <div class="truth">
+    <span class="tag tag-sim">SIMULATED device budgets (ranks/steps/availability)</span>
+    <span class="tag tag-real">real SmolLM2-135M</span>
+    <span class="tag tag-real">real text</span>
+    <button id="livepill" class="livepill" data-state="idle" type="button" title="Go to the live panel (key 3)">LIVE · idle</button>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Demo sections">
+  <button role="tab" id="tab-real" aria-controls="view-real" aria-selected="true" data-key="1">Committed runs <kbd>1</kbd></button>
+  <button role="tab" id="tab-outage" aria-controls="view-outage" aria-selected="false" data-key="2">Tablet outage, committed <kbd>2</kbd></button>
+  <button role="tab" id="tab-live" aria-controls="view-live" aria-selected="false" data-key="3">Live: pull the plug <kbd>3</kbd></button>
+  <button role="tab" id="tab-costs" aria-controls="view-costs" aria-selected="false" data-key="4">Costs &amp; caveats <kbd>4</kbd></button>
+</nav>
+
+<main>
+<!-- 1 · committed runs -------------------------------------------------------------------------------->
+<section id="view-real" class="view" role="tabpanel" aria-labelledby="tab-real">
+  <div class="viewhead">
+    <h2>Who gains? Real model, real text, 4 strategies × 5 paired seeds, 12 rounds with dropouts</h2>
+    <p class="sub">Replayed from <code>eval/results</code> · five devices, one text domain each · the workstation holds 8× the data of any other device.</p>
+  </div>
+  <div class="grid-real">
+    <figure class="panel chart-panel">
+      <figcaption>
+        <h3>Improvement over the untuned model, per domain, after round 12</h3>
+        <p class="legend" id="legend-real"></p>
+      </figcaption>
+      <div id="chart-gains" class="chart" role="img" aria-label="Per-domain improvement over the untuned model for four strategies"></div>
+      <p class="src">Bars: mean over 5 seeds. Whiskers: Bonferroni 95%, 5 domains. Above the line = better than the untuned model; below = the model forgot that domain. Source <code>v2_canonical.json · dropout.&lt;strategy&gt;.&lt;domain&gt;.gain_mean / gain_lo_bonf / gain_hi_bonf</code></p>
+    </figure>
+    <aside class="panel ledger" aria-label="Headline results">
+      <h3>Ledger</h3>
+      <div id="ledger"></div>
+    </aside>
+  </div>
+</section>
+
+<!-- 2 · committed outage ------------------------------------------------------------------------------>
+<section id="view-outage" class="view" role="tabpanel" aria-labelledby="tab-outage" hidden>
+  <div class="viewhead">
+    <h2>The tablet goes offline for rounds 5–9. What happens to its domain?</h2>
+    <p class="sub">Committed dropout scenario: seeded random offline rounds and deadline cut-offs, plus a forced tablet outage. Same availability for every strategy (paired).</p>
+  </div>
+  <div class="grid-outage">
+    <figure class="panel chart-panel">
+      <figcaption>
+        <h3>Tablet's domain (man pages): improvement over the untuned model at the evaluated rounds</h3>
+        <p class="legend" id="legend-outage"></p>
+      </figcaption>
+      <div id="chart-outage" class="chart" role="img" aria-label="Man-page loss relative to the untuned model across evaluated rounds"></div>
+      <p class="src">Thick line: mean of 5 seeds; dots: each seed. Evaluated rounds only (3, 6, 9, 12); nothing is claimed between checkpoints. Source <code>eval/results/logs/v2_dropout_&lt;strategy&gt;_s&lt;seed&gt;.json · eval.per_domain_loss.manpages</code> minus <code>base_per_domain_smollm2-135m.json · manpages</code></p>
+    </figure>
+    <aside class="panel" aria-label="Outage summary">
+      <h3>Worst point above the untuned model</h3>
+      <div id="peaks"></div>
+      <h3 class="mt">Rounds each device's work entered the aggregate</h3>
+      <div id="usedrounds"></div>
+    </aside>
+  </div>
+  <figure class="panel strip-panel">
+    <figcaption class="striphead">
+      <h3>Round by round, seed <select id="strip-seed" aria-label="Seed for the round strip"></select></h3>
+      <div class="stripctl">
+        <button id="strip-play" type="button">Play rounds</button>
+        <span class="legend" id="legend-strip"></span>
+      </div>
+    </figcaption>
+    <div id="roundstrip" class="roundstrip"></div>
+    <p class="src" id="strip-src"></p>
+  </figure>
+</section>
+
+<!-- 3 · live --------------------------------------------------------------------------------------------->
+<section id="view-live" class="view" role="tabpanel" aria-labelledby="tab-live" hidden>
+  <div class="viewhead livehead">
+    <h2>Pull the plug on a device, mid-training</h2>
+    <div class="controls topctl">
+      <label class="seedpick">seed <select id="live-seed" aria-label="Live seed"></select></label>
+      <button id="btn-start" class="primary" type="button" title="key S">Start live run</button>
+      <button id="btn-pause" type="button" disabled>Pause after this round</button>
+      <button id="btn-stop" type="button" disabled>Stop</button>
+      <span class="sep" aria-hidden="true"></span>
+      <button id="btn-recorded" type="button">Play RECORDED run</button>
+      <label class="speed">speed <select id="rec-speed" aria-label="Recorded playback speed"><option value="1">1×</option><option value="4" selected>4×</option><option value="16">16×</option></select></label>
+    </div>
+  </div>
+  <p class="livelabel" id="livelabel">LIVE · reduced config (batch 1×64, eval 8×64 tok/domain, 6 rounds) · Δ vs untuned on the same eval subset · not comparable in absolute terms to committed runs</p>
+  <p id="livestatus" class="livestatus" role="status" aria-live="polite">Checking the live engine…</p>
+  <div id="membanner" class="membanner" hidden role="status">Paused for memory: this Mac's memory level is <b id="memlvl">–</b> (&lt; 25). Training resumes at ≥ 30.</div>
+  <div class="grid-live">
+    <aside class="panel strip" aria-label="Devices">
+      <h3>Power strip <span class="hint">click to pull / restore a plug · T = tablet</span></h3>
+      <ul id="sockets" class="sockets"></ul>
+      <p class="src">In-process Flower grid: node removed (<code>LocalGrid.kill_node</code>), not an OS-process kill; both federations lose the device from the same round.</p>
+    </aside>
+    <div class="feds">
+      <figure class="panel fed" data-fed="fedavg_ab_homo">
+        <figcaption><h3 title="PEFT LoRA rank 8 on every device + FedAvg over A and B, weighted by data volume; devices cut off by the deadline are dropped"><span class="swatch s-fedavg_ab_homo"></span>Starter <small>FedAvg on A,B · r8 · data-weighted · late work dropped</small></h3></figcaption>
+        <div class="chart" id="live-bars-fedavg_ab_homo"></div>
+        <p class="fedline" id="fedline-fedavg_ab_homo">–</p>
+      </figure>
+      <figure class="panel fed" data-fed="anchor_full">
+        <figcaption><h3 title="Shared frozen seed-generated A; device k trains the first r_k columns of B; partial work kept (step-normalised); an absent device's last update reused for at most 4 rounds; equal device weights; clipping at 2x the median norm"><span class="swatch s-anchor_full"></span>AnchorLoRA <small>frozen shared A · partial work kept · memory ≤ 4 rounds · equal weights</small></h3></figcaption>
+        <div class="chart" id="live-bars-anchor_full"></div>
+        <p class="fedline" id="fedline-anchor_full">–</p>
+      </figure>
+      <figure class="panel curve">
+        <figcaption>
+          <h3>Tablet's domain (man pages), round by round</h3>
+          <p class="legend" id="legend-curve"></p>
+        </figcaption>
+        <div class="chart" id="live-curve"></div>
+        <p class="src" id="curve-src"></p>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · costs ------------------------------------------------------------------------------------------>
+<section id="view-costs" class="view" role="tabpanel" aria-labelledby="tab-costs" hidden>
+  <div class="viewhead">
+    <h2>What AnchorLoRA costs, and what this demo does not show</h2>
+  </div>
+  <div class="grid-costs">
+    <div class="panel"><h3>Costs: AnchorLoRA minus each baseline (paired by seed, 95% CI)</h3><div id="costs"></div></div>
+    <div class="panel"><h3>Read the numbers this way</h3>
+      <ul class="caveats">
+        <li><b>Full-system comparison under paired availability.</b> Every strategy saw the same dropouts and cut-offs; AnchorLoRA's ingredients act together, so no single one is credited here.</li>
+        <li><b>Norm share is a magnitude diagnostic</b>: how large each device's piece of the update was. It is not a fairness guarantee.</li>
+        <li><b>Outage results hold at the evaluated rounds</b> (3, 6, 9, 12 committed; every round live). Nothing is claimed between checkpoints.</li>
+        <li><b>Device budgets are simulated</b>: ranks, step counts and availability are assumptions; every device runs on this Mac. The model and the text are real.</li>
+        <li><b>The live panel is a reduced configuration</b> (batch 1×64 tokens, 8 held-out blocks × 64 tokens per domain, 6 rounds). Its values are deltas against the untuned model on the same subset and are not comparable in absolute terms to the committed runs. Its pattern was pre-registered and checked on 5 seeds before the demo: <span id="valsummary">–</span></li>
+        <li><b>The unplug is in-process</b>: a Flower node removed from an in-process grid (<code>LocalGrid.kill_node</code>), not a killed OS process.</li>
+      </ul>
+    </div>
+    <div class="panel span2"><h3>Provenance</h3><div id="provenance"></div></div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <span>Perceptron Hackathon 2026 (IIT Bombay × Optiver) · Problem 1 · <code>perceptron-p01-federated-lora/demo</code></span>
+  <span id="footstate"></span>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

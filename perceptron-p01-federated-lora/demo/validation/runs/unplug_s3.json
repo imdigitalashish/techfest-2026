@@ -1,0 +1,1087 @@
+{
+ "config": {
+  "seed": 3,
+  "rounds": 6,
+  "live": {
+   "batch_size": 1,
+   "seq_len": 64,
+   "eval_blocks_per_domain": 8,
+   "eval_stride": 6,
+   "rounds": 6,
+   "lr": 0.001,
+   "threads": 4,
+   "eval_every": 1
+  },
+  "strategies": [
+   "fedavg_ab_homo",
+   "anchor_full"
+  ],
+  "script": {
+   "c4": [
+    2,
+    6
+   ]
+  },
+  "forced_outage": "none (the judge or the script supplies the outage)"
+ },
+ "provenance": {
+  "commit": "5d655ba",
+  "code_sha": "cc9d632a1a27",
+  "dirty": false
+ },
+ "untuned": {
+  "wiki": 4.146405220031738,
+  "pycode": 2.818359613418579,
+  "cheaders": 2.594313859939575,
+  "readmes": 2.8957972526550293,
+  "manpages": 3.921891212463379
+ },
+ "identical_start": true,
+ "load_s": 2.67,
+ "unplugged_rounds": {
+  "c4": [
+   2,
+   3,
+   4,
+   5,
+   6
+  ]
+ },
+ "completed_rounds": 6,
+ "records": [
+  {
+   "fed": "fedavg_ab_homo",
+   "round": 1,
+   "per_domain": {
+    "wiki": 4.053616523742676,
+    "pycode": 2.836451768875122,
+    "cheaders": 2.6053528785705566,
+    "readmes": 2.9068305492401123,
+    "manpages": 3.910914659500122
+   },
+   "delta": {
+    "wiki": -0.0927886962890625,
+    "pycode": 0.01809215545654297,
+    "cheaders": 0.011039018630981445,
+    "readmes": 0.011033296585083008,
+    "manpages": -0.010976552963256836
+   },
+   "macro_delta": -0.012720155715942382,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "fresh",
+     "steps": [
+      8,
+      8
+     ],
+     "scheduled_steps": 8
+    },
+    "c2": {
+     "state": "discarded",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 1
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "discarded",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 2
+    }
+   },
+   "fresh": 3,
+   "reporters": [
+    "c0",
+    "c1",
+    "c3"
+   ],
+   "memory": [],
+   "weights": {
+    "c0": 0.8,
+    "c1": 0.1,
+    "c3": 0.1
+   },
+   "norm_share": {
+    "c0": 0.9027462327243566,
+    "c1": 0.06802869791758767,
+    "c3": 0.029225069358055772
+   },
+   "update_norm": 1.106373456741159,
+   "train_s": 4.88,
+   "eval_s": 1.51
+  },
+  {
+   "fed": "anchor_full",
+   "round": 1,
+   "per_domain": {
+    "wiki": 4.132782459259033,
+    "pycode": 2.813232898712158,
+    "cheaders": 2.5930612087249756,
+    "readmes": 2.892918348312378,
+    "manpages": 3.9152069091796875
+   },
+   "delta": {
+    "wiki": -0.013622760772705078,
+    "pycode": -0.0051267147064208984,
+    "cheaders": -0.0012526512145996094,
+    "readmes": -0.002878904342651367,
+    "manpages": -0.006684303283691406
+   },
+   "macro_delta": -0.005913066864013672,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "fresh",
+     "steps": [
+      8,
+      8
+     ],
+     "scheduled_steps": 8
+    },
+    "c2": {
+     "state": "fresh",
+     "steps": [
+      1,
+      4
+     ],
+     "scheduled_steps": 1
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "fresh",
+     "steps": [
+      2,
+      4
+     ],
+     "scheduled_steps": 2
+    }
+   },
+   "fresh": 5,
+   "reporters": [
+    "c0",
+    "c1",
+    "c2",
+    "c3",
+    "c4"
+   ],
+   "memory": [],
+   "weights": {
+    "c0": 0.2,
+    "c1": 0.2,
+    "c2": 0.2,
+    "c3": 0.2,
+    "c4": 0.2
+   },
+   "norm_share": {
+    "c0": 0.18305575798602397,
+    "c1": 0.1688302899414918,
+    "c2": 0.28191465481212163,
+    "c3": 0.14708951347099294,
+    "c4": 0.2191097837893697
+   },
+   "update_norm": 0.3930030588081113,
+   "train_s": 6.1,
+   "eval_s": 1.87
+  },
+  {
+   "fed": "fedavg_ab_homo",
+   "round": 2,
+   "per_domain": {
+    "wiki": 3.985102653503418,
+    "pycode": 2.8572654724121094,
+    "cheaders": 2.6169254779815674,
+    "readmes": 2.920584201812744,
+    "manpages": 3.9039318561553955
+   },
+   "delta": {
+    "wiki": -0.1613025665283203,
+    "pycode": 0.03890585899353027,
+    "cheaders": 0.022611618041992188,
+    "readmes": 0.024786949157714844,
+    "manpages": -0.0179593563079834
+   },
+   "macro_delta": -0.01859149932861328,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "fresh",
+     "steps": [
+      8,
+      8
+     ],
+     "scheduled_steps": 8
+    },
+    "c2": {
+     "state": "fresh",
+     "steps": [
+      4,
+      4
+     ],
+     "scheduled_steps": 4
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "unplugged",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 4
+    }
+   },
+   "fresh": 4,
+   "reporters": [
+    "c0",
+    "c1",
+    "c2",
+    "c3"
+   ],
+   "memory": [],
+   "weights": {
+    "c0": 0.7272727272727273,
+    "c1": 0.09090909090909091,
+    "c2": 0.09090909090909091,
+    "c3": 0.09090909090909091
+   },
+   "norm_share": {
+    "c0": 0.8630384620445314,
+    "c1": 0.06394960470692737,
+    "c2": 0.044845922281957135,
+    "c3": 0.028166010966584044
+   },
+   "update_norm": 1.082585164593899,
+   "train_s": 6.69,
+   "eval_s": 2.65
+  },
+  {
+   "fed": "anchor_full",
+   "round": 2,
+   "per_domain": {
+    "wiki": 4.123519420623779,
+    "pycode": 2.8095898628234863,
+    "cheaders": 2.5916810035705566,
+    "readmes": 2.890509843826294,
+    "manpages": 3.9078257083892822
+   },
+   "delta": {
+    "wiki": -0.022885799407958984,
+    "pycode": -0.008769750595092773,
+    "cheaders": -0.0026328563690185547,
+    "readmes": -0.0052874088287353516,
+    "manpages": -0.01406550407409668
+   },
+   "macro_delta": -0.010728263854980468,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "fresh",
+     "steps": [
+      8,
+      8
+     ],
+     "scheduled_steps": 8
+    },
+    "c2": {
+     "state": "fresh",
+     "steps": [
+      4,
+      4
+     ],
+     "scheduled_steps": 4
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "unplugged",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 4,
+     "memory_age": 1,
+     "memory": "reused"
+    }
+   },
+   "fresh": 4,
+   "reporters": [
+    "c0",
+    "c1",
+    "c2",
+    "c3"
+   ],
+   "memory": [
+    "c4"
+   ],
+   "weights": {
+    "c0": 0.2,
+    "c1": 0.2,
+    "c2": 0.2,
+    "c3": 0.2,
+    "c4": 0.2
+   },
+   "norm_share": {
+    "c0": 0.20136300294014323,
+    "c1": 0.19070990632391496,
+    "c2": 0.19013604675019602,
+    "c3": 0.16580355474051292,
+    "c4": 0.25198748924523273
+   },
+   "update_norm": 0.33273475060197677,
+   "train_s": 6.04,
+   "eval_s": 1.84
+  },
+  {
+   "fed": "fedavg_ab_homo",
+   "round": 3,
+   "per_domain": {
+    "wiki": 3.9016857147216797,
+    "pycode": 2.9046132564544678,
+    "cheaders": 2.6689305305480957,
+    "readmes": 2.9597504138946533,
+    "manpages": 3.95898699760437
+   },
+   "delta": {
+    "wiki": -0.2447195053100586,
+    "pycode": 0.08625364303588867,
+    "cheaders": 0.07461667060852051,
+    "readmes": 0.06395316123962402,
+    "manpages": 0.03709578514099121
+   },
+   "macro_delta": 0.0034399509429931642,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "fresh",
+     "steps": [
+      8,
+      8
+     ],
+     "scheduled_steps": 8
+    },
+    "c2": {
+     "state": "offline",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 0
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "unplugged",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 2
+    }
+   },
+   "fresh": 3,
+   "reporters": [
+    "c0",
+    "c1",
+    "c3"
+   ],
+   "memory": [],
+   "weights": {
+    "c0": 0.8,
+    "c1": 0.1,
+    "c3": 0.1
+   },
+   "norm_share": {
+    "c0": 0.9020905859389594,
+    "c1": 0.0685668246848717,
+    "c3": 0.02934258937616895
+   },
+   "update_norm": 1.3611283008562522,
+   "train_s": 8.09,
+   "eval_s": 1.53
+  },
+  {
+   "fed": "anchor_full",
+   "round": 3,
+   "per_domain": {
+    "wiki": 4.111501216888428,
+    "pycode": 2.8070313930511475,
+    "cheaders": 2.59185791015625,
+    "readmes": 2.8884379863739014,
+    "manpages": 3.9021100997924805
+   },
+   "delta": {
+    "wiki": -0.03490400314331055,
+    "pycode": -0.01132822036743164,
+    "cheaders": -0.0024559497833251953,
+    "readmes": -0.00735926628112793,
+    "manpages": -0.019781112670898438
+   },
+   "macro_delta": -0.01516571044921875,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "fresh",
+     "steps": [
+      8,
+      8
+     ],
+     "scheduled_steps": 8
+    },
+    "c2": {
+     "state": "offline",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 0,
+     "memory_age": 1,
+     "memory": "reused"
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "unplugged",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 2,
+     "memory_age": 2,
+     "memory": "reused"
+    }
+   },
+   "fresh": 3,
+   "reporters": [
+    "c0",
+    "c1",
+    "c3"
+   ],
+   "memory": [
+    "c2",
+    "c4"
+   ],
+   "weights": {
+    "c0": 0.2,
+    "c1": 0.2,
+    "c2": 0.2,
+    "c3": 0.2,
+    "c4": 0.2
+   },
+   "norm_share": {
+    "c0": 0.20211046526200455,
+    "c1": 0.19302098704665543,
+    "c2": 0.18649690236670938,
+    "c3": 0.17120711770013922,
+    "c4": 0.24716452762449134
+   },
+   "update_norm": 0.34139238418452733,
+   "train_s": 4.31,
+   "eval_s": 1.73
+  },
+  {
+   "fed": "fedavg_ab_homo",
+   "round": 4,
+   "per_domain": {
+    "wiki": 3.8684816360473633,
+    "pycode": 2.9550490379333496,
+    "cheaders": 2.682298421859741,
+    "readmes": 2.9861536026000977,
+    "manpages": 3.9876551628112793
+   },
+   "delta": {
+    "wiki": -0.277923583984375,
+    "pycode": 0.1366894245147705,
+    "cheaders": 0.08798456192016602,
+    "readmes": 0.09035634994506836,
+    "manpages": 0.06576395034790039
+   },
+   "macro_delta": 0.020574140548706054,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "fresh",
+     "steps": [
+      8,
+      8
+     ],
+     "scheduled_steps": 8
+    },
+    "c2": {
+     "state": "offline",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 0
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "unplugged",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 0
+    }
+   },
+   "fresh": 3,
+   "reporters": [
+    "c0",
+    "c1",
+    "c3"
+   ],
+   "memory": [],
+   "weights": {
+    "c0": 0.8,
+    "c1": 0.1,
+    "c3": 0.1
+   },
+   "norm_share": {
+    "c0": 0.8972147814753356,
+    "c1": 0.07187062867808329,
+    "c3": 0.0309145898465811
+   },
+   "update_norm": 1.4439099007826506,
+   "train_s": 4.47,
+   "eval_s": 1.62
+  },
+  {
+   "fed": "anchor_full",
+   "round": 4,
+   "per_domain": {
+    "wiki": 4.102243900299072,
+    "pycode": 2.8060624599456787,
+    "cheaders": 2.5891976356506348,
+    "readmes": 2.8881194591522217,
+    "manpages": 3.8945655822753906
+   },
+   "delta": {
+    "wiki": -0.044161319732666016,
+    "pycode": -0.01229715347290039,
+    "cheaders": -0.00511622428894043,
+    "readmes": -0.007677793502807617,
+    "manpages": -0.02732563018798828
+   },
+   "macro_delta": -0.019315624237060548,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "fresh",
+     "steps": [
+      8,
+      8
+     ],
+     "scheduled_steps": 8
+    },
+    "c2": {
+     "state": "offline",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 0,
+     "memory_age": 2,
+     "memory": "reused"
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "unplugged",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 0,
+     "memory_age": 3,
+     "memory": "reused"
+    }
+   },
+   "fresh": 3,
+   "reporters": [
+    "c0",
+    "c1",
+    "c3"
+   ],
+   "memory": [
+    "c2",
+    "c4"
+   ],
+   "weights": {
+    "c0": 0.2,
+    "c1": 0.2,
+    "c2": 0.2,
+    "c3": 0.2,
+    "c4": 0.2
+   },
+   "norm_share": {
+    "c0": 0.20298922325903987,
+    "c1": 0.1889488538295034,
+    "c2": 0.18681435252982095,
+    "c3": 0.17366232574461443,
+    "c4": 0.2475852446370212
+   },
+   "update_norm": 0.3397165160826746,
+   "train_s": 4.51,
+   "eval_s": 1.64
+  },
+  {
+   "fed": "fedavg_ab_homo",
+   "round": 5,
+   "per_domain": {
+    "wiki": 3.8370988368988037,
+    "pycode": 2.9563307762145996,
+    "cheaders": 2.6897075176239014,
+    "readmes": 3.0133378505706787,
+    "manpages": 4.0267534255981445
+   },
+   "delta": {
+    "wiki": -0.30930638313293457,
+    "pycode": 0.1379711627960205,
+    "cheaders": 0.09539365768432617,
+    "readmes": 0.11754059791564941,
+    "manpages": 0.10486221313476562
+   },
+   "macro_delta": 0.02929224967956543,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "fresh",
+     "steps": [
+      8,
+      8
+     ],
+     "scheduled_steps": 8
+    },
+    "c2": {
+     "state": "fresh",
+     "steps": [
+      4,
+      4
+     ],
+     "scheduled_steps": 4
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "unplugged",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 4
+    }
+   },
+   "fresh": 4,
+   "reporters": [
+    "c0",
+    "c1",
+    "c2",
+    "c3"
+   ],
+   "memory": [],
+   "weights": {
+    "c0": 0.7272727272727273,
+    "c1": 0.09090909090909091,
+    "c2": 0.09090909090909091,
+    "c3": 0.09090909090909091
+   },
+   "norm_share": {
+    "c0": 0.8494264476155673,
+    "c1": 0.07174631778638033,
+    "c2": 0.04793142753575755,
+    "c3": 0.030895807062294795
+   },
+   "update_norm": 1.346356073283783,
+   "train_s": 5.29,
+   "eval_s": 1.43
+  },
+  {
+   "fed": "anchor_full",
+   "round": 5,
+   "per_domain": {
+    "wiki": 4.092824935913086,
+    "pycode": 2.804433584213257,
+    "cheaders": 2.5869874954223633,
+    "readmes": 2.8866004943847656,
+    "manpages": 3.887251853942871
+   },
+   "delta": {
+    "wiki": -0.053580284118652344,
+    "pycode": -0.013926029205322266,
+    "cheaders": -0.007326364517211914,
+    "readmes": -0.009196758270263672,
+    "manpages": -0.03463935852050781
+   },
+   "macro_delta": -0.023733758926391603,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "fresh",
+     "steps": [
+      8,
+      8
+     ],
+     "scheduled_steps": 8
+    },
+    "c2": {
+     "state": "fresh",
+     "steps": [
+      4,
+      4
+     ],
+     "scheduled_steps": 4
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "unplugged",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 4,
+     "memory_age": 4,
+     "memory": "reused"
+    }
+   },
+   "fresh": 4,
+   "reporters": [
+    "c0",
+    "c1",
+    "c2",
+    "c3"
+   ],
+   "memory": [
+    "c4"
+   ],
+   "weights": {
+    "c0": 0.2,
+    "c1": 0.2,
+    "c2": 0.2,
+    "c3": 0.2,
+    "c4": 0.2
+   },
+   "norm_share": {
+    "c0": 0.19998972388452088,
+    "c1": 0.1914200399604248,
+    "c2": 0.18438745685911176,
+    "c3": 0.17550803909576415,
+    "c4": 0.24869474020017843
+   },
+   "update_norm": 0.33690607210027357,
+   "train_s": 5.33,
+   "eval_s": 1.87
+  },
+  {
+   "fed": "fedavg_ab_homo",
+   "round": 6,
+   "per_domain": {
+    "wiki": 3.802302598953247,
+    "pycode": 2.9613683223724365,
+    "cheaders": 2.690096855163574,
+    "readmes": 3.0256268978118896,
+    "manpages": 4.03810977935791
+   },
+   "delta": {
+    "wiki": -0.3441026210784912,
+    "pycode": 0.14300870895385742,
+    "cheaders": 0.09578299522399902,
+    "readmes": 0.12982964515686035,
+    "manpages": 0.11621856689453125
+   },
+   "macro_delta": 0.028147459030151367,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "offline",
+     "steps": [
+      0,
+      8
+     ],
+     "scheduled_steps": 0
+    },
+    "c2": {
+     "state": "fresh",
+     "steps": [
+      4,
+      4
+     ],
+     "scheduled_steps": 4
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "unplugged",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 4
+    }
+   },
+   "fresh": 3,
+   "reporters": [
+    "c0",
+    "c2",
+    "c3"
+   ],
+   "memory": [],
+   "weights": {
+    "c0": 0.8,
+    "c2": 0.1,
+    "c3": 0.1
+   },
+   "norm_share": {
+    "c0": 0.9175421924129913,
+    "c2": 0.04986889713963297,
+    "c3": 0.0325889104473757
+   },
+   "update_norm": 1.6251899388727251,
+   "train_s": 4.85,
+   "eval_s": 1.78
+  },
+  {
+   "fed": "anchor_full",
+   "round": 6,
+   "per_domain": {
+    "wiki": 4.075207710266113,
+    "pycode": 2.8001186847686768,
+    "cheaders": 2.58414626121521,
+    "readmes": 2.88523006439209,
+    "manpages": 3.8815438747406006
+   },
+   "delta": {
+    "wiki": -0.071197509765625,
+    "pycode": -0.018240928649902344,
+    "cheaders": -0.010167598724365234,
+    "readmes": -0.010567188262939453,
+    "manpages": -0.04034733772277832
+   },
+   "macro_delta": -0.03010411262512207,
+   "devices": {
+    "c0": {
+     "state": "fresh",
+     "steps": [
+      16,
+      16
+     ],
+     "scheduled_steps": 16
+    },
+    "c1": {
+     "state": "offline",
+     "steps": [
+      0,
+      8
+     ],
+     "scheduled_steps": 0,
+     "memory_age": 1,
+     "memory": "reused"
+    },
+    "c2": {
+     "state": "fresh",
+     "steps": [
+      4,
+      4
+     ],
+     "scheduled_steps": 4
+    },
+    "c3": {
+     "state": "fresh",
+     "steps": [
+      2,
+      2
+     ],
+     "scheduled_steps": 2
+    },
+    "c4": {
+     "state": "unplugged",
+     "steps": [
+      0,
+      4
+     ],
+     "scheduled_steps": 4,
+     "memory_age": 5,
+     "memory": "expired"
+    }
+   },
+   "fresh": 3,
+   "reporters": [
+    "c0",
+    "c2",
+    "c3"
+   ],
+   "memory": [
+    "c1"
+   ],
+   "weights": {
+    "c0": 0.25,
+    "c1": 0.25,
+    "c2": 0.25,
+    "c3": 0.25
+   },
+   "norm_share": {
+    "c0": 0.27417589664689057,
+    "c1": 0.25627474993564664,
+    "c2": 0.24064191062832946,
+    "c3": 0.22890744278913336
+   },
+   "update_norm": 0.3870016532881771,
+   "train_s": 4.14,
+   "eval_s": 2.06
+  }
+ ],
+ "wall_s": 93.7,
+ "peak_rss_mb": 1352
+}
