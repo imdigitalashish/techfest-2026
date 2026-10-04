@@ -6,11 +6,14 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (09:55 IST, 4 Oct)
-- **Mode: 3 projects at a time** (user decision, 09:50). Running 20 leads at once saturated the upload link and model calls kept timing out (HTTP 408). Now only 3 leads run; the rest are paused and idle. When an active project completes its definition of done, the next one in the queue starts.
-- **Active:** [namma-space](namma-space/thought_node.md) · [perceptron-p07-multi-agent-allocation](perceptron-p07-multi-agent-allocation/thought_node.md) (Perceptron pick) · [ev-c2-green-auto-lca](ev-c2-green-auto-lca/thought_node.md) (EV pick).
-- **Queue:** 1. InnovateX zonal theme, T1 or T2 (picked by 7 Oct; deck due 9 Oct) → 2. India@71 T1 (proposal due 1 Nov) → 3. APCTT (from 10 Oct data) → 4. P9, then P1 (only if the Perceptron pick changes).
-- **Paused indefinitely:** P2, P3, P4, P5, P6, P8, P10, EV C1, India@71 T2/T3, InnovateX T3. All their work is on `main`.
+## Now (11:08 IST, 4 Oct)
+- **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
+- **Active:** Namma Space · P7 (Perceptron) · EV C2 (EV pick) · InnovateX T1 JalSakshi (zonal deck due 9 Oct) · P9 (Perceptron alternate).
+- **Completed — awaiting your review:** India@71 T1 (proposal PDF, 6 pages).
+- **Queue:** APCTT (when the 10 Oct data lands) → P1.
+- **Perceptron pick (12 Oct) is open:**
+  - P7's detector spike failed its pre-registered replication. Its robust claim (planning beats rules, including a +2.5 pp real NYC replay) and all headline numbers were independently reproduced.
+  - P9's real τ-bench errors: 36–43% harmful-catch at 1.85% false-block (vs 100% on its own synthetic tests).
 
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
@@ -61,6 +64,15 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 11:08 IST — Sweep
+- India@71 T1 completed and verified (10:50); P9 took the slot.
+- Cross-model reviews are paying off:
+  - India T1: a review found eval leakage, and the corrected eval reversed the result (the transparent WHZ rule beats ML).
+  - P7: a GPT-6 Sol run reproduced every headline number exactly.
+  - EV C2: applied Sol and Astra reviews; check_docs prevents drift.
+  - P9: miss taxonomy — 8/20 misses were user-requested (not catchable from the transcript), 8/20 wrong-entity (the spike's target).
+- InnovateX T1 picked by two independent judges (GPT-6 Astra, Grok 4.7) and applying their fixes.
+- My one wrong flag: the green-steel gazette date (the lead's primary-source check was right).
 ### 2026-10-04 10:50 IST — India@71 T1 completed
 Verified on main: 6-page A4 Arial PDF, citations verified at primary sources, GPT-6 Sol (14/14 accepted) + GPT-6 Astra (16/1) reviews, leakage-free eval (transparent WHZ rule 43% > ML 38%, ADR 003), check_docs 17/17. Marked ✅ Completed in README. P9 resumed into the free slot (APCTT waits for 10 Oct data).
 ### 2026-10-04 09:55 IST — Batch mode
