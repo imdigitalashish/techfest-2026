@@ -1,6 +1,6 @@
 # P4 demo proposal: "The alarm that cries wolf"
 
-**Status:** proposal for lead approval (2026-10-04, IST). Nothing is built yet beyond a timing probe.
+**Status:** historical proposal (approved and built; see `README.md`). Proposal for lead approval (2026-10-04, IST). Nothing is built yet beyond a timing probe.
 
 ## Crazy element (recommended): the alarm dial
 The judge turns one dial: the textbook KS test's significance level, log10 α from −1 down to −300, with two extra stops, "calibrated (empirical null)" and "off (α = 0)". Two views update instantly: the replay day's alarm ticks and loss, and a held-out panel showing KS→refit over 22 days at that α against the regime gate.
@@ -8,7 +8,7 @@ The judge turns one dial: the textbook KS test's significance level, log10 α fr
 **What the probe found** (post-hoc probe, 2026-08-01; computed with the committed `run_episode`):
 - At α = 1e-3, KS→refit fires 48 times and scores log-loss 0.593946, which equals the committed `v2_holdout.json` value.
 - At α = 1e-10 it fires 44 times; at 1e-20, 37 times; at 1e-30, still 26 times. Loss worsens to 0.7086, above the coin flip's ln 2.
-- The reason is that `kstwo.sf` underflows to exactly 0 at D = 1. No α > 0 switches the alarm off.
+- ~~The reason is that `kstwo.sf` underflows to exactly 0 at D = 1. No α > 0 switches the alarm off.~~ **SUPERSEDED (2026-10-04):** rejected by the sweep. No held-out window (0 of 62,480) or training window (0 of 34,080) has D = 1 or p = 0, and the alarm stops at α ≤ 1e-150. The exact complete-separation probability (≈ 10^-218.5) is a separate mathematical aside. See `demo/results/alarm_dial_sweep.json` and the demo review `reviews/2026-10-04-demo-gpt-6-astra.md` (D5).
 
 **Hypothesis:** the demo shows it only if the sweep confirms it.
 - No α (and no calibrated quantile) makes detect→retrain beat conditioning on state.

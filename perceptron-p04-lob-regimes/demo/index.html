@@ -93,7 +93,7 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
       <div class="legend"><span><i class="sw" style="background:var(--ks)"></i>KS → refit, Δ vs static (97.5% CI band)</span><span><i class="sw" style="background:var(--gate)"></i>regime gate</span><span><i class="sw" style="background:var(--enorm)"></i>one EWMA head (= dial off)</span></div>
     </div>
     <div>
-      <h3>Why it cries wolf: the textbook test on the training data itself</h3>
+      <h3>Why it keeps firing: training-day rejection rate — not a ground-truth false-alarm rate</h3>
       <canvas id="why" height="300"></canvas>
       <div class="mut" id="why-note"></div>
     </div>
@@ -289,7 +289,7 @@ function drawDial(){
   let det=`22-day KS → refit: Δ vs static ${f4(v.mean)} [${f4(v.ci97_5[0])}, ${f4(v.ci97_5[1])}], better on ${v.days_better}/22 days; vs regime gate ${f4(vg.mean)} [${f4(vg.ci97_5[0])}, ${f4(vg.ci97_5[1])}], better on ${vg.days_better}/22 days.`;
   if(s.kind==="naive"){det+=` On the 2023 training days themselves (each day against the other eleven), this α rejects <b>${(s.null_train_reject_share*100).toFixed(s.null_train_reject_share<0.01?2:1)}%</b> of 10-minute windows (nominal ${s.log10_alpha>=-3?(10**s.log10_alpha*100)+"%":"≈ 0%"}).`;
     if(ds&&ds.window_reject_share!=null)det+=` On ${DAY}, ${(ds.window_reject_share*100).toFixed(1)}% of windows reject ${chip("live-computed")}.`;
-    if(s.below_separation)det+=` <b>Below the exact separation probability (10^${sep.toFixed(1)})</b>: no 10-minute window can be that extreme under an i.i.d. null, and SciPy's asymptotic p reaches 0 only at D = 1.`;}
+    if(s.below_separation)det+=` <b>Below the exact separation probability (10^${sep.toFixed(1)})</b>: the exact probability of complete separation (D = 1) under exchangeability. SciPy's asymptotic p is 0 only at D = 1, which no window reached.`;}
   if(STOP==="off")det+=" With the alarm off, KS → refit is exactly the un-adapted model with one EWMA head.";
   $("#dial-detail").innerHTML=det;
   // sweep chart
@@ -326,7 +326,7 @@ function drawDial(){
   const nt=SW.null_train;
   $("#why-note").innerHTML=`${nt.n_windows.toLocaleString()} leave-one-day-out windows on the 12 training days, each compared with the other 11 days (same construction as the calibrated null). `+
     `Median Bonferroni p-value: <b>10^${nt.median_log10_pbon.toFixed(1)}</b>. Windows with complete separation (D = 1): <b>${(nt.share_D1*100).toFixed(1)}%</b>; on the held-out days: ${SW.holdout_windows.n_D1} of ${SW.holdout_windows.n.toLocaleString()}. `+
-    `Exact i.i.d. probability of D = 1 (m = ${SW.separation.m}, n = ${SW.separation.n_ref.toLocaleString()}): 10^${sep.toFixed(1)}. Overlapping, autocorrelated, drifting 1-second windows break the i.i.d. assumption behind the p-value. ${chip("post-hoc demo sweep")}`;
+    `Exact i.i.d. probability of D = 1 (m = ${SW.separation.m}, n = ${SW.separation.n_ref.toLocaleString()}): 10^${sep.toFixed(1)}. So these windows are not i.i.d. draws from one distribution: days differ, and overlapping 1-second windows are autocorrelated. The rejection rate measures that, not a verified false-alarm rate. ${chip("post-hoc demo sweep")}`;
   dialVerdict();
 }
 function dialVerdict(){
@@ -334,9 +334,9 @@ function dialVerdict(){
   const beats=st.filter(s=>s.vs_regime_gated.ci97_5[1]<0),anyMean=st.filter(s=>s.vs_regime_gated.mean<0);
   const n30=st.find(s=>s.id==="naive_30");const d=dayData(DAY),a30=d&&d.stops.naive_30?d.stops.naive_30.alarm_s.length:null;
   let txt;
-  if(beats.length===0&&anyMean.length===0){txt=`<b>No setting of the dial makes "detect → retrain" beat conditioning on state.</b> The best of ${st.length} stops is ${stopLabel(best.id)}, still ${f4(best.vs_regime_gated.mean)} [${f4(best.vs_regime_gated.ci97_5[0])}, ${f4(best.vs_regime_gated.ci97_5[1])}] worse than the regime gate (better on ${best.vs_regime_gated.days_better}/22 days).`;}
+  if(beats.length===0&&anyMean.length===0){txt=`<b>Across these ${st.length} tested settings, this KS → refit recipe never beats the state gate.</b> The best of ${st.length} stops is ${stopLabel(best.id)}, still ${f4(best.vs_regime_gated.mean)} [${f4(best.vs_regime_gated.ci97_5[0])}, ${f4(best.vs_regime_gated.ci97_5[1])}] worse than the regime gate (better on ${best.vs_regime_gated.days_better}/22 days).`;}
   else{txt=`<b>Some dial settings match or beat the regime gate:</b> ${(beats.length?beats:anyMean).map(s=>stopLabel(s.id)+" "+f4(s.vs_regime_gated.mean)).join("; ")}. The demo shows this as it is.`;}
-  txt+=` Even at α = 1e-30 the textbook test fires ${n30.alarms_per_day.toFixed(1)} times/day on held-out days${a30!=null?` (${a30} on ${DAY})`:""}. On the 2023 training days themselves (each day against the other eleven), it rejects ${(n30.null_train_reject_share*100).toFixed(0)}% of 10-minute windows at that α. <b>The i.i.d. null is the problem, not α.</b>`;
+  txt+=` Even at α = 1e-30 the textbook test fires ${n30.alarms_per_day.toFixed(1)} times/day on held-out days${a30!=null?` (${a30} on ${DAY})`:""}. On the 2023 training days themselves (each day against the other eleven), it rejects ${(n30.null_train_reject_share*100).toFixed(0)}% of 10-minute windows at that α, so these windows are not i.i.d. draws from one distribution. <b>Detecting covariate change does not mean refitting helps.</b>`;
   const off=st.find(s=>s.id==="off"),en=SB.rows.find(r=>r.policy==="static_enorm"),enG=en.vs_regime_gated;
   const offIsEnorm=Object.entries(off.per_day).every(([dd,r])=>Math.abs(r.logloss-en.per_day[dd])<1e-9);
   if(beats.length===0&&anyMean.length===0&&offIsEnorm)txt+=` Turn the dial until it stops crying wolf, and it is just the un-adapted single EWMA head, which the regime gate beats by ${enG.mean.toFixed(4)} on ${enG.n_days-enG.days_better}/${enG.n_days} held-out days ${chip("post-hoc exploratory")}.`;

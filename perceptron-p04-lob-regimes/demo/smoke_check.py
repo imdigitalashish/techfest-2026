@@ -129,8 +129,11 @@ def main() -> int:
     for needle in ('id="scoreboard"', 'id="replay"', 'id="dial"', 'id="exec"', 'id="sweep"', 'id="why"', 'id="rp"',
                    'id="dial-range"', "results/scoreboard.json", "results/alarm_dial_sweep.json", ".cache/replay_",
                    ".cache/status.json", "Not tradable as a taker after fees", "optimistic", "other eleven",
-                   "live-computed", "post-hoc demo sweep", "pre-registered primary"):
+                   "live-computed", "post-hoc demo sweep", "pre-registered primary", "never beats the state gate",
+                   "not a ground-truth false-alarm rate", "does not mean refitting helps"):
         check(needle in html, f"index.html contains {needle!r}")
+    for banned in ("The i.i.d. null is the problem", "No setting of the dial", "at any sensitivity"):
+        check(banned not in html and banned not in (DEMO / "SCRIPT.md").read_text(), f"overshooting wording absent: {banned!r}")
     check("http://" not in html.replace("http://127.0.0.1", "") and "https://" not in html, "index.html loads nothing from the network")
     print()
     if FAIL:

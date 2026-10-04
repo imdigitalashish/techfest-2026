@@ -37,7 +37,7 @@
 
 **Drag the slider** from 1e-3 to **1e-30**. **Point at the readout:** 26 alarms on this day, 28.7 per day across 22 held-out days.
 
-**Say:** "α is ten to the minus thirty, and it still fires 26 times. Why? Look at the right panel. On the 2023 training days themselves, each checked against the other eleven, the test rejects **33%** of 10-minute windows at that α, and **99.4%** at the default 1e-3. The median p-value is 10^-22.9. One-second windows overlap, are autocorrelated and drift, so the i.i.d. null behind the p-value is simply false. The i.i.d. null is the problem, not α."
+**Say:** "α is ten to the minus thirty, and it still fires 26 times. Why? Look at the right panel. On the 2023 training days themselves, each checked against the other eleven, the test rejects **33%** of 10-minute windows at that α, and **99.4%** at the default 1e-3. The median p-value is 10^-22.9. So these windows are not i.i.d. draws from one distribution. That's a training-day rejection rate, not a verified false-alarm rate, and detecting a change doesn't mean refitting helps."
 
 **Point at the left chart:** the red curve stays above the green regime-gate line at **every** setting, with 0/22 days better at any stop.
 
@@ -55,7 +55,7 @@
 
 **Point at the bottom line:** "Not tradable as a taker after fees." "The maker number is an optimistic upper bound, which we label as such."
 
-**Close:** "Detect-and-retrain fails under real high-frequency dependence at any sensitivity; conditioning on state works, on 22 of 22 held-out days."
+**Close:** "Across 20 tested settings, this KS-refit recipe never beat the state gate; conditioning on state was better on 22 of 22 held-out days."
 
 **Optional, +45 s · Stress test (section 5, SEMI-SYNTHETIC)** · `fallback/11_splice_calm_to_volatile_12h.png`
 
