@@ -11,11 +11,11 @@ Theme 5 (AI That Teaches), Problem 8. A learner who writes 1/8 + 1/8 = 2/16 is n
 ## Understanding of the challenge
 1. **Inverse problem.** One wrong answer can come from different misconceptions, from two interacting ones, or from a slip. Often only a better next question separates them.
 2. **Trust before coverage.** Naming the wrong misconception misleads. A diagnoser must therefore be tested on same-domain wrong answers caused by *other* misconceptions; Eedi's Kaggle metric (MAP@25) scores positives only.
-3. **Real errors are rarely pure computations.** Only 29 of 131 real Eedi distractors labelled with our five misconceptions come from questions an exact engine can evaluate.
+3. **Real errors are rarely pure computations.** Only 29 of the 131 real Eedi distractors labelled with our five misconceptions (or an equivalent label) come from questions an exact engine can evaluate.
 4. **Practice must be correct and must target the misconception,** and proving learning needs counterfactual controls.
 
 ## What we measured first (pre-registered)
-Before running seven tests against GPT-4.1-mini, GPT-5.4-mini and GPT-5.5, we committed hypotheses, prompts and decision rules.
+Before any run, we committed the hypotheses, prompts and decision rules for six experiments against GPT-4.1-mini, GPT-5.4-mini and GPT-5.5.
 - **Real Eedi data** (131 positives, 152 same-domain negatives):
   - GPT-5.5 diagnosed 79.4% of positives, with 0.0% false claims.
   - Our exact engine diagnosed 19.1%, with 0.0% false claims.
