@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** DEMO (Supervisor 19:57 IST, PLAYBOOK §11). Child session "P1 demo builder" proposes the "crazy" element; the lead approves, then it builds `demo/`. After that: lead verification from a clean checkout → gpt-6-astra demo review → "DEMO DONE". (Earlier: the 11:10 definition of done was met at 13:05.)
+- **Phase:** ✅ DEMO DONE (2026-10-04 22:11 IST). `demo/run.sh` (first visual 0.6 s, offline, CPU) opens on REAL committed 5-seed results; the "Pull the plug" live tab trains the starter and AnchorLoRA side by side on the real SmolLM2-135M, with an event-gated round-2 unplug. `demo/smoke.sh` PASS from a clean clone (89 s). gpt-6-astra demo review: 7/10, all 8 findings fixed. Run it: `cd perceptron-p01-federated-lora && demo/fetch.sh` (once), then `demo/run.sh`.
 - **Headline** (5 paired seeds, dropout scenario, SmolLM2-135M, 12 rounds; `eval/results/v2_summary.md`):
 
   | Method | Macro loss | AnchorLoRA − method, 95 % CI |
@@ -391,3 +391,15 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - smoke must assert P1–P3 are true, plus a UI self-test;
   - corrections to a reversed caption formula, the memory-banner text and the header wording.
 - Dispositions appended to the review file; ledger row added; reviewer session archived.
+
+### 2026-10-04 22:11 IST — Lead: DEMO DONE (clean-clone verified after review fixes)
+- The builder pushed all 8 review fixes (eadf2e4, demo/ only). The live engine is untouched, so the validated code_sha cc9d632a1a27 and the RECORDED run stay valid; 19 tests pass.
+- **Lead verification from a clean clone of origin/main** (7085311, `/tmp/p1_demo_verify`):
+  - `fetch.sh` succeeded offline.
+  - `smoke.sh` PASS in 89 s (132 checks), including:
+    - strict P1–P3 verdicts and complete validation runs;
+    - the stage flow through the server (hold after round 1 → plug → applied in round 2; memory reasons with thresholds);
+    - a headless-Chrome page self-test at 1440×900 that drives all 4 tabs from committed fixtures with no network;
+    - a server-driven real live run, bit-identical to the committed seed-0 runs.
+  - `run.sh` gave a first visual in 0.6 s. No P1 server left running (ports 8766–8767 down).
+- Builder session archived (worktree clean, nothing unpushed). The Supervisor got "DEMO DONE".
