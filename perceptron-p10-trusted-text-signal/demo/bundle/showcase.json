@@ -1,0 +1,790 @@
+{
+ "rule": "Flippable = clean plain CQR covers the realised return and >= 1 of the 53 committed oracle_grid(3) variants (<= 3 injected posts) makes plain CQR miss. Showcase = 3 silent flippable days needing the fewest injected posts (ties: date, ticker) + 3 busiest flippable days (ties: fewest posts, date); one per ticker.",
+ "n_test": 16443,
+ "n_flippable": 327,
+ "n_flippable_silent": 207,
+ "frac_flippable": 0.019886881955847473,
+ "n_test_silent": 8136,
+ "note": "Exploratory: computed on the StockNet test period, which was inspected during development.",
+ "days": [
+  {
+   "ticker": "PICO",
+   "date": "2015-07-06",
+   "kind": "silent",
+   "n_real_posts": 0,
+   "min_injected_to_flip": 1,
+   "posts": []
+  },
+  {
+   "ticker": "DHR",
+   "date": "2015-07-07",
+   "kind": "silent",
+   "n_real_posts": 0,
+   "min_injected_to_flip": 1,
+   "posts": []
+  },
+  {
+   "ticker": "ABBV",
+   "date": "2015-07-09",
+   "kind": "silent",
+   "n_real_posts": 0,
+   "min_injected_to_flip": 1,
+   "posts": []
+  },
+  {
+   "ticker": "FB",
+   "date": "2015-09-28",
+   "kind": "busy",
+   "n_real_posts": 58,
+   "min_injected_to_flip": 2,
+   "posts": [
+    {
+     "text": "Perspectives On The VW Scandal http://t.co/dmQzcLoIrJ http://t.co/ZNPhT5QSek #stocks #trading #investing $FB $\u2026 http://t.co/XG5hVFJGig",
+     "sentiment": -0.040391934988983316,
+     "trust": 0.7490653780117236,
+     "followers": 539,
+     "age_days": 342,
+     "verified": false
+    },
+    {
+     "text": "Worried About Looming Rate Hike? Try This Ex-US REIT ETF http://t.co/cm3piRMt1B http://t.co/JlYeulNmT2 #stocks #trading #investing $FB \u2026",
+     "sentiment": 0.07959943187172545,
+     "trust": 0.4914632087094635,
+     "followers": 1619,
+     "age_days": 64,
+     "verified": false
+    },
+    {
+     "text": "ABX Barrick Gold Corp. Company Info\nhttp://t.co/w999aecYQN\n\n$ABX $FB $O $DHI #ABX #share #stockmarket",
+     "sentiment": -0.006716608197201421,
+     "trust": 0.5745074791582058,
+     "followers": 555,
+     "age_days": 687,
+     "verified": false
+    },
+    {
+     "text": "FB Facebook, Inc. Quotes\nhttp://t.co/LtK5LNzCYm\n\n$FB $EUM $XLU $UNG #FB #nasdaq #invest",
+     "sentiment": -0.01668220878020672,
+     "trust": 0.5996949248495381,
+     "followers": 992,
+     "age_days": 747,
+     "verified": false
+    },
+    {
+     "text": "Groupon: Getting Leaner http://t.co/QACO2zhTEC http://t.co/ZNPhT5QSek #stocks #trading #investing $FB $AAPL http://t.co/XG5hVFJGig",
+     "sentiment": 0.011981019508504248,
+     "trust": 0.748653987854443,
+     "followers": 539,
+     "age_days": 342,
+     "verified": false
+    },
+    {
+     "text": "RT @LNPServices: #Facebook updates a long-ignored feature - http://t.co/rsPu9RgPvT - $FB http://t.co/xvqYqQbb8o",
+     "sentiment": -0.028404800339603117,
+     "trust": 0.23975988622088157,
+     "followers": 23,
+     "age_days": 1,
+     "verified": false
+    },
+    {
+     "text": "UVXY ProShares Ultra VIX Short-Term Futures ETF Ex-Div Date\nhttp://t.co/fL4HkpeBnD\n\n$UVXY $DIA $FB $GIM #UVXY #invest #pennystocks",
+     "sentiment": 0.1104124236633511,
+     "trust": 0.5921686475483602,
+     "followers": 834,
+     "age_days": 746,
+     "verified": false
+    },
+    {
+     "text": "RT @IHNewsDesk: FB Facebook, Inc. Bid\nhttp://t.co/1potkdW0me\n\n$FB $X $ACAD $WYY #FB #pennystocks #tradeideas",
+     "sentiment": -0.0022624441952058365,
+     "trust": 0.33372541869345107,
+     "followers": 681,
+     "age_days": 137,
+     "verified": false
+    },
+    {
+     "text": "FB Facebook, Inc. Dividend\nhttp://t.co/eSx8iqVRfM\n\n$FB $WMIH $T.TO $SMH #FB #stockmarket #stockmarket",
+     "sentiment": -0.017008938497877334,
+     "trust": 0.6174059807725026,
+     "followers": 1492,
+     "age_days": 687,
+     "verified": false
+    },
+    {
+     "text": "QLD ProShares Ultra QQQ Fund Short Sales\nhttp://t.co/68h3LOq9AY\n\n$QLD $DOL.TO $CVM $FB #QLD #stocks #invest",
+     "sentiment": -0.25670888248791296,
+     "trust": 0.6502290527914772,
+     "followers": 3178,
+     "age_days": 1449,
+     "verified": false
+    },
+    {
+     "text": "RT @2morrowknight: The Most Popular #Instagram Photos of the Year (so far) http://t.co/3AZHPasCGe $FB #travel RT @ReutersPictures http://t.\u2026",
+     "sentiment": 0.009393491494801294,
+     "trust": 0.7086359830674748,
+     "followers": 121,
+     "age_days": 492,
+     "verified": false
+    },
+    {
+     "text": "PNB.IN Punjab National Bank Chart\nhttp://t.co/EmT0eIUZof\n\n$PNB.IN $FB $BMO.TO $HYG #PNB.IN #investing #share",
+     "sentiment": 0.06155219438016729,
+     "trust": 0.5756636108245848,
+     "followers": 570,
+     "age_days": 679,
+     "verified": false
+    },
+    {
+     "text": "Twitter Stock buzz: $SPY $AAPL $FB $CAT $CRGP (02:30 pm) #stocks #finance #stockmarket #StockPicks",
+     "sentiment": 0.07169172272566379,
+     "trust": 0.6743117625214742,
+     "followers": 5534,
+     "age_days": 2535,
+     "verified": false
+    },
+    {
+     "text": "BIIB Biogen Inc. Stock Message Board\nhttp://t.co/iRrjSPa3N6\n\n$BIIB $REXX $SSO $FB #BIIB #share #pennystocks",
+     "sentiment": 0.009840347780506548,
+     "trust": 0.6613736141261871,
+     "followers": 4108,
+     "age_days": 675,
+     "verified": false
+    },
+    {
+     "text": "COD.L Costco Wholesale Corp. Market Cap\nhttp://t.co/yVgnHFfDYb\n\n$COD.L $HD $DUST $FB #COD.L #nasdaq #stockmarket",
+     "sentiment": -0.027065602006178986,
+     "trust": 0.5997386384397313,
+     "followers": 993,
+     "age_days": 748,
+     "verified": false
+    },
+    {
+     "text": "XLG Guggenheim Russell Top 50 ETF Message Board Posts\nhttp://t.co/zf5OXSV1Ug\n\n$XLG $BLUE $FB $HCN #XLG #investing #share",
+     "sentiment": 0.14229355182366707,
+     "trust": 0.5863322860120456,
+     "followers": 729,
+     "age_days": 688,
+     "verified": false
+    },
+    {
+     "text": "RT IBDinvestors: Facebook Future Is Bright With Video, Instagram Ads http://t.co/azb2zHt9eo $FB \u2026 http://t.co/XG5hVFJGig",
+     "sentiment": 0.059185154226350914,
+     "trust": 0.7495838563939649,
+     "followers": 540,
+     "age_days": 343,
+     "verified": false
+    },
+    {
+     "text": "TCEL Direxion Daily Technology Bull 3x Shares Yield\nhttp://t.co/rKv7fEdwm7\n\n$TCEL $UNH $SPXS $FB #TCEL #finance #pennystocksTECL\u2026",
+     "sentiment": 0.05569479856761972,
+     "trust": 0.6502017214827148,
+     "followers": 3176,
+     "age_days": 1450,
+     "verified": false
+    },
+    {
+     "text": "The Identity Crisis At Ruby Tuesday http://t.co/C3g0lnUePi http://t.co/JlYeulNmT2 #stocks #trading #investing $FB $AAPL",
+     "sentiment": -0.15899097880023727,
+     "trust": 0.4928860591123235,
+     "followers": 1621,
+     "age_days": 65,
+     "verified": false
+    },
+    {
+     "text": "http://t.co/XrpdyEASas &lt;-- Top performing profitly trading newsletters! $GENE $CRMD #stocks #trading $INUV $FB $TWTR",
+     "sentiment": 0.20393619219373063,
+     "trust": 0.43424226808222066,
+     "followers": 21,
+     "age_days": 485,
+     "verified": false
+    },
+    {
+     "text": "Merkel Confronts Facebook's Zuckerberg Over Policing Hate Posts $FB http://t.co/VCBj5Pl64Q",
+     "sentiment": -0.041805227297844715,
+     "trust": 0.8090258052931316,
+     "followers": 1230,
+     "age_days": 1165,
+     "verified": false
+    },
+    {
+     "text": "http://t.co/xiWK67QXdP &lt; Timothy Sykes shows you a key part of his strategy for free! #pennystocks $FB $TWTR #trading",
+     "sentiment": 0.20582892687442256,
+     "trust": 0.2892193732824341,
+     "followers": 12,
+     "age_days": 71,
+     "verified": false
+    },
+    {
+     "text": "BLUE Bluebird Bio Inc. 52Wk High\nhttp://t.co/B910AWgs9T\n\n$BLUE $PANW $FB $FB #BLUE #finance #nasdaqBMO.TO Bank of Montreal % Change\u2026",
+     "sentiment": 0.07800284481817038,
+     "trust": 0.5665580991017953,
+     "followers": 462,
+     "age_days": 688,
+     "verified": false
+    },
+    {
+     "text": "BLUE Bluebird Bio Inc. 52Wk High\nhttp://t.co/gk6OysOkru\n\n$BLUE $PANW $FB $FB #BLUE #finance #nasdaqBMO.TO Bank of Montreal % Change\u2026",
+     "sentiment": 0.07800284481817038,
+     "trust": 0.5997823080745726,
+     "followers": 994,
+     "age_days": 688,
+     "verified": false
+    },
+    {
+     "text": "PM Modi at FB headquarters, Watch live feed http://t.co/WKMbSvQVmU $FB http://t.co/XG5hVFJGig",
+     "sentiment": 1.7250692531298488e-05,
+     "trust": 0.7504768946609416,
+     "followers": 541,
+     "age_days": 344,
+     "verified": false
+    },
+    {
+     "text": "$FB $TWTR:\n\nFacebook\u2019s Ad System Is Based on a Decades-Old Economic Theory:\n\nhttp://t.co/bPyywGjMe4 http://t.co/XG5hVFJGig",
+     "sentiment": 0.1689510106709259,
+     "trust": 0.7505132830809257,
+     "followers": 540,
+     "age_days": 344,
+     "verified": false
+    },
+    {
+     "text": "That was $MBLY trade idea from last week http://t.co/uU3ZZLj0Mg $FB $TWTR $LNKD #Pennystocks http://t.co/XG5hVFJGig",
+     "sentiment": 0.7039593974682279,
+     "trust": 0.5499943713609867,
+     "followers": 540,
+     "age_days": 343,
+     "verified": false
+    },
+    {
+     "text": "AEM Agnico Eagle Mines Ltd. Last Price\nhttp://t.co/RFoJrSvzOT\n\n$AEM $FB $IMSC $S #AEM #finance #investing",
+     "sentiment": 0.07303933693816887,
+     "trust": 0.5997823080745726,
+     "followers": 994,
+     "age_days": 688,
+     "verified": false
+    },
+    {
+     "text": "FB Facebook, Inc. Message Board Posts\nhttp://t.co/yxvXjvRHDV\n\n$FB $COW $XLU $ASAB #FB #stock #stocks http://t.co/XG5hVFJGig",
+     "sentiment": 0.0204487810963186,
+     "trust": 0.5499028442174048,
+     "followers": 540,
+     "age_days": 343,
+     "verified": false
+    },
+    {
+     "text": "10 Best Stocks For Value Investors This Week - 9/26/15 http://t.co/c521Ogmp14 http://t.co/JlYeulNmT2 #stocks #trading #investing $FB $A\u2026",
+     "sentiment": 0.019373842444740264,
+     "trust": 0.49302362887386586,
+     "followers": 1621,
+     "age_days": 65,
+     "verified": false
+    },
+    {
+     "text": "$BAC Last Price Updated Sunday, September 27, 2015 4:59:24 PM $FB $XIV $AMZN $MCD http://t.co/JEs0XIiTOF",
+     "sentiment": 0.20179019580102714,
+     "trust": 0.5997386384397313,
+     "followers": 993,
+     "age_days": 749,
+     "verified": false
+    },
+    {
+     "text": "$FB $JPM $BX $GOOGL $AAPL $TSLA:\n\nIndia\u2019s Modi Calls Internet Key to Dream of $20 Trillion Economy:\n\n\u2026 http://t.co/XG5hVFJGig",
+     "sentiment": 0.023551188273387626,
+     "trust": 0.550513234082555,
+     "followers": 541,
+     "age_days": 344,
+     "verified": false
+    },
+    {
+     "text": "RT @TCBFx: The Closing Bell is out! http://t.co/xx5SUmDc3t $EURUSD $GBPUSD $USDJPY $AUDUSD $SPY $TWTR $GPRO $YHOO $LNKD $FB $AAPL $BRD $CAT\u2026",
+     "sentiment": 0.017773826070577495,
+     "trust": 0.5902102692033894,
+     "followers": 926,
+     "age_days": 359,
+     "verified": false
+    },
+    {
+     "text": "Via PortfolioBuzz: Get tweets in 1 watchlist for major constituents of #FTSE100 $TWTR $FB $LNKD \u2026 \u2026 http://t.co/RBfA8LcTJ0",
+     "sentiment": 0.06422241534677299,
+     "trust": 0.7499147815204038,
+     "followers": 541,
+     "age_days": 343,
+     "verified": false
+    },
+    {
+     "text": "Divergence Drivers And The Dollar http://t.co/hkJe7i1y6l http://t.co/JlYeulNmT2 #stocks #trading #investing $FB $AAPL",
+     "sentiment": 0.06967997352082805,
+     "trust": 0.493439280827189,
+     "followers": 1621,
+     "age_days": 66,
+     "verified": false
+    },
+    {
+     "text": "@edtan74 $FB Facebook goes after TV ad dollars with new buying options, Nielsen deal http://t.co/q3iY55i5Bc",
+     "sentiment": -0.18424937774728073,
+     "trust": 0.690562256959446,
+     "followers": 2076,
+     "age_days": 236,
+     "verified": false
+    },
+    {
+     "text": "Wilson sigui\u00f3 la expectativa bajista del mercado y sacando ganancias con la tendencia. $SPY $FB $TWTR http://t.co/QXFGs5251y",
+     "sentiment": -0.0004565486631194129,
+     "trust": 0.8407730728026336,
+     "followers": 2556,
+     "age_days": 572,
+     "verified": false
+    },
+    {
+     "text": "adding $FB here @89.16",
+     "sentiment": 0.030302073142648295,
+     "trust": 0.6785329835010767,
+     "followers": 60,
+     "age_days": 2252,
+     "verified": false
+    },
+    {
+     "text": "Oculus Joins 20th Century Fox to Bring Virtual Reality to Movies $FB http://t.co/jC6VSj6mIK http://t.co/XG5hVFJGig",
+     "sentiment": 0.01724425805910887,
+     "trust": 0.7511106857097135,
+     "followers": 537,
+     "age_days": 344,
+     "verified": false
+    },
+    {
+     "text": "$FB world is collapsing https://t.co/AcfAgb9UZj",
+     "sentiment": -0.9162454988518816,
+     "trust": 0.7264817823009536,
+     "followers": 183,
+     "age_days": 2341,
+     "verified": false
+    },
+    {
+     "text": "Will Facebook $FB Stock Benefit From New Ad Products? http://t.co/z8hoX6wEP9",
+     "sentiment": 0.09320788663534021,
+     "trust": 0.8417139409727326,
+     "followers": 2612,
+     "age_days": 591,
+     "verified": false
+    },
+    {
+     "text": "RT @optionalarmchat: We only focus on a handful of stocks that move well. $AAPL $FB $NFLX $GOOGL $AMZN $TSLA $LNKD $BABA $GILD $REGN $BIIB \u2026",
+     "sentiment": 0.1912394997612306,
+     "trust": 0.05,
+     "followers": 4,
+     "age_days": 34,
+     "verified": false
+    },
+    {
+     "text": "Via PortfolioBuzz: Get tweets in 1 watchlist for major constituents of #FTSE100 $TWTR $FB $LNKD \u2026 \u2026 http://t.co/XG5hVFJGig",
+     "sentiment": 0.06422241534677299,
+     "trust": 0.7509193840449034,
+     "followers": 540,
+     "age_days": 344,
+     "verified": false
+    },
+    {
+     "text": "$FB News: \"Actives on open @ CBOE: $AAPL $FB $DIS $GILD $AMZN $WFC\" https://t.co/VGKGbgf2BC  Analyze: https://t.co/TQc9eC1Wte",
+     "sentiment": 0.14098528195209464,
+     "trust": 0.5356025857193123,
+     "followers": 226,
+     "age_days": 744,
+     "verified": false
+    },
+    {
+     "text": "#toptickertweets $AAPL $SPY $FB $AA $IBB #FinTech #trading http://t.co/NKDRUaTly8 20150928 10:00:07:801",
+     "sentiment": 0.3633766689604191,
+     "trust": 0.5763427993562937,
+     "followers": 579,
+     "age_days": 533,
+     "verified": false
+    },
+    {
+     "text": "RT @iansherr: Questions from the audience are predetermined. So there\u2019s that. $FB #Modiberg.",
+     "sentiment": -0.0009820409001690972,
+     "trust": 0.7110589710299249,
+     "followers": 128,
+     "age_days": 893,
+     "verified": false
+    },
+    {
+     "text": "RT JustinPulitzer: Weekend Review VIDEO (9/27): $SPY $IWM $QQQ $IBB $GILD $AAPL $AMZN $GOOGL $FB $NFLX $TSLA $AMBA\u2026 http://t.co/XG5hVFJGig",
+     "sentiment": 0.04167159413062564,
+     "trust": 0.5508362282864053,
+     "followers": 540,
+     "age_days": 344,
+     "verified": false
+    },
+    {
+     "text": "RT geomarketing: On eve of #AWXII, $FB Adds #TRP measurements, mobile polling w/an eye toward bridging media forma\u2026 http://t.co/WdP8eUhuQO",
+     "sentiment": 0.4128633231928757,
+     "trust": 0.6752241429894372,
+     "followers": 139,
+     "age_days": 329,
+     "verified": false
+    },
+    {
+     "text": "3 quick in and out trades already on $AAPL, $AMZN, and $FB. All call trades Gotta love this volatility, provides a lot of opportunities",
+     "sentiment": 0.47478337072008914,
+     "trust": 0.6544068044350275,
+     "followers": 34,
+     "age_days": 915,
+     "verified": false
+    },
+    {
+     "text": "COST Costco Wholesale Corp. % Change\nhttp://t.co/anSnnqdgdC\n\n$COST $EEM $FB $SBUX #COST #stock #stockmarket",
+     "sentiment": -0.2896497068840481,
+     "trust": 0.5997386384397313,
+     "followers": 993,
+     "age_days": 689,
+     "verified": false
+    },
+    {
+     "text": "AAPL Apple, Inc. Chart\nhttp://t.co/oWKr6dKTd9\n\n$AAPL $FB $LNKD $RSP #AAPL #stock #finance http://t.co/XG5hVFJGig",
+     "sentiment": 0.09088077944387876,
+     "trust": 0.5512972407579124,
+     "followers": 537,
+     "age_days": 345,
+     "verified": false
+    },
+    {
+     "text": "FB Facebook, Inc. 52Wk Low\nhttp://t.co/JnYVOXsvEX\n\n$FB $FOLD $XLB $TVIX #FB #stockmarket #nasdaq",
+     "sentiment": -0.19781993174821616,
+     "trust": 0.5997386384397313,
+     "followers": 993,
+     "age_days": 689,
+     "verified": false
+    },
+    {
+     "text": "RT ThudderWicks: Early movers: $AA, $MEG, $WMB, $BHI, $VOD, $NVO, $FB, $JCP, $SNY &amp; more http://t.co/kDDmK4jo55 http://t.co/XG5hVFJGig",
+     "sentiment": 0.1092882317598464,
+     "trust": 0.5511345687778322,
+     "followers": 539,
+     "age_days": 344,
+     "verified": false
+    },
+    {
+     "text": "RT optionalarmchat: If you trade/watch/chart $FB $TSLA $AMZN $GOOGL $NFLX $AAPL $LNKD $FIT $REGN take a FREE TRIAL\u2026 http://t.co/6GtxeYO85j",
+     "sentiment": 0.04653722617013207,
+     "trust": 0.4176091259055682,
+     "followers": 14,
+     "age_days": 1720,
+     "verified": false
+    },
+    {
+     "text": "#toptickertweets $AAPL $SPY $AA $FB $IBB #FinTech #trading http://t.co/NKDRUaTly8 20150928 09:25:04:779",
+     "sentiment": 0.40368394323956297,
+     "trust": 0.576192783842053,
+     "followers": 577,
+     "age_days": 533,
+     "verified": false
+    },
+    {
+     "text": "RT iansherr: Questions from the audience are predetermined. So there\u2019s that. $FB #Modiberg. http://t.co/XG5hVFJGig",
+     "sentiment": -0.004496170277158462,
+     "trust": 0.7510193227098464,
+     "followers": 539,
+     "age_days": 344,
+     "verified": false
+    },
+    {
+     "text": "FB Facebook, Inc. Dividend\nhttp://t.co/AWGMiMwudD\n\n$FB $SPXL $UUP $SBLK #FB #stock #share http://t.co/XG5hVFJGig",
+     "sentiment": 0.00472985621488136,
+     "trust": 0.5511704142738941,
+     "followers": 537,
+     "age_days": 345,
+     "verified": false
+    },
+    {
+     "text": "RT SentiQuant: #toptickertweets $AAPL $SPY $IBB $SPX $FB #FinTech #trading http://t.co/i0eU4qD2XW\u00a0 20150928 15:11:07:386",
+     "sentiment": 0.20984794104245302,
+     "trust": 0.582743494133999,
+     "followers": 5410,
+     "age_days": 282,
+     "verified": false
+    }
+   ]
+  },
+  {
+   "ticker": "D",
+   "date": "2016-03-28",
+   "kind": "busy",
+   "n_real_posts": 17,
+   "min_injected_to_flip": 1,
+   "posts": [
+    {
+     "text": "L$D",
+     "sentiment": 0.01948048468145254,
+     "trust": 0.7569373909615046,
+     "followers": 370,
+     "age_days": 916,
+     "verified": false
+    },
+    {
+     "text": "https://t.co/7ffuBGtzcX &lt;- awesome video on how TimSykes went from $12,000 to $1.65 MILLION trading stocks! $D $IBB $BCEI",
+     "sentiment": 0.5701860921113995,
+     "trust": 0.5940645330751546,
+     "followers": 86,
+     "age_days": 273,
+     "verified": false
+    },
+    {
+     "text": "RT @kalungs: wow.. almost forgot how dope that L$D video is",
+     "sentiment": 0.08464048939272154,
+     "trust": 0.4320547168215003,
+     "followers": 98,
+     "age_days": 120,
+     "verified": false
+    },
+    {
+     "text": "L$D // ASAP Rocky on repeat until I fall asleep \ud83c\udfa7",
+     "sentiment": 0.4330770526034071,
+     "trust": 0.799913054128737,
+     "followers": 997,
+     "age_days": 1510,
+     "verified": false
+    },
+    {
+     "text": "RT @kiwiportuario: @Liliana2ok Perdimos 12 A\u00f1os y Cientos de miles de millones de U$D. El Perjuicio es Incalculable. La Carcel no alcanza, \u2026",
+     "sentiment": -0.011752012925292966,
+     "trust": 0.5701439584004689,
+     "followers": 82,
+     "age_days": 253,
+     "verified": false
+    },
+    {
+     "text": "L$D #Harmonizers #iHeartAwards #BestFanArmy",
+     "sentiment": 0.1235921041829633,
+     "trust": 0.2239158922354068,
+     "followers": 11,
+     "age_days": 14,
+     "verified": false
+    },
+    {
+     "text": "RT @pregANDREINA: Cuerpo AntiCorrupci\u00f3n: Donde est\u00e1n los 1700 Millones U$D de la L\u00ednea 2 del Metro Valencia que estar\u00eda lista 2012 ? https:\u2026",
+     "sentiment": 0.0036682607545764304,
+     "trust": 0.7974511692737328,
+     "followers": 942,
+     "age_days": 2269,
+     "verified": false
+    },
+    {
+     "text": "L$D",
+     "sentiment": 0.01948048468145254,
+     "trust": 0.7959518376972997,
+     "followers": 910,
+     "age_days": 1455,
+     "verified": false
+    },
+    {
+     "text": "RT @LrdPrettyFranco: L$D\nJukebox Joints \nWavy Bone https://t.co/Pxz6mqHDCe",
+     "sentiment": 0.10445201644468502,
+     "trust": 0.785430604180108,
+     "followers": 714,
+     "age_days": 489,
+     "verified": false
+    },
+    {
+     "text": "Donde est\u00e1n las pruebas?\nAs\u00ed cualquiera condena\n@chiqui_avalos No defiendo\na nadie. Se\u00f1alo el hecho.\nMa\u00f1ana publicar\u00e9 que\nten\u00e9s millones U$D",
+     "sentiment": -0.0003755299820713307,
+     "trust": 0.8937768567049936,
+     "followers": 8664,
+     "age_days": 2341,
+     "verified": false
+    },
+    {
+     "text": "RT @VibeMusicOnly: A$AP Rocky - L$D https://t.co/hUBEFIuWEr",
+     "sentiment": 0.023672114406800768,
+     "trust": 0.8166430113843283,
+     "followers": 1466,
+     "age_days": 1562,
+     "verified": false
+    },
+    {
+     "text": "L$D",
+     "sentiment": 0.01948048468145254,
+     "trust": 0.7758911892397974,
+     "followers": 573,
+     "age_days": 1447,
+     "verified": false
+    },
+    {
+     "text": "#Clar\u00ednEsMafia Que alguien lo relacione con los  2.500.000 U$D que cost\u00f3 el Dpto. en Miami es ser un mal pensado ? https://t.co/aHPrzUjruI",
+     "sentiment": -0.018019138887816453,
+     "trust": 0.6445495243047522,
+     "followers": 1022,
+     "age_days": 222,
+     "verified": false
+    },
+    {
+     "text": "RT @PabloTooTurnt_: L$D x @asvpxrocky  https://t.co/elny8jWVaN",
+     "sentiment": -0.006857859698642306,
+     "trust": 0.835237549500052,
+     "followers": 2250,
+     "age_days": 1557,
+     "verified": false
+    },
+    {
+     "text": "RT @Swagcookin_John: L$D",
+     "sentiment": -0.0034977004471653554,
+     "trust": 0.7558708570533166,
+     "followers": 361,
+     "age_days": 788,
+     "verified": false
+    },
+    {
+     "text": "RT @SuperSecretario: USA se llev\u00f3 U$D: 12.000.000.000\nARG se llev\u00f3 U$D: 0\n\nPero no me estas cargando, Carolo?",
+     "sentiment": -0.010407653893363896,
+     "trust": 0.7318063334962762,
+     "followers": 207,
+     "age_days": 2073,
+     "verified": false
+    },
+    {
+     "text": "Dominion Resources, Inc. $D Receives Consensus Recommendation of \u201cBuy\u201d from Analysts https://t.co/lxg8fQN4aL",
+     "sentiment": 0.268198088513355,
+     "trust": 0.8048441803550405,
+     "followers": 1117,
+     "age_days": 470,
+     "verified": false
+    }
+   ]
+  },
+  {
+   "ticker": "CELG",
+   "date": "2015-07-23",
+   "kind": "busy",
+   "n_real_posts": 16,
+   "min_injected_to_flip": 1,
+   "posts": [
+    {
+     "text": "Celgene's Q2 Earnings Call: Highlights &amp; Analyst Commentary $AZN $CELG $JUNO  http://t.co/wZxYwx1B1C via @benzinga",
+     "sentiment": 0.6616208736794177,
+     "trust": 0.7257678574869185,
+     "followers": 180,
+     "age_days": 2386,
+     "verified": false
+    },
+    {
+     "text": "CELG Celgene Corp. Prev Close\nhttp://t.co/ePwZqV31NY\n\n$CELG $FWDG $IWM $MJMJ #CELG #nasdaq #nasdaq",
+     "sentiment": 0.006553516220267085,
+     "trust": 0.5749736315569062,
+     "followers": 561,
+     "age_days": 621,
+     "verified": false
+    },
+    {
+     "text": "S&amp;P100 #Stocks Performance $ABT $C $BAC $ACN $EMC $LOW $CELG $JPM $BK $MS $SLB $BA $ALL $COST $WFC $NKE  more@ http://t.co/cKkr8csQUU",
+     "sentiment": 0.0584848735469341,
+     "trust": 0.5919601023784111,
+     "followers": 830,
+     "age_days": 1178,
+     "verified": false
+    },
+    {
+     "text": "CELG Celgene Corp. Chart\nhttp://t.co/bKFkA1rVWF\n\n$CELG $GASL $GERN $JNUG #CELG #pennystocks #investing",
+     "sentiment": 0.30568414611651173,
+     "trust": 0.7000000000000001,
+     "followers": 13197,
+     "age_days": 397,
+     "verified": false
+    },
+    {
+     "text": "ERX Direxion Daily Energy Bull 3x Shares Ex-Div Date\nhttp://t.co/iaG8llFjLc\n\n$ERX $AMRN $FSLR $CELG #ERX #tradeideas #stock",
+     "sentiment": 0.009321687839510318,
+     "trust": 0.7000000000000001,
+     "followers": 13191,
+     "age_days": 397,
+     "verified": false
+    },
+    {
+     "text": "Our Penny Stock Newsletter Alerts Gained 350% In Just 8 Trading Days! Get Our Next Pick Early: http://t.co/JxHdp4Vi8P $MDLZ $CELG",
+     "sentiment": 0.8396575621681431,
+     "trust": 0.9,
+     "followers": 14906,
+     "age_days": 462,
+     "verified": false
+    },
+    {
+     "text": "RT @dougheuringaria: As of June 2015  $CELG has established collaborations with over 30 partners, exciting emerging biotech companies http:\u2026",
+     "sentiment": 0.09712531007872777,
+     "trust": 0.6286493381509585,
+     "followers": 233,
+     "age_days": 266,
+     "verified": false
+    },
+    {
+     "text": "$CELG 2Q15 \"PREP-PACK\" --&gt; reports THURSDAY at ~730 am, call is @9 am ET http://t.co/19JRtCDtjO",
+     "sentiment": 0.11771170026213443,
+     "trust": 0.8517591730711908,
+     "followers": 3292,
+     "age_days": 1959,
+     "verified": false
+    },
+    {
+     "text": "TQQQ ProShares UltraPro QQQ Ideas\nhttp://t.co/y3TBUO4l8I\n\n$TQQQ $ABX $GLD $CELG #TQQQ #nasdaq #stock",
+     "sentiment": 0.16055158232557817,
+     "trust": 0.5954724790979063,
+     "followers": 900,
+     "age_days": 683,
+     "verified": false
+    },
+    {
+     "text": "PPCH Propanc Health Group Corp. Last Trade\nhttp://t.co/BWmLtOX6Km\n\n$PPCH $AXP $CELG $AMZN #PPCH #stockmarket #invest",
+     "sentiment": 0.05971494596236289,
+     "trust": 0.5612783856719735,
+     "followers": 409,
+     "age_days": 622,
+     "verified": false
+    },
+    {
+     "text": "@PipsToDollars $CELG slowly moving higher",
+     "sentiment": 0.10387297570441711,
+     "trust": 0.6939519252618619,
+     "followers": 86,
+     "age_days": 668,
+     "verified": false
+    },
+    {
+     "text": "TZA Direxion Daily Small Cap Bear 3x Shares Investor Opinions\nhttp://t.co/5IkER1Ot82\n\n$TZA $UNH $CELG $PCLN #TZA #tradeideas #stock",
+     "sentiment": -0.04658819805159946,
+     "trust": 0.7000000000000001,
+     "followers": 13189,
+     "age_days": 396,
+     "verified": false
+    },
+    {
+     "text": "QLD Transocean, Inc. Summary\nhttp://t.co/SfujZCeshI\n\n$QLD $SDS $CELG $MBLY #QLD #tradeideas #stockmarket",
+     "sentiment": 0.05698702319543131,
+     "trust": 0.6487421211359475,
+     "followers": 3071,
+     "age_days": 1384,
+     "verified": false
+    },
+    {
+     "text": "IHNewsDesk: CELG Celgene Corp. Chart\nhttp://t.co/1DxlWG2Aw3\n\n$CELG $WUBA $AAL $QCOM #CELG #finance #pennystocks \u2026 http://t.co/0E9svKWzVD",
+     "sentiment": 0.16499687630883395,
+     "trust": 0.48148916504563755,
+     "followers": 933,
+     "age_days": 259,
+     "verified": false
+    },
+    {
+     "text": "IBB Biotech iShares Company Info\nhttp://t.co/hBOteLAddN\n\n$IBB $PFF $JDST $CELG #IBB #investing #stockmarket",
+     "sentiment": 0.031605076667282184,
+     "trust": 0.6639187559935754,
+     "followers": 4356,
+     "age_days": 610,
+     "verified": false
+    },
+    {
+     "text": "LOCK LifeLock, Inc. Volume\nhttp://t.co/IX1iPM3bQI\n\n$LOCK $AGG $LOCK $CELG #LOCK #finance #pennystocks",
+     "sentiment": 0.02285239736823448,
+     "trust": 0.5751279103983343,
+     "followers": 563,
+     "age_days": 622,
+     "verified": false
+    }
+   ]
+  }
+ ]
+}

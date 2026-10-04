@@ -1,0 +1,49 @@
+{
+ "exported": "2026-10-04 17:39 IST",
+ "source": {
+  "panel_minilm.parquet": "2b79ce085f3093ca4b122736a58dbc497c0bfc007cebc71713bb22827300e445",
+  "docs_scored_minilm.parquet": "7428629740eaa3f5c674e9c7f860d37134a1a14a2ee5c70dca159d53940a1c5d"
+ },
+ "committed_results": "eval/results/text_minilm_v2.json",
+ "checks": {
+  "model_text_roundtrip_max_abs_pred_diff": 0.0,
+  "n_cal": 10788,
+  "n_test": 16443,
+  "n_docs_caltest": 68532,
+  "pump_template_score_cached_embedding": 0.9521228402900375,
+  "pump_template_score_committed": 0.9521228402900375,
+  "head_json_roundtrip_max_abs_proba_diff": 0.0,
+  "oracle_plain_cqr_coverage": 0.8469257434774676,
+  "oracle_plain_cqr_coverage_committed": 0.8469257434774676
+ },
+ "files": {
+  "docs_caltest.parquet": {
+   "bytes": 849047,
+   "sha256": "205b37b1ebea4982c76dbfd18e11690be93d847ebb47ba4a3fe993a01259b0b7"
+  },
+  "model_q_hi.txt": {
+   "bytes": 464921,
+   "sha256": "28190027f79e655354a8661dbf79302640637e52ee3dc36ef29a04ae24713486"
+  },
+  "model_q_lo.txt": {
+   "bytes": 464637,
+   "sha256": "cc92d87bd343681e73d1a9a5218ae8f10deca1cdebbed8360df5ebd4224f8851"
+  },
+  "model_q_med.txt": {
+   "bytes": 461362,
+   "sha256": "0d5d7001dd73dd52d280df9a36f662e0967c02d4495759835f42219b040ad1bf"
+  },
+  "panel_caltest.parquet": {
+   "bytes": 3252621,
+   "sha256": "8aad42e95b1e98122dfc043335f97bf95f431cfdd1e9d43d40c2918812cc1436"
+  },
+  "scorer_head.json": {
+   "bytes": 23953,
+   "sha256": "a541fbd553a01fa739dfb0b38714fee221efa4ced1005ae1bbde5c259ed052d2"
+  },
+  "showcase.json": {
+   "bytes": 27053,
+   "sha256": "c5b74133173e4bf9c13681eceffa17f97b47b2bccad339330ea8bba15ef81f4d"
+  }
+ }
+}
