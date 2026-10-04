@@ -1,3 +1,4 @@
 timestamp	commit	hypothesis	metric	delta	kept	notes
 2026-10-04T07:59+05:30	31ccc35	baseline (8 indices, hand weights)	0.6942	0	baseline	auroc_nongood 1.0; gross_error_recall 0.9952; reject_rate 0.0433; sd 0.041; SYNTHETIC
 2026-10-04T08:20+05:30	(uncommitted)	+neg_sd_dweight +frac_dl_band (copy-forward signature)	0.9502	+0.2560	NO (reverted)	frame eval passed keep rule (sd 0.070) and guards; anti-gaming holdout: fresh seeds same pattern 0.9328 but variant fabrication pattern 0.7287 = baseline 0.7287 -> gain does not generalise; frac_dl_band copies the simulator's band [0.3,1.0] = metric gaming. SYNTHETIC
+2026-10-04T09:05+05:30	(this commit)	remove low_wasting_vs_peers (Goodhart / self-fulfilling; hostile judge Q6; ADR 002)	0.6942	0.0000	YES (design constraint)	no metric change; guards unchanged (nongood 1.0, gross 0.9952, reject 0.0433). SYNTHETIC

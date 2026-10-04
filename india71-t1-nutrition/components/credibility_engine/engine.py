@@ -32,7 +32,6 @@ INDEX_WEIGHTS = {
     "pct_flagged": 0.5,
     "p_nonneg_dweight": 1.5,
     "p_nonneg_dlength": 1.5,
-    "low_wasting_vs_peers": 0.5,
 }
 
 
@@ -124,7 +123,6 @@ def score_units(ix: pd.DataFrame, weights: dict | None = None) -> pd.DataFrame:
     w = weights or INDEX_WEIGHTS
     s = ix.copy()
     s["sd_whz_dev"] = (s.sd_whz - 1.0).abs()  # WHO/UNICEF 2019: SD of WHZ expected near 1
-    s["low_wasting_vs_peers"] = -s.wasting_prev
     susp = pd.DataFrame({k: _robust_z(s[k]).clip(lower=0) for k in w}).fillna(0)
     total = sum(susp[k] * v for k, v in w.items()) / sum(w.values())
     s["suspicion"] = total

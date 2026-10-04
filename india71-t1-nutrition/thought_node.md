@@ -10,11 +10,21 @@
 - _(none)_
 
 ## Now
-- **Phase:** Morning package delivered (08:00 IST, 4 Oct). Next: Phase 4–5 on the spikes (early-warning evaluator, then auto-research loop on the credibility engine).
-- **Plan (next 48 h):** (1) build C5 `early_warning` with a frozen recall@capacity evaluator against the "no weight gain in 2 months" baseline; (2) first ratchet loop on C4 (`autoresearch/program.md`, frozen `eval.py`, `results.tsv`); (3) verify the legal layer (DPDP Act/Rules 2025, ABDM consent artefact, NDGFP) and the CMAM protocol timelines against primary texts. Then remove every (VERIFY) tag or change the design; (4) fix the action-router ops simulation (output invalid: median 999 days); (5) re-run the failed research threads (data-quality methods, deployed-global, NFHS-5 subgroup numbers) one at a time.
-- **Doing:** lead only (Supervisor lean mode: no sub-agents until lifted).
-- **Needs from user:** (a) Register by 15 Oct for one India@71 theme, after the 12 Oct selection memo. (b) Teammates (≤4): names, skills and contacts for the proposal header. (c) Optional, high value: any contact in a state WCD department or district administration willing to discuss a read-only Poshan Tracker extract for a pilot. Real data would replace our synthetic validation.
-- **Risks:** (1) all model metrics are on SYNTHETIC data; real Poshan Tracker microdata isn't public. (2) Legal citations unverified (agents failed). (3) Unions are already hostile to monitoring (FRS), so credibility scoring must be framed as supportive supervision. (4) Infrastructure: 20+ research agents died on 408 timeouts overnight.
+- **Phase:** 5–6. Morning package delivered (08:02, accepted by the Supervisor at 08:22). Since then: hostile-judge review → ADR 002 redesign of spike A; proposal v0.2; first auto-research iterations (1 rejected as overfit, 1 kept for design reasons); end-to-end walking skeleton.
+- **Plan (next):**
+  1. Fold in the DPDP verification (`V1`, running) and replace every (VERIFY) tag, or change the design.
+  2. Verify ABDM consent-artefact details and the CMAM protocol timelines.
+  3. Evaluator v2 for spike A (audit value of diagnostics: PPV at a fixed re-measurement budget; remote-AWC false-positive rate; robustness across simulator variants).
+  4. Early-warning evaluator v1 (real-decline episodes) and a ratchet loop.
+  5. Fix the action-router ops simulation.
+  6. Re-run the failed research threads one at a time (≤2 concurrent agents).
+- **Doing:** lead + research agent V1 (DPDP Act/Rules verification).
+- **Needs from user:** (a) register by 15 Oct for one India@71 theme (after the 12 Oct memo); (b) teammates (≤4): names, skills, contacts; (c) any state WCD / district contact for a read-only pilot extract (on the Supervisor's list); (d) later, ideally an introduction to an Anganwadi workers' union or worker-rights NGO for co-design (ADR 002 makes this a pilot prerequisite).
+- **Risks:**
+  1. All model metrics are SYNTHETIC.
+  2. The legal basis for child-level scoring is unconfirmed (go/no-go gate in ADR 002).
+  3. Worker and union acceptance.
+  4. Metric gaming in the auto-research loops (anti-gaming holdout in place; it already caught one overfit).
 
 ## Phase 0 — what the judges must be able to see (from `_briefs/india71.txt`)
 | Criterion (official) | What we must show | Evidence we will produce |
@@ -62,6 +72,13 @@ Context from the statement: Poshan Tracker already tracks growth-monitoring and 
 - 2026-10-04 — Measurable gap = survey-vs-admin divergence on wasting (NFHS-5 19.3% vs Poshan Tracker 5.46%, June 2025) and the unknown share of under-detection behind it. [landscape §1](research/landscape.md)
 - 2026-10-04 — Spikes: **A credibility engine** + **B capacity-constrained early warning**; rest best practice. [ADR 001](architecture/adr/001-spike.md)
 - 2026-10-04 — Demo on WHO tables (real) + SYNTHETIC cohort calibrated to ki-consortium parameters; every artefact carries `synthetic=True`.
+- 2026-10-04 — **ADR 002:**
+  - spike A is measurement-system diagnostics per AWC × device × month: no worker scores, support before scrutiny, random plus targeted re-measurement;
+  - employment use denied in code (contract v0.2.0) and in the data-sharing agreement;
+  - child-level prediction sits behind a legal go/no-go;
+  - a service-readiness gate comes before SLA clocks;
+  - the 19.3 vs 5.46 figure is framed as an *unexplained discrepancy*.
+  [ADR 002](architecture/adr/002-measurement-diagnostics.md) · [hostile-judge-01](research/hostile-judge-01.md)
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric (latest, committed) |
@@ -70,12 +87,12 @@ Context from the statement: Poshan Tracker already tracks growth-monitoring and 
 | C1 | ingest_adapters | extracts/FHIR → canonical events | ETL | | contract | % schema-valid |
 | C2 | identity_linkage | IdentityRecord → LinkDecision | ID join, Fellegi–Sunter | (C) | built | F1 ids 0.513 · prob 0.945 · PPRL 0.968 — SYNTHETIC |
 | C3 | growth_standards | MeasurementEvent → AnthroZ | WHO Anthro | | built | max error 0.003 z on 87,408 WHO table points |
-| C4 | credibility_engine | events+z → RecordQuality, UnitCredibility | SMART / WHO-UNICEF survey checks | **A** | built | AUROC fabricating 0.694±0.041, any non-good 1.0 — SYNTHETIC |
+| C4 | credibility_engine → measurement diagnostics (ADR 002) | events+z → RecordQuality, AWC×device×month diagnostics | SMART / WHO-UNICEF survey checks | **A** | built; ratchet started | AUROC fabricating 0.694±0.041, any non-good 1.0 — SYNTHETIC; iteration 1 (0.950) rejected by anti-gaming holdout |
 | C5 | early_warning | z, velocity, health events → RiskScore | 2-month no-gain rule | **B** | v0 built | recall@5/AWC-month 0.326 vs rule 0.253, lowest-WHZ 0.318; +health 0.325 — SYNTHETIC |
 | C6 | action_router | RiskScore/Alert → Task | monthly review | | built (sim invalid) | % within SLA |
 | C7 | frontline_worklist | Task → Worklist | PT home-visit scheduler | | built | payload bytes, % SMS ≤160 |
 | C8 | aggregate_publisher | events → AggregateCell | static dashboards | | contract | relative error at ε |
-| C9 | policy_gate | AccessRequest → AccessDecision | RBAC | | built | 29/29 red-team, 0 false allows |
+| C9 | policy_gate | AccessRequest → AccessDecision | RBAC | | built | 31/31 red-team (incl. employment-use denial), 0 false allows |
 | C10 | audit_ledger | event → AuditEntry | DB audit | | built | tamper detection 100/100 |
 
 ## Selection memo (v1, 4 Oct 2026 — final by 12 Oct)
@@ -110,4 +127,15 @@ Learned: (1) the v0 model beats the programme rule by +7.3 pp at equal capacity 
 
 ### 2026-10-04 08:05 IST — proposal length check
 Rendered `deliverables/round1-proposal.md` to PDF (Playwright; A4, 1-inch margins, Arial 11 pt, 7.5 cm placeholder for the diagram): **5 pages**, so it fits the 6-page limit with a page of headroom (preview in gitignored `.cache/`). Still open: team header, final diagram rendering, (VERIFY) legal citations.
+
+### 2026-10-04 08:15–09:05 IST — skeleton, ratchet, hostile judge, ADR 002
+- **Walking skeleton.** `eval/run_pipeline.py` runs one weekly district end to end on SYNTHETIC data ([`eval/results/pipeline_demo.json`](eval/results/pipeline_demo.json)):
+  - 5,307 children measured in the month across 120 AWCs; 4.22% of records rejected; 47 AWCs flagged.
+  - Alerts: 123 SAM, 838 MAM, 600 risk, 47 data-recheck → 1,608 tasks → 140 worklists, 1,222 SMS (max 80 chars).
+  - Access decisions as intended (AWW own AWC allow; DPO named deny; AWW other AWC deny; public aggregate transformed). Audit chain of 1,612 entries verified.
+  - Risk-alert precision 41.5%; 25.8% of next-3-month incident cases flagged in that single month.
+- **Auto-research on spike A.**
+  - Iteration 1 (+weight-increment spread, +length-increment band) scored 0.950 on the frozen eval but **0.7287 = baseline** on a variant fabrication pattern. Its band feature copies the simulator's own band, so it was **rejected and reverted**.
+  - Iteration 2 (drop `low_wasting_vs_peers`): no metric change, kept for design reasons. Ledger: `components/credibility_engine/autoresearch/results.tsv`.
+- **Hostile judge.** An independent rubber-duck agent raised 8 blocking objections; the top 3 are accepted ([research/hostile-judge-01.md](research/hostile-judge-01.md)). Wrote ADR 002. Proposal → v0.2: no "6 lakh never flagged" claim, synthetic results labelled as engineering checks, union co-design + legal opinion + pre-registered validation as pilot prerequisites, service-readiness gate. Policy gate: explicit `employment_action` deny (31/31).
 
