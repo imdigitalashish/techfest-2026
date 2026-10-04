@@ -28,7 +28,7 @@ Order-flow price impact scales inversely with depth (Cont, Kukanov & Stoikov 201
 
 ## Minimum Viable
 1. **Predict direction:** up versus down, conditional on a non-zero 10-s move (ties excluded from scores, not markouts); held-out AUC 0.6746.
-2. **Detect a shift and react:** the CUSUM drives the reaction. In an illustrative development replay (2024-05-01) the KS audit fired at 18:09:32, after the 18:00 UTC FOMC statement, and the CUSUM at 18:17:43, shrinking forecasts. A known-shift replay with the gate on and off will test causality.
+2. **Detect a shift and react:** the CUSUM drives the reaction. In an illustrative development replay (2024-05-01) the KS audit fired within 10 minutes of the 18:00 UTC FOMC statement and the CUSUM within 20, shrinking forecasts. A labelled semi-synthetic splice of two real days adds a known changepoint for testing that reaction.
 
 ## Stretch ambitions
 - **Multiple regime heads:** implemented. Against a single EWMA-normalised head they cut held-out log-loss by 0.0083 (post-hoc ablation, 22/22 days). Each head alone does worse than switching (+0.0138 to +0.0526).

@@ -40,4 +40,4 @@ The overnight v1 results (6 days) remain reproducible with `python eval/run_base
 | `data/` | Fetch scripts, `manifest.csv` (MD5 per file), `events.csv` (FOMC times verified at federalreserve.gov). |
 | `.data/` | Raw downloads and caches. Gitignored; rebuilt by the fetch scripts. |
 
-Data: Tardis.dev free datasets (first day of each month) for Binance USD-M futures. Fees: Binance's official USDⓈ-M fee page (accessed 2026-10-04).
+Data: Tardis.dev free datasets (first day of each month) for Binance USD-M futures, used under Tardis's terms for internal research and educational use. Raw files and per-second series are never committed. `eval/results/*` are the team's internal research records; some contain second-resolution detector timestamps, so do not redistribute them outside the team. Public-facing artifacts (the abstract, the demo, the fallback images) show market-derived series only as ≥10-minute aggregates (ToS clause 9.2). Fees: Binance's official USDⓈ-M fee page (accessed 2026-10-04).
