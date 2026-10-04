@@ -10,24 +10,27 @@
 - _(none)_
 
 ## Now
-- **Phase:** 4–5. The walking skeleton and eval harness run end-to-end with real numbers on the M5; the AnchorLoRA spike pilot beats the starter baseline (1 seed); the ratchet is scaffolded. Morning package complete (08:00 IST).
-- **Plan:** (1) replicate (seed 1 running, then ≥5 seeds) → (2) close the antithesis gaps (stronger baselines, de-confounded design, Sybil and leave-one-out tests) → (3) Flower adapter + kill-a-node demo → (4) standard datasets (finance sentiment, Dolly-15k) → (5) 0.5B–1.1B runs on Azure → abstract final by 31 Oct.
-- **Doing (07:55 IST):**
-  - Replication: 3 attached processes. (1) clean `anchor_naive`/`anchor_full` seed 0, then seed 1; (2) dropout seed 1 for all strategies; (3) dropout `anchor_full` seed 1 alone. Each run takes ≈30+ min at load average ≈ 80. Results append to `eval/results/v1_*.jsonl`; regenerate with `python -m eval.summarize --tag v1`.
-  - Agents (network recovered for agents; PyPI ≈ 176 KB/s, so `flwr` 1.39.0 is now installed): `c10-flower-adapter` (builds `components/flower_adapter/`) · `r5c-companies` → `research/raw/companies.md` · `r46-frameworks-benchmarks` → `research/raw/frameworks_benchmarks.md` · `r1c-fedlora-frontier` → `research/raw/fedlora_frontier.md` (incl. the prior-art verdict on frozen A + nested ranks).
+- **Phase:** 5. The spike replicates: on the dropout scenario `anchor_full` reaches macro 2.6651 on both seeds 0 and 1, vs the starter's 2.7346 / 2.7535 (untuned model 2.7063). A sequential seed and ratchet queue is running. The morning package was delivered at 08:00 IST.
+- **Plan:** (1) ≥ 5 seeds with 95 % CIs → (2) ratchet candidates (τ_eff actual vs planned, PreLort-style segment normalisation, decayed memory, √n weights) → (3) close the antithesis gaps (stronger baselines, de-confounded design, Sybil and leave-one-out tests) → (4) Flower kill-a-node demo → (5) standard datasets (finance sentiment, Dolly-15k) → (6) 0.5B–1.1B runs on Azure → abstract final by 31 Oct.
+- **Doing (09:45 IST):**
+  - **GPU queue** (Supervisor memory rule: one heavy job at a time under `nice -n 10`): `scripts/handover_to_queue.sh` → `scripts/gpu_queue.sh`. Phases run in order: replicate (dropout seeds 2–4: anchor_full, fedavg_ab_homo) → ratchet (4 candidates × seeds 0–1) → ablate → clean. It skips runs already recorded, so a restart is safe: `scripts/handover_to_queue.sh 0`.
+  - **Agents:** independent ADR 001 review (rubber-duck). `r46-frameworks-benchmarks` wrote `research/raw/frameworks_benchmarks.md`; integration pending.
 - **Next:**
-  1. Re-run research threads r1–r6 + first principles when the network recovers, to fill the company section and verify every UNVERIFIED item.
-  2. Install `flwr` (blocked: `grpcio` not downloadable overnight) and build C10.
-  3. Ratchet iteration 1: τ_eff from actual vs planned steps.
-  4. Baselines: exact ΔW + SVD (FlexLoRA-style), FedEx-LoRA, RoLoRA; centralised and local-only bounds.
-  5. Latin-square rotation of domains across device budgets; Sybil split test; leave-one-device-out.
-- **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills (the abstract has placeholders); optional: a phone or Raspberry Pi for the physical-device stretch. Azure GPU quota for 0.5–1.1B runs is not yet checked (the subscription is enabled; SKU ask to follow).
+  1. Add CIs to `eval.summarize` once seed 2 lands.
+  2. Ratchet decisions in `results.tsv`.
+  3. Flower kill-a-node demo with `LocalGrid.kill_node` (C10 parity run when the GPU is quiet).
+  4. Baselines: exact ΔW + SVD (FlexLoRA/FedPA-LoRA-style), PreLort, FedEx-LoRA, RoLoRA; centralised and local-only bounds.
+  5. Latin-square rotation; Sybil split; leave-one-device-out.
+- **Needs from user:**
+  - Register by 15 Oct (after the 12 Oct selection).
+  - Teammates' names and skills (the abstract has placeholders).
+  - Optional: a phone or Raspberry Pi for the physical-device stretch.
+  - Azure GPU quota is not yet checked; the SKU ask will follow.
 - **Risks:**
-  1. Ingredients are published (FFA-LoRA, FedNova, MIFA), so novelty is the integration plus measurement; the prior-art check for frozen-A + nested ranks is inconclusive (UNVERIFIED).
+  1. **Prior art is now close on both sides:** CF-LoRA (arXiv 2609.36986, 29 Sep 2026) freezes a learned shared A, and PreLort (2606.15963) nests ranks. No paper combining a seed-frozen A with nested ranks was found (`research/raw/fedlora_frontier.md`). Claim the integration and the measurement only.
   2. Frozen A may cap expressiveness (RoLoRA, NeurIPS 2025).
-  3. Single-seed, 12-round pilot on a local-text proxy.
-  4. Overnight network outage: all 8 research sub-agents failed, and the company landscape is thin.
-  5. The shared GPU makes runs slow (≈10 min for 12 rounds of a 135M model).
+  3. Only 2 seeds and 12 rounds, on a local-text proxy.
+  4. The shared M5 is memory-bound (swap ≈ 21 GB at 09:40), so runs are slow.
 
 ## Phase 0 — constraints and what we must show (from `_briefs/perceptron.txt`, read 02:05 IST)
 **Hard constraints**
@@ -149,3 +152,27 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - Simulator facts (8× data, ranks/steps, 5-round outage, 4-round memory) live in code (`device_simulator/profiles.py`, `aggregator/strategies.py`), not in the result rows. The checker flagged them as unsupported by results; they are config facts.
 - **Replication in flight:** dropout seed 1 for `fedavg_ab_homo` (main process) and `anchor_full` (extra process `rep-anchor-s1`). At load average ≈ 80, expect results after 08:30.
 - Also added: `requirements.txt` (pinned), `scripts/fetch_data.sh`, `README.md`.
+
+### 2026-10-04 09:45 IST — Lead: Supervisor memory request (08:50 / 09:08) handled; seed-1 replication
+- **Memory.** The session died on a model 408 right after the 08:50 request. On resume (09:12), swap stood at 31.5 / 32.8 GB. Three of my runs were alive: 62365 (dropout matrix, `fedavg_ab_het` seed 1, running since 08:42), plus 19612 (dropout `anchor_full` seed 1, ~50 min of progress) and 62358 (clean `anchor_full` seed 0, ~6 min), both of which I had paused (SIGSTOP) at 08:28.
+  - **Kept 19612**: it had the most progress and is the key spike replication. Resumed it at nice 10.
+  - **Stopped 62365 and 62358** (`kill`). Their in-progress rounds lived only in memory, so that partial work was lost. The 8 completed runs were already saved in `eval/results/v1_*.jsonl`.
+  - 19612 then finished. All remaining runs go through one sequential queue under `nice -n 10` (`scripts/gpu_queue.sh` via `scripts/handover_to_queue.sh`; idempotent with `--skip-existing`), which started at 09:41.
+  - Swap after the stop: 20.9 GB used.
+- **Replication (dropout, 12 rounds).**
+
+  | Run | Seed 0 | Seed 1 |
+  |---|---|---|
+  | `anchor_full` macro | 2.66508 | 2.66510 |
+  | Starter `fedavg_ab_homo` macro | 2.7346 | 2.7535 |
+  | `anchor_full` c0 influence share | 0.204 | 0.224 |
+
+  Untuned model: 2.7063. All 5 domains improve over the untuned model on both seeds (`eval/results/v1_summary.md`).
+- **New code (13/13 tests).**
+  - `Anchor` options for the ratchet: `tau_from` (actual vs planned), `memory_decay`, `segment_norm` (PreLort-style per-column owners), and √n weights. The default path stays bit-identical to the v1 runs; a test asserts it.
+  - `eval.run_matrix --skip-existing`.
+  - C10 Flower adapter by agent `c10-flower-adapter`: Flower 1.39 Message API with an in-process `LocalGrid` (no Ray) and `kill_node`. Its 3 CPU tests pass. The LLM parity run did not finish on the loaded GPU and is pending.
+- **Research.**
+  - `research/raw/companies.md`: 25 primary sources; the landscape §6 was rewritten, and 3 claims re-opened by the lead were confirmed.
+  - `research/raw/fedlora_frontier.md`: prior-art verdict **NOT FOUND** for the exact combination. The closest work is CF-LoRA (frozen shared A, same rank) and PreLort (nested ranks, trained A). The 13 new arXiv IDs were verified by script; the TSV now has 57 rows.
+- Supervisor: memory request done as asked (this entry).
