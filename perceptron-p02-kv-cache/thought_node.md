@@ -10,32 +10,25 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ finishing (2026-10-04 18:08 IST).
-  - All pre-registered runs are done (T1, T2, S4, T3), plus amendments 1–5.
-  - Remaining before DONE:
-    1. Post-hoc E1–E5 (running on the VM), then E6 (max_new=32 sensitivity).
-    2. The gpt-6-sol reproduction (after `e6.done`).
-    3. gpt-6-astra phase 2 on the final abstract, then the demo review.
-    4. Demo builder finishes.
-    5. Final render, VM deallocation, "DONE — slot free".
-- **Results:** [eval/RESULTS.md](eval/RESULTS.md). Memo **4.2/5** by pre-fixed rules ([deliverables/selection-memo.md](deliverables/selection-memo.md)).
-  - **Primary passed** (+0.40 at 25%) and **replicated** on T2 (+0.375). RoD beats all 9 query-agnostic baselines.
-  - **Not near-lossless at 25%** (−0.25 vs full).
-  - **At 10% memory RoD ≈ full** on T1 (0.854 vs 0.833) and above full on T2 (+0.23), but T2's full ceiling is depressed by a 10-token answer limit (amendment 5; E6 pending).
-  - Mechanism: look-alike confusion as more blocks are recalled (T1).
-  - Halo does not help.
-  - T3 (aliased keys) is too hard even for the full cache (10%), so meaning-based retrieval is untested; RoD's block hit there is 23% vs lexical 73%.
-- **Doing:** VM post-hoc/E6.
-  - [P2 demo builder](ghapp://sessions/931e0d5e-6f6f-4cc3-ac7a-2f28c39c2b5c) is building.
-  - [gpt-6-sol](ghapp://sessions/377140bc-8a99-47d1-bed3-2b53e4b22b70) waits for `e6.done`.
-  - [gpt-6-astra](ghapp://sessions/97e5f61d-3add-4e44-9c65-d77e119bfb8a) is idle, waiting for the final abstract (≤ 2 running at once).
-- **Needs from user:** register by 15 Oct (if P2 is chosen over P1; only one of P1/P2 is allowed). Teammates' names and skills for the team-fit section.
+- **Phase:** ✅ definition of done met except the last review (2026-10-04 19:05 IST). Waiting only for the gpt-6-astra demo review (§11.7); after that comes triage, then "DEMO DONE" and "DONE — slot free" to the Supervisor.
+- **Delivered:**
+  - **Measured results** ([eval/RESULTS.md](eval/RESULTS.md)): pre-registered T1/T2/S4/T3 plus 5 amendments, exploratory E1–E6, and identity checks.
+  - **Final Round-1 abstract** (884–891 words, every number rendered; [deliverables/round1-abstract.md](deliverables/round1-abstract.md)) and diagram.
+  - **Selection memo v2** (4.2/5 by pre-fixed rules; [deliverables/selection-memo.md](deliverables/selection-memo.md)).
+  - **Demo** ([demo/](demo/)): replay by default, `--live` opt-in, `SCRIPT.md`, `fallback/`, `smoke.sh`. Verified from a clean clone: smoke PASS in 408 s, live engine 20/20 rows identical.
+  - **Reviews:**
+    - gpt-6-sol code/eval/reproduction: 12/12 accepted; 320/320 rows bit-identical.
+    - gpt-6-astra spike: 12/12 accepted.
+    - gpt-6-astra abstract: 70/100, 7/7 accepted.
+  - **VM** `p02-kv-1`: **deallocated** (disk kept for the finals; delete with `eval/azure/run_on_azure.sh delete`).
+- **Needs from user:**
+  1. Choose P1 or P2 for Perceptron (only one is allowed); register by 15 Oct.
+  2. Teammates' names and skills. The abstract's team line is a placeholder; the astra review scored team fit 2/5.
 - **Risks:**
   1. Synthetic needles, n=12 per split.
-  2. Approximate re-prefill (E2 pending).
-  3. CPU-only timings.
-  4. Narrow novelty.
-  5. The demo isn't built yet.
+  2. Not near-lossless at 25%; the precision-first fix is exploratory only.
+  3. CPU-only timings; the prefill is not memory-bounded.
+  4. Novelty is a narrow combination.
 
 ## Phase 0 — what the judges need to see (from `_briefs/perceptron.txt`)
 - **MVP bullets → evidence:** (a) one existing method applied + memory saved vs uncompressed → a table of *retained KV bytes* (counting every index/scale byte) and measured peak memory, per method and ratio; (b) accuracy drop on a small long-context recall task → needle-recall accuracy with 95% Wilson CIs vs the full cache.
@@ -245,4 +238,17 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **T3 (aliased keys):** full-cache ceiling 0.104, so S6 is **inconclusive by rule** (+0.06, CI −0.02 to +0.15). RoD's block hit is 0.23 vs lexical 0.73 at 10%: no evidence that the sketch retrieves by meaning.
 - **Byte checks:** 0 violations (T1 36 cells, T2 36, T3 24).
 - **Abstract:** 873 words rendered; caveats now include S2 (T1/T2), mechanism, halo, the T3 negative and CPU time.
+
+### 2026-10-04 19:05 IST: All runs, reviews and demo done; VM deallocated
+- **Post-hoc E1–E5** (18:19; exploratory, T1 contexts):
+  - Streamed scorer = unchunked in 144/144; determinism 144/144; transient set ≤ 0.74 MiB.
+  - Exact KV for the same blocks: 0.875 / 0.896 / 0.875.
+  - Oracle block: 0.979 at 10%.
+  - **Top-2 recall: 0.854 at 25% and 50%.** The dip is implicated in approximate multi-block re-prefill.
+- **E6** (18:31): T2 with 32-token answers. Full 0.667, RoD@10% 0.750; paired +0.083 (CI −0.021 to +0.229). Superiority not established.
+- **Demo builder done** (6b8d8c9). Clean-clone `smoke.sh` PASS: replay = committed rows; the live engine reproduces 20/20 T1 rows; live compress 60 s incl. load, ask 38 s; unload frees the model.
+  - Supervisor 18:0x memory concern: live keeps fp16 weights and upcasts per matmul (numerics = harness); lazy load; replay is the default.
+- **gpt-6-astra phase 2** (abstract, 70/100): 7 items accepted. Title, post-prefill-state wording, T2 led by E6, chronology wording, grid coverage, PyTorch demo, causal wording.
+- **gpt-6-sol final:** 320/320 rows bit-identical on the VM; 790/790 fields; primary and S7 confirmed. 4 new items accepted: S2 isn't scorer-isolating, T2 truncation, kvpress prefill precision, seed guard.
+- **VM** deallocated at about 19:00 after the reproduction. sol session archived. Temporary clean clone removed.
 
