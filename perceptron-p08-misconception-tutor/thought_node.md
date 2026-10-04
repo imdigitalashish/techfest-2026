@@ -11,36 +11,29 @@
 - 2026-10-04 09:55 (Supervisor): **PAUSE** (user's decision; only Namma Space, P7 and EV C2 run; P7 is the Perceptron pick unless the user overrides). → Paused at 10:00 IST. No jobs were running.
 
 ## Now
-- **Phase:** ⏸ **PAUSED 10:00 IST, 4 Oct** (Supervisor 09:55). Resume only on the Supervisor's or user's go. Morning package delivered (07:50 IST): walking skeleton, eval harness with real numbers, C3 autoresearch loop (2 iterations, 1 kept), selection memo v1 (re-scored after the LLM baselines).
-- **Plan:** Misconceptions as **executable bug switches** on one exact interpreter → exact diagnosis with slip abstention → SymPy-verified *discriminative* generation → set-level Bayesian tracer with information-gain item choice. LLM + retrieval for everything the library doesn't cover. Evaluated on real Eedi distractors + labelled-synthetic learners; pilot before finals.
-- **Doing:** nothing (paused). No background jobs. Azure resource `tf26-p08-aoai-1004` (rg `rg-tf26-p08`) has 3 deployments: `gpt-4.1-mini`, and `gpt-5.4-mini` + `gpt-5.5` (both deployed 09:52, not yet used). Pay-per-token, so idle costs nothing.
-- **Resume point — "where does the LLM baseline fail?"** (Supervisor 09:40). Nothing written yet. Do in this order, each in a new `eval/run_llm_gaps.py --part <name>` writing `eval/results/llm_gaps_<name>.json`; pre-register hypotheses and metrics in `eval/llm_gap_protocol.md` and commit it *before* running.
-  - **Baselines:** run every part with `gpt-4.1-mini` **and** a reasoning model (`gpt-5.4-mini`; `gpt-5.5` on the decisive parts). Beating only a mini model would not convince. `components/llm.py` needs a reasoning-model branch: `max_completion_tokens`, no `temperature`, api-version `2025-04-01-preview`.
-  1. `real_negatives` (**real data, highest value**). Add a NONE option to the closed-set prompt. Run on the 129 pack-labelled Eedi distractors plus the arithmetic distractors labelled with *other* misconceptions (parsed, key agrees; via `components/bugs/eedi_parse.py`, ≈175). Metrics: LLM false-claim rate vs the exec path (1.8%), precision/recall/F1 with NONE as a class. Pre-register a synonym list of Eedi names equivalent to our 5 rules *before* running.
-  2. `inversion` (synthetic, labelled). Deeper expressions (5–8 ops) and *composite* answers (2 held bugs), plus pure slips. LLM asked for the full set or NONE; exact set-Bayes as reference. Metrics: LLM exact-set accuracy vs depth; slip false-attribution.
-  3. `tracing` (synthetic). ~100 simulated learners × 12 random items. LLM reads the history and returns P(holds) per misconception, vs the set-Bayes tracer. Metrics: exact-set accuracy, Brier, per-misconception F1.
-  4. `prob_pack`. New executable probability/EV pack: two-dice sums (equiprobability, unordered outcomes), urn without replacement (independence), union of independent events (adding non-exclusive probabilities), diagnostic test (confusion of the inverse), E[X²] vs E[X]² (Jensen). Sources in `research/notes/r7-domain-taxonomies.md` are mostly secondary: label them. Test LLM-only generation key correctness and LLM classification on it.
-  5. Optional: `selection` — LLM picks the next item from 10 candidates vs EIG vs random; tracer accuracy after 6 items.
-  - Then update the selection memo. If no gap appears, say so plainly (Supervisor's instruction) and message the Supervisor with the result.
-- **Next after that (ordered):**
-  1. Independent adversarial review of ADR 001 and re-verification of the landscape's top claims (when sub-agents are allowed again).
-  2. Close the research gaps (Kaggle leaderboard scores, verified-generation literature, MATHia/ALEKS/Indian ed-tech, RCTs).
-  3. LLM bug compiler (Eedi text → program, accepted only if it reproduces distractors).
-  4. Real option-level tracing on Eedi response data.
-  5. Web UI + teacher heat-map.
-  6. Pilot design (consent, pre/post isomorphic items, random-practice control).
+- **Phase:** 5–6 — **ACTIVE again since 14:58 IST, 4 Oct** (Supervisor batch slot). Goal: find out honestly whether and where the LLM baseline fails, then finalise.
+- **Definition of done (Supervisor 14:58):**
+  1. Pre-register `eval/llm_gap_protocol.md` and commit it before any run. Then run `real_negatives` (real data), `inversion` and `tracing` (+ `prob_pack` if time) against gpt-4.1-mini **and** gpt-5.4-mini (gpt-5.5 on the decisive parts). If there is no gap, say so plainly.
+  2. Re-frame the pitch on that evidence.
+  3. Final Round-1 abstract with numbers rendered from committed results, plus a doc-drift check (`eval/check_docs.py`) and the diagram.
+  4. Cross-model reviews as child sessions: gpt-6-astra (max) as hostile judge on abstract + spike; gpt-6-sol (max) on code/eval, reproducing the headline numbers → `reviews/` + `reviews/ledger.tsv`.
+  5. Final selection memo; push; message the Supervisor "DONE — slot free".
+- **Plan:** protocol → runner (`eval/run_llm_gaps.py`; responses saved to committed JSONL so scoring reproduces offline) → runs (bounded; tokens and cost logged per part) → analysis → pitch/abstract/memo → 2 reviews → triage → DONE.
+- **Doing:** lead (Opus 5.5) writing the pre-registration. No child sessions (cap 2; reviewers come last). No background jobs.
+- **Rules in force:** no `task` sub-agents; ≤2 child sessions; never `git stash`/`--autostash`; timestamps from `TZ=Asia/Kolkata date`; heavy jobs `nice -n 10`, CPU only, start only when `kern.memorystatus_level` ≥ 30; small API batches; poll long jobs ≥10 min apart; Azure keys in env only.
 - **Needs from user:**
   - Register by 15 Oct (after the 12 Oct selection).
   - Teammates' names and skills for the team-fit section (abstract has [TEAM] placeholders).
   - A Kaggle login to download the official Eedi 2024 files and confirm the mirror's fidelity.
   - In Nov: ~30 learners for a consented pilot.
-  - FYI: an Azure OpenAI resource was created in the VS Enterprise subscription (rg `rg-tf26-p08`; deployments gpt-4.1-mini, gpt-5.4-mini, gpt-5.5). Pay-per-token; delete the resource group when no longer needed: `az group delete -n rg-tf26-p08`.
+  - FYI: Azure OpenAI resource in the VS Enterprise subscription (rg `rg-tf26-p08`; deployments gpt-4.1-mini, gpt-5.4-mini, gpt-5.5). Pay-per-token; delete when no longer needed: `az group delete -n rg-tf26-p08`.
 - **Risks:**
-  1. The LLM baseline is strong on the MVP pack (86.0% classification, 40/40 generation), so the innovation case rests on tracing/information gain, verification and harder packs.
-  2. Simulated learning ≠ real learning.
-  3. LaTeX parser covers ~45% of real items.
-  4. Eedi 2024 data via an unofficial mirror.
-  5. Network interception of AI endpoints (GitHub Models stub; Azure flaky 06:40–07:06).
+  1. The LLM baseline is strong (gpt-4.1-mini 86.0% vs exec→TF-IDF 45.7% on the real 5-category set); reasoning models may close every remaining gap. If so, the memo says P8 has no defensible edge.
+  2. Synthetic parts (inversion, tracing) favour the executable side, which shares the generative model (home-field advantage). They must be labelled and weighted below the real-data part.
+  3. Simulated learning ≠ real learning.
+  4. LaTeX parser covers ~45% of real items.
+  5. Eedi 2024 data via an unofficial mirror.
+  6. Uplink congestion / Azure flakiness.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -137,3 +130,6 @@ Model API returned "408 Timed out reading request body" for most agents (network
 ### 2026-10-04 10:00 IST — Paused by the Supervisor
 - 09:40: resumed for "where does the LLM baseline fail?". Azure reachable. Listed deployable models: swedencentral offers up to gpt-5.5 and gpt-5.6. Deployed `gpt-5.4-mini` (2026-03-17) and `gpt-5.5` (2026-04-24) next to `gpt-4.1-mini`, so the gap tests can include strong reasoning baselines. No experiments run yet, so no new numbers.
 - 09:55: Supervisor PAUSE (only 3 projects run; P7 is the Perceptron pick unless the user overrides). Nothing was running. Exact resume plan is in *Now → Resume point*.
+
+### 2026-10-04 15:00 IST — Resumed by the Supervisor (batch slot)
+- 14:58 message: P8 active again; definition of done = LLM-gap experiments (pre-registered) → re-framed pitch → final abstract with rendered numbers + doc-drift check → gpt-6-astra / gpt-6-sol reviews → final memo → "DONE — slot free". Now rewritten.
