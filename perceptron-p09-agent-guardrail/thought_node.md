@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ PAUSED at 09:55 IST, 4 Oct (Supervisor/user decision: only 3 projects run at a time; P9 is the Perceptron alternate). Nothing of ours is running; all work is pushed.
+- **Phase:** ⏸ PAUSED 4 Oct (Supervisor message stamped 09:55 IST; user decision: only 3 projects run at a time; P9 is the Perceptron alternate). Nothing of ours is running; all work is pushed.
 - **Headline:** *Cite-Before-Act*: a pre-tool guard that checks the provenance of every argument (user words / reference KB / trusted tool data; untrusted text is never a source of intent) plus pre-trade-style contracts. The unverifiable residue goes to a risk-routed local model whose quoted evidence must verify verbatim, then to a human.
 - **Evidence so far** (reproduce: `eval/README.md`; τ-bench: `eval/taubench/`):
   - **Real agent errors: τ-bench retail replay.**
@@ -118,7 +118,7 @@ _First version 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
 - **Overall: 4.6/5.**
 
 ## Log
-### 2026-10-04 09:58 IST — Paused by the Supervisor (user decision); results saved
+### 2026-10-04 09:53 IST — Paused by the Supervisor (user decision); results saved
 - **08:22 Supervisor:** package accepted; P9 ranks #2 in Perceptron and moves to #1 if the guard holds on real agent errors by 10 Oct. Next: τ-bench/AgentDojo real-error replay vs no-guard/schema/LLM-judge baselines, then an independent adversarial red team.
 - **~09:15 Supervisor:** an orphaned PID 42665 (my Qwen3-8B judge, queued in last night's chained shell) was using memory. Killed; swap recovered. New rule for my LLM runs: Qwen3-1.7B only, chunked with checkpoints, `nice -n 10`, one at a time, only when swap has >4 GB free. The chain had finished three valid runs (results kept with their commits): cascade (8B) dev/test and the full-test 1.7B judge. The cascade let one bad test message through (an unrequested "account upgraded" message). Root cause: a quote from *policy* text was accepted as evidence for *intent*. Fixed: provenance checks now accept only quotes from the client's words, and an intent quote must contain a request verb.
 - **τ-bench replay built:** `eval/taubench/{fetch.sh,replay.py,run.py}`. The stubbed-package import avoids τ-bench's LLM SDK dependencies. The fast effect-based labeller deep-copies only touched records and was verified against full hashing. The guard sees the tool outputs exactly as the agent saw them. Fidelity mismatches turned out to be a later data rename (`province`→`state`) and are normalised. Dev v0 numbers and diagnosis are in *Now*.
