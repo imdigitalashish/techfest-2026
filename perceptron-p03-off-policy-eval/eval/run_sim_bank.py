@@ -25,19 +25,20 @@ from components.simulator.sim import World, ground_truth, simulate  # noqa: E402
 
 # FROZEN scenario bank v0 (do not edit; add a new version instead). All data SYNTHETIC.
 BANK = {
-    "S1_drift_masks_gain": dict(response_drift=-0.5, mix_shift=0.5, new_policy_quality=1.0, old_policy_quality=0.3),
-    "S2_drift_fakes_gain": dict(response_drift=+0.5, mix_shift=0.0, new_policy_quality=0.0, old_policy_quality=0.8),
+    "S1_drift_masks_gain": dict(response_drift=-1.0, mix_shift=0.5, new_policy_quality=0.7, old_policy_quality=0.3),
+    "S2_drift_fakes_gain": dict(response_drift=+1.0, mix_shift=0.0, new_policy_quality=0.3, old_policy_quality=0.8),
     "S3_stationary_control": dict(response_drift=0.0, mix_shift=0.0, new_policy_quality=1.0, old_policy_quality=0.3),
     "S4_hidden_override": dict(response_drift=-0.3, hidden_confounding=1.0, new_policy_quality=0.6, old_policy_quality=0.5),
     "S5_low_overlap": dict(response_drift=-0.3, epsilon=0.02, temperature=3.0, new_policy_quality=1.0, old_policy_quality=0.0),
 }
+COMMON = dict(n_before=10_000, n_after=10_000)
 ESTIMATORS = ["IPW", "SNIPW", "DM", "DR", "SwitchDR"]
 GAMMAS = [1.0, 1.25, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 7.0, 10.0]
 
 
 def run_one(args):
     name, seed, truth, do_msm = args
-    cfg = ScenarioConfig(name=name, seed=seed, **BANK[name])
+    cfg = ScenarioConfig(name=name, seed=seed, **COMMON, **BANK[name])
     sim = simulate(cfg, truth)
     w: World = sim.world
     pi_old_after = ActionDist(probs=w.policy(sim.after.X, "old"), policy="old")
@@ -62,7 +63,7 @@ def run_one(args):
         curve = delta_curve(c, sim.after.pscore, sim.after.R, GAMMAS, B=100, seed=seed)
         g_idx = next((i for i, g in enumerate(GAMMAS) if g >= t.gamma_true), len(GAMMAS) - 1)
         rows.append(dict(scenario=name, seed=seed, estimator="MSM_HAJEK", truth=t.policy_effect_after, naive=naive,
-                         delta=float(sim.after.R.mean() - 0.5 * 0), lo=curve.lo[0], hi=curve.hi[0],
+                         delta=(curve.lo[0] + curve.hi[0]) / 2, lo=curve.lo[0], hi=curve.hi[0],
                          covered=curve.lo[g_idx] <= t.policy_effect_after <= curve.hi[g_idx],
                          gamma_star=curve.gamma_star, gamma_true=t.gamma_true, msm_lo=curve.lo[g_idx], msm_hi=curve.hi[g_idx]))
     return rows
@@ -104,7 +105,7 @@ def main():
     ap.add_argument("--msm_seeds", type=int, default=10)
     ap.add_argument("--workers", type=int, default=8)
     a = ap.parse_args()
-    truths = {s: ground_truth(World(ScenarioConfig(name=s, **kw))) for s, kw in BANK.items()}
+    truths = {s: ground_truth(World(ScenarioConfig(name=s, **COMMON, **kw)), n_mc=200_000) for s, kw in BANK.items()}
     jobs = [(s, k, truths[s], s == "S4_hidden_override" and k < a.msm_seeds) for s in BANK for k in range(a.seeds)]
     with ProcessPoolExecutor(a.workers) as ex:
         rows = [r for rs in ex.map(run_one, jobs) for r in rs]

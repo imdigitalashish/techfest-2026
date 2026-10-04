@@ -10,12 +10,25 @@
 - _(none)_
 
 ## Now
-- **Phase:** 1–4, compressed. LEAN MODE (Supervisor, 05:50 IST): no sub-agents or downloads over 200 MB before 08:30; the lead works alone.
-- **Plan:** Morning package in the Supervisor's order: (a) this node → (b) `research/landscape.md` → (c) `architecture/components.md` + contracts → (d) ADR 001 → (e) selection memo → (f) `deliverables/round1-abstract.md` + `architecture.md` → (g) a walking skeleton on a ground-truth simulator, plus the small Open Bandit Dataset sample if it is reachable.
-- **Doing:** Lead, alone: primary-source reads via the arXiv API and GitHub API (small requests), then writing.
-- **Next:** landscape → components → ADR → memo → abstract → skeleton numbers.
+- **Phase:** 4 — walking skeleton + eval harness (Phases 1–3 v1 done). LEAN MODE until 08:30: no sub-agents, small requests.
+- **Done:**
+  - [`research/landscape.md`](research/landscape.md), cited via the arXiv and GitHub APIs (evidence in `research/sources/`).
+  - [`architecture/components.md`](architecture/components.md) with 12 components and executable pydantic contracts in [`architecture/contracts/contracts.py`](architecture/contracts/contracts.py).
+  - [ADR 001](architecture/adr/001-spike.md): spikes are the C9 Decomposer and the C8+C7 Robustness Certificate.
+  - [Abstract draft](deliverables/round1-abstract.md) (894 words) and [architecture diagram](deliverables/architecture.md).
+  - Skeleton components: simulator, estimators (IPW/SNIPW/DM/DR/Switch-DR), Wald/bootstrap intervals, MSM sensitivity bounds, decomposer.
+- **Doing:** The 30-seed simulator bank v0 is running (`eval/run_sim_bank.py`; the machine's load average is about 80, so it is slow). Next is the OBD Random→BTS check on the 10k-row sample.
+- **Next:**
+  1. Commit bank and OBD numbers; put the real numbers into the abstract.
+  2. Contract tests.
+  3. After lean mode: an independent rubber-duck review of ADR 001, per-component research files, the first ratchet loop on C6.
+  4. Full OBD (26M rows) via Azure or a chunked download.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** Saturated network (all 8 research sub-agents died at 0 turns on HTTP 408). Mitigation: sequential, small requests. The full Open Bandit Dataset is too big to download tonight, so tonight's real-data numbers use only the small sample bundled with obp.
+- **Risks:**
+  - The network is saturated, so research fan-out is deferred.
+  - The OBD sample is tiny (38 clicks in 10k Random rows), so the real-data check is noisy until we have the full data.
+  - The mix/drift split depends on the reward model.
+  - Judges may see a simulator as rigged. Mitigation: the frozen bank includes a case where the naive number is right, plus a hidden-override case where OPE itself fails.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -40,21 +53,37 @@
 - What companies ship: experimentation and counterfactual-evaluation platforms at large recommender, ads and marketplace companies — check their engineering blogs.
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — **Framing:** answer "did the switch cause the change?" (the policy effect in the after period) rather than only "what is V(π)?". Use OPE to build the counterfactual "old policy during the after period", and attribute the naive gap to it.
+- 2026-10-04 — **Spikes:** the C9 Decomposer and the C8+C7 Robustness Certificate (see [ADR 001](architecture/adr/001-spike.md)). The auto-research ratchet targets C6 (Δ-RMSE on the frozen bank). It is process, not pitch, because GrowthHacker (arXiv:2511.00802) is prior art.
+- 2026-10-04 — **Own numpy implementations behind contracts**, cross-checkable against obp later. Reason: obp's last release was 0.5.5 in June 2022 (GitHub API), and tonight's stack is pandas 3, numpy 2.4 and scikit-learn 1.9.
+- 2026-10-04 — **Assumption (no user input):** the team is Ashish plus two TBD teammates; the abstract says so.
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| C1 | LogIngest | raw → `BanditLog` | obp loader | | contract done | validation pass rate |
+| C2 | PolicyAdapter | policy → `ActionDist` | obp BTS action dist | | sim policies done; BTS MC pending | MC error |
+| C3 | PropensityModel | log → `Propensity` | logged / logistic | | logged only | held-out log-loss |
+| C4 | RewardModel | log → `RewardModelOut` | cross-fitted logistic | | done (`components/estimators/ope.py`) | held-out log-loss |
+| C5 | ValueEstimator | → `ValueEstimate` | IPW/SNIPW/DM/DR/Switch-DR | | done | rel. error (OBD), RMSE (bank) |
+| C6 | DeltaEstimator | → `DeltaEstimate` | V̂(new) − V̂(old) | ratchet target | baseline done | Δ-RMSE on bank |
+| C7 | Interval | influence → `Interval` | Wald, bootstrap | ★ (with C8) | baseline done | coverage + width |
+| C8 | Sensitivity | → `SensitivityCurve` | MSM Hajek bounds + bootstrap | ★ | v0 done (`components/sensitivity/msm.py`) | validity at Γ_true + width |
+| C9 | Decomposer | before/after → `Decomposition` | naive gap | ★ | v0 done | RMSE + sign of the policy term |
+| C10 | Report | → `Verdict` | dashboard number | | contract only | decision accuracy |
+| C11 | Simulator | config → logs + `GroundTruth` | obp synthetic | | done (`components/simulator/sim.py`) | truth MC precision |
+| C12 | EvalHarness | bank × seeds → metrics | obp evaluate | | v0 running | — |
 
 ## Selection memo
 _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+**v1 — 2026-10-04 07:35 IST** (synthetic-simulator numbers are labelled; evidence: `eval/results/`)
+- **Winnability — 4/5.** The MVP has a crisp, checkable answer: exact ground truth in our simulator, and real ground truth in OBD (BTS on-policy CTR). A rigorous team can show numbers judges cannot argue with. The theme has a single problem. That Optiver judges reward counterfactual rigour is our hypothesis (UNVERIFIED).
+- **Innovation headroom — 4/5.** The spike is a before/after Decomposer plus a Robustness Certificate (CI + MSM bounds + tipping point Γ\* for Δ). The obvious baseline only estimates V(π) with obp. Every piece has prior art (Δ-OPE, MSM, confidence sequences), but our arXiv search found no tool that attributes a policy switch this way. Agentic OPE-code optimisation is already published (GrowthHacker, Nov 2025), so we do not pitch the ratchet as novel.
+- **Feasibility — 5/5.** CPU-only (numpy, scikit-learn). Overnight, under lean mode, we built the simulator, 5 estimators, intervals, MSM bounds and the decomposer. Nothing depends on a GPU or on the 19–25 Nov exam window.
+- **Demo strength — 4/5.** A waterfall chart ("the dashboard said it failed; the season did it; the policy helped") and an interactive Γ slider. Less visually flashy than LLM or agent demos.
+- **Fit with the user's strengths — 3/5.** It leans on statistics and causal inference more than large-scale systems or frontier models. Bridges: full-scale OBD (26M rows), streaming anytime-valid monitoring, and optional evaluation of LLM-generated policies.
+- **Biggest risk:** being read as "a tutorial re-run of obp" or "a rigged simulator". Mitigation: the frozen bank includes cases where naive is right and where OPE fails (the hidden override), plus OBD real truth and a semi-synthetic OBD before/after.
+- **One-line pitch:** "Your dashboard says the new policy failed. We show the season did it, the policy actually helped, and how much hidden confounding it would take to overturn that."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -69,3 +98,17 @@ Folder, brief and journal created. The lead session starts Phase 0.
 ### 2026-10-04 05:55 IST — All 8 research agents failed; switching to lean mode
 - Every sub-agent failed at 0 turns with `408 Timed out reading request body`, so no research files were produced. The network is saturated across the portfolio.
 - Supervisor's lean-mode directive (05:50) received: no sub-agents, small requests, nothing over 200 MB, push every 30 minutes. Plan reordered to match. Research is now done directly: arXiv API and GitHub API records saved under `research/sources/`.
+
+### 2026-10-04 07:35 IST — Morning package mostly on main; skeleton running
+- **Research (lead, lean mode):**
+  - 50 arXiv records fetched through the official API, abstracts saved under `research/sources/`.
+  - Newest work found includes: GrowthHacker (2511.00802, prior art for our ratchet); Adyen's production OPE (2501.10470); OPE under non-stationarity (2506.20417); "When offline evaluation misleads" (2608.11560, closest framing); Jeunen's A/B acceleration (2607.14604) and additive control variates (2602.14914).
+  - Company facts verified first-party: Azure Personalizer was retired on 25 Aug 2026 (Microsoft Learn); ReAgent is archived in favour of Pearl (README); obp's last release was 0.5.5 in June 2022 (GitHub API).
+- **Architecture:** 12 components with executable pydantic contracts; ADR 001 picks the C9 Decomposer and the C8+C7 Certificate as spikes.
+- **Deliverables:** abstract v1 (894 words) and a mermaid architecture diagram.
+- **OBD sample** (10k rows per policy, "All" campaign, fetched by `eval/fetch_obd_sample.sh`): Random CTR 0.00380 (38 clicks), BTS CTR 0.00420 (42 clicks); Random propensity is 0.0125 (= 1/80); both logs span 2019-11-24 to 2019-11-30, so the two policies ran concurrently. Our pandas run.
+- **Smoke run** (4 seeds; not committed, superseded by the 30-seed run):
+  - DR recovered the policy effect with RMSE about 0.003 in the stationary and drift scenarios.
+  - With an unlogged override (S4), every estimator was biased by about −0.07 with 0% coverage; MSM bounds held the truth at Γ_true and flagged fragility (Γ\* about 1.25).
+  - S1/S2 drift was too weak to flip the naive sign, so before freezing bank v0 the drifts were set to ±1.0 logit, chosen from ground-truth-only checks: S1 truth +0.075 vs naive −0.054; S2 truth −0.084 vs naive +0.090.
+- **Supervisor 07:22:** alignment check answered (the abstract was already on main; order agreed).
