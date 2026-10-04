@@ -222,3 +222,13 @@ Apply at resume step 2.
 - → `research/sources/state_gap_verified.csv` + [V4](research/sources/V4-state-gap-verified.md). **Poshan Tracker wasting < NFHS-5 wasting in 36/36 States/UTs** (REAL; caveated as an unexplained discrepancy).
 - Bonus datapoint: Poshan Tracker June 2023, ~7 crore measured, 7% wasted, 19% underweight (same LS answer).
 
+### 2026-10-04 18:13 IST — demo "crazy" element approved
+- **Builder's proposal:** "Find every child without pooling names". Knobs for RCH-ID coverage (100%→0%) and typo/transliteration rate (0–40%), with shared-ID join vs plaintext probabilistic vs keyed Bloom-filter PPRL side by side (precomputed 7×5 grid, n=5,000; the default cell equals `identity_linkage.json`). A privacy panel shows the two 1,000-bit encodings.
+- **Six screens:** (1) REAL state gap; (2) linkage knobs; (3) one example child's rebuilt RCH + U-WIN + Poshan Tracker timeline; (4) WHZ rule vs programme rule with a K knob (K=5 → 0.429 / 0.365); (5) ≤80-char SMS + escalation; (6) "break it": other-AWC worker, CDPO disciplinary request, fake consent → deny, plus a live audit tamper with truncation caught only with a checkpoint.
+- **Approved, with changes:**
+  - use the primary-verified `state_gap_verified.csv` (REAL, 36/36);
+  - label the 35% ID coverage as an assumption;
+  - choose the example child by a stated, reproducible rule, show the aggregate recall beside it, and compute (not assert) its linkage;
+  - the browser hash chain must reproduce the Python hashes byte for byte (checked by node in smoke.sh);
+  - no worker-level scores; linkage framed as care coordination only.
+
