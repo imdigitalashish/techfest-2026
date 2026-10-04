@@ -1,0 +1,15 @@
+{
+ "data": "SYNTHETIC",
+ "recall_fraud_at_5pct_false_flags": 0.7164,
+ "false_flag_rate_test": 0.047,
+ "recall_inflated_x1.2-3": 0.694,
+ "recall_inflated_x1.2-1.5": 0.244,
+ "recall_phantom": 1.0,
+ "recall_wetted_or_silted": 0.5,
+ "precision_at_5pct_prevalence": 0.4451,
+ "precision_at_10pct_prevalence": 0.6288,
+ "baseline_ratio_recall_at_5pct": 0.6748,
+ "status_quo_slip_check_recall": 0.0,
+ "tamper_detection_rate_with_anchor": 1.0,
+ "reproduce": "cd innovatex-t3-coastal-plastic/components && python3 -m mrv_ledger.evaluate"
+}
