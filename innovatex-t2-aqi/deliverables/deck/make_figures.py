@@ -32,20 +32,19 @@ def fig_forecast():
 
 def fig_attribution():
     rows = list(csv.DictReader(open(os.path.join(ROOT, "components", "attribution", "autoresearch", "results.tsv")), delimiter="\t"))
-    v1 = {r["method"]: r for r in rows if r["timestamp_ist"] == "2026-10-04T08:03"}
-    keys = ["pair_fixed", "ring", "ring_selfcal"]
-    labels = ["Fixed upwind/downwind\npair (common practice)", "Wind-resolved ring", "Ring + self-calibration\n(DustLedger)"]
-    mean = [float(v1[k]["test_scalar_MAE"].split("±")[0]) for k in keys]
-    sd = [float(v1[k]["test_scalar_MAE"].split("±")[1]) for k in keys]
-    csi = [float(v1[k]["notes"].split("test ")[1].split(";")[0]) for k in keys]
+    v2 = {r["method"]: r for r in rows if r["timestamp_ist"] == "2026-10-04T09:47"}
+    keys = ["pair_fixed", "ring", "ring_refcal", "ring_selfcal"]
+    labels = ["Fixed upwind/\ndownwind pair", "Wind-resolved\nring", "Ring + weekly\nreference visits", "Ring + idle-hour\nself-calibration"]
+    vals = [float(v2[k]["test_scalar_MAE"]) for k in keys]
+    csi = [float(v2[k]["notes"].split("holdout CSI ")[1].split(";")[0]) for k in keys]
     fig, ax = plt.subplots(figsize=(10, 5.2))
-    bars = ax.bar(labels, mean, yerr=sd, capsize=8, color=[GREY, GREY, ACCENT])
-    for b, m, s, c in zip(bars, mean, sd, csi):
-        ax.text(b.get_x() + b.get_width() / 2, m + s + 3, f"{m:.1f} ± {s:.1f}\nevent CSI {c:.2f}", ha="center", fontsize=12, color=INK)
+    bars = ax.bar(labels, vals, color=[GREY, GREY, GREY, ACCENT])
+    for b, m, c in zip(bars, vals, csi):
+        ax.text(b.get_x() + b.get_width() / 2, m + 2, f"{m:.1f}\nevent CSI {c:.2f}", ha="center", fontsize=12, color=INK)
     ax.set_ylabel("Error in the site's own PM10, µg/m³ (MAE)")
-    ax.set_ylim(0, max(m + s for m, s in zip(mean, sd)) * 1.3)
-    ax.set_title("Isolating one site's dust from Delhi's background — held-out Jan–Sep 2026, 5 simulated sites", fontsize=13)
-    fig.text(0.01, 0.01, "REAL background PM10 (CPCB monitor) + REAL ERA5 wind; SIMULATED site, plumes and sensors. components/attribution/autoresearch/eval.py (v1)", fontsize=9, color=WARN)
+    ax.set_ylim(0, max(vals) * 1.3)
+    ax.set_title("Stress-tested replay: held-out Jan–Sep 2026, unseen seeds, 4 scenarios incl. an unseen site shape", fontsize=12)
+    fig.text(0.01, 0.01, "REAL background PM10 (CPCB monitor) + REAL ERA5 wind; SIMULATED site, plumes, sensors and faults. autoresearch/eval_v2.py (v2.1)", fontsize=9, color=WARN)
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     fig.savefig(os.path.join(HERE, "fig_attribution.png"), dpi=200)
 

@@ -56,27 +56,34 @@ Accessed: 2026-10-04 (IST), research session started ~08:33 IST.
 
 ## (10) 10 W 12 V solar panel
 
-_pending_
+- **"12V 36 Cell 10 watt Solar Panel 41x30cm"** · Robu.in · ₹1,047.00 (Incl. GST) listed, but Availability: **"Out of Stock"** · https://robu.in/product/10w-solar-panel-36-cell-solar-plate-high-quality-10-w-10-watts/ · accessed 2026-10-04 ~09:21 IST (Playwright).
+- **Loom Solar 10-Watt Solar Panel, Polycrystalline PV Module** · Amazon.in · **₹949** (M.R.P. ₹2,500) · 1,235 ratings / 4.1★, buy-box price shown (in stock) · https://www.amazon.in/Loom-Solar-10-Watt-Panel/dp/B07JF2B35T/ · accessed 2026-10-04 ~09:24 IST (Playwright).
+- Also seen in stock on Robu (not opened individually): "20W 12V Solar Panel (74×35cm)" SKU 12298 (/product/20w-12v-solar-panel-solar-plate-high-quality-20-w-20-watts/), "18V 20W 36-Cell Solar Panel" SKU 818165.
 
 ## (11) 12 V LiFePO4 battery (6–12 Ah) or 18650 pack + solar charge controller (CN3791/MPPT)
 
-_pending_
+- **Pro-Range A Grade IFR 32650 12.8V 12000mAh (12 Ah) 3C 4S2P LiFePO4 Battery Pack** · Robu.in · **₹3,359.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/pro-range-ifr-32650-lifepo4-12000mah-12-8v-4s2p-protected-battery-pack-3c/ · accessed 2026-10-04 ~09:28 IST (Playwright).
+- Smaller pack also seen in stock (same search, not opened individually): "Pro-Range IFR 32650 12.8V 6000mAh (6 Ah) 3C 4S1P LiFePO4 Battery Pack" SKU 1290270 (/product/pro-range-ifr-32650-lifepo4-6000mah-12-8v-4s1p-protected-battery-pack-3c/).
+- **Elejoy CN3791 12V MPPT Solar Charger Module** · Robu.in · **₹199.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/cn3791-12v-mppt-solar-charger-module/ · accessed 2026-10-04 ~09:30 IST (Playwright).
 
 ## (12) IP65 ABS junction box ~200×150 mm
 
-_pending_
+- **F1 195×115×75mm IP65 ABS PCB Plastic Junction Box** (closest in-stock size to the ~200×150mm target) · Robu.in · **₹269.00 (Incl. GST)** · Availability: "In Stock" · https://robu.in/product/f1-19511575mm-ip65-abs-pcb-plastic-junction-box/ · accessed 2026-10-04 ~09:34 IST (Playwright).
+- Note: several closer/larger Robu options in the same range (e.g. 158×90×60mm, 115×90×55mm variants) were shown **Out of Stock** on the search grid.
 
 ## (13) 12 V diaphragm/misting pump + misting nozzle kit
 
-_pending_
+- **"550" Diaphragm Pump 12V Water Pump (for Water Spray / Fish Tank / Reflux Pump)** — pump only, no nozzles · Robu.in · **₹399.00 (Incl. GST)** · Availability: "In Stock" (3 customer reviews) · https://robu.in/product/550-diaphragm-pump-12v-water-pump-for-water-spray-fish-tank-reflux-pump/ · accessed 2026-10-04 ~09:37 IST (Playwright).
+- **Fieldstar DIY Misting System Kit with Nozzles, Pump 12V, Pipe, Connectors (8 Nozzles)** — combined pump + misting-nozzle kit in one bundle · Amazon.in · **₹1,999** (M.R.P. ₹3,999) · 12 ratings / 3.2★, buy-box price shown (in stock) · https://www.amazon.in/Misting-System-Kit-Nozzles-Hydroponics/dp/B0F3DKV27D/ · accessed 2026-10-04 ~09:39 IST (Playwright).
 
 ## (14) 12 V solenoid valve (1/2")
 
-_pending_
+- **12V DC 1/2″ Electric Solenoid Water Air Valve Switch (Normally Closed)** · Robu.in · **₹269.00 (Incl. GST)** · Availability: "In Stock" (9 customer reviews) · https://robu.in/product/dc12v-plastic-electric-12v-water-solenoid-valve-electric-solenoid-valve-magnetic-nc-water-air-inlet-flow-switch-nc-12/ · accessed 2026-10-04 ~09:41 IST (Playwright).
 
 ## (15) YF-S201 or similar Hall flow sensor
 
-_pending_
+- **YF-S201 Water Flow Sensor 1–30 L/min (Black)** · Robu.in · **₹219.00 (Incl. GST)** · Availability: "In Stock" (1 customer review) · https://robu.in/product/yf-s201-water-flow-measurement-sensor-with-1-30liter-min-flow-rate-2/ · accessed 2026-10-04 ~09:43 IST (Playwright).
+- Same model also listed in "White" trim, SKU 12219 (/product/yf-s201-water-flow-measurement-sensor-with-1-30liter-min-flow-rate/), not opened individually.
 
 ## (16) Relay/SSR module
 

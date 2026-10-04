@@ -56,4 +56,15 @@ def ring_selfcal(obs, geom, window_days=14, idle_hours=(0, 1, 2, 3, 4, 5)):
     return _ring(cal, obs, geom)
 
 
-METHODS = {"pair_fixed": pair_fixed, "ring": ring, "ring_selfcal": ring_selfcal}
+def ring_refcal(obs, geom):
+    """Fair baseline (review 08:35): ring co-calibrated by weekly reference visits. Each node is divided by its gain to
+    ambient air measured at the latest past visit (`refvisit_<node>`, NaN between visits; evaluator v2 only)."""
+    cal = {}
+    for n in NODES:
+        col = f"refvisit_{n}"
+        g = obs[col].shift(1).ffill().fillna(1.0).clip(0.2, 5.0) if col in obs else pd.Series(1.0, index=obs.index)
+        cal[n] = (obs[f"raw_{n}"] / g).values
+    return _ring(cal, obs, geom)
+
+
+METHODS = {"pair_fixed": pair_fixed, "ring": ring, "ring_selfcal": ring_selfcal, "ring_refcal": ring_refcal}

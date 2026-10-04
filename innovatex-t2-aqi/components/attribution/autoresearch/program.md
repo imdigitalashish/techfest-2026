@@ -6,6 +6,7 @@
 **Rules:** edit only `../methods.py`; `eval.py` is frozen (any change starts a new ledger version); methods must be causal (hour t uses rows ≤ t); keep a change only if DEV improves by more than noise (≥ 1 µg/m³ until multi-seed is in place) and TEST doesn't get worse; log every attempt in `results.tsv` (kept or not).
 
 ## Status
+- **Evaluator v2.1 is live (`eval_v2.py`; scalar = mean DEV MAE over easy/medium/hard; holdout lead-only).** Current: ring_selfcal DEV 50.09 vs fair baseline ring_refcal 60.89. Use v2.1 for all new keep/revert decisions; v1 (`eval.py`) is kept only for history.
 - Evaluator v1 (5 seeds) is live. Independent review (ADR 001, 08:35) found that v1 favours self-calibration; **no further keep/revert decisions until evaluator v2** (lead-only): new sensor model with separate dust gains + a co-calibrated baseline; contaminated quiet hours and spatial gradients; 15-min winds, vane decorrelation, varied geometry; a hidden holdout that only the lead runs (TEST no longer printed to the loop).
 
 ## Idea backlog (ordered)
