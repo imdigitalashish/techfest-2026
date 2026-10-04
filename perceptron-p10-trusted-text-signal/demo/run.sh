@@ -24,8 +24,8 @@ T1=$(now)
 echo "[demo] first visual ready in $(perl -e "printf '%.1f', $T1 - $T0") s"
 echo "[demo] OPEN  $URL"
 if [ -z "${P10_NO_OPEN:-}" ]; then (open "$URL" 2>/dev/null || xdg-open "$URL" 2>/dev/null || true); fi
-grep -h "^\[demo\]" "$DEMO/server.log" || true
 for _ in $(seq 1 120); do grep -q "scorer:" "$DEMO/server.log" && break; sleep 0.5; done
-grep -h "scorer:" "$DEMO/server.log" || echo "[demo] scorer still warming up (the page works meanwhile)"
+grep -h "^\[demo\]" "$DEMO/server.log" || true
+grep -q "scorer:" "$DEMO/server.log" || echo "[demo] scorer still warming up (the page works meanwhile)"
 echo "[demo] Ctrl-C to stop."
 wait $SRV

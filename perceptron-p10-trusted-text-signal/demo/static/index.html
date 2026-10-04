@@ -27,8 +27,9 @@ header.top .spacer{flex:1}
 .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line2);font-size:13px;color:var(--muted);white-space:nowrap}
 .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--none)}
 .pill.ok .dot{background:var(--cert)} .pill.warn{border-color:var(--inj);color:var(--inj)} .pill.warn .dot{background:var(--inj)}
-main{display:grid;grid-template-columns:400px 1fr;gap:20px;padding:20px 24px 140px;max-width:1680px;margin:0 auto}
-@media (max-width:1100px){main{grid-template-columns:1fr}}
+main{display:grid;grid-template-columns:400px 1fr;gap:20px;align-items:start;padding:20px 24px 150px;max-width:1680px;margin:0 auto}
+main > .console{position:sticky;top:var(--hdr,76px);max-height:calc(100vh - var(--hdr,76px) - var(--ftr,120px) - 8px);overflow:auto;padding-right:4px;scrollbar-width:thin}
+@media (max-width:1100px){main{grid-template-columns:1fr} main > .console{position:static;max-height:none;overflow:visible}}
 section.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
 section.panel + section.panel{margin-top:16px}
 h2{font-size:16px;margin:0 0 10px;font-weight:650;letter-spacing:-.005em}
@@ -119,7 +120,7 @@ details summary{cursor:pointer;color:var(--muted);font-size:13.5px}
 <header class="top">
   <div>
     <h1>Break the band</h1>
-    <div class="sub">Perceptron P10 · you are the manipulator. Write fake posts, inject them into a real stock-day, and try to make the certified interval fail.</div>
+    <div class="sub">Perceptron P10 · you are the manipulator: inject fake posts into a real stock-day and try to make the certified interval fail.</div>
   </div>
   <div class="spacer"></div>
   <span class="pill" id="scorerPill"><span class="dot"></span><span id="scorerTxt">scorer warming up…</span></span>
@@ -127,7 +128,7 @@ details summary{cursor:pointer;color:var(--muted);font-size:13.5px}
 </header>
 
 <main>
-  <div>
+  <div class="console">
     <section class="panel" aria-labelledby="h-day">
       <h2 id="h-day">1 · Pick a stock-day</h2>
       <p class="small muted" id="selRule">Loading…</p>
@@ -494,8 +495,8 @@ function renderFlips(){
   if(f.n_flipping===0){ el.innerHTML = `<p class="small"><b class="ok">None of the ${f.n_variants} tested attacks</b> with ≤ ${f.k} posts flips plain CQR here. This is the typical day (${pct(1-S.meta.showcase.frac_flippable)} of stock-days at k = 3).</p>`; return; }
   el.innerHTML = `<p class="small"><b class="bad num">${f.n_flipping} of ${f.n_variants}</b> tested attacks flip plain CQR. The certified band (k = ${f.k}) still contains the clean interval under <b class="ok num">${f.n_flipping_cert_survives} of ${f.n_flipping}</b>.</p>` +
     `<table><thead><tr><th>attack (scores set directly)</th><th class="r">plain</th><th class="r">certified ⊇ clean</th><th></th></tr></thead><tbody>` +
-    f.flipping.map((v,i) => `<tr><td class="small">${esc(variantText(v))}</td><td class="r bad small">miss</td><td class="r ok small">${v.cert_contains_clean?"yes":"no"}</td><td class="r"><button class="btn small" data-v="${i}">inject</button></td></tr>`).join("") +
-    `</tbody></table>` + (f.n_flipping>f.flipping.length ? `<p class="faint small">… and ${f.n_flipping-f.flipping.length} more.</p>` : "");
+    f.flipping.slice(0,8).map((v,i) => `<tr><td class="small">${esc(variantText(v))}</td><td class="r bad small">miss</td><td class="r ok small">${v.cert_contains_clean?"yes":"no"}</td><td class="r"><button class="btn small" data-v="${i}">inject</button></td></tr>`).join("") +
+    `</tbody></table>` + (f.n_flipping>8 ? `<p class="faint small">… and ${f.n_flipping-8} more.</p>` : "");
   el.querySelectorAll("button[data-v]").forEach(b => b.onclick = () => {
     const v = f.flipping[+b.dataset.v];
     S.posts = v.sents.map((s,j) => ({id:S.nextId++, text:`[grid attack: sentiment ${fmt(s,1)} set directly, not scored from text]`, sentiment:s, trust:v.trusts[j], copies:1, scorer:"grid"}));
@@ -618,6 +619,8 @@ function renderMeter(P){
     (P ? `<br><span class="bad">┅</span> plain ACI under your attack ${pct(P.aci_plain.coverage,2)} · <span class="ok">━</span> CR-ACI under your attack ${pct(P.cr_aci.coverage,2)} (long-run mean daily coverage; not per-row).` : "");
 }
 
+function sizeChrome(){ const r = document.documentElement.style; r.setProperty('--hdr', document.querySelector('header.top').offsetHeight + 'px'); r.setProperty('--ftr', (getComputedStyle(document.querySelector('footer.honest')).position==='fixed' ? document.querySelector('footer.honest').offsetHeight : 0) + 'px'); }
+addEventListener('resize', sizeChrome); sizeChrome();
 boot();
 </script>
 </body>
