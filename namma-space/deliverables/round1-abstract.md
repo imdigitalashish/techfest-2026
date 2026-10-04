@@ -1,85 +1,94 @@
-# Namma Space — Round 1 Technical Abstract (DRAFT v0.1, 4 Oct 2026)
+# Namma Space — Technical Abstract (Round 1)
+**Phone capture → navigable, photoreal 3D web twin** · Techfest 2026 × Juspay · DRAFT v0.9 (4 Oct 2026)
 
-> Draft for the ≤5-page PDF due 31 Oct. Numbers marked **[drjohnson]** come from committed runs on a public scene (reproduce commands in the repo). Sections marked **TODO(home)** are filled after the user's own capture. Nothing here is a projection unless labelled "target".
+> Every number in this document comes from a committed run with a reproduce command (repository `namma-space/`). **[public]** = Deep Blending *drjohnson* (a multi-room house, 263 photos; non-commercial research licence; used for evaluation only). **[home]** = our own capture, added after recording. ⟨…⟩ = value pending from the run in progress.
 
-**Team:** TBD · **Repo:** `namma-space/` · **Live viewer:** TBD (Round-1 link)
+## 1. Goal
+One phone video of an indoor space should become, automatically and with no 3D modelling, a link that anyone can open to:
+- walk through the space in first person (WASD + mouse);
+- click and search points of interest;
+- follow a walking path that stays on the floor and avoids walls and furniture.
 
-## 1. Problem and goal
-Turn an ordinary smartphone video of an indoor space into a photoreal 3D web twin. Anyone can open it from a link, walk through it in first person (WASD + mouse), click rooms to see their names, search for a room or item, and follow an obstacle-aware walking path on the floor. No manual 3D modelling at any stage. Round 1 covers capture → reconstruction → free-roam viewer. We built the navigation layer from day one because the same geometry drives collisions in the viewer.
+Round 1 asks for capture → reconstruction → free-roam viewer. We built the full chain end-to-end from day one, because the same geometry drives collisions in the viewer and paths in Round 2.
 
-## 2. System architecture
-Fourteen components, each behind a typed contract (`architecture/contracts/contracts.ts`) with its own scalar metric, so each can be improved independently:
+## 2. Architecture
+Fourteen components with typed contracts (`architecture/contracts/contracts.ts`), each with its own scalar metric, so any one can be replaced or auto-tuned in isolation:
 
-`capture SOP → ingest (keyframes + voice tags) → posing (SfM) → splat training (3DGS) → scene alignment (gravity, floor, metric scale) → walkable space (NavGrid) → path planner → POIs + search → scene packager → web viewer (→ AR, bonus)`
+`capture SOP → ingest → posing (SfM) → 3D Gaussian Splatting → scene alignment → walkable space → path planner → POIs + search → scene packager → web viewer (→ AR, finals bonus)`
 
-Design principles:
-1. **One aligned frame** (y-up, floor at y = 0, metres) shared by the splat, the navigation grid, POIs and the AR session.
-2. **Apple-silicon first.** The whole Round-1 pipeline runs on a laptop GPU (Metal); cloud GPUs are an accelerator, not a dependency.
-3. **Evidence over guesswork.** Every stage reports its own quality metric, which makes it measurable on Day 1 of the finals.
+- **One frame for everything:** splats, walkable map, POIs and (later) AR live in a gravity-aligned frame with the floor at y = 0 and metric scale.
+- **One command:** `./process_capture.sh <capture_folder> <name>` runs all stages, times each, caches results so re-runs resume, and writes `report.json` plus a static site ready to serve or deploy.
+- **Laptop-first:** the whole Round-1 pipeline runs on an Apple M5 laptop (Metal GPU). Cloud GPUs are an accelerator, not a dependency.
 
-## 3. Capture SOP (summary of `deliverables/capture-sop.md`)
-- **Settings:** 4K30 video, HDR off, 1× lens, exposure/focus locked, landscape, audio on.
-- **Per room, three passes:** an inward loop, an outward loop tilted 20–40° down (floor edges and furniture legs for navigation), and a "route pass" along real walking routes. Doorways are crossed at half speed with a 1 s pause on each side (that is where reconstructions split).
-- **Scale:** a printed ArUco marker (150 mm) on the floor, or the measured camera height as a fallback.
-- **Voice tags:** say the room or item name on entry ("Kitchen", "Three-seater sofa"). The timestamp gives the camera pose, so POIs need no manual 3D work.
-- **Large venues (finals):** a two-person crew; capture the corridor "spine" first, then rooms as clips that start and end in the corridor; upload each clip while capturing the next.
-- **Why each rule exists:** see SOP §10. Each rule maps to a failure mode of SfM, splatting or navmesh extraction.
+## 3. Capture SOP (`deliverables/capture-sop.md`)
+- **Settings:** 4K30 video, HDR off, 1× lens only, exposure and focus locked, landscape.
+- **Per room, three passes:** an inward loop; an outward loop tilted 20–40° down (floor edges and furniture legs for navigation); and a "route pass" along real walking routes.
+- **Doorways:** crossed at half speed, pausing 1 s on each side. This is where reconstructions split, so overlap is critical.
+- **Scale:** a printed 150 mm ArUco marker on the floor, filmed at the start and end. It is triangulated from the posed frames to give metric scale (unit test: <1% scale error on synthetic views). Fallback: the measured camera height.
+- **Voice tags:** say each room or item name on entry. The timestamp → frame → ray gives a POI without manual 3D work.
+- **Before leaving:** a 3-minute checklist (sharpness spot-check, both loops, marker at start and end).
+- **Large venues (finals):** a two-person crew; capture the corridor "spine" first, then each room as a clip that starts and ends in the corridor; upload while capturing the next clip.
+- Every rule maps to a failure mode of SfM, splatting or navigation (SOP §10).
 
 ## 4. Reconstruction pipeline
-1. **Ingest:** ffmpeg keyframes at 2–4 fps; a variance-of-Laplacian blur filter; audio transcription for voice tags. *(In progress.)*
-2. **Posing:** COLMAP 4.2 via pycolmap (sequential matching for video). Feed-forward posing models are evaluated as a drop-in behind the same contract. *(Verification pending.)*
-3. **3D Gaussian Splatting:** Brush v0.3.0 on Apple Metal. **[drjohnson]** 263 images (1332×876), 15k steps, 2M splats: **36.9 min** wall-clock on a shared Apple M5 (6.9 GB peak memory). Held-out PSNR is not yet captured (next run).
-4. **Scene alignment:** up = mean camera up, refined by a floor plane fitted to the lowest dense height peak; scale from the marker or camera height; yaw from the principal axes. **[drjohnson]** 4.3 s; floor refined by 2.9° over the camera-up estimate; point heights span −0.03 to 2.65 m (p1–p99), consistent with a floor and a ceiling. Scale on drjohnson is ASSUMED (no marker; 1.5 m camera-height prior).
-5. **Packaging:** importance-pruned, compressed splats + `nav.json` + `pois.json` + a manifest. *(Next.)*
+| Stage | Method | **[public]** result (own pipeline, raw photos) |
+|---|---|---|
+| Ingest | ffmpeg keyframes at 4 fps → sharpest of every 2 (variance of Laplacian) → drop frames below 0.3× clip median sharpness | 263 frames, 9.9 s |
+| Posing | COLMAP 4.2 via pycolmap: SIFT (CPU), sequential matching (overlap 20, quadratic), **global SfM** (the GLOMAP mapper, now in COLMAP), undistortion | **262/263 registered (99.6%)**, 0.661 px mean reprojection error, 12,316 points, 6.0 min |
+| 3D Gaussian Splatting | Brush v0.3.0 on Apple Metal, 15k steps, ≤2M splats; held-out every 8th image | ⟨PSNR / SSIM⟩ held-out, ⟨train min⟩, ⟨peak GB⟩ |
+| Alignment | camera-up mean → floor = lowest dense height peak, refined by a plane fit → scale from ArUco marker / camera height → yaw from principal axes | ⟨floor inliers, tilt⟩ (scale ASSUMED on [public]: no marker) |
+| Walkable space | sparse points in the body band 0.15–1.70 m = obstacles; observation rays carve free space; walked trajectory adds connectivity; eroded by 0.25 m agent radius | ⟨navigable m²⟩, ⟨camera positions on navigable⟩ |
+| Packaging | importance pruning (opacity × area) to ≤1M splats → aligned `.splat` (32 B/splat) + manifest + NavGrid + POIs | ⟨MB⟩ |
 
-## 5. Web viewer
-three.js 0.180 + Spark 2.3.1 (MIT) Gaussian-splat renderer, loaded from CDNs via an import map: zero install. Features:
-- PointerLock WASD + mouse-look at a 1.6 m eye height, with smoothed acceleration;
-- movement collision-checked against the NavGrid, sliding along walls, so the user can't walk through walls or furniture;
-- a minimap you can click to get a route;
-- POI labels, search with route + auto-walk, and in-viewer POI tagging.
+Pose accuracy on [public] vs the dataset's reference reconstruction (Sim(3)-aligned camera centres): ⟨ATE⟩.
 
-**[drjohnson]** 1.0M splats (32 MB `.splat`, importance-pruned from 2M), Chrome 154 on an Apple M5 (shared machine):
+## 5. Web viewer (zero install)
+A static page: three.js + Spark (MIT) Gaussian-splat renderer, loaded from CDNs.
+- **Movement:** PointerLock WASD + mouse-look at a 1.6 m eye height, with smoothed acceleration. Every step is checked against the walkable map and slides along walls, so you can't walk through walls or furniture.
+- **Minimap:** click it to route anywhere.
+- **POIs:** labels; search by name or alias (e.g. "fireplace", "bookcase"), which plans a route and can auto-walk it.
+- **Tagging:** press `P` to tag a POI where you stand.
 
-| Measurement | Value |
-|---|---|
-| Static view | median **45 fps**, p95 frame time 36.7 ms |
-| First frame | 1.05 s |
-| All splats loaded (localhost) | 10.5 s |
-| In-browser A* route (8–11 m) | 82–94 ms |
-| While walking | median 42 fps, p95 104.7 ms |
+**[public]**, Chrome on Apple M5 (shared machine), 1.0M splats:
 
-The p95 while walking means hitching, which is the next optimisation target (splat budget vs sort cost). Targets: ≥50 fps p95 on a 2023 laptop; first frame ≤5 s over the network. **TODO(home):** the same measurements on the user's home over a public URL.
+| Condition | Median fps | p95 frame time | Notes |
+|---|---|---|---|
+| Static view | 45 | 36.7 ms | first frame 1.05 s, all splats loaded 10.5 s (localhost) |
+| Walking | 42 | 104.7 ms | hitching: the main optimisation target (§7) |
 
-## 6. Navigation layer (preview of Round 2)
-**Walkable space (our spike A).** The evidence already in the capture is fused into a 5 cm NavGrid:
-- sparse points in the body band 0.15–1.70 m are obstacles;
-- every camera→point observation ray carves free space, which removes floaters;
-- the route the person actually walked is evidence of connected floor;
-- the walkable area is eroded by a 0.25 m agent radius.
+Frozen protocol for the next measurement: cold cache, throttled network, scripted walk — ⟨S_V⟩. **[home]:** public URL and the same measurements.
 
-The planner is 8-connected A* with a clearance penalty, plus line-of-sight string pulling (contract test: it must pass through a doorway and never touch a wall).
+## 6. Navigation and search (Round-2 preview, measured honestly)
+- **Planner:** 8-connected A* with a clearance penalty, then line-of-sight string pulling. Contract test: the route must use the doorway and never touch the wall. An identical JavaScript port runs in the browser: an 8–11 m route in 82–94 ms.
+- **POIs:** labelled from evidence frames, placed by casting a ray from the chosen pixel into the reconstruction, with an approach point snapped onto the walkable map. 7 POIs on [public].
+- **Path-safety evaluation v3** (`eval/nav_eval_v3.py`), built after two independent reviews caught leakage in our first metric:
+  - endpoints are held-out camera positions, moved to verified-free cells;
+  - **every** pair is tested (406 / 435 per split);
+  - the whole route is checked against a frozen dense-geometry reference (3DGS splats) with a 0.25 m body radius;
+  - Wilson 95% intervals and paired sign tests.
+- **Result:** 45–50% of routes are fully collision-free under this strict reference (Wilson ±5%). There are no refusals: every pair gets a route. Adding free-space carving or the walked trajectory does **not** change this (paired p ≥ 0.06). The sparse SfM points miss thin obstacles such as chair legs.
+- **Round-2 plan:** obstacles from the dense splats, a mesh → Recast navmesh comparison arm, and a real-geometry benchmark (ARKitScenes laser-scanned meshes) so the reference is independent of our own reconstruction.
 
-**[drjohnson] results** (33 held-out camera positions; 40 held-out start/goal pairs; collisions measured against an independent dense proxy, 172k splats from the trained 3DGS — *not* ground truth):
+## 7. Where we innovate (ADR 001 v2)
+After two independent reviews (including GPT-6 Astra as a hostile methodologist), we put the innovation where the marks are:
+- **D′ — quality-qualified turnaround:** maximise 𝟙[accepted] · (1 − T/90 min). T counts capture → deployed link, including retries; a twin is accepted only if every room is present, scale error is ≤3% and held-out PSNR meets a frozen threshold. Levers: on-site QA that says which room to re-shoot before you leave, per-clip streaming, frame selection, faster training.
+- **E — fidelity-constrained delivery:** minimise max(T_visible / 5 s, p95 frame time / 20 ms) on a frozen cold-cache walkthrough, with ≤1 dB PSNR loss. Levers: importance pruning, SPZ compression, progressive loading, render budget.
 
-| Evidence used | Held-out positions inside navigable map | Paths passing <15 cm from dense geometry | Path / straight-line length (median) | A* median / p95 |
-|---|---|---|---|---|
-| points only | 0.788 | 25.0% | 1.029 | 18.7 / 174.9 ms |
-| + ray carving | 0.879 | 25.0% | 1.012 | 10.5 / 65.9 ms |
-| + walked trajectory | 0.939 | 37.5% | 1.009 | 7.3 / 44.4 ms |
-| both | **0.970** | 37.5% | 1.009 | 6.5 / 43.6 ms |
+Both run as auto-research "ratchets": an agent edits the component, a frozen evaluator scores it, and only gains beyond noise are kept.
 
-All variants found a path for 100% of pairs. Evidence fusion makes far more of the real walkable space reachable. The trajectory prior also brings paths closer to furniture, so our optimisation target is recall *at a fixed collision budget*.
+## 8. State of the art and positioning (verified 4 Oct 2026; details in `research/`)
+- **Posing:** global SfM is now part of COLMAP — the standalone GLOMAP repo is marked deprecated, and pycolmap 4.2 exposes `global_mapping`. Feed-forward models such as MapAnything (Apache-2.0, metric) and VGGT-Ω (non-commercial) are the speed frontier. They sit behind our posing contract as drop-in candidates once Apple-silicon support is verified.
+- **Splatting:** Brush (Apache-2.0) trains on Apple Metal; its unreleased main branch adds Mip-Splatting and a 4× memory reduction.
+- **Viewers:** Spark (MIT, three.js) reads PLY/SPZ/SPLAT/KSPLAT/SOG.
+- **Navigation in splat twins:** Splat-Nav (robot planning in Gaussian-splat maps), Habitat-GS (ECCV 2026) and MeshSplatting (meshes with walkable scenes) are the closest research.
+- **Products:** ⟨summary from `research/companies.md`⟩.
+- **Our gap:** phone video → photoreal twin → walkable map + search + routing (+ AR) in one zero-install link, produced in under an hour.
 
-**Auto-research ratchet (first loop).** A frozen evaluator scores J = recall − collision rate on split A, with confirmation on a second held-out split B. Of 8 automatic hypotheses, one was kept: *use the walked trajectory for connectivity only, never to erase obstacle evidence*. It raised J_A from 0.595 to 0.659 (recall 0.909, near-collision paths 37.5% → 25.0%) and J_B from 0.550 to 0.579. The other 7 changes (carving thresholds, obstacle inflation, corridor width, closing and dilation radii) were reverted (`components/walkable_space/autoresearch/results.tsv`).
+## 9. Evaluation discipline
+- Fixed seeds and splits (every 8th frame held out, buffered).
+- Committed result files, and one command per number.
+- Contract tests per component.
+- Every headline claim reviewed by an independent model before submission (`reviews/ledger.tsv`).
 
-## 7. Evaluation protocol
-Fixed held-out splits (every 8th image), fixed seeds, one command per result (`.venv/bin/python eval/run_nav_e2e.py`). Each component has an isolated metric: registration rate (posing), held-out PSNR/SSIM/LPIPS at a time budget (splats), floor residual and marker scale error (alignment), recall at a collision budget (walkable space), success / collision / latency (planner), p95 frame time (viewer). **TODO(home):** the same table on the user's home capture.
-
-## 8. Credits and licences (to be finalised)
-COLMAP / pycolmap (BSD, to verify) · Brush (Apache-2.0 per the release `LICENSE`, to verify against the repository) · three.js (MIT, to verify) · splat renderer (TBD) · NumPy / SciPy / OpenCV (BSD/Apache, to verify) · Deep Blending *drjohnson* (Hedman et al. 2018; non-commercial research licence — used only for internal evaluation, not hosted).
-
-## 9. Roadmap
-- **By 31 Oct (R1):** the user's home captured with the SOP → posing → splat → viewer at a public link; abstract, video and repo with test data.
-- **By 17 Nov (R2, early because of exams):** POIs (voice tags + OCR + manual confirm), search, desktop paths in the viewer.
-- **Dec (finals):** Day-1 rehearsal on a new venue with a stopwatch; AR bonus (Android WebXR + relocalisation).
+## 10. Credits and licences
+COLMAP / pycolmap (BSD) · Brush (Apache-2.0) · three.js (MIT) · Spark (MIT) · NumPy / SciPy (BSD) · OpenCV incl. ArUco (Apache-2.0) · ffmpeg (LGPL/GPL, CLI) · Deep Blending dataset (Hedman et al. 2018; non-commercial research use, evaluation only, not hosted).

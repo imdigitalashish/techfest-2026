@@ -10,12 +10,23 @@
 - _(none)_
 
 ## Now
-- **Phase:** 3–4 — walking skeleton on Deep Blending *drjohnson* (photos → 3DGS → alignment → walkable grid → A*) with real numbers; morning-package docs pushed. Lean Mode ends 08:30 (then ≤3 concurrent sub-agents).
-- **Plan:** viewer + packager (Spark WASD, NavGrid collisions, POIs, path) → first auto-research loop on walkable-space → verify the landscape (≤3 agents) → own SfM run + Brush held-out PSNR → the user's home capture → Round-1 twin.
-- **Doing:** lead: morning package complete (08:20); next is the viewer.
-- **Next:** (1) `components/scene_packager` (.splat export, manifest) + `web/` viewer; (2) `components/walkable_space/autoresearch/` (program.md, frozen eval.py, results.tsv); (3) independent rubber-duck review of ADR 001; (4) landscape verification passes.
-- **Needs from user:** (1) Register by 15 Oct. (2) **Capture your home with [`deliverables/capture-sop.md`](deliverables/capture-sop.md)** (≈15–20 min; print [`deliverables/assets/marker_aruco_4x4_id0_150mm.pdf`](deliverables/assets/marker_aruco_4x4_id0_150mm.pdf) if you can) and note your phone model (LiDAR or not). (3) Azure GPU quota is 0 for modern GPU families: request e.g. 8 vCPU "Standard NCASv3_T4 Family" or 36 vCPU "NVadsA10v5" in Central India / East US.
-- **Risks:** no CUDA (visual quality and Day-1 turnaround); path safety against dense geometry (first run: 17.5–35% of paths within 15 cm of the proxy; being re-measured); dataset licences (drjohnson is non-commercial); shared-machine contention.
+- **Phase:** active batch (Supervisor, 09:55). The definition of done has 6 items: E2E pipeline · viewer + POIs + search + path · abstract + video script + setup · drop-in script · memo + journal · cross-model review of the Round-1 deliverable.
+- **Plan:** E2E on raw drjohnson photos (own SfM → Brush → align → NavGrid → package → site → eval v3) → POIs + site + viewer measurement (S_V) → fill the abstract → cross-model reviews as sessions (gpt-6-astra: deliverable; gpt-6-sol: eval code + headline numbers) → DONE message.
+- **Doing:**
+  - lead: E2E run (Brush training since 10:12); abstract v0.9 drafted with ⟨pending⟩ slots.
+  - child sessions (2/2): [companies research](ghapp://sessions/f288d1bd-555c-428d-800f-15071f60f1bc), [SOTA nav/POI/AR/viewer](ghapp://sessions/4eb75b17-eb5d-4b07-9a64-ad9b17993992).
+- **Next:** fill numbers → reviews → DONE. After DONE, only work that needs the user's capture: process it with `./process_capture.sh`, deploy, measure S_T / S_V.
+- **Needs from user:**
+  1. Register by 15 Oct (team ≤4; teammates' names).
+  2. **Capture your home with [`deliverables/capture-sop.md`](deliverables/capture-sop.md)** (≈15–20 min). Print [`deliverables/assets/marker_aruco_4x4_id0_150mm.pdf`](deliverables/assets/marker_aruco_4x4_id0_150mm.pdf) at 100%. Time yourself with a stopwatch. Note the phone model (LiDAR or not). Hand off the originals via AirDrop/cable plus `capture.json`, then run `./process_capture.sh <folder> home` (or drop the folder path in the Inbox).
+  3. Azure GPU quota is 0 for modern GPU families: request e.g. 8 vCPU "Standard NCASv3_T4 Family" or 36 vCPU "NVadsA10v5" (Central India / East US).
+  4. OK to host the home twin publicly on an Azure static website (needed for the R1 link; anyone with the link sees your home).
+  5. Optional: sign the ScanNet++ terms for a second real-geometry benchmark.
+- **Risks:**
+  - R1 depends on the user's capture (SOP untested in the field).
+  - Viewer hitching while walking (p95 105 ms vs a 20 ms budget).
+  - Path safety: ≈50% of routes come within 0.275 m of dense geometry (sparse map misses thin obstacles).
+  - No CUDA; dataset licences (drjohnson is non-commercial: never host it).
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Namma Space — Techfest IIT Bombay. Teams that complete the full pipeline including AR navigation are considered for full-time roles at Juspay. Prize pool ₹1,50,000 (top 3).
