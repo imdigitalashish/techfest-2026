@@ -1,6 +1,6 @@
 # ADR 001 — Spike choice: evidence-first ordinal assessor
 
-- **Status:** accepted (v0, 2026-10-04 07:40 IST); revisit on 10 Oct when the official guide, criteria checklist and samples arrive.
+- **Status:** **amended by [ADR 002](002-reframe-spike.md)** (2026-10-04 09:30 IST) after an independent adversarial review ([001-review.md](001-review.md)) and the genre-shift study. Kept for the record.
 - **Deciders:** project lead. In lean mode, with sub-agents disabled, the lead ran the six-hats and adversarial passes. An **independent** rubber-duck review is still pending and is the first task once agents are re-enabled.
 
 ## Context
@@ -27,13 +27,13 @@ Round 1 is scored 100% on hidden-set **ordinal accuracy & precision**, plus pass
 ## Thesis → antithesis → synthesis
 - **Thesis:** A wins both rounds: the cumulative "is it beyond level k?" structure *is* the rubric, so accuracy and auditability come from the same model.
 - **Antithesis** (lead, playing adversary): on proposal-style text an n-gram model already captures most of the signal; evidence extraction is a pipeline of brittle heuristics that will lose to a fine-tuned LLM on accuracy, while explanations from a separate extractor may not match what the classifier actually used ("faithfulness gap"). Organisers may score only the TRL number in Round 1, so effort on gap analysis is wasted there.
-- **Synthesis:** (1) keep the strong text model as the backbone and add evidence features only where the frozen held-out eval shows a gain (ratchet); (2) make the gap analysis *faithful by construction* — it reads the model's own P(TRL>k) per threshold plus the evidence that fired, rather than a separate generator's text; (3) treat C5 (B) as the always-on second spike because the metric is unknown; (4) keep C (LLM fine-tune) as a challenger behind the C4 seam — if it wins on held-out QWK within the latency budget, it replaces the backbone without changing the contracts.
+- **Synthesis:** (1) keep the strong text model as the backbone and add evidence features only where the frozen held-out eval shows a gain (ratchet); (2) make the gap analysis consistent with the model — it reports the model's own P(TRL>k) per threshold next to the evidence that fired (the review showed this is *not* a faithfulness guarantee while evidence does not feed the model); (3) treat C5 (B) as the always-on second spike because the metric is unknown; (4) keep C (LLM fine-tune) as a challenger behind the C4 seam — if it wins on held-out QWK within the latency budget, it replaces the backbone without changing the contracts.
 
 ## First-principles check
-The real bottleneck is not model capacity; it is **label/genre mismatch**. We train on one genre with one labelling process and are scored on unknown genres labelled by APCTT experts. What generalises across genres is the *claim of demonstration* (type × environment × scale × achieved), which is exactly what A extracts. And the decision rule must match the unknown metric, which is B.
+Hypothesis (not yet tested against a capable encoder or LLM): the real bottleneck is **label/genre mismatch** more than model capacity. The genre-shift study (eval/README.md) has since measured a large shift penalty. We train on one genre with one labelling process and are scored on unknown genres labelled by APCTT experts. What generalises across genres is the *claim of demonstration* (type × environment × scale × achieved), which is exactly what A extracts. And the decision rule must match the unknown metric, which is B.
 
 ## Decision
-**Spike 1 = A (C3 evidence extractor + C6 rubric/gap engine, coupled through C4's cumulative thresholds). Spike 2 = B (C5 calibration and metric-aware decoding).** C1, C2, C7 and C8 use best existing practice. LLM fine-tuning (C) and teacher distillation (D) stay challengers behind the C4 seam.
+**Spike 1 = A (C3 evidence extractor + C6 rubric/gap engine, coupled through C4's cumulative thresholds). Spike 2 = B (C5 calibration and metric-aware decoding).** C1, C2, C7 and C8 are to use best existing practice (the v0 skeleton has minimal stand-ins). LLM fine-tuning (C) and teacher distillation (D) stay challengers behind the C4 seam.
 
 ## Consequences
 - The frozen held-out eval (`eval/`) is the arbiter: every evidence feature must earn its place on QWK/MAE.

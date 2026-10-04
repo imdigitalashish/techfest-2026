@@ -7,12 +7,13 @@ _Draft v0, 2026-10-04 (project lead). Round 1 = frozen model, hidden evaluation 
 |---|---|
 | "Model Ordinal Accuracy & Precision on Hidden Evaluation Set (Primary Score)" | Held-out ordinal metrics — exact accuracy, within-1 accuracy, MAE, quadratic weighted kappa (QWK), macro precision — on a frozen public split and on the 10 Oct dev samples; decoding tuned to the official metric once it is published. |
 | "Strict pass/fail compliance on output schema, execution speed, and dependency checks" | Every record validated against the official schema loaded **from file**; 100% validity on fuzzed inputs; measured docs/s and peak RAM on CPU; pinned, minimal, permissively licensed dependencies; offline run. |
-| Round 2: integrate the frozen model, process live files, usability, pitch | The same frozen model plus an audit report: level, calibrated confidence, quoted evidence per rubric criterion, and the gap list for the next level. |
+| Round 2: integrate the frozen model, process live files, usability, pitch | The same frozen model plus an audit report: level, confidence (calibrated once C5 is fitted), quoted page-anchored evidence per rubric criterion (supported / contradicted / not evidenced), and the gap list for the next level. |
 
 ## 2. Pipeline (details: [architecture/components.md](../architecture/components.md), [ADR 001](../architecture/adr/001-spike.md))
 `raw file → C1 parse → C2 genre router → C3 evidence extractor ★ → C4 ordinal model (P(TRL>k), k=1..8) → C5 calibrate & decode ★ → C6 rubric engine & gap analysis ★ → C7 assemble + validate against official schema → JSON`.
-- **Why ordinal:** the model outputs 8 cumulative decisions "is the technology beyond level k?", which (a) respects the order of TRL, (b) lets us pick the decision rule that is optimal for the official metric, and (c) maps one-to-one onto rubric criteria, so the gap analysis is read off the model's own thresholds (faithful by construction).
-- **Why evidence-first:** every rubric we opened defines a level by *what was demonstrated, where, at what scale* (EU Horizon Annex G; NASA). Those claims read the same in patents, papers and reports, which is our hedge against genre shift.
+- **Spike reframed after review ([ADR 002](../architecture/adr/002-reframe-spike.md)):** Round 1 is scored only on hidden-set accuracy, and our genre-shift study shows shift is the dominant risk. The primary spike is therefore a **transfer-robust ordinal model chosen by a tournament on a leakage-clean, shift-aware eval suite**. The evidence-led audit (C3+C6) is the Round-2 sidecar and enters the model only if it wins on that suite.
+- **Why ordinal:** the model outputs 8 cumulative decisions "is the technology beyond level k?", which respects the order of TRL, lets us pick the decision rule for the official metric, and lets the audit report the model's P(TRL ≥ level) next to each rubric criterion (model-consistent reporting; not a faithfulness claim).
+- **Why evidence matters:** every rubric we opened defines a level by *what was demonstrated, where, at what scale* (EU Horizon Annex G; NASA). Hypothesis to test: such claims transfer across patents, papers and reports better than raw n-grams do (patent claims express legal scope, so this may fail for patents).
 - **Self-contained:** CPU, offline, open weights only. v0 is scikit-learn; any LLM challenger must be open-weight, run offline and fit the latency budget.
 
 ## 3. Public-data plan
@@ -35,14 +36,14 @@ All sources must fall under the organisers' "approved public data sources" — *
 ## 5. Three-submission plan
 | # | Target date | What | Purpose |
 |---|---|---|---|
-| 1 | ~31 Oct | Robust, fast baseline (text model + calibrated decoding), schema-exact, offline. | Prove it **runs** in the organisers' environment; get the first benchmark score. Diagnostics tell us the hidden-set level of difficulty and any schema/speed problems. |
-| 2 | ~8 Nov | Spike version: evidence features + rubric-coupled thresholds, decoding re-tuned on the dev samples; challenger backbone only if it beats v1 on our held-out sets within the latency budget. | Measure the spike's gain on the hidden set; second diagnostic. |
-| 3 | by 14 Nov (24 h buffer before the 15 Nov 23:59 freeze) | The better of #1 and #2 by hidden-set diagnostic plus our held-out sets (no tuning on the final hold-out), plus last robustness fixes. | Final, immutable entry. **Nothing user-dependent is scheduled in 19–25 Nov** (exams); the freeze precedes them. |
+| 1 | as early as compliant (target ≤31 Oct; earlier if feedback latency is unknown) | The **strongest** fully compliant tournament winner (not a deliberately weak baseline), schema-exact, offline. | First hidden-set score plus run/fail diagnostics, early enough to react. |
+| 2 | ~8 Nov | **Exactly one orthogonal hypothesis** vs #1, with identical parser, packaging, adapter and decoder — e.g. shift-robust student (augmented/distilled) vs direct TechPort model. | A clean A/B on the hidden set: one score, one cause. |
+| 3 | by 14 Nov (24 h buffer before the 15 Nov 23:59 freeze) | The diagnostic winner **exactly**, plus pass/fail fixes only; nothing output-changing appears first in the immutable entry. | Final, immutable entry. **Nothing user-dependent in 19–25 Nov** (exams); the freeze precedes them. |
 Rule for every submission: a clean-machine dry run (fresh venv, network off, timer on) and schema validation of all outputs before upload.
 
-## 6. 10-Oct adaptation checklist (target: adapted within 6 hours of receipt)
+## 6. 10-Oct adaptation checklist (target: a first adapted dry run within ~6 hours of receipt; longer if schema, formats, metric or environment differ materially)
 1. Read the training guide, criteria checklist and dataset guidelines; log every rule in the thought node.
-2. Output schema → save as `config/official_schema.json`; point C7 at it; run the contract and fuzz tests.
+2. Output schema → save the organisers' file as a resource; write an explicit adapter `Assessment → official record`; validate with the organisers' checker if provided, else a standards-complete validator (pinned, licence-checked). Add golden fixtures and exact record-count/order checks. The internal mini-validator fails closed and is not evidence of official compliance.
 3. Metric → implement it exactly in `eval/`; switch C5's decoding rule to the metric-optimal one.
 4. Approved data list → prune or extend `data/` sources; re-run the builders.
 5. Criteria checklist → encode as the rubric data file used by C3 and C6 (replacing EU+NASA v0 wording); map each criterion to evidence signals.
