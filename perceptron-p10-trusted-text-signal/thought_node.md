@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ RESUMED 12:45 IST, 4 Oct (batch slot). Goal: finish to the Supervisor's definition of done, then send "DONE — slot free". The 12 Oct Perceptron pick is open between P7 (done), P9, P1 and P4; P10 enters late, so the memo must make an honest case for or against it.
+- **Phase:** ▶ WINNING DEMO (Supervisor 17:28 IST, 4 Oct; PLAYBOOK §11). Round-1 package DONE at 13:55 (see Log). Goal: `demo/run.sh` (one command, ≤ 60 s to first visual, offline, CPU), `demo/SCRIPT.md`, `demo/fallback/`, `demo/smoke.sh`, plus one gpt-6-astra demo review; I verify from a clean checkout, then send "DEMO DONE".
 - **Plan (definition of done, in order):**
   1. Finish the rubber-duck fixes with tests:
      - pump trust from `trust_of`; record ACI `stats`; richer plain-CQR oracle grid plus the guaranteed floor;
@@ -21,7 +21,7 @@
   4. Final Round-1 abstract rendered from committed results, a doc-drift check script, and the architecture diagram.
   5. Cross-model reviews as child sessions (PLAYBOOK §10, at most 2 at a time): `gpt-6-astra` (max) as hostile judge on the abstract and spike; `gpt-6-sol` (max) on code and eval, including reproducing the headline numbers. Record them in `reviews/` and `ledger.tsv`.
   6. Final selection memo, thought node current, everything pushed, then message the Supervisor.
-- **Doing:** ✅ **DONE (4 Oct ~13:55 IST).** Definition of done met; everything pushed; Supervisor messaged "DONE — slot free". Next work, after the 12 Oct selection: edit budget, FNSPID pre-registration, formal round-off review, demo.
+- **Doing:** spawning one demo-builder child session (plan mode). It proposes the "crazy" element; I approve; it builds to §11. Lead steer: "you are the manipulator" — a judge writes fake posts (scored live by the real scorer) within budget k and tries to make the band miss. The certified band holds; plain CQR can be broken on honestly selected vulnerable days; past k the guarantee badge turns off. Plus a rolling ACI meter and an honest "text adds no value, p = 0.46" panel.
 - **Machine rules:** start heavy jobs only when `sysctl -n kern.memorystatus_level` ≥ 30 (pause below 25); always `nice -n 10`, one job at a time; CPU only; small requests; poll long jobs at ≥ 10-minute intervals; no FinBERT download (MiniLM is cached).
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section. Optional: a Kaggle API token (`~/.kaggle/kaggle.json`).
 - **Risks:**
@@ -231,3 +231,11 @@ Added `tests/` (43 pass): DST-safe 16:00 ET alignment, contract rejection, brute
 - gpt-6-sol verified B1–B3, N1–N2 and the warning fix. It reproduced `text_minilm_v2` exactly (1,156/1,156 non-timing fields), found no new blockers, and raised one non-blocking DJIA-report wording issue (fixed).
 - The abstract's reproduction sentence now states what was reproduced: v2 StockNet and the DJIA results.
 - Definition of done met → messaged the Supervisor "DONE — slot free".
+
+### 2026-10-04 17:30 IST — New phase: winning demo (Supervisor 17:28, user directive)
+- Read PLAYBOOK §11. Memory guard: `kern.memorystatus_level` was 28–32, so only light work by me; heavy steps are delegated to the builder under nice and the guard.
+- **Facts the demo must respect** (`eval/results/text_minilm_v2.json`):
+  - The pump moves the median forecast by only +0.094 pp on average (p95 |shift| 0.196 pp), against an interval width of ~4.76 pp.
+  - The worst of 53 variants per stock-day takes plain CQR from 86.7% to 84.7%, i.e. ~2% of stock-days flip.
+  - So a "wildly swinging forecast" would be dishonest. The demo instead shows honestly selected vulnerable days plus the population numbers.
+- The Supervisor's hypothesis is adopted, with that honesty constraint and a "judge as manipulator" framing.
