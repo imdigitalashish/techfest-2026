@@ -388,7 +388,7 @@ def write_summary(res, path):
          "Gate: frozen `eval/gate_rule.json` via `components/report/gate.py`.", "",
          f"**Integrity:** extract sha256 matches the manifest; reproduction checks {sum(c['ok'] for c in res['reproduction'])}/{len(res['reproduction'])} pass; "
          f"closed forms vs gate.py/per-row arrays {sum(res['crosscheck'].values())}/{len(res['crosscheck'])} series pass.", ""]
-    L += ["## Primary summary — IPW, row-level interval", "",
+    L += ["## Per-series summary — IPW, row-level interval (registered primary = the BTS-logs rows)", "",
           "Scan away from the logging policy (BTS logs: α from 0 up; Random logs: α from 1 down). 101 grid points per row. "
           "E1 = reference inside the 95% CI. *Answered miss* = gate answers and E1 fails; *unnecessary abstention* = gate abstains and E1 holds.", "",
           "| period | logs | gate first abstains at α | E1 first fails at α | answered ✓ | answered miss | unnecessary abstention | justified abstention | largest answered miss (per 1,000) |",
@@ -399,9 +399,28 @@ def write_summary(res, path):
         ff = "never" if e1["first_fail"] is None else f"{e1['first_fail']:.2f}"
         L.append(f"| {s['label']} | {'BTS (exact)' if s['source'] == 'SB' else 'Random (approx. target)'} | {fa} | {ff} | {e1['answered_hold']} | {e1['answered_miss']} | "
                  f"{e1['unnecessary_abstention']} | {e1['justified_abstention']} | {k3(e1['max_answered_miss'])} |")
-    tot = {k: sum(s["summary"]["IPW_row"]["E1"][k] for s in res["series"].values()) for k in ("answered_hold", "answered_miss", "unnecessary_abstention", "justified_abstention")}
-    L += ["", f"Totals over 12 series × 101 points: answered ✓ {tot['answered_hold']}, answered miss {tot['answered_miss']}, "
-              f"unnecessary abstention {tot['unnecessary_abstention']}, justified abstention {tot['justified_abstention']}.", ""]
+    cats = ("answered_hold", "answered_miss", "unnecessary_abstention", "justified_abstention")
+
+    def tsum(src, key, ep):
+        return {c: sum(s["summary"][key][ep][c] for s in res["series"].values() if src in (None, s["source"])) for c in cats}
+    p1, p2, sr, pool = tsum("SB", "IPW_row", "E1"), tsum("SB", "IPW_row", "E2"), tsum("SR", "IPW_row", "E1"), tsum(None, "IPW_row", "E1")
+    n_sb = sum(len(s["rows"]) for s in res["series"].values() if s["source"] == "SB")
+    n_sr = sum(len(s["rows"]) for s in res["series"].values() if s["source"] == "SR")
+    sb_ans = [r for s in res["series"].values() if s["source"] == "SB" for r in s["rows"] if r["answer"]]
+    n0, nz = sum(r["a"] == 0 for r in sb_ans), [r for r in sb_ans if r["a"] > 0]
+    L += ["", f"**Registered primary (IPW, row-level, BTS logs; {n_sb} grid points):** the gate answered {p1['answered_hold'] + p1['answered_miss']}/{n_sb}; "
+              f"E1 held at {p1['answered_hold']}/{p1['answered_hold'] + p1['answered_miss']} answered ({p1['answered_miss']} answered misses). "
+              f"Of those answers, {n0} are at α = 0, the logging end, where the estimate equals the reference by construction; "
+              f"at α > 0, E1 held at {sum(bool(r['IPW']['E1']) for r in nz)}/{len(nz)}. "
+              f"It refused {p1['unnecessary_abstention'] + p1['justified_abstention']}/{n_sb} ({p1['unnecessary_abstention']} with the reference inside the own CI, "
+              f"{p1['justified_abstention']} outside). Ungated IPW on the same points: E1 holds at {p1['answered_hold'] + p1['unnecessary_abstention']}/{n_sb}. "
+              f"E2 on the same scope: answered {p2['answered_hold']} consistent, {p2['answered_miss']} rejecting; refused {p2['unnecessary_abstention']} consistent, "
+              f"{p2['justified_abstention']} rejecting.",
+          f"**Secondary — Random logs (approximate target; {n_sr} grid points):** answered {sr['answered_hold'] + sr['answered_miss']}/{n_sr}; "
+              f"E1 held at {sr['answered_hold']}/{sr['answered_hold'] + sr['answered_miss']} answered.",
+          f"**Secondary — pooled over both sources (not the registered primary; 12 series × 101 points):** answered ✓ {pool['answered_hold']}, "
+              f"answered miss {pool['answered_miss']}, unnecessary abstention {pool['unnecessary_abstention']}, justified abstention {pool['justified_abstention']}.",
+          "All counts are correlated grid locations from overlapping periods and deterministic α steps, not independent decisions.", ""]
     L += ["## Secondary summaries — every estimator, endpoint and interval", "",
           "Format: answered ✓ / answered miss / unnecessary abstention / justified abstention (first failing α).", "",
           "| period | logs | IPW E1 row | IPW E1 hour-cluster | IPW E2 row | IPW E2 hour-cluster | SNIPW E1 row | SNIPW E1 hour-cluster | SNIPW E2 row | SNIPW E2 hour-cluster |",

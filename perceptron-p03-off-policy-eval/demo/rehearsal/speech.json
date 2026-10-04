@@ -1,0 +1,58 @@
+{
+ "rate_wpm": 150,
+ "voice": "macOS say, default system voice",
+ "beats": [
+  {
+   "beat": 1,
+   "words": 72,
+   "seconds": 34.28
+  },
+  {
+   "beat": 2,
+   "words": 51,
+   "seconds": 19.67
+  },
+  {
+   "beat": 3,
+   "words": 24,
+   "seconds": 12.02
+  },
+  {
+   "beat": 4,
+   "words": 50,
+   "seconds": 18.89
+  },
+  {
+   "beat": 5,
+   "words": 42,
+   "seconds": 16.33
+  },
+  {
+   "beat": 6,
+   "words": 20,
+   "seconds": 10.05
+  },
+  {
+   "beat": 7,
+   "words": 20,
+   "seconds": 7.52
+  },
+  {
+   "beat": 8,
+   "words": 37,
+   "seconds": 18.02
+  },
+  {
+   "beat": 9,
+   "words": 30,
+   "seconds": 12.55
+  },
+  {
+   "beat": 10,
+   "words": 29,
+   "seconds": 11.51
+  }
+ ],
+ "total_words": 375,
+ "total_speech_seconds": 160.84
+}

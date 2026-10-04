@@ -7,10 +7,10 @@
 <link rel="icon" href="data:,">
 <!--
 DIRECTION CONTRACT (impeccable, new-work)
-THESIS: The demo is a worked computation on an engineering pad, checked line by line against a real A/B test; the evaluator's refusals are entered in the same ink. Refuses the dark KPI-dashboard default.
-OWN-WORLD: Pale-green computation-pad paper with a faint grid, graphite ink, red checking pencil, ochre for greedy logs, blue ink for exploration logs, rubber stamps (REAL / SYNTHETIC / POST-HOC / PRE-REGISTERED), ruled title blocks with "Checked by", DIN lettering, boxed answers, a slide-rule cursor.
-STORY: The judge sees the dashboard number taken apart (sheet 1), sees when logs can answer (2), drags the cursor and watches estimate, interval, effective rows and verdict move against the real check (3), then the simulator (4). Every number shows its source.
-FIRST VIEWPORT: Title block; headline "+1.62 vs +1.26"; the worked arithmetic with boxed results beside a to-scale waterfall; the CAN'T TELL stamp.
+THESIS: The demo is a worked computation on an engineering pad, compared line by line with a noisy concurrent A/B reference; the evaluator's refusals are entered in the same ink. Refuses the dark KPI-dashboard default.
+OWN-WORLD: Pale-green computation-pad paper with a faint grid, graphite ink, red checking pencil, ochre for greedy logs, blue ink for exploration logs, rubber stamps (REAL / SYNTHETIC / POST-HOC / PRE-REGISTERED), ruled title blocks with "Compared with", DIN lettering, boxed answers, a slide-rule cursor.
+STORY: The judge sees the dashboard number taken apart against the A/B reference and the evaluator's refusal (sheet 1), sees when logs can answer (2), uses presets and the cursor to watch estimate, interval, weight ESS, both endpoints and the verdict move against the noisy reference (3), then the labelled simulator (4). Dotted numbers show their source.
+FIRST VIEWPORT: Title block; headline "+1.62 vs +1.26"; the worked arithmetic with boxed results and a CAN'T TELL mini-stamp beside a to-scale waterfall.
 FORM: Lab notebook (#7 of 7), staged as an engineering computation pad with a slide-rule cursor; seed 100dee6a.
 -->
 <style>
@@ -107,7 +107,7 @@ svg .barsub { font-size: 13px; fill: var(--ink-3); }
 svg .connector { stroke: var(--ink-3); stroke-width: 1.2; stroke-dasharray: 3 3; }
 svg .drbox { fill: none; stroke: var(--sb); stroke-width: 3; stroke-dasharray: 8 5; }
 svg .drlab { font: 700 15px var(--din); fill: var(--sb-ink); }
-svg .truthln { stroke: var(--ink); stroke-width: 3; stroke-dasharray: 7 4; }
+svg .refln { stroke: var(--ink); stroke-width: 3; stroke-dasharray: 7 4; }
 .verdict { display: grid; grid-template-columns: auto 1fr; gap: 24px; align-items: center; margin: 26px 0 6px; padding: 18px 20px; border: 2px solid var(--ink); background: rgba(255, 255, 255, .45); }
 .verdict p { margin: 0 0 6px; max-width: 78ch; }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 18px; }
@@ -205,7 +205,7 @@ kbd { font: 600 12.5px var(--mono); border: 1.5px solid var(--ink-3); border-bot
 
 /* sheet 4 */
 .s4 { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 36px; align-items: start; }
-#sweep .l-truth { stroke: var(--ink); stroke-width: 3; stroke-dasharray: 8 5; fill: none; }
+#sweep .l-ref { stroke: var(--ink); stroke-width: 3; stroke-dasharray: 8 5; fill: none; }
 #sweep .l-naive { stroke: var(--red); stroke-width: 3; fill: none; }
 #sweep .l-dr { stroke: var(--ok); stroke-width: 3.4; fill: none; }
 #sweep text.lbl { font: 700 20px var(--din); }
@@ -227,6 +227,46 @@ footer p { max-width: 120ch; }
 @media (max-width: 640px) { .tb { grid-template-columns: minmax(0, 1fr); grid-template-areas: "proj" "sheet" "data" "check" "stamp"; }
   .tb .c-sheet, .tb .c-check { border-left: 0; } .tb .c-sheet { border-top: 1px solid var(--rule); }
   .chart { overflow-x: auto; } #knob, #strip, #sweep { min-width: 760px; } .stamp-cant { white-space: normal; } body { font-size: 16px; } .calc { grid-template-columns: 1fr; } .calc .lab { padding-bottom: 0; border-bottom: 0 !important; } .verdict { grid-template-columns: 1fr; } }
+/* review fixes (gpt-6-astra demo review D1–D12) */
+.calc .minicall { display: flex; align-items: center; gap: 12px; margin-top: 9px; font-size: 15px; line-height: 1.4; color: var(--ink-2); }
+.calc .minicall .stamp { flex: none; }
+.stamp-mini { font-size: 15px; padding: 5px 8px 4px; transform: rotate(-2deg); }
+.caveat { font-size: 14px; line-height: 1.4; color: var(--ink-2); margin: 4px 0 4px 8px; max-width: none; }
+.caveat b { color: var(--ink); }
+.readout .defs { font-size: 12.5px; line-height: 1.35; color: var(--ink-3); margin: 5px 0 0; }
+.readout .kv { grid-template-columns: 104px 1fr; }
+.readout .kv dd.epl { font: 600 14.5px/1.35 var(--sans); }
+.readout .dim { color: var(--ink-3); font: 500 13px var(--sans); margin-left: 6px; }
+.readout .znote { display: block; font-size: 12.5px; color: var(--ink-3); margin-top: 2px; }
+.readout .verdict-cell .stamp-cant { font-size: 21px; padding: 7px 10px 6px; }
+.seg.presets button { padding: 8px 11px; }
+.seg.presets button kbd { margin-right: 6px; font-size: 11.5px; padding: 0 4px; }
+.seg.presets button[aria-pressed="true"] kbd { background: var(--paper-hi); color: var(--ink); }
+.striphead { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin: 0 0 8px; }
+.striphead .ctl-l { display: inline; margin: 0 6px 0 0; font: 600 12px/1.2 var(--sans); text-transform: uppercase; letter-spacing: .07em; color: var(--rule); }
+.seg.mini button { font-size: 13.5px; padding: 6px 9px; }
+.prim { font-size: 16px; line-height: 1.5; margin: 10px 0 8px; max-width: 92ch; }
+.formula { font: 600 16px/1.7 var(--mono); background: var(--paper-hi); border: 1.5px solid var(--rule-soft); padding: 8px 12px; margin: 6px 0 8px; overflow-x: auto; white-space: nowrap; }
+.s1case h3 { margin-bottom: 4px; }
+.s1case .fine { margin: 0 0 6px; }
+@media (max-width: 1500px) {
+  .controls { gap: 10px 14px; }
+  .seg button { padding: 8px 9px; font-size: 14.5px; }
+  .seg.presets button { padding: 8px 9px; }
+  .alpha { flex: 1 1 340px; min-width: 300px; }
+  .readout .kv { grid-template-columns: 88px 1fr; }
+  .readout .kv dd.epl { font-size: 13.5px; }
+  .readout .verdict-cell .stamp-cant { font-size: 18px; padding: 6px 9px 5px; }
+  .caveat { font-size: 13px; }
+}
+@media (max-height: 820px) and (min-width: 1181px) {
+  .sheet { padding-top: 14px; }
+  h1 { font-size: clamp(28px, 2.7vw, 40px); margin: 12px 0 6px; }
+  .lede { font-size: 17px; margin-bottom: 12px; }
+  .calc > div { padding: 8px 0 7px; }
+  .calc .lab { padding-top: 10px; }
+  .readout .defs { margin-top: 3px; }
+}
 </style>
 </head>
 <body>
@@ -243,54 +283,56 @@ footer p { max-width: 120ch; }
     <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
     <div class="c-sheet"><i>Sheet</i><b>1 / 4</b></div>
     <div class="c-data"><i>Data</i><b>Open Bandit Dataset · ZOZOTOWN fashion A/B test · 24–27 Nov 2019 · {{S1_hours}} h</b></div>
-    <div class="c-check"><i>Checked by</i><b>the concurrent A/B arms</b></div>
+    <div class="c-check"><i>Compared with</i><b>the concurrent A/B arms (a noisy reference)</b></div>
     <div class="stampcell">{{STAMP_REAL}}</div>
   </header>
   <h1 id="h1-1"><span class="ln">The dashboard said <span class="nw">{{S1_naive}}.</span></span><span class="ln">The A/B test says <span class="nw">{{S1_ref}}.</span></span></h1>
-  <p class="lede">A policy switch, re-enacted on real traffic: the uniform-random policy's logs for the first {{S1_half}} hours, the Thompson-sampling policy's (BTS) for the next {{S1_half}}. Both arms really ran the whole time ({{S1_n_random}} and {{S1_n_bts}} impressions), so the second half carries a real A/B check. <span class="unit">Units: clicks per 1,000 impressions.</span></p>
+  <p class="lede">We re-enact a switch using concurrent A/B logs: uniform-random logs for the first {{S1_half}} hours, Thompson-sampling (BTS) logs for the next {{S1_half}}. Both arms ran throughout ({{S1_n_random}} and {{S1_n_bts}} impressions), so the second half has a concurrent A/B reference. <span class="unit">Units: clicks per 1,000 impressions.</span></p>
   <div class="s1">
     <div class="calc" role="table" aria-label="Worked calculation">
       <div class="lab" role="rowheader">Dashboard<span>after − before</span></div>
       <div role="cell"><span class="expr">BTS, last {{S1_half}} h − Random, first {{S1_half}} h</span>
         <span class="arith">{{S1_B2}} − {{S1_R1}} = {{S1_naive}} <span class="unit">{{S1_naive_hw}}</span></span></div>
-      <div class="lab" role="rowheader">A/B check<span>same hours</span></div>
+      <div class="lab" role="rowheader">A/B reference<span>same hours</span></div>
       <div role="cell"><span class="expr">BTS, last {{S1_half}} h − Random, last {{S1_half}} h</span>
         <span class="arith">{{S1_B2}} − {{S1_R2}} = {{S1_ref}} <span class="unit">{{S1_ref_hw}}</span></span></div>
       <div class="lab" role="rowheader">The week<span>not the policy</span></div>
       <div role="cell"><span class="expr">Random, last {{S1_half}} h − Random, first {{S1_half}} h</span>
         <span class="arith">{{S1_R2}} − {{S1_R1}} = <span class="hl">{{S1_env}}</span></span>
-        <span class="note">The old policy's own click rate rose {{S1_env_pct}} with no switch at all. The dashboard books that as the new policy's: it overstates the policy by {{S1_overstate}}.</span></div>
+        <span class="note">The old policy's own click rate rose {{S1_env_pct}} with no switch at all. The dashboard counts that rise as the policy's, so it is {{S1_overstate}} above the concurrent A/B point estimate.</span></div>
       <div class="lab" role="rowheader">Logs only<span>no A/B needed</span></div>
       <div role="cell"><span class="expr">BTS, last {{S1_half}} h − doubly robust estimate of "Random, last {{S1_half}} h" from the BTS logs</span>
         <span class="arith">{{S1_B2}} − {{S1_dr_vhat}} = {{S1_dr}}</span>
-        <span class="note">95% interval {{S1_dr_ci}} (row-level) · {{S1_dr_block}} (hour-block bootstrap, post hoc). Both hold the A/B check, and also the dashboard number.</span></div>
+        <span class="note">95% interval {{S1_dr_ci}} (row-level) · {{S1_dr_block}} (hour-block bootstrap, post hoc). Both hold the A/B reference, and also the dashboard number.</span>
+        <span class="minicall"><span class="stamp stamp-cant stamp-mini">Can't tell</span><span>Our evaluator withholds this answer: weight ESS is {{S1_ess_pct2}} of rows, below the frozen {{RULE_ESS}} floor (post hoc; details below).</span></span></div>
     </div>
     <figure class="wfwrap" style="margin:0">
       {{S1_WATERFALL}}
-      <figcaption>Drawn to scale from the A/B arms (all four cells observed). The orange dashed box is what the logs alone say the policy did.</figcaption>
+      <figcaption>Drawn to scale from the four observed A/B cells. The orange dashed box is DR's estimate from the BTS logs alone.</figcaption>
     </figure>
   </div>
   <div class="verdict">
     <span class="stamp stamp-cant">Can't tell from these logs</span>
     <div>
-      <p><b>Our evaluator refuses this one.</b> To score "Random during the last {{S1_half}} h" it must reweight the BTS logs, and BTS almost never shows what Random would. The {{S1_n_after}} BTS impressions are worth {{S1_ess_abs}} uniform-random ones for this question (ESS/n {{S1_ess_pct2}}, below the frozen {{RULE_ESS}} floor). A single click logged at propensity {{S1_min_ps}} counts {{S1_max_w}} times.</p>
-      <p class="fine">{{STAMP_POST}} The overlap gate (ESS/n ≥ {{RULE_ESS}}, mean-weight |z| ≤ {{RULE_Z}}) was calibrated on the simulator only and frozen before it touched OBD, but it was designed after we had seen these OBD failures, so every OBD verdict on this sheet is post hoc.</p>
+      <p><b>Why it refuses.</b> To score "Random during the last {{S1_half}} h" it must reweight the BTS logs, and BTS rarely shows what Random would. Weight ESS is about {{S1_ess_abs}}, or {{S1_ess_pct2}} of the {{S1_n_after}} rows, below the frozen {{RULE_ESS}} floor: a measure of weight concentration, not guaranteed precision. A click at the smallest logged propensity ({{S1_min_ps}}) would get weight {{S1_max_w}}; the largest weight on an actual click here is about {{S1_max_click_w}} (propensity {{S1_max_click_ps}}).</p>
+      <p class="fine">{{STAMP_POST}} The gate (ESS/n ≥ {{RULE_ESS}}, mean-weight |z| ≤ {{RULE_Z}}) was selected using simulator runs after OBD failures had informed its design, then frozen. Every OBD verdict on this sheet is therefore post hoc.</p>
     </div>
   </div>
   <div class="two">
     <div>
-      <h3>Was refusing right?</h3>
-      <p>Here, no: the interval held the A/B check, so this refusal cost an answer. On the pre-registered whole-day pair 25 → 26 Nov, the same estimate failed: DR {{S1_f_dr_plain}} ({{S1_f_ci}}) against a check of {{S1_f_ref_plain}}, with the dashboard at {{S1_f_naive}}. The gate refused that one too (ESS/n {{S1_f_ess}}).</p>
+      <h3>Did refusing matter here?</h3>
+      <p>Here DR's interval held the A/B reference, so this refusal cost an answer. On the pre-registered whole-day pair 25 → 26 Nov the same estimate failed the S1 consistency test: DR {{S1_f_dr_plain}} ({{S1_f_ci}}) against a reference of {{S1_f_ref_plain}}, with the dashboard at {{S1_f_naive}}. The gate refused that one too (weight ESS {{S1_f_ess}} of rows).</p>
     </div>
     <div>
       <h3>Track record on real cases <span class="stamp stamp-post" style="font-size:11px;margin-left:6px">post hoc</span></h3>
       <ul class="track">
         <li><b>{{S1_t_answered}}</b>answered</li>
-        <li><b>{{S1_t_refin}}</b>interval held the check</li>
-        <li><b>{{S1_t_refused}}</b>failures refused</li>
+        <li><b>{{S1_t_refin}}</b>answered intervals held the reference</li>
+        <li><b>{{S1_t_refused}}</b>S1 rejections refused</li>
+        <li><b>{{S1_t_own}}</b>own-CI misses refused</li>
         <li><b>{{S1_t_wrong}}</b>confidently wrong sign</li>
       </ul>
-      <p class="fine">{{S1_t_listed}} distinct instances from the 84 h (they share observations). Reverse switch, BTS → Random: dashboard {{S1_b_naive}} vs check {{S1_b_ref}} (the naive number is right); DR {{S1_b_dr}} ({{S1_b_ci}}), answered at ESS/n {{S1_b_ess}}: "hurt".</p>
+      <p class="fine">{{S1_t_listed}} distinct instances from the 84 h; they share observations. S1 = the pre-registered consistency test (the 95% CI of estimate − reference contains 0). Own-CI miss = the reference lies outside DR's own 95% interval. Reverse switch, BTS → Random: dashboard {{S1_b_naive}} vs reference {{S1_b_ref}} (the naive number is closer); DR {{S1_b_dr}} ({{S1_b_ci}}), answered at weight ESS {{S1_b_ess}} of rows: "hurt".</p>
     </div>
   </div>
 </section>
@@ -301,18 +343,18 @@ footer p { max-width: 120ch; }
     <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
     <div class="c-sheet"><i>Sheet</i><b>2 / 4</b></div>
     <div class="c-data"><i>Data</i><b>Random arm's {{S2_n}} impressions → value of BTS, same 84 h</b></div>
-    <div class="c-check"><i>Checked by</i><b>the BTS arm's own click rate</b></div>
+    <div class="c-check"><i>Compared with</i><b>the BTS arm's observed click rate (noisy; approximate target)</b></div>
     <div class="stampcell">{{STAMP_REAL}}</div>
   </header>
   <h1 id="h1-2">When the logs can tell: <span class="nw">{{S2_dr}} <span class="vs">vs</span> {{S2_truth}}</span></h1>
-  <p class="lede">Uniform-random logs cover every item at every position, so they can score the Thompson-sampling policy. The gate answers (ESS/n {{S2_ess_pct}}, mean-weight z {{S2_z}}). Doubly robust lands {{S2_dr_relerr}} from what the BTS arm actually earned, {{S2_truth_plain}} {{S2_truth_hw}}.</p>
+  <p class="lede">Uniform-random logs cover every item at every position, so they can score the Thompson-sampling policy. The gate answers (weight ESS {{S2_ess_pct}} of rows, mean-weight z {{S2_z}}). Doubly robust lands {{S2_dr_relerr}} from the BTS arm's observed click rate, {{S2_truth_plain}} {{S2_truth_hw}}: an approximate-target comparison, not verified accuracy.</p>
   <div class="s2">
     <figure class="wfwrap" style="margin:0">{{S2_FOREST}}
-      <figcaption>Estimates with 95% intervals; grey band: the BTS arm's click rate ± 95%. Red rings: the interval misses the check.</figcaption></figure>
+      <figcaption>Estimates with 95% intervals; grey band: the BTS arm's observed click rate ± 95%. Red rings: the interval misses that rate.</figcaption></figure>
     <div class="facts">
       <div><h3>An approximate target, said plainly</h3><p>BTS kept learning: {{S2_a1_cells}} of its busiest item-position cells moved their propensity at least 1.5× within the 84 h (median {{S2_a1_med}}×). So we score an hourly reconstruction of it. The standard OBD protocol scores one static prior (the top block), which is a different policy.</p></div>
-      <div><h3>The direct method looked overconfident</h3><p>DM's interval (SE {{S2_dm_se_old}} per 1,000) misses the check. Refitting its model inside the bootstrap gives SE {{S2_dm_se}} per 1,000, and DM becomes consistent (dashed red, post hoc).</p></div>
-      <div><h3>Same evaluator, opposite logs</h3><p>Sheet 1 asked BTS logs about Random: overlap {{S1_ess_pct}}, refused. Here Random logs answer about BTS: overlap {{S2_ess_pct}}, answered, within {{S2_dr_relerr}}. Which logs you kept decides which questions you can ever answer. Sheet 3 makes that a knob.</p></div>
+      <div><h3>The direct method looked overconfident</h3><p>DM's interval (SE {{S2_dm_se_old}} per 1,000) misses the BTS arm's rate. Refitting its model inside the bootstrap gives SE {{S2_dm_se}} per 1,000, and DM becomes consistent (dashed red, post hoc).</p></div>
+      <div><h3>Same evaluator, opposite logs</h3><p>Sheet 1 asked BTS logs about Random: weight ESS {{S1_ess_pct}} of rows, refused. Here Random logs answer about BTS: weight ESS {{S2_ess_pct}}, answered, within {{S2_dr_relerr}}. Which logs you keep decides which questions you can answer. Sheet 3 makes that a knob.</p></div>
     </div>
   </div>
 </section>
@@ -323,31 +365,42 @@ footer p { max-width: 120ch; }
     <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
     <div class="c-sheet"><i>Sheet</i><b>3 / 4</b></div>
     <div class="c-data"><i>Data</i><b>Vendored extract, {{EXTRACT_MB}} MB · BTS and Random arms · {{K_PERIODS}} periods × {{K_GRID}} α</b></div>
-    <div class="c-check"><i>Checked by</i><b>a straight line between the two arms</b></div>
+    <div class="c-check"><i>Compared with</i><b>a noisy A/B reference line (arm click rates mixed by α)</b></div>
     <div class="stampcell">{{STAMP_REAL}}<span class="stamp stamp-pre">Pre-registered<small>{{PREREG_TIME}} · {{PREREG_COMMIT}}</small></span></div>
   </header>
   <h1 id="h1-3">Turn the knob: how far can a new policy stray before the logs can't tell?</h1>
-  <p class="lede">Candidate policy π<sub>α</sub> = (1 − α) × BTS + α × uniform random. Its true value is a straight line between the two A/B arms, a real check at every α. From BTS logs the importance weights are exact: (1 − α) + α / (80 × logged propensity). IPS always prints a number. Our evaluator prints it only when the frozen gate passes.</p>
+  <p class="lede">Candidate policy π<sub>α</sub> = (1 − α) × BTS + α × uniform random. We compare against a noisy concurrent-A/B reference: the two arms' observed click rates, mixed by α, not known truth. From BTS logs the weights come straight from the logged propensities, (1 − α) + α / (80 × propensity). Plain IPS always prints a number; our evaluator prints it only when the frozen gate passes.</p>
   <div class="controls">
+    <div class="ctl"><span class="ctl-l">Presets</span><div class="seg presets" id="presets" role="group" aria-label="Presets: each sets period, alpha, estimator, interval, endpoint and logs together">
+      <button data-preset="1"><kbd>5</kbd>W2 · α 0.42</button><button data-preset="2"><kbd>6</kbd>W2 · α 0.43</button><button data-preset="3"><kbd>7</kbd>Nov 26 · α 0.33</button></div></div>
     <div class="ctl alpha"><div class="alpha-head"><span class="ctl-l" style="display:inline">Cursor</span><span class="val" id="alpha-val">α = 0.25</span><span class="mix" id="alpha-mix"></span></div>
       <input type="range" id="alpha" min="0" max="100" step="1" value="25" aria-label="alpha: share of uniform random in the candidate policy" aria-describedby="alpha-mix"></div>
-    <div class="ctl"><span class="ctl-l">Period</span><div class="seg" id="periods" role="group" aria-label="Period"></div></div>
-    <div class="ctl"><span class="ctl-l">Estimator</span><div class="seg" id="est" role="group" aria-label="Estimator"><button data-v="IPW">IPS</button><button data-v="SNIPW">SNIPS</button></div></div>
-    <div class="ctl"><span class="ctl-l">Interval</span><div class="seg" id="iv" role="group" aria-label="Interval"><button data-v="row">row-level</button><button data-v="cluster">hour-cluster</button></div></div>
-    <div class="ctl"><span class="ctl-l">Logs</span><div class="seg" id="srcs" role="group" aria-label="Log sources"><button class="sb" data-v="SB">BTS logs</button><button class="sr" data-v="SR">Random logs</button></div></div>
+    <div class="ctl"><span class="ctl-l">Period</span><div class="seg" data-k="p" id="periods" role="group" aria-label="Period"></div></div>
+    <div class="ctl"><span class="ctl-l">Estimator</span><div class="seg" data-k="e" role="group" aria-label="Estimator"><button data-v="IPW">IPS</button><button data-v="SNIPW">SNIPS</button></div></div>
+    <div class="ctl"><span class="ctl-l">Interval</span><div class="seg" data-k="iv" role="group" aria-label="Interval"><button data-v="row">row-level</button><button data-v="cluster">hour-cluster</button></div></div>
+    <div class="ctl"><span class="ctl-l">Endpoint shown</span><div class="seg" data-k="ep" role="group" aria-label="Endpoint shown in the chart and strips"><button data-v="E1">E1 own CI</button><button data-v="E2">E2 paired</button></div></div>
+    <div class="ctl"><span class="ctl-l">Logs</span><div class="seg" data-k="src" role="group" aria-label="Log sources"><button class="sb" data-v="SB">BTS logs</button><button class="sr" data-v="SR">Random logs</button></div></div>
   </div>
   <div class="s3">
-    <div class="chart"><svg id="knob" viewBox="0 0 1000 556" role="img" aria-label="Value of the candidate policy against alpha, with the A/B check line, both estimators' intervals, effective sample size and the gate's verdict"></svg>
-      <div class="legend"><span><i class="ln-ref"></i>A/B check (line between the arms)</span><span><i class="ln-sb"></i>estimate from BTS logs</span><span><i class="ln-sr"></i>estimate from Random logs</span><span><i class="ln-miss"></i>answered, check outside</span></div>
-      <div class="legend"><span><i class="sw-ok"></i>answers · check inside</span><span><i class="sw-miss"></i>answers · check outside</span><span><i class="sw-unn"></i>can't tell · check was inside</span><span><i class="sw-jus"></i>can't tell · check outside</span></div></div>
+    <div class="chart"><svg id="knob" viewBox="0 0 1000 556" role="img" aria-label="Value of the candidate policy against alpha, with the noisy A/B reference line, the estimators' intervals, effective sample size and the gate's verdict"></svg>
+      <p class="caveat"><b>Black line:</b> a noisy concurrent-A/B reference (observed arm click rates mixed by α), not known truth. BTS weights come from logged propensities; the Random-side target is an hourly approximation; arm comparability is unresolved.</p>
+      <div class="legend" id="legend-lines"></div>
+      <div class="legend" id="legend-cells"></div></div>
     <div class="readout" id="readout" aria-live="polite"></div>
   </div>
   <div class="under">
-    <div class="box"><h2 style="margin-top:0">Every period, every α: pre-registered, nothing hidden</h2>
-      <div class="chart"><svg id="strip" viewBox="0 0 1000 300" role="img" aria-label="Verdict and check status for all 12 series at all 101 values of alpha"></svg></div>
+    <div class="box"><h2 style="margin-top:0">All {{K_PERIODS}} periods × {{K_GRID}} α, by endpoint (pre-registered)</h2>
+      <div class="striphead"><span><span class="ctl-l">Endpoint</span><span class="seg mini" data-k="ep" role="group" aria-label="Endpoint shown in the strips"><button data-v="E1">E1 own CI</button><button data-v="E2">E2 paired</button></span></span>
+        <span><span class="ctl-l">Interval</span><span class="seg mini" data-k="iv" role="group" aria-label="Interval"><button data-v="row">row-level</button><button data-v="cluster">hour-cluster</button></span></span></div>
+      <div class="chart"><svg id="strip" viewBox="0 0 1000 300" role="img" aria-label="Gate verdict and endpoint status for all 12 series at all 101 values of alpha"></svg></div>
+      <div class="legend" id="legend-strip"></div>
+      {{PRIMARY_HTML}}
       <p class="fine" id="totals"></p></div>
-    <div class="box"><h2 style="margin-top:0">Predicted before computing</h2><div id="preds"></div>
-      <p class="keys"><kbd>←</kbd><kbd>→</kbd> move α (<kbd>Shift</kbd> ×5) · <kbd>[</kbd><kbd>]</kbd> period · <kbd>i</kbd> estimator · <kbd>c</kbd> interval · <kbd>1</kbd>–<kbd>4</kbd> sheets · hover any number for its source</p></div>
+    <div class="box"><h2 style="margin-top:0">Endpoint-derived checks: {{K_CHECKS}} matched</h2>
+      <div class="formula">IPS(λ) = (1 − λ)·p + λ·u<br>SNIPS(λ) = [(1 − λ)·p + λ·u] / [(1 − λ) + λ·m]</div>
+      <p class="fine">λ = the far-end share (BTS logs: λ = α; Random logs: λ = 1 − α); p = the logging arm's click rate; u = IPS at the far end; m = the far end's mean weight. The curves are determined by these endpoint statistics, so the registered checks mainly test algebra and implementation, not independent forecasts. The gate's mean-weight z is the same at every α away from the logging end. Computed beyond the endpoints: hour-cluster uncertainty, the full-window BTS aggregation and previously unrecorded z statistics.</p>
+      <div id="preds"></div>
+      <p class="keys"><kbd>5</kbd><kbd>6</kbd><kbd>7</kbd> presets · <kbd>←</kbd><kbd>→</kbd> α (<kbd>Shift</kbd> ×5) · <kbd>[</kbd><kbd>]</kbd> period · <kbd>i</kbd> estimator · <kbd>c</kbd> interval · <kbd>e</kbd> endpoint · <kbd>1</kbd>–<kbd>4</kbd> sheets (<kbd>3</kbd> again: the knob) · dotted numbers show their source</p></div>
   </div>
 </section>
 
@@ -356,26 +409,28 @@ footer p { max-width: 120ch; }
   <header class="tb">
     <div class="proj"><i>Project</i><b>Did the policy actually work?</b><span>Perceptron 2026 · Problem 3 · off-policy evaluation</span></div>
     <div class="c-sheet"><i>Sheet</i><b>4 / 4</b></div>
-    <div class="c-data"><i>Data</i><b>Simulator with known counterfactuals · 10,000 logged rounds per period</b></div>
-    <div class="c-check"><i>Checked by</i><b>exact ground truth (Monte Carlo)</b></div>
+    <div class="c-data"><i>Data</i><b>Simulator · {{S4_ROUNDS}} logged rounds per period</b></div>
+    <div class="c-check"><i>Compared with</i><b>a Monte-Carlo reference ({{S4_MC}} draws)</b></div>
     <div class="stampcell"><span class="stamp stamp-syn">Synthetic</span></div>
   </header>
-  <h1 id="h1-4">Stress test: a season can flip the dashboard's sign</h1>
-  <p class="lede">This is the simulator, where the truth is known exactly. A seasonal drop makes the dashboard read {{S4_NAIVE}} points while the switch really added {{S4_POLICY_TRUE}}. DR recovers {{S4_POLICY}}; the naive number has the wrong sign in {{S4_WRONG}} seeds. Drag the drift to see where naive is right and where it lies.</p>
+  <h1 id="h1-4">Stress test: when does the dashboard get the sign wrong?</h1>
+  <p class="lede">A synthetic benchmark; the population reference is approximated with {{S4_MC}} Monte-Carlo draws. Drag the drift (mix shift {{S4_SWEEP_MIX}}, {{S4_SWEEP_SEEDS}} seeds per level): the dashboard has the wrong sign in every seed at drift {{S4_WRONG_FROM}} or below, while DR's RMSE stays at most {{S4_DR_RMSE}} points across all {{S4_LEVELS}} levels.</p>
   <div class="s4">
     <div><div class="chart">
       <div class="ctl dslider"><label for="drift">Response drift (logit) <span class="val" id="drift-val" style="font:700 20px var(--din)"></span></label>
         <input type="range" id="drift" min="0" max="12" step="1" value="2"></div>
-      <svg id="sweep" viewBox="0 0 1000 400" role="img" aria-label="Truth, naive and DR estimates of the policy effect across 13 drift levels"></svg></div>
+      <svg id="sweep" viewBox="0 0 1000 400" role="img" aria-label="Monte-Carlo reference, naive and DR estimates of the policy effect across 13 drift levels"></svg></div>
       <div class="readout" id="sweep-read" style="margin-top:14px" aria-live="polite"></div></div>
-    <figure class="wfwrap" style="margin:0"><h3>Scenario S1: what the dashboard number is made of</h3>{{S4_WATERFALL}}
-      <figcaption>Change in click-through rate, percentage points. {{S4_SEEDS}} seeds.</figcaption></figure>
+    <figure class="wfwrap s1case" style="margin:0"><h3>Separate fixed case S1 (mix shift {{S4_S1_MIX}}, {{S4_SEEDS}} seeds): not controlled by the slider</h3>
+      <p class="fine">A seasonal drop makes the dashboard read {{S4_NAIVE}} points while the switch added {{S4_POLICY_TRUE}} (Monte-Carlo reference). DR recovers {{S4_POLICY}}; the naive number has the wrong sign in {{S4_WRONG}} seeds.</p>
+      {{S4_WATERFALL}}
+      <figcaption>Change in click-through rate, percentage points.</figcaption></figure>
   </div>
 </section>
 </main>
 <footer>
-  <p><b>Provenance.</b> Hover any dotted number for its source file and key. Every number comes from a committed result or is computed from one by committed code: <code>demo/build.py</code> (this page) and <code>demo/knob.py</code> (sheet 3, pre-registered in <code>demo/preregistration_knob.md</code>). The knob values are recomputed from the vendored extract by <code>demo/smoke.sh</code>. Inputs (sha256 prefixes): {{DIGESTS}}.</p>
-  <p><b>Data.</b> Open Bandit Dataset © ZOZO, Inc., licensed CC BY 4.0 (creativecommons.org/licenses/by/4.0). Saito, Aihara, Matsutani, Narita, "A Large-scale Open Dataset for Bandit Algorithms", arXiv:2008.07146. This page uses an aggregated extract (campaign All, 24–27 Nov 2019; counts per hour, item, position, propensity, click); see <code>demo/data/NOTICE.md</code>. The "A/B check" is the concurrent arm difference, not ground truth: arm balance by user is unresolved (a raw-label artefact).</p>
+  <p><b>Provenance.</b> Dotted numbers have hover and focus sources, the knob readouts included; full provenance is in <code>demo/README.md</code> and the result files. The page renders committed results offline: <code>demo/build.py</code> reads <code>eval/results/</code> and <code>demo/results/knob_results.json</code>, which <code>demo/knob.py</code> computed from the vendored extract under the pre-registration <code>demo/preregistration_knob.md</code>. <code>demo/smoke.sh</code> replays the grid from the {{EXTRACT_MB}} MB extract with the same analysis code and independently checks five basic quantities with separate standard-library code. Knob values on this page are rounded to 6 significant figures. Inputs (sha256 prefixes): {{DIGESTS}}.</p>
+  <p><b>Data.</b> Open Bandit Dataset © ZOZO, Inc., licensed CC BY 4.0 (creativecommons.org/licenses/by/4.0). Saito, Aihara, Matsutani, Narita, "A Large-scale Open Dataset for Bandit Algorithms", arXiv:2008.07146. This page uses an aggregated extract (campaign All, 24–27 Nov 2019; counts per hour, item, position, propensity, click); see <code>demo/data/NOTICE.md</code>. The "A/B reference" is the concurrent arm difference (on sheet 3, the arms' click rates mixed by α), not ground truth: arm comparability by user is unresolved (a raw-label artefact).</p>
 </footer>
 <div id="tip" role="tooltip"></div>
 <script id="data" type="application/json">{{DATA_JSON}}</script>
@@ -393,17 +448,23 @@ const pc = x => (x < 0.01 ? (100 * x).toFixed(2) : (100 * x).toFixed(1)) + '%';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const Z = 1.959963984540054;
 const TAU = K.rule.tau_ess;
+const KR = 'demo/results/knob_results.json → ';
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* a number with a hover/focus source (D10); txt must already be safe HTML */
+const sn = (txt, src) => `<span class="n" tabindex="0" data-src="${esc(src)}">${txt}</span>`;
 
 /* ---------- tooltips ---------- */
 const tip = $('#tip');
-function showTip(el) { tip.textContent = 'source: ' + el.dataset.src; const r = el.getBoundingClientRect(); tip.classList.add('on');
+let tipEl = null;
+function showTip(el) { if (tipEl && tipEl !== el) tipEl.removeAttribute('aria-describedby'); tipEl = el; el.setAttribute('aria-describedby', 'tip');
+  tip.textContent = 'source: ' + el.dataset.src; const r = el.getBoundingClientRect(); tip.classList.add('on');
   const w = tip.offsetWidth; tip.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, r.left)) + 'px';
   tip.style.top = (r.bottom + 8 + tip.offsetHeight > window.innerHeight ? r.top - tip.offsetHeight - 8 : r.bottom + 8) + 'px'; }
+function hideTip() { tip.classList.remove('on'); if (tipEl) tipEl.removeAttribute('aria-describedby'); tipEl = null; }
 document.addEventListener('mouseover', e => { const el = e.target.closest('[data-src]'); if (el) showTip(el); });
-document.addEventListener('mouseout', e => { if (e.target.closest('[data-src]')) tip.classList.remove('on'); });
+document.addEventListener('mouseout', e => { if (e.target.closest('[data-src]')) hideTip(); });
 document.addEventListener('focusin', e => { const el = e.target.closest('[data-src]'); if (el) showTip(el); });
-document.addEventListener('focusout', () => tip.classList.remove('on'));
+document.addEventListener('focusout', hideTip);
 
 /* ---------- sheet index ---------- */
 const tabs = $$('nav.index a');
@@ -412,27 +473,35 @@ let activeSheet = 1;
 const io = new IntersectionObserver(ents => { ents.forEach(en => { if (en.isIntersecting) { activeSheet = Number(en.target.id.slice(5));
   tabs.forEach(t => t.setAttribute('aria-current', String(Number(t.dataset.sheet) === activeSheet))); } }); }, {rootMargin: '-45% 0px -50% 0px'});
 sheets.forEach(s => io.observe(s));
+const knobAnchor = () => $('#sheet3 .controls');
+const scrollTo = el => el.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'});
 /* pressing 3 (or its tab) again while on sheet 3 brings the knob controls and chart into view: needed on 720p projectors */
 const goSheet = n => { const knob = n === 3 && activeSheet === 3 && document.getElementById('sheet3').getBoundingClientRect().top > -40;
-  (knob ? document.querySelector('#sheet3 .controls') : document.getElementById('sheet' + n)).scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block: 'start'}); };
+  scrollTo(knob ? knobAnchor() : document.getElementById('sheet' + n)); };
 tabs.forEach(t => t.addEventListener('click', e => { e.preventDefault(); goSheet(Number(t.dataset.sheet)); }));
 
 /* ---------- sheet 3: the knob ---------- */
 const PERIODS = K.periods;
-const st = {a: 25, p: 'W2', e: 'IPW', iv: 'row', show: {SB: true, SR: true}};
-const SRC = {SB: {name: 'BTS logs', sub: 'greedy · exact weights', col: 'var(--sb)', ink: 'var(--sb-ink)'},
-             SR: {name: 'Random logs', sub: 'exploration · approximate target', col: 'var(--sr)', ink: 'var(--sr)'}};
+const st = {a: 25, p: 'W2', e: 'IPW', iv: 'row', ep: 'E1', show: {SB: true, SR: true}};
+/* presets set period, alpha, estimator, interval, endpoint and logs together (D7) */
+const PRESETS = {1: {p: 'W2', a: 42}, 2: {p: 'W2', a: 43}, 3: {p: 'D26', a: 33}};
+const BASE_VIEW = {e: 'IPW', iv: 'row', ep: 'E1'};
+const SRC = {SB: {name: 'BTS logs', sub: 'greedy · logged propensities', col: 'var(--sb)'},
+             SR: {name: 'Random logs', sub: 'exploration · approximate target', col: 'var(--sr)'}};
 const ser = (p, s) => K.series[p + '·' + s];
 const bit = (b, k) => (b >> k) & 1;
 const E1 = (b, e, iv) => bit(b, (e === 'IPW' ? 1 : 5) + (iv === 'row' ? 0 : 1));
 const E2 = (b, e, iv) => bit(b, (e === 'IPW' ? 3 : 7) + (iv === 'row' ? 0 : 1));
-const lamOf = (s, i) => (s === 'SB' ? i / 100 : 1 - i / 100);
+const pass = b => (st.ep === 'E1' ? E1(b, st.e, st.iv) : E2(b, st.e, st.iv));
+const estName = () => (st.e === 'IPW' ? 'IPS' : 'SNIPS');
+const ivName = () => (st.iv === 'row' ? 'row-level' : 'hour-cluster');
+const cl = () => (st.iv === 'row' ? '' : '_cl');
 const X0 = 92, X1 = 980, xa = i => X0 + (X1 - X0) * i / 100;
 const MT = 16, MB = 300, ET = 330, EB = 436, ST = 456, SH = 20;
 let yr = [0, 1];
 const ym = v => MB - (MB - MT) * (v - yr[0]) / (yr[1] - yr[0]);
 const ye = v => EB - (EB - ET) * (Math.log10(Math.max(v, 1e-4)) + 4) / 4;
-function seVals(f, e, iv) { return iv === 'row' ? f[e].s : f[e].sc; }
+const seVals = (f, e, iv) => (iv === 'row' ? f[e].s : f[e].sc);
 function rangeFor(p) {
   let lo = Infinity, hi = -Infinity;
   for (const s of ['SB', 'SR']) { if (!st.show[s]) continue; const f = ser(p, s).f;
@@ -446,8 +515,16 @@ function poly(top, bot) { return top.map(p => p.join(',')).join(' ') + ' ' + bot
 function segments(bits) { const segs = []; let cur = null;
   for (let i = 0; i <= 100; i++) { const a = bits[i] & 1; if (!cur || cur.a !== a) { if (cur) cur.idx.push(i); cur = {a, idx: [i]}; segs.push(cur); } else cur.idx.push(i); }
   return segs; }
-function cellState(b, e, iv) { const a = b & 1, ok = E1(b, e, iv); return a ? (ok ? 'ok' : 'miss') : (ok ? 'unn' : 'jus'); }
+function cellState(b) { const a = b & 1, k = pass(b); return a ? (k ? 'ok' : 'miss') : (k ? 'unn' : 'jus'); }
 const FILL = {ok: '#8fbf96', miss: 'var(--red)', unn: 'url(#hatchL)', jus: '#59645c'};
+function epWords() { return st.ep === 'E1' ? {fail: 'reference outside own CI', ok: 'reference inside own CI', refOk: 'reference was inside'}
+                                           : {fail: 'paired test rejects', ok: 'paired test consistent', refOk: 'paired test consistent'}; }
+function legends() {
+  const w = epWords();
+  $('#legend-lines').innerHTML = `<span><i class="ln-ref"></i>A/B reference (noisy)</span><span><i class="ln-sb"></i>estimate from BTS logs</span><span><i class="ln-sr"></i>estimate from Random logs</span><span><i class="ln-miss"></i>answered, but ${w.fail}</span>`;
+  const cells = `<span><i class="sw-ok"></i>answers · ${w.ok} (diagnostic pass)</span><span><i class="sw-miss"></i>answers · ${w.fail}</span><span><i class="sw-unn"></i>can't tell · ${w.refOk}</span><span><i class="sw-jus"></i>can't tell · ${w.fail}</span>`;
+  $('#legend-cells').innerHTML = cells; $('#legend-strip').innerHTML = cells;
+}
 
 function drawKnob() {
   const svg = $('#knob'); yr = rangeFor(st.p);
@@ -461,30 +538,30 @@ function drawKnob() {
   for (let i = 0; i <= 100; i++) { rTop.push([xa(i), ym(fB.ref[i] + Z * sref[i])]); rBot.push([xa(i), ym(fB.ref[i] - Z * sref[i])]); rLine.push([xa(i), ym(fB.ref[i])]); }
   h += `<polygon points="${poly(rTop, rBot)}" class="refband"/>`;
   let lines = '';
+  const w = epWords();
   for (const s of ['SR', 'SB']) { if (!st.show[s]) continue; const f = ser(st.p, s).f; const v = f[st.e].v, se = seVals(f, st.e, st.iv);
     for (const sg of segments(f.bits)) { const top = sg.idx.map(i => [xa(i), ym(v[i] + Z * se[i])]), bot = sg.idx.map(i => [xa(i), ym(v[i] - Z * se[i])]);
       const line = sg.idx.map(i => [xa(i), ym(v[i])].join(',')).join(' ');
       if (sg.a) { h += `<polygon points="${poly(top, bot)}" fill="${SRC[s].col}" opacity=".2"/>`; lines += `<polyline points="${line}" fill="none" stroke="${SRC[s].col}" stroke-width="3.2" stroke-linejoin="round"/>`; }
       else { h += `<polygon points="${poly(top, bot)}" fill="url(#hatch)" opacity=".85"/>`; lines += `<polyline points="${line}" fill="none" stroke="#7f8a82" stroke-width="2.4" stroke-dasharray="7 5"/>`; } }
     let run = [];
-    const flush = () => { if (run.length) lines += `<polyline points="${run.join(' ')}" fill="none" stroke="var(--red)" stroke-width="7" stroke-linecap="round" opacity=".85"><title>answered, but the A/B check is outside the interval</title></polyline>`; run = []; };
-    for (let i = 0; i <= 100; i++) { if ((f.bits[i] & 1) && !E1(f.bits[i], st.e, st.iv)) run.push([xa(i), ym(v[i])].join(',')); else flush(); } flush(); }
+    const flush = () => { if (run.length) lines += `<polyline points="${run.join(' ')}" fill="none" stroke="var(--red)" stroke-width="7" stroke-linecap="round" opacity=".85"><title>answered, but ${w.fail}</title></polyline>`; run = []; };
+    for (let i = 0; i <= 100; i++) { if ((f.bits[i] & 1) && !pass(f.bits[i])) run.push([xa(i), ym(v[i])].join(',')); else flush(); } flush(); }
   h += `<polyline points="${rLine.map(p => p.join(',')).join(' ')}" class="refline" fill="none"/>` + lines;
-
-  // ESS panel
+  // weight-ESS panel
   h += `<line x1="${X0}" x2="${X1}" y1="${EB}" y2="${EB}" class="axis" stroke="#17201a"/>`;
   for (const [t, lab] of [[1, '100%'], [0.1, '10%'], [0.01, '1%'], [0.001, '0.1%']]) h += `<line x1="${X0}" x2="${X1}" y1="${ye(t)}" y2="${ye(t)}" stroke="#a9bfa9" stroke-dasharray="2 4"/><text x="${X0 - 10}" y="${ye(t) + 5}" class="tick" text-anchor="end">${lab}</text>`;
-  h += `<line x1="${X0}" x2="${X1}" y1="${ye(TAU)}" y2="${ye(TAU)}" class="thr"/><text x="${X0 + 8}" y="${ye(TAU) + 19}" class="lbl-s halo">gate floor: ESS/n ${(100 * TAU).toFixed(0)}% (frozen)</text>`;
+  h += `<line x1="${X0}" x2="${X1}" y1="${ye(TAU)}" y2="${ye(TAU)}" class="thr"/><text x="${X1 - 4}" text-anchor="end" y="${ye(TAU) + 19}" class="lbl-s halo">floor ${(100 * TAU).toFixed(0)}% (frozen heuristic)</text>`;
   h += `<text x="${X0 - 64}" y="${(ET + EB) / 2}" class="lbl-s" transform="rotate(-90 ${X0 - 64} ${(ET + EB) / 2})" text-anchor="middle">ESS / n</text>`;
   for (const s of ['SR', 'SB']) { if (!st.show[s]) continue; const S = ser(st.p, s); const f = S.f;
     h += `<polyline points="${f.ess.map((v, i) => [xa(i), ye(v)].join(',')).join(' ')}" fill="none" stroke="${SRC[s].col}" stroke-width="3"/>`;
     const pr = K.pred[st.p + '·' + s]; const fa = S.summary.first_abstain;
-    if (pr && pr.gate_alpha != null) { const px = xa(Math.round(pr.gate_alpha * 100)); h += `<path d="M${px - 8},${ye(TAU) + 18} l8,-13 l8,13 z" fill="none" stroke="${SRC[s].col}" stroke-width="2"><title>pre-registered prediction: first can't-tell at α ${pr.gate_alpha.toFixed(2)}</title></path>`; }
-    if (fa != null) { const px = xa(Math.round(fa * 100)); h += `<path d="M${px - 7},${ye(TAU) - 4} l7,-12 l7,12 z" fill="${SRC[s].col}"><title>observed: first can't-tell at α ${fa.toFixed(2)}</title></path>`; } }
+    if (pr && pr.gate_alpha != null) { const px = xa(Math.round(pr.gate_alpha * 100)); h += `<path d="M${px - 8},${ye(TAU) + 18} l8,-13 l8,13 z" fill="none" stroke="${SRC[s].col}" stroke-width="2"><title>endpoint-derived check (registered): first can't-tell at α ${pr.gate_alpha.toFixed(2)}</title></path>`; }
+    if (fa != null) { const px = xa(Math.round(fa * 100)); h += `<path d="M${px - 7},${ye(TAU) - 4} l7,-12 l7,12 z" fill="${SRC[s].col}"><title>computed: first can't-tell at α ${fa.toFixed(2)}</title></path>`; } }
   // mini strip for the selected period
   ['SB', 'SR'].forEach((s, r) => { const f = ser(st.p, s).f; const y = ST + r * (SH + 5); const cw = (X1 - X0) / 101;
     h += `<text x="${X0 - 10}" y="${y + 15}" class="tick" text-anchor="end">${s === 'SB' ? 'BTS' : 'Random'}</text>`;
-    for (let i = 0; i <= 100; i++) h += `<rect x="${X0 + i * cw}" y="${y}" width="${cw + .4}" height="${SH}" fill="${FILL[cellState(f.bits[i], st.e, st.iv)]}"/>`;
+    for (let i = 0; i <= 100; i++) h += `<rect x="${X0 + i * cw}" y="${y}" width="${cw + .4}" height="${SH}" fill="${FILL[cellState(f.bits[i])]}"/>`;
     h += `<rect x="${X0}" y="${y}" width="${X1 - X0}" height="${SH}" fill="none" stroke="#17201a" stroke-width="1"/>`; });
   for (const [t, lab] of [[0, '0'], [25, '0.25'], [50, '0.5'], [75, '0.75'], [100, '1']]) h += `<text x="${xa(t)}" y="${ST + 2 * SH + 28}" class="tick" text-anchor="middle">${lab}</text>`;
   h += `<text x="${X0}" y="${ST + 2 * SH + 50}" class="lbl" font-size="14">← BTS as deployed</text><text x="${X1}" y="${ST + 2 * SH + 50}" class="lbl" font-size="14" text-anchor="end">uniform random →</text>`;
@@ -495,36 +572,43 @@ function drawKnob() {
 
 const lastAns = {SB: null, SR: null};
 function readoutSource(s, i) {
-  const S = ser(st.p, s), f = S.f, b = f.bits[i], v = f[st.e].v[i], se = seVals(f, st.e, st.iv)[i];
-  const lo = v - Z * se, hi = v + Z * se, a = b & 1, inside = E1(b, st.e, st.iv), miss = st.iv === 'row' ? f[st.e].m[i] : f[st.e].mc[i];
-  const lam = lamOf(s, i), ess = f.ess[i], maxw = (1 - lam) + lam * S.max_x;
-  const estName = st.e === 'IPW' ? 'IPS' : 'SNIPS';
-  const ours = a ? `<span class="ok">✓ answers</span> <span style="font:500 16px var(--mono)">${fx(v)} (${fx(lo)} … ${fx(hi)})</span>`
-                 : `<span class="stamp stamp-cant" data-k="${s}" style="font-size:17px;padding:6px 9px 5px">Can't tell</span><span class="why">${esc(f.why[i].replace(/\|mean-weight z\|/g, 'mean-weight |z|'))}</span>`;
-  const check = inside ? `<span class="ok">inside ✓</span>` : `<span class="bad">outside by ${fx(miss)}</span>`;
+  const S = ser(st.p, s), f = S.f, b = f.bits[i], E = f[st.e];
+  const key = `${KR}series['${st.p}·${s}'].rows[${i}]`, ek = `${key}.${st.e}`, c = cl();
+  const v = E.v[i], se = st.iv === 'row' ? E.s[i] : E.sc[i], lo = v - Z * se, hi = v + Z * se, a = b & 1;
+  const e1 = E1(b, st.e, st.iv), e2 = E2(b, st.e, st.iv), miss = st.iv === 'row' ? E.m[i] : E.mc[i];
+  const d = v - f.ref[i], ds = st.iv === 'row' ? E.ds[i] : E.dsc[i], dlo = d - Z * ds, dhi = d + Z * ds;
+  const e1t = e1 ? '<span class="ok">E1 inside</span>' : `<span class="bad">E1 outside by ${sn(fx(miss), `${ek}.miss${c} ×1000 (reference to the nearest CI edge)`)}</span>`;
+  const e2t = `<span class="${e2 ? 'ok' : 'bad'}">E2 ${e2 ? 'consistent' : e1 ? 'still rejects' : 'rejects'}</span> (difference CI ${sn(fx(dlo), `(${ek}.v − rows[${i}].ref) − 1.96 × ${ek}.d_se${c}, ×1000`)} … ${sn(fx(dhi), `(${ek}.v − rows[${i}].ref) + 1.96 × ${ek}.d_se${c}, ×1000`)})`;
+  const why = f.why[i];
+  const zNote = /mean-weight z/.test(why) ? '<span class="znote">The z-test flags this log slice; it does not prove the cause.</span>' : '';
+  const ours = a ? `<span class="ok">✓ answers</span><span class="why">${sn('diagnostic pass', `${key}.answer (components/report/gate.py decide() with eval/gate_rule.json)`)}, not a deployment guarantee</span>`
+                 : `<span class="stamp stamp-cant" data-k="${s}">Can't tell</span><span class="why">${sn(esc(why.replace(/\|mean-weight z\|/g, 'mean-weight |z|')), `${key}.why (components/report/gate.py decide() with eval/gate_rule.json)`)}${zNote}</span>`;
+  const mw = f.mw[i];
   return `<div class="row ${s.toLowerCase()}"><div class="head"><b class="src">${SRC[s].name}</b><span class="tag">${SRC[s].sub}</span></div>
-    <dl class="kv"><dt>${estName} says</dt><dd>${fx(v)} <span style="color:var(--ink-3)">(${fx(lo)} … ${fx(hi)})</span></dd>
-    <dt>check is</dt><dd>${check}</dd>
-    <dt>overlap</dt><dd>ESS/n ${pc(ess)}: ${grp(S.n)} rows ≈ ${grp(f.essn[i])} rows from the candidate itself</dd>
-    <dt>weights</dt><dd>max ${maxw >= 100 ? grp(maxw) : maxw.toFixed(2)} · mean-weight z ${fx(f.z[i], 2, true)}</dd></dl>
+    <dl class="kv"><dt>${estName()} · ${st.iv === 'row' ? 'row' : 'cluster'}</dt><dd>${sn(fx(v), `${ek}.v ×1000`)} (${sn(fx(lo), `${ek}.v − 1.96 × ${ek}.se${c}, ×1000`)} … ${sn(fx(hi), `${ek}.v + 1.96 × ${ek}.se${c}, ×1000`)})</dd>
+    <dt>endpoints</dt><dd class="epl">${e1t}; ${e2t}</dd>
+    <dt>weight ESS</dt><dd>${sn(grp(f.essn[i]), `${key}.ess (weight concentration, not precision)`)} = ${sn(pc(f.ess[i]), `${key}.ess_frac`)} of ${sn(grp(S.n), `${KR}series['${st.p}·${s}'].n_logging`)} rows</dd>
+    <dt>weights</dt><dd>max ${sn(mw >= 100 ? grp(mw) : mw.toFixed(2), `${key}.max_w`)} · mean-weight z ${sn(fx(f.z[i], 2, true), `${key}.z`)}</dd></dl>
     <div class="verdict-cell"><span class="tag" style="min-width:94px">our evaluator</span>${ours}</div></div>`;
 }
 function drawCursor(fromMove) {
   const i = st.a; $('#alpha').value = i; $('#alpha-val').textContent = 'α = ' + (i / 100).toFixed(2);
   $('#alpha-mix').textContent = `= ${100 - i}% BTS + ${i}% uniform`;
   const cur = $('#cur'); if (cur) cur.setAttribute('transform', `translate(${xa(i)},0)`);
-  const fB = ser(st.p, 'SB').f; const sref = (st.iv === 'row' ? fB.sref : fB.srefc)[i];
+  const fB = ser(st.p, 'SB').f, sref = (st.iv === 'row' ? fB.sref : fB.srefc)[i];
   let dots = `<circle cx="${xa(i)}" cy="${ym(fB.ref[i])}" r="6.5" fill="#17201a" stroke="#f6f9f2" stroke-width="2"/>`;
   for (const s of ['SR', 'SB']) if (st.show[s]) { const f = ser(st.p, s).f; dots += `<circle cx="${xa(i)}" cy="${ym(f[st.e].v[i])}" r="6.5" fill="${SRC[s].col}" stroke="#f6f9f2" stroke-width="2"/>`; }
   $('#dots').innerHTML = dots;
-  const per = PERIODS.find(p => p.id === st.p);
+  const per = PERIODS.find(p => p.id === st.p), rk = `${KR}series['${st.p}·SB'].rows[${i}]`;
   let h = `<div class="row"><div class="head"><b>α = ${(i / 100).toFixed(2)}</b><span class="tag">${esc(per.label)}</span></div>
-    <dl class="kv"><dt>A/B check</dt><dd><b>${fx(fB.ref[i])}</b> <span style="color:var(--ink-3)">± ${fx(Z * sref)}</span></dd></dl></div>`;
+    <dl class="kv"><dt>A/B reference</dt><dd>${sn('<b>' + fx(fB.ref[i]) + '</b>', `${rk}.ref ×1000`)} ± ${sn(fx(Z * sref), `${rk}.se_ref${cl()} ×1.96 ×1000`)}<span class="dim">noisy; not known truth</span></dd></dl>
+    <p class="defs">E1: reference inside the estimate's own 95% CI. E2 (= S1): 95% CI of estimate − reference contains 0. Weight ESS measures concentration, not precision.</p></div>`;
   for (const s of ['SB', 'SR']) if (st.show[s]) h += readoutSource(s, i);
   $('#readout').innerHTML = h;
   for (const s of ['SB', 'SR']) { const a = ser(st.p, s).f.bits[i] & 1; const el = $(`#readout .stamp[data-k="${s}"]`);
     if (fromMove && el && lastAns[s] === 1 && a === 0 && !reduce) el.classList.add('thump'); lastAns[s] = a; }
   $$('#strip .cursor-line').forEach(l => { const x0 = Number(l.dataset.x0), x = x0 + (X1 - x0) * i / 100; l.setAttribute('x1', x); l.setAttribute('x2', x); });
+  syncPresets();
   writeHash();
 }
 function drawStrip() {
@@ -532,47 +616,62 @@ function drawStrip() {
   const SX0 = 150, xs = i => SX0 + (X1 - SX0) * i / 100, RH = 19, top = 10, cw = (X1 - SX0) / 101; let h = '';
   rows.forEach(([p, s], r) => { const y = top + r * RH + (r >> 1) * 4; const f = ser(p.id, s).f; const sel = p.id === st.p;
     h += `<g class="srow" data-p="${p.id}" style="cursor:pointer"><text x="${SX0 - 10}" y="${y + 13}" class="tick" text-anchor="end" style="${sel ? 'font-weight:700;fill:#17201a' : ''}">${p.id === 'W' ? 'W 84h' : p.id.replace('D', 'Nov ')} · ${s === 'SB' ? 'BTS' : 'Random'}</text>`;
-    for (let i = 0; i <= 100; i++) h += `<rect x="${SX0 + i * cw}" y="${y}" width="${cw + .4}" height="${RH - 3}" fill="${FILL[cellState(f.bits[i], st.e, st.iv)]}"/>`;
+    for (let i = 0; i <= 100; i++) h += `<rect x="${SX0 + i * cw}" y="${y}" width="${cw + .4}" height="${RH - 3}" fill="${FILL[cellState(f.bits[i])]}"/>`;
     h += `<rect x="${SX0}" y="${y}" width="${X1 - SX0}" height="${RH - 3}" fill="none" stroke="${sel ? '#17201a' : '#a9bfa9'}" stroke-width="${sel ? 2.4 : 1}"/></g>`; });
   const bottom = top + rows.length * RH + 6 * 4;
   for (const [t, lab] of [[0, '0'], [25, '0.25'], [50, '0.5'], [75, '0.75'], [100, '1']]) h += `<text x="${xs(t)}" y="${bottom + 16}" class="tick" text-anchor="middle">${lab}</text>`;
   h += `<text x="${SX0 - 10}" y="${bottom + 16}" class="tick" text-anchor="end">α</text><line class="cursor-line" data-x0="${SX0}" x1="${xs(st.a)}" x2="${xs(st.a)}" y1="${top - 6}" y2="${bottom}"/>`;
   svg.setAttribute('viewBox', `0 0 1000 ${bottom + 24}`); svg.innerHTML = h;
   $$('#strip .srow').forEach(g => g.addEventListener('click', () => { st.p = g.dataset.p; full(); }));
-  const T = K.totals[`${st.e}_${st.iv}_E1`], T2 = K.totals[`${st.e}_cluster_E1`];
-  const W = K.where.filter(w => st.e === 'IPW' && st.iv === 'row');
-  const where = W.map(w => `${esc(w.label.split(' · ')[0])}, ${w.source === 'SB' ? 'BTS' : 'Random'} logs, α ${w.from.toFixed(2)}–${w.to.toFixed(2)}, worst ${w.max_miss.toFixed(3)} per 1,000 beyond the interval`).join('; ');
-  $('#totals').innerHTML = `${st.e === 'IPW' ? 'IPS' : 'SNIPS'}, ${st.iv === 'row' ? 'row-level' : 'hour-cluster'} intervals, 12 series × 101 α: <b>${T.answered_hold}</b> answered with the check inside · <b>${T.answered_miss}</b> answered with the check outside${where ? ' (' + where + ')' : ''} · <b>${T.unnecessary_abstention}</b> refused although the check was inside · <b>${T.justified_abstention}</b> refused with the check outside.` +
-    (st.iv === 'row' ? ` With hour-cluster intervals: ${T2.answered_miss} answered with the check outside.` : '') + ` Reproduction ${K.repro[0]}/${K.repro[1]} · closed forms vs gate.py ${K.xcheck[0]}/${K.xcheck[1]}.`;
+  const key = `${st.e}_${st.iv}_${st.ep}`, sk = `${st.e}_${st.iv === 'row' ? 'row' : 'cluster'}.${st.ep}`;
+  const fmt = src => { const T = K.totals[src][key]; return sn(`${T.answered_hold} / ${T.answered_miss} / ${T.unnecessary_abstention} / ${T.justified_abstention}`, `${KR}series[*·${src}].summary.${sk}, summed over the 6 ${src === 'SB' ? 'BTS' : 'Random'}-logs series`); };
+  $('#totals').innerHTML = `<b>This view</b> (${estName()} · ${ivName()} · ${st.ep === 'E1' ? 'E1 own CI' : 'E2 paired'}), as answered-pass / answered-fail / refused-pass / refused-fail: BTS logs ${fmt('SB')} · Random logs ${fmt('SR')}. Reproduction ${K.repro[0]}/${K.repro[1]} · closed forms vs gate.py ${K.xcheck[0]}/${K.xcheck[1]} series.`;
 }
 function drawPreds() {
   const items = []; ['SB', 'SR'].forEach(s => { const pr = K.pred[st.p + '·' + s]; if (!pr) return;
     for (const [k, v] of Object.entries(pr.items)) if (v && v.grade) items.push([s, k, v]); });
-  const name = {gate: 'gate', E1_IPW: 'IPS: check inside', E2_IPW: 'IPS: S1 test', all: 'all'};
-  let h = `<table class="pred"><thead><tr><th>Logs</th><th>Item</th><th>Predicted</th><th>Observed</th><th></th></tr></thead><tbody>`;
+  const name = {gate: 'gate', E1_IPW: 'IPS E1', E2_IPW: 'IPS E2 (S1)', all: 'all'};
+  let h = `<table class="pred"><thead><tr><th>Logs</th><th>Item</th><th>Registered check</th><th>Computed</th><th></th></tr></thead><tbody>`;
   for (const [s, k, v] of items) { const hit = v.grade === 'hit', na = v.grade === 'n/a';
     h += `<tr><td>${s === 'SB' ? 'BTS' : 'Random'}</td><td>${name[k] || k}</td><td>${esc(v.predicted).replace(/alpha/g, 'α')}</td><td>${esc(v.result === true ? 'yes' : v.result).replace(/alpha/g, 'α')}</td><td class="${na ? '' : hit ? 'hit' : 'miss'}">${na ? '—' : hit ? '✓' : '✗'}</td></tr>`; }
-  h += `</tbody></table><p class="fine" style="margin-top:8px">All periods: <b>${K.hits}/${K.total}</b> predictions hit. Misses: ${K.misses.map(esc).join(' · ').replace(/alpha/g, 'α')}. Predictions came from committed α-endpoints alone (<code>demo/prereg_predictions.py</code>). By algebra IPS's error is exactly α × its error at α = 1, and the gate's mean-weight z does not change with α, so much of this is foreseeable. The new evidence is SNIPS, hour-cluster intervals, Nov 24, W, and the exact crossings.</p>`;
+  h += `</tbody></table><p class="fine" style="margin-top:8px">This period's registered checks (${sn(esc(st.p), `${KR}predictions['${st.p}·SB'], predictions['${st.p}·SR']`)}). Mismatches over all periods: ${K.misses.map(esc).join(' · ').replace(/alpha/g, 'α')}.</p>`;
   $('#preds').innerHTML = h;
+}
+function syncControls() {
+  $$('.seg[data-k] button').forEach(b => { const k = b.closest('.seg').dataset.k, v = b.dataset.v;
+    b.setAttribute('aria-pressed', String(k === 'src' ? st.show[v] : st[k] === v)); });
+  syncPresets();
+}
+function syncPresets() {
+  $$('#presets button').forEach(b => { const P = PRESETS[b.dataset.preset];
+    const on = st.p === P.p && st.a === P.a && st.e === BASE_VIEW.e && st.iv === BASE_VIEW.iv && st.ep === BASE_VIEW.ep && st.show.SB && st.show.SR;
+    b.setAttribute('aria-pressed', String(on)); });
+}
+function applyPreset(n) {
+  const P = PRESETS[n];
+  const sameView = st.p === P.p && st.e === BASE_VIEW.e && st.iv === BASE_VIEW.iv && st.ep === BASE_VIEW.ep && st.show.SB && st.show.SR;
+  Object.assign(st, BASE_VIEW, {p: P.p, a: P.a}); st.show.SB = st.show.SR = true; activeSheet = 3;
+  if (sameView) drawCursor(true); else full();
+  const top = knobAnchor().getBoundingClientRect().top;
+  if (top < -2 || top > 40) scrollTo(knobAnchor());
 }
 function buildControls() {
   $('#periods').innerHTML = PERIODS.map(p => `<button data-v="${p.id}" title="${esc(p.label)}">${p.id === 'W' ? 'W 84h' : p.id.startsWith('D') ? p.id.replace('D', 'Nov ') : p.id}</button>`).join('');
-  const sync = () => { $$('#periods button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === st.p)));
-    $$('#est button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === st.e)));
-    $$('#iv button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === st.iv)));
-    $$('#srcs button').forEach(b => b.setAttribute('aria-pressed', String(st.show[b.dataset.v]))); };
-  $('#periods').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { st.p = b.dataset.v; full(); } });
-  $('#est').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { st.e = b.dataset.v; full(); } });
-  $('#iv').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { st.iv = b.dataset.v; full(); } });
-  $('#srcs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { const v = b.dataset.v; const o = v === 'SB' ? 'SR' : 'SB'; st.show[v] = !st.show[v]; if (!st.show[v] && !st.show[o]) st.show[o] = true; full(); } });
+  document.addEventListener('click', e => {
+    const pb = e.target.closest('#presets button'); if (pb) { applyPreset(Number(pb.dataset.preset)); return; }
+    const b = e.target.closest('.seg[data-k] button'); if (!b) return;
+    const k = b.closest('.seg').dataset.k, v = b.dataset.v;
+    if (k === 'src') { const o = v === 'SB' ? 'SR' : 'SB'; st.show[v] = !st.show[v]; if (!st.show[v] && !st.show[o]) st.show[o] = true; } else st[k] = v;
+    full();
+  });
   $('#alpha').addEventListener('input', e => { st.a = Number(e.target.value); drawCursor(true); });
-  buildControls.sync = sync;
 }
-function full() { buildControls.sync(); drawKnob(); drawStrip(); drawPreds(); lastAns.SB = lastAns.SR = null; drawCursor(false); }
-function writeHash() { const h = `#s3:a=${st.a},p=${st.p},e=${st.e},iv=${st.iv},src=${['SB', 'SR'].filter(s => st.show[s]).join('+')}`; if (activeSheet === 3 && location.hash !== h) history.replaceState(null, '', h); }
+function full() { syncControls(); legends(); drawKnob(); drawStrip(); drawPreds(); lastAns.SB = lastAns.SR = null; drawCursor(false); }
+function writeHash() { const h = `#s3:a=${st.a},p=${st.p},e=${st.e},iv=${st.iv},ep=${st.ep},src=${['SB', 'SR'].filter(s => st.show[s]).join('+')}`; if (activeSheet === 3 && location.hash !== h) history.replaceState(null, '', h); }
 function readHash() { const m = location.hash.match(/^#s3:(.*)$/); if (!m) return false; const kv = Object.fromEntries(m[1].split(',').map(x => x.split('=')));
   if (kv.a != null && /^\d+$/.test(kv.a)) st.a = Math.min(100, Math.max(0, Number(kv.a)));
   if (kv.p && PERIODS.some(p => p.id === kv.p)) st.p = kv.p; if (kv.e === 'IPW' || kv.e === 'SNIPW') st.e = kv.e; if (kv.iv === 'row' || kv.iv === 'cluster') st.iv = kv.iv;
+  if (kv.ep === 'E1' || kv.ep === 'E2') st.ep = kv.ep;
   if (kv.src) { st.show.SB = kv.src.includes('SB'); st.show.SR = kv.src.includes('SR'); if (!st.show.SB && !st.show.SR) st.show.SB = st.show.SR = true; }
   return true; }
 
@@ -586,10 +685,10 @@ function drawSweep() {
   const wrong = SW.filter(p => p.naive_ok < 0.5); if (wrong.length) { const x0 = xs(wrong[0].drift) - 14, x1 = xs(wrong[wrong.length - 1].drift) + 14;
     h += `<rect x="${x0}" y="${T}" width="${x1 - x0}" height="${B - T}" fill="rgba(200,16,46,.07)"/><text x="${(x0 + x1) / 2}" y="${T + 18}" class="lbl" text-anchor="middle" fill="var(--red)" style="fill:var(--red)">dashboard has the wrong sign</text>`; }
   const pl = k => SW.map(p => [xs(p.drift), ys(p[k])].join(',')).join(' ');
-  h += `<polyline points="${pl('naive')}" class="l-naive"/><polyline points="${pl('dr')}" class="l-dr"/><polyline points="${pl('truth')}" class="l-truth"/>`;
+  h += `<polyline points="${pl('naive')}" class="l-naive"/><polyline points="${pl('dr')}" class="l-dr"/><polyline points="${pl('ref')}" class="l-ref"/>`;
   SW.forEach(p => { h += `<circle cx="${xs(p.drift)}" cy="${ys(p.naive)}" r="4" fill="var(--red)"/><circle cx="${xs(p.drift)}" cy="${ys(p.dr)}" r="4.5" fill="var(--ok)"/>`; });
   const last = SW[SW.length - 1];
-  h += `<text x="${xs(last.drift) - 6}" y="${ys(last.naive) - 10}" class="lbl" text-anchor="end" style="fill:var(--red)">dashboard (naive)</text><text x="${xs(last.drift) - 6}" y="${ys(last.dr) + 26}" class="lbl" text-anchor="end" style="fill:var(--ok)">DR ≈ truth (dashed)</text>`;
+  h += `<text x="${xs(last.drift) - 6}" y="${ys(last.naive) - 10}" class="lbl" text-anchor="end" style="fill:var(--red)">dashboard (naive)</text><text x="${xs(last.drift) - 6}" y="${ys(last.dr) + 26}" class="lbl" text-anchor="end" style="fill:var(--ok)">DR ≈ Monte-Carlo reference (dashed)</text>`;
   for (const d of [-1.5, -1, -0.5, 0, 0.5, 1, 1.5]) h += `<text x="${xs(d)}" y="${B + 22}" class="tick" text-anchor="middle">${d > 0 ? '+' : d < 0 ? M : ''}${Math.abs(d).toFixed(1)}</text>`;
   h += `<text x="${(L + R) / 2}" y="${B + 50}" text-anchor="middle" style="font-size:18px;fill:var(--ink-3)">response drift between the periods (logit) · y: policy effect, percentage points</text>`;
   h += `<g id="sw-cur"><line x1="0" x2="0" y1="${T - 6}" y2="${B + 6}" stroke="var(--red)" stroke-width="2"/></g>`;
@@ -597,27 +696,30 @@ function drawSweep() {
 }
 function drawSweepCursor() {
   const i = Number($('#drift').value), p = SW[i]; const xs = $('#sweep')._xs; $('#sw-cur').setAttribute('transform', `translate(${xs(p.drift)},0)`);
-  $('#drift-val').textContent = (p.drift > 0 ? '+' : p.drift < 0 ? M : '') + Math.abs(p.drift).toFixed(2);
+  const dl = (p.drift > 0 ? '+' : p.drift < 0 ? M : '') + Math.abs(p.drift).toFixed(2);
+  $('#drift-val').textContent = dl;
   const ok = Math.round(100 * p.naive_ok);
-  $('#sweep-read').innerHTML = `<div class="row"><div class="head"><b>Drift ${(p.drift > 0 ? '+' : p.drift < 0 ? M : '') + Math.abs(p.drift).toFixed(2)}</b><span class="tag">${p.seeds} seeds · <span class="stamp stamp-syn" style="font-size:10px;padding:3px 5px 2px">synthetic</span></span></div>
-    <dl class="kv"><dt>truth</dt><dd><b>${fx(p.truth, 2, true)}</b> points</dd>
-    <dt>dashboard</dt><dd class="${ok < 50 ? 'bad' : ''}">${fx(p.naive, 2, true)} · right sign in ${ok}% of seeds · RMSE ${p.naive_rmse.toFixed(2)}</dd>
-    <dt>DR</dt><dd>${fx(p.dr, 2, true)} · RMSE ${p.dr_rmse.toFixed(2)} · 95% coverage ${p.dr_cover.toFixed(2)}</dd></dl>
-    <p class="fine" style="margin:8px 0 0">source: ${esc(p.src)}</p></div>`;
+  $('#sweep-read').innerHTML = `<div class="row"><div class="head"><b>Drift ${dl}</b><span class="tag">${sn(String(p.seeds), p.src)} seeds · <span class="stamp stamp-syn" style="font-size:10px;padding:3px 5px 2px">synthetic</span></span></div>
+    <dl class="kv"><dt>reference</dt><dd>${sn('<b>' + fx(p.ref, 2, true) + '</b>', p.src)} points (Monte Carlo)</dd>
+    <dt>dashboard</dt><dd class="${ok < 50 ? 'bad' : ''}">${sn(fx(p.naive, 2, true), p.src)} · right sign in ${sn(ok + '%', p.src)} of seeds · RMSE ${sn(p.naive_rmse.toFixed(2), p.src)}</dd>
+    <dt>DR</dt><dd>${sn(fx(p.dr, 2, true), p.src)} · RMSE ${sn(p.dr_rmse.toFixed(2), p.src)} · 95% coverage ${sn(p.dr_cover.toFixed(2), p.src)}</dd></dl></div>`;
 }
 $('#drift').addEventListener('input', drawSweepCursor);
 
 /* ---------- keys ---------- */
 document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { hideTip(); return; }
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const t = e.target; if (t.matches && t.matches('input[type=range]') && (e.key.startsWith('Arrow') || e.key === 'Home' || e.key === 'End')) return;
   const P = PERIODS.map(p => p.id);
   if (/^[1-4]$/.test(e.key)) { goSheet(Number(e.key)); e.preventDefault(); }
+  else if (/^[5-7]$/.test(e.key)) { applyPreset(Number(e.key) - 4); e.preventDefault(); }
   else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { if (activeSheet === 4) { const d = $('#drift'); d.value = Math.max(0, Math.min(12, Number(d.value) + (e.key === 'ArrowRight' ? 1 : -1))); drawSweepCursor(); }
     else { st.a = Math.max(0, Math.min(100, st.a + (e.key === 'ArrowRight' ? 1 : -1) * (e.shiftKey ? 5 : 1))); drawCursor(true); } e.preventDefault(); }
   else if (e.key === ']' || e.key === '[') { st.p = P[(P.indexOf(st.p) + (e.key === ']' ? 1 : P.length - 1)) % P.length]; full(); e.preventDefault(); }
   else if (e.key === 'i') { st.e = st.e === 'IPW' ? 'SNIPW' : 'IPW'; full(); }
   else if (e.key === 'c') { st.iv = st.iv === 'row' ? 'cluster' : 'row'; full(); }
+  else if (e.key === 'e') { st.ep = st.ep === 'E1' ? 'E2' : 'E1'; full(); }
 });
 
 buildControls();
@@ -625,7 +727,7 @@ const fromHash = readHash();
 full(); drawSweep(); drawSweepCursor();
 if (fromHash) { activeSheet = 3; setTimeout(() => document.getElementById('sheet3').scrollIntoView({block: 'start', behavior: 'instant'}), 0); }
 else if (/^#sheet[1-4]$/.test(location.hash)) setTimeout(() => document.getElementById(location.hash.slice(1)).scrollIntoView({block: 'start', behavior: 'instant'}), 0);
-window.__P3 = {st, full, drawCursor, goSheet};
+window.__P3 = {st, full, drawCursor, goSheet, applyPreset};
 })();
 </script>
 </body>

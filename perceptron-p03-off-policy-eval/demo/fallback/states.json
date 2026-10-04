@@ -1,0 +1,492 @@
+{
+ "captured_at": "2026-10-04T17:27:31.002Z",
+ "page_sha256": "3cfd67de0ecde14602d6ef265900e6d50563c78afb23f355783ace072788c2bf",
+ "viewport": "1600x900",
+ "browser": "Chromium (Playwright)",
+ "method": "clicks, keys and scrolling only, in talk-track order; state checked against each file name before saving",
+ "shots": [
+  {
+   "file": "01_b1_sheet1_top.png",
+   "did": "page opened at the top of sheet 1",
+   "state": {
+    "sheet": 1,
+    "p": "W2",
+    "a": 25,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR",
+    "presets": [],
+    "alpha_label": "α = 0.25",
+    "pressed": {
+     "p": [
+      "W2"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "row",
+      "row"
+     ],
+     "ep": [
+      "E1",
+      "E1"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": false,
+     "readout": false,
+     "strip": false,
+     "primary": false
+    }
+   },
+   "readout_bts": "",
+   "sha256": "8442c977d747cd6abfc09be75010bcfc6dcb7933a4b0098a180c38dc44ad607f",
+   "bytes": 247889
+  },
+  {
+   "file": "02_b2_sheet1_cant_tell.png",
+   "did": "scroll down to the CAN'T TELL stamp",
+   "state": {
+    "sheet": 1,
+    "p": "W2",
+    "a": 25,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR",
+    "presets": [],
+    "alpha_label": "α = 0.25",
+    "pressed": {
+     "p": [
+      "W2"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "row",
+      "row"
+     ],
+     "ep": [
+      "E1",
+      "E1"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": true,
+     "readout": false,
+     "strip": false,
+     "primary": false
+    }
+   },
+   "readout_bts": "",
+   "sha256": "805de6f44f7d8f5dcc6b17916ca028e95ac106b7514d13ce5eea4029e612a937",
+   "bytes": 320129
+  },
+  {
+   "file": "03_b3_sheet2.png",
+   "did": "press 2",
+   "state": {
+    "sheet": 2,
+    "p": "W2",
+    "a": 25,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR",
+    "presets": [],
+    "alpha_label": "α = 0.25",
+    "pressed": {
+     "p": [
+      "W2"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "row",
+      "row"
+     ],
+     "ep": [
+      "E1",
+      "E1"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": false,
+     "readout": false,
+     "strip": false,
+     "primary": false
+    }
+   },
+   "readout_bts": "",
+   "sha256": "3a08c9f8f4b6166256ad9173e555ff26886af900f1a4f1eeb6e17d18cccd0047",
+   "bytes": 268570
+  },
+  {
+   "file": "04_b4_preset5_W2_a0.42_IPS_row_E1.png",
+   "did": "press 5",
+   "state": {
+    "sheet": 3,
+    "p": "W2",
+    "a": 42,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR",
+    "presets": [
+     "1"
+    ],
+    "alpha_label": "α = 0.42",
+    "pressed": {
+     "p": [
+      "W2"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "row",
+      "row"
+     ],
+     "ep": [
+      "E1",
+      "E1"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": false,
+     "readout": true,
+     "strip": false,
+     "primary": false
+    }
+   },
+   "readout_bts": "BTS logs GREEDY · LOGGED PROPENSITIES IPS · row 4.309 (4.178 … 4.439) endpoints E1 inside; E2 consistent (difference CI −0.198 … 0.087) weight ESS 138,643 = 5.0% of 2,769,425 rows weights max 5,251 · mean-weight z −0.62 OUR EVALUATOR ✓ answers diagnostic pass, not a deployment guarantee",
+   "sha256": "6dc5439bb565c9d5b95d2c2c7891d142e98470c25a6e6fe5f6a7aad7d7744d81",
+   "bytes": 286031
+  },
+  {
+   "file": "05_b5_preset6_W2_a0.43_IPS_row_E1.png",
+   "did": "press 6",
+   "state": {
+    "sheet": 3,
+    "p": "W2",
+    "a": 43,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR",
+    "presets": [
+     "2"
+    ],
+    "alpha_label": "α = 0.43",
+    "pressed": {
+     "p": [
+      "W2"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "row",
+      "row"
+     ],
+     "ep": [
+      "E1",
+      "E1"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": false,
+     "readout": true,
+     "strip": false,
+     "primary": false
+    }
+   },
+   "readout_bts": "BTS logs GREEDY · LOGGED PROPENSITIES IPS · row 4.295 (4.163 … 4.427) endpoints E1 inside; E2 consistent (difference CI −0.203 … 0.089) weight ESS 132,565 = 4.8% of 2,769,425 rows weights max 5,376 · mean-weight z −0.62 OUR EVALUATOR CAN'T TELL ESS/n 0.0479 < 0.05",
+   "sha256": "d710436c2c680d7aee2d51687f97691e379944188720b34bdc57e5051851bdca",
+   "bytes": 285731
+  },
+  {
+   "file": "06_b6_preset7_Nov26_a0.33_IPS_row_E1.png",
+   "did": "press 7",
+   "state": {
+    "sheet": 3,
+    "p": "D26",
+    "a": 33,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR",
+    "presets": [
+     "3"
+    ],
+    "alpha_label": "α = 0.33",
+    "pressed": {
+     "p": [
+      "D26"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "row",
+      "row"
+     ],
+     "ep": [
+      "E1",
+      "E1"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": false,
+     "readout": true,
+     "strip": false,
+     "primary": false
+    }
+   },
+   "readout_bts": "BTS logs GREEDY · LOGGED PROPENSITIES IPS · row 4.379 (4.249 … 4.510) endpoints E1 outside by 0.018; E2 rejects (difference CI −0.279 … −0.018) weight ESS 112,867 = 7.0% of 1,611,904 rows weights max 4,126 · mean-weight z −1.91 OUR EVALUATOR ✓ answers diagnostic pass, not a deployment guarantee",
+   "sha256": "ae21061159037776c957b8aaafa8a415cf3d743175d65dc0111121019291d0c6",
+   "bytes": 280309
+  },
+  {
+   "file": "07_b7_Nov26_a0.33_IPS_cluster_E1.png",
+   "did": "click hour-cluster",
+   "state": {
+    "sheet": 3,
+    "p": "D26",
+    "a": 33,
+    "e": "IPW",
+    "iv": "cluster",
+    "ep": "E1",
+    "src": "SB+SR",
+    "presets": [],
+    "alpha_label": "α = 0.33",
+    "pressed": {
+     "p": [
+      "D26"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "cluster",
+      "cluster"
+     ],
+     "ep": [
+      "E1",
+      "E1"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": false,
+     "readout": true,
+     "strip": false,
+     "primary": false
+    }
+   },
+   "readout_bts": "BTS logs GREEDY · LOGGED PROPENSITIES IPS · cluster 4.379 (4.091 … 4.668) endpoints E1 inside; E2 still rejects (difference CI −0.290 … −0.008) weight ESS 112,867 = 7.0% of 1,611,904 rows weights max 4,126 · mean-weight z −1.91 OUR EVALUATOR ✓ answers diagnostic pass, not a deployment guarantee",
+   "sha256": "3a3d277b5bb7feebe62036e620719d791e43ebcb6c714f4ac792e4c5607a4d3c",
+   "bytes": 286075
+  },
+  {
+   "file": "08_b8_Nov26_a0.33_IPS_row_E1_strip.png",
+   "did": "click row-level; scroll down to the strip",
+   "state": {
+    "sheet": 3,
+    "p": "D26",
+    "a": 33,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR",
+    "presets": [
+     "3"
+    ],
+    "alpha_label": "α = 0.33",
+    "pressed": {
+     "p": [
+      "D26"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "row",
+      "row"
+     ],
+     "ep": [
+      "E1",
+      "E1"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": false,
+     "readout": false,
+     "strip": true,
+     "primary": true
+    }
+   },
+   "readout_bts": "BTS logs GREEDY · LOGGED PROPENSITIES IPS · row 4.379 (4.249 … 4.510) endpoints E1 outside by 0.018; E2 rejects (difference CI −0.279 … −0.018) weight ESS 112,867 = 7.0% of 1,611,904 rows weights max 4,126 · mean-weight z −1.91 OUR EVALUATOR ✓ answers diagnostic pass, not a deployment guarantee",
+   "sha256": "ee8839daf54d5fc47d8f611251c83fd7e9ec7e95ad4dbf1d1a07f2bca1ed082f",
+   "bytes": 435149
+  },
+  {
+   "file": "09_b9_sheet4.png",
+   "did": "press 4",
+   "state": {
+    "sheet": 4,
+    "p": "D26",
+    "a": 33,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR",
+    "presets": [
+     "3"
+    ],
+    "alpha_label": "α = 0.33",
+    "pressed": {
+     "p": [
+      "D26"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "row",
+      "row"
+     ],
+     "ep": [
+      "E1",
+      "E1"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": false,
+     "readout": false,
+     "strip": false,
+     "primary": false
+    }
+   },
+   "readout_bts": "",
+   "sha256": "1ea800f7a9ba80cd3b74e4a089da14f2f22ea5b825d631df132c833eadb68774",
+   "bytes": 236744
+  },
+  {
+   "file": "10_qa_Nov25_a0.05_IPS_row_E1_z_refusal.png",
+   "did": "press 3 twice; click Nov 25; Shift+← five times, ← three times",
+   "state": {
+    "sheet": 3,
+    "p": "D25",
+    "a": 5,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR",
+    "presets": [],
+    "alpha_label": "α = 0.05",
+    "pressed": {
+     "p": [
+      "D25"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "row",
+      "row"
+     ],
+     "ep": [
+      "E1",
+      "E1"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": false,
+     "readout": true,
+     "strip": false,
+     "primary": false
+    }
+   },
+   "readout_bts": "BTS logs GREEDY · LOGGED PROPENSITIES IPS · row 4.830 (4.718 … 4.941) endpoints E1 inside; E2 consistent (difference CI −0.034 … 0.003) weight ESS 197,785 = 13.4% of 1,479,442 rows weights max 626 · mean-weight z +4.61 OUR EVALUATOR CAN'T TELL mean-weight |z| 4.6 > 3.0 The z-test flags this log slice; it does not prove the cause.",
+   "sha256": "d17d38939598cf360907007a4e54d2e5b046ce021e14bf3a97b99a80422496bb",
+   "bytes": 291517
+  },
+  {
+   "file": "11_qa_Nov26_a0.33_IPS_cluster_E2_strip.png",
+   "did": "press 7, c, e; scroll down to the strip",
+   "state": {
+    "sheet": 3,
+    "p": "D26",
+    "a": 33,
+    "e": "IPW",
+    "iv": "cluster",
+    "ep": "E2",
+    "src": "SB+SR",
+    "presets": [],
+    "alpha_label": "α = 0.33",
+    "pressed": {
+     "p": [
+      "D26"
+     ],
+     "e": [
+      "IPW"
+     ],
+     "iv": [
+      "cluster",
+      "cluster"
+     ],
+     "ep": [
+      "E2",
+      "E2"
+     ],
+     "src": [
+      "SB+SR"
+     ]
+    },
+    "in_view": {
+     "stamp": false,
+     "readout": false,
+     "strip": true,
+     "primary": true
+    }
+   },
+   "readout_bts": "BTS logs GREEDY · LOGGED PROPENSITIES IPS · cluster 4.379 (4.091 … 4.668) endpoints E1 inside; E2 still rejects (difference CI −0.290 … −0.008) weight ESS 112,867 = 7.0% of 1,611,904 rows weights max 4,126 · mean-weight z −1.91 OUR EVALUATOR ✓ answers diagnostic pass, not a deployment guarantee",
+   "sha256": "33171d7628190f8406740220b750da0292461e4620e48b6718d6a7f1c79fac36",
+   "bytes": 439721
+  }
+ ]
+}

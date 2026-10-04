@@ -4,7 +4,7 @@ Implements [`preregistration_knob.md`](../preregistration_knob.md) (commit `1020
 
 **Integrity:** extract sha256 matches the manifest; reproduction checks 58/58 pass; closed forms vs gate.py/per-row arrays 12/12 series pass.
 
-## Primary summary — IPW, row-level interval
+## Per-series summary — IPW, row-level interval (registered primary = the BTS-logs rows)
 
 Scan away from the logging policy (BTS logs: α from 0 up; Random logs: α from 1 down). 101 grid points per row. E1 = reference inside the 95% CI. *Answered miss* = gate answers and E1 fails; *unnecessary abstention* = gate abstains and E1 holds.
 
@@ -23,7 +23,10 @@ Scan away from the logging policy (BTS logs: α from 0 up; Random logs: α from 
 | Nov 26 · whole UTC day | BTS (exact) | 0.40 | 0.28 | 28 | 12 | 0 | 61 | 0.036 |
 | Nov 26 · whole UTC day | Random (approx. target) | never | never | 101 | 0 | 0 | 0 | 0.000 |
 
-Totals over 12 series × 101 points: answered ✓ 681, answered miss 12, unnecessary abstention 403, justified abstention 116.
+**Registered primary (IPW, row-level, BTS logs; 606 grid points):** the gate answered 87/606; E1 held at 75/87 answered (12 answered misses). Of those answers, 6 are at α = 0, the logging end, where the estimate equals the reference by construction; at α > 0, E1 held at 69/81. It refused 519/606 (403 with the reference inside the own CI, 116 outside). Ungated IPW on the same points: E1 holds at 478/606. E2 on the same scope: answered 48 consistent, 39 rejecting; refused 458 consistent, 61 rejecting.
+**Secondary — Random logs (approximate target; 606 grid points):** answered 606/606; E1 held at 606/606 answered.
+**Secondary — pooled over both sources (not the registered primary; 12 series × 101 points):** answered ✓ 681, answered miss 12, unnecessary abstention 403, justified abstention 116.
+All counts are correlated grid locations from overlapping periods and deterministic α steps, not independent decisions.
 
 ## Secondary summaries — every estimator, endpoint and interval
 

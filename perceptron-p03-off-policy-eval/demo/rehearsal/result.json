@@ -1,0 +1,192 @@
+{
+ "measured_at": "2026-10-04T17:56:36.592Z",
+ "page_sha256": "3cfd67de0ecde14602d6ef265900e6d50563c78afb23f355783ace072788c2bf",
+ "browser": "Chromium (Playwright)",
+ "viewport": "1600x900",
+ "method": "real clicks and keys in the browser; 1 s presenter pause before each action; speech = macOS say at 150 wpm (default voice), waited in real time; run in 2 segment(s) to fit the tool's request limit, the clock stopping only at beat boundaries",
+ "spoken_words": 375,
+ "speech_s": 160.84,
+ "total_s": 172.02,
+ "segments": [
+  {
+   "beats": "1–5",
+   "seconds": 107.22
+  },
+  {
+   "beats": "6–10",
+   "seconds": 64.8
+  }
+ ],
+ "beats": [
+  {
+   "beat": 1,
+   "words": 72,
+   "start_s": 0,
+   "pause_s": 0,
+   "action_s": 0,
+   "speech_s": 34.28,
+   "state": {
+    "sheet": 1,
+    "p": "W2",
+    "a": 25,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR"
+   }
+  },
+  {
+   "beat": 2,
+   "words": 51,
+   "start_s": 34.29,
+   "pause_s": 1,
+   "action_s": 0.118,
+   "speech_s": 19.67,
+   "state": {
+    "sheet": 1,
+    "p": "W2",
+    "a": 25,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR"
+   }
+  },
+  {
+   "beat": 3,
+   "words": 24,
+   "start_s": 55.09,
+   "pause_s": 1,
+   "action_s": 0.741,
+   "speech_s": 12.02,
+   "state": {
+    "sheet": 2,
+    "p": "W2",
+    "a": 25,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR"
+   }
+  },
+  {
+   "beat": 4,
+   "words": 50,
+   "start_s": 68.86,
+   "pause_s": 1,
+   "action_s": 0.904,
+   "speech_s": 18.89,
+   "state": {
+    "sheet": 3,
+    "p": "W2",
+    "a": 42,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR"
+   }
+  },
+  {
+   "beat": 5,
+   "words": 42,
+   "start_s": 89.72,
+   "pause_s": 1,
+   "action_s": 0.154,
+   "speech_s": 16.33,
+   "state": {
+    "sheet": 3,
+    "p": "W2",
+    "a": 43,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR"
+   }
+  },
+  {
+   "beat": 6,
+   "words": 20,
+   "start_s": 107.22,
+   "pause_s": 1,
+   "action_s": 0.08,
+   "speech_s": 10.05,
+   "state": {
+    "sheet": 3,
+    "p": "D26",
+    "a": 33,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR"
+   }
+  },
+  {
+   "beat": 7,
+   "words": 20,
+   "start_s": 118.36,
+   "pause_s": 1,
+   "action_s": 0.109,
+   "speech_s": 7.52,
+   "state": {
+    "sheet": 3,
+    "p": "D26",
+    "a": 33,
+    "e": "IPW",
+    "iv": "cluster",
+    "ep": "E1",
+    "src": "SB+SR"
+   }
+  },
+  {
+   "beat": 8,
+   "words": 37,
+   "start_s": 127,
+   "pause_s": 1,
+   "action_s": 0.097,
+   "speech_s": 18.02,
+   "state": {
+    "sheet": 3,
+    "p": "D26",
+    "a": 33,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR"
+   }
+  },
+  {
+   "beat": 9,
+   "words": 30,
+   "start_s": 146.12,
+   "pause_s": 1,
+   "action_s": 0.821,
+   "speech_s": 12.55,
+   "state": {
+    "sheet": 4,
+    "p": "D26",
+    "a": 33,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR"
+   }
+  },
+  {
+   "beat": 10,
+   "words": 29,
+   "start_s": 160.49,
+   "pause_s": 0,
+   "action_s": 0,
+   "speech_s": 11.51,
+   "state": {
+    "sheet": 4,
+    "p": "D26",
+    "a": 33,
+    "e": "IPW",
+    "iv": "row",
+    "ep": "E1",
+    "src": "SB+SR"
+   }
+  }
+ ]
+}

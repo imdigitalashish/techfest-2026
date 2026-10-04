@@ -1,59 +1,106 @@
 # SCRIPT — the 3-minute live demo (P3 · "the evaluator that says I don't know")
 
-**Before you go on**
-- Run `perceptron-p03-off-policy-eval/demo/smoke.sh` the same morning; it must end with `PASS`.
-- Start the demo with `demo/run.sh`. It opens `demo/index.html` offline.
-- Set full screen and 100% zoom at 1920×1080; use 90% at 1280×720.
-- Keys:
-  - <kbd>1</kbd>–<kbd>4</kbd> switch sheets. On sheet 3, press <kbd>3</kbd> again to bring the knob controls and chart into view; this is needed on a 1280×720 projector.
-  - <kbd>←</kbd>/<kbd>→</kbd> move α by 0.01; hold <kbd>Shift</kbd> for 0.05.
-  - <kbd>[</kbd>/<kbd>]</kbd> change period.
-  - <kbd>i</kbd> switches IPS/SNIPS; <kbd>c</kbd> switches row-level/hour-cluster.
-- Hover any dotted number to show its source file and key.
-- **If the live demo fails:** open `demo/fallback/01…12*.png` in order. The talk track is the same; screenshot names match the beats below.
+**Measured rehearsal: 2:52 (172.0 s), clicks included, for 375 spoken words** (method under "Rehearsal"). The talk track is the spoken part; everything else is for preparation and Q&A.
 
-Units are clicks per 1,000 impressions throughout (percentage points on sheet 4).
+## Before you go on
 
-| time | do | say | point at |
-|---|---|---|---|
-| 0:00 | Sheet 1, top (`01_…`) | "Real data: ZOZOTOWN's Open Bandit A/B test. A team switched recommendation policy. The dashboard said **+1.62**. But both policies were running side by side the whole time, so we have a real A/B check: **+1.26**." | headline boxes |
-| 0:20 | — | "The old policy's own click rate rose **11%** with no switch at all. The dashboard booked the week as the policy, so it overstates the policy by **29%**. From the logs alone, with no A/B test, doubly robust OPE says **+1.40**, interval **+1.13 … +1.67**. That interval holds the check." | "The week" and "Logs only" rows; waterfall |
-| 0:40 | Scroll to the stamp (`02_…`) | "And yet our evaluator refuses to sign off: **can't tell from these logs**. The 2,769,425 BTS impressions are worth only **25,395** random ones for this question, and one click counts **12,500** times. Honestly, here the refusal cost us an answer. But on 26 Nov the same estimate failed, **+1.48** against a check of **+1.06**, and it refused that too. Track record: **5/8** answered, **4/5** held the check, **2/2** failures refused. This gate was designed after we saw these failures, so it is *post hoc* on these cases. So we pre-registered a fresh test." | CAN'T TELL stamp; POST HOC stamp; track record |
-| 1:00 | <kbd>3</kbd>, then <kbd>3</kbd> again to show the knob (`04_…`) | "Registered tonight at **21:07:33 IST**, before computing anything. The candidate mixes the deployed sampler with uniform random. Its true value is a straight line between the two A/B arms, so we have a real check at every α." | PRE-REGISTERED stamp; black line |
-| 1:15 | Drag α from 0 to 0.42 | "Orange is IPS from the BTS logs: tight, and on the line. Watch the effective rows fall, from 2.77 million to **138,643**." | orange band; readout "overlap" |
-| 1:30 | One more step, to 0.43 (`05_…`) | "There. ESS/n crosses the frozen 5% floor, and the stamp lands: **can't tell**. We predicted **0.43** from one committed number before we computed this. IPS still prints **4.295** with a tidy interval. Ours says it can't tell." | stamp; hollow vs filled triangles |
-| 1:45 | — | "Blue asks the same question from the **Random** arm's logs, nine times fewer rows. It answers at every α, and IPS holds the check at every α on all six periods. Which logs you keep decides which questions you can ever answer." | blue band; Random rows of the strip |
-| 2:00 | <kbd>]</kbd> to Nov 26, α 0.33 (`06_…`) | "Now the honest negative. On 26 Nov, between α **0.28** and **0.39**, IPS's interval misses the check while our gate still answers. The worst miss is **0.036** per 1,000. The gate is late here." | red pencil on the curve; red cells in the strip |
-| 2:10 | <kbd>c</kbd> (`07_…`) | "Rows within an hour are not independent. With hour-cluster intervals, those misses disappear." | readout "check is inside" |
-| 2:15 | Scroll to the strip (`10_…`) | "Every period, every α: 12 series × 101 points, pre-registered, nothing hidden. **681** answered with the check inside, **12** answered misses, all on that one day, and **403** refusals that weren't needed. It is a conservative auditor. **31 of 33** predictions made before computing hit." | strip; totals; predictions table |
-| 2:35 | <kbd>4</kbd> (`11_…`, `12_…`) | "In the simulator, the truth is exact. A seasonal drop makes the dashboard read **−5.6** points while the switch added **+7.5**. DR recovers **+7.5**; the dashboard has the wrong sign in **30/30** seeds. Drag the drift: naive is right only when the season cooperates." | SYNTHETIC stamp; red shaded zone |
-| 2:50 | Hover any number | "Every number here has a source: hover it. One command rebuilds the page from a 0.76 MB vendored extract, and a smoke test recomputes every knob value from it. This is the evaluator that says 'I don't know', and shows you when that was the right call." | tooltip |
+- **Check the build.** Run `perceptron-p03-off-policy-eval/demo/smoke.sh` the same morning; it must end with `PASS`.
+- **Start the demo.** Run `demo/run.sh`. It opens `demo/index.html` offline in the default browser.
+- **Screen.** Full screen at 100% zoom. The knob view fits 1280×720, 1440×900, 1600×900 and 1920×1080.
+- **Presets** each set the period, α, estimator (IPS), interval (row-level), endpoint (E1) and both log sources together, then scroll to the knob:
+  - <kbd>5</kbd> W2 · α 0.42 (answers)
+  - <kbd>6</kbd> W2 · α 0.43 (can't tell)
+  - <kbd>7</kbd> Nov 26 · α 0.33 (the negative)
+- **Other keys:**
+  - <kbd>1</kbd>–<kbd>4</kbd> switch sheets; on sheet 3 a second <kbd>3</kbd> shows the knob.
+  - <kbd>c</kbd> switches row-level / hour-cluster intervals; <kbd>e</kbd> switches the endpoint shown (E1 / E2); <kbd>i</kbd> switches IPS / SNIPS.
+  - <kbd>←</kbd> <kbd>→</kbd> move α by 0.01 (<kbd>Shift</kbd>: 0.05); <kbd>[</kbd> <kbd>]</kbd> step through the periods.
+  - Clicking the buttons does the same.
+- **Hover** a dotted number to show its source file and key.
+- **If the live page fails:** show `demo/fallback/01…09` in order; the beat numbers match the table below. Files 10–11 are Q&A views. Every file's selected state is checked against its name in `fallback/states.json`.
 
-## Honest caveats to say before a judge asks
-- **The "A/B check" is the concurrent arm difference, not ground truth.** The pre-registered balance check flagged a total-variation distance of about 0.36 per user feature. A post-hoc look at the raw labels found one category per feature with a different hash in each file. The label-free distance is ≤ 0.0044 (`eval/results/obd_balance_posthoc.md`). It is unresolved, and we say so on screen.
-- **The gate is post hoc on OBD.** It was designed after we saw the failures on sheet 1. The knob analysis on sheet 3 is pre-registered, except at endpoints that were already committed.
-- **The Random-logs side of the knob scores an approximate target**, an hourly reconstruction of the adaptive sampler, as on sheet 2.
-- **Sheet 4 is synthetic.**
+Units: clicks per 1,000 impressions (percentage points on sheet 4).
 
-## The hardest questions
-**1. "Isn't the knob trivial? IPS is linear in α."**
-Yes, and the page says so. IPS's error is exactly α × its error at α = 1, and the gate's mean-weight z does not change with α. That is why we pre-registered predictions from the committed α = 1 cells; 31 of 33 hit.
-The genuinely new evidence is:
-- SNIPS, which is nonlinear: 24 answered misses on Nov 25 Random logs with row-level intervals, 0 with hour-cluster;
-- the hour-cluster intervals;
-- two periods never examined before, Nov 24 and the full window;
-- the exact crossings.
+## Talk track
 
-The claim is not new estimator maths. It is showing, on real data against a real check, where an evaluator should stop answering.
+| # | start (measured) | do (exact clicks) | say | fallback |
+|---|---|---|---|---|
+| 1 | 0:00 | Page open at the top of sheet 1. | "We re-enact a switch using concurrent A/B logs from ZOZOTOWN's Open Bandit Dataset: uniform-random logs before, Thompson-sampling logs after. The dashboard says plus 1.62 clicks per thousand. The concurrent A/B estimate says plus 1.26: the dashboard is 29% above it, because the old policy's own click rate rose anyway. From the logs alone, doubly robust estimation gives plus 1.40, with an interval that holds the A/B reference, and also the dashboard number." | `01_b1_…` |
+| 2 | 0:34 | Scroll down to the big CAN'T TELL stamp. | "Yet our evaluator says: can't tell from these logs. Reweighting greedy logs toward random concentrates the weights; weight ESS is under 1% of rows. We designed this gate after seeing OBD failures, so this sheet is post hoc: it refused 2 of 2 consistency failures, and 2 of 3 interval misses." | `02_b2_…` |
+| 3 | 0:55 | Press <kbd>2</kbd>. | "When the logs explore, the same evaluator answers: DR 4.936 against the Thompson arm's observed 4.890, an approximate target, because that policy kept learning." | `03_b3_…` |
+| 4 | 1:08 | Press <kbd>5</kbd> (preset W2 · α 0.42). | "So we pre-registered a knob before computing it. Alpha mixes the deployed policy with uniform random. The black line mixes the two arms' observed click rates: a noisy reference, not known truth. Orange is IPS from the Thompson logs; at alpha 0.42 the gate answers and the reference is inside." | `04_b4_…` |
+| 5 | 1:29 | Press <kbd>6</kbd> (preset W2 · α 0.43). | "One step further, weight ESS drops below the frozen 5% floor: can't tell, while plain IPS still prints a tidy interval. Blue, from the Random arm's logs, an approximate target, answers everywhere. The logs you keep decide which questions you can answer." | `05_b5_…` |
+| 6 | 1:47 | Press <kbd>7</kbd> (preset Nov 26 · α 0.33). | "Now the negative. On 26 November the gate answers while IPS's interval misses the reference, from alpha 0.28 to 0.39." | `06_b6_…` |
+| 7 | 1:58 | Click **hour-cluster**. | "With hour-cluster intervals the reference is inside, but the paired test still rejects. A green point check is not validation." | `07_b7_…` |
+| 8 | 2:07 | Click **row-level** and check it is highlighted; scroll down to the strip. | "Back to row-level, the registered primary. On Thompson logs the gate answered 87 of 606 grid points, with the reference inside 75; it refused 519. These are correlated grid locations, not independent decisions; deployment value is untested." | `08_b8_…` |
+| 9 | 2:26 | Press <kbd>4</kbd>. | "In the simulator, against a Monte-Carlo reference, a downward drift of 0.75 or more makes the dashboard's sign wrong in every seed, while DR's RMSE stays at most 0.6 points." | `09_b9_…` |
+| 10 | 2:40 | Stay on sheet 4. | "Everything here renders committed results; one smoke command replays the grid from a 0.76-megabyte extract. An evaluator that says I don't know, and shows the evidence for each answer." | `09_b9_…` |
 
-**2. "Your gate was tuned after seeing these failures, and it still fails on Nov 26. Why trust it?"**
-It was calibrated on the simulator only, before touching OBD (36 configurations; it answers 47% with coverage 0.96). It was frozen at commit b4e95ae.
-- A pre-registered simulator holdout: it answered 818/1,536 runs, and 771/818 answered intervals held the truth (1,404/1,536 ungated).
-- On the pre-registered knob it is conservative: 403 unnecessary refusals against 12 answered misses. Those misses are at most 0.036 per 1,000, all on one day, and none survive hour-cluster intervals.
-- The fix we would test next is a dependence-aware diagnostic. We won't retune the frozen rule after the fact.
+**What to point at, beat by beat:**
+1. The boxed **+1.62** and **+1.26**; "The week" row; the **+1.40** box.
+2. The stamp; the POST HOC stamp; "2/2 S1 rejections refused" and "2/3 own-CI misses refused".
+3. The **4.936** and **4.890** boxes.
+4. The black reference line, its caveat under the chart, the orange band, and the readout's "✓ answers".
+5. The stamp landing in the readout; the hollow and filled triangles at 0.43.
+6. The red pencil on the orange curve; the readout's "E1 outside … E2 rejects".
+7. The readout's "**E1 inside; E2 still rejects (difference CI −0.290 … −0.008)**".
+8. The bold "Registered primary" paragraph.
+9. The red "wrong sign" zone.
 
-**3. "Why does it refuse a 1% change on Nov 25?"**
-On that day the BTS logs' mean importance weight is significantly above 1 (z = +4.6): the logged propensities don't add up for the items actually shown. That is a property of the logs, not of α, so the frozen rule refuses at every α > 0.
-At α = 0.05, IPS was in fact fine: 4.830 against a check of 4.845 (`08_…`). That refusal cost an answer, and we report it rather than tune it away.
+## Rehearsal
 
-**Spare: "Is this a judgment, or a computation?"** Hover the number. `demo/smoke.sh` re-derives the extract numbers with no shared code. It recomputes all 1,212 knob points from the extract and checks them against the committed results byte for byte. It also checks that the page's numbers equal the abstract's `headline.json`.
+- **Measured** at 23:26 IST on 4 Oct 2026, on the committed page: **2:52.0 (172.0 s)** for the whole path, clicks included. The start column above is that measured timeline.
+- **How:**
+  - `demo/rehearsal/speech.py` counts the talk track's spoken words (375) and times each beat with macOS `say -r 150`: 150 words per minute, default voice, rendered to a file, not played. Speech total: 160.8 s.
+  - `demo/rehearsal/drive.js` performs every click and key in the "do" column in Chromium at 1600×900, with a 1 s presenter pause before each action. It waits each beat's speech time in real time and asserts the state each beat must show (for example beat 7's readout). Result: `demo/rehearsal/result.json`.
+  - The browser tool limits a request to about 3 minutes, so the run took two calls: beats 1–5 (107.2 s) and 6–10 (64.8 s). The clock stopped only at that beat boundary, where nothing happens on screen.
+- **Limits:** this is a synthetic voice at a steady 150 wpm, not a human run-through. At 140 wpm the same path would take about 3:04. Rehearse aloud once with a stopwatch; if it runs long, drop beat 10's first sentence (15 words, 7.2 s by the same `say` timing).
+
+## Honest caveats (say them if asked; they are on the page)
+
+- **The black line is a noisy concurrent-A/B reference, not known truth.**
+  - It is the arms' observed click rates mixed by α.
+  - The BTS-side weights use logged propensities along the realised history.
+  - The Random-side target is an hourly approximation of an adaptive policy.
+  - Arm comparability is unresolved (a raw-label artefact, `eval/results/obd_raw_labels.md`).
+  - Deploying a new adaptive mixture could change later histories, which no line here captures.
+- **The gate's chronology.** The rule was selected using simulator runs after OBD failures had informed its design, then frozen. Sheet 1 is post hoc. The knob protocol was registered before its curves were computed, while disclosing the endpoints already seen: this is pre-registered reuse of OBD, not an untouched real-data holdout.
+- **"31/33" are endpoint-derived checks.** IPS(λ) = (1 − λ)·p + λ·u and SNIPS(λ) = [(1 − λ)·p + λ·u] / [(1 − λ) + λ·m], so the curves are determined by endpoint statistics. The checks mainly test algebra and implementation. Computed beyond the endpoints: hour-cluster uncertainty, the full-window BTS aggregation and previously unrecorded z statistics.
+- **Counts are correlated grid locations, not decisions.** Under the registered point-containment diagnostic, 403 refused BTS grid locations contain the reference. The gate trades fewer answers for a lower observed miss fraction (12/87 answered vs 128/606 ungated); deployment value remains untested. The 5% floor is a frozen heuristic, not a theorem.
+- **Weight ESS measures weight concentration, not guaranteed precision.**
+  - The 12,500 weight is hypothetical: a click at the smallest logged propensity would get it. The largest weight on an actual click in that window is about 139.
+  - The mean-weight z-test flags a log slice; it does not identify the cause or prove the recorded propensities invalid.
+- **Sheet 4 is synthetic.** Its reference is approximated with 200,000 Monte-Carlo draws. The S1 waterfall is a separate fixed case (mix shift 0.5, 30 seeds) that the slider does not control.
+- **What runs where.** The page renders committed results. `smoke.sh` replays the grid from the extract with the same analysis code, and independently re-checks five basic quantities with separate standard-library code.
+
+## The three hardest questions
+
+**1. "You already have both A/B arms. What did OPE identify that the A/B test did not, and would your line stay correct after a real deployment?"**
+- The arm we score is held out as the reference; the estimate uses only the other arm's logs.
+- BTS-side weight: (1 − α) + α / (80 × logged propensity).
+- The estimand is a fixed-history mixture on the observed traffic. The line is a noisy reference, arm balance is unresolved, the Random-side target is reconstructed, and a newly deployed adaptive mixture could change later histories.
+- On sheet 1, DR's interval also contains the dashboard number. We do not claim to have recovered the true policy effect.
+
+**2. "You pressed c and the failure turned green. Did you fix the problem or change the test?"**
+- We changed the interval model. The green status is E1; the paired E2 test still rejects.
+- At Nov 26, α 0.33: IPS 4.379 against a reference of 4.528, with a joint-hour difference interval of −0.290 … −0.008 per 1,000.
+- The difference interval accounts for the shared arm's covariance. For IPS, E2 rejects at every answered nonzero α on Nov 26, in both interval modes. SNIPS's E2 is consistent at all 39 of those points (press <kbd>e</kbd>, then click **SNIPS**); we report both.
+- Hour clustering was pre-declared, but it does not prove independence across hours or remove the uncertainty from the adaptive target.
+
+**3. "Why should we trust, or pay for, this gate? The curves follow from the endpoints and it refuses most primary cases."**
+- IPS and SNIPS are standard, and the curve algebra is largely predetermined; 31/33 is mainly a reproducibility check.
+- **Primary scope:**
+  - 87/606 BTS grid points answered; E1 holds at 75/87. Six of the 87 are at α = 0, the logging end, inside by construction; at α > 0 it is 69/81.
+  - E2 consistent at 48, rejecting at 39.
+  - These are dependent grid counts.
+- **Calibration:** OBD failures informed the gate's design.
+- **Simulator holdout (separately pre-registered):**
+  - 818/1,536 runs answered; 771/818 answered intervals held the reference, against 1,404/1,536 ungated.
+  - Neither version had a confident wrong sign, so no wrong-sign benefit was shown.
+- **The claim:** an inspectable diagnostic aid. A held-out, cost-sensitive test of errors against refusals comes next; there is no universal 5% safety boundary.
+
+**Spare: "Is this a computation or a judgement?"**
+- Hover any dotted number, including the knob readouts, for its file and key.
+- The page renders committed results.
+- `smoke.sh` replays all 1,212 knob points from the 0.76 MB extract with the same code, byte for byte, and independently re-checks five basic quantities.
+- It also asserts that the page's headline numbers equal the abstract's `headline.json`.

@@ -10,7 +10,16 @@ Checks, each PASS/FAIL (exit 0 only if all pass):
   5. page: demo/build.py rebuild is byte-identical to the committed demo/index.html; the inlined headline numbers equal
      the committed JSON; the knob grid is inlined; no external resources; inline JS parses (node --check, if node exists)
   6. run.sh: P3_NO_OPEN=1 demo/run.sh finishes, and the time to the page is < 60 s
-  7. fallback screenshots: demo/fallback/ holds PNGs, total < 5 MB
+  7. fallback screenshots: demo/fallback/ holds PNGs, total < 5 MB; fallback/states.json lists exactly those files (sha256),
+     was captured from the committed index.html (sha256), and each recorded on-screen state matches its file name; the
+     SCRIPT's fallback column names existing files
+  8. review fixes: Nov 26 · α 0.33 · IPS · hour-cluster shows "E1 inside; E2 still rejects (difference CI −0.290 … −0.008)"
+     (results JSON and inlined page data); the registered primary (IPS, row-level, BTS logs) is 75/12/403/116 and the page
+     reports 87/606, 75/87, 519/606; sheet 1 shows "2/2 S1 rejections refused" and "2/3 own-CI misses refused" (recomputed
+     from gate_obd_posthoc.json); the largest clicked-row weight, recomputed here from the extract, is the page's "about 139";
+     no banned wording ("true value", "A/B check", "truth" other than "not known/ground truth", ...) in page, SCRIPT, README
+  9. SCRIPT: 350-400 spoken words; demo/rehearsal/result.json (the measured rehearsal with clicks, <= 180 s) ran this exact
+     talk track on the committed index.html, and SCRIPT's start times and total are the measured ones
 """
 from __future__ import annotations
 
@@ -70,6 +79,7 @@ def main():
     W, H1, H2 = set(range(84)), set(range(42)), set(range(42, 84))
     A = pre["a3_halves"]["A_deploy_BTS"]
     b2, r1, r2 = ctr(B, H2, False), ctr(R, H1, True), ctr(R, H2, True)
+    max_click_w = max((1.0 / 80) / float(x[3]) for x in B if int(x[0]) in H2 and x[4] == "1")
     ipw = math.fsum(int(x[5]) * (1.0 / 80) / float(x[3]) for x in B if int(x[0]) in H2 and x[4] == "1") / sum(int(x[5]) for x in B if int(x[0]) in H2)
     for label, ours, ref in (("BTS CTR in W (4.890 per 1,000)", ctr(B, W, False), pre["a2"]["truth"]),
                              ("Random CTR in W (3.442 per 1,000)", ctr(R, W, True), pre["a2"]["random_ctr"]),
@@ -112,9 +122,9 @@ def main():
             m = re.search(r'data-src="[^"]*' + re.escape(src_part) + r'[^"]*"[^>]*>([^<]+)<', html)
             return m.group(1) if m else None
         hl = json.loads((RES / "headline.json").read_text())["display"]
-        pairs = [("a3_halves.A_deploy_BTS.naive ×1000", hl["a3A_naive_k"]), ("a3_halves.A_deploy_BTS.truth ×1000 (concurrent", hl["a3A_truth_k"]),
+        pairs = [("a3_halves.A_deploy_BTS.naive ×1000", hl["a3A_naive_k"]), ("a3_halves.A_deploy_BTS.truth ×1000 (the file", hl["a3A_truth_k"]),
                  ("a3_halves.A_deploy_BTS.DR.policy_effect_after ×1000", hl["a3A_dr_k"]), ("a2.P-hourly.DR.value ×1000", hl["a2_hourly_dr_k3"]),
-                 ("a2.truth ×1000 (BTS arm", hl["obd_ctr_bts_k3"]), ("halves_A.block_lo", hl["bb_A_lo"]), ("halves_A.block_hi", hl["bb_A_hi"])]
+                 ("a2.truth ×1000 (the BTS arm", hl["obd_ctr_bts_k3"]), ("halves_A.block_lo", hl["bb_A_lo"]), ("halves_A.block_hi", hl["bb_A_hi"])]
         got = [(want, span(src)) for src, want in pairs]
         check("headline numbers on the page equal eval/results/headline.json", all(g == w for w, g in got), " · ".join(f"{g}" for _, g in got))
         ext = re.findall(r"""(?:src|href)\s*=\s*["'](?:https?:)?//|url\(\s*["']?https?:|@import|<link[^>]+stylesheet""", html)
@@ -126,6 +136,47 @@ def main():
             check("inline JS parses (node --check)", p.returncode == 0, p.stderr[-300:])
         else:
             print("[SKIP] node not found: JS syntax check skipped")
+        # 8. review fixes: E2 beside E1, the registered primary scope, sheet-1 track record, wording
+        z = kr["z"]
+        r33 = kr["series"]["D26·SB"]["rows"][33]
+        I = r33["IPW"]
+        dd = I["v"] - r33["ref"]
+        lo, hi = 1000 * (dd - z * I["d_se_cl"]), 1000 * (dd + z * I["d_se_cl"])
+        f = ks["D26·SB"]["f"]
+        pd = f["IPW"]["v"][33] - f["ref"][33]
+        plo, phi = pd - z * f["IPW"]["dsc"][33], pd + z * f["IPW"]["dsc"][33]
+        rlo, rhi = pd - z * f["IPW"]["ds"][33], pd + z * f["IPW"]["ds"][33]
+        check("Nov 26 · α 0.33 · IPS: row-level E1 and E2 fail; hour-cluster E1 inside, E2 still rejects (difference CI −0.290 … −0.008)",
+              abs(r33["a"] - 0.33) < 1e-9 and r33["answer"] and not I["E1"] and not I["E2"] and I["E1_cl"] and not I["E2_cl"]
+              and f"{lo:.3f}|{hi:.3f}" == f"{plo:.3f}|{phi:.3f}" == "-0.290|-0.008" and f"{rlo:.3f}|{rhi:.3f}" == "-0.279|-0.018"
+              and "e1 ? 'still rejects' : 'rejects'" in html, f"cluster {lo:.3f} … {hi:.3f}, row {rlo:.3f} … {rhi:.3f} per 1,000 (JSON and page data)")
+        def text(h):
+            h = re.sub(r"<script\b[^>]*>.*?</script>|<style\b[^>]*>.*?</style>", "", h, flags=re.S)
+            return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", h)).replace("&amp;", "&").replace("&gt;", ">").replace("&lt;", "<").replace("&#x27;", "'")
+        cats = ("answered_hold", "answered_miss", "unnecessary_abstention", "justified_abstention")
+        prim = [sum(s["summary"]["IPW_row"]["E1"][c] for s in kr["series"].values() if s["source"] == "SB") for c in cats]
+        prim_txt = text(re.search(r'<p class="prim">.*?</p>', html, re.S).group(0))
+        check("registered primary (IPS, row-level, BTS logs) reported on its own: 75 / 12 / 403 / 116; page: 87/606 answered, 75/87 hold E1, 519/606 refused",
+              prim == [75, 12, 403, 116] and all(re.search(t, prim_txt) for t in (r"answered\s*87/606", r"held at\s*75/87", r"refused\s*519/606")),
+              " / ".join(map(str, prim)))
+        u = json.loads((RES / "gate_obd_posthoc.json").read_text())["summary"]["unique_instances"]
+        t_s1 = f"{u['abstained_s1_rejected']}/{u['s1_rejected_total']}"
+        t_own = f"{u['abstained'] - u['abstained_ref_in_ci']}/{u['listed'] - u['answered_ref_in_ci'] - u['abstained_ref_in_ci']}"
+        vis = text(html)
+        check("sheet 1: '2/2 S1 rejections refused' and '2/3 own-CI misses refused' (recomputed from gate_obd_posthoc.json)",
+              (t_s1, t_own) == ("2/2", "2/3") and re.search(re.escape(t_s1) + r"\s*S1 rejections refused", vis) and re.search(re.escape(t_own) + r"\s*own-CI misses refused", vis),
+              f"{t_s1}; {t_own}")
+        check("largest weight on an actual click, recomputed here from the extract, is the page's 'about 139' (12,500 is hypothetical)",
+              round(max_click_w) == 139 and span("clicked BTS rows in hours 42–83") == "139" and re.search(r"about\s*139\b", vis), f"{max_click_w:.3f}")
+        def banned(t):
+            bad = [m.group(0) for m in re.finditer(r"true value|A/B check|before touching OBD|never examined|overstates", t, re.I)]
+            bad += [t[max(0, m.start() - 40):m.end() + 10] for m in re.finditer(r"truth", t, re.I) if not re.search(r"not (?:known|ground) $", t[max(0, m.start() - 16):m.start()])]
+            return bad
+        scan = {"index.html": re.sub(r'data-src="[^"]*"', "", re.sub(r'<script id="data" type="application/json">.*?</script>', "", html, flags=re.S))}
+        scan.update({n: re.sub(r"`[^`]*`", "", (DEMO / n).read_text()) for n in ("SCRIPT.md", "README.md")})
+        bad = {n: banned(t) for n, t in scan.items()}
+        check("wording: no 'true value' / 'A/B check' / 'before touching OBD' / 'never examined' / 'overstates'; 'truth' only in 'not known truth' or 'not ground truth' (page, SCRIPT, README; source keys excluded)",
+              not any(bad.values()), "; ".join(f"{n}: {v[:2]}" for n, v in bad.items() if v))
     # 6. run.sh timing
     t = time.time()
     p = subprocess.run(["bash", str(DEMO / "run.sh")], env={**os.environ, "P3_NO_OPEN": "1", "P3_PYTHON": PY}, capture_output=True, text=True)
@@ -135,6 +186,59 @@ def main():
     pngs = list((DEMO / "fallback").glob("*.png"))
     tot = sum(x.stat().st_size for x in DEMO.joinpath("fallback").rglob("*") if x.is_file())
     check("fallback screenshots present, total < 5 MB", pngs and tot < 5_000_000, f"{len(pngs)} PNG, {tot / 1e6:.2f} MB")
+    sys.path.insert(0, str(DEMO / "rehearsal"))
+    sys.dont_write_bytecode = True
+    from speech import parse_script
+    beats = parse_script()
+    sj = json.loads((DEMO / "fallback" / "states.json").read_text())
+    names = sorted(x.name for x in pngs)
+    probs = [] if names == sorted(s["file"] for s in sj["shots"]) else ["the PNG set differs from states.json"]
+    for s in sj["shots"]:
+        fp = DEMO / "fallback" / s["file"]
+        if not fp.exists() or hashlib.sha256(fp.read_bytes()).hexdigest() != s["sha256"]:
+            probs.append(f"{s['file']}: missing or sha256 differs")
+            continue
+        x, st = {}, s["state"]
+        for tok in s["file"][:-4].split("_"):
+            if re.fullmatch(r"sheet[1-4]", tok): x["sheet"] = int(tok[-1])
+            elif re.fullmatch(r"preset[5-7]", tok): x["preset"] = str(int(tok[-1]) - 4)
+            elif re.fullmatch(r"Nov2[4-6]", tok): x["p"] = "D" + tok[-2:]
+            elif re.fullmatch(r"W[12]?", tok): x["p"] = tok
+            elif re.fullmatch(r"a\d\.\d\d", tok): x["a"] = round(100 * float(tok[1:]))
+            elif tok in ("IPS", "SNIPS"): x["e"] = "IPW" if tok == "IPS" else "SNIPW"
+            elif tok in ("row", "cluster"): x["iv"] = tok
+            elif tok in ("E1", "E2"): x["ep"] = tok
+            elif tok == "strip": x["strip"] = True
+        if "p" in x: x["sheet"] = 3
+        probs += [f"{s['file']}: {k} {st[k]} ≠ {v}" for k, v in x.items() if k in ("sheet", "p", "a", "e", "iv", "ep") and st[k] != v]
+        if x.get("sheet") == 3:
+            probs += [f"{s['file']}: pressed {k} {st['pressed'][k]}" for k in ("p", "e", "iv", "ep") if any(v != st[k] for v in st["pressed"][k])]
+            probs += [] if st["alpha_label"] == f"α = {st['a'] / 100:.2f}" else [f"{s['file']}: α label {st['alpha_label']}"]
+        probs += [f"{s['file']}: presets {st['presets']}" for _ in [0] if "preset" in x and st["presets"] != [x["preset"]]]
+        probs += [f"{s['file']}: strip not in view" for _ in [0] if x.get("strip") and not st["in_view"]["strip"]]
+    for b in beats:
+        m = re.search(r"`(\d\d_b\d+_)", b.get("fallback", ""))
+        if not m or sum(n.startswith(m.group(1)) for n in names) != 1:
+            probs.append(f"SCRIPT beat {b['beat']}: fallback {b.get('fallback')!r} does not name exactly one file")
+    page_sha = hashlib.sha256((DEMO / "index.html").read_bytes()).hexdigest()
+    probs += [] if sj["page_sha256"] == page_sha else ["captured from a different index.html than the committed one"]
+    shown = {s["file"][:2]: s["readout_bts"] for s in sj["shots"]}
+    want = "E1 inside; E2 still rejects (difference CI −0.290 … −0.008)"
+    probs += [f"{k}: readout lacks {want!r}" for k in ("07", "11") if want not in shown.get(k, "")]
+    probs += [] if "E1 outside by 0.018; E2 rejects (difference CI −0.279 … −0.018)" in shown.get("06", "") else ["06: row-level readout differs"]
+    check("fallback/states.json: same files (sha256), captured from the committed page; each on-screen state matches its file name; 07 and 11 read "
+          "'E1 inside; E2 still rejects (difference CI −0.290 … −0.008)'; SCRIPT beats name existing files",
+          not probs, "; ".join(probs[:4]) if probs else f"{len(sj['shots'])} states checked")
+    # 9. talk track and the measured rehearsal
+    words = sum(b["words"] for b in beats)
+    res = json.loads((DEMO / "rehearsal" / "result.json").read_text())
+    mmss = lambda t: f"{int(t // 60)}:{int(t % 60):02d}"
+    same_track = res["spoken_words"] == words and [b["words"] for b in beats] == [r["words"] for r in res["beats"]]
+    starts = all(b["start"] == mmss(r["start_s"]) for b, r in zip(beats, res["beats"]))
+    check("SCRIPT: 350–400 spoken words; the measured rehearsal (clicks included) ran this exact talk track on the committed page in ≤ 180 s; SCRIPT shows its start times and total",
+          350 <= words <= 400 and same_track and res["total_s"] <= 180 and starts and f"{res['total_s']:.1f} s" in (DEMO / "SCRIPT.md").read_text()
+          and res["page_sha256"] == page_sha,
+          f"{words} words; {res['total_s']:.1f} s measured")
 
     n_fail = sum(not ok for _, ok, _ in results)
     print(f"\nsmoke: {len(results) - n_fail}/{len(results)} checks passed" + (" — FAIL" if n_fail else " — PASS"))
