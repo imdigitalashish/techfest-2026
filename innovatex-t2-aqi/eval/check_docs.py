@@ -89,6 +89,11 @@ def main() -> int:
         for s in STALE:
             if s in text:
                 problems.append(f"STALE {rel}: contains superseded '{s}'")
+    memo = tn.split("## Selection memo", 1)[-1].split("\n## ", 1)[0]
+    k = __import__("render_docs").keys()
+    for key in ["at_pair", "at_ring", "at_selfcal", "at_gain_selfcal_vs_refcal_pct", "bom_kit", "pw_load", "pw_margin", "calm_lt10_winter_pct"]:
+        if k[key] not in memo:
+            problems.append(f"MEMO thought_node.md Selection memo: run number {key} = {k[key]} not found (memo out of date?)")
     for p in problems:
         print(p)
     print(f"check_docs: {len(problems)} problem(s) in {len(rendered)} rendered docs, {len(rows)} fact rows")

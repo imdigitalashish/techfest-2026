@@ -21,6 +21,7 @@
 **Never say:** tamper-proof · "we will cut AQI by …" · "clean sites can keep working" (it's a proposal) · "no one else does this".
 
 **Fast answers** (full list: qa-prep.md)
+
 - *Why you, in the most crowded theme?* Others measure the city; we answer which site added the dust — honestly, with "inconclusive" when we can't tell.
 - *Built or simulated?* Data pipeline and forecast benchmark: built, real data. Site + sensors: simulated. Ring + misting: Round 2.
 - *Sensors aren't accurate for dust.* Agreed (CSTEP 2025: qualitative). We use differences, then verify with a dust test and reference co-location; inspectors still verify before fines.
