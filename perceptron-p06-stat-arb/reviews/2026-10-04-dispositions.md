@@ -57,3 +57,21 @@ Score 62/100 (3.10/5), up from 53/100.
 | P6-A06 | minor | ACCEPTED | "A regressor trained on execution-surplus labels clipped to ±30 bp". |
 | P6-A07 | major | ACCEPTED (needs user) | Team skills, motivation and ownership must come from the user; nothing is fabricated. Listed under *Needs from user*. |
 | P6-A08 | major | ACCEPTED | The architecture page is regenerated: published-quote fills, the clipped-label ranker, survival as report and baseline, future work marked, sensitivity results in the table. |
+
+## `gpt-6-astra` (max): demo, "judge watching the demo" — [`2026-10-04-demo-gpt-6-astra.md`](2026-10-04-demo-gpt-6-astra.md)
+
+Scores: wow 3/5 · clarity in 3 minutes 2/5 · honesty/rigour 3/5 · robustness 3/5 · problem fit 5/5. Verdict: "credible, well-instrumented replay benchmark; not yet a reliable three-minute finals demo." Smoke passed 18/18 on the reviewer's own run. All findings were sent to the demo builder in priority order.
+
+| ID | Severity | Disposition | Action (by the demo builder; verified by the lead) |
+|---|---|---|---|
+| P6-D01 | major | ACCEPTED | Select the race episode first by a disclosed, outcome-independent rule, then a 1× lead-in; add cancel and a presenter deadline; keep every trial, false start and timeout visible. |
+| P6-D02 | major | ACCEPTED | A named race setup snapshots frozen / 1 bp / 1 ms; the script narrates current values and keeps window vs day distinct. |
+| P6-D03 | major | ACCEPTED | Label $/day as "mean day-level uplift, summed over 6 fee/latency scenarios" on the cards and in the script. |
+| P6-D04 | major | ACCEPTED | Make LIVE / offline / error state consistent: request timeouts, stale notice, readiness retry, regression check if feasible. |
+| P6-D05 | major | ACCEPTED | "12 sampled first-of-month days, 5 previously inspected", with the unseen-7 result alongside. |
+| P6-D06 | major | ACCEPTED | "Illustrative sensitivity range, not a bound on executable lifetime" (as in the abstract). |
+| P6-D07 | major | ACCEPTED | Relabel the laptop presets "receive−venue timestamp p05, clock offset unresolved"; remove "floors" and the arrow. Same root cause as abstract finding P6-A04. |
+| P6-D08 | major | ACCEPTED | A compact 3-step stage view (replay → race → evidence); the dashboard stays for Q&A. |
+| P6-D09 | minor | ACCEPTED | Derive the abstention caption from the full-day cells; remove the band text when the band is absent. |
+| P6-D10 | minor | ACCEPTED | The offline ratio is labelled against the right quantity (committed p50 vs the 7 µs allowance). |
+| L1 (lead) | minor | — | Two naive break-even figures appear on screen, from different leg sets (9-leg 4.6 ms vs 5-leg 2–3 ms); name the leg set at each. |

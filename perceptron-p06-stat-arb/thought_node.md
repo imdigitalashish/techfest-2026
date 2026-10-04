@@ -238,3 +238,8 @@ Folder, brief and journal created. The lead session starts Phase 0.
     5. window chosen by a stated rule;
     6. LEV hatched outside its trained L range;
     7. option B (bullet time) only after the §11 bar is green.
+- **18:37–19:08 — Demo ready for review, verified, reviewed.**
+  - The builder reported READY FOR REVIEW at d170f52 (window 13:37–13:52 UTC = densest 15 minutes on 2026-10-01; smoke 18/18).
+  - **My clean-checkout check** (fresh clone, no `.data`/`.cache`, venv from the lock): smoke **18/18 in 104 s**. Day grid at δ = 1/5/20 equals the committed 2026-10-01 V0 and V1 totals; live recompute equals the exported grid; compiled LEV equals sklearn exactly. `run.sh`: first visual **0.7 s**, live **16.7 s**.
+  - **`gpt-6-astra` demo review** (child 2 of 2, f8addd0): wow 3, clarity 2, honesty 3, robustness 3, fit 5. All 10 findings accepted (dispositions + ledger), plus one of mine: the two naive break-even figures come from different leg sets.
+  - Fix list sent to the builder in priority order: race length; race setup snapshot; copy pass (6-scenario denominator, 5 inspected days, sensitivity-not-bound, uncalibrated laptop timestamps, abstention caption, offline ratio); live-state consistency; 3-step stage view.
