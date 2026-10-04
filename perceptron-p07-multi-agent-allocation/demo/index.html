@@ -60,6 +60,7 @@ aside{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:auto}
 .status{font-size:14px;font-weight:700;color:var(--amber)}
 .pred-big{font-size:26px;font-weight:800;color:var(--green)}
 .pred-big.na{color:var(--dim);font-size:18px}
+.pred-big.worse{color:var(--red)}
 canvas.strip{display:block;width:100%;height:92px;margin-top:2px}
 .lp{display:grid;grid-template-columns:44px 1fr 1fr;gap:4px;align-items:stretch}
 .lp div.h{font-size:12px;color:var(--dim);text-align:center;align-self:end}
@@ -690,7 +691,8 @@ const NYC_VIEW = {
   chip(v, chip) {
     if (v.warming) { chip.className = 'chip'; chip.textContent = ''; return; }
     const d = v.win[0] - v.win[1];
-    if (v.t > NY_EVENT[0] && d !== 0) { chip.className = 'chip ' + (d > 0 ? 'good' : 'bad'); chip.textContent = d > 0 ? `Planner: ${d} fewer lost in the window so far` : `Planner: ${-d} MORE lost in the window so far`; }
+    const sofar = v.winSteps >= WIN ? 'in the night window' : 'in the window so far';
+    if (v.t > NY_EVENT[0] && d !== 0) { chip.className = 'chip ' + (d > 0 ? 'good' : 'bad'); chip.textContent = d > 0 ? `Planner: ${d} fewer lost ${sofar}` : `Planner: ${-d} MORE lost ${sofar}`; }
     else { chip.className = 'chip'; chip.textContent = v.t < NY_EVENT[0] ? 'Watch Two Bridges (bottom row, 4th cell) at 22:00.' : ''; }
   },
   onDom(v) {
@@ -807,11 +809,11 @@ function renderPred(v) {
   else {
     const mean = sum(b.d) / b.d.length, won = b.d.filter(x => x < 0).length;
     if (b.head && b.head.lost !== undefined) {
-      h += `<div class="pred-big">${S(b.head.src, b.head.lost)} requests lost per surge</div><div class="hint">planner minus rule, in the 120 minutes after onset. Served: ${S(b.head.src, b.head.pp)} pp [95% CI] (seeds won).</div>`;
+      h += `<div class="pred-big${parseFloat(b.head.lost) > 0 ? ' worse' : ''}">${S(b.head.src, b.head.lost)} requests lost per surge</div><div class="hint">planner minus rule, in the 120 minutes after onset. Served: ${S(b.head.src, b.head.pp)} pp [95% CI] (seeds won).</div>`;
     } else if (b.head && b.head.prereg) {
       h += `<div class="pred-big">${S(b.head.src, b.head.pp)} pp served</div><div class="hint">PRE-REGISTERED: planner minus the reference rule, ${S(b.head.src, b.head.won)} seeds, Holm p = ${S(b.head.src, b.head.holm)}. Lost per surge, planner minus rule: ${signed(mean)} (mean of the dots).</div>`;
     } else {
-      h += `<div class="pred-big">${signed(mean)} requests lost per surge</div><div class="hint">planner minus rule, mean of the ${b.n} committed seeds below (derived); planner lost fewer in ${won}/${b.n}.</div>`;
+      h += `<div class="pred-big${mean > 0 ? ' worse' : ''}">${signed(mean)} requests lost per surge</div><div class="hint">planner minus rule, mean of the ${b.n} committed seeds below (derived); planner lost fewer in ${won}/${b.n}.</div>`;
     }
   }
   $('#synPredTxt').innerHTML = h;
