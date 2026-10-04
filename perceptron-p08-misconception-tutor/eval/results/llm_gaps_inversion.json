@@ -1,0 +1,385 @@
+{
+ "counts": {
+  "L1/single": 20,
+  "L1/pair": 20,
+  "L1/slip": 20,
+  "L2/single": 20,
+  "L2/pair": 20,
+  "L2/slip": 20,
+  "L3/single": 20,
+  "L3/pair": 20,
+  "L3/slip": 20
+ },
+ "methods": {
+  "EXEC": {
+   "L1": {
+    "n": 60,
+    "exact_set_acc": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "acc_single": 1.0,
+    "acc_pair": 1.0,
+    "acc_slip": 1.0,
+    "slip_false_attribution": 0.0,
+    "slip_false_attribution_ci": [
+     0.0,
+     0.0
+    ],
+    "claim_consistency": 1.0
+   },
+   "L2": {
+    "n": 60,
+    "exact_set_acc": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "acc_single": 1.0,
+    "acc_pair": 1.0,
+    "acc_slip": 1.0,
+    "slip_false_attribution": 0.0,
+    "slip_false_attribution_ci": [
+     0.0,
+     0.0
+    ],
+    "claim_consistency": 1.0
+   },
+   "L3": {
+    "n": 60,
+    "exact_set_acc": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "acc_single": 1.0,
+    "acc_pair": 1.0,
+    "acc_slip": 1.0,
+    "slip_false_attribution": 0.0,
+    "slip_false_attribution_ci": [
+     0.0,
+     0.0
+    ],
+    "claim_consistency": 1.0
+   },
+   "ALL": {
+    "n": 180,
+    "exact_set_acc": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "acc_single": 1.0,
+    "acc_pair": 1.0,
+    "acc_slip": 1.0,
+    "slip_false_attribution": 0.0,
+    "slip_false_attribution_ci": [
+     0.0,
+     0.0
+    ],
+    "claim_consistency": 1.0
+   }
+  },
+  "LLM:gpt-4.1-mini": {
+   "L1": {
+    "n": 60,
+    "exact_set_acc": 0.2667,
+    "ci": [
+     0.1667,
+     0.3833
+    ],
+    "acc_single": 0.4,
+    "acc_pair": 0.35,
+    "acc_slip": 0.05,
+    "slip_false_attribution": 0.95,
+    "slip_false_attribution_ci": [
+     0.85,
+     1.0
+    ],
+    "claim_consistency": 0.3559
+   },
+   "L2": {
+    "n": 60,
+    "exact_set_acc": 0.1833,
+    "ci": [
+     0.0833,
+     0.2833
+    ],
+    "acc_single": 0.15,
+    "acc_pair": 0.4,
+    "acc_slip": 0.0,
+    "slip_false_attribution": 1.0,
+    "slip_false_attribution_ci": [
+     1.0,
+     1.0
+    ],
+    "claim_consistency": 0.3167
+   },
+   "L3": {
+    "n": 60,
+    "exact_set_acc": 0.1167,
+    "ci": [
+     0.05,
+     0.2
+    ],
+    "acc_single": 0.05,
+    "acc_pair": 0.3,
+    "acc_slip": 0.0,
+    "slip_false_attribution": 1.0,
+    "slip_false_attribution_ci": [
+     1.0,
+     1.0
+    ],
+    "claim_consistency": 0.15
+   },
+   "ALL": {
+    "n": 180,
+    "exact_set_acc": 0.1889,
+    "ci": [
+     0.1333,
+     0.25
+    ],
+    "acc_single": 0.2,
+    "acc_pair": 0.35,
+    "acc_slip": 0.0167,
+    "slip_false_attribution": 0.9833,
+    "slip_false_attribution_ci": [
+     0.95,
+     1.0
+    ],
+    "claim_consistency": 0.2737
+   }
+  },
+  "LLM:gpt-5.4-mini": {
+   "L1": {
+    "n": 60,
+    "exact_set_acc": 0.9667,
+    "ci": [
+     0.9167,
+     1.0
+    ],
+    "acc_single": 0.9,
+    "acc_pair": 1.0,
+    "acc_slip": 1.0,
+    "slip_false_attribution": 0.0,
+    "slip_false_attribution_ci": [
+     0.0,
+     0.0
+    ],
+    "claim_consistency": 1.0
+   },
+   "L2": {
+    "n": 60,
+    "exact_set_acc": 0.9333,
+    "ci": [
+     0.8667,
+     0.9833
+    ],
+    "acc_single": 0.9,
+    "acc_pair": 0.95,
+    "acc_slip": 0.95,
+    "slip_false_attribution": 0.0,
+    "slip_false_attribution_ci": [
+     0.0,
+     0.0
+    ],
+    "claim_consistency": 1.0
+   },
+   "L3": {
+    "n": 60,
+    "exact_set_acc": 0.95,
+    "ci": [
+     0.8996,
+     1.0
+    ],
+    "acc_single": 0.95,
+    "acc_pair": 0.95,
+    "acc_slip": 0.95,
+    "slip_false_attribution": 0.05,
+    "slip_false_attribution_ci": [
+     0.0,
+     0.15
+    ],
+    "claim_consistency": 0.975
+   },
+   "ALL": {
+    "n": 180,
+    "exact_set_acc": 0.95,
+    "ci": [
+     0.9167,
+     0.9778
+    ],
+    "acc_single": 0.9167,
+    "acc_pair": 0.9667,
+    "acc_slip": 0.9667,
+    "slip_false_attribution": 0.0167,
+    "slip_false_attribution_ci": [
+     0.0,
+     0.05
+    ],
+    "claim_consistency": 0.9914
+   }
+  },
+  "LLM:gpt-5.5": {
+   "L3": {
+    "n": 60,
+    "exact_set_acc": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "acc_single": 1.0,
+    "acc_pair": 1.0,
+    "acc_slip": 1.0,
+    "slip_false_attribution": 0.0,
+    "slip_false_attribution_ci": [
+     0.0,
+     0.0
+    ],
+    "claim_consistency": 1.0
+   },
+   "ALL": {
+    "n": 60,
+    "exact_set_acc": 1.0,
+    "ci": [
+     1.0,
+     1.0
+    ],
+    "acc_single": 1.0,
+    "acc_pair": 1.0,
+    "acc_slip": 1.0,
+    "slip_false_attribution": 0.0,
+    "slip_false_attribution_ci": [
+     0.0,
+     0.0
+    ],
+    "claim_consistency": 1.0
+   }
+  }
+ },
+ "usage": {
+  "gpt-4.1-mini": {
+   "calls": 180,
+   "errors": 0,
+   "prompt_tokens": 55575,
+   "completion_tokens": 1946,
+   "reasoning_tokens": 0,
+   "cost_usd_estimate": 0.0253
+  },
+  "gpt-5.4-mini": {
+   "calls": 180,
+   "errors": 0,
+   "prompt_tokens": 55395,
+   "completion_tokens": 412934,
+   "reasoning_tokens": 405256,
+   "cost_usd_estimate": 1.8997
+  },
+  "gpt-5.5": {
+   "calls": 60,
+   "errors": 0,
+   "prompt_tokens": 19068,
+   "completion_tokens": 141077,
+   "reasoning_tokens": 138535,
+   "cost_usd_estimate": 4.3277
+  }
+ },
+ "invalid": {
+  "gpt-4.1-mini": 0,
+  "gpt-5.4-mini": 1,
+  "gpt-5.5": 0
+ },
+ "decisions": {
+  "gpt-4.1-mini": {
+   "H3_L3_exact_set_acc": 0.1167,
+   "H3_ci": [
+    0.05,
+    0.2
+   ],
+   "H3_gap": true,
+   "H4_slip_false_attribution": 0.9833,
+   "H4_ci": [
+    0.95,
+    1.0
+   ],
+   "H4_gap": true
+  },
+  "gpt-5.4-mini": {
+   "H3_L3_exact_set_acc": 0.95,
+   "H3_ci": [
+    0.8996,
+    1.0
+   ],
+   "H3_gap": false,
+   "H4_slip_false_attribution": 0.0167,
+   "H4_ci": [
+    0.0,
+    0.05
+   ],
+   "H4_gap": false
+  },
+  "gpt-5.5": {
+   "H3_L3_exact_set_acc": 1.0,
+   "H3_ci": [
+    1.0,
+    1.0
+   ],
+   "H3_gap": false,
+   "H4_slip_false_attribution": 0.0,
+   "H4_ci": [
+    0.0,
+    0.0
+   ],
+   "H4_gap": false
+  }
+ },
+ "ops_per_level": {
+  "L1": [
+   1,
+   2.7,
+   4
+  ],
+  "L2": [
+   2,
+   4.7333,
+   6
+  ],
+  "L3": [
+   4,
+   6.6667,
+   8
+  ]
+ },
+ "part": "inversion",
+ "protocol": "eval/llm_gap_protocol.md",
+ "price_source": "Azure Retail Prices API, serviceName 'Foundry Models', swedencentral, Global meters (gpt 4.1 mini Inp/Outp glbl; 5.4 mini Inp/Opt Gl; 5.5 ShortCo inp/opt Gl), accessed 2026-10-04. Reasoning tokens are assumed to be billed as output tokens (assumption).",
+ "gpt55_subset": "L3 only",
+ "models": {
+  "gpt-4.1-mini": {
+   "effort": null,
+   "max_tokens": 300,
+   "price": [
+    0.4,
+    1.6
+   ]
+  },
+  "gpt-5.4-mini": {
+   "effort": "medium",
+   "max_tokens": 8000,
+   "price": [
+    0.75,
+    4.5
+   ]
+  },
+  "gpt-5.5": {
+   "effort": "high",
+   "max_tokens": 16000,
+   "price": [
+    5.0,
+    30.0
+   ]
+  }
+ },
+ "command": "python -m eval.run_llm_gaps --part inversion --models gpt-4.1-mini,gpt-5.4-mini,gpt-5.5",
+ "total_cost_usd_estimate": 6.2527
+}
