@@ -1,0 +1,383 @@
+station_id,station_name,station_type,lat,lon,telemetry,agency_name,district_name,block_name,basin_name,created_date,source
+PIZ10181,Nilothi STP/Lake,Ground Water,28.3924,77.0251,1,Delhi SW GW,West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282432077112201,Jheel Khoh,Ground Water,28.40888889,77.18944444,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL28,Delhi South East KALKAJI Asola Pz,Ground Water,28.4125,77.2667,1,CGWB,South East Delhi,KALKAJI,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF16,New Delhi Phoot Khurd Phoot Khurd,Ground Water,28.399723,76.499166,1,Delhi SW GW,New Delhi,-,Area of Inland drainage in Rajasthan Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282512077122801,Balbir Nagar,Ground Water,28.42,77.20777778,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282532077124501,Bhatti RWH,Ground Water,28.42555556,77.2125,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282540077123001,Bhatti-Pz,Ground Water,28.42777778,77.20833333,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL03,Delhi South SAKET Bhatti Pz,Ground Water,28.4278,77.2083,1,CGWB,South,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282737077110001,Fatehpur Beri Pz,Ground Water,28.46027778,77.18333333,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282805077090001,Jaunapur DJB,Ground Water,28.46805556,77.15,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282818077074701,Ayanagar Pz,Ground Water,28.47166667,77.12972222,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF08,New Delhi Hiranki Hiranki 14500,Ground Water,28.478332,77.448893,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL08,Delhi South MEHRAULI Gadaipur Pz,Ground Water,28.4769,77.1561,1,CGWB,South,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282840077121601,Satbari Pz,Ground Water,28.47777778,77.20444444,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282837077092201,Gadaipur Pz,Ground Water,28.47694444,77.15611111,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL26,Delhi New Delhi VASANT VIHAR Sultanpur IMS Pz,Ground Water,28.4894,77.1458,1,CGWB,New Delhi,VASANT VIHAR,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282922077084501,Sultanpur IMS,Ground Water,28.48944444,77.14583333,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+282945077160001,Asola Pz,Ground Water,28.49583333,77.26666667,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283022077105601,Jamali Kamali,Ground Water,28.50611111,77.18222222,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283032077202601,Jaitpur Khadar RD-3500,Ground Water,28.50888889,77.34055556,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI008,Jaitpur Khadar RD3500 Pz,Ground Water,28.5089,77.3406,1,CGWB,South East Delhi,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283054077200601,Jaitpur Khadar RD-2600,Ground Water,28.515,77.335,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF11,New Delhi Daurala Daurala,Ground Water,28.510715,76.894526,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283039076535601,Deorala Pz,Ground Water,28.51083333,76.89888889,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF10,New Delhi Salahpur Salahpur,Ground Water,28.516111,77.060838,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF14,New Delhi Mungeshpur Mungeshpur,Ground Water,28.516277,77.060958,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283105076541501,Raota,Ground Water,28.51805556,76.90416667,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283128077122201,Saket D Block Pz,Ground Water,28.52444444,77.20611111,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL21,Delhi South HAUZ KHAS Pusp Vihar Pz,Ground Water,28.527124,77.223113,1,CGWB,South,HAUZ KHAS,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283144077193101,Madanpur Khadar,Ground Water,28.52888889,77.32527778,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283130077045501,Kapashera,Ground Water,28.525,77.08194444,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283140077133601,Pusp Vihar Pz,Ground Water,28.52777778,77.22666667,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283144077135601,Madan Gir,Ground Water,28.52888889,77.23222222,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI004,Shikarpur Deep Pz,Ground Water,28.5244,76.9533,1,CGWB,South West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283128076571201,Sikarpur Deep,Ground Water,28.52444444,76.95333333,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI085,Shikarpur Shallow Pz,Ground Water,28.5247,76.9533,1,CGWB,South West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283129076571201,Sikarpur Shallow,Ground Water,28.52472222,76.95333333,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10187,Ghalibpur_1,Ground Water,28.529587,76.879106,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283209077092501,JUN Pz-13 Upstreem,Ground Water,28.53583333,77.15694444,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283209077092502,JUN Pz-3 (D) Downstream,Ground Water,28.53583333,77.15694444,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283154076523101,Galibpur Pz,Ground Water,28.53166667,76.87527778,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10194,Ghummanhera,Ground Water,28.533259,76.928695,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL11,Delhi New Delhi VASANT VIHAR J N U Pz,Ground Water,28.537572,77.157268,1,CGWB,New Delhi,VASANT VIHAR,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283203076543101,Daryapur Khurd,Ground Water,28.53416667,76.90861111,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI030,Daryapur Khurd_1,Ground Water,28.5342,76.9086,1,CGWB,South West,-,Ganga Basin,1696550400000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283222077105001,Sanjay van Ck Dam,Ground Water,28.53944444,77.18055556,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283205076541001,Jhuljhuli Pz,Ground Water,28.53472222,76.90277778,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10219,Okhla Jal Board,Ground Water,28.541703,77.265,1,Delhi SW GW,South,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283236077185101,Kalindi Kunj Barrage Pz,Ground Water,28.54333333,77.31416667,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283210076541701,Jhuljhuli Dw,Ground Water,28.53611111,76.90472222,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10210,Sarangpur_1,Ground Water,28.536307,76.889225,1,Delhi SW GW,South West,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283243077120801,Hauz Khas Pz,Ground Water,28.54527778,77.20222222,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL33,Delhi South HAUZ KHAS Hauz Khas Pz,Ground Water,28.547245,77.204833,1,CGWB,South,HAUZ KHAS,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10179,Daulatpur Site,Ground Water,28.543026,76.968245,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283235076575501,Daulatpur Pz,Ground Water,28.54305556,76.96527778,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL06,Delhi South West KAPESHERA Daulatpur Pz,Ground Water,28.5431,76.9653,1,CGWB,South West,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283247077003401,Chawla,Ground Water,28.54638889,77.00944444,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL30,Delhi South West KAPESHERA Chhawla Pz,Ground Water,28.5464,77.0094,1,CGWB,South West,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10189,Malikpur_2,Ground Water,28.549226,76.899343,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10178,Chawla Village 1,Ground Water,28.55598,77.006781,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283350077110001,R.K. Puram,Ground Water,28.56388889,77.18333333,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283342077031601,Dwarka Sect.-20,Ground Water,28.56166667,77.05444444,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10220,Chhawla Village-3,Ground Water,28.562713,77.008146,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283355077043001,Papankalan(SPG),Ground Water,28.56527778,77.075,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283409077173201,Batla House Pz,Ground Water,28.56916667,77.29222222,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10184,Chhawla Village-2,Ground Water,28.564256,77.002377,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL44,"Delhi South West DWARKA Dwarka Sec-23,DDA Park Pz",Ground Water,28.565955,77.05051,1,CGWB,South West,DWARKA,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283400077031401,Dwarka Sect -23,Ground Water,28.56666667,77.05388889,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283352076504501,Dhansa Pz,Ground Water,28.56444444,76.84583333,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283430077081501,Basant Gaon,Ground Water,28.575,77.1375,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10195,Samaspur khalsa,Ground Water,28.573101,76.898219,1,Delhi SW GW,West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL25,Delhi New Delhi DELHI CANTONMENT Shekhwati Line Pz,Ground Water,28.5783,77.1078,1,CGWB,New Delhi,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283442077062801,Shekhawati Line Pz,Ground Water,28.57833333,77.10777778,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283443077062901,Tagore Garden Pz,Ground Water,28.57861111,77.10805556,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10198,Tajpur Khurd,Ground Water,28.577042,77.013587,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283427076514401,Issapur Khera Pz,Ground Water,28.57416667,76.86222222,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283436076545101,Ojwah Pz,Ground Water,28.57666667,76.91416667,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI068,Ujwah Pz,Ground Water,28.5767,76.9142,1,CGWB,South West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL07,Delhi South West DWARKA Dwarka S-16 (TP),Ground Water,28.581332,77.024241,1,CGWB,South West,DWARKA,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL31,Delhi East MAYUR VIHAR Chilla Regulator,Ground Water,28.587153,77.301025,1,CGWB,East,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283514077180501,Chilla Regulator,Ground Water,28.58722222,77.30138889,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283505077053701,Palam Signal Camp,Ground Water,28.58472222,77.09361111,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283508077013401,Dwarka Sec-16 (Tp),Ground Water,28.58555556,77.02611111,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283525077125901,Lodhi Garden (D),Ground Water,28.59027778,77.21638889,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283525077125902,Lodhi Garden.(SH),Ground Water,28.59027778,77.21638889,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI010,LodhiGarden (Deep),Ground Water,28.5903,77.2164,1,CGWB,New Delhi,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI039,LodhiGarden(5hallow),Ground Water,28.5903,77.2164,1,CGWB,New Delhi,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283525077124501,Safdarjung tomb,Ground Water,28.59027778,77.2125,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283525077110301,Shanti Path Dw,Ground Water,28.59027778,77.18416667,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283530077131401,Lodhi Graden Dw,Ground Water,28.59166667,77.22055556,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10186,Jaffarpur Kalan-2,Ground Water,28.587139,76.924383,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL18,Delhi South East DEFENCE COLONY Nangli Rajapur Pz,Ground Water,28.5944,77.2733,1,CGWB,South East Delhi,DEFENCE COLONY,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283540077162401,Nagali Rajapur Pz,Ground Water,28.59444444,77.27333333,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI007,Kabulline Pz,Ground Water,28.5922,77.1275,1,CGWB,New Delhi,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283532077073901,Kabul Line Pz,Ground Water,28.59222222,77.1275,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283542077150301,Humayun Tomb,Ground Water,28.595,77.25083333,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI003,Sunder Nursery Pz,Ground Water,28.5961,77.245,1,CGWB,New Delhi,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283546077144201,Sundar Nursery Pz,Ground Water,28.59611111,77.245,2,CGWB,South,HAUZ KHAS,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL43,"Delhi South West DWARKA Dwarka Sec-5,DDA Park Pz",Ground Water,28.594994,77.058065,1,CGWB,South West,DWARKA,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10177,Jaffarpur Kalan-1,Ground Water,28.59306,76.919752,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283601077175501,Chillasaroda Pz,Ground Water,28.60027778,77.29861111,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283602077165201,Mayur Vihar Flood Plain,Ground Water,28.60055556,77.28111111,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10185,Bakkargarh Village,Ground Water,28.593893,76.876161,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283550077024702,Dwarka Sect 12 Deep,Ground Water,28.59722222,77.04638889,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283601077031801,Dwarka Sect-5,Ground Water,28.60027778,77.055,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283617077155801,Nizamuddin Bridge-2,Ground Water,28.60472222,77.26611111,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283615077103001,Mahabir Vansth.,Ground Water,28.60416667,77.175,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283612077064001,CVD Depot Cant (Sh),Ground Water,28.60333333,77.11111111,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283612077064002,CVD Depot Cant (Md),Ground Water,28.60333333,77.11111111,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283612077064003,CVD Depot Cant (Dp),Ground Water,28.60333333,77.11111111,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL05,Delhi New Delhi DELHI CANTONMENT Cvd Depot Cantt (D),Ground Water,28.603516,77.111253,1,CGWB,New Delhi,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL35,Delhi New Delhi CHANAKYAPURI Mahabir Vansth.,Ground Water,28.605006,77.176548,1,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283625077155801,Nizamuddin Bridge-1,Ground Water,28.60694444,77.26611111,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283622077123601,Nehru Park Dw,Ground Water,28.60611111,77.21,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10251,Palam_1,Ground Water,28.606234,77.169772,1,Delhi SW GW,South West,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283630077160002,Akshardham Temple Pz,Ground Water,28.60833333,77.26666667,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283624077074401,Kirbi Place Pz,Ground Water,28.60666667,77.12888889,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL51,Delhi East Mayur vihar Kondli DJB WTP,Ground Water,28.610828,77.322998,1,CGWB,East,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283630077103001,Kitchner road,Ground Water,28.60833333,77.175,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI087,Surheda_2,Ground Water,28.603888,76.932222,1,CGWB,South West,-,Ganga Basin,1696982400000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283614076555601,Surheda TW,Ground Water,28.60388889,76.93222222,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283634077090201,Nicolsan Range Pz,Ground Water,28.60944444,77.15055556,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283644077161201,Akshardham D Pz,Ground Water,28.61222222,77.27,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10180,Dwarka WTP,Ground Water,28.607861,77.004922,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10190,Mitroan Village,Ground Water,28.606988,76.949855,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283642077115801,Presidents Estate-1,Ground Water,28.61166667,77.19944444,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283645077133001,India gate,Ground Water,28.6125,77.225,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL10,Delhi New Delhi CHANAKYAPURI India Gate Pz,Ground Water,28.6125,77.225,1,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL14,Delhi South West NAJAFGARH Mandela Kalan Pz,Ground Water,28.6072,76.8939,1,CGWB,South West,NAJAFGARH,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283626076533801,Mandela Khurd Pz,Ground Water,28.60722222,76.89388889,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283655077195101,Kondli Pz,Ground Water,28.61527778,77.33083333,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283652077144701,Pragati Maidan,Ground Water,28.61444444,77.24638889,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10224,Uttam Nagar-2,Ground Water,28.611554,77.073147,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283653077124301,Shram Shakti Bhawan 1,Ground Water,28.61472222,77.21194444,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283659077181601,"Mayur Vihar B Block, Ph-II",Ground Water,28.61638889,77.30444444,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10204,Bindapur Jal board Uttam Nagar,Ground Water,28.612391,77.073364,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10250,Akshardham P-6 Rainywell,Ground Water,28.616121,77.28266,1,Delhi SW GW,East,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283654077124401,Shram Shakti Bhawan 2,Ground Water,28.615,77.21222222,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL17,Delhi East MAYUR VIHAR Mayur Vihar B Block Ph II,Ground Water,28.616787,77.304421,1,CGWB,East,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283655077124501,Shram Shakti Bhawan 3,Ground Water,28.61527778,77.2125,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF19,New Delhi Mundella kalan Mundella kalan,Ground Water,28.610835,76.894722,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283702077120001,Presidents Estate-2,Ground Water,28.61722222,77.2,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL36,Delhi South West NAJAFGARH Najafgarh Town,Ground Water,28.6147,77.0006,1,CGWB,South West,NAJAFGARH,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283653077000201,Najafgarh Town,Ground Water,28.61472222,77.00055556,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI124,Shram shakti bhawan 1_2,Ground Water,28.619974,77.212174,1,CGWB,New Delhi,-,Ganga Basin,1696982400000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL16,Delhi West RAJOURI GARDEN Mayapuri Pz,Ground Water,28.618502,77.111227,1,CGWB,West,RAJOURI GARDEN,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283707077064001,Mayapuri Pz,Ground Water,28.61861111,77.11111111,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10226,Beri Wala Bagh,Ground Water,28.619525,77.107,1,Delhi SW GW,West,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF20,New Delhi Nangli Sarkrawati,Ground Water,28.619167,77.000275,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10217,Mayapuri Phase-2,Ground Water,28.6225,77.123768,1,Delhi SW GW,West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10255,Janakpuri C-2 BPS,Ground Water,28.623384,77.085892,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283715076552501,Kair pZ,Ground Water,28.62083333,76.92361111,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10234,Yamuna Bank V-8 Rainywell,Ground Water,28.627219,77.269839,1,Delhi SW GW,East,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283741077190501,Ghazipur Crossing Pz,Ground Water,28.62805556,77.31805556,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI014,gazipur crossing pz,Ground Water,28.628056,77.318056,1,CGWB,East,-,Ganga Basin,1696550400000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL32,Delhi East PREET VIHAR Gazi Pur Crossing,Ground Water,28.6281,77.3181,1,CGWB,East,PREET VIHAR,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10218,ITO V-7 Rainywell,Ground Water,28.627363,77.260293,1,Delhi SW GW,East,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283748077194301,Gazipur SLFO,Ground Water,28.63,77.32861111,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10192,Kair Viilage,Ground Water,28.623046,76.921139,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283745077141501,Parsidharamsala Dw,Ground Water,28.62916667,77.2375,2,CGWB,Central,CIVIL LINES,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10230,Janak Puri BPS,Ground Water,28.626821,77.094117,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI089,Lalita Park (Pz),Ground Water,28.6325,77.2717,1,CGWB,Nazul Land,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283748077052901,Janakpuri Pz,Ground Water,28.63,77.09138889,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI125,Janakpuri Pz_1,Ground Water,28.63,77.09138889,1,CGWB,West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283755077115501,Birla mandir,Ground Water,28.63194444,77.19861111,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283755077093401,PUSA (WTC),Ground Water,28.63194444,77.15944444,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283758077114501,Mandir Lane Pz,Ground Water,28.63277778,77.19583333,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283759077085601,PUSA Indrapuri Gate,Ground Water,28.63305556,77.14888889,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283756077042701,Vikashpuri Pz,Ground Water,28.63222222,77.07416667,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL38,Delhi West PATEL NAGAR Vikashpuri Pz,Ground Water,28.63233,77.074891,1,CGWB,West,PATEL NAGAR,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10208,Vikas Puri,Ground Water,28.632295,77.072763,1,Delhi SW GW,West,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283822077145601,Rajghat Pz,Ground Water,28.63944444,77.24888889,2,CGWB,Central,CIVIL LINES,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283821077094401,PUSA (NRL),Ground Water,28.63916667,77.16222222,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL46,Delhi East PREET VIHAR Bank Enclave Pz,Ground Water,28.641098,77.271159,1,CGWB,East,PREET VIHAR,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI056,PUSA (NRL) Pz,Ground Water,28.6392,77.1622,1,CGWB,West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL47,Delhi East PREET VIHAR Gujarat Vihar Pz,Ground Water,28.642264,77.2918,1,CGWB,East,PREET VIHAR,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283817076584401,Dichaon Kalan DW,Ground Water,28.63805556,76.97888889,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283834077121301,Pachkuian Road,Ground Water,28.64277778,77.20361111,2,CGWB,New Delhi,CHANAKYAPURI,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283820076591501,Dichaon Kalan,Ground Water,28.63888889,76.9875,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283820076582502,Jharoda Kalan Pz,Ground Water,28.63888889,76.97361111,2,CGWB,South West,NAJAFGARH,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL13,Delhi North West Rajouri Garden Tagore Garden,Ground Water,28.644938,77.107787,1,CGWB,North West,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283858077070701,Rajouri Garden TW,Ground Water,28.64944444,77.11861111,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283855077014501,Tilangpur Kotla Dw,Ground Water,28.64861111,77.02916667,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283900077010001,Baprola Dw,Ground Water,28.65,77.01666667,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283910077092201,Shadipur TW,Ground Water,28.65277778,77.15611111,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283909077052001,Keshopur TW,Ground Water,28.6525,77.08888889,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI018,Keshopur DJB WTP,Ground Water,28.6525,77.08638889,1,CGWB,West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283920077140901,Chandini Chowk DW,Ground Water,28.65555556,77.23583333,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10244,Keshopur (Hastal),Ground Water,28.654241,77.086034,1,Delhi SW GW,West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10246,Khayala Jal Board,Ground Water,28.655815,77.107821,1,Delhi SW GW,West,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10182,40 MGD Nilothi STP,Ground Water,28.656607,77.055383,1,Delhi SW GW,West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283940077181101,Cbd Shahdara Pz,Ground Water,28.66111111,77.30305556,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10183,Dwarka Site STP,Ground Water,28.65661,77.007148,1,Delhi SW GW,South West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283945077150901,Gandhi Nagar Pz,Ground Water,28.6625,77.2525,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283952077140401,ISBT(KashmereGate)DW2,Ground Water,28.66444444,77.23444444,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL48,Delhi Shahdara VIVEK VIHAR Vivek Vihar (Pz),Ground Water,28.6708,77.3131,1,CGWB,Shahdara,VIVEK VIHAR,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI013,vivek vihar(Pz)_1,Ground Water,28.6708333,77.31305556,1,CGWB,Shahdara,-,Ganga Basin,1696982400000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284018077163101,GT Road Seelampur TW,Ground Water,28.67166667,77.27527778,2,CGWB,East,GANDHI NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF18,New Delhi Bakkarwala Bakkarwala,Ground Water,28.667358,77.012916,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284020077135001,ISBT (Kashmiri Gate) Dw,Ground Water,28.67222222,77.23055556,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10231,Neelwal,Ground Water,28.667911,76.976996,1,Delhi SW GW,West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10207,Roshanara Lake,Ground Water,28.674318,77.198205,1,Delhi SW GW,North,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284034077174901,G T Road Shahdara Dw,Ground Water,28.67611111,77.29694444,2,CGWB,North East,SEELAM PUR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL45,Delhi NAZUL LAND NAZUL LAND Shastri Park (Pz),Ground Water,28.675825,77.262026,1,CGWB,Nazul Land,NAZUL LAND,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284028077085901,Punjabi Bagh,Ground Water,28.67444444,77.14972222,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284026077050401,Guru Harkishan Nagar Pz,Ground Water,28.67388889,77.08444444,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284032077053601,Peera Garhi Dw,Ground Water,28.67555556,77.09333333,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284041077054101,Peera Garhi Pz,Ground Water,28.67805556,77.09472222,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL20,Delhi West PUNJABI BAGH Peeragarhi Pz,Ground Water,28.6781,77.0947,1,CGWB,West,PUNJABI BAGH,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284105077145701,Ushmanpur Pz,Ground Water,28.68472222,77.24916667,2,CGWB,North East,SEELAM PUR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL27,Delhi North East SEELAM PUR Ushmanpur Pz,Ground Water,28.684922,77.249118,1,CGWB,North East,SEELAM PUR,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284102077105601,Ashok Vihar - IV,Ground Water,28.68388889,77.18222222,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL34,Delhi North NARELA Kingsway Camp Police Ground Pz,Ground Water,28.6847,77.1994,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284105077115801,Kingsway Camp Police Ground Pz,Ground Water,28.68472222,77.19944444,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10193,Tikri Kalan_1,Ground Water,28.68067,76.966534,1,Delhi SW GW,West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284056076593901,Hiran Kudna Dw,Ground Water,28.68222222,76.99416667,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI051,Tikri Kalan Pz_1,Ground Water,28.6833,76.9694,1,CGWB,West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284100076581001,Tikri Kalan Pz,Ground Water,28.68333333,76.96944444,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284109077030901,Nangloi Pz,Ground Water,28.68583333,77.0525,2,CGWB,West,PATEL NAGAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF04,New Delhi Jagatpur Jagatpur RD3750,Ground Water,28.697777,77.665558,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284127077124801,Delhi University Pz,Ground Water,28.69083333,77.21333333,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI142,Sanjay Van Pz_1,Ground Water,28.6903,77.1419,1,CGWB,North West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284125077044501,Mangolpuri Pz,Ground Water,28.69027778,77.07916667,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL15,Delhi North West ROHINI Mangolpuri Pz,Ground Water,28.6903,77.0792,1,CGWB,North West,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284128077072601,Sainik Vihar Pz,Ground Water,28.69111111,77.12388889,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL50,Delhi North West SARASWATI VIHAR Sainik Vihar(Pz),Ground Water,28.6911,77.1219,1,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284140077122001,Banda Bahadur SH,Ground Water,28.69444444,77.20555556,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284145077134001,Majanu Ka Tila Dw,Ground Water,28.69583333,77.22777778,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI066,Sandesh Vihar Pz_1,Ground Water,28.695,77.1461,1,CGWB,North West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284154077181901,Nand Nagri TW,Ground Water,28.69833333,77.30527778,2,CGWB,North East,SEELAM PUR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284205077151601,Wazirabad TRANSCO,Ground Water,28.70138889,77.25444444,2,CGWB,North East,SEELAM PUR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10213,Bhagirathi WTP,Ground Water,28.704129,77.274827,1,Delhi SW GW,North East,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284215077162801,Gokulpuri E Pz,Ground Water,28.70416667,77.27444444,2,CGWB,North East,SEELAM PUR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284215077162701,Gokulpuri W Pz,Ground Water,28.70416667,77.27416667,2,CGWB,North East,SEELAM PUR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284200077020001,Mubarakpur,Ground Water,28.7,77.03333333,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI123,Rohini Sector 1Pz,Ground Water,28.7028,77.0981,1,CGWB,North West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284219077111001,Chattrasal Stadium TW,Ground Water,28.70527778,77.18611111,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF03,New Delhi Jagatpur Jagatpur RD2800,Ground Water,28.716111,77.83278,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI116,Sonia Vihar_1,Ground Water,28.7078,77.249,1,CGWB,North East,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284230077112701,Model Town TW,Ground Water,28.70833333,77.19083333,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284225077013001,Rani Khera,Ground Water,28.70694444,77.025,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284246077141201,Sonia Vihar WTP,Ground Water,28.71277778,77.23666667,2,CGWB,North East,SEELAM PUR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10215,Sonia Vihar WTP,Ground Water,28.712973,77.236647,1,Delhi SW GW,North East,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10264,Sonia Vihar BPS,Ground Water,28.71497,77.243025,1,Delhi SW GW,North East,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10188,Sawda_1,Ground Water,28.710593,76.985882,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284257077152401,Wazirabad Raf,Ground Water,28.71583333,77.25666667,2,CGWB,North East,SEELAM PUR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10241,Madanpur Dabas-2,Ground Water,28.713549,77.024083,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL49,Delhi North West ROHINI Rithala Pz Sec5 Rohini,Ground Water,28.715,77.1017,1,CGWB,North West,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10176,Nizampur-2,Ground Water,28.714187,76.961263,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI058,Kewal Park,Ground Water,28.7185,77.1812,1,CGWB,North,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10260,Madanpur Dabas-1,Ground Water,28.717333,77.028609,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284315077061001,Rithala Dw,Ground Water,28.72083333,77.10277778,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF17,New Delhi Nizampur Nizampur,Ground Water,28.719166,76.959724,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI017,Nizampur_3,Ground Water,28.7194,76.9667,1,CGWB,North West,-,Ganga Basin,1696550400000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284310076580001,Nizampur,Ground Water,28.71944444,76.96666667,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10221,Coronational Piller STP,Ground Water,28.724068,77.192602,1,Delhi SW GW,North,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI111,Coronation Pillar,Ground Water,28.7245,77.1925,1,CGWB,North,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10191,Nizampur-1,Ground Water,28.720718,76.962987,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI103,"Rohini, Sector-23",Ground Water,28.7239,77.0711,1,CGWB,North West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284330077000001,Kanjhawala (pz),Ground Water,28.725,77.0,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284330077000002,Kanjhawala Dw,Ground Water,28.725,77.0,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10214,Garhi Randala,Ground Water,28.725533,76.964817,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284344077084901,Haiderpur Pz,Ground Water,28.72888889,77.14694444,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL09,Delhi North ALIPUR Haiderpur Pz,Ground Water,28.7289,77.1469,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI127,Burari OJB Ex. Eng Office,Ground Water,28.7332,77.1974,1,CGWB,Central,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10243,Burari Jal Board,Ground Water,28.733406,77.197952,1,Delhi SW GW,North,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL23,Delhi North West ROHINI Rohini Sec 11 Pz,Ground Water,28.7322,77.1044,1,CGWB,North West,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284356077061601,Rohini Sector - 11,Ground Water,28.73222222,77.10444444,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF02,New Delhi Jagatpur Jagatpur RD1450,Ground Water,28.7432,77.7138,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284411077094601,Balswa Lake,Ground Water,28.73638889,77.16277778,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL12,Delhi Central CIVIL LINES Jagatpur Pz 1,Ground Water,28.739897,77.2226,1,CGWB,Central,CIVIL LINES,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284424077132101,Jagatpur Pz-2,Ground Water,28.74,77.2225,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284420077093001,Balsawa Landfill,Ground Water,28.73888889,77.15833333,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10205,Karala Village,Ground Water,28.738172,77.036871,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI037,Samaipur Badli,Ground Water,28.7406,77.1525,1,CGWB,North West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284436077131701,Jagatpur Pz-1,Ground Water,28.74333333,77.22138889,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10240,Kanjawala Village-2,Ground Water,28.74029,77.005833,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10237,Bhalaswa Lake,Ground Water,28.743598,77.173068,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284450077071001,Delhi College of Engineering,Ground Water,28.74722222,77.11944444,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10256,Prahladpur Bangar,Ground Water,28.7499,77.0802,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF01,New Delhi Libaspur Libaspur,Ground Water,28.751926,77.151187,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284510077054201,Rohini Sec-28,Ground Water,28.75277778,77.095,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL24,Delhi North ALIPUR Rohini Sector 28,Ground Water,28.7528,77.095,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10266,Jaunti_1,Ground Water,28.751257,76.962865,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10261,Burari_2,Ground Water,28.756228,77.196368,1,Delhi SW GW,North East,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284510076580002,Jaunti Dw,Ground Water,28.75277778,76.96666667,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284520077002101,Majara Dabas,Ground Water,28.75555556,77.00583333,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI170,Majara Dabas_1,Ground Water,28.7556,77.0058,1,CGWB,North West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284529077055701,Rohini Sector 26,Ground Water,28.75805556,77.09916667,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284536077122701,Burarai-Pz,Ground Water,28.76,77.2075,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL29,Delhi North NARELA Barwala Pz,Ground Water,28.7583,77.0625,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284530077034601,Barwala Dw,Ground Water,28.75833333,77.06277778,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284530077034501,Barwala Pz,Ground Water,28.75833333,77.0625,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10239,Chatesar_1,Ground Water,28.757685,76.96282,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10206,Barwala_4,Ground Water,28.764122,77.062335,1,Delhi SW GW,North,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI063,Sultanpur Dabas_1,Ground Water,28.765,77.0356,1,CGWB,North West,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF15,New Delhi Sultanpur Dabas,Ground Water,28.765278,77.038054,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10209,Burari A-5 Rainy well,Ground Water,28.76879,77.206413,1,Delhi SW GW,North East,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284608077122701,Burari Auger Pz,Ground Water,28.76888889,77.2075,2,CGWB,North West,NARELA,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI154,Khera Kalan Pz_1,Ground Water,28.7694,77.1181,1,CGWB,North,-,Ganga Basin,1696550400000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284610077070501,Khera Kalan Pz,Ground Water,28.76944444,77.11805556,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10267,Budhanpur Majra,Ground Water,28.767782,77.002478,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10175,Khera Kalan_1,Ground Water,28.770901,77.111818,1,Delhi SW GW,North,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF06,New Delhi Hiranki Hiranki 12500,Ground Water,28.775829,77.204692,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10238,Salahpur Majra,Ground Water,28.772453,76.99233,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10235,Punjab Khor,Ground Water,28.77285,76.959988,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL04,Delhi Central CIVIL LINES Burari AugurPz,Ground Water,28.780696,77.201492,1,CGWB,Central,CIVIL LINES,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF13,New Delhi Khera Khurd Khera Khurd,Ground Water,28.78139,77.095556,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10212,Budhpur_1,Ground Water,28.782182,77.135933,1,Delhi SW GW,North West,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284700077105001,Hiranki Dw,Ground Water,28.78333333,77.18055556,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10265,Naya Bans,Ground Water,28.783548,77.096035,1,Delhi SW GW,North West,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF09,New Delhi Hiranki Hiranki 16000,Ground Water,28.790555,77.462778,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10216,Jat khor,Ground Water,28.783938,76.975912,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF05,New Delhi Hiranki Hiranki 11500,Ground Water,28.799725,77.863054,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI102,Bawana DJB JE Store,Ground Water,28.7869,77.03,1,CGWB,North,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284720077014502,Bawana Dw New,Ground Water,28.78888889,77.02916667,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DELGW_09,PZM30m_9,Ground Water,28.79479,77.18898,1,Delhi SW GW,North West,NARELA,Ganga Basin,1600905600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284738077021101,Bawana Gausala TW,Ground Water,28.79388889,77.03638889,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10225,Holambi Kalan-2,Ground Water,28.796751,77.17526,1,Delhi SW GW,North,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10242,Holambi Kalan-1,Ground Water,28.796924,77.093506,1,Delhi SW GW,North,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL42,Delhi North ALIPUR Alipur Garhi Pz,Ground Water,28.7981,77.1244,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10200,Hiranki jal Board,Ground Water,28.799674,77.185994,1,Delhi SW GW,North,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10262,Alipur_4,Ground Water,28.799178,77.137048,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10222,Hiranki_2,Ground Water,28.801228,77.181269,1,Delhi SW GW,North,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL39,Delhi North ALIPUR Hiranki Village Pz,Ground Water,28.8014,77.1808,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10229,Nangal Thakuran Village 1,Ground Water,28.798778,77.009323,1,Delhi SW GW,North,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284820077081001,Alipur,Ground Water,28.80555556,77.13611111,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10232,Qutab Garh_1,Ground Water,28.804576,76.959129,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL40,Delhi North West SARASWATI VIHAR Qutabgarh Pz,Ground Water,28.8056,76.9647,1,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10223,Nangal Thakuran Village-2,Ground Water,28.806685,77.008927,1,Delhi SW GW,North,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10257,Katewara,Ground Water,28.8066,76.976771,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF12,New Delhi DSIIDC DSIIDC,Ground Water,28.810556,77.081947,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI106,Tiggipur Shallow Pz_1,Ground Water,28.8147,77.1975,1,CGWB,North,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI099,Tiggipur Deep Pz_1,Ground Water,28.8147,77.1972,1,CGWB,North,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284853077115101,Tiggipur Shallow Pz,Ground Water,28.81472222,77.1975,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284853077115001,Tiggipur Deep Pz,Ground Water,28.81472222,77.19722222,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284840076570001,Kutubgarh Pz,Ground Water,28.81111111,76.95,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284855077090601,Bakoli-  Deep Pz,Ground Water,28.81527778,77.15166667,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284855077090602,Bakoli -  Shallow Pz,Ground Water,28.81527778,77.15166667,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI122,Bakolishallow,Ground Water,28.8153,77.1517,1,CGWB,North,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI141,Bakoli Deep Pz,Ground Water,28.8153,77.1517,1,CGWB,North,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10211,Mungeshpur_1,Ground Water,28.815643,76.973015,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284921077121301,Palla Temple,Ground Water,28.8225,77.20361111,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI073,Palla Temple_1,Ground Water,28.8225,77.2036,1,CGWB,North,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL01,Delhi North NARELA Auchandi Pz,Ground Water,28.8194,76.9972,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284910076595001,Auchandi Pz,Ground Water,28.81944444,76.99722222,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI132,Bawana DJB WTP_1,Ground Water,28.8233,77.0536,1,CGWB,North,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10227,Baktavarpur 2,Ground Water,28.827877,77.162431,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10236,Hamidpur_1,Ground Water,28.828072,77.152017,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10268,Bakhtawarpur Village,Ground Water,28.830845,77.179796,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284951077025801,Ghoga DW,Ground Water,28.83083333,77.04944444,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284955077003001,Hareoli Dw,Ground Water,28.83194444,77.00833333,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI210,Narela DJB WTP,Ground Water,28.83666667,77.13444444,1,CGWB,North,-,Ganga Basin,1693180800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10269,Sannoth Lake,Ground Water,28.835116,77.048643,1,Delhi SW GW,North West,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL22,Delhi North NARELA Qatlupur Pz,Ground Water,28.8347,77.0225,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+285005077012101,Qatlupur Pz,Ground Water,28.83472222,77.0225,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10245,Tikri Kalan 2,Ground Water,28.837543,77.122258,1,Delhi SW GW,West,-,Ganga Basin,1697500800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10203,Tajpur Kalan,Ground Water,28.840925,77.169846,1,Delhi SW GW,North,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI260,Qatlupur_2,Ground Water,28.841203,77.025598,1,CGWB,North,-,Ganga Basin,1696982400000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL37,Delhi North ALIPUR Singhola Pz,Ground Water,28.8433,77.1294,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+AAXI138,Singhola Pz_2,Ground Water,28.8433333,77.129444,1,CGWB,North,-,Ganga Basin,1696982400000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+285036077074601,Singhola Pz,Ground Water,28.84333333,77.12944444,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10259,Singhola_2,Ground Water,28.844571,77.120856,1,Delhi SW GW,North,-,Ganga Basin,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+285100077042501,Bankner Dw,Ground Water,28.85,77.07361111,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+285105077042502,Bankner-Pz,Ground Water,28.85138889,77.07361111,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL02,Delhi North NARELA Bankner Pz,Ground Water,28.8514,77.0736,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL41,Delhi North ALIPUR Singhu Village Pz,Ground Water,28.8533,77.1311,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+285129077114701,Palla Zero RD,Ground Water,28.85805556,77.19638889,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+CGWBDL19,Delhi North ALIPUR Palla Zero RD,Ground Water,28.8581,77.1964,1,CGWB,North,-,Ganga Basin,1685059200000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+285128077070601,BBMB Narela Pz,Ground Water,28.85777778,77.11833333,2,CGWB,North West,SARASWATI VIHAR,Ganga Basin,1553212800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+DLIF07,New Delhi Hiranki Hiranki 13500,Ground Water,28.874166,77.70472,1,Delhi SW GW,New Delhi,-,Ganga Basin,1684800000000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10202,Bawana WTP,Ground Water,28.815964,7.057178,1,Delhi SW GW,North West,-,,1685404800000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283548077112401,Shanti Path amirican embassy,Ground Water,28.59666667,77.19,2,CGWB,NEW DELHI,,,-2209161600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283623076533601,Mundela Kalan Pz,Ground Water,28.60638889,76.89333333,2,CGWB,SOUTH WEST,,,-2209161600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283827077171501,Bank Enclave Pz_1,Ground Water,28.64083333,77.2875,2,CGWB,EAST,,,-2209161600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283832077173001,Gujarat Vihar Pz_1,Ground Water,28.64222222,77.29166667,2,CGWB,EAST,,,-2209161600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+283952077140402,Khela Ghat Bhela road_1,Ground Water,28.66444444,77.23444444,2,CGWB,CENTRAL,,,-2209161600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284753077072801,Alipur Garhi Pz_1,Ground Water,28.79805556,77.12444444,2,CGWB,NORTH,,,-2209161600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+284804077105101,Hiranki Village Pz_1,Ground Water,28.80111111,77.18083333,2,CGWB,NORTH,,,-2209161600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+285112077075201,Singhu Village Pz_1,Ground Water,28.85333333,77.13111111,2,CGWB,NORTH,,,-2209161600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+Aaxi167,Jaitpur Khadar RD3500 Pz_1,Ground Water,28.5089,77.3406,1,CGWB,South East Delhi,,,-2209161600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
+PIZ10263,Tagore Garden_1,Ground Water,28.65757,77.120175,1,Delhi SW GW,WEST,,,-2209161600000,India-WRIS/NWIC ArcGIS NWIC/GroundwaterLevel_Stations layer 0
