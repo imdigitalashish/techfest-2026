@@ -117,14 +117,20 @@ Headline run: StockNet with the MiniLM scorer, [`eval/results/text_minilm_v1.md`
 | C12 | decision / demo | INTERVALS → UI | — | | ⏳ | hit rate of "interval excludes 0" |
 
 ## Selection memo
-_v1, 4 Oct 07:50 IST (final by 12 Oct). Scores 1–5 with evidence._
-- **Winnability: 4** — the crux (weak text + non-exchangeable returns + test-time manipulation) is precisely identified and already measured on real data; most teams will ship FinBERT + MAPIE split CP, which our own run shows under-covers (81.3%; 76.5% in high volatility). Same theme as P9, so compare those two memos directly.
-- **Innovation headroom: 4** — CR-ACI certifies coverage against a budget of k injected documents (oracle attack k = 3: plain CQR 84.4% vs certified 88.0%; CR-ACI 89.5–89.7% at +0.3% width). Prior-art searches found robust conformal only for bounded perturbations of single inputs or poisoned calibration data (closest: Zargarbashi et al. ICML 2024; VRCP NeurIPS 2024 for regression); independent novelty review still pending.
-- **Feasibility: 5** — the full pipeline already runs end-to-end on the M5 (data prep 35 s; full evaluation incl. oracle attack 10–31 min); data on disk; MAPIE/LightGBM only. Exam window needs only automated runs.
-- **Demo strength: 4** — live band per stock-day with an attack toggle and a k slider, plus "which posts could flip this forecast". Point forecasts are unimpressive (text adds ~no accuracy), so the demo must sell trust, not alpha.
-- **Fit with the user's strengths: 4** — systems + frontier models map to LLM/FinBERT scorers with look-ahead tests, streaming FNSPID, verification-style bounds; needs less quant-microstructure depth than P4–P6.
-- **Biggest risk:** judges may ask "why fuse text at all?" — measured fusion ≈ price-only on accuracy. Answer: the price-of-robustness curve shows what text costs and buys; finals data (FNSPID news) and FinBERT may raise its value. Second risk: injection-only threat model (edit budget planned).
-- **One-line pitch:** a news-plus-price signal whose 90% band stays 90% when someone floods the feed with fake posts — and that tells you how many fake posts it can survive.
+_v2 DRAFT, 4 Oct 13:15 IST — to be finalised with the cross-model scores (gpt-6-astra hostile judge, gpt-6-sol reproduction). v1 (4 Oct 07:50) is superseded. The pick is open between P7 (done), P9, P1 and P4. P10 enters late; this is the honest case. Every number is in `eval/results/` and is checked by `deliverables/check_drift.py`._
+- **Winnability — 3.**
+  - For: the strongest evidence discipline of any plan we could submit here — pre-registration on unseen data, an exact certificate unit-tested against brute force, day-clustered intervals, an abstract rendered from results. It also shows the organisers' starter baseline is not meaningful (MAPIE split CP 81.6%, 76.9% in high volatility).
+  - Against: our own pre-registered test found **no evidence that text adds value** (DJIA Winkler +0.1%, p = 0.46; StockNet pinball 0.3508 vs 0.3513). The problem's premise — that fusing text helps — is therefore unsupported in our data, and the pitch has to become "trust and coverage guarantees for an untrusted channel".
+- **Innovation headroom — 3.5.**
+  - The certificate is new in this setting as far as our searches go: exact deletion box for order-statistic aggregators, tree interval propagation, and a combination with ACI.
+  - Close prior art bounds worst-case conformity-score changes (Zargarbashi et al., ICML 2024), so the claim is hedged.
+  - Measured payoffs are small because the exposure is small: the oracle takes plain CQR to 84.7% vs a certified floor of 86.7%; CR-ACI ≈ ACI.
+- **Feasibility — 5.** Built, tested (59 tests) and reproducible on CPU in about a minute per run. Data is free and hash-pinned. Remaining work (edit budget, FNSPID) fits before 17 Nov.
+- **Demo strength — 3.** An attack toggle and k slider are easy to show. The visible effect is subtle (≈ 2 pp coverage), and the most honest headline ("text did not help") is not a crowd-pleaser.
+- **Fit with the user's strengths — 4.** Evaluation rigour, guarantees and systems; little frontier-model work, by design (LLM scorers risk look-ahead).
+- **Biggest risk:** judges read P10 as "the fusion doesn't help, so what is being trusted?" Mitigation: lead with the guarantee and the pre-registered honesty. Moving to news-rich, event-driven data (FNSPID earnings news) is where text should matter, but this is a hope, not evidence.
+- **Recommendation:** **not** the team's pick unless P9 (the Theme-6 alternative) and P1 / P4 fall through. P10 is a credible, low-risk backup with a rigorous core, but its ceiling is capped by the measured absence of text value. Within Theme 6, compare against P9's final 62/100 once the gpt-6-astra score for P10 is in.
+- **One-line pitch:** "A 90% band you can still trust when someone floods the feed with fake posts — proved, tested on unseen data, and honest that the text itself added nothing measurable."
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
