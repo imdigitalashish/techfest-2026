@@ -1,0 +1,150 @@
+{
+ "summary": {
+  "rule": {
+   "tau_ess": 0.05,
+   "tau_r": 0.0,
+   "tau_z": 3.0,
+   "calibrated_at": "2026-10-04 13:39:26 IST",
+   "calibration": "simulator only (eval/calibrate_gate.py); never fitted to OBD",
+   "answer_rate": 0.4708333333333333,
+   "pooled_coverage_answered": 0.9616519174041298,
+   "confident_wrong_answered": 0,
+   "ungated": {
+    "tau_ess": 0.0,
+    "tau_r": 0,
+    "answer_rate": 0.9625,
+    "pooled_cov": 0.9191919191919192,
+    "worst_cfg_cov": 0.65,
+    "confident_wrong": 0
+   }
+  },
+  "cases": 10,
+  "answered": 6,
+  "answered_wrong": 0,
+  "failures_total": 3,
+  "failures_abstained": 3,
+  "abstained_but_right": 1
+ },
+ "cases": [
+  {
+   "source": "pre-registered",
+   "case": "Analysis 2 Random\u2192V(BTS) P-static",
+   "answer": true,
+   "dr_ci_contains_truth": true,
+   "verdict": "answered, correct",
+   "ess_frac": 0.16188382146172334,
+   "ess_r": 435.0914260620427,
+   "z_mean_w": 2.116197949576078,
+   "max_w": 19.6576,
+   "n": 660904
+  },
+  {
+   "source": "pre-registered",
+   "case": "Analysis 2 Random\u2192V(BTS) P-hourly",
+   "answer": true,
+   "dr_ci_contains_truth": true,
+   "verdict": "answered, correct",
+   "ess_frac": 0.11395818876141872,
+   "ess_r": 404.69327862839236,
+   "z_mean_w": 1.3705335050597183,
+   "max_w": 66.2568208153376,
+   "n": 660904
+  },
+  {
+   "source": "pre-registered",
+   "case": "halves \u00b7 A deploy BTS",
+   "answer": false,
+   "dr_ci_contains_truth": true,
+   "verdict": "abstained (would have been right)",
+   "ess_frac": 0.009169883097078432,
+   "ess_r": 676.6860128789324,
+   "z_mean_w": -0.6194048945772127,
+   "max_w": 12500.000000000002,
+   "n": 2769425
+  },
+  {
+   "source": "pre-registered",
+   "case": "halves \u00b7 B roll back",
+   "answer": true,
+   "dr_ci_contains_truth": true,
+   "verdict": "answered, correct",
+   "ess_frac": 0.137348139677488,
+   "ess_r": 215.829408612337,
+   "z_mean_w": -0.9852157231444242,
+   "max_w": 41.75782765308949,
+   "n": 308605
+  },
+  {
+   "source": "deviation",
+   "case": "2019-11-24\u21922019-11-25 \u00b7 A deploy BTS",
+   "answer": false,
+   "dr_ci_contains_truth": false,
+   "verdict": "abstained (would have been wrong)",
+   "ess_frac": 0.0005397670823623599,
+   "ess_r": 504.1871881975846,
+   "z_mean_w": 4.605872522344607,
+   "max_w": 12500.000000000002,
+   "n": 1479442
+  },
+  {
+   "source": "deviation",
+   "case": "2019-11-24\u21922019-11-25 \u00b7 B roll back",
+   "answer": true,
+   "dr_ci_contains_truth": true,
+   "verdict": "answered, correct",
+   "ess_frac": 0.09847479536787712,
+   "ess_r": 93.15023552090524,
+   "z_mean_w": 2.7338922566281356,
+   "max_w": 58.246059245522424,
+   "n": 163989
+  },
+  {
+   "source": "deviation",
+   "case": "2019-11-24\u21922019-11-26 \u00b7 A deploy BTS",
+   "answer": false,
+   "dr_ci_contains_truth": false,
+   "verdict": "abstained (would have been wrong)",
+   "ess_frac": 0.007954431024379049,
+   "ess_r": 574.7260298561722,
+   "z_mean_w": -1.9068592606316892,
+   "max_w": 12500.000000000002,
+   "n": 1611904
+  },
+  {
+   "source": "deviation",
+   "case": "2019-11-24\u21922019-11-26 \u00b7 B roll back",
+   "answer": true,
+   "dr_ci_contains_truth": true,
+   "verdict": "answered, correct",
+   "ess_frac": 0.14269235181108728,
+   "ess_r": 124.83393704065946,
+   "z_mean_w": 0.005248838340118656,
+   "max_w": 41.75782765308949,
+   "n": 179290
+  },
+  {
+   "source": "deviation",
+   "case": "2019-11-25\u21922019-11-26 \u00b7 A deploy BTS",
+   "answer": false,
+   "dr_ci_contains_truth": false,
+   "verdict": "abstained (would have been wrong)",
+   "ess_frac": 0.007954431024379049,
+   "ess_r": 574.7260298561722,
+   "z_mean_w": -1.9068592606316892,
+   "max_w": 12500.000000000002,
+   "n": 1611904
+  },
+  {
+   "source": "deviation",
+   "case": "2019-11-25\u21922019-11-26 \u00b7 B roll back",
+   "answer": true,
+   "dr_ci_contains_truth": true,
+   "verdict": "answered, correct",
+   "ess_frac": 0.14269235181108728,
+   "ess_r": 124.83393704065946,
+   "z_mean_w": 0.005248838340118656,
+   "max_w": 41.75782765308949,
+   "n": 179290
+  }
+ ]
+}

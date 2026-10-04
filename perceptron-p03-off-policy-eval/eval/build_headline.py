@@ -94,12 +94,29 @@ def main():
     put("fb_direct_pp", sgn(100 * fb["truth"]["effect_after"], 1), "decomposer_review.json feedback1.00 direct ×100")
     put("fb_total_pp", sgn(100 * fb["truth"]["total_effect"], 1), "decomposer_review.json feedback1.00 total ×100")
     put("fb_dr_pp", sgn(100 * fb["dr_mean"], 1), "decomposer_review.json feedback1.00 DR mean ×100")
-    ms = r["nonlin2.0"]
-    put("ms_dr_bias_pp", sgn(100 * (ms["dr_mean"] - ms["truth"]["effect_after"]), 1), "decomposer_review.json nonlin2.0 DR bias ×100")
-    put("ms_dm_bias_pp", sgn(100 * ms["dm_bias"], 1), "decomposer_review.json nonlin2.0 DM bias ×100")
-    put("ms_mixdm_bias_pp", sgn(100 * ms["mix_dm_bias"], 1), "decomposer_review.json nonlin2.0 DM-mix bias ×100")
-    put("ms_mixdr_bias_pp", sgn(100 * ms["mix_dr_bias"], 1), "decomposer_review.json nonlin2.0 DR-mix bias ×100")
+    ms = r["nonlinmix2.0"]
+    put("ms_dr_bias_pp", sgn(100 * (ms["dr_mean"] - ms["truth"]["effect_after"]), 2), "decomposer_review.json nonlinmix2.0 DR bias ×100")
+    put("ms_dm_bias_pp", sgn(100 * ms["dm_bias"], 2), "decomposer_review.json nonlinmix2.0 DM bias ×100")
+    put("ms_mixdm_bias_pp", sgn(100 * ms["mix_dm_bias"], 2), "decomposer_review.json nonlinmix2.0 DM-mix bias ×100")
+    put("ms_mixdr_bias_pp", sgn(100 * ms["mix_dr_bias"], 2), "decomposer_review.json nonlinmix2.0 DR-mix bias ×100")
     put("shap_cover", f"{100 * np.mean([v['shap_cover'] for v in r.values()]):.0f}%", "decomposer_review.json mean Shapley coverage")
+
+    put("ms_true_mix_pp", sgn(100 * ms["truth"]["mix"], 2), "decomposer_review.json nonlinmix2.0 true mix ×100")
+    put("ms_true_effect_pp", sgn(100 * ms["truth"]["effect_after"], 1), "decomposer_review.json nonlinmix2.0 true effect ×100")
+    put("fb_gap_pp", f"{100 * (fb['truth']['total_effect'] - fb['truth']['effect_after']):.1f}", "decomposer_review.json feedback1.00 total − direct ×100")
+
+    # ---- overlap gate: simulator calibration + post-hoc OBD ----
+    g = json.loads((ROOT / "eval" / "gate_rule.json").read_text())
+    put("gate_tau_ess", f"{100 * g['tau_ess']:.0f}%", "gate_rule.json tau_ess")
+    put("gate_sim_answer", f"{100 * g['answer_rate']:.0f}%", "gate_rule.json answer_rate")
+    put("gate_sim_cov", f"{g['pooled_coverage_answered']:.2f}", "gate_rule.json pooled_coverage_answered")
+    put("gate_sim_ungated_worst", f"{g['ungated']['worst_cfg_cov']:.2f}", "gate_rule.json ungated.worst_cfg_cov")
+    put("gate_sim_configs", "36", "eval/calibrate_gate.py CONFIGS (3 x 2 x 3 x 2)")
+    go = json.loads((RES / "gate_obd_posthoc.json").read_text())["summary"]
+    put("gate_obd_answered", f"{go['answered']}/{go['cases']}", "gate_obd_posthoc.json answered/cases")
+    put("gate_obd_wrong", str(go["answered_wrong"]), "gate_obd_posthoc.json answered_wrong")
+    put("gate_obd_caught", f"{go['failures_abstained']}/{go['failures_total']}", "gate_obd_posthoc.json failures abstained/total")
+    put("gate_obd_cost", str(go["abstained_but_right"]), "gate_obd_posthoc.json abstained_but_right")
 
     # ---- C6 ratchet ----
     led = pd.read_csv(ROOT / "components" / "delta_estimator" / "autoresearch" / "results.tsv", sep="\t")
