@@ -5,7 +5,7 @@
   301,
   174
  ],
- "reference_free_cells": 38303,
+ "reference_free_cells": 38184,
  "dense_proxy_splats": 172217,
  "variants": {
   "points_only": {
@@ -13,18 +13,22 @@
     "n_heldout": 33,
     "n_endpoints": 29,
     "n_pairs": 406,
-    "CFC": 0.46551724137931033,
+    "CFC": 0.45566502463054187,
     "CFC_wilson95": [
-     0.4175,
-     0.5141
+     0.4079,
+     0.5043
+    ],
+    "CFC_camera_bootstrap95": [
+     0.3171,
+     0.6327
     ],
     "refusal_rate": 0.0,
-    "collision_rate": 0.5344827586206896,
+    "collision_rate": 0.5443349753694581,
     "stretch_median": 0.9793394008100891,
-    "stretch_p90": 1.0443498560624533,
+    "stretch_p90": 1.043812861182916,
     "area_navigable_m2": 27.687500000000007,
     "outcomes": {
-     "0-8": "ok",
+     "0-8": "collide",
      "0-16": "ok",
      "0-24": "ok",
      "0-32": "collide",
@@ -36,7 +40,7 @@
      "0-80": "collide",
      "0-88": "ok",
      "0-96": "collide",
-     "0-104": "ok",
+     "0-104": "collide",
      "0-112": "collide",
      "0-144": "ok",
      "0-152": "ok",
@@ -187,7 +191,7 @@
      "48-112": "collide",
      "48-144": "collide",
      "48-152": "collide",
-     "48-160": "collide",
+     "48-160": "ok",
      "48-176": "collide",
      "48-184": "collide",
      "48-192": "collide",
@@ -256,7 +260,7 @@
      "72-216": "collide",
      "72-224": "collide",
      "72-232": "collide",
-     "72-240": "ok",
+     "72-240": "collide",
      "72-248": "ok",
      "72-256": "collide",
      "80-88": "ok",
@@ -291,7 +295,7 @@
      "88-216": "collide",
      "88-224": "collide",
      "88-232": "collide",
-     "88-240": "ok",
+     "88-240": "collide",
      "88-248": "ok",
      "88-256": "collide",
      "96-104": "ok",
@@ -427,28 +431,28 @@
      "232-240": "collide",
      "232-248": "collide",
      "232-256": "ok",
-     "240-248": "ok",
+     "240-248": "collide",
      "240-256": "collide",
      "248-256": "collide"
-    },
-    "CFC_camera_bootstrap95": [
-     0.3282,
-     0.6495
-    ]
+    }
    },
    "B": {
     "n_heldout": 33,
     "n_endpoints": 30,
     "n_pairs": 435,
-    "CFC": 0.49195402298850577,
+    "CFC": 0.4804597701149425,
     "CFC_wilson95": [
-     0.4452,
-     0.5388
+     0.4339,
+     0.5274
+    ],
+    "CFC_camera_bootstrap95": [
+     0.3214,
+     0.6832
     ],
     "refusal_rate": 0.0,
-    "collision_rate": 0.5080459770114942,
-    "stretch_median": 0.9865629424182598,
-    "stretch_p90": 1.1082063000273847,
+    "collision_rate": 0.5195402298850574,
+    "stretch_median": 0.9849420633229174,
+    "stretch_p90": 1.0826990918054087,
     "area_navigable_m2": 26.385000000000005,
     "outcomes": {
      "4-12": "ok",
@@ -594,7 +598,7 @@
      "44-92": "collide",
      "44-100": "collide",
      "44-108": "collide",
-     "44-116": "ok",
+     "44-116": "collide",
      "44-140": "collide",
      "44-148": "collide",
      "44-156": "collide",
@@ -645,7 +649,7 @@
      "60-156": "collide",
      "60-164": "collide",
      "60-180": "collide",
-     "60-188": "ok",
+     "60-188": "collide",
      "60-196": "collide",
      "60-204": "collide",
      "60-212": "collide",
@@ -769,12 +773,12 @@
      "116-140": "collide",
      "116-148": "collide",
      "116-156": "collide",
-     "116-164": "ok",
+     "116-164": "collide",
      "116-180": "collide",
      "116-188": "collide",
      "116-196": "collide",
-     "116-204": "ok",
-     "116-212": "ok",
+     "116-204": "collide",
+     "116-212": "collide",
      "116-220": "collide",
      "116-228": "collide",
      "116-236": "collide",
@@ -886,11 +890,7 @@
      "244-252": "ok",
      "244-260": "collide",
      "252-260": "ok"
-    },
-    "CFC_camera_bootstrap95": [
-     0.3467,
-     0.6863
-    ]
+    }
    }
   },
   "points+carving": {
@@ -898,18 +898,22 @@
     "n_heldout": 33,
     "n_endpoints": 29,
     "n_pairs": 406,
-    "CFC": 0.45320197044334976,
+    "CFC": 0.4433497536945813,
     "CFC_wilson95": [
-     0.4054,
-     0.5018
+     0.3958,
+     0.492
+    ],
+    "CFC_camera_bootstrap95": [
+     0.3028,
+     0.6295
     ],
     "refusal_rate": 0.0,
-    "collision_rate": 0.5467980295566502,
+    "collision_rate": 0.5566502463054187,
     "stretch_median": 0.979723689709715,
-    "stretch_p90": 1.0412241612976703,
+    "stretch_p90": 1.0429283850973121,
     "area_navigable_m2": 27.942500000000006,
     "outcomes": {
-     "0-8": "ok",
+     "0-8": "collide",
      "0-16": "ok",
      "0-24": "ok",
      "0-32": "collide",
@@ -921,7 +925,7 @@
      "0-80": "collide",
      "0-88": "ok",
      "0-96": "collide",
-     "0-104": "ok",
+     "0-104": "collide",
      "0-112": "collide",
      "0-144": "ok",
      "0-152": "ok",
@@ -1072,7 +1076,7 @@
      "48-112": "collide",
      "48-144": "collide",
      "48-152": "collide",
-     "48-160": "collide",
+     "48-160": "ok",
      "48-176": "collide",
      "48-184": "collide",
      "48-192": "collide",
@@ -1141,7 +1145,7 @@
      "72-216": "collide",
      "72-224": "collide",
      "72-232": "collide",
-     "72-240": "ok",
+     "72-240": "collide",
      "72-248": "ok",
      "72-256": "collide",
      "80-88": "ok",
@@ -1176,7 +1180,7 @@
      "88-216": "collide",
      "88-224": "collide",
      "88-232": "collide",
-     "88-240": "ok",
+     "88-240": "collide",
      "88-248": "ok",
      "88-256": "collide",
      "96-104": "ok",
@@ -1312,28 +1316,28 @@
      "232-240": "collide",
      "232-248": "collide",
      "232-256": "ok",
-     "240-248": "ok",
+     "240-248": "collide",
      "240-256": "collide",
      "248-256": "collide"
-    },
-    "CFC_camera_bootstrap95": [
-     0.3114,
-     0.6431
-    ]
+    }
    },
    "B": {
     "n_heldout": 33,
     "n_endpoints": 30,
     "n_pairs": 435,
-    "CFC": 0.5011494252873563,
+    "CFC": 0.4896551724137931,
     "CFC_wilson95": [
-     0.4544,
-     0.5479
+     0.443,
+     0.5365
+    ],
+    "CFC_camera_bootstrap95": [
+     0.3309,
+     0.6883
     ],
     "refusal_rate": 0.0,
-    "collision_rate": 0.49885057471264366,
-    "stretch_median": 0.9681235209006709,
-    "stretch_p90": 1.0364697680053634,
+    "collision_rate": 0.5103448275862069,
+    "stretch_median": 0.9672972354787255,
+    "stretch_p90": 1.0303329185579895,
     "area_navigable_m2": 27.757500000000004,
     "outcomes": {
      "4-12": "ok",
@@ -1479,7 +1483,7 @@
      "44-92": "collide",
      "44-100": "collide",
      "44-108": "collide",
-     "44-116": "ok",
+     "44-116": "collide",
      "44-140": "collide",
      "44-148": "collide",
      "44-156": "collide",
@@ -1525,7 +1529,7 @@
      "60-100": "ok",
      "60-108": "ok",
      "60-116": "collide",
-     "60-140": "ok",
+     "60-140": "collide",
      "60-148": "collide",
      "60-156": "collide",
      "60-164": "collide",
@@ -1654,12 +1658,12 @@
      "116-140": "collide",
      "116-148": "collide",
      "116-156": "collide",
-     "116-164": "ok",
+     "116-164": "collide",
      "116-180": "collide",
      "116-188": "collide",
      "116-196": "collide",
-     "116-204": "ok",
-     "116-212": "ok",
+     "116-204": "collide",
+     "116-212": "collide",
      "116-220": "collide",
      "116-228": "collide",
      "116-236": "collide",
@@ -1771,11 +1775,7 @@
      "244-252": "ok",
      "244-260": "collide",
      "252-260": "ok"
-    },
-    "CFC_camera_bootstrap95": [
-     0.3595,
-     0.6912
-    ]
+    }
    }
   },
   "points+trajectory": {
@@ -1783,18 +1783,22 @@
     "n_heldout": 33,
     "n_endpoints": 29,
     "n_pairs": 406,
-    "CFC": 0.46551724137931033,
+    "CFC": 0.45566502463054187,
     "CFC_wilson95": [
-     0.4175,
-     0.5141
+     0.4079,
+     0.5043
+    ],
+    "CFC_camera_bootstrap95": [
+     0.3171,
+     0.6327
     ],
     "refusal_rate": 0.0,
-    "collision_rate": 0.5344827586206896,
+    "collision_rate": 0.5443349753694581,
     "stretch_median": 0.9793394008100891,
-    "stretch_p90": 1.0443498560624533,
+    "stretch_p90": 1.043812861182916,
     "area_navigable_m2": 27.745000000000005,
     "outcomes": {
-     "0-8": "ok",
+     "0-8": "collide",
      "0-16": "ok",
      "0-24": "ok",
      "0-32": "collide",
@@ -1806,7 +1810,7 @@
      "0-80": "collide",
      "0-88": "ok",
      "0-96": "collide",
-     "0-104": "ok",
+     "0-104": "collide",
      "0-112": "collide",
      "0-144": "ok",
      "0-152": "ok",
@@ -1957,7 +1961,7 @@
      "48-112": "collide",
      "48-144": "collide",
      "48-152": "collide",
-     "48-160": "collide",
+     "48-160": "ok",
      "48-176": "collide",
      "48-184": "collide",
      "48-192": "collide",
@@ -2026,7 +2030,7 @@
      "72-216": "collide",
      "72-224": "collide",
      "72-232": "collide",
-     "72-240": "ok",
+     "72-240": "collide",
      "72-248": "ok",
      "72-256": "collide",
      "80-88": "ok",
@@ -2061,7 +2065,7 @@
      "88-216": "collide",
      "88-224": "collide",
      "88-232": "collide",
-     "88-240": "ok",
+     "88-240": "collide",
      "88-248": "ok",
      "88-256": "collide",
      "96-104": "ok",
@@ -2197,28 +2201,28 @@
      "232-240": "collide",
      "232-248": "collide",
      "232-256": "ok",
-     "240-248": "ok",
+     "240-248": "collide",
      "240-256": "collide",
      "248-256": "collide"
-    },
-    "CFC_camera_bootstrap95": [
-     0.3282,
-     0.6495
-    ]
+    }
    },
    "B": {
     "n_heldout": 33,
     "n_endpoints": 30,
     "n_pairs": 435,
-    "CFC": 0.4896551724137931,
+    "CFC": 0.4781609195402299,
     "CFC_wilson95": [
-     0.443,
-     0.5365
+     0.4316,
+     0.5251
+    ],
+    "CFC_camera_bootstrap95": [
+     0.3212,
+     0.6762
     ],
     "refusal_rate": 0.0,
-    "collision_rate": 0.5103448275862069,
-    "stretch_median": 0.9737285205656268,
-    "stretch_p90": 1.0511908529055074,
+    "collision_rate": 0.5218390804597701,
+    "stretch_median": 0.9729686901400805,
+    "stretch_p90": 1.0407035156283644,
     "area_navigable_m2": 27.217500000000005,
     "outcomes": {
      "4-12": "ok",
@@ -2364,7 +2368,7 @@
      "44-92": "collide",
      "44-100": "collide",
      "44-108": "collide",
-     "44-116": "ok",
+     "44-116": "collide",
      "44-140": "collide",
      "44-148": "collide",
      "44-156": "collide",
@@ -2415,7 +2419,7 @@
      "60-156": "collide",
      "60-164": "collide",
      "60-180": "collide",
-     "60-188": "ok",
+     "60-188": "collide",
      "60-196": "collide",
      "60-204": "collide",
      "60-212": "collide",
@@ -2539,12 +2543,12 @@
      "116-140": "collide",
      "116-148": "collide",
      "116-156": "collide",
-     "116-164": "ok",
+     "116-164": "collide",
      "116-180": "collide",
      "116-188": "collide",
      "116-196": "collide",
-     "116-204": "ok",
-     "116-212": "ok",
+     "116-204": "collide",
+     "116-212": "collide",
      "116-220": "collide",
      "116-228": "collide",
      "116-236": "collide",
@@ -2656,11 +2660,7 @@
      "244-252": "ok",
      "244-260": "collide",
      "252-260": "ok"
-    },
-    "CFC_camera_bootstrap95": [
-     0.346,
-     0.6801
-    ]
+    }
    }
   },
   "full": {
@@ -2668,18 +2668,22 @@
     "n_heldout": 33,
     "n_endpoints": 29,
     "n_pairs": 406,
-    "CFC": 0.45320197044334976,
+    "CFC": 0.4433497536945813,
     "CFC_wilson95": [
-     0.4054,
-     0.5018
+     0.3958,
+     0.492
+    ],
+    "CFC_camera_bootstrap95": [
+     0.3028,
+     0.6295
     ],
     "refusal_rate": 0.0,
-    "collision_rate": 0.5467980295566502,
+    "collision_rate": 0.5566502463054187,
     "stretch_median": 0.979723689709715,
-    "stretch_p90": 1.0412241612976703,
+    "stretch_p90": 1.0429283850973121,
     "area_navigable_m2": 28.000000000000007,
     "outcomes": {
-     "0-8": "ok",
+     "0-8": "collide",
      "0-16": "ok",
      "0-24": "ok",
      "0-32": "collide",
@@ -2691,7 +2695,7 @@
      "0-80": "collide",
      "0-88": "ok",
      "0-96": "collide",
-     "0-104": "ok",
+     "0-104": "collide",
      "0-112": "collide",
      "0-144": "ok",
      "0-152": "ok",
@@ -2842,7 +2846,7 @@
      "48-112": "collide",
      "48-144": "collide",
      "48-152": "collide",
-     "48-160": "collide",
+     "48-160": "ok",
      "48-176": "collide",
      "48-184": "collide",
      "48-192": "collide",
@@ -2911,7 +2915,7 @@
      "72-216": "collide",
      "72-224": "collide",
      "72-232": "collide",
-     "72-240": "ok",
+     "72-240": "collide",
      "72-248": "ok",
      "72-256": "collide",
      "80-88": "ok",
@@ -2946,7 +2950,7 @@
      "88-216": "collide",
      "88-224": "collide",
      "88-232": "collide",
-     "88-240": "ok",
+     "88-240": "collide",
      "88-248": "ok",
      "88-256": "collide",
      "96-104": "ok",
@@ -3082,28 +3086,28 @@
      "232-240": "collide",
      "232-248": "collide",
      "232-256": "ok",
-     "240-248": "ok",
+     "240-248": "collide",
      "240-256": "collide",
      "248-256": "collide"
-    },
-    "CFC_camera_bootstrap95": [
-     0.3114,
-     0.6431
-    ]
+    }
    },
    "B": {
     "n_heldout": 33,
     "n_endpoints": 30,
     "n_pairs": 435,
-    "CFC": 0.5011494252873563,
+    "CFC": 0.4896551724137931,
     "CFC_wilson95": [
-     0.4544,
-     0.5479
+     0.443,
+     0.5365
+    ],
+    "CFC_camera_bootstrap95": [
+     0.3309,
+     0.6883
     ],
     "refusal_rate": 0.0,
-    "collision_rate": 0.49885057471264366,
-    "stretch_median": 0.9681235209006709,
-    "stretch_p90": 1.0364697680053634,
+    "collision_rate": 0.5103448275862069,
+    "stretch_median": 0.9672972354787255,
+    "stretch_p90": 1.0303329185579895,
     "area_navigable_m2": 28.037500000000005,
     "outcomes": {
      "4-12": "ok",
@@ -3249,7 +3253,7 @@
      "44-92": "collide",
      "44-100": "collide",
      "44-108": "collide",
-     "44-116": "ok",
+     "44-116": "collide",
      "44-140": "collide",
      "44-148": "collide",
      "44-156": "collide",
@@ -3295,7 +3299,7 @@
      "60-100": "ok",
      "60-108": "ok",
      "60-116": "collide",
-     "60-140": "ok",
+     "60-140": "collide",
      "60-148": "collide",
      "60-156": "collide",
      "60-164": "collide",
@@ -3424,12 +3428,12 @@
      "116-140": "collide",
      "116-148": "collide",
      "116-156": "collide",
-     "116-164": "ok",
+     "116-164": "collide",
      "116-180": "collide",
      "116-188": "collide",
      "116-196": "collide",
-     "116-204": "ok",
-     "116-212": "ok",
+     "116-204": "collide",
+     "116-212": "collide",
      "116-220": "collide",
      "116-228": "collide",
      "116-236": "collide",
@@ -3541,11 +3545,7 @@
      "244-252": "ok",
      "244-260": "collide",
      "252-260": "ok"
-    },
-    "CFC_camera_bootstrap95": [
-     0.3595,
-     0.6912
-    ]
+    }
    }
   }
  },
@@ -3588,5 +3588,6 @@
   }
  },
  "reproduce": "cd namma-space && .venv/bin/python eval/nav_eval_v3.py --out eval/results/drjohnson_nav_v3.json",
- "note_statistics": "Pair-level Wilson intervals ignore shared-endpoint dependence; use CFC_camera_bootstrap95 (cameras resampled, 2000 draws, seed 0). Paired sign tests are pair-level and therefore optimistic; p >= 0.06 is no evidence of a difference, not proof of equivalence."
+ "note_statistics": "CFC_camera_bootstrap95 resamples endpoint cameras (2000 draws, seed 0); pair-level Wilson intervals ignore shared-endpoint dependence and are too narrow. Paired sign tests are pair-level (optimistic); p >= 0.06 = no evidence of a difference, not equivalence.",
+ "note_reference": "Reference = dense 3DGS proxy from the same photos (not ground truth). Margin r + cell*sqrt(2)/2; no diagonal corner-cutting (gpt-6-sol H1/H2 fixes, 2026-10-04 11:07)."
 }

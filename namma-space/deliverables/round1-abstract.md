@@ -25,7 +25,7 @@ Fourteen components with typed contracts (`architecture/contracts/contracts.ts`)
 - **Per room, three passes:** an inward loop; an outward loop tilted 20–40° down (floor edges and furniture legs for navigation); and a "route pass" along real walking routes.
 - **Doorways:** crossed at half speed, pausing 1 s on each side. This is where reconstructions split, so overlap is critical.
 - **Scale:** a printed 150 mm ArUco marker on the floor, filmed at the start and end. It is triangulated from the posed frames to give metric scale (unit test: <1% scale error on synthetic views). Fallback: the measured camera height.
-- **Voice tags:** say each room or item name on entry. The timestamp → frame → ray gives a POI without manual 3D work.
+- **Voice tags (planned for R2):** say each room or item name on entry. The timestamp → frame → ray will give a POI without manual 3D work. Today, POIs come from labelled frames or in-viewer tagging.
 - **Before leaving:** a 3-minute checklist (sharpness spot-check, both loops, marker at start and end).
 - **Large venues (finals):** a two-person crew; capture the corridor "spine" first, then each room as a clip that starts and ends in the corridor; upload while capturing the next clip.
 - Every rule maps to a failure mode of SfM, splatting or navigation (SOP §10).
@@ -62,12 +62,16 @@ Frozen protocol for the next measurement: cold cache, throttled network, scripte
 - **Planner:** 8-connected A* with a clearance penalty, then line-of-sight string pulling. Contract test: the route must use the doorway and never touch the wall. An identical JavaScript port runs in the browser: an 8–11 m route in 82–94 ms.
 - **POIs:** labelled from evidence frames, placed by casting a ray from the chosen pixel into the reconstruction, with an approach point snapped onto the walkable map. 7 POIs on [public].
 - **Path-safety evaluation v3** (`eval/nav_eval_v3.py`), built after two independent reviews caught leakage in our first metric:
-  - endpoints are held-out camera positions, moved to verified-free cells;
-  - **every** pair is tested (406 / 435 per split);
-  - the whole route is checked against a frozen dense-geometry reference (3DGS splats) with a 0.25 m body radius;
-  - Wilson 95% intervals and paired sign tests.
-- **Result:** 45–50% of routes are fully collision-free under this strict reference (Wilson ±5%). There are no refusals: every pair gets a route. Adding free-space carving or the walked trajectory does **not** change this (paired p ≥ 0.06). The sparse SfM points miss thin obstacles such as chair legs.
-- **Round-2 plan:** obstacles from the dense splats, a mesh → Recast navmesh comparison arm, and a real-geometry benchmark (ARKitScenes laser-scanned meshes) so the reference is independent of our own reconstruction.
+  - endpoints are held-out camera positions moved (≤0.5 m) to verified-free cells; 29/33 and 30/33 cameras qualify;
+  - **all pairs among those endpoints** are tested;
+  - the whole route, including connectors, is checked against a frozen dense-geometry reference (3DGS splats) at a 0.25 m body radius plus a quantisation margin;
+  - uncertainty comes from a camera-level bootstrap (pairs share endpoints, so pair-level intervals are too narrow).
+- **Result:** ⟨CFC⟩ of routes are fully collision-free under this strict reference (camera-bootstrap 95% CI ⟨…⟩). Every eligible pair gets a route. Adding free-space carving or the walked trajectory shows **no evidence of a difference** — which is not proof of equivalence. The sparse SfM points miss thin obstacles such as chair legs.
+- **Limitation:** the reference comes from the same photos (SfM and splat use all images), so this is a same-scene consistency check, not ground truth.
+- **Round-2 plan:**
+  - obstacles from the dense splats (PlayCanvas `splat-transform`'s collision pipeline, MIT), with a mesh → Recast navmesh comparison arm;
+  - an independent real-geometry benchmark (ARKitScenes laser-scanned meshes);
+  - automatic POIs from voice tags, detection (SAM 3 / YOLOE) and VLM naming, replacing today's manual frame tagging.
 
 ## 7. Where we innovate (ADR 001 v2)
 After two independent reviews (including GPT-6 Astra as a hostile methodologist), we put the innovation where the marks are:
