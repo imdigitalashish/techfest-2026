@@ -34,3 +34,14 @@ _Sources opened 2026-10-04. Code: [`components/mrv_ledger/`](../../components/mr
 ## Assumptions and limits
 - Parameter values (density 150 kg/m³, moisture 0.40, sensor and density noise) are ASSUMPTIONS. No opened source gave measured values for Mumbai boom catch.
 - The hash chain proves records were not changed after writing. It does not prove the original entry was true; the sensor reconciliation addresses that, imperfectly.
+
+## Review fixes (2026-10-04, 17:30 IST — code review issues 1 and 4)
+- **Shipped threshold equals the quoted one.**
+  - The review cut is now a versioned parameter, `components/mrv_ledger/params.json`: `z_review` 2.1419, calibrated on 20 000 SYNTHETIC honest trips (seed 11) at commit `0a13367`.
+  - Every default `reconcile()` call and the dashboard build use it.
+  - Quoted metrics are unchanged: recall 71.6 % at 4.7 % false flags; precision 44.5 % / 62.9 % at 5 % / 10 % prevalence. The previously shipped prior (z = 1.645) flagged 9.0 % of honest records.
+- **Signer bound to the record.**
+  - A signature counts only if it comes from the record's own crew, or a delegate in a published delegation table, and covers that entry's hash. Python and the browser verifier apply the same rules.
+  - Tests reject cross-crew re-signing and mismatched hashes.
+  - An insider who re-signs a rewritten suffix is caught (200/200), unless every rewritten record is the insider's own; then only the anchor catches it.
+- **Open.** `z_reject` (2.326) is still the N(0,1) ASSUMPTION and marks 3.7 % of held-out honest records `reject`. Calibrate it next, e.g. to ≤ 1 %.

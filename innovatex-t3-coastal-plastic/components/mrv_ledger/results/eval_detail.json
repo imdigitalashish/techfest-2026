@@ -6,14 +6,41 @@
   "sigma_fill_abs": 0.03,
   "sigma_density_rel": 0.25,
   "sigma_claim_rel": 0.1,
-  "z_review": 1.645,
+  "z_review": 2.1418883002056686,
   "z_reject": 2.326,
   "max_wet_density_kg_m3": 450.0
  },
+ "params_json": {
+  "z_review": 2.1418883002056686,
+  "meaning": "reconcile() flags 'review' when z > z_review (z_reject stays the N(0,1) 1% ASSUMPTION)",
+  "calibration": {
+   "target_false_flag_rate": 0.05,
+   "calibration_target_fpr": 0.04746488474127901,
+   "n_cal": 20000,
+   "seed_cal": 11,
+   "data": "SYNTHETIC honest trips from mrv_ledger.synth.make_trips",
+   "model_params": {
+    "wet_bulk_density_kg_m3": 150.0,
+    "moisture_fraction": 0.4,
+    "sigma_fill_abs": 0.03,
+    "sigma_density_rel": 0.25,
+    "sigma_claim_rel": 0.1,
+    "z_reject": 2.326,
+    "max_wet_density_kg_m3": 450.0
+   }
+  },
+  "code_commit": "0a13367274729c895209e6602eff8c03ab0c1b89",
+  "worktree_clean_at_calibration": true,
+  "calibrated_at_ist": "2026-10-04T17:29:05+05:30",
+  "reproduce": "cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate"
+ },
+ "params_json_rewritten_by_this_run": true,
  "reconciliation": {
+  "shipped_z_review": 2.1418883002056686,
+  "params_source": "innovatex-t3-coastal-plastic/components/mrv_ledger/params.json",
   "calibration_target_fpr": 0.0475,
-  "z_threshold_review": 2.1419,
   "ratio_threshold_baseline": 1.7677,
+  "honest_reject_rate_at_z_reject": 0.037,
   "methods": {
    "proposed_z": {
     "recall_all_fraud": 0.7164,
@@ -27,6 +54,18 @@
     "recall_inflated_x1.5-2.0": 0.5801,
     "recall_inflated_x2.0-3.0": 0.8862,
     "auc": 0.9255
+   },
+   "uncalibrated_prior_z1.645": {
+    "recall_all_fraud": 0.7824,
+    "false_flag_rate_honest": 0.0902,
+    "precision_at_5pct_prevalence": 0.3134,
+    "precision_at_10pct_prevalence": 0.4908,
+    "recall_inflated": 0.769,
+    "recall_phantom": 1.0,
+    "recall_wetted": 0.605,
+    "recall_inflated_x1.2-1.5": 0.3609,
+    "recall_inflated_x1.5-2.0": 0.6987,
+    "recall_inflated_x2.0-3.0": 0.9266
    },
    "baseline_ratio": {
     "recall_all_fraud": 0.6748,
@@ -97,8 +136,14 @@
    "detected_chain_only": 0.0,
    "detected_by_signatures": 1.0
   },
+  "insider_resign_suffix": {
+   "trials": 200,
+   "detected_with_anchor": 1.0,
+   "detected_by_signatures": 1.0,
+   "note": "signatures miss it only if every rewritten record is the insider's own"
+  },
   "all_detected_with_anchor": true
  },
- "git_sha_at_run": "57938df",
- "reproduce": "cd innovatex-t3-coastal-plastic/components && python3 -m mrv_ledger.evaluate"
+ "git_sha_at_run": "0a13367",
+ "reproduce": "cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate"
 }

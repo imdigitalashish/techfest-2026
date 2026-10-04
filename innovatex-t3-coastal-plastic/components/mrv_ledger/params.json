@@ -1,0 +1,24 @@
+{
+ "z_review": 2.1418883002056686,
+ "meaning": "reconcile() flags 'review' when z > z_review (z_reject stays the N(0,1) 1% ASSUMPTION)",
+ "calibration": {
+  "target_false_flag_rate": 0.05,
+  "calibration_target_fpr": 0.04746488474127901,
+  "n_cal": 20000,
+  "seed_cal": 11,
+  "data": "SYNTHETIC honest trips from mrv_ledger.synth.make_trips",
+  "model_params": {
+   "wet_bulk_density_kg_m3": 150.0,
+   "moisture_fraction": 0.4,
+   "sigma_fill_abs": 0.03,
+   "sigma_density_rel": 0.25,
+   "sigma_claim_rel": 0.1,
+   "z_reject": 2.326,
+   "max_wet_density_kg_m3": 450.0
+  }
+ },
+ "code_commit": "0a13367274729c895209e6602eff8c03ab0c1b89",
+ "worktree_clean_at_calibration": true,
+ "calibrated_at_ist": "2026-10-04T17:29:05+05:30",
+ "reproduce": "cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate"
+}

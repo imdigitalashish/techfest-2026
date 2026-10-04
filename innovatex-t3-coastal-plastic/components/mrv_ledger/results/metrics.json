@@ -1,5 +1,6 @@
 {
  "data": "SYNTHETIC",
+ "z_review_shipped": 2.1418883002056686,
  "recall_fraud_at_5pct_false_flags": 0.7164,
  "false_flag_rate_test": 0.047,
  "recall_inflated_x1.2-3": 0.694,
@@ -11,5 +12,6 @@
  "baseline_ratio_recall_at_5pct": 0.6748,
  "status_quo_slip_check_recall": 0.0,
  "tamper_detection_rate_with_anchor": 1.0,
- "reproduce": "cd innovatex-t3-coastal-plastic/components && python3 -m mrv_ledger.evaluate"
+ "insider_resign_detected_by_signatures": 1.0,
+ "reproduce": "cd innovatex-t3-coastal-plastic/components && nice -n 10 python3 -m mrv_ledger.evaluate"
 }
