@@ -10,19 +10,19 @@
 - _(none)_
 
 ## Now
-_Updated 2026-10-04 07:30 IST._
-- **Phase:** 4–6. The walking skeleton and eval harness are built, and there are **held-out MVP numbers**: look-ahead beats the best rule on 10/10 seeds under shock and under shock+drift. The first ratchet is done. Abstract v0.2 is written (896 words).
+_Updated 2026-10-04 08:10 IST._
+- **Phase:** 4–6. The walking skeleton and eval harness are built, and there are **held-out MVP numbers**: look-ahead beats the best rule on 10/10 seeds under shock and under shock+drift. The first ratchet is done. Abstract v0.2 is written (896 words). 6/6 contract tests pass.
 - **Plan:** PettingZoo dispatch simulator → 3 rule-based allocators vs a look-ahead MPC (EWMA or change-aware forecaster) vs a clairvoyant oracle → paired statistics on frozen seeds → spike = regime-aware forecasting, tested along the lead-time/patience axis ([ADR 001](architecture/adr/001-spike.md)).
 - **Doing:** morning package complete and pushed. P=3 test done: H1 unsupported so far (see Log, 08:05). No sub-agents (Supervisor lean mode).
 - **Next (ordered):**
-  2. Add a hop-time knob (3–5 steps per hop, multi-step LP edges) and re-test H1. If it still ties, promote Spike B (price-based coordination).
-  3. Write contract tests: PettingZoo `parallel_api_test`; core ≡ wrapper; conservation.
-  4. Get an independent rubber-duck review of ADR 001 and the abstract once sub-agents are allowed.
-  5. Re-run the failed research threads (compute-cluster papers, social/competitions).
-  6. Build the RL comparator (TorchRL MAPPO).
-  7. Continue the ratchet: spatial pooling, BOCPD.
-  8. Build the demo dashboard.
-  9. Move long sweeps to an Azure VM (subscription active).
+  1. Add a hop-time knob (3–5 steps per hop, multi-step LP edges) and re-test H1. If the detector still ties the EWMA, promote Spike B (price-based decentralised coordination).
+  2. Move to ≥20 frozen test seeds (n=10 caps Holm-adjusted p at 0.068). Run long sweeps on an Azure VM (subscription active) to escape local CPU contention.
+  3. Get an independent rubber-duck review of ADR 001 and the abstract once sub-agents are allowed.
+  4. Re-run the failed research threads: compute-cluster papers, social/competitions, Swiggy/Zomato, TCPD metric formulas.
+  5. Build the RL comparator (TorchRL MAPPO/IPPO on the PettingZoo env).
+  6. Continue the ratchet: spatial pooling, BOCPD, conformal-PID band.
+  7. Build the demo dashboard (click-to-shock).
+  8. Replay a real trace (NYC TLC).
 - **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills for the team-fit section.
 - **Risks:**
   - The detector's end-to-end value may be small when lead time ≤ patience. The pilot suggests exactly this, so the spike is framed as a falsifiable phase diagram.
