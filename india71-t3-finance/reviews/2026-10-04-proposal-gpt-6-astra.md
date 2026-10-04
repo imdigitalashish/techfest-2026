@@ -197,3 +197,47 @@ This is a targeted spot-check, not certification of every reference; in particul
 **Round 1:** do not submit unchanged: **15 issues, 3 blocking** (identity premise, legal boundary, omitted/unfilled team information).<br>
 **Substance:** retain the technical-governance framing and honest rule-first evidence; resolve what "person", "meaningful" and "permitted" actually mean before scale claims.<br>
 **Selection:** T1 ranks higher now; T3 is a credible reserve only after a narrower bank-local scope and explicit approval, funding and service-protection gates.
+
+## Addendum (v1.1) - 4 October 2026
+
+**Re-review timestamp:** 2026-10-04 15:16:44 IST (`TZ=Asia/Kolkata date`). **Version reviewed:** `001b1a38b46d390a50fd9c4edf0f660b4e27027f`; the requested proposal, PDF and decisions are unchanged at the fetched trunk `b0517b8`. This is a focused disposition review, not a fresh full-code audit or legal clearance.
+
+**Result: 11 resolved / 4 not fully resolved / 0 new blocking.** "Resolved" means adequately addressed for a six-page Round-1 concept, not production acceptance. The four partial items are **5, 8, 9 and 15**. Of the original three blockers, **1 and 2 are resolved by the narrower, gated scope**. The renderer part of **15 is fixed**; actual registration details and the final filename remain an external submission dependency. I agree that inventing a Team ID or renaming the placeholder before registration would be wrong.
+
+### Disposition of the original findings
+
+| Original # | Disposition | Focused judgement |
+|---|---|---|
+| 1 - identity | Resolved | Bank-local customer IDs replace the assumed universal reference key. Cross-bank translation is explicitly unbuilt and separately authorised. Do not sum different banks' customers as unique national people. |
+| 2 - legal boundary | Resolved for concept | Targeting moves inside the bank; every flow faces legal/board approval, with later clean-room roles/contracts/basis gated. RBI tracing duties do **not** automatically authorise all optional incentives, onboarding or profiling: those need their own approval at that gate. |
+| 3 - Parliament quotation | Resolved | Range-wise data, gender/area **closures**, low balances and credit are now distinguished from an unpublished stock breakdown. |
+| 4 - evidence framing | Resolved | Non-comparable indicators and the December answer-date limitation are explicit; NSFI 2025-30 is incorporated. Delete "mostly rural women and the poorest" as an unsupported characterisation of the inoperative-account population, not of the intended priority group. |
+| 5 - welfare metric | **Not fully resolved** | The prose now respects cash use and separates regulatory status, but "meaningful use" still drives eligibility, simulated gains and part of the stated primary outcome. Its old channel/retention/product preference survives. |
+| 6 - exclusion/coercion | Resolved for concept | Extra outreach is optional; benefits and standard service remain available, including to holdouts. Floors are implemented. Accessible contact, self-referral and appeal scripts remain pilot-gate work, not proven by a quota. |
+| 7 - BC surveillance | Resolved for concept | Individual BC performance scoring is removed; BC data are limited to operational support. Retain this restriction in contracts, not only dashboards. |
+| 8 - privacy release | **Not fully resolved** | Contribution bounds and overlapping-table composition are substantial improvements, but a budget "per quarter" does not bound repeated releases about the same people across quarters. Private effect intervals remain unspecified. |
+| 9 - KYC/fraud resolution | **Not fully resolved** | The June 2025 BC amendments are correctly included. C7 still lacks an explicit bank-owned, time-bounded human review/appeal route preventing a risk flag from becoming indefinite obstruction. |
+| 10 - funding/ownership | Resolved for concept | A named partner-bank role owns the budget and pays BC time/travel; non-commitment is disclosed. This is a proposed payer, not a costed or funded pilot: require an approved all-in budget at Gate 1. |
+| 11 - pilot sizing | Resolved for concept | A worked assumed-baseline calculation and preregistration gate replace a calendar promise. The cluster example assumes ICC 0.02 and 50 people/cluster; it is not power for every arm, subgroup or the challenger gate. |
+| 12 - synthetic honesty | Resolved | Gaming percentages and independent-row assumptions are corrected. C6 v0.3 is separately registered; the reference is no longer called a certified optimum, and rare gate deployment is disclosed. |
+| 13 - maturity/scale | Resolved | Bank-local first deployment, explicit acceptance gates and optional non-production DEPA remove the unsupported national-infrastructure promise. |
+| 14 - citations (originally minor) | Resolved for traceability | PDF references now contain 25 links, including P4 and current RBI/NSFI sources. P4 still returns 403 to my fetcher; the recovered link is not independent confirmation of its figures by me. |
+| 15 - team/renderer | **Partly resolved** | The team block is present in the PDF and the strip logic preserves it. Visible placeholders and `[TeamID]` appropriately remain pending registration, so the draft is not yet administratively submission-ready. |
+
+### Small, net-neutral closure edits
+
+**5:** A lightweight classifier check with twelve successful monthly benefit cash-outs still produces `pass_through`, MUS **6.67**; a regular single-channel cash user produces `basic`, MUS **46.67**, both correctly regulatory-operative. These are not failures of access. Replace section 4.1's long descriptor/state enumeration and section 5's "and meaningful use" with a measurable, holder-chosen access endpoint; make the old MUS outcome explicitly simulator-only until validated, not a welfare or outreach-eligibility test. Preserve historical synthetic numbers rather than relabel them as access outcomes.
+
+**8:** Replace "per quarter" with an explicit cumulative horizon spanning repeated people and quarters, including exhaustion/stop rules. Fund a short statement that effect intervals include privacy noise by cutting the repeated forum list in section 4.4. A new period must not silently reset a claimed longitudinal person-level privacy bound.
+
+**9:** Replace the MuleHunter deployment aside in section 4.3 with the bank's human-review/appeal owner, the RBI three-working-day clock for complete activation applications and required post-activation safeguards. State that a Sakriya score alone cannot impose an indefinite block. Scope "never uses biometrics" to Sakriya's analytics, not the authorised biometric re-KYC rail described earlier.
+
+**15:** Replace the visible placeholders only when registration supplies real details; trim the repeated section 6 outcome/KPI wording by the space those details add. No seventh page or smaller font. Apply prose corrections to the proposal template before regenerating; changing only generated Markdown risks losing them.
+
+### New blockers, evidence and selection
+
+**No new blocking issue found.** The new "cheapest arm not shown harmful" rule is an exploration policy, not proof of safety: lack of statistically demonstrated harm is not demonstrated non-harm. This belongs behind the voluntary-pilot gate, not a claim of field safety.
+
+The rendered v1.1 remains six A4 pages with embedded Arial at least 11 pt and one-inch text margins; the team block and links are actually present. All **28/28** numeric drift checks and the **8** selected lightweight regression tests pass. The registered v0.3 files are unchanged between registration `28c80bb` and results `001b1a3`. Crucially, the deployable gated policy yields about **276** synthetic additional users, not the challenger's **310**; its gain over the rule is **0.00781**, CI **[-0.00986, 0.02548]**, consistent with deployment in only 1/10 worlds. The proposal discloses that limitation, so I do not count it as a new misrepresentation.
+
+**T1 still ranks higher, but the gap is materially smaller.** The T1 proposal is unchanged from my original comparison. T3 now has a credible bank-local entry point, honest approval gates and better-supported engineering evidence. T1 still connects its endpoint more directly to beneficiary welfare and an established service protocol; T3 has not finished separating wanted banking access from its old activity/product metric, and its fraud-resolution path is less concrete. Keep T1 as the default. Fixing those points could change a later ranking; stronger synthetic uplift alone would not.
