@@ -12,7 +12,8 @@ norm = lambda s: re.sub(r"[^a-z]", "", unicodedata.normalize("NFKD", str(s)).enc
 ALIAS = {"utofdnhanddd": "dadraandnagarhavelianddamananddiu", "andamanandnicobarisland": "andamanandnicobarislands",
          "andamanandnicobar": "andamanandnicobarislands", "utofdandnhanddandd": "dadraandnagarhavelianddamananddiu"}
 key = lambda s: ALIAS.get(norm(s), norm(s))  # noqa: E731
-J = lambda o: json.dumps(o, separators=(",", ":"))  # noqa: E731
+# JSON embedded in an inline <script>: escape "<" so no data value can close the script element (review issue 9)
+J = lambda o: json.dumps(o, separators=(",", ":"), ensure_ascii=True).replace("<", "\\u003c").replace(">", "\\u003e")  # noqa: E731
 
 
 def national():
@@ -40,7 +41,7 @@ def national():
 def maharashtra():
     g = gpd.read_file(f"{R}/.data/geo/mh_district_gap.geojson")
     g["geometry"] = g.geometry.simplify(0.005, preserve_topology=True)
-    for c in ("est_stations", "est_lo", "est_hi", "bev_per_station", "open_coverage"):
+    for c in ("est_stations", "est_lo", "est_hi", "bev_per_station", "open_coverage", "open_per_10k_bev", "corridor_norm_stations", "corridor_cov_pct"):
         g[c] = g[c].astype(float).round(2)
     rec = pd.read_csv(f"{RES}/c5_linked_records.csv"); rec = rec[rec.state_key == "maharashtra"]
     sites = rec.groupby("site").agg(lat=("lat", "mean"), lon=("lon", "mean"), name=("name", "first"),
@@ -50,6 +51,9 @@ def maharashtra():
              for r in sites.itertuples()]
     summ = json.load(open(f"{RES}/mh_district_gap_summary.json"))
     summ["corridor"] = json.load(open(f"{RES}/mh_corridor_summary.json"))
+    gap = pd.read_csv(f"{RES}/state_gap_baseline.csv"); m = gap[gap.vahan_state.str.upper() == "MAHARASHTRA"].iloc[0]
+    summ["aligned_bev_per_station"] = round(float(m.bev_jul2025_per_pcs)); summ["bev_per_station_to_date"] = round(float(m.bev_per_pcs))
+    summ["cg_pit"] = json.load(open(f"{RES}/small_area_summary.json"))["chhattisgarh_point_in_time"]["results"]["A_bev_only_point_in_time"]
     cp = pd.read_csv(f"{R}/.data/roads/mh_corridor_points.csv").iloc[::6]  # every 6th 1-km sample point
     corr = {"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [r.lon, r.lat]},
             "properties": {"c": int(bool(r.covered))}} for r in cp.itertuples()]}

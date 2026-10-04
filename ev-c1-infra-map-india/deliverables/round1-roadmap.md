@@ -1,58 +1,45 @@
-# Round 1 — Implementation roadmap · EV Infra Map India (v2, 4 Oct 2026)
+# Round 1 — Implementation roadmap · EV Infra Map India (v3, 4 Oct 2026)
 
-**Goal for the Grand Finale (16–18 Dec 2026):** a working web platform that delivers every expected deliverable of Challenge 1. It will be demonstrated live at national level and on Maharashtra, starting from what already runs today (methodology §2).
+**Goal for the Grand Finale (16–18 Dec 2026):** a working platform that covers every expected deliverable, demonstrated live at national level and on Maharashtra. It builds on what already runs ([methodology](round1-methodology.md) §2), and keeps a public-data-only fallback for every step.
 
 ## 1. Expected deliverables → what we will show
-| Expected deliverable (brief) | What we build | Status today |
+| Expected deliverable | What we build | Status today |
 |---|---|---|
-| Functional platform with a unified view of charging infrastructure | Census of public charging *sites* from every accessible source, each record traceable to its source, as-on date and licence | **Running:** 3 open sources linked into <!--n:linked_sites-->3,336<!--/n--> sites, plus 3 official snapshots |
-| Interactive national GIS map (chargers, coverage, gaps) | MapLibre dashboard: sites, BEV per station, open-data coverage per state, district drill-down | **Running:** national and Maharashtra pages (`components/dashboard_map/dist/`) |
-| Analytical methodology document | [Methodology](round1-methodology.md) + assumptions registry + fact-check | **Drafted** (this submission) |
-| Charger requirement estimation and recommendation module | Requirements by charger class and year (3 scenarios), energy- and norm-based; recommended sites with reasons | Running: benchmark density (Maharashtra: <!--n:mh_shortfall_ka-->3,641<!--/n--> more stations to reach Karnataka's density) and the MoP highway norm (<!--n:cor_norm_stations-->1,853<!--/n--> corridor stations for Maharashtra); energy-based module and siting in stage 3 |
-| Decision-support dashboard | Indicators per state and district with ranges, ranked reasons, scenario sliders, PDF/CSV export | Indicators and reasons **running**; scenarios and export in stage 4 |
-| Demo video for ≥ 1 geography | Maharashtra: Nagpur (most underserved), Mumbai–Pune–Nashik corridor, a data-thin district | Stage 5 |
-| Scalability roadmap | §5 below | Drafted |
+| Unified view of charging infrastructure | Census of candidate sites from every accessible source, each with source, date, licence and URL | **Running:** <!--n:linked_sites-->3,325<!--/n--> linked clusters; 3 official snapshots |
+| National GIS map (chargers, coverage, gaps) | MapLibre dashboard: sites, date-aligned registration pressure, reference coverage per state, Maharashtra drill-down | **Running** (`components/dashboard_map/dist/`) |
+| Methodology document | Methodology + fact-check + assumptions registry | **Drafted** |
+| Requirement estimation & recommendations | Norm-based (MoP 20 km / 100 km / 1 km grid) and energy-based requirements; candidate sites with reasons | **Running:** highway norm for Maharashtra (<!--n:cor_norm_stations-->1,853<!--/n--> stations); the rest in stages 2–3 |
+| Decision-support dashboard | Indicators with ranges and reasons, "verify first" lists, scenario sliders, exports | Indicators and reasons **running**; scenarios and exports in stage 3 |
+| Demo video (≥ 1 geography) | Maharashtra: a verify-first district (Nagpur), the Mumbai–Pune corridor, a data-thin district | Stage 4 |
+| Scalability roadmap | §4 | Drafted |
 
-## 2. Development stages
-| Stage | Dates | Output | Exit test (measured by the frozen evaluators) |
-|---|---|---|---|
-| 0. Data foundation (**done**) | 4 Oct | VAHAN pipeline (national, monthly, RTO); 3 open charger sources; official snapshots; boundaries; Maharashtra and Chhattisgarh crosswalks | Σ RTO = state total (achieved: error <!--n:mh_reconciliation_err-->0.0<!--/n-->) |
-| 1. Round-1 submission | by 30 Oct | This methodology + roadmap; team registration by 15 Oct | Submitted by the team leader on techfest.org |
-| 2. Core engine | 1–17 Nov | Fellegi–Sunter site matching (hand-labelled pairs); coverage re-estimated with any new list; segment-aware demand (stock, km, Wh/km, public share); forecast with uncertainty to 2030 | Matching F1 ≥ 0.9; held-out forecast WAPE ≤ <!--n:c9_hold_logit-->0.157<!--/n--> (today's level); district validation repeated on every new official annex |
-| — Exams (team unavailable) | 19–25 Nov | Scheduled data refresh and auto-research loops only | — |
-| 3. Requirements + siting | 26 Nov–5 Dec | Energy-based requirements; urban 1 km grid norm; heavy-duty 100 km norm (the 20 km highway norm already runs for Maharashtra); MCLP siting with a grid-readiness flag | Beats random, population-greedy and norm-grid placements on demand covered per added charger |
-| 4. Platform | 26 Nov–10 Dec | FastAPI + DuckDB/GeoParquet store; dashboard with scenarios, exports and source lineage; Survey of India–consistent boundaries | A planner finds the five worst districts and their reasons in < 2 minutes (timed with 3 users) |
-| 5. Hardening + rehearsal | 10–15 Dec | Offline demo (vendored map library, cached data), video, hostile-jury Q&A rehearsal | Full demo runs offline on one laptop |
-| Grand Finale | 16–18 Dec | Live demo + how the solution evolved from this roadmap | — |
+## 2. Stages, owners and exit tests
+Owners are roles until the team is registered: **D** = data & pipeline lead, **A** = analytics lead, **P** = platform/UI lead, **L** = team leader (submission, partner requests).
 
-## 3. Tools and technologies
-- **Data:** Python 3.11, requests (VAHAN replay), Overpass API, DuckDB (+ spatial, httpfs for Overture), pandas, GeoPandas, GeoParquet.
-- **Analytics:**
-  - capture–recapture: log-linear Poisson, our own code, validated;
-  - small-area allocation with bootstrap intervals;
-  - forecasting: pooled logit trends; a Gaussian-process disaggregation is to be tried (Nature Communications 2026, verified);
-  - Splink (entity resolution), PySAL `spopt` (siting) and PySAL `access` (2SFCA);
-  - OSRM or Valhalla for drive times.
-- **Platform:** FastAPI, MapLibre GL JS, PMTiles.
-- **Quality:**
-  - typed contracts (`architecture/contracts/`);
-  - frozen evaluators with held-out splits;
-  - auto-research ledgers;
-  - `eval/run_all.sh` → `eval/check_docs.py` on every change.
-- **Compute:** one laptop is enough; all inputs are small.
+| Stage | Dates | Output | Owner | Exit test |
+|---|---|---|---|---|
+| 0. Data foundation (**done**) | 4 Oct | VAHAN national/monthly/RTO pipeline (fail-closed); 3 open charger lists; official snapshots; boundaries; crosswalks | D | Σ RTO = state total (achieved) |
+| 1. Round 1 | by 30 Oct | Registration by 15 Oct; this submission; BEE open-API request (clause 13) and CEA energy-report ingestion | L, D | Submitted by the team leader; API request sent with a 30-day follow-up date |
+| 2. MVP engine — **scope cut before exams** | 1–17 Nov | (a) Requirement MVP: the three MoP norms on directed carriageways and state-notified urban areas (heavy-duty only with ≥ 2 × 240 kW chargers). (b) Segment- and mode-aware public energy demand with sourced ranges, cross-checked against CEA DISCOM energy. (c) A hand-audited sample of 200 sites (access, status, connectors) and pairwise match labels | A, D | Matching F1 measured on labels; CEA energy within the model's stated range for ≥ 2 states, or the gap explained |
+| — Exams | 19–25 Nov | Scheduled data refresh only | — | — |
+| 3. Recommendations + platform | 26 Nov–8 Dec | Candidate sites with a grid-status field (`verified / unknown / infeasible`, with evidence and date); MCLP siting; FastAPI store; dashboard scenarios and exports | A, P | Beats random, population-greedy and norm-grid placement on demand covered per added charger; a planner finds the verify-first districts and their reasons in < 2 minutes (3 users) |
+| 4. Hardening | 9–15 Dec | Offline demo (vendored map library, cached data), video, hostile-jury rehearsal, licence/redistribution review | P, L | Full demo offline on one laptop |
+| Finale | 16–18 Dec | Live demo + how the work evolved from this roadmap | all | — |
 
-## 4. Risks and mitigations
-| Risk | Mitigation |
-|---|---|
-| Open charger data is sparse (<!--n:open_coverage_pct-->11.4%<!--/n--> of the official count) | Request the BEE national database and operator data via MHI/ICAT (MoP 2024 clause 13); use UEI/Beckn discovery when open; coverage shown on the map |
-| District supply rests on a model tested in one state | Re-test on every official district annex; show ranges, never single numbers |
-| Registrations ≠ vehicles on the road | Survival curves by segment with documented ranges; sensitivity charts |
-| VAHAN dashboard markup changes | Client discovers widget ids by label and fails loudly; cached snapshots |
-| Government map compliance | No third-party basemap; Survey of India–consistent boundaries before the finale |
-| Team availability (exams 19–25 Nov) | Core engine by 17 Nov; only automated jobs in the exam window |
+**Stretch, not dependencies:** Gaussian-process district disaggregation; drive-time catchments (OSRM/Valhalla); national district coverage beyond Maharashtra.
 
-## 5. Scalability roadmap (towards a nationwide planning platform)
-1. **National refresh:** all 1,468 VAHAN offices and all charger sources on a schedule; versioned, reproducible runs.
-2. **Federated inputs:** states, DISCOMs and operators push data through the same site/connector contract (OCPI-like). The BEE database and UEI become near-complete sources, and the capture–recapture audit then measures *their* coverage.
-3. **More segments and uses:** fleets, e-trucks, battery swapping, depots.
-4. **Planning workflows:** PM E-DRIVE allocation what-ifs, ULB-level reports, an open API.
+## 3. Safeguards for ministry-facing claims
+| Risk | Safeguard | Fallback if no new data arrives |
+|---|---|---|
+| Open lists see only a fraction of stations (reference-coverage index <!--n:open_coverage_pct-->11.4%<!--/n-->) | BEE open-API request (L, by 30 Oct); coverage audit re-run on every new list | Publish coverage per state; label every supply number "lower bound" or "model, conditional" |
+| District supply is model-based (tested in one state) | Re-test on every official district annex obtained; ranges only | Rank on observed registration pressure and visible supply; never on modelled supply alone |
+| Grid and land feasibility | `verified / unknown / infeasible` with evidence (MoP clause 11(3)); DISCOM checks for finalists only | Recommendations stay "provisional" |
+| Scheme rules change (PM E-DRIVE guidance, eligibility) | Version every scheme document used; distinguish announced / sanctioned / installed / operational | Use only verified, dated documents |
+| Map and jurisdiction compliance | Boundary provenance and vintage tracked; RTO crosswalks reviewed with transport-department lists | Show merged units explicitly; state "not Survey of India–certified" |
+| VAHAN dashboard changes | Ids discovered by label; exports rejected unless rows sum to totals | Cached, checksummed snapshots |
+
+## 4. Scalability (towards a nationwide planning platform)
+1. **National refresh:** all <!--v:V1-->1,468<!--/v--> VAHAN offices and every charger source on a schedule, versioned and reproducible.
+2. **Federated inputs:** states, DISCOMs and operators push data through the same site/connector contract. The BEE database becomes the backbone, and the coverage audit measures *its* completeness.
+3. **More segments:** fleets, e-trucks, depots, battery swapping.
+4. **Planning workflows:** PM E-DRIVE allocation what-ifs (once allocation data are verified), ULB-level reports, an open API.

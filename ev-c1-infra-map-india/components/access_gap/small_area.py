@@ -101,6 +101,108 @@ def open_sites_by_district(state_key: str, dist: gpd.GeoDataFrame, col: str) -> 
     return j.groupby(col).size()
 
 
+CG_TOTAL_SOURCE = "pib2086533"  # independent state annex total (271), not the sum of district labels
+
+
+def cg_truth_harmonised():
+    """Official district counts (20 Dec 2024) on 2021 district geometry. Rules: duplicate-name rows summed;
+    Manendragarh-Chirmiri-Bharatpur -> Koriya (split from Korea on 9 Sep 2022); Sarangarh-Bilaigarh (two parents) split
+    0.5/0.5 to Raigarh and Baloda Bazar; districts absent from the annex stay MISSING (not zero)."""
+    cg = districts_of("Chhat")
+    off = pd.read_csv(f"{R}/components/charger_ingest/data/official_pcs_chhattisgarh_districts_pib2086533.csv")
+    m = {"Kabirdham (Kawardha)": "Kabeerdham", "Kanker": "Uttar Bastar Kanker", "Manendragarh Chirmiri Bharatpur": "Koriya",
+         "Korea": "Koriya", "Balodabazar-Bhatapara": "Baloda Bazar", "Gariyaband": "Gariaband", "Bemetara": "Bemetra"}
+    rows = []
+    for d, n in off[["district", "pcs"]].values:
+        if d == "Sarangarh-Bilaigarh":
+            rows += [("Raigarh", n / 2), ("Baloda Bazar", n / 2)]
+        else:
+            rows.append((m.get(d, d), n))
+    t = pd.DataFrame(rows, columns=["d", "pcs"]).groupby("d").pcs.sum()
+    truth = t.reindex(sorted(cg.shapeName))  # NaN = no label
+    acct = {"annex_rows": int(len(off)), "annex_total": int(off.pcs.sum()), "labelled_2021_districts": int(truth.notna().sum()),
+            "unlabelled_2021_districts": sorted(truth[truth.isna()].index.tolist()), "unmapped_names": sorted(set(t.index) - set(cg.shapeName))}
+    return cg, truth, acct
+
+
+def cg_district_bev(year_end=None):
+    """District BEV from RTO tables: 'till today' (A) or cumulative to the end of `year_end` (A minus later years)."""
+    xw = pd.read_csv(f"{R}/components/admin_geo/data/rto_district_CG.csv")
+    def bev(code, y):
+        f = f"{RAW}/rto_CG_{code}_class_fuel_{y}.csv"
+        if not os.path.exists(f):
+            return 0.0
+        d = pd.read_csv(f); return float(d.get("ELECTRIC(BOV)", 0).sum() + d.get("PURE EV", 0).sum())
+    rows = []
+    for code, dist in xw[xw.district.notna()][["rto_code", "district"]].values:
+        v = bev(code, "A")
+        if year_end is not None:
+            v -= sum(bev(code, str(y)) for y in range(year_end + 1, 2027))
+        rows.append((dist, v))
+    return pd.DataFrame(rows, columns=["d", "bev"]).groupby("d").bev.sum()
+
+
+def open_asof(date):
+    """Approximate open-data sites known by `date`: OCM created on/before it + OSM last-edited on/before it (no Overture:
+    no history). A lower bound; used only for the point-in-time variant."""
+    import sys as _s
+    _s.path.insert(0, f"{R}/components/census_completeness")
+    import mse as M
+    d = M.link(M.load_sources(ocm_max_created=date, use_ovt=False, osm_max_edit=date))
+    return d.groupby("site").agg(lat=("lat", "mean"), lon=("lon", "mean"), state_key=("state_key", "first")).reset_index()
+
+
+def score(pred, truth, lo=None, hi=None):
+    lab = truth.notna()
+    p, t = pred[lab].astype(float), truth[lab].astype(float)
+    out = {"wape": round(float((p - t).abs().sum() / t.sum()), 4), "spearman": round(float(spearmanr(p.values, t.values)[0]), 4)}
+    if lo is not None:
+        out["pi90_coverage"] = round(float(((t >= lo[lab]) & (t <= hi[lab])).mean()), 4)
+        out["pi90_inside"] = f"{int(((t >= lo[lab]) & (t <= hi[lab])).sum())}/{int(lab.sum())}"
+    return out
+
+
+def validate_chhattisgarh_point_in_time() -> dict:
+    cg, truth, acct = cg_truth_harmonised()
+    total = float(official(CG_TOTAL_SOURCE)["chhattisgarh"])
+    idx = truth.index
+    bev24 = cg_district_bev(2024).reindex(idx).fillna(0)
+    ys = official("pib2086533"); bev_s24 = bev_cum_at(2024, 11)
+    zero = pd.Series(0.0, index=idx)
+    res, tables = {}, {}
+    # (A) BEV-only, fully point-in-time: c = 0
+    coefA, _ = fit_state_model(ys, bev_s24, pd.Series(0.0, index=ys.index), exclude="chhattisgarh")
+    rng = np.random.default_rng(SEED); sims = []
+    _, dfA = fit_state_model(ys, bev_s24, pd.Series(0.0, index=ys.index), exclude="chhattisgarh")
+    for _ in range(1000):
+        cb, _ = fit_state_model(ys, bev_s24, pd.Series(0.0, index=ys.index), "chhattisgarh", idx=rng.integers(0, len(dfA), len(dfA)))
+        pp = np.asarray(allocate(total, bev24, zero, cb[1], 0.0).values, float) / total
+        sims.append(rng.multinomial(int(round(total)), pp / pp.sum()))
+    sims = np.array(sims); A = allocate(total, bev24, zero, coefA[1], 0.0)
+    loA, hiA = pd.Series(np.percentile(sims, 5, 0), idx), pd.Series(np.percentile(sims, 95, 0), idx)
+    res["A_bev_only_point_in_time"] = {**score(A, truth, loA, hiA), "b": round(float(coefA[1]), 3)}
+    res["baseline_bev_share_point_in_time"] = score(total * bev24 / bev24.sum(), truth)
+    # (B) BEV + approximate as-of open data (OCM created / OSM last edit <= 20 Dec 2024)
+    o = open_asof("2024-12-20")
+    open_s = o.groupby("state_key").size()
+    g = gpd.GeoDataFrame(o[o.state_key == "chhattisgarh"], geometry=gpd.points_from_xy(o[o.state_key == "chhattisgarh"].lon, o[o.state_key == "chhattisgarh"].lat), crs="EPSG:4326")
+    open_d = gpd.sjoin(g, cg[["shapeName", "geometry"]], how="left", predicate="within").groupby("shapeName").size().reindex(idx).fillna(0)
+    B, loB, hiB, coefB = small_area(total, bev24, open_d, ys, bev_s24, open_s, exclude="chhattisgarh")
+    res["B_bev_plus_open_asof_approx"] = {**score(B, truth, loB, hiB), "b": round(float(coefB[1]), 3), "c": round(float(coefB[2]), 3),
+                                          "open_sites_cg_asof": int(open_d.sum())}
+    res["baseline_open_share_asof_approx"] = score(total * open_d / max(open_d.sum(), 1), truth)
+    # (C) current covariates (sanity check only; not a historical test)
+    bevA = cg_district_bev(None).reindex(idx).fillna(0)
+    open_now = open_sites_by_district("chhattisgarh", cg, "shapeName").reindex(idx).fillna(0)
+    C, loC, hiC, coefC = small_area(total, bevA, open_now, official("pib2086533"), bev_cum_at(2024, 11), open_by_state(), exclude="chhattisgarh")
+    res["C_current_covariates_sanity_check"] = {**score(C, truth, loC, hiC), "b": round(float(coefC[1]), 3), "c": round(float(coefC[2]), 3)}
+    pd.DataFrame({"official_dec2024_harmonised": truth, "bev_to_dec2024": bev24, "open_asof_approx": open_d,
+                  "A_bev_only": A, "A_lo": loA, "A_hi": hiA, "B_bev_open": B, "B_lo": loB, "B_hi": hiB,
+                  "C_current": C, "C_lo": loC, "C_hi": hiC}).to_csv(f"{OUT}/cg_district_validation_pit.csv", index_label="district")
+    return {"total_allocated": total, "total_source": CG_TOTAL_SOURCE, "accounting": acct, "results": res,
+            "note": "interval recipe (coefficient bootstrap + multinomial) was revised after the first Chhattisgarh comparison; coverage here is not an independent calibration test"}
+
+
 def validate_chhattisgarh() -> dict:
     cg = districts_of("Chhat")
     off = pd.read_csv(f"{R}/components/charger_ingest/data/official_pcs_chhattisgarh_districts_pib2086533.csv")
@@ -122,8 +224,7 @@ def validate_chhattisgarh() -> dict:
     res = {k: {"wape": round(float((v - truth).abs().sum() / truth.sum()), 3), "spearman": round(float(spearmanr(np.asarray(v.reindex(truth.index), float), np.asarray(truth, float))[0]), 3)}
            for k, v in cands.items()}
     cover = float(((truth >= lo.round(0)) & (truth <= hi.round(0))).mean())
-    pd.DataFrame({"official_dec2024": truth, "bev_till_today": bev_d, "open_sites": open_d, **{k: v.round(1) for k, v in cands.items()},
-                  "sa_lo": lo.round(1), "sa_hi": hi.round(1)}).to_csv(f"{OUT}/cg_district_validation.csv", index_label="district")
+    pd.DataFrame({"official_dec2024": truth, "bev_till_today": bev_d, "open_sites": open_d, **cands, "sa_lo": lo, "sa_hi": hi}).to_csv(f"{OUT}/cg_district_validation.csv", index_label="district")
     return {"districts": int(len(truth)), "official_total_evaluated": int(total), "bev_mapped": int(bev_d.sum()),
             "open_sites": int(open_d.sum()), "state_model_coef_dec2024_excl_cg": [round(float(x), 3) for x in coef],
             "methods": res, "small_area_ci90_coverage": round(cover, 3)}
@@ -143,6 +244,7 @@ def state_loo(source="pib2151390", ym=(2025, 7)) -> dict:
 
 
 if __name__ == "__main__":
-    s = {"chhattisgarh_validation": validate_chhattisgarh(), "state_model_aug2025": state_loo()}
+    s = {"chhattisgarh_point_in_time": validate_chhattisgarh_point_in_time(), "chhattisgarh_validation_v1_superseded": validate_chhattisgarh(),
+         "state_model_aug2025": state_loo()}
     json.dump(s, open(f"{OUT}/small_area_summary.json", "w"), indent=1)
     print(json.dumps(s, indent=1))

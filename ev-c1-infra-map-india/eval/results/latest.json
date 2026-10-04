@@ -840,23 +840,23 @@
   "source": "eval/results/c5_mse_summary.json"
  },
  "osm_n_in_india": {
-  "value": 599,
-  "text": "599",
+  "value": 586,
+  "text": "586",
   "source": "eval/results/c5_mse_summary.json"
  },
  "linked_records": {
-  "value": 3507,
-  "text": "3,507",
+  "value": 3494,
+  "text": "3,494",
   "source": "eval/results/c5_mse_summary.json"
  },
  "linked_sites": {
-  "value": 3336,
-  "text": "3,336",
+  "value": 3325,
+  "text": "3,325",
   "source": "eval/results/c5_mse_summary.json"
  },
  "sites_in_all3": {
-  "value": 7,
-  "text": "7",
+  "value": 6,
+  "text": "6",
   "source": "eval/results/c5_mse_summary.json"
  },
  "open_coverage_pct": {
@@ -865,43 +865,43 @@
   "source": "eval/results/c5_mse_summary.json"
  },
  "mse_nat": {
-  "value": 80832.7,
-  "text": "80,833",
+  "value": 28657.1,
+  "text": "28,657",
   "source": "eval/results/c5_mse_summary.json"
  },
  "mse_nat_lo": {
-  "value": 35915.2,
-  "text": "35,915",
+  "value": 25355.3,
+  "text": "25,355",
   "source": "eval/results/c5_mse_summary.json"
  },
  "mse_nat_hi": {
-  "value": 171036.3,
-  "text": "171,036",
+  "value": 143736.8,
+  "text": "143,737",
   "source": "eval/results/c5_mse_summary.json"
  },
  "mse_states": {
-  "value": 17,
-  "text": "17",
+  "value": 5,
+  "text": "5",
   "source": "eval/results/c5_mse_summary.json"
  },
  "mse_median_ratio": {
-  "value": 0.576,
-  "text": "0.58",
+  "value": 1.27,
+  "text": "1.27",
   "source": "eval/results/c5_mse_summary.json"
  },
  "union_median_ratio": {
-  "value": 0.094,
-  "text": "0.094",
+  "value": 0.128,
+  "text": "0.128",
   "source": "eval/results/c5_mse_summary.json"
  },
  "mse_median_abs_log": {
-  "value": 0.844,
-  "text": "0.84",
+  "value": 0.239,
+  "text": "0.24",
   "source": "eval/results/c5_mse_summary.json"
  },
  "mse_ci_coverage": {
-  "value": 0.471,
-  "text": "47%",
+  "value": 0.8,
+  "text": "80%",
   "source": "eval/results/c5_mse_summary.json"
  },
  "mse_passes": {
@@ -909,14 +909,54 @@
   "text": "fails",
   "source": "eval/results/c5_mse_summary.json"
  },
+ "mse_n_aic": {
+  "value": 41989.6,
+  "text": "41,990",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_n_min_model": {
+  "value": 14248.1,
+  "text": "14,248",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_n_max_model": {
+  "value": 70920.7,
+  "text": "70,921",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_states_ge100": {
+  "value": 22,
+  "text": "22",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_states_in_ci": {
+  "value": 4,
+  "text": "4",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_bias": {
+  "value": 0.239,
+  "text": "0.24",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "osm_private_excluded": {
+  "value": 13,
+  "text": "13",
+  "source": "eval/results/c5_mse_summary.json"
+ },
+ "edges_removed": {
+  "value": 1,
+  "text": "1",
+  "source": "eval/results/c5_mse_summary.json"
+ },
  "mse_nat_min_model": {
-  "value": 21339,
-  "text": "21,339",
+  "value": 21257,
+  "text": "21,257",
   "source": "eval/results/c5_mse_sensitivity.json"
  },
  "mse_nat_max_model": {
-  "value": 80833,
-  "text": "80,833",
+  "value": 51005,
+  "text": "51,005",
   "source": "eval/results/c5_mse_sensitivity.json"
  },
  "mse_sens_runs": {
@@ -925,68 +965,83 @@
   "source": "eval/results/c5_mse_sensitivity.json"
  },
  "mse_sens_any_pass": {
-  "value": false,
-  "text": "none",
+  "value": true,
+  "text": "one",
   "source": "eval/results/c5_mse_sensitivity.json"
  },
  "mse_sens_cov_max": {
-  "value": 0.471,
-  "text": "47%",
+  "value": 0.833,
+  "text": "83%",
   "source": "eval/results/c5_mse_sensitivity.json"
  },
- "cg_districts": {
-  "value": 28,
-  "text": "28",
+ "mse_sens_n_pass": {
+  "value": 1,
+  "text": "1",
+  "source": "eval/results/c5_mse_sensitivity.json"
+ },
+ "mse_sens_pass_radius": {
+  "value": 250,
+  "text": "250 m",
+  "source": "eval/results/c5_mse_sensitivity.json"
+ },
+ "cg_total": {
+  "value": 271,
+  "text": "271",
   "source": "eval/results/small_area_summary.json"
  },
- "cg_official_total": {
-  "value": 270,
-  "text": "270",
+ "cg_labelled": {
+  "value": 27,
+  "text": "27",
   "source": "eval/results/small_area_summary.json"
  },
- "cg_wape_open_share": {
+ "cg_unlabelled": {
+  "value": "Gaurella Pendra Marwahi",
+  "text": "Gaurella Pendra Marwahi",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_pit_wape": {
+  "value": 0.2958,
+  "text": "0.30",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_pit_spearman": {
+  "value": 0.8837,
+  "text": "0.88",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_pit_b": {
+  "value": 0.658,
+  "text": "0.66",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_pit_inside": {
+  "value": "24/27",
+  "text": "24/27",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_pit_bevshare_wape": {
+  "value": 0.579,
+  "text": "0.58",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_cur_wape": {
+  "value": 0.3945,
+  "text": "0.39",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_cur_inside": {
+  "value": "22/27",
+  "text": "22/27",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_open_asof": {
+  "value": 0,
+  "text": "0",
+  "source": "eval/results/small_area_summary.json"
+ },
+ "cg_v1_open_share_wape": {
   "value": 0.995,
   "text": "0.99",
-  "source": "eval/results/small_area_summary.json"
- },
- "cg_spearman_open_share": {
-  "value": 0.456,
-  "text": "0.46",
-  "source": "eval/results/small_area_summary.json"
- },
- "cg_wape_bev_share": {
-  "value": 0.54,
-  "text": "0.54",
-  "source": "eval/results/small_area_summary.json"
- },
- "cg_spearman_bev_share": {
-  "value": 0.855,
-  "text": "0.85",
-  "source": "eval/results/small_area_summary.json"
- },
- "cg_wape_blend_50_50": {
-  "value": 0.705,
-  "text": "0.70",
-  "source": "eval/results/small_area_summary.json"
- },
- "cg_spearman_blend_50_50": {
-  "value": 0.766,
-  "text": "0.77",
-  "source": "eval/results/small_area_summary.json"
- },
- "cg_wape_small_area_model": {
-  "value": 0.41,
-  "text": "0.41",
-  "source": "eval/results/small_area_summary.json"
- },
- "cg_spearman_small_area_model": {
-  "value": 0.841,
-  "text": "0.84",
-  "source": "eval/results/small_area_summary.json"
- },
- "cg_ci_coverage": {
-  "value": 0.821,
-  "text": "82%",
   "source": "eval/results/small_area_summary.json"
  },
  "sa_loo": {
@@ -1014,9 +1069,14 @@
   "text": "7,773",
   "source": "eval/results/mh_district_gap_summary.json"
  },
- "mh_shortfall_ka": {
-  "value": 3641,
-  "text": "3,641",
+ "mh_gross_add_ka": {
+  "value": 3677,
+  "text": "3,677",
+  "source": "eval/results/mh_district_gap_summary.json"
+ },
+ "mh_net_ka": {
+  "value": 3621,
+  "text": "3,621",
   "source": "eval/results/mh_district_gap_summary.json"
  },
  "ka_bev_per_pcs": {
@@ -1025,88 +1085,63 @@
   "source": "eval/results/mh_district_gap_summary.json"
  },
  "sa_b_mh": {
-  "value": 0.463,
-  "text": "0.46",
+  "value": 0.64,
+  "text": "0.64",
   "source": "eval/results/mh_district_gap_summary.json"
  },
- "sa_c_mh": {
-  "value": 0.313,
-  "text": "0.31",
+ "mh_rank_sens": {
+  "value": 0.663,
+  "text": "0.66",
   "source": "eval/results/mh_district_gap_summary.json"
  },
- "mh_top1_name": {
-  "value": "Nagpur",
-  "text": "Nagpur",
+ "mh_verify_first": {
+  "value": "Nagpur, Nashik, Ahilyanagar, Chhatrapati Sambhajinagar, Solapur, Amravati",
+  "text": "Nagpur, Nashik, Ahilyanagar, Chhatrapati Sambhajinagar, Solapur, Amravati",
   "source": "eval/results/mh_district_gap_summary.json"
  },
- "mh_top1_bev_per_stn": {
-  "value": 573.8,
-  "text": "574",
+ "mh_verify_first_n": {
+  "value": 6,
+  "text": "6",
   "source": "eval/results/mh_district_gap_summary.json"
  },
- "mh_top1_range": {
-  "value": "423–774",
-  "text": "423–774",
-  "source": "eval/results/mh_district_gap_summary.json"
- },
- "mh_top2_name": {
-  "value": "Amravati",
-  "text": "Amravati",
-  "source": "eval/results/mh_district_gap_summary.json"
- },
- "mh_top2_bev_per_stn": {
-  "value": 467.3,
-  "text": "467",
-  "source": "eval/results/mh_district_gap_summary.json"
- },
- "mh_top2_range": {
-  "value": "323–723",
-  "text": "323–723",
-  "source": "eval/results/mh_district_gap_summary.json"
- },
- "mh_top3_name": {
-  "value": "Nashik",
-  "text": "Nashik",
-  "source": "eval/results/mh_district_gap_summary.json"
- },
- "mh_top3_bev_per_stn": {
-  "value": 441.0,
-  "text": "441",
-  "source": "eval/results/mh_district_gap_summary.json"
- },
- "mh_top3_range": {
-  "value": "351–566",
-  "text": "351–566",
+ "mh_state_open_density": {
+  "value": 3.67,
+  "text": "3.7",
   "source": "eval/results/mh_district_gap_summary.json"
  },
  "nagpur_bev": {
   "value": 113736,
   "text": "113,736",
-  "source": "eval/results/mh_district_gap.csv"
+  "source": "eval/results/mh_district_gap_summary.json"
  },
  "nagpur_open": {
   "value": 4,
   "text": "4",
-  "source": "eval/results/mh_district_gap.csv"
+  "source": "eval/results/mh_district_gap_summary.json"
  },
  "nagpur_est": {
-  "value": 198.2,
-  "text": "198",
-  "source": "eval/results/mh_district_gap.csv"
+  "value": 298.9,
+  "text": "299",
+  "source": "eval/results/mh_district_gap_summary.json"
  },
  "nagpur_lo": {
-  "value": 147.0,
-  "text": "147",
-  "source": "eval/results/mh_district_gap.csv"
+  "value": 253.0,
+  "text": "253",
+  "source": "eval/results/mh_district_gap_summary.json"
  },
  "nagpur_hi": {
-  "value": 269.04999999999995,
-  "text": "269",
-  "source": "eval/results/mh_district_gap.csv"
+  "value": 355.0,
+  "text": "355",
+  "source": "eval/results/mh_district_gap_summary.json"
  },
  "nagpur_3w_pct": {
   "value": 24,
   "text": "24%",
+  "source": "eval/results/mh_district_gap.csv"
+ },
+ "nagpur_open_density": {
+  "value": 0.3516916367728775,
+  "text": "0.4",
   "source": "eval/results/mh_district_gap.csv"
  },
  "cor_side_km": {
@@ -1195,8 +1230,38 @@
   "source": "eval/results/c9_summary.json"
  },
  "c9_hold_gain_vs_naive": {
-  "value": 29,
-  "text": "29%",
+  "value": 29.5,
+  "text": "29.5%",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9v3_dev_naive": {
+  "value": 0.3598,
+  "text": "0.360",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9v3_dev_logit": {
+  "value": 0.1772,
+  "text": "0.177",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9v3_dev_ensemble": {
+  "value": 0.2004,
+  "text": "0.200",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9v3_dev_pooled": {
+  "value": 0.2306,
+  "text": "0.231",
+  "source": "eval/results/c9_summary.json"
+ },
+ "c9v3_dev_gain": {
+  "value": 51,
+  "text": "51%",
+  "source": "eval/results/c9_summary.json"
+ },
+ "nowcast_q4_err": {
+  "value": 0.1055,
+  "text": "11%",
   "source": "eval/results/c9_summary.json"
  },
  "nowcast_wape": {
@@ -1215,13 +1280,13 @@
   "source": "eval/results/c9_summary.json"
  },
  "nowcast_2026": {
-  "value": 3598002,
-  "text": "3,598,002",
+  "value": 3598003,
+  "text": "3,598,003",
   "source": "eval/results/c9_summary.json"
  },
  "nowcast_2026_m": {
   "value": 3.6,
-  "text": "3.60 million",
+  "text": "about 3.6 million",
   "source": "eval/results/c9_summary.json"
  },
  "nowcast_2026_lo_m": {

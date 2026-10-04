@@ -82,36 +82,53 @@ def main():
     put("mse_median_abs_log", c5["median_abs_log_ratio_mse"], f"{c5['median_abs_log_ratio_mse']:.2f}", src)
     put("mse_ci_coverage", c5["ci90_coverage_of_official"], f"{100 * c5['ci90_coverage_of_official']:.0f}%", src)
     put("mse_passes", c5["passes_state_check"], "fails" if not c5["passes_state_check"] else "passes", src)
+    put("mse_n_aic", n["N_aic_weighted"], f0(n["N_aic_weighted"]), src)
+    put("mse_n_min_model", n["N_min_model"], f0(n["N_min_model"]), src); put("mse_n_max_model", n["N_max_model"], f0(n["N_max_model"]), src)
+    put("mse_states_ge100", c5["states_ge100"], source=src); put("mse_states_in_ci", c5["states_in_ci"], source=src)
+    put("mse_bias", c5["bias_median_log_ratio_mse"], f"{c5['bias_median_log_ratio_mse']:.2f}", src)
+    put("osm_private_excluded", c5["osm_excluded_access_private_or_no"], source=src)
+    put("edges_removed", c5["edges_removed_for_one_record_per_source"], source=src)
     sens = j("c5_mse_sensitivity.json"); src = "eval/results/c5_mse_sensitivity.json"
     nats = [r["national"] for r in sens]
     put("mse_nat_min_model", min(nats), source=src); put("mse_nat_max_model", max(nats), source=src)
-    put("mse_sens_runs", len(sens), source=src); put("mse_sens_any_pass", any(r["passes"] for r in sens), "none" if not any(r["passes"] for r in sens) else "some", src)
+    put("mse_sens_runs", len(sens), source=src); put("mse_sens_any_pass", any(r["passes"] for r in sens), "none" if not any(r["passes"] for r in sens) else "one", src)
     put("mse_sens_cov_max", max(r["ci_coverage"] for r in sens), f"{100 * max(r['ci_coverage'] for r in sens):.0f}%", src)
+    put("mse_sens_n_pass", sum(r["passes"] for r in sens), source=src)
+    ps = [r for r in sens if r["passes"]]
+    put("mse_sens_pass_radius", ps[0]["radius_m"] if ps else 0, f"{ps[0]['radius_m']} m" if ps else "none", src)
     sa = j("small_area_summary.json"); src = "eval/results/small_area_summary.json"
-    cg = sa["chhattisgarh_validation"]
-    put("cg_districts", cg["districts"], source=src); put("cg_official_total", cg["official_total_evaluated"], source=src)
-    for k, v in cg["methods"].items():
-        put(f"cg_wape_{k}", v["wape"], f"{v['wape']:.2f}", src); put(f"cg_spearman_{k}", v["spearman"], f"{v['spearman']:.2f}", src)
-    put("cg_ci_coverage", cg["small_area_ci90_coverage"], f"{100 * cg['small_area_ci90_coverage']:.0f}%", src)
+    pit = sa["chhattisgarh_point_in_time"]; rr = pit["results"]
+    put("cg_total", int(pit["total_allocated"]), source=src)
+    put("cg_labelled", pit["accounting"]["labelled_2021_districts"], source=src)
+    put("cg_unlabelled", ", ".join(pit["accounting"]["unlabelled_2021_districts"]), ", ".join(pit["accounting"]["unlabelled_2021_districts"]), src)
+    A = rr["A_bev_only_point_in_time"]
+    put("cg_pit_wape", A["wape"], f"{A['wape']:.2f}", src); put("cg_pit_spearman", A["spearman"], f"{A['spearman']:.2f}", src)
+    put("cg_pit_b", A["b"], f"{A['b']:.2f}", src); put("cg_pit_inside", A["pi90_inside"], A["pi90_inside"], src)
+    put("cg_pit_bevshare_wape", rr["baseline_bev_share_point_in_time"]["wape"], f"{rr['baseline_bev_share_point_in_time']['wape']:.2f}", src)
+    C = rr["C_current_covariates_sanity_check"]
+    put("cg_cur_wape", C["wape"], f"{C['wape']:.2f}", src); put("cg_cur_inside", C["pi90_inside"], C["pi90_inside"], src)
+    put("cg_open_asof", rr["B_bev_plus_open_asof_approx"]["open_sites_cg_asof"], source=src)
+    v1 = sa["chhattisgarh_validation_v1_superseded"]["methods"]
+    put("cg_v1_open_share_wape", v1["open_share"]["wape"], f"{v1['open_share']['wape']:.2f}", src)
     put("sa_loo", sa["state_model_aug2025"]["loo_median_abs_log_err"], f"{sa['state_model_aug2025']['loo_median_abs_log_err']:.2f}", src)
     g = j("mh_district_gap_summary.json"); src = "eval/results/mh_district_gap_summary.json"
     put("mh_districts", g["districts"], source=src); put("mh_open_sites", g["open_sites_in_mh"], source=src)
     put("mh_zero_open_districts", g["districts_with_zero_open_sites"], source=src)
-    put("mh_need_ka", g["mh_need_at_karnataka_density"], source=src); put("mh_shortfall_ka", g["mh_shortfall_vs_karnataka"], source=src)
+    put("mh_need_ka", g["mh_need_at_karnataka_density"], source=src); put("mh_gross_add_ka", g["mh_shortfall_vs_karnataka"], source=src)
+    put("mh_net_ka", g["mh_statewide_net_vs_karnataka"], source=src)
     put("ka_bev_per_pcs", g["karnataka_bev_per_station"], f"{g['karnataka_bev_per_station']:.1f}", src)
     put("sa_b_mh", g["small_area_coef_excl_mh"][1], f"{g['small_area_coef_excl_mh'][1]:.2f}", src)
-    put("sa_c_mh", g["small_area_coef_excl_mh"][2], f"{g['small_area_coef_excl_mh'][2]:.2f}", src)
-    top = g["top5_bev_per_station"]
-    for i, (dname, v, rng) in enumerate(top[:3], 1):
-        put(f"mh_top{i}_name", dname, dname, src); put(f"mh_top{i}_bev_per_stn", v, f0(v), src); put(f"mh_top{i}_range", rng, rng, src)
+    put("mh_rank_sens", g["ranking_spearman_bev_only_vs_open_model"], f"{g['ranking_spearman_bev_only_vs_open_model']:.2f}", src)
+    put("mh_verify_first", ", ".join(g["verify_first_districts"]), ", ".join(g["verify_first_districts"]), src)
+    put("mh_verify_first_n", len(g["verify_first_districts"]), source=src)
+    put("mh_state_open_density", g["state_open_per_10k_bev"], f"{g['state_open_per_10k_bev']:.1f}", src)
+    ng = g["nagpur"]
+    put("nagpur_bev", int(ng[0]), source=src); put("nagpur_open", int(ng[1]), source=src)
+    put("nagpur_est", ng[2], f0(ng[2]), src); put("nagpur_lo", ng[3], f0(ng[3]), src); put("nagpur_hi", ng[4], f0(ng[4]), src)
     gd = list(csv.DictReader((RES / "mh_district_gap.csv").open()))
-    ng = next(r for r in gd if r["district"] == "Nagpur")
-    put("nagpur_bev", int(float(ng["bev_total"])), source="eval/results/mh_district_gap.csv")
-    put("nagpur_open", int(float(ng["open_sites"])), source="eval/results/mh_district_gap.csv")
-    put("nagpur_est", float(ng["est_stations"]), f0(float(ng["est_stations"])), "eval/results/mh_district_gap.csv")
-    put("nagpur_lo", float(ng["est_lo"]), f0(float(ng["est_lo"])), "eval/results/mh_district_gap.csv")
-    put("nagpur_hi", float(ng["est_hi"]), f0(float(ng["est_hi"])), "eval/results/mh_district_gap.csv")
-    put("nagpur_3w_pct", round(100 * float(ng["bev_3W"]) / float(ng["bev_total"])), f"{100 * float(ng['bev_3W']) / float(ng['bev_total']):.0f}%", "eval/results/mh_district_gap.csv")
+    ngr = next(r for r in gd if r["district"] == "Nagpur")
+    put("nagpur_3w_pct", round(100 * float(ngr["bev_3W"]) / float(ngr["bev_total"])), f"{100 * float(ngr['bev_3W']) / float(ngr['bev_total']):.0f}%", "eval/results/mh_district_gap.csv")
+    put("nagpur_open_density", float(ngr["open_per_10k_bev"]), f"{float(ngr['open_per_10k_bev']):.1f}", "eval/results/mh_district_gap.csv")
     cr = j("mh_corridor_summary.json"); src = "eval/results/mh_corridor_summary.json"
     put("cor_side_km", cr["side_km"], source=src); put("cor_nh_ref_pct", cr["share_km_with_NH_ref_pct"], f"{cr['share_km_with_NH_ref_pct']:.1f}%", src)
     put("cor_norm_stations", cr["norm_stations_required"], source=src); put("cor_hw_sites", cr["hw_accessible_open_sites"], source=src)
@@ -123,14 +140,22 @@ def main():
     fc = c9["forecast_12m_dev_holdout"]
     for k, short in (("naive12", "naive"), ("pooled_growth_nat_0.5", "pooled"), ("share_logit_k2_0.5", "logit"), ("ensemble_pg+sl", "ensemble")):
         put(f"c9_dev_{short}", fc[k]["dev_wape"], f"{fc[k]['dev_wape']:.3f}", src); put(f"c9_hold_{short}", fc[k]["holdout_wape"], f"{fc[k]['holdout_wape']:.3f}", src)
-    put("c9_hold_gain_vs_naive", round(100 * (1 - fc["share_logit_k2_0.5"]["holdout_wape"] / fc["naive12"]["holdout_wape"])),
-        f"{100 * (1 - fc['share_logit_k2_0.5']['holdout_wape'] / fc['naive12']['holdout_wape']):.0f}%", src)
+    put("c9_hold_gain_vs_naive", round(100 * (1 - fc["share_logit_k2_0.5"]["holdout_wape"] / fc["naive12"]["holdout_wape"]), 1),
+        f"{100 * (1 - fc['share_logit_k2_0.5']['holdout_wape'] / fc['naive12']['holdout_wape']):.1f}%", src)
+    f3 = c9["forecast_12m_v3_purged"]
+    put("c9v3_dev_naive", f3["naive12"]["dev_wape"], f"{f3['naive12']['dev_wape']:.3f}", src)
+    put("c9v3_dev_logit", f3["share_logit_k2_0.5"]["dev_wape"], f"{f3['share_logit_k2_0.5']['dev_wape']:.3f}", src)
+    put("c9v3_dev_ensemble", f3["ensemble_pg+sl"]["dev_wape"], f"{f3['ensemble_pg+sl']['dev_wape']:.3f}", src)
+    put("c9v3_dev_pooled", f3["pooled_growth_nat_0.5"]["dev_wape"], f"{f3['pooled_growth_nat_0.5']['dev_wape']:.3f}", src)
+    put("c9v3_dev_gain", round(100 * (1 - f3["share_logit_k2_0.5"]["dev_wape"] / f3["naive12"]["dev_wape"])),
+        f"{100 * (1 - f3['share_logit_k2_0.5']['dev_wape'] / f3['naive12']['dev_wape']):.0f}%", src)
     bt = c9["nowcast_backtest_by_method"]["yoy"]
+    put("nowcast_q4_err", bt["mean_abs_q4_err"], f"{100 * bt['mean_abs_q4_err']:.0f}%", src)
     put("nowcast_wape", bt["mean_wape"], f"{100 * bt['mean_wape']:.1f}%", src)
     put("nowcast_mean_nat_err", bt["mean_abs_nat_err"], f"{100 * bt['mean_abs_nat_err']:.1f}%", src)
     put("nowcast_max_nat_err", bt["max_abs_nat_err"], f"{100 * bt['max_abs_nat_err']:.1f}%", src)
     nc = c9["nowcast_2026_national"]
-    put("nowcast_2026", nc["yoy"], source=src); put("nowcast_2026_m", round(nc["yoy"] / 1e6, 2), f"{nc['yoy'] / 1e6:.2f} million", src)
+    put("nowcast_2026", nc["yoy"], source=src); put("nowcast_2026_m", round(nc["yoy"] / 1e6, 1), f"about {nc['yoy'] / 1e6:.1f} million", src)
     put("nowcast_2026_lo_m", round(min(nc.values()) / 1e6, 2), f"{min(nc.values()) / 1e6:.2f}", src)
     put("nowcast_2026_hi_m", round(max(nc.values()) / 1e6, 2), f"{max(nc.values()) / 1e6:.2f}", src)
     put("ytd_2026", c9["ytd_jan_sep_2026_national"], source=src)

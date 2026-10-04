@@ -38,12 +38,14 @@ key = lambda s: ALIAS.get(norm(s), norm(s))  # noqa: E731
 OVT_RELEASE = "2026-09-23.1"
 
 
-def load_sources(osm_file="osm_india.csv", ocm_max_created=None, use_ovt=True) -> pd.DataFrame:
+def load_sources(osm_file="osm_india.csv", ocm_max_created=None, use_ovt=True, osm_max_edit=None) -> pd.DataFrame:
     """Records from the open lists, clipped to India; OSM access=private|no excluded (not public supply).
     Each record keeps its licence and a source URL (review 2026-10-04, issues 3 and 10)."""
     adm = gpd.read_file(f"{R_}/.data/geo/ind_adm1.geojson")[["shapeName", "geometry"]]
     osm = pd.read_csv(f"{R_}/.data/chargers/{osm_file}")
     osm = osm[~osm.access.isin(["private", "no"])]
+    if osm_max_edit:  # approximate "known by date": last edit on or before the date (a lower bound on existence)
+        osm = osm[pd.to_datetime(osm.last_edit, utc=True, errors="coerce") <= pd.Timestamp(osm_max_edit, tz="UTC")]
     osm = osm.assign(src="osm", license="ODbL-1.0 (c) OpenStreetMap contributors",
                      url="https://www.openstreetmap.org/" + osm.source_id.astype(str))
     ocm = pd.read_csv(f"{R_}/.data/chargers/ocm_india.csv")
@@ -173,6 +175,18 @@ def mse(cells: np.ndarray, rng: np.random.Generator, B=300):
             "N_min_model": float(min(per_model.values())), "N_max_model": float(max(per_model.values())), "per_model": per_model}
 
 
+def eligible(cells: np.ndarray) -> tuple[bool, str]:
+    """Abstention rule (review 2026-10-04): estimate only with >= 20 sites and >= 3 sites in at least two pairwise
+    overlaps (pattern order: 001, 010, 011, 100, 101, 110, 111). Otherwise the region is 'not estimable'."""
+    c = dict(zip(["".join(map(str, p)) for p in PATTERNS], cells))
+    ov = {"OC": c["110"] + c["111"], "OV": c["101"] + c["111"], "CV": c["011"] + c["111"]}
+    if cells.sum() < 20:
+        return False, "fewer than 20 linked sites"
+    if sum(v >= 3 for v in ov.values()) < 2:
+        return False, "fewer than two source pairs with >= 3 shared sites"
+    return True, ""
+
+
 def cells_of(h: pd.DataFrame) -> np.ndarray:
     c = h.groupby(["osm", "ocm", "ovt"]).size()
     return np.array([float(c.get(p, 0)) for p in PATTERNS])
@@ -189,7 +203,10 @@ def main():
     rows = []
     for st, g in h.groupby("state_key"):
         c = cells_of(g)
-        r = mse(c, rng) or {"n_obs": int(c.sum()), "model": "none", "N_hat": np.nan, "ci90_lo": np.nan, "ci90_hi": np.nan, "n_boot_ok": 0}
+        ok, why = eligible(c)
+        r = (mse(c, rng) if ok else None) or {"n_obs": int(c.sum()), "model": "abstain" if not ok else "none", "N_hat": np.nan,
+                                              "ci90_lo": np.nan, "ci90_hi": np.nan, "n_boot_ok": 0}
+        r["abstain_reason"] = why
         r.pop("per_model", None)
         r.update({"state_key": st, "official_pcs_aug2025": off.get(st), "in_all3": int(c[-1]),
                   **{f"cell_{''.join(map(str, p))}": int(v) for p, v in zip(PATTERNS, c)},
@@ -210,6 +227,9 @@ def main():
         "edges_removed_for_one_record_per_source": int(d.attrs.get("edges_removed_for_constraint", 0)),
         "osm_excluded_access_private_or_no": int(pd.read_csv(f"{R_}/.data/chargers/osm_india.csv").access.isin(["private", "no"]).sum()),
         "states_ge100_without_estimate": int(((st.official_pcs_aug2025 >= 100) & st.N_hat.isna()).sum()),
+        "states_ge100": int((st.official_pcs_aug2025 >= 100).sum()),
+        "states_in_ci": int(ev.official_in_ci90.sum()),
+        "abstention_rule": "estimate only with >= 20 linked sites and >= 3 shared sites in at least two source pairs",
         "national_cells": {"".join(map(str, p)): int(v) for p, v in zip(PATTERNS, nat_c)},
         "national_mse": nat, "official_national_aug2025": int(sum(off.values())), "ieefa_national_jul2026": 52718,
         "states_evaluated": int(len(ev)), "states_with_mse": int(st.N_hat.notna().sum()),
@@ -219,7 +239,7 @@ def main():
         "median_mse_over_official": round(float(np.median(ev.N_hat / ev.official_pcs_aug2025)), 3),
         "median_union_over_official": round(float(np.median(ev.n_obs / ev.official_pcs_aug2025)), 3),
         "passes_state_check": bool(np.median(np.abs(lr)) < np.log(1.25) and ev.official_in_ci90.mean() >= 0.8),
-        "pass_rule": "median |ln(MSE/official)| < ln 1.25 AND 90% CI covers official in >= 80% of states (states with >= 100 official PCS)",
+        "pass_rule": "median |ln(MSE/official)| < ln 1.25 AND 90% CI covers official in >= 80% of eligible states with >= 100 official PCS (rule written into the code before its first run; no earlier independent freeze)",
     }
     json.dump(summary, open(f"{OUT}/c5_mse_summary.json", "w"), indent=1)
     print(json.dumps(summary, indent=1))

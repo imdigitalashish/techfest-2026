@@ -1,13 +1,61 @@
 {
- "chhattisgarh_validation": {
+ "chhattisgarh_point_in_time": {
+  "total_allocated": 271.0,
+  "total_source": "pib2086533",
+  "accounting": {
+   "annex_rows": 31,
+   "annex_total": 271,
+   "labelled_2021_districts": 27,
+   "unlabelled_2021_districts": [
+    "Gaurella Pendra Marwahi"
+   ],
+   "unmapped_names": []
+  },
+  "results": {
+   "A_bev_only_point_in_time": {
+    "wape": 0.2958,
+    "spearman": 0.8837,
+    "pi90_coverage": 0.8889,
+    "pi90_inside": "24/27",
+    "b": 0.658
+   },
+   "baseline_bev_share_point_in_time": {
+    "wape": 0.579,
+    "spearman": 0.8837
+   },
+   "B_bev_plus_open_asof_approx": {
+    "wape": 0.2826,
+    "spearman": 0.8837,
+    "pi90_coverage": 0.9259,
+    "pi90_inside": "25/27",
+    "b": 0.523,
+    "c": 0.388,
+    "open_sites_cg_asof": 0
+   },
+   "baseline_open_share_asof_approx": {
+    "wape": 1.0,
+    "spearman": NaN
+   },
+   "C_current_covariates_sanity_check": {
+    "wape": 0.3945,
+    "spearman": 0.8607,
+    "pi90_coverage": 0.8148,
+    "pi90_inside": "22/27",
+    "b": 0.462,
+    "c": 0.337
+   }
+  },
+  "note": "interval recipe (coefficient bootstrap + multinomial) was revised after the first Chhattisgarh comparison; coverage here is not an independent calibration test"
+ },
+ "chhattisgarh_validation_v1_superseded": {
   "districts": 28,
   "official_total_evaluated": 270,
   "bev_mapped": 218859,
   "open_sites": 55,
   "state_model_coef_dec2024_excl_cg": [
-   -0.411,
-   0.461,
-   0.34
+   -0.414,
+   0.462,
+   0.337
   ],
   "methods": {
    "open_share": {
@@ -23,17 +71,17 @@
     "spearman": 0.766
    },
    "small_area_model": {
-    "wape": 0.41,
-    "spearman": 0.841
+    "wape": 0.409,
+    "spearman": 0.849
    }
   },
   "small_area_ci90_coverage": 0.821
  },
  "state_model_aug2025": {
   "coef_all_states": [
-   -0.294,
-   0.461,
-   0.324
+   -0.299,
+   0.462,
+   0.321
   ],
   "states_in_fit": 36,
   "loo_median_abs_log_err": 0.515

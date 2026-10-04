@@ -5,10 +5,10 @@
   "sites": 3325,
   "national": 28657,
   "national_model": "OC",
-  "states": 18,
-  "median_ratio": 0.565,
-  "median_abs_log": 0.903,
-  "ci_coverage": 0.444,
+  "states": 5,
+  "median_ratio": 1.27,
+  "median_abs_log": 0.239,
+  "ci_coverage": 0.8,
   "passes": false
  },
  {
@@ -17,10 +17,10 @@
   "sites": 3325,
   "national": 28657,
   "national_model": "OC",
-  "states": 18,
-  "median_ratio": 0.466,
-  "median_abs_log": 0.92,
-  "ci_coverage": 0.444,
+  "states": 5,
+  "median_ratio": 1.261,
+  "median_abs_log": 0.239,
+  "ci_coverage": 0.6,
   "passes": false
  },
  {
@@ -29,10 +29,10 @@
   "sites": 3325,
   "national": 28657,
   "national_model": "OC",
-  "states": 18,
-  "median_ratio": 0.466,
-  "median_abs_log": 0.92,
-  "ci_coverage": 0.444,
+  "states": 5,
+  "median_ratio": 1.256,
+  "median_abs_log": 0.244,
+  "ci_coverage": 0.8,
   "passes": false
  },
  {
@@ -41,9 +41,9 @@
   "sites": 3325,
   "national": 21257,
   "national_model": "indep",
-  "states": 15,
-  "median_ratio": 0.576,
-  "median_abs_log": 0.844,
+  "states": 5,
+  "median_ratio": 0.793,
+  "median_abs_log": 0.263,
   "ci_coverage": 0.4,
   "passes": false
  },
@@ -53,10 +53,10 @@
   "sites": 3337,
   "national": 51005,
   "national_model": "OC+CV",
-  "states": 18,
-  "median_ratio": 0.413,
-  "median_abs_log": 1.346,
-  "ci_coverage": 0.389,
+  "states": 5,
+  "median_ratio": 1.702,
+  "median_abs_log": 0.532,
+  "ci_coverage": 0.8,
   "passes": false
  },
  {
@@ -65,10 +65,10 @@
   "sites": 3298,
   "national": 23826,
   "national_model": "OC",
-  "states": 18,
-  "median_ratio": 0.587,
-  "median_abs_log": 0.808,
-  "ci_coverage": 0.5,
-  "passes": false
+  "states": 6,
+  "median_ratio": 1.171,
+  "median_abs_log": 0.185,
+  "ci_coverage": 0.833,
+  "passes": true
  }
 ]

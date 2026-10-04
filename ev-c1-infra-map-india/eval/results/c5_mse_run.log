@@ -8,7 +8,10 @@
  "sites_linked": 3325,
  "edges_removed_for_one_record_per_source": 1,
  "osm_excluded_access_private_or_no": 13,
- "states_ge100_without_estimate": 4,
+ "states_ge100_without_estimate": 17,
+ "states_ge100": 22,
+ "states_in_ci": 4,
+ "abstention_rule": "estimate only with >= 20 linked sites and >= 3 shared sites in at least two source pairs",
  "national_cells": {
   "001": 953,
   "010": 1720,
@@ -22,8 +25,8 @@
   "n_obs": 3325,
   "model": "OC",
   "N_hat": 28657.1,
-  "ci90_lo": 26557.4,
-  "ci90_hi": 162966.3,
+  "ci90_lo": 25355.3,
+  "ci90_hi": 143736.8,
   "n_boot_ok": 300,
   "n_boot_fail": 0,
   "N_aic_weighted": 41989.6,
@@ -42,30 +45,21 @@
  },
  "official_national_aug2025": 29277,
  "ieefa_national_jul2026": 52718,
- "states_evaluated": 18,
- "states_with_mse": 22,
- "bias_median_log_ratio_mse": -0.571,
- "median_abs_log_ratio_mse": 0.903,
- "bias_median_log_ratio_union": -2.402,
- "median_abs_log_ratio_union": 2.402,
- "ci90_coverage_of_official": 0.444,
- "median_mse_over_official": 0.565,
- "median_union_over_official": 0.091,
+ "states_evaluated": 5,
+ "states_with_mse": 5,
+ "bias_median_log_ratio_mse": 0.239,
+ "median_abs_log_ratio_mse": 0.239,
+ "bias_median_log_ratio_union": -2.055,
+ "median_abs_log_ratio_union": 2.055,
+ "ci90_coverage_of_official": 0.8,
+ "median_mse_over_official": 1.27,
+ "median_union_over_official": 0.128,
  "passes_state_check": false,
- "pass_rule": "median |ln(MSE/official)| < ln 1.25 AND 90% CI covers official in >= 80% of states (states with >= 100 official PCS)"
+ "pass_rule": "median |ln(MSE/official)| < ln 1.25 AND 90% CI covers official in >= 80% of eligible states with >= 100 official PCS (rule written into the code before its first run; no earlier independent freeze)"
 }
-    state_key  n_osm  n_ocm  n_ovt  in_all3  n_obs    model   N_hat  ci90_lo  ci90_hi  official_pcs_aug2025  mse_over_official
-    karnataka     62    379    170        4    569 OC+OV+CV 15593.8   2125.2  67819.8                  6097              2.558
-  maharashtra     70     77    303        0    435       OC  5302.5    765.7  10655.1                  4155              1.276
- uttarpradesh     24     29     34        0     82       OV   336.4    185.7   1595.5                  2326              0.145
-        delhi    170     33     64        1    252       OC  2470.4    578.8  11854.7                  1967              1.256
-    tamilnadu     68    211    128        1    378       OC  2261.3   1067.9   6504.6                  1781              1.270
-    rajasthan      4     47     13        0     63    indep   848.1    229.7   1029.4                  1531              0.554
-       kerala     94    598     41        0    687       OV  1755.0   1461.3   3524.6                  1392              1.261
-      gujarat      6     32     69        0    106    indep  2809.3    857.3   3060.1                  1208              2.326
-    telangana      2     12    115        0    128    indep  1632.3    131.2   2059.5                  1066              1.531
-      haryana     10     28     43        0     73       OC   204.2    148.4    744.0                   935              0.218
-andhrapradesh     31     77     13        0    119    indep  1887.3    523.8   3872.7                   793              2.380
-       punjab      1      2      8        0     10    indep    25.4     10.0     32.3                   717              0.035
-       odisha      2    239      1        0    240    indep   358.8    240.0    714.0                   623              0.576
- chhattisgarh      0     54      1        0     55       CV    55.7     55.7     73.8                   346              0.161
+  state_key  n_osm  n_ocm  n_ovt  in_all3  n_obs    model   N_hat  ci90_lo  ci90_hi  official_pcs_aug2025  mse_over_official
+  karnataka     62    379    170        4    569 OC+OV+CV 15593.8   2105.0  69485.7                  6097              2.558
+maharashtra     70     77    303        0    435       OC  5302.5    801.1   8369.4                  4155              1.276
+      delhi    170     33     64        1    252       OC  2470.4    573.4  11845.7                  1967              1.256
+  tamilnadu     68    211    128        1    378       OC  2261.3    962.9   4169.6                  1781              1.270
+     kerala     94    598     41        0    687       OV  1755.0   1515.7   3721.2                  1392              1.261

@@ -62,13 +62,13 @@
 | C1 | vahan_ingest | dashboard → RegistrationRecord | manual Excel export | | **real**: national monthly + RTO (MH, CG), fuel filter | Σ RTO vs state = <!--n:mh_reconciliation_err-->0.0<!--/n--> |
 | C2 | charger_ingest | sources → ChargerRecord | per-source scrapers | | **real**: OSM, OCM export, Overture, 3 PIB snapshots | records per source |
 | C3 | charger_normalize | ChargerRecord → canonical | rule tables | | point-in-polygon state; taxonomy drafted | field accuracy (pending labels) |
-| C4 | charger_resolve | ChargerRecord[] → Site[] | distance + name | ★ | **real** v1: mutual-NN 150 m → <!--n:linked_sites-->3,336<!--/n--> sites | pairwise F1 (pending labels) |
-| C5 | census_completeness | Site[] → coverage / estimate | raw counts | ★ | **real**: 3-source MSE **fails** validation → audit | median ratio <!--n:mse_median_ratio-->0.58<!--/n-->, CI coverage <!--n:mse_ci_coverage-->47%<!--/n--> |
+| C4 | charger_resolve | ChargerRecord[] → Site[] | distance + name | ★ | **real** v1: mutual-NN 150 m → <!--n:linked_sites-->3,325<!--/n--> sites | pairwise F1 (pending labels) |
+| C5 | census_completeness | Site[] → coverage / estimate | raw counts | ★ | **real**: 3-source MSE with abstention: fails stated rule narrowly → audit only | estimable states <!--n:mse_states-->5<!--/n-->/<!--n:mse_states_ge100-->22<!--/n-->; CI covers <!--n:mse_states_in_ci-->4<!--/n--> |
 | C6 | admin_geo | boundaries, RTO↔district | Census-2011 shapes | | **real**: ADM1 + ADM2 2021 (LGD), MH + CG crosswalks | % RTOs mapped (MH 60/61, CG 28/31) |
 | C7 | ev_stock | registrations → stock | cumulative regs | | baseline | holdout error (pending) |
 | C8 | demand_model | stock → public kWh | EVs-per-charger | | designed (§2.6) | rank corr. (pending) |
 | C9 | adoption_forecast | monthly series → forecast, nowcast | naive | ★2 | **real** v2 | held-out WAPE <!--n:c9_hold_logit-->0.157<!--/n--> |
-| C10 | access_gap | sites + demand → GapRecord | EVs per charger | | **real**: state + MH districts (small-area) | CG district WAPE <!--n:cg_wape_small_area_model-->0.41<!--/n--> |
+| C10 | access_gap | sites + demand → GapRecord | EVs per charger | | **real**: state + MH districts (small-area) | CG point-in-time WAPE <!--n:cg_pit_wape-->0.30<!--/n--> |
 | C11 | requirement_siting | gaps → Recommendation | norm counts | ★2 | benchmark only; full module Round 2 | demand covered per charger (pending) |
 | C12 | platform_api | outputs → API | static CSV | | planned | p95 latency |
 | C13 | dashboard_map | data → map UI | static choropleth | | **real** v1 (national + MH), browser-checked | planner task time (pending) |

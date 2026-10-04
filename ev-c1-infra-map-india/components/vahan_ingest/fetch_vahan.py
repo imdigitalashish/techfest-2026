@@ -15,6 +15,7 @@ import datetime as dt
 import json
 import os
 import sys
+import time
 import traceback
 
 import pandas as pd
@@ -81,6 +82,16 @@ def states_class(year: str) -> None:
             v = Vahan()
 
 
+def new_session(tries: int = 4) -> Vahan:
+    """Create a dashboard session, retrying with backoff (the server intermittently answers 500)."""
+    for k in range(tries):
+        try:
+            return Vahan()
+        except Exception as e:  # noqa: BLE001
+            log(f"session retry {k + 1}: {e!r}"[:200]); time.sleep(15 * (k + 1))
+    raise SystemExit("VAHAN dashboard unavailable")
+
+
 def rto_level(state: str, years: list[str]) -> None:
     v, rtos = None, []
     for attempt in range(3):  # the dashboard occasionally answers the state change without the RTO list
@@ -107,8 +118,8 @@ def rto_level(state: str, years: list[str]) -> None:
                              "rto_label": r.label, "y_axis": "Vehicle Class", "x_axis": "Fuel", "year": y},
                        lambda: v.query("Vehicle Class", "Fuel", y))
             except Exception as e:
-                log(f"FAIL {key}: {e!r}\n{traceback.format_exc(limit=2)}")
-                v = Vahan()
+                log(f"FAIL {key}: {e!r}"[:300])
+                v = new_session()
 
 
 BEV_CODES = ["4", "23"]  # VAHAN fuel checkbox values: 4 = ELECTRIC(BOV), 23 = PURE EV

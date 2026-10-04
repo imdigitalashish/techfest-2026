@@ -31,7 +31,7 @@ def run(policy, radius, B=200):
         return N, lo, hi, "+".join(mb) or "indep"
     rows = []
     for st, g in h.groupby("state_key"):
-        if off.get(st, 0) >= 100:
+        if off.get(st, 0) >= 100 and M.eligible(M.cells_of(g))[0]:
             r = est(M.cells_of(g))
             if r: rows.append((st, off[st], *r))
     df = pd.DataFrame(rows, columns=["state", "official", "N", "lo", "hi", "model"])

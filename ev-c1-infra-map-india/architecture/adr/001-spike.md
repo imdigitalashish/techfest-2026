@@ -52,23 +52,27 @@ A planner needs: demand (how many EVs of each segment need public energy, where)
 
 ---
 
-## Addendum — 4 Oct 2026, 14:30 IST: what the spikes showed, and the revised decision
-**Status:** accepted (supersedes the "Decision" section above where they conflict). Evidence: committed runs, rendered from `eval/results/latest.json`.
+## Addendum — 4 Oct 2026 (updated 16:00 IST after two cross-model reviews)
+**Status:** accepted (supersedes the "Decision" section above where they conflict). Numbers are rendered from `eval/results/latest.json`. Review triage is in `reviews/` and [ledger](../../reviews/ledger.tsv).
 
-**Spike 1 (census completeness) — the gate criterion is not met:**
-- **Setup:** three open lists (OSM, OCM, Overture; built without OSM) link into <!--n:linked_sites-->3,336<!--/n--> sites, <!--n:open_coverage_pct-->11.4%<!--/n--> of the official count, with only <!--n:sites_in_all3-->7<!--/n--> sites in all three.
-- **Estimate:** the log-linear multiple-systems estimate is <!--n:mse_nat-->80,833<!--/n--> nationally (90% CI <!--n:mse_nat_lo-->35,915<!--/n-->–<!--n:mse_nat_hi-->171,036<!--/n-->).
-- **Validation:** against held-out official state counts, the median ratio is <!--n:mse_median_ratio-->0.58<!--/n--> (raw union <!--n:union_median_ratio-->0.094<!--/n-->) and the CI covers the official count in <!--n:mse_ci_coverage-->47%<!--/n--> of states. It **fails** the pass rule.
-- **Why (first principles):** capture–recapture needs lists that are independent *and* that overlap enough. Here every list over-captures the same easy, branded, urban sites (positive dependence plus heterogeneous catchability), and overlaps are tiny.
-- **Adversarial check, done by the data rather than by an agent:** the antithesis held ("overlap may simply not be enough to be stable").
+**Spike 1 (inventory coverage) — the gate criterion is not met:**
+- **Lists:** three open lists (OSM, OCM, Overture; Overture contains no OSM data) link into <!--n:linked_sites-->3,325<!--/n--> candidate clusters, with at most one record per source per cluster. Only <!--n:sites_in_all3-->6<!--/n--> clusters are in all three lists.
+- **Estimability:** with an abstention rule (enough overlap to estimate), capture–recapture is estimable in only <!--n:mse_states-->5<!--/n--> of <!--n:mse_states_ge100-->22<!--/n--> states with ≥ 100 official stations.
+- **Result:** there, the median estimate is <!--n:mse_median_ratio-->1.27<!--/n-->× the older official count, and the CI covers it in <!--n:mse_states_in_ci-->4<!--/n--> of <!--n:mse_states-->5<!--/n--> states. The stated rule **<!--n:mse_passes-->fails<!--/n-->** narrowly; <!--n:mse_sens_any_pass-->one<!--/n--> of <!--n:mse_sens_runs-->6<!--/n--> sensitivity variants passes.
+- **Stability:** the national total depends on the model (<!--n:mse_n_min_model-->14,248<!--/n-->–<!--n:mse_n_max_model-->70,921<!--/n-->). An earlier version flipped with a single linkage decision, so no national total is quoted.
+- **Why (hypotheses, not identified causes):** positive list dependence and heterogeneous catchability (every list favours branded, urban sites) amid thin overlaps. These are tested as lists are added.
 
-**What replaced it for districts (the synthesis's fallback, now validated):** the small-area allocation of official state totals (BEV<sup>b</sup>·(open+1)<sup>c</sup>, b and c fitted across states).
-- On Chhattisgarh's official district counts, WAPE was <!--n:cg_wape_small_area_model-->0.41<!--/n-->, against BEV-share <!--n:cg_wape_bev_share-->0.54<!--/n--> and open-share <!--n:cg_wape_open_share-->0.99<!--/n-->.
-- Its 90% predictive intervals covered <!--n:cg_ci_coverage-->82%<!--/n--> of districts.
+**District supply — the fallback, now tested at a past date:**
+- **Method:** a BEV-only small-area allocation (b fitted across the other states).
+- **Test:** on Chhattisgarh's official district annex (Dec 2024, with point-in-time registrations and the independent state total), WAPE was <!--n:cg_pit_wape-->0.30<!--/n--> against <!--n:cg_pit_bevshare_wape-->0.58<!--/n--> for plain BEV shares. The 90% interval contained <!--n:cg_pit_inside-->24/27<!--/n--> official counts.
+- **Limits:** one state; the interval recipe was revised after a first look; an open-data term was not testable at that date. Results are labelled conditional.
+- **Consequence:** district *rankings* on modelled supply are model-induced, so Maharashtra districts are ranked on observed registration pressure and visible supply ("verify first"), not on modelled shortage.
 
-**Spike 2 (forecast):** monthly backtest; the pooled EV-share logit trend has held-out WAPE <!--n:c9_hold_logit-->0.157<!--/n--> vs naive <!--n:c9_hold_naive-->0.223<!--/n-->. The ensemble did not help (<!--n:c9_hold_ensemble-->0.161<!--/n-->).
+**Spike 2 (forecast):**
+- **Purged split:** on development origins whose targets do not overlap the held-out ones, the pooled EV-share logit trend has WAPE <!--n:c9v3_dev_logit-->0.177<!--/n--> vs naive <!--n:c9v3_dev_naive-->0.360<!--/n-->. The held-out result is retrospective.
+- **Prospective test:** frozen predictions are committed and will be scored on CY2026 data in Jan 2027.
 
 **Revised decision:**
-1. **Spike 1 is reframed** from "estimate the true total" to "*measure and map coverage*, and estimate district supply by validated small-area allocation". Capture–recapture stays in the pipeline as an *audit* that is re-run whenever a denser list arrives (BEE database, operator feeds, UEI). It is never used for planning numbers unless it passes the state check.
-2. **Spike 2 continues** with segment-aware demand and the energy/norm requirement module (methodology §2.6).
-3. **Next independent review:** a cross-model hostile-judge review of this ADR and the Round-1 documents (PLAYBOOK §10), logged in `reviews/ledger.tsv`.
+1. **Spike 1 becomes a coverage audit:** coverage per state plus abstention. It is re-run when the BEE open API (MoP clause 13) or operator feeds arrive. Planning never uses its totals unless it passes.
+2. **District supply** uses the point-in-time-tested allocation, with conditional ranges and verification flags.
+3. **Spike 2** continues with segment- and mode-aware demand. The bounded requirement MVP (the three MoP norms, energy cross-checked against CEA DISCOM data) comes before any forecasting sophistication.
