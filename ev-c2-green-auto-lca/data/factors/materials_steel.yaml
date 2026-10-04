@@ -1,0 +1,53 @@
+# Materials layer — steel (spike D groundwork). Thresholds from the Government of India Green Steel Taxonomy (2024).
+# They are policy thresholds, not measured intensities: use them only as labelled bands until plant/product data are found.
+- id: method.steel.green_threshold.in.mos2024
+  layer: method
+  name: Green-steel eligibility threshold (India Green Steel Taxonomy) — emission intensity of finished steel
+  value: 2.2
+  unit: t CO2e/t finished steel
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "Scope 1 + 2 + limited scope 3 (agglomeration incl. sintering, pelletising, coke making; beneficiation; embodied emissions of purchased raw materials and intermediates) up to finished steel; excludes upstream mining, downstream and transport."
+  geography: IN
+  reference_year: "2024"
+  technology: any steelmaking route (plant-level MRV by NISST under BEE CCTS procedure)
+  source_id: mos-green-steel-taxonomy-2024
+  locator: "Notification of 23 Dec 2024, clause 1 (p. 4 of the Gazette extract)"
+  quote: "plant with CO2 equivalent emission intensity less than 2.2 tonnes of CO 2e per tonne of finished steel (tfs)"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 3, rationale: "Official threshold; not a measured intensity of any plant or route"}
+  status: verified
+- id: method.steel.five_star_threshold.in.mos2024
+  layer: method
+  name: Five-star green-rated steel upper bound (India Green Steel Taxonomy)
+  value: 1.6
+  unit: t CO2e/t finished steel
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "As the green-steel threshold record."
+  geography: IN
+  reference_year: "2024"
+  technology: any steelmaking route
+  source_id: mos-green-steel-taxonomy-2024
+  locator: "Notification of 23 Dec 2024, clause 2"
+  quote: "Five-star green-rated steel: Steel with emission intensity lower than 1.6 t-CO2e/tfs shall be defined as five-"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 3, rationale: "Official threshold; not a measured intensity"}
+  status: verified
+- id: method.steel.four_star_upper.in.mos2024
+  layer: method
+  name: Four-star green-rated steel upper bound (India Green Steel Taxonomy)
+  value: 2.0
+  unit: t CO2e/t finished steel
+  quantity: emission_factor
+  gas_basis: CO2e-unspecified
+  boundary: "As the green-steel threshold record."
+  geography: IN
+  reference_year: "2024"
+  technology: any steelmaking route
+  source_id: mos-green-steel-taxonomy-2024
+  locator: "Notification of 23 Dec 2024, clause 2"
+  quote: "Four-star green-rated steel: Steel with emission intensity between 1.6 and 2.0 t-CO2e/tfs shall be defined"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 3, rationale: "Official threshold; not a measured intensity"}
+  status: verified

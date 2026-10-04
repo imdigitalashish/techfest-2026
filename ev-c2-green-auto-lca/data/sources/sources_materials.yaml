@@ -1,0 +1,9 @@
+- id: mos-green-steel-taxonomy-2024
+  title: "Taxonomy for Green Steel for India — Notification F. No. 1(6)-2024-ID-2 (Gazette of India: Extraordinary, Part I Sec. 1)"
+  publisher: Ministry of Steel, Government of India
+  year: 2024
+  url: https://steel.gov.in/sites/default/files/2026-09/Notification%20green%20steel%20taxonomy%20for%20india%2023.12.2024-reg..pdf
+  type: government-report
+  accessed: 2026-10-04
+  local_copy: .data/raw/materials/green_steel_taxonomy_2024.pdf
+  notes: "Notified 23 Dec 2024. Thresholds in t CO2e per tonne of finished steel (tfs); scope 1 + 2 + limited scope 3 up to finished steel; NISST is the MRV and certification agency; MRV per BEE CCTS procedure (July 2024)."
