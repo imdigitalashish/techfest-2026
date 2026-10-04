@@ -31,6 +31,7 @@ class ScenarioConfig:
     shock_size: int = 2
     shock_duration: int = 360          # steps (6 h)
     shock_window: tuple = (0.35, 0.55) # onset ~ U(window) * horizon
+    n_shocks: int = 1                  # >1: one shock per equal segment of the horizon (random block and time)
     # gradual drift: hotspot 0 migrates linearly to drift_to
     drift: bool = False
     drift_to: tuple = (3.5, 0.5)
@@ -50,6 +51,11 @@ SCENARIOS: dict[str, ScenarioConfig] = {
     "spikes": ScenarioConfig(name="spikes", spikes=24),
     "shock+drift+spikes": ScenarioConfig(name="shock+drift+spikes", shock=True, drift=True, spikes=24,
                                          overdispersion=0.2),
+    # long horizons: repeated regime changes (one shock per day) on top of a week-long drift and transient spikes
+    "long-week": ScenarioConfig(name="long-week", horizon=7 * 1440, shock=True, n_shocks=7, drift=True,
+                                spikes=7 * 24, overdispersion=0.2),
+    "long-month": ScenarioConfig(name="long-month", horizon=30 * 1440, shock=True, n_shocks=30, drift=True,
+                                 spikes=30 * 24, overdispersion=0.2),
 }
 
 
@@ -105,7 +111,7 @@ def build_trace(cfg: ScenarioConfig, seed: int) -> DemandTrace:
     rates = cfg.total_rate * diurnal[:, None] * weights
     unit = cfg.total_rate / Z
 
-    if cfg.shock:
+    if cfg.shock and cfg.n_shocks <= 1:
         s = cfg.shock_size
         r0, c0 = rng_layout.integers(0, G - s + 1, size=2)
         zones = tuple(int((r0 + i) * G + (c0 + j)) for i in range(s) for j in range(s))
@@ -114,6 +120,18 @@ def build_trace(cfg: ScenarioConfig, seed: int) -> DemandTrace:
         rates[ts:te, list(zones)] += cfg.shock_extra * unit
         cps += [ChangePoint(ts, "shock_on", zones, cfg.shock_extra * unit),
                 ChangePoint(te, "shock_off", zones, -cfg.shock_extra * unit)]
+    elif cfg.shock:
+        seg = T // cfg.n_shocks
+        for k in range(cfg.n_shocks):
+            s = cfg.shock_size
+            r0, c0 = rng_layout.integers(0, G - s + 1, size=2)
+            zones = tuple(int((r0 + i) * G + (c0 + j)) for i in range(s) for j in range(s))
+            latest = max(k * seg + 1, (k + 1) * seg - cfg.shock_duration - 60)
+            ts = int(rng_layout.integers(k * seg + int(0.1 * seg), max(k * seg + int(0.1 * seg) + 1, latest)))
+            te = min(T, ts + cfg.shock_duration)
+            rates[ts:te, list(zones)] += cfg.shock_extra * unit
+            cps += [ChangePoint(ts, "shock_on", zones, cfg.shock_extra * unit),
+                    ChangePoint(te, "shock_off", zones, -cfg.shock_extra * unit)]
     for _ in range(cfg.spikes):
         z = int(rng_layout.integers(0, Z))
         ts = int(rng_layout.integers(0, T - cfg.spike_duration))

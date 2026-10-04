@@ -81,3 +81,13 @@ def test_forecasters_follow_contract():
         out = fc.forecast(30, 6)
         assert isinstance(out, Forecast) and out.mean.shape == (6, 25) and (out.mean >= 0).all()
     assert ChangeAwareForecaster(prof, lvl).det.Z == 25
+
+
+def test_planner_backends_agree():
+    od = od_matrix(CFG)
+    a, b = MPCPlanner(5, od, horizon=8, hop_steps=2, backend="highspy"), MPCPlanner(5, od, horizon=8, hop_steps=2, backend="scipy")
+    rng = np.random.default_rng(1)
+    for _ in range(10):
+        args = (rng.integers(0, 4, 25), rng.integers(0, 2, (8, 25)), rng.integers(0, 4, 25), rng.random((8, 25)))
+        pa, pb = a.solve(*args), b.solve(*args)
+        assert pa.status == pb.status == "ok" and abs(pa.objective - pb.objective) < 1e-6

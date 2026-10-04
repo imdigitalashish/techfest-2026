@@ -45,8 +45,10 @@ def run_episode(job: dict) -> dict:
         cfg = replace(cfg, horizon=int(job["horizon"]))
     trace = build_trace(cfg, job["seed"])
     meta = episode_meta(cfg, trace)
+    hop = int(job.get("hop_steps", 1))
+    meta["hop_steps"] = hop
     core = DispatchCore(trace, n_agents=job["n_agents"], patience=job["patience"], init_seed=job["seed"],
-                        init_shares=meta["hist_shares"])
+                        init_shares=meta["hist_shares"], move_steps_per_hop=hop)
     pol = make_policy(job["policy"], **job.get("policy_kw", {}))
     pol.reset(meta)
     T = trace.horizon
@@ -64,21 +66,33 @@ def run_episode(job: dict) -> dict:
     S = served.sum()
     cdf = np.cumsum(wh) / max(1, wh.sum())
     out = dict(policy=pol.name, scenario=cfg.name, seed=job["seed"], horizon=T, n_agents=job["n_agents"],
+               patience=job["patience"], hop_steps=hop,
                arrivals=int(arr.sum()), served=int(S), served_frac=S / max(1, arr.sum()),
                lost_frac=lost.sum() / max(1, arr.sum()), mean_wait=float((wh * np.arange(wh.size)).sum() / max(1, S)),
                p95_wait=int(np.searchsorted(cdf, 0.95)), empty_per_srv=empty / max(1, S), wall_s=wall)
+    if hasattr(pol, "planner"):
+        out["planner_backend"] = pol.planner.backend
     if hasattr(pol, "solve_ms") and pol.solve_ms:
         sm = np.array(pol.solve_ms)
         out.update(solve_ms_mean=float(sm.mean()), solve_ms_p99=float(np.percentile(sm, 99)))
     on = [c for c in trace.change_points if c.kind == "shock_on"]
-    if on:
-        ts = on[0].t
-        w_s, w_a = served[ts:ts + WIN], arr[ts:ts + WIN]
-        out.update(shock_t=ts, shock_lost=int(lost[ts:ts + WIN].sum()), shock_served=w_s.sum() / max(1, w_a.sum()))
-        k = np.ones(ROLL)
-        roll = np.convolve(w_s, k, "valid") / np.maximum(1, np.convolve(w_a, k, "valid"))
-        ok = np.flatnonzero(roll >= 0.90)
-        out["recover_steps"] = int(ok[0] + ROLL) if ok.size else WIN
+    if on:  # per-shock window metrics, averaged over every shock in the run (identical to before for one shock)
+        sl, ss, rs = [], [], []
+        for c in on:
+            ts = c.t
+            w_s, w_a = served[ts:ts + WIN], arr[ts:ts + WIN]
+            sl.append(int(lost[ts:ts + WIN].sum()))
+            ss.append(w_s.sum() / max(1, w_a.sum()))
+            k = np.ones(ROLL)
+            roll = np.convolve(w_s, k, "valid") / np.maximum(1, np.convolve(w_a, k, "valid"))
+            ok = np.flatnonzero(roll >= 0.90)
+            rs.append(int(ok[0] + ROLL) if ok.size else WIN)
+        out.update(shock_t=on[0].t, n_shocks=len(on), shock_lost=float(np.mean(sl)), shock_served=float(np.mean(ss)),
+                   recover_steps=float(np.mean(rs)))
+    D = cfg.day
+    if T // D >= 2:  # batch means for long runs: served fraction per simulated day
+        out["daily_served"] = json.dumps([round(float(served[d * D:(d + 1) * D].sum() / max(1, arr[d * D:(d + 1) * D].sum())), 5)
+                                          for d in range(T // D)])
     if job.get("save_series"):
         out["series"] = dict(served=served.tolist(), lost=lost.tolist(), arr=arr.tolist())
     return out

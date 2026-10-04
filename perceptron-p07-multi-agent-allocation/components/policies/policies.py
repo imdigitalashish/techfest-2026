@@ -25,6 +25,8 @@ class _Base:
 
     def reset(self, meta: dict) -> None:
         self.meta = meta
+        self.hop = int(meta.get("hop_steps", 1))
+        self.L = 3 if self.hop == 1 else max(3, self.hop)   # rules count units arriving within one lead time
 
     def observe(self, info: StepInfo) -> None:
         pass
@@ -38,8 +40,8 @@ class StaticPolicy(_Base):
         self.shares = meta["hist_shares"]
 
     def act(self, s: FleetState) -> np.ndarray:
-        total = s.idle_count.sum() + s.incoming(3)[1:].sum()
-        return flows_to_targets(transport_flows(s, total * self.shares), s)
+        total = s.idle_count.sum() + s.incoming(self.L)[1:].sum()
+        return flows_to_targets(transport_flows(s, total * self.shares, lookahead=self.L), s)
 
 
 class ReactivePolicy(_Base):
@@ -57,8 +59,8 @@ class ReactivePolicy(_Base):
     def act(self, s: FleetState) -> np.ndarray:
         self.t = s.t
         d = self.ma.forecast(s.t, 1).mean[0] + 1e-9
-        total = s.idle_count.sum() + s.incoming(3)[1:].sum()
-        return flows_to_targets(transport_flows(s, total * d / d.sum()), s)
+        total = s.idle_count.sum() + s.incoming(self.L)[1:].sum()
+        return flows_to_targets(transport_flows(s, total * d / d.sum(), lookahead=self.L), s)
 
     def observe(self, info):
         self.ma.observe(self.t, info.arrivals)
@@ -73,7 +75,8 @@ class GreedyPolicy(_Base):
 
     def act(self, s: FleetState) -> np.ndarray:
         Z = s.idle_count.size
-        need = s.queue_len - s.idle_count - s.incoming(1)[1]
+        k = 1 if self.hop == 1 else self.hop
+        need = s.queue_len - s.idle_count - s.incoming(k)[1:].sum(0)
         spare = np.maximum(0, s.idle_count - s.queue_len)
         flows = np.zeros((Z, Z), dtype=np.int64)
         need = need.astype(np.int64).copy()
@@ -89,7 +92,7 @@ class GreedyPolicy(_Base):
 
 
 class MPCPolicy(_Base):
-    def __init__(self, kind: str = "cusum", horizon: int = 6, c_move: float = 0.05, c_wait: float = 0.02,
+    def __init__(self, kind: str = "cusum", horizon: int | None = None, c_move: float = 0.05, c_wait: float = 0.02,
                  gamma: float = 0.97, alpha: float | None = None, delta: float = 1.0, h: float = 8.0):
         self.kind, self.H = kind, horizon
         self.kw = dict(c_move=c_move, c_wait=c_wait, gamma=gamma)
@@ -98,7 +101,8 @@ class MPCPolicy(_Base):
 
     def reset(self, meta):
         super().reset(meta)
-        self.planner = MPCPlanner(meta["grid"], meta["od_prob"], horizon=self.H, **self.kw)
+        self.Hrun = self.H or (6 if self.hop == 1 else self.hop + 6)   # look-ahead must exceed the lead time
+        self.planner = MPCPlanner(meta["grid"], meta["od_prob"], horizon=self.Hrun, hop_steps=self.hop, **self.kw)
         prof, lvl = meta["profile"], meta["init_level"]
         if self.kind == "ewma":
             self.fc = EWMAForecaster(prof, lvl, alpha=self.alpha or 0.05)
@@ -113,8 +117,8 @@ class MPCPolicy(_Base):
 
     def act(self, s: FleetState) -> np.ndarray:
         self.t = s.t
-        fc = self.fc.forecast(s.t, self.H)
-        plan = self.planner.solve(s.idle_count, s.incoming(self.H)[: self.H], s.queue_len, fc.mean)
+        fc = self.fc.forecast(s.t, self.Hrun)
+        plan = self.planner.solve(s.idle_count, s.incoming(self.Hrun)[: self.Hrun], s.queue_len, fc.mean)
         self.solve_ms.append(plan.solve_ms)
         return flows_to_targets(plan.flows, s)
 

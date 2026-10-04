@@ -21,7 +21,7 @@ from components.scenarios.scenarios import manhattan
 class DispatchCore:
     def __init__(self, trace: DemandTrace, n_agents: int = 40, patience: int = 10,
                  move_cost: float = 0.05, lost_penalty: float = 0.0, init_seed: int = 0,
-                 init_shares: np.ndarray | None = None):
+                 init_shares: np.ndarray | None = None, move_steps_per_hop: int = 1):
         self.trace = trace
         self.T, self.Z = trace.counts.shape
         self.G = int(round(np.sqrt(self.Z)))
@@ -29,6 +29,8 @@ class DispatchCore:
         self.K, self.P = int(n_agents), int(patience)
         self.move_cost, self.lost_penalty = float(move_cost), float(lost_penalty)
         self.travel = manhattan(self.G)
+        self.hop_steps = int(move_steps_per_hop)       # reallocation lead time L per hop (cold-start analogue)
+        self.move_time = self.travel * self.hop_steps   # empty repositioning only; service trips stay max(1, hops)
         self.trip = np.maximum(1, self.travel)
         # per-zone request arrays in arrival order
         self.times_z, self.dest_z = [], []
@@ -65,7 +67,7 @@ class DispatchCore:
                           agent_eta=self.eta.copy(),
                           idle_count=np.bincount(self.zone[idle], minlength=self.Z),
                           queue_len=self.tail - self.head, last_arrivals=last.astype(np.int64),
-                          travel_time=self.travel, od_prob=self.trace.od_prob, patience=self.P)
+                          travel_time=self.move_time, od_prob=self.trace.od_prob, patience=self.P)
 
     def step(self, targets: np.ndarray) -> StepInfo:
         t, Z = self.t, self.Z
@@ -78,9 +80,9 @@ class DispatchCore:
         if mv.any():
             d = self.travel[self.zone[mv], targets[mv]]
             empty = int(d.sum())
+            self.eta[mv] = self.move_time[self.zone[mv], targets[mv]]
             self.zone[mv] = targets[mv]
             self.status[mv] = MOVING
-            self.eta[mv] = d
         # 2) arrivals
         arr = self.trace.counts[t].astype(np.int64)
         self.tail += arr
