@@ -10,24 +10,20 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED** (Supervisor, 09:55 IST, user's decision: only 3 projects run at a time; P7 is the Perceptron pick unless the user overrides). No background jobs are running.
-- **Resume point (exact):**
-  1. **Larger real OBD slice.** Done: the full Random log (`random/all`, 1,374,327 rows, time-sorted) was read from the official zip by HTTP range requests and saved compactly to gitignored `.data/obd_slice/random/all/all.npz`. Regenerate: `.venv/bin/python eval/obd_zip_slice.py --member open_bandit_dataset/random/all/all.csv --budget_mb 30` (22.1 MB download).
-     Next: `nice -n 10 .venv/bin/python eval/obd_zip_slice.py --member open_bandit_dataset/bts/all/all.csv --budget_mb 100`. That reads a 100 MB time-ordered prefix of the 203.6 MB compressed BTS log (estimated 5.9M rows, about the first 3.4 days; the estimate assumes a constant compression ratio).
-     Then write `eval/run_obd_slice.py`:
-     - Restrict Random to the BTS time window; run IPW/SNIPW/DM/DR against the BTS on-policy CTR.
-     - Test whether the deployed BTS updated during the week by checking whether the logged propensity of a fixed (item, position) drifts over time. If it did, use logged-propensity reconstruction of the deployed BTS per batch as the evaluation policy.
-     - **Real before/after with real truth:** before = Random, days 1–2; after = BTS, days 3–4. Truth is the after-period effect, BTS minus the concurrent Random arm in days 3–4. The OPE estimate uses only the BTS logs and their propensities. Also run the reverse direction.
-  2. **Hostile review of the decomposer** (Supervisor 09:40). Points to address:
-     - (a) The policy term is the *direct* effect on after-period users. A policy-induced mix shift (feedback) is attributed to "environment"; add a simulator knob and quantify.
-     - (b) The attribution depends on order (index-number problem). Fix with a 2×2 Shapley decomposition: OPE fills both unobserved cells, V_before(new) and V_after(old). This also yields a policy × season interaction.
-     - (c) The reward model is well specified by construction; test the mix/drift split under misspecification.
-     - (d) The drift sweep must show where naive is right as well as wrong.
-     - (e) The naive number is a strawman versus A/B tests; answer: the brief asks for it, and logs are all you have once a policy is already deployed.
-  3. Optional reuse: P5's synchronised-twins RNG / `eval/nsr.py` for paired keep/revert decisions in the C6 ratchet.
-  4. C6 ratchet backlog ideas 2–8 (baseline nRMSE 0.21823).
+- **Phase:** ▶ **RESUMED** 13:05 IST (Supervisor; batch slot freed by P1). Working to the Supervisor's definition of done (13:05).
+- **Definition of done (Supervisor 13:05):**
+  1. **Real OBD check**, with the analysis pre-registered before results: the BTS time-window slice; a drift test of the deployed BTS's logged propensities; a real before/after with real truth, in both directions.
+  2. **Decomposer review fixes:** (a) a feedback/mix-shift knob; (b) the 2×2 Shapley decomposition plus the interaction term; (c) a misspecification test; (d) a drift sweep that shows where naive is right and where it is wrong.
+  3. **Final abstract** rendered from committed results, plus a doc-drift check script and the architecture diagram.
+  4. **Cross-model reviews** as child sessions: gpt-6-astra (max) as hostile judge; gpt-6-sol (max) on code/eval, including reproducing the headline numbers. Recorded in `reviews/` and `reviews/ledger.tsv`.
+  5. **Final selection memo** (an honest case versus P7, P9, P1 and P4), thought node current, pushed, then "DONE — slot free".
+- **Rules in force:** child sessions only (at most 2 at a time); never `git stash` or `--autostash`; start heavy jobs only when `kern.memorystatus_level` ≥ 30, under `nice -n 10`, one at a time, pausing below 25; keep network requests small.
+- **Doing:** Step 1. Pre-registration first (`eval/preregistration_obd.md`), then the 100 MB BTS range-read on its own.
+- **Next:** steps 2 → 3 → 4 → 5.
 - **Needs from user:** Register by 15 Oct if P3 is chosen. Teammates' names and skills for the team-fit section.
-- **Risks:** The network is congested (HTTP 408s). The OBD sample result is still inconclusive until step 1 finishes.
+- **Risks:**
+  - On real data the BTS−Random difference may be too small, or IPW too noisy, to be conclusive. We report it either way, as pre-registered.
+  - The network is congested.
 - **Morning package (done 08:05 IST; accepted by the Supervisor):** landscape, components + contracts, ADR 001, selection memo v1, abstract + architecture, skeleton + simulator bank v0 + OBD sample check, C6 ratchet (baseline + 1 iteration). Details are in the Log.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
