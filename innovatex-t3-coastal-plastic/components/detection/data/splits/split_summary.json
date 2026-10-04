@@ -1,0 +1,57 @@
+{
+ "dataset": "TUD-GV floating litter subset (zenodo 13730228)",
+ "seed": 42,
+ "grouping": "experiment id",
+ "train": {
+  "images": 969,
+  "annotations": 6026,
+  "experiments": [
+   "exp1",
+   "exp11",
+   "exp121",
+   "exp122",
+   "exp18",
+   "exp19",
+   "exp2",
+   "exp23",
+   "exp24",
+   "exp25",
+   "exp27",
+   "exp29",
+   "exp3",
+   "exp30",
+   "exp4",
+   "exp5",
+   "exp53",
+   "exp54",
+   "exp55",
+   "exp8",
+   "exp82",
+   "exp9"
+  ]
+ },
+ "val": {
+  "images": 278,
+  "annotations": 2092,
+  "experiments": [
+   "exp16",
+   "exp56",
+   "exp6",
+   "exp7"
+  ]
+ },
+ "test": {
+  "images": 254,
+  "annotations": 1563,
+  "experiments": [
+   "exp14",
+   "exp20",
+   "exp28",
+   "exp50"
+  ]
+ },
+ "groningen_cross_site_test": {
+  "images": 63,
+  "annotations": 383
+ }
+}
