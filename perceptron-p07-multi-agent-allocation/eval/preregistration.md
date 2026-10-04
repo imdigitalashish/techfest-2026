@@ -58,3 +58,33 @@
   - matched-α EWMA (`mpc-ewma@alpha=0.01`, the detector arm's slow α without the detector) — separates "detector" from "slower smoothing";
   - fixed horizon H = 14 for both arms in every cell (`@horizon=14`) — removes the horizon-grows-with-L confound across cells.
 - **"Null" wording:** without an equivalence margin we will say "no evidence of benefit", never "no effect".
+
+---
+
+# Addendum B — pre-registration of the spike falsification test (design frozen 2026-10-04 11:05 IST; to run in October)
+
+**Spike A″ (decision-aware, regime-gated forecast trust).** The planner plans on trust_z(t) × forecast_z(t), where:
+- trust_z(t) = τ_shock if zone z (or a grid neighbour) raised a Poisson-CUSUM alarm within the last W steps; otherwise τ_quiet;
+- an optional variant shrinks by calibrated uncertainty: τ_quiet scaled by the conformal-PID coverage state.
+
+(τ_shock, τ_quiet, W) are chosen by grid search on **tuning seeds 0–49 only**, maximising mean served fraction across the scenario suite and the (L, P) grid. They are then frozen and committed before any test run.
+
+**Test seeds:** 300–329 (never used). **Cells:**
+- the 6 scenarios at L=1, P=10;
+- the 8 (L, P) cells of the shock scenario;
+- each under both planner variants (abandonment-aware and legacy backlog): 28 cells.
+
+**Primary family (Holm over 28 cells).** Endpoint: served fraction. Contrast: gated trust − max(trust = 0, trust = 1), where the better extreme is chosen per cell **on tuning seeds**. Paired by seed; two-sided Wilcoxon; 95% paired bootstrap CI.
+
+**Success criterion, written now:**
+- a positive, Holm-significant gain in ≥ 21 of 28 cells; and
+- no cell with a Holm-significant loss larger than 0.5 pp.
+
+Otherwise the spike is reported as failed and the deliverable rests on the planning result plus the measured map.
+
+**Secondary:**
+- gated trust − best *fixed* trust (tuned on seeds 0–49), which isolates the value of gating by regime;
+- requests lost per shock;
+- empty moves per served request.
+
+**Amendments:** any change to this design must be committed (dated, with a reason) before the first test-seed run.
