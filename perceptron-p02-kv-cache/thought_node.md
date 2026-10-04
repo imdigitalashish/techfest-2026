@@ -10,26 +10,19 @@
 - _(none)_
 
 ## Now
-- **Phase:** ⏸ **PAUSED** (Supervisor 09:55, user's decision: only 3 projects run at once; P7 is the Perceptron pick unless the user overrides). Nothing is running locally or on Azure.
-- **Delivered:** landscape (cited), per-component scan, RoD prior-art report, components + contracts, ADR 001, selection memo v1, Round-1 abstract (843 words), architecture diagram, harness v2, Azure runner, C7 autoresearch scaffold.
-- **Not done (be honest):** **no measured numbers.** `eval/kvbench.py` v2 and `components/recall_on_demand/autoresearch/eval.py` have **never executed end to end**. Local runs starved (GPU 67% busy from other sessions, 35.7 GB swap); the Azure probe was stopped at pause.
-- **Resume point (in order):**
-  1. **Start the VM.** `az vm start -g p02-kvcache-rg -n p02-kv-1`.
-     - It is a Standard_D8ds_v5 in centralindia: 8 vCPU (Xeon 8370C), 32 GiB, now *deallocated*.
-     - The disk keeps a uv Python 3.11 venv (mlx[cpu] 0.32.3, mlx-lm 0.32.0) and `~/p02/.data/haystack.txt`, which is identical to the local one (3,521 paragraphs, 2,289,620 chars).
-     - SSH key: `.data/azure_p02` (gitignored). If it is lost, reset it with `az vm user update`.
-  2. **Speed probe:** 4-bit vs dequantised forward over 1,024 tokens on the CPU. It hadn't finished after 5 min; the model download may have been part of that. If 4-bit is slow, add a `--dequant` flag. Check first that `mlx_lm.utils.dequantize_model` exists (UNVERIFIED).
-  3. **Smoke run:** `eval/azure/run_on_azure.sh run "--ctx 1024 --n 1 --needles 2 --fracs 0.25 --name smoke_az"`, then `status`, then `fetch`. Fix bugs.
-  4. **Grid, one job at a time:** `--ctx 4096 --n 12 --seed 0 --style literal`, then `--style paraphrase`, then `--halo 64` (re-prefill context ablation).
-  5. **C7 ratchet:** `components/recall_on_demand/autoresearch/eval.py --layer {2,4,8,12,15}`, logged to `results.tsv`.
-  6. **Update the abstract, ADR and memo with measured numbers.** Apply the remaining hostile-review fixes (Log 10:05). Message the Supervisor with memo v2.
-  7. **Cleanup:** `eval/azure/run_on_azure.sh delete` removes the resource group.
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section (the hostile review scored team fit 1/5 without them).
-- **Risks:**
-  1. No numbers, so the project ranks low in selection.
-  2. Re-prefilled blocks see only sinks + the block, so their KV is approximate. The halo ablation is pending.
-  3. Lexical needles flatter retrieval. The `rodlex` control and paraphrase style are in v2; key aliasing is not yet.
-  4. Novelty is plausible but not airtight: ArkVale's digest mechanism is UNVERIFIED, and SpeCache's sketch scope is unconfirmed.
+- **Phase:** ▶ **RESUMED 14:36 IST** (Supervisor: P3 freed a batch slot). Goal: definition of done (Supervisor 14:36) → measured numbers → final abstract → cross-model reviews → final memo (P2 vs P1, honestly) → push → deallocate VM → "DONE — slot free".
+- **Plan (in order):**
+  1. Start Azure VM `p02-kv-1` (D8ds_v5, centralindia, CPU only); speed probe (4-bit vs dequantised fp32 forward).
+  2. Harness: `--dequant` for CPU compute, KV stored in bf16 (so bytes match a GPU deployment); smoke run on the VM.
+  3. **Pre-register** the main comparison in `eval/PREREG.md` and commit it *before* the grid runs.
+  4. Grid on the VM, one job at a time: main (literal needles) → paraphrase needles → halo ablation (re-prefill context).
+  5. Final Round-1 abstract with numbers rendered from committed results + `eval/check_docs.py` doc-drift check + diagram.
+  6. Cross-model reviews (child sessions, ≤ 2 at once): `gpt-6-astra` max = hostile judge (spike + abstract); `gpt-6-sol` max = code/eval + reproduce headline numbers. Record in `reviews/` + `reviews/ledger.tsv`.
+  7. Final selection memo, thought node, push; deallocate VM; message Supervisor.
+- **Doing:** VM starting; harness CPU changes.
+- **Rules now in force:** child sessions only (no `task` sub-agents), ≤ 2 at a time; no `git stash`/`--autostash`; timestamps from `TZ=Asia/Kolkata date`; local heavy jobs only with `nice -n 10` and `kern.memorystatus_level` ≥ 30 (prefer the VM); poll VM jobs at ≥ 10-min intervals; fetch only results.
+- **Needs from user:** register by 15 Oct (if P2 is chosen over P1 — the brief allows only one of P1/P2). Teammates' names and skills for the team-fit section.
+- **Risks:** (1) MLX CPU speed on the VM is unknown — may force 2k contexts. (2) Re-prefilled blocks see only sinks + the block (approximate KV) — halo ablation. (3) Lexical needles flatter retrieval — paraphrase style + `rodlex` control. (4) CPU timings ≠ GPU timings — latency reported as relative only. (5) Novelty hedged ("to our knowledge").
 
 ## Phase 0 — what the judges need to see (from `_briefs/perceptron.txt`)
 - **MVP bullets → evidence:** (a) one existing method applied + memory saved vs uncompressed → a table of *retained KV bytes* (counting every index/scale byte) and measured peak memory, per method and ratio; (b) accuracy drop on a small long-context recall task → needle-recall accuracy with 95% Wilson CIs vs the full cache.
