@@ -1,6 +1,6 @@
 # Zonal pitch — InnovateX Theme 3 (Delhi zonal, 10 Oct 2026, 10 minutes)
 
-> Draft v1.3 (4 Oct 2026, 07:35 IST) by the project lead. Every number carries a source key; the source list is at the end and in [`../research/`](../research/).
+> Draft v1.4 (4 Oct 2026, 08:00 IST) by the project lead. Every number carries a source key; the source list is at the end and in [`../research/`](../research/).
 > - **[V]** = lead not yet verified at a primary source. Verify it or cut it before the pitch.
 > - **SIMULATED** = output of our digital twin, not field data.
 > - **⟨FILL⟩** = to be filled from a committed run or the sourced BOM. Never invent it.
@@ -71,7 +71,7 @@ Two Interceptors will soon guard two of Mumbai's creeks. NullahNet makes the lon
 4. **Ratchet pocket + fail-open fuse** (retrofit for existing booms):
    - A one-way pocket keeps the catch when the flow reverses.
    - A hinged section opens at a set water head, so the boom can never raise upstream flood levels.
-   - Every clearance is a **signed, hash-chained evidence record**. It is checked against the camera's before/after fill and the weighbridge, and pays the contractor per verified kg. The catch is routed to recycling or cement-kiln co-processing with EPR paperwork **[V]**.
+   - Every clearance is a **signed, hash-chained evidence record**. It is checked against the camera's before/after fill and the weighbridge, and pays the contractor per verified kg. The catch is routed to recycling or, for non-recyclable film, to end-of-life routes such as cement-kiln co-processing through a CPCB-registered processor [P:P1]. Whether drain-recovered plastic earns EPR certificates is NOT FOUND in the rules.
 - **Speaker notes:** Point at the dashboard screenshot: map, fill gauges marked SIMULATED, today's plan, ledger with ✓ verified badges.
 
 ## Slide 7 — Built for Mumbai conditions (5:45–6:45)
@@ -167,8 +167,9 @@ All four results come from runs committed to our repo, each with a reproduce com
     - It slots into existing boom and clearance contracts. It changes *when* crews go and *how* they are paid.
     - It needs no new civil works. The dashboard is built for a ward engineer.
 14. **"Is the ratchet pocket novel?"**
-    - One-way flap litter traps exist (prior art noted in [interception-hardware.md](../research/components/interception-hardware.md) ⟨FILL⟩).
-    - Our contribution is the tidal-outfall retrofit with a calibrated fail-open fuse, plus instrumentation. We claim nothing beyond what our flume shows.
+    - No. Passive floating litter traps already exist for tidal waterways. The Bandalong Litter Trap is a floating device that "collect[s] and retain[s] floating litter", is "suitable for most waterways wider than 2 metres, including waterways subject to tidal action" and adapts to water-level changes [S15].
+   - A search summary also describes a one-way flap, but we did not see that on the pages we opened, so it is **UNVERIFIED**.
+    - Our claim is narrower. We retrofit Mumbai's existing steel-net nullah booms with a calibrated fail-open fuse, so the boom never raises upstream flood level, plus an instrumented pocket tied to dispatch and evidence records. We claim nothing beyond what our flume shows.
 15. **"Scalability across India?"** All site specifics are configuration (gated or open, geometry, catchment); tide and rain feeds are global. A new city needs site surveys, not new software.
 
 ## Sources (opened by the research sessions on 2026-10-04; details in the research files)
@@ -186,4 +187,5 @@ All four results come from runs committed to our repo, each with a reproduce com
 - [S13] NASA POWER climatology API (Mumbai) and Indian retailer product pages, opened 2026-10-04 — see [sensing-edge-bom.md](../research/components/sensing-edge-bom.md)
 - [M:…] keys in [research/mumbai-context.md](../research/mumbai-context.md) (sources S1–S21: The Ocean Cleanup, Lokmat, Plastic Bank / Meijer et al. 2021, BRIMSTOWAD summary, BMC ESR 2022-23, beach-clean-up and ban-enforcement reporting, EOW FIR coverage)
 - [P:…] keys in [research/components/policy-economics.md](../research/components/policy-economics.md) (P1 PWM Rules 2016 as amended / EPR guidelines; P4–P7 BMC budget 2026-27; P8 Maharashtra minimum wages)
+- [S15] Bandalong Litter Trap — https://www.bandalong.com.au/bandalong-litter-trap.html and Storm Water Systems — https://www.stormwatersystems.com/bandalong-litter-trap (both opened 2026-10-04 by the lead)
 - [S14] ITOPF Technical Information Paper 3 (boom escape velocity ≈ 0.35 m/s) — see [interception-hardware.md](../research/components/interception-hardware.md)

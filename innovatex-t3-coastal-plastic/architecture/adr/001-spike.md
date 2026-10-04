@@ -72,6 +72,14 @@ The theme asks us to monitor, intercept and reduce plastic leaking from Mumbai's
   - Spike 1: drop it if P2 does not beat P1 by more than the Monte Carlo spread on held-out years.
   - Spike 2: drop the "ratchet" claim if reversed-flow flume tests show no retention gain over an angled boom, or if the fuse cannot keep head rise under the cap.
 
+## Update 08:00 IST — prior art for Spike 2 (lead check)
+Passive floating litter traps for tidal waterways already exist. The Bandalong Litter Trap is a floating device that collects and retains floating litter and is "suitable for most waterways wider than 2 metres, including waterways subject to tidal action" (bandalong.com.au). It is built from HDPE and marine-grade aluminium and adapts to water-level changes (stormwatersystems.com); both pages were opened 2026-10-04. A one-way flap mechanism is described only by a search summary, so it is UNVERIFIED.
+
+**Consequences.**
+- The "ratchet pocket" is not novel as a concept.
+- Spike 2's claim narrows to a **fail-open fuse retrofit** for Mumbai's existing steel-net conveyor booms, plus an **instrumented pocket** that feeds dispatch and evidence.
+- The flume must still show a retention gain under reversal; otherwise we adopt an off-the-shelf trap design and drop the retention claim.
+
 ## Update 07:15 IST — first twin result: timing alone is a small lever (SIMULATED)
 Source: [`components/twin_sim/results/metrics.json`](../../components/twin_sim/results/metrics.json). Reproduce with `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run`.
 

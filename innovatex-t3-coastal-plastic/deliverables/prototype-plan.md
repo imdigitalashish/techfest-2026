@@ -65,7 +65,7 @@ flowchart LR
 T2 and T3 feed the twin's ratchet sensitivity, replacing ASSUMPTION ranges with measured ones.
 
 ## 4. Bill of materials
-All prices must come from a product page opened on a stated date. They are copied from [`../research/components/sensing-edge-bom.md`](../research/components/sensing-edge-bom.md) once that file lands. Until then, prices are **⟨FILL⟩** — never estimated here.
+All prices must come from a product page opened on a stated date. The tables below are copied from [`../research/components/sensing-edge-bom.md`](../research/components/sensing-edge-bom.md). Nothing is estimated here.
 
 _Copied verbatim from [`../research/components/sensing-edge-bom.md`](../research/components/sensing-edge-bom.md) (every price from an Indian retailer product page opened 2026-10-04; GST inclusion UNVERIFIED). Flume structure (channel, pumps, valves, boom materials, test items) is not yet priced — **⟨FILL⟩** before purchase._
 
