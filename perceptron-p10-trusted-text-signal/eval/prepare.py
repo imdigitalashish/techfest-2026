@@ -1,9 +1,9 @@
 """Build the cached modelling panel: ingest → align → FinBERT → trust → aggregate → TS features.
 
 Usage (from perceptron-p10-trusted-text-signal/):
-    PYTHONPATH=. .venv/bin/python eval/prepare.py [--scorer vader|finbert]
+    PYTHONPATH=. .venv/bin/python eval/prepare.py [--scorer vader|minilm|finbert]
 Writes .cache/docs_scored{suffix}.parquet and .cache/panel{suffix}.parquet (gitignored);
-suffix is "" for vader (default) and "_finbert" for FinBERT (ProsusAI/finbert).
+suffix is "" for vader (default), "_minilm" for MiniLM+LR, "_finbert" for FinBERT (ProsusAI/finbert).
 """
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ from components.aggregator.aggregate import aggregate
 from components.align.calendar import assign_trade_date, leakage_count
 from components.ingest.stocknet import load_prices, load_tweets
 from components.text_scorer.finbert import FinBertScorer, score_docs
+from components.text_scorer.minilm import score_docs_minilm
 from components.text_scorer.vader import score_docs_vader
 from components.trust_scorer.heuristic import score_trust
 from components.ts_features.features import build_ts_features
@@ -41,7 +42,8 @@ def main(scorer: str = "vader") -> dict:
     leaks = leakage_count(aligned)
     assert leaks == 0, f"look-ahead leakage: {leaks} documents"
     t1 = time.time()
-    scored = score_docs_vader(aligned) if scorer == "vader" else score_docs(aligned, FinBertScorer(cache_dir=CACHE))
+    scored = {"vader": lambda: score_docs_vader(aligned), "minilm": lambda: score_docs_minilm(aligned),
+              "finbert": lambda: score_docs(aligned, FinBertScorer(cache_dir=CACHE))}[scorer]()
     t2 = time.time()
     trusted = score_trust(scored)
     trusted.to_parquet(CACHE / f"docs_scored{sfx}.parquet", index=False)
@@ -62,5 +64,5 @@ def main(scorer: str = "vader") -> dict:
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--scorer", choices=["vader", "finbert"], default="vader")
+    ap.add_argument("--scorer", choices=["vader", "minilm", "finbert"], default="vader")
     main(ap.parse_args().scorer)

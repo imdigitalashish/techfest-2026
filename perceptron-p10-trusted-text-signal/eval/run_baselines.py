@@ -182,8 +182,8 @@ def main(tag: str = "baseline_v0", suffix: str = "", scorer_name: str = "vader+f
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--tag", default="baseline_v0")
-    ap.add_argument("--scorer", choices=["vader", "finbert"], default="vader")
+    ap.add_argument("--scorer", choices=["vader", "minilm", "finbert"], default="vader")
     ap.add_argument("--no-oracle", action="store_true")
     a = ap.parse_args()
     sfx = "" if a.scorer == "vader" else f"_{a.scorer}"
-    main(a.tag, sfx, {"vader": "vader+fin", "finbert": "ProsusAI/finbert"}[a.scorer], not a.no_oracle)
+    main(a.tag, sfx, {"vader": "vader+fin", "minilm": "MiniLM-L6 + LR (TFNS)", "finbert": "ProsusAI/finbert"}[a.scorer], not a.no_oracle)
