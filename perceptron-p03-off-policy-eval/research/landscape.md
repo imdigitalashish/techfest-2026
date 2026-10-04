@@ -145,6 +145,11 @@ Classic alternatives for before/after, and how OPE differs:
 ## 9. Datasets and simulators we use
 
 - **Open Bandit Dataset** (ZOZO): "about 26M rows, each one representing a user impression with some feature values, selected items as actions, true propensity scores, and click indicators" (obd/README.md). Logging policies: Uniform-Random and Bernoulli Thompson Sampling. Campaigns: All (items 0–79), Men (0–33), Women (0–45). The repo ships a small version: "10,000 records for each pair of campaign and behavior policy". **Tonight we use only that sample** (`eval/fetch_obd_sample.sh`), because the full data exceeds the lean-mode download cap. Standard protocol (arXiv:2008.07146): estimate the value of the Bernoulli-TS policy from the Random logs and compare it with its on-policy CTR.
+- **Verified 2026-10-04 (first-party code):** the standard obp OBD protocol evaluates one *static* Bernoulli-TS action distribution built from the ZOZOTOWN prior.
+  - `examples/obd/evaluate_off_policy_estimators.py` sets `is_zozotown_prior=True` and calls a single-round `compute_batch_action_dist`.
+  - `obp/policy/contextfree.py` line 18: "configurations to replicate the Bernoulli Thompson Sampling policy used in ZOZOTOWN production".
+  - Our pre-registered analysis of 5.96M BTS rows (`eval/results/obd_slice_summary.md`) shows the deployed policy's logged propensities drifting by a median factor of 16 between 6-hour windows. So the protocol evaluates an approximation of the deployed policy, not the policy itself.
+  - On the "All" campaign, DR still lands within 0.1% of the on-policy CTR with the static prior, and within 0.9% with an hourly reconstruction.
 - **Our ground-truth simulator** (`components/simulator/`): synthetic, labelled as such. It provides before/after periods with controllable response drift, mix shift, overlap, effect size and hidden confounding, and exact counterfactual values.
 
 ## References
