@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** 🎬 DEMO PHASE (Supervisor slot from 17:59 IST, 4 Oct; PLAYBOOK §11). The Round-1 package is complete (11:00). Now building the winning demo via one child session (the demo builder), then a gpt-6-astra "judge watching the demo" review. Started 2026-10-04 18:04 IST.
+- **Phase:** 🎬 DEMO PHASE (Supervisor slot from 17:59 IST, 4 Oct; PLAYBOOK §11). Demo built and verified from a clean clone (19:25); gpt-6-astra judge review running. The Round-1 package is complete (11:00). Now building the winning demo via one child session (the demo builder), then a gpt-6-astra "judge watching the demo" review. Started 2026-10-04 18:04 IST.
 - **Deliverables:**
   - [`deliverables/India71_100_[TeamID].pdf`](deliverables/): 6 A4 pages, 1-inch margins, Arial ≥11 pt; source `round1-proposal.md` v0.3.
   - [`deliverables/architecture.md`](deliverables/architecture.md).
@@ -238,4 +238,19 @@ Apply at resume step 2.
   - **SHOULD:** drill into Nandurbar or Amravati (Melghat), then "SIMULATED children, REAL district rates", with the simulator calibrated to the district's NFHS-5 wasting/stunting.
   - **COULD:** district-calibrated eval_v1.
 - **V5:** the undocumented "12/12" district spot-check was redone. **24/24 exact** against IIPS district fact-sheet PDFs (4 random + 2 purposive districts). The compilation repo has no licence, so numbers are cited to IIPS and its files are not redistributed.
+
+### 2026-10-04 19:24 IST — demo built (builder 5d6b5b9) and verified by the lead from a clean clone
+- **Builder report:** 7 screens.
+  1. India REAL: tile grid + 36/36 scatter.
+  2. Districts REAL: 706/707 swarm; Sahibganj excluded for conflicting rows in the compilation.
+  3. Find every child SYNTHETIC: 7×5 grid, n=5,000. The default cell reproduces 0.513/0.945/0.968 exactly. At 0% IDs/+40% typos: IDs 0.00 (true by definition), pooled names 0.70, PPRL 0.89.
+  4. One child, SIMULATED at REAL district rates: Nandurbar/Amravati calibrated exactly on wasting and stunting; severe wasting is not calibrated and is shown as such.
+  5. This week: frozen eval_v1 at the calibrated config. Nandurbar 0.394 vs 0.363; Amravati 0.398 vs 0.360; reference 0.429/0.365 reproduced.
+  6. SMS ≤80 chars, with an overflow finding (20 tasks vs capacity 10 in one AWC) and escalation.
+  7. Break it: 6 gate decisions; ledger tamper buttons re-hashed live in the browser; truncation and re-seal-all caught only by the checkpoint.
+- **Lead verification, clean clone at 40e3f0c** (`git clone --depth 1` → `/tmp/t1-clean`; documented venv setup `uv venv` + `requirements.txt`):
+  - `demo/smoke.sh` **PASS in 58 s**: 46 data checks; JS == Python ledger parity; offline grep; exporter `--check` (district re-derivation skipped without fetched data, as documented); headless page load.
+  - `demo/run.sh` exit 0 in 1.2 s; first visual **0.15 s** (Playwright, file://).
+  - pytest passes (1 skip: WHO SD validation tables aren't in a fresh clone); `eval/check_docs` 19/19.
+- **Seen by eye:** screens 1, 3 and 7 are honest and clearly labelled. Cosmetic: "India" label overlaps "Maharashtra" on the scatter; the ledger table header overlaps a row. Batched with the review findings.
 

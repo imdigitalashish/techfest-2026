@@ -2,6 +2,13 @@
 
 A data-governance and decision layer behind Poshan Tracker. Journal and current state: [`thought_node.md`](thought_node.md). Proposal: [`deliverables/round1-proposal.md`](deliverables/round1-proposal.md) → PDF [`deliverables/India71_100_[TeamID].pdf`](deliverables/). Architecture: [`architecture/components.md`](architecture/components.md), ADRs in [`architecture/adr/`](architecture/adr/). Research: [`research/landscape.md`](research/landscape.md). Reviews: [`reviews/`](reviews/).
 
+## Demo (finals): one command, offline
+```bash
+cd india71-t1-nutrition && demo/run.sh      # opens demo/index.html; no venv, no server, no network
+demo/smoke.sh                               # headless checks (needs the .venv below for step 4)
+```
+Seven screens: REAL state and district data (NFHS-5 vs Poshan Tracker), then SIMULATED children at REAL district rates (find every child, one child, this week's worklist, SMS, break it). Talk track: [`demo/SCRIPT.md`](demo/SCRIPT.md); fallback screenshots and GIF: [`demo/fallback/`](demo/fallback/); details: [`demo/README.md`](demo/README.md).
+
 ## Reproduce (macOS/Linux, Python 3.11)
 ```bash
 cd india71-t1-nutrition
