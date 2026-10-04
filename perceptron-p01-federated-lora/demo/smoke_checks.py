@@ -150,6 +150,11 @@ def replay_checks() -> None:
               "validation table recomputed from demo/validation/runs equals results.json")
         check(all(v is not None for v in committed["verdict"].values()), f"validation complete: {committed['verdict']}")
         check(committed["deterministic_r1_all"] is True, "round 1 identical in ghost and unplug runs (every seed)")
+        from demo.live_engine import provenance  # stdlib at import time (torch loads lazily)
+
+        now = provenance()["code_sha"]
+        validated = sorted({p["code_sha"] for p in committed["provenance"]})
+        check(validated == [now], f"live engine + components code_sha {now} == the validated code_sha {validated}")
     rec = P.get("recorded")
     check(rec is not None, "RECORDED run present (demo/fallback/recorded_live_s0.jsonl)")
     if rec:

@@ -4,7 +4,7 @@ Pre-registered in the demo proposal (approved by the P1 lead, 4 Oct 2026, 20:11 
 
 Live config: `{"batch_size": 1, "seq_len": 64, "eval_blocks_per_domain": 8, "eval_stride": 6, "rounds": 6, "lr": 0.001, "threads": 4, "eval_every": 1}`; committed config otherwise (strategies, ranks, steps, lr, seeded dropout draws without the forced outage). Unplug script: `c4:2-6` (tablet removed from both grids in rounds 2-6; ghost = same seed, nobody unplugged). Values: manpages loss minus the untuned model's, on the same 8 x 64-token eval subset (nats/token); negative = better than untuned.
 
-Code: commit 5d655ba · code_sha cc9d632a1a27 · dirty False
+Code: commit 5d655ba · code_sha cc9d632a1a27 · dirty False. The commit is the local commit at run time (before the rebase onto main changed its hash); code_sha (sha1 over demo/live_engine.py and components/**/*.py) identifies the code, and demo/smoke.sh checks that the current engine has the same code_sha.
 
 Criteria (every seed must pass):
 - **P1** AnchorLoRA manpages loss < untuned at every live evaluation (rounds 1-6) of the unplug run

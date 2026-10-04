@@ -133,7 +133,9 @@ def write_table(res: dict) -> str:
          "rounds 2-6; ghost = same seed, nobody unplugged). Values: manpages loss minus the untuned model's, on "
          "the same 8 x 64-token eval subset (nats/token); negative = better than untuned.", "",
          "Code: " + "; ".join(f"commit {p['commit']} · code_sha {p['code_sha']} · dirty {p['dirty']}"
-                               for p in res["provenance"]), "",
+                               for p in res["provenance"]) + ". The commit is the local commit at run time (before the "
+         "rebase onto main changed its hash); code_sha (sha1 over demo/live_engine.py and components/**/*.py) identifies "
+         "the code, and demo/smoke.sh checks that the current engine has the same code_sha.", "",
          "Criteria (every seed must pass):"] + [f"- **{k}** {v}" for k, v in CRITERIA.items()] + [
          "- determinism: round 1 (and the untuned eval) identical bit for bit in the ghost and unplug runs", "",
          "| seed | AnchorLoRA manpages, max over r1-6 | starter manpages r6 | AnchorLoRA manpages r6 | unplug effect "
