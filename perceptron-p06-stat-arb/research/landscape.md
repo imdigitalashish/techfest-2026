@@ -88,7 +88,7 @@ The frontier in cross-asset statistical arbitrage is no longer â€œfind a spreadâ
 - X/Twitter searches were empty or rate-limited; no X claims are cited.
 
 
-## Fact-check (independent agent, 2026-10-04 ~07:45 IST)
+## Fact-check (independent agent, 2026-10-04 ~07:35 IST)
 Eight load-bearing claims were re-opened at their sources. The fact-check agent was asked to treat arXiv 1812.00595 and Makarov & Schoar as one claim; this document already cites them as separate papers.
 
 | Claim | Verdict | Action |
