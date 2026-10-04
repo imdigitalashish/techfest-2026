@@ -1,0 +1,6 @@
+{
+  "name": "namma-space-viewer-eval",
+  "private": true,
+  "description": "Frozen viewer evaluator for spike E (measure_viewer.mjs)",
+  "dependencies": { "playwright-core": "1.63.0" }
+}
