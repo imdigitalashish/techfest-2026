@@ -46,10 +46,10 @@ Query-scored key indices (Quest, ArkVale) and token recomputation (CacheBlend, H
 - **Unit of analysis:** 12 held-out contexts, with context-clustered bootstrap CIs. Scorer tuning used only development seeds (an exploratory best of 322 variants).
 - **Metrics:** recall, retained and answer-time bytes, compression, needle-block hit rate and latency overhead.
 - **Preliminary results:** <!-- p2:headline:begin -->
-On 12 held-out ~4k-token contexts (48 independent questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. At 25% of the KV memory, StreamingLLM recalls 19%, kvpress SnapKV 6% and ExpectedAttention 4%; RoD recalls 58% (95% CI 44%–73%) while retaining 7.7× less state than the full cache. Pre-registered: RoD − StreamingLLM +0.40 (95% CI +0.25 to +0.54); RoD − full -0.25 (-0.42 to -0.08), non-inferiority at a 5-point margin not shown.
+On 12 held-out ~4k-token contexts (48 independent questions; Llama-3.2-1B-Instruct) the full cache recalls 83%. At 25% of the KV memory the ten tested query-agnostic baselines recall 0%–35% and RoD 58%: the pre-registered gain over StreamingLLM is +0.40 (95% CI +0.25 to +0.54), but RoD − full is -0.25 (-0.42 to -0.08), so it is not near-lossless there. Exploratory: at 10% memory RoD recalls 85% vs ≤6% for the baselines; replication on fresh contexts pending.
 <!-- p2:headline:end -->
 - **Controls:** <!-- p2:caveats:begin -->
-At 25% memory: RoD minus a lexical index over the same ids, +0.04 (95% CI -0.04 to +0.12); CPU time per answer 6.2× StreamingLLM's.
+At 25% memory unless stated: RoD minus a lexical index over the same ids, +0.04 (95% CI -0.04 to +0.12); RoD finds the needle's block 100% of the time, but accuracy given a hit falls from 98% (2 recalled blocks, at 10%) to 55%, mostly by naming another needle's value; CPU time per answer 6.2× StreamingLLM's.
 <!-- p2:caveats:end -->
 
 ## Feasibility and risks

@@ -5,6 +5,7 @@ For T1's 12 seed-0 literal contexts, keep 0.10/0.25/0.50 and the frozen RoD conf
   E2  exact-KV oracle: the scorer's blocks, but their exact KV gathered from the full prefill (needs a full backing store).
   E3  oracle-block selection: the needle's block forced plus the scorer's other picks, re-prefilled as RoD does.
   E23 both oracles: the needle's block with exact KV, an upper bound for this store design at that budget.
+  E5  precision-first recall (amendment 4): only the scorer's top-2 blocks, re-prefilled, at keep 0.25 and 0.50.
 Writes eval/results/posthoc_T1.json and eval/results/posthoc_T1.rows.jsonl.
 Usage (VM, ~/p02): HF_HUB_OFFLINE=1 ~/venv_kvp/bin/python components/recall_on_demand/posthoc_T1.py
 """
@@ -29,9 +30,10 @@ from streamed import softmax_lift_streamed, transient_bytes_streamed  # noqa: E4
 CFG = {"layer": 5, "bits": 4, "scorer": "softmax_lift", "lexical": False, "qsel": "content"}
 
 
-def choose(r, nblk, En, m):
+def choose(r, nblk, En, m, ordered=False):
     rb = F.pad(r, (0, nblk * kb.BLOCK - En), value=float("-inf")).view(nblk, kb.BLOCK).max(1).values
-    return sorted(torch.topk(rb, min(m, nblk)).indices.tolist())
+    idx = torch.topk(rb, min(m, nblk)).indices.tolist()
+    return idx if ordered else sorted(idx)
 
 
 @torch.inference_mode()
@@ -94,6 +96,8 @@ def main():
                        "e2_exactkv_correct": ok(answer_with(E, st, q_ids, cu, Kf, Vf)),
                        "e3_oracleblk_correct": ok(answer_with(E, st, q_ids, co)),
                        "e23_both_correct": ok(answer_with(E, st, q_ids, co, Kf, Vf))}
+                if f > 0.1 and m > 2:
+                    row["e5_top2_correct"] = ok(answer_with(E, st, q_ids, choose(ru, nblk, En, 2)))
                 r1 = rec.get((si, qi, round(f, 4)))
                 if r1 is not None:
                     row["t1_recorded_equal"] = r1["recalled_blocks"] == cu
@@ -110,7 +114,9 @@ def main():
                         "rod_T1_acc": (sum(r["rod_correct_T1"] for r in rs_ if "rod_correct_T1" in r) / n) if rec else None,
                         "e2_exactkv_acc": sum(r["e2_exactkv_correct"] for r in rs_) / n,
                         "e3_oracleblk_acc": sum(r["e3_oracleblk_correct"] for r in rs_) / n,
-                        "e23_both_acc": sum(r["e23_both_correct"] for r in rs_) / n}
+                        "e23_both_acc": sum(r["e23_both_correct"] for r in rs_) / n,
+                        "e5_top2_acc": (sum(r["e5_top2_correct"] for r in rs_ if "e5_top2_correct" in r) /
+                                        max(1, sum("e5_top2_correct" in r for r in rs_))) if any("e5_top2_correct" in r for r in rs_) else None}
     out = {"label": "EXPLORATORY (PREREG amendment 3); T1 contexts, frozen RoD config", "summary": summ,
            "max_abs_score_diff_streamed_vs_unchunked": worst,
            "transient_bytes_streamed_chunk256_upper_bound": transient_bytes_streamed(Lq=20),

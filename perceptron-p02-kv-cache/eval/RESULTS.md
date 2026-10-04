@@ -113,6 +113,19 @@ torch-cpu · Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz · torch 2.10.0+cpu �
 
 **S7: RoD (keep 0.25) vs full cache: per-context deltas** (12 contexts): [-0.25, -0.5, -0.5, 0.25, -0.5, -0.5, 0.25, 0.0, -0.5, 0.0, -0.5, -0.25]; questions where only RoD is right: 3, only the comparator: 15 (of 48).
 
+## Identity / plumbing checks (dev seed 100; Supervisor 16:24 spot-check)
+
+`HF_HUB_OFFLINE=1 ~/venv_kvp/bin/python components/recall_on_demand/identity_check.py 4` · context 4149 tokens, 4 questions
+
+| Keep | B | Resident | Recall budget m (blocks) | Evicted tokens | I3 partition exact | I1 exact-KV assembly: max abs Δlogit, answers = full | I2 one-pass re-prefill: max abs ΔKV, answers = full |
+|---|---|---|---|---|---|---|---|
+| 0.10 | 415 | 185 | 2 | 3964 | True | 0.0053, 4/4 | 0.0254, 4/4 |
+| 0.25 | 1037 | 496 | 7 | 3653 | True | 0.0059, 4/4 | 0.0234, 4/4 |
+| 0.50 | 2074 | 1014 | 15 | 3135 | True | 0.0057, 4/4 | 0.0234, 4/4 |
+| 1.00 | 4149 | 2052 | 32 | 2097 | True | 0.0055, 4/4 | 0.0234, 4/4 |
+
+Positions, masks, cache assembly and block bookkeeping reproduce the full cache whenever the evicted KV is restored exactly or recomputed with its true prefix, so RoD's recall loss is not a plumbing artifact.
+
 ## RoD's transient scoring working set (analytic, T1 mean context)
 
 | Keep | Recall blocks m | Evicted tokens E | Persistent store MiB | Transient scoring set MiB (unchunked upper bound) |

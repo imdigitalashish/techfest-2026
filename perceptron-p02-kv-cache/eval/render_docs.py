@@ -121,6 +121,8 @@ def compute():
         V["S5"] = {f: {b: delta(T1, "rod", T1, b, f) for b in ["streaming", "snapkv", "h2o", "rodlex", "kvp_expected"]} for f in (0.1, 0.5)}
         V["T1"] = table(T1)
     if T2:
+        V["R1"] = delta(T2, "rod", T2, "full", 0.1, fB=1.0)
+        V["R2"] = {k: mech(rows, "rod") for k, rows in (("T1", T1), ("T2", T2)) if rows}
         V["S3"] = delta(T2, "rod", T2, "streaming", 0.25)
         V["S2_T2"] = delta(T2, "rod", T2, "rodlex", 0.25)
         V["T2"] = table(T2)
@@ -144,6 +146,24 @@ def compute():
 
 def get(tab, m, f):
     return next((t for t in tab or [] if t["m"] == m and abs(t["f"] - f) < 1e-9), None)
+
+
+def mech(rows, m):
+    vals = defaultdict(set)
+    for r in rows:
+        vals[r["sample"]].add(r["value"])
+    out = {}
+    for f in (0.1, 0.25, 0.5):
+        rs = [r for r in rows if r["method"] == m and abs(r["frac"] - f) < 1e-9]
+        if not rs:
+            continue
+        hit = [r for r in rs if r.get("needle_block_hit")]
+        wrong = [r for r in rs if not r["correct"]]
+        other = sum(any(v in r["answer"].replace(",", "") for v in vals[r["sample"]] - {r["value"]}) for r in wrong)
+        out[f] = {"acc_given_hit": sum(r["correct"] for r in hit) / max(1, len(hit)), "n_hit": len(hit),
+                  "wrong": len(wrong), "wrong_other_needle": other,
+                  "hit_rate": len(hit) / max(1, sum(bool(r.get("needle_evicted")) for r in rs))}
+    return out
 
 
 def per_context(rows, mA, mB, fA, fB):
@@ -222,6 +242,14 @@ def verdicts(V):
         x = V.get(k)
         out.append(f"- **S2** (RoD − RoD-lexical, keep 0.25, {lab}): {fmt_d(x)}"
                    + ("" if x is None else (" → sketch beats lexical" if x["lo"] > 0 else " → no evidence the sketch beats lexical retrieval")))
+    if V.get("R1") is not None:
+        x = V["R1"]
+        out.append(f"- **R1** (replication on T2: RoD − full at keep 0.10, margin −0.15): {fmt_d(x)} → "
+                   + ("**replicated** (lower bound > −0.15)" if x["lo"] > -0.15 else "**not replicated**"))
+    for k, mm in (V.get("R2") or {}).items():
+        out.append(f"- **R2 mechanism {k}** (RoD): " + "; ".join(
+            f"keep {f}: block hit {d['hit_rate']:.2f}, accuracy given hit {d['acc_given_hit']:.2f}, "
+            f"{d['wrong_other_needle']}/{d['wrong']} wrong answers name another needle's value" for f, d in mm.items()))
     x = V.get("S3")
     out.append(f"- **S3** (primary replicated on T2 paraphrase): {fmt_d(x)}"
                + ("" if x is None else (" → replicated" if x["lo"] > 0 else " → not replicated")))
@@ -255,15 +283,19 @@ def headline(V):
     if not t:
         return "_Measured results pending (pre-registered runs in progress)._"
     pc = lambda x: "n/a" if x is None else f"{x['acc']:.0%}"
-    full, rod, st = get(t, "full", 1.0), get(t, "rod", 0.25), get(t, "streaming", 0.25)
-    exp, snap = get(t, "kvp_expected", 0.25), get(t, "kvp_snapkv", 0.25)
+    full, rod, rod10 = get(t, "full", 1.0), get(t, "rod", 0.25), get(t, "rod", 0.1)
+    base25 = [get(t, b, 0.25)["acc"] for b in ["streaming"] + QA if get(t, b, 0.25)]
+    base10 = [get(t, b, 0.1)["acc"] for b in ["streaming"] + QA if get(t, b, 0.1)]
     p, s7 = V["primary"], V["S7"][0.25]
-    ni = "shown" if s7["lo"] > -0.05 else "not shown"
+    r1 = V.get("R1")
+    rep = ("replication on fresh contexts pending" if r1 is None else
+           f"on fresh contexts RoD − full is {r1['d']:+.2f} (95% CI {r1['lo']:+.2f} to {r1['hi']:+.2f}), "
+           + ("replicating it within the pre-set 15-point margin" if r1["lo"] > -0.15 else "not replicating it"))
     return (f"On 12 held-out ~4k-token contexts (48 independent questions; Llama-3.2-1B-Instruct) the full cache recalls {pc(full)}. "
-            f"At 25% of the KV memory, StreamingLLM recalls {pc(st)}, kvpress SnapKV {pc(snap)} and ExpectedAttention {pc(exp)}; "
-            f"RoD recalls {pc(rod)} (95% CI {rod['lo']:.0%}–{rod['hi']:.0%}) while retaining {rod['x']:.1f}× less state than the full cache. "
-            f"Pre-registered: RoD − StreamingLLM {p['d']:+.2f} (95% CI {p['lo']:+.2f} to {p['hi']:+.2f}); RoD − full {s7['d']:+.2f} "
-            f"({s7['lo']:+.2f} to {s7['hi']:+.2f}), non-inferiority at a 5-point margin {ni}.")
+            f"At 25% of the KV memory the ten tested query-agnostic baselines recall {min(base25):.0%}–{max(base25):.0%} and RoD {pc(rod)}: "
+            f"the pre-registered gain over StreamingLLM is {p['d']:+.2f} (95% CI {p['lo']:+.2f} to {p['hi']:+.2f}), but RoD − full is "
+            f"{s7['d']:+.2f} ({s7['lo']:+.2f} to {s7['hi']:+.2f}), so it is not near-lossless there. Exploratory: at 10% memory RoD recalls "
+            f"{pc(rod10)} vs ≤{max(base10):.0%} for the baselines; {rep}.")
 
 
 def caveats(V):
@@ -271,16 +303,19 @@ def caveats(V):
         return "_Controls pending._"
     sh = lambda x: "pending" if x is None else f"{x['d']:+.2f} (95% CI {x['lo']:+.2f} to {x['hi']:+.2f})"
     rod, st = get(V["T1"], "rod", 0.25), get(V["T1"], "streaming", 0.25)
-    parts = [f"RoD minus a lexical index over the same ids, {sh(V.get('S2_T1'))}"]
+    mm = mech(load("T1")["rows"], "rod")
+    parts = [f"RoD minus a lexical index over the same ids, {sh(V.get('S2_T1'))}",
+             f"RoD finds the needle's block {mm[0.25]['hit_rate']:.0%} of the time, but accuracy given a hit falls from "
+             f"{mm[0.1]['acc_given_hit']:.0%} (2 recalled blocks, at 10%) to {mm[0.25]['acc_given_hit']:.0%}, mostly by naming another needle's value"]
     if V.get("T2"):
         parts.append(f"paraphrased templates, RoD minus StreamingLLM {sh(V.get('S3'))}")
     if V.get("T3"):
         fc = get(V["T3"], "full", 1.0)
-        parts.append(f"synonym-aliased keys (full-cache ceiling {fc['acc']:.0%}), RoD minus lexical {sh((V.get('S6') or {}).get(0.25))}")
+        parts.append(f"synonym-aliased keys at 10% memory (full-cache ceiling {fc['acc']:.0%}), RoD minus lexical {sh((V.get('S6') or {}).get(0.1))}")
     if V.get("S4"):
         parts.append(f"64 tokens of recompute context, {sh(V['S4'].get(0.25))}")
     parts.append(f"CPU time per answer {rod['s'] / st['s']:.1f}× StreamingLLM's")
-    return "At 25% memory: " + "; ".join(parts) + "."
+    return "At 25% memory unless stated: " + "; ".join(parts) + "."
 
 
 def render_blocks(V):
@@ -315,18 +350,31 @@ def results_md(V):
             parts += ["", f"**{lab}: per-context deltas** (12 contexts): {pc['deltas']}; questions where only RoD is right: "
                       f"{pc['a_only']}, only the comparator: {pc['b_only']} (of {pc['n_q']})."]
         parts.append("")
+    ic = RES / "identity_check_dev100.json"
+    if ic.exists():
+        I = json.loads(ic.read_text())
+        parts += ["## Identity / plumbing checks (dev seed 100; Supervisor 16:24 spot-check)", "",
+                  f"`{I['command']}` · context {I['T']} tokens, 4 questions", "",
+                  "| Keep | B | Resident | Recall budget m (blocks) | Evicted tokens | I3 partition exact | I1 exact-KV assembly: max abs Δlogit, answers = full | I2 one-pass re-prefill: max abs ΔKV, answers = full |",
+                  "|---|---|---|---|---|---|---|---|"]
+        for f, d in I["per_keep"].items():
+            parts.append(f"| {float(f):.2f} | {d['B']} | {d['B_res']} | {d['m']} | {d['evicted_tokens']} | {d['I3_partition_ok']} | "
+                         f"{d['I1_max_abs_dlogit']:.4f}, {d['I1_answers_equal']}/{d['n_questions']} | {d['I2_max_abs_dkv']:.4f}, {d['I2_answers_equal']}/{d['n_questions']} |")
+        parts += ["", "Positions, masks, cache assembly and block bookkeeping reproduce the full cache whenever the evicted KV is restored "
+                  "exactly or recomputed with its true prefix, so RoD's recall loss is not a plumbing artifact.", ""]
     ph = RES / "posthoc_T1.json"
     if ph.exists():
         P = json.loads(ph.read_text())
         parts += ["## Exploratory post-hoc analyses on T1 contexts (PREREG amendment 3; not confirmatory)", "",
                   f"`{P['command']}` · streamed vs unchunked max |Δscore| {P['max_abs_score_diff_streamed_vs_unchunked']:.2e} · "
                   f"streamed transient set ≤ {P['transient_bytes_streamed_chunk256_upper_bound'] / 2**20:.2f} MiB", "",
-                  "| Keep | Questions | Recall blocks m | E1 streamed = unchunked | Unchunked = T1 recorded | RoD (T1) | E2 exact-KV oracle | E3 oracle block | E2+E3 |",
-                  "|---|---|---|---|---|---|---|---|---|"]
+                  "| Keep | Questions | Recall blocks m | E1 streamed = unchunked | Unchunked = T1 recorded | RoD (T1) | E2 exact-KV oracle | E3 oracle block | E2+E3 | E5 top-2 only |",
+                  "|---|---|---|---|---|---|---|---|---|---|"]
         for f, s in P["summary"].items():
             rodacc = "n/a" if s["rod_T1_acc"] is None else f"{s['rod_T1_acc']:.3f}"
             parts.append(f"| {float(f):.2f} | {s['n']} | {s['m_mean']:.1f} | {s['streamed_equal']}/{s['n']} | {s['t1_recorded_equal']}/{s['n']} | "
-                         f"{rodacc} | {s['e2_exactkv_acc']:.3f} | {s['e3_oracleblk_acc']:.3f} | {s['e23_both_acc']:.3f} |")
+                         f"{rodacc} | {s['e2_exactkv_acc']:.3f} | {s['e3_oracleblk_acc']:.3f} | {s['e23_both_acc']:.3f} | "
+                         f"{'n/a' if s.get('e5_top2_acc') is None else format(s['e5_top2_acc'], '.3f')} |")
         parts.append("")
     if V.get("T1"):
         Ts = sorted({r["sample"]: r["T"] for r in load("T1")["rows"]}.values())

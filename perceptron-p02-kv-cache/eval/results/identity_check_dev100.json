@@ -1,0 +1,73 @@
+{
+ "seed": 100,
+ "T": 4149,
+ "per_keep": {
+  "0.1": {
+   "B": 415,
+   "B_res": 185,
+   "B_rec": 185,
+   "m": 2,
+   "evicted_tokens": 3964,
+   "n_blocks": 62,
+   "stored_MiB": 7.136,
+   "I3_partition_ok": true,
+   "I1_max_abs_dlogit": 0.00528,
+   "I1_answers_equal": 4,
+   "I2_max_abs_dkv": 0.0254,
+   "I2_answers_equal": 4,
+   "n_questions": 4
+  },
+  "0.25": {
+   "B": 1037,
+   "B_res": 496,
+   "B_rec": 496,
+   "m": 7,
+   "evicted_tokens": 3653,
+   "n_blocks": 58,
+   "stored_MiB": 16.769,
+   "I3_partition_ok": true,
+   "I1_max_abs_dlogit": 0.00588,
+   "I1_answers_equal": 4,
+   "I2_max_abs_dkv": 0.0234,
+   "I2_answers_equal": 4,
+   "n_questions": 4
+  },
+  "0.5": {
+   "B": 2074,
+   "B_res": 1014,
+   "B_rec": 1015,
+   "m": 15,
+   "evicted_tokens": 3135,
+   "n_blocks": 49,
+   "stored_MiB": 32.814,
+   "I3_partition_ok": true,
+   "I1_max_abs_dlogit": 0.0057,
+   "I1_answers_equal": 4,
+   "I2_max_abs_dkv": 0.0234,
+   "I2_answers_equal": 4,
+   "n_questions": 4
+  },
+  "1.0": {
+   "B": 4149,
+   "B_res": 2052,
+   "B_rec": 2052,
+   "m": 32,
+   "evicted_tokens": 2097,
+   "n_blocks": 33,
+   "stored_MiB": 64.967,
+   "I3_partition_ok": true,
+   "I1_max_abs_dlogit": 0.00553,
+   "I1_answers_equal": 4,
+   "I2_max_abs_dkv": 0.0234,
+   "I2_answers_equal": 4,
+   "n_questions": 4
+  }
+ },
+ "full_answers": [
+  "8632408",
+  "7594010",
+  "9503783",
+  "3035275"
+ ],
+ "command": "HF_HUB_OFFLINE=1 ~/venv_kvp/bin/python components/recall_on_demand/identity_check.py 4"
+}
