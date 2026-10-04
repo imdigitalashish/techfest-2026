@@ -10,13 +10,13 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ **DEMO phase** (Supervisor 21:47 IST, PLAYBOOK §11). Updated 2026-10-04 21:49 IST.
-- **Plan:**
-  1. Spawn one demo-builder child session. It proposes the "crazy" element; the lead approves it before it builds.
-  2. Build to §11: `demo/run.sh`, baseline side by side with a judge knob, SIMULATED labels on every screen, numbers from committed results, `demo/SCRIPT.md`, `demo/fallback/`, `demo/smoke.sh`.
-  3. One gpt-6-astra demo review, recorded in `reviews/`.
-  4. The lead verifies from a clean checkout, then sends "DEMO DONE".
-- **Doing:** the builder is applying the 13 accepted demo-review fixes (gpt-6-astra 3.5/5): label precision, an agent-first cold open, the size knob frozen at 09:55 with the aggregate shown, and a 3-beat script. Then the lead re-verifies from a clean worktree and sends DEMO DONE. Updated 2026-10-04 22:44 IST.
+- **Phase:** ✅ **DEMO DONE (2026-10-04 23:17 IST).** The Ghost Market demo is built, reviewed and verified from a clean worktree. Batch slot released; idle until the Supervisor resumes P5.
+- **Demo:**
+  - Run it with `perceptron-p05-impact-execution/demo/run.sh`; READY in about 1 s, offline. Every screen is labelled SIMULATED (ABIDES).
+  - It opens on "The answer first", the E10 verdict "not confirmed", and the ghost is the star after that.
+  - Size knob frozen at 09:55 with the 30-seed aggregate shown; naive vs synced coupling; a live "bring your own seed" in about 2.5 s with a top-5 pre-trade identity check.
+  - `demo/SCRIPT.md` (3 beats, 40 s for the judge's seed), `demo/fallback/` (10 screenshots), `demo/smoke.sh`.
+  - gpt-6-astra demo review 3.5/5 → 13/13 fixes applied.
 - **Earlier phase (definition of done, met 14:08):** see the Log.
 - **Delivered:**
   - E8, E7, E9, E10, E11 and E12, each pre-registered by commit time.
@@ -335,3 +335,10 @@ Those labels were estimates, 1–7 min ahead of the clock. The other headers are
 - **The reviewer reproduced everything end to end:** live seed 20261004 in 4.8 s with 731/731 identical pre-trade events; smoke passed; offline; no console errors.
 - **Same wording errors fixed in the reviewed abstract, memo and ADR:** "every background agent" (not every agent); "paired-difference std 7.7×" (not "CIs"); explicit horizons (5-min mean gap). The abstract is 899 words; check_docs OK; pytest 7/7.
 - **Decisions:** `reviews/2026-10-04-demo-gpt-6-astra.decisions.md`; ledger updated.
+
+### 2026-10-04 23:17 IST — DEMO DONE: lead's final verification from a clean worktree of origin/main (532d663d)
+- **Replay only:** `DEMO_NO_OPEN=1 demo/run.sh` prints READY after about 1 s; `demo/smoke.sh` passes, with the live lane skipped for its stated reason.
+- **After the README setup:** smoke passes in 3 s. Invalid seeds (−1, 2^31, 12.5, abc) are rejected with HTTP 400. Live seed 101 runs in 2.5 s with top-5 identity 304/304, and its T1 gaps equal the committed E7/E8 rows; delay + at-fill = decision-to-fill.
+- **Headless browser:** the page opens on tab "1 The answer"; the heading is "The answer first: our agent did not confirm beating TWAP."; the SIMULATED badge sits in the header.
+- **Wording audit:** retired phrases absent (0/12); required phrases present.
+- The verification server, the clean worktree and temp files were removed. The builder and demo-review child sessions are finished, with their work on `main`; they are being archived.
