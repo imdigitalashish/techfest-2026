@@ -63,13 +63,14 @@ Full contracts: [architecture/components.md](architecture/components.md) · code
 
 ## Selection memo
 _First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+- **Winnability: 4/5** — The track is Optiver-sponsored and the judges are domain experts, which rewards measured realism. On day 1 we already have a leakage-tested pipeline on real Binance data and a non-obvious, evidence-backed finding: the textbook "rolling KS → retrain" fires 48 times a day and *raises* held-out log-loss by +0.020 [+0.016, +0.025]. Risk: P4 is the most "standard ML" of Theme 3, so expect crowding.
+- **Innovation headroom: 4/5** — The spike is a calibrated, harm-aware shift monitor (empirical null, plus a sequential loss test after Podkopaev & Ramdas, plus calendar priors). It drives a regime-adaptive head mixer whose switching rate rises on alarms instead of refitting on tiny windows. The 2026 frontier is adjacent but different: UQ-LOB (arXiv 2609.31491) calibrates forecasts from realised windows; Jeon (arXiv 2607.09230) classifies liquidity states around macro events. Neither does calibrated detection with adaptation inside a µs loop.
+- **Feasibility by the deadline: 5/5** — The end-to-end skeleton runs on the M5 Mac in about 3 minutes for 54 policy-days. No GPU is needed. The data is free (Tardis first-of-month days). Remaining work is incremental: more days, the harm gate, a GBDT head and a compiled step. Plan: MVP plus stretch done by 17 Nov, before the 19–25 Nov exams; the 1 Dec midway report needs no new work.
+- **Demo strength: 4/5** — Replay an FOMC day: price, alarm timeline (naive vs calibrated), mixer weights shifting to the high-volatility head at 18:00 UTC, rolling log-loss against the static model, and a latency panel. A live Binance websocket feed works at the venue (public, free). Weakness: the effect sizes are statistical (−0.013 log-loss), not dramatic PnL.
+- **Fit with the user's strengths: 4/5** — Streaming systems, typed contracts, latency budgets and evaluation rigour match large-scale systems work. There is less room for frontier-model work, though a small transformer head (TLOB-style) is optional.
+- **Biggest risk:** Small, noisy gains and only 8 days on disk. Judges may say "this edge is not tradable". Mitigation: grow to 24+ days, report bootstrap CIs, report edge in bps against the 1-tick spread and fees, and frame the work as *robustness and knowing when you're wrong*, which is what a market maker needs.
+- **One-line pitch:** "A 10-second BTC order-book forecaster that knows when the market has changed: calibrated shift alarms (the textbook KS fires 48×/day and hurts — we measured it) steer a microsecond-cheap mixture of regime-specific heads that stays sharp through FOMC releases."
+- **Overall: 4.2/5** (mean of the five scores).
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
