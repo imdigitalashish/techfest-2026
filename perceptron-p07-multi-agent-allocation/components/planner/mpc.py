@@ -36,7 +36,7 @@ def grid_edges(grid: int) -> np.ndarray:
 
 
 class MPCPlanner:
-    def __init__(self, grid: int, od_prob: np.ndarray, horizon: int = 8, c_move: float = 0.05,
+    def __init__(self, grid: int, od_prob: np.ndarray, horizon: int = 6, c_move: float = 0.05,
                  c_wait: float = 0.02, gamma: float = 0.97):
         self.G, self.Z, self.H = grid, grid * grid, int(horizon)
         self.edges = grid_edges(grid)
@@ -92,7 +92,7 @@ class MPCPlanner:
         b_ub = np.maximum(demand[:H], 0.0).astype(float).copy()
         b_ub[0] += queue
         res = linprog(self.cost, A_ub=self.A_ub, b_ub=b_ub.ravel(), A_eq=self.A_eq, b_eq=b_eq.ravel(),
-                      bounds=(0, None), method="highs")
+                      bounds=(0, None), method="highs-ipm")
         flows = np.zeros((Z, Z), dtype=np.int64)
         if res.status != 0:
             return Plan(flows=flows, objective=float("nan"), solve_ms=1e3 * (time.perf_counter() - t0),

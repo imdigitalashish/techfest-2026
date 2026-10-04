@@ -1,0 +1,120 @@
+"""C10 — Evaluation harness: (policy x scenario x seed) grid with common random numbers.
+
+Per episode metrics (all from the simulator's StepInfo stream):
+  served_frac   served / arrivals                       (primary)
+  lost_frac     abandoned / arrivals
+  mean_wait     mean steps waited by served requests;  p95_wait from the wait histogram
+  empty_per_srv empty repositioning hops per served request (cost of moving resources)
+  shock_lost    requests lost in the 120 steps after the shock onset (resilience "triangle" area)
+  shock_served  served fraction in that window
+  recover_steps steps after onset until the 30-step rolling served fraction first reaches >= 0.90 (a common
+                absolute bar for every policy); = window length (120) if never
+  solve_ms_mean / p99 planner latency (look-ahead policies)
+Usage:  python -m eval.harness --scenarios shock --policies reactive mpc-cusum --seeds 0-19 --out eval/results/x
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import time
+from concurrent.futures import ProcessPoolExecutor
+from dataclasses import replace
+
+import numpy as np
+import pandas as pd
+
+from components.policies.policies import make_policy
+from components.scenarios.scenarios import SCENARIOS, build_trace, diurnal_profile, historical_shares
+from components.simulator.core import DispatchCore
+
+WIN, ROLL = 120, 30
+
+
+def episode_meta(cfg, trace):
+    prof = diurnal_profile(cfg)
+    shares = historical_shares(cfg)
+    level = shares * cfg.total_rate  # deseasonalised per-zone level from history
+    return dict(grid=cfg.grid, n_zones=cfg.grid ** 2, od_prob=trace.od_prob, profile=prof, hist_shares=shares,
+                init_level=level, init_level_raw=level, rates=trace.rates)
+
+
+def run_episode(job: dict) -> dict:
+    cfg = SCENARIOS[job["scenario"]]
+    if job.get("horizon"):
+        cfg = replace(cfg, horizon=int(job["horizon"]))
+    trace = build_trace(cfg, job["seed"])
+    meta = episode_meta(cfg, trace)
+    core = DispatchCore(trace, n_agents=job["n_agents"], patience=job["patience"], init_seed=job["seed"],
+                        init_shares=meta["hist_shares"])
+    pol = make_policy(job["policy"], **job.get("policy_kw", {}))
+    pol.reset(meta)
+    T = trace.horizon
+    served = np.zeros(T, np.int64); lost = np.zeros(T, np.int64); arr = np.zeros(T, np.int64)
+    wh = np.zeros(job["patience"], np.int64); empty = 0
+    t0 = time.perf_counter()
+    while not core.done:
+        st = core.state()
+        info = core.step(pol.act(st))
+        pol.observe(info)
+        t = st.t
+        served[t], lost[t], arr[t] = info.served.sum(), info.lost.sum(), info.arrivals.sum()
+        wh += info.wait_hist; empty += info.empty_moves
+    wall = time.perf_counter() - t0
+    S = served.sum()
+    cdf = np.cumsum(wh) / max(1, wh.sum())
+    out = dict(policy=pol.name, scenario=cfg.name, seed=job["seed"], horizon=T, n_agents=job["n_agents"],
+               arrivals=int(arr.sum()), served=int(S), served_frac=S / max(1, arr.sum()),
+               lost_frac=lost.sum() / max(1, arr.sum()), mean_wait=float((wh * np.arange(wh.size)).sum() / max(1, S)),
+               p95_wait=int(np.searchsorted(cdf, 0.95)), empty_per_srv=empty / max(1, S), wall_s=wall)
+    if hasattr(pol, "solve_ms") and pol.solve_ms:
+        sm = np.array(pol.solve_ms)
+        out.update(solve_ms_mean=float(sm.mean()), solve_ms_p99=float(np.percentile(sm, 99)))
+    on = [c for c in trace.change_points if c.kind == "shock_on"]
+    if on:
+        ts = on[0].t
+        w_s, w_a = served[ts:ts + WIN], arr[ts:ts + WIN]
+        out.update(shock_t=ts, shock_lost=int(lost[ts:ts + WIN].sum()), shock_served=w_s.sum() / max(1, w_a.sum()))
+        k = np.ones(ROLL)
+        roll = np.convolve(w_s, k, "valid") / np.maximum(1, np.convolve(w_a, k, "valid"))
+        ok = np.flatnonzero(roll >= 0.90)
+        out["recover_steps"] = int(ok[0] + ROLL) if ok.size else WIN
+    if job.get("save_series"):
+        out["series"] = dict(served=served.tolist(), lost=lost.tolist(), arr=arr.tolist())
+    return out
+
+
+def parse_seeds(s: str) -> list[int]:
+    if "-" in s:
+        a, b = s.split("-")
+        return list(range(int(a), int(b) + 1))
+    return [int(x) for x in s.split(",")]
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--scenarios", nargs="+", default=["stationary", "shock", "drift", "shock+drift"])
+    ap.add_argument("--policies", nargs="+", default=["static", "greedy", "reactive", "mpc-ewma", "mpc-cusum", "oracle"])
+    ap.add_argument("--seeds", default="0-19")
+    ap.add_argument("--n-agents", type=int, default=40)
+    ap.add_argument("--patience", type=int, default=10)
+    ap.add_argument("--horizon", type=int, default=0)
+    ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 2) - 1))
+    ap.add_argument("--out", default="eval/results/run")
+    a = ap.parse_args()
+    jobs = [dict(policy=p, scenario=sc, seed=sd, n_agents=a.n_agents, patience=a.patience, horizon=a.horizon)
+            for sc in a.scenarios for sd in parse_seeds(a.seeds) for p in a.policies]
+    os.makedirs(a.out, exist_ok=True)
+    t0 = time.time()
+    with ProcessPoolExecutor(a.workers) as ex:
+        rows = list(ex.map(run_episode, jobs, chunksize=1))
+    df = pd.DataFrame(rows)
+    df.to_csv(os.path.join(a.out, "episodes.csv"), index=False)
+    with open(os.path.join(a.out, "config.json"), "w") as f:
+        json.dump(dict(vars(a), n_jobs=len(jobs), wall_s=time.time() - t0), f, indent=1)
+    print(df.groupby(["scenario", "policy"])[["served_frac", "lost_frac", "mean_wait", "empty_per_srv"]].mean().round(4))
+    print(f"{len(jobs)} episodes in {time.time() - t0:.0f}s -> {a.out}")
+
+
+if __name__ == "__main__":
+    main()
