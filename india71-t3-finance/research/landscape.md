@@ -11,7 +11,7 @@ The scorecard says inclusion is rising; the ledger says usage is falling.
 | Indicator | Earlier | Latest | Source |
 |---|---|---|---|
 | PMJDY accounts | 42.20 crore (Mar 2021) | 59.09 crore (19 Aug 2026) | [P1] Annexure-II; [P4] |
-| RBI Financial Inclusion Index | 53.9 (2018) [P4]; 64.2 (Mar 2024) | 67.0 (Mar 2025) → **70.0 (Mar 2026)**, rise "mainly on account of uptick in Usage" | [P5], [P6] |
+| RBI Financial Inclusion Index | 43.4 (Mar 2017), 53.9 (Mar 2021) [P17]; 64.2 (Mar 2024) | 67.0 (Mar 2025) → **70.0 (Mar 2026)**, rise "mainly on account of uptick in Usage" | [P5], [P6], [P17] |
 | **Inoperative PMJDY accounts** | **5.94 crore = 14.1% (Mar 2021)** | **15.09 crore = 26.4% of 57.07 crore (Lok Sabha answer, 8 Dec 2025)** | [P1] Annexure-II; [P3] |
 
 Inoperative-account series from the Ministry of Finance's own Parliament answers ([`eval/public_data/derived/pmjdy_inoperative_trend.csv`](../eval/public_data/derived/pmjdy_inoperative_trend.csv)):
@@ -60,7 +60,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 2. **One-size outreach.** Alerts and campaigns go to every inoperative account [P2]. Many inoperative accounts belong to people who use another account (duplicates), have migrated, or have died — reactivating those wastes visits; meanwhile persuadable users get the same SMS as everyone else. (Mechanism plausible; share **UNVERIFIED** — no public data; our simulator makes the assumption explicit.)
 3. **KYC friction.** Reactivation needs fresh KYC [P3, P8]; RBI allows any branch or V-CIP [P8], but for a rural, low-literacy holder that still means a trip or a smartphone — the same friction that caused disuse. [L: BC-based re-KYC — UNVERIFIED.]
 4. **DBT as pass-through.** Benefits land and are withdrawn in cash, so accounts are "active" without meaningful use (no saving, insurance, digital payment) [mechanism; magnitude **UNVERIFIED** — needs bank data].
-5. **Safety.** Reactivated dormant accounts can be abused as mule accounts [L: RBIH MuleHunter.AI, I4C — UNVERIFIED tonight]; a reactivation drive without a fraud gate creates risk.
+5. **Safety.** Reactivated dormant accounts can be abused as mule accounts; MHA's I4C and RBI Innovation Hub signed an MoU (May 2026) to feed I4C's Suspect Registry into "MuleHunter.ai™ implemented across banks" [P22]. A reactivation drive without a fraud gate creates risk.
 6. **Data-sharing uncertainty.** Linking bank, NPCI-mapper and DBT data touches the DPDP Act 2023 and the Aadhaar Act [P13–P16]; the rules allow a workable pattern (aggregate statistics vs bank-held person decisions; reference keys only), but no actor has built it, so each keeps its silo.
 
 ## 3. What is deployed today
@@ -75,12 +75,14 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 | RBI | FI-Index (national composite, 0–100), first published Aug 2021 | Annual; 70.0 for March 2026 | [P5, P6] |
 | RBI | 2,421 Centres for Financial Literacy | Production (31 Mar 2025) | [P1] |
 | NPCI / RBI | UPI 123PAY — UPI for feature phones via app, missed call, IVR and proximity sound (launched with the DigiSaathi helpline) | Production; usage numbers not found on the opened page | [P10] |
-| NPCI | AePS, APBS/NPCI mapper for Aadhaar-based DBT, "Hello! UPI" voice payments | Production | [L] UNVERIFIED (npci.org.in blocked our fetchers) |
-| MoRD / DAY-NRLM | BC Sakhi (women SHG members as Business Correspondents) | Production | [L] UNVERIFIED tonight |
-| India Post Payments Bank | Doorstep banking, AePS | Production | [L] UNVERIFIED tonight |
+| NPCI | AePS (Aadhaar-enabled Payment System) — cash withdrawals 92.64 million (₹22,642.99 crore) in Sept 2026, 99.99 million in Aug 2026 | Production | [P18] |
+| NPCI / DBT Mission | APB system and NPCI mapper: Aadhaar-based DBT goes to the bank with the **latest seeding mandate** ("all the subsidies will be routed to that bank only"); seeding needs the customer's written, informed consent | Production (SOP v3.0.2, Feb 2021) | [P20] |
+| NPCI | "Hello! UPI" conversational voice payments | Production per news (Sept 2023) | [L] UNVERIFIED — NPCI's 2026 site restructure returns 404 for the old press-release and white-paper URLs |
+| MoRD / DAY-NRLM | BC Sakhi — SHG women as Business Correspondent agents (deposits, credit, remittances, pensions and scholarships, MGNREGA wages, insurance/pension enrolment) | 65,949 deployed FY 2022-23 to June 2025 | [P19] |
+| India Post Payments Bank | Doorstep banking, AePS | Production | [L] UNVERIFIED (not needed for the proposal) |
 | Sahamati / RBI | Account Aggregator consent framework (NBFC-AA) | 500 million+ consents fulfilled, 310 million+ accounts linked, 1,100+ regulated entities (as of Sept 2026) | [P11] |
-| RBI Innovation Hub | MuleHunter.AI (AI model to detect mule accounts) | Piloted with two large public-sector banks (Dec 2024); current bank count UNVERIFIED | [P12] |
-| iSPIRT / cloud providers | DEPA Training confidential clean rooms; cloud confidential clean rooms | Open source / cloud services | [L] UNVERIFIED tonight |
+| RBI Innovation Hub | MuleHunter.AI (AI model to detect mule accounts) | Piloted with two large public-sector banks (Dec 2024) [P12]; "implemented across banks" and fed by I4C's Suspect Registry under a May 2026 MoU [P22]; bank count UNVERIFIED (secondary sources say 26 or 31) | [P12], [P22] |
+| iSPIRT (DEPA) | DEPA for Training — open-source reference implementation of Confidential Clean Rooms (needs a signed e-contract and an Azure subscription); README: "work-in-progress and should not be used in production"; 18 GitHub stars, last push 12 Aug 2026, CC0 licence | Reference implementation, not production | [P21] |
 
 **Where our design borrows and where it goes further.** We reuse every rail above unchanged (accounts, KYC, BCs, UPI 123PAY, AePS, alerts, campaigns, SLBC/DLCC review forums). What is missing in production — based on what the Ministry says it does not maintain [P1, P3] — is (a) a person-level, gaming-resistant usage measure, (b) targeting by *expected incremental* usage instead of by dormancy, (c) causal measurement of which outreach works for whom, and (d) usage-based accountability tables down to district and implementer level released with privacy guarantees. That is the scope of Sakriya.
 
@@ -116,6 +118,12 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 - **[P14]** MeitY notification G.S.R. 843(E), 13 Nov 2025 (commencement of the DPDP Act: most substantive provisions incl. ss. 3–17 in force 18 months after publication); PIB backgrounder on the DPDP Rules 2025 notified 14 Nov 2025. https://www.meity.gov.in/static/uploads/2025/11/c56ceae6c383460ca69577428d36828b.pdf · https://pib.gov.in/PressReleasePage.aspx?PRID=2190655 — opened 2026-10-04 (v2).
 - **[P15]** Aadhaar (Targeted Delivery of Financial and Other Subsidies, Benefits and Services) Act, 2016, s. 29 (as amended). https://backend.uidai.gov.in/get/files/media/document/2026-06/Aadhaar_Act_2016_as_amended_0.pdf — opened 2026-10-04 (v2).
 - **[P16]** UIDAI Circular No. 14 of 2025 (4 Nov 2025), Aadhaar Data Vault and Reference Key. https://uidai.gov.in/images/Circular-No.14_of-2025.pdf — opened 2026-10-04 (v2).
+- **[P17]** RBI Press Release 2021-2022/70, Financial Inclusion Index (17 Aug 2021): Access 35%, Usage 45%, Quality 20%; 97 indicators; 53.9 for March 2021 vs 43.4 for March 2017; no base year; annual in July. https://www.rbi.org.in/scripts/FS_PressRelease.aspx?prid=52068 — opened 2026-10-04. **Note:** PIB's Aug 2026 backgrounder [P4] says "53.9 in 2018"; RBI's release dates 53.9 to March 2021, so we use RBI's figures.
+- **[P18]** NPCI, AePS Product Statistics, "AePS – Cash Withdrawal Monthly Statistics" (2026-27; data MTD as of 30 Sep 2026). https://www.npci.org.in/product/aeps/product-statistics — opened in a browser 2026-10-04.
+- **[P19]** Lok Sabha Unstarred Question 1598, Ministry of Rural Development, answered 29 Jul 2025 (BC Sakhis deployed). https://www.sansad.in/getFile/loksabhaquestions/annex/185/AU1598_DuNizn.pdf?source=pqals — opened 2026-10-04.
+- **[P20]** DBT Mission / NPCI, "Aadhaar Payments Bridge (APB) System — Standard Operating Procedure", v3.0.2 (Feb 2021), §2 and note (a). https://dbtbharat.gov.in/data/dbt_payments/Standard-Operating-Procedure-of-Aadhaar-Payments-Bridge-(APB).pdf — opened 2026-10-04.
+- **[P21]** iSPIRT, `depa-training` repository (README; GitHub API: 18 stars, pushed 2026-08-12, CC0-1.0). https://github.com/iSPIRT/depa-training — opened 2026-10-04.
+- **[P22]** PIB (Ministry of Home Affairs), "I4C and RBIH Sign MoU to Strengthen AI-Driven Detection of Mule Accounts and Cyber Financial Frauds", 12 May 2026. https://pib.gov.in/PressReleasePage.aspx?PRID=2260277 — opened in a browser 2026-10-04.
 - **[P0]** Official problem statement, The India @71/100 Challenge, Techfest 2026-27 — `_briefs/india71.pdf`.
 - **[S]** News coverage seen in search results 2026-10-04, not checked against primaries: The Hindu BusinessLine and Economic Times on RBI FI-Index FY25 = 67.0 (from 64.2) and weights Access 35% / Usage 45% / Quality 20%.
 
@@ -126,7 +134,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 3. NFHS-5 / NFHS-4: women having a bank or savings account they themselves use (national, state, district) — overnight download was truncated.
 4. ~~RBI circular on inoperative accounts~~ (done: [P8]).
 5. ~~DPDP Act ss. 7, 8, 10, 17; Rules and commencement; Aadhaar Act s. 29; UIDAI ADV~~ (done: [P13]–[P16]); still open: NPCI mapper consent rules; the DPDP Rules' standards for s. 17(2)(b) processing.
-6. Partly done ([P10]–[P12]): still UNVERIFIED — AePS volumes, NPCI mapper, Hello! UPI, BC Sakhi numbers (npci.org.in and pib.gov.in block automated fetches; use a browser), current MuleHunter.AI bank count, DEPA clean-room repos.
+6. Done 4 Oct 14:30 IST: AePS [P18], NPCI mapper consent and routing [P20], BC Sakhi [P19], MuleHunter.AI deployment [P22] (bank count still UNVERIFIED), FI-Index weights [P17], DEPA [P21]. Still UNVERIFIED: Hello! UPI (NPCI URLs 404), IPPB figures.
 7. DBT Bharat totals (FY 2024-25, 2025-26) — the dashboard is client-rendered; needs a browser.
 8. Outcomes of the Jul–Sep 2025 saturation campaign (PIB/DFS).
 9. Effect sizes from account-usage RCTs (Dupas et al. 2018; Field et al. 2021; Karlan et al. 2016; Schaner 2018; Bachas et al. 2021) to replace simulator ASSUMPTIONs.
