@@ -1,21 +1,72 @@
-Traceback (most recent call last):
-  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/eval/baseline_state_gap.py", line 58, in <module>
-    rl = pd.read_csv(f"{RAW}/rto_list_MH.csv"); rows = []
-         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 872, in read_csv
-    return _read(filepath_or_buffer, kwds)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 300, in _read
-    parser = TextFileReader(filepath_or_buffer, **kwds)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1643, in __init__
-    self._engine = self._make_engine(f, self.engine)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py", line 1925, in _make_engine
-    return mapping[engine](f, **self.options)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-bookish-sniffle/ev-c1-infra-map-india/.venv/lib/python3.12/site-packages/pandas/io/parsers/c_parser_wrapper.py", line 95, in __init__
-    self._reader = parsers.TextReader(src, **kwds)
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "pandas/_libs/parsers.pyx", line 575, in pandas._libs.parsers.TextReader.__cinit__
-pandas.errors.EmptyDataError: No columns to parse from file
+{
+ "vahan_states": 36,
+ "states_matched_to_pib": 36,
+ "unmatched_vahan_states": [],
+ "india_bev_registrations_till_today": 10550090,
+ "india_all_registrations_till_today": 452117289,
+ "india_bev_registrations_cy2025": 2356971,
+ "india_bev_share_cy2025_pct": 8.05,
+ "official_pcs_sum_pib2151390": 29277,
+ "national_bev_per_official_pcs": 360.4,
+ "median_state_bev_per_pcs": 307.95,
+ "osm_charging_features_india": 600,
+ "osm_base_timestamp": "2026-10-04T00:26:35Z",
+ "osm_coverage_vs_official_pct": 2.05,
+ "osm_with_operator_pct": 31.8,
+ "osm_with_any_socket_tag_pct": 7.8,
+ "mh_rtos_listed": 61,
+ "mh_rtos_fetched_till_today": 35,
+ "mh_bev_till_today_sum_rtos": 583404,
+ "mh_bev_by_segment_till_today": {
+  "2W": 472448,
+  "3W": 44664,
+  "4W": 58155,
+  "BUS": 3263,
+  "GOODS": 4589,
+  "OTHER": 285
+ },
+ "mh_top5_rtos_bev": [
+  [
+   "NAGPUR (EAST) - MH49( 17-APR-2017 )",
+   65467
+  ],
+  [
+   "NASHIK - MH15( 05-JAN-2017 )",
+   59554
+  ],
+  [
+   "KOLHAPUR - MH9( 02-MAR-2017 )",
+   50773
+  ],
+  [
+   "CHHATRAPATI SAMBHAJINAGAR - MH20( 20-OCT-2016 )",
+   43235
+  ],
+  [
+   "AMRAWATI - MH27( 21-JAN-2017 )",
+   30377
+  ]
+ ],
+ "mh_state_bev_till_today": 1185108,
+ "mh_pcs_pib2151390": 4155,
+ "mh_bev_per_pcs": 285.2
+}
+   vahan_state  bev_cum  bev_2025  pcs_total  bev_per_pcs  bev_share_2025_pct
+    CHANDIGARH    27524      5179         14       1966.0               10.17
+         ASSAM   386338     85143        344       1123.1               14.30
+         BIHAR   565118    123802        521       1084.7                8.21
+       TRIPURA    45383     10229         56        810.4               18.27
+ UTTAR PRADESH  1842283    405392       2326        792.0                9.89
+  CHHATTISGARH   218859     47736        346        632.5                6.46
+        ODISHA   346713     79237        623        556.5                8.86
+   UTTARAKHAND   116866     20244        223        524.1                6.84
+MADHYA PRADESH   519491    139923       1147        452.9                8.23
+    PUDUCHERRY    20700      4612         50        414.0                6.40
+    TAMIL NADU   721587    166233       1781        405.2                7.85
+     JHARKHAND   141963     34028        353        402.2                5.01
+      vahan_state  bev_cum  pcs_total  bev_per_pcs
+ HIMACHAL PRADESH     8745        137         63.8
+        MEGHALAYA     2676         62         43.2
+ARUNACHAL PRADESH      328         47          7.0
+           SIKKIM       41         12          3.4
+         NAGALAND      128         42          3.0

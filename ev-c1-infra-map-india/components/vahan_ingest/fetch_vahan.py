@@ -72,8 +72,15 @@ def states_class(year: str) -> None:
 
 
 def rto_level(state: str, years: list[str]) -> None:
-    v = Vahan()
-    rtos = v.set_state(state)
+    v, rtos = None, []
+    for attempt in range(3):  # the dashboard occasionally answers the state change without the RTO list
+        v = Vahan()
+        rtos = v.set_state(state)
+        if rtos:
+            break
+        log(f"{state}: empty RTO list (attempt {attempt + 1}); retrying with a fresh session")
+    if not rtos:
+        raise SystemExit(f"{state}: dashboard returned no RTOs; keeping the cached list untouched")
     st_label = next((s.label for s in v.states if s.value == state), state)
     pd.DataFrame([{"rto_code": r.value, "rto_label": r.label} for r in rtos]).to_csv(
         os.path.join(RAW, f"rto_list_{state}.csv"), index=False)

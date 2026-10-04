@@ -86,6 +86,10 @@ Folder, brief and journal created. The lead session starts Phase 0.
 ### 2026-10-04 08:05 IST — Morning package v1 (Lean Mode)
 - **Real data, reproducible:** VAHAN national pulls (State × Fuel for Till-Today and CY2020–2026; 36 states × vehicle class × fuel) and Maharashtra RTO tables (34/61 offices so far), plus OSM India chargers (600 features) and official state-wise PCS parsed from PIB 2151390 (36 states, sum 29,277 ✓) and PIB 2118894 (BEE, 26,367 ✓).
 - **Baseline v0 (C10 state level):** 10,550,090 BEV registrations till today; 360 per official PCS nationally; worst large states Assam 1,123, Bihar 1,085, UP 792; best Karnataka 152. Hypothesis: e-rickshaw-heavy states are over-flagged by the naive ratio → segment-aware demand (C8) is required.
-- **Found and fixed:** the PIB pages contain each table twice, which doubled the totals → dedupe plus a sum check against the stated totals. The baseline's summary JSON is still stale (an empty RTO table crashes the MH section); the state CSV is correct and the memo uses it.
+- **Found and fixed:** the PIB pages contain each table twice, which doubled the totals → dedupe plus a sum check against the stated totals. The baseline's summary JSON was stale at 08:05 (fixed 08:25, see next entry).
 - Wrote research/landscape.md (only pages opened tonight; leads marked UNVERIFIED), architecture/components.md + contracts (pydantic + JSON Schemas), and ADR 001 (six hats, thesis/antithesis/synthesis, scores; the independent adversarial review is pending: no sub-agents in Lean Mode).
+
+### 2026-10-04 08:25 IST — VAHAN redeploy handled; baseline summary corrected
+- At ~07:28 the dashboard's JSF auto-ids shifted (state dropdown `j_idt34` → `j_idt37`, Refresh `j_idt65` → `j_idt75`), and the resumed Maharashtra fetch silently got 0 RTOs. The client now discovers widget ids from the page by their labels, and the fetcher never overwrites a good RTO list with an empty one. The Maharashtra fetch resumed (35/61 offices at 08:25).
+- `eval/results/baseline_summary.json` regenerated; it now agrees with the CSV and the memo: 36/36 states matched; 10,550,090 BEV registrations till today; 2,356,971 in CY2025 (8.05%); 29,277 official PCS; 360.4 BEV per PCS; OSM 600 = 2.05% of official, 31.8% with operator, 7.8% with socket tags.
 

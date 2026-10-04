@@ -55,7 +55,7 @@ summary = {
 seg = lambda c: ("2W" if re.search(r"M-CYCLE|MOTOR CYCLE|MOPED|MOTORISED CYCLE", c) else "3W" if re.search(r"RICKSHAW|THREE WHEELER", c)
        else "4W" if re.search(r"MOTOR CAR|MOTOR CAB|LUXURY CAB|MAXI CAB|QUADRICYCLE", c) else "BUS" if re.search(r"BUS", c)
        else "GOODS" if re.search(r"GOODS|TRUCK|CARRIER", c) else "OTHER")
-rl = pd.read_csv(f"{RAW}/rto_list_MH.csv"); rows = []
+rl = pd.read_csv(f"{RAW}/rto_list_MH.csv") if os.path.getsize(f"{RAW}/rto_list_MH.csv") > 5 else pd.DataFrame(columns=["rto_code", "rto_label"]); rows = []
 for _, r in rl.iterrows():
     for y in ("A", "2025"):
         p = f"{RAW}/rto_MH_{r.rto_code}_class_fuel_{y}.csv"

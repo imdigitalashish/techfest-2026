@@ -50,11 +50,24 @@ class Vahan:
         r = self._req("get", BASE)
         self.page = r.text
         self.vs = re.search(r'name="javax.faces.ViewState"[^>]*value="([^"]+)"', r.text).group(1)
-        self.form = {"masterLayout_formlogin": "masterLayout_formlogin", "j_idt26_input": "A",
-                     "j_idt34_input": "-1", "selectedRto_input": "-1",
+        # JSF auto-ids (j_idtNN) shift between deployments, so discover them from the page by their labels.
+        sel_ids = re.findall(r'<select[^>]*id="([^"]+)_input"', self.page)
+        def find_select(label):
+            for sid in sel_ids:
+                if any(label in o.label for o in _options(self.page, sid)):
+                    return sid
+            raise RuntimeError(f"VAHAN page changed: no select with option {label!r}")
+        self.type_id = find_select("In Thousand")
+        self.state_id = find_select("All Vahan4 Running States")
+        m = re.search(r'<button id="([^"]+)"[^>]*PrimeFaces\.ab\(\{s:&quot;\1&quot;,f:&quot;masterLayout_formlogin&quot;,u:&quot;VhCatg norms fuel VhClass combTablePnl', self.page)
+        if not m:
+            raise RuntimeError("VAHAN page changed: Refresh button not found")
+        self.refresh_id = m.group(1)
+        self.form = {"masterLayout_formlogin": "masterLayout_formlogin", f"{self.type_id}_input": "A",
+                     f"{self.state_id}_input": "-1", "selectedRto_input": "-1",
                      "yaxisVar_input": "State", "xaxisVar_input": "Fuel",
                      "selectedYearType_input": "C", "selectedYear_input": "A"}
-        self.states = [o for o in _options(self.page, "j_idt34") if o.value != "-1"]
+        self.states = [o for o in _options(self.page, self.state_id) if o.value != "-1"]
 
     def _req(self, method: str, url: str, **kw) -> requests.Response:
         for attempt in range(5):
@@ -90,7 +103,7 @@ class Vahan:
         return self._ajax(source, render, event="change")
 
     def set_state(self, code: str) -> list[Option]:
-        t = self._set("j_idt34_input", code, "j_idt34", "selectedRto yaxisVar")
+        t = self._set(f"{self.state_id}_input", code, self.state_id, "selectedRto yaxisVar")
         self.form["selectedRto_input"] = "-1"
         return [o for o in _options(t, "selectedRto") if o.value != "-1"]
 
@@ -103,7 +116,7 @@ class Vahan:
         self._set("xaxisVar_input", x, "xaxisVar", "multipleYear")
         self._set("selectedYearType_input", year_type, "selectedYearType", "selectedYear")
         self._set("selectedYear_input", year, "selectedYear", "selectedYear")
-        self._ajax("j_idt65", REFRESH_RENDER)
+        self._ajax(self.refresh_id, REFRESH_RENDER)
         d = dict(self.form)
         d.update({"groupingTable:xls": "groupingTable:xls", "javax.faces.ViewState": self.vs})
         r = self._req("post", BASE, data=d)
