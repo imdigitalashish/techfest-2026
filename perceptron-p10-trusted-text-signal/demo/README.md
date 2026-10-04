@@ -3,12 +3,16 @@
 You are the manipulator. Pick a real StockNet stock-day, write fake posts (scored live by the deployed MiniLM scorer), give them a fake account (trust via `trust_of`), and inject them. Watch the plain CQR interval break on the few days where it can, while the **certified** band provably contains the no-injection interval for any ≤ k injected posts. Then let the machine red-team the day, and replay your attack on all 16,443 test stock-days.
 
 ```bash
-bash perceptron-p10-trusted-text-signal/demo/run.sh     # opens http://127.0.0.1:8710/ (first visual ≈ 6 s)
+bash perceptron-p10-trusted-text-signal/demo/run.sh     # opens http://127.0.0.1:8710/
 bash perceptron-p10-trusted-text-signal/demo/smoke.sh   # headless assertions (≈ 1.5 min)
 ```
 
 - **Fresh clone, offline, CPU only.** No StockNet fetch is needed: the committed 5.6 MB `bundle/` holds the cal+test feature rows, per-post sentiment/trust scores, the three LightGBM models as text, the sentiment head as JSON, and the showcased days.
 - **Python.** `run.sh` uses `P10_PYTHON`, else the project `.venv`, else creates `demo/.venv` with `uv` from `requirements.txt` (offline wheel cache first).
+- **Timing on this M5 Mac, CPU, measured from a fresh clone.**
+  - The *first* run does a one-time setup of 106 s: about 15 s for `uv` to install from cache, and the rest is macOS's one-time scan of newly installed native libraries on first load. `run.sh` prints this separately.
+  - First visual then arrives in 14.8 s.
+  - Every later run shows the first visual in 3.9 s (6.1 s with the project venv). The MiniLM scorer is ready about 4 s after that.
 - **Scorer.** The live scorer needs `sentence-transformers/all-MiniLM-L6-v2` in the Hugging Face cache (about 90 MB; one-time `hf download sentence-transformers/all-MiniLM-L6-v2`). Without it the page uses VADER and says **FALLBACK** on screen.
 - **Shared-Mac guards.** Everything runs under `nice -n 10` and waits while `kern.memorystatus_level` < 30. `P10_PORT` and `P10_NO_OPEN=1` are honoured.
 
