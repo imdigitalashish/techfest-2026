@@ -1,0 +1,12 @@
+{
+  "train": {
+    "n": 1107,
+    "frac_open_equals_prev_close": 0.031616982836495035,
+    "spearman_gap_vs_y": 0.3421071141039383
+  },
+  "test": {
+    "n": 505,
+    "frac_open_equals_prev_close": 0.04356435643564356,
+    "spearman_gap_vs_y": 0.3992907169237088
+  }
+}

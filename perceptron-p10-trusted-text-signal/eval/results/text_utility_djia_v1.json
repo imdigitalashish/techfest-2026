@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "synthetic": false,
+    "n_train": 1087,
+    "n_cal": 376,
+    "n_test": 505,
+    "train": [
+      "2008-09-08",
+      "2012-12-31"
+    ],
+    "cal": [
+      "2013-01-02",
+      "2014-06-30"
+    ],
+    "test": [
+      "2014-07-01",
+      "2016-06-30"
+    ],
+    "target": "100*log(Close[t+1]/Open[t+1])",
+    "alpha": 0.1,
+    "block": 10,
+    "B": 10000
+  },
+  "models": {
+    "price_only": {
+      "winkler": 3.523920023730098,
+      "coverage": 0.9188118811881189,
+      "mean_width": 2.87848288684333,
+      "coverage_high_vol": 0.9615384615384616,
+      "cqr_offset_Q": -0.02705039547360144,
+      "pinball": {
+        "q05": 0.09460724148140015,
+        "q50": 0.3204151258871798,
+        "q95": 0.08223568715850109
+      },
+      "ic_spearman_median": 0.3551896804587291,
+      "aci": {
+        "coverage": 0.900990099009901,
+        "mean_width": 2.7429804700800138,
+        "mean_day_err": 0.09900990099009901
+      },
+      "linear_qr": {
+        "winkler": 6.234292398026954,
+        "coverage": 0.7960396039603961,
+        "mean_width": 3.220755592680648
+      }
+    },
+    "fusion": {
+      "winkler": 3.520489310062675,
+      "coverage": 0.9207920792079208,
+      "mean_width": 2.8363197101132203,
+      "coverage_high_vol": 0.9615384615384616,
+      "cqr_offset_Q": -0.06447072211088556,
+      "pinball": {
+        "q05": 0.09653428252596175,
+        "q50": 0.3190701753226503,
+        "q95": 0.08151491166009778
+      },
+      "ic_spearman_median": 0.34998639615514354,
+      "aci": {
+        "coverage": 0.900990099009901,
+        "mean_width": 2.726816649391346,
+        "mean_day_err": 0.09900990099009901
+      },
+      "linear_qr": {
+        "winkler": 6.410760523201561,
+        "coverage": 0.7722772277227723,
+        "mean_width": 3.2412818447179657
+      }
+    }
+  },
+  "primary": {
+    "mean_winkler_improvement": 0.0034307136674228793,
+    "relative_improvement": 0.000973550376943981,
+    "p_one_sided": 0.4629,
+    "boot_90ci_of_mean": [
+      -0.06379665348161692,
+      0.06759697510022787
+    ],
+    "decision": "no evidence that text adds value"
+  },
+  "secondary_linear_qr": {
+    "mean_winkler_improvement": -0.17646812517460644,
+    "p_one_sided": 0.9954
+  },
+  "exploratory": {
+    "spearman_abs_y_vs_sent_mean": 0.045626270701604334,
+    "spearman_abs_y_vs_sent_std": 0.08800718581174889,
+    "spearman_abs_y_vs_frac_bear": 0.06629136772681211,
+    "spearman_abs_y_vs_abs_max": 0.0998090802869107,
+    "spearman_abs_y_vs_novelty": 0.04464222819797509
+  }
+}
