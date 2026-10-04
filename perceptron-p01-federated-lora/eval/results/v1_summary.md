@@ -8,6 +8,7 @@ Model HuggingFaceTB/SmolLM2-135M, LoRA on q_proj, v_proj (r_max 16, α 32.0), 12
 |---|---|---|---|---|---|---|---|---|---|---|
 | FedAvg on A,B — rank 8 everywhere (starter baseline) | 0 | 2.6995 | 3.3334 | -0.0806 | -0.0374 | 1.0320 | 0.0880 | 0.0138 | 22.1 / 22.1 / 22.1 / 22.1 / 22.1 | 856 |
 | FedAvg on A,B — device ranks, zero-padded (HetLoRA-style) | 0 | 2.6873 | 3.3059 | -0.0559 | -0.0285 | 1.2462 | 0.3615 | 0.0042 | 44.2 / 22.1 / 11.1 / 5.5 / 11.1 | 866 |
+| Frozen shared A, nested ranks, n_k weights (FFA-LoRA-style) | 0 | 2.7427 | 3.3747 | -0.1033 | -0.0539 | 0.9944 | 0.0000 | 0.0215 | 17.7 / 8.8 / 4.4 / 2.2 / 4.4 | 4252 |
 
 Per-domain final loss (seed mean):
 
@@ -15,6 +16,7 @@ Per-domain final loss (seed mean):
 |---|---|---|---|---|---|
 | fedavg_ab_homo | 3.2741 | 2.4848 | 1.8329 | 2.5724 | 3.3334 |
 | fedavg_ab_het | 3.3059 | 2.4662 | 1.8171 | 2.5418 | 3.3056 |
+| anchor_naive | 3.3747 | 2.5320 | 1.8620 | 2.5905 | 3.3543 |
 
 ## Scenario `dropout` — `v1_dropout.jsonl`
 
