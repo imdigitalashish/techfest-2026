@@ -110,6 +110,11 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 17:59 IST — InnovateX T3 completed (18 of 20)
+- **InnovateX T3 DONE (d82d80f), verified on main:** check_docs 0 problems (35 fact rows); 85 tests pass; astra and sol reviews in the ledger.
+  - Tide model trained only on pre-2024 data: P2 vs P1 −5.2% [−15.9, −0.8], 39/40 (SIMULATED). The litter-counter fix replaced an artefactual 33% with +15.9% (SYNTHETIC).
+  - Memo v4 keeps T1 as the zonal pick. The dashboard still needs the §11 demo pieces; it is in the demo-verify list.
+- Slot → India@71 T1 demo (your India pick).
 ### 2026-10-04 17:36 IST — Sweep
 - Demo phase running: briefs went to P7, P10 and P6 at 17:28. Each lead spawns one demo builder.
 - P7 appended a correction listing the real commit times of its pre-registrations. Every registration still precedes its run.
