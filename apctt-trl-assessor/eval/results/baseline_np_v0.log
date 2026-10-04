@@ -1,0 +1,24 @@
+/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-solid-spork/apctt-trl-assessor/eval/baseline_numpy.py:84: RuntimeWarning: divide by zero encountered in matmul
+  Wt = np.linalg.solve(Xc.T @ Xc + a.alpha * np.eye(a.D, dtype=np.float32), Xc.T @ (T - mu))
+/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-solid-spork/apctt-trl-assessor/eval/baseline_numpy.py:84: RuntimeWarning: overflow encountered in matmul
+  Wt = np.linalg.solve(Xc.T @ Xc + a.alpha * np.eye(a.D, dtype=np.float32), Xc.T @ (T - mu))
+/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-solid-spork/apctt-trl-assessor/eval/baseline_numpy.py:84: RuntimeWarning: invalid value encountered in matmul
+  Wt = np.linalg.solve(Xc.T @ Xc + a.alpha * np.eye(a.D, dtype=np.float32), Xc.T @ (T - mu))
+/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-solid-spork/apctt-trl-assessor/eval/baseline_numpy.py:89: RuntimeWarning: divide by zero encountered in matmul
+  Z = (Xte - xm) @ Wt + mu
+/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-solid-spork/apctt-trl-assessor/eval/baseline_numpy.py:89: RuntimeWarning: overflow encountered in matmul
+  Z = (Xte - xm) @ Wt + mu
+/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-solid-spork/apctt-trl-assessor/eval/baseline_numpy.py:89: RuntimeWarning: invalid value encountered in matmul
+  Z = (Xte - xm) @ Wt + mu
+/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-solid-spork/apctt-trl-assessor/eval/baseline_numpy.py:101: RuntimeWarning: divide by zero encountered in matmul
+  res["models"]["thr_ridge_expect"] = metrics(yte, np.clip(np.rint(P @ lv), 1, K).astype(int))
+/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-solid-spork/apctt-trl-assessor/eval/baseline_numpy.py:101: RuntimeWarning: overflow encountered in matmul
+  res["models"]["thr_ridge_expect"] = metrics(yte, np.clip(np.rint(P @ lv), 1, K).astype(int))
+/Users/imdigitalashish/Projects/AshishKumarVerm/techfest-2026/.worktrees/imdigitalashish-solid-spork/apctt-trl-assessor/eval/baseline_numpy.py:101: RuntimeWarning: invalid value encountered in matmul
+  res["models"]["thr_ridge_expect"] = metrics(yte, np.clip(np.rint(P @ lv), 1, K).astype(int))
+== trl_current: train 6352 test 1657 fit 201.7s predict 13.68 ms/doc
+majority           exact 0.291 within1 0.701 MAE 1.112 QWK 0.000
+ridge_round        exact 0.297 within1 0.745 MAE 1.053 QWK 0.314
+thr_ridge_mode     exact 0.309 within1 0.696 MAE 1.151 QWK 0.235
+thr_ridge_median   exact 0.312 within1 0.745 MAE 1.042 QWK 0.302
+thr_ridge_expect   exact 0.303 within1 0.754 MAE 1.034 QWK 0.298
