@@ -6,16 +6,16 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (12:52 IST, 4 Oct)
+## Now (13:05 IST, 4 Oct)
 - **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
 - **Active:**
-  - Namma Space: Brush E2E is thrashing on memory; kill/restart decision at 13:15.
-  - P1: GPU queue resumed 12:31.
-  - P4: gpt-6-sol reproduction of the v2 holdout is running.
-  - P10: resumed 12:44 into InnovateX T1's slot.
-  - P5: resumed 12:52 into P9's slot.
-- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9.
-- **Queue:** APCTT (when the 10 Oct data lands) → P3 → EV C1 → India@71 T3 → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
+  - Namma Space: Brush E2E (has the GPU to itself since 12:57); kill/restart decision at 13:15.
+  - P10: resumed 12:44; text-utility test pre-registered on unseen DJIA data.
+  - P5: resumed 12:52; E7–E9 pre-registered; astra and sol reviews running.
+  - P3: resumed 13:05 into P1's slot.
+  - EV C1: resumed 13:05 into P4's slot.
+- **Completed — awaiting your review:** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4.
+- **Queue:** APCTT (when the 10 Oct data lands) → India@71 T3 → P6 → P2 → P8 → India@71 T2 → InnovateX T2 → InnovateX T3.
 - **Needs you today:**
   - free memory (see *Mac memory* below);
   - a 2-min mini-SOP test clip for Namma Space;
@@ -45,10 +45,13 @@
   - one timed rehearsal using `presenter-card.pdf`;
   - a pilot contact or letter (e.g. DJB, as the rainwater-harvesting nodal agency);
   - supplier quotes for the parts in `prototype-plan.md`.
-- [ ] **P9 agent guardrail (✅ Completed — please review `perceptron-p09-agent-guardrail/deliverables/`):**
-  - decide the 12 Oct Perceptron pick (one problem per team): P7 and P9 are done; P1, P4, P10 and P5 are finishing;
-  - teammates' names for the [TEAM] placeholders;
-  - if you keep the Azure OpenAI resource `rg-tf26-p08`, P9's frontier baseline can be re-run from it.
+- [ ] **Perceptron pick by 12 Oct (one problem per team).** P7, P9, P1 and P4 are ✅ Completed and ready for your review; P10, P5 and P3 are still running.
+  - **P7 multi-agent allocation:** planning beats the best rule, +3.7 pp under shock and +5.5 pp under shock+drift (30/30 seeds, pre-registered). Its detector spike failed replication. astra hostile score 71/100.
+  - **P9 agent guardrail:** on held-out real agent errors, 41% of harmful calls stopped at 2.0% of good calls blocked (30% held for review). astra 62/100; memo 3.8/5.
+  - **P1 federated LoRA:** the only method that improves every domain (macro −0.081 vs the starter), at a stated cost on the data-rich domain. astra 68/100 on the draft before its fixes; memo 4.2/5.
+  - **P4 order-book regimes:** the most rigorous (sol reproduced it exactly), but the gain is small (−0.0099 log-loss) and not tradable after fees. astra 53/100 before fixes; memo 3.4/5. P4 itself recommends P7 or P9.
+  - The astra scores were given at different stages and the memos are self-scored, so treat them as rough, not a ranking.
+  - Whichever you pick: teammates' names for the [TEAM] placeholders, then register by 15 Oct.
 ## Portfolio (08:18 IST) — package = landscape, components, contracts, ADR, deliverables, eval, memo
 | Project | Package | Memo (self-score) | Last push | Note |
 |---|---|---|---|---|
@@ -84,6 +87,18 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 13:05 IST — P1 and P4 completed
+- **P1 DONE (9b710f7), verified on main:**
+  - 5 paired seeds with node dropout. AnchorLoRA's macro loss beats the starter by −0.081 [−0.093, −0.070], FFA-LoRA by −0.050 and FlexLoRA by −0.083.
+  - It improves all 5 domains vs the untuned model; the starter improves only the data-rich one. Stated costs: sample-weighted (micro) loss +0.116, worst-domain loss +0.057.
+  - check_claims 12/12; check_numbers PASS. Reviews: sol 13/14, astra 12/12. Memo 4.2/5.
+- **P4 DONE (40fccc2), verified on main:**
+  - Pre-registered; 22-day holdout; sol reproduced every number exactly.
+  - KS-triggered retraining is worse (+0.0268 log-loss, 21/22 days). The volatility-regime gate is better (−0.0099, 22/22). The registered Fixed-Share spike failed H1.
+  - Break-even fee 0.132 bps/side vs 1.7–5.0 bps taker fees: not tradable as a taker.
+  - check_numbers: 185 numbers OK. astra review 18 items accepted (3 in part); sol 5/5. Memo 3.4/5. P4 itself recommends P7 or P9 over P4.
+- P3 and EV C1 resumed into the slots. Neither project left browsers or servers running.
+
 ### 2026-10-04 12:52 IST — P9 completed
 - **P9 DONE (2462e64), verified on main:** check_docs 22/22; 7 tests pass; abstract 877 words.
   - On 991 held-out real τ-bench write calls (a re-run after the code-review fixes, labelled exploratory), the tuned checker stops 41% [28–55] of harmful calls, blocks 2.0% of good calls and holds 30%.
