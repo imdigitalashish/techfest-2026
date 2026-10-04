@@ -2,6 +2,17 @@
 
 Journal and current state: [thought_node.md](thought_node.md) · approach: [deliverables/architecture.md](deliverables/architecture.md) · abstract: [deliverables/round1-abstract.md](deliverables/round1-abstract.md) · components: [architecture/components.md](architecture/components.md) · spike decision: [architecture/adr/001-spike.md](architecture/adr/001-spike.md) · research: [research/landscape.md](research/landscape.md)
 
+## Live demo (PLAYBOOK §11)
+```bash
+bash demo/setup_venv.sh   # once per fresh clone (needs network once; creates .venv, warms native imports)
+bash demo/run.sh          # offline; opens http://127.0.0.1:8707/ on the July 4th (real NYC trips) tab
+bash demo/smoke.sh        # headless checks (31–32 asserts, ~70–95 s); --quick skips the week recompute
+```
+- **Opening scene:** real NYC TLC trips (July 2025, Manhattan, thinned). The best rule and the look-ahead planner run side by side on the identical request stream. Live losses in the July 4 21:30–23:30 surge window sit next to the committed 20-replicate means.
+- **Then the judge's turn:** click to add a surge (live only). The synthetic stress test predicts first: the committed (L,P)-cell result appears before the click, and the live result then lands among the 20 committed per-seed results.
+- **Talk track:** [`demo/SCRIPT.md`](demo/SCRIPT.md). Fallback screenshots and video: [`demo/fallback/`](demo/fallback/). Details: [`demo/README.md`](demo/README.md).
+- **Lead's fresh-clone check** (`gh repo clone`, 2026-10-04 19:20 IST): smoke 31/31 (the raw-TLC cross-check is skipped by design). First visual came 38 s after run.sh on a cold clone (includes macOS's first load of freshly installed native libraries) and 2.4 s on a warm rerun.
+
 ## Run it (from this folder)
 ```bash
 uv venv .venv --python 3.11 --system-site-packages && uv pip install --python .venv/bin/python -r requirements.txt highspy

@@ -276,3 +276,16 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
   - The synthetic city becomes "Stress test (SYNTHETIC)", shown second, and keeps the committed per-seed bridge.
   - Always visible: "real demand, simulated fleet; cause UNVERIFIED". Cells carry Manhattan zone names from the committed mapping.
 - The builder has committed its engine (2bf74ee) and its live UI, server and run.sh (a47365a).
+
+### 2026-10-04 19:21 IST — Demo built; lead fresh-clone verification passed
+- The builder reported DEMO BUILT (last commit 0738aee): smoke 32/32 in its worktree and 31/31 on a fresh clone; first visual 1.6–2.8 s warm.
+- **My verification** (`gh repo clone` of main at 40e3f0c into /tmp, private ports):
+  - demo/ is 6.2 MB with no CDN references;
+  - `demo/smoke.sh` 31/31 in 92 s (the find_surges cross-check is skipped; raw TLC data is not in a clone by design);
+  - `demo/run.sh` first visual 38 s on the cold clone (my setup skipped setup_venv.sh's import warm-up, so this includes macOS's first native-library load) and 2.4 s warm;
+  - the clone's git tree stays clean after running.
+- Key live receipts, asserted by smoke:
+  - July 4 window losses for replicate 200 are live [46, 1] = committed [46, 1];
+  - NYC, week and shock-day recomputes are bit-identical to the committed episodes.csv rows;
+  - synthetic seed 7000 at L=1, P=10: rule 160 vs planner 17 lost.
+- Launched the gpt-6-astra "judge watching the demo" review session ([P7 review: demo (gpt-6-astra)](ghapp://sessions/326ddbe5-f3aa-495b-ab58-f5681fd970d5)). The README now links the demo.
