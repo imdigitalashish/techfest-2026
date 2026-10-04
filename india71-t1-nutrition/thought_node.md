@@ -71,7 +71,7 @@ Context from the statement: Poshan Tracker already tracks growth-monitoring and 
 | C2 | identity_linkage | IdentityRecord → LinkDecision | ID join, Fellegi–Sunter | (C) | built | F1 ids 0.513 · prob 0.945 · PPRL 0.968 — SYNTHETIC |
 | C3 | growth_standards | MeasurementEvent → AnthroZ | WHO Anthro | | built | max error 0.003 z on 87,408 WHO table points |
 | C4 | credibility_engine | events+z → RecordQuality, UnitCredibility | SMART / WHO-UNICEF survey checks | **A** | built | AUROC fabricating 0.694±0.041, any non-good 1.0 — SYNTHETIC |
-| C5 | early_warning | z, velocity, health events → RiskScore | 2-month no-gain rule | **B** | next | recall@capacity |
+| C5 | early_warning | z, velocity, health events → RiskScore | 2-month no-gain rule | **B** | v0 built | recall@5/AWC-month 0.326 vs rule 0.253, lowest-WHZ 0.318; +health 0.325 — SYNTHETIC |
 | C6 | action_router | RiskScore/Alert → Task | monthly review | | built (sim invalid) | % within SLA |
 | C7 | frontline_worklist | Task → Worklist | PT home-visit scheduler | | built | payload bytes, % SMS ≤160 |
 | C8 | aggregate_publisher | events → AggregateCell | static dashboards | | contract | relative error at ε |
@@ -100,4 +100,11 @@ Relaunched research as 12 narrow agents (L1–L12). Survivors with usable notes:
 
 ### 2026-10-04 07:10–08:00 IST — resume after session crash; morning package
 Pushed all component work (`31ccc35`; 19 tests pass). Verified the core gap at primary sources myself: Rajya Sabha USQ 477 Annexure I (Poshan Tracker June 2025: 37.07/5.46/15.93) and PIB PRID 1988614 (NFHS-5 35.5/19.3/32.1; Poshan Tracker Nov 2023 37.51/17.43/6). Wrote research/landscape.md, architecture/components.md, ADR 001, deliverables/round1-proposal.md + architecture.md, selection memo v1. Ran all component metrics into `eval/results/*.json`. Known issue: action-router ops simulation output invalid (median 999 days; queue overload under default assumptions), so it is excluded from all claims until fixed.
+
+### 2026-10-04 08:00 IST — early-warning v0 (spike B) result
+Frozen evaluator `components/early_warning/eval.py` (train seeds 21–22, held-out seed 23; capacity K=5 per AWC per month; target = truly wasted within 3 months among truly non-wasted child-months). SYNTHETIC result ([`eval/results/early_warning.json`](eval/results/early_warning.json)):
+- recall@5: programme rule "no weight gain in 2 months" **0.253**; lowest current WHZ **0.318**; logistic on anthropometry **0.326**; plus linked health events **0.325**.
+- Base rate 15.4%.
+
+Learned: (1) the v0 model beats the programme rule by +7.3 pp at equal capacity but barely beats ranking by current WHZ. (2) Linked health events add nothing *in this simulator*. This is partly by construction (illness is weakly coupled to episode onset), so linkage value must not be claimed from it. (3) The high base rate suggests many "incident" cases are threshold-hovering. Next: an evaluator v1 that weights new episodes with a real decline (kept as a separate file; v0 stays frozen), a velocity-z feature, and a ratchet loop.
 

@@ -94,6 +94,7 @@ All components are typed modules with contract tests, and every number below com
 | WHO z-score engine | Max error vs WHO's own published tables (87,408 points, ±4 SD) | **0.003 z** |
 | Record linkage, ICDS ↔ health (synthetic dual registry, 5,000 children) | Pairwise F1: shared IDs only / probabilistic / privacy-preserving Bloom filter | **0.51 / 0.94 / 0.97** |
 | Credibility engine (synthetic, 120 AWCs, 3 seeds) | AUROC, any unreliable AWC / copy-forward AWCs specifically; gross-error recall | **1.00 / 0.69 / 0.995** |
+| Early warning v0 (held-out synthetic cohort; 5 home visits per AWC per month) | Recall of children who become wasted within 3 months: logistic model / "no weight gain in 2 months" rule | **0.33 / 0.25** |
 | Policy gate | Red-team access requests correctly denied | **29/29, 0 false allows** |
 | Audit log | Random tampering detected | **100/100** |
 
