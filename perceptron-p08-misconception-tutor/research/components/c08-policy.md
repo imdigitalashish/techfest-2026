@@ -19,3 +19,7 @@ Initial misconceptions still held after 4 sessions (SYNTHETIC, 450 learners/arm)
 
 ## Next
 EIG-optimal generation; run on LLM-simulated students with a hidden programmatic state.
+
+## Update (4 Oct)
+- The inversion test shows reasoning models can also identify interacting misconceptions exactly: gpt-5.5 100.0% at 7–8 operators, gpt-5.4-mini 95.0%, gpt-4.1-mini 11.7%.
+- The policy's value is therefore item choice and cost, not identification accuracy. Its simulated-learning result (5.5% vs 58.4% of misconceptions left) remains synthetic until the pilot.

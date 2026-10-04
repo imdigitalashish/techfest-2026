@@ -19,3 +19,8 @@ Exact-set diagnosis accuracy after 4 sessions x 8 items (SYNTHETIC): **0.836** w
 
 ## Next
 Real-data validation on option-level sequences.
+
+## Update — pre-registered tracing test (synthetic; home-field for the tracer)
+- **Exact held set after 12 answers:** tracer 64.0% (Brier 0.066) vs gpt-5.4-mini 66.0% (Brier 0.073; Δ −2 pp, CI −7 to +3) and gpt-5.5 60.0% (tracer 66.0% on the same 50; n.s.); gpt-4.1-mini 16.0%.
+- The tracer has no accuracy edge over reasoning models. It is kept because it is free per learner (GPT-5.5 cost $0.146 per learner in this test) and drives information-gain item choice.
+- **Next:** real option-level sequences.

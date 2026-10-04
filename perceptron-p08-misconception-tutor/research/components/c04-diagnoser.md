@@ -20,3 +20,19 @@ MVP closed set (real, n=129): majority **30.2%**, TF-IDF **38.0%**, exec->TF-IDF
 
 ## Next
 Add the LLM leg (Azure OpenAI) and a dense retriever; report hybrid gains with bootstrap CIs.
+
+## Update — pre-registered LLM-gap tests (4 Oct, `eval/llm_gap_protocol.md`)
+- **Real Eedi data** (131 positives, 152 same-domain negatives, NONE allowed):
+
+  | Diagnoser | Positives correct | False claims on negatives |
+  |---|---|---|
+  | Engine | 19.1% | 0.0% |
+  | gpt-4.1-mini | 55.7% | 15.8% |
+  | gpt-5.4-mini | 69.5% | 0.0% |
+  | gpt-5.5 | 79.4% | 0.0% |
+
+  The gated hybrid helps only gpt-4.1-mini: balanced accuracy 70.0% → 78.2%.
+- **Decision:** C4 becomes an **exact-first cascade** (engine claim, else LLM). It has no accuracy edge over reasoning models.
+  - On real items, GPT-5.5 cost per 1,000 diagnoses falls $6.50 → $5.95, because the engine explains only 26/304 (post hoc).
+  - On engine-native probability items, cost per 1,000 halves, $7.32 → $3.66 (confirmatory, Addendum B).
+  - The engine is deterministic at 0.11 ms; GPT-5.5 changed 2 of 40 repeated diagnoses.

@@ -18,3 +18,7 @@ Fidelity vs real option statistics: to do. Current parameters are assumptions, s
 
 ## Next
 Calibrate on real data.
+
+## Update (4 Oct)
+- The tracing test used these program learners. The tracer shares their generative family, so its result (64.0% vs gpt-5.4-mini 66.0%) is an upper bound on its advantage.
+- Calibrating the simulator to real Eedi option statistics remains open.

@@ -20,3 +20,7 @@ Template generator: 400/400 items SymPy-verified, target fires 100%, discriminat
 
 ## Next
 Repeat the LLM-only comparison on word problems and the probability pack; add LLM-proposed families verified by the same checks.
+
+## Update — pre-registered prob_pack generation test (Addendum A)
+- **LLM-only answer keys + misconception answers** for 60 probability / expected-value problems, both exact: gpt-4.1-mini 36.7%, gpt-5.4-mini 96.7%, gpt-5.5 100.0%. Our keys are exact by construction.
+- The verification edge is real against cheaper models and a guarantee against any model, but GPT-5.5 made no key errors here.
