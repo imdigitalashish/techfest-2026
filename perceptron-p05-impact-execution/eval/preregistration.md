@@ -148,3 +148,5 @@ The clock times written in this file were the lead's estimates, not readings of 
 - **Report** (descriptive, no directional hypothesis): mean delay and at_fill for each arm; paired Δ vs TWAP with 95% CIs; the identity residual.
 - **Integrity:** also report the new exact pre-trade check (event-level book arrays equal before 09:35, and equal arrival mids).
 - **Command:** `nice -n 10 .venv/bin/python eval/run_experiment.py --exp E12_filltime_test --seeds 1660:1720 --qty 4000 --policies eval/policies/test_touch.json --workers 4 --rng-sync per_wakeup` (test_touch.json = the TWAP, IA_full and TWAP_touch_limit entries of test.json).
+
+**Correction to A1 item 2 (appended 2026-10-04 13:15:26 IST):** the text "(0.2¢/share, ≈  on the M parent)" lost its dollar figures to shell substitution. Intended text: "(0.2¢/share, ≈ $8 on the $4M parent)", i.e. 0.02 bps × $4,000,000 = $8 per 4,000-share parent at $1,000/share. The margin itself (±0.02 bps) is unchanged.
