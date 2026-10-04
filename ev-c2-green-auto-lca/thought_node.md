@@ -10,10 +10,10 @@
 - _(none)_
 
 ## Now
-- **Phase:** 3–4 done for Round 1 — two case studies with uncertainty, ADR v2 (spikes A + D, national grid as foundation), Round-1 methodology + roadmap v1.0, three independent reviews processed. Active batch (Supervisor 09:55); delegation only via child sessions (≤ 2).
-- **Headline (rendered from `eval/results/latest.json`):** <!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `d337af61e1`).<!-- headline:end -->
-- **Plan:** cross-model review of the final Round-1 documents (gpt-6-astra session) → apply → DONE to Supervisor → **pause** (batch mode) while the user reviews. Spike-D data gate and gold set resume on reactivation (roadmap stage 1a/1b; no Round-1 dependency).
-- **Doing:** lead; reviewer sessions: engine/claims (gpt-6-sol, done), Round-1 docs (gpt-6-astra, next).
+- **Phase:** Round-1 package complete (DoD 1–6). Round-1 methodology + roadmap v1.1 are content-final; team details pending registration. Two case studies with uncertainty. ADR v2 (spikes A + D, national grid as foundation). Four independent reviews processed, with 45 items accepted (some in part) and 0 rejected. Next: DONE to Supervisor → pause (batch mode).
+- **Headline (rendered from `eval/results/latest.json`):** <!-- headline:begin -->Central results (CEA FY2025-26 average grid, partial upstream, inputs id `d337af61e1-dirty`, n = 10000 paired Monte Carlo draws, seed 20261004): the legacy-data sedan case is harmonized: GWP100-AR5 — e-Verito-class BEV vs petrol sedan saving **10.0 % (-10.1 to 25.6)**, P(lower) 0.81 (not decisive). The scooter calculation gives **38.1 % (32.0 to 43.2)** lower emissions in a **partial, mixed-basis GHG indicator** (GWP100-AR5, GWP20(CH4), unspecified), not yet a harmonized GWP100 comparison.<!-- headline:end -->
+- **Plan:** DONE to Supervisor → **pause** while the user reviews. On reactivation: spike-D data gate (taxonomy-band fallback already sourced) and the gold set (roadmap stages 1a/1b).
+- **Doing:** lead. Reviewer sessions done and idle: engine/claims (gpt-6-sol), Round-1 docs (gpt-6-astra).
 - **Next (after reactivation):** D data gate memo (started: Green Steel Taxonomy records) → gold set with unseen-publisher split → one full source-to-comparison chain + independent technical review → Round 1 submission by the team leader (≤ 30 Oct).
 - **Needs from user:** register by 15 Oct (EV track fixed at registration; this project is the current EV pick); team of 2–5 — ideally an environmental/mechanical teammate for LCA Q&A; team name, Team ID, institution and contacts for the Round-1 header; access to ISO 14040/14044 text (IIT Delhi library or BIS) for the methodology's ISO references.
 - **Risks:** auditable-looking but non-comparable numbers (mitigated by harmonization flags, boundary matrix, rejected-factor demo); D's data gate; jury LCA rigour; exam window 19–25 Nov.
@@ -119,3 +119,20 @@ Supervisor directive: no sub-agents, small requests, push every 30 min. Committi
   - The e-Verito-class BEV sedan is not clearly better than petrol on today's average grid (10.0 %, interval spans 0); the 2W saving is robust (38.1 %).
   - Ledger and journal timestamps typed by hand were partly wrong; corrected from git commit times. Times now come only from `date`/git.
 - **Docs:** methodology + roadmap v1.0, landscape, ADR v2, memo final; result blocks rendered from `latest.json`; `check_docs.py` in the tests.
+
+### 2026-10-04 10:43–11:06 IST — Round-1 docs cross-model review (gpt-6-astra) applied → v1.1
+- **Review (child session, gpt-6-astra, max):** 63.5/100 as submitted; 2 critical, 9 major, 3 minor. All 14 accepted (presentation trim in part) — `reviews/2026-10-04-round1-docs-gpt-6-astra.md`.
+- **Bugs it found that tests missed:**
+  - §10's results table was empty: adjacent markers defeated the render regex, and the drift check passed it.
+  - The EOL flag was not enforced.
+  Both fixed and covered by tests, plus a non-empty-block check.
+- **Added:**
+  - CO2-only panel (average / operating margin / build margin), so the grid method is compared on one basis;
+  - transmission-only loss sensitivity (car BEV saving rises to 20.4 %, 3.1 to 33.9);
+  - battery-replacement sensitivity (car 5.8 %, scooter 35.5 %);
+  - roadmap roles R1/R2/R3 with hour estimates;
+  - D fallback backed by the Green Steel Taxonomy;
+  - vivas 27–28 Nov respected; feature freeze 10 Dec;
+  - synthetic-data statement rendered; licences on all sources; duplicate CEA entry merged; `requirements.txt`.
+- **Headline policy:** the harmonized sedan result leads. The scooter number always carries "partial, mixed-basis GHG indicator".
+- **Supervisor 10:53:** gazette date checked against the PDF (notification 23 Dec 2024; release 12 Dec 2024 per steel.gov.in) and recorded. Spike D parked until reactivation.

@@ -243,3 +243,25 @@ Expand WTT/TTW, pedigree, CFF, BF-BOF/DRI-EAF and the internal "spike A/D" label
 3. **The strongest assets are traceability and honest verification terminology;** repair the empty table, unimplemented EOL guarantees and false-accept inference.
 4. **Keep A+D, but narrow the contract:** one source-qualified decision chain, meaningful extraction coverage and measured human effort, with a genuinely executable fallback.
 5. **Strict Round-1 score: 63.5/100; findings: 2 critical, 9 major, 3 minor;** focused evidence and claim repairs would matter more than another hundred records.
+
+## Lead decisions (4 Oct 2026, 11:05 IST)
+| # | Decision | Reason / action |
+|---|---|---|
+| 1 | **ACCEPTED** (gate; cannot be fabricated) | Release-gate box at the top of both documents, plus the leader's upload checklist. Team details are a user action item (register by 15 Oct). Documents are content-final v1.1 and administratively pending. |
+| 2 | **ACCEPTED** | The rendered headline now leads with the harmonized AR5 sedan result (10.0 %, P(lower) 0.81, "not decisive"). The scooter 38.1 % is labelled a "partial, mixed-basis GHG indicator" with its gas-basis families listed. The results table has a gas-basis column. §1 rewritten per the suggested replacement. |
+| 3 | **ACCEPTED** | Render regex fixed for adjacent markers. `check_docs.py` now fails on any empty marked block and on fewer than 8 table rows. The introduction's run identity is rendered (manifest block). The inputs id covers only result-determining inputs (`components/lca_engine`, `data`, `eval/eval.py`). |
+| 4 | **ACCEPTED** | `check_scenario` rejects an EOL stage on any product whose records carry `eol_included` (test reproduces the reviewer's case). §5 now distinguishes current embedded treatment from planned models; CFF is conditional. |
+| 5 | **ACCEPTED** | Boundary rows are classed: in scope / embedded / assumed absent (tested) / outside current scope. The explicit sentence "current cases do not yet demonstrate compliance with this budget" is added. Battery-replacement sensitivities were added (sedan +9.5 g/km, scooter +1.6 g/km). The 1 %/5 % rule is labelled our proposed policy, not ISO. |
+| 6 | **ACCEPTED** | Added a common CO2-only panel (average / operating margin / build margin) for both cases. The build margin is labelled CO2-only. The commercial-loss convention is stated, with a transmission-only sensitivity added (lower bound on physical losses). A snapshot-grid caveat is in §1 and §10. |
+| 7 | **ACCEPTED** | Central, interval and P(lower) are defined together. "Always lower" is removed. The CNG central-vs-median skew is explained; the two-piece lognormal is named as an assumption; the blank pedigree rationales are acknowledged with review scheduled. "Highest-value dataset" became "screening priority". |
+| 8 | **ACCEPTED** | The deployment bound is removed from all documents and the renderer. Rendered wording: "accepted 0 of N synthetic digit-perturbed regression cases … does not estimate or bound the deployment false-accept rate". |
+| 9 | **ACCEPTED** | Roadmap v1.1 adds roles R1/R2/R3 with hour estimates, a two-person base plan and a critical path. Commitments are split into committed vs conditional/stretch (300 records, CFF and AR6 elementary flows moved to conditional). The D fallback rests on already-opened evidence (Green Steel Taxonomy bands). Vivas 27–28 Nov are respected (app from 29 Nov), feature freeze is 10 Dec, and dates and stage references are made consistent (ADR: D gate 7 Oct, ADR revisit 12 Oct). |
+| 10 | **ACCEPTED** | Pre-declared targets: complete-record recall ≥ 0.6 at precision ≥ 0.9 on unseen publishers, document-macro reporting, failures counted, adjudicated gold labels, a timing protocol, and baselines. The landscape's universal absence claim is replaced by a bounded search result. |
+| 11 | **ACCEPTED** | The synthetic-data statement is rendered: no synthetic inventory or vehicle records; N synthetic regression negatives; Monte Carlo draws are simulations. |
+| 12 | **ACCEPTED** | Duty cycle and payload stated; the 2W charging-loss inclusion marked as an assumption; physical-causality wording corrected; ISO public-comparison review worded as "panel of interested parties (our understanding)"; intended use stated. |
+| 13 | **ACCEPTED** | Now called "heterogeneous published estimates". Row-vs-study counts are separated. The TERI row-selection status is recorded honestly (no rule was recorded at transcription; to be documented). No causal inference. |
+| 14 | **ACCEPTED** | Licence status set on every source; duplicate CEA registry entry merged (19 sources = 19 unique URLs); `requirements.txt` incl. SciPy; CI labelled planned (local tests today). |
+| — | **ACCEPTED** | A superseding status note was added to the hostile-review record (AR5 now used for the grid adders). |
+| Presentation | **ACCEPTED in part** | Added a "Summary for the jury" and expanded jargon on first use where touched. A deeper trim is deferred until the portal's format and length limits are known. |
+
+Accepted 15 (one in part), rejected 0.

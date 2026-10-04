@@ -114,3 +114,11 @@ def test_gpt6sol_regressions(db):
     assert np.percentile(x, 2.5) == pytest.approx(42.5, rel=0.005)
     assert np.percentile(x, 97.5) == pytest.approx(44.8, rel=0.005)
     assert spearman(np.ones(8), np.arange(8)) == 0.0                                      # finding 7
+
+
+def test_eol_double_counting_is_rejected(db):
+    import copy
+    sc = copy.deepcopy(load_scenarios()["car_in2026_avg_co2e"])
+    petrol = sc.products[0]
+    petrol.stages["end_of_life"] = petrol.stages["vehicle_production"]
+    assert any("EOL" in x for x in check_scenario(db, sc))

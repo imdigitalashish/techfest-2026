@@ -103,6 +103,11 @@ def check_scenario(db: FactorDB, sc: Scenario) -> list[str]:
                 problems.append(f"{sc.id}/{p.id}: param {name} -> unknown record {rid}")
             elif not db[rid].is_scalar:
                 problems.append(f"{sc.id}/{p.id}: param {name} -> record {rid} is not scalar")
+        # EOL double-counting guard: a product whose factors already embed end-of-life/recycling may not add an EOL stage
+        eol_stages = [st for st in p.stages if "end_of_life" in st or st.startswith("eol")]
+        embedded = [rid for rid in p.params.values() if rid in db.records and db[rid].eol_included]
+        if eol_stages and embedded:
+            problems.append(f"{sc.id}/{p.id}: EOL stage(s) {eol_stages} added although {embedded} already include end of life")
     return problems
 
 

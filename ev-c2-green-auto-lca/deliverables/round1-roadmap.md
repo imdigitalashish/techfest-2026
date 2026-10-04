@@ -1,66 +1,80 @@
-# Round 1 — Implementation roadmap · v1.0 (4 Oct 2026)
+# Round 1 — Implementation roadmap · v1.1 (4 Oct 2026)
 
 **Green Auto India — EV Infra & Green Mobility AI Challenge, Challenge 2.** Companion to `round1-methodology.md`.
-**Team name / ID / leader:** _[to fill after registration on techfest.org, by 15 Oct]_
 
-<!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `d337af61e1`).<!-- headline:end -->
+> **Release gate:** team name, Team ID, institution, leader contact and members must be filled by the team (registration closes 15 Oct; only the leader uploads, once, by 30 Oct). Not submittable until then.
 
-## 0. What exists today (demonstrated, 4 Oct) vs what we commit to (December)
-| Demonstrated now (in the repository, reproducible) | Committed for the Grand Finale (16–18 Dec) |
-|---|---|
-| Cited record store: <!-- dbcounts:begin -->127 records (107 verified, 20 derived) from 20 opened sources<!-- dbcounts:end -->; quote-presence verifier + value-in-quote check enforced by tests | Process/exchange layer with co-products and allocation; ≥ 300 records across all 8 data layers |
-| Engine: parameterised stages, scenario inheritance, paired Monte Carlo, gas-basis flags | Elementary-flow inventory (CO2/CH4/N2O) characterised with AR6 GWP100; correlation groups |
-| Two case studies (2W, sedans) + sensitivities; arithmetic verification vs ICCT (0.06 %, 1.0 %); independent plausibility vs 3 Indian car LCAs | Spike D: one Indian material/component route comparison, end to end, with an independent technical review |
-| India grid CO2e (AR6, partial upstream), national, with margins as sensitivities | Harmonized national grid incl. remaining upstream (mining energy, rail, gas) or explicit bounds |
-| Static offline dashboard with provenance on every input | Web app (API + dashboard), "add a dataset" flow, rejected-factor demo, offline rehearsal |
-| — | Spike A: extractor with frozen document-level dev/test split, field-level F1, reviewer-minutes metric |
+<!-- headline:begin --><!-- headline:end -->
 
-## 1. Stages, dates and exit criteria
-| Stage | Dates | Build | Exit criterion (measured) |
-|---|---|---|---|
-| 0. Walking skeleton | done 4 Oct | Record schema, engine, MC, eval, dashboard, two case studies, grid CO2e | Verification ≤ 2 % vs ICCT; docs rendered from the run (drift test) |
-| 1a. Decision freeze + D data gate | 4–7 Oct | Freeze the D decision (candidate: a steel part via BF-BOF vs coal-DRI-EAF vs scrap-EAF, or primary vs recycled aluminium; battery cell origin vs Indian pack assembly). Inventory Indian public sources (Ministry of Steel, producers' BRSR/sustainability reports, EPDs). Rule: corporate intensity ratios are not product LCI without boundary checks | Go/no-go memo; if no-go, fallback = harmonized national grid + one material record set, no invented supplier detail |
-| 1b. Gold set + baselines | 8–12 Oct | Annotate a diverse document set (CEA, ministry and Parliament answers, BRSR, EPDs, papers); reserve unseen publishers; manual and rule baselines; grid dimensional tests (done) | Frozen dev/test split committed; baseline field-level F1 on dev |
-| 1c. One full chain + Round 1 | 13–30 Oct | One source-to-comparison chain for D, including a deliberately rejected incompatible factor; independent technical review; methodology and roadmap submitted by the team leader | Chain reproducible by `eval.py`; review recorded; **Round 1 submitted ≤ 30 Oct** |
-| 2. Spike A — extractor | 1–17 Nov | Rules + LLM extractor proposing records with page/cell coordinates and quotes. Checks: quote presence (boundary-aware), value-in-quote, unit/year/locator binding. States: source-anchored → semantically checked → reviewer-approved | Test-split complete-record precision ≥ 0.9 at stated recall; 0 observed false accepts on hard negatives (regression gate, not a guarantee); reviewer minutes per accepted record reported |
-| 3. Spike D + data breadth | 1–17 Nov (parallel) | Indian route records (steel, aluminium, battery cell origin), process/exchange layer, EOL models (cut-off, avoided burden, CFF) | D comparison reproduces source intensities (accounting test); P(route X < Y) with paired uncertainty |
-| — Integration checkpoint | 17 Nov | Everything merged, tests green, docs rendered | Checkpoint tag in git |
-| — Exam freeze | 18–25 Nov | No user-dependent work (IIT Delhi end-semester exams 19–25 Nov) | — |
-| 4. Product + rehearsal | 26 Nov–12 Dec | Web app, India map of the national-grid view with labels, "add a dataset" flow; hostile-jury rehearsal | Offline demo < 10 min; every displayed number has provenance |
-| 5. Grand Finale | 16–18 Dec | Live demo + walkthrough of evolution from this roadmap | — |
-
-**Stretch (only after the exit criteria above):** 3W (e-rickshaw/e-auto vs CNG auto), buses, state consumption-based grid factors from inter-state flows, prospective grid factors (rolling-origin back-tested), openLCA JSON-LD export with tested round trip, further impact categories.
-
-## 2. Data strategy by layer (sources and status)
-| Layer | Indian public sources | Status 4 Oct |
+## 0. Demonstrated now vs committed vs conditional
+| Demonstrated (4 Oct, reproducible with `bash eval/run_all.sh`) | Committed for the Grand Finale (16–18 Dec) | Conditional / stretch (only if the gate or exit criteria above it pass) |
 |---|---|---|
-| Grid electricity | CEA CO2 Baseline Database v22.0 (FY2025-26; station workbook); CEA General Review; Lok Sabha answers (T&D losses) | CO2 national + margins, CO2e adders (IPCC CH4/N2O, BUR-4 coal-mine CH4), 35 state T&D records |
-| Fuels | IPCC 2006 defaults; ICCT India blends; India's BUR/National Communication; ethanol programme data (E20) | Petrol/diesel/CNG WTT+TTW; E20 WTW pending |
-| Materials (spike D) | Ministry of Steel; producers' BRSR and sustainability reports; Indian EPDs; peer-reviewed India studies | Gate on 4–7 Oct |
-| Components and battery | OEM and supplier disclosures; GREET/BatPaC as labelled proxies | ICCT battery factors (proxy) |
-| Processes | BRSR energy intensities; literature with pedigree | Planned |
-| Logistics | Indian freight-mode factors (road, rail, coastal) from government sources | Planned |
-| Use phase | ICCT India consumption; Indian Driving Cycle; independent studies (TERI, IITG, IITK) | In DB; on-road data is the top data gap (screening importance) |
-| End of life | Vehicle Scrapping Policy facilities; battery-waste rules; recycler disclosures; informal-sector studies | Planned |
-| Benchmarks | ICCT 2021 (2W, cars); TERI 2026; IIT Guwahati 2025; IIT Kanpur 2023 | 6 studies transcribed |
+| Cited record store (<!-- dbcounts:begin --><!-- dbcounts:end -->); quote-presence + value-in-quote checks in the tests | One Indian steel decision chain: Green Steel Taxonomy bands on one cited component mass (always), **or** a source-qualified route pair (if the D gate passes) | Route pair BF-BOF vs coal-DRI-EAF vs scrap-EAF with plant/product data |
+| Engine: parameterised stages, scenario inheritance, paired Monte Carlo, gas-basis flags, EOL double-counting guard | One process with explicit co-product allocation; one EOL approach (cut-off) | Avoided burden and Circular Footprint Formula (only with compatible parameters) |
+| Two case studies with grid-method, loss, battery-replacement and fuel sensitivities; arithmetic verification vs ICCT (0.06 %, 1.0 %); context from 3 independent Indian car LCAs | Extractor evaluated on unseen publishers against manual and rule baselines (§1, stage 2 metrics) | 300+ records across all eight layers; AR6 elementary-flow inventory (needs sources that report CH4/N2O separately) |
+| National grid CO2e (partial upstream) with margins as sensitivities | Web app + offline demo with provenance on every input, and a "rejected incompatible factor" moment | State consumption-based or prospective grid factors (with back-tests) |
 
-**Integration approach:** every number enters as a cited record (page + verbatim quote, pedigree, gas basis, allocation, EOL flag). The fail-closed checks run in CI, and results and docs are regenerated from one run (`eval/eval.py` → `eval/render_docs.py` → `eval/check_docs.py`). **Synthetic data:** none so far; any synthetic data will be labelled `synthetic`.
+## 1. Roles, capacity and critical path
+**Roles:**
+- **R1 — data and software lead** (team leader): engine, extractor, app.
+- **R2 — LCA and methods lead** (teammate to recruit): boundaries, allocation, EOL, pedigree reviews, the D decision.
+- **R3 — data collection** (optional teammate): annotation, Indian sources.
+
+The plan works with **R1 + R2 alone**. Hours are planning estimates, not measurements.
+
+| Stage | Dates | Owner | Est. hours | Build | Exit criterion (measured) |
+|---|---|---|---|---|---|
+| 0. Walking skeleton | done 4 Oct | R1 | — | Schema, engine, MC, eval, dashboard, two cases, grid CO2e, three independent reviews | Verification ≤ 2 %; docs rendered from the run; drift test green |
+| 1a. Decision freeze + D data gate | 5–7 Oct | R2 (R1 support) | 10 + 4 | Freeze the D decision; inventory Indian steel evidence on the taxonomy boundary (NISST certificates, producer EPDs/BRSR mapped to scope, Ministry of Steel publications). Rule: corporate intensity ratios are not product inventories | Go/no-go memo in `research/notes/spike-d-data-gate.md` |
+| 1b. Gold set + baselines | 8–12 Oct | R1 + R3 | 12 + 8 | Annotate a diverse document set; reserve unseen publishers; timing protocol; manual and rule baselines | Frozen dev/test split committed; baseline scores on dev |
+| — Selection gate | 12 Oct | Supervisor/user | — | Confirm EV track; register by 15 Oct | Registration done |
+| 1c. One full chain + Round 1 | 13–18 Oct chain; 19–30 Oct submission | R1 + R2 | 15 + 10 | One source-to-comparison chain for D (or the fallback), including a deliberately rejected incompatible factor; independent technical review; leader uploads | Chain reproducible by `run_all.sh`; review recorded; **upload ≤ 30 Oct** |
+| 2. Extractor | 1–15 Nov | R1 | 25 | Rules + LLM proposals with page/cell coordinates; checks; reviewer queue | On unseen publishers: complete-record recall ≥ 0.6 at precision ≥ 0.9, document-macro, failures counted; reviewer minutes per usable record vs manual |
+| 3. D chain + process + EOL | 1–15 Nov | R2 | 20 | Steel chain; one allocated process; cut-off EOL model with its guard tests | D reproduces source intensities (accounting test); P(option A < B) reported |
+| — Integration checkpoint | 16–17 Nov | R1 + R2 | 6 | Everything merged, tests green, docs rendered | Tag in git |
+| — Exams and vivas | 18–28 Nov | — | 0 | No owner-dependent work (exams 19–25 Nov, vivas 27–28 Nov) | — |
+| 4. App + rehearsal | 29 Nov–10 Dec | R1 (R2 rehearsal) | 20 + 6 | Web app, "add a dataset" flow, rejected-factor demo, hostile-jury rehearsal | **Feature freeze 10 Dec**; offline demo < 10 min |
+| 5. Grand Finale | 16–18 Dec | team | — | Live demo + how the prototype evolved from this roadmap | — |
+
+**Critical path:** 1a (D decision) → 1c (one chain) → 3 (D + process + EOL) → 16–17 Nov integration → 4 (app). Stage 2 runs in parallel. If 1a is no-go, stage 3 uses the fallback, so the path does not stall.
+
+**D no-go fallback (already backed by opened evidence):** the Ministry of Steel Green Steel Taxonomy bands (< 1.6, 1.6–2.0, 2.0–2.2 and > 2.2 t CO2e per tonne of finished steel) are applied to one cited component steel mass, as labelled sensitivities. The demo then shows how the taxonomy rating of the steel moves a vehicle's footprint; the route-pair comparison is withdrawn from the claims.
+
+## 2. Data strategy by layer
+| Layer | Indian public sources | Status 4 Oct | Minimum compatible fields |
+|---|---|---|---|
+| Grid electricity | CEA CO2 Baseline v22.0 (station workbook); CEA General Review; Lok Sabha answers (losses); BUR-4; Coal Directory | Central + margins + partial-upstream CO2e | Boundary (busbar/meter), gas basis, FY |
+| Fuels | IPCC 2006; ICCT India blends; BUR/NC; ethanol programme (E20) | Petrol/diesel/CNG well-to-wheel; E20 pending | Blend share, gas basis, GWP set |
+| Materials (D) | Ministry of Steel Green Steel Taxonomy; NISST; producers' EPDs/BRSR; peer-reviewed India studies | Taxonomy thresholds recorded | Taxonomy scope (scope 1 + 2 + limited 3), unit per tonne finished steel |
+| Components, battery | OEM/supplier disclosures; GREET/BatPaC as labelled proxies | ICCT factors (proxy) | Chemistry, cell origin, capacity basis |
+| Processes | BRSR energy intensities; literature with pedigree | Planned | Reference product, co-products, allocation |
+| Logistics | Government freight-mode factors | Planned | Mode, load factor, tkm basis |
+| Use phase | ICCT India consumption; Indian Driving Cycle; independent studies | In DB; on-road energy use is the top screening gap | Metering point (plug/battery), duty cycle |
+| End of life | Vehicle Scrapping Policy facilities; battery-waste rules; recycler disclosures | Planned | Route, yield, quality ratio, formal/informal share |
+| Benchmarks | ICCT 2021; TERI 2026; IITG 2025; IITK 2023 | 6 studies | Lifetime, boundary, GWP set, selection rule |
+
+**Integration and governance:**
+- Every number enters as a cited record (page + quote, pedigree with scorer and rationale, gas basis, allocation, EOL flag, licence status of its source).
+- Outputs are regenerated in order by `eval/run_all.sh`, and docs fail on drift.
+- Planned: source hashes, versioned releases with deduplication by document, review ownership (R2 approves pedigree and boundary fields), and a hosted CI for the existing local tests.
+
+**Synthetic data:** <!-- synthetic:begin --><!-- synthetic:end -->
 
 ## 3. Tools
-Python 3.11 · pydantic · NumPy · PyYAML + git · openpyxl · pdfplumber/pdftotext · Azure OpenAI (extractor, behind the verifier) · Brightway/openLCA formats · FastAPI + lightweight front-end (December) · pytest (contract, dimensional, drift and value-in-quote tests).
+Python 3.11 · NumPy · SciPy · pydantic · PyYAML + git · openpyxl · pdfplumber/pdftotext · pytest (`requirements.txt`) · Azure OpenAI (extractor proposals, behind the checks) · openLCA/Brightway formats (export planned) · FastAPI + lightweight front-end (stage 4).
 
 ## 4. Scalability roadmap (beyond the finale)
-- **Coverage:** 3W, buses, trucks; CNG/hybrid/hydrogen; more impact categories.
-- **Institutional:** ICAT/MHI-hosted versioned releases; OEM and supplier submissions through the same template and checks; reviewer roles.
-- **Interoperability:** openLCA/ILCD exports; mappings to international datasets where Indian data are absent (labelled proxies).
-- **Continuous updates:** annual CEA releases ingested by the extractor; the screening-importance ranking guides which Indian studies to commission.
+- **Coverage:** 3W, buses and trucks; hybrid and hydrogen; more impact categories.
+- **Institutional:** ICAT/MHI-hosted versioned releases; submissions from OEMs and suppliers through the same template and checks; reviewer roles.
+- **Interoperability:** openLCA/ILCD exports; labelled mappings to international datasets where Indian data are absent.
+- **Continuous updates:** annual CEA releases through the extractor; screening importance guides which Indian studies to commission.
 
 ## 5. Risks and mitigations
 | Risk | Mitigation |
 |---|---|
-| Numbers look auditable but are not comparable (biggest risk) | Mandatory harmonization flags; boundary matrix per result; rejected-factor demo; independent technical review in October |
-| D's data gate fails | Fallback to the harmonized national grid + material records; no invented supplier detail |
-| LLM extraction errors | Fail-closed checks; reviewer approval; hard negatives; frozen unseen test split |
-| Grid-method disputes | Average = attributional central; margins as labelled sensitivities; no consequential claim |
-| Jury questions on ISO 14044 rigour | Boundary, allocation, EOL and gas-basis sections; independent review before any public comparative claim |
-| Exam window (19–25 Nov) | Integration checkpoint 17 Nov; polish only after 26 Nov |
+| Numbers look auditable but are not comparable (biggest risk) | Gas-basis flags in every table; boundary classes; rejected-factor demo; independent technical review in October |
+| D gate fails | Taxonomy-band fallback (above), already backed by an opened official source |
+| Extraction errors or low coverage | Pre-declared precision **and** recall on unseen publishers; failures counted; reviewer approval |
+| Grid-method disputes | Average = attributional central; margins and a common CO2-only panel as sensitivities; billed-energy loss convention stated |
+| Jury questions on ISO 14044 rigour | Boundary, allocation, EOL and gas-basis sections; no public comparative claim before the prescribed critical review |
+| Team capacity | Plan works with two people; owner-dependent work avoids 18–28 Nov; feature freeze 10 Dec |

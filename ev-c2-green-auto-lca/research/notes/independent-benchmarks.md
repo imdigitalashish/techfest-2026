@@ -23,3 +23,9 @@ Searches targeted non-ICCT India-specific vehicle LCA / WTW+production results (
 
 - **2W petrol vs 2.9 kWh e-scooter at ~120,000 km:** no independent open full-LCA two-wheeler benchmark was verified in this pass. The best 2W lead remains the Elsevier Energy 2025 paper, but it is UNVERIFIED/paywalled here.
 - **Indian passenger cars at ~165,000 km:** TERI 2026 is strongest for petrol/diesel/CNG/BEV market vehicles (150,000 km). IIT Guwahati 2025 is also strong for petrol/BEV/hybrid hatchback and compact SUV (160,000 km). IIT Kanpur 2023 is useful for sensitivity and triangulation but assumes 200,000 km and reports grouped vehicle sets.
+
+## Row-selection status (lead, 4 Oct 2026, after the gpt-6-astra Round-1 review)
+The 8 TERI rows were picked by the benchmark agent to span powertrains (petrol, CNG, diesel, BEV). They are not a random sample, and no explicit selection rule was recorded at transcription time. Before these studies are used for anything stronger than context:
+- record a selection rule (e.g. all sedan/compact rows, or all 59 vehicles);
+- separate vehicle-point counts from study counts;
+- reserve compatible unseen cases for any later held-out check.

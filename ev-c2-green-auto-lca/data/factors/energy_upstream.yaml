@@ -418,7 +418,7 @@
   reference_year: "2025-26 database version; standing default assumption"
   technology: coal-fired power stations
   uncertainty: {distribution: none, low: null, high: null, note: "CEA publishes a point default assumption."}
-  source_id: cea-co2-baseline-v22-upstream
+  source_id: cea-co2-baseline-v22
   locator: "Appendix B, p. 26, Assumptions for CO2 Emission Calculations"
   quote: "Gross Heat Rate (gross) 2,500 2,713 2,013 3150 2,117 1,975 3,213 2,117 n/a n/a"
   accessed: 2026-10-04
@@ -437,7 +437,7 @@
   reference_year: "2025-26 database version; standing default assumption"
   technology: coal-fired power-station fuel
   uncertainty: {distribution: none, low: null, high: null, note: "CEA publishes a point default assumption."}
-  source_id: cea-co2-baseline-v22-upstream
+  source_id: cea-co2-baseline-v22
   locator: "Appendix B, p. 26, Assumptions for CO2 Emission Calculations"
   quote: "GCV kcal /kg (or m3) 3,755 n/a 8,800 n/a 10,100 10,500 10,500 11,300 n/a n/a"
   accessed: 2026-10-04
@@ -456,7 +456,7 @@
   reference_year: "2025-26 database version; standing default assumption"
   technology: coal-fired power stations
   uncertainty: {distribution: none, low: null, high: null, note: "No source range; inherits uncertainty from default input assumptions."}
-  source_id: cea-co2-baseline-v22-upstream
+  source_id: cea-co2-baseline-v22
   locator: "derived from Appendix B, p. 26"
   quote: ""
   accessed: 2026-10-04

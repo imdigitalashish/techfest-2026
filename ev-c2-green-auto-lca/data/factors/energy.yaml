@@ -111,3 +111,21 @@
   pedigree: {reliability: 1, completeness: 1, temporal: 1, geographical: 1, technological: 1}
   status: verified
   notes: "Years: 2013-14, 2014-15, ..., 2025-26 (13 values)."
+- id: energy.electricity.in.transmission_loss_share.fy2023_24
+  layer: energy
+  name: Transmission-only losses, India (midpoint of regional values) — lower bound for technical T&D losses
+  value: 0.0368
+  unit: fraction
+  quantity: share
+  gas_basis: n/a
+  boundary: "Inter-state/regional transmission losses only; excludes distribution technical losses (so a LOWER bound on physical delivery losses) and commercial losses."
+  geography: IN
+  reference_year: "2023-24"
+  technology: regional transmission networks
+  uncertainty: {distribution: uniform, low: 0.0312, high: 0.0424, note: "Range of the five regional values."}
+  source_id: loksabha-usq842-2025
+  locator: "Answer to (a)-(d), regional table, p. 1"
+  accessed: 2026-10-04
+  pedigree: {reliability: 1, completeness: 2, temporal: 2, geographical: 1, technological: 3, rationale: "Official regional values; transmission only"}
+  status: derived
+  derivation: "midpoint of regional transmission losses 2023-24: Northern 3.15, Western 3.12, Southern 3.46, Eastern 4.24, North-Eastern 3.89 % -> (3.12 + 4.24)/2 = 3.68 %"

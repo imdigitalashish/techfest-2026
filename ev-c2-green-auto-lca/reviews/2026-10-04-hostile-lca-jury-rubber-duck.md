@@ -3,6 +3,9 @@
 - **Date:** 4 Oct 2026 ~09:55 IST · **Artifacts:** Round-1 methodology + roadmap drafts v0.1, landscape, architecture, data, engine v1, eval v1 (commit `657edd1`) · **Reviewer:** `rubber-duck` agent (default model of the harness; model id not exposed), via `task` before the sessions-only directive.
 - **Raw review:** verbatim in [`deliverables/jury-review-hostile-lca.md`](../deliverables/jury-review-hostile-lca.md) (§1 issues, §2 questions, §3 ICCT wording).
 
+## Status note (superseding, 4 Oct 2026 11:00 IST)
+Item 1's resolution was later changed by the gpt-6-sol review (its item 1): the grid CO2e adders now use **AR5** GWPs in the case studies (not AR6). AR5 and AR6 are separate gas-basis families, so the car case is harmonized on AR5 GWP100 and the scooter case remains mixed. The rows below are kept as originally decided, for the record.
+
 ## Lead decisions
 | # | Issue (short) | Decision | Reason / action |
 |---|---|---|---|

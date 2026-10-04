@@ -1,10 +1,10 @@
 # ADR 001 — Spike components (v2): (A) evidence-anchored ingestion + (D) one Indian material/component route comparison; national grid as a bounded foundation
 
-- **Status:** accepted v2, 4 Oct 2026 10:35 IST (lead), superseding v1 (07:44 IST). Revisit at the 12 Oct selection gate.
+- **Status:** accepted v2, 4 Oct 2026 (lead), superseding v1 (07:44 IST). Spike-D data gate decided by 7 Oct (roadmap stage 1a); the ADR as a whole is revisited at the 12 Oct selection gate.
 - **Why v2:** an independent hostile-LCA-jury review (`deliverables/jury-review-hostile-lca.md`) and a cross-model ADR review by gpt-6-astra (`reviews/2026-10-04-adr001-gpt-6-astra.md`) both found that v1 over-weighted the grid service and over-claimed novelty and verification strength. Decisions per item are recorded in the review file.
 
 ## Context (committed run, `eval/results/summary.md`)
-<!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `d337af61e1`).<!-- headline:end -->
+<!-- headline:begin -->Central results (CEA FY2025-26 average grid, partial upstream, inputs id `d337af61e1-dirty`, n = 10000 paired Monte Carlo draws, seed 20261004): the legacy-data sedan case is harmonized: GWP100-AR5 — e-Verito-class BEV vs petrol sedan saving **10.0 % (-10.1 to 25.6)**, P(lower) 0.81 (not decisive). The scooter calculation gives **38.1 % (32.0 to 43.2)** lower emissions in a **partial, mixed-basis GHG indicator** (GWP100-AR5, GWP20(CH4), unspecified), not yet a harmonized GWP100 comparison.<!-- headline:end -->
 - Arithmetic implementation verification against the same source that supplies most inputs: ICCT 2021 two-wheeler table 0.06 %, India sedans 1.0 %. This verifies arithmetic, not accuracy.
 - **Contribution:** grid electricity is the largest stage of every EV result. **Between-method scenarios:** the grid-accounting choice (CEA average vs operating vs build margin) moves the e-scooter saving from 16 % to 56 % and flips the sedan sign. **Within-method parameter uncertainty** is smaller and is driven by real-world consumption. These are three different statements. We no longer say "grid method dominates" without saying which one we mean.
 - Independent Indian car studies (TERI 2026, IIT Guwahati 2025, IIT Kanpur 2023) bracket our petrol and BEV sedans but not our CNG or diesel. That makes Indian vehicle, material and consumption data the open question, not grid arithmetic.
@@ -19,7 +19,7 @@
 | E. LLM chat copilot | 2/2 | 1 | 5 | 2 | 4 | Rejected — little judging value for its reliability burden |
 
 ## Six Thinking Hats (v2)
-- **White:** the verifier checks quote presence and, since v5, the value-in-quote. It did not bind values to table headers, units or pages, and `0.675` used to match inside `10.675` (fixed in v5). Negative tests are synthetic and clustered. Zero observed false accepts in 208 means a ~1.4 % one-sided 95 % bound (rule of three), not zero.
+- **White:** the verifier checks quote presence and, since v5, the value-in-quote. It did not bind values to table headers, units or pages, and `0.675` used to match inside `10.675` (fixed in v5). Negative tests are synthetic, clustered and reused, so zero observed accepts is a regression result only — it does not estimate or bound the deployment false-accept rate.
 - **Red:** the MHI/ICAT jury cares about manufacturers' choices ("which steel, which cell origin"). A route comparison with Indian sources lands harder than a state map.
 - **Black:** D may fail its data gate (route-level Indian data can be thin or only corporate-level). A may look like "PDF search". Both risk numbers that look auditable but are not comparable — the biggest risk per the astra review.
 - **Yellow:** A is the scalability answer (how ICAT and suppliers add data). D directly serves OEM and supplier decisions. B (national, harmonized) keeps every EV result honest.
@@ -38,7 +38,7 @@ An LCA result is Σ (activity amount × emission factor). A comparison is only a
 
 ## Consequences
 - **Metrics:**
-  - *A:* document-macro F1 and complete-record precision/recall on a frozen document-level dev/test split (unseen publishers); abstention rate; reviewer minutes per usable record; harder negatives (wrong field, neighbouring cell, unit, year, scope). "Zero observed false accepts" stays a regression requirement, not a guarantee.
+  - *A:* document-macro F1 and complete-record precision/recall on a frozen document-level dev/test split (unseen publishers); abstention rate; reviewer minutes per usable record; harder negatives (wrong field, neighbouring cell, unit, year, scope). "Zero observed false accepts" stays a regression requirement, not a statistical guarantee; pre-declared complete-record recall ≥ 0.6 at precision ≥ 0.9 on unseen publishers, with a human-timing protocol.
   - *D:* reproduction of the source's route intensities (accounting test), then decision robustness, i.e. P(route X < route Y) under paired uncertainty.
   - *B:* national reconstruction as an accounting test only; prospective claims need rolling-origin back-tests vs persistence (MAE, signed bias).
 - **Two-week plan (Round 1 due 30 Oct):**

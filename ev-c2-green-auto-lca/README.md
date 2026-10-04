@@ -10,7 +10,7 @@ python3 data/fetch/fetch_sources.py                 # optional: re-download ever
 python3 components/ingestion/autoresearch/eval.py   # spike-A quote verifier metric (needs the raw files)
 python3 components/ingestion/value_check.py         # every verified value appears in its own quote
 ```
-<!-- headline:begin -->Central results (CEA FY2025-26 average grid, CO2e GWP100 (AR5, as ICCT inputs), partial upstream): e-scooter vs petrol scooter saving **38.1 % (32.0 to 43.2)**; e-Verito-class BEV sedan vs petrol sedan **10.0 % (-10.1 to 25.6)** (90 % intervals; inputs id `d337af61e1`).<!-- headline:end -->
+<!-- headline:begin -->Central results (CEA FY2025-26 average grid, partial upstream, inputs id `d337af61e1-dirty`, n = 10000 paired Monte Carlo draws, seed 20261004): the legacy-data sedan case is harmonized: GWP100-AR5 — e-Verito-class BEV vs petrol sedan saving **10.0 % (-10.1 to 25.6)**, P(lower) 0.81 (not decisive). The scooter calculation gives **38.1 % (32.0 to 43.2)** lower emissions in a **partial, mixed-basis GHG indicator** (GWP100-AR5, GWP20(CH4), unspecified), not yet a harmonized GWP100 comparison.<!-- headline:end -->
 
 Results tables in the documents are rendered from `eval/results/latest.json`; `eval/check_docs.py` (part of the tests) fails if any document drifts from the run. Reviews and lead decisions: [`reviews/`](reviews/).
 

@@ -135,3 +135,27 @@ scenarios:
           gwp_ch4: method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5
           gwp_n2o: method.gwp100.n2o.no_ccfb.ipcc_ar5
         stages: {electricity_production_wtt: "elec / 100 * (ef_gen * (1 + (ch4c * gwp_ch4 + n2oc * gwp_n2o) / (co2c * 1000)) + coal_sh * hr / gcv * cmm / 1000 * dens * gwp_ch4) / (1 - td)"}
+
+  - id: in2026_battery_replacement
+    base: in2026_avg_co2e
+    kind: sensitivity
+    label: "Sensitivity — one battery replacement over the 120,000 km life (CO2e grid)"
+    description: "Structural sensitivity: the ICCT assumption of no replacement is relaxed to one extra 2.9 kWh pack. Not evidence that a replacement occurs."
+    overrides:
+      ev_scooter: {stages: {battery_production: "2 * kwh * bat_int / life"}}
+
+  - id: in2026_tx_losses
+    base: in2026_avg_co2e
+    kind: sensitivity
+    label: "Sensitivity — grid gross-up by transmission-only losses (lower bound on technical losses) instead of all-India T&D incl. commercial"
+    description: "The central case allocates system emissions to billed electricity using T&D losses of 17.63 % (incl. commercial losses). This row uses regional transmission losses only (3.12-4.24 %), a lower bound on physical delivery losses."
+    overrides:
+      ev_scooter: {params: {td: energy.electricity.in.transmission_loss_share.fy2023_24}}
+
+  - id: in2026_om_co2_only
+    base: in2026_cea_average
+    kind: sensitivity
+    label: "Sensitivity — CO2-only panel: CEA operating margin (compare with the CO2-only average and build-margin rows on one basis)"
+    description: "Common-basis panel: average, operating margin and build margin all CO2-only, so the spread reflects the grid-accounting method alone."
+    overrides:
+      ev_scooter: {params: {ef_gen: energy.electricity.in.grid_om.fy2025_26}}

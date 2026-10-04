@@ -1,8 +1,8 @@
-# Eval results (harness v2, inputs id d337af61e1, run at commit 5040fae, n=10000, seed=20261004)
+# Eval results (harness v2, inputs id d337af61e1-dirty, run at commit d6e1e85-dirty, n=10000, seed=20261004)
 
 The inputs id hashes the git trees of components/lca_engine/, data/ and eval/eval.py — stable across rebases.
 Reproduce: `python3 eval/eval.py` from `ev-c2-green-auto-lca/`. Unit: g per vehicle-km (GHG indicator; see gas-basis flags).
-Database: 127 records ({'verified': 107, 'derived': 20}), 20 sources.
+Database: 128 records ({'verified': 107, 'derived': 21}), 19 sources.
 
 ## Arithmetic implementation verification (NOT validation: same source supplies inputs and targets)
 
@@ -62,6 +62,27 @@ Database: 127 records ({'verified': 107, 'derived': 20}), 20 sources.
 | Petrol scooter 110 cc class | 64.3 [60.1 – 69.0] | reference |  | 2.1 |
 | Electric scooter 2.9 kWh | 39.8 [37.7 – 42.5] | 38.1 % [32.0 – 43.2 %] | 1.000 | 1.78 |
 
+**in2026_battery_replacement** [sensitivity] — Sensitivity — one battery replacement over the 120,000 km life (CO2e grid) — _NOT harmonized (GWP100-AR5, GWP20(CH4), unspecified)_
+
+| Vehicle | Total [90 %] | vs reference: reduction [90 %] | P(lower) | Pedigree score |
+|---|---|---|---|---|
+| Petrol scooter 110 cc class | 64.3 [60.1 – 69.0] | reference |  | 2.1 |
+| Electric scooter 2.9 kWh | 41.4 [39.2 – 44.2] | 35.5 % [29.2 – 40.8 %] | 1.000 | 1.8 |
+
+**in2026_tx_losses** [sensitivity] — Sensitivity — grid gross-up by transmission-only losses (lower bound on technical losses) instead of all-India T&D incl. commercial — _NOT harmonized (GWP100-AR5, GWP20(CH4), unspecified)_
+
+| Vehicle | Total [90 %] | vs reference: reduction [90 %] | P(lower) | Pedigree score |
+|---|---|---|---|---|
+| Petrol scooter 110 cc class | 64.3 [60.0 – 69.0] | reference |  | 2.1 |
+| Electric scooter 2.9 kWh | 35.0 [33.2 – 37.3] | 45.5 % [40.1 – 49.9 %] | 1.000 | 1.82 |
+
+**in2026_om_co2_only** [sensitivity] — Sensitivity — CO2-only panel: CEA operating margin (compare with the CO2-only average and build-margin rows on one basis) — _NOT harmonized (CO2-only, GWP100-AR5, GWP20(CH4), unspecified)_
+
+| Vehicle | Total [90 %] | vs reference: reduction [90 %] | P(lower) | Pedigree score |
+|---|---|---|---|---|
+| Petrol scooter 110 cc class | 64.3 [60.0 – 68.9] | reference |  | 2.1 |
+| Electric scooter 2.9 kWh | 52.6 [49.6 – 55.8] | 18.2 % [10.5 – 25.1 %] | 1.000 | 1.75 |
+
 
 ## Car — sedan: petrol vs diesel vs CNG vs electric — decision and sensitivity scenarios (paired Monte Carlo, 90 % intervals)
 
@@ -100,6 +121,33 @@ Database: 127 records ({'verified': 107, 'derived': 20}), 20 sources.
 | Diesel sedan (6.0 L/100 km real-world) | 239.4 [214.4 – 269.0] | -5.9 % [-24.1 – 9.7 %] | 0.282 | 2.06 |
 | CNG sedan (5.0 kg/100 km real-world) | 224.1 [210.6 – 268.7] | 0.9 % [-24.1 – 11.0 %] | 0.306 | 2.22 |
 | Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug) | 203.5 [174.4 – 241.6] | 10.0 % [-10.1 – 25.6 %] | 0.808 | 1.89 |
+
+**car_in2026_battery_replacement** [sensitivity] — Sensitivity — one battery replacement over the 165,000 km life (CO2e grid) — _harmonized_
+
+| Vehicle | Total [90 %] | vs reference: reduction [90 %] | P(lower) | Pedigree score |
+|---|---|---|---|---|
+| Petrol sedan (6.8 L/100 km real-world) | 226.2 [202.6 – 253.8] | reference |  | 2.06 |
+| Diesel sedan (6.0 L/100 km real-world) | 239.4 [214.4 – 269.0] | -5.9 % [-24.1 – 9.7 %] | 0.282 | 2.06 |
+| CNG sedan (5.0 kg/100 km real-world) | 224.1 [210.6 – 268.7] | 0.9 % [-24.1 – 11.0 %] | 0.306 | 2.22 |
+| Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug) | 213.0 [183.7 – 251.4] | 5.8 % [-14.6 – 21.6 %] | 0.683 | 1.92 |
+
+**car_in2026_tx_losses** [sensitivity] — Sensitivity — grid gross-up by transmission-only losses (lower bound on technical losses) — _harmonized_
+
+| Vehicle | Total [90 %] | vs reference: reduction [90 %] | P(lower) | Pedigree score |
+|---|---|---|---|---|
+| Petrol sedan (6.8 L/100 km real-world) | 226.2 [202.5 – 253.5] | reference |  | 2.06 |
+| Diesel sedan (6.0 L/100 km real-world) | 239.4 [214.3 – 267.9] | -5.9 % [-24.0 – 9.3 %] | 0.278 | 2.06 |
+| CNG sedan (5.0 kg/100 km real-world) | 224.1 [210.2 – 269.6] | 0.9 % [-23.7 – 10.9 %] | 0.307 | 2.22 |
+| Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug) | 180.1 [155.2 – 212.8] | 20.4 % [3.1 – 33.9 %] | 0.972 | 1.94 |
+
+**car_in2026_om_co2_only** [sensitivity] — Sensitivity — CO2-only panel: CEA operating margin (one basis with the CO2-only average and build-margin rows) — _NOT harmonized (CO2-only, GWP100-AR5)_
+
+| Vehicle | Total [90 %] | vs reference: reduction [90 %] | P(lower) | Pedigree score |
+|---|---|---|---|---|
+| Petrol sedan (6.8 L/100 km real-world) | 226.2 [202.4 – 254.1] | reference |  | 2.06 |
+| Diesel sedan (6.0 L/100 km real-world) | 239.4 [214.4 – 268.6] | -5.9 % [-23.6 – 9.8 %] | 0.282 | 2.06 |
+| CNG sedan (5.0 kg/100 km real-world) | 224.1 [210.8 – 269.4] | 0.9 % [-23.9 – 11.0 %] | 0.312 | 2.22 |
+| Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug) | 266.4 [225.5 – 316.4] | -17.8 % [-44.8 – 3.9 %] | 0.093 | 1.86 |
 
 ## Independent plausibility check — Indian cars (NOT validation)
 

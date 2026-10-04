@@ -43,6 +43,19 @@ def main() -> int:
     for k in ("2w_central", "car_central"):
         if key_numbers(d)[k] not in prose:
             problems.append(f"methodology prose lacks the current {k} number {key_numbers(d)[k]!r}")
+    for rel in DOCS:
+        p = ROOT / rel
+        if p.exists():
+            for m in re.finditer(r"<!-- ([a-z-]+):begin -->(.*?)<!-- \1:end -->", p.read_text(), flags=re.S):
+                if not m.group(2).strip():
+                    problems.append(f"{rel}: marked block '{m.group(1)}' is empty")
+    meth_text = (ROOT / "deliverables/round1-methodology.md").read_text()
+    if meth_text.count("<!-- results-table:begin -->") != 1:
+        problems.append("methodology must contain exactly one results-table block")
+    else:
+        blk = meth_text.split("<!-- results-table:begin -->")[1].split("<!-- results-table:end -->")[0]
+        if blk.count("\n|") < 8:
+            problems.append("methodology results table has fewer rows than expected")
     for x in problems:
         print("DRIFT", x)
     print("docs OK" if not problems else f"{len(problems)} drift problem(s)")

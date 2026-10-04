@@ -128,3 +128,27 @@ scenarios:
           gwp_ch4: method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5
           gwp_n2o: method.gwp100.n2o.no_ccfb.ipcc_ar5
         stages: {electricity_production_wtt: "elec / 100 * (ef_gen * (1 + (ch4c * gwp_ch4 + n2oc * gwp_n2o) / (co2c * 1000)) + coal_sh * hr / gcv * cmm / 1000 * dens * gwp_ch4) / (1 - td)"}
+
+  - id: car_in2026_battery_replacement
+    base: car_in2026_avg_co2e
+    kind: sensitivity
+    label: "Sensitivity — one battery replacement over the 165,000 km life (CO2e grid)"
+    description: "Structural sensitivity: one extra 23 kWh pack; not evidence that a replacement occurs."
+    overrides:
+      bev: {stages: {battery_production: "2 * kwh * bat_int / life"}}
+
+  - id: car_in2026_tx_losses
+    base: car_in2026_avg_co2e
+    kind: sensitivity
+    label: "Sensitivity — grid gross-up by transmission-only losses (lower bound on technical losses)"
+    description: "As case 1: transmission-only losses (3.12-4.24 %) instead of all-India T&D incl. commercial losses (17.63 %)."
+    overrides:
+      bev: {params: {td: energy.electricity.in.transmission_loss_share.fy2023_24}}
+
+  - id: car_in2026_om_co2_only
+    base: car_in2026_cea_average
+    kind: sensitivity
+    label: "Sensitivity — CO2-only panel: CEA operating margin (one basis with the CO2-only average and build-margin rows)"
+    description: "Common-basis panel for the grid-accounting method."
+    overrides:
+      bev: {params: {ef_gen: energy.electricity.in.grid_om.fy2025_26}}

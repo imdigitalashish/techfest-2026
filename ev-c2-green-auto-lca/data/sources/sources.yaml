@@ -9,6 +9,7 @@
   accessed: 2026-10-04
   local_copy: .data/raw/electricity/cea_ug_v22.pdf
   notes: "Dated August 2026 on the cover; data for FY 2025-26. Companion workbook below."
+  license: "not stated by the publisher — we store only extracted values and short verbatim quotations with attribution; source documents are not redistributed (re-downloaded by data/fetch/fetch_sources.py)"
 - id: cea-co2-baseline-v22-xlsx
   title: "Baseline Carbon Dioxide Emission Database, Version 22.0 (station/unit-level workbook)"
   publisher: Central Electricity Authority (CEA), Government of India
@@ -18,6 +19,7 @@
   accessed: 2026-10-04
   local_copy: .data/raw/electricity/cea_db_v22.xlsx
   notes: "Sheets: Data (4475 rows x 56 cols, unit-level net generation GWh and absolute CO2 by FY 2017-18..2025-26, with STATE, SECTOR, TYPE, FUEL), Results, Transfer (1G), Units + Abbrev, Assumptions."
+  license: "not stated by the publisher — we store only extracted values and short verbatim quotations with attribution; source documents are not redistributed (re-downloaded by data/fetch/fetch_sources.py)"
 - id: loksabha-usq842-2025
   title: "Lok Sabha Unstarred Question No. 842 — Line losses in power transmission (answered 04.12.2025)"
   publisher: Ministry of Power, Government of India (citing CEA General Review, Nov 2025)
@@ -26,6 +28,7 @@
   type: government-report
   accessed: 2026-10-04
   local_copy: .data/raw/electricity/ls_au842.pdf
+  license: "not stated by the publisher — we store only extracted values and short verbatim quotations with attribution; source documents are not redistributed (re-downloaded by data/fetch/fetch_sources.py)"
 - id: ipcc-2006-v2-ch1
   title: "2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 2 (Energy), Chapter 1 Introduction"
   publisher: IPCC / IGES
@@ -34,6 +37,7 @@
   type: standard
   accessed: 2026-10-04
   local_copy: .data/raw/fuels/ipcc2006_v2_ch1.pdf
+  license: "not stated by the publisher — we store only extracted values and short verbatim quotations with attribution; source documents are not redistributed (re-downloaded by data/fetch/fetch_sources.py)"
 - id: unsd-eyb-2020-table2
   title: "Energy Statistics Yearbook 2020 — Table II: Selected conversion factors for crude oil and oil products"
   publisher: United Nations Statistics Division
@@ -42,6 +46,7 @@
   type: dataset
   accessed: 2026-10-04
   local_copy: .data/raw/fuels/unsd_conv.pdf
+  license: "not stated by the publisher — we store only extracted values and short verbatim quotations with attribution; source documents are not redistributed (re-downloaded by data/fetch/fetch_sources.py)"
 - id: icct-2w-fc-india-2021
   title: "Fuel consumption standards for the new two-wheeler fleet in India (ICCT Briefing), S. Anup and A. Deo"
   publisher: International Council on Clean Transportation (ICCT)
@@ -51,6 +56,7 @@
   accessed: 2026-10-04
   local_copy: .data/raw/benchmarks/icct_2w_fc_2021.pdf
   notes: "Table 1 (p. 3) gives life-cycle GHG of 5 Indian 2Ws registered FY 2020-21 by stage, footnote 9 gives all key inputs. Methodology refers to Bieker (2021) global LCA."
+  license: "not stated by the publisher — we store only extracted values and short verbatim quotations with attribution; source documents are not redistributed (re-downloaded by data/fetch/fetch_sources.py)"
 - id: icct-india-lca-factsheet-2021
   title: "Life-cycle greenhouse gas emissions of combustion engine and electric passenger cars and two-wheelers in India (ICCT Fact Sheet), G. Bieker"
   publisher: International Council on Clean Transportation (ICCT)
@@ -60,6 +66,7 @@
   accessed: 2026-10-04
   local_copy: .data/raw/benchmarks/icct_india_2021.pdf
   notes: "Figure 2 (p. 3) is a vector chart; stage values digitized from PDF drawing coordinates by data/fetch/digitize_icct_factsheet_2021.py (±0.3 g/km)."
+  license: "not stated by the publisher — we store only extracted values and short verbatim quotations with attribution; source documents are not redistributed (re-downloaded by data/fetch/fetch_sources.py)"
 - id: bw-pedigree-matrix
   title: "brightway-lca/pedigree_matrix — pedigree_matrix/data.py and pm.py (uncertainty factors and lognormal sigma formula)"
   publisher: Brightway LCA (open source; GitHub)
@@ -68,6 +75,7 @@
   type: software
   accessed: 2026-10-04
   notes: "version_1 and version_2 uncertainty-factor tables; sigma = sqrt(sum(ln(U_i)^2))/2 including the basic uncertainty factor. Last push 2022-06-16."
+  license: "not stated by the publisher — we store only extracted values and short verbatim quotations with attribution; source documents are not redistributed (re-downloaded by data/fetch/fetch_sources.py)"
 - id: icct-global-lca-2021
   title: "A global comparison of the life-cycle greenhouse gas emissions of combustion engine and electric passenger cars (ICCT White Paper), G. Bieker"
   publisher: International Council on Clean Transportation (ICCT)
@@ -77,3 +85,4 @@
   accessed: 2026-10-04
   local_copy: .data/raw/benchmarks/icct_global_lca_2021.pdf
   notes: "India chapter (pp. 43-46) and Appendix A (Tables A.1, A.8, A.9, A.21; Table 2.4). Totals for India sedans quoted in the text; stage values in the companion fact sheet Figure 1 (digitized)."
+  license: "not stated by the publisher — we store only extracted values and short verbatim quotations with attribution; source documents are not redistributed (re-downloaded by data/fetch/fetch_sources.py)"

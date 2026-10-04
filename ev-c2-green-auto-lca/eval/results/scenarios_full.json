@@ -1875,6 +1875,862 @@
    }
   }
  },
+ "in2026_battery_replacement": {
+  "scenario": "in2026_battery_replacement",
+  "label": "Sensitivity \u2014 one battery replacement over the 120,000 km life (CO2e grid)",
+  "description": "Structural sensitivity: the ICCT assumption of no replacement is relaxed to one extra 2.9 kWh pack. Not evidence that a replacement occurs.",
+  "case": "2W \u2014 petrol vs electric scooter",
+  "kind": "sensitivity",
+  "n_iterations": 10000,
+  "seed": 20261004,
+  "unit": "g per vehicle-km (GHG indicator)",
+  "products": {
+   "ice_scooter": {
+    "label": "Petrol scooter 110 cc class",
+    "powertrain": "ICE",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 4.701666666666667,
+     "maintenance": 1.0,
+     "fuel_production_wtt": 13.440000000000001,
+     "tailpipe_ttw": 45.150000000000006
+    },
+    "total": 64.29166666666667,
+    "mc_total": {
+     "mean": 64.35332662347825,
+     "p05": 60.059195126167914,
+     "p50": 64.25822004189,
+     "p95": 68.96664012822504
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 4.715403429175875,
+      "p05": 4.0649005726753655,
+      "p50": 4.695146729868817,
+      "p95": 5.439562515703331
+     },
+     "maintenance": {
+      "mean": 1.0001393359726165,
+      "p05": 0.878474392879593,
+      "p50": 0.9983987519590318,
+      "p95": 1.1285970266074798
+     },
+     "fuel_production_wtt": {
+      "mean": 13.447617004118918,
+      "p05": 12.323576954437442,
+      "p50": 13.430448447451386,
+      "p95": 14.636014980816594
+     },
+     "tailpipe_ttw": {
+      "mean": 45.19016685421084,
+      "p05": 41.374704010776426,
+      "p50": 45.11094250964799,
+      "p95": 49.281701171233294
+     }
+    },
+    "params": {
+     "mass": "vehicle.2w.scooter_ice.curb_mass_implied.icct2021",
+     "prod_int": "vehicle.2w.production_intensity.icct2021",
+     "life": "vehicle.2w.lifetime_km.icct2021",
+     "fuel": "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity",
+     "wtt": "fuels.gasoline.in.wtt.icct2021_car",
+     "ttw": "fuels.gasoline.in.ttw.icct2021_car",
+     "maint": "use.2w.scooter_ice.maintenance.icct2021"
+    },
+    "elasticity": {
+     "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.07313026571613365,
+     "vehicle.2w.production_intensity.icct2021": 0.07313026571613365,
+     "vehicle.2w.lifetime_km.icct2021": -0.07240620367936192,
+     "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.9113156189241661,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.2090473104342181,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.702268308489948,
+     "use.2w.scooter_ice.maintenance.icct2021": 0.015554115359696873
+    },
+    "dq_score": 2.1017732244358083,
+    "dq_dims": {
+     "reliability": 2.4858278063054993,
+     "completeness": 3.0,
+     "temporal": 2.450625370461649,
+     "geographical": 1.0862331147479654,
+     "technological": 1.4861798306639273
+    },
+    "india_footprint_share": 0.9268697342838625,
+    "gas_basis_shares": {
+     "GWP20(CH4)": 0.0731302657161374,
+     "unspecified": 0.015554115359688916,
+     "GWP100-AR5": 0.9113156189241738
+    },
+    "importance": {
+     "fuels.gasoline.in.ttw.icct2021_car": 0.5543429133730063,
+     "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.3780337882640618,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.0479845452487456,
+     "vehicle.2w.lifetime_km.icct2021": 0.01073955783425124,
+     "vehicle.2w.production_intensity.icct2021": 0.005180856841325425,
+     "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.0034360568079377855,
+     "use.2w.scooter_ice.maintenance.icct2021": 0.00028228163067174465
+    }
+   },
+   "ev_scooter": {
+    "label": "Electric scooter 2.9 kWh",
+    "powertrain": "BEV",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 4.199000000000001,
+     "battery_production": 3.2866666666666666,
+     "maintenance": 1.0,
+     "electricity_production_wtt": 32.9525166389637
+    },
+    "total": 41.43818330563037,
+    "mc_total": {
+     "mean": 41.68691465772624,
+     "p05": 39.226487262112165,
+     "p50": 41.66686569301694,
+     "p95": 44.21863557986679
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 4.2128474362928445,
+      "p05": 3.6291765156897418,
+      "p50": 4.198831127526303,
+      "p95": 4.858460646451659
+     },
+     "battery_production": {
+      "mean": 3.3114815401571787,
+      "p05": 2.6291640319236063,
+      "p50": 3.283340226919629,
+      "p95": 4.092910038806574
+     },
+     "maintenance": {
+      "mean": 1.0040652631965643,
+      "p05": 0.8818968956817794,
+      "p50": 1.0006264912271599,
+      "p95": 1.1357650223848132
+     },
+     "electricity_production_wtt": {
+      "mean": 33.158520418079654,
+      "p05": 30.966791014244542,
+      "p50": 33.14598461211446,
+      "p95": 35.42826343424578
+     }
+    },
+    "params": {
+     "glider": "vehicle.2w.scooter_ev.glider_mass_implied.icct2021",
+     "prod_int": "vehicle.2w.production_intensity.icct2021",
+     "life": "vehicle.2w.lifetime_km.icct2021",
+     "kwh": "battery.scooter_ev.capacity.icct2021",
+     "bat_int": "battery.li_ion.production_intensity.in.icct2021_car",
+     "elec": "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity",
+     "ef_gen": "energy.electricity.in.grid_wavg_generation.fy2025_26",
+     "td": "energy.electricity.in.td_loss_share.fy2023_24",
+     "maint": "use.2w.scooter_ev.maintenance.icct2021",
+     "ch4c": "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries",
+     "n2oc": "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries",
+     "co2c": "fuels.coal.in.co2_per_energy_ncv.cea_v22",
+     "coal_sh": "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26",
+     "hr": "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default",
+     "gcv": "energy.upstream.coal_power.gcv.coal.cea_v22_default",
+     "cmm": "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020",
+     "dens": "energy.upstream.coal_mining.ch4_density.ipcc2006",
+     "gwp_ch4": "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5",
+     "gwp_n2o": "method.gwp100.n2o.no_ccfb.ipcc_ar5"
+    },
+    "elasticity": {
+     "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.10133166237116427,
+     "vehicle.2w.production_intensity.icct2021": 0.10133166237116427,
+     "vehicle.2w.lifetime_km.icct2021": -0.17885801364531748,
+     "battery.scooter_ev.capacity.icct2021": 0.07931493141062695,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.07931493141062695,
+     "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.7952210741460346,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.7776773672627383,
+     "energy.electricity.in.td_loss_share.fy2023_24": 0.17056961223542166,
+     "use.2w.scooter_ev.maintenance.icct2021": 0.024132332072191186,
+     "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 0.00024244962217922448,
+     "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.003212457493823283,
+     "fuels.coal.in.co2_per_energy_ncv.cea_v22": -0.003420700114868059,
+     "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 0.017543706883279157,
+     "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 0.017543706883279157,
+     "energy.upstream.coal_power.gcv.coal.cea_v22_default": -0.01737000681513416,
+     "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.017543706883279157,
+     "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.017543706883279157,
+     "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.017786156505458377,
+     "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.003212457493823283
+    },
+    "dq_score": 1.799716364204966,
+    "dq_dims": {
+     "reliability": 2.0047137082640702,
+     "completeness": 2.1682213433898503,
+     "temporal": 2.081674696541122,
+     "geographical": 1.1718688971527256,
+     "technological": 1.5721031756770623
+    },
+    "india_footprint_share": 0.8193534062182316,
+    "gas_basis_shares": {
+     "GWP20(CH4)": 0.10133166237115096,
+     "GWP100-AR5": 0.8745360055566531,
+     "unspecified": 0.024132332072195985
+    },
+    "importance": {
+     "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.5116108732439222,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.25674147213868953,
+     "vehicle.2w.lifetime_km.icct2021": 0.07726265441187684,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.056356808608078804,
+     "energy.electricity.in.td_loss_share.fy2023_24": 0.019528440434700728,
+     "vehicle.2w.production_intensity.icct2021": 0.018851416715682814,
+     "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.015913349982886443,
+     "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.01514275679372285,
+     "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.008870996086987428,
+     "battery.scooter_ev.capacity.icct2021": 0.007903121559482933,
+     "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.006749845179927018,
+     "use.2w.scooter_ev.maintenance.icct2021": 0.0026965805532586555,
+     "energy.upstream.coal_power.gcv.coal.cea_v22_default": 0.001153630703048147,
+     "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 0.0009102281886701466,
+     "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 0.0001757790074870504,
+     "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 0.00012129494466132103,
+     "fuels.coal.in.co2_per_energy_ncv.cea_v22": 1.0751446917085736e-05,
+     "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.0,
+     "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0
+    }
+   }
+  },
+  "gas_basis_families": [
+   "GWP100-AR5",
+   "GWP20(CH4)",
+   "unspecified"
+  ],
+  "harmonized": false,
+  "reference_product": "ice_scooter",
+  "comparisons": {
+   "ev_scooter": {
+    "vs": "ice_scooter",
+    "reduction_central": 0.35546571656828985,
+    "reduction_mc": {
+     "mean": 0.3511129458553041,
+     "p05": 0.2915738201574499,
+     "p50": 0.35173224905957096,
+     "p95": 0.4082135155554936
+    },
+    "difference_mc": {
+     "mean": 22.666411965752005,
+     "p05": 17.767728781028584,
+     "p50": 22.595657451891103,
+     "p95": 27.808768024444838
+    },
+    "p_lower": 1.0,
+    "importance": {
+     "fuels.gasoline.in.ttw.icct2021_car": 0.3205832001581002,
+     "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.23194036935925824,
+     "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.22123675811226604,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.11721336338518157,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.027824253342016658,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.026451548692544204,
+     "vehicle.2w.lifetime_km.icct2021": 0.011104772549634932,
+     "energy.electricity.in.td_loss_share.fy2023_24": 0.010768037885711124
+    }
+   }
+  },
+  "comparison": {
+   "ice": "ice_scooter",
+   "bev": "ev_scooter",
+   "reduction_central": 0.35546571656828985,
+   "reduction_mc": {
+    "mean": 0.3511129458553041,
+    "p05": 0.2915738201574499,
+    "p50": 0.35173224905957096,
+    "p95": 0.4082135155554936
+   },
+   "difference_mc": {
+    "mean": 22.666411965752005,
+    "p05": 17.767728781028584,
+    "p50": 22.595657451891103,
+    "p95": 27.808768024444838
+   },
+   "p_bev_lower": 1.0,
+   "importance": {
+    "fuels.gasoline.in.ttw.icct2021_car": 0.3205832001581002,
+    "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.23194036935925824,
+    "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.22123675811226604,
+    "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.11721336338518157,
+    "battery.li_ion.production_intensity.in.icct2021_car": 0.027824253342016658,
+    "fuels.gasoline.in.wtt.icct2021_car": 0.026451548692544204,
+    "vehicle.2w.lifetime_km.icct2021": 0.011104772549634932,
+    "energy.electricity.in.td_loss_share.fy2023_24": 0.010768037885711124,
+    "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.008321724634329114,
+    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.005798441852238588,
+    "battery.scooter_ev.capacity.icct2021": 0.005199196283233243,
+    "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.003979678175514712,
+    "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.003144820008459186,
+    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.0020259354301701794,
+    "vehicle.2w.production_intensity.icct2021": 0.0015819184791366072,
+    "use.2w.scooter_ev.maintenance.icct2021": 0.000941292491561646,
+    "energy.upstream.coal_power.gcv.coal.cea_v22_default": 0.0009106296106493161,
+    "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 0.0007203734777827436,
+    "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 0.000170220832716316,
+    "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 4.179459113315855e-05,
+    "use.2w.scooter_ice.maintenance.icct2021": 3.716716228313993e-05,
+    "fuels.coal.in.co2_per_energy_ncv.cea_v22": 4.503486079029993e-06,
+    "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.0,
+    "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0
+   }
+  }
+ },
+ "in2026_tx_losses": {
+  "scenario": "in2026_tx_losses",
+  "label": "Sensitivity \u2014 grid gross-up by transmission-only losses (lower bound on technical losses) instead of all-India T&D incl. commercial",
+  "description": "The central case allocates system emissions to billed electricity using T&D losses of 17.63 % (incl. commercial losses). This row uses regional transmission losses only (3.12-4.24 %), a lower bound on physical delivery losses.",
+  "case": "2W \u2014 petrol vs electric scooter",
+  "kind": "sensitivity",
+  "n_iterations": 10000,
+  "seed": 20261004,
+  "unit": "g per vehicle-km (GHG indicator)",
+  "products": {
+   "ice_scooter": {
+    "label": "Petrol scooter 110 cc class",
+    "powertrain": "ICE",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 4.701666666666667,
+     "maintenance": 1.0,
+     "fuel_production_wtt": 13.440000000000001,
+     "tailpipe_ttw": 45.150000000000006
+    },
+    "total": 64.29166666666667,
+    "mc_total": {
+     "mean": 64.35161603031631,
+     "p05": 60.05279019868391,
+     "p50": 64.2387930931264,
+     "p95": 68.9450507436788
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 4.716808641621119,
+      "p05": 4.0658901407708585,
+      "p50": 4.696594103011975,
+      "p95": 5.441442723278449
+     },
+     "maintenance": {
+      "mean": 1.0000398276171447,
+      "p05": 0.878474392879593,
+      "p50": 0.9980738264058288,
+      "p95": 1.128849687173123
+     },
+     "fuel_production_wtt": {
+      "mean": 13.445116675342348,
+      "p05": 12.328873692988177,
+      "p50": 13.42760252912096,
+      "p95": 14.62680898307877
+     },
+     "tailpipe_ttw": {
+      "mean": 45.189650885735695,
+      "p05": 41.38884065481165,
+      "p50": 45.11954296508593,
+      "p95": 49.24883472331993
+     }
+    },
+    "params": {
+     "mass": "vehicle.2w.scooter_ice.curb_mass_implied.icct2021",
+     "prod_int": "vehicle.2w.production_intensity.icct2021",
+     "life": "vehicle.2w.lifetime_km.icct2021",
+     "fuel": "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity",
+     "wtt": "fuels.gasoline.in.wtt.icct2021_car",
+     "ttw": "fuels.gasoline.in.ttw.icct2021_car",
+     "maint": "use.2w.scooter_ice.maintenance.icct2021"
+    },
+    "elasticity": {
+     "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.07313026571613365,
+     "vehicle.2w.production_intensity.icct2021": 0.07313026571613365,
+     "vehicle.2w.lifetime_km.icct2021": -0.07240620367936192,
+     "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.9113156189241661,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.2090473104342181,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.702268308489948,
+     "use.2w.scooter_ice.maintenance.icct2021": 0.015554115359696873
+    },
+    "dq_score": 2.1017732244358083,
+    "dq_dims": {
+     "reliability": 2.4858278063054993,
+     "completeness": 3.0,
+     "temporal": 2.450625370461649,
+     "geographical": 1.0862331147479654,
+     "technological": 1.4861798306639273
+    },
+    "india_footprint_share": 0.9268697342838625,
+    "gas_basis_shares": {
+     "GWP20(CH4)": 0.0731302657161374,
+     "unspecified": 0.015554115359688916,
+     "GWP100-AR5": 0.9113156189241738
+    },
+    "importance": {
+     "fuels.gasoline.in.ttw.icct2021_car": 0.5551331487679061,
+     "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.37679073804956936,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.045633664602764974,
+     "vehicle.2w.lifetime_km.icct2021": 0.009938938314693838,
+     "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.006110213264602257,
+     "vehicle.2w.production_intensity.icct2021": 0.005772694711635316,
+     "use.2w.scooter_ice.maintenance.icct2021": 0.0006206022888281802
+    }
+   },
+   "ev_scooter": {
+    "label": "Electric scooter 2.9 kWh",
+    "powertrain": "BEV",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 4.199000000000001,
+     "battery_production": 1.6433333333333333,
+     "maintenance": 1.0,
+     "electricity_production_wtt": 28.180012412286544
+    },
+    "total": 35.02234574561988,
+    "mc_total": {
+     "mean": 35.23046042775699,
+     "p05": 33.19717096124327,
+     "p50": 35.22893532058502,
+     "p95": 37.291823712210935
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 4.21366224858147,
+      "p05": 3.6297107744963872,
+      "p50": 4.198831127526303,
+      "p95": 4.858712974117981
+     },
+     "battery_production": {
+      "mean": 1.6559901868374207,
+      "p05": 1.3185249177589444,
+      "p50": 1.6414777115082817,
+      "p95": 2.0479675621287976
+     },
+     "maintenance": {
+      "mean": 1.004199783407225,
+      "p05": 0.8820813444859532,
+      "p50": 1.0008078019299913,
+      "p95": 1.1359372420234908
+     },
+     "electricity_production_wtt": {
+      "mean": 28.356608208930872,
+      "p05": 26.496793329650593,
+      "p50": 28.346135420985092,
+      "p95": 30.243183316631573
+     }
+    },
+    "params": {
+     "glider": "vehicle.2w.scooter_ev.glider_mass_implied.icct2021",
+     "prod_int": "vehicle.2w.production_intensity.icct2021",
+     "life": "vehicle.2w.lifetime_km.icct2021",
+     "kwh": "battery.scooter_ev.capacity.icct2021",
+     "bat_int": "battery.li_ion.production_intensity.in.icct2021_car",
+     "elec": "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity",
+     "ef_gen": "energy.electricity.in.grid_wavg_generation.fy2025_26",
+     "td": "energy.electricity.in.transmission_loss_share.fy2023_24",
+     "maint": "use.2w.scooter_ev.maintenance.icct2021",
+     "ch4c": "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries",
+     "n2oc": "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries",
+     "co2c": "fuels.coal.in.co2_per_energy_ncv.cea_v22",
+     "coal_sh": "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26",
+     "hr": "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default",
+     "gcv": "energy.upstream.coal_power.gcv.coal.cea_v22_default",
+     "cmm": "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020",
+     "dens": "energy.upstream.coal_mining.ch4_density.ipcc2006",
+     "gwp_ch4": "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5",
+     "gwp_n2o": "method.gwp100.n2o.no_ccfb.ipcc_ar5"
+    },
+    "elasticity": {
+     "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.1198948816991873,
+     "vehicle.2w.production_intensity.icct2021": 0.1198948816991873,
+     "vehicle.2w.lifetime_km.icct2021": -0.16516564855079083,
+     "battery.scooter_ev.capacity.icct2021": 0.04692242333706903,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.04692242333706903,
+     "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.8046294961784816,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.7868782261360245,
+     "energy.electricity.in.transmission_loss_share.fy2023_24": 0.030753408132847097,
+     "use.2w.scooter_ev.maintenance.icct2021": 0.028553198785231784,
+     "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 0.00024531809288508684,
+     "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.0032504647308389863,
+     "fuels.coal.in.co2_per_energy_ncv.cea_v22": -0.0034611711126436907,
+     "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 0.01775127004243683,
+     "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 0.01775127004243683,
+     "energy.upstream.coal_power.gcv.coal.cea_v22_default": -0.017575514893523707,
+     "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.01775127004243683,
+     "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.01775127004243683,
+     "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.017996588135321918,
+     "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0032504647308389863
+    },
+    "dq_score": 1.8220057733594963,
+    "dq_dims": {
+     "reliability": 2.0625301963483484,
+     "completeness": 2.238895774378053,
+     "temporal": 2.075475544891054,
+     "geographical": 1.1754909616514932,
+     "technological": 1.5576363895285326
+    },
+    "india_footprint_share": 0.8331826949637142,
+    "gas_basis_shares": {
+     "GWP20(CH4)": 0.11989488169921213,
+     "GWP100-AR5": 0.8515519195155503,
+     "unspecified": 0.028553198785237464
+    },
+    "importance": {
+     "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.5602185766006281,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.26881866488829864,
+     "vehicle.2w.lifetime_km.icct2021": 0.06524198694213812,
+     "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.025323823552383575,
+     "vehicle.2w.production_intensity.icct2021": 0.021854992853487385,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.0216600575836737,
+     "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.012647178233690784,
+     "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.007859303313246715,
+     "energy.electricity.in.transmission_loss_share.fy2023_24": 0.005753461296980931,
+     "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.005317124087096812,
+     "battery.scooter_ev.capacity.icct2021": 0.0022208936964553086,
+     "use.2w.scooter_ev.maintenance.icct2021": 0.001899745304650699,
+     "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 0.0007002811374175524,
+     "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 0.0002746291894163168,
+     "energy.upstream.coal_power.gcv.coal.cea_v22_default": 0.00016659165601095517,
+     "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 3.7213032330282024e-05,
+     "fuels.coal.in.co2_per_energy_ncv.cea_v22": 5.4766320942240825e-06,
+     "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.0,
+     "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0
+    }
+   }
+  },
+  "gas_basis_families": [
+   "GWP100-AR5",
+   "GWP20(CH4)",
+   "unspecified"
+  ],
+  "harmonized": false,
+  "reference_product": "ice_scooter",
+  "comparisons": {
+   "ev_scooter": {
+    "vs": "ice_scooter",
+    "reduction_central": 0.455258394105718,
+    "reduction_mc": {
+     "mean": 0.45158938166772616,
+     "p05": 0.40072414483610697,
+     "p50": 0.45235935449980147,
+     "p95": 0.4989437601953864
+    },
+    "difference_mc": {
+     "mean": 29.121155602559313,
+     "p05": 24.34258465548816,
+     "p50": 29.09259197027764,
+     "p95": 34.081601470114144
+    },
+    "p_lower": 1.0,
+    "importance": {
+     "fuels.gasoline.in.ttw.icct2021_car": 0.3403363974459974,
+     "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.2277192930242787,
+     "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.22534974371609245,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.13066614920645409,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.028144971243293862,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.010256955450796669,
+     "vehicle.2w.lifetime_km.icct2021": 0.008390211881942502,
+     "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.008338275228786031
+    }
+   }
+  },
+  "comparison": {
+   "ice": "ice_scooter",
+   "bev": "ev_scooter",
+   "reduction_central": 0.455258394105718,
+   "reduction_mc": {
+    "mean": 0.45158938166772616,
+    "p05": 0.40072414483610697,
+    "p50": 0.45235935449980147,
+    "p95": 0.4989437601953864
+   },
+   "difference_mc": {
+    "mean": 29.121155602559313,
+    "p05": 24.34258465548816,
+    "p50": 29.09259197027764,
+    "p95": 34.081601470114144
+   },
+   "p_bev_lower": 1.0,
+   "importance": {
+    "fuels.gasoline.in.ttw.icct2021_car": 0.3403363974459974,
+    "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.2277192930242787,
+    "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.22534974371609245,
+    "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.13066614920645409,
+    "fuels.gasoline.in.wtt.icct2021_car": 0.028144971243293862,
+    "battery.li_ion.production_intensity.in.icct2021_car": 0.010256955450796669,
+    "vehicle.2w.lifetime_km.icct2021": 0.008390211881942502,
+    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.008338275228786031,
+    "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.005153113320249077,
+    "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.0037367355616613885,
+    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.0035489954979422574,
+    "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.0022461961476878947,
+    "energy.electricity.in.transmission_loss_share.fy2023_24": 0.0018434946330858418,
+    "vehicle.2w.production_intensity.icct2021": 0.0013589257699805253,
+    "use.2w.scooter_ev.maintenance.icct2021": 0.0009151203660342373,
+    "battery.scooter_ev.capacity.icct2021": 0.0007981061165634612,
+    "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 0.0004515052210438246,
+    "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 0.0004191646796299264,
+    "use.2w.scooter_ice.maintenance.icct2021": 0.0001671022908462084,
+    "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 7.772762778004764e-05,
+    "energy.upstream.coal_power.gcv.coal.cea_v22_default": 5.6511947681117494e-05,
+    "fuels.coal.in.co2_per_energy_ncv.cea_v22": 2.5303622172534848e-05,
+    "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.0,
+    "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0
+   }
+  }
+ },
+ "in2026_om_co2_only": {
+  "scenario": "in2026_om_co2_only",
+  "label": "Sensitivity \u2014 CO2-only panel: CEA operating margin (compare with the CO2-only average and build-margin rows on one basis)",
+  "description": "Common-basis panel: average, operating margin and build margin all CO2-only, so the spread reflects the grid-accounting method alone.",
+  "case": "2W \u2014 petrol vs electric scooter",
+  "kind": "sensitivity",
+  "n_iterations": 10000,
+  "seed": 20261004,
+  "unit": "g per vehicle-km (GHG indicator)",
+  "products": {
+   "ice_scooter": {
+    "label": "Petrol scooter 110 cc class",
+    "powertrain": "ICE",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 4.701666666666667,
+     "maintenance": 1.0,
+     "fuel_production_wtt": 13.440000000000001,
+     "tailpipe_ttw": 45.150000000000006
+    },
+    "total": 64.29166666666667,
+    "mc_total": {
+     "mean": 64.349790805925,
+     "p05": 59.95762029772967,
+     "p50": 64.3355124668494,
+     "p95": 68.85662915079857
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 4.715161789634337,
+      "p05": 4.062556723344704,
+      "p50": 4.6981130387970955,
+      "p95": 5.44043872189304
+     },
+     "maintenance": {
+      "mean": 1.0029002559554714,
+      "p05": 0.883343669288666,
+      "p50": 0.9990058881190313,
+      "p95": 1.1329392011434418
+     },
+     "fuel_production_wtt": {
+      "mean": 13.456333271714687,
+      "p05": 12.318561410267364,
+      "p50": 13.438121042477928,
+      "p95": 14.642762148752512
+     },
+     "tailpipe_ttw": {
+      "mean": 45.17539548862051,
+      "p05": 41.36716422077519,
+      "p50": 45.132835102857165,
+      "p95": 49.147847594032264
+     }
+    },
+    "params": {
+     "mass": "vehicle.2w.scooter_ice.curb_mass_implied.icct2021",
+     "prod_int": "vehicle.2w.production_intensity.icct2021",
+     "life": "vehicle.2w.lifetime_km.icct2021",
+     "fuel": "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity",
+     "wtt": "fuels.gasoline.in.wtt.icct2021_car",
+     "ttw": "fuels.gasoline.in.ttw.icct2021_car",
+     "maint": "use.2w.scooter_ice.maintenance.icct2021"
+    },
+    "elasticity": {
+     "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.07313026571613365,
+     "vehicle.2w.production_intensity.icct2021": 0.07313026571613365,
+     "vehicle.2w.lifetime_km.icct2021": -0.07240620367936192,
+     "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.9113156189241661,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.2090473104342181,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.702268308489948,
+     "use.2w.scooter_ice.maintenance.icct2021": 0.015554115359696873
+    },
+    "dq_score": 2.1017732244358083,
+    "dq_dims": {
+     "reliability": 2.4858278063054993,
+     "completeness": 3.0,
+     "temporal": 2.450625370461649,
+     "geographical": 1.0862331147479654,
+     "technological": 1.4861798306639273
+    },
+    "india_footprint_share": 0.9268697342838625,
+    "gas_basis_shares": {
+     "GWP20(CH4)": 0.0731302657161374,
+     "unspecified": 0.015554115359688916,
+     "GWP100-AR5": 0.9113156189241738
+    },
+    "importance": {
+     "fuels.gasoline.in.ttw.icct2021_car": 0.5578399692122528,
+     "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.37155072075232365,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.04723123144180092,
+     "vehicle.2w.lifetime_km.icct2021": 0.008277036289286315,
+     "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.006799895530017652,
+     "vehicle.2w.production_intensity.icct2021": 0.006148402704689115,
+     "use.2w.scooter_ice.maintenance.icct2021": 0.0021527440696295246
+    }
+   },
+   "ev_scooter": {
+    "label": "Electric scooter 2.9 kWh",
+    "powertrain": "BEV",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 4.199000000000001,
+     "battery_production": 1.6433333333333333,
+     "maintenance": 1.0,
+     "electricity_production_wtt": 45.77085103799927
+    },
+    "total": 52.61318437133261,
+    "mc_total": {
+     "mean": 52.65661936538889,
+     "p05": 49.55685011843279,
+     "p50": 52.63589256058566,
+     "p95": 55.80812292001822
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 4.212312525950801,
+      "p05": 3.6319961391118314,
+      "p50": 4.1926708603565785,
+      "p95": 4.847047023618541
+     },
+     "battery_production": {
+      "mean": 1.655261775032293,
+      "p05": 1.3218379046042212,
+      "p50": 1.6383002108917917,
+      "p95": 2.047377773689941
+     },
+     "maintenance": {
+      "mean": 1.003200351641795,
+      "p05": 0.8823899045494444,
+      "p50": 1.0006590154639006,
+      "p95": 1.1325912242808818
+     },
+     "electricity_production_wtt": {
+      "mean": 45.78584471276399,
+      "p05": 42.79828068178639,
+      "p50": 45.75683135290184,
+      "p95": 48.83449263283618
+     }
+    },
+    "params": {
+     "glider": "vehicle.2w.scooter_ev.glider_mass_implied.icct2021",
+     "prod_int": "vehicle.2w.production_intensity.icct2021",
+     "life": "vehicle.2w.lifetime_km.icct2021",
+     "kwh": "battery.scooter_ev.capacity.icct2021",
+     "bat_int": "battery.li_ion.production_intensity.in.icct2021_car",
+     "elec": "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity",
+     "ef_gen": "energy.electricity.in.grid_om.fy2025_26",
+     "td": "energy.electricity.in.td_loss_share.fy2023_24",
+     "maint": "use.2w.scooter_ev.maintenance.icct2021"
+    },
+    "elasticity": {
+     "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.07980889296424633,
+     "vehicle.2w.production_intensity.icct2021": 0.07980889296424633,
+     "vehicle.2w.lifetime_km.icct2021": -0.10994370551722654,
+     "battery.scooter_ev.capacity.icct2021": 0.031234249608137747,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.031234249608137747,
+     "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.8699502146640251,
+     "energy.electricity.in.grid_om.fy2025_26": 0.8699502146640251,
+     "energy.electricity.in.td_loss_share.fy2023_24": 0.18659851405310482,
+     "use.2w.scooter_ev.maintenance.icct2021": 0.01900664276357072
+    },
+    "dq_score": 1.7505813644126236,
+    "dq_dims": {
+     "reliability": 1.9746883577322047,
+     "completeness": 2.072200022272765,
+     "temporal": 2.0220593227536536,
+     "geographical": 1.1142021987803978,
+     "technological": 1.569756920524096
+    },
+    "india_footprint_share": 0.8889568574276099,
+    "gas_basis_shares": {
+     "GWP20(CH4)": 0.07980889296424935,
+     "GWP100-AR5": 0.031234249608140766,
+     "unspecified": 0.019006642763574503,
+     "CO2-only": 0.8699502146640353
+    },
+    "importance": {
+     "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.6008330664570125,
+     "energy.electricity.in.grid_om.fy2025_26": 0.3177421785487143,
+     "vehicle.2w.lifetime_km.icct2021": 0.03092550624584088,
+     "energy.electricity.in.td_loss_share.fy2023_24": 0.02514904478379978,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.008755360111820498,
+     "vehicle.2w.production_intensity.icct2021": 0.007485955858544668,
+     "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.006849699806258111,
+     "battery.scooter_ev.capacity.icct2021": 0.0012112754186365349,
+     "use.2w.scooter_ev.maintenance.icct2021": 0.001047912769372619
+    }
+   }
+  },
+  "gas_basis_families": [
+   "CO2-only",
+   "GWP100-AR5",
+   "GWP20(CH4)",
+   "unspecified"
+  ],
+  "harmonized": false,
+  "reference_product": "ice_scooter",
+  "comparisons": {
+   "ev_scooter": {
+    "vs": "ice_scooter",
+    "reduction_central": 0.18164846084771058,
+    "reduction_mc": {
+     "mean": 0.18032371286987836,
+     "p05": 0.10469957330823566,
+     "p50": 0.1813523037515063,
+     "p95": 0.2507912170659989
+    },
+    "difference_mc": {
+     "mean": 11.69317144053612,
+     "p05": 6.354736849902567,
+     "p50": 11.632804095494048,
+     "p95": 16.973986530517603
+    },
+    "p_lower": 1.0,
+    "importance": {
+     "fuels.gasoline.in.ttw.icct2021_car": 0.3165516476306495,
+     "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.2590665665917485,
+     "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.23102949041048418,
+     "energy.electricity.in.grid_om.fy2025_26": 0.14032751160046578,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.02556450762889548,
+     "energy.electricity.in.td_loss_share.fy2023_24": 0.010728671709405193,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.004028477683675095,
+     "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.0034981212454593476
+    }
+   }
+  },
+  "comparison": {
+   "ice": "ice_scooter",
+   "bev": "ev_scooter",
+   "reduction_central": 0.18164846084771058,
+   "reduction_mc": {
+    "mean": 0.18032371286987836,
+    "p05": 0.10469957330823566,
+    "p50": 0.1813523037515063,
+    "p95": 0.2507912170659989
+   },
+   "difference_mc": {
+    "mean": 11.69317144053612,
+    "p05": 6.354736849902567,
+    "p50": 11.632804095494048,
+    "p95": 16.973986530517603
+   },
+   "p_bev_lower": 1.0,
+   "importance": {
+    "fuels.gasoline.in.ttw.icct2021_car": 0.3165516476306495,
+    "use.2w.scooter_ev.elec_kwh_per_100km.icct2021_ambiguity": 0.2590665665917485,
+    "use.2w.scooter_ice.fuel_l_per_100km.icct2021_ambiguity": 0.23102949041048418,
+    "energy.electricity.in.grid_om.fy2025_26": 0.14032751160046578,
+    "fuels.gasoline.in.wtt.icct2021_car": 0.02556450762889548,
+    "energy.electricity.in.td_loss_share.fy2023_24": 0.010728671709405193,
+    "battery.li_ion.production_intensity.in.icct2021_car": 0.004028477683675095,
+    "vehicle.2w.scooter_ice.curb_mass_implied.icct2021": 0.0034981212454593476,
+    "vehicle.2w.scooter_ev.glider_mass_implied.icct2021": 0.0034511388372606942,
+    "vehicle.2w.lifetime_km.icct2021": 0.0027020235471647007,
+    "use.2w.scooter_ice.maintenance.icct2021": 0.0017098919328591249,
+    "battery.scooter_ev.capacity.icct2021": 0.0006838540063139096,
+    "use.2w.scooter_ev.maintenance.icct2021": 0.0006577037813282018,
+    "vehicle.2w.production_intensity.icct2021": 3.933942901352729e-07
+   }
+  }
+ },
  "car_icct2021_replication": {
   "scenario": "car_icct2021_replication",
   "label": "Verification C \u2014 ICCT (2021) India sedans, STEPS lifetime grid (inputs as tabulated)",
@@ -4888,6 +5744,1558 @@
     "method.gwp100.ch4.ar5.icct2021": 0.0,
     "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.0,
     "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0
+   }
+  }
+ },
+ "car_in2026_battery_replacement": {
+  "scenario": "car_in2026_battery_replacement",
+  "label": "Sensitivity \u2014 one battery replacement over the 165,000 km life (CO2e grid)",
+  "description": "Structural sensitivity: one extra 23 kWh pack; not evidence that a replacement occurs.",
+  "case": "Car \u2014 sedan: petrol vs diesel vs CNG vs electric",
+  "kind": "sensitivity",
+  "n_iterations": 10000,
+  "seed": 20261004,
+  "unit": "g per vehicle-km (GHG indicator)",
+  "products": {
+   "petrol": {
+    "label": "Petrol sedan (6.8 L/100 km real-world)",
+    "powertrain": "ICE",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 31.452121212121217,
+     "maintenance": 5.0,
+     "fuel_production_wtt": 43.52,
+     "tailpipe_ttw": 146.2
+    },
+    "total": 226.1721212121212,
+    "mc_total": {
+     "mean": 227.22972054530828,
+     "p05": 202.6417015448132,
+     "p50": 226.46236839640605,
+     "p95": 253.81937192903703
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 31.623899309563182,
+      "p05": 26.454857368494032,
+      "p50": 31.415362259302043,
+      "p95": 37.4273440180757
+     },
+     "maintenance": {
+      "mean": 5.0073325786434175,
+      "p05": 4.40739762260649,
+      "p50": 4.992694708393326,
+      "p95": 5.65112886904683
+     },
+     "fuel_production_wtt": {
+      "mean": 43.71231055233908,
+      "p05": 37.86604921177203,
+      "p50": 43.59852113796036,
+      "p95": 50.10460601432788
+     },
+     "tailpipe_ttw": {
+      "mean": 146.88617810476262,
+      "p05": 127.46971217985332,
+      "p50": 146.22943407516914,
+      "p95": 168.58044858460252
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.gasoline.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "fuel": "use.car.sedan.gasoline.l_per_100km.icct2021",
+     "wtt": "fuels.gasoline.in.wtt.icct2021_car",
+     "ttw": "fuels.gasoline.in.ttw.icct2021_car",
+     "maint": "use.car.sedan.maintenance.gasoline.icct2021"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.13906276796433883,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.13906276796433883,
+     "vehicle.car.lifetime_km.in.icct2021": -0.13768590887555837,
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.8388301749271129,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.19241982507289024,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.6464103498542477,
+     "use.car.sedan.maintenance.gasoline.icct2021": 0.022107057108562738
+    },
+    "dq_score": 2.060945901378541,
+    "dq_dims": {
+     "reliability": 2.472033051416225,
+     "completeness": 2.5377657788199857,
+     "temporal": 2.5384165979031907,
+     "geographical": 1.2180974808501006,
+     "technological": 1.5384165979032025
+    },
+    "india_footprint_share": 0.8609372320356714,
+    "gas_basis_shares": {
+     "GWP100-AR5": 1.0
+    },
+    "importance": {
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.7695185181346118,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.1686787929425357,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.017200131929049206,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.014761315495340202,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.014497081241999827,
+     "vehicle.car.lifetime_km.in.icct2021": 0.014472456907679367,
+     "use.car.sedan.maintenance.gasoline.icct2021": 0.0008717033487837025
+    }
+   },
+   "diesel": {
+    "label": "Diesel sedan (6.0 L/100 km real-world)",
+    "powertrain": "ICE",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 31.452121212121217,
+     "maintenance": 7.0,
+     "fuel_production_wtt": 46.800000000000004,
+     "tailpipe_ttw": 154.2
+    },
+    "total": 239.4521212121212,
+    "mc_total": {
+     "mean": 240.28130136198848,
+     "p05": 214.3638382603791,
+     "p50": 239.58356283603257,
+     "p95": 268.9639105003871
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 31.645412874244702,
+      "p05": 26.47441529264156,
+      "p50": 31.51526309610521,
+      "p95": 37.32132814748589
+     },
+     "maintenance": {
+      "mean": 7.015840207625425,
+      "p05": 6.160182701018404,
+      "p50": 6.996434452953159,
+      "p95": 7.928533979904283
+     },
+     "fuel_production_wtt": {
+      "mean": 46.931896656980726,
+      "p05": 40.712306517482666,
+      "p50": 46.786848356648505,
+      "p95": 53.66396673967199
+     },
+     "tailpipe_ttw": {
+      "mean": 154.68815162313766,
+      "p05": 134.14285909789368,
+      "p50": 154.15617719295804,
+      "p95": 177.35945873421818
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.diesel.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "fuel": "use.car.sedan.diesel.l_per_100km.icct2021",
+     "wtt": "fuels.diesel.in.wtt.icct2021_car",
+     "ttw": "fuels.diesel.in.ttw.icct2021_car",
+     "maint": "use.car.sedan.maintenance.diesel.icct2021"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.13135035535667064,
+     "vehicle.car.production_intensity.diesel.icct2021": 0.13135035535667064,
+     "vehicle.car.lifetime_km.in.icct2021": -0.13004985678878314,
+     "use.car.sedan.diesel.l_per_100km.icct2021": 0.8394162431409274,
+     "fuels.diesel.in.wtt.icct2021_car": 0.19544617004474416,
+     "fuels.diesel.in.ttw.icct2021_car": 0.6439700730961714,
+     "use.car.sedan.maintenance.diesel.icct2021": 0.029233401502416816
+    },
+    "dq_score": 2.061150989732588,
+    "dq_dims": {
+     "reliability": 2.475386366533379,
+     "completeness": 2.5379098464052814,
+     "temporal": 2.5385288907604537,
+     "geographical": 1.2154009542033781,
+     "technological": 1.5385288907604484
+    },
+    "india_footprint_share": 0.8686496446433273,
+    "gas_basis_shares": {
+     "GWP100-AR5": 1.0
+    },
+    "importance": {
+     "use.car.sedan.diesel.l_per_100km.icct2021": 0.7798975789519538,
+     "fuels.diesel.in.ttw.icct2021_car": 0.17360378001533947,
+     "fuels.diesel.in.wtt.icct2021_car": 0.014713317361056334,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.012458442689212654,
+     "vehicle.car.lifetime_km.in.icct2021": 0.010228125823389023,
+     "vehicle.car.production_intensity.diesel.icct2021": 0.007912121812406848,
+     "use.car.sedan.maintenance.diesel.icct2021": 0.0011866333466418562
+    }
+   },
+   "cng": {
+    "label": "CNG sedan (5.0 kg/100 km real-world)",
+    "powertrain": "CNG",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 33.266666666666666,
+     "maintenance": 5.0,
+     "fuel_production_wtt": 46.00000000000001,
+     "tailpipe_ttw": 139.79999999999998
+    },
+    "total": 224.06666666666666,
+    "mc_total": {
+     "mean": 239.03735939919687,
+     "p05": 210.6257122372725,
+     "p50": 238.65531543368533,
+     "p95": 268.7120059925226
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 33.49494155699296,
+      "p05": 27.972591152160152,
+      "p50": 33.297855401666766,
+      "p95": 39.56546942399185
+     },
+     "maintenance": {
+      "mean": 5.016993733360213,
+      "p05": 4.415245674030611,
+      "p50": 5.0075767270783205,
+      "p95": 5.661157831341061
+     },
+     "fuel_production_wtt": {
+      "mean": 46.10360559083803,
+      "p05": 39.792898075474255,
+      "p50": 45.96104855847693,
+      "p95": 53.066920612390035
+     },
+     "tailpipe_ttw": {
+      "mean": 154.4218185180056,
+      "p05": 130.7813647290911,
+      "p50": 154.15105679772026,
+      "p95": 178.98559923327872
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.cng.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "fuel": "use.car.sedan.cng.kg_per_100km.icct2021",
+     "wtt": "fuels.natural_gas.in.wtt.icct2021_car",
+     "ttw": "fuels.natural_gas.in.ttw.icct2021_car",
+     "maint": "use.car.sedan.maintenance.cng.icct2021",
+     "slip": "use.car.cng.methane_slip.icct2021",
+     "gwp_ch4": "method.gwp100.ch4.ar5.icct2021"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.14846771794108332,
+     "vehicle.car.production_intensity.cng.icct2021": 0.14846771794108332,
+     "vehicle.car.lifetime_km.in.icct2021": -0.1469977405357303,
+     "use.car.sedan.cng.kg_per_100km.icct2021": 0.821184171377555,
+     "fuels.natural_gas.in.wtt.icct2021_car": 0.2052960428443824,
+     "fuels.natural_gas.in.ttw.icct2021_car": 0.6158881285331853,
+     "use.car.sedan.maintenance.cng.icct2021": 0.02231478726568712,
+     "use.car.cng.methane_slip.icct2021": 0.008033323415650408,
+     "method.gwp100.ch4.ar5.icct2021": 0.008033323415650408
+    },
+    "dq_score": 2.221171665185431,
+    "dq_dims": {
+     "reliability": 2.4661856479125697,
+     "completeness": 2.9263414613856287,
+     "temporal": 2.5443169954259703,
+     "geographical": 1.2419809025202073,
+     "technological": 1.9270333186827806
+    },
+    "india_footprint_share": 0.851532282058911,
+    "gas_basis_shares": {
+     "GWP100-AR5": 0.9999999999999999
+    },
+    "importance": {
+     "use.car.sedan.cng.kg_per_100km.icct2021": 0.617901175578071,
+     "use.car.cng.methane_slip.icct2021": 0.21267288072090978,
+     "fuels.natural_gas.in.ttw.icct2021_car": 0.11768078834231127,
+     "vehicle.car.lifetime_km.in.icct2021": 0.015542349762075667,
+     "vehicle.car.production_intensity.cng.icct2021": 0.015220296378766153,
+     "fuels.natural_gas.in.wtt.icct2021_car": 0.011723449402419043,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.008270766750200852,
+     "use.car.sedan.maintenance.cng.icct2021": 0.0009882930652460806,
+     "method.gwp100.ch4.ar5.icct2021": 0.0
+    }
+   },
+   "bev": {
+    "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
+    "powertrain": "BEV",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 28.42787878787879,
+     "battery_production": 18.957575757575757,
+     "maintenance": 4.0,
+     "electricity_production_wtt": 161.60621186924726
+    },
+    "total": 212.9916664147018,
+    "mc_total": {
+     "mean": 215.274402524635,
+     "p05": 183.65446511121942,
+     "p50": 213.9757687926949,
+     "p95": 251.40514600750262
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 28.592660688830772,
+      "p05": 23.92358237361111,
+      "p50": 28.467787480355774,
+      "p95": 33.74135770671199
+     },
+     "battery_production": {
+      "mean": 19.1207090058135,
+      "p05": 14.998387255547991,
+      "p50": 18.912266433976214,
+      "p95": 23.953572043680346
+     },
+     "maintenance": {
+      "mean": 4.014606077591579,
+      "p05": 3.532827802237322,
+      "p50": 4.005946066306471,
+      "p95": 4.540566085001122
+     },
+     "electricity_production_wtt": {
+      "mean": 163.54642675239913,
+      "p05": 133.02253329407935,
+      "p50": 162.16015327059742,
+      "p95": 198.80284811586571
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.bev_wo_battery.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "kwh": "battery.car.sedan.capacity.icct2021",
+     "bat_int": "battery.li_ion.production_intensity.in.icct2021_car",
+     "elec": "use.car.sedan.bev.kwh_per_100km.icct2021",
+     "maint": "use.car.sedan.maintenance.bev.icct2021",
+     "ef_gen": "energy.electricity.in.grid_wavg_generation.fy2025_26",
+     "td": "energy.electricity.in.td_loss_share.fy2023_24",
+     "ch4c": "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries",
+     "n2oc": "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries",
+     "co2c": "fuels.coal.in.co2_per_energy_ncv.cea_v22",
+     "coal_sh": "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26",
+     "hr": "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default",
+     "gcv": "energy.upstream.coal_power.gcv.coal.cea_v22_default",
+     "cmm": "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020",
+     "dens": "energy.upstream.coal_mining.ch4_density.ipcc2006",
+     "gwp_ch4": "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5",
+     "gwp_n2o": "method.gwp100.n2o.no_ccfb.ipcc_ar5"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.13346944162842309,
+     "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.13346944162842309,
+     "vehicle.car.lifetime_km.in.icct2021": -0.22027289808519887,
+     "battery.car.sedan.capacity.icct2021": 0.08900618543762966,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.08900618543762966,
+     "use.car.sedan.bev.kwh_per_100km.icct2021": 0.7587442954439083,
+     "use.car.sedan.maintenance.bev.icct2021": 0.018780077490045618,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.7420053181313017,
+     "energy.electricity.in.td_loss_share.fy2023_24": 0.1627455866894622,
+     "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 0.000231328461674591,
+     "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.0030651021169581455,
+     "fuels.coal.in.co2_per_energy_ncv.cea_v22": -0.003263792652060491,
+     "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 0.016738977312633296,
+     "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 0.016738977312633296,
+     "energy.upstream.coal_power.gcv.coal.cea_v22_default": -0.016573244863941704,
+     "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.016738977312633296,
+     "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.016738977312633296,
+     "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.0169703057742812,
+     "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0030651021169581455
+    },
+    "dq_score": 1.9173979199270963,
+    "dq_dims": {
+     "reliability": 2.022896902075709,
+     "completeness": 2.1631925715871745,
+     "temporal": 2.225365093691351,
+     "geographical": 1.253323395841087,
+     "technological": 1.922211636440159
+    },
+    "india_footprint_share": 0.7775243729339462,
+    "gas_basis_shares": {
+     "GWP100-AR5": 1.0
+    },
+    "importance": {
+     "use.car.sedan.bev.kwh_per_100km.icct2021": 0.9099992501266047,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.035691815519161466,
+     "vehicle.car.lifetime_km.in.icct2021": 0.021151537704658552,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.009645704173253835,
+     "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.008032207246927478,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.006473352997930809,
+     "energy.electricity.in.td_loss_share.fy2023_24": 0.00322897190326583,
+     "battery.car.sedan.capacity.icct2021": 0.002620015189313264,
+     "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.0010971328706398755,
+     "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.000616038063853536,
+     "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.0005803831811980417,
+     "energy.upstream.coal_power.gcv.coal.cea_v22_default": 0.0003582484099752605,
+     "use.car.sedan.maintenance.bev.icct2021": 0.000216201311768212,
+     "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 0.00015925298536278618,
+     "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 9.469431903886266e-05,
+     "fuels.coal.in.co2_per_energy_ncv.cea_v22": 2.989768029077601e-05,
+     "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 5.296316756662378e-06,
+     "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.0,
+     "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0
+    }
+   }
+  },
+  "gas_basis_families": [
+   "GWP100-AR5"
+  ],
+  "harmonized": true,
+  "reference_product": "petrol",
+  "comparisons": {
+   "diesel": {
+    "vs": "petrol",
+    "reduction_central": -0.0587163436803293,
+    "reduction_mc": {
+     "mean": -0.06238228793578716,
+     "p05": -0.24050859626620633,
+     "p50": -0.05543814817290238,
+     "p95": 0.09710084133427264
+    },
+    "difference_mc": {
+     "mean": -13.051580816680216,
+     "p05": -50.43273352567117,
+     "p50": -12.58687357079485,
+     "p95": 23.917513398488904
+    },
+    "p_lower": 0.2817,
+    "importance": {
+     "use.car.sedan.diesel.l_per_100km.icct2021": 0.3884370003933936,
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.38205908146410983,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.10027310939909188,
+     "fuels.diesel.in.ttw.icct2021_car": 0.09722050852854697,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.00871116381397192,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.007747630403236123,
+     "vehicle.car.production_intensity.diesel.icct2021": 0.007290256579427912,
+     "fuels.diesel.in.wtt.icct2021_car": 0.006141606597364676
+    }
+   },
+   "cng": {
+    "vs": "petrol",
+    "reduction_central": 0.009309080775167122,
+    "reduction_mc": {
+     "mean": -0.05691064224746168,
+     "p05": -0.2406834813645217,
+     "p50": -0.052115413313974734,
+     "p95": 0.11010267223075386
+    },
+    "difference_mc": {
+     "mean": -11.807638853888568,
+     "p05": -50.62760386205402,
+     "p50": -11.762305843130903,
+     "p95": 26.88541618731459
+    },
+    "p_lower": 0.3057,
+    "importance": {
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.35886786007389376,
+     "use.car.sedan.cng.kg_per_100km.icct2021": 0.3303332338384427,
+     "use.car.cng.methane_slip.icct2021": 0.11533686172146022,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.09003908569119119,
+     "fuels.natural_gas.in.ttw.icct2021_car": 0.07039999362176114,
+     "vehicle.car.production_intensity.cng.icct2021": 0.008847006901410793,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.008472659549240787,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.007735122268545246
+    }
+   },
+   "bev": {
+    "vs": "petrol",
+    "reduction_central": 0.05827621338466282,
+    "reduction_mc": {
+     "mean": 0.04818312132830656,
+     "p05": -0.14614697175810498,
+     "p50": 0.05474777705818651,
+     "p95": 0.2164268408566588
+    },
+    "difference_mc": {
+     "mean": 11.955318020673298,
+     "p05": -31.066807846152397,
+     "p50": 12.456402482088336,
+     "p95": 53.08102423382268
+    },
+    "p_lower": 0.6835,
+    "importance": {
+     "use.car.sedan.bev.kwh_per_100km.icct2021": 0.6127783574849894,
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.26622810649137424,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.06853269085909823,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.02335251803373113,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.004900608680243921,
+     "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.004692644795534401,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.004425756326759239,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.004209093135825907
+    }
+   }
+  },
+  "comparison": {
+   "ice": "petrol",
+   "bev": "bev",
+   "reduction_central": 0.05827621338466282,
+   "reduction_mc": {
+    "mean": 0.04818312132830656,
+    "p05": -0.14614697175810498,
+    "p50": 0.05474777705818651,
+    "p95": 0.2164268408566588
+   },
+   "difference_mc": {
+    "mean": 11.955318020673298,
+    "p05": -31.066807846152397,
+    "p50": 12.456402482088336,
+    "p95": 53.08102423382268
+   },
+   "p_bev_lower": 0.6835,
+   "importance": {
+    "use.car.sedan.bev.kwh_per_100km.icct2021": 0.6127783574849894,
+    "use.car.sedan.gasoline.l_per_100km.icct2021": 0.26622810649137424,
+    "fuels.gasoline.in.ttw.icct2021_car": 0.06853269085909823,
+    "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.02335251803373113,
+    "battery.li_ion.production_intensity.in.icct2021_car": 0.004900608680243921,
+    "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.004692644795534401,
+    "fuels.gasoline.in.wtt.icct2021_car": 0.004425756326759239,
+    "vehicle.car.production_intensity.gasoline.icct2021": 0.004209093135825907,
+    "vehicle.car.lifetime_km.in.icct2021": 0.002124656889536766,
+    "battery.car.sedan.capacity.icct2021": 0.0019667082336480768,
+    "energy.electricity.in.td_loss_share.fy2023_24": 0.0014985672348830769,
+    "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.0011289930003953767,
+    "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.000947892058588357,
+    "vehicle.car.production_intensity.diesel.icct2021": 0.000887465669011769,
+    "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.0006818654379491337,
+    "fuels.diesel.in.wtt.icct2021_car": 0.0004191794276868763,
+    "fuels.natural_gas.in.ttw.icct2021_car": 0.0002263690058643324,
+    "use.car.sedan.maintenance.diesel.icct2021": 0.0002036410832696,
+    "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 0.0001498715214810479,
+    "energy.upstream.coal_power.gcv.coal.cea_v22_default": 0.00013557256958861898,
+    "use.car.sedan.maintenance.bev.icct2021": 8.456094837679401e-05,
+    "use.car.sedan.cng.kg_per_100km.icct2021": 8.43712384667781e-05,
+    "vehicle.car.sedan.mass.in.fy2019_20": 7.661998809940126e-05,
+    "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 6.248229920895688e-05,
+    "fuels.coal.in.co2_per_energy_ncv.cea_v22": 5.247781455470351e-05,
+    "use.car.sedan.diesel.l_per_100km.icct2021": 5.17267822211069e-05,
+    "use.car.sedan.maintenance.gasoline.icct2021": 4.259177907524621e-05,
+    "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 1.8377794918951878e-05,
+    "vehicle.car.production_intensity.cng.icct2021": 1.7345618061177715e-05,
+    "use.car.cng.methane_slip.icct2021": 1.563202763183994e-05,
+    "fuels.natural_gas.in.wtt.icct2021_car": 2.086032058386371e-06,
+    "use.car.sedan.maintenance.cng.icct2021": 1.1522147549588446e-06,
+    "fuels.diesel.in.ttw.icct2021_car": 1.7523112273847694e-08,
+    "method.gwp100.ch4.ar5.icct2021": 0.0,
+    "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.0,
+    "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0
+   }
+  }
+ },
+ "car_in2026_tx_losses": {
+  "scenario": "car_in2026_tx_losses",
+  "label": "Sensitivity \u2014 grid gross-up by transmission-only losses (lower bound on technical losses)",
+  "description": "As case 1: transmission-only losses (3.12-4.24 %) instead of all-India T&D incl. commercial losses (17.63 %).",
+  "case": "Car \u2014 sedan: petrol vs diesel vs CNG vs electric",
+  "kind": "sensitivity",
+  "n_iterations": 10000,
+  "seed": 20261004,
+  "unit": "g per vehicle-km (GHG indicator)",
+  "products": {
+   "petrol": {
+    "label": "Petrol sedan (6.8 L/100 km real-world)",
+    "powertrain": "ICE",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 31.452121212121217,
+     "maintenance": 5.0,
+     "fuel_production_wtt": 43.52,
+     "tailpipe_ttw": 146.2
+    },
+    "total": 226.1721212121212,
+    "mc_total": {
+     "mean": 227.2232331523826,
+     "p05": 202.46945616548703,
+     "p50": 226.62873032036538,
+     "p95": 253.533607008132
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 31.627625558644066,
+      "p05": 26.46050654019858,
+      "p50": 31.415362259302043,
+      "p95": 37.46601624631905
+     },
+     "maintenance": {
+      "mean": 5.007626531467087,
+      "p05": 4.407808595965398,
+      "p50": 4.992386689359103,
+      "p95": 5.654310520340453
+     },
+     "fuel_production_wtt": {
+      "mean": 43.71231298045679,
+      "p05": 37.987100214583435,
+      "p50": 43.57253968161709,
+      "p95": 50.016117998075266
+     },
+     "tailpipe_ttw": {
+      "mean": 146.87566808181464,
+      "p05": 127.14110702642344,
+      "p50": 146.40969898291908,
+      "p95": 168.0151123281804
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.gasoline.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "fuel": "use.car.sedan.gasoline.l_per_100km.icct2021",
+     "wtt": "fuels.gasoline.in.wtt.icct2021_car",
+     "ttw": "fuels.gasoline.in.ttw.icct2021_car",
+     "maint": "use.car.sedan.maintenance.gasoline.icct2021"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.13906276796433883,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.13906276796433883,
+     "vehicle.car.lifetime_km.in.icct2021": -0.13768590887555837,
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.8388301749271129,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.19241982507289024,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.6464103498542477,
+     "use.car.sedan.maintenance.gasoline.icct2021": 0.022107057108562738
+    },
+    "dq_score": 2.060945901378541,
+    "dq_dims": {
+     "reliability": 2.472033051416225,
+     "completeness": 2.5377657788199857,
+     "temporal": 2.5384165979031907,
+     "geographical": 1.2180974808501006,
+     "technological": 1.5384165979032025
+    },
+    "india_footprint_share": 0.8609372320356714,
+    "gas_basis_shares": {
+     "GWP100-AR5": 1.0
+    },
+    "importance": {
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.7848553865231539,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.16016240594953518,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.017665020747041616,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.01338957762411118,
+     "vehicle.car.lifetime_km.in.icct2021": 0.013002972415224164,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.010300852704001702,
+     "use.car.sedan.maintenance.gasoline.icct2021": 0.0006237840369322784
+    }
+   },
+   "diesel": {
+    "label": "Diesel sedan (6.0 L/100 km real-world)",
+    "powertrain": "ICE",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 31.452121212121217,
+     "maintenance": 7.0,
+     "fuel_production_wtt": 46.800000000000004,
+     "tailpipe_ttw": 154.2
+    },
+    "total": 239.4521212121212,
+    "mc_total": {
+     "mean": 240.2850652222411,
+     "p05": 214.3514518602167,
+     "p50": 239.7349894053529,
+     "p95": 267.9214301623782
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 31.653108826067207,
+      "p05": 26.48513178505399,
+      "p50": 31.51975271456652,
+      "p95": 37.314843511062136
+     },
+     "maintenance": {
+      "mean": 7.016360616014402,
+      "p05": 6.162144392601361,
+      "p50": 6.998498495647997,
+      "p95": 7.924093471040374
+     },
+     "fuel_production_wtt": {
+      "mean": 46.92665971224241,
+      "p05": 40.68746205010236,
+      "p50": 46.77046763728682,
+      "p95": 53.76354392728428
+     },
+     "tailpipe_ttw": {
+      "mean": 154.68893606791707,
+      "p05": 134.09997813950338,
+      "p50": 154.07066885192359,
+      "p95": 176.97226413413378
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.diesel.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "fuel": "use.car.sedan.diesel.l_per_100km.icct2021",
+     "wtt": "fuels.diesel.in.wtt.icct2021_car",
+     "ttw": "fuels.diesel.in.ttw.icct2021_car",
+     "maint": "use.car.sedan.maintenance.diesel.icct2021"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.13135035535667064,
+     "vehicle.car.production_intensity.diesel.icct2021": 0.13135035535667064,
+     "vehicle.car.lifetime_km.in.icct2021": -0.13004985678878314,
+     "use.car.sedan.diesel.l_per_100km.icct2021": 0.8394162431409274,
+     "fuels.diesel.in.wtt.icct2021_car": 0.19544617004474416,
+     "fuels.diesel.in.ttw.icct2021_car": 0.6439700730961714,
+     "use.car.sedan.maintenance.diesel.icct2021": 0.029233401502416816
+    },
+    "dq_score": 2.061150989732588,
+    "dq_dims": {
+     "reliability": 2.475386366533379,
+     "completeness": 2.5379098464052814,
+     "temporal": 2.5385288907604537,
+     "geographical": 1.2154009542033781,
+     "technological": 1.5385288907604484
+    },
+    "india_footprint_share": 0.8686496446433273,
+    "gas_basis_shares": {
+     "GWP100-AR5": 1.0
+    },
+    "importance": {
+     "use.car.sedan.diesel.l_per_100km.icct2021": 0.786861244058988,
+     "fuels.diesel.in.ttw.icct2021_car": 0.16551330124817412,
+     "fuels.diesel.in.wtt.icct2021_car": 0.01573099690176252,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.012372671924670751,
+     "vehicle.car.lifetime_km.in.icct2021": 0.010338414089658365,
+     "vehicle.car.production_intensity.diesel.icct2021": 0.007853584125234044,
+     "use.car.sedan.maintenance.diesel.icct2021": 0.0013297876515120538
+    }
+   },
+   "cng": {
+    "label": "CNG sedan (5.0 kg/100 km real-world)",
+    "powertrain": "CNG",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 33.266666666666666,
+     "maintenance": 5.0,
+     "fuel_production_wtt": 46.00000000000001,
+     "tailpipe_ttw": 139.79999999999998
+    },
+    "total": 224.06666666666666,
+    "mc_total": {
+     "mean": 239.0570516943302,
+     "p05": 210.2250766312148,
+     "p50": 238.56940732419386,
+     "p95": 269.58764350547193
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 33.49328687384015,
+      "p05": 27.972591152160152,
+      "p50": 33.290385842178274,
+      "p95": 39.60004539697665
+     },
+     "maintenance": {
+      "mean": 5.016376545476294,
+      "p05": 4.415131959358026,
+      "p50": 5.00607596070169,
+      "p95": 5.661178763287543
+     },
+     "fuel_production_wtt": {
+      "mean": 46.10350789414004,
+      "p05": 39.79272523374072,
+      "p50": 45.942580346833466,
+      "p95": 53.027113149048326
+     },
+     "tailpipe_ttw": {
+      "mean": 154.44388038087374,
+      "p05": 131.0193587700275,
+      "p50": 154.07095665538654,
+      "p95": 179.6479079940997
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.cng.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "fuel": "use.car.sedan.cng.kg_per_100km.icct2021",
+     "wtt": "fuels.natural_gas.in.wtt.icct2021_car",
+     "ttw": "fuels.natural_gas.in.ttw.icct2021_car",
+     "maint": "use.car.sedan.maintenance.cng.icct2021",
+     "slip": "use.car.cng.methane_slip.icct2021",
+     "gwp_ch4": "method.gwp100.ch4.ar5.icct2021"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.14846771794108332,
+     "vehicle.car.production_intensity.cng.icct2021": 0.14846771794108332,
+     "vehicle.car.lifetime_km.in.icct2021": -0.1469977405357303,
+     "use.car.sedan.cng.kg_per_100km.icct2021": 0.821184171377555,
+     "fuels.natural_gas.in.wtt.icct2021_car": 0.2052960428443824,
+     "fuels.natural_gas.in.ttw.icct2021_car": 0.6158881285331853,
+     "use.car.sedan.maintenance.cng.icct2021": 0.02231478726568712,
+     "use.car.cng.methane_slip.icct2021": 0.008033323415650408,
+     "method.gwp100.ch4.ar5.icct2021": 0.008033323415650408
+    },
+    "dq_score": 2.221171665185431,
+    "dq_dims": {
+     "reliability": 2.4661856479125697,
+     "completeness": 2.9263414613856287,
+     "temporal": 2.5443169954259703,
+     "geographical": 1.2419809025202073,
+     "technological": 1.9270333186827806
+    },
+    "india_footprint_share": 0.851532282058911,
+    "gas_basis_shares": {
+     "GWP100-AR5": 0.9999999999999999
+    },
+    "importance": {
+     "use.car.sedan.cng.kg_per_100km.icct2021": 0.6040067151649903,
+     "use.car.cng.methane_slip.icct2021": 0.22009663834342907,
+     "fuels.natural_gas.in.ttw.icct2021_car": 0.11793886898990515,
+     "vehicle.car.lifetime_km.in.icct2021": 0.019343680790062497,
+     "fuels.natural_gas.in.wtt.icct2021_car": 0.013951282951569749,
+     "vehicle.car.production_intensity.cng.icct2021": 0.012806815611537284,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.010693092050530399,
+     "use.car.sedan.maintenance.cng.icct2021": 0.0011629060979756424,
+     "method.gwp100.ch4.ar5.icct2021": 0.0
+    }
+   },
+   "bev": {
+    "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
+    "powertrain": "BEV",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 28.42787878787879,
+     "battery_production": 9.478787878787879,
+     "maintenance": 4.0,
+     "electricity_production_wtt": 138.2008271560413
+    },
+    "total": 180.10749382270797,
+    "mc_total": {
+     "mean": 182.0125520040387,
+     "p05": 155.18671019269226,
+     "p50": 180.6773206492872,
+     "p95": 212.77957568864832
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 28.599333168533466,
+      "p05": 23.922495574252075,
+      "p50": 28.4782284810517,
+      "p95": 33.762578567196734
+     },
+     "battery_production": {
+      "mean": 9.560118392113518,
+      "p05": 7.5329528376484705,
+      "p50": 9.449487750626345,
+      "p95": 11.964096884944784
+     },
+     "maintenance": {
+      "mean": 4.015029253424533,
+      "p05": 3.5334186487499237,
+      "p50": 4.005946066306471,
+      "p95": 4.543367992180172
+     },
+     "electricity_production_wtt": {
+      "mean": 139.8380711899672,
+      "p05": 113.84912290479043,
+      "p50": 138.52978085040274,
+      "p95": 170.02081848996045
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.bev_wo_battery.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "kwh": "battery.car.sedan.capacity.icct2021",
+     "bat_int": "battery.li_ion.production_intensity.in.icct2021_car",
+     "elec": "use.car.sedan.bev.kwh_per_100km.icct2021",
+     "maint": "use.car.sedan.maintenance.bev.icct2021",
+     "ef_gen": "energy.electricity.in.grid_wavg_generation.fy2025_26",
+     "td": "energy.electricity.in.transmission_loss_share.fy2023_24",
+     "ch4c": "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries",
+     "n2oc": "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries",
+     "co2c": "fuels.coal.in.co2_per_energy_ncv.cea_v22",
+     "coal_sh": "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26",
+     "hr": "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default",
+     "gcv": "energy.upstream.coal_power.gcv.coal.cea_v22_default",
+     "cmm": "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020",
+     "dens": "energy.upstream.coal_mining.ch4_density.ipcc2006",
+     "gwp_ch4": "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5",
+     "gwp_n2o": "method.gwp100.n2o.no_ccfb.ipcc_ar5"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.15783840074894992,
+     "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.15783840074894992,
+     "vehicle.car.lifetime_km.in.icct2021": -0.2083830735675018,
+     "battery.car.sedan.capacity.icct2021": 0.05262850355419483,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.05262850355419483,
+     "use.car.sedan.bev.kwh_per_100km.icct2021": 0.767324136396464,
+     "use.car.sedan.maintenance.bev.icct2021": 0.02220895930036468,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.7503958756007154,
+     "energy.electricity.in.transmission_loss_share.fy2023_24": 0.029327575547336258,
+     "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 0.00023394431184710078,
+     "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.003099762131930689,
+     "fuels.coal.in.co2_per_energy_ncv.cea_v22": -0.0033006994492818156,
+     "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 0.01692826079576436,
+     "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 0.01692826079576436,
+     "energy.upstream.coal_power.gcv.coal.cea_v22_default": -0.016760654253201418,
+     "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.01692826079576436,
+     "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.01692826079576436,
+     "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.017162205107595682,
+     "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.003099762131930689
+    },
+    "dq_score": 1.9441814906605852,
+    "dq_dims": {
+     "reliability": 2.0783579728739294,
+     "completeness": 2.2195354079548637,
+     "temporal": 2.2313014793847072,
+     "geographical": 1.272672271402308,
+     "technological": 1.9190403216871184
+    },
+    "india_footprint_share": 0.7895330956968355,
+    "gas_basis_shares": {
+     "GWP100-AR5": 1.0
+    },
+    "importance": {
+     "use.car.sedan.bev.kwh_per_100km.icct2021": 0.9183948748974927,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.03574441273830375,
+     "vehicle.car.lifetime_km.in.icct2021": 0.017505289550248857,
+     "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.011652815798871147,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.007274385550620931,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.0021931101654677565,
+     "battery.car.sedan.capacity.icct2021": 0.0020460651419340367,
+     "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.001904679044259649,
+     "energy.electricity.in.transmission_loss_share.fy2023_24": 0.0018521639919930185,
+     "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 0.00034111399142448817,
+     "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.0003234993453552268,
+     "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.0002932207839487583,
+     "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 0.0002121138331683787,
+     "energy.upstream.coal_power.gcv.coal.cea_v22_default": 0.0001276635405370464,
+     "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 5.9850421334999704e-05,
+     "use.car.sedan.maintenance.bev.icct2021": 5.844472676269974e-05,
+     "fuels.coal.in.co2_per_energy_ncv.cea_v22": 1.6296478276549615e-05,
+     "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.0,
+     "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0
+    }
+   }
+  },
+  "gas_basis_families": [
+   "GWP100-AR5"
+  ],
+  "harmonized": true,
+  "reference_product": "petrol",
+  "comparisons": {
+   "diesel": {
+    "vs": "petrol",
+    "reduction_central": -0.0587163436803293,
+    "reduction_mc": {
+     "mean": -0.062258052031813574,
+     "p05": -0.24031447040967668,
+     "p50": -0.05704429211592421,
+     "p95": 0.09302809891295238
+    },
+    "difference_mc": {
+     "mean": -13.061832069858491,
+     "p05": -50.389484681048685,
+     "p50": -12.960747224091946,
+     "p95": 22.47911389757558
+    },
+    "p_lower": 0.2781,
+    "importance": {
+     "use.car.sedan.diesel.l_per_100km.icct2021": 0.39919666602553633,
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.38732200726784655,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.09232575351760332,
+     "fuels.diesel.in.ttw.icct2021_car": 0.08710585148680612,
+     "fuels.diesel.in.wtt.icct2021_car": 0.009453331873195973,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.008165757321829987,
+     "vehicle.car.production_intensity.diesel.icct2021": 0.007799813892157239,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.006456801763896539
+    }
+   },
+   "cng": {
+    "vs": "petrol",
+    "reduction_central": 0.009309080775167122,
+    "reduction_mc": {
+     "mean": -0.05685319859430206,
+     "p05": -0.23724511584410804,
+     "p50": -0.0524912870467219,
+     "p95": 0.10885493868748769
+    },
+    "difference_mc": {
+     "mean": -11.833818541947656,
+     "p05": -50.0615359047686,
+     "p50": -11.911522226891663,
+     "p95": 26.75678967752996
+    },
+    "p_lower": 0.3071,
+    "importance": {
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.346382816376009,
+     "use.car.sedan.cng.kg_per_100km.icct2021": 0.34035170712092455,
+     "use.car.cng.methane_slip.icct2021": 0.1257987382906542,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.0816513708384597,
+     "fuels.natural_gas.in.ttw.icct2021_car": 0.06985165204171351,
+     "fuels.natural_gas.in.wtt.icct2021_car": 0.008719113429425777,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.008499978078527376,
+     "vehicle.car.production_intensity.cng.icct2021": 0.008072029832076782
+    }
+   },
+   "bev": {
+    "vs": "petrol",
+    "reduction_central": 0.203670669676438,
+    "reduction_mc": {
+     "mean": 0.19534514428040842,
+     "p05": 0.03108710533455456,
+     "p50": 0.20096009387547548,
+     "p95": 0.33848075727940014
+    },
+    "difference_mc": {
+     "mean": 45.21068114834388,
+     "p05": 6.492469169531683,
+     "p50": 45.61328713306847,
+     "p95": 83.03573120764416
+    },
+    "p_lower": 0.9722,
+    "importance": {
+     "use.car.sedan.bev.kwh_per_100km.icct2021": 0.6327903958166661,
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.25878931489761486,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.055667934578675,
+     "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.02503900074975222,
+     "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.0068385479672728846,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.005008937273438714,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.0047538360478363295,
+     "vehicle.car.lifetime_km.in.icct2021": 0.001836865614032622
+    }
+   }
+  },
+  "comparison": {
+   "ice": "petrol",
+   "bev": "bev",
+   "reduction_central": 0.203670669676438,
+   "reduction_mc": {
+    "mean": 0.19534514428040842,
+    "p05": 0.03108710533455456,
+    "p50": 0.20096009387547548,
+    "p95": 0.33848075727940014
+   },
+   "difference_mc": {
+    "mean": 45.21068114834388,
+    "p05": 6.492469169531683,
+    "p50": 45.61328713306847,
+    "p95": 83.03573120764416
+   },
+   "p_bev_lower": 0.9722,
+   "importance": {
+    "use.car.sedan.bev.kwh_per_100km.icct2021": 0.6327903958166661,
+    "use.car.sedan.gasoline.l_per_100km.icct2021": 0.25878931489761486,
+    "fuels.gasoline.in.ttw.icct2021_car": 0.055667934578675,
+    "energy.electricity.in.grid_wavg_generation.fy2025_26": 0.02503900074975222,
+    "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.0068385479672728846,
+    "fuels.gasoline.in.wtt.icct2021_car": 0.005008937273438714,
+    "vehicle.car.production_intensity.gasoline.icct2021": 0.0047538360478363295,
+    "vehicle.car.lifetime_km.in.icct2021": 0.001836865614032622,
+    "energy.electricity.in.transmission_loss_share.fy2023_24": 0.0017529354956471752,
+    "energy.upstream.coal_mining.ch4_weighted.in.bur4_2020": 0.0016067937255876356,
+    "battery.li_ion.production_intensity.in.icct2021_car": 0.0012781635664198205,
+    "battery.car.sedan.capacity.icct2021": 0.0011690318140253422,
+    "vehicle.car.production_intensity.diesel.icct2021": 0.0009924970847020249,
+    "energy.upstream.coal_mining.ch4_density.ipcc2006": 0.0008028918235925194,
+    "energy.upstream.coal_power.gcv.coal.cea_v22_default": 0.0002505097061596042,
+    "fuels.diesel.in.ttw.icct2021_car": 0.00021534454412248325,
+    "use.car.cng.methane_slip.icct2021": 0.00018631698355745473,
+    "energy.upstream.stationary_combustion.coal.n2o.ipcc2006.energy_industries": 0.00017847052568133978,
+    "energy.upstream.coal_power.net_heat_rate.coal.cea_v22_default": 0.0001652061597149242,
+    "use.car.sedan.diesel.l_per_100km.icct2021": 0.0001635571567588909,
+    "vehicle.car.production_intensity.cng.icct2021": 0.00011411636630362207,
+    "use.car.sedan.maintenance.diesel.icct2021": 0.00010988531934001875,
+    "fuels.natural_gas.in.wtt.icct2021_car": 8.497184854084857e-05,
+    "use.car.sedan.maintenance.bev.icct2021": 6.924428289320309e-05,
+    "energy.electricity.in.coal_lignite_share_net_generation.fy2025_26": 6.147200195688157e-05,
+    "use.car.sedan.cng.kg_per_100km.icct2021": 3.266461032733094e-05,
+    "fuels.natural_gas.in.ttw.icct2021_car": 2.1885589493532603e-05,
+    "energy.upstream.stationary_combustion.coal.ch4.ipcc2006.energy_industries": 1.0611960006988928e-05,
+    "fuels.coal.in.co2_per_energy_ncv.cea_v22": 7.966239686237556e-06,
+    "use.car.sedan.maintenance.cng.icct2021": 4.814244851477877e-07,
+    "vehicle.car.sedan.mass.in.fy2019_20": 1.0488458038630317e-07,
+    "fuels.diesel.in.wtt.icct2021_car": 2.4863131036699546e-08,
+    "use.car.sedan.maintenance.gasoline.icct2021": 1.907799681628853e-08,
+    "method.gwp100.ch4.ar5.icct2021": 0.0,
+    "method.gwp100.ch4_fossil.no_ccfb.ipcc_ar5": 0.0,
+    "method.gwp100.n2o.no_ccfb.ipcc_ar5": 0.0
+   }
+  }
+ },
+ "car_in2026_om_co2_only": {
+  "scenario": "car_in2026_om_co2_only",
+  "label": "Sensitivity \u2014 CO2-only panel: CEA operating margin (one basis with the CO2-only average and build-margin rows)",
+  "description": "Common-basis panel for the grid-accounting method.",
+  "case": "Car \u2014 sedan: petrol vs diesel vs CNG vs electric",
+  "kind": "sensitivity",
+  "n_iterations": 10000,
+  "seed": 20261004,
+  "unit": "g per vehicle-km (GHG indicator)",
+  "products": {
+   "petrol": {
+    "label": "Petrol sedan (6.8 L/100 km real-world)",
+    "powertrain": "ICE",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 31.452121212121217,
+     "maintenance": 5.0,
+     "fuel_production_wtt": 43.52,
+     "tailpipe_ttw": 146.2
+    },
+    "total": 226.1721212121212,
+    "mc_total": {
+     "mean": 227.3516302089988,
+     "p05": 202.38436038794003,
+     "p50": 226.74255608355622,
+     "p95": 254.04849622269336
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 31.678532180331693,
+      "p05": 26.37897381302639,
+      "p50": 31.523289527786204,
+      "p95": 37.46663335176482
+     },
+     "maintenance": {
+      "mean": 5.015988972008229,
+      "p05": 4.419779535035103,
+      "p50": 4.999420600112169,
+      "p95": 5.675060495468893
+     },
+     "fuel_production_wtt": {
+      "mean": 43.741252186066376,
+      "p05": 37.97168952442727,
+      "p50": 43.54166845661548,
+      "p95": 50.17100961001452
+     },
+     "tailpipe_ttw": {
+      "mean": 146.91585687059253,
+      "p05": 127.28827959290757,
+      "p50": 146.29889525633791,
+      "p95": 168.26645088361465
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.gasoline.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "fuel": "use.car.sedan.gasoline.l_per_100km.icct2021",
+     "wtt": "fuels.gasoline.in.wtt.icct2021_car",
+     "ttw": "fuels.gasoline.in.ttw.icct2021_car",
+     "maint": "use.car.sedan.maintenance.gasoline.icct2021"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.13906276796433883,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.13906276796433883,
+     "vehicle.car.lifetime_km.in.icct2021": -0.13768590887555837,
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.8388301749271129,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.19241982507289024,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.6464103498542477,
+     "use.car.sedan.maintenance.gasoline.icct2021": 0.022107057108562738
+    },
+    "dq_score": 2.060945901378541,
+    "dq_dims": {
+     "reliability": 2.472033051416225,
+     "completeness": 2.5377657788199857,
+     "temporal": 2.5384165979031907,
+     "geographical": 1.2180974808501006,
+     "technological": 1.5384165979032025
+    },
+    "india_footprint_share": 0.8609372320356714,
+    "gas_basis_shares": {
+     "GWP100-AR5": 1.0
+    },
+    "importance": {
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.772604510227367,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.1635876380730367,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.017482006463164234,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.01735452909367691,
+     "vehicle.car.lifetime_km.in.icct2021": 0.014263422034124347,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.014195728925806561,
+     "use.car.sedan.maintenance.gasoline.icct2021": 0.0005121651828243531
+    }
+   },
+   "diesel": {
+    "label": "Diesel sedan (6.0 L/100 km real-world)",
+    "powertrain": "ICE",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 31.452121212121217,
+     "maintenance": 7.0,
+     "fuel_production_wtt": 46.800000000000004,
+     "tailpipe_ttw": 154.2
+    },
+    "total": 239.4521212121212,
+    "mc_total": {
+     "mean": 240.25782727170252,
+     "p05": 214.37221635709182,
+     "p50": 239.50708808808594,
+     "p95": 268.5851445225617
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 31.670373703793995,
+      "p05": 26.399504535602638,
+      "p50": 31.50692897819669,
+      "p95": 37.41212884584091
+     },
+     "maintenance": {
+      "mean": 7.0043831575314925,
+      "p05": 6.141180971630994,
+      "p50": 6.990791903070299,
+      "p95": 7.9090438540559855
+     },
+     "fuel_production_wtt": {
+      "mean": 46.95868614634027,
+      "p05": 40.6691408364144,
+      "p50": 46.79943776772552,
+      "p95": 53.721609535518326
+     },
+     "tailpipe_ttw": {
+      "mean": 154.62438426403673,
+      "p05": 134.0425255309524,
+      "p50": 154.06129566742018,
+      "p95": 177.39812069190594
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.diesel.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "fuel": "use.car.sedan.diesel.l_per_100km.icct2021",
+     "wtt": "fuels.diesel.in.wtt.icct2021_car",
+     "ttw": "fuels.diesel.in.ttw.icct2021_car",
+     "maint": "use.car.sedan.maintenance.diesel.icct2021"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.13135035535667064,
+     "vehicle.car.production_intensity.diesel.icct2021": 0.13135035535667064,
+     "vehicle.car.lifetime_km.in.icct2021": -0.13004985678878314,
+     "use.car.sedan.diesel.l_per_100km.icct2021": 0.8394162431409274,
+     "fuels.diesel.in.wtt.icct2021_car": 0.19544617004474416,
+     "fuels.diesel.in.ttw.icct2021_car": 0.6439700730961714,
+     "use.car.sedan.maintenance.diesel.icct2021": 0.029233401502416816
+    },
+    "dq_score": 2.061150989732588,
+    "dq_dims": {
+     "reliability": 2.475386366533379,
+     "completeness": 2.5379098464052814,
+     "temporal": 2.5385288907604537,
+     "geographical": 1.2154009542033781,
+     "technological": 1.5385288907604484
+    },
+    "india_footprint_share": 0.8686496446433273,
+    "gas_basis_shares": {
+     "GWP100-AR5": 1.0
+    },
+    "importance": {
+     "use.car.sedan.diesel.l_per_100km.icct2021": 0.7750188487562848,
+     "fuels.diesel.in.ttw.icct2021_car": 0.17324588557524728,
+     "fuels.diesel.in.wtt.icct2021_car": 0.016558834591408302,
+     "vehicle.car.production_intensity.diesel.icct2021": 0.013551346078398831,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.010244382002778862,
+     "vehicle.car.lifetime_km.in.icct2021": 0.00953178655561254,
+     "use.car.sedan.maintenance.diesel.icct2021": 0.0018489164402692537
+    }
+   },
+   "cng": {
+    "label": "CNG sedan (5.0 kg/100 km real-world)",
+    "powertrain": "CNG",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 33.266666666666666,
+     "maintenance": 5.0,
+     "fuel_production_wtt": 46.00000000000001,
+     "tailpipe_ttw": 139.79999999999998
+    },
+    "total": 224.06666666666666,
+    "mc_total": {
+     "mean": 239.1270770026129,
+     "p05": 210.79349709552136,
+     "p50": 238.83288266315714,
+     "p95": 269.43520242793954
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 33.46554688395207,
+      "p05": 27.9075236577506,
+      "p50": 33.300691543342055,
+      "p95": 39.702278232804446
+     },
+     "maintenance": {
+      "mean": 5.00807489240264,
+      "p05": 4.403418474593399,
+      "p50": 4.993068334791693,
+      "p95": 5.670126935482015
+     },
+     "fuel_production_wtt": {
+      "mean": 46.18984243805054,
+      "p05": 39.80479470356138,
+      "p50": 46.00677209897282,
+      "p95": 53.15561712828923
+     },
+     "tailpipe_ttw": {
+      "mean": 154.4636127882077,
+      "p05": 131.11364220223444,
+      "p50": 153.90044881920852,
+      "p95": 179.3932623552665
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.cng.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "fuel": "use.car.sedan.cng.kg_per_100km.icct2021",
+     "wtt": "fuels.natural_gas.in.wtt.icct2021_car",
+     "ttw": "fuels.natural_gas.in.ttw.icct2021_car",
+     "maint": "use.car.sedan.maintenance.cng.icct2021",
+     "slip": "use.car.cng.methane_slip.icct2021",
+     "gwp_ch4": "method.gwp100.ch4.ar5.icct2021"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.14846771794108332,
+     "vehicle.car.production_intensity.cng.icct2021": 0.14846771794108332,
+     "vehicle.car.lifetime_km.in.icct2021": -0.1469977405357303,
+     "use.car.sedan.cng.kg_per_100km.icct2021": 0.821184171377555,
+     "fuels.natural_gas.in.wtt.icct2021_car": 0.2052960428443824,
+     "fuels.natural_gas.in.ttw.icct2021_car": 0.6158881285331853,
+     "use.car.sedan.maintenance.cng.icct2021": 0.02231478726568712,
+     "use.car.cng.methane_slip.icct2021": 0.008033323415650408,
+     "method.gwp100.ch4.ar5.icct2021": 0.008033323415650408
+    },
+    "dq_score": 2.221171665185431,
+    "dq_dims": {
+     "reliability": 2.4661856479125697,
+     "completeness": 2.9263414613856287,
+     "temporal": 2.5443169954259703,
+     "geographical": 1.2419809025202073,
+     "technological": 1.9270333186827806
+    },
+    "india_footprint_share": 0.851532282058911,
+    "gas_basis_shares": {
+     "GWP100-AR5": 0.9999999999999999
+    },
+    "importance": {
+     "use.car.sedan.cng.kg_per_100km.icct2021": 0.6123959971651546,
+     "use.car.cng.methane_slip.icct2021": 0.225221197346689,
+     "fuels.natural_gas.in.ttw.icct2021_car": 0.1125162374105467,
+     "fuels.natural_gas.in.wtt.icct2021_car": 0.016484302145016137,
+     "vehicle.car.production_intensity.cng.icct2021": 0.013406163630469462,
+     "vehicle.car.lifetime_km.in.icct2021": 0.01138589416413454,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.008589458661973236,
+     "use.car.sedan.maintenance.cng.icct2021": 7.494760162993398e-07,
+     "method.gwp100.ch4.ar5.icct2021": 0.0
+    }
+   },
+   "bev": {
+    "label": "Battery-electric sedan (23 kWh, 19.2 kWh/100 km at the plug)",
+    "powertrain": "BEV",
+    "notes": "",
+    "stages": {
+     "vehicle_production": 28.42787878787879,
+     "battery_production": 9.478787878787879,
+     "maintenance": 4.0,
+     "electricity_production_wtt": 224.4700740560884
+    },
+    "total": 266.3767407227551,
+    "mc_total": {
+     "mean": 268.28663853839447,
+     "p05": 225.50873760165626,
+     "p50": 266.80572772870585,
+     "p95": 316.37999396954484
+    },
+    "mc_stages": {
+     "vehicle_production": {
+      "mean": 28.611986034635578,
+      "p05": 23.90704858243718,
+      "p50": 28.441191303734122,
+      "p95": 33.94919065592365
+     },
+     "battery_production": {
+      "mean": 9.571007917039527,
+      "p05": 7.490053712235429,
+      "p50": 9.473086392544667,
+      "p95": 11.967830538947638
+     },
+     "maintenance": {
+      "mean": 4.015872459407255,
+      "p05": 3.5234785154068016,
+      "p50": 4.003036938268968,
+      "p95": 4.544136538267429
+     },
+     "electricity_production_wtt": {
+      "mean": 226.0877721273121,
+      "p05": 183.89238458888022,
+      "p50": 224.4677739969776,
+      "p95": 273.9535131594958
+     }
+    },
+    "params": {
+     "mass": "vehicle.car.sedan.mass.in.fy2019_20",
+     "prod_int": "vehicle.car.production_intensity.bev_wo_battery.icct2021",
+     "life": "vehicle.car.lifetime_km.in.icct2021",
+     "kwh": "battery.car.sedan.capacity.icct2021",
+     "bat_int": "battery.li_ion.production_intensity.in.icct2021_car",
+     "elec": "use.car.sedan.bev.kwh_per_100km.icct2021",
+     "maint": "use.car.sedan.maintenance.bev.icct2021",
+     "ef_gen": "energy.electricity.in.grid_om.fy2025_26",
+     "td": "energy.electricity.in.td_loss_share.fy2023_24"
+    },
+    "elasticity": {
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.10672057444185107,
+     "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.10672057444185107,
+     "vehicle.car.lifetime_km.in.icct2021": -0.14089575926741862,
+     "battery.car.sedan.capacity.icct2021": 0.03558414241825219,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.03558414241825219,
+     "use.car.sedan.bev.kwh_per_100km.icct2021": 0.842678957055446,
+     "use.car.sedan.maintenance.bev.icct2021": 0.015016326084414262,
+     "energy.electricity.in.grid_om.fy2025_26": 0.8426789570554674,
+     "energy.electricity.in.td_loss_share.fy2023_24": 0.18074901133405638
+    },
+    "dq_score": 1.8645003587264726,
+    "dq_dims": {
+     "reliability": 1.9892323681166406,
+     "completeness": 2.0663530936939254,
+     "temporal": 2.1298977130524976,
+     "geographical": 1.1826747005277292,
+     "technological": 1.9543439182415703
+    },
+    "india_footprint_share": 0.8576952831399047,
+    "gas_basis_shares": {
+     "GWP100-AR5": 0.1573210429445232,
+     "CO2-only": 0.8426789570554768
+    },
+    "importance": {
+     "use.car.sedan.bev.kwh_per_100km.icct2021": 0.9412777464340948,
+     "energy.electricity.in.grid_om.fy2025_26": 0.03659198158179345,
+     "vehicle.car.lifetime_km.in.icct2021": 0.008772016927722656,
+     "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.005578730410894227,
+     "vehicle.car.sedan.mass.in.fy2019_20": 0.0037702782580003942,
+     "energy.electricity.in.td_loss_share.fy2023_24": 0.001585767370478326,
+     "battery.car.sedan.capacity.icct2021": 0.001337127077954935,
+     "battery.li_ion.production_intensity.in.icct2021_car": 0.0008266911623726735,
+     "use.car.sedan.maintenance.bev.icct2021": 0.00025966077668861397
+    }
+   }
+  },
+  "gas_basis_families": [
+   "CO2-only",
+   "GWP100-AR5"
+  ],
+  "harmonized": false,
+  "reference_product": "petrol",
+  "comparisons": {
+   "diesel": {
+    "vs": "petrol",
+    "reduction_central": -0.0587163436803293,
+    "reduction_mc": {
+     "mean": -0.061752575591582204,
+     "p05": -0.2360930563721832,
+     "p50": -0.05584307688755752,
+     "p95": 0.09836330582681911
+    },
+    "difference_mc": {
+     "mean": -12.906197062703633,
+     "p05": -49.91390252012256,
+     "p50": -12.706214189260095,
+     "p95": 24.1616053236262
+    },
+    "p_lower": 0.2822,
+    "importance": {
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.39052161621611164,
+     "use.car.sedan.diesel.l_per_100km.icct2021": 0.3884599042564869,
+     "fuels.diesel.in.ttw.icct2021_car": 0.09431912125648012,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.08952755173630433,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.009155867847311575,
+     "fuels.diesel.in.wtt.icct2021_car": 0.00901916340877055,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.00834785344960584,
+     "vehicle.car.production_intensity.diesel.icct2021": 0.006852807903907168
+    }
+   },
+   "cng": {
+    "vs": "petrol",
+    "reduction_central": 0.009309080775167122,
+    "reduction_mc": {
+     "mean": -0.056826814051988125,
+     "p05": -0.2389210227218326,
+     "p50": -0.05124837045254549,
+     "p95": 0.10995519003965215
+    },
+    "difference_mc": {
+     "mean": -11.775446793614071,
+     "p05": -50.27892880677859,
+     "p50": -11.64671727901927,
+     "p95": 27.039931553748108
+    },
+    "p_lower": 0.3117,
+    "importance": {
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.3727942337422427,
+     "use.car.sedan.cng.kg_per_100km.icct2021": 0.3323584892065881,
+     "use.car.cng.methane_slip.icct2021": 0.12453398880721293,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.07546352564778402,
+     "fuels.natural_gas.in.ttw.icct2021_car": 0.058696554585035136,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.009654664608418576,
+     "fuels.natural_gas.in.wtt.icct2021_car": 0.008998414923277274,
+     "vehicle.car.production_intensity.cng.icct2021": 0.008592483741885579
+    }
+   },
+   "bev": {
+    "vs": "petrol",
+    "reduction_central": -0.17776116390988328,
+    "reduction_mc": {
+     "mean": -0.1856687358721807,
+     "p05": -0.448385608339167,
+     "p50": -0.1758240497116883,
+     "p95": 0.039302832645964035
+    },
+    "difference_mc": {
+     "mean": -40.93500832939558,
+     "p05": -95.9440375449153,
+     "p50": -39.79163089394403,
+     "p95": 9.44559492612324
+    },
+    "p_lower": 0.0928,
+    "importance": {
+     "use.car.sedan.bev.kwh_per_100km.icct2021": 0.6519280401191645,
+     "use.car.sedan.gasoline.l_per_100km.icct2021": 0.2434339494485223,
+     "fuels.gasoline.in.ttw.icct2021_car": 0.05602896149706172,
+     "energy.electricity.in.grid_om.fy2025_26": 0.030809962757414027,
+     "vehicle.car.production_intensity.gasoline.icct2021": 0.00562400485327927,
+     "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.004608836889898642,
+     "fuels.gasoline.in.wtt.icct2021_car": 0.0036101332029932365,
+     "battery.car.sedan.capacity.icct2021": 0.0007080221639559224
+    }
+   }
+  },
+  "comparison": {
+   "ice": "petrol",
+   "bev": "bev",
+   "reduction_central": -0.17776116390988328,
+   "reduction_mc": {
+    "mean": -0.1856687358721807,
+    "p05": -0.448385608339167,
+    "p50": -0.1758240497116883,
+    "p95": 0.039302832645964035
+   },
+   "difference_mc": {
+    "mean": -40.93500832939558,
+    "p05": -95.9440375449153,
+    "p50": -39.79163089394403,
+    "p95": 9.44559492612324
+   },
+   "p_bev_lower": 0.0928,
+   "importance": {
+    "use.car.sedan.bev.kwh_per_100km.icct2021": 0.6519280401191645,
+    "use.car.sedan.gasoline.l_per_100km.icct2021": 0.2434339494485223,
+    "fuels.gasoline.in.ttw.icct2021_car": 0.05602896149706172,
+    "energy.electricity.in.grid_om.fy2025_26": 0.030809962757414027,
+    "vehicle.car.production_intensity.gasoline.icct2021": 0.00562400485327927,
+    "vehicle.car.production_intensity.bev_wo_battery.icct2021": 0.004608836889898642,
+    "fuels.gasoline.in.wtt.icct2021_car": 0.0036101332029932365,
+    "battery.car.sedan.capacity.icct2021": 0.0007080221639559224,
+    "energy.electricity.in.td_loss_share.fy2023_24": 0.000707348923194528,
+    "battery.li_ion.production_intensity.in.icct2021_car": 0.0004006088309032813,
+    "vehicle.car.sedan.mass.in.fy2019_20": 0.000385466252740037,
+    "use.car.sedan.maintenance.bev.icct2021": 0.00030591164802265834,
+    "fuels.natural_gas.in.wtt.icct2021_car": 0.00029520052003964765,
+    "fuels.natural_gas.in.ttw.icct2021_car": 0.00020242336667139848,
+    "use.car.cng.methane_slip.icct2021": 0.00019472022278344204,
+    "fuels.diesel.in.ttw.icct2021_car": 0.00014017377825452373,
+    "use.car.sedan.maintenance.diesel.icct2021": 0.00013379902312533675,
+    "vehicle.car.lifetime_km.in.icct2021": 0.000130303273712279,
+    "use.car.sedan.maintenance.cng.icct2021": 0.00011548658408921128,
+    "use.car.sedan.diesel.l_per_100km.icct2021": 0.0001006742001529307,
+    "use.car.sedan.maintenance.gasoline.icct2021": 7.144391222773965e-05,
+    "vehicle.car.production_intensity.cng.icct2021": 6.089271653992895e-05,
+    "use.car.sedan.cng.kg_per_100km.icct2021": 3.2881253503564295e-06,
+    "vehicle.car.production_intensity.diesel.icct2021": 3.4758756954739766e-07,
+    "fuels.diesel.in.wtt.icct2021_car": 1.0233327181168248e-10,
+    "method.gwp100.ch4.ar5.icct2021": 0.0
    }
   }
  }
