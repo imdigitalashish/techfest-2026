@@ -37,6 +37,7 @@ class PitTruth:
     clog_rate_per_m3: float
     inlet_blocked_from: pd.Timestamp | None
     fakes: list[tuple[pd.Timestamp, float]] = field(default_factory=list)
+    drain_exponent: float = 1.0      # 1 = linear reservoir (evaluator v1); 0.5 = orifice-like (evaluator v2)
 
 
 def load_rain(start: str, end: str) -> pd.Series:
@@ -97,7 +98,15 @@ def simulate_pit(p: PitTruth, rain_min: pd.Series, rng: np.random.Generator, noi
         q = q_rain[i] + q_fake[i]
         k_h = p.k0_per_h * np.exp(-p.clog_rate_per_m3 * cum_in)
         vol += q
-        out = vol * (1.0 - np.exp(-k_h / 60.0))
+        if p.drain_exponent == 1.0:
+            out = vol * (1.0 - np.exp(-k_h / 60.0))
+        else:   # outflow = k*A*h_ref*(h/h_ref)^beta, h_ref = 0.5 m, 6 explicit sub-steps per minute
+            out, v = 0.0, vol
+            for _ in range(6):
+                hh = v / p.pit_area_m2
+                d = min(v, k_h / 360.0 * p.pit_area_m2 * 0.5 * (max(hh, 0.0) / 0.5) ** p.drain_exponent)
+                v -= d
+                out += d
         vol -= out
         spill = vol - cap if vol > cap else 0.0
         vol -= spill
