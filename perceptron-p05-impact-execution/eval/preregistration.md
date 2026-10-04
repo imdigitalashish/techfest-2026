@@ -104,3 +104,19 @@ The clock times written in this file were the lead's estimates, not readings of 
 | E7 and E9 outcomes | "13:20", "13:21" | commit fe782e1, **13:05:17** | — | — |
 
 **Consequence for claims:** E10 (H2) is the strictly pre-registered confirmatory test of the schedule effect. H1/E6 is reported as "registered before inspection", not as strictly pre-registered.
+
+---
+
+## Amendment A1 to E10 interpretation (appended 2026-10-04 13:13:18 IST, before E10 finished and before any E10 result was read)
+**Trigger:** the gpt-6-astra hostile review (#10, `reviews/2026-10-04-abstract-h1-gpt-6-astra.md`) showed that the E8/E10 attribution rule treats "not significant" as "not a cause" and ignores the interaction. The confirmatory H2 rule is **unchanged**. Only the descriptive attribution and pooling are amended:
+1. **Signed effects:** report A (QP main), B (front-loading main), C (interaction) and D (corrected feedback) as signed means with 95% paired-bootstrap CIs, for IS and own impact.
+2. **Labels per contrast:**
+   - "detected (+/−)" if the CI excludes 0.
+   - "negligible" only if the whole CI lies within the equivalence margin **±0.02 bps** (0.2¢/share, ≈  on the M parent).
+   - "unresolved" otherwise.
+3. **Interaction:** if C's CI excludes 0, the main effects A and B are not interpreted alone; the simple effects are reported instead.
+4. The old classifier output ("QP schedule / front-loading / both / unattributed") is still printed by `eval/attribution.py` for continuity, but it is **not** used in any deliverable.
+5. **Pooling** (both descriptive, neither confirmatory):
+   - E6 ∪ E10, the two fixed-n confirmatory blocks with no discovery data.
+   - The registered E5 ∪ E6 ∪ E10.
+   E8 (validation) is always reported separately, never dropped.
