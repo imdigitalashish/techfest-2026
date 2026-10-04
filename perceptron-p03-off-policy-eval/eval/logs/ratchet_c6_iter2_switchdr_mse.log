@@ -1,0 +1,5 @@
+  drift_masks_gain: truth +0.0751 mean +0.0727 nRMSE 0.0953 coverage 0.75
+  drift_fakes_gain: truth -0.0838 mean -0.0849 nRMSE 0.0868 coverage 0.83
+  low_overlap: truth +0.2668 mean +0.2647 nRMSE 0.1258 coverage 0.67
+  small_effect: truth +0.0139 mean +0.0121 nRMSE 0.5530 coverage 0.75
+nRMSE=0.21522 min_coverage=0.67 split=dev
