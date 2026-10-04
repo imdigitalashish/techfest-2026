@@ -1,0 +1,3 @@
+date	artifact	model	effort	review_file	issues	accepted	rejected	note
+2026-10-04	ADR 001 spike choice	rubber-duck sub-agent (same family; pre-§10)	default	research/reviews/adr001-antithesis.md	—	—	—	before §10; synthesised in ADR 001 (spike reframed, source narrowed, forecasts archived, oracle/threshold baselines); item-level accounting not done
+2026-10-04	ADR 001 spike choice	First Principles sub-agent (same family; pre-§10)	default	research/reviews/adr001-first-principles.md	—	—	—	before §10; FWCE metric and gated-vs-open outfall logic adopted; item-level accounting not done
