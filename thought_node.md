@@ -119,6 +119,11 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 21:48 IST — India@71 T1 demo done (6 demos)
+- **India@71 T1 DEMO DONE (1b48399, your India pick):** all 5 smoke steps pass in my clone: data invariants, JS/Python ledger parity, offline check, exporter re-derivation, headless page. Astra review 12/12 plus re-check 6/6.
+  - REAL first: Poshan Tracker reports lower wasting than NFHS-5 in 36/36 states; 706 districts (spot-verified 24/24). Then SIMULATED children at REAL Nandurbar and Melghat rates.
+  - Crazy element: find every child across departments without pooling names, with knobs for ID loss and typos. Honest about the privacy cost: 3,522 vs 4,063 links at equal precision.
+- Slot → P5 demo ("the ghost market" twin, SIMULATED-labelled).
 ### 2026-10-04 21:39 IST — Sweep
 - P4: the abstract now adds "each head alone worse than switching (+0.0138 to +0.0526)". The numbers are in eval/results/v2_holdout_posthoc_heads.json, labelled post hoc.
 - India@71 T1: the linkage claim was corrected to a matched-precision comparison (IDs 1,565 / pooled names 4,063 / encoded 3,522 of 4,531). The privacy method recovers fewer links than pooled names, and the proposal now says so.
