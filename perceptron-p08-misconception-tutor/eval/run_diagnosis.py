@@ -127,7 +127,7 @@ def part_b(q: pd.DataFrame, llm_n: int) -> dict:
     rows = []
     for (qi, (question, correct, incorrect)), code in zip(parts.items(), pos.code):
         parsed, key_ok, matched = executable_match(question, correct, incorrect)
-        rows.append({"qid": int(pos.loc[qi, "qid"]), "code": code, "parsed": parsed, "key_agrees": key_ok, "matched": matched,
+        rows.append({"qid": str(pos.loc[qi, "qid"]), "code": code, "parsed": parsed, "key_agrees": key_ok, "matched": matched,
                      "query": pos.loc[qi, "query"]})
     # negatives: arithmetic distractors labelled with other misconceptions -> false-claim rate
     rng = random.Random(0)

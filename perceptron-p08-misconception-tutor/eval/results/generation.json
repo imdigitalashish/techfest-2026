@@ -1,0 +1,158 @@
+{
+ "command": "python -m eval.run_generation --n 40 --seed 0 --llm-n 8",
+ "template": {
+  "LTR/isolated": {
+   "requested": 40,
+   "accepted": 40,
+   "key_verified": 1.0,
+   "target_fires": 1.0,
+   "discriminative": 1.0,
+   "mean_bugs_firing": 1,
+   "unique_items": 40,
+   "tries_per_item": 2.425,
+   "ms_per_item": 2.0256468749721535,
+   "example": "Work out 7 \u2212 (\u22125) \u00d7 6"
+  },
+  "LTR/discriminative": {
+   "requested": 40,
+   "accepted": 40,
+   "key_verified": 1.0,
+   "target_fires": 1.0,
+   "discriminative": 1.0,
+   "mean_bugs_firing": 1.825,
+   "unique_items": 40,
+   "tries_per_item": 1.225,
+   "ms_per_item": 0.4432770743733272,
+   "example": "Work out (\u22125)\u00b2 \u2212 (\u22128) \u00d7 2"
+  },
+  "SQ_DOUBLE/isolated": {
+   "requested": 40,
+   "accepted": 40,
+   "key_verified": 1.0,
+   "target_fires": 1.0,
+   "discriminative": 1.0,
+   "mean_bugs_firing": 1,
+   "unique_items": 40,
+   "tries_per_item": 6.375,
+   "ms_per_item": 0.9672301996033639,
+   "example": "Work out 5\u00b2 + 3"
+  },
+  "SQ_DOUBLE/discriminative": {
+   "requested": 40,
+   "accepted": 40,
+   "key_verified": 1.0,
+   "target_fires": 1.0,
+   "discriminative": 1.0,
+   "mean_bugs_firing": 1.975,
+   "unique_items": 40,
+   "tries_per_item": 1.025,
+   "ms_per_item": 0.6983541505178437,
+   "example": "Work out 8 \u2212 (\u22122) \u00d7 5\u00b2"
+  },
+  "SUB_NEG/isolated": {
+   "requested": 40,
+   "accepted": 40,
+   "key_verified": 1.0,
+   "target_fires": 1.0,
+   "discriminative": 1.0,
+   "mean_bugs_firing": 1,
+   "unique_items": 40,
+   "tries_per_item": 1.35,
+   "ms_per_item": 0.37203542451607063,
+   "example": "Work out 8 \u2212 (\u22122)"
+  },
+  "SUB_NEG/discriminative": {
+   "requested": 40,
+   "accepted": 40,
+   "key_verified": 1.0,
+   "target_fires": 1.0,
+   "discriminative": 1.0,
+   "mean_bugs_firing": 1,
+   "unique_items": 40,
+   "tries_per_item": 1.35,
+   "ms_per_item": 0.3146083254250698,
+   "example": "Work out 8 \u2212 (\u22122)"
+  },
+  "FRAC_ADD/isolated": {
+   "requested": 40,
+   "accepted": 40,
+   "key_verified": 1.0,
+   "target_fires": 1.0,
+   "discriminative": 1.0,
+   "mean_bugs_firing": 1,
+   "unique_items": 40,
+   "tries_per_item": 2.1,
+   "ms_per_item": 0.42642710031941533,
+   "example": "Work out (1/8 + 5/6) \u00d7 9"
+  },
+  "FRAC_ADD/discriminative": {
+   "requested": 40,
+   "accepted": 40,
+   "key_verified": 1.0,
+   "target_fires": 1.0,
+   "discriminative": 1.0,
+   "mean_bugs_firing": 1,
+   "unique_items": 40,
+   "tries_per_item": 2.1,
+   "ms_per_item": 0.41735832492122427,
+   "example": "Work out (1/8 + 5/6) \u00d7 9"
+  },
+  "NEG_TIMES_NEG/isolated": {
+   "requested": 40,
+   "accepted": 40,
+   "key_verified": 1.0,
+   "target_fires": 1.0,
+   "discriminative": 1.0,
+   "mean_bugs_firing": 1,
+   "unique_items": 40,
+   "tries_per_item": 3.125,
+   "ms_per_item": 0.466691650217399,
+   "example": "Work out (\u22123) \u00d7 (\u22128) + 11"
+  },
+  "NEG_TIMES_NEG/discriminative": {
+   "requested": 40,
+   "accepted": 40,
+   "key_verified": 1.0,
+   "target_fires": 1.0,
+   "discriminative": 1.0,
+   "mean_bugs_firing": 1.8,
+   "unique_items": 40,
+   "tries_per_item": 1.125,
+   "ms_per_item": 0.31058229942573234,
+   "example": "Work out (\u22125)\u00b2 \u2212 (\u22122) \u00d7 6"
+  }
+ },
+ "llm_only": {
+  "model": "openai/gpt-4.1-mini",
+  "per_code": {
+   "LTR": {
+    "calls": 0,
+    "parse_ok": 0,
+    "key_correct": 0,
+    "target_fires": 0,
+    "llm_bug_answer_matches": 0,
+    "valid_targeted": 0,
+    "discriminative": 0
+   }
+  },
+  "totals": {
+   "calls": 0,
+   "parse_ok": 0,
+   "key_correct": 0,
+   "target_fires": 0,
+   "llm_bug_answer_matches": 0,
+   "valid_targeted": 0,
+   "discriminative": 0
+  },
+  "rates": {
+   "parse_ok": null,
+   "key_correct": null,
+   "target_fires": null,
+   "llm_bug_answer_matches": null,
+   "valid_targeted": null,
+   "discriminative": null
+  },
+  "failure_examples": [],
+  "stopped_early": "unparseable response: HTTP 200 text/plain"
+ }
+}
