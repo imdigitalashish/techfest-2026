@@ -135,3 +135,15 @@ Folder, brief and journal created. The lead session starts Phase 0.
 **Deliverables.** `research/landscape.md`, `architecture/components.md` + `contracts/*.schema.json`, `research/components/*.md` (10), `architecture/adr/001-spike.md`, `deliverables/round1-abstract.md` (897 words), `deliverables/architecture.md` (mermaid), the selection memo above.
 
 **Supervisor 07:22 alignment check.** Agreed (write ADR, deliverables, memo and Now/Log, pushing after each). Done, no reply needed.
+
+### 2026-10-04 07:50 IST — Lead: independent fact-check of every number
+- A `general-purpose` agent checked every quantitative claim in the abstract, selection memo, Log, ADR 001 and the component notes against `eval/results/*.jsonl`, the base-loss JSON and the source TSV.
+- **Confirmed:** all loss, share, weak-gain, "all four other domains worse" and "every domain improves" claims.
+- **Found and fixed:**
+  - The aggregation-error range "9–36%" / "9–25%" came from the smoke test; the seed-0 range is 5.5–36.2%.
+  - Upload "0.4–2.9 MB/round" and "2–8×" were wrong; the measured figure is a 2.5× reduction at equal ranks and participation.
+  - The 1–5 option scores are now labelled subjective.
+  - CLAIR and FedRoRA abstracts were added to the verified TSV (44/44); iFLoRA's ACL Anthology metadata is recorded in `research/sources/other_verified.md`.
+- Simulator facts (8× data, ranks/steps, 5-round outage, 4-round memory) live in code (`device_simulator/profiles.py`, `aggregator/strategies.py`), not in the result rows. The checker flagged them as unsupported by results; they are config facts.
+- **Replication in flight:** dropout seed 1 for `fedavg_ab_homo` (main process) and `anchor_full` (extra process `rep-anchor-s1`). At load average ≈ 80, expect results after 08:30.
+- Also added: `requirements.txt` (pinned), `scripts/fetch_data.sh`, `README.md`.

@@ -19,7 +19,7 @@ A. **AnchorLoRA** (23/25) · B. exact product-space + SVD with caps (19) · C. l
 - **White (facts, tonight's runs, seed 0, 12 rounds):** FedAvg over A and B has a 5.5–36.2% aggregation error, the data-rich device's influence share is 1.02–1.25, and **weak devices' domains end worse than the base model** (weak gain −0.06 to −0.13 nats). Exactness alone (anchor_naive, n_k weights) is *worse*: macro 2.762, c0 share 1.00. **anchor_full** (dropout scenario): macro **2.665** vs 2.735 starter / 2.705 HetLoRA-style / 2.706 untuned; every domain improves; c0 share 0.20; aggregation error 0.000; no loss rise between evaluations. Trade-off: the data-rich wiki domain improves less (3.515 vs 3.265). Full table: `eval/results/v1_summary.md`.
 - **Red (gut, judges):** "Exact for any rank mix, in one line of algebra" plus a live dominance meter is memorable and easy to explain to Optiver engineers.
 - **Black (risks):** frozen A limits expressiveness (RoLoRA, NeurIPS 2025, argues for trainable A); each ingredient is published (FFA-LoRA, FedNova, MIFA), so novelty sits in the integration; 12-round single-seed evidence is thin; the local-text domains are a proxy.
-- **Yellow (benefits):** exactness, ~2–8× less upload than FedAvg on A and B, devices of any rank, no extra server memory beyond B, auditability.
+- **Yellow (benefits):** exactness; 2.5× less upload than FedAvg on A and B at the same ranks (r·768 vs r·1,920 floats per q/v layer pair; measured 12-round totals in `eval/results/v1_summary.md`); devices of any rank; no extra server memory beyond B; auditability.
 - **Green (alternatives):** anchor refresh (periodically merge ΔW into the base and redraw A); rotating rank masks; RoLoRA-style alternation on strong devices only; loss-aware (q-FFL) weights; FedBuff-style async for the demo.
 - **Blue (process):** keep A as the spike, run the ablation ladder and the antithesis experiments below, and ratchet on the dropout scenario with a frozen evaluator.
 
@@ -28,7 +28,7 @@ A. **AnchorLoRA** (23/25) · B. exact product-space + SVD with caps (19) · C. l
 
 **Antithesis (independent rubber-duck, 07:05 IST; abridged):**
 1. *Confounded design:* hardware class, rank, steps, data volume and domain move together, so the macro gain might come from uniform weighting alone. Simulation also says nothing about RAM, energy or deadlines.
-2. *Straw-man baseline:* FedAvg over A and B is known to be invalid, so a 9–25% aggregation error "does not validate your method". Compare against exact product-space aggregation + SVD, zero-padded LoRA, fixed A without extras, and per-mechanism ablations.
+2. *Straw-man baseline:* FedAvg over A and B is known to be invalid, so its measured aggregation error "does not validate your method" (the reviewer saw early smoke-test numbers; the seed-0 range is 5.5–36.2%). Compare against exact product-space aggregation + SVD, zero-padded LoRA, fixed A without extras, and per-mechanism ablations.
 3. *Normalisation risk:* scaling a 1-step partial update by the *planned* mean steps "pretends that an early noisy gradient completed several steps".
 4. *Structural ownership:* with prefix ranks only high-rank devices touch columns > r_k, and a frozen random A confines updates to a fixed input subspace.
 5. *Stale replay* counts one computation several times at an obsolete model; "MIFA-style" doesn't inherit MIFA's guarantees.
