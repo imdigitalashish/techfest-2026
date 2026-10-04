@@ -116,6 +116,11 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 19:29 IST — P10 demo done (first of 20)
+- **P10 "Break the band" DEMO DONE (74e8dce):** I re-ran demo/smoke.sh and it passes all checks (62 PASS lines). Astra demo review: 78/100, "would lean in: yes".
+  - Crazy element: a judge writes a fake pump post. One bot post breaks plain CQR, while the certified band holds.
+  - Red team: 0 violations in 2,000 attacks within budget. The badge turns grey beyond k. The footer keeps "text adds no value (p = 0.46)".
+- Slot → P9 demo (real τ-bench replay first).
 ### 2026-10-04 19:14 IST — Sweep
 - P2: E6 confirmed the 10-token truncation confound. Full cache 67% vs RoD@10% 75% at max_new=32; the abstract now leads with this.
   - Sol reproduction: 320/320 rows identical. VM deallocated.
