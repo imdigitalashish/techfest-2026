@@ -21,7 +21,7 @@
   4. Final Round-1 abstract rendered from committed results, a doc-drift check script, and the architecture diagram.
   5. Cross-model reviews as child sessions (PLAYBOOK §10, at most 2 at a time): `gpt-6-astra` (max) as hostile judge on the abstract and spike; `gpt-6-sol` (max) on code and eval, including reproducing the headline numbers. Record them in `reviews/` and `ledger.tsv`.
   6. Final selection memo, thought node current, everything pushed, then message the Supervisor.
-- **Doing:** steps 1–4 done and pushed: fixes and tests, v1 reruns, pre-registered text test, abstract rendered plus drift check. Step 5: cross-model reviews running as child sessions — `P10 review · astra hostile judge` and `P10 review · sol code + repro`. Then step 6.
+- **Doing:** steps 1–5 done and pushed. Both cross-model reviews are in and all 18 items are accepted and fixed (v2). Final confirmation is running in the same two child sessions: astra re-scores the final abstract, sol verifies the fixes and reproduces one v2 run. Then step 6 (final memo, push, DONE).
 - **Machine rules:** start heavy jobs only when `sysctl -n kern.memorystatus_level` ≥ 30 (pause below 25); always `nice -n 10`, one job at a time; CPU only; small requests; poll long jobs at ≥ 10-minute intervals; no FinBERT download (MiniLM is cached).
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section. Optional: a Kaggle API token (`~/.kaggle/kaggle.json`).
 - **Risks:**
@@ -31,23 +31,29 @@
   - Pooled Kupiec/Christoffersen p-values are optimistic.
   - Memory and uplink constraints slow the reruns.
 
-## Key results — v1 (committed; reproduce commands in each report header)
-Headline run: StockNet with the MiniLM scorer, [`eval/results/text_minilm_v1.md`](eval/results/text_minilm_v1.md). The VADER run is [`baseline_v1.md`](eval/results/baseline_v1.md). 87 tickers, 119,641 tweets, 0 look-ahead leaks; test Jul 2015 → Mar 2016 (16,443 stock-days); α = 0.1; full run ~1 min on CPU. Abstract numbers are rendered from these JSONs (`deliverables/render.py`, `deliverables/check_drift.py`).
-- **Starter baseline is not meaningful:** fusion + MAPIE split CP covers 81.6% overall and 76.9% in high volatility (Kupiec p < 0.001). CQR 86.6%. ACI (our loop) 89.5%, day-clustered 90% CI 87.5–91.2%, width 5.22 pp.
-- **Text value — none measurable:**
-  - StockNet: pinball 0.3508 fusion vs 0.3513 price-only.
-  - **Pre-registered test on unseen Kaggle DJIA news** ([result](eval/results/text_utility_djia_v1.md), registered at `dd8bcd1` before the run): **no evidence that text adds value** (Winkler +0.10%, one-sided p = 0.46, 90% CI [−0.064, +0.068]). Linear QR: text hurts (p = 0.995).
-- **Attacks, k = 3:**
-  - The 53-variant oracle takes plain CQR to 84.7%. The certified interval is guaranteed ≥ 86.7% (the clean CQR coverage) for any attack within budget.
-  - Worst fixed variant: CQR 85.7% vs certified 89.5%.
-  - CR-ACI: 89.5% clean / 89.7% under the pump, at +0.3% / +1.0% width vs plain ACI.
-  - Bursts on pre-specified days: plain ACI 89.5% vs CR-ACI 90.7% on attacked days (VADER run: 88.6% vs 91.8%).
-- **C3 scorer** (macro-F1 on 2,388 labelled financial tweets): VADER 0.489 · MiniLM+LR 0.691 · with 20% / 40% flipped labels 0.662 / 0.606.
+## Key results — v2 (after the cross-model review fixes; reproduce commands in each report header)
+Headline run: StockNet with the MiniLM scorer, [`eval/results/text_minilm_v2.md`](eval/results/text_minilm_v2.md); VADER: [`baseline_v2.md`](eval/results/baseline_v2.md). v1 was reproduced exactly by gpt-6-sol; the v1→v2 deltas are in [`v1_vs_v2_diff.json`](eval/results/v1_vs_v2_diff.json), and headline numbers are unchanged at reported precision. 87 tickers, 119,641 tweets, 0 tweets after the timestamp cut-off; test Jul 2015 → Mar 2016 (16,443 stock-days); α = 0.1. The abstract is rendered from these JSONs (`deliverables/render.py`, `deliverables/check_drift.py`).
+- **Starter baseline is not meaningful:** MAPIE split CP covers 81.6% overall and 76.9% in high volatility (Kupiec p < 0.001). CQR 86.6%. ACI (our loop) 89.5%, day-clustered 90% CI 87.5–91.2%, width 5.22 pp. Seeds 0–2: ACI coverage sd 0.03 pp (`seed_stability_minilm.json`, v1 code).
+- **Text value — none detected:**
+  - StockNet (exploratory): pinball 0.3508 vs 0.3513; the text gain averaged over 3 seeds is −0.0002.
+  - **Pre-registered unseen Kaggle DJIA** (registered at `dd8bcd1`): **no evidence that text adds value** (Winkler 3.524 → 3.520, +0.1%, p = 0.46). Qualification: the test conditions on the official open.
+  - Exploratory pre-open variant: −0.6%, p = 0.73.
+  - Positive control: detects +11.1% (p = 0.019), misses +3.9% (p = 0.11).
+- **Attacks, k = 3 (symmetric CQR):**
+  - The worst of 53 tested variants per row takes plain CQR to 84.7%. Certified ≥ the clean 86.7% on this test set (fixed offset).
+  - Worst fixed variant: plain 85.7% vs certified 89.5%.
+  - Beyond budget (10 posts): certified 86.9% vs plain 86.2%.
+  - Certified width +4.8% (clean).
+  - CR-ACI: 89.5% / 89.7% (clean / pump), +0.4% / +1.0% width vs plain ACI. Bursts on attacked days: plain ACI 89.5% vs CR-ACI 90.7%.
+  - Per-row containment holds only at a fixed offset. Separately adapted ACI runs need not be nested (documented by a test).
+- **C3 scorer** (macro-F1, 2,388 labelled financial tweets): VADER 0.489 · MiniLM+LR 0.691 · 20% / 40% flipped labels 0.662 / 0.606.
 - **Soundness:**
-  - 59 unit tests: brute-force box exactness, tree-bound soundness, trust stability, ACI long-run bound and boundaries.
-  - Degenerate-box error 0; clean features inside the attacked box on 100% of rows; certified ⊇ clean-covered rows on every evaluated attack.
-- **Ratchet** (evaluator v2, 2014-only splits): baseline SCORE 4.565 (`components/robust_conformal/autoresearch/results.tsv`).
-- v0 numbers (old trust, clipped ACI) are kept for history in `eval/results/baseline_v0.md`.
+  - 70 unit tests: brute-force box exactness; derived round-off margin with sol's 50,003-post counterexample as a regression test; tree bounds; trust stability; ACI long-run bound, boundaries and non-nesting; empty-interval scoring; scorer dispatch.
+  - Clean features inside the attacked box on 100% of rows.
+- **Cross-model reviews** (`reviews/`, `ledger.tsv`):
+  - gpt-6-astra: 64/100 on the near-final abstract, with 5 blocking issues, all fixed.
+  - gpt-6-sol: every headline number reproduced exactly; 3 blocking findings, all fixed.
+  - A re-score and a fix verification are in progress.
 
 ## Phase 0 — what the judges must be able to see (lead, 4 Oct 03:00 IST)
 **The crux in our words.** Three things interact: (1) the text signal is weak and noisy, and probably says more about *how much* a price will move than *which way*; (2) daily returns are not exchangeable (volatility clustering, regime shifts), so a split-conformal interval is valid only on average and can under-cover exactly when it matters; (3) an adversary who injects or edits text moves the input at test time, which no standard conformal guarantee covers — the interval can be narrow, shifted and confidently wrong. "Meaningful" therefore has to be operationalised, not asserted.
