@@ -116,7 +116,8 @@
     return canonical(data);
   }
 
-  function hashEntry(entry) { return sha256Hex(payload(entry)); }
+  var counter = { hashes: 0 };
+  function hashEntry(entry) { counter.hashes++; return sha256Hex(payload(entry)); }
 
   /* Ledger.verify(checkpoint): [ok, first bad index or null]. */
   function verify(entries, checkpoint) {
@@ -166,6 +167,6 @@
 
   return {
     ZERO_HASH: ZERO_HASH, sha256Hex: sha256Hex, canonical: canonical, payload: payload, hashEntry: hashEntry,
-    verify: verify, flip: flip, reseal: reseal, truncate: truncate, scenarios: scenarios
+    verify: verify, flip: flip, reseal: reseal, truncate: truncate, scenarios: scenarios, counter: counter
   };
 });

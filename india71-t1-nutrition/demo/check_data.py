@@ -9,6 +9,7 @@ import csv
 import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,22 +63,30 @@ def main() -> int:
     check(all(cell[m][k] == lk[m][k] for m in ("ids_only", "plaintext_probabilistic", "pprl_bloom") for k in ("f1", "precision", "recall", "clerical_review_share")),
           "linkage: 35% / +0% cell == eval/results/identity_linkage.json (F1, precision, recall, clerical share)")
     check(len(L["cells"]) == len(L["coverage_levels"]) * len(L["noise_levels"]) == 35, "linkage: 7 x 5 = 35 cells")
-    lo = [c for c in L["cells"].values() if c["coverage"] <= 0.5]
-    check(all(c["pprl_bloom"]["f1"] > c["ids_only"]["f1"] + 0.25 for c in lo), "linkage: PPRL F1 > shared-ID F1 + 0.25 whenever RCH-ID coverage <= 50%")
-    zero = [c for c in L["cells"].values() if c["coverage"] == 0]
-    check(all(c["ids_only"]["f1"] == 0 and c["pprl_bloom"]["f1"] >= 0.85 for c in zero), "linkage: at 0% coverage shared-ID F1 = 0 and PPRL F1 >= 0.85 at every typo level")
-    check(all(c["pprl_bloom"]["f1"] > c["plaintext_probabilistic"]["f1"] for c in L["cells"].values() if c["coverage"] < 1),
-          "linkage: PPRL F1 > pooled plaintext F1 in every cell below 100% coverage")
+    check(L["boundary_columns"] == ["source", "record_id", "clk", "block_tokens", "id_tokens", "sex_token", "synthetic"],
+          "linkage: Bloom-filter runs through the encoded boundary (only CLK + keyed tokens cross)")
+    cells = list(L["cells"].values())
+    check(all(c[m]["true_links"] + c[m]["false_links"] == c[m]["accepted_links"] for c in cells for m in ("ids_only", "plaintext_probabilistic", "pprl_bloom", "pprl_bloom_precision_matched")),
+          "linkage: correct + false links == accepted links for every method and cell")
+    stress = L["cells"]["0|0.4"]
+    check((stress["pprl_bloom"]["true_links"], stress["pprl_bloom"]["false_links"], stress["plaintext_probabilistic"]["true_links"], stress["plaintext_probabilistic"]["false_links"]) == (3907, 366, 2456, 34),
+          "linkage: 0% IDs / +40% typos: encoded 3,907 correct / 366 false vs pooled 2,456 / 34 (review M4)")
+    lo = [c for c in cells if c["coverage"] <= 0.5]
+    check(all(c["pprl_bloom_precision_matched"]["reached"] and c["pprl_bloom_precision_matched"]["precision"] >= c["plaintext_probabilistic"]["precision"] and
+              c["pprl_bloom_precision_matched"]["true_links"] > c["ids_only"]["true_links"] for c in lo),
+          "linkage: at pooled matching's precision, encoded linkage still beats the shared-ID join whenever coverage <= 50%")
+    check(all(c["ids_only"]["true_links"] == 0 for c in cells if c["coverage"] == 0), "linkage: at 0% coverage the shared-ID join finds nobody (by definition)")
     check(L["label"] == "SYNTHETIC", "linkage labelled SYNTHETIC")
 
-    # SYNTHETIC: reference worklist == committed eval_v1 at K = 5
-    ew = d["committed"]["early_warning_v1"]
+    # SYNTHETIC: reference worklist == committed eval_v2 (infant gate) at K = 5
+    ew = d["committed"]["early_warning_v2"]
     wr = d["worklist_ref"]
     i5 = wr["K_values"].index(5)
-    check(all(wr["recall"][m][i5] == ew["methods"][m]["episode_recall"] for m in ew["methods"]), "worklist_ref: recall at K = 5 == early_warning_v1.json for all 5 methods")
-    check(wr["recall"]["lowest_observed_whz"][i5] == 0.429 and wr["recall"]["rule_no_gain_2m"][i5] == 0.3651, "worklist_ref: WHZ rule 0.429 vs programme rule 0.3651 at K = 5")
-    check(all(wr["ci95"][m][i5] == ew["bootstrap_95ci"][m] for m in ("logistic_anthro", "logistic_anthro_plus_linked_health", "lowest_observed_whz")),
-          "worklist_ref: bootstrap CIs at K = 5 == committed")
+    check(wr.get("protocol") == "eval_v2", "worklist_ref uses the eval_v2 protocol (infant gate)")
+    check(all(wr["recall"][m][i5] == ew["methods"][m]["episode_recall"] for m in ew["methods"]), "worklist_ref: recall at K = 5 == early_warning_v2.json for all 5 methods")
+    check(wr["recall"]["lowest_observed_whz"][i5] == 0.4733 and wr["recall"]["rule_no_gain_2m"][i5] == 0.4128, "worklist_ref: WHZ rule 0.4733 vs programme rule 0.4128 at K = 5")
+    check(all(wr["ci95"][m][i5] == v for m, v in ew["bootstrap_95ci"].items()), f"worklist_ref: all {len(ew['bootstrap_95ci'])} bootstrap CIs at K = 5 == committed")
+    check(wr["n_episodes"] == ew["n_episodes_rankable"] and wr["infant_pathway_share"] == ew["infant_pathway_share"], "worklist_ref: rankable episodes and infant-pathway share == committed")
 
     # SIMULATED children, REAL district rates
     sim = d["sim"]
@@ -90,11 +99,25 @@ def main() -> int:
         check(abs(cal["achieved_pct"]["wasted"] - cal["target_pct"]["wasted"]) <= 0.15 and abs(cal["achieved_pct"]["stunted"] - cal["target_pct"]["stunted"]) <= 0.15,
               f"sim[{pid}] achieved wasting/stunting {cal['achieved_pct']['wasted']}/{cal['achieved_pct']['stunted']} == target")
         c = s["story"]["child"]
-        check(c["link"]["linked_correctly"] and not c["link"]["ids_only_linked"], f"sim[{pid}] example child linked by PPRL (correct vs truth), not by shared IDs")
+        check(c["link"]["linked_correctly"] and not c["link"]["ids_only_linked"], f"sim[{pid}] example child linked through the encoded boundary (correct vs truth), not by shared IDs")
         check(1 <= c["lead_months"] <= 3 and c["onset"]["month_index"] - 3 <= c["first_flag_month"] <= c["onset"]["month_index"] - 1, f"sim[{pid}] example child listed {c['lead_months']} month(s) before onset")
+        before = [m for m in c["truth_wlz"] if m["month_index"] < c["onset"]["month_index"]]
+        obs_before = [m for m in c["measurements"] if m["month_index"] < c["onset"]["month_index"]]
+        check(c["first_ever_onset"] and all(m["wlz"] >= -2 for m in before) and all(m["status"] == "normal" for m in obs_before) and
+              (date.fromisoformat(c["truth_wlz"][0]["date"]) - date.fromisoformat(c["dob_true"])).days <= 31,
+              f"sim[{pid}] example child's episode is first-ever (born in window, never wasted or recorded MAM/SAM before)")
+        flag_age = [m["age_days"] for m in c["measurements"] if m["month_index"] == c["first_flag_month"]]
+        check(flag_age and flag_age[0] >= 183, f"sim[{pid}] example child was >= 6 months when listed (infant gate)")
         wl = s["worklist"]
         check(wl["recall"]["lowest_observed_whz"][i5] > wl["recall"]["rule_no_gain_2m"][i5] > wl["recall"]["random_within_awc"][i5], f"sim[{pid}] K = 5: WHZ rule > programme rule > random")
-        check(max(m["chars"] for m in s["sms"]["messages"]) <= 80, f"sim[{pid}] every SMS <= 80 characters")
+        ages = [k["age_m"] for e in [s["story"]["example"]] + s["examples"] for k in e["children"]]
+        check(min(ages) >= 6.0, f"sim[{pid}] no child under 6 months in any ranked list (min {min(ages)} months)")
+        ft = s["sms"]["featured_task"]
+        check(not ft["delivered"] and ft["status"] == "blocked" and ft["blocked_reason"] == "capacity" and not ft["worker_clock"] and ft["status_day8"] == "blocked",
+              f"sim[{pid}] undelivered featured task is blocked (capacity), no worker clock, not escalated on day 8")
+        check(s["sms"]["capacity_exception"] and s["sms"]["capacity_exception"][0]["owner_role"] == "ls" and s["sms"]["day8"]["blocked_still_blocked"],
+              f"sim[{pid}] capacity exception owned by the Lady Supervisor; all blocked tasks stay blocked on day 8")
+        check(max(m["chars"] for m in s["sms"]["messages"]) <= 80, f"sim[{pid}] every exported SMS <= 80 characters")
         check(all(r["decision"] == expect[r["id"]] for r in s["gate"]["requests"]), f"sim[{pid}] gate: 2 allows, 4 denies as expected")
         check(any(r["rule_id"] == "deny-employment-action" for r in s["gate"]["requests"]), f"sim[{pid}] gate: employment use denied by its own rule")
         pv = s["ledger"]["python_verdicts"]

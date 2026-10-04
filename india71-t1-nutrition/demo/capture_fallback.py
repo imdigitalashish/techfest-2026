@@ -3,7 +3,7 @@
 Needs Playwright for Python with Chromium, plus Pillow (demo/requirements-demo.txt):
     python3 -m pip install -r demo/requirements-demo.txt && python3 -m playwright install chromium
 Run from india71-t1-nutrition/:  python3 demo/capture_fallback.py
-Writes demo/fallback/NN-*.png and demo/fallback/find-every-child.gif. Fails on any page error or any non-file:// request.
+Writes demo/fallback/NN-*.png (1280x720, the projector size) and demo/fallback/find-every-child.gif. Fails on any page error or any non-file:// request.
 """
 
 from __future__ import annotations
@@ -24,13 +24,14 @@ SHOTS = [
     ("03-districts-nandurbar", "districts&state=MH&district=Nandurbar&cohort=nandurbar"),
     ("04-find-as-simulated", "find&cov=0.35&noise=0&cohort=nandurbar"),
     ("05-find-no-ids-40pct-typos", "find&cov=0&noise=0.4&cohort=nandurbar"),
-    ("06-one-child-nandurbar", "child&cohort=nandurbar"),
-    ("07-this-week-revealed", "week&cohort=nandurbar&K=5&reveal=1"),
-    ("08-worker-sms", "sms&cohort=nandurbar"),
-    ("09-break-it-discipline-truncate", "break&cohort=nandurbar&req=cdpo_discipline&tamper=truncate"),
-    ("10-break-it-reseal-all", "break&cohort=nandurbar&req=fake_consent&tamper=resealall"),
-    ("11-districts-amravati-melghat", "districts&state=MH&district=Amravati&cohort=amravati"),
-    ("12-one-child-amravati", "child&cohort=amravati"),
+    ("06-find-details-boundary", "find&cov=0&noise=0.4&cohort=nandurbar&details=1"),
+    ("07-one-child-nandurbar", "child&cohort=nandurbar"),
+    ("08-this-month-k5-revealed", "week&cohort=nandurbar&K=5&reveal=1"),
+    ("09-sms-capacity-gate", "sms&cohort=nandurbar"),
+    ("10-break-discipline-truncate", "break&cohort=nandurbar&req=cdpo_discipline&tamper=truncate"),
+    ("11-break-reseal-all", "break&cohort=nandurbar&req=fake_consent&tamper=resealall"),
+    ("12-districts-amravati-melghat", "districts&state=MH&district=Amravati&cohort=amravati"),
+    ("13-one-child-amravati", "child&cohort=amravati"),
 ]
 GIF_SEQUENCE = [(1.0, 0), (0.75, 0), (0.5, 0), (0.35, 0), (0.2, 0), (0.1, 0), (0.0, 0), (0.0, 0.1), (0.0, 0.2), (0.0, 0.3), (0.0, 0.4)]
 
@@ -41,7 +42,7 @@ def main() -> int:
     foreign: list[str] = []
     with sync_playwright() as p:
         browser = p.chromium.launch()
-        page = browser.new_page(viewport={"width": 1440, "height": 900}, device_scale_factor=1)
+        page = browser.new_page(viewport={"width": 1280, "height": 720}, device_scale_factor=1, reduced_motion="reduce")
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
         page.on("request", lambda r: foreign.append(r.url) if not r.url.startswith(("file:", "data:", "about:")) else None)
@@ -60,7 +61,7 @@ def main() -> int:
         frames = []
         for cov, noise in GIF_SEQUENCE:
             load(f"find&cov={cov:g}&noise={noise:g}&cohort=nandurbar")
-            img = Image.open(io.BytesIO(page.locator("#s-find .g-link > .panel").first.screenshot())).convert("RGB")
+            img = Image.open(io.BytesIO(page.locator("#s-find .body > .panel").first.screenshot())).convert("RGB")
             img = img.resize((760, round(img.height * 760 / img.width)), Image.LANCZOS)
             frames.append(img.quantize(colors=96, method=Image.Quantize.MEDIANCUT))
         durations = [900] * (len(frames) - 1) + [2600]
