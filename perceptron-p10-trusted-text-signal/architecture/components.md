@@ -1,6 +1,6 @@
 # P10 component map
 
-Every component is a pure function over typed DataFrames. _v1, 4 Oct 13:30 IST: trust made deletion-stable, ACI made exact, attacks enriched (see `research/notes/review-adr001-rubber-duck.md`). Headline results: `eval/results/text_minilm_v1.md`._ The contracts (columns, dtypes, value checks, keys) live in [`contracts/contracts.py`](contracts/contracts.py) and are enforced at every hand-off by `validate(df, CONTRACT)`; a violation raises `ContractError`. Code: `components/<name>/`. Baselines are what runs in the walking skeleton tonight; numbers come from [`eval/results/baseline_v0.json`](../eval/results/baseline_v0.json).
+Every component is a pure function over typed DataFrames. _v1, 4 Oct ~13:05 IST: trust made deletion-stable, ACI made exact, attacks enriched (see `research/notes/review-adr001-rubber-duck.md`). Headline results: `eval/results/text_minilm_v1.md`._ The contracts (columns, dtypes, value checks, keys) live in [`contracts/contracts.py`](contracts/contracts.py) and are enforced at every hand-off by `validate(df, CONTRACT)`; a violation raises `ContractError`. Code: `components/<name>/`. Baselines are what runs in the walking skeleton tonight; numbers come from [`eval/results/baseline_v0.json`](../eval/results/baseline_v0.json).
 
 ```mermaid
 flowchart LR

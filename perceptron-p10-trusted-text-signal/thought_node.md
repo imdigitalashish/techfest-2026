@@ -167,7 +167,7 @@ Added `tests/` (43 pass): DST-safe 16:00 ET alignment, contract rejection, brute
   - **Independent antithesis:** the rubber-duck review found 3 blocking issues — trust not deletion-stable, ACI clipping/reordering, the "per-prediction coverage" overclaim — plus evaluation flaws and a strong "drop the text" case. Saved with the lead's synthesis in `research/notes/review-adr001-rubber-duck.md`. Fixed in code: trust, ACI, contract, evaluator v1, vectorised box (43 tests pass). Fixed in the abstract: three overclaims. The rerun is the resume point.
 - Supervisor 09:40: lean mode back on. Supervisor 09:55: **PAUSE** (user's decision). No jobs running; all results saved; exact restart commands are in *Now*.
 
-### 2026-10-04 12:45–13:35 IST — Resumed: review fixes, v1 reruns, pre-registered text test, final abstract
+### 2026-10-04 12:45–13:10 IST — Resumed: review fixes, v1 reruns, pre-registered text test, final abstract
 - **Supervisor 12:45:** RESUMED with a definition of done. Acted on: Now rewritten; steps 1–4 done; step 5 running.
 - **Fixes (59 tests pass):**
   - pump trust from `trust_of` (fresh account → 0.101), and the pump sentiment from the deployed scorer;

@@ -37,7 +37,7 @@ The bottleneck is not sentiment accuracy. Conformal validity is a statement abou
 - C7 stays a tree ensemble (or monotone/linear) until a neural verifier is added.
 - The eval harness reports clean, pump and oracle coverage for every method, plus width at k = 0…5.
 
-## Update — 4 Oct 2026, 13:30 IST (v1)
+## Update — 4 Oct 2026, ~13:05 IST (v1)
 - **Independent antithesis done** (rubber-duck review, saved with per-item decisions in `research/notes/review-adr001-rubber-duck.md`). Its three blocking findings are fixed and tested:
   - trust is now computed from each post's own metadata (deletion- and injection-stable);
   - the ACI loop now matches Gibbs & Candès (no clipping, whole line at α_t ≤ 0, empty set at α_t ≥ 1, long-run bound tested on adversarial sequences);
