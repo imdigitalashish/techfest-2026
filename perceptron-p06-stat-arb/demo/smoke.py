@@ -11,6 +11,9 @@
    - compiled LEV equals sklearn;
    - the race endpoint at a grid reaction time equals the grid;
    - the flattened models equal lev_*.npz.
+4. Browser (demo/browser_check.py, headless Chrome; skipped if none is installed): race setup, race length within the
+   presenter deadline, and honest labels after the backend is killed.
+5. Copy guard: wording withdrawn after the demo review must not come back.
 """
 from __future__ import annotations
 
@@ -75,6 +78,11 @@ def static_checks(P: dict) -> None:
     total = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(DEMO) for f in fs if "__pycache__" not in dp)
     big = [f for dp, _, fs in os.walk(DEMO) for f in fs if os.path.getsize(os.path.join(dp, f)) > 20e6]
     ok("demo/ size ≤ 10.5 MB and no file > 20 MB", total <= 10.5e6 and not big, f"{total / 1e6:.2f} MB")
+    banned = {"bounded to": "D06", "floors": "D07", "latency floor": "D07", "(India) →": "D07", "12-month": "D05", "measured now": "D04",
+              "trades nothing": "D09", "LIVE (warming)": "D04"}
+    hits = [f"{w!r} in {f} ({banned[w]})" for f in ("app.js", "index.html", "SCRIPT.md", "fallback/README.md")
+            for w in banned if os.path.exists(os.path.join(DEMO, f)) and w in open(os.path.join(DEMO, f)).read()]
+    ok("copy guard: wording withdrawn after the demo review is absent", not hits, "; ".join(hits) if hits else f"{len(banned)} phrases")
     m = P["meta"]
     ok("episode count matches meta and provenance", len(P["episodes"]["t_us"]) == m["window_episodes"] == prov["window"]["episodes"],
        f"{m['window_episodes']} episodes in the window")
@@ -167,8 +175,15 @@ def backend_checks(P: dict) -> None:
                    for w, g in (("you", gy), ("machine", gm)) for p in ("naive", "thr"))
         ok("race at RT 300 ms, δ 1 ms == exported grid (you and machine rows)", good,
            f"you naive {r['you']['naive']['usd']:+.2f} thr {r['you']['thr']['usd']:+.2f} · machine naive {r['machine']['naive']['usd']:+.2f} thr {r['machine']['thr']['usd']:+.2f}")
+        if os.environ.get("P6_SMOKE_NO_BROWSER") != "1":
+            from demo import browser_check
+            browser_check.run(f"http://127.0.0.1:{port}/#stage-1", lambda: os.killpg(proc.pid, signal.SIGTERM), ok)
     finally:
-        os.killpg(proc.pid, signal.SIGTERM)
+        if proc.poll() is None:            # the browser regression may already have killed it (macOS: EPERM on a dead group)
+            try:
+                os.killpg(proc.pid, signal.SIGTERM)
+            except (ProcessLookupError, PermissionError):
+                pass
         proc.wait(timeout=10)
         os.unlink(pf)
 

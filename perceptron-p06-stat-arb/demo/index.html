@@ -7,16 +7,25 @@
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="stage">
 <header>
   <div class="title">
     <h1>Cross-venue BTC mispricings under a latency budget</h1>
     <div class="sub">Perceptron 2026 · Problem 6 · detect → rank by latency-conditioned value → simulated execution</div>
   </div>
-  <div id="mode" class="mode offline" title="">OFFLINE · precomputed grid</div>
+  <div class="hdr-right">
+    <div id="mode" class="mode warming">checking for a live backend…</div>
+    <button id="viewToggle" class="ghost">Dashboard (Q&amp;A)</button>
+  </div>
 </header>
+<div id="stagebar" class="stagebar">
+  <nav id="steps" class="steps"><button data-step="1">1 · Replay + latency knob</button><button data-step="2">2 · Race the machine</button><button data-step="3">3 · Evidence and limits</button></nav>
+  <div id="scope" class="scope"></div>
+</div>
 <div id="honesty" class="honesty"></div>
+<div id="stage" class="stage-grid s1"><div class="scol"></div><div class="scol"></div></div>
 
+<div id="dash">
 <main>
   <section class="left">
     <div class="panel replay">
@@ -30,16 +39,16 @@
       </div>
     </div>
     <div class="panel clocks">
-      <div class="ptitle"><span>Decay clocks · open mispricings with net edge &gt; 0 at the chosen fee</span><span class="hint">shaded = below the slower venue's publication interval (bounded, not measured)</span></div>
+      <div class="ptitle"><span>Decay clocks · open mispricings with net edge &gt; 0 at the chosen fee</span><span class="hint">shaded = faster than the slower venue publishes: not resolvable from these quotes</span></div>
       <canvas id="clocks" width="760" height="214"></canvas>
     </div>
   </section>
 
   <section class="right">
     <div class="panel knob">
-      <div class="ptitle"><span>Latency budget · the knob</span><span class="hint">one-way δ; feed = order = δ (as in the frontier sweep)</span></div>
+      <div class="ptitle"><span>Latency budget · the knob</span><span class="hint">assumes feed = order latency = δ (order latency is not measured)</span></div>
       <div class="sliderrow">
-        <input id="delta" type="range" min="0" max="17" step="1" value="6">
+        <input id="delta" type="range" min="0" max="17" step="1" value="6" aria-label="one-way latency">
         <div id="deltaRead" class="read"></div>
       </div>
       <div id="presets" class="chips"></div>
@@ -49,42 +58,48 @@
       </div>
       <div id="simnote" class="note"></div>
     </div>
+    <div class="panel bigcmp" id="bigcmp"></div>
     <div class="panel counters">
       <div class="ptitle"><span>Simulated execution surplus · same opportunities, three policies</span><span id="liveok" class="hint"></span></div>
       <table id="ctab">
-        <thead><tr><th>policy</th><th>this 15-min window</th><th>trades · both legs</th><th>full held-out day</th></tr></thead>
+        <thead><tr><th>policy</th><th>this 15-min window</th><th>trades · both legs</th><th>full held-out day, this setup</th></tr></thead>
         <tbody></tbody>
       </table>
       <div id="levnote" class="note"></div>
     </div>
     <div class="panel frontier">
-      <div class="ptitle"><span>Frontier · full held-out day (5 legs), surplus vs end-to-end latency L</span><span class="hint">asinh scale</span></div>
+      <div class="ptitle"><span>Frontier · full held-out day (5 walk-forward legs), surplus vs end-to-end latency L</span><span class="hint">asinh scale</span></div>
       <canvas id="front" width="560" height="250"></canvas>
       <div id="frontnote" class="note"></div>
     </div>
   </section>
 </main>
 
-<section class="panel race">
+<div class="racewrap" id="raceWrap">
+<section class="panel race" id="racePanel">
   <div class="ptitle"><span>RACE THE MACHINE · your reaction time goes into the committed simulator</span><span id="raceStatus" class="hint"></span></div>
-  <div class="racegrid">
-    <div>
-      <div id="raceRule" class="rule"></div>
-      <button id="raceBtn" class="big">Start 5 trials</button>
-      <table id="trials"><thead><tr><th>#</th><th>flashed mispricing</th><th>your RT</th><th>your order (δ + RT + δ)</th><th>machine (δ + p50 + δ)</th></tr></thead><tbody></tbody></table>
-    </div>
-    <div>
-      <table id="two"><thead><tr><th></th><th>naive<br><small>act on everything seen</small></th><th>tuned threshold<br><small>selector, 09-01 grid</small></th></tr></thead><tbody></tbody></table>
-      <div id="raceSummary" class="note"></div>
-    </div>
+  <div id="raceRule" class="rule"></div>
+  <div class="racectl">
+    <button id="raceBtn" class="big">Start 5 trials</button>
+    <button id="raceStop" class="ghost" disabled>Stop now · score completed trials</button>
+    <span id="raceClock" class="raceclock"></span>
   </div>
+  <div id="raceSetup" class="setup"></div>
+  <table id="trials"><thead><tr><th>#</th><th>flashed mispricing (drawn at random)</th><th>your RT</th><th>your order<br><small>δ + RT + δ</small></th><th>machine<br><small>δ + decision + δ</small></th></tr></thead><tbody></tbody></table>
 </section>
+<section class="panel raceres" id="raceResPanel">
+  <div class="ptitle"><span>Whole-window counterfactual at your median RT</span><span class="hint">all window opportunities at 1 bp/leg, not the sum of your trials</span></div>
+  <table id="two"><thead><tr><th></th><th>naive<br><small>act on everything seen</small></th><th>tuned threshold<br><small>selector, fitted on 09-01</small></th></tr></thead><tbody></tbody></table>
+  <div id="raceSummary" class="note">Run a race: the 2×2 appears here.</div>
+</section>
+</div>
 
-<section class="panel evidence">
+<section class="panel evidence" id="evidencePanel">
   <div class="ptitle"><span>What the committed evidence says (not this window)</span><span class="hint">every figure is read from eval/results/*.json at build time</span></div>
   <div id="cards" class="cards"></div>
 </section>
 <footer id="foot"></footer>
+</div>
 
 <script src="assets/data.js"></script>
 <script src="app.js"></script>
