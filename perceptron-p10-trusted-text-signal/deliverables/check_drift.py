@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from deliverables.render import PH, ROOT, render_text, targets  # noqa: E402
 
 WHITELIST = {"90%", "5%", "50%", "95%", "20%", "40%", "0.5%", "1%", "100%"}  # design constants: target coverage, quantile levels, trim fraction, label-flip rates
-REPORTS_V1 = ["baseline_v1", "text_minilm_v1"]
+REPORTS_V1 = ["baseline_v1", "text_minilm_v1", "baseline_v2", "text_minilm_v2"]
 
 
 def main() -> int:

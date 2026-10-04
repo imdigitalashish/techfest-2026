@@ -44,8 +44,9 @@ def get(stem: str, path: str):
 
 
 def derived() -> dict:
-    """Derived numbers for the abstract. Headline StockNet run = text_minilm_v1 (the scorer the approach names)."""
-    b = result("text_minilm_v1")
+    """Derived numbers for the abstract. Headline StockNet run = text_minilm_v2 (the scorer the approach names; v2 = after
+    the cross-model review fixes; v1 was independently reproduced, v1 vs v2 differences in eval/results/v1_vs_v2_diff.json)."""
+    b = result("text_minilm_v2")
     fz = b["ablation"]["fusion"]
     cr = b["spike"]["cr_aci"]
     split_p = fz["split"]["kupiec_p"]
@@ -59,6 +60,10 @@ def derived() -> dict:
         "worst_variant_cert_cov": b["attack"]["oracle"]["worst3"][0]["certified_coverage"],
         "djia_decision": t["primary"]["decision"],
         "djia_rel_improvement_pct": 100 * t["primary"]["relative_improvement"],
+        "beyond10_plain": b["attack"]["beyond_budget"][-1]["vanilla_coverage"],
+        "beyond10_cert": b["attack"]["beyond_budget"][-1]["certified_k3_coverage"],
+        "posctl_detect_pct": 100 * result("exploratory_djia_v2")["C_positive_control"]["noise_1.0"]["relative_improvement"],
+        "posctl_miss_pct": 100 * result("exploratory_djia_v2")["C_positive_control"]["noise_2.0"]["relative_improvement"],
     }
 
 

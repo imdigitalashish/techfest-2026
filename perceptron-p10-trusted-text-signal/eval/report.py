@@ -64,7 +64,9 @@ if not o.get("skipped"):
             L.append(f"| worst fixed variant #{i}: sents {w['sents']}, trusts {w['trusts']} | CQR / certified | "
                      f"{pc(w['vanilla_coverage'])} / {pc(w['certified_coverage'])} | {f(w['vanilla_width'])} / {f(w['certified_width'])} | "
                      f"{'yes' if w['floor_holds'] else 'NO'} |")
-        L += ["", f"**Guaranteed floor (fixed offset, real arithmetic plus a derived round-off margin):** for every attack within the budget, "
+        margin = ("real arithmetic plus a derived round-off margin" if "beyond_budget" in r["attack"]
+                  else "real arithmetic; this v1 run used a fixed 1e-6 margin, superseded in v2 by a derived round-off margin (review B2)")
+        L += ["", f"**Guaranteed floor (fixed offset, {margin}):** for every attack within the budget, "
               f"the certified symmetric-CQR interval covers every row that the clean symmetric-CQR interval covers, so certified coverage under "
               f"attack ≥ {pc(o['certified_guaranteed_floor'])} on this test set (retrospective, not a future coverage probability). "
               f"The {o['grid_size']}-variant oracle against plain CQR is a finite score-space search, not a worst-case bound."]

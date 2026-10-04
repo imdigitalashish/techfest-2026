@@ -1,0 +1,120 @@
+{
+  "baseline_v1_vs_baseline_v2": {
+    "shared_numeric_leaves": 1122,
+    "identical": 955,
+    "max_abs_diff": 0.05086404528326849,
+    "top_diffs": [
+      {
+        "path": "spike.clean_k5.width[tweets=none]",
+        "v1": 4.827750650356266,
+        "v2": 4.776886605072997
+      },
+      {
+        "path": "spike.clean_k3.width[tweets=none]",
+        "v1": 4.827750650356266,
+        "v2": 4.776886605072997
+      },
+      {
+        "path": "spike.clean_k2.width[tweets=none]",
+        "v1": 4.827750650356266,
+        "v2": 4.776886605072997
+      },
+      {
+        "path": "spike.clean_k1.width[tweets=none]",
+        "v1": 4.827750650356266,
+        "v2": 4.776886605072997
+      },
+      {
+        "path": "spike.cr_aci.cr_aci_pump.kupiec_p",
+        "v1": 0.10505584169704396,
+        "v2": 0.14251435715668256
+      },
+      {
+        "path": "spike.clean_k5.width[vol=mid]",
+        "v1": 4.110728810621419,
+        "v2": 4.078862611218836
+      },
+      {
+        "path": "spike.clean_k3.width[vol=mid]",
+        "v1": 4.087206483664794,
+        "v2": 4.055342347814379
+      },
+      {
+        "path": "spike.clean_k2.width[vol=mid]",
+        "v1": 4.065533652098737,
+        "v2": 4.033673643352657
+      }
+    ],
+    "new_leaves_in_v2": [
+      "ablation.fusion",
+      "ablation.price_only",
+      "ablation.text_only",
+      "attack.beyond_budget",
+      "attack.pump",
+      "spike.clean_k1",
+      "spike.clean_k2",
+      "spike.clean_k3",
+      "spike.clean_k5",
+      "spike.cr_aci"
+    ]
+  },
+  "text_minilm_v1_vs_text_minilm_v2": {
+    "shared_numeric_leaves": 1120,
+    "identical": 961,
+    "max_abs_diff": 0.02169994766167141,
+    "top_diffs": [
+      {
+        "path": "spike.cr_aci.cr_aci_pump.kupiec_p",
+        "v1": 0.24713071822582852,
+        "v2": 0.26883066588749993
+      },
+      {
+        "path": "spike.clean_k5.width[tweets=none]",
+        "v1": 4.828132183487699,
+        "v2": 4.809191983496705
+      },
+      {
+        "path": "spike.clean_k3.width[tweets=none]",
+        "v1": 4.828132183487699,
+        "v2": 4.809191983496705
+      },
+      {
+        "path": "spike.clean_k2.width[tweets=none]",
+        "v1": 4.828132183487699,
+        "v2": 4.809191983496705
+      },
+      {
+        "path": "spike.clean_k1.width[tweets=none]",
+        "v1": 4.828132183487699,
+        "v2": 4.809191983496705
+      },
+      {
+        "path": "spike.cr_aci.cr_aci_clean.width[tweets=1-4]",
+        "v1": 5.326727413601669,
+        "v2": 5.341798555733971
+      },
+      {
+        "path": "spike.cr_aci.cr_aci_clean.width[tweets=5+]",
+        "v1": 5.597241416318138,
+        "v2": 5.612207387178859
+      },
+      {
+        "path": "spike.clean_k5.width[vol=low]",
+        "v1": 3.6633662134026053,
+        "v2": 3.650678099972234
+      }
+    ],
+    "new_leaves_in_v2": [
+      "ablation.fusion",
+      "ablation.price_only",
+      "ablation.text_only",
+      "attack.beyond_budget",
+      "attack.pump",
+      "spike.clean_k1",
+      "spike.clean_k2",
+      "spike.clean_k3",
+      "spike.clean_k5",
+      "spike.cr_aci"
+    ]
+  }
+}

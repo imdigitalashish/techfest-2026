@@ -50,9 +50,11 @@ Pump: 3 posts with the template's sentiment from the deployed scorer (0.953) and
 | worst fixed variant #2: sents [1.0, 1.0], trusts [1.0, 1.0] | CQR / certified | 85.2% / 89.7% | 4.522 / 5.206 | yes |
 | worst fixed variant #3: sents [1.0, -1.0], trusts [1.0, 1.0] | CQR / certified | 85.2% / 91.0% | 4.543 / 5.465 | yes |
 
-**Guaranteed floor:** for every attack within the budget, the certified interval covers every row that the clean CQR interval covers, so certified coverage under attack ≥ 86.5% (the clean CQR coverage). The 53-variant oracle against plain CQR is a search, not a worst-case bound.
+**Guaranteed floor (fixed offset, real arithmetic; this v1 run used a fixed 1e-6 margin, superseded in v2 by a derived round-off margin (review B2)):** for every attack within the budget, the certified symmetric-CQR interval covers every row that the clean symmetric-CQR interval covers, so certified coverage under attack ≥ 86.5% on this test set (retrospective, not a future coverage probability). The 53-variant oracle against plain CQR is a finite score-space search, not a worst-case bound.
 
 ## CR-ACI (certified box + our ACI loop, γ = 0.01)
+
+Per-row containment holds only at a shared offset (the fixed-offset table above). CR-ACI's clean and attacked runs adapt their offsets separately and need not be nested (counterexample in `tests/test_review_fixes.py`); ACI's guarantee is long-run *mean daily* miscoverage, with worst-case bound (max(α, 1−α) + γ)/(γT) — weak at this horizon.
 
 | Run | Coverage | Mean daily cov. [90% CI] | Mean width | Cov. on attacked days | ACI α_t range | days α_t ≤ 0 / ≥ 1 |
 |---|---|---|---|---|---|---|
@@ -77,4 +79,5 @@ Burst runs attack only three pre-specified 10-day windows (test days 20–29, 80
 - One seed and one fixed 87-stock universe (StockNet; survivorship). VADER scorer unless stated.
 - Adjusted closes are back-adjusted for dividends and splits; we use only return ratios, so levels do not leak, but volume is not split-adjusted.
 - The certificate assumes clean calibration data and covers injection of up to k documents; edits of real documents and price manipulation are out of scope.
+- Empty intervals: 0.0% of fusion ACI rows (empty sets count as misses; width/Winkler exclude them).
 - This test period has been looked at several times during development; the untouched-data text-utility test is `eval/results/text_utility_djia_v1.json` (pre-registered).
