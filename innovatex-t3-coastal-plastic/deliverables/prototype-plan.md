@@ -67,48 +67,62 @@ T2 and T3 feed the twin's ratchet sensitivity, replacing ASSUMPTION ranges with 
 ## 4. Bill of materials
 All prices must come from a product page opened on a stated date. They are copied from [`../research/components/sensing-edge-bom.md`](../research/components/sensing-edge-bom.md) once that file lands. Until then, prices are **⟨FILL⟩** — never estimated here.
 
-### 4A. Edge node (pilot field design; also used over the flume)
-| # | Item | Purpose | Qty | Unit price (INR) | Source (URL, date) |
-|---|---|---|---|---|---|
-| 1 | Raspberry Pi 5 (4 GB or 8 GB) | edge compute | 1 | ⟨FILL⟩ | ⟨FILL⟩ |
-| 2 | Raspberry Pi AI HAT+ (Hailo-8L) **or** Raspberry Pi AI Camera (IMX500) | on-device detector | 1 | ⟨FILL⟩ | ⟨FILL⟩ |
-| 3 | Camera Module 3 (Wide / NoIR) | pocket view, IR at night | 1 | ⟨FILL⟩ | ⟨FILL⟩ |
-| 4 | Waterproof ultrasonic (JSN-SR04T / A02YYUW) or ToF LiDAR (TF-Luna) | pocket level / water level | 1–2 | ⟨FILL⟩ | ⟨FILL⟩ |
-| 5 | Tipping-bucket rain gauge | local rain | 1 | ⟨FILL⟩ | ⟨FILL⟩ |
-| 6 | 4G Cat-1 modem (e.g. SIMCom A7670 / SIM7600) + IoT SIM | telemetry | 1 | ⟨FILL⟩ | ⟨FILL⟩ |
-| 7 | Solar panel (sized below) + MPPT controller | power | 1 | ⟨FILL⟩ | ⟨FILL⟩ |
-| 8 | 12 V LiFePO4 battery (sized below) | ≥3 days of autonomy | 1 | ⟨FILL⟩ | ⟨FILL⟩ |
-| 9 | IP67 enclosure, cable glands, SS316 pole clamps | corrosion and weather | 1 set | ⟨FILL⟩ | ⟨FILL⟩ |
-| 10 | Tilt/tamper switch, GPS module | theft and tamper flags | 1 | ⟨FILL⟩ | ⟨FILL⟩ |
-| | **Subtotal A** | | | ⟨FILL⟩ | |
+_Copied verbatim from [`../research/components/sensing-edge-bom.md`](../research/components/sensing-edge-bom.md) (every price from an Indian retailer product page opened 2026-10-04; GST inclusion UNVERIFIED). Flume structure (channel, pumps, valves, boom materials, test items) is not yet priced — **⟨FILL⟩** before purchase._
 
-### 4B. Flume demonstrator
-| # | Item | Qty | Unit price (INR) | Source (URL, date) |
-|---|---|---|---|---|
-| 1 | Acrylic sheet or uPVC gutter sections + end caps | ⟨FILL⟩ | ⟨FILL⟩ | ⟨FILL⟩ |
-| 2 | Submersible pumps (12 V DC or mains) ×2, or 1 + valve manifold | 2 | ⟨FILL⟩ | ⟨FILL⟩ |
-| 3 | Ball valves, hose, fittings | 1 set | ⟨FILL⟩ | ⟨FILL⟩ |
-| 4 | HDPE / PVC pipe for boom floats; nylon or HDPE netting for the skirt | 1 set | ⟨FILL⟩ | ⟨FILL⟩ |
-| 5 | HDPE sheet / rubber for flaps; SS316 pins, springs, counterweights | 1 set | ⟨FILL⟩ | ⟨FILL⟩ |
-| 6 | Two ultrasonic level sensors + microcontroller (ESP32) for head difference | 1 set | ⟨FILL⟩ | ⟨FILL⟩ |
-| 7 | Kitchen / hanging scale (0.1 g–5 kg) | 1 | ⟨FILL⟩ | ⟨FILL⟩ |
-| | **Subtotal B** | | ⟨FILL⟩ | |
+#### 4A. BOM A — pilot field node (one nullah outfall, solar profile P1)
+| Function | Item (as listed by retailer) | Qty | Unit ₹ | Line ₹ | Retailer page (opened 2026-10-04) |
+|---|---|---:|---:|---:|---|
+| Compute | Raspberry Pi 5, 8GB variant (in stock; 4GB ₹16,199.99 out of stock) | 1 | 21,199.99 | 21,199.99 | https://thinkrobotics.com/products/raspberry-pi-5 |
+| AI accelerator | Official Raspberry Pi AI HAT+ 13 TOPS (Hailo-8L) | 1 | 6,854.00 | 6,854.00 | https://quartzcomponents.com/products/official-raspberry-pi-ai-hat-13-tops |
+| Camera | Raspberry Pi Camera Module 3 | 1 | 3,245.00 | 3,245.00 | https://robocraze.com/products/raspberry-pi-camera-module-3 |
+| Backhaul (images + telemetry) | Waveshare SIM7600E-H 4G HAT for Raspberry Pi, LTE Cat-4, GNSS | 1 | 9,149.99 | 9,149.99 | https://thinkrobotics.com/products/sim7600e-h-4g-hat-for-raspberry-pi-lte-cat-4-4g-3g-2g-gnss |
+| Water/boom-fill level | DFRobot A02YYUW waterproof ultrasonic distance sensor, 3–450 cm (retailer title) | 1 | 2,259.00 | 2,259.00 | https://robocraze.com/products/dfrobot-a02yyuw-waterproof-ultrasonic-distance-sensor |
+| Solar | Loom Solar Mono PERC half-cut 55 Wp 12 V panel (x2 = 110 Wp for profile P1) | 2 | 2,200.00 | 4,400.00 | https://www.loomsolar.com/products/loom-solar-panel-55-watt-mono-crystalline |
+| Storage battery | CAML 12.8 V 100 Ah (1.28 kWh) LiFePO4 — smallest 12.8 V LiFePO4 found on an opened Indian page; ~5.3 days of P1 autonomy at 80% DoD (1,280 × 0.8 / 192) | 1 | 34,500.00 | 34,500.00 | https://www.loomsolar.com/products/caml-10012-low-voltage-lithium-battery |
+| Charge controller | 20A Digital PWM Solar Controller with LCD + USB (LiFePO4 profile support UNVERIFIED) | 1 | 339.00 | 339.00 | https://robocraze.com/products/20a-digital-pwm-solar-controller-with-lcd-and-usb-output-port |
+| 12 V → 5 V | SmartElex TPS5430 buck module 5 V 3 A (below the official 5 V/5 A, 27 W PSU rating — bench-test; upgrade if brown-outs) | 1 | 335.00 | 335.00 | https://robocraze.com/products/smartelex-tps5430-buck-module-5v-3a-dc-dc-converter |
+| **Subtotal (priced items)** | | | | **82,281.98** | |
+
+Not priced from an opened page (**ESTIMATE**, excluded from subtotal): IP65/IP66 enclosure big enough for Pi 5 + HAT + 4G HAT (the only IP65 box found was 90×90×60 mm, ₹458 — too small: https://quartzcomponents.com/products/plastic-enclosure-90x90x60-mm-for-adapters-led-drivers-general-purpose-housing); microSD/SSD; GI pole + clamps; cable glands; surge/lightning protection; IR illuminator for night; installation labour; SIM data plan.
+Cost levers: profile P2 (duty-cycled) needs one 55 Wp panel and a ~300 Wh pack instead of 1.28 kWh — the battery is ~50% of BOM A; a 4S LiFePO4 pack with a DALY 4S 12 V 40 A BMS (₹1,125, https://quartzcomponents.com/products/daly-lifepo4-4s-12v-40a-waterproof-battery-management-system-bms-protection-board) is the cheaper build-your-own route (cells not priced).
+
+#### 4B. BOM B — student flume prototype (bench, mains-powered)
+| Function | Item (as listed by retailer) | Qty | Unit ₹ | Line ₹ | Retailer page (opened 2026-10-04) |
+|---|---|---:|---:|---:|---|
+| Compute | Raspberry Pi 5, 8GB | 1 | 21,199.99 | 21,199.99 | https://thinkrobotics.com/products/raspberry-pi-5 |
+| AI accelerator | Official Raspberry Pi AI HAT+ 13 TOPS (same stack as the field node, so models transfer) | 1 | 6,854.00 | 6,854.00 | https://quartzcomponents.com/products/official-raspberry-pi-ai-hat-13-tops |
+| Camera | Raspberry Pi Camera Module 3 | 1 | 3,245.00 | 3,245.00 | https://robocraze.com/products/raspberry-pi-camera-module-3 |
+| Power | Official Raspberry Pi 5 27W USB-C PD power supply | 1 | 1,249.00 | 1,249.00 | https://robocraze.com/products/raspberry-pi-5-27w-usb-c-power-supply-black-colour |
+| Level in flume | Waterproof ultrasonic distance transducer (JSN-SR04T class) | 1 | 295.00 | 295.00 | https://quartzcomponents.com/products/waterproof-ultrasonic-distance-transducer-sensor |
+| Sensor/actuator MCU | ESP32 38-pin WiFi + Bluetooth NodeMCU dev board (pump/gate control, level logging) | 1 | 425.00 | 425.00 | https://robocraze.com/products/esp32-development-board |
+| LPWAN demo link | SX1278 LoRa module Ra-02 433 MHz (pair; note India's LoRaWAN band is 865–867 MHz — use for bench demo only) | 2 | 345.00 | 690.00 | https://robocraze.com/products/sx1278-lora-module-ra-02-433mhz-wireless-spread-spectrum-transmission |
+| **Subtotal (priced items)** | | | | **33,957.99** | |
+
+Not priced (**ESTIMATE**, excluded): acrylic/PVC flume channel + submersible pump + valve; mock boom (PVC pipe + mesh skirt); tide simulator (second pump on a timer via the ESP32); plastic test items (real bags/sachets/bottles).
+Cheaper variant: drop the AI HAT+ and use the Raspberry Pi AI Camera (₹8,339) for on-sensor inference → saves ₹6,854 + ₹3,245 − ₹8,339 = ₹1,760, at the cost of a smaller model.
 
 ### 4C. Software and cloud
 Open-source stack (Python, ultralytics, Leaflet). Data comes from free APIs (Open-Meteo; tide source per [`../research/components/twin.md`](../research/components/twin.md)). Hosting is a static site plus hourly batch jobs; an Azure student/VS subscription is enough for the prototype. Cost per site at scale: ⟨FILL⟩.
 
 ## 5. Power budget and solar sizing (edge node)
-| Load | Power (W) | Duty cycle | Wh/day |
-|---|---|---|---|
-| Edge board + NPU (inference every 1–5 min, sleep in between) | ⟨FILL from datasheets⟩ | ⟨FILL⟩ | ⟨FILL⟩ |
-| Camera | ⟨FILL⟩ | ⟨FILL⟩ | ⟨FILL⟩ |
-| 4G modem (bursts every 15 min) | ⟨FILL⟩ | ⟨FILL⟩ | ⟨FILL⟩ |
-| Sensors | ⟨FILL⟩ | ⟨FILL⟩ | ⟨FILL⟩ |
-| **Total** | | | ⟨FILL⟩ |
+NASA POWER climatology for Mumbai (19.07 N, 72.85 E), all-sky surface shortwave, kWh/m²/day — query and caveats in [`sensing-edge-bom.md`](../research/components/sensing-edge-bom.md) §1:
 
-- **Panel sizing:** panel W = daily Wh ÷ (July peak-sun-hours × system efficiency).
-- **Battery sizing:** battery Wh = daily Wh × 3 days ÷ usable depth of discharge.
-- **Inputs:** July all-sky insolation for Mumbai from NASA POWER (query recorded in the BOM file) ⟨FILL⟩. July is the design month because monsoon cloud is worst then.
+| Jan | Feb | Mar | Apr | May | Jun | Jul | Aug | Sep | Oct | Nov | Dec | Annual |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 4.8833 | 5.7439 | 6.5887 | 7.0786 | 7.0942 | 5.0006 | **3.7920** | 4.0363 | 4.7818 | 5.2109 | 4.8430 | 4.5336 | 5.2942 |
+
+- Design month = **July (3.79 kWh/m²/day ≈ 3.79 peak-sun-hours)**, i.e. 53% of the May peak — and July is exactly when nullahs carry the most plastic. Size for July, not the annual mean.
+
+July (≈3.79 peak-sun-hours, about half of May) is the design month, and it is also the month of peak plastic flux.
+
+### Sizing (ESTIMATE; loads are ASSUMPTIONS until bench-measured) (ESTIMATE — reproducible)
+`P_panel_W = E_load_Wh_per_day / (PSH_July × η_system)`, `C_batt_Wh = E_load_Wh_per_day × autonomy_days / DoD`, with η_system = 0.65 (PWM/MPPT, temperature, soiling, battery round-trip — **ASSUMPTION**), DoD = 0.8 for LiFePO4 (**ASSUMPTION**), autonomy = 3 days (**ASSUMPTION** for monsoon).
+
+| Profile | Avg load (ASSUMPTION) | E_load Wh/day | Panel W (July) | Pick | Battery Wh (3 days) | Pick |
+|---|---:|---:|---:|---|---:|---|
+| P1 — Pi 5 + AI HAT+ + camera + 4G, inference 24 h | 8 W | 192 | 192/(3.79×0.65) = **78 W** | 100 W | 192×3/0.8 = **720 Wh** | 12.8 V 60 Ah LiFePO4 (768 Wh) |
+| P2 — duty-cycled: 2 min of video per 10 min in daylight + event-triggered; modem sleeps | 3 W | 72 | 72/(3.79×0.65) = **29 W** | 40 W | 72×3/0.8 = **270 Wh** | 12.8 V 24 Ah (307 Wh) |
+| P3 — Raspberry Pi AI Camera (on-sensor inference) + Pi Zero 2 W class host + NB-IoT/LoRa telemetry | 1.5 W | 36 | 36/(3.79×0.65) = **15 W** | 20 W | 36×3/0.8 = **135 Wh** | 12.8 V 12 Ah (154 Wh) |
 
 ## 6. Build schedule (around the 10 Oct zonal and the 19–25 Nov exams)
 | Window | Work | Owner |
@@ -154,5 +168,5 @@ Open-source stack (Python, ultralytics, Leaflet). Data comes from free APIs (Ope
 
 ## 10. Needs from the user
 - **Team:** a teammate with fabrication skills for the flume (and ideally the edge node).
-- **Purchases:** parts per the BOM once priced (⟨FILL⟩ total).
+- **Purchases:** priced electronics are ₹82,282 for the field node (BOM A) and ₹33,958 for the flume electronics (BOM B), plus flume structure (⟨FILL⟩). Approve before buying.
 - **Before the zonal (optional):** a ~2-hour tabletop reversal test before 10 Oct.

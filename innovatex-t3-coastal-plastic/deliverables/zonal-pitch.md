@@ -1,6 +1,6 @@
 # Zonal pitch — InnovateX Theme 3 (Delhi zonal, 10 Oct 2026, 10 minutes)
 
-> Draft v1 (4 Oct 2026, 06:40 IST) by the project lead. Every number carries a source key; the source list is at the end and in [`../research/`](../research/).
+> Draft v1.1 (4 Oct 2026, 07:00 IST) by the project lead. Every number carries a source key; the source list is at the end and in [`../research/`](../research/).
 > - **[V]** = lead not yet verified at a primary source. Verify it or cut it before the pitch.
 > - **SIMULATED** = output of our digital twin, not field data.
 > - **⟨FILL⟩** = to be filled from a committed run or the sourced BOM. Never invent it.
@@ -38,13 +38,14 @@ Two Interceptors will soon guard two of Mumbai's creeks. NullahNet makes the lon
 |---|---|---|
 | The Ocean Cleanup Interceptors at Malad and Trombay creeks (MCGM permits, MPCB MoU, 2026) [S1][S2] | Big solar barriers at two creek mouths; 61–92 t/yr expected from the first systems [S1] | ≈1.2–1.8% of 5,000 t/yr (our arithmetic). The other outfalls are untouched. |
 | Plastic Fischer TrashBooms (on-ground partner) [S2][S7] | Low-tech booms; 3.2 million kg recovered with 71 booms across 8 sites (India + Indonesia); per-kg third-party verification [S7] | Manual chain of custody; no forecasting or tide logic; sees only what reaches the bank |
-| BMC trash booms and manual nullah clearance **[V]** | Floating barriers, contractor clearance | Schedule-driven. Overflow during storms **[V]**. Quantities hard to verify (2025 police probe into Mithi desilting quantities **[V]**). |
+| BMC steel-net trash booms with conveyors at nullah mouths [S11] | 9 booms since ~2022, 14 more planned (→ 23). About ₹1 crore each. About 1.5 t/day per boom in the dry season and 2.5–3 t/day in the monsoon (mixed garbage). O&M is ₹14.5 crore for 2 years across six western-suburb sites [S12] | Un-instrumented: no fill sensing, no forecast or tide logic, and pay is per contract, not per verified kg. Quantities are hard to verify — a 2025 police probe concerned Mithi desilting quantities **[V]**. |
 | Trash wheel (Baltimore), Bubble Barrier (Amsterdam), WasteShark | ~500 tons/yr at one site (operator claim) [S8]; ~1 t/yr at one canal [S9]; 160-litre basket [S10] | Costly fixed civil works, mains power, or tiny capacity. None built for twice-daily tidal reversal. |
 - **Speaker notes:** "We are not competing with The Ocean Cleanup. They take the two biggest mouths. We take the long tail, and our data layer could plug into their verification too."
 
 ## Slide 5 — The insight (3:30–4:30)
 1. **Plastic flux peaks exactly when barriers fail.**
    - Heavy rain → fast flow → items dragged under the skirt and pockets overflow; flood rules force booms open.
+   - Floating booms lose their catch above an escape velocity of about 0.35 m/s, whatever the skirt depth (oil-boom guidance) [S14]. Angling the boom keeps the normal velocity below that — something we test in the flume.
    - So barriers catch far less of the plastic that actually flows than their average performance suggests.
 2. **Tide matters differently by outfall.**
    - Behind tide-locked flap gates the water is still at high tide. That is the best capture and clearance window.
@@ -72,7 +73,7 @@ Two Interceptors will soon guard two of Mumbai's creeks. NullahNet makes the lon
 - **Tides:** each site is modelled as gated or open; the dispatch and ratchet logic depend on it.
 - **Monsoon:** the fail-open fuse has a measured head-rise envelope. We will never claim "cannot flood". The twin uses 2019–2025 real monsoons, including extreme bursts.
 - **Corrosion:** HDPE floats, SS316 hardware, IP67 enclosure mounted above the highest recorded water level.
-- **Power:** sized for July insolation in Mumbai **⟨FILL — NASA POWER figure from the BOM file⟩**.
+- **Power:** sized for July, the darkest month and also the month of peak plastic flux. Mumbai gets 3.79 kWh/m²/day of insolation in July vs 7.09 in May (NASA POWER climatology) [S13]. A duty-cycled node needs about a 40 W panel and a 300 Wh LiFePO4 battery for 3 days' autonomy (estimate) [S13].
 - **Connectivity:** 4G/NB-IoT with ≥7 days of store-and-forward.
 - **Maintenance:** lens wiper and health flags (dirty lens, low battery, tamper) appear on the dashboard.
 - **Speaker notes:** "Judges asked for robustness under tides, corrosion and monsoon overflow. Each of those is a design input, not an afterthought."
@@ -89,7 +90,10 @@ All four results come from runs committed to our repo, each with a reproduce com
 - **Speaker notes:** Say "simulated" out loud. Credibility matters more than the size of the number.
 
 ## Slide 9 — Cost and business model (7:45–8:45)
-- **Per outfall:** sensor node ≈ ⟨FILL ₹ from sourced BOM⟩; ratchet/fuse retrofit ≈ ⟨FILL⟩; cloud/dashboard ≈ ⟨FILL⟩ per site per year.
+- **Per outfall:**
+  - Field sensor node: ₹82,282 for electronics priced on Indian retailer pages (the battery is about half of that). The duty-cycled variant is cheaper; the enclosure is not yet priced [S13].
+  - Ratchet/fuse retrofit: ⟨FILL after the flume build⟩.
+  - **For comparison:** a BMC boom costs ≈ ₹1 crore [S11], and boom O&M runs ≈ ₹1.2 crore per site-year (derived from ₹14.5 crore / 6 sites / 2 years; assumes one boom per site) [S12]. Instrumenting a boom costs **under 1% of the boom's price**.
 - **Who pays:**
   - BMC storm-water-drain budgets already pay for booms and clearance **[V amounts]**. We make that spend verifiable and better timed.
   - Producers (PIBOs) under EPR could fund the low-value film stream **[V eligibility]**.
@@ -141,7 +145,9 @@ All four results come from runs committed to our repo, each with a reproduce com
     - Yes, and interception is the last line of defence.
     - Our outfall data ranks catchments by leakage, so the ward can target collection and enforcement. That is source reduction informed by data.
 11. **"What about corrosion, theft and biofouling?"** HDPE and SS316 hardware, an IP67 node on a pole above the high-water mark, tamper and tilt sensing, a lens wiper, and monthly maintenance included in the crew plan.
-12. **"How much does one site cost, and what is the payback?"** ⟨FILL from prototype-plan.md BOM and the unit-economics table⟩.
+12. **"How much does one site cost, and what is the payback?"**
+    - The node is ≈ ₹82k in priced parts [S13], against ≈ ₹1 crore per boom [S11] and ≈ ₹1.2 crore of O&M per site-year (derived) [S12].
+    - If dispatch and per-kg verification improve the value of O&M spend by even ~1%, one node pays for itself in under a year. That is our arithmetic and an ASSUMPTION about effect size; the twin's measured relative gain replaces it.
 13. **"Why will BMC adopt this?"**
     - It slots into existing boom and clearance contracts. It changes *when* crews go and *how* they are paid.
     - It needs no new civil works. The dashboard is built for a ward engineer.
@@ -160,3 +166,7 @@ All four results come from runs committed to our repo, each with a reproduce com
 - [S8] Mr. Trash Wheel (operator claim, 500 tons/yr) — see [companies.md](../research/companies.md)
 - [S9] DutchNews, 17 Sep 2024, citing a City of Amsterdam report on the Westerdok Bubble Barrier — see [companies.md](../research/companies.md)
 - [S10] RanMarine WasteShark+ product page — https://www.ranmarine.io/wasteshark/
+- [S11] Hindustan Times on BMC's nullah trash booms (9 installed, 14 planned, ≈ ₹1 crore each, t/day) — URL and quotes in [interception-hardware.md](../research/components/interception-hardware.md) and [landscape.md](../research/landscape.md)
+- [S12] Free Press Journal, 30 Jul 2026, on BMC's ₹14.5-crore two-year boom O&M contract (Virgo Specialties) — see [interception-hardware.md](../research/components/interception-hardware.md)
+- [S13] NASA POWER climatology API (Mumbai) and Indian retailer product pages, opened 2026-10-04 — see [sensing-edge-bom.md](../research/components/sensing-edge-bom.md)
+- [S14] ITOPF Technical Information Paper 3 (boom escape velocity ≈ 0.35 m/s) — see [interception-hardware.md](../research/components/interception-hardware.md)
