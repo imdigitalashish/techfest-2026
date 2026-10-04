@@ -6,17 +6,15 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (15:56 IST, 4 Oct)
-- **Mode:** batch of 5, sessions-only delegation, cross-model reviews (PLAYBOOK §0, §4, §10). Watch every 2 min.
+## Now (16:31 IST, 4 Oct)
+- **Mode:** batch of up to 5. The queue holds only APCTT (gated on the 10 Oct data), so 4 leads are active.
 - **Active:**
-  - P2: pre-registered confirmatory grid on its Azure VM (3 amendments, all before any test outcome); both reviews triaged.
-  - P8: no gap vs reasoning LLMs on real data (pre-registered); cascade confirmatory on prob_pack (Addendum B) next.
-  - India@71 T2: pre-registered coverage test passed (0.967 ≥ 0.85; conservative ±6 pp); allocation gain not shown.
-  - InnovateX T2: verified BOM (₹60,711 kit); templated package with check_docs.
-  - InnovateX T3: resumed 15:55 into P6's slot.
-- **Completed — awaiting your review (14):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6.
-- **Queue:** APCTT only, when the 10 Oct data lands.
-- **Azure running now:** P2's VM `p02-kv-1` and P8's pay-per-token OpenAI resource.
+  - P2: the pre-registered primary passed (RoD − StreamingLLM +0.396 [0.25, 0.54] at keep 0.25); non-inferiority vs full not shown; identity checks running on a dev seed; T2 replication registered (Amendment 4) before outcomes.
+  - P8: no gap vs reasoning LLMs on real data (pre-registered); the cascade halves LLM calls and cost on tutor-native items (H8, pre-registered).
+  - India@71 T2: coverage test passed (conservative); proposal v1.0 PDF; reviews in.
+  - InnovateX T3: final package v1, memo v2 vs T1; YOLO11n baseline on the GPU (granted 15:58).
+- **Completed — awaiting your review (15):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6 · InnovateX T2.
+- **Azure running now:** P2's VM `p02-kv-1` (D16ds_v5) and P8's pay-per-token OpenAI resource.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -51,6 +49,9 @@
   - C1's own call: **C1, narrowly** (within rubric noise). It flips to C2 if your team has an LCA person but no GIS/data person.
   - Optional for C1: route the BEE charger-API request via MHI/ICAT.
 - [ ] **EV C2:** access to the ISO 14040/14044 standards text (IIT Delhi library or BIS) for the LCA jury Q&A; an environmental/mechanical teammate; team name, Team ID, institution and contacts for the Round-1 header.
+- [ ] **InnovateX T2 DustLedger (✅ Completed, documented alternative):** its own memo recommends pitching **T1** at the Delhi zonal.
+  - It corrected itself on the record: the CAQM fine is ₹1–2 lakh, not ₹5 lakh; its forecast gain was an oracle (ML loses to persistence for PM2.5); and its self-calibration accuracy claim is withdrawn.
+  - Needed only if you choose T2: team fields, a pilot or co-location site by ~20 Oct, and approval for a controlled dust test.
 - [ ] **InnovateX T1 JalSakshi (✅ Completed — please review `innovatex-t1-groundwater/deliverables/`):**
   - register for the Delhi zonal by 9 Oct and fill in the team details;
   - a hardware teammate;
@@ -104,6 +105,13 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 16:31 IST — InnovateX T2 completed
+- **IX-T2 DONE (4ea3d82), verified on main:** check_docs 0 problems (5 docs, 25 fact rows); deck, Q&A, card and demo present.
+  - Reviews: astra 37 items (32 accepted + 4 partial), sol reproduced the headline numbers.
+  - Its memo recommends T1.
+  - Killed its leftover Playwright Chrome (PID 58128).
+- No resume: only APCTT is queued, and it's gated until 10 Oct.
+
 ### 2026-10-04 15:56 IST — P6 completed
 - **P6 DONE (378ac26), verified on main:** check_docs OK; 7 tests.
   - Reviews: astra 13 + sol 16 + astra 8, all accepted.
