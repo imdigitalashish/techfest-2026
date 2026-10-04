@@ -44,7 +44,7 @@ StockNet, 87 tickers, 119,641 tweets, look-ahead leaks 0; test 2015-07-01→2016
 | Evaluation rigor (15%) | Baselines (price-only, text-only, fusion × split CP / CQR / ACI); coverage, width, Winkler, Kupiec, Christoffersen; conditional coverage; attack budgets |
 | Team fit (10%) | Week-by-week plan around the 19–25 Nov exams; teammates' skills (needs user) |
 
-**Assumptions (overnight, no user input):** A1 team = Ashish + up to two teammates TBD. A2 skeleton dataset = StockNet (tweets + prices, 88 US stocks, 2014–2015, MIT licence; the benchmark used by published tweet-injection attacks); FNSPID news (KDD 2024) as the long-history set for regime shifts later. A3 target = next-day close-to-close log return per ticker; information set = documents timestamped before that day's close (America/New_York). A4 α = 0.1 primary (also 0.05, 0.2). A5 strictly time-ordered train → calibration → test splits.
+**Assumptions (overnight, no user input):** A1 team = Ashish + up to two teammates TBD. A2 skeleton dataset = StockNet (tweets + prices, 88 US stocks, 2014–2015, MIT licence; its StockNet model is a victim in the published tweet-concatenation attack, Xie et al. 2022); FNSPID news (KDD 2024) as the long-history set for regime shifts later. A3 target = next-day close-to-close log return per ticker; information set = documents timestamped before that day's close (America/New_York). A4 α = 0.1 primary (also 0.05, 0.2). A5 strictly time-ordered train → calibration → test splits.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -70,7 +70,7 @@ StockNet, 87 tickers, 119,641 tweets, look-ahead leaks 0; test 2015-07-01→2016
 - What companies ship: alternative-data and news-signal products from data vendors and quant funds (public material).
 
 ## Key decisions
-- 2026-10-04 — Skeleton dataset = StockNet (tweets + user metadata + prices; MIT; the benchmark attacked by Xie et al. 2022). FNSPID news for the finals (stream-filtered). Kaggle set not used (no credentials).
+- 2026-10-04 — Skeleton dataset = StockNet (tweets + user metadata + prices; MIT; its StockNet model is a victim in Xie et al. 2022 — that the attack used this exact dataset is UNVERIFIED). FNSPID news for the finals (stream-filtered). Kaggle set not used (no credentials).
 - 2026-10-04 — Target = next-day close-to-close log return (%); information cut-off 16:00 America/New_York; strictly time-ordered train 2014 / cal H1-2015 / test Jul-2015→Mar-2016.
 - 2026-10-04 — Text scorer tonight = VADER + finance lexicon (FinBERT weights >200 MB, deferred under lean mode); scorers must not be able to recall outcomes (look-ahead bias, arXiv:2512.23847).
 - 2026-10-04 — **Spike = CR-ACI** (certified manipulation-robust conformal + ACI); secondary track = text-driven width / regime-conditional conformal. [ADR 001](architecture/adr/001-spike.md).
@@ -95,7 +95,7 @@ StockNet, 87 tickers, 119,641 tweets, look-ahead leaks 0; test 2015-07-01→2016
 ## Selection memo
 _v1, 4 Oct 07:50 IST (final by 12 Oct). Scores 1–5 with evidence._
 - **Winnability: 4** — the crux (weak text + non-exchangeable returns + test-time manipulation) is precisely identified and already measured on real data; most teams will ship FinBERT + MAPIE split CP, which our own run shows under-covers (81.3%; 76.5% in high volatility). Same theme as P9, so compare those two memos directly.
-- **Innovation headroom: 4** — CR-ACI certifies coverage against a budget of k injected documents (oracle attack k = 3: plain CQR 84.4% vs certified 88.0%; CR-ACI 89.5–89.7% at +0.3% width). Prior-art searches found robust conformal only for ℓp/smoothing noise on single inputs (closest: Zargarbashi et al. ICML 2024; VRCP NeurIPS 2024); independent novelty review still pending.
+- **Innovation headroom: 4** — CR-ACI certifies coverage against a budget of k injected documents (oracle attack k = 3: plain CQR 84.4% vs certified 88.0%; CR-ACI 89.5–89.7% at +0.3% width). Prior-art searches found robust conformal only for bounded perturbations of single inputs or poisoned calibration data (closest: Zargarbashi et al. ICML 2024; VRCP NeurIPS 2024 for regression); independent novelty review still pending.
 - **Feasibility: 5** — the full pipeline already runs end-to-end on the M5 (data prep 35 s; full evaluation incl. oracle attack 10–31 min); data on disk; MAPIE/LightGBM only. Exam window needs only automated runs.
 - **Demo strength: 4** — live band per stock-day with an attack toggle and a k slider, plus "which posts could flip this forecast". Point forecasts are unimpressive (text adds ~no accuracy), so the demo must sell trust, not alpha.
 - **Fit with the user's strengths: 4** — systems + frontier models map to LLM/FinBERT scorers with look-ahead tests, streaming FNSPID, verification-style bounds; needs less quant-microstructure depth than P4–P6.
