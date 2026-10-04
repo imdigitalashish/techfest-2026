@@ -6,8 +6,8 @@ L_end_to_end = feed latency (venue → our process) + detector + decision + orde
   - detector + decision: measured on the M5 (eval/results/decision_timing.json);
   - order: NOT measurable without exchange accounts → assumed equal to the one-way feed latency (labelled).
 The value of a budget comes from the latency–P&L frontier (eval/results/baseline_0901_to_1001.json): for each fee
-level and policy, the largest one-way latency at which simulated P&L is still positive (break-even), by linear
-interpolation in log-latency between grid points.
+level and policy, the FIRST one-way latency at which simulated P&L turns non-positive (break-even), by linear
+interpolation in log-latency between grid points; '*' flags series that turn positive again later.
 Usage: .venv/bin/python -m eval.latency_budget
 """
 from __future__ import annotations
@@ -21,15 +21,18 @@ POLICIES = ["naive", "threshold_pair", "ev_kmpair", "lev"]
 
 
 def breakeven(rows: list[dict], tier: str, policy: str) -> str:
+    """First one-way latency on the grid at which simulated P&L turns <= 0 (log-linear interpolation).
+    A trailing '*' marks a non-monotone series (P&L turns positive again at a larger latency)."""
     pts = sorted((r["delta_ms"], r["pnl_usd"]) for r in rows if r["tier"] == tier and r["policy"] == policy)
     if not pts:
         return "n/a"
     if pts[0][1] <= 0:
         return f"< {pts[0][0]:g}"
-    for (d0, p0), (d1, p1) in zip(pts, pts[1:]):
+    for k, ((d0, p0), (d1, p1)) in enumerate(zip(pts, pts[1:])):
         if p1 <= 0 < p0:
             x = np.log(d0) + (np.log(d1) - np.log(d0)) * p0 / (p0 - p1)
-            return f"{np.exp(x):.1f}"
+            later_positive = any(p > 0 for _, p in pts[k + 2:])
+            return f"{np.exp(x):.1f}" + ("*" if later_positive else "")
     return f"> {pts[-1][0]:g}"
 
 
@@ -69,8 +72,9 @@ def main() -> None:
         L.append(f"| {k} | {feed[k]['feed_p50_us']/1e3:.2f} ms | {feed[k]['feed_p99_us']/1e3:.1f} ms | {'' if mac is None else f'{mac:.0f} ms'} |")
     L += ["", "Our compute is 3–4 orders of magnitude below the network terms: the budget is spent on distance, not on the model.", "",
           "## 2. What a budget buys — break-even one-way latency (ms) by fee level", "",
-          "Largest one-way latency δ (feed = order = δ, as in the frontier sweep) at which simulated P&L on the held-out day "
-          "2026-10-01 (9 legs) is still positive. Grid 0.5–100 ms; log-linear interpolation.", "",
+          "First one-way latency δ (feed = order = δ, as in the frontier sweep) at which simulated P&L on the held-out day "
+          "2026-10-01 (9 legs) turns non-positive. Grid 0.5–100 ms; log-linear interpolation; * = P&L turns positive again at a larger δ "
+          "(non-monotone, noisy with few trades).", "",
           "| fee per leg | naive | tuned per-pair threshold | EV (KM by pair) | LEV |", "|---|---|---|---|---|"]
     for t, v in out["breakeven_oneway_ms"].items():
         L.append(f"| {t[1:]} bp | " + " | ".join(v[p] for p in POLICIES) + " |")

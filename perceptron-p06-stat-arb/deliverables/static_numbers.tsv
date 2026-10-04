@@ -19,3 +19,4 @@
 60	60 s EWMA fair basis (components/detector/cross.py basis_tau_s); Coinbase Exchange base-tier taker fee 60 bps (research/notes/fees.md → https://help.coinbase.com/en/exchange/trading-and-funding/exchange-fees, fact-check PASS)
 95	95% confidence level
 2026	Perceptron 2026
+30	LEV target clipped at ±30 bp (components/decision/autoresearch/rules.py fit_gbm_reg clip=30)

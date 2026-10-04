@@ -24,7 +24,7 @@ def ms(x: float, nd: int = 1) -> str:
     return f"{x:.{nd}f}"
 
 
-def main() -> None:
+def build() -> dict[str, str]:
     base = json.load(open(R + "baseline_0901_to_1001.json"))
     wf = json.load(open(R + "falsification_walkforward_12d_prereg.json"))
     cs = json.load(open(R + "falsification_clockskew.json"))
@@ -109,11 +109,35 @@ def main() -> None:
     p05 = [r["feed_p05_us"] / 1e3 for r in live if r["leg"] in ("binance-futures:BTCUSDT", "coinbase:BTC-USD", "kraken:BTC/USD", "deribit:BTC-PERPETUAL")]
     h["mac_p05_min"], h["mac_p05_max"] = f"{min(p05):.0f}", f"{max(p05):.0f}"
 
+    # ---------------- decay: publication-time bounds on the pooled median (held-out day, 9 legs)
+    h["med_lo"], h["med_hi"] = ms(allp["median_lo_ms"]), ms(allp["median_hi_ms"])
+    h["wf_inspected"] = str(c["n_days"] - u["n_days"])
+    h["unseen_tci"] = ci(*u["t_ci95"])
+
+    # ---------------- Amendment 1 (stricter simulator) and exploratory attribution
+    sen = json.load(open(R + "sensitivity_amendment1.json"))
+    w = sen["worlds"]
+    for key, world in (("v1", "V1_strict"), ("v2", "V2_strict_mo1"), ("v3", "V3_strict_mo10"), ("v4", "V4_transfer")):
+        x = w[world]["registered"]["lev - threshold_pair"]
+        h[f"{key}_mean"], h[f"{key}_tci"], h[f"{key}_pos"] = usd(x["mean_usd_per_day"]), ci(*x["t_ci95"]), str(x["days_positive"])
+    h["sens_decision"] = ("the gain survives both stricter models" if sen["decision"] == "robust"
+                          else "the gain does not survive the stricter models, so the headline depends on optimistic fills or basis marking")
+    for key, comp in (("x_gbm", "lev - gbm_clf"), ("x_noL", "lev - lev_noL"), ("x_ridge", "lev - ridge")):
+        x = w["V0_frozen"]["exploratory"][comp]
+        h[f"{key}_mean"], h[f"{key}_tci"], h[f"{key}_pos"] = usd(x["mean_usd_per_day"]), ci(*x["t_ci95"]), str(x["days_positive"])
+    h["collide_lev"] = f"{sen['collisions']['V1_strict']['lev']:.0%}"
+
     cad = {r["leg"]: r for r in json.load(open(R + "update_cadence.json"))["legs"]}
     h["cad_bnf_ms"] = f"{cad['binance-futures_BTCUSDT']['median_gap_ms']:.0f}"
     h["cad_grid_ms"] = f"{cad['okex_BTC-USDT']['median_gap_ms']:.0f}"
     h["cad_cb_ms"] = f"{cad['coinbase_BTC-USD']['median_gap_ms']:.1f}"
-    h["_sources"] = "baseline_0901_to_1001 · falsification_walkforward_12d_prereg · falsification_clockskew · decay_report · latency_budget · decision_timing · live_latency · update_cadence"
+    h["_sources"] = ("baseline_0901_to_1001 · falsification_walkforward_12d_prereg · sensitivity_amendment1 · falsification_clockskew · "
+                     "decay_report · latency_budget · decision_timing · live_latency · update_cadence")
+    return h
+
+
+def main() -> None:
+    h = build()
     json.dump(h, open(R + "headline.json", "w"), indent=1, ensure_ascii=False)
     print(json.dumps(h, indent=1, ensure_ascii=False))
 

@@ -69,6 +69,42 @@ def ci_at(km: KaplanMeierFitter, t: float) -> tuple[float, float, float]:
     return float(sf.iloc[i, 0]), float(ci.iloc[i, 0]), float(ci.iloc[i, 1])
 
 
+def publication_bounds(opp: pl.DataFrame, ts_by_leg: dict[str, np.ndarray]) -> pl.DataFrame:
+    """Interval bounds on each episode's true lifetime implied by the venues' publication times.
+    True start ∈ (previous publication of the venue that opened it, t_start]; true end ∈ (previous publication of the venue
+    that closed it, t_end]. Hence T ∈ [max(0, prev_close − t_start), t_end − prev_open]. If both venues published at the same
+    instant, the earlier previous publication is used (wider, conservative). Censored episodes keep their observed time."""
+    t0 = opp["t_start_us"].to_numpy(); t1 = t0 + opp["duration_us"].to_numpy()
+    sell = opp["pair"].str.split(" > ").list.get(0).to_numpy(); buy = opp["pair"].str.split(" > ").list.get(1).to_numpy()
+    prev_open = np.full(t0.size, np.inf); prev_close = np.full(t0.size, np.inf)
+    for side in (sell, buy):
+        for leg in np.unique(side):
+            m = side == leg
+            ts = ts_by_leg[leg]
+            for t, prev in ((t0, prev_open), (t1, prev_close)):
+                i = np.searchsorted(ts, t[m], side="left")
+                hit = (i < ts.size) & (ts[np.clip(i, 0, ts.size - 1)] == t[m])
+                pv = np.where(i > 0, ts[np.clip(i - 1, 0, ts.size - 1)], t[m]).astype(float)
+                cur = prev[m]
+                prev[m] = np.where(hit, np.minimum(cur, pv), cur)
+    prev_open = np.where(np.isfinite(prev_open), prev_open, t0)
+    prev_close = np.where(np.isfinite(prev_close), prev_close, t1)
+    cens = opp["censored"].to_numpy()
+    lo = np.where(cens, t1 - t0, np.maximum(0.0, prev_close - t0))
+    hi = np.where(cens, t1 - t0, t1 - prev_open)
+    return opp.with_columns(pl.Series("T_lo_ms", (lo + 1) / 1000.0), pl.Series("T_hi_ms", (hi + 1) / 1000.0))
+
+
+def bounds_summary(g: pl.DataFrame) -> dict:
+    E = (~g["censored"]).to_numpy()
+    out = {}
+    for k in ("lo", "hi"):
+        km = KaplanMeierFitter().fit(g[f"T_{k}_ms"].to_numpy(), E)
+        out[f"median_{k}_ms"] = float(km.median_survival_time_)
+        out[f"S10_{k}"] = float(km.survival_function_at_times([10.0]).iloc[0])
+    return out
+
+
 def summarise(g: pl.DataFrame, label: str) -> dict:
     T = (g["duration_us"].to_numpy() + 1) / 1000.0
     E = (~g["censored"]).to_numpy()
@@ -81,6 +117,8 @@ def summarise(g: pl.DataFrame, label: str) -> dict:
     for t in TIMES:
         s, l, h = ci_at(km, t)
         row[f"S({t:g}ms)"] = [s, l, h]
+    if "T_lo_ms" in g.columns:
+        row.update(bounds_summary(g))
     return row, km
 
 
@@ -88,6 +126,8 @@ def part_a(date: str) -> tuple[list[dict], dict]:
     q = load(".data/tardis", date, LEGS9)
     legs = sorted(q["leg"].unique().to_list())
     opp = pair_group(add_features(detect(q, legs, "ts_exch_us", theta_bps=1.0)))
+    ts_by_leg = {l: np.unique(g["ts_exch_us"].to_numpy()) for (l,), g in q.group_by(["leg"])}
+    opp = publication_bounds(opp.with_columns((pl.col("sell_venue") + " > " + pl.col("buy_venue")).alias("pair")), ts_by_leg)
     del q
     rows, curves = [], {}
     r, km = summarise(opp, "all pairs")
@@ -118,6 +158,10 @@ def part_b(days: list[str]) -> list[dict]:
             pl.col("_p").list.get(1).str.split(":").list.first().is_in(list(PERP)).alias("_bp"))
         o = o.with_columns(pl.when(pl.col("_sp") & pl.col("_bp")).then(pl.lit("perp-perp"))
                            .when(pl.col("_sp") | pl.col("_bp")).then(pl.lit("spot-perp")).otherwise(pl.lit("spot-spot")).alias("instr_group"))
+        q = load(".data/tardis", d, LEGS9[:5])
+        ts_by_leg = {l: np.unique(g["ts_exch_us"].to_numpy()) for (l,), g in q.group_by(["leg"])}
+        del q
+        o = publication_bounds(o, ts_by_leg)
         r, _ = summarise(o, "all pairs")
         r["day"] = d
         for (grp,), g in o.group_by(["instr_group"], maintain_order=True):
@@ -135,7 +179,7 @@ def main() -> None:
     rows, curves = part_a(a.date)
     months = part_b(a.days)
     res = {"part_a_date": a.date, "part_a": rows, "part_b": months,
-           "commit": subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip(),
+           "commit": (os.environ.get("P6_COMMIT") or subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()),
            "command": "eval/run_guarded.sh .venv/bin/python -m eval.decay_report --days " + " ".join(a.days)}
     json.dump(res, open("eval/results/decay_report.json", "w"), indent=1)
 
@@ -148,18 +192,22 @@ def main() -> None:
          "**Resolution caveat** (`eval/results/update_cadence.md`): in these samples Binance spot and OKX quotes are published on a "
          "100 ms grid and Binance perpetual quotes every 26 ms, while Coinbase and Kraken update within milliseconds. A lifetime "
          "cannot be resolved below the cadence of the venues involved, so sub-26 ms decay is only measurable on Coinbase/Kraken/Deribit pairs.", "",
-         "| group / ordered pair (sell > buy) | n | median lifetime (ms) | 95% CI hour-block | 95% CI Greenwood | S(1 ms) | S(10 ms) | S(100 ms) |",
-         "|---|---|---|---|---|---|---|---|"]
+         "**Publication-time bounds:** each lifetime is only known to lie in [max(0, prev. publication of the closing venue − start), "
+         "end − prev. publication of the opening venue]; Kaplan–Meier on the two ends brackets the true curve (`median bounds`).", "",
+         "| group / ordered pair (sell > buy) | n | median lifetime (ms) | median bounds (ms) | 95% CI hour-block | 95% CI Greenwood | S(1 ms) | S(10 ms) | S(100 ms) |",
+         "|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
         s = [r[f"S({t:g}ms)"] for t in TIMES]
-        L.append(f"| {r['group']} | {r['n']:,} | {fmt(r['median_ms'])} | [{fmt(r['median_ci_hour_block'][0])}, {fmt(r['median_ci_hour_block'][1])}] | "
+        L.append(f"| {r['group']} | {r['n']:,} | {fmt(r['median_ms'])} | [{fmt(r.get('median_lo_ms', float('nan')))}, {fmt(r.get('median_hi_ms', float('nan')))}] | "
+                 f"[{fmt(r['median_ci_hour_block'][0])}, {fmt(r['median_ci_hour_block'][1])}] | "
                  f"[{fmt(r['median_ci_greenwood'][0])}, {fmt(r['median_ci_greenwood'][1])}] | "
                  + " | ".join(f"{v[0]:.3f} [{v[1]:.3f}, {v[2]:.3f}]" for v in s) + " |")
     if months:
         L += ["", "## Stability across months (5 walk-forward legs, first day of each month)", "",
-              "| day | episodes | median (ms) | 95% CI hour-block | perp-perp | spot-perp | spot-spot |", "|---|---|---|---|---|---|---|"]
+              "| day | episodes | median (ms) | median bounds (ms) | 95% CI hour-block | perp-perp | spot-perp | spot-spot |", "|---|---|---|---|---|---|---|---|"]
         for r in months:
-            L.append(f"| {r['day']} | {r['n']:,} | {fmt(r['median_ms'])} | [{fmt(r['median_ci_hour_block'][0])}, {fmt(r['median_ci_hour_block'][1])}] | "
+            L.append(f"| {r['day']} | {r['n']:,} | {fmt(r['median_ms'])} | [{fmt(r['median_lo_ms'])}, {fmt(r['median_hi_ms'])}] | "
+                     f"[{fmt(r['median_ci_hour_block'][0])}, {fmt(r['median_ci_hour_block'][1])}] | "
                      f"{fmt(r.get('median_ms[perp-perp]', float('nan')))} | {fmt(r.get('median_ms[spot-perp]', float('nan')))} | "
                      f"{fmt(r.get('median_ms[spot-spot]', float('nan')))} |")
         med = np.array([r["median_ms"] for r in months])

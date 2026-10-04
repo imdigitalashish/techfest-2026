@@ -5,7 +5,9 @@ day, every candidate is "executed" by the latency simulator at each latency in a
 legs at venue arrival times, partial fills, fees, unwind loss), and a gradient-boosted regressor
 maps (features, log L) → realised P&L in bps. The policy acts iff the predicted value at our
 actual latency (including the model's own compute time) is positive, and ranks by it.
-Survival probabilities enter only as features (residual-survival at L from the KM-by-pair model).
+NOTE: the evaluated LEV (this module and the walk-forward's rules.LEARN_X) uses market-state features only —
+edge, quote age, spreads, volatility, venue flags, size, pair, latency, fee. No survival-model output is a feature;
+residual-survival features are future work (ADR 001), not part of any reported result.
 """
 from __future__ import annotations
 
