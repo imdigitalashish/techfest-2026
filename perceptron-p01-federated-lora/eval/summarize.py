@@ -165,6 +165,7 @@ def scenario_section(tag: str, scen: str, runs: list[dict], canon: dict) -> list
         pw = paired(by, SPIKE, b, lambda r: r["final_worst_loss"])
         pu = paired(by, SPIKE, b, lambda r: micro(r["final_per_domain_loss"]))
         cm, cw, cu = ci([v for _, v in pm]), ci([v for _, v in pw]), ci([v for _, v in pu])
+        canon[f"{scen}.spike_vs_{b}.n"] = len(pm)
         for nm, c in (("macro", cm), ("worst", cw), ("micro", cu)):
             canon[f"{scen}.spike_vs_{b}.{nm}_mean"] = c[0]
             if c[1] is not None:

@@ -11,8 +11,8 @@ flowchart TB
   subgraph Local["On each device (C4 local trainer)"]
     direction TB
     M["Frozen base LLM<br/>SmolLM2-135M → Qwen2.5-0.5B / TinyLlama-1.1B"]
-    A["Shared anchor A (r_max × d)<br/>regenerated from a public seed, never sent"]
-    B["Trainable B[:, :r_k] only<br/>(rank fits the device's memory)"]
+    A["Shared anchor A (r_max × d)<br/>regenerated from a public seed<br/>(design target; the pilot Flower adapter still ships A)"]
+    B["Trainable B[:, :r_k] only<br/>(active columns and uplink ∝ r_k;<br/>RAM/throughput not yet measured)"]
     M --- A --- B
   end
   subgraph Server["Server (Flower ServerApp + custom strategy) — C6 AnchorLoRA aggregator"]
@@ -33,4 +33,4 @@ flowchart TB
   SIM["C2 device simulator: seeded offline rounds, deadline cut-offs, mid-run outage<br/>(identical schedule for every strategy → paired comparison)"] -.-> Devices
 ```
 
-**Reading the diagram.** Every device runs the full global adapter but trains only as many columns of B as its memory allows. A is identical everywhere (regenerated from a seed), so the server's sum of B-updates is exactly the sum of the devices' weight updates ΔW_k = ΔB_k·A. Steps ①–③ are classic federated-optimisation corrections; sharing A removes the factorisation error underneath them (they keep their own assumptions, which the ablations test). ⑤ makes "quiet domination" a number every round. The evaluation swaps the server box for the baselines. Implemented and run on 5 paired seeds: FedAvg over A and B (the starter), FFA-LoRA (ICLR 2024), FlexLoRA (arXiv 2402.11505) and HetLoRA-style zero-padding. Planned for the finals: FedEx-LoRA, PreLort and RoLoRA.
+**Reading the diagram.** Every device runs the full global adapter but trains only as many columns of B as its memory allows. A is identical everywhere (regenerated from a seed), so the server's sum of zero-padded B-updates exactly reproduces the corresponding weight-space sum. This is an identity for the directions we choose; it is not a guarantee of unbiased averaging or convergence. Steps ①–③ are classic federated-optimisation corrections; sharing A removes the factorisation error underneath them (they keep their own assumptions, which the ablations test). ⑤ makes "quiet domination" a number every round. The evaluation swaps the server box for the baselines. Implemented baselines include the starter, FFA-LoRA, FlexLoRA and HetLoRA-style padding. The current paired sample sizes and completed scenarios are those in the generated results table (`eval/results/v2_summary.md`). Planned for the finals: FedEx-LoRA, PreLort and RoLoRA.

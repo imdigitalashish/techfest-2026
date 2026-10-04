@@ -72,3 +72,18 @@ Each covers one half of our "frozen shared A + nested ranks" design. Neither com
 | 7 | Exact aggregation ≠ fair or useful aggregation; ownership of high columns by high-rank devices | **PARTLY ACCEPTED:** PreLort-style per-column averaging inside the anchor space (`anchor_full_seg`) is tested. Rotating masks are deferred to the finals plan. |
 
 **Decision (narrowed).** We keep the aggregator as the spike. The claim is now exactly the sentence in `research/novelty.md`: an evaluated *combination* (seed-frozen shared A + prefix-nested device ranks → exact mixed-rank aggregation), plus partial-participation handling, macro weighting and influence instrumentation. It is not a new primitive. The published baselines in the final evaluation are FFA-LoRA (ICLR 2024) and FlexLoRA (arXiv 2402.11505), implemented from their papers, alongside HetLoRA-style padding and the starter.
+
+## Update — 4 Oct 2026, 12:25 IST: hostile-judge review (gpt-6-astra, max) and superseded statements
+The review scored abstract v2 at **3.40/5** (1 BLOCKING, 8 MAJOR, 3 MINOR); full text in `reviews/2026-10-04-abstract-spike-gpt-6-astra.md`. All 12 findings are **ACCEPTED**. Abstract v3 applies its three section replacements and exact wordings.
+
+**Superseded statements in this ADR.** Read these as history; the current wording follows.
+| Earlier statement (location) | Current wording |
+|---|---|
+| "every linear FL tool … becomes exact for LoRA … turns FL theory back on" (First principles 1) | With common A and LoRA scaling, summing zero-padded B deltas exactly reproduces the corresponding weight-space sum. That is an identity for the normalised, clipped or replayed directions we choose. It does **not** guarantee unbiased current-client averaging or convergence. Prefix masks also omit other clients' gradients in columns that only high-rank clients own. |
+| "nothing is padded or diluted in the averaging" (First principles 2) | The server zero-pads deltas; non-owner directions are zero under the selected weighting policy. |
+| "no extra server memory beyond B" (Yellow hat) | The server also caches a recent B-direction for each remembered client. |
+| "√n weights as the Sybil-robust middle ground" (synthesis 7) | Equal-client and √n weights both remain identity-sensitive (splitting n into m identities gives √(m·n)). The fix is to authenticate participants and test data-preserving identity splits. |
+| "every domain improves" (White hat, v1) | All five mean domain losses decrease; only some Bonferroni-adjusted intervals exclude zero (the count is rendered in the abstract). |
+| "exact aggregation … unbiased under partial participation" (abstract v1/v2) | Exactness covers the factorisation only. The participation corrections and equal-client weights are heuristics whose utility and bias need separate evaluation. |
+
+**Decision (unchanged spike, reframed claim).** The aggregator stays the spike, framed as *an evaluated systems recipe extending FFA-LoRA's frozen-A design to prefix-masked device updates*. The decisive next experiment is attribution: matched admitted work, a rank-matched frozen-A control with the same weights, leave-one-mechanism-out runs and weak-client removal. If a simpler partial-work or uniform-weight policy explains the gain, we present that result.

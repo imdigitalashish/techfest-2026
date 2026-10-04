@@ -1,86 +1,80 @@
-# Round 1 abstract (v2, 4 Oct 2026) — Perceptron Hackathon 2026, Problem 1
+# Round 1 abstract (v3, 4 Oct 2026) — Perceptron Hackathon 2026, Problem 1
 
-**AnchorLoRA: exact mixed-rank federated LoRA in which weak, intermittent devices still count**
+**AnchorLoRA: federated LoRA for weak, intermittent devices — exact mixed-rank aggregation with measured participation and influence**
 
-*Body 600–900 words. Every number is rendered from committed results (`eval/results/v2_canonical.json`; AnchorLoRA/starter n = {{dropout.anchor_full.n|d}}/{{dropout.fedavg_ab_homo.n|d}}, FFA-LoRA n = {{dropout.ffa_lora.n|d}}, FlexLoRA n = {{dropout.flexlora.n|d}} paired seeds) by `scripts/render_deliverable.py` and verified by `scripts/check_numbers.py`. Edit the template (`round1-abstract.template.md`), not this file.*
+*Body 600–900 words. Every number is rendered from committed results (`eval/results/v2_canonical.json`) by `scripts/render_deliverable.py` and verified by `scripts/check_numbers.py`. Edit the template (`round1-abstract.template.md`), not this file. Wording follows the two cross-model reviews in `reviews/`.*
 
 ### Problem & theme chosen
-Theme 1 (Efficient AI at Scale), Problem 1: *Cheap Fine-Tuning Across Weak, Scattered Devices.* Trading desks across jurisdictions, hospital sites and staff phones hold text that cannot be pooled; fine-tuning one shared small model in place with LoRA is the cheapest way to specialise it. It is a systems problem disguised as an optimisation problem.
+Theme 1 (Efficient AI at Scale), Problem 1: *Cheap Fine-Tuning Across Weak, Scattered Devices.* Trading desks, hospital sites and staff phones hold text that cannot be pooled. We target collaborative specialisation of a small model without pooling raw text; the challenge couples device resource limits, interrupted work and conflicting local objectives.
 
 ### Understanding of the challenge
-The starter recipe (PEFT LoRA + Flower FedAvg) breaks in three places:
-1. **LoRA updates are products.** ΔW_k = B_k·A_k, so averaging A and B separately gives mean(B)·mean(A) ≠ mean(B·A). In our pilot the starter's applied update was {{dropout.fedavg_ab_homo.agg_err_mean|pct.1f}}% off the true average of device updates.
-2. **Unequal work and dropouts bias the objective.** Weak devices finish fewer steps, miss deadlines or vanish; discarding their work favours always-on, fast devices (FedNova's "objective inconsistency").
-3. **Sample-weighted averaging is a micro-average.** A device with 8× the data sets the direction. Under the starter, the data-rich domain improved by {{dropout.fedavg_ab_homo.wiki.gain_mean|.2f}} nats/token while all four other domains ended *worse* than the untuned model (every 95% confidence interval below zero).
+The starter recipe (PEFT LoRA + Flower FedAvg) has three failure modes:
+1. **LoRA updates are products.** ΔW_k = B_k·A_k, so averaging A and B separately gives mean(B)·mean(A) ≠ mean(B·A). Zero-padding mixed ranks adds more error. In our pilot, the starter's mean relative round-update aggregation residual was {{dropout.fedavg_ab_homo.agg_err_mean|pct.1f}}%; its effect on task loss is not isolated.
+2. **Unequal work and dropouts bias the objective:** discarding weak devices' late or partial work favours always-on, fast devices (FedNova's "objective inconsistency").
+3. **Sample-weighted averaging is a micro-average.** Under the starter, the 8×-data device's domain improved by {{dropout.fedavg_ab_homo.wiki.gain_mean|.2f}} nats/token while all four other domains ended *worse* than the untuned model.
 
-So the brief's three goals are three properties of the aggregation: exact, unbiased under partial participation, balanced.
+Weak devices must supply useful fresh updates within limited resources, and availability bias or quantity skew must not silently decide whose text the model serves. These are systems and statistical requirements, not consequences of exact aggregation. Our primary target is equal-device held-out loss; we report the sample-weighted trade-off.
 
 ### Proposed approach
-- **Stack:** HF PEFT LoRA on SmolLM2-135M, then Qwen2.5-0.5B and SmolLM2-1.7B; Flower `ServerApp`/`ClientApp`, one process per device; PyTorch MPS plus Azure.
-- **Shared anchor.** Every device regenerates the same frozen A from a public seed (never transmitted) and trains only the first r_k ∈ {2,…,16} columns of B, so its trainable parameters and uplink scale with r_k: r·d_out numbers per layer, {{const.upload_ratio_theory|.1f}}× fewer than sending A and B. Because A is shared, Σ_k w_k ΔB_k·A *is* the average of the devices' weight updates for any mix of ranks.
-- **Participation corrections:**
+- **Pilot:** HF PEFT LoRA on SmolLM2-135M, simulated on one shared model. Clients update nested B prefixes (ranks 2–16) under a shared frozen A, regenerated from a public seed, and a common LoRA scale; their zero-padded deltas aggregate exactly in weight space, including after the corrections below.
+- **Cost:** each payload holds r_k·d_out fp32 values per layer; at matched ranks the pilot's q/v adapters need {{const.upload_ratio_theory|.1f}}× fewer uplink values than A+B. Active coefficients and logical uplink shrink with rank; measured RAM, total communication and throughput are not yet established.
+- **Participation heuristics:**
   - partial work cut off by the round deadline is kept and step-normalised (FedNova-style);
-  - an absent device's last update is reused for ≤4 rounds (MIFA-style);
-  - per-device (macro) weights with median-norm clipping.
+  - an absent client's clipped direction is reused for up to four rounds (MIFA-style);
+  - included clients are weighted equally.
 
-  Sharing A removes only the factorisation error; ablations test the corrections.
-- **Influence audit:** each round logs every device's share of the applied update; leave-one-device-out and Sybil tests are planned.
-- **Data:** the pilot uses five real-text domains, one per device; the finals use FlowerTune-Finance (FPB/FiQA/TFNS accuracy) with Dirichlet non-IID splits.
+  These do not guarantee unbiased optimisation; ablations test each.
+- **Finals:** Flower processes with seed-only A transport and measured resources; FlowerTune-Finance accuracy with non-IID splits; 0.5–1.7B models on Azure.
 
 ### Minimum Viable (what will exist and be demoable)
-- *Simulate 3–5 nodes with different data splits and compute budgets.* **Already running:** five device profiles (workstation to Raspberry Pi) with distinct domains, 8× quantity skew, ranks and local steps 16/8/4/2/4, and seeded dropouts.
-- *Show convergence despite heterogeneity:* per-domain, macro and worst-domain held-out loss against rounds.
-- **Pilot result** (SmolLM2-135M, 12 rounds, dropout scenario, {{dropout.anchor_full.n|d}} paired seeds; untuned macro loss {{base.macro|.3f}}):
+- *Simulate 3–5 nodes with different data splits and compute budgets.* **Already running:** five device profiles (workstation to Raspberry Pi): distinct domains, 8× quantity skew, ranks/steps 16/8/4/2/4, seeded dropouts.
+- *Show convergence despite heterogeneity:* per-domain and macro held-out loss against rounds (so far: short-horizon improvement).
+- **Exploratory pilot** (SmolLM2-135M, 12 rounds, dropout scenario, fixed text; untuned {{base.macro|.3f}}; paired t intervals describe seed variability only):
 
-  | Method | Macro loss | AnchorLoRA − method (95% CI) |
+  | Method | Macro loss | AnchorLoRA − method, 95% CI (shared seeds) |
   |---|---|---|
   | **AnchorLoRA** | **{{dropout.anchor_full.macro_mean|.3f}}** | — |
-  | Starter | {{dropout.fedavg_ab_homo.macro_mean|.3f}} | {{dropout.spike_vs_fedavg_ab_homo.macro_mean|.3f}} ({{dropout.spike_vs_fedavg_ab_homo.macro_lo|.3f}} to {{dropout.spike_vs_fedavg_ab_homo.macro_hi|.3f}}) |
-  | FFA-LoRA | {{dropout.ffa_lora.macro_mean|.3f}} | {{dropout.spike_vs_ffa_lora.macro_mean|.3f}} ({{dropout.spike_vs_ffa_lora.macro_lo|.3f}} to {{dropout.spike_vs_ffa_lora.macro_hi|.3f}}) |
-  | FlexLoRA | {{dropout.flexlora.macro_mean|.3f}} | {{dropout.spike_vs_flexlora.macro_mean|.3f}} ({{dropout.spike_vs_flexlora.macro_lo|.3f}} to {{dropout.spike_vs_flexlora.macro_hi|.3f}}) |
+  | Starter | {{dropout.fedavg_ab_homo.macro_mean|.3f}} | {{dropout.spike_vs_fedavg_ab_homo.macro_mean|.3f}} ({{dropout.spike_vs_fedavg_ab_homo.macro_lo|.3f}} to {{dropout.spike_vs_fedavg_ab_homo.macro_hi|.3f}}; n={{dropout.spike_vs_fedavg_ab_homo.n|d}}) |
+  | FFA-LoRA | {{dropout.ffa_lora.macro_mean|.3f}} | {{dropout.spike_vs_ffa_lora.macro_mean|.3f}} ({{dropout.spike_vs_ffa_lora.macro_lo|.3f}} to {{dropout.spike_vs_ffa_lora.macro_hi|.3f}}; n={{dropout.spike_vs_ffa_lora.n|d}}) |
+  | FlexLoRA | {{dropout.flexlora.macro_mean|.3f}} | {{dropout.spike_vs_flexlora.macro_mean|.3f}} ({{dropout.spike_vs_flexlora.macro_lo|.3f}} to {{dropout.spike_vs_flexlora.macro_hi|.3f}}; n={{dropout.spike_vs_flexlora.n|d}}) |
 
-  AnchorLoRA improved {{dropout.anchor_full.domains_ci_pos_bonf|d}} of 5 domains with Bonferroni-adjusted intervals above zero; the starter improved only the data-rich one.
+  - Paper-derived baselines, one fixed optimiser and scale; a full-system comparison under paired availability, not matched completed work.
+  - All five AnchorLoRA mean domain losses decrease; {{dropout.anchor_full.domains_ci_pos_bonf|d}} of five Bonferroni-adjusted intervals exclude zero.
+  - The starter's only positive domain gain is the data-rich one.
 
 ### Stretch ambitions
-- **Dropout mid-training.** A five-round outage of the tablet is built into the dropout scenario.
-  - Under the starter, the tablet's domain loss peaked {{dropout.fedavg_ab_homo.outage_peak_rise_mean|+.2f}} above the untuned model.
-  - Under AnchorLoRA it stayed below it at every evaluation checkpoint (every 3 rounds; mean peak {{dropout.anchor_full.outage_peak_rise_mean|+.3f}}).
-  - Live demo: kill a Flower SuperNode mid-round.
+- **Dropout mid-training.** A five-round tablet outage is built in.
+  - Under AnchorLoRA, the tablet's domain loss stayed below untuned at rounds 3, 6, 9 and 12 in every seed; under the starter it peaked {{dropout.fedavg_ab_homo.outage_peak_rise_mean|+.2f}} above. Sampled checkpoints do not exclude intervening spikes.
+  - Next: per-round recovery against paired no-outage/no-replay controls, then a real Flower process kill.
 - **Smarter vs naive aggregation:** an ablation ladder from FedAvg to AnchorLoRA, one mechanism at a time.
 
 ### Novelty / differentiation
-Each half of our design exists alone:
-- **Frozen A:** FFA-LoRA (ICLR 2024); CF-LoRA (2026) shares a learned frozen A.
-- **Prefix-nested ranks:** PreLort (2026).
-
-To our search, no method combines a seed-generated frozen A with nested device ranks, making mixed-rank aggregation exact at minimal upload. We contribute that combination as an evaluated system, not a new primitive, with participation corrections, a macro objective (every device's domain counts, not every sample) and an influence audit. The data-rich device's bounded norm share of each update falls from {{dropout.fedavg_ab_homo.c0_norm_mean|.2f}} under the starter to {{dropout.anchor_full.c0_norm_mean|.2f}}, against a fair share of 0.2.
+We extend FFA-LoRA's frozen-A design (ICLR 2024) to prefix-masked device updates and evaluate participation handling and update-share diagnostics for one shared model. CF-LoRA (2026) learns A before freezing it for clustered B aggregation; PreLort (2026) trains both factors with a multi-prefix objective and segment-wise aggregation. Our contribution is the tested systems recipe and its cost/utility trade-offs, not a new exactness primitive or a minimum-communication theorem. The data-rich client's round-and-seed mean norm share of the update falls from {{dropout.fedavg_ab_homo.c0_norm_mean|.2f}} to {{dropout.anchor_full.c0_norm_mean|.2f}}. This is a magnitude diagnostic, not a fairness cap or causal estimate.
 
 ### Evaluation plan
 - **Metrics:**
-  - macro, worst-domain and per-domain held-out loss; finance accuracy;
-  - micro (sample-weighted) loss, to expose the trade-off: AnchorLoRA's is {{dropout.spike_vs_fedavg_ab_homo.micro_mean|.3f}} *worse* than the starter's, because the data-rich domain gains less;
-  - influence shares, aggregation error, post-dropout spikes, upload bytes, peak memory.
-- **Baselines:** starter, FFA-LoRA, FlexLoRA, HetLoRA-style padding (implemented); FedEx-LoRA, PreLort, RoLoRA, centralised and local-only bounds (next).
-- **Protocol:**
-  - identical seeded device schedules for every method (paired), ≥5 seeds, 95% t-intervals;
-  - a Latin-square rotation of domains across device budgets, so budget, domain and data size aren't confounded; a Sybil test.
+  - equal-device (macro) and per-domain held-out loss; finance accuracy;
+  - sample-weighted loss: AnchorLoRA's is {{dropout.spike_vs_fedavg_ab_homo.micro_mean|.3f}} worse, and no worst-domain improvement is established;
+  - aggregation residual, update shares, dropout recovery, bytes, peak memory.
+- **Meaningful participation:** fresh updates within a measured device budget that improve held-out utility versus a paired run withholding that client.
+- **Controls:** matched-work, rank-matched and leave-one-mechanism-out runs; FedEx-LoRA, PreLort, RoLoRA; local-only and centralised references.
+- **Protocol:** freeze the primary macro comparison before a fresh holdout; size seeds for target precision; adjust the prespecified domain family; rotate domains across budgets and independently vary data quantity and outages (including the data-rich client); identity-split (Sybil) tests.
 
 ### Feasibility and risks
 - **Team:**
-  - [TEAM: lead — distributed systems, LLMs] owns the aggregator and Flower deployment;
-  - [TEAM: member 2 — optimisation/ML] owns baselines and ablations;
-  - [TEAM: member 3 — data/visualisation] owns datasets, the harness and the dashboard.
-- **Milestones:**
-  - Weeks 1–2: finance data, Flower multi-process. Weeks 3–4: baselines, Latin square. Week 5: 0.5–1.7B on Azure. Week 6: dashboard, kill-a-node demo.
-  - 19–25 Nov exams kept free; 1 Dec midway report; physical devices and rehearsal to 15 Dec.
+  - [TEAM: lead — distributed systems, LLMs]: aggregator and Flower deployment.
+  - [TEAM: member 2 — optimisation/ML]: baselines and controls.
+  - [TEAM: member 3 — data/visualisation]: datasets, harness and dashboard.
+- **Milestones:** weeks 1–2 controls and finance data; 3–4 Flower processes, resource-real weak clients; 5 larger models on Azure; 6 dashboard, kill-a-node demo; 19–25 Nov exams kept free; 1 Dec midway report.
 - **Risks and mitigations:**
-  - Frozen A may cap expressiveness (RoLoRA argues for trainable A): periodic anchor refresh, larger ranks on strong devices.
-  - Macro weights are Sybil-sensitive: √n weights, device registration.
-  - Part of the gain may come from step-normalisation or memory replay: ablations queued.
-  - Simulation isn't hardware, and the pilot's per-domain test sets are only 6,144 tokens: measure a real phone or Pi via Flower; use FlowerTune's public test sets.
+  - Frozen A may cap expressiveness (RoLoRA): anchor refresh, larger ranks on strong devices.
+  - Equal-client and square-root weights remain identity-sensitive: authenticate participants and test data-preserving identity splits.
+  - Gains may partly reflect extra admitted work or replay: controls queued.
+  - The 12-round pilot's per-domain test sets are 6,144 tokens from 2–3 documents: the finals use a larger untouched holdout.
 
 ---
 *Notes for the team (not part of the submission):*
 - Replace the [TEAM] placeholders with names and skills.
-- Novelty wording follows `research/novelty.md`: never "first to freeze A" or "first nested ranks".
+- Novelty wording follows `research/novelty.md`.
 - Re-render after any new results: `python -m eval.summarize --tag v2 && python -m eval.dropout_analysis --tag v2 && python scripts/render_deliverable.py deliverables/round1-abstract.template.md deliverables/round1-abstract.md && python scripts/check_numbers.py deliverables/round1-abstract.md`.
+- Before submitting, confirm `dropout.anchor_full.outage_peak_rise_max < 0` in `eval/results/v2_dropout_canonical.json`. The "every seed stayed below" sentence depends on it.

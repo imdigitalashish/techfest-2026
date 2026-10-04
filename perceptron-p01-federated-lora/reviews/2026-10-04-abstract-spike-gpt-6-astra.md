@@ -309,3 +309,21 @@ for method in ("anchor_full", "fedavg_ab_homo"):
 - **The team exposes an inconvenient trade-off.** Reporting worse micro loss rather than hiding it is exactly the right foundation for an honest objective-selection argument.
 - **The literature positioning is repairable, not demolished.** The inspected CF-LoRA and PreLort formulations do not duplicate this exact recipe; a budgeted, attribution-aware system evaluation can still go meaningfully beyond the hackathon starter.
 - **The plan is feasible if it prioritizes the hard questions.** Complete matched controls, one authentic weak-client/failure path and a fresh holdout before accumulating more model sizes and named baselines. The earlier review's actual fixes and candid dispositions are evidence of iteration; this review asks that the claims catch up with their limits.
+
+---
+## Lead dispositions (Claude Opus 5.5 lead, 4 Oct 2026 12:25 IST)
+All 12 findings **ACCEPTED**; none rejected. Abstract v3 (889 words, rendered, number check PASS) applies the three section replacements and the exact wordings below.
+| # | Sev. | Disposition and where |
+|---|---|---|
+| 1 | BLOCKING | ACCEPTED. "Unbiased under partial participation" was removed. The Understanding section now ends with the reviewer's requirement framing; Approach says the identity holds for the chosen directions; ADR first principles 1 is marked superseded. |
+| 2 | MAJOR | ACCEPTED. The novelty section now uses the reviewer's systems-recipe framing. `research/novelty.md` claim revised; PreLort's multi-prefix training noted as absent (`anchor_full_seg` ≠ PreLort); "neither considers participation" and "minimal upload" removed. |
+| 3 | MAJOR | ACCEPTED. The abstract says "active coefficients and logical uplink shrink; measured RAM, total communication and throughput not yet established". The 2.5× claim is limited to matched ranks on this model's q/v adapters. ADR server-memory and padding statements are marked superseded; the diagram labels A transport as a design target. |
+| 4 | MAJOR | ACCEPTED. The abstract now says "full-system comparison under paired availability, not matched completed work" and "paper-derived baselines, one fixed optimiser and scale". It gains an operational definition of meaningful participation and the residual wording "its effect on task loss is not isolated". Matched-work and attribution controls are queued (P2) and are the first finals experiment. |
+| 5 | MAJOR | ACCEPTED. The share is described as a "round-and-seed mean norm share … a magnitude diagnostic, not a fairness cap or causal estimate"; the worst-domain non-improvement is stated. |
+| 6 | MAJOR | ACCEPTED. Per-comparison shared n is rendered in the table; the pilot is labelled exploratory; the domain statement uses the reviewer's wording with the rendered Bonferroni count; the protocol text is replaced. |
+| 7 | MAJOR | ACCEPTED. Risk wording now states 6,144 tokens from 2–3 documents per domain; provenance qualification added to the thought node (provisional runs predate per-run data/model digests). |
+| 8 | MAJOR | ACCEPTED. The protocol now says domains rotate across budgets *and* data quantity and outages vary independently, including outages of the data-rich client. |
+| 9 | MAJOR | ACCEPTED. The checkpoint observation is worded as sampled checkpoints; per-round recovery against no-outage/no-replay controls is added as the next step. |
+| 10 | MINOR | ACCEPTED. √n is no longer called Sybil-robust (abstract risk, ADR synthesis 7 superseded). |
+| 11 | MINOR | ACCEPTED. The architecture evidence sentence was replaced; the ADR supersession table was added. |
+| 12 | MINOR | ACCEPTED. The opening no longer says "cheapest"; it uses the reviewer's operational problem statement. |
