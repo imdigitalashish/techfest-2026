@@ -14,7 +14,7 @@
 - **Plan:** (1) ≥ 5 seeds with 95 % CIs → (2) ratchet candidates (τ_eff actual vs planned, PreLort-style segment normalisation, decayed memory, √n weights) → (3) close the antithesis gaps (stronger baselines, de-confounded design, Sybil and leave-one-out tests) → (4) Flower kill-a-node demo → (5) standard datasets (finance sentiment, Dolly-15k) → (6) 0.5B–1.1B runs on Azure → abstract final by 31 Oct.
 - **Doing (09:45 IST):**
   - **GPU queue** (Supervisor memory rule: one heavy job at a time under `nice -n 10`): `scripts/handover_to_queue.sh` → `scripts/gpu_queue.sh`. Phases run in order: replicate (dropout seeds 2–4: anchor_full, fedavg_ab_homo) → ratchet (4 candidates × seeds 0–1) → ablate → clean. It skips runs already recorded, so a restart is safe: `scripts/handover_to_queue.sh 0`.
-  - **Agents:** independent ADR 001 review (rubber-duck). `r46-frameworks-benchmarks` wrote `research/raw/frameworks_benchmarks.md`; integration pending.
+  - **Agents (Lean Mode: no new ones):** the independent ADR 001 review (rubber-duck, launched 09:43) is still running. Dropout-stretch evidence is done (`eval/results/v1_dropout_analysis.md`).
 - **Next:**
   1. Add CIs to `eval.summarize` once seed 2 lands.
   2. Ratchet decisions in `results.tsv`.
@@ -178,3 +178,25 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - `research/raw/companies.md`: 25 primary sources; the landscape §6 was rewritten, and 3 claims re-opened by the lead were confirmed.
   - `research/raw/fedlora_frontier.md`: prior-art verdict **NOT FOUND** for the exact combination. The closest work is CF-LoRA (frozen shared A, same rank) and PreLort (nested ranks, trained A). The 13 new arXiv IDs were verified by script; the TSV now has 57 rows.
 - Supervisor: memory request done as asked (this entry).
+
+### 2026-10-04 10:00 IST — Lead: dropout stretch evidence (from existing logs, no extra GPU)
+- `python -m eval.dropout_analysis --tag v1` → `eval/results/v1_dropout_analysis.md`. Device c4 (tablet, manpages) is offline in rounds 5–9, on top of random offline rounds and deadline cut-offs.
+- **Weak devices' work actually counts.** Rounds in which a device's update entered the aggregate (mean over seeds):
+
+  | Device | Baselines | AnchorLoRA (+ memory) |
+  |---|---|---|
+  | c2 (phone) | 5 / 12 | 9.7 (+2.0) |
+  | c4 (tablet) | 3 / 12 | 5.3 (+5.7) |
+
+  Under the baselines, deadline cut-offs throw away the weak devices' partial work (`xxxo-----oo-`).
+- **Outage stability.** Peak rise of the outage device's domain loss above the untuned model (3.233):
+
+  | Strategy | Peak rise | n |
+  |---|---|---|
+  | FedAvg-homo (starter) | +0.27 | 2 |
+  | FedAvg-het | +0.30 | 1 |
+  | anchor_naive | +0.15 | 1 |
+  | **anchor_full** | **−0.021** (never above untuned; monotone decrease) | 3 |
+
+- The queue landed anchor_full seed 2 at **2.6646**. Three AnchorLoRA seeds so far: 2.66508 / 2.66510 / 2.6646.
+- Lean Mode (Supervisor 09:40) acknowledged: no new agents; the ADR review agent launched at 09:43 is still running; compute is the single nice-10 queue.
