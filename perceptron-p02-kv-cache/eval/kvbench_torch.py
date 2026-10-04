@@ -55,7 +55,16 @@ STYLES = {
                 "What is the special magic number for {k} mentioned in the text above? Answer with the number only."),
     "paraphrase": ("Note for the record: {k} was issued the access code {v}.",
                    "Which seven-digit code was issued to {k}? Reply with the digits only."),
+    # amendment 1 (T3): the question names the key with synonyms of the needle's words -> no lexical overlap on keys
+    "alias": ("The vault of the {k} opens with the code {v}.",
+              "Which code opens the vault of the {k}? Reply with the digits only."),
 }
+SYN_ADJ = [("big", "large"), ("small", "little"), ("fast", "quick"), ("old", "ancient"), ("happy", "cheerful"),
+           ("cold", "chilly"), ("rich", "wealthy"), ("smart", "clever"), ("angry", "furious"), ("quiet", "silent"),
+           ("tired", "sleepy"), ("strong", "powerful")]
+SYN_NOUN = [("dog", "hound"), ("car", "automobile"), ("house", "home"), ("boat", "ship"), ("doctor", "physician"),
+            ("child", "kid"), ("rock", "stone"), ("road", "street"), ("gift", "present"), ("shop", "store"),
+            ("sofa", "couch"), ("hat", "cap")]
 
 
 def nb(t):
@@ -137,6 +146,11 @@ def chat(tok, content):
 def make_sample(tok, paras, ctx_tokens, n_needles, rng, style="literal"):
     tn, tq = STYLES[style]
     keys, needles = set(), []
+    if style == "alias":
+        for a, w in zip(rng.sample(SYN_ADJ, n_needles), rng.sample(SYN_NOUN, n_needles)):
+            j = int(rng.random() < 0.5)
+            needles.append({"key": f"{a[j]} {w[j]}", "qkey": f"{a[1 - j]} {w[1 - j]}",
+                            "value": str(rng.randint(1_000_000, 9_999_999))})
     while len(needles) < n_needles:
         k = f"{rng.choice(ADJ)}-{rng.choice(NOUN)}"
         if k not in keys:
@@ -156,11 +170,11 @@ def make_sample(tok, paras, ctx_tokens, n_needles, rng, style="literal"):
             "you will be asked about them later.\n\n" + "\n".join(body))
     pre, out = None, []
     for nd in needles:
-        pre, post = chat(tok, text + "\n\n@@SPLIT@@" + tq.format(k=nd["key"])).split("@@SPLIT@@")
+        pre, post = chat(tok, text + "\n\n@@SPLIT@@" + tq.format(k=nd.get("qkey", nd["key"]))).split("@@SPLIT@@")
         out.append((tok.encode(post, add_special_tokens=False), nd))
     ctx_ids = tok.encode(pre, add_special_tokens=False)
     for _, nd in out:
-        nd["n_q_content"] = len(tok.encode(tq.format(k=nd["key"]), add_special_tokens=False))
+        nd["n_q_content"] = len(tok.encode(tq.format(k=nd.get("qkey", nd["key"])), add_special_tokens=False))
         pat = tok.encode(nd["value"], add_special_tokens=False)
         nd["pos"] = next((p for p in range(len(ctx_ids) - len(pat) + 1) if ctx_ids[p:p + len(pat)] == pat), -1)
         nd["depth_tok"] = round(nd["pos"] / len(ctx_ids), 3)

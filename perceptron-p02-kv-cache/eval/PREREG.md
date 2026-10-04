@@ -78,4 +78,21 @@ S4: python eval/kvbench_torch.py --ctx 4096 --n 12 --needles 4 --seed 0 --style 
 Run order: T1, then T2, then S4, one job at a time.
 
 ## Amendments
-_(none)_
+### Amendment 1: 2026-10-04 15:18 IST
+Committed while T1 was running, before any test-split result had been seen.
+- **Why.** T2 paraphrases only the templates. Its keys stay literal (e.g. "silent-tiger"), so a lexical index can still match them, and T2 cannot separate the attention sketch from lexical retrieval. This was raised in the Supervisor's 15:17 spot-check.
+- **New split T3:** seed 2, style `alias`, 12 contexts (48 questions).
+  - Each needle names its key with one word pair ("The vault of the big house opens with the code …").
+  - The question uses synonyms ("Which code opens the vault of the large home?"), so key words share no tokens.
+  - The template words are shared by all 4 needles.
+- **Methods (lean):** `full`, `streaming`, `snapkv`, `kvp_expected`, `rod`, `rodlex` at keep fractions 0.10 and 0.25. The RoD config is unchanged.
+- **S6:** RoD − `rodlex` on T3 at 0.10 and at 0.25, with paired context-bootstrap CIs. "The sketch retrieves by meaning where a lexical index cannot" is claimed only if a lower bound > 0.
+  - Expected weakness, stated in advance: shared template words let `rodlex` recall several needle blocks at once, and its recall budget is not smaller than RoD's (at 0.10 it is larger: about 3 blocks vs 2), so S6 is a conservative test.
+  - The full-cache ceiling on T3 is reported. If full-cache recall is < 0.5, T3 is reported as too hard for this 1B model and S6 as inconclusive.
+- **Code.** The `alias` style is an additive change to `kvbench_torch.py`: literal and paraphrase behaviour and their RNG draws are unchanged.
+  - T1, T2 and S4 run the pre-registered file as copied to the VM before registration (md5 `74029553e051e0b93d56af5cd51b3267`).
+  - T3 runs after S4 with the amended file.
+- **Command:**
+  ```
+  T3: python eval/kvbench_torch.py --ctx 4096 --n 12 --needles 4 --seed 2 --style alias --fracs 0.1,0.25 --kvp_fracs 0.1,0.25 --methods full,streaming,snapkv,kvp_expected,rod,rodlex $R --name T3_alias_s2
+  ```
