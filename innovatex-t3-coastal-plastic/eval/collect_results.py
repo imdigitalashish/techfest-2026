@@ -3,7 +3,7 @@
 Usage (from the repo root or anywhere):
     python3 innovatex-t3-coastal-plastic/eval/collect_results.py
 
-Reads components/*/results/metrics.json, the files each component writes from a committed
+Reads components/*/results/*.json (small files with a 'reproduce' key), which each component writes from a committed
 run, and renders them with their reproduce commands. The script never computes or edits a
 metric; it only copies them.
 """
@@ -39,7 +39,8 @@ def _flatten(d: dict, prefix: str = "") -> list[tuple[str, object]]:
 
 
 def main() -> None:
-    files = sorted(ROOT.glob("components/*/results/metrics.json"))
+    files = sorted(f for f in ROOT.glob("components/*/results/*.json")
+                   if f.stat().st_size < 200_000 and '"reproduce"' in f.read_text())
     ist = dt.timezone(dt.timedelta(hours=5, minutes=30))
     lines = [
         "# Results — every number with its reproduce command",
@@ -53,7 +54,7 @@ def main() -> None:
     if not files:
         lines.append("_No component has committed metrics yet._")
     for f in files:
-        comp = f.parent.parent.name
+        comp = f"{f.parent.parent.name} — {f.name}"
         try:
             data = json.loads(f.read_text())
         except Exception as e:  # keep going; report the broken file

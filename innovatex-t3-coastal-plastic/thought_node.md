@@ -10,16 +10,21 @@
 - _(none)_
 
 ## Now
-- **Phase:** 3–6 in parallel (spike chosen; skeleton building; deliverables drafting). LEAN MODE until 08:30 (Supervisor).
-- **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup Interceptors cover the big creek mouths (Malad, Trombay, 2026). Our system is the network layer for the long tail:
+- **Phase:** morning package delivered (08:10 IST, 4 Oct). Next: Phase 5 (ratchets) and the 7 Oct selection gate.
+- **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments, leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup's 2026 Interceptors cover the big Malad and Trombay creek mouths. NullahNet is the network layer for the rest:
   - pocket-fill sensing;
-  - forecast- and gate-aware dispatch (Spike 1);
-  - a ratchet pocket with a fail-open fuse retrofitted to existing booms (Spike 2, Round 2);
-  - signed evidence records so contractors are paid per verified kg.
-
-  Details: [ADR 001](architecture/adr/001-spike.md).
-- **Doing:** child sessions — *T3 detection + flux*, *T3 digital twin + dispatch*, *T3 dashboard + MRV ledger*, *T3 research: Mumbai + policy*, *T3 research: tech + companies*. Lead: zonal-pitch.md, prototype-plan.md, then integrating results.
-- **Next:** detector metrics → RESULTS.md → final push by 08:15 → Supervisor note. After the morning package: fill-split analysis in the twin (entrainment, overflow, bypass), ratchet sensitivity, flume test before 10 Oct.
+  - tide-aware dispatch (Spike 1, support: −2.1% escaped in the twin);
+  - a **fail-open fuse retrofit with an instrumented pocket** for BMC's steel-net booms (Spike 2, headline; flume-tested);
+  - signed evidence records for pay per verified kg.
+  See [ADR 001](architecture/adr/001-spike.md).
+- **Done tonight:** [landscape](research/landscape.md) · [components + contracts](architecture/components.md) · [per-component research](research/components/README.md) · [ADR 001](architecture/adr/001-spike.md) · selection memo v1 (below) · [zonal pitch](deliverables/zonal-pitch.md) · [prototype plan](deliverables/prototype-plan.md) · skeleton: twin + dispatch on real forcing, evidence ledger, dashboard, detection scaffold · [results](eval/RESULTS.md) · two autoresearch ledgers (twin, detection).
+- **Doing:** child sessions twin, dashboard + ledger, and both research sessions are done. *T3 detection + flux* is still trying to train the baseline.
+- **Next:**
+  1. Trained detector mAP on held-out data.
+  2. Twin: split escape into entrainment, overflow and bypass; ratchet/fuse SENSITIVITY; a paired P2−P1 interval.
+  3. Flume T2/T3 before 10 Oct (needs a teammate).
+  4. Prior-art write-up for the fuse retrofit.
+  5. Selection memo final by 7 Oct 12:00.
 - **Needs from user:**
   1. Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct.
   2. If T3 is chosen, name a teammate with fabrication skills. Ideally that teammate runs a ~2-hour tabletop reversed-flow flume test before 10 Oct (a box, a small pump, film pieces, phone video — see [prototype-plan](deliverables/prototype-plan.md) §3, T2/T3).
@@ -62,8 +67,8 @@
 | C2 | Catchment plastic load | rain, catchment → `LoadSeries` | build-up / wash-off model | – | building | NSE vs boom catch (needs field data) |
 | C3 | Outfall hydraulics | rain, tide → `HydraulicSeries` | rational method + tidal stage | – | building | — |
 | C4 | Interceptor model | load, hydraulics → `InterceptorSeries` | fixed-efficiency boom | Spike 2 (ratchet + fuse, via H1) | **done (v0, SIMULATED)** | capture efficiency vs flume |
-| C5 | Vision detector | frame → `FrameDetections` | YOLO11n | candidate | building | held-out mAP50 |
-| C6 | Flux counter | detections → `FluxEstimate` | ByteTrack + line crossing | candidate | building | count error % |
+| C5 | Vision detector | frame → `FrameDetections` | YOLO11n | – (instrumentation) | zero-shot only; training pending | zero-shot COCO YOLO11n, Groningen cross-site: mAP50 0.405 ± 0.026, recall 0.01 @ conf 0.25 |
+| C6 | Flux counter | detections → `FluxEstimate` | ByteTrack + line crossing | – | **v0** | count error 75% on a SYNTHETIC sequence (zero-shot detector) |
 | C7 | Fill estimator | frame + range → `FillEstimate` | ultrasonic / ToF range | – | planned | fill MAE |
 | C8 | Edge telemetry | sensors → `SiteTelemetry` | MQTT over 4G / NB-IoT | – | planned | delivery rate, bytes/day |
 | C9 | Risk forecaster | rain fcst, tide, fill → `SiteForecast` | rain-threshold rule | candidate | building | Brier score |
@@ -145,5 +150,12 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Research complete:** `mumbai-context.md`, `policy-economics.md` and `recovery-upcycling.md` added; `landscape.md` now lists 109 source URLs collected from the research files.
   - Still open: scrap, EPR and credit prices; desilting rates; whether drain-recovered plastic earns EPR certificates (NOT FOUND); the minimum-wage source URL; C14 not started.
 - **Prior art check (lead, 07:58).** The Bandalong Litter Trap (floating, passive, suitable for tidal waterways >2 m wide) already exists. Spike 2 narrows to a fail-open fuse retrofit for BMC's steel-net booms plus an instrumented pocket; see ADR 001 update 08:00.
+- **Detection (08:05).**
+  - The trained YOLO11n baseline did not complete: the machine was thrashing (swap full, load average ~85).
+  - Committed instead:
+    - zero-shot COCO YOLO11n on the held-out Groningen cross-site split (63 images, 383 boxes): mAP50 0.405 ± 0.026 (bootstrap), recall 0.01 at conf 0.25;
+    - SYNTHETIC flux sequence: 3 of 12 crossings counted (75% error).
+  - Reproduce commands are in `eval/RESULTS.md`.
+  - **Next:** train on the TUD-GV grouped split once the machine is free.
 - **Open items before 10 Oct.** The pitch still has 6 ⟨FILL⟩ markers: team details, detector mAP (×2), flume result, retrofit cost. It has 2 [V] markers: the low-resale-value claim and flood-tide re-floating at open outfalls.
 - **Contract change queued for Round 2 (not applied tonight, to avoid drift while children finish):** add optional `signature`, `signer_key_id` to `LedgerEntry` and `ledger_anchor` to `DashboardBundle`. These currently live in `dashboard/site/aux.json`.

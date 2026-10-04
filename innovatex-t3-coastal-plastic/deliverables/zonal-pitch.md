@@ -92,7 +92,11 @@ All four results come from runs committed to our repo, each with a reproduce com
   - Clearing whenever the pocket looks full did *worse* (+3.1% escaped).
   - **Lesson:** timing alone is a small lever. About half the arriving plastic is not captured whatever the schedule. So the headline lever is capture physics at high flow, which is why we build the angled-boom ratchet pocket.
   - Reproduce: `python -m twin_sim.run`.
-- **Detector:** YOLO11n on a public floating-litter dataset; held-out mAP50 = ⟨FILL⟩.
+- **Detector: honest status.**
+  - The trained baseline did not finish overnight because the shared machine was overloaded.
+  - Zero-shot COCO YOLO11n on a held-out cross-site split (Groningen bridge camera, 63 images, 383 boxes) scores mAP50 0.41 ± 0.03. But at a usable threshold it finds only 1% of items (recall 0.01 at conf 0.25).
+  - The flux counter on a SYNTHETIC drift sequence missed 9 of 12 crossings (75% count error).
+  - **Conclusion:** off-the-shelf models don't see river litter, so training on floating-litter data is required. ⟨FILL trained mAP50 before 10 Oct⟩.
 - **Evidence records (SYNTHETIC test data):**
   - Tampering detected 100% of the time.
   - 72% of inflated claims caught at a 4.7% false-flag rate. A simple claimed-vs-sensor ratio check catches 67%; today's slip check catches 0%.
@@ -146,7 +150,7 @@ All four results come from runs committed to our repo, each with a reproduce com
 5. **"Did you use real forecasts or actual rainfall?"** Both, for different jobs. Decisions use the archived JMA day-ahead forecast as it was issued, which we checked is archived back to 2019. Outcomes use ERA5 rain. The policy never sees the future.
 6. **"Can a camera see plastic at night, in rain, in black nullah water?"**
    - Not reliably. That is why the primary reading is *pocket fill*: an area and range measurement that is robust to glare and supported by an IR camera and a range sensor.
-   - Item counting is secondary. Detector metrics are on a public dataset ⟨FILL mAP⟩. Domain shift to Mumbai water is our first data-collection task.
+   - Item counting is secondary. Our zero-shot baseline finds only 1% of items at a usable threshold, so a detector trained on floating-litter data is required. ⟨FILL trained mAP⟩. Domain shift to Mumbai water is our first data-collection task.
 7. **"How do you turn counts into kilograms?"**
    - Not from counts alone. We use pocket volume × bulk density, checked against the weighbridge.
    - We also do random sort samples for the dry-plastic fraction, to correct for water and organic weight.

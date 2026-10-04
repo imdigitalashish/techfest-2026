@@ -1,8 +1,145 @@
 # Results — every number with its reproduce command
 
-Generated 2026-10-04 07:29 IST at commit `e7430e9` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
+Generated 2026-10-04 08:09 IST at commit `aee372f` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
 
-## mrv_ledger
+## detection — flux_synthetic.json
+
+Source: [`components/detection/results/flux_synthetic.json`](../components/detection/results/flux_synthetic.json)  
+Reproduce: `python -m t3det.synth --out ../../.data/detection/synth/seq02 --frames 120 --items 12 --seed 11 --speed 6.0 12.0 && python -m t3det.run_flux --weights ../../.data/detection/weights/yolo11n.pt --seq ../../.data/detection/synth/seq02`
+
+| Metric | Value |
+|---|---|
+| label | SYNTHETIC |
+| sequence | seq02 |
+| frames | 120 |
+| fps | 5 |
+| gt_crossings | 12 |
+| items_crossed | 3 |
+| count_error_pct | 75 |
+| detector_weights | yolo11n.pt |
+| tracker | bytetrack.yaml (ultralytics defaults) |
+| conf | 0.1 |
+| imgsz | 640 |
+| flux_estimate.site_id | SYNTHETIC-seq01 |
+| flux_estimate.t_start | 2026-10-04T00:00:00Z |
+| flux_estimate.t_end | 2026-10-04T00:00:24Z |
+| flux_estimate.items_crossed | 3 |
+| flux_estimate.items_per_min | 7.5 |
+| flux_estimate.by_label.traffic light | 1 |
+| flux_estimate.by_label.bird | 1 |
+| flux_estimate.by_label.kite | 1 |
+| flux_estimate.est_kg | 0.057 |
+| flux_estimate.est_kg_ci90 | [0.0, 0.1624] |
+| flux_estimate.method | YOLO detector + ByteTrack (ultralytics, conf>=0.1) + line-crossing count, one count per track id; mass = items x 19.0 g/item (sd 37.0 g; assumption: van Emmerik et al. 2019 Sci Rep (Saigon), PMC6753078: 1.9e-2 kg per visually counted item, sd 3.7e-2; transfer to Mumbai assumed); CI90 = n*mean +/- 1.645*sd*sqrt(n) |
+| flux_estimate.provenance.kind | synthetic |
+| flux_estimate.provenance.source | component:detection/t3det.synth seed=11 |
+| flux_estimate.provenance.retrieved_at | 2026-10-04T02:24:00.379100Z |
+| flux_estimate.provenance.notes | SYNTHETIC: real TUD-GV test-split litter crops pasted on an inpainted TUD-GV water frame; mass factor is an ASSUMPTION transferred from the Saigon River (van Emmerik et al. 2019) |
+
+## detection — zeroshot_groningen_eval.json
+
+Source: [`components/detection/results/zeroshot_groningen_eval.json`](../components/detection/results/zeroshot_groningen_eval.json)  
+Reproduce: `cd innovatex-t3-coastal-plastic/components/detection && python3.11 autoresearch/eval.py --weights ../../.data/detection/weights/yolo11n.pt --split groningen --boot 20`
+
+| Metric | Value |
+|---|---|
+| what | Smoke test of the FROZEN autoresearch/eval.py on the Groningen cross-site split with COCO-pretrained YOLO11n (zero-shot, class-aware NMS, any COCO class = litter candidate). Values transcribed verbatim from the run's stdout/stderr (2026-10-04 ~07:41 IST). |
+| split | groningen |
+| n_images | 63 |
+| n_gt | 383 |
+| mAP50 | 0.4053 |
+| boot_se | 0.026 |
+| boot_reps | 20 |
+| precision@0.25 | 1 |
+| recall@0.25 | 0.0104 |
+| ms_per_img_median | 3156 |
+| config.imgsz | 640 |
+| config.conf | 0.001 |
+| config.iou | 0.7 |
+| config.augment | False |
+| config.tiles | [1, 1] |
+| note | ms/img measured while the machine was thrashing (swap full, load avg ~85): an upper bound |
+
+## mrv_ledger — eval_detail.json
+
+Source: [`components/mrv_ledger/results/eval_detail.json`](../components/mrv_ledger/results/eval_detail.json)  
+Reproduce: `cd innovatex-t3-coastal-plastic/components && python3 -m mrv_ledger.evaluate`
+
+| Metric | Value |
+|---|---|
+| data | SYNTHETIC (mrv_ledger/synth.py); parameters are ASSUMPTIONS (reconcile.Params) |
+| params.wet_bulk_density_kg_m3 | 150 |
+| params.moisture_fraction | 0.4 |
+| params.sigma_fill_abs | 0.03 |
+| params.sigma_density_rel | 0.25 |
+| params.sigma_claim_rel | 0.1 |
+| params.z_review | 1.645 |
+| params.z_reject | 2.326 |
+| params.max_wet_density_kg_m3 | 450 |
+| reconciliation.calibration_target_fpr | 0.0475 |
+| reconciliation.z_threshold_review | 2.142 |
+| reconciliation.ratio_threshold_baseline | 1.768 |
+| reconciliation.methods.proposed_z.recall_all_fraud | 0.7164 |
+| reconciliation.methods.proposed_z.false_flag_rate_honest | 0.047 |
+| reconciliation.methods.proposed_z.precision_at_5pct_prevalence | 0.4451 |
+| reconciliation.methods.proposed_z.precision_at_10pct_prevalence | 0.6288 |
+| reconciliation.methods.proposed_z.recall_inflated | 0.694 |
+| reconciliation.methods.proposed_z.recall_phantom | 1 |
+| reconciliation.methods.proposed_z.recall_wetted | 0.5 |
+| reconciliation.methods.proposed_z.recall_inflated_x1.2-1.5 | 0.244 |
+| reconciliation.methods.proposed_z.recall_inflated_x1.5-2.0 | 0.5801 |
+| reconciliation.methods.proposed_z.recall_inflated_x2.0-3.0 | 0.8862 |
+| reconciliation.methods.proposed_z.auc | 0.9255 |
+| reconciliation.methods.baseline_ratio.recall_all_fraud | 0.6748 |
+| reconciliation.methods.baseline_ratio.false_flag_rate_honest | 0.0479 |
+| reconciliation.methods.baseline_ratio.precision_at_5pct_prevalence | 0.4258 |
+| reconciliation.methods.baseline_ratio.precision_at_10pct_prevalence | 0.6102 |
+| reconciliation.methods.baseline_ratio.recall_inflated | 0.6487 |
+| reconciliation.methods.baseline_ratio.recall_phantom | 1 |
+| reconciliation.methods.baseline_ratio.recall_wetted | 0.428 |
+| reconciliation.methods.baseline_ratio.recall_inflated_x1.2-1.5 | 0.2056 |
+| reconciliation.methods.baseline_ratio.recall_inflated_x1.5-2.0 | 0.503 |
+| reconciliation.methods.baseline_ratio.recall_inflated_x2.0-3.0 | 0.8549 |
+| reconciliation.methods.baseline_ratio.auc | 0.9174 |
+| reconciliation.methods.status_quo_slip_check.recall_all_fraud | 0 |
+| reconciliation.methods.status_quo_slip_check.false_flag_rate_honest | 0 |
+| reconciliation.methods.status_quo_slip_check.precision_at_5pct_prevalence | 0 |
+| reconciliation.methods.status_quo_slip_check.precision_at_10pct_prevalence | 0 |
+| reconciliation.methods.status_quo_slip_check.recall_inflated | 0 |
+| reconciliation.methods.status_quo_slip_check.recall_phantom | 0 |
+| reconciliation.methods.status_quo_slip_check.recall_wetted | 0 |
+| reconciliation.methods.status_quo_slip_check.recall_inflated_x1.2-1.5 | 0 |
+| reconciliation.methods.status_quo_slip_check.recall_inflated_x1.5-2.0 | 0 |
+| reconciliation.methods.status_quo_slip_check.recall_inflated_x2.0-3.0 | 0 |
+| reconciliation.sensitivity.false_flag_rate_if_true_density_x0.8 | 0.0075 |
+| reconciliation.sensitivity.false_flag_rate_if_true_density_x1.25 | 0.178 |
+| reconciliation.n_test.honest | 10000 |
+| reconciliation.n_test.inflated | 3000 |
+| reconciliation.n_test.phantom | 1000 |
+| reconciliation.n_test.wetted | 1000 |
+| tamper.edit.trials | 200 |
+| tamper.edit.detected_with_anchor | 1 |
+| tamper.edit.detected_chain_only | 1 |
+| tamper.delete.trials | 200 |
+| tamper.delete.detected_with_anchor | 1 |
+| tamper.delete.detected_chain_only | 0.995 |
+| tamper.reorder.trials | 200 |
+| tamper.reorder.detected_with_anchor | 1 |
+| tamper.reorder.detected_chain_only | 1 |
+| tamper.insert.trials | 200 |
+| tamper.insert.detected_with_anchor | 1 |
+| tamper.insert.detected_chain_only | 1 |
+| tamper.truncate_tail.trials | 200 |
+| tamper.truncate_tail.detected_with_anchor | 1 |
+| tamper.truncate_tail.detected_chain_only | 0 |
+| tamper.rewrite_suffix.trials | 200 |
+| tamper.rewrite_suffix.detected_with_anchor | 1 |
+| tamper.rewrite_suffix.detected_chain_only | 0 |
+| tamper.rewrite_suffix.detected_by_signatures | 1 |
+| tamper.all_detected_with_anchor | True |
+| git_sha_at_run | 57938df |
+
+## mrv_ledger — metrics.json
 
 Source: [`components/mrv_ledger/results/metrics.json`](../components/mrv_ledger/results/metrics.json)  
 Reproduce: `cd innovatex-t3-coastal-plastic/components && python3 -m mrv_ledger.evaluate`
@@ -22,7 +159,7 @@ Reproduce: `cd innovatex-t3-coastal-plastic/components && python3 -m mrv_ledger.
 | status_quo_slip_check_recall | 0 |
 | tamper_detection_rate_with_anchor | 1 |
 
-## twin_sim
+## twin_sim — metrics.json
 
 Source: [`components/twin_sim/results/metrics.json`](../components/twin_sim/results/metrics.json)  
 Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run`
