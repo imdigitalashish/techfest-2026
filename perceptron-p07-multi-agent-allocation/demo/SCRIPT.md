@@ -12,7 +12,7 @@ All numbers below are either live (one run, computed now) or committed. Hover ov
 
 1. **Point at the green data bar.**
    > "Real Manhattan yellow-taxi trips from NYC TLC, July 2025, public data, thinned to fit 40 vehicles. Real demand; the fleet is simulated. Left is the best rule-based allocator on this data. Right is our planner, a linear program re-solved every simulated minute. Both sides get exactly the same requests."
-2. **During the time-lapse (about 10–15 s, labelled *fast-forwarding, computed live*).**
+2. **During the time-lapse (about 5–15 s depending on load, labelled *fast-forwarding, computed live*).**
    > "Two days, 3 and 4 July, computed live up to 21:15 on the 4th."
 3. **When the dashed *observed surge* box lights up on Two Bridges (bottom row, 4th cell), around 22:00.**
    > "This cell had **62** pickups in half an hour, against **3.0** on the training days: **20.67×**. We don't know why. The cause is unverified, and the planner had no way to know either; it learned from 1–2 July only."
