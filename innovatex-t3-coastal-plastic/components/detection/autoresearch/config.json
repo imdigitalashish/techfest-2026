@@ -1,0 +1,11 @@
+{
+ "imgsz": 640,
+ "conf": 0.001,
+ "iou": 0.7,
+ "augment": false,
+ "tiles": [1, 1],
+ "tile_overlap": 0.2,
+ "tile_plus_full": true,
+ "merge_iou": 0.5,
+ "max_det": 300
+}

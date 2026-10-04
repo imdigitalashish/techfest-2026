@@ -1,0 +1,7 @@
+[
+ {"hypothesis": "test-time imgsz 960 (more pixels per small item)", "patch": {"imgsz": 960}},
+ {"hypothesis": "SAHI-style 2x2 tiles + full frame, NMS merge 0.5", "patch": {"tiles": [2, 2], "tile_plus_full": true}},
+ {"hypothesis": "test-time imgsz 1280 (native resolution of the stored 1280 px frames)", "patch": {"imgsz": 1280}},
+ {"hypothesis": "ultralytics TTA (flips + scales)", "patch": {"augment": true}},
+ {"hypothesis": "NMS IoU 0.5 (dense accumulations)", "patch": {"iou": 0.5}}
+]

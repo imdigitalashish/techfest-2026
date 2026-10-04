@@ -55,15 +55,25 @@ class LineCrossingCounter:
 
 @dataclass
 class MassModel:
-    """Per-item mass distribution (lognormal fitted to a mean and a 90% interval of the mean item mass)."""
+    """Items -> kg. Per-item mass mean/sd from a cited survey; 90% CI of a sum of n independent items (CLT)."""
     mean_g: float
-    ci90_g: tuple[float, float]
-    kind: str  # Provenance kind of the conversion factor: "observed" (cited) or "assumption"
+    sd_g: float
+    kind: str  # provenance of the factor for OUR site: "assumption" when transferred from another river
     source: str
 
     def kg(self, n: int) -> tuple[float, tuple[float, float]]:
-        lo, hi = self.ci90_g
-        return n * self.mean_g / 1000, (n * lo / 1000, n * hi / 1000)
+        half = 1.645 * self.sd_g * math.sqrt(n)
+        return n * self.mean_g / 1000, (max(0.0, n * self.mean_g - half) / 1000, (n * self.mean_g + half) / 1000)
+
+
+# van Emmerik et al. (2019) Sci. Rep., "Seasonality of riverine macroplastic transport" (Saigon River),
+# https://pmc.ncbi.nlm.nih.gov/articles/PMC6753078/ (opened 2026-10-04): "each visually counted particle equals on
+# average 1.9 x 10^-2 kg (sigma = 3.7 x 10^-2 kg) sampled plastic in the upper 0.5 m"; net-sampled items average
+# 1.0 x 10^-2 kg/item (sigma 3.3 x 10^-2, N = 3057). Transfer from Saigon to Mumbai nullahs is an ASSUMPTION.
+SAIGON_VISUAL_COUNT = MassModel(
+    mean_g=19.0, sd_g=37.0, kind="assumption",
+    source="van Emmerik et al. 2019 Sci Rep (Saigon), PMC6753078: 1.9e-2 kg per visually counted item, sd 3.7e-2; "
+           "transfer to Mumbai assumed")
 
 
 class FluxCounter:
@@ -96,13 +106,10 @@ class FluxCounter:
             items_crossed=counter.count, items_per_min=round(counter.count / minutes, 3) if minutes else 0.0,
             by_label=dict(counter.by_label), est_kg=round(est, 4), est_kg_ci90=(round(ci[0], 4), round(ci[1], 4)),
             method=(f"YOLO detector + ByteTrack (ultralytics, conf>={self.conf}) + line-crossing count, one count per "
-                    f"track id; mass = items x mean item mass ({self.mass.mean_g} g, {self.mass.kind}: {self.mass.source})"),
+                    f"track id; mass = items x {self.mass.mean_g} g/item (sd {self.mass.sd_g} g; {self.mass.kind}: "
+                    f"{self.mass.source}); CI90 = n*mean +/- 1.645*sd*sqrt(n)"),
             provenance=provenance)
 
 
-def lognormal_ci90(mean: float, cv: float) -> tuple[float, float]:
-    """90% interval of a lognormal with given mean and coefficient of variation (helper for assumptions)."""
-    s2 = math.log(1 + cv * cv)
-    mu = math.log(mean) - s2 / 2
-    s = math.sqrt(s2)
-    return math.exp(mu - 1.645 * s), math.exp(mu + 1.645 * s)
+def count_error_pct(predicted: int, truth: int) -> float:
+    return 100.0 * abs(predicted - truth) / max(truth, 1)
