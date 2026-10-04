@@ -1,0 +1,60 @@
+{
+ "properties": {
+  "site_id": {
+   "title": "Site Id",
+   "type": "string"
+  },
+  "zone": {
+   "title": "Zone",
+   "type": "string"
+  },
+  "ts": {
+   "format": "date-time",
+   "title": "Ts",
+   "type": "string"
+  },
+  "on": {
+   "title": "On",
+   "type": "boolean"
+  },
+  "duration_s": {
+   "maximum": 3600,
+   "minimum": 0,
+   "title": "Duration S",
+   "type": "integer"
+  },
+  "reason": {
+   "enum": [
+    "site_increment",
+    "forecast_risk",
+    "manual",
+    "test",
+    "water_budget_stop"
+   ],
+   "title": "Reason",
+   "type": "string"
+  },
+  "increment_ref": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Increment Ref"
+  }
+ },
+ "required": [
+  "site_id",
+  "zone",
+  "ts",
+  "on",
+  "duration_s",
+  "reason"
+ ],
+ "title": "ActuationCommand",
+ "type": "object"
+}

@@ -1,0 +1,54 @@
+{
+ "properties": {
+  "site_id": {
+   "title": "Site Id",
+   "type": "string"
+  },
+  "ts": {
+   "format": "date-time",
+   "title": "Ts",
+   "type": "string"
+  },
+  "ws_ms": {
+   "minimum": 0,
+   "title": "Ws Ms",
+   "type": "number"
+  },
+  "wd_deg": {
+   "exclusiveMaximum": 360,
+   "minimum": 0,
+   "title": "Wd Deg",
+   "type": "number"
+  },
+  "gust_ms": {
+   "anyOf": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Gust Ms"
+  },
+  "provenance": {
+   "default": "MEASURED",
+   "enum": [
+    "MEASURED",
+    "SIMULATED",
+    "PUBLIC_REFERENCE"
+   ],
+   "title": "Provenance",
+   "type": "string"
+  }
+ },
+ "required": [
+  "site_id",
+  "ts",
+  "ws_ms",
+  "wd_deg"
+ ],
+ "title": "WindReading",
+ "type": "object"
+}

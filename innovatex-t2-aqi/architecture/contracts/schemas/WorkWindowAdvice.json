@@ -1,0 +1,43 @@
+{
+ "properties": {
+  "site_id": {
+   "title": "Site Id",
+   "type": "string"
+  },
+  "date": {
+   "title": "Date",
+   "type": "string"
+  },
+  "windows": {
+   "items": {
+    "maxItems": 2,
+    "minItems": 2,
+    "prefixItems": [
+     {
+      "format": "date-time",
+      "type": "string"
+     },
+     {
+      "format": "date-time",
+      "type": "string"
+     }
+    ],
+    "type": "array"
+   },
+   "title": "Windows",
+   "type": "array"
+  },
+  "rationale": {
+   "title": "Rationale",
+   "type": "string"
+  }
+ },
+ "required": [
+  "site_id",
+  "date",
+  "windows",
+  "rationale"
+ ],
+ "title": "WorkWindowAdvice",
+ "type": "object"
+}

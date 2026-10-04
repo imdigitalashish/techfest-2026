@@ -1,0 +1,135 @@
+{
+ "$defs": {
+  "QAFlag": {
+   "enum": [
+    "ok",
+    "out_of_range",
+    "stuck",
+    "fog_rh_gt_95",
+    "low_flow",
+    "gap_filled",
+    "suspected_spray",
+    "clock_skew"
+   ],
+   "title": "QAFlag",
+   "type": "string"
+  }
+ },
+ "properties": {
+  "site_id": {
+   "title": "Site Id",
+   "type": "string"
+  },
+  "node_id": {
+   "title": "Node Id",
+   "type": "string"
+  },
+  "ts": {
+   "format": "date-time",
+   "title": "Ts",
+   "type": "string"
+  },
+  "seq": {
+   "minimum": 0,
+   "title": "Seq",
+   "type": "integer"
+  },
+  "pm1": {
+   "minimum": 0,
+   "title": "Pm1",
+   "type": "number"
+  },
+  "pm25": {
+   "minimum": 0,
+   "title": "Pm25",
+   "type": "number"
+  },
+  "pm10": {
+   "minimum": 0,
+   "title": "Pm10",
+   "type": "number"
+  },
+  "bins": {
+   "anyOf": [
+    {
+     "items": {
+      "type": "number"
+     },
+     "maxItems": 24,
+     "minItems": 1,
+     "type": "array"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Bins"
+  },
+  "t_c": {
+   "title": "T C",
+   "type": "number"
+  },
+  "rh_pct": {
+   "maximum": 100,
+   "minimum": 0,
+   "title": "Rh Pct",
+   "type": "number"
+  },
+  "fan_ok": {
+   "default": true,
+   "title": "Fan Ok",
+   "type": "boolean"
+  },
+  "fw": {
+   "title": "Fw",
+   "type": "string"
+  },
+  "provenance": {
+   "default": "MEASURED",
+   "enum": [
+    "MEASURED",
+    "SIMULATED",
+    "PUBLIC_REFERENCE"
+   ],
+   "title": "Provenance",
+   "type": "string"
+  },
+  "sig": {
+   "anyOf": [
+    {
+     "type": "string"
+    },
+    {
+     "type": "null"
+    }
+   ],
+   "default": null,
+   "title": "Sig"
+  },
+  "flags": {
+   "default": [
+    "ok"
+   ],
+   "items": {
+    "$ref": "#/$defs/QAFlag"
+   },
+   "title": "Flags",
+   "type": "array"
+  }
+ },
+ "required": [
+  "site_id",
+  "node_id",
+  "ts",
+  "seq",
+  "pm1",
+  "pm25",
+  "pm10",
+  "t_c",
+  "rh_pct",
+  "fw"
+ ],
+ "title": "CleanReading",
+ "type": "object"
+}

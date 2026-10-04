@@ -1,0 +1,47 @@
+{
+ "properties": {
+  "site_id": {
+   "title": "Site Id",
+   "type": "string"
+  },
+  "ts": {
+   "format": "date-time",
+   "title": "Ts",
+   "type": "string"
+  },
+  "kind": {
+   "enum": [
+    "reading",
+    "wind",
+    "increment",
+    "actuation",
+    "calibration",
+    "maintenance"
+   ],
+   "title": "Kind",
+   "type": "string"
+  },
+  "payload_sha256": {
+   "title": "Payload Sha256",
+   "type": "string"
+  },
+  "prev_hash": {
+   "title": "Prev Hash",
+   "type": "string"
+  },
+  "entry_hash": {
+   "title": "Entry Hash",
+   "type": "string"
+  }
+ },
+ "required": [
+  "site_id",
+  "ts",
+  "kind",
+  "payload_sha256",
+  "prev_hash",
+  "entry_hash"
+ ],
+ "title": "LedgerEntry",
+ "type": "object"
+}

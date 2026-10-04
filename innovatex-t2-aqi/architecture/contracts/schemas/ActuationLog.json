@@ -1,0 +1,41 @@
+{
+ "properties": {
+  "site_id": {
+   "title": "Site Id",
+   "type": "string"
+  },
+  "zone": {
+   "title": "Zone",
+   "type": "string"
+  },
+  "ts_on": {
+   "format": "date-time",
+   "title": "Ts On",
+   "type": "string"
+  },
+  "ts_off": {
+   "format": "date-time",
+   "title": "Ts Off",
+   "type": "string"
+  },
+  "litres": {
+   "minimum": 0,
+   "title": "Litres",
+   "type": "number"
+  },
+  "flow_meter_ok": {
+   "default": true,
+   "title": "Flow Meter Ok",
+   "type": "boolean"
+  }
+ },
+ "required": [
+  "site_id",
+  "zone",
+  "ts_on",
+  "ts_off",
+  "litres"
+ ],
+ "title": "ActuationLog",
+ "type": "object"
+}

@@ -1,0 +1,55 @@
+{
+ "properties": {
+  "site_id": {
+   "title": "Site Id",
+   "type": "string"
+  },
+  "date": {
+   "title": "Date",
+   "type": "string"
+  },
+  "coverage_pct": {
+   "maximum": 100,
+   "minimum": 0,
+   "title": "Coverage Pct",
+   "type": "number"
+  },
+  "exceedance_minutes": {
+   "title": "Exceedance Minutes",
+   "type": "integer"
+  },
+  "mean_increment_pm10": {
+   "title": "Mean Increment Pm10",
+   "type": "number"
+  },
+  "p95_increment_pm10": {
+   "title": "P95 Increment Pm10",
+   "type": "number"
+  },
+  "water_litres": {
+   "title": "Water Litres",
+   "type": "number"
+  },
+  "suspected_tamper_events": {
+   "title": "Suspected Tamper Events",
+   "type": "integer"
+  },
+  "ledger_head": {
+   "title": "Ledger Head",
+   "type": "string"
+  }
+ },
+ "required": [
+  "site_id",
+  "date",
+  "coverage_pct",
+  "exceedance_minutes",
+  "mean_increment_pm10",
+  "p95_increment_pm10",
+  "water_litres",
+  "suspected_tamper_events",
+  "ledger_head"
+ ],
+ "title": "DailyComplianceReport",
+ "type": "object"
+}

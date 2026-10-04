@@ -1,0 +1,76 @@
+{
+ "$defs": {
+  "QAFlag": {
+   "enum": [
+    "ok",
+    "out_of_range",
+    "stuck",
+    "fog_rh_gt_95",
+    "low_flow",
+    "gap_filled",
+    "suspected_spray",
+    "clock_skew"
+   ],
+   "title": "QAFlag",
+   "type": "string"
+  }
+ },
+ "properties": {
+  "site_id": {
+   "title": "Site Id",
+   "type": "string"
+  },
+  "node_id": {
+   "title": "Node Id",
+   "type": "string"
+  },
+  "ts": {
+   "format": "date-time",
+   "title": "Ts",
+   "type": "string"
+  },
+  "window_s": {
+   "default": 60,
+   "title": "Window S",
+   "type": "integer"
+  },
+  "pm25_cal": {
+   "title": "Pm25 Cal",
+   "type": "number"
+  },
+  "pm10_cal": {
+   "title": "Pm10 Cal",
+   "type": "number"
+  },
+  "sigma_pm10": {
+   "minimum": 0,
+   "title": "Sigma Pm10",
+   "type": "number"
+  },
+  "model_version": {
+   "title": "Model Version",
+   "type": "string"
+  },
+  "flags": {
+   "default": [
+    "ok"
+   ],
+   "items": {
+    "$ref": "#/$defs/QAFlag"
+   },
+   "title": "Flags",
+   "type": "array"
+  }
+ },
+ "required": [
+  "site_id",
+  "node_id",
+  "ts",
+  "pm25_cal",
+  "pm10_cal",
+  "sigma_pm10",
+  "model_version"
+ ],
+ "title": "CalibratedReading",
+ "type": "object"
+}

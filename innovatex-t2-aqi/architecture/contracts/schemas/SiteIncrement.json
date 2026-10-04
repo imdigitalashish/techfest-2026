@@ -1,0 +1,100 @@
+{
+ "properties": {
+  "site_id": {
+   "title": "Site Id",
+   "type": "string"
+  },
+  "window_start": {
+   "format": "date-time",
+   "title": "Window Start",
+   "type": "string"
+  },
+  "window_s": {
+   "default": 900,
+   "title": "Window S",
+   "type": "integer"
+  },
+  "background_pm10": {
+   "description": "upwind / ring-minimum estimate",
+   "title": "Background Pm10",
+   "type": "number"
+  },
+  "increment_pm10": {
+   "description": "site's own contribution at the downwind fence line, \u00b5g/m\u00b3",
+   "title": "Increment Pm10",
+   "type": "number"
+  },
+  "ci90": {
+   "maxItems": 2,
+   "minItems": 2,
+   "prefixItems": [
+    {
+     "type": "number"
+    },
+    {
+     "type": "number"
+    }
+   ],
+   "title": "Ci90",
+   "type": "array"
+  },
+  "p_site_cause": {
+   "description": "P(increment > threshold)",
+   "maximum": 1,
+   "minimum": 0,
+   "title": "P Site Cause",
+   "type": "number"
+  },
+  "wind_from_deg": {
+   "title": "Wind From Deg",
+   "type": "number"
+  },
+  "ws_ms": {
+   "title": "Ws Ms",
+   "type": "number"
+  },
+  "upwind_nodes": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Upwind Nodes",
+   "type": "array"
+  },
+  "downwind_nodes": {
+   "items": {
+    "type": "string"
+   },
+   "title": "Downwind Nodes",
+   "type": "array"
+  },
+  "method": {
+   "default": "ring-differential-v0",
+   "title": "Method",
+   "type": "string"
+  },
+  "provenance": {
+   "default": "MEASURED",
+   "enum": [
+    "MEASURED",
+    "SIMULATED",
+    "PUBLIC_REFERENCE"
+   ],
+   "title": "Provenance",
+   "type": "string"
+  }
+ },
+ "required": [
+  "site_id",
+  "window_start",
+  "background_pm10",
+  "increment_pm10",
+  "ci90",
+  "p_site_cause",
+  "wind_from_deg",
+  "ws_ms",
+  "upwind_nodes",
+  "downwind_nodes"
+ ],
+ "title": "SiteIncrement",
+ "type": "object"
+}

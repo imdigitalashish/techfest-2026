@@ -1,0 +1,53 @@
+{
+ "properties": {
+  "station_id": {
+   "title": "Station Id",
+   "type": "string"
+  },
+  "issue_time": {
+   "format": "date-time",
+   "title": "Issue Time",
+   "type": "string"
+  },
+  "valid_date": {
+   "title": "Valid Date",
+   "type": "string"
+  },
+  "pollutant": {
+   "enum": [
+    "pm25",
+    "pm10"
+   ],
+   "title": "Pollutant",
+   "type": "string"
+  },
+  "q10": {
+   "title": "Q10",
+   "type": "number"
+  },
+  "q50": {
+   "title": "Q50",
+   "type": "number"
+  },
+  "q90": {
+   "title": "Q90",
+   "type": "number"
+  },
+  "model_version": {
+   "title": "Model Version",
+   "type": "string"
+  }
+ },
+ "required": [
+  "station_id",
+  "issue_time",
+  "valid_date",
+  "pollutant",
+  "q10",
+  "q50",
+  "q90",
+  "model_version"
+ ],
+ "title": "BackgroundForecast",
+ "type": "object"
+}
