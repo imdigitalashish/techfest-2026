@@ -73,8 +73,8 @@ Context from the statement: PMJDY brought over 56 crore people into the formal s
 | C4 | Regulated clean room | encrypted inputs → approved outputs | DEPA / cloud clean rooms (UNVERIFIED) | — | designed | red-team leaks |
 | C5 | Purpose & policy engine + audit | `AccessRequest` → `AccessDecision` | AA consent artefact | — | **prototype v0.3** (31/31 scenarios, 0 false allows; 95/95 log attacks; identity registry, basis codes, derived own-customer scope, decide-and-log) | scenario accuracy |
 | C6 | Targeting engine | `PersonUsage` + budget → plan | blanket drives | **A** | **v0.3** (rule default + gated challenger; registered: +0.086 [0.057, 0.115], H1–H3 pass; SYNTHETIC) | share of reference gain |
-| C7 | Fraud & safety gate | plan + risk → allow/verify/hold | bank AML; MuleHunter.AI (UNVERIFIED) | — | designed | mule recall @1% FPR |
-| C8 | Last-mile orchestrator | plan → tasks → events | camps, bulk SMS | — | designed | completions per BC-day |
+| C7 | Fraud & safety gate | plan + risk → allow/verify/hold | bank AML; MuleHunter.AI [P12, P22] | — | **prototype** (rules only; demo) | mule recall @1% FPR |
+| C8 | Last-mile orchestrator | plan → tasks → events | camps, bulk SMS | — | **prototype** (tasks + per-BC cap ASSUMPTION; demo) | completions per BC-day |
 | C9 | Outcome & experiment service | events + usage → `EffectEstimate` | before/after counts | — | simulated pilot in C14 | effect RMSE, CI coverage |
 | C10 | Usage scorecard & attribution | persons + effects → `ScorecardRow` | SLBC enrolment tables | **B** | **built v0** (holdout incremental, insufficient-data status, no BC-level release); ρ 0.90 SYNTHETIC, IID stylised | Spearman ρ under gaming |
 | C11 | DP publisher | rows → `DPRelease` | small-cell suppression | — | **built v0.3** (secret noise; locked, persistent, composed ledger) | MAE at ε = 1 |
