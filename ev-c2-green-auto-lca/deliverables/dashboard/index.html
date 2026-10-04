@@ -19,7 +19,7 @@ code{font-size:12px;background:#f1f3ef;padding:1px 4px;border-radius:4px}footer{
 <section><h2>Comparison with the reference vehicle (paired Monte Carlo)</h2><div class="row" id="cards"></div></section>
 <section id="wisec"><h2>What-if: grid emission factor for charging</h2>
 <p class="muted">National generation factor with a state T&amp;D-loss adjustment (India runs one integrated grid; state losses FY2023-24 from Lok Sabha USQ 842 include commercial losses — this is not a state generation mix). CEA FY2025-26 at generation: build margin 0.446 · average 0.675 · operating margin 0.963 kg CO<sub>2</sub>/kWh (CO<sub>2</sub> only).</p>
-Charging state: <select id="st"></select><br><input type="range" id="ef" min="0" max="1.4" step="0.001" style="width:60%"> <b id="efv"></b> kg/kWh at generation, effective (same gas basis as the scenario: <span id="efb"></span>)
+Charging state: <select id="st"></select><br><input type="range" id="ef" min="0" max="1.4" step="0.0001" style="width:60%"> <b id="efv"></b> kg/kWh at generation, effective (same gas basis as the scenario: <span id="efb"></span>)
 <p id="whatif" class="big"></p><p id="breakeven" class="muted"></p></section>
 <section><h2>Which inputs drive the EV-vs-ICE difference (screening)</h2><div id="gaps"></div>
 <p class="muted">Normalized squared Spearman rank correlation between each input and the difference — a screening measure of where better Indian data would help most, not a variance decomposition. Parameter uncertainty only; scenario choices (average vs margin grid) are shown as separate scenarios.</p></section>
@@ -67,12 +67,12 @@ function whatif(reset){
  // effective factor at generation implied by the scenario's own electricity stage (CO2 or CO2e, whichever it uses)
  const effGen=ev.stages.electricity_production_wtt/1000/elec*(1-tdScen);
  document.getElementById('efb').textContent=ev.params.gwp_ch4?'CO2e incl. CH4/N2O + coal-mine methane':'CO2 only';
- const slider=document.getElementById('ef');if(reset){slider.value=effGen.toFixed(3)}
+ const slider=document.getElementById('ef');if(reset){slider.value=effGen.toFixed(4)}
  const g=Number(slider.value);document.getElementById('efv').textContent=fmt(g,3);
  const other=ev.total-ev.stages.electricity_production_wtt,evt=other+1000*elec*g/(1-td);
- document.getElementById('whatif').textContent=`EV ${fmt(evt)} vs ${ref.label} ${fmt(ref.total)} g/km → ${evt<=ref.total?fmt(100*(1-evt/ref.total))+'% lower':fmt(100*(evt/ref.total-1))+'% higher'} (meter factor ${fmt(g/(1-td),3)} kg CO2/kWh)`;
+ document.getElementById('whatif').textContent=`EV ${fmt(evt)} vs ${ref.label} ${fmt(ref.total)} g/km → ${evt<=ref.total?fmt(100*(1-evt/ref.total))+'% lower':fmt(100*(evt/ref.total-1))+'% higher'} (meter factor ${fmt(g/(1-td),3)} kg/kWh)`;
  const be=(ref.total-other)/1000/elec*(1-td);
- document.getElementById('breakeven').textContent=`Break-even grid factor (EV = reference): ${fmt(be,3)} kg CO2/kWh at generation, ${fmt(be/(1-td),3)} at the meter. Static what-if at central values; consumption at the scenario's central value.`}
+ document.getElementById('breakeven').textContent=`Break-even grid factor (EV = reference): ${fmt(be,3)} kg/kWh at generation, ${fmt(be/(1-td),3)} at the meter (same gas basis as the scenario). Static what-if at central values; consumption at the scenario's central value.`}
 const stSel=document.getElementById('st');const TD=Object.values(DB.records).filter(d=>d.id.endsWith('.td_loss_share.fy2023_24')).map(d=>[d.geography==='IN'?'All India':d.name.replace('T&D losses, ','').replace(' (share of energy available)',''),d.value]).sort((a,b)=>a[0]==='All India'?-1:b[0]==='All India'?1:a[0].localeCompare(b[0]));
 TD.forEach(([n,v])=>{const o=document.createElement('option');o.value=v;o.textContent=`${n} (${(100*v).toFixed(2)}%)`;stSel.appendChild(o)});stSel.onchange=()=>whatif(false);
 sel.onchange=draw;document.getElementById('ef').oninput=()=>whatif(false);window.onresize=draw;draw();
