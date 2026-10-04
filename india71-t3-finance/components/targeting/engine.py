@@ -12,7 +12,8 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 
 ARMS = ["sms_ivr", "bc_visit", "upi_onboard", "incentive"]
 CONFIG = {"learner": "t", "max_iter": 200, "learning_rate": 0.05, "max_leaf_nodes": 15, "min_samples_leaf": 40, "l2": 1.0,
-          "shrink": 0.5}  # shrink: weight on per-person deviation from the arm's pilot ATE (1.0 = no shrinkage)
+          "shrink": 0.5}
+# shrink: weight on per-person deviation from the arm's pilot ATE (1.0 = no shrinkage); a float applies to all arms
 
 NUM = ["mus", "n_accounts", "months_since_last_customer_txn", "share_dbt_withdrawn_7d", "dist_bc_km"]
 BOOL = ["female", "rural", "kyc_due", "is_dbt_account", "dbt_monthly", "has_phone", "smartphone", "literate", "bc_sakhi_present"]
@@ -47,9 +48,10 @@ def fit(X: pd.DataFrame, arm: pd.Series, y: pd.Series, seed: int = 0) -> dict:
 def predict_uplift(model: dict, X: pd.DataFrame) -> pd.DataFrame:
     D = design(X)
     p0 = model["models"]["none"].predict_proba(D)[:, 1]
-    k = CONFIG.get("shrink", 1.0)
+    sh = CONFIG.get("shrink", 1.0)
     out = {}
     for a in ARMS:
+        k = sh.get(a, 1.0) if isinstance(sh, dict) else sh
         u = model["models"][a].predict_proba(D)[:, 1] - p0
         out[a] = model["ate"][a] + k * (u - model["ate"][a])
     return pd.DataFrame(out, index=X.index)
@@ -80,15 +82,17 @@ def allocate(uplift: pd.DataFrame, costs: dict, budget: float, female: np.ndarra
         best, take = solve(hi, mu)
         return best, take
 
-    mu = 0.0
-    best, take = fit_lam(mu)
-    if min_share_women > 0 and take.any():
+    best, take = fit_lam(0.0)
+    if min_share_women > 0 and take.any() and fem[take].mean() < min_share_women:
+        # smallest mu that satisfies the share constraint (binary search; keep the feasible end)
         lo, hi = 0.0, 2.0
+        best, take = fit_lam(hi)
         for _ in range(30):
-            if fem[take].mean() >= min_share_women:
-                break
-            mu = (lo + hi) / 2
-            best, take = fit_lam(mu)
-            lo, hi = (mu, hi) if fem[take].mean() < min_share_women else (lo, mu)
+            mid = (lo + hi) / 2
+            b, t = fit_lam(mid)
+            if t.any() and fem[t].mean() >= min_share_women:
+                hi, best, take = mid, b, t
+            else:
+                lo = mid
     arms = np.where(take, np.array(ARMS, dtype=object)[best], "none")
     return pd.Series(arms, index=uplift.index, name="arm")

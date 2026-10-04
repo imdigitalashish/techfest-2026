@@ -1,3 +1,7 @@
 timestamp	commit	hypothesis	metric	delta	kept	notes
 2026-10-04T07:43+05:30	805f95e	baseline: T-learner (HistGradientBoosting) + Lagrangian budgeted allocation, women floor	0.3396	-	yes	seeds 0-2, n=20000, SYNTHETIC; best-arm rule 0.3835; oracle 1.0; sd 0.04
 2026-10-04T07:59+05:30	dd4b12d+1	exp1: shrink per-person uplift toward each arm's pilot ATE, kappa=0.5 (winner's-curse control)	0.3514	+0.0118	yes	seed sd 0.020 (was 0.040); best-arm rule 0.3835 still ahead; women share 0.594; run with pre-fix allocate (floor not binding, so identical)
+2026-10-04T08:22+05:30	(lead)	EVALUATOR FIX: women-floor search in allocate stopped at the first feasible mu (oracle could treat only women); fixed to smallest feasible mu, and the oracle now uses the frozen eval/frozen_allocate.py. Rows above are SUPERSEDED.	-	-	-	re-measured below with eval/rebaseline_c6.py
+2026-10-04T08:22+05:30	(lead)	re-baseline: T-learner, no shrinkage (shrink=1.0)	0.2992	-	baseline	sd 0.043; best-arm rule 0.3655; status quo 0.0353; risk -0.0734; eval/results/c6_baseline.json
+2026-10-04T08:22+05:30	(lead)	exp1 re-measured: shrink per-person uplift toward arm ATE, kappa=0.5	0.3349	+0.0357	yes	sd 0.019; eval/results/c6_exp1.json
+2026-10-04T08:22+05:30	(lead)	exp2: per-arm shrink (IVR at its pilot ATE for all, expensive arms kappa=0.5) = hybrid policy	0.3496	+0.0147	no	sd 0.208 - not beyond noise: when the pilot IVR ATE estimate is <= 0 (seed 2) nobody gets IVR and value collapses; eval/results/c6_exp2.json

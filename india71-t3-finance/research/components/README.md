@@ -6,7 +6,7 @@
 
 - **Baseline in production:** blanket outreach — alerts before inoperativity and quarterly letters/SMS to all inoperative holders [P2]; campaign drives to re-KYC inactive accounts [P1, P2].
 - **Our baseline (built):** T-learner uplift (one gradient-boosted classifier per arm) + Lagrangian multiple-choice knapsack under a rupee budget, women's-share floor via a bonus term, 10% holdout (contract `InterventionPlanRow`).
-- **Measured (SYNTHETIC, 3 seeds, `eval/results/targeting_baseline.json`):** normalised policy value 0.34 ± 0.04 vs best-arm-for-all 0.38, status quo 0.04, risk ranking −0.08, oracle 1.0.
+- **Measured (SYNTHETIC, 3 seeds, corrected evaluator, `eval/results/c6_*.json`):** normalised policy value 0.30 ± 0.04 (T-learner), 0.33 ± 0.02 with shrinkage (kept), vs best-arm-for-all 0.37, status quo 0.04, risk ranking −0.07, oracle 1.0.
 - **Innovation room:** (1) noise-aware allocation — shrinkage toward arm means, lower-confidence-bound allocation for expensive arms (winner's-curse control); (2) policy *selection* by doubly-robust off-policy value on a pilot split, so the system never deploys a learned policy that loses to a simple rule; (3) adaptive experimentation (Thompson sampling over arms per segment) so the holdout keeps learning [L: Kasy & Sautmann 2021; Hadad et al. 2021]; (4) person-level (not account-level) allocation, which removes double-visits to multi-account holders; (5) fairness/equity constraints with reason codes for explainability [L: Athey & Wager 2021 policy learning; Kitagawa & Tetenov 2018].
 - **Metric:** normalised policy value at fixed budget, averaged over seeds; fresh-seed re-checks. Loop: [`../../components/targeting/autoresearch/`](../../components/targeting/autoresearch/).
 

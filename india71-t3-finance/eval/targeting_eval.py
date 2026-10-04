@@ -27,6 +27,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import sakriya_paths  # noqa: F401,E402
 from components.targeting import engine
 from eval.pipeline import build
+from eval.frozen_allocate import allocate as frozen_allocate
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 ARMS = engine.ARMS
@@ -102,7 +103,7 @@ def run(seed: int, n: int, budget_per_eligible: float, verbose=True) -> dict:
     # oracle
     P = pot.set_index("person_id")
     Ut = pd.DataFrame({a: (P.loc[test["person_id"], f"p_{a}"] - P.loc[test["person_id"], "p_none"]).to_numpy() for a in ARMS}, index=test.index)
-    res["oracle"] = (engine.allocate(Ut, costs, budget, test["female"].to_numpy(), min_share_women=share_w).to_numpy(), None)
+    res["oracle"] = (frozen_allocate(Ut, costs, budget, test["female"].to_numpy(), min_share_women=share_w).to_numpy(), None)
 
     out = {"seed": seed, "n_persons": n, "eligible": int(len(test)), "budget_inr": budget, "pilot_n": int(len(train))}
     pid = test["person_id"].to_numpy()

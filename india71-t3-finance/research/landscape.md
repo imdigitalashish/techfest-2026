@@ -36,7 +36,7 @@ Accounts grew 35% (42.20 → 57.07 crore) while inoperative accounts grew 154% (
 
 **Depth of use today** [P1, P4]: deposits ₹3,16,514 crore (19 Aug 2026; ≈ ₹5,356 per account, derived); 41.29 crore RuPay cards issued; overdraft availed by 35,99,662 holders (≈ 0.64% of accounts, derived) with ₹393.02 crore outstanding (Mar 2025).
 
-**Household survey view** [S]: news reports of World Bank Global Findex 2025 say 89% of Indian adults had an account in 2024 and 16% of account owners made no deposit or withdrawal in the past 12 months, more than double the global 6% (CNBC-TV18; Financial Express — **UNVERIFIED** against the Findex report).
+**Person-level view — the two lenses disagree** [P7] (World Bank Global Findex 2025 data file; India rows in [`findex2025_india_account_inactive.csv`](../eval/public_data/derived/findex2025_india_account_inactive.csv)). Adults (15+) with an *inactive* account (no deposit or withdrawal in the past year): **27.4% in 2021 → 14.3% in 2024** (35.4% → 16.1% of account owners, derived), while account ownership rose 77.5% → 89.0%. So the *survey, person-level* lens shows inactivity halving while the *administrative, account-level* PMJDY lens shows the inoperative share rising (14.1% → 26.4%). The likely reconciliation — people using one account while older Jan Dhan accounts lapse — cannot be tested with administrative data that counts accounts, not people. **Who is left behind (2024, share of account owners with an inactive account, derived):** women 19.6% vs men 12.6%; poorest 40% 23.2% vs richest 60% 11.6%; primary education or less 19.1% vs secondary or more 10.2%; out of the labour force 20.9% vs in it 13.0%; rural 16.0% ≈ urban 16.2%. India's 14.3% of adults compares with 11.8% for South Asia and 6.1% for developing economies [P7].
 
 ## 2. Existing ecosystem and why the gap persists
 
@@ -84,7 +84,8 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 ## 5. Our own numbers so far (committed runs)
 
 - Real data: the two CSVs above (reproduce with `python eval/public_data/parse_ls4090.py`).
-- Synthetic targeting benchmark (C14 simulator → C2 → C3 → C6): see [`eval/results/`](../eval/results/) and the thought node; all account-level data there is **SYNTHETIC**, calibrated to the 23% inoperative share above.
+- Synthetic targeting benchmark (C14 simulator → C2 → C3 → C6): [`eval/results/c6_*.json`](../eval/results/) and the ledger [`components/targeting/autoresearch/results.tsv`](../components/targeting/autoresearch/results.tsv); all account-level data there is **SYNTHETIC**, calibrated to the 23% inoperative share above.
+- Findex 2025 India extract: [`findex2025_india_account_inactive.csv`](../eval/public_data/derived/findex2025_india_account_inactive.csv).
 
 ## 6. Sources
 
@@ -94,12 +95,13 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 - **[P4]** Press Information Bureau backgrounder "12 Years of PM Jan Dhan Yojana: Banking for All, Empowerment for All", 27 Aug 2026 (PDF, 6 pp.). Local copy retrieved overnight by our fetcher and read 2026-10-04; **its URL was not recorded — to re-record** (pib.gov.in).
 - **[P5]** Reserve Bank of India, Press Release 2025-2026/759, "Financial Inclusion Index for March 2025", 22 Jul 2025. https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=60875 — opened 2026-10-04.
 - **[P6]** Reserve Bank of India, Press Release 2026-2027/686, "Financial Inclusion Index for March 2026", 16 Jul 2026. https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=63164 — opened 2026-10-04.
+- **[P7]** World Bank, Global Findex Database 2025 (GlobalFindexDatabase2025.csv; indicators account_t_d, inactive_t_d). https://thedocs.worldbank.org/en/doc/be6615202d1f08a25855c8ac2d615122-0050012025/related/GlobalFindexDatabase2025.csv (download page https://www.worldbank.org/en/publication/globalfindex/download-data) — downloaded and read 2026-10-04.
 - **[P0]** Official problem statement, The India @71/100 Challenge, Techfest 2026-27 — `_briefs/india71.pdf`.
-- **[S]** News coverage seen in search results 2026-10-04, not checked against primaries: CNBC-TV18 and Financial Express on Global Findex 2025 (India 89% account ownership; 16% of account owners inactive); The Hindu BusinessLine and Economic Times on RBI FI-Index FY25 = 67.0 (from 64.2) and weights Access 35% / Usage 45% / Quality 20%.
+- **[S]** News coverage seen in search results 2026-10-04, not checked against primaries: The Hindu BusinessLine and Economic Times on RBI FI-Index FY25 = 67.0 (from 64.2) and weights Access 35% / Usage 45% / Quality 20%.
 
 ## 7. Verification backlog (do before any number goes into the PDF)
 
-1. Global Findex 2025 India figures from the World Bank report/databank (incl. inactive-account share by gender).
+1. ~~Global Findex 2025 India figures~~ (done: [P7], data file).
 2. ~~FI-Index values~~ (done: [P5], [P6]); still to open: the Aug 2021 methodology release (weights, 97 indicators — currently [S]).
 3. NFHS-5 / NFHS-4: women having a bank or savings account they themselves use (national, state, district) — overnight download was truncated.
 4. RBI circular on inoperative accounts (Jan 2024) — DBT/scholarship account treatment, alert duties, BC/V-CIP activation.

@@ -8,11 +8,11 @@
 
 ## 1. Problem identification — the gap and who it hurts
 
-India's scorecard says financial inclusion is rising: PMJDY accounts grew from 42.20 crore (March 2021) to 59.09 crore (August 2026), and the RBI Financial Inclusion Index rose from 53.9 (2018) to 70.0 (March 2026); RBI attributes the latest year's rise "mainly" to an "uptick in Usage" [P4, P6]. The lived reality moved the other way: **inoperative PMJDY accounts — no customer-induced transaction for two years — rose from 5.94 crore (14.1% of accounts, March 2021) to 15.09 crore (26.4%, Lok Sabha answer of 8 December 2025)** [P1, P3]. Accounts grew 35%; inoperative accounts grew 154%.
+India's scorecard says financial inclusion is rising: PMJDY accounts grew from 42.20 crore (March 2021) to 59.09 crore (August 2026), and the RBI Financial Inclusion Index rose from 53.9 (2018) to 70.0 (March 2026); RBI attributes the latest year's rise "mainly" to an "uptick in Usage" [P4, P6]. The administrative record moved the other way: **inoperative PMJDY accounts — no customer-induced transaction for two years — rose from 5.94 crore (14.1% of accounts, March 2021) to 15.09 crore (26.4%, Lok Sabha answer of 8 December 2025)** [P1, P3]. Accounts grew 35%; inoperative accounts grew 154%. Meanwhile the World Bank's household survey shows *person-level* inactivity falling — adults with an inactive account went from 27.4% (2021) to 14.3% (2024) [P7]. The two lenses disagree because the State counts accounts, not people: someone may use one account while an old Jan Dhan account lapses, and nobody can tell which. What both lenses agree on is **who is left behind**: in 2024, 19.6% of women account owners had an inactive account against 12.6% of men, and 23.2% of the poorest 40% against 11.6% of the richest 60% [P7, derived].
 
 The people behind these accounts are overwhelmingly the scheme's intended beneficiaries: 55.7% of PMJDY accounts belong to women and 77.8% are in rural or semi-urban areas [P4]. Yet when asked in Parliament, the Ministry of Finance stated that inoperative accounts by gender and by rural/semi-urban area, the number of accounts holding less than ₹500, and credit extended to PMJDY holders are **"not centrally maintained"** [P1, P3]. The State cannot say *which* women, in *which* districts, hold an account they no longer use — so it cannot target help to them, and it cannot hold banks, Business Correspondents (BCs) or districts accountable for usage rather than openings.
 
-**Gap statement.** One in four Jan Dhan accounts is inoperative and the share is rising, while the data systems that could identify, reach and count the people behind them — bank ledgers, DBT credits, BC networks — are not governed to do so. **Community:** rural, low-literacy and women account holders, many of whom receive DBT into accounts they use only to withdraw cash, or not at all.
+**Gap statement.** One in four Jan Dhan accounts is inoperative and the share is rising; one in five women account owners — and almost one in four of the poorest 40% — has an account they did not use in a year [P7]; and the data systems that could identify, reach and count these people — bank ledgers, DBT credits, BC networks — are not governed to do so. **Community:** women, the poorest and less-educated account holders (Findex 2024: 19.6% of women owners inactive vs 12.6% of men; 23.2% of the poorest 40% vs 11.6% of the richest 60%), most of them in the rural and semi-urban areas that hold 77.8% of Jan Dhan accounts [P4, P7].
 
 ## 2. Evidence and context
 
@@ -27,7 +27,7 @@ The people behind these accounts are overwhelmingly the scheme's intended benefi
 | Overdraft availed | 35.99 lakh holders (≈ 0.6% of accounts), ₹393 crore outstanding (Mar 2025) | [P1] |
 | Women's / men's accounts with balance below ₹2,500 | 22.86 crore / 20.04 crore (Mar 2025) | [P1] Annexure-I |
 | Data "not centrally maintained" | inoperative by gender, by rural/semi-urban, balance ranges, accounts < ₹500, credit to PMJDY holders | [P1, P3] |
-| Household view | 16% of Indian account owners made no deposit or withdrawal in 12 months (2024) — UNVERIFIED (news report of Global Findex 2025) | [S1] |
+| Adults with an inactive account (survey) | 27.4% (2021) → 14.3% (2024); of account owners: women 19.6%, men 12.6%; poorest 40% 23.2%, richest 60% 11.6% (2024, derived) | [P7] |
 
 The trend survived a nationwide Gram Panchayat-level saturation campaign (1 July – 30 September 2025) in which re-KYC of inactive PMJDY accounts was a key focus [P1, P2]: the count reported in December 2025 was higher than in July 2025. (The two answers word the definition slightly differently, so part of the increase may be definitional — itself a data-governance problem.)
 
@@ -81,17 +81,17 @@ flowchart LR
 
 **4.5 What the demo already shows.** A working skeleton (Python; 14 components behind typed contracts) runs end to end on a SYNTHETIC district population calibrated to the official 23% inoperative share. On held-out synthetic persons at the same budget, we compare policies by the share of the oracle's achievable incremental usage they capture (0 = random allocation, 1 = perfect knowledge):
 
-| Policy (same budget: ₹10 per eligible person) | Share of achievable gain captured (mean ± sd, 3 seeds) | Incremental persons in meaningful use (per ~11,600 eligible) | Women's share of those reached |
+| Policy (same budget: ₹10 per eligible person) | Share of achievable gain captured (mean ± sd, 3 seeds) | Incremental persons in meaningful use (per ~11,500 eligible) | Women's share of those reached |
 |---|---|---|---|
 | Status quo: BC visits to inoperative, then dormant, then DBT pass-through accounts | 0.04 ± 0.00 | 47 | 56% |
-| Highest predicted risk of non-use first (BC visit) | -0.08 ± 0.01 | 18 | 69% |
+| Highest predicted risk of non-use first (BC visit) | -0.07 ± 0.01 | 18 | 69% |
 | Random persons, random arm | 0.00 ± 0.00 | 38 | 58% |
-| Best average arm from the pilot, given to everyone (IVR/SMS) | 0.38 ± 0.01 | 134 | 58% |
-| Sakriya v0: per-arm uplift model + budgeted allocation, women ≥ their share | 0.34 ± 0.04 | 122 | 68% |
-| Oracle: true uplift + same allocation (upper bound) | 1.00 ± 0.00 | 288 | 72% |
-_SYNTHETIC. 20,000 simulated persons per seed (seeds 0–2); ~11,511 not yet in meaningful use and outside the 20% pilot are eligible; pilot = randomised arms used to train the models. 'Share of achievable gain' = (policy − random) / (oracle − random). The best-average-arm rule spends only about a third of the budget because IVR is cheap. Reproduce: `python eval/targeting_eval.py --seeds 0 1 2 --n 20000` → `eval/results/targeting_baseline.json`._
+| Best average arm from the pilot, given to everyone (IVR/SMS) | 0.37 ± 0.01 | 134 | 58% |
+| Sakriya v0.1: per-arm uplift model (shrunk toward arm averages) + budgeted allocation, women ≥ their share | 0.33 ± 0.02 | 126 | 59% |
+| Oracle: true uplift + same allocation (upper bound) | 1.00 ± 0.00 | 300 | 58% |
+_SYNTHETIC. 20,000 simulated persons per seed (seeds 0–2); ~11,511 not yet in meaningful use and outside the 20% pilot are eligible; the pilot (randomised arms) trains the models. 'Share of achievable gain' = (policy − random) / (oracle − random). The best-average-arm rule spends only about a third of the budget because IVR is cheap. Reproduce: `python eval/rebaseline_c6.py exp1 0.5` → `eval/results/c6_exp1.json`._
 
-Interpretation: blanket, dormancy-first outreach captures little of what the budget could achieve, and ranking by "risk of non-use" is worse than random — dormancy is not persuadability. In this first version our learned allocation (0.34) does not yet beat the simple best-arm rule (0.38), which also spends only a third of the budget — which is why Sakriya deploys a learned allocation only where it beats simple rules on held-out pilot data. The large gap to the oracle (1.0) is the room our automated improvement loop works on. These are simulator results that show the mechanism, not field impact.
+Interpretation: blanket, dormancy-first outreach captures little of what the budget could achieve, and ranking by "risk of non-use" is worse than random — dormancy is not persuadability. In this first version our learned allocation (0.33) does not yet beat the simple best-arm rule (0.37), which also spends only a third of the budget — which is why Sakriya deploys a learned allocation only where it beats simple rules on held-out pilot data. The large gap to the oracle (1.0) is the room our automated improvement loop works on. These are simulator results that show the mechanism, not field impact.
 
 ## 5. Feasibility and implementation roadmap
 
@@ -117,5 +117,5 @@ Interpretation: blanket, dormancy-first outreach captures little of what the bud
 - [P4] Press Information Bureau, "12 Years of PM Jan Dhan Yojana: Banking for All, Empowerment for All", 27 Aug 2026 (URL to be added).
 - [P5] Reserve Bank of India, Press Release 2025-2026/759, "Financial Inclusion Index for March 2025", 22 Jul 2025. rbi.org.in (prid=60875)
 - [P6] Reserve Bank of India, Press Release 2026-2027/686, "Financial Inclusion Index for March 2026", 16 Jul 2026. rbi.org.in (prid=63164)
-- [S1] News reports (CNBC-TV18, Financial Express) of World Bank Global Findex 2025 — UNVERIFIED; replace with the Findex report.
+- [P7] World Bank, Global Findex Database 2025, data file GlobalFindexDatabase2025.csv (indicators account_t_d, inactive_t_d), India rows; shares of account owners derived as inactive_t_d / account_t_d.
 - Techfest 2026-27, The India @71/100 Challenge — problem statement.
