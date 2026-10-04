@@ -74,3 +74,12 @@ where Δλ is the extra demand rate, d the detection delay, L the reallocation l
   - RL (C8) is the comparator.
   - Option B is revisited for the finals' "multi-agent" emphasis.
   - If H1 is falsified everywhere, we report that honestly and the spike moves to B.
+
+## Update 2026-10-04 08:05 IST — first test of H1 (not supported yet)
+- **Run:** `eval/results/p3-v1` (shock, seeds 100–104, P=3, 1-step hops; reproduce with `.venv/bin/python -m eval.harness --scenarios shock --policies greedy reactive mpc-ewma mpc-cusum-v1 oracle --seeds 100-104 --patience 3 --horizon 1440 --out eval/results/p3-v1`).
+- **Served fraction:** greedy 0.802 · reactive 0.783 · mpc-ewma 0.889 · mpc-cusum-v1 0.889 · oracle 0.890.
+- **Look-ahead vs best rule:** +8.7 pp (paired CI [+7.0, +10.8]), 5/5 seeds; n=5 caps the Wilcoxon p at 0.062. The margin roughly doubles from P=10 (+3.9 pp). That fits the first-principles story: the shorter the patience, the more structurally late reactive allocation is.
+- **H1 (detector beats EWMA, growing as P/L shrinks):** *not supported at P ∈ {3, 10} with 1-step hops*. The detector, the EWMA and even the clairvoyant forecast tie.
+- **Reason:** lead time here is 1–3 steps and H=6, so the MPC's view of the *observed* queue plus the units about to free up already captures the shock. Forecasts only matter when L is large relative to the reaction window.
+- **Next test:** a hop-time knob of 3–5 steps per hop, which needs multi-step edges in the time-expanded LP, with H ≥ L + P.
+- **Fallback if that also ties:** promote Spike B (price-based decentralised coordination). Keep the look-ahead planner plus the measured (L, P) law as the headline.

@@ -13,9 +13,9 @@
 _Updated 2026-10-04 07:30 IST._
 - **Phase:** 4–6. The walking skeleton and eval harness are built, and there are **held-out MVP numbers**: look-ahead beats the best rule on 10/10 seeds under shock and under shock+drift. The first ratchet is done. Abstract v0.2 is written (896 words).
 - **Plan:** PettingZoo dispatch simulator → 3 rule-based allocators vs a look-ahead MPC (EWMA or change-aware forecaster) vs a clairvoyant oracle → paired statistics on frozen seeds → spike = regime-aware forecasting, tested along the lead-time/patience axis ([ADR 001](architecture/adr/001-spike.md)).
-- **Doing:** morning package complete and pushed. Next is the P=3 patience sweep to test H1. No sub-agents (Supervisor lean mode).
+- **Doing:** morning package complete and pushed. P=3 test done: H1 unsupported so far (see Log, 08:05). No sub-agents (Supervisor lean mode).
 - **Next (ordered):**
-  2. Run the patience sweep (P=3 vs 10) to test hypothesis H1.
+  2. Add a hop-time knob (3–5 steps per hop, multi-step LP edges) and re-test H1. If it still ties, promote Spike B (price-based coordination).
   3. Write contract tests: PettingZoo `parallel_api_test`; core ≡ wrapper; conservation.
   4. Get an independent rubber-duck review of ADR 001 and the abstract once sub-agents are allowed.
   5. Re-run the failed research threads (compute-cluster papers, social/competitions).
@@ -81,10 +81,10 @@ Details: [architecture/components.md](architecture/components.md) · contracts: 
 ## Selection memo
 _First version, 4 Oct 07:35 IST; final by 12 Oct. Scores 1–5._
 - **Winnability — 4.** The MVP was reached overnight. On held-out seeds 100–109, the look-ahead MPC beats the best rule on 10/10 seeds: +3.9 pp served under shock (CI [+3.3, +4.6]) and +5.4 pp under shock+drift ([+5.2, +5.7]), losing 82–121 fewer requests in the two hours after the shock (`eval/results/mvp-v1/summary.md`). P7 is the only problem in Theme 4, so it probably draws many "RL on PettingZoo" entries. We separate ourselves through evaluation rigour (frozen seeds, paired CIs, oracle regret) and a falsifiable lead-time law.
-- **Innovation headroom — 3.5.**
+- **Innovation headroom — 3 (down from 3.5 at 08:05).**
   - The spike: a statistical change detector inside the forecaster that feeds the rolling-horizon planner, plus a lost ≈ Δλ·max(0, d + L − P) "when look-ahead pays" phase diagram.
   - For: the first ratchet run beats the EWMA reference on the isolated metric (0.4154 vs 0.4385; detection in ~5.6 steps).
-  - Against: the pilot shows little *end-to-end* gain when lead time ≤ patience, and "MPC beats rules" alone is known (Iglesias 2018).
+  - Against: there is no *end-to-end* detector gain yet. At P=10 and at P=3 (1-step hops), detector = EWMA = oracle; H1 is unsupported so far. And "MPC beats rules" alone is known (Iglesias 2018).
   - Second spike candidate: LP dual-price (market-style) decentralised coordination.
 - **Feasibility — 5.** Simulator, baselines, MPC, harness, statistics and the ratchet already run on the M5 CPU; no GPU or data download is needed. The RL comparator is optional. Everything user-dependent can finish before 17 Nov.
 - **Demo strength — 4.** A live grid where a judge clicks to inject a shock: the detector fires, units pre-position and the baselines lag, with live served-fraction and CI panels. Less flashy than a 3D or LLM demo, but very legible.
@@ -149,3 +149,11 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
   - The greedy local rule collapses under drift (0.739), a nice multi-agent coordination point.
 - **Statistics caveat:** with n=10, Holm correction over all 28 paired tests per scenario gives a smallest adjusted p of 0.068. The pre-registered primary test (served fraction, look-ahead vs best rule) has p=0.002. ≥20 test seeds are needed for family-wide significance; that is planned.
 - Updated: abstract v0.2 (numbers in, 896 words), ADR 001 evidence table, selection memo.
+
+### 2026-10-04 08:05 IST — P=3 test of H1 (`eval/results/p3-v1`)
+- Reproduce: `.venv/bin/python -m eval.harness --scenarios shock --policies greedy reactive mpc-ewma mpc-cusum-v1 oracle --seeds 100-104 --patience 3 --horizon 1440 --out eval/results/p3-v1 && .venv/bin/python -m eval.stats eval/results/p3-v1`
+- Served fraction: greedy 0.802 · reactive 0.783 · mpc-ewma 0.889 · mpc-cusum-v1 0.889 · oracle 0.890.
+- Look-ahead vs best rule: +8.7 pp [+7.0, +10.8], 5/5 seeds (n=5 caps Wilcoxon p at 0.062). The margin roughly doubles from P=10.
+- **H1 not supported:** the detector, EWMA and oracle forecasts tie. With 1-step hops the queue plus the units about to free up already capture the shock.
+- Next: a hop-time knob (L of 3–5 steps per hop). ADR 001 now has an update section. Innovation score lowered to 3.
+- Contract tests: 6 passed. README added. Per-component innovation scan: `research/components/innovation-scan.md`.
