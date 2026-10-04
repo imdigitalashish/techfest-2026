@@ -182,3 +182,12 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - POST-HOC on OBD: 6/10 cases answered, 0 wrong; 3/3 DR failures abstained; 1 unnecessary abstention.
 - **Abstract** rendered from `eval/results/headline.json` (885 words). `eval/check_docs.py` shows 0 untraced numbers in the abstract; the memo is pending. Architecture diagram v2 includes Shapley and the gate.
 - **Child sessions spawned (2, the cap):** "P3 hostile judge (gpt-6-astra, max)" and "P3 code/eval reviewer (gpt-6-sol, max; reproduces the headline numbers)".
+
+### 2026-10-04 13:52 IST — Product layer while the reviews run
+- **C10 verdict** (`components/report/verdict.py`): worked / hurt / inconclusive / **can't tell**. Each off-policy cell is gated on the logs it comes from.
+  - Both cells pass: decide on the Shapley term and report the interaction.
+  - One passes: decide on that period's effect and say the interaction is not estimable.
+  - Neither passes: can't tell.
+  - Insight: on OBD every 2×2 needs one cell estimated from Thompson-sampling logs, which are greedy and fail the gate. So the Shapley term is never estimable there, while the single-ordering effect from the Random logs is.
+- **Abstract wording fixed before review:** DR's interval in the deploy case (+1.40 ± 0.27 per 1,000) holds the truth, but also still contains the dashboard number (+1.62); the abstract now says so. Framing added: OPE supplies the control arm a difference-in-differences would need.
+- **Added:** `deliverables/evidence-map.md` (criteria → evidence); `eval/demo_verdicts.py` (will run once the reviewer's OBD job finishes; one heavy job at a time). Tests: 13 pass.
