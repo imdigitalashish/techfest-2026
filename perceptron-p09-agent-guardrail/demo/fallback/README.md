@@ -1,6 +1,6 @@
 # Recorded fallback: P9 demo screenshots
 
-Use these if the live demo fails. They were captured from `demo/run.sh` (headless Chromium via Playwright, 1440×900, full page) on 4 Oct 2026, at the commit that added them. Every number in them is reproduced by `demo/smoke.sh`.
+Use these if the live demo fails. They were captured from `demo/run.sh` at `/?capture=1`, which unsticks the header for full-page shots (headless Chromium via Playwright, 1440×900, full page) on 4 Oct 2026, at the commit that added them. Every number in them is reproduced by `demo/smoke.sh`.
 
 | File | Screen | What it shows |
 |---|---|---|
