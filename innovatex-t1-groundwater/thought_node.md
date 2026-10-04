@@ -10,14 +10,14 @@
 - _(none)_
 
 ## Now
-- **Phase:** 4 — walking skeleton. The real-data part is done; the recharge simulator and verifier are next. Phases 0–3 were done in lean mode (Supervisor directive 05:49: no new sub-agents).
+- **Phase:** 4–5: walking skeleton running end-to-end. The real DWLR profile, C0 simulator, C5 baseline and frozen evaluator all work. The baseline is in the ledger and the ratchet starts next. Phases 0–3 were done in lean mode (Supervisor directive 05:49: no new sub-agents).
 - **Plan:** the hero is **JalSakshi RechargeMeter**: measured, not self-declared, recharge from Delhi's rainwater-harvesting (RWH) pits. Spikes: C5 recharge-verifier + C4 ingest-qc ([ADR 001](architecture/adr/001-spike.md)). A city twin on real India-WRIS DWLR data is the outcome layer.
 - **Doing:** lead only.
   - Still running from before lean mode: r3 hardware/prices (no output yet).
   - Died without output: r1a, r2, r4, r6/r6a/r6b, r1b1.
   - The first-principles physics agent never reported.
 - **Next (ordered):**
-  1. C0 simulator on real ERA5 rain, C5 baseline and a frozen evaluator, to get real numbers.
+  1. Autoresearch ratchet on C5. Baseline dev event MdAPE is 11.8 %. The weak spots are fake recall (0.2) and the false-implausible rate (0.31). See `components/recharge_verifier/autoresearch/program.md`.
   2. C4 QC module on real DWLR data, with fault-injection F1.
   3. Autoresearch loop on C5's MdAPE.
   4. Static dashboard.
@@ -63,12 +63,12 @@ Full table, contracts and graph: [architecture/components.md](architecture/compo
 
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
-| C0 | twin-simulator | ERA5 rain + structure → RawSample + truth | — | test harness | next | mass-balance closure |
+| C0 | twin-simulator | ERA5 rain + structure → RawSample + truth | — | test harness | **built** | mass-balance closure |
 | C1 | sensor-front-end | physical → RawSample | vented / ultrasonic | — | design | stage RMSE (mm) |
 | C2 | edge-firmware | RawSample → UplinkFrame | fixed-interval DWLR (2/day) | — | design | mAh/day at equal error |
 | C3 | telemetry-link | UplinkFrame → DeliveryReport | GPRS | — | design | % events ≤24 h |
 | C4 | ingest-qc | frames / WRIS JSON → Series + QCReport | range/flatline | ★2 | real-data profile done | fault F1; % usable |
-| C5 | recharge-verifier | Series + structure → RechargeEvent | self-certification | ★1 | next | event-volume MdAPE |
+| C5 | recharge-verifier | Series + structure → RechargeEvent | self-certification | ★1 | **baseline 11.8 % MdAPE (dev, sim)** | event-volume MdAPE |
 | C6 | hydro-twin | Series → HeadModelFit, RechargeEstimate | Pastas TFN | — | planned | holdout NSE |
 | C7 | inspection-queue | events/QC → InspectionTicket | complaints | — | planned | precision@k |
 | C8 | dashboard | all → HTML | ThingSpeak/Blynk | — | planned | 5-task time |
@@ -129,3 +129,24 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - "infiltrated volume with uncertainty", not "aquifer recharge";
   - no claims to identify illegal borewells.
 - **Not done yet, next:** simulator, verifier and evaluator numbers; the autoresearch loop; the dashboard.
+
+### 2026-10-04 08:05 IST — Walking skeleton end-to-end (simulated pits, real rain)
+- **Built:**
+  - C0 `components/twin_simulator/simulate.py`: linear-reservoir pits, 1-minute step, exact mass balance, with clogging, blocked inlets, bucket fakes, noise and dropouts. Driven by real ERA5 hourly Delhi rain.
+  - C5 baseline `components/recharge_verifier/verifier.py`.
+  - Frozen evaluator `components/recharge_verifier/autoresearch/eval.py`.
+- **Baseline, dev split** (monsoon 2025, 40 simulated pits, imperfect registry):
+
+  | Metric | Value |
+  |---|---|
+  | Event MdAPE (primary) | **11.8 %** |
+  | Event APE p90 | 95.8 % |
+  | Season-total error | 61.0 % |
+  | Coverage | 0.975 |
+  | Clogging precision / recall | 1.0 / 1.0 |
+  | Fake recall | 0.2 (n=10) |
+  | False-implausible rate | 0.307 |
+  | Blocked recall | 1.0 (n=1) |
+
+  Logged in `results.tsv`. The holdout run (monsoon 2024) is in progress.
+- **Reading:** volumes are already decent per event. The weak spots are the verdicts: fake detection, and honest pits flagged as implausible. That is the first ratchet target, ideas 1 and 6 in `program.md`.
