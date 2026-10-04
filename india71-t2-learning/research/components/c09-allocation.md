@@ -13,6 +13,6 @@
 | Greedy/knapsack on expected gain with equity weights | 3·2·5·4·3 |
 | Robust allocation using interval lower bounds | 3·3·4·4·2 |
 
-**Status.** First pass: targeting with moderated vs raw data reached 441.2 vs 441.1 children (oracle 444) — no gain in the current simulator, because inflation in it barely reorders schools. Simulator needs heterogeneous, need-correlated inflation before this claim is tested.
+**Status.** **Pre-registered result: no allocation gain.** Targeting the top 10 % of schools with moderated vs raw numbers: +0.2 below-goal children (CI −5.6 to +6.1, 30 held-out districts); worse at a 5 % budget (−13.4, CI −20.8 to −6.0). Even perfect information beats raw by only ~1.2–1.5 % because school size dominates the score. Allocation is demoted to 'evidence for existing review', not a value claim.
 
 **Isolated metric.** Expected additional children meeting the goal vs oracle.

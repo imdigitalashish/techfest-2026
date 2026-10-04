@@ -14,6 +14,6 @@
 | Prior from the school's previous round (shrinks items further) | 4·3·4·5·3 |
 | AI oral-reading (ORF) score as an extra item, validated per language | 4·3·3·4·4 |
 
-**Status.** Implemented: `components/diagnostics/` — rule, Bayesian IRT, CAT. Baseline ledger: exact level accuracy 0.551 with the check capped at 8 items (seeds 101–105, synthetic). Autoresearch scaffold: `components/diagnostics/autoresearch/`.
+**Status.** Implemented: `components/diagnostics/` — ASER rule, Bayesian 2PL IRT, CAT. On the vectorised simulator (seeds 101–105, SYNTHETIC items): exact 5-level accuracy CAT@8 0.546 vs full-test IRT 0.597 vs ASER rule 0.472; CAT uses 7.6 items (~2.5 min at an assumed 20 s/item). The stopping threshold is a model rule, not field certainty; field validation against independently scored responses is a phase-0 task.
 
 **Isolated metric.** Exact level accuracy and items per child at parity with the full test (seeds 101–105; held-out 201–205).

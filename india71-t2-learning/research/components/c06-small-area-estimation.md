@@ -14,6 +14,6 @@
 | Hierarchical Bayes over block → cluster → school (PyMC) | 4·3·3·5·3 |
 | MRP using UDISE+ composition (SC/ST, single-teacher) | 3·3·3·4·3 |
 
-**Status.** First pass had 90 % CI coverage of 0.50 (full shift to a noisy anchor; anchor error not in SE). Patched 07:00 (precision-weighted benchmarking, design effect 2 assumed); re-run pending under CPU contention.
+**Status.** Now a Fay–Herriot model on the **reporting bias** (direct = block's HT-weighted re-test residual; synthetic = risk-stratified model; τ² by an adjusted likelihood that stays positive with ~6 blocks), then precision-weighted benchmarking to a same-construct survey only. Covered by the pre-registered test (see C5).
 
 **Isolated metric.** Block RMSE (pp); 90 % CI coverage; |aggregate − anchor|.

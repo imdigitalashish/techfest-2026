@@ -14,6 +14,6 @@
 | IVR menu per group for teachers without smartphones | 4·3·4·3·4 |
 | Plan acknowledgement + recheck date written to the action ledger | 4·3·5·4·3 |
 
-**Status.** Implemented: `components/teacher_view/`. First run (synthetic class of 60): Hindi WhatsApp plan 659 bytes; SMS 3 segments; IVR script.
+**Status.** Implemented: `components/teacher_view/`. Synthetic class of 60: Hindi WhatsApp plan 755 bytes (sorted roll numbers, named activities), Hindi SMS 3 segments, IVR script with recheck date; printed tool is the default per the v1.0 proposal.
 
 **Isolated metric.** Payload bytes / SMS segments; group–level match rate; (pilot) plans acted on.
