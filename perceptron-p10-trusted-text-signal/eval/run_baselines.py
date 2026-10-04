@@ -63,7 +63,10 @@ def template_sentiment(scorer: str) -> float:
     return float(VaderScorer().score(t)["compound"].iloc[0])
 
 
-def main(tag: str = "baseline_v1", suffix: str = "", scorer_name: str = "vader+fin", oracle: bool = True, scorer: str = "vader"):
+def main(tag: str = "baseline_v1", suffix: str = "", scorer_name: str = "vader+fin", oracle: bool = True, scorer: str = "vader",
+         seed: int = 0):
+    global SEED
+    SEED = seed
     t0 = time.time()
     OUT.mkdir(parents=True, exist_ok=True)
     panel = pd.read_parquet(f".cache/panel{suffix}.parquet")
@@ -229,6 +232,7 @@ if __name__ == "__main__":
     ap.add_argument("--tag", default="baseline_v1")
     ap.add_argument("--scorer", choices=["vader", "minilm", "finbert"], default="vader")
     ap.add_argument("--no-oracle", action="store_true")
+    ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args()
     sfx = "" if a.scorer == "vader" else f"_{a.scorer}"
-    main(a.tag, sfx, {"vader": "vader+fin", "minilm": "MiniLM-L6 + LR (TFNS)", "finbert": "ProsusAI/finbert"}[a.scorer], not a.no_oracle, a.scorer)
+    main(a.tag, sfx, {"vader": "vader+fin", "minilm": "MiniLM-L6 + LR (TFNS)", "finbert": "ProsusAI/finbert"}[a.scorer], not a.no_oracle, a.scorer, a.seed)

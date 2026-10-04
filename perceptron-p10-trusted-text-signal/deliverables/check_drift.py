@@ -2,7 +2,7 @@
 
 Checks
 1. Every deliverables/*.template.md re-renders exactly to its committed .md (numbers come from eval/results/*.json).
-2. Every eval/results/<tag>.json with a v1-style report re-renders exactly to eval/results/<tag>.md.
+2. Every v1 results report (StockNet runs and the pre-registered DJIA test) re-renders exactly from its JSON.
 3. The Round-1 abstract body is 600-900 words (the official suggested length), tables included.
 4. Templates contain no hard-coded percentages outside placeholders, except the whitelist below
    (design constants such as the 90% target, quantile levels and the trimming fraction).
@@ -39,12 +39,14 @@ def main() -> int:
                 bad.append(f"{out.name}: {words} words (allowed 600-900)")
             else:
                 print(f"{out.name}: {words} words")
-    for tag in REPORTS_V1:
+    jobs = [(tag, [str(ROOT / "eval/report.py"), tag]) for tag in REPORTS_V1]
+    jobs.append(("text_utility_djia_v1", [str(ROOT / "eval/report_djia.py")]))
+    for tag, cmd in jobs:
         js, md = ROOT / "eval/results" / f"{tag}.json", ROOT / "eval/results" / f"{tag}.md"
         if not js.exists():
             continue
         before = md.read_text() if md.exists() else ""
-        subprocess.run([sys.executable, str(ROOT / "eval/report.py"), tag], cwd=ROOT, check=True, capture_output=True)
+        subprocess.run([sys.executable, *cmd], cwd=ROOT, check=True, capture_output=True)
         if md.read_text() != before:
             bad.append(f"stale report: eval/results/{tag}.md (re-rendered now; commit it)")
     for b in bad:
