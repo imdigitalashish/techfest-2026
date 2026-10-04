@@ -10,21 +10,23 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ RESUMED (13:05) — definition of done items 1–3 complete and pushed. Item 4 in progress: two cross-model reviews running as child sessions. Then triage, then item 5 (final memo) → "DONE — slot free".
-- **Doing:**
-  - [EV C1 code+eval review (gpt-6-sol, max)](ghapp://sessions/2e1afeef-1c2d-42e1-9965-c8bb3303da70): reproduces `eval/run_all.sh` from a copy of the cached data; reviews code and evals.
-  - [EV C1 hostile judge (gpt-6-astra, max)](ghapp://sessions/3a2611bb-08aa-44b9-92dd-893f78fe5562): ADR 001 + Round-1 docs.
-  - Lead: waiting for both, then triage → `reviews/ledger.tsv`, fixes, re-render, final memo.
-- **Done since resume:**
-  - **Facts:** fact-check of 11 claims + MoP/PM E-DRIVE norms verified at primary sources.
-  - **C9:** month-wise VAHAN, forecast ratchet, 2026 nowcast with backtest.
-  - **C5:** Overture as third source; capture–recapture (fails state validation, reported as such).
-  - **Supply:** small-area allocation tested at a past date on Chhattisgarh's official district counts (conditional; one state).
-  - **Maharashtra:** district gap on LGD-based boundaries incl. Palghar; dashboard v1 checked in a browser.
-  - **Docs:** Round-1 docs v2 with numbers rendered from runs; drift/unverified-number check passes.
-- **Rules in force:** child sessions only (≤ 2); never stash or autostash; heavy jobs under `nice -n 10` with memory ≥ 30.
-- **Needs from user:** If EV C1 is preferred over C2: register by 15 Oct (track fixed at registration). Team of 2–5: names and skills. Optional: request access to BEE's national charging-station database through MHI/ICAT (MoP 2024 clause 13); a free Open Charge Map API key.
-- **Risks:** (1) supply data: open sources see <!--n:open_coverage_pct-->11.4%<!--/n--> of official stations, and capture–recapture fails validation → district supply rests on a model validated in one state; (2) registrations ≠ on-road stock; (3) a probably crowded track (UNVERIFIED: no registration statistics); (4) VAHAN markup changes (client self-discovers ids); (5) boundary compliance.
+- **Phase:** ✅ Definition of done (Supervisor 13:05) met at 15:10 IST. Slot released to the Supervisor. Idle until the 12 Oct selection, or until the user picks C1.
+- **State:**
+  - **Facts:** verified at primary sources ([fact-check](research/fact-check.md), 28 rows).
+  - **Analysis:**
+    - C9 on month-wise VAHAN: purged backtest, nowcast and a frozen prospective test;
+    - C5 with a third source and a capture–recapture estimate with abstention: fails its rule narrowly, so used as a coverage audit;
+    - district supply tested at a past date;
+    - Maharashtra on 2021 LGD boundaries incl. Palghar, plus the corridor norm.
+  - **Round-1 methodology v3 + roadmap v3:** numbers rendered from runs; external numbers bound to fact rows; `check_docs` passes.
+  - **Dashboard:** checked in a browser, including a hostile-input test.
+  - **Reviews:** two cross-model reviews; 28 issues triaged ([ledger](reviews/ledger.tsv)).
+- **If the user picks C1, resume here:** (1) register, fill team fields; (2) send the BEE open-API request (MoP clause 13) via MHI/ICAT; (3) the requirement MVP: urban 1 km grid and heavy-duty norms, energy model cross-checked against CEA DISCOM data; (4) a hand audit of 200 sites + match labels; (5) score the prospective test in Jan 2027.
+- **Needs from user:**
+  - Choose the EV track (memo below recommends C1, narrowly) and register by 15 Oct (track fixed at registration).
+  - Team of 2–5: names, skills; fill the Round-1 team fields.
+  - Optional: route the BEE open-API request through MHI/ICAT contacts.
+- **Risks:** (1) supply data — open lists show <!--n:open_coverage_pct-->11.4%<!--/n--> of the official count, capture–recapture is estimable in only <!--n:mse_states-->5<!--/n--> of <!--n:mse_states_ge100-->22<!--/n--> large states; (2) district supply tested in one state; (3) probably a crowded track (UNVERIFIED); (4) VAHAN markup changes (fail-closed client); (5) boundary compliance.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** EV Infra & Green Mobility AI Challenge — Techfest IIT Bombay with the Ministry of Heavy Industries (MHI) and the International Centre for Automotive Technology (ICAT). Prize pool ₹2,00,000; top 3 teams per track.
@@ -55,6 +57,7 @@
 - 2026-10-04 13:45 — Capture–recapture **fails** the stated state check → used as a coverage audit only; district supply = small-area allocation validated on Chhattisgarh (Supervisor 13:25 proposal, refined). [ADR 001 addendum](architecture/adr/001-spike.md).
 - 2026-10-04 13:50 — Government-facing maps draw no third-party basemap; boundaries are LGD-aligned (geoBoundaries ADM2 2021) and labelled as not SoI-certified.
 - 2026-10-04 14:00 — Documents render run-derived numbers from `eval/results/latest.json`; `eval/check_docs.py` fails on drift or on any unverified number in the Round-1 docs.
+- 2026-10-04 15:00 — After two cross-model reviews (28 issues, all accepted): one record per source per site; capture–recapture abstains where lists don't overlap; no national total quoted; Chhattisgarh tested at a past date (BEV-only allocation, WAPE <!--n:cg_pit_wape-->0.30<!--/n-->); Maharashtra ranked on observed pressure + visible supply ("verify first"), not modelled shortage; forecast split purged and a prospective test frozen; external numbers bound to fact rows.
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric (latest) |
@@ -68,22 +71,32 @@
 | C7 | ev_stock | registrations → stock | cumulative regs | | baseline | holdout error (pending) |
 | C8 | demand_model | stock → public kWh | EVs-per-charger | | designed (§2.6) | rank corr. (pending) |
 | C9 | adoption_forecast | monthly series → forecast, nowcast | naive | ★2 | **real** v2 | held-out WAPE <!--n:c9_hold_logit-->0.157<!--/n--> |
-| C10 | access_gap | sites + demand → GapRecord | EVs per charger | | **real**: state + MH districts (small-area) | CG point-in-time WAPE <!--n:cg_pit_wape-->0.30<!--/n--> |
-| C11 | requirement_siting | gaps → Recommendation | norm counts | ★2 | benchmark only; full module Round 2 | demand covered per charger (pending) |
+| C10 | access_gap | sites + demand → GapRecord | EVs per charger | | **real**: state ratios (date-aligned); MH registration pressure, visible supply, verify-first; conditional district supply | CG point-in-time WAPE <!--n:cg_pit_wape-->0.30<!--/n--> |
+| C11 | requirement_siting | gaps → Recommendation | norm counts | ★2 | **real** MVP: MoP 20 km corridor norm for Maharashtra (<!--n:cor_norm_stations-->1,853<!--/n--> stations); energy-based + siting Round 2 | demand covered per charger (pending) |
 | C12 | platform_api | outputs → API | static CSV | | planned | p95 latency |
 | C13 | dashboard_map | data → map UI | static choropleth | | **real** v1 (national + MH), browser-checked | planner task time (pending) |
 | C14 | eval | all → metrics | — | | **real**: run_all + frozen evals + doc checks | — |
 
 ## Selection memo
-_v1, 4 Oct 08:05 IST — final by 12 Oct. Scores 1–5 with one line of evidence each. Overall **4.2 / 5**._
-- **Winnability — 4:** a real national pipeline already runs on day 1: VAHAN (36/36 states, RTO-level) + official state charger totals + OSM. Most teams will have static or synthetic data; ours updates from the public dashboard.
-- **Innovation headroom — 4:** measured completeness of the national charger census (open data shows 600 of 29,277 official stations = 2.05%), with CIs validated against held-out official totals, plus segment-aware requirement estimates. Novelty vs. literature still UNVERIFIED (check by 12 Oct).
-- **Feasibility — 4:** all inputs are public and small (VAHAN tables are KB-sized); an M5 Mac suffices; Azure is optional. Risk: second and third charger sources need a key or permission.
-- **Demo strength — 5:** a national map → Maharashtra drill-down → "where do the next N chargers go, and why" is live-demoable, with every number clickable to its source.
-- **Fit with the user's strengths — 4:** large-scale data systems, ingestion, geospatial, cloud. Frontier models are secondary (ER, NL queries), not central.
-- **Biggest risk:** supply-side data. Open sources are ~2% complete in India, so district-level supply depends on getting operator/OCM/UEI feeds; fallback is calibration to official state totals.
-- **One-line pitch:** India's first completeness-aware EV charging census. We fuse every public charger source, measure what is still missing, and tell each district how many chargers of which type it needs, and where, with an evidence trail for every number.
-- **Headline real numbers (from [`eval/results/state_gap_baseline.csv`](eval/results/state_gap_baseline.csv)):** 10,550,090 BEV registrations in VAHAN till today (`ELECTRIC(BOV)` + `PURE EV`, 36 states/UTs); 2,356,971 in CY2025 = 8.05% of all CY2025 registrations; 360 BEV registrations per official public charging station nationally (29,277 PCS, PIB 1 Aug 2025); BEV registrations per PCS run from 152 in Karnataka to 1,085 in Bihar and 1,123 in Assam.
+_Final (4 Oct 2026, 15:10 IST) — for the 12 Oct gate. Scores 1–5 with one line of evidence each. Overall **4.1 / 5** (EV C2: 4.0)._
+- **Winnability — 4:**
+  - Real national pipeline: VAHAN to RTO and month, three open charger lists, three official snapshots, a corridor norm.
+  - Every claim is rendered or bound to a quoted source.
+  - Hostile-judge Round-1 score: 70/100 (gpt-6-astra, max), before its 17 issues were fixed. C2 drew 63.5/100 from the same reviewer model on its own draft; the scores are not strictly comparable.
+- **Innovation headroom — 3.5:**
+  - The coverage audit is an application claim found novel in three dated searches, but it fails its rule narrowly where estimable.
+  - Point-in-time-tested district supply (WAPE <!--n:cg_pit_wape-->0.30<!--/n--> vs <!--n:cg_pit_bevshare_wape-->0.58<!--/n--> on Chhattisgarh).
+  - A fail-closed VAHAN pipeline and claim-bound documents.
+  - Solid rather than headline-grabbing.
+- **Feasibility — 4.5:** everything runs on a laptop from small public inputs (`run_all.sh`, manifest-verified). What remains is bounded: the norm/energy requirement MVP, a site audit, the platform.
+- **Demo strength — 4.5:** India map → Maharashtra "verify first" districts → corridor gaps under the MoP 20 km rule. Every number shows its source and date, which suits an MHI/ICAT jury that runs PM E-DRIVE charging.
+- **Fit with the user's strengths — 4:** data engineering, scraping, geospatial and statistics at national scale. Frontier models are secondary.
+- **Biggest risk:** supply-side data. Open lists see <!--n:open_coverage_pct-->11.4%<!--/n--> of the official count, so the strongest version needs BEE's database/API (promised in MoP clause 13; access not yet obtained). The track is also probably crowded (UNVERIFIED).
+- **One-line pitch:** "A national EV-charging evidence base that says what it knows and what it doesn't: live VAHAN demand to RTO level, every open charger source linked with provenance, coverage measured, district supply estimated with tested ranges, and MoP norms turned into corridor requirements."
+- **C1 vs C2 (one EV track per team) — call: C1, narrowly.**
+  - **For C1:** an equal or slightly higher rubric score (4.1 vs 4.0); a better pre-fix hostile-judge score (70 vs 63.5, same reviewer model); a far more demoable product for a ministry jury; direct policy hooks (MoP norms, PM E-DRIVE, the BEE database).
+  - **For C2:** probably fewer competing teams (UNVERIFIED); exact reproduction of published Indian LCAs; a natural fit with ICAT's testing role.
+  - **What would flip the call to C2:** the team has an automotive/LCA member but no one for GIS and data engineering, or the user prefers the less crowded track. The margin is within our rubric's noise; both projects are submission-ready apart from team fields.
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -204,7 +217,7 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Dashboard v1** (`components/dashboard_map/`; `dist/index.html` + `dist/maharashtra.html`): no third-party basemap (boundary compliance); national layers BEV/station and **open/official coverage per state** (Supervisor item 3); district drill-down with ranges and reasons. Checked in Chromium (Playwright, private pages; the shared browser was being navigated by another session): 0 console errors, both layers switch, ranking row → zoom + popup. Screenshots committed. Browser closed.
 
 ### 2026-10-04 14:00 IST — Docs pipeline, Round-1 v2, reviews launched, pre-emptive robustness checks
-- **Docs pipeline:** `eval/run_all.sh` re-runs every analysis from cached data → `make_latest.py` (240 keys) → `render_docs.py` (inline markers `<!--n:key-->`) → `check_docs.py`. The check fails on marker drift, superseded numbers, or any significant number in the Round-1 docs that is neither rendered nor in `research/fact-check.md`. A negative test (fake number + drifted marker) failed as expected.
+- **Docs pipeline:** `eval/run_all.sh` re-runs every analysis from cached data → `make_latest.py` (240 keys) → `render_docs.py` (inline n-markers) → `check_docs.py`. The check fails on marker drift, superseded numbers, or any significant number in the Round-1 docs that is neither rendered nor in `research/fact-check.md`. A negative test (fake number + drifted marker) failed as expected.
 - **Round-1 methodology and roadmap v2** written and rendered; ADR 001 addendum (spike outcome and revised decision); landscape v2 (verified timeline, policy anchors, Overture/AllThePlaces in "What companies ship today", reliability evidence); project README.
 - **Reviews launched** (child sessions, ≤ 2): gpt-6-sol max (code + eval reproduction) and gpt-6-astra max (hostile judge: ADR 001 + Round-1 docs v2).
 - **Pre-emptive checks while waiting:**
@@ -213,4 +226,20 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - **Registration vintage:** 95.3% of BEV registrations are from 2020 or later and 90.8% from 2022 or later, so registrations ≈ on-road fleet except ~0.5M older units.
   - **Overture name-rule sample:** 30/30 are charging sites (one outside India, removed by the clip).
 - Dashboard re-checked in a private browser page (only a favicon 404); browser closed, server stopped.
+
+### 2026-10-04 15:10 IST — Reviews triaged, fixes landed, definition of done met
+- **Code + eval review (gpt-6-sol, max):** 11 issues (2 blockers). All accepted (one partly). It reproduced every headline number byte-identically from copied inputs.
+  - Blocker 1, linkage chaining: fixed. The national capture–recapture estimate flipped (as predicted), so no national total is quoted.
+  - Blocker 2, the Chhattisgarh test used future covariates: replaced by a point-in-time test.
+  - Majors: VAHAN parsing fails closed (all 214 cached tables pass row-sum checks); C9 isolation guard and purged split; claim-bound doc checker (negative test passes); escaped map with a hostile-input test; data manifest + exact env lock.
+- **Hostile judge (gpt-6-astra, max):** Round-1 score 70/100 (8/6/7/7/7); 17 issues, all accepted (one routed to the user: team fields).
+  - Wording narrowed: reference-coverage index, conditional ranges, "verify first", no "first"/"pre-registered".
+  - Roadmap gained owners, deadlines, fallbacks and safeguards.
+  - Sizing formula fixed (24 h); BEE open-API clause, heavy-duty 2 × 240 kW rule and the CEA DISCOM energy report verified and added.
+- **New results:**
+  - Capture–recapture with abstention: estimable in 5 of 22 large states; fails narrowly; one of six variants passes.
+  - Chhattisgarh point-in-time: WAPE 0.30 vs 0.58, interval 24/27.
+  - Forecast v3 purged: dev WAPE 0.177 vs naive 0.360; nowcast floored at YTD; prospective predictions frozen in a45c068.
+  - Maharashtra verify-first districts: Nagpur, Nashik, Ahilyanagar, Chhatrapati Sambhajinagar, Solapur, Amravati.
+- **Supervisor 14:20 suggestions applied:** criterion → evidence map at the top of the methodology, validation tables in an appendix, explicit C1-vs-C2 call in the memo.
 
