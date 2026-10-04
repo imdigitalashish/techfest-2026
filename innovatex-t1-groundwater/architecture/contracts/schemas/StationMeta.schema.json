@@ -1,0 +1,124 @@
+{
+  "$defs": {
+    "AquiferType": {
+      "enum": [
+        "alluvium_unconfined",
+        "alluvium_confined",
+        "hard_rock_fractured",
+        "unknown"
+      ],
+      "title": "AquiferType",
+      "type": "string"
+    },
+    "DeviceRole": {
+      "description": "One node design, three deployments (see architecture/components.md).",
+      "enum": [
+        "sentinel",
+        "recharge_meter",
+        "seal_guard"
+      ],
+      "title": "DeviceRole",
+      "type": "string"
+    },
+    "Provenance": {
+      "enum": [
+        "real",
+        "simulated",
+        "derived"
+      ],
+      "title": "Provenance",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "station_id": {
+      "title": "Station Id",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "lat": {
+      "maximum": 90,
+      "minimum": -90,
+      "title": "Lat",
+      "type": "number"
+    },
+    "lon": {
+      "maximum": 180,
+      "minimum": -180,
+      "title": "Lon",
+      "type": "number"
+    },
+    "district": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "District"
+    },
+    "agency": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Agency"
+    },
+    "telemetric": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Telemetric"
+    },
+    "role": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/DeviceRole"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "aquifer": {
+      "$ref": "#/$defs/AquiferType",
+      "default": "unknown"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance",
+      "default": "real"
+    },
+    "source": {
+      "title": "Source",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "name",
+    "lat",
+    "lon",
+    "source"
+  ],
+  "title": "StationMeta",
+  "type": "object"
+}

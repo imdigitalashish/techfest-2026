@@ -1,0 +1,46 @@
+{
+  "$defs": {
+    "Channel": {
+      "enum": [
+        "abs_pressure",
+        "baro",
+        "water_temp",
+        "ec",
+        "pump_current",
+        "vibration",
+        "lid",
+        "battery"
+      ],
+      "title": "Channel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "sensor front-end -> edge firmware: one raw reading.",
+  "properties": {
+    "device_id": {
+      "title": "Device Id",
+      "type": "string"
+    },
+    "ts": {
+      "format": "date-time",
+      "title": "Ts",
+      "type": "string"
+    },
+    "channel": {
+      "$ref": "#/$defs/Channel"
+    },
+    "value": {
+      "title": "Value",
+      "type": "number"
+    }
+  },
+  "required": [
+    "device_id",
+    "ts",
+    "channel",
+    "value"
+  ],
+  "title": "RawSample",
+  "type": "object"
+}

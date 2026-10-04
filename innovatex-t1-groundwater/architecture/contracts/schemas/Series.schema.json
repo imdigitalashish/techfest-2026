@@ -1,0 +1,111 @@
+{
+  "$defs": {
+    "Provenance": {
+      "enum": [
+        "real",
+        "simulated",
+        "derived"
+      ],
+      "title": "Provenance",
+      "type": "string"
+    },
+    "QCFlag": {
+      "enum": [
+        "unchecked",
+        "good",
+        "suspect",
+        "bad",
+        "filled"
+      ],
+      "title": "QCFlag",
+      "type": "string"
+    },
+    "Variable": {
+      "enum": [
+        "depth_to_water_m",
+        "water_column_m",
+        "abs_pressure_hpa",
+        "baro_pressure_hpa",
+        "water_temp_c",
+        "ec_us_cm",
+        "pump_current_a",
+        "vibration_g_rms",
+        "rain_mm",
+        "et0_mm",
+        "battery_v"
+      ],
+      "title": "Variable",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Columnar batch: one variable at one station. The unit of exchange between analytics.",
+  "properties": {
+    "station_id": {
+      "title": "Station Id",
+      "type": "string"
+    },
+    "variable": {
+      "$ref": "#/$defs/Variable"
+    },
+    "unit": {
+      "title": "Unit",
+      "type": "string"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "source": {
+      "title": "Source",
+      "type": "string"
+    },
+    "ts": {
+      "items": {
+        "format": "date-time",
+        "type": "string"
+      },
+      "title": "Ts",
+      "type": "array"
+    },
+    "values": {
+      "items": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "title": "Values",
+      "type": "array"
+    },
+    "qc_flags": {
+      "anyOf": [
+        {
+          "items": {
+            "$ref": "#/$defs/QCFlag"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Qc Flags"
+    }
+  },
+  "required": [
+    "station_id",
+    "variable",
+    "unit",
+    "provenance",
+    "source",
+    "ts",
+    "values"
+  ],
+  "title": "Series",
+  "type": "object"
+}

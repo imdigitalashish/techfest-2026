@@ -1,0 +1,89 @@
+{
+  "$defs": {
+    "FitMetrics": {
+      "additionalProperties": false,
+      "properties": {
+        "nse": {
+          "title": "Nse",
+          "type": "number"
+        },
+        "rmse_m": {
+          "title": "Rmse M",
+          "type": "number"
+        },
+        "n": {
+          "title": "N",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "nse",
+        "rmse_m",
+        "n"
+      ],
+      "title": "FitMetrics",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "hydro-twin output: per-well response model of depth-to-water to rain/ET (+pumping).",
+  "properties": {
+    "station_id": {
+      "title": "Station Id",
+      "type": "string"
+    },
+    "model": {
+      "title": "Model",
+      "type": "string"
+    },
+    "stresses": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Stresses",
+      "type": "array"
+    },
+    "calib_start": {
+      "format": "date-time",
+      "title": "Calib Start",
+      "type": "string"
+    },
+    "calib_end": {
+      "format": "date-time",
+      "title": "Calib End",
+      "type": "string"
+    },
+    "metrics_calib": {
+      "$ref": "#/$defs/FitMetrics"
+    },
+    "metrics_valid": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/FitMetrics"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "params": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Params",
+      "type": "object"
+    }
+  },
+  "required": [
+    "station_id",
+    "model",
+    "stresses",
+    "calib_start",
+    "calib_end",
+    "metrics_calib",
+    "params"
+  ],
+  "title": "HeadModelFit",
+  "type": "object"
+}

@@ -1,0 +1,46 @@
+{
+  "$defs": {
+    "EdgeEventKind": {
+      "enum": [
+        "pump_on",
+        "pump_off",
+        "level_rise",
+        "level_step",
+        "lid_open",
+        "tamper",
+        "low_battery"
+      ],
+      "title": "EdgeEventKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "$ref": "#/$defs/EdgeEventKind"
+    },
+    "ts": {
+      "format": "date-time",
+      "title": "Ts",
+      "type": "string"
+    },
+    "value": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Value"
+    }
+  },
+  "required": [
+    "kind",
+    "ts"
+  ],
+  "title": "EdgeEvent",
+  "type": "object"
+}

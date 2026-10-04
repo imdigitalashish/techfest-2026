@@ -1,0 +1,87 @@
+{
+  "$defs": {
+    "ExtractionEventKind": {
+      "enum": [
+        "periodic_pumping",
+        "step_drawdown",
+        "sealed_well_running",
+        "unexplained_decline"
+      ],
+      "title": "ExtractionEventKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "extraction-detector / seal-guard output for one station or device.",
+  "properties": {
+    "event_id": {
+      "title": "Event Id",
+      "type": "string"
+    },
+    "station_id": {
+      "title": "Station Id",
+      "type": "string"
+    },
+    "kind": {
+      "$ref": "#/$defs/ExtractionEventKind"
+    },
+    "t_start": {
+      "format": "date-time",
+      "title": "T Start",
+      "type": "string"
+    },
+    "t_end": {
+      "format": "date-time",
+      "title": "T End",
+      "type": "string"
+    },
+    "amplitude_m": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Amplitude M"
+    },
+    "period_h": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Period H"
+    },
+    "score": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Score",
+      "type": "number"
+    },
+    "evidence": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "default": {},
+      "title": "Evidence",
+      "type": "object"
+    }
+  },
+  "required": [
+    "event_id",
+    "station_id",
+    "kind",
+    "t_start",
+    "t_end",
+    "score"
+  ],
+  "title": "ExtractionEvent",
+  "type": "object"
+}

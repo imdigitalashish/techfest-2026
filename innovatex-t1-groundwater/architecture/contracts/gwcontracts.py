@@ -284,6 +284,19 @@ class ExtractionEvent(_Strict):
 
 
 # ----------------------------------------------------------------------------- recharge verification
+class RechargeStructure(_Strict):
+    """Registry entry for one RWH recharge pit/shaft (from the DJB rebate application + install survey)."""
+    structure_id: str
+    lat: float = Field(ge=-90, le=90)
+    lon: float = Field(ge=-180, le=180)
+    catchment_m2: float = Field(gt=0, description="roof/paved area draining to the structure")
+    runoff_coeff: float = Field(gt=0, le=1, description="prior; refined per structure from events")
+    pit_area_m2: float = Field(gt=0, description="plan area of the storage (stage -> volume)")
+    overflow_stage_m: float = Field(gt=0, description="water column at which the pit spills")
+    k_as_built_per_h: Optional[float] = Field(default=None, gt=0, description="recession constant at commissioning")
+    rebate_account: Optional[str] = None
+
+
 class RechargeEventVerdict(str, Enum):
     verified = "verified"            # rise consistent with rain x catchment, normal recession
     clogged = "clogged"              # inflow seen, recession far slower than as-built

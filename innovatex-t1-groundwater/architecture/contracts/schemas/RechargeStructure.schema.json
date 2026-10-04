@@ -1,0 +1,84 @@
+{
+  "additionalProperties": false,
+  "description": "Registry entry for one RWH recharge pit/shaft (from the DJB rebate application + install survey).",
+  "properties": {
+    "structure_id": {
+      "title": "Structure Id",
+      "type": "string"
+    },
+    "lat": {
+      "maximum": 90,
+      "minimum": -90,
+      "title": "Lat",
+      "type": "number"
+    },
+    "lon": {
+      "maximum": 180,
+      "minimum": -180,
+      "title": "Lon",
+      "type": "number"
+    },
+    "catchment_m2": {
+      "description": "roof/paved area draining to the structure",
+      "exclusiveMinimum": 0,
+      "title": "Catchment M2",
+      "type": "number"
+    },
+    "runoff_coeff": {
+      "description": "prior; refined per structure from events",
+      "exclusiveMinimum": 0,
+      "maximum": 1,
+      "title": "Runoff Coeff",
+      "type": "number"
+    },
+    "pit_area_m2": {
+      "description": "plan area of the storage (stage -> volume)",
+      "exclusiveMinimum": 0,
+      "title": "Pit Area M2",
+      "type": "number"
+    },
+    "overflow_stage_m": {
+      "description": "water column at which the pit spills",
+      "exclusiveMinimum": 0,
+      "title": "Overflow Stage M",
+      "type": "number"
+    },
+    "k_as_built_per_h": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "recession constant at commissioning",
+      "title": "K As Built Per H"
+    },
+    "rebate_account": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rebate Account"
+    }
+  },
+  "required": [
+    "structure_id",
+    "lat",
+    "lon",
+    "catchment_m2",
+    "runoff_coeff",
+    "pit_area_m2",
+    "overflow_stage_m"
+  ],
+  "title": "RechargeStructure",
+  "type": "object"
+}

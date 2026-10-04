@@ -1,0 +1,54 @@
+{
+  "$defs": {
+    "Channel": {
+      "enum": [
+        "abs_pressure",
+        "baro",
+        "water_temp",
+        "ec",
+        "pump_current",
+        "vibration",
+        "lid",
+        "battery"
+      ],
+      "title": "Channel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Fixed-interval block: value_i = offset + scale * (first + cumsum([0] + deltas))_i.",
+  "properties": {
+    "channel": {
+      "$ref": "#/$defs/Channel"
+    },
+    "scale": {
+      "exclusiveMinimum": 0,
+      "title": "Scale",
+      "type": "number"
+    },
+    "offset": {
+      "title": "Offset",
+      "type": "number"
+    },
+    "first": {
+      "title": "First",
+      "type": "integer"
+    },
+    "deltas": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Deltas",
+      "type": "array"
+    }
+  },
+  "required": [
+    "channel",
+    "scale",
+    "offset",
+    "first",
+    "deltas"
+  ],
+  "title": "ChannelBlock",
+  "type": "object"
+}

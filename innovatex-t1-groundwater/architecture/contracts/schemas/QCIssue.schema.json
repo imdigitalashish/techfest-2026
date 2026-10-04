@@ -1,0 +1,61 @@
+{
+  "$defs": {
+    "QCFlag": {
+      "enum": [
+        "unchecked",
+        "good",
+        "suspect",
+        "bad",
+        "filled"
+      ],
+      "title": "QCFlag",
+      "type": "string"
+    },
+    "QCReason": {
+      "enum": [
+        "spike",
+        "flatline",
+        "drift",
+        "out_of_range",
+        "gap",
+        "step",
+        "duplicate"
+      ],
+      "title": "QCReason",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "ts": {
+      "format": "date-time",
+      "title": "Ts",
+      "type": "string"
+    },
+    "reason": {
+      "$ref": "#/$defs/QCReason"
+    },
+    "flag": {
+      "$ref": "#/$defs/QCFlag"
+    },
+    "detail": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Detail"
+    }
+  },
+  "required": [
+    "ts",
+    "reason",
+    "flag"
+  ],
+  "title": "QCIssue",
+  "type": "object"
+}

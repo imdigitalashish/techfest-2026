@@ -1,0 +1,95 @@
+{
+  "$defs": {
+    "RechargeEventVerdict": {
+      "enum": [
+        "verified",
+        "clogged",
+        "no_inflow",
+        "implausible"
+      ],
+      "title": "RechargeEventVerdict",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "recharge-verifier output for one storm at one recharge structure.",
+  "properties": {
+    "structure_id": {
+      "title": "Structure Id",
+      "type": "string"
+    },
+    "t_start": {
+      "format": "date-time",
+      "title": "T Start",
+      "type": "string"
+    },
+    "t_end": {
+      "format": "date-time",
+      "title": "T End",
+      "type": "string"
+    },
+    "rain_mm": {
+      "minimum": 0,
+      "title": "Rain Mm",
+      "type": "number"
+    },
+    "inflow_m3": {
+      "minimum": 0,
+      "title": "Inflow M3",
+      "type": "number"
+    },
+    "recharged_m3": {
+      "minimum": 0,
+      "title": "Recharged M3",
+      "type": "number"
+    },
+    "overflow_m3": {
+      "minimum": 0,
+      "title": "Overflow M3",
+      "type": "number"
+    },
+    "k_per_h": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "recession constant of the pit",
+      "title": "K Per H"
+    },
+    "clogging_index": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "k / k_as_built",
+      "title": "Clogging Index"
+    },
+    "verdict": {
+      "$ref": "#/$defs/RechargeEventVerdict"
+    }
+  },
+  "required": [
+    "structure_id",
+    "t_start",
+    "t_end",
+    "rain_mm",
+    "inflow_m3",
+    "recharged_m3",
+    "overflow_m3",
+    "verdict"
+  ],
+  "title": "RechargeEvent",
+  "type": "object"
+}

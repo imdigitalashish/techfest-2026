@@ -1,0 +1,117 @@
+{
+  "$defs": {
+    "QCFlag": {
+      "enum": [
+        "unchecked",
+        "good",
+        "suspect",
+        "bad",
+        "filled"
+      ],
+      "title": "QCFlag",
+      "type": "string"
+    },
+    "QCIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "ts": {
+          "format": "date-time",
+          "title": "Ts",
+          "type": "string"
+        },
+        "reason": {
+          "$ref": "#/$defs/QCReason"
+        },
+        "flag": {
+          "$ref": "#/$defs/QCFlag"
+        },
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
+        }
+      },
+      "required": [
+        "ts",
+        "reason",
+        "flag"
+      ],
+      "title": "QCIssue",
+      "type": "object"
+    },
+    "QCReason": {
+      "enum": [
+        "spike",
+        "flatline",
+        "drift",
+        "out_of_range",
+        "gap",
+        "step",
+        "duplicate"
+      ],
+      "title": "QCReason",
+      "type": "string"
+    },
+    "Variable": {
+      "enum": [
+        "depth_to_water_m",
+        "water_column_m",
+        "abs_pressure_hpa",
+        "baro_pressure_hpa",
+        "water_temp_c",
+        "ec_us_cm",
+        "pump_current_a",
+        "vibration_g_rms",
+        "rain_mm",
+        "et0_mm",
+        "battery_v"
+      ],
+      "title": "Variable",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "station_id": {
+      "title": "Station Id",
+      "type": "string"
+    },
+    "variable": {
+      "$ref": "#/$defs/Variable"
+    },
+    "n_obs": {
+      "title": "N Obs",
+      "type": "integer"
+    },
+    "issues": {
+      "items": {
+        "$ref": "#/$defs/QCIssue"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "counts": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Counts",
+      "type": "object"
+    }
+  },
+  "required": [
+    "station_id",
+    "variable",
+    "n_obs",
+    "issues",
+    "counts"
+  ],
+  "title": "QCReport",
+  "type": "object"
+}

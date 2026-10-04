@@ -1,0 +1,58 @@
+{
+  "$defs": {
+    "AquiferType": {
+      "enum": [
+        "alluvium_unconfined",
+        "alluvium_confined",
+        "hard_rock_fractured",
+        "unknown"
+      ],
+      "title": "AquiferType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Parameters for analytic (Theis/Hantush) drawdown models. Ranges with sources, not truths.",
+  "properties": {
+    "aquifer": {
+      "$ref": "#/$defs/AquiferType"
+    },
+    "transmissivity_m2d": {
+      "exclusiveMinimum": 0,
+      "title": "Transmissivity M2D",
+      "type": "number"
+    },
+    "storativity": {
+      "description": "S (confined) or Sy (unconfined)",
+      "exclusiveMaximum": 1,
+      "exclusiveMinimum": 0,
+      "title": "Storativity",
+      "type": "number"
+    },
+    "leakage_factor_m": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Leakage Factor M"
+    },
+    "source": {
+      "title": "Source",
+      "type": "string"
+    }
+  },
+  "required": [
+    "aquifer",
+    "transmissivity_m2d",
+    "storativity",
+    "source"
+  ],
+  "title": "AquiferParams",
+  "type": "object"
+}

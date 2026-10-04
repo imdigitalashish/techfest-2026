@@ -1,0 +1,71 @@
+{
+  "additionalProperties": false,
+  "description": "telemetry-link outcome for one frame (radio + network model, or real network logs).",
+  "properties": {
+    "device_id": {
+      "title": "Device Id",
+      "type": "string"
+    },
+    "fcnt": {
+      "title": "Fcnt",
+      "type": "integer"
+    },
+    "delivered": {
+      "title": "Delivered",
+      "type": "boolean"
+    },
+    "attempts": {
+      "minimum": 1,
+      "title": "Attempts",
+      "type": "integer"
+    },
+    "latency_s": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latency S"
+    },
+    "energy_mj": {
+      "minimum": 0,
+      "title": "Energy Mj",
+      "type": "number"
+    },
+    "link": {
+      "enum": [
+        "lorawan",
+        "nbiot",
+        "store_and_forward"
+      ],
+      "title": "Link",
+      "type": "string"
+    },
+    "rssi_dbm": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rssi Dbm"
+    }
+  },
+  "required": [
+    "device_id",
+    "fcnt",
+    "delivered",
+    "attempts",
+    "energy_mj",
+    "link"
+  ],
+  "title": "DeliveryReport",
+  "type": "object"
+}

@@ -1,0 +1,173 @@
+{
+  "$defs": {
+    "Channel": {
+      "enum": [
+        "abs_pressure",
+        "baro",
+        "water_temp",
+        "ec",
+        "pump_current",
+        "vibration",
+        "lid",
+        "battery"
+      ],
+      "title": "Channel",
+      "type": "string"
+    },
+    "ChannelBlock": {
+      "additionalProperties": false,
+      "description": "Fixed-interval block: value_i = offset + scale * (first + cumsum([0] + deltas))_i.",
+      "properties": {
+        "channel": {
+          "$ref": "#/$defs/Channel"
+        },
+        "scale": {
+          "exclusiveMinimum": 0,
+          "title": "Scale",
+          "type": "number"
+        },
+        "offset": {
+          "title": "Offset",
+          "type": "number"
+        },
+        "first": {
+          "title": "First",
+          "type": "integer"
+        },
+        "deltas": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Deltas",
+          "type": "array"
+        }
+      },
+      "required": [
+        "channel",
+        "scale",
+        "offset",
+        "first",
+        "deltas"
+      ],
+      "title": "ChannelBlock",
+      "type": "object"
+    },
+    "DeviceRole": {
+      "description": "One node design, three deployments (see architecture/components.md).",
+      "enum": [
+        "sentinel",
+        "recharge_meter",
+        "seal_guard"
+      ],
+      "title": "DeviceRole",
+      "type": "string"
+    },
+    "EdgeEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/EdgeEventKind"
+        },
+        "ts": {
+          "format": "date-time",
+          "title": "Ts",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "kind",
+        "ts"
+      ],
+      "title": "EdgeEvent",
+      "type": "object"
+    },
+    "EdgeEventKind": {
+      "enum": [
+        "pump_on",
+        "pump_off",
+        "level_rise",
+        "level_step",
+        "lid_open",
+        "tamper",
+        "low_battery"
+      ],
+      "title": "EdgeEventKind",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "edge firmware -> telemetry link -> ingest. Mirrors a LoRaWAN / NB-IoT application payload.",
+  "properties": {
+    "device_id": {
+      "title": "Device Id",
+      "type": "string"
+    },
+    "role": {
+      "$ref": "#/$defs/DeviceRole"
+    },
+    "fcnt": {
+      "minimum": 0,
+      "title": "Fcnt",
+      "type": "integer"
+    },
+    "t0": {
+      "format": "date-time",
+      "title": "T0",
+      "type": "string"
+    },
+    "period_s": {
+      "exclusiveMinimum": 0,
+      "title": "Period S",
+      "type": "integer"
+    },
+    "blocks": {
+      "items": {
+        "$ref": "#/$defs/ChannelBlock"
+      },
+      "title": "Blocks",
+      "type": "array"
+    },
+    "events": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/EdgeEvent"
+      },
+      "title": "Events",
+      "type": "array"
+    },
+    "battery_mv": {
+      "minimum": 0,
+      "title": "Battery Mv",
+      "type": "integer"
+    },
+    "payload_bytes": {
+      "minimum": 0,
+      "title": "Payload Bytes",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "device_id",
+    "role",
+    "fcnt",
+    "t0",
+    "period_s",
+    "blocks",
+    "battery_mv",
+    "payload_bytes"
+  ],
+  "title": "UplinkFrame",
+  "type": "object"
+}

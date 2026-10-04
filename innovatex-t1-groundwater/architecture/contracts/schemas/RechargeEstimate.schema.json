@@ -1,0 +1,42 @@
+{
+  "additionalProperties": false,
+  "description": "aquifer-level recharge from the water-table-fluctuation (WTF) method at one station/season.",
+  "properties": {
+    "station_id": {
+      "title": "Station Id",
+      "type": "string"
+    },
+    "season": {
+      "title": "Season",
+      "type": "string"
+    },
+    "rise_m": {
+      "title": "Rise M",
+      "type": "number"
+    },
+    "specific_yield": {
+      "exclusiveMaximum": 1,
+      "exclusiveMinimum": 0,
+      "title": "Specific Yield",
+      "type": "number"
+    },
+    "recharge_mm": {
+      "title": "Recharge Mm",
+      "type": "number"
+    },
+    "method": {
+      "title": "Method",
+      "type": "string"
+    }
+  },
+  "required": [
+    "station_id",
+    "season",
+    "rise_m",
+    "specific_yield",
+    "recharge_mm",
+    "method"
+  ],
+  "title": "RechargeEstimate",
+  "type": "object"
+}
