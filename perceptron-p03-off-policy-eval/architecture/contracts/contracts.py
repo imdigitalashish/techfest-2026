@@ -170,6 +170,9 @@ class ScenarioConfig(_M):
     hidden_confounding: float = 0.0  # strength of an unobserved u tilting the deployed policy's actions (unlogged override)
     feedback: float = 0.0  # policy-induced mix shift: after the switch, users move by feedback * fb_dir only because the NEW policy runs
     nonlinearity: float = 0.0  # adds a reward term the linear-logistic reward model cannot represent (misspecification test)
+    nonlinear_axis: Literal["fixed", "mix"] = "fixed"  # "mix": the nonlinear term lies along the mix-shift direction (stresses the mix split)
+    reward_offset: float = 0.0  # added to every logit; negative values make rewards sparse (OBD-like click rates)
+    pscore_noise_sims: int = 0  # >0: logged propensities are Monte-Carlo estimates count/M with M = this (as in OBD's BTS logs)
     world_seed: int = 7  # fixes the world (true reward weights, policies) across sampling seeds
     seed: int = 0
 

@@ -35,6 +35,8 @@ for fb in (0.0, 0.25, 0.5, 1.0):
     EXPERIMENTS[f"feedback{fb:.2f}"] = ("feedback", dict(BASE, response_drift=-1.0, mix_shift=0.0, feedback=fb))
 for lam in (0.0, 1.0, 2.0):
     EXPERIMENTS[f"nonlin{lam:.1f}"] = ("misspec", dict(BASE, response_drift=-1.0, mix_shift=0.5, nonlinearity=lam))
+for lam in (1.0, 2.0):
+    EXPERIMENTS[f"nonlinmix{lam:.1f}"] = ("misspec", dict(BASE, response_drift=-1.0, mix_shift=0.5, nonlinearity=lam, nonlinear_axis="mix"))
 
 
 def run_one(args):
@@ -117,7 +119,7 @@ def report(a, seeds):
         if v["kind"] != "misspec":
             continue
         t = v["truth"]
-        L.append(f"| {k[6:]} | {t['effect_after']:+.4f} | {v['dr_mean']:+.4f} ({v['dr_mean'] - t['effect_after']:+.4f}) | {v['dm_mean']:+.4f} ({v['dm_bias']:+.4f}) | "
+        L.append(f"| {k[6:].replace('mix', 'along mix axis, ')} | {t['effect_after']:+.4f} | {v['dr_mean']:+.4f} ({v['dr_mean'] - t['effect_after']:+.4f}) | {v['dm_mean']:+.4f} ({v['dm_bias']:+.4f}) | "
                  f"{t['mix']:+.4f} | {v['mix_dm_bias']:+.4f} ({v['mix_dm_rmse']:.4f}) | {v['mix_dr_bias']:+.4f} ({v['mix_dr_rmse']:.4f}) | {v['dr_cover']:.2f} |")
     L += ["", "## (b) Shapley coverage summary", "",
           "Mean 95% coverage across all experiments: Shapley policy "

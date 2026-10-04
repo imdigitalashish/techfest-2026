@@ -55,9 +55,11 @@ class World:
 
     def reward_prob(self, X, u, period: int):
         logit = X @ self.theta.T + self.bias + self.cfg.response_drift * period + U_REWARD * u[:, None] * self.z
-        if self.cfg.nonlinearity:
+        if self.cfg.nonlinearity and self.cfg.nonlinear_axis == "fixed":
             logit = logit + self.cfg.nonlinearity * (np.outer(X[:, 0] ** 2 - 1, self.s_nl) + np.outer(np.sin(2 * X[:, 1]), self.c_nl))
-        return _sigmoid(logit)
+        elif self.cfg.nonlinearity:
+            logit = logit + self.cfg.nonlinearity * np.outer((X @ self.mix_dir) ** 2 - 1, self.s_nl)
+        return _sigmoid(logit + self.cfg.reward_offset)
 
     def policy(self, X, which: str):
         """Nominal policy pi(a|x): softmax of the policy's scorer mixed with epsilon-uniform exploration."""
@@ -120,8 +122,11 @@ def simulate(cfg: ScenarioConfig, truth: GroundTruth | None = None) -> SimOutput
         A = _draw(P_act, rng)
         R = (rng.random(n) < world.reward_prob(X, u, period)[np.arange(n), A]).astype(float)
         P_logged = world.policy(X, which)  # what the system logs: nominal propensities
+        ps = P_logged[np.arange(n), A]
+        if cfg.pscore_noise_sims:  # logged propensity = Monte-Carlo estimate (count / M), floored at 1/M
+            ps = np.maximum(rng.binomial(cfg.pscore_noise_sims, ps) / cfg.pscore_noise_sims, 1.0 / cfg.pscore_noise_sims)
         logs.append(
-            BanditLog(X=X, A=A, R=R, pscore=P_logged[np.arange(n), A], period=np.full(n, period),
+            BanditLog(X=X, A=A, R=R, pscore=ps, period=np.full(n, period),
                       n_actions=cfg.n_actions, source=f"sim:{cfg.name}")
         )
     return SimOutput(before=logs[0], after=logs[1], truth=truth or ground_truth(world), world=world)
