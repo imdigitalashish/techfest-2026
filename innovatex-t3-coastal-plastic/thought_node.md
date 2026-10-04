@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** morning package delivered (08:10 IST, 4 Oct). Next: Phase 5 (ratchets) and the 7 Oct selection gate.
+- **Phase:** morning package delivered and accepted (08:22 IST, 4 Oct). Light effort until the 7 Oct selection gate; T3 is unlikely to be the zonal pick.
 - **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments, leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup's 2026 Interceptors cover the big Malad and Trombay creek mouths. NullahNet is the network layer for the rest:
   - pocket-fill sensing;
   - tide-aware dispatch (Spike 1, support: −2.1% escaped in the twin);
@@ -159,3 +159,11 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - **Next:** train on the TUD-GV grouped split once the machine is free.
 - **Open items before 10 Oct.** The pitch still has 6 ⟨FILL⟩ markers: team details, detector mAP (×2), flume result, retrofit cost. It has 2 [V] markers: the low-resale-value claim and flood-tide re-floating at open outfalls.
 - **Contract change queued for Round 2 (not applied tonight, to avoid drift while children finish):** add optional `signature`, `signer_key_id` to `LedgerEntry` and `ledger_anchor` to `DashboardBundle`. These currently live in `dashboard/site/aux.json`.
+
+### 2026-10-04 08:22 IST — Supervisor accepted the morning package
+- The Supervisor agrees that T3 is unlikely to be the Delhi-zonal pick unless T1 and T2 falter.
+- From 08:30 Lean Mode lifts with limits: at most 2 concurrent sub-agents or child sessions; no downloads over 1 GB without a stated reason; keep effort light until 7 Oct.
+- Actions:
+  - No new spawns.
+  - The detection child holds one queued task: train the YOLO11n baseline only while the 1-min load is under 20, stop above 40, 60-min cap.
+  - The lead keeps the package current and will finalise the selection memo by 7 Oct 12:00.
