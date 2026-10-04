@@ -6,26 +6,26 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (21:39 IST, 4 Oct)
+## Now (22:31 IST, 4 Oct)
 - **Mode:** play to WIN. Every project gets a PLAYBOOK §11 demo, and demos open on real data. At most 5 running at once.
 - **Round 1: 19 of 20 done.** APCTT is gated on its 10 Oct data and needs your registration by 9 Oct.
-- **Demos done (5), all re-verified by me:**
+- **Demos done (7), all re-verified by me:**
   - P10 "Break the band".
   - P2: memory slider.
   - P6: "race the machine".
   - P7: real NYC July-4 surge.
   - P9: "hijack the agent".
+  - India@71 T1: "find every child" on real NFHS-5.
+  - P1: "pull the plug".
 - **Demos running (5):**
-  - India@71 T1: re-check fixes landed; DEMO DONE is close.
-  - P1:
-    - "Unplug the tablet": a real Flower LocalGrid.
-    - Pre-registered live criteria pass 5/5 seeds.
-    - Review 8/8 accepted.
-  - P3: "says I don't know", on real OBD; alpha-knob pre-registered 21:07:33.
-  - P8: "ask it again". Eedi is CC BY-NC with no redistribution, so it uses a fetch step.
-  - P4: "the alarm that cries wolf", on real Binance books.
-- **Demo queue:** P5 → India@71 T3. Then I check InnovateX T1–T3, EV C1/C2, India@71 T2 and Namma myself.
-- **Estimate:** all demos done around midnight–1 AM.
+  - P3: real OBD; astra review 12/12 accepted.
+  - P8: "ask it again"; smoke 49/49 + 53/53 from clean clones; astra review running.
+  - P4: real Binance alarm dial plus a semi-synthetic splice; astra review running.
+  - P5: "ghost market", SIMULATED-labelled; clean-worktree verified.
+  - India@71 T3: "try to break it"; just started.
+- **Demo queue:** empty.
+- **Next:** I check the 7 existing demos myself (InnovateX T1–T3, EV C1/C2, India@71 T2, Namma) as slots free.
+- **Estimate:** done around 00:30–01:30.
 - **Open item:** P6's demo commits a raw Tardis slice. Check the terms before the repo goes public.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
@@ -119,6 +119,9 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 22:31 IST — Sweep
+- The demo queue is empty. P8 and P5 are verified from clean checkouts; their astra demo reviews are running.
+- P4: Amendment 3 discloses labeler float-noise ties (4 of 3.0M labels).
 ### 2026-10-04 22:21 IST — P1 demo done (7 demos); demo queue empty
 - **P1 DEMO DONE (17eea3c):** full smoke PASS in my clone (0 failed, 61 s), including the live Flower path, bit-identical to the in-process harness. I used a temporary symlink to the worktree venv, then removed it. Astra review 7/10, 8/8 fixed.
   - Opens REAL: committed 5-seed per-domain bars with paired CIs (−0.081 [−0.093, −0.070]).
