@@ -153,7 +153,8 @@ class ScenarioConfig(_M):
     old_policy_quality: float = 0.5
     temperature: float = 1.0  # softmax inverse temperature of both policies
     epsilon: float = 0.1  # uniform exploration mixed into both policies (overlap)
-    hidden_confounding: float = 0.0  # strength of an unobserved u driving both action and reward
+    hidden_confounding: float = 0.0  # strength of an unobserved u tilting the deployed policy's actions (unlogged override)
+    world_seed: int = 7  # fixes the world (true reward weights, policies) across sampling seeds
     seed: int = 0
 
 
@@ -162,6 +163,8 @@ class GroundTruth(_M):
     v_before_new: float
     v_after_old: float
     v_after_new: float
+    v_mix_old: float  # old policy on after-period users with before-period response: isolates the mix shift
+    gamma_true: float = 1.0  # max odds ratio between actual and logged propensities (1 = no hidden confounding)
 
     @property
     def naive_expected(self) -> float:
@@ -174,3 +177,11 @@ class GroundTruth(_M):
     @property
     def env_change(self) -> float:
         return self.v_after_old - self.v_before_old
+
+    @property
+    def mix_shift(self) -> float:
+        return self.v_mix_old - self.v_before_old
+
+    @property
+    def response_drift(self) -> float:
+        return self.v_after_old - self.v_mix_old
