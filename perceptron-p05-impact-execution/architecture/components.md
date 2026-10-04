@@ -1,6 +1,6 @@
 # Components and contracts: P5 market-impact-aware execution
 
-Each component has one responsibility, typed contracts (pydantic models in [`contracts/contracts.py`](contracts/contracts.py)) and an **isolated scalar metric**, so it can be researched, swapped or auto-improved on its own. ★ marks a spike (see [ADR 001](adr/001-spike.md)). "Status" is as of 4 Oct 2026, 08:40 IST.
+Each component has one responsibility, typed contracts (pydantic models in [`contracts/contracts.py`](contracts/contracts.py)) and an **isolated scalar metric**, so it can be researched, swapped or auto-improved on its own. ★ marks a spike (see [ADR 001](adr/001-spike.md)). "Status" is as of 4 Oct 2026, 13:20 IST.
 
 ```mermaid
 flowchart LR
@@ -29,15 +29,15 @@ flowchart LR
 
 | # | Component | Responsibility (one sentence) | Input → Output (contract) | Calls | Existing baseline | Isolated metric | Status |
 |---|---|---|---|---|---|---|---|
-| C1 | `sim_env` | Build and run one reactive market day with exactly one extra agent | `WorldSpec` → `WorldResult` (book-top series, trades, holdings by agent type, agent record) | ABIDES kernel | ABIDES rmsc04 (J.P. Morgan) | **Realism scorecard**: fitted impact exponent δ vs 0.5, decay ratio, spread/depth/volume vs targets; plus sims/s | ✅ runs (Py3.11 + shim) |
+| C1 | `sim_env` | Build and run one reactive market day with exactly one extra agent | `WorldSpec` → `WorldResult` (book-top series, trades, holdings by agent type, agent record) | ABIDES kernel | ABIDES rmsc04 (J.P. Morgan) | **Realism scorecard**: fitted impact exponent δ vs 0.5, decay ratio, spread/depth/volume vs targets; plus sims/s | ✅ runs; ⚠ impact near-linear, fully transient (E7) |
 | C2 ★ | `twin_runner` | Produce paired worlds (with vs without our order) on identical randomness | `TwinSpec` → `TwinPair` (+ integrity report) | C1 | Naive same-seed twins | **Noise-to-signal ratio** NSR = std_seeds(Δmid(T1)) / \|mean Δmid(T1)\| (lower is better). E4 (30 val seeds): naive 4.7 → synced 1.4 | ✅ naive + `per_wakeup` sync (E4/E5) |
 | C3 | `market_state` | Turn the agent's book view and own fills into features | `BookSnapshot` + fills → `Features` | — | L1 quotes | R² of features → next-slot instantaneous cost (held-out seeds) | partial (inside policies) |
-| C4 ★ | `impact_model` | Estimate our own outstanding impact and the counterfactual "ghost" mid from observables only | `Features` + own fills → `ImpactEstimate` (Î(t), ghost mid) | — | Exponential propagator (OW-style) | **Ghost-book RMSE** (¢) vs the true twin mid on held-out seeds, horizon ≤ 20 min | ✅ v0 fitted; OOS R² < 0 (noise) |
+| C4 ★ | `impact_model` | Estimate our own outstanding impact and the counterfactual "ghost" mid from observables only | `Features` + own fills → `ImpactEstimate` (Î(t), ghost mid) | — | Exponential propagator (OW-style) | **Ghost-book RMSE** (¢) vs the true twin mid on held-out seeds, horizon ≤ 20 min | ⚠ unresolved: synced fit, held-out R² +0.15/−0.02 (E9) |
 | C4b | `calibrate` | Fit kernel, instantaneous-cost slope and volume curve on train seeds | twin episodes → `ImpactParams`, `VolumeProfile` | C4 | — | Same as C4 (fit quality) | ✅ |
 | C5 | `scheduler` | Plan the target cumulative trajectory | `ParentOrder` + `ImpactParams` (+ profile) → `Schedule` | C4 | TWAP, VWAP, Almgren–Chriss | Model-expected cost of the schedule; end-to-end ΔIS | ✅ TWAP/VWAP/propagator-QP |
 | C6 | `child_order_tactics` | Turn a slot target into concrete orders | `SlotTarget` + `BookSnapshot` → `ChildOrder[]` | — | Market order | **Instantaneous cost** (bps vs decision mid) per filled share | ✅ MKT, touch-limit |
 | C7 | `execution_agent` | Run a policy in the simulator on a decision grid, guaranteeing completion | `PolicySpec` + `ParentOrder` → fills, decision log | C3–C6 | ABIDES-Gym execution env | **Completion rate** (must be 100%) + IS | ✅ |
-| C8 | `tca` | Measure cost: IS, exact twin decomposition, mark-outs | `TwinPair` + fills → `EpisodeMetrics` | — | Perold implementation shortfall | **Identity error** \|IS − (drift + own + instant)\| (must be ≤ 1e-9) | ✅ |
+| C8 | `tca` | Measure cost: IS, exact twin decomposition, mark-outs | `TwinPair` + fills → `EpisodeMetrics` | — | Perold implementation shortfall | **Identity error** \|IS − (drift + own + instant)\| (must be ≤ 1e-9); fill-time split delay + at-fill (E12) | ✅ |
 | C9 | `eval_harness` | Seed splits, paired comparisons, CIs, ledger | `ExperimentSpec` → CSV + summary (`ComparisonResult`) | C2, C8, C10 | Unpaired mean over seeds | **CI half-width** of ΔIS at fixed compute (variance-reduction factor vs unpaired) | ✅ v0 (runner + calibrate) |
 | C10 | `feedback_attribution` | Say who absorbed or amplified our order, and how the market responded over time | `TwinPair` → `Attribution` (Δposition by agent type, MM spread/depth response, impulse response) | C1 data | none | **Share-conservation residual** (Σ Δpos + our qty = 0) and attribution CI width | ✅ v0 (Δpos by type) |
 | C11 | `learner` / autoresearch | Improve the policy parameters (or an RL policy) against the frozen eval | `results.tsv` → new `PolicySpec` | C9 | grid search | Validation ΔIS vs TWAP (paired) | ⏳ next |

@@ -10,21 +10,25 @@
 - _(none)_
 
 ## Now
-- **Phase:** ▶ **ACTIVE again (resumed 12:52 IST, 4 Oct; batch slot, PLAYBOOK §0).** Finishing to the Supervisor's definition of done, then messaging "DONE — slot free".
-- **Plan / definition of done:**
-  1. E8 attribution ablation (QP schedule vs front-loading), after diagnosing the 09:50 crash.
-  2. E7 realism scorecard (δ vs 0.5) and E9 synced calibration. All pre-registered in `eval/preregistration.md` before running.
-  3. Final Round-1 abstract rendered from committed results, `eval/check_docs.py` drift check, architecture diagram.
-  4. Cross-model reviews as child sessions: gpt-6-astra (max) as hostile judge on the abstract and H1; gpt-6-sol (max) on code, eval and reproduction. Recorded in `reviews/`.
-  5. Final selection memo; push; DONE.
-- **Doing:** lead runs E8 → E7 → E9 one at a time (`nice -n 10`, `--workers 4`, only if `kern.memorystatus_level` ≥ 30; pause below 25). Child sessions: ≤ 2 at a time; no `task` sub-agents.
-- **Next:** E8 → E7 → E9 → claims/render/check_docs → reviews → memo → DONE. Stretch: feedback-loop test with `num_momentum_agents=0`.
-- **Needs from user:** Register by 15 Oct if P5 is chosen at the 12 Oct selection. Teammates' names and skills (the abstract has placeholders).
-- **Risks:**
-  1. Effect size is small (−0.034 bps ≈ 10% of TWAP's controllable cost) and unattributed (E8 settles it).
-  2. ABIDES impact realism is untested (E7).
-  3. Uplink saturated: keep requests small; poll long jobs at ≥ 10-min intervals.
-  4. Shared machine: memory level ~32 at resume.
+- **Phase:** ▶ ACTIVE (batch slot since 12:52 IST). Closing the Supervisor's definition of done. Updated 2026-10-04 13:21 IST.
+- **Done since resume:**
+  - 09:50 crash diagnosed (root cause undetermined; three causes ruled out).
+  - E8 attribution: E6's effect not reproduced on validation seeds; contrasts unresolved.
+  - E7 realism: impact near-linear, fully transient.
+  - E9 synced calibration: criterion not met.
+  - Both cross-model reviews: gpt-6-sol reproduced H1 bit-for-bit (7/7 issues accepted); gpt-6-astra scored the draft 2.80/5 (16/16 accepted).
+  - Amendment A1 committed before E10 results.
+  - Claims, render and check_docs tooling; abstract and architecture templates.
+- **Doing:** E10 strict replication (n = 400, fresh test seeds 1260–1659) is running, slowly under machine load ~24, at nice 10 with 4 workers.
+- **Next, in order:**
+  1. E10 → `eval/h1_verdict.py --exp E10_replication_test --name H2` and `eval/attribution.py --exp E10_replication_test`.
+  2. E11 (market-law check).
+  3. E12 (fill-time split).
+  4. Render the docs; `check_docs` must pass.
+  5. gpt-6-astra re-scores the final abstract.
+  6. Final memo, then push and send DONE.
+- **Needs from user:** register by 15 Oct if P5 is picked at the 12 Oct selection; teammates' names and skills (the abstract has placeholders).
+- **Risks:** (1) sub-tick effects in a simulator with near-linear impact; (2) E10 may not replicate; (3) machine load slows runs.
 
 ### Phase 0 — what we must be able to show (from the Round-1 rubric)
 - Crux (20%): the agent's own trades move the price it later pays (transient + permanent impact, book resilience, other agents' reactions), so slippage is endogenous; a replay backtest can't see it.
@@ -56,6 +60,10 @@
 - What practitioners ship: execution-algo research from brokers and trading firms (public papers and talks).
 
 ## Key decisions
+- 2026-10-04 13:21 IST: **Time stamps come from `TZ=Asia/Kolkata date` / git commit times only** (Supervisor; PLAYBOOK §6). Earlier labels are corrected in `eval/preregistration.md`.
+- 2026-10-04 13:21 IST: **Confirmatory claims rest on strictly pre-registered fixed-n blocks (E10/H2).** E6/H1 is "registered after launch, before inspection"; E3/E5 are exploratory; E8 is validation.
+- 2026-10-04 13:21 IST: **Wording per the reviews:** "counterfactual-mid estimator (prototype)", not "ghost book"; "conditional simulator counterfactual / CRN coupling", not "exact"; "pre-trade mids match at 1-s sampling", not "bit-identical"; the E6 arm is "QP + front-loading, market orders".
+- 2026-10-04 13:21 IST: **Docs are rendered from templates** (`eval/render_docs.py`); `eval/check_docs.py` must pass before DONE.
 - 2026-10-04: **Simulator = ABIDES rmsc04** (`jpmorganchase/abides-jpmc-public` @ f9cbe51), run on Python 3.11 + numpy 2.2 + pandas 2.3 with a 40-line `pomegranate` shim (same mixture, the agent's own RNG). No gym/ray. Assumption: shim draws are not bit-identical to pomegranate 0.14.5; the distribution is the same.
 - 2026-10-04: **Task:** SELL 4,000 shares, 09:35–09:55, 40×30-s slots, forced completion; ≈12% of window volume. Metric = IS bps vs the arrival mid; paired vs TWAP with a bootstrap CI. Seeds: train 0–99 / val 100–199 / test 1000–1199.
 - 2026-10-04: **Counterfactual twins:** the null twin appends a zero-quantity copy of our agent, so the latency model and all background RNG streams are identical (verified bit-identical pre-trade, 80/80).
@@ -226,3 +234,14 @@ The Supervisor spotted journal and registration times running ahead of git. Audi
 Those labels were estimates, 1–7 min ahead of the clock. The other headers are earlier than their commits, as they should be.
 
 **H1 caveat found during the audit:** the H1 registration was committed at 08:26:53, ≈ 3 min after E6 launched, and the first E6 seed file was written at 08:25:21. No E6 output was read before the run finished, but H1 is now classified as "registered after launch, before inspection". E10 (registered 13:01:50, first seed 13:05:11) is the strict confirmatory test. Correction table: `eval/preregistration.md` (end). From now on every time comes from `TZ=Asia/Kolkata date`.
+
+### 2026-10-04 13:21 IST — E7/E8/E9 done; both cross-model reviews in; amendment A1; templates
+- **E8** (pre-registered; val 100–199; synced): IA_sched_only vs TWAP is +0.0056 [−0.0284, +0.0393], so the E6 effect was not reproduced. All attribution contrasts are unresolved (`eval/results/E8_ablation_val_attribution.md`).
+- **E7** realism: δ = 1.01 [0.55, 1.76] (75% of draws valid). The registered rule says "consistent", but only because it was too lenient. Post hoc, resolved-size δ = 0.87 [0.57, 1.35], with no detectable permanent impact (`eval/results/realism_scorecard.md`). So ABIDES rmsc04 impact is near-linear and fully transient, which is why schedules barely matter.
+- **E9:** on the registered split (fixed after review sol #1), held-out R² is +0.15 (TWAP) and −0.02 (PROBE); RMSE 5.0¢ vs 19.7¢ for naive twins. Criterion not met.
+- **Reviews** (`reviews/ledger.tsv`):
+  - gpt-6-sol reproduced 12/12 rows bit-for-bit; 7 issues, all accepted.
+  - gpt-6-astra scored the draft 2.80/5 (56/100); 16 issues, all accepted (#16 is blocked on the user's teammates).
+- **Amendment A1** (commit 8b85e29, 13:13:18, before E10 results): signed attribution labels with a ±0.02 bps equivalence margin, an interaction rule, and descriptive pools E6∪E10 and E5∪E6∪E10.
+- **E11/E12 pre-registered** (commit 50c5be6). Shell-substitution defects fixed twice (5744e5b and A1's dollar figures); doc text is now written only with quoted heredocs or the edit tools.
+- **Crash root cause:** undetermined. Ruled out: a Python exception, a memory kill (no log entry), tool-shell teardown (plain-`&` sleeps survived 19 min).

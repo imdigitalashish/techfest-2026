@@ -4,7 +4,7 @@
 
 ## C2: why naive twins fail, and what synchronisation does
 - **Setup.** For each seed: world A (our agent sells 4,000 shares, 09:35–09:55) and world B (null agent, quantity 0). Both arms append exactly one agent, so the latency model is identical. Every background agent has its own seeded `RandomState` drawn in fixed order from the master seed (`rmsc04.py`).
-- **Naive twins** are bit-identical before our first order: 80/80 runs (E1), 300/300 (E3). Afterwards, any state-dependent branch in a background agent consumes a *different number* of random draws, which shifts its whole future random stream. That decorrelates the twins chaotically. E1: std of the twin mid gap was 4.7¢ at +60 s, 33¢ at +20 min and 64¢ at +30 min, against a 3–5¢ mean impact.
+- **Naive twins** match before our first order (1-s sampled mids, ≈1¢ tolerance; corrected wording after review): 80/80 runs (E1), 300/300 (E3). Afterwards, any state-dependent branch in a background agent consumes a *different number* of random draws, which shifts its whole future random stream. That decorrelates the twins chaotically. E1: std of the twin mid gap was 4.7¢ at +60 s, 33¢ at +20 min and 64¢ at +30 min, against a 3–5¢ mean impact.
 - **Synchronisation (`per_wakeup`).** Each background agent's decision RNG is re-keyed at every wake-up from (seed, agent id, wake-up count). Wake-time draws come from a dedicated timing stream (`components/sim_env/sim_env/world.py::_synchronise_rng`). Extra or missing draws in one cycle can no longer shift later cycles, so the twins differ only through *causal* responses to our orders. Marginal distributions are unchanged: each draw is still from the same distribution with a fresh, independent key.
 - **Evidence (E4, TWAP, val seeds 100–129):**
   - NSR at the end of execution fell 4.7 → 1.4.
@@ -26,3 +26,9 @@
 - **Next measurement:** refit on synced train-seed twins (E9) and report the out-of-sample R²/RMSE on held-out train seeds. That is the C4 isolated metric.
 - **Candidates:** a nonparametric kernel (a binned G(τ)); a state-dependent kernel (scaled by touch depth or spread); a small sequence model mapping (own fills, book features) to the twin gap; Hawkes-type cross-excitation with momentum flow (cf. Muhle-Karbe, Ouazzani Chahdi, Rosenbaum, arXiv:2601.23172).
 - **Why it matters for the pitch:** the twins are the lab instrument; the ghost book is what transfers to a live venue. Certify it by its RMSE against exact counterfactuals.
+
+## Update 2026-10-04 13:20 IST (evidence after the morning)
+- E9 on the registered split (fit seeds 0–19, held-out 20–39): synced kernel τ = 120 s; held-out mean-path R² +0.15 (TWAP) and −0.02 (random slicing); per-seed RMSE ≈ 5.0¢ vs ≈ 19.7¢ for naive twins on the same split. The pre-registered criterion (R² > 0 for both) is **not met**.
+- The estimator is renamed "counterfactual-mid estimator (prototype)". Under the SELL convention, no-order mid = observed mid + Î.
+- E7: impact is near-linear in size and fully transient in rmsc04 (resolved-size slope 0.87 [0.57, 1.35]). A propagator with ≈0 permanent part fits that physics; the open problem is per-episode noise and state dependence.
+- E11 tests whether the coupling preserves market statistics (pre-registered).

@@ -196,7 +196,44 @@ def g_e10(c):
         c[f"fb_{name}_pct"] = f"{100 * v.mean() / q:.0f}"
 
 
-GROUPS = [g_h1, g_ci_tightening, g_noise, g_integrity, g_facts, g_speed, g_e8, g_e7, g_e9, g_e10]
+def g_reviews(c):
+    import re as _re
+    rows = open(os.path.join(ROOT, "reviews", "ledger.tsv")).read().splitlines()[1:]
+    for r in rows:
+        f = r.split("\t")
+        m = _re.search(r"Weighted rubric (\d\.\d\d)/5", f[7])
+        if f[2] == "gpt-6-astra" and m:
+            key = "astra_final" if "final" in f[1].lower() else "astra_draft"
+            c[key] = m.group(1)
+    c["reviews_issues"] = f"{sum(int(r.split(chr(9))[4]) for r in rows)}"
+    c["reviews_accepted"] = f"{sum(int(r.split(chr(9))[5]) for r in rows)}"
+
+
+def g_e11(c):
+    j = _json("E11_market_laws.json")
+    c["e11_n"] = f"{j['n_per_engine']}"
+    lab = [v["label"] for k, v in j.items() if isinstance(v, dict)]
+    c["e11_preserved"], c["e11_total"] = f"{sum(x.startswith('preserved') for x in lab)}", f"{len(lab)}"
+    c["e11_differs"] = f"{sum(x == 'differs' for x in lab)}"
+    for k in ("volume", "spread_cents", "ret_std_1m_bps", "touch_depth"):
+        c[f"e11_{k}_ratio"] = f"{j[k]['value']:.2f}"
+        c[f"e11_{k}_lo"], c[f"e11_{k}_hi"] = f"{j[k]['ci95'][0]:.2f}", f"{j[k]['ci95'][1]:.2f}"
+        c[f"e11_{k}_label"] = j[k]["label"]
+
+
+def g_e12(c):
+    df = _csv("E12_filltime_test.csv")
+    c["e12_n"] = f"{df.seed.nunique()}"
+    c["e12_exact"], c["e12_rows"] = f"{int(df.pre_window_exact.astype(bool).sum())}", f"{len(df)}"
+    for arm, key in [("IA_full", "ia"), ("TWAP_touch_limit", "tl")]:
+        for m in ("delay_bps", "at_fill_bps", "instant_bps"):
+            mm, lo, hi, _ = _paired(df, arm, "TWAP", m)
+            c[f"e12_{key}_{m[:-4]}"], c[f"e12_{key}_{m[:-4]}_lo"], c[f"e12_{key}_{m[:-4]}_hi"] = f"{mm:+.3f}", f"{lo:+.3f}", f"{hi:+.3f}"
+    res = (df.instant_bps - df.delay_bps - df.at_fill_bps).abs().max()
+    c["e12_identity_resid"] = f"{res:.1e}"
+
+
+GROUPS = [g_h1, g_ci_tightening, g_noise, g_integrity, g_facts, g_speed, g_e8, g_e7, g_e9, g_e10, g_reviews, g_e11, g_e12]
 
 
 def compute(strict=False):

@@ -52,8 +52,9 @@
 | Qlib RL (Microsoft) | Data-driven backtest + RL | Ships single- and multi-asset order-execution tasks (Qlib docs, opened). |
 
 ## 5. Our own first measurements (real, committed runs; ABIDES rmsc04)
+> Later results supersede parts of this section: E7 realism (`eval/results/realism_scorecard.md`), E8/E10 attribution and replication, E9 synced calibration, E11/E12 (`eval/preregistration.md`).
 - **Market (seeds 1–3, `/tmp` stats run, reproduced in E1):** mid ≈ 100,000¢ ($1,000); median spread 1 tick (1¢ = 0.1 bp); touch depth ≈ 100–130 shares; ≈ 50–58k shares traded per 30–35 min.
-- **Twin integrity (E1, 40 train seeds × 2 policies):** the treatment and its null twin are **bit-identical before our first order in 80/80 runs**. Arrival mid is identical by construction.
+- **Twin integrity (E1, 40 train seeds × 2 policies):** pre-trade mids of the treatment and its null twin match at 1-s sampling (≈1¢ tolerance) in 80/80 runs; arrival mid identical by construction. (Corrected 4 Oct 13:20: the earlier "bit-identical" overstated this check; an exact event-level check exists from E12 on. See `reviews/`.)
 - **Twin divergence:** after our first child order the twin difference Δmid has mean ≈ +1.5¢ at 60 s and +3.2¢ at 300 s (adverse, as expected), but its **std grows from 4.7¢ (60 s) to 33¢ (1,200 s) to 64¢ (1,800 s)**. Naive same-seed twins decorrelate chaotically. The systematic own impact is real but small compared with the decorrelation noise, and the propagator fitted on 20 train seeds has out-of-sample R² < 0 on 20 held-out seeds (`eval/results/calibration.json`). **This is the main methodological gap we will close** (ADR 001).
 
 ## 6. What companies ship today
