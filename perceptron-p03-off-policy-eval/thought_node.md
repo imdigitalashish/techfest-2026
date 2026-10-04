@@ -281,3 +281,11 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Browser check (Playwright, served over localhost): no console errors.
 - **Sent back to the builder:** at 1200 px the sheet-3 title block is cramped; check 1280/1440/1920.
 - **Demo review requested:** the gpt-6-astra session was reused for the PLAYBOOK §11.7 "judge watching the demo" review.
+
+### 2026-10-04 22:39 IST — Demo review (gpt-6-astra) and fixes in progress
+- **Layout fix** a6f0c52, verified from a clean checkout: smoke 23/23; first visual in 0.1 s.
+- **gpt-6-astra demo review** (bf9230b; pinned f58966c): wow 7, clarity 4, technical credibility 6, honesty 5 (out of 10). Verdict: "working real-data MVP: yes; top-three finals demo: no, as presented".
+  - Blockers: D1, the A/B line called "true value"; D2, endpoints merged (Nov 26's paired E2 test still rejects after hour clustering; BTS-primary counts are 75/87 answered holding E1, 519/606 refused).
+  - Majors: chronology overstated; "31/33" sold as fresh evidence; the 403 refusals over-read; a 500-word script for 3 minutes; script/screen state mismatches; ESS and z over-interpreted; simulator called "exact".
+  - Minors: dynamic numbers lack hover sources; replay vs independent recompute conflated; one inconsistent fallback.
+- All 12 accepted (`reviews/2026-10-04-dispositions.md`; ledger row). The fix list went to the builder: copy contract, E1/E2 side by side, BTS-primary counts, a 350–400-word script with presets and a timed rehearsal, source keys, re-captured fallbacks.
