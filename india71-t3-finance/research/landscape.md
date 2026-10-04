@@ -41,6 +41,7 @@ Accounts grew 35% (42.20 → 57.07 crore) while inoperative accounts grew 154% (
 ## 2. Existing ecosystem and why the gap persists
 
 What is in place (verified tonight from the Ministry's answers [P1–P3]):
+- **RBI's revised instructions (in force since 1 Apr 2024)** [P8]: an account is inoperative if there are no "customer induced transactions" for over two years; banks must review at least annually accounts with no customer-induced transaction for over a year, alert holders by letter/e-mail/SMS that the account will become inoperative within the next year and that fresh KYC will then be needed, and trace holders (or nominees/legal heirs) when letters bounce; KYC for reactivation must be accepted at all branches, including non-home branches, and through V-CIP; no charges for activation and no minimum-balance penalties on inoperative accounts; transactions in reactivated accounts are monitored to reduce fraud. **Crucially, accounts opened to receive DBT or scholarships must be segregated in core banking "so that the stipulation of 'inoperative' account is not applicable to these accounts"** [P8, Annex para 3] — the official inoperative flag is blind, by design, to unused DBT accounts.
 - **Rules.** An account is inoperative after two years without (customer-induced) transactions; unclaimed balances move to RBI's DEA Fund after ten years; an inoperative account can be reactivated at any time by completing KYC under the Master Direction – KYC 2016 [P3].
 - **Alerts.** Banks inform holders by letter, e-mail or SMS before an account becomes inactive and contact holders of inoperative accounts quarterly [P2].
 - **DBT keeps flowing.** DBT benefits are credited even to inactive accounts [P2] — so a benefit can land in an account its owner cannot or does not use.
@@ -48,9 +49,10 @@ What is in place (verified tonight from the Ministry's answers [P1–P3]):
 - **Products attached to the account:** RuPay card with accident cover (₹1 lakh; ₹2 lakh for accounts opened after Aug 2018), overdraft up to ₹10,000 per household, DBT, PMJJBY, PMSBY, APY, MUDRA eligibility [P4].
 
 Why the gap persists — root-cause tree (evidence status in brackets):
+0. **The official flag is not a usage measure.** "Inoperative" is a fraud-control and unclaimed-deposit status; DBT/scholarship accounts are exempted from it [P8], so the very beneficiaries the theme targets can be invisible in inoperative statistics, and a DBT account that is credited and immediately emptied counts as "operative".
 1. **Measurement counts accounts, not people, and enrolment, not use.** Key breakdowns are "not centrally maintained" [P1, P3]; review forums therefore see openings and totals. Usage enters the national scorecard only through the composite FI-Index [P5, P6] (Usage weight 45% per [S] ET/BusinessLine — UNVERIFIED at RBI), which is national, not district- or implementer-level [L].
 2. **One-size outreach.** Alerts and campaigns go to every inoperative account [P2]. Many inoperative accounts belong to people who use another account (duplicates), have migrated, or have died — reactivating those wastes visits; meanwhile persuadable users get the same SMS as everyone else. (Mechanism plausible; share **UNVERIFIED** — no public data; our simulator makes the assumption explicit.)
-3. **KYC friction.** Reactivation needs KYC [P3]; for a rural, low-literacy holder that means a branch or BC visit — the same friction that caused disuse. [L: RBI's 2024 inoperative-accounts circular and BC-based re-KYC — UNVERIFIED tonight.]
+3. **KYC friction.** Reactivation needs fresh KYC [P3, P8]; RBI allows any branch or V-CIP [P8], but for a rural, low-literacy holder that still means a trip or a smartphone — the same friction that caused disuse. [L: BC-based re-KYC — UNVERIFIED.]
 4. **DBT as pass-through.** Benefits land and are withdrawn in cash, so accounts are "active" without meaningful use (no saving, insurance, digital payment) [mechanism; magnitude **UNVERIFIED** — needs bank data].
 5. **Safety.** Reactivated dormant accounts can be abused as mule accounts [L: RBIH MuleHunter.AI, I4C — UNVERIFIED tonight]; a reactivation drive without a fraud gate creates risk.
 6. **Data-sharing uncertainty.** Linking bank, NPCI-mapper and DBT data touches the DPDP Act 2023 and the Aadhaar Act (s. 29) [L — section-level claims UNVERIFIED tonight]; without a clear legal pattern, each actor keeps its silo.
@@ -62,6 +64,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 | DFS, Ministry of Finance | PMJDY: BSBD accounts, RuPay, OD, DBT eligibility, Jan Suraksha linkage | Production, 59.09 crore accounts (19 Aug 2026) | [P4] |
 | DFS + banks | Gram Panchayat saturation campaign incl. re-KYC of inactive PMJDY accounts, 1 Jul – 30 Sep 2025 | Ran; outcome numbers not opened tonight | [P1, P2] |
 | Banks | Pre-inoperative alerts; quarterly contact of inoperative holders (letter/e-mail/SMS) | Production | [P2] |
+| RBI | Inoperative-account regime: annual review, alerts, tracing, KYC at any branch or V-CIP, no activation charges, DBT/scholarship accounts exempt, reactivated-account monitoring | Production since 1 Apr 2024 | [P8] |
 | RBI | DEA Fund (unclaimed deposits after 10 years); KYC-based reactivation | Production | [P3] |
 | RBI | FI-Index (national composite, 0–100), first published Aug 2021 | Annual; 70.0 for March 2026 | [P5, P6] |
 | RBI | 2,421 Centres for Financial Literacy | Production (31 Mar 2025) | [P1] |
@@ -85,6 +88,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 
 - Real data: the two CSVs above (reproduce with `python eval/public_data/parse_ls4090.py`).
 - Synthetic targeting benchmark (C14 simulator → C2 → C3 → C6): [`eval/results/c6_*.json`](../eval/results/) and the ledger [`components/targeting/autoresearch/results.tsv`](../components/targeting/autoresearch/results.tsv); all account-level data there is **SYNTHETIC**, calibrated to the 23% inoperative share above.
+- **Real-RCT check of the C6 learner** [P9] (`python eval/hillstrom_eval.py --seeds 0 1 2` → [`hillstrom_uplift.json`](../eval/results/hillstrom_uplift.json); retail e-mail, not banking): incremental visits per 1,000 customers vs no e-mail, IPW on held-out halves, mean of 3 splits — at a 10% budget: random 6.4, best arm to a random subset 8.1, our learner 10.6; at 20%: 13.2 / 15.5 / 18.7; at 100%: 63.6 / 80.7 / 77.5. The learner wins when contacts are scarce (who to contact) and loses at full coverage (which message), where per-person arm choice is noisy; the 95% CIs of the paired difference include zero in 2 of 3 splits at 10–20%.
 - Findex 2025 India extract: [`findex2025_india_account_inactive.csv`](../eval/public_data/derived/findex2025_india_account_inactive.csv).
 
 ## 6. Sources
@@ -96,6 +100,8 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 - **[P5]** Reserve Bank of India, Press Release 2025-2026/759, "Financial Inclusion Index for March 2025", 22 Jul 2025. https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=60875 — opened 2026-10-04.
 - **[P6]** Reserve Bank of India, Press Release 2026-2027/686, "Financial Inclusion Index for March 2026", 16 Jul 2026. https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=63164 — opened 2026-10-04.
 - **[P7]** World Bank, Global Findex Database 2025 (GlobalFindexDatabase2025.csv; indicators account_t_d, inactive_t_d). https://thedocs.worldbank.org/en/doc/be6615202d1f08a25855c8ac2d615122-0050012025/related/GlobalFindexDatabase2025.csv (download page https://www.worldbank.org/en/publication/globalfindex/download-data) — downloaded and read 2026-10-04.
+- **[P8]** Reserve Bank of India, circular RBI/2023-24/105 DOR.SOG (LEG).REC/64/09.08.024/2023-24, "Inoperative Accounts/Unclaimed Deposits in Banks – Revised Instructions", 1 Jan 2024, effective 1 Apr 2024. https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12589&Mode=0 — opened 2026-10-04.
+- **[P9]** K. Hillstrom, MineThatData E-Mail Analytics and Data Mining Challenge dataset (64,000 customers randomised to no e-mail / men's / women's e-mail), 2008. http://www.minethatdata.com/Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv — downloaded 2026-10-04.
 - **[P0]** Official problem statement, The India @71/100 Challenge, Techfest 2026-27 — `_briefs/india71.pdf`.
 - **[S]** News coverage seen in search results 2026-10-04, not checked against primaries: The Hindu BusinessLine and Economic Times on RBI FI-Index FY25 = 67.0 (from 64.2) and weights Access 35% / Usage 45% / Quality 20%.
 
@@ -104,7 +110,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 1. ~~Global Findex 2025 India figures~~ (done: [P7], data file).
 2. ~~FI-Index values~~ (done: [P5], [P6]); still to open: the Aug 2021 methodology release (weights, 97 indicators — currently [S]).
 3. NFHS-5 / NFHS-4: women having a bank or savings account they themselves use (national, state, district) — overnight download was truncated.
-4. RBI circular on inoperative accounts (Jan 2024) — DBT/scholarship account treatment, alert duties, BC/V-CIP activation.
+4. ~~RBI circular on inoperative accounts~~ (done: [P8]).
 5. DPDP Act 2023 sections 7, 8, 10, 17 and the DPDP Rules commencement; Aadhaar Act s. 29; NPCI mapper consent rules.
 6. NPCI: UPI 123PAY, AePS volumes; MoRD BC Sakhi numbers; RBIH MuleHunter.AI deployment; Sahamati AA statistics; DEPA clean-room repos.
 7. DBT Bharat totals (FY 2024-25, 2025-26) — the dashboard is client-rendered; needs a browser.

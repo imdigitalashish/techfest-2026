@@ -12,4 +12,5 @@
 3. S-learner / X-learner / DR-learner instead of the T-learner (pool strength across arms).
 4. Allocate expensive arms by a lower confidence bound (bootstrap the pilot).
 5. Policy selection: choose among {learned, best-arm, hybrid} by doubly-robust policy value on a pilot split.
+7. Two-stage policy (evidence: Hillstrom real RCT and the simulator both show per-person *arm choice* is the noisy part): rank persons by predicted uplift of the best arm (*who*), then assign the arm by segment-level effect per rupee (*which*) unless per-person evidence is strong.
 6. Feature work: interactions for KYC-due × inoperative, women × BC Sakhi, phone × literacy.
