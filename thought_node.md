@@ -25,6 +25,7 @@
 
 - [ ] **Mac memory (08:50):** swap is ~97% full (34.6 of 35.8 GB). Your own VM (`com.apple.Virtualization`, ~16 GB incl. compressed) and CapCut are the largest non-project users. Pausing them while the projects run, or approving Azure compute for heavy jobs, would stop the slowdowns. I've asked P1 and P9 to shrink their jobs.
 - [ ] **India@71 T1 (✅ Completed — please review):** team names + Team ID for `India71_100_[TeamID].pdf`; a state/district WCD contact for a pilot data extract; a union/worker-association contact for co-design.
+- [ ] **EV C2:** access to the ISO 14040/14044 standards text (IIT Delhi library or BIS) for the LCA jury Q&A; an environmental/mechanical teammate; team name, Team ID, institution and contacts for the Round-1 header.
 ## Portfolio (08:18 IST) — package = landscape, components, contracts, ADR, deliverables, eval, memo
 | Project | Package | Memo (self-score) | Last push | Note |
 |---|---|---|---|---|
