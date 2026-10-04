@@ -4,12 +4,12 @@
 
 > **Release gate:** team name, Team ID, institution, leader contact and members must be filled by the team (registration closes 15 Oct; only the leader uploads, once, by 30 Oct). Not submittable until then.
 
-<!-- headline:begin --><!-- headline:end -->
+<!-- headline:begin -->Central results (CEA FY2025-26 average grid, partial upstream, inputs id `91a3e4ce38`, n = 10000 paired Monte Carlo draws, seed 20261004): the legacy-data sedan case is harmonized: GWP100-AR5 — e-Verito-class BEV vs petrol sedan saving **10.0 % (-10.1 to 25.6)**, P(lower) 0.81 (not decisive). The scooter calculation gives **38.1 % (32.0 to 43.2)** lower emissions in a **partial, mixed-basis GHG indicator** (GWP100-AR5, GWP20(CH4), unspecified), not yet a harmonized GWP100 comparison.<!-- headline:end -->
 
 ## 0. Demonstrated now vs committed vs conditional
 | Demonstrated (4 Oct, reproducible with `bash eval/run_all.sh`) | Committed for the Grand Finale (16–18 Dec) | Conditional / stretch (only if the gate or exit criteria above it pass) |
 |---|---|---|
-| Cited record store (<!-- dbcounts:begin --><!-- dbcounts:end -->); quote-presence + value-in-quote checks in the tests | One Indian steel decision chain: Green Steel Taxonomy bands on one cited component mass (always), **or** a source-qualified route pair (if the D gate passes) | Route pair BF-BOF vs coal-DRI-EAF vs scrap-EAF with plant/product data |
+| Cited record store (<!-- dbcounts:begin -->128 records (107 verified, 21 derived) from 19 opened sources<!-- dbcounts:end -->); quote-presence + value-in-quote checks in the tests | One Indian steel decision chain: Green Steel Taxonomy bands on one cited component mass (always), **or** a source-qualified route pair (if the D gate passes) | Route pair BF-BOF vs coal-DRI-EAF vs scrap-EAF with plant/product data |
 | Engine: parameterised stages, scenario inheritance, paired Monte Carlo, gas-basis flags, EOL double-counting guard | One process with explicit co-product allocation; one EOL approach (cut-off) | Avoided burden and Circular Footprint Formula (only with compatible parameters) |
 | Two case studies with grid-method, loss, battery-replacement and fuel sensitivities; arithmetic verification vs ICCT (0.06 %, 1.0 %); context from 3 independent Indian car LCAs | Extractor evaluated on unseen publishers against manual and rule baselines (§1, stage 2 metrics) | 300+ records across all eight layers; AR6 elementary-flow inventory (needs sources that report CH4/N2O separately) |
 | National grid CO2e (partial upstream) with margins as sensitivities | Web app + offline demo with provenance on every input, and a "rejected incompatible factor" moment | State consumption-based or prospective grid factors (with back-tests) |
@@ -58,7 +58,7 @@ The plan works with **R1 + R2 alone**. Hours are planning estimates, not measure
 - Outputs are regenerated in order by `eval/run_all.sh`, and docs fail on drift.
 - Planned: source hashes, versioned releases with deduplication by document, review ownership (R2 approves pedigree and boundary fields), and a hosted CI for the existing local tests.
 
-**Synthetic data:** <!-- synthetic:begin --><!-- synthetic:end -->
+**Synthetic data:** <!-- synthetic:begin -->No synthetic inventory or vehicle-performance records are used in the case studies. Verifier evaluation uses 214 labelled synthetic digit-perturbed quote negatives generated from source records. Monte Carlo draws simulate the stated uncertainty model and are not measured data. Any future synthetic inventory record will carry status `synthetic`.<!-- synthetic:end -->
 
 ## 3. Tools
 Python 3.11 · NumPy · SciPy · pydantic · PyYAML + git · openpyxl · pdfplumber/pdftotext · pytest (`requirements.txt`) · Azure OpenAI (extractor proposals, behind the checks) · openLCA/Brightway formats (export planned) · FastAPI + lightweight front-end (stage 4).
