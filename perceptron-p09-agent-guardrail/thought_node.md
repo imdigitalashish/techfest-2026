@@ -123,6 +123,16 @@ _Final, 4 Oct 2026 (v4). Re-scored after both cross-model reviews; supersedes v1
 - **Overall: 3.8 / 5.** Recommendation: a solid, low-risk Perceptron pick whose claims are modest but survive adversarial review. Choose it over P7 if P7's spike stays unreplicated; it will not win on novelty alone.
 
 ## Log
+### 2026-10-04 21:11 IST — Demo review applied
+- **gpt-6-astra demo review:** scores 7/7/8 of 10 (lean-in / believe numbers / problem fit), 12 findings, all accepted (`reviews/2026-10-04-demo-gpt-6-astra.md`, ledger).
+- **Guard fixes (lead):** each verified to leave the 18 committed τ-bench result files identical:
+  - `3b1b92f`: live bypass, a hashless order id in a ticket was allowed; taint is now format-insensitive;
+  - `86de6dc`: a benign note restating the order's original payment method blocked the control; exempt;
+  - `09452de`: benign notes repeating an item the user named or an address they confirmed are exempt.
+  - Order identity is never exempt; that one is labelled on screen as a known conservative false block.
+- **Fix 8:** the 15-decision tokenizer impact is now a committed analysis (`known_issue_contractions.py/json`).
+- **Builder:** UI, script and API fixes 1–7, 9, 10 at `c79042d`; smoke 142/142.
+
 ### 2026-10-04 20:15 IST — Demo built; lead verified from a clean clone
 - **Builder pushed the demo** (`f3446ba`).
 - **Screens:** (1) REAL τ-bench errors: no guard (τ-bench tool DB diff) vs LIVE Tier 0 vs REPLAYED gpt-4.1-mini judge; (2) "Hijack the agent": typed ticket → SCRIPTED agent → LIVE guard, plus a benign control; (3) knob over 300 real calls against the judge's curve; (4) SYNTHETIC desk; (5) "what this does not show".
