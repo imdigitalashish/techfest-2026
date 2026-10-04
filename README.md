@@ -19,7 +19,7 @@ Private monorepo: one folder per problem statement, each run by its own project-
 | [perceptron-p03-off-policy-eval](perceptron-p03-off-policy-eval/thought_node.md) | ✅ Completed — ready for your review | Perceptron | Did the policy actually work? (off-policy evaluation) | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p04-lob-regimes](perceptron-p04-lob-regimes/thought_node.md) | ✅ Completed — ready for your review | Perceptron | Order-book forecasting under regime shifts | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p05-impact-execution](perceptron-p05-impact-execution/thought_node.md) | ✅ Completed — ready for your review | Perceptron | Market-impact-aware execution | Abstract · 31 Oct | 15–18 Dec |
-| [perceptron-p06-stat-arb](perceptron-p06-stat-arb/thought_node.md) | 🟢 Active | Perceptron | Cross-asset statistical arbitrage with latency budgets | Abstract · 31 Oct | 15–18 Dec |
+| [perceptron-p06-stat-arb](perceptron-p06-stat-arb/thought_node.md) | ✅ Completed — ready for your review | Perceptron | Cross-asset statistical arbitrage with latency budgets | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p07-multi-agent-allocation](perceptron-p07-multi-agent-allocation/thought_node.md) | ✅ Completed — ready for your review | Perceptron | Splitting a shared resource when demand keeps changing | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p08-misconception-tutor](perceptron-p08-misconception-tutor/thought_node.md) | 🟢 Active | Perceptron | A tutor that finds the real reason you're stuck | Abstract · 31 Oct | 15–18 Dec |
 | [perceptron-p09-agent-guardrail](perceptron-p09-agent-guardrail/thought_node.md) | ✅ Completed — ready for your review | Perceptron | Catching an agent before it acts on a bad idea | Abstract · 31 Oct | 15–18 Dec |
@@ -33,7 +33,7 @@ Private monorepo: one folder per problem statement, each run by its own project-
 | [india71-t3-finance](india71-t3-finance/thought_node.md) | ✅ Completed — ready for your review | India @71/100 | Financial inclusion & meaningful banking access | 6-page proposal · 1 Nov | 16–18 Dec |
 | [innovatex-t1-groundwater](innovatex-t1-groundwater/thought_node.md) | ✅ Completed — ready for your review | InnovateX | IoT underground water management | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
 | [innovatex-t2-aqi](innovatex-t2-aqi/thought_node.md) | 🟢 Active | InnovateX | Rising AQI in cities | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
-| [innovatex-t3-coastal-plastic](innovatex-t3-coastal-plastic/thought_node.md) | ⏳ Queued #2 | InnovateX | Coastal plastic pollution (Mumbai) | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
+| [innovatex-t3-coastal-plastic](innovatex-t3-coastal-plastic/thought_node.md) | 🟢 Active | InnovateX | Coastal plastic pollution (Mumbai) | Zonal pitch · Delhi 10 Oct | 15–18 Dec |
 
 ## Key dates
 
