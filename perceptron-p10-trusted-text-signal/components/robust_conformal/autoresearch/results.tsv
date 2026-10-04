@@ -3,3 +3,4 @@ timestamp	commit	hypothesis	SCORE	delta	kept	notes
 2026-10-04T08:02+05:30	727d717	h1: drop sent_std (loosest deletion box)	4.42735	-0.61%	yes (provisional)	cov_clean 0.90832, cov_pump 0.91194, width_pump 4.456; single seed; test-period re-check pending
 2026-10-04T08:09+05:30	58955a1	h2: robust-only text features (log_n_docs, sent_trim)	4.41294	-0.33% vs h1	no	below 0.5% keep threshold vs current best (h1); -0.93% vs baseline; cov_clean 0.90814, cov_pump 0.9099
 2026-10-04T08:09+05:30	58955a1	h3: ACI gamma 0.005 (baseline features)	4.46503	+0.24% vs baseline	no	worse; cov_clean 0.91055, cov_pump 0.91639
+2026-10-04T08:27+05:30	0f7bf91	lead re-check of h1 on untouched test period (eval/recheck_ratchet.py)	-	+0.13% clean width vs baseline	reverted	test: cov_clean 0.8953 width 5.2396 (baseline 0.8952 / 5.233); cov_pump 0.8969 width 5.2408 (baseline 0.8972 / 5.247) -> val gain did not transfer; new keep rule: mean of 3 seeds, >1%

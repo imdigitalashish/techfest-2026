@@ -12,7 +12,7 @@
 ## Now
 - **Phase:** morning package delivered (Phases 0–5 v0). Next: re-verify research gaps, FinBERT scorer, edit-budget certificate, FNSPID subset.
 - **Plan:** (1) 4–12 Oct: fill research gaps (social signal, SEBI/SEC, detectors, Kupiec/Christoffersen primaries) + independent rubber-duck review of ADR 001 + final selection memo by 12 Oct; (2) FinBERT/finbert-tone scorers behind the C3 contract; (3) edit-budget (replace ≤k docs) certificate; (4) FNSPID stream-filtered news subset 2018–2023 as the finals test; (5) ratchet loops on CR-ACI width.
-- **Doing:** first ratchet batch on the frozen spike evaluator: h1 (drop `sent_std`) kept provisionally (SCORE 4.454 → 4.427, −0.6%); h2 (robust-only text features) and h3 (ACI γ = 0.005) running. No sub-agents (Supervisor lean mode until 08:30, then ≤ 3 concurrent).
+- **Doing:** ratchet batch 1 closed. h1 (drop `sent_std`) passed on validation (−0.6%) but did not transfer to the test period (+0.1% width), so it was reverted and the keep rule tightened to 3 seeds and >1%. h2 and h3 were not kept. Lean mode lifts 08:30 (≤ 3 concurrent sub-agents).
 - **Next:** log ratchet results → rubber-duck review of ADR 001 when agents are allowed again → research gap pass → FinBERT weights (~440 MB) once downloads are allowed.
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section (the abstract has TBD roles). Optional: a Kaggle API token (`~/.kaggle/kaggle.json`) if we want the organisers' "Kaggle news + price" set as an extra baseline.
 - **Risks:** text adds ~no point accuracy (measured: pinball 0.3518 fusion vs 0.3513 price-only) → pitch rests on trust/coverage, not alpha · threat model is injection-only (edits next) · split methods under-cover in the 2015–16 test regime (measured) · pooled Kupiec/Christoffersen p-values are optimistic · ADR 001 antithesis is lead-written (independent review pending) · research notes are partial (agents died on 408s; gaps listed in landscape §7).
@@ -123,3 +123,15 @@ Lead re-verified the top citations (arXiv API: 2406.16964, 2506.16553, 2601.1308
 
 ### 2026-10-04 07:50–08:05 IST — Tests, ratchet, gate message
 Added `tests/` (43 pass): DST-safe 16:00 ET alignment, contract rejection, brute-force check that the deletion box is sound and exact (40 random cases, all deletions of ≤ k docs), tree-bound soundness on sampled points. Fixed a bug where `CertifiedCQR` assumed every text feature was in the model; committed results used the full feature set, so they are unaffected. Ratchet h1 (drop `sent_std`) passed the keep rule (−0.6%, coverages 90.8% / 91.2%); single seed, so the test-period re-check is pending. Supervisor 07:47 final call acted on: memo filled, Now/Log refreshed, everything pushed. Messaged the Supervisor that selection memo v1 is ready (gate deliverable).
+
+### 2026-10-04 08:09–08:28 IST — Self-audit + ratchet re-check
+- **Ratchet:**
+  - h2 (robust-only text features) improved only −0.33% vs h1, below the threshold → not kept.
+  - h3 (ACI γ = 0.005) was worse → not kept.
+  - Lead test-period re-check of h1 (`eval/recheck_ratchet.py`): clean width 5.240 vs baseline 5.233. The validation gain did not transfer → reverted. Keep rule is now mean of 3 seeds, >1%.
+  - Lesson: single-seed differences under ~1% are noise here.
+- **Self-audit fixes (wording only; no numbers changed):**
+  - Abstract: StockNet's *model* is a victim in Xie et al.; that the attack used this exact dataset is unverified.
+  - Robust-CP prior art also covers poisoning and sparse edits (ICML 2024).
+  - Results caveat: the 12-variant oracle is not a worst-case bound for plain CQR. The certified floor (clean CQR coverage) holds for every attack within budget.
+- Added `research/components/robust_conformal.md` (exactness proofs) and `text_scorer.md`, both referenced from code.

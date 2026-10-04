@@ -1,1 +1,1 @@
-{"text_cols": ["log_n_docs", "sent_mean", "sent_trim", "trust_mean"], "lgbm": {}, "aci_gamma": 0.01}
+{"text_cols": ["log_n_docs", "sent_mean", "sent_trim", "sent_std", "trust_mean"], "lgbm": {}, "aci_gamma": 0.01}

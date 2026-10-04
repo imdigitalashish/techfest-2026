@@ -6,7 +6,7 @@
 
 **Allowed edits:** `config.json` (text feature subset, LightGBM params, ACI γ) and implementation inside `components/fusion`, `components/aggregator`, `components/robust_conformal` — contract tests must still pass and every text feature must keep an exact deletion-range rule. Never edit `eval.py`, `eval/metrics.py` or the splits.
 
-**Keep rule:** keep a change only if SCORE improves by > 0.5% and both coverages stay ≥ 0.895; log every attempt in `results.tsv` (kept or not).
+**Keep rule:** keep a change only if the mean SCORE over 3 seeds improves by > 1% and both coverages stay ≥ 0.895; log every attempt in `results.tsv` (kept or not). (Tightened 4 Oct 08:27 after h1's −0.6% single-seed validation gain did not transfer to the test period.)
 
 **Idea backlog (ordered):**
 1. Drop the loosest-boxed feature (`sent_std`).
