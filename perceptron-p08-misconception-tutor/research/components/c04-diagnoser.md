@@ -33,6 +33,7 @@ Add the LLM leg (Azure OpenAI) and a dense retriever; report hybrid gains with b
 
   The gated hybrid helps only gpt-4.1-mini: balanced accuracy 70.0% → 78.2%.
 - **Decision:** C4 becomes an **exact-first cascade** (engine claim, else LLM). It has no accuracy edge over reasoning models.
-  - On real items, GPT-5.5 cost per 1,000 diagnoses falls $6.50 → $5.95, because the engine explains only 26/304 (post hoc).
-  - On engine-native probability items, cost per 1,000 halves, $7.32 → $3.66 (confirmatory, Addendum B).
-  - The engine is deterministic at 0.11 ms; GPT-5.5 changed 2 of 40 repeated diagnoses.
+  - On real items (post hoc), GPT-5.5 cost per 1,000 diagnoses falls $6.50 → $6.10 (−6.2%), because the engine explains only 26/304.
+  - On engine-native probability items, LLM calls halve by design. Cost per 1,000 falls only $7.32 → $5.08 (−30.5%), because routed slip answers cost more. This is a construction-guaranteed accounting demonstration, not independent evidence.
+  - Costs are summed over the items actually routed (a review fix; earlier versions wrongly multiplied average cost by the routed fraction).
+  - The engine gave identical outputs on 304/304 items over two passes (median 0.06 ms). GPT-5.5 changed 2 of 40 repeated diagnoses.

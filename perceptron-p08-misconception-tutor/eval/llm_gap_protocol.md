@@ -212,3 +212,18 @@ Misconceptions:
 
 Reply with JSON only: {"code": "<EQUIPROB|INDEP|ADD_PROB|INVERSE|JENSEN|NONE>"}
 ```
+
+## Clarifications and post-hoc additions (appended 2026-10-04 17:15 IST, after the cross-model reviews; the registered text above is unchanged)
+1. **Exposure** (astra #10). The 129 linked positives, together with gpt-4.1-mini forced-choice predictions on them (`eval/results/diagnosis.json`), had been seen before registration. Outputs under the new prompts had not. These are therefore prospectively specified analyses on a previously inspected corpus. Any future confirmatory claim needs a new question-level holdout.
+2. **Multiplicity** (astra #13). The primary confirmatory family is {H1, H2} × gpt-5.5. All other hypothesis × model decisions (21 nominal gap decisions in total) are exploratory, and their 95% intervals are nominal.
+3. **Interpretation** (astra #23). H1 supports a false-claim statement. H2 supports only a balanced-accuracy statement, because it can improve through positives alone. Neither held for gpt-5.5.
+4. **H6 and §2.3** (astra #22, #14). H6 is a Brier-score advantage under the simulated distribution, not a calibration test. "Upper bound" in §2.3 should read "optimistic scenario".
+5. **H8** (sol #1, astra #3). H8 is guaranteed by construction: the engine applies the item's own family rule, and the item mix fixes routing at 50%. It is an accounting demonstration of routing, not independent confirmation, and the label "confirmatory" is withdrawn.
+6. **Cascade cost and latency — DEVIATION** (sol #2, astra #1–2).
+   - The earlier computation multiplied the all-item mean cost and median latency by the routed fraction. It is now summed over the items actually routed (`eval/run_prob_pack.py`, `eval/run_cascade.py`), and `llm_gaps_prob_diag.json` and `cascade_real.json` were regenerated offline from the unchanged responses.
+   - GPT-5.5 cost per 1,000: probability $7.32 → $5.08 (previously reported $3.66); real $6.50 → $6.10 (previously $5.95). No decision changed.
+7. **Exact intervals** (sol #4, astra #4). Clopper–Pearson 95% intervals are reported post hoc in `eval/results/llm_gaps_posthoc.json`, e.g. 0/152 false claims gives an upper bound of 2.4%. The registered bootstrap decisions are unchanged.
+8. **Clustering** (astra #12). A question-clustered bootstrap (173 questions) is reported post hoc: the H1/H2 decisions are unchanged for all models. For HYB vs LLM with gpt-4.1-mini there were 4 wins and 0 losses; the exact sign test gives p = 0.125, so that secondary result is not robust.
+9. **Display** (sol #3). Fraction literals are shown bracketed. `parse_display` and a round-trip test now confirm that every displayed inversion/tracing expression reproduces its labels; under the old `parse_dsl`, 26/180 inversion items differed. Prompts and items are unchanged, so no rescoring was needed.
+10. **Tracing ambiguity** (sol #7). Post-hoc sensitivity excluding the 7 learners who hold both SQ_DOUBLE and NEG_TIMES_NEG and saw a squared negative: tracer 64.5% vs gpt-5.4-mini 66.7% (Δ CI −7.5 to +3.2 pp). Conclusions unchanged.
+11. **Retries** (sol #8, astra #21). 14 items had a second attempt; the first attempt's usage was not retained. Unrecorded cost is at most $0.51. The runner now sums usage over attempts and counts requests.

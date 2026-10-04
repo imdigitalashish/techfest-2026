@@ -80,7 +80,11 @@ Domain packs: [notes/r7](notes/r7-domain-taxonomies.md) gives cited, executable 
 5. **Product.** Teacher-in-the-loop dashboard (Eedi × DeepMind evidence); Socratic feedback; never let an LLM state an unverified number (Khan).
 
 ### 8b. What our own pre-registered tests showed (4 Oct, `eval/llm_gap_protocol.md`)
-Reasoning LLMs (GPT-5.4-mini, GPT-5.5) matched our exact engine and tracer on every test. On real Eedi data they made no false claims on 152 same-domain negatives and covered far more positives. A non-reasoning model (GPT-4.1-mini) failed every test. The engine's distinct value is cost, latency, determinism and verified generation, not accuracy. See [ADR 001 revision 1](../architecture/adr/001-spike.md).
+- **Reasoning LLMs (GPT-5.4-mini, GPT-5.5):** no pre-registered gap (H1–H7) was detected against them. On real Eedi data they made 0 false claims on 152 selected same-domain negatives (exact 95% upper bound 2.4%) and covered far more positives than the engine. Non-detection is not equivalence: no equivalence margin was registered.
+- **Non-reasoning model (GPT-4.1-mini):** gaps were detected on every test.
+- **The engine's distinct value** is conditional: lower cost where it can certify answers (a 6.2% saving on real items, post hoc), determinism and latency, and verified arithmetic practice. It is not accuracy.
+
+Corrected after the cross-model reviews ([responses](../reviews/2026-10-04-responses.md)). See [ADR 001 revision 1](../architecture/adr/001-spike.md).
 
 ## 9. Gaps to close before 31 Oct
 

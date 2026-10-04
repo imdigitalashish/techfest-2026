@@ -90,3 +90,16 @@ The protocol and runner were committed before any run: [`eval/llm_gap_protocol.m
 - **Yellow:** exact evidence, and items that are verified rather than trusted.
 - **Green:** the only remaining differentiator a judge would weigh heavily is *real learning evidence* (the pilot).
 - **Blue:** at the 12 Oct selection, P8 should not be the Perceptron pick unless the team values the education theme and can run the pilot.
+
+## Revision 2 — 2026-10-04 17:15 IST, after the cross-model reviews ([responses](../../reviews/2026-10-04-responses.md))
+- **Wording corrections to Revision 1.**
+  - "Refuted for reasoning models" should read "not supported by these tests". No equivalence margin was registered, and non-detection is not equivalence.
+  - "Exact inference gives calibrated posteriors" (Hats, Yellow) is not established. The tracer showed only a Brier-score comparison under the simulated distribution.
+- **Corrected economics.** Costs are now summed over the routed items:
+  - Probability items (engine-native; routing fixed by construction): $7.32 → $5.08 per 1,000 diagnoses (−30.5%, not −50%).
+  - Real items (post hoc): $6.50 → $6.10 (−6.2%).
+- **Decision.**
+  - **A becomes dependable infrastructure:** certificates ("this rule reproduces this answer"), deterministic and verified arithmetic practice. It is not presented as diagnosing the learner's true belief.
+  - **B stays a bounded adaptive policy,** to be compared with simpler policies and with an LLM tutor given the same history.
+  - **The new spike is learner benefit:** a randomised pilot of our tutor vs a GPT-5.5 tutor, with matched items, time and interface.
+  - **Scope cut:** the bug compiler (F), catalogue-to-tracer integration and the probability pack are stretch goals; the MVP is the five-misconception arithmetic pack.

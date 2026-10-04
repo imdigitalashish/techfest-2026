@@ -11,29 +11,29 @@
 - 2026-10-04 09:55 (Supervisor): **PAUSE** (user's decision; only Namma Space, P7 and EV C2 run; P7 is the Perceptron pick unless the user overrides). → Paused at 10:00 IST. No jobs were running.
 
 ## Now
-- **Phase:** 5–6 — **ACTIVE again since 14:58 IST, 4 Oct** (Supervisor batch slot). Goal: find out honestly whether and where the LLM baseline fails, then finalise.
-- **Definition of done (Supervisor 14:58):**
-  1. Pre-register `eval/llm_gap_protocol.md` and commit it before any run. Then run `real_negatives` (real data), `inversion` and `tracing` (+ `prob_pack` if time) against gpt-4.1-mini **and** gpt-5.4-mini (gpt-5.5 on the decisive parts). If there is no gap, say so plainly.
-  2. Re-frame the pitch on that evidence.
-  3. Final Round-1 abstract with numbers rendered from committed results, plus a doc-drift check (`eval/check_docs.py`) and the diagram.
-  4. Cross-model reviews as child sessions: gpt-6-astra (max) as hostile judge on abstract + spike; gpt-6-sol (max) on code/eval, reproducing the headline numbers → `reviews/` + `reviews/ledger.tsv`.
-  5. Final selection memo; push; message the Supervisor "DONE — slot free".
-- **Plan:** protocol → runner (`eval/run_llm_gaps.py`; responses saved to committed JSONL so scoring reproduces offline) → runs (bounded; tokens and cost logged per part) → analysis → pitch/abstract/memo → 2 reviews → triage → DONE.
-- **Doing:** every pre-registered experiment has run (total $19.75). Final abstract, architecture, ADR revision and selection memo are written; `check_docs` passes. **Reviews running (child sessions, launched 16:44 IST):** "P8 review: abstract (astra)" (`aa201700-b32f-4785-903d-ff0c0c46fee4`; gpt-6-astra, max; hostile judge on abstract + spike + memo) and "P8 review: code+eval (sol)" (`af6ac48b-b2af-4f1c-85de-3940a3c9877d`; gpt-6-sol, max; offline reproduction + code review). After that: triage into `reviews/ledger.tsv`, revise, push, and send "DONE — slot free".
-- **Rules in force:** no `task` sub-agents; ≤2 child sessions; never `git stash`/`--autostash`; timestamps from `TZ=Asia/Kolkata date`; heavy jobs `nice -n 10`, CPU only, start only when `kern.memorystatus_level` ≥ 30; small API batches; poll long jobs ≥10 min apart; Azure keys in env only.
+- **Phase:** ✅ **Done for this batch (17:45 IST, 4 Oct)**: definition of done met; "DONE — slot free" sent to the Supervisor.
+- **Plan / result:**
+  - Pre-registered LLM-gap tests (`eval/llm_gap_protocol.md`): no gap was detected against the reasoning models; gaps were detected only against gpt-4.1-mini.
+  - The pitch is re-framed as an **exact-first cascade** with no accuracy claim.
+  - Deliverables are rendered from results: `deliverables/round1-abstract.md` (829 words), `architecture.md` and `selection-memo.md`. `check_docs` is OK and its self-test passes.
+  - Reviews by gpt-6-astra and gpt-6-sol are triaged in `reviews/`.
+- **Doing:** nothing; no background jobs. The two reviewer child sessions are idle; they have commits, so they are not archived.
+- **Next (only if P8 is picked at the 12 Oct gate):**
+  1. Fill [TEAM] (names, skills, owners).
+  2. Pilot protocol and consent (randomised vs a GPT-5.5 tutor).
+  3. A non-generator-native cascade workload.
+  4. Rule-precedence wording in the tracing prompt; parser segment-disambiguation sensitivity.
+  5. Real option-level tracing.
+  6. Web UI and teacher view.
 - **Needs from user:**
-  - Register by 15 Oct (after the 12 Oct selection).
-  - Teammates' names and skills for the team-fit section (abstract has [TEAM] placeholders).
-  - A Kaggle login to download the official Eedi 2024 files and confirm the mirror's fidelity.
-  - In Nov: ~30 learners for a consented pilot.
-  - FYI: Azure OpenAI resource in the VS Enterprise subscription (rg `rg-tf26-p08`; deployments gpt-4.1-mini, gpt-5.4-mini, gpt-5.5). Pay-per-token; delete when no longer needed: `az group delete -n rg-tf26-p08`.
+  - Decide the Perceptron pick at the 12 Oct gate (P8 memo recommends **against**).
+  - If P8 is picked: register by 15 Oct; teammates' names, skills and owners; a Kaggle login to verify the Eedi mirror; ~30 consenting learners in November.
+  - Azure OpenAI resource group `rg-tf26-p08` (gpt-4.1-mini, gpt-5.4-mini, gpt-5.5) is pay-per-token. Delete with `az group delete -n rg-tf26-p08` if P8 is dropped.
 - **Risks:**
-  1. The LLM baseline is strong (gpt-4.1-mini 86.0% vs exec→TF-IDF 45.7% on the real 5-category set); reasoning models may close every remaining gap. If so, the memo says P8 has no defensible edge.
-  2. Synthetic parts (inversion, tracing) favour the executable side, which shares the generative model (home-field advantage). They must be labelled and weighted below the real-data part.
-  3. Simulated learning ≠ real learning.
-  4. LaTeX parser covers ~45% of real items.
-  5. Eedi 2024 data via an unofficial mirror.
-  6. Uplink congestion / Azure flakiness.
+  1. No accuracy edge over frontier LLMs.
+  2. Learning evidence needs a pilot that overlaps the exams.
+  3. Executable coverage on real items is low (26/304).
+  4. Eedi data comes via a mirror; revision and hashes are pinned.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -66,6 +66,11 @@
 - 2026-10-04 15:21 — **Pre-registered LLM-gap protocol** (`eval/llm_gap_protocol.md`, plus Addendum A at 15:29 and Addendum B at 15:51). Run against gpt-4.1-mini, gpt-5.4-mini and gpt-5.5, with an offline-reproducible scoring path.
 - 2026-10-04 16:45 — **Spike A re-scoped** ([ADR 001, revision 1](architecture/adr/001-spike.md)). "Executable diagnosis beats LLM diagnosis" is refuted for reasoning models, so the design is now an **exact-first cascade**: the engine answers what it can prove, and a frontier LLM handles the rest. Claims are limited to cost, latency, determinism and verified generation.
 - 2026-10-04 16:45 — **Selection recommendation: against P8** as the team's Perceptron pick (see the Selection memo).
+- 2026-10-04 17:40 — **Review-driven corrections** ([responses](reviews/2026-10-04-responses.md); 35 issues, all accepted, 4 of them partly).
+  - Cascade costs are now summed over routed items: probability items \$7.32 → \$5.08 per 1,000, real items \$6.10.
+  - Wording: "certificate", not "proof"; "no gap detected", not "match".
+  - MVP narrowed to the arithmetic pack; the pilot is now randomised against a GPT-5.5 tutor.
+  - The drift check now compares against fresh renders, and its self-test catches falsification.
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
@@ -73,9 +78,9 @@
 | C1 | Catalogue | id → Misconception | Eedi graph (CC BY) | — | built | link coverage 5/5 |
 | C2 | Normaliser | raw → NormalizedAnswer | Fraction parsing | — | built | canonicalisation acc 8/8 cases |
 | C3 | Bug library | Item → PredictedAnswer[] | mal-rules (Sleeman, MalruleLib) | **A** | built (5 bugs); autoresearch loop | reproduction_dev 0.155 → 0.190 (loop iter 2); wrong attribution 0% |
-| C4 | Diagnoser (exact-first cascade) | DiagnosisRequest → Diagnosis | LLM zero-shot; retrieval+rerank | **A** (re-scoped) | built | real Eedi (pre-registered): GPT-5.5 79.4% of positives / 0.0% false claims; engine 19.1% / 0.0%; cascade = GPT-5.5 accuracy at −8.6% cost |
+| C4 | Diagnoser (exact-first cascade) | DiagnosisRequest → Diagnosis | LLM zero-shot; retrieval+rerank | **A** (re-scoped) | built | real Eedi (pre-registered): GPT-5.5 79.4% of positives, 0/152 false claims (exact 95% upper bound 2.4%); engine 19.1%, 0/152; cascade cost −6.2% on real items (post hoc) |
 | C5 | Verifier | Item → VerificationReport | none / LLM self-check | — | built | fault detection (mutation suite: to do) |
-| C6 | Generator | GenerationRequest → GeneratedItem[] | LLM-only | **A** | built | verified by construction; LLM-only probability keys: GPT-4.1-mini 36.7%, GPT-5.4-mini 96.7%, GPT-5.5 100.0% |
+| C6 | Generator | GenerationRequest → GeneratedItem[] | LLM-only | **A** | built | arithmetic keys SymPy-verified; LLM-only probability key + misconception answer both exact: GPT-4.1-mini 36.7%, GPT-5.4-mini 96.7%, GPT-5.5 100.0% |
 | C7 | Learner model | state+obs → LearnerState | BKT / pyKT | **B** | built | synthetic tracing: 64.0% exact set vs GPT-5.4-mini 66.0% (n.s.), GPT-4.1-mini 16.0% |
 | C8 | Policy | NextItemRequest → NextItemDecision | random practice | **B** | built | misconceptions still held after 4 sessions: 5.5% vs 58.4% (synthetic) |
 | C9 | Feedback | Diagnosis → text | generic "answer is X" | — | template built | rubric pass rate (to define) |
@@ -167,3 +172,22 @@ Model API returned "408 Timed out reading request body" for most agents (network
 - **Total API spend:** $19.75 (cap $60).
 - **Re-framed pitch:** exact-first cascade; no accuracy claim. ADR 001 revision 1, final abstract (792 words, rendered from results; `check_docs` OK), architecture diagram, components, landscape §8b, and the final selection memo (**against P8**) are all written.
 - Offline reproduction of real_negatives checked: identical metrics and decisions.
+
+### 2026-10-04 17:15 IST — Cross-model reviews triaged; corrections; DONE for this batch
+- **Reviews:**
+  - gpt-6-sol (max) reproduced every scored field offline and raised 12 issues.
+  - gpt-6-astra (max) scored the pre-revision abstract 62/100 (not shortlist-ready) and raised 23 issues.
+  - All 35 were accepted (4 partly): [responses](reviews/2026-10-04-responses.md); ledger updated.
+- **Correction to my 16:41 and earlier log entries — the cost figures there were wrong.**
+  - Probability cascade: "$7.32 → $3.66" should read **$7.32 → $5.08 per 1,000** (calls halve, routed answers cost more).
+  - Real cascade: "$6.50 → $5.95" should read **$6.10**.
+  - "Confirmatory" for H8 is withdrawn: it is construction-guaranteed.
+  - The engine's "0.11 ms" was a 40-item median; over 304 items it is 0.06 ms, with identical outputs on two passes.
+  - API spend: $19.75 in retained responses, plus at most $0.51 for discarded retry attempts.
+- **Post-hoc analyses** (`python -m eval.analyze_gaps`), none changing a registered decision:
+  - exact CIs: 0/152 false claims gives an upper bound of 2.4%;
+  - question-clustered bootstrap (173 questions);
+  - HYB vs gpt-4.1-mini: exact sign test p = 0.125, not robust;
+  - tracing sensitivity excluding 7 ambiguous learners: unchanged.
+- **Code:** strict offline mode, usage summed over retries, cache provenance, pinned and checksummed data, display round-trip parser with tests (10 tests pass), and a hardened drift check (fresh-render comparison, claim-only numbers, `--selftest`).
+- **Docs:** abstract, architecture and memo re-rendered; ADR 001 Revision 2; protocol clarifications appended; landscape §8b, components.md and c04 corrected.
