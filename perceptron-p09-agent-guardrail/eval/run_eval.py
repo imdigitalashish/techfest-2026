@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import json
 import statistics
+import sys
 import subprocess
 import time
 from collections import defaultdict
@@ -61,22 +62,26 @@ def metrics(rows: list[dict]) -> dict:
     return {k: (round(v, 4) if isinstance(v, float) else v) for k, v in m.items()}
 
 
-def run(guard_name: str, split: str, limit: int | None = None) -> dict:
+def run(guard_name: str, split: str, limit: int | None = None, every: int = 1) -> dict:
     kb = ReferenceKB()
     guard = make(guard_name, kb)
-    items = load(split)[:limit] if limit else load(split)
+    items = load(split)[::every]
+    items = items[:limit] if limit else items
     rows = []
     t0 = time.time()
-    for it in items:
+    for k, it in enumerate(items):
         v = guard(GuardRequest(call=it.call, context=it.context))
         rows.append({"item_id": it.item_id, "family": it.family, "class": it.hallucination_class, "mutation": it.mutation,
                      "should_execute": it.should_execute, "decision": v.decision.value, "latency_ms": round(v.latency_ms, 3),
                      "tiers": v.tiers_run, "feedback": v.feedback[:300]})
+        if k % 10 == 0:
+            print(f"  [{guard_name}] {k + 1}/{len(items)} {time.time() - t0:.0f}s", file=sys.stderr, flush=True)
     commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=ROOT).stdout.strip()
-    out = {"guard": guard_name, "split": split, "suite": str(SUITE.relative_to(ROOT.parent)), "commit": commit,
+    out = {"guard": guard_name, "split": split, "every": every, "suite": str(SUITE.relative_to(ROOT.parent)), "commit": commit,
            "wall_s": round(time.time() - t0, 1), "metrics": metrics(rows), "rows": rows}
     RES.mkdir(exist_ok=True)
-    (RES / f"{guard_name.replace(':', '_')}__{split}.json").write_text(json.dumps(out, indent=1))
+    tag = f"__every{every}" if every > 1 else ""
+    (RES / f"{guard_name.replace(':', '_')}__{split}{tag}.json").write_text(json.dumps(out, indent=1))
     return out
 
 
@@ -85,9 +90,10 @@ if __name__ == "__main__":
     ap.add_argument("--guards", default="none,schema,t0")
     ap.add_argument("--split", default="test", choices=["dev", "test", "all"])
     ap.add_argument("--limit", type=int)
+    ap.add_argument("--every", type=int, default=1, help="stratified subsample: every k-th item (suite is ordered by family)")
     a = ap.parse_args()
     for g in a.guards.split(","):
-        o = run(g, a.split, a.limit)
+        o = run(g, a.split, a.limit, a.every)
         m = o["metrics"]
         print(f"{g:24s} {a.split:4s} n={m['n']:3d} catch={m['catch_rate']:.3f} false_block={m['false_block_rate']:.3f} "
               f"escalate={m['escalation_rate']:.3f} auto={m['auto_rate']:.3f} score={m['score']:.3f} "

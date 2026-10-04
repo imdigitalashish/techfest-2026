@@ -236,6 +236,10 @@ def make(name: str, kb: ReferenceKB) -> Guard:
         return Tier0Guard(kb)
     if name == "cascade":
         return CascadeGuard(kb)
+    if name == "cascade:fast":  # memory-constrained variant: both tiers use the fast model
+        g = CascadeGuard(kb, careful=llm.FAST)
+        g.name = "cascade:fast"
+        return g
     if name.startswith("llm_judge"):
         size = name.split(":")[1] if ":" in name else "8b"
         return LLMJudgeGuard(kb, llm.FAST if size == "1.7b" else llm.CAREFUL)
