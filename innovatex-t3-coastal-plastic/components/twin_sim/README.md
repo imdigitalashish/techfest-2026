@@ -14,11 +14,13 @@ python twin_sim/autoresearch/eval.py                # FROZEN tuning metric (2019
 python twin_sim/autoresearch/ratchet.py [--round2]  # keep-if-better loop over P2 knobs, logs results.tsv
 python -m twin_sim.run                              # held-out 2024-2025 comparison + results/bundle_part.json
 python -m twin_sim.run --bundle-only                # rebuild the bundle from committed metrics.json
+python -m twin_sim.analysis                         # SIMULATED escape causes, paired P2-P1, FWCE, fuse SENSITIVITY -> results/analysis.json
 ```
 
 ## Outputs (read by the dashboard)
 - `results/bundle_part.json` (3.3 MB). It has the keys `sites`, `forcing`, `interceptor`, `forecasts`, `plans` (P2 and P0, daily), `telemetry` (every 6 h, `simulated=true`) and `metrics`. Coverage is monsoon 2025, hourly, all 4 sites, from a nominal-parameter P2 run. The whole file validates as `contracts.DashboardBundle`.
 - `results/metrics.json`: held-out and tuning comparisons, P2 knobs, tide-fit skill and the reproduce command.
+- `results/analysis.json` (about 20 KB, label SIMULATED): escape split by cause, paired per-draw differences (P2 vs P1: −5.6% [−15.8%, −0.3%], 39/40 draws), FWCE per policy, and the fail-open fuse / one-way pocket SENSITIVITY. See twin.md §6.
 
 ## Headline (SIMULATED, held-out Jun–Sep 2024+2025, 40 draws)
 Each figure is escaped kg vs P0: median reduction, then the 90% interval.

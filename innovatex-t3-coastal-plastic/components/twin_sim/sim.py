@@ -65,7 +65,7 @@ def run_season(phys: dict, P: dict, policy, fc: dict, sensor_seed: int, record: 
     rng = np.random.default_rng(sensor_seed)
     stored = np.zeros((D, S))
     pool = np.zeros((D, S))
-    keys = ["arrived", "captured", "ent", "over", "byp", "refl", "cleared"]
+    keys = ["arrived", "captured", "ent", "over", "byp", "refl", "rel", "cleared"]
     tot = {k: np.zeros((D, S)) for k in keys}
     over_h = np.zeros((D, S))
     crew_h = np.zeros(D)

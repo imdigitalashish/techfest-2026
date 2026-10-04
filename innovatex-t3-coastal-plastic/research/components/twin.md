@@ -113,3 +113,62 @@ Tuning years 2019–2023, same 40 draws: P1 −3.2% [−5.9%, −0.3%]; P2 +1.5%
 - ERA5 smooths convective extremes. IMD/BMC gauge data would sharpen the bypass and overflow dynamics.
 - Tide comes from a model fit (residual RMSE 8 cm vs the model series), with no storm surge. UHSLC and Survey of India predictions were not checked.
 - There is no crew travel time, and shift length is fixed. The idea backlog (crew-hour banking for storm surges, split shifts, learned value function) is in `autoresearch/program.md`.
+
+## 6. Held-out analysis: escape causes, paired comparisons, FWCE, fail-open fuse SENSITIVITY (SIMULATED)
+
+Source: `components/twin_sim/results/analysis.json` (label SIMULATED), reproduced with `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.analysis`.
+
+Setup: held-out Jun–Sep 2024+2025, 4 sites summed. The 40 draws, seed, P2 knobs and crew budget (2 crews × 8 h/day) are the same as `metrics.json`, and nothing was retuned. The analysis checks that its escaped-kg medians equal `metrics.json` and that the mass-balance error is 0 kg.
+
+Notation: values are median [p05–p95] across draws. "Arrived" is the contract's `arrived_kg` at the boom, which also counts re-arrivals of re-floated debris.
+
+**Escape by cause** (kg; share of escaped / share of arrived, medians):
+
+| policy | entrainment | overtopping | bypass / release | escaped total |
+|---|---|---|---|---|
+| P0 | 401,466 [110,913–799,722]; 91.0% / 32.7% | 36,650 [0–198,187]; 6.5% / 2.4% | 1,989 [0–51,698]; 0.6% / 0.1% | 428,336 [144,443–961,537] |
+| P1 | 404,459 [112,970–819,587]; 90.6% / 32.8% | 34,918 [0–204,204]; 6.6% / 2.2% | 2,582 [0–56,237]; 0.7% / 0.2% | 455,001 [151,216–980,895] |
+| P2 | 391,972 [112,382–756,467]; 92.5% / 32.6% | 31,565 [0–183,725]; 5.9% / 1.7% | 2,589 [0–50,770]; 0.7% / 0.2% | 411,619 [147,549–917,790] |
+
+The 90% intervals of the shares are in the JSON. For entrainment's share of escaped they are about [64–100%].
+
+**Re-floating** is a re-exposure flux, not an escape term: the debris re-arrives at the boom on the ebb.
+- Tidal re-float: P0 302,891 kg (24.9% of arrived), P1 344,104 kg (27.5%), P2 266,179 kg (23.5%).
+- Flood release: 1,167, 1,770 and 1,445 kg respectively.
+
+**Paired per-draw difference in escaped kg** (same draw, same sensor noise):
+
+| comparison | median | 90% interval | draws where the first is lower |
+|---|---|---|---|
+| P2 vs P1 | −5.6% | [−15.8%, −0.3%] | 39/40 |
+| P2 vs P0 | −2.1% | [−12.5%, +1.5%] | 28/40 (matches §4) |
+| P1 vs P0 | +3.1% | [0.0%, +6.0%] | 2/40 |
+
+**FWCE** = (cleared + stored at 30 Sep) ÷ catchment load, counting each kg once:
+
+| policy | FWCE | for comparison: gross captured ÷ arrived |
+|---|---|---|
+| P0 | 46.0% [30.7–69.9] | 64.0% |
+| P1 | 44.2% [30.0–69.3] | 63.6% |
+| P2 | 49.1% [30.9–70.1] | 64.6% |
+
+**Fail-open fuse / one-way pocket: SENSITIVITY, assumption-driven, not evidence.** All rows use policy P2. Variants:
+- (a) current release behaviour;
+- (b) fuse: at release, only the arriving flux passes and the pocket keeps its catch;
+- (c) fuse plus tidal re-float × 0.5 or × 0.2. Re-float × 1 is identical to (b) by construction.
+
+| variant | escaped kg | Δ escaped vs (a), paired | draws lower than (a) | FWCE | Δ FWCE vs (a), pp |
+|---|---|---|---|---|---|
+| (a) current release | 411,619 [147,549–917,790] | — | — | 49.1% [30.9–70.1] | — |
+| (b) fuse | 411,415 [139,432–917,133] | −0.1% [−1.5%, 0.0%] | 31/40 | 49.5% [30.9–70.2] | +0.1 [0.0, +0.8] |
+| (c) fuse + re-float × 0.5 | 385,505 [128,073–889,525] | −5.0% [−9.9%, −1.4%] | 40/40 | 51.5% [32.8–73.1] | +2.6 [+0.9, +4.0] |
+| (c) fuse + re-float × 0.2 | 368,722 [119,354–860,655] | −9.4% [−16.6%, −2.2%] | 40/40 | 53.2% [36.0–75.1] | +4.6 [+1.3, +7.2] |
+
+**Caveats.**
+- **Circularity.** escaped_kg is computed by the same assumed process model that the policies act on. These results show relative value under the stated assumptions; they are not field evidence. Field calibration comes in Round 2.
+- **The cause split is set by assumptions.**
+  - "Entrainment" means every non-captured arrival outside bypass hours. That includes the (1 − e_max) share assumed to pass under the boom even at slack water.
+  - Overtopping depends on the assumed boom capacity and debris bulk density.
+- **The fuse matters little here because release is rare.** On the ERA5 0.25° rain scale there are only 13 bypass site-hours in 2024–2025. With gauge-scale rain peaks the fuse could matter more (UNTESTED).
+- **The pocket rows scale the assumed tidal re-float rate** (k_refloat 0.01–0.08 /h). Keeping more catch raises overtopping (P2 median 31.6 t → 44.1 t → 50.4 t), and the net figures above include this.
+- **Still omitted from the twin:** travel time between sites, minimum clearance duration, gated (flap-gate) outfalls, boom angle θ, and a perfect-foresight oracle policy.

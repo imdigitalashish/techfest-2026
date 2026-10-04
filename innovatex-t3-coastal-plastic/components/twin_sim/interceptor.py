@@ -41,12 +41,18 @@ def step(stored, pool, fresh_kg, v_ms, level_m, bypass, crew_kg_cap, P: dict) ->
     ent = np.where(bypass, 0.0, arrived - pot)
     byp = np.where(bypass, arrived, 0.0)
     s1 = stored + captured
-    k = np.where(bypass, P["k_flood_release"], np.where(v_ms < 0.0, P["k_refloat_per_h"], 0.0))
+    # Optional SENSITIVITY switches (absent = baseline behaviour, bit-identical):
+    # refloat_mult scales tidal re-floating (one-way pocket); fail_open_fuse keeps the pocket's catch
+    # during a release, so only the arriving flux passes.
+    k_tide = np.where(v_ms < 0.0, P["k_refloat_per_h"] * P.get("refloat_mult", 1.0), 0.0)
+    fuse = bool(P.get("fail_open_fuse", False))
+    k = k_tide if fuse else np.where(bypass, P["k_flood_release"], k_tide)
     refl = k * s1
+    rel = np.zeros_like(refl) if fuse else np.where(bypass, refl, 0.0)   # flood-release part of refl
     s2 = s1 - refl
     cleared = np.minimum(s2, crew_kg_cap)
     return dict(stored=s2 - cleared, pool=pool + refl, arrived=arrived, captured=captured, ent=ent,
-                over=over, byp=byp, refl=refl, cleared=cleared)
+                over=over, byp=byp, refl=refl, rel=rel, cleared=cleared)
 
 
 def interceptor_series(site_id, t, rec: dict, capacity_kg: float, source: str) -> "C.InterceptorSeries":
