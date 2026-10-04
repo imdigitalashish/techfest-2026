@@ -6,15 +6,16 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (16:31 IST, 4 Oct)
+## Now (16:44 IST, 4 Oct)
 - **Mode:** batch of up to 5. The queue holds only APCTT (gated on the 10 Oct data), so 4 leads are active.
 - **Active:**
-  - P2: the pre-registered primary passed (RoD − StreamingLLM +0.396 [0.25, 0.54] at keep 0.25); non-inferiority vs full not shown; identity checks running on a dev seed; T2 replication registered (Amendment 4) before outcomes.
-  - P8: no gap vs reasoning LLMs on real data (pre-registered); the cascade halves LLM calls and cost on tutor-native items (H8, pre-registered).
-  - India@71 T2: coverage test passed (conservative); proposal v1.0 PDF; reviews in.
-  - InnovateX T3: final package v1, memo v2 vs T1; YOLO11n baseline on the GPU (granted 15:58).
+  - P2: primary passed (+0.396 vs StreamingLLM at 25% KV). Identity checks I1–I3 pass, so the loss at 25/50% is real, not plumbing; mechanism under test. Selection memo v2.
+  - P8: final abstract (check_docs 118 claims OK); astra and sol reviews running. Honest headline: no gap vs GPT-5.5 on real data; the exact-first cascade halves LLM calls and cost on tutor-native items; the engine is deterministic (GPT-5.5 changed 2/40 answers across 3 runs).
+  - India@71 T2: proposal v1.1 final PDF. Two pre-registered coverage tests passed (0.967, conservative, ±6 pp). Reviews: sol 12/12, astra 4/4.
+  - InnovateX T3: final package v1; astra review running; YOLO11n baseline on the GPU.
 - **Completed — awaiting your review (15):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6 · InnovateX T2.
 - **Azure running now:** P2's VM `p02-kv-1` (D16ds_v5) and P8's pay-per-token OpenAI resource.
+- **Memory:** level 25–32%, swap 28–30 GB. Your VM and the open 3D-viewer panel are the big consumers.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -105,6 +106,11 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 16:44 IST — Sweep
+- P2 identity checks pass (dev seed 100): the non-monotonic recall at 25/50% KV is a real effect of isolated re-prefill, not an artifact.
+- India@71 T2 v2 coverage test registered 16:31:04 on fresh seeds 201–230; v1 stands.
+- P8 cascade confirmed on prob_pack (H8, registered before the run); consistency measured.
+
 ### 2026-10-04 16:31 IST — InnovateX T2 completed
 - **IX-T2 DONE (4ea3d82), verified on main:** check_docs 0 problems (5 docs, 25 fact rows); deck, Q&A, card and demo present.
   - Reviews: astra 37 items (32 accepted + 4 partial), sol reproduced the headline numbers.
