@@ -24,17 +24,17 @@ Model HuggingFaceTB/SmolLM2-135M, LoRA on q_proj, v_proj (r_max 16, α 32.0), 12
 
 | Strategy | seeds | macro ↓ | worst ↓ | weak-device gain ↑ | min rel. gain ↑ | c0 share | agg. error | max spike ↓ | upload MB (c0…c4) | wall s |
 |---|---|---|---|---|---|---|---|---|---|---|
-| FedAvg on A,B — rank 8 everywhere (starter baseline) | 0 | 2.7346 | 3.4183 | -0.1319 | -0.0573 | 1.0171 | 0.0550 | 0.0404 | 22.1 / 16.6 / 9.2 / 16.6 / 5.5 | 686 |
+| FedAvg on A,B — rank 8 everywhere (starter baseline) | 0,1 | 2.7441 ± 0.0133 | 3.4379 ± 0.0276 | -0.1445 ± 0.0179 | -0.0634 ± 0.0085 | 1.0172 ± 0.0001 | 0.0559 ± 0.0013 | 0.0438 ± 0.0049 | 22.1 / 16.6 / 9.2 / 17.5 / 5.5 | 2880 |
 | FedAvg on A,B — device ranks, zero-padded (HetLoRA-style) | 0 | 2.7046 | 3.3599 | -0.0859 | -0.0392 | 1.0399 | 0.2544 | 0.0942 | 44.2 / 16.6 / 4.6 / 4.1 / 2.8 | 506 |
 | Frozen shared A, nested ranks, n_k weights (FFA-LoRA-style) | 0 | 2.7616 | 3.3847 | -0.1290 | -0.0668 | 0.9963 | 0.0000 | 0.0350 | 17.7 / 6.6 / 1.8 / 1.7 / 1.1 | 527 |
-| AnchorLoRA: + FedNova norm, macro weights, clip, memory, partial work | 0 | 2.6651 | 3.5153 | 0.0247 | 0.0050 | 0.2041 | 0.0000 | 0.0000 | 17.7 / 8.8 / 3.3 / 1.8 / 2.2 | 1160 |
+| AnchorLoRA: + FedNova norm, macro weights, clip, memory, partial work | 0,1 | 2.6651 ± 0.0000 | 3.5153 ± 0.0001 | 0.0249 ± 0.0002 | 0.0040 ± 0.0014 | 0.2139 ± 0.0139 | 0.0000 ± 0.0000 | 0.0000 ± 0.0000 | 17.7 / 8.1 / 3.1 / 1.8 / 1.8 | 3571 |
 
 Per-domain final loss (seed mean):
 
 | Strategy | wiki | pycode | cheaders | readmes | manpages |
 |---|---|---|---|---|---|
-| fedavg_ab_homo | 3.2645 | 2.5162 | 1.8667 | 2.6074 | 3.4183 |
+| fedavg_ab_homo | 3.2678 | 2.5220 | 1.8719 | 2.6207 | 3.4379 |
 | fedavg_ab_het | 3.2861 | 2.4821 | 1.8343 | 2.5604 | 3.3599 |
 | anchor_naive | 3.3654 | 2.5590 | 1.8849 | 2.6142 | 3.3847 |
-| anchor_full | 3.5153 | 2.3874 | 1.7580 | 2.4706 | 3.1942 |
+| anchor_full | 3.5153 | 2.3879 | 1.7597 | 2.4712 | 3.1914 |
 

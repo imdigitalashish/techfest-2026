@@ -1,1 +1,8 @@
-from .strategies import STRATEGIES, Anchor, FedAvgAB, make_strategy, product_space_report  # noqa: F401
+from .strategies import (  # noqa: F401
+    BASE_STRATEGIES,
+    STRATEGIES,
+    Anchor,
+    FedAvgAB,
+    make_strategy,
+    product_space_report,
+)

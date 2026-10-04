@@ -95,3 +95,38 @@ def test_registry_and_schemas(tmp_path):
         make_strategy(name)
     assert len(export_schemas(tmp_path)) == 6
     DeviceProfile(client_id="x", device_class="phone", domain="wiki", n_train_blocks=1, rank=1, local_steps=1)
+
+
+def test_new_anchor_options_keep_exactness():
+    for kw in [dict(segment_norm=True), dict(tau_from="actual", normalize="nova"),
+               dict(memory=True, memory_decay=0.5), dict(weighting="sqrt_n")]:
+        _, rep = _round(Anchor(**kw), ranks=[8, 4, 2, 1], steps=[4, 1, 2, 4])
+        assert rep["aggregation_error"] < 1e-5, kw
+
+
+def test_segment_norm_gives_full_weight_to_sole_owner_of_a_column():
+    s = Anchor(segment_norm=True, weighting="uniform")
+    g = s.init_global(_init(layers=1))
+    k = next(iter(g["B"]))
+    hi = torch.zeros(D_OUT, R)
+    hi[:, :] = 1.0                     # rank-8 device writes every column
+    lo = torch.zeros(D_OUT, R)
+    lo[:, :2] = 1.0                    # rank-2 device writes columns 0-1 only
+    meta = dict(n_examples=1, planned_steps=1, steps_done=1)
+    g, _ = s.aggregate(g, {"c0": {k: hi}, "c1": {k: lo}}, {"c0": meta, "c1": meta}, 0)
+    assert torch.allclose(g["B"][k], torch.ones(D_OUT, R))  # shared columns: mean of 1 and 1; others: sole owner
+
+
+def test_default_coefficients_match_scalar_path():
+    s = Anchor(normalize="nova", weighting="uniform")
+    g = s.init_global(_init(layers=1))
+    k = next(iter(g["B"]))
+    gen = torch.Generator().manual_seed(1)
+    p = {c: {k: torch.randn(D_OUT, R, generator=gen)} for c in ("c0", "c1", "c2")}
+    m = {c: dict(n_examples=1 + i, planned_steps=3 + i, steps_done=1 + i) for i, c in enumerate(p)}
+    g, _ = s.aggregate(g, p, m, 0)
+    w = 1 / 3
+    tau = sum(w * m[c]["planned_steps"] for c in sorted(p))   # same op order as Anchor.aggregate
+    ref = g["B"][k].new_zeros(D_OUT, R) + sum((1.0 * tau * w) * (p[c][k] * (1.0 / m[c]["steps_done"]))
+                                              for c in sorted(p))
+    assert torch.equal(g["B"][k], ref)

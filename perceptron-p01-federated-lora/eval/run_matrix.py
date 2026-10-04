@@ -18,7 +18,7 @@ from pathlib import Path
 
 import torch
 
-from components.aggregator import STRATEGIES
+from components.aggregator import BASE_STRATEGIES
 from components.orchestrator import ExperimentConfig, load_world, run_experiment
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -36,20 +36,33 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--scenario", default="clean", choices=["clean", "dropout"])
     ap.add_argument("--seeds", type=int, nargs="+", default=[0, 1])
-    ap.add_argument("--strategies", nargs="+", default=list(STRATEGIES))
+    ap.add_argument("--strategies", nargs="+", default=list(BASE_STRATEGIES))
     ap.add_argument("--rounds", type=int, default=12)
     ap.add_argument("--exclude", nargs="*", default=[])
     ap.add_argument("--tag", default="v1")
+    ap.add_argument("--skip-existing", action="store_true",
+                    help="skip (strategy, seed) pairs already present in the output jsonl")
     args = ap.parse_args()
 
     (OUT / "logs").mkdir(parents=True, exist_ok=True)
+    suffix = f"_ex{'-'.join(args.exclude)}" if args.exclude else ""
+    out_jsonl = OUT / f"{args.tag}_{args.scenario}{suffix}.jsonl"
+    done = set()
+    if args.skip_existing and out_jsonl.exists():
+        for line in out_jsonl.read_text().splitlines():
+            if line.strip():
+                r = json.loads(line)
+                if r["rounds"] == args.rounds:
+                    done.add((r["strategy"], r["seed"]))
+    todo = [(seed, strat) for seed in args.seeds for strat in args.strategies if (strat, seed) not in done]
+    if not todo:
+        print("nothing to run", flush=True)
+        return
     cfg0 = ExperimentConfig(scenario=args.scenario, rounds=args.rounds, exclude=tuple(args.exclude))
     lm, data = load_world(cfg0)
     env = {"commit": git_commit(), "torch": torch.__version__, "device": str(lm.device), "machine": platform.machine()}
-    suffix = f"_ex{'-'.join(args.exclude)}" if args.exclude else ""
-    out_jsonl = OUT / f"{args.tag}_{args.scenario}{suffix}.jsonl"
-    for seed in args.seeds:
-        for strat in args.strategies:
+    for seed, strat in todo:
+        if True:
             cfg = ExperimentConfig(strategy=strat, scenario=args.scenario, seed=seed, rounds=args.rounds,
                                    exclude=tuple(args.exclude))
             summary, rounds_log = run_experiment(cfg, lm, data)

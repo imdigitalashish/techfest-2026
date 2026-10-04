@@ -127,6 +127,9 @@ class Anchor:
     server_lr: float = 1.0
     train_A: bool = False
     homogeneous_rank: int | None = None
+    tau_from: str = "planned"        # τ_eff from "planned" steps, or "actual" steps done (true FedNova)
+    memory_decay: float | None = None  # weight a remembered update by decay**age, then renormalise
+    segment_norm: bool = False       # PreLort-style: column j averaged only over devices with rank > j
 
     def rank_for(self, device_rank: int) -> int:
         return self.homogeneous_rank or device_rank
@@ -134,7 +137,7 @@ class Anchor:
     def init_global(self, init: LayerState) -> dict:
         return {"A": {k: A.clone() for k, (A, _) in init.items()},
                 "B": {k: B.clone() for k, (_, B) in init.items()},
-                "mem": {}, "mem_round": {}, "n": {}, "tau": {}}
+                "mem": {}, "mem_round": {}, "n": {}, "tau": {}, "rank": {}}
 
     def client_view(self, g: dict, rank: int) -> LayerState:
         # every device runs the FULL global adapter; it only trains the first `rank` columns of B
@@ -144,11 +147,24 @@ class Anchor:
         nbytes = sum(4 * rank * B.shape[0] for _, B in after.values())
         return {k: after[k][1] - view[k][1] for k in after}, nbytes
 
+    @staticmethod
+    def _infer_rank(payload: dict) -> int:
+        """Highest non-zero B column + 1 (masked gradients leave columns >= r_k exactly zero)."""
+        r = 0
+        for v in payload.values():
+            nz = torch.nonzero(v.abs().sum(dim=0) > 0)
+            if nz.numel():
+                r = max(r, int(nz.max()) + 1)
+        return max(r, 1)
+
     def aggregate(self, g: dict, payloads: dict[str, dict], metas: dict[str, dict], t: int):
+        g.setdefault("rank", {})
         dirs = {}
         for c in sorted(payloads):
             g["n"][c] = metas[c]["n_examples"]
-            g["tau"][c] = metas[c]["planned_steps"]
+            g["tau"][c] = metas[c]["steps_done"] if self.tau_from == "actual" else metas[c]["planned_steps"]
+            if self.segment_norm:
+                g["rank"][c] = metas[c].get("rank") or self._infer_rank(payloads[c])
             s = 1.0 / max(1, metas[c]["steps_done"]) if self.normalize == "nova" else 1.0
             dirs[c] = {k: v * s for k, v in payloads[c].items()}
         if self.clip_kappa is not None and len(dirs) >= 2:
@@ -172,15 +188,35 @@ class Anchor:
                            aggregation_error=0.0, update_norm=0.0)
         oldB = {k: v.clone() for k, v in g["B"].items()}
         w = _weights(cids, g["n"], self.weighting)
+        if self.memory and self.memory_decay is not None:
+            w = {c: w[c] * self.memory_decay ** (t - g["mem_round"][c]) for c in cids}
+            tot = sum(w.values())
+            w = {c: v / tot for c, v in w.items()}
         tau_eff = sum(w[c] * g["tau"][c] for c in cids) if self.normalize == "nova" else 1.0
-        coef = {c: self.server_lr * tau_eff * w[c] for c in cids}
+        r_max = next(iter(g["B"].values())).shape[1]
+        if self.segment_norm:
+            colw = {c: torch.zeros(r_max, dtype=torch.float64) for c in cids}
+            for j in range(r_max):
+                owners = [c for c in cids if g["rank"].get(c, r_max) > j]
+                tot = sum(w[c] for c in owners)
+                for c in owners:
+                    colw[c][j] = w[c] / tot
+            coef = {c: (self.server_lr * tau_eff * colw[c]).to(torch.float32) for c in cids}
+
+            def scale(c: str, v: torch.Tensor) -> torch.Tensor:
+                return v * coef[c].to(v.device)  # per-column coefficients
+        else:
+            coef = {c: self.server_lr * tau_eff * w[c] for c in cids}
+
+            def scale(c: str, v: torch.Tensor) -> torch.Tensor:
+                return coef[c] * v  # scalar path, bit-identical to the v1 runs
         for k in g["B"]:
-            g["B"][k] = g["B"][k] + sum(coef[c] * active[c][k] for c in cids)
+            g["B"][k] = g["B"][k] + sum(scale(c, active[c][k]) for c in cids)
         old = {k: (g["A"][k], oldB[k]) for k in g["A"]}
         new = {k: (g["A"][k], g["B"][k]) for k in g["A"]}
 
         def contrib(c: str, k: str) -> torch.Tensor:
-            return (coef[c] * active[c][k]) @ g["A"][k]
+            return scale(c, active[c][k]) @ g["A"][k]
 
         shares, err, norm = product_space_report(old, new, cids, contrib)
         return g, dict(reporters=sorted(dirs), used_memory_for=used_memory, weights=w, influence_share=shares,
@@ -200,7 +236,21 @@ STRATEGIES: dict[str, Callable[[], object]] = {
     # spike: exact anchor space + FedNova + macro weights + median clipping + memory + partial work
     "anchor_full": lambda: Anchor(name="anchor_full", normalize="nova", weighting="uniform", clip_kappa=2.0,
                                   memory=True, memory_max_age=4, accept_partial=True),
+    # ratchet candidates (results in components/aggregator/autoresearch/results.tsv)
+    "anchor_full_tauact": lambda: Anchor(name="anchor_full_tauact", normalize="nova", weighting="uniform",
+                                         clip_kappa=2.0, memory=True, memory_max_age=4, accept_partial=True,
+                                         tau_from="actual"),
+    "anchor_full_decay": lambda: Anchor(name="anchor_full_decay", normalize="nova", weighting="uniform",
+                                        clip_kappa=2.0, memory=True, memory_max_age=4, accept_partial=True,
+                                        memory_decay=0.5),
+    "anchor_full_seg": lambda: Anchor(name="anchor_full_seg", normalize="nova", weighting="uniform",
+                                      clip_kappa=2.0, memory=True, memory_max_age=4, accept_partial=True,
+                                      segment_norm=True),
+    "anchor_full_sqrtn": lambda: Anchor(name="anchor_full_sqrtn", normalize="nova", weighting="sqrt_n",
+                                        clip_kappa=2.0, memory=True, memory_max_age=4, accept_partial=True),
 }
+
+BASE_STRATEGIES = ["fedavg_ab_homo", "fedavg_ab_het", "anchor_naive", "anchor_full"]
 
 
 def make_strategy(name: str):
