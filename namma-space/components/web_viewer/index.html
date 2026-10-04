@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Namma Space — 3D indoor twin</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #111; font: 14px/1.4 system-ui, -apple-system, Segoe UI, sans-serif; color: #eee; }
+  canvas#view { display: block; }
+  .panel { position: absolute; background: rgba(15,15,20,0.78); border-radius: 10px; padding: 10px 12px; backdrop-filter: blur(6px); }
+  #search { top: 12px; left: 12px; width: 300px; }
+  #search input { width: 100%; box-sizing: border-box; padding: 8px 10px; border-radius: 8px; border: 1px solid #444; background: #1c1c22; color: #fff; font-size: 14px; }
+  #results { margin-top: 6px; max-height: 240px; overflow: auto; }
+  #results div { padding: 5px 6px; border-radius: 6px; cursor: pointer; }
+  #results div:hover { background: #2d6cdf; }
+  #hud { bottom: 12px; left: 12px; font: 12px ui-monospace, Menlo, monospace; white-space: pre; }
+  #help { top: 12px; right: 12px; max-width: 270px; font-size: 12px; }
+  #mini { bottom: 12px; right: 12px; padding: 6px; }
+  #mini canvas { display: block; border-radius: 6px; cursor: crosshair; image-rendering: pixelated; }
+  #banner { top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; font-size: 16px; }
+  #route { top: 12px; left: 50%; transform: translateX(-50%); display: none; font-size: 15px; }
+  kbd { background: #333; border-radius: 4px; padding: 0 5px; border: 1px solid #555; }
+</style>
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
+      "@sparkjsdev/spark": "https://sparkjs.dev/releases/spark/2.3.1/spark.module.js"
+    }
+  }
+</script>
+</head>
+<body>
+<canvas id="view"></canvas>
+<div id="search" class="panel">
+  <input id="q" placeholder="Search a room or item…  (/)" autocomplete="off" />
+  <div id="results"></div>
+</div>
+<div id="route" class="panel"></div>
+<div id="help" class="panel">
+  <b>Namma Space</b> — click the view to walk.<br/>
+  <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move · mouse look · <kbd>Shift</kbd> run<br/>
+  <kbd>/</kbd> search · <kbd>G</kbd> auto-walk the route · <kbd>Esc</kbd> release mouse<br/>
+  <kbd>P</kbd> tag a POI here · <kbd>F</kbd> fly (no collisions; <kbd>Space</kbd>/<kbd>C</kbd> up/down)<br/>
+  Click the minimap to route to any spot.
+</div>
+<div id="mini" class="panel"><canvas id="minimap"></canvas></div>
+<div id="hud" class="panel"></div>
+<div id="banner" class="panel">Loading scene…</div>
+<script type="module" src="./app.js"></script>
+</body>
+</html>

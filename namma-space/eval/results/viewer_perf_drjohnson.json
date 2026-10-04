@@ -1,0 +1,11 @@
+{
+  "what": "Web viewer (components/web_viewer) on the drjohnson ScenePackage: 1,000,000 splats, 32,000,000-byte .splat, served from localhost",
+  "when": "2026-10-04 08:49-08:53 IST",
+  "client": {"browser": "Chrome 154 (Playwright MCP, headed)", "webgl_renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5)", "viewport_css_px": [1200, 863], "machine_note": "shared Apple M5 24 GB with ~20 other agent sessions running"},
+  "method": "window.__nsStats() = median and p95 of requestAnimationFrame deltas over the last <=600 frames; __nsRouteToFarthest() plans a JS A* route from the camera to the farthest navigable cell; __nsAutoWalk() walks it at 1.4 m/s",
+  "static_view": {"frames": 600, "fps_median": 45.2, "frame_ms_p50": 22.1, "frame_ms_p95": 36.7},
+  "load": {"first_frame_ms": 1053.5, "splats_loaded_ms": 10517},
+  "route_planning_js": [{"length_m": 8.44, "ms": 82.3}, {"length_m": 11.47, "ms": 93.7}],
+  "walking": {"window_s": 7.5, "frames": 246, "fps_median": 42.4, "frame_ms_p95": 104.7, "stayed_on_navigable": true, "note": "first 3.5 s: fps_median 26.7, p95 137 ms — hitching while moving is the next optimisation target"},
+  "end_of_route_static": {"fps_median": 63, "frame_ms_p95": 27.8, "source": "HUD screenshot .data/runs/viewer_shot2_route.png"}
+}
