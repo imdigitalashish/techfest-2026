@@ -26,13 +26,13 @@ Our compute is 3–4 orders of magnitude below the network terms: the budget is 
 
 ## 2. What a budget buys — break-even one-way latency (ms) by fee level
 
-Largest one-way latency δ (feed = order = δ, as in the frontier sweep) at which simulated P&L on the held-out day 2026-10-01 (9 legs) is still positive. Grid 0.5–100 ms; log-linear interpolation.
+First one-way latency δ (feed = order = δ, as in the frontier sweep) at which simulated P&L on the held-out day 2026-10-01 (9 legs) turns non-positive. Grid 0.5–100 ms; log-linear interpolation; * = P&L turns positive again at a larger δ (non-monotone, noisy with few trades).
 
 | fee per leg | naive | tuned per-pair threshold | EV (KM by pair) | LEV |
 |---|---|---|---|---|
 | 0 bp | > 100 | > 100 | > 100 | > 100 |
 | 1 bp | 4.6 | > 100 | 53.7 | 92.9 |
 | 2 bp | 7.8 | > 100 | > 100 | 96.5 |
-| 5 bp | 69.2 | 10.6 | 89.3 | 93.4 |
+| 5 bp | 69.2 | 10.6* | 89.3 | 93.4 |
 
-Commit `9cadff6` · `.venv/bin/python -m eval.latency_budget`
+Commit `fdc067f` · `.venv/bin/python -m eval.latency_budget`

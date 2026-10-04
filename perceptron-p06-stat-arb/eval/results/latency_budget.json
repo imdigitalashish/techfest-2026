@@ -65,7 +65,7 @@
   },
   "f5": {
    "naive": "69.2",
-   "threshold_pair": "10.6",
+   "threshold_pair": "10.6*",
    "ev_kmpair": "89.3",
    "lev": "93.4"
   }
@@ -79,6 +79,6 @@
   "okex-swap:BTC-USDT-SWAP": 23.775,
   "bybit:BTCUSDT": -8.893
  },
- "commit": "9cadff6",
+ "commit": "fdc067f",
  "command": ".venv/bin/python -m eval.latency_budget"
 }

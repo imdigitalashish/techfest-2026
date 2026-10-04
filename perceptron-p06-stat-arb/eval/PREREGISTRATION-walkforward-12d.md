@@ -78,3 +78,14 @@ The reviews `reviews/2026-10-04-spike-adr-gpt-6-astra.md` (P6-01, 02, 06, 08, 09
 - **Worlds.** V1 = S1, basis mark. V2 = S1 + 1 s markout. V3 = S1 + 10 s markout. V4 = transfer. In V1–V3, policies are trained and scored on that world's labels.
 - **Decision.** The primary claim is called **robust** only if LEV − tuned threshold keeps both 95% lower bounds > 0 in V1 **and** V2. Otherwise the primary claim is reported as **dependent on the frozen simulator's optimistic fills or basis marking**.
 - **Wording.** The frozen metric is renamed in all deliverables to **"basis-adjusted simulated execution surplus"** (P6-01); the day score is described as a **sum over six fee/latency scenarios** (P6-05). The 12 days are described as "12 sampled months, 5 previously inspected", with the unseen-7 subset alongside (P6-03).
+
+### Amendment 1 — erratum (2026-10-04 15:19 IST, before the corrected re-run)
+The `gpt-6-sol` code review found that `components/sim/strict.py` (commit fdc067f) reused the last available quote in two places:
+- markouts at arrival + H, when no quote exists after that time (the end of the data);
+- unwinds, when no quote exists after the unwind time.
+
+**Fix:** these marks and unwinds are treated as unavailable. The affected candidate rows are excluded from every policy's training and scoring in the strict worlds V1–V4, so comparisons stay paired, and the number of excluded rows is reported.
+
+The S3 collision rule is **unchanged**; the reviewer confirmed it matches the registered definition (flags against earlier selected intents, no reallocation of capacity). Nothing else changes.
+
+The first run (Azure, code fdc067f) is kept as `eval/results/sensitivity_amendment1_run1.{json,md}`. The corrected run replaces `sensitivity_amendment1.{json,md}`, and both are reported.
