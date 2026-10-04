@@ -24,7 +24,7 @@
   - LEV vs threshold is shown honestly as modest, with a strict-fills toggle.
   - Decay clock with the cadence floor; live compiled decision timing.
   - Every number comes from committed results or committed code running live on a committed slice.
-- **Doing (17:29):** [P6 demo builder](ghapp://sessions/d90f3e4a-6dd4-4baf-8ddd-6a1e15f31123), child 1 of 2, is building from a full kickoff brief; its crazy-element proposal is expected first.
+- **Doing (17:29):** [P6 demo builder](ghapp://sessions/d90f3e4a-6dd4-4baf-8ddd-6a1e15f31123), child 1 of 2, is building. At 17:36 I approved its crazy element **A, "Race the machine"**, with 7 conditions (see Log).
 - **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills for the abstract's [TEAM] lines.
 - **Risks:**
   - Demo honesty: the LEV gain is fragile, so the demo must not imply a validated edge.
@@ -228,3 +228,13 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Architecture: offline HTML fed by exported JSON (which doubles as the fallback), plus a Python backend only for live recompute and live Numba timing.
   - Committed slice: 10–20 minutes of 2026-10-01 for the 5 walk-forward legs, using the walk-forward's own LEV model (trained on 2026-09-01).
   - Candidate crazy element: "race the machine" (the judge's measured reaction time fed into the committed simulator); the builder proposes and I approve.
+- **17:36 — Crazy element approved: A, "Race the machine".**
+  - The judge does 5 reaction trials on real 2026-10-01 mispricings, each scored by the committed simulator with RT in place of compute. Then a one-way latency knob (10 µs → 100 ms), a fee 1/2 bp switch and a frozen/strict toggle drive naive / threshold / LEV counters for the live window and for the full held-out day (exported grid).
+  - Conditions:
+    1. 1× replay during trials;
+    2. a fixed flash rule, with all trials reported;
+    3. a 2×2 {judge RT, machine} × {naive, selector}, with machine latency from live-measured compiled timing;
+    4. strict = V1 world, with the day grid at δ = 1/5/20 asserted by smoke against the committed walk-forward (V0) and Amendment 1 (V1) 2026-10-01 totals;
+    5. window chosen by a stated rule;
+    6. LEV hatched outside its trained L range;
+    7. option B (bullet time) only after the §11 bar is green.
