@@ -1,0 +1,228 @@
+{
+ "built_at_ist": "2026-10-04 17:56:58 IST",
+ "commit": "a869f76dd1387cef4788e2ecf1bd2e06ea0a36ae",
+ "builder_unmodified_vs_commit": true,
+ "command": "eval/run_guarded.sh .venv/bin/python -m demo.build_assets",
+ "runtime_s": 184.1,
+ "python": "3.11.14",
+ "platform": "macOS-26.2-arm64-arm-64bit",
+ "packages": {
+  "numpy": "2.4.6",
+  "polars": "1.44.2",
+  "scikit-learn": "1.9.1",
+  "numba": "0.68.0",
+  "lifelines": "0.30.0"
+ },
+ "inputs_raw_md5": {
+  "2026-09-01/binance_BTCUSDT": "bbf711c2b5b84865aa946d2f7fd97026",
+  "2026-09-01/binance-futures_BTCUSDT": "fa099951d257a17e1a3f69d963ca08c0",
+  "2026-09-01/coinbase_BTC-USD": "5ecaa9de1898eeccc605412d54822874",
+  "2026-09-01/okex_BTC-USDT": "1f13af945f22fcdc91d119b3e06bfbe6",
+  "2026-09-01/okex-swap_BTC-USDT-SWAP": "a8450576a351d042a068f5240b243afb",
+  "2026-10-01/binance_BTCUSDT": "388cd9e70cccbb3d90e3adfb7af51fde",
+  "2026-10-01/binance-futures_BTCUSDT": "916e973702b915296d915d7aa97b2b6e",
+  "2026-10-01/coinbase_BTC-USD": "705c52230febdbd5427ae43c64d0f895",
+  "2026-10-01/okex_BTC-USDT": "8d68b40805904ffd2cc45f51021507b0",
+  "2026-10-01/okex-swap_BTC-USDT-SWAP": "3bfbca6dcd7b75856f978e6514597298"
+ },
+ "caches_checked_md5": {
+  ".cache/falsification/cells_2026-09-01_exch.parquet": "f218bfcdd54aae2a29fd3025edfaab9e",
+  ".cache/falsification/cells_2026-10-01_exch.parquet": "302c371af79cb3fa4e6337642cf1b258",
+  ".cache/falsification/opp_2026-10-01_exch.parquet": "b2b6a2ecf25a0730a3fa33ceddf1b174",
+  ".cache/sensitivity/cells_2026-09-01.parquet": "90f3b0c703bbc457e7e0a35781700d05",
+  ".cache/sensitivity/cells_2026-10-01.parquet": "b6e935ddc343a0844ef57822b0c5be21"
+ },
+ "params": {
+  "deltas_ms": [
+   0.01,
+   0.02,
+   0.05,
+   0.1,
+   0.2,
+   0.5,
+   1.0,
+   2.0,
+   3.0,
+   5.0,
+   7.0,
+   10.0,
+   15.0,
+   20.0,
+   30.0,
+   50.0,
+   70.0,
+   100.0
+  ],
+  "rts_ms": [
+   100.0,
+   150.0,
+   200.0,
+   250.0,
+   300.0,
+   350.0,
+   400.0,
+   500.0,
+   650.0,
+   800.0,
+   1000.0,
+   1500.0,
+   2000.0
+  ],
+  "machine_D_us": 7.0,
+  "fees": [
+   1.0,
+   2.0
+  ],
+  "race_fee": 1.0,
+  "window_s": 900,
+  "lead_in_s": 120,
+  "tail_s": 20,
+  "q_max": 0.05,
+  "stale_cap_us": 1000000.0,
+  "markouts_s": [
+   1.0,
+   10.0
+  ],
+  "legs": [
+   "binance_BTCUSDT",
+   "binance-futures_BTCUSDT",
+   "coinbase_BTC-USD",
+   "okex_BTC-USDT",
+   "okex-swap_BTC-USDT-SWAP"
+  ],
+  "registered_deltas_ms": [
+   1.0,
+   5.0,
+   20.0
+  ]
+ },
+ "window": {
+  "w0_us": 1790861820000000,
+  "w1_us": 1790862720000000,
+  "episodes": 5642,
+  "candidates": {
+   "1": 243,
+   "2": 13
+  },
+  "slice_quotes": 145373,
+  "rule": "densest 15 minutes of 2026-10-01 by detected-episode count (episodes \u2265 1 bp beyond the 60 s EWMA fair basis, 5 legs), windows starting on whole UTC minutes, ties \u2192 earliest"
+ },
+ "checks": [
+  {
+   "check": "2026-09-01 frozen registered cells == .cache/falsification",
+   "ok": true,
+   "detail": "15870 rows vs .cache/falsification/cells_2026-09-01_exch.parquet (f218bfcdd54aae2a29fd3025edfaab9e)"
+  },
+  {
+   "check": "frozen: grid thresholds at registered cells == walk-forward fit_threshold",
+   "ok": true,
+   "detail": "120 keys"
+  },
+  {
+   "check": "2026-09-01 strict registered cells == .cache/sensitivity (valid rows)",
+   "ok": true,
+   "detail": "15870 rows vs .cache/sensitivity/cells_2026-09-01.parquet (90f3b0c703bbc457e7e0a35781700d05)"
+  },
+  {
+   "check": "strict: grid thresholds at registered cells == walk-forward fit_threshold",
+   "ok": true,
+   "detail": "120 keys"
+  },
+  {
+   "check": "2026-10-01 episodes == .cache/falsification opp",
+   "ok": true,
+   "detail": "102,075 episodes"
+  },
+  {
+   "check": "window episode count == rule count",
+   "ok": true,
+   "detail": "5642"
+  },
+  {
+   "check": "2026-10-01 frozen registered cells == .cache/falsification",
+   "ok": true,
+   "detail": "12780 rows vs .cache/falsification/cells_2026-10-01_exch.parquet (302c371af79cb3fa4e6337642cf1b258)"
+  },
+  {
+   "check": "2026-10-01 strict registered cells == .cache/sensitivity (valid rows)",
+   "ok": true,
+   "detail": "12780 rows vs .cache/sensitivity/cells_2026-10-01.parquet (b6e935ddc343a0844ef57822b0c5be21)"
+  },
+  {
+   "check": "every window config: slice recompute == full-day labels (outcome, pnl)",
+   "ok": true,
+   "detail": "540 configs; max per-config rounding deviation of exported pnl 4.40e-01 USD"
+  },
+  {
+   "check": "frozen: day totals at \u03b4=1/5/20 (6 cells) == committed 2026-10-01 (V0 walk-forward)",
+   "ok": true,
+   "detail": {
+    "naive": [
+     -2487.82555,
+     -2487.82555
+    ],
+    "thr": [
+     1175.13029,
+     1175.13029
+    ],
+    "lev": [
+     1341.529834,
+     1341.529834
+    ]
+   }
+  },
+  {
+   "check": "strict: day totals at \u03b4=1/5/20 (6 cells) == committed 2026-10-01 (V1 Amendment 1)",
+   "ok": true,
+   "detail": {
+    "naive": [
+     -6689.921381,
+     -6689.921381
+    ],
+    "thr": [
+     -19.507321,
+     -19.507321
+    ],
+    "lev": [
+     -26.005083,
+     -26.005083
+    ]
+   }
+  },
+  {
+   "check": "frozen: per-cell day totals == walk-forward per-cell table (to the cent)",
+   "ok": true,
+   "detail": ""
+  }
+ ],
+ "outputs": {
+  "data.js": {
+   "md5": "2601bd9aa4fc8af3e1124d00026fb2dd",
+   "bytes": 1836144
+  },
+  "lev_frozen.npz": {
+   "md5": "7c1cd9fb7373548483a2d66314826921",
+   "bytes": 157041
+  },
+  "lev_frozen.pkl.gz": {
+   "md5": "828b1962662e3fc199093825f42580c0",
+   "bytes": 298495
+  },
+  "lev_strict.npz": {
+   "md5": "4a347e652045ea39d991228cfcd9c062",
+   "bytes": 157459
+  },
+  "lev_strict.pkl.gz": {
+   "md5": "2f69bcb9a422b9e1d78b6efc3d26c567",
+   "bytes": 301415
+  },
+  "thresholds.json": {
+   "md5": "8c2d01a04c70d9e900eca5bca403d2e5",
+   "bytes": 284554
+  },
+  "window_books.npz": {
+   "md5": "61c860a13191a0ea8b432feeb3b175b0",
+   "bytes": 1449441
+  }
+ }
+}

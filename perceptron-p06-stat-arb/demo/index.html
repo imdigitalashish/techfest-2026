@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P6 · Cross-venue BTC mispricings under a latency budget</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="title">
+    <h1>Cross-venue BTC mispricings under a latency budget</h1>
+    <div class="sub">Perceptron 2026 · Problem 6 · detect → rank by latency-conditioned value → simulated execution</div>
+  </div>
+  <div id="mode" class="mode offline" title="">OFFLINE · precomputed grid</div>
+</header>
+<div id="honesty" class="honesty"></div>
+
+<main>
+  <section class="left">
+    <div class="panel replay">
+      <div class="ptitle"><span>Replay · recorded quotes</span><span id="clock" class="clock">--:--:--.---</span></div>
+      <canvas id="pent" width="760" height="430"></canvas>
+      <div id="flash" class="flash hidden"></div>
+      <div class="controls">
+        <button id="play">▶ Play</button>
+        <span class="seg" id="speed"><button data-v="0.1">0.1×</button><button data-v="1" class="on">1×</button><button data-v="10">10×</button><button data-v="60">60×</button></span>
+        <canvas id="scrub" width="470" height="34" title="Candidate density over the window; click to jump"></canvas>
+      </div>
+    </div>
+    <div class="panel clocks">
+      <div class="ptitle"><span>Decay clocks · open mispricings with net edge &gt; 0 at the chosen fee</span><span class="hint">shaded = below the slower venue's publication interval (bounded, not measured)</span></div>
+      <canvas id="clocks" width="760" height="214"></canvas>
+    </div>
+  </section>
+
+  <section class="right">
+    <div class="panel knob">
+      <div class="ptitle"><span>Latency budget · the knob</span><span class="hint">one-way δ; feed = order = δ (as in the frontier sweep)</span></div>
+      <div class="sliderrow">
+        <input id="delta" type="range" min="0" max="17" step="1" value="6">
+        <div id="deltaRead" class="read"></div>
+      </div>
+      <div id="presets" class="chips"></div>
+      <div class="chips">
+        <span class="lab">fee / leg</span><span class="seg" id="fee"><button data-v="1" class="on">1 bp</button><button data-v="2">2 bp</button></span>
+        <span class="lab">simulator</span><span class="seg" id="sim"><button data-v="frozen" class="on">frozen (primary)</button><button data-v="strict">strict V1</button></span>
+      </div>
+      <div id="simnote" class="note"></div>
+    </div>
+    <div class="panel counters">
+      <div class="ptitle"><span>Simulated execution surplus · same opportunities, three policies</span><span id="liveok" class="hint"></span></div>
+      <table id="ctab">
+        <thead><tr><th>policy</th><th>this 15-min window</th><th>trades · both legs</th><th>full held-out day</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div id="levnote" class="note"></div>
+    </div>
+    <div class="panel frontier">
+      <div class="ptitle"><span>Frontier · full held-out day (5 legs), surplus vs end-to-end latency L</span><span class="hint">asinh scale</span></div>
+      <canvas id="front" width="560" height="250"></canvas>
+      <div id="frontnote" class="note"></div>
+    </div>
+  </section>
+</main>
+
+<section class="panel race">
+  <div class="ptitle"><span>RACE THE MACHINE · your reaction time goes into the committed simulator</span><span id="raceStatus" class="hint"></span></div>
+  <div class="racegrid">
+    <div>
+      <div id="raceRule" class="rule"></div>
+      <button id="raceBtn" class="big">Start 5 trials</button>
+      <table id="trials"><thead><tr><th>#</th><th>flashed mispricing</th><th>your RT</th><th>your order (δ + RT + δ)</th><th>machine (δ + p50 + δ)</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div>
+      <table id="two"><thead><tr><th></th><th>naive<br><small>act on everything seen</small></th><th>tuned threshold<br><small>selector, 09-01 grid</small></th></tr></thead><tbody></tbody></table>
+      <div id="raceSummary" class="note"></div>
+    </div>
+  </div>
+</section>
+
+<section class="panel evidence">
+  <div class="ptitle"><span>What the committed evidence says (not this window)</span><span class="hint">every figure is read from eval/results/*.json at build time</span></div>
+  <div id="cards" class="cards"></div>
+</section>
+<footer id="foot"></footer>
+
+<script src="assets/data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
