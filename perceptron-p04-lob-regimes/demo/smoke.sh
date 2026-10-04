@@ -20,4 +20,14 @@ for u in index.html results/scoreboard.json results/alarm_dial_sweep.json .cache
 done
 echo "[smoke] assertions"
 "$PY" demo/smoke_check.py
+echo "[smoke] browser stage (headless Chromium)"
+set +e
+"$PY" demo/smoke_browser.py "http://127.0.0.1:$PORT/index.html"
+rc=$?
+set -e
+if (( rc == 3 )); then
+  echo "[smoke] WARNING: browser stage SKIPPED (Playwright/Chromium not installed); data assertions passed"
+elif (( rc != 0 )); then
+  exit "$rc"
+fi
 echo "[smoke] total $(( $(date +%s) - T0 )) s"

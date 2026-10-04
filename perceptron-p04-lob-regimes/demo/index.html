@@ -19,7 +19,7 @@ section{background:var(--panel);border:1px solid var(--line);border-radius:10px;
 .c-synth{color:#000;background:#f0b429;border-color:#f0b429}
 table{border-collapse:collapse;width:100%}td,th{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
 th{color:var(--mut);font-weight:600;font-size:12px}td.num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
-.grid2{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}@media(max-width:1100px){.grid2{grid-template-columns:1fr}}
+.grid2{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px}.grid2>div{min-width:0}main>section{min-width:0}.tscroll{overflow-x:auto}@media(max-width:1100px){.grid2{grid-template-columns:1fr}}
 .tabs button,.btn{background:#1f2630;color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:5px 10px;margin:0 6px 6px 0;cursor:pointer;font:inherit}
 .tabs button.on,.btn.on{border-color:var(--acc);color:var(--acc)}
 canvas{display:block;width:100%}
@@ -46,7 +46,7 @@ footer{color:var(--mut);font-size:12px;padding:0 28px 30px}
   <div class="mut" id="sb-note"></div>
   <div class="grid2">
     <div>
-      <table id="sb-table"><thead><tr><th>policy</th><th>status</th><th class="num">log-loss</th><th class="num">Δ vs static [97.5% CI]</th><th style="width:110px">Δ, lower is better</th><th class="num">days better</th><th class="num">alarms/day</th></tr></thead><tbody></tbody></table>
+      <div class="tscroll"><table id="sb-table"><thead><tr><th>policy</th><th>status</th><th class="num">log-loss</th><th class="num">Δ vs static [97.5% CI]</th><th style="width:110px">Δ, lower is better</th><th class="num">days better</th><th class="num">alarms/day</th></tr></thead><tbody></tbody></table></div>
       <div class="verdict" id="sb-verdict"></div>
     </div>
     <div>
