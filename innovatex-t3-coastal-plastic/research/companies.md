@@ -2,6 +2,29 @@
 
 Owner: T3 research worker (tech + companies). All web sources opened on **2026-10-04** unless stated. Vendor statements are marked *(claim)*. Anything not confirmed from an opened page is **UNVERIFIED** or **NOT FOUND**.
 
+## What companies ship today — summary table
+Details, quotes and URLs are in the evidence log below (all opened 2026-10-04). *(claim)* = vendor/operator figure.
+
+| Company | Product | Deployments / scale (year) | Business model | India / Mumbai presence | Evidence | What we borrow / where we beat |
+|---|---|---|---|---|---|---|
+| The Ocean Cleanup | Interceptor family (solar barrier + conveyor + dumpsters), Smart Rivers Survey | ~50 Mkg prevented, 2–5% of global river emissions *(claim, 2026)*; 30 Cities Program, $121M of $350M funded (Mar 2026) | Donor-funded non-profit; partners with cities | **Yes — Mumbai is a 2026 city: Trombay + Malad creek pilots, MPCB MoU, MCGM SWD permits; 61–92 t/yr expected** | theoceancleanup.com press releases 10 Feb + 30 Apr 2026 | Borrow: survey-first siting, fill sensor that texts operators. Beat: we cover the many small nullah outfalls + forecast/tide-aware dispatch + independent verified kg |
+| Plastic Fischer | TrashBoom (local, low-tech, low-cost) + own sorting | >3.2 Mkg, >71 booms, 8 sites India+Indonesia, 98 jobs *(claim)* | Sells verified waste credits / brand partnerships; co-processing in cement kilns | **Yes — 7 Indian cities; TOC's Mumbai operator** | pinwheel.earth project page | Borrow: 3L design, third-party per-kg verification. Beat: add in-water camera evidence to cross-check weighbridge kg |
+| Clearwater Mills | Trash Wheel | Mr. Trash Wheel 500 tons/yr *(operator claim)* | Sells/builds wheels; city/NGO owners | NOT FOUND | mrtrashwheel.com | Borrow: conveyor to swappable dumpster, public webcam. Beat: far cheaper per outfall |
+| The Great Bubble Barrier | Bubble curtain | Amsterdam since 2019, ~1 t/yr; 5 more for €600k (2024) | Sells systems to water authorities | NOT FOUND | dutchnews.nl (Sep 2024) | Borrow: flow-transparent capture. Beat: tidal reversal; no mains power at outfalls |
+| Clearbot | Autonomous electric cleaning boats with camera | JNPA Mumbai; Veolia HK hyacinth 260 t in 2 weeks *(claims)* | Robots-as-a-service | **Yes — JNPA Mumbai project listed** | clearbot.dev | Borrow: per-trip waste data. Complement: our dispatch tells boats when/where |
+| RanMarine | WasteShark+ drone | London, Zaanstad cases; 160 L basket *(claim)* | Hardware sale/lease | NOT FOUND | ranmarine.io/wasteshark | Mop-up only |
+| Seabin | Seabin + "Nature-Data Intelligence Platform" | Sydney Harbour since 2020 | Data dashboards for partners | NOT FOUND | seabinproject.com | Borrow: data-as-product pivot |
+| CleanHub | Brand-funded, TÜV SÜD-verified collection | Global coastal communities | Brands pay per verified kg | UNVERIFIED (locations page timed out) | cleanhub.com | Beat: "ocean-bound" proof at the outfall, not just collection |
+| Greyparrot | AI waste analytics (Analyzer, Sync) in MRFs | NOT FOUND (JS counters) | SaaS + cameras for sorting plants | NOT FOUND | greyparrot.ai | Borrow: composition analytics → per-kg EPR category |
+| AMP | AI sortation (Jet, MicroJet, Delta) + operated facilities | NOT FOUND | Builds and operates facilities | NOT FOUND | ampsortation.com | Downstream partner, not competitor |
+| Saahas Zero Waste | EPR compliance, zero-waste programmes | "Since 2013", "50+ Sites" | Service fees, EPR | India (Bengaluru HQ) | saahaszerowaste.com | EPR off-take partner |
+| Banyan Nation | Traceable rPE (bottle-to-bottle) | NOT FOUND | Sells recycled resin; EPR | India (Hyderabad) | banyannation.com | Off-take for HDPE/PP in our catch |
+| Skrap | Zero-waste offices/events | NOT FOUND | Consulting | Mumbai | skrap.in | Community/source-reduction partner |
+| Recykal, ReCircle | EPR/marketplace platforms | NOT FOUND (JS-rendered sites) | EPR credits, marketplace | India | recykal.com, recircle.in | EPR credit rails for verified kg |
+| Sampurn(e)arth | Decentralised waste mgmt (Mumbai) | NOT FOUND (site timed out) | — | Mumbai | sampurnearth.com (unreachable) | — |
+| Smart-bin vendors (Bigbelly, Sensoneo etc.) | Fill-level sensing bins | NOT FOUND — not researched in time | — | — | — | Same sensor+route-optimisation pattern as our boom-fill dispatch |
+| **BMC (municipal baseline)** | Steel-net trash booms + conveyors | 9 since ~2022, → 23; ₹1 cr/unit; 1.5–3 t/day/boom; O&M ₹14.5 cr/2 yr | Municipal contracts (Virgo Specialties) | **Mumbai** | HT 2025; FPJ 30 Jul 2026 | **The real incumbent: we instrument these booms rather than replace them** |
+
 ## Notes per company (evidence log, filled as sources are opened)
 
 ### The Ocean Cleanup — Interceptor family + 30 Cities Program (non-profit, NL)
