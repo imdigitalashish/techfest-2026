@@ -57,7 +57,7 @@ _v0, 2026-10-04 07:30 IST, project lead (lean mode: written without sub-agents a
 
 ## 6. Our first public benchmark (real numbers)
 
-See `eval/results/` and the table in `../deliverables/approach.md` §4 (TechPort v0 split, text-only TF-IDF baselines, CPU).
+See [`../eval/README.md`](../eval/README.md): TechPort v0 frozen grouped split, text-only baselines on CPU. On `trl_current` (n_test=1,657), hashed TF-IDF ridge reaches QWK 0.314 / MAE 1.053, against QWK 0.000 / MAE 1.112 for the majority class.
 
 ## 7. Open research threads (next, once lean mode lifts)
 1. Re-open DoD/GAO/DOE TRA guides in a browser; extract each level's *evidence standard* into `architecture/contracts/rubric_eu_nasa.json` (v0 already uses EU + NASA wording).
