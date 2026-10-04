@@ -114,6 +114,7 @@ The single source of truth for a project, read and written by the user and the S
   `git fetch origin && git rebase origin/main && git push origin HEAD:main` — on rejection, repeat. Never force-push; never rewrite pushed history.
 - Touch only your own folder. Root files and `_briefs/` belong to the Supervisor.
 - **Never use `git stash` or `--autostash`.** All worktrees share one stash list, so a `stash pop` can apply another session's changes (this happened on 4 Oct). Commit before you rebase; a small `<slug>: wip` commit is fine.
+- **Timestamps come from the clock, never from memory:** `TZ=Asia/Kolkata date '+%Y-%m-%d %H:%M IST'`. A pre-registration's stated time must match its git commit time, because the commit is the evidence. To fix a wrong time, append a dated correction; never edit registered text.
 - Fetch and rebase at the start of each step too, so you see Inbox edits the user made on GitHub. On a conflict in `thought_node.md`, keep the user's text verbatim plus your update.
 - Auto-research experiments live on a local branch; push only kept improvements and the `results.tsv` ledger.
 - Never commit secrets, or files over 20 MB (datasets, weights, videos). Put them in gitignored `.data/` or `.cache/` and commit a script that fetches or regenerates them.
