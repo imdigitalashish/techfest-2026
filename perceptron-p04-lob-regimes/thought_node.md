@@ -64,6 +64,7 @@
 - 2026-10-04 — **Spikes:** C6 shift monitor + C7 regime-adaptive mixer — see [ADR 001](architecture/adr/001-spike.md).
 - 2026-10-04 12:00 — **v2 protocol pre-registered** (`eval/PREREGISTRATION.md`, `d9ad7a9`). All 46 free days; train 2023, dev 2024, holdout 2025-01…2026-10; primary test is a 97.5% paired day-cluster bootstrap. Amendment 1 (`a9b310b`), made after dev and before the holdout, fixed H=10, B=600 and added `spike_gate`.
 - 2026-10-04 12:35 — **Spike revised by evidence.** The volatility-regime gate plus harm-gated abstention replaces the Fixed-Share mixer, which failed H1 on the holdout. The calibrated KS stays as a label-free audit (ADR 001 *v2 outcome*).
+- 2026-10-04 21:34 — **Demo concept approved:** "the alarm that cries wolf" (builder's `demo/PROPOSAL.md`, commit `4c2aa71`). A judge dial sets the naive KS α from 1e-1 to 1e-300, plus "calibrated" and "off" stops, over a real replay and a 22-day post-hoc sweep. Anchors: α=1e-3 equals committed `ks_refit`, off equals `static_enorm`, calibrated equals `ksc_refit`. Approved on condition that the claim "no α can silence it" is reframed: SciPy's asymptotic p is 0 at D=1, while the exact probability of complete separation, 2/C(m+n, m), is about 1e-219 and must be shown.
 - 2026-10-04 — **Costs:** Binance USDⓈ-M fees from the official page (Regular 2.0/5.0 bps, VIP 9 0.0/1.7 bps maker/taker). Taker edge is measured at +100 ms; maker figures are upper bounds.
 
 ## Components
@@ -221,4 +222,5 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - Each regime head alone loses to the gate: high-vol head +0.0141 (better on 1/22 days), mid-vol +0.0138, low-vol +0.0526.
   - Held-out head usage: low/mid/high 20.7% / 33.2% / 46.0%, with large day-to-day swings.
   - So the gain comes from switching between heads, not from one better model. This answers a likely judge question.
+- 21:34 The builder's proposal was reviewed and approved with 7 conditions; the main one is the correction above. The builder's probe on held-out 2026-08-01: α=1e-3 reproduces the committed `ks_refit` value (0.593946, 48 alarms); at α=1e-30 the test still fires 26 times and log-loss worsens to 0.7086. The fresh-clone fetch is 16 days, 473 MB.
 
