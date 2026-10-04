@@ -1,0 +1,2 @@
+timestamp	commit	hypothesis	event_mdape_dev	delta	kept	notes
+2026-10-04T08:02+05:30	baseline	baseline verifier (events>2cm, per-event log-linear k, k*A*int h)	11.810	0	baseline	dev: p90 95.8, season_total_err 61.0%, coverage 0.975, clog P/R 1.0/1.0, fake_recall 0.2 (n=10), false_implausible 0.307, blocked_recall 1.0 (n=1), runtime 176 s

@@ -1,0 +1,22 @@
+{
+  "split": "dev",
+  "pits": 40,
+  "rain_period": [
+    "2025-06-15",
+    "2025-09-30 23:00"
+  ],
+  "rain_total_mm": 600.9000000000001,
+  "events_scored": 1584,
+  "event_mdape": 11.80999980940404,
+  "event_ape_p90": 95.83346089024674,
+  "season_total_abs_pct_err": 60.95311682826815,
+  "coverage": 0.9748417491907466,
+  "clogging_precision": 1.0,
+  "clogging_recall": 1.0,
+  "fake_recall": 0.2,
+  "fakes": 10,
+  "false_implausible_rate": 0.30725190839694655,
+  "blocked_recall": 1.0,
+  "blocked_pits": 1,
+  "runtime_s": 175.8
+}
