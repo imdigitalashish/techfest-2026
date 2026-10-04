@@ -1,0 +1,27 @@
+                                                     served_frac  ...  empty_per_srv
+scenario    policy                                                ...               
+shock       mpc-ewma                                      0.9526  ...         0.5099
+            mpc-ewma@trust=0.25                           0.9653  ...         0.4072
+            mpc-ewma@trust=0.5                            0.9652  ...         0.4548
+            mpc-ewma@trust=0.75                           0.9606  ...         0.4921
+            mpc-gated@tau_shock=0,tau_quiet=0.5           0.9646  ...         0.4528
+            mpc-gated@tau_shock=0,tau_quiet=0.75          0.9597  ...         0.4909
+            mpc-gated@tau_shock=0,tau_quiet=1             0.9525  ...         0.5075
+            mpc-gated@tau_shock=0.25,tau_quiet=0.5        0.9651  ...         0.4534
+            mpc-gated@tau_shock=0.25,tau_quiet=0.75       0.9600  ...         0.4909
+            mpc-gated@tau_shock=0.25,tau_quiet=1          0.9523  ...         0.5082
+            mpc-queue                                     0.9629  ...         0.3800
+shock+drift mpc-ewma                                      0.9339  ...         0.6447
+            mpc-ewma@trust=0.25                           0.9397  ...         0.5441
+            mpc-ewma@trust=0.5                            0.9437  ...         0.5965
+            mpc-ewma@trust=0.75                           0.9403  ...         0.6319
+            mpc-gated@tau_shock=0,tau_quiet=0.5           0.9434  ...         0.5937
+            mpc-gated@tau_shock=0,tau_quiet=0.75          0.9406  ...         0.6291
+            mpc-gated@tau_shock=0,tau_quiet=1             0.9338  ...         0.6429
+            mpc-gated@tau_shock=0.25,tau_quiet=0.5        0.9438  ...         0.5953
+            mpc-gated@tau_shock=0.25,tau_quiet=0.75       0.9407  ...         0.6297
+            mpc-gated@tau_shock=0.25,tau_quiet=1          0.9337  ...         0.6435
+            mpc-queue                                     0.9277  ...         0.4995
+
+[22 rows x 4 columns]
+220 episodes in 116s -> eval/results/gated-tuning-preview

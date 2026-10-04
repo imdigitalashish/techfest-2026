@@ -5,7 +5,8 @@ For every (L, P) cell and frozen test seed, all policies replay the identical re
 Reported paired differences in served fraction (mean, 95% paired-bootstrap CI, seeds won):
   mpc_vs_rule       mpc-ewma     - best rule-based allocator (chosen per cell by mean)
   detector_vs_ewma  mpc-cusum-v1 - mpc-ewma        (value of the change detector = spike H1)
-  oracle_vs_ewma    oracle       - mpc-ewma        (upper bound on the value of ANY better forecast)
+  oracle_vs_ewma    oracle       - mpc-ewma        (true-rate forecast in the same planner: a reference, NOT an upper
+                                                     bound - it can be negative when the planner over-trusts forecasts)
 Usage: python -m eval.phase --hops 1 2 4 8 --patience 3 10 --seeds 100-109 --horizon 720 --out eval/results/phase-v1
        python -m eval.phase --summarise-only --out eval/results/phase-v1
 """

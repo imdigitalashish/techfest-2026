@@ -54,3 +54,13 @@ NYC has no synthetic `shock_lost` column, hence **31/31** available comparisons 
 **Information boundary:** `eval/harness.py:68` replaces `rates` with `None` before resetting any non-oracle policy; `FleetState` and `StepInfo` expose observed state/outcomes, not true rates (`architecture/contracts/contracts.py:57-94`). Only `oracle` reads `meta["rates"]` (`components/policies/policies.py:138`). The scalar trust knob changes only the forecast tensor passed to `planner.solve` (`:144`), not the forecaster observations, queue, or ground-truth trace.
 
 This is an exact reproduction of seven analyses and a bounded eight-episode simulation sample, **not** a rerun of every committed episode.
+
+## Lead decisions (2026-10-04 11:15 IST)
+
+| # | Decision | Reason / action |
+|---|---|---|
+| 1 | **ACCEPTED** | The abstract now separates what was tested from what is planned. Tested: one scalar trust shared by all zones (exploratory sweep, `eval/results/trust-v2`). Planned: per-zone, uncertainty- and regime-gated trust, under the pre-registered Addendum B test. A tuning-seed preview (`eval/results/gated-tuning-preview`) shows that regime *gating* adds ≈0 over the best fixed trust (+0.01 pp), so the gain comes from global shrinkage. The ADR and memo were updated accordingly. |
+| 2 | **ACCEPTED (fixed)** | `eval/phase.py` docstring: the true-rate forecast is "a reference, NOT an upper bound". A repo-wide sweep found no other occurrence outside third-party code. |
+| 3 | **ACCEPTED** | The abstract now says "~6 ms per decision step end to end (median, laptop)": median `wall_s/horizon` = 5.949 ms over the 180 mvp-v2 `mpc-ewma` rows, as this review reproduced. |
+
+All headline numbers reproduced exactly: 7/7 regenerated analyses; 8 replayed episodes matching on 31/31 metrics, highspy 1.15.1. No numbers in the abstract change.

@@ -17,6 +17,7 @@ from architecture.contracts.contracts import FleetState, Forecast, StepInfo
 from components.coordinator.assign import flows_to_targets, transport_flows
 from components.forecasting.forecasters import (ChangeAwareForecaster, EWMAForecaster,
                                                 MovingAverageForecaster, OracleForecaster)
+from components.detection.detectors import PoissonCusum
 from components.planner.mpc import MPCPlanner, grid_edges
 
 
@@ -149,6 +150,42 @@ class MPCPolicy(_Base):
         self.fc.observe(self.t, info.arrivals)
 
 
+class GatedTrustMPC(MPCPolicy):
+    """Spike A'' (decision-aware, regime-gated forecast trust). EWMA forecast; a per-zone Poisson CUSUM is used ONLY
+    to gate trust: zones with an alarm (self or grid neighbour) in the last `window` steps plan on tau_shock x forecast,
+    all other zones on tau_quiet x forecast. Parameters are tuned on tuning seeds only (eval/preregistration.md, Add. B)."""
+
+    def __init__(self, tau_shock: float = 0.25, tau_quiet: float = 0.75, window: float = 60, **kw):
+        super().__init__("ewma", **kw)
+        self.tau_shock, self.tau_quiet, self.window = float(tau_shock), float(tau_quiet), int(window)
+        self.name = "mpc-gated"
+
+    def reset(self, meta):
+        super().reset(meta)
+        Z, G = meta["n_zones"], meta["grid"]
+        self.det = PoissonCusum(Z, delta=self.delta, h=self.h)
+        self.last_alarm = np.full(Z, -10**9)
+        E = grid_edges(G)
+        self.adj = np.eye(Z, dtype=bool)
+        self.adj[E[:, 0], E[:, 1]] = True
+
+    def act(self, s: FleetState) -> np.ndarray:
+        self.t = s.t
+        recent = (s.t - self.last_alarm) <= self.window
+        gate = self.adj[recent].any(0) if recent.any() else recent
+        trust = np.where(gate, self.tau_shock, self.tau_quiet)
+        fc = self.fc.forecast(s.t, self.Hrun)
+        plan = self.planner.solve(s.idle_count, s.incoming(self.Hrun)[: self.Hrun], s.queue_len, fc.mean * trust[None, :])
+        self.solve_ms.append(plan.solve_ms)
+        return flows_to_targets(plan.flows, s)
+
+    def observe(self, info):
+        f = float(self.fc.f(self.t))
+        out, _ = self.det.update(self.t, info.arrivals, self.fc.level * f, f)
+        self.last_alarm[out.alarm] = self.t
+        self.fc.observe(self.t, info.arrivals)
+
+
 def make_policy(name: str, **kw):
     """'base@k=v,k2=v2' builds a variant of a base policy (e.g. 'mpc-ewma@c_move=0.5'); its name keeps the suffix."""
     if "@" in name:
@@ -162,6 +199,7 @@ def make_policy(name: str, **kw):
         return pol
     return {"static": StaticPolicy, "greedy": GreedyPolicy, "reactive": ReactivePolicy,
             "mpc-myopic": lambda **k: MPCPolicy("ewma", myopic=True, **k),
+            "mpc-gated": lambda **k: GatedTrustMPC(**k),
             "mpc-queue": lambda **k: MPCPolicy("queue", **k),
             "mpc-ewma": lambda **k: MPCPolicy("ewma", **k), "mpc-cusum": lambda **k: MPCPolicy("cusum", **k),
             "mpc-cusum-v1": lambda **k: MPCPolicy("cusum1", **k),

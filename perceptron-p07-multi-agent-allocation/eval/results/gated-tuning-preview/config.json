@@ -1,0 +1,28 @@
+{
+ "scenarios": [
+  "shock",
+  "shock+drift"
+ ],
+ "policies": [
+  "mpc-queue",
+  "mpc-ewma",
+  "mpc-ewma@trust=0.25",
+  "mpc-ewma@trust=0.5",
+  "mpc-ewma@trust=0.75",
+  "mpc-gated@tau_shock=0,tau_quiet=0.5",
+  "mpc-gated@tau_shock=0,tau_quiet=0.75",
+  "mpc-gated@tau_shock=0,tau_quiet=1",
+  "mpc-gated@tau_shock=0.25,tau_quiet=0.5",
+  "mpc-gated@tau_shock=0.25,tau_quiet=0.75",
+  "mpc-gated@tau_shock=0.25,tau_quiet=1"
+ ],
+ "seeds": "0-9",
+ "n_agents": 40,
+ "patience": 10,
+ "horizon": 1440,
+ "workers": 4,
+ "out": "eval/results/gated-tuning-preview",
+ "legacy": false,
+ "n_jobs": 220,
+ "wall_s": 116.48320484161377
+}
