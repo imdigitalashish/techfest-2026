@@ -9,6 +9,8 @@
  "official_pcs_sum_pib2151390": 29277,
  "national_bev_per_official_pcs": 360.4,
  "median_state_bev_per_pcs": 307.95,
+ "india_bev_registrations_to_jul2025": 6919965,
+ "national_bev_jul2025_per_official_pcs": 236.4,
  "osm_charging_features_india": 600,
  "osm_base_timestamp": "2026-10-04T00:26:35Z",
  "osm_coverage_vs_official_pct": 2.05,

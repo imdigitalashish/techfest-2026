@@ -1,0 +1,74 @@
+[
+ {
+  "policy": "aic_all",
+  "radius_m": 150,
+  "sites": 3336,
+  "national": 80833,
+  "national_model": "OC+OV+CV",
+  "states": 17,
+  "median_ratio": 0.576,
+  "median_abs_log": 0.844,
+  "ci_coverage": 0.471,
+  "passes": false
+ },
+ {
+  "policy": "aic_nonsat",
+  "radius_m": 150,
+  "sites": 3336,
+  "national": 28471,
+  "national_model": "OC",
+  "states": 17,
+  "median_ratio": 0.554,
+  "median_abs_log": 0.867,
+  "ci_coverage": 0.412,
+  "passes": false
+ },
+ {
+  "policy": "bic_all",
+  "radius_m": 150,
+  "sites": 3336,
+  "national": 28471,
+  "national_model": "OC",
+  "states": 17,
+  "median_ratio": 0.554,
+  "median_abs_log": 0.867,
+  "ci_coverage": 0.412,
+  "passes": false
+ },
+ {
+  "policy": "indep",
+  "radius_m": 150,
+  "sites": 3336,
+  "national": 21339,
+  "national_model": "indep",
+  "states": 15,
+  "median_ratio": 0.576,
+  "median_abs_log": 0.844,
+  "ci_coverage": 0.4,
+  "passes": false
+ },
+ {
+  "policy": "aic_all",
+  "radius_m": 100,
+  "sites": 3349,
+  "national": 47688,
+  "national_model": "OC+CV",
+  "states": 16,
+  "median_ratio": 0.481,
+  "median_abs_log": 1.124,
+  "ci_coverage": 0.125,
+  "passes": false
+ },
+ {
+  "policy": "aic_all",
+  "radius_m": 250,
+  "sites": 3309,
+  "national": 23717,
+  "national_model": "OC",
+  "states": 17,
+  "median_ratio": 0.576,
+  "median_abs_log": 0.867,
+  "ci_coverage": 0.471,
+  "passes": false
+ }
+]

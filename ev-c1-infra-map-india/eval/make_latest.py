@@ -40,6 +40,8 @@ def main():
     put("nat_bev_share_2025", b["india_bev_share_cy2025_pct"], f"{b['india_bev_share_cy2025_pct']:.2f}%", src)
     put("official_pcs_aug2025", b["official_pcs_sum_pib2151390"], source=src)
     put("nat_bev_per_pcs", b["national_bev_per_official_pcs"], f0(b["national_bev_per_official_pcs"]), src)
+    put("nat_bev_jul2025", b["india_bev_registrations_to_jul2025"], source=src)
+    put("nat_bev_jul2025_per_pcs", b["national_bev_jul2025_per_official_pcs"], f0(b["national_bev_jul2025_per_official_pcs"]), src)
     put("osm_n", b["osm_charging_features_india"], source=src)
     put("osm_pct_official", b["osm_coverage_vs_official_pct"], f"{b['osm_coverage_vs_official_pct']:.2f}%", src)
     put("osm_operator_pct", b["osm_with_operator_pct"], f"{b['osm_with_operator_pct']:.1f}%", src)
@@ -57,6 +59,7 @@ def main():
             put(f"state_bev_per_pcs_{k}", float(r["bev_per_pcs"]), f0(float(r["bev_per_pcs"])), "eval/results/state_gap_baseline.csv")
             put(f"state_bev_cum_{k}", int(r["bev_cum"]), source="eval/results/state_gap_baseline.csv")
             put(f"state_pcs_{k}", int(float(r["pcs_total"])), source="eval/results/state_gap_baseline.csv")
+            put(f"state_bev_jul2025_per_pcs_{k}", float(r["bev_jul2025_per_pcs"]), f0(float(r["bev_jul2025_per_pcs"])), "eval/results/state_gap_baseline.csv")
     m = j("mh_district_summary.json"); src = "eval/results/mh_district_summary.json"
     put("mh_rtos", m["mh_rtos_with_data"], source=src)
     put("mh_reconciliation_err", m["c1_reconciliation_rel_err"], f"{m['c1_reconciliation_rel_err']:.1f}", src)
@@ -76,6 +79,11 @@ def main():
     put("mse_median_abs_log", c5["median_abs_log_ratio_mse"], f"{c5['median_abs_log_ratio_mse']:.2f}", src)
     put("mse_ci_coverage", c5["ci90_coverage_of_official"], f"{100 * c5['ci90_coverage_of_official']:.0f}%", src)
     put("mse_passes", c5["passes_state_check"], "fails" if not c5["passes_state_check"] else "passes", src)
+    sens = j("c5_mse_sensitivity.json"); src = "eval/results/c5_mse_sensitivity.json"
+    nats = [r["national"] for r in sens]
+    put("mse_nat_min_model", min(nats), source=src); put("mse_nat_max_model", max(nats), source=src)
+    put("mse_sens_runs", len(sens), source=src); put("mse_sens_any_pass", any(r["passes"] for r in sens), "none" if not any(r["passes"] for r in sens) else "some", src)
+    put("mse_sens_cov_max", max(r["ci_coverage"] for r in sens), f"{100 * max(r['ci_coverage'] for r in sens):.0f}%", src)
     sa = j("small_area_summary.json"); src = "eval/results/small_area_summary.json"
     cg = sa["chhattisgarh_validation"]
     put("cg_districts", cg["districts"], source=src); put("cg_official_total", cg["official_total_evaluated"], source=src)

@@ -24,6 +24,16 @@
   "text": "360",
   "source": "eval/results/baseline_summary.json"
  },
+ "nat_bev_jul2025": {
+  "value": 6919965,
+  "text": "6,919,965",
+  "source": "eval/results/baseline_summary.json"
+ },
+ "nat_bev_jul2025_per_pcs": {
+  "value": 236.4,
+  "text": "236",
+  "source": "eval/results/baseline_summary.json"
+ },
  "osm_n": {
   "value": 600,
   "text": "600",
@@ -89,6 +99,11 @@
   "text": "14",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_chandigarh": {
+  "value": 1422.8,
+  "text": "1,423",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_assam": {
   "value": 1123.1,
   "text": "1,123",
@@ -102,6 +117,11 @@
  "state_pcs_assam": {
   "value": 344,
   "text": "344",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_assam": {
+  "value": 758.7,
+  "text": "759",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_bihar": {
@@ -119,6 +139,11 @@
   "text": "521",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_bihar": {
+  "value": 735.9,
+  "text": "736",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_tripura": {
   "value": 810.4,
   "text": "810",
@@ -132,6 +157,11 @@
  "state_pcs_tripura": {
   "value": 56,
   "text": "56",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_tripura": {
+  "value": 594.8,
+  "text": "595",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_uttar_pradesh": {
@@ -149,6 +179,11 @@
   "text": "2,326",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_uttar_pradesh": {
+  "value": 565.3,
+  "text": "565",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_chhattisgarh": {
   "value": 632.5,
   "text": "632",
@@ -162,6 +197,11 @@
  "state_pcs_chhattisgarh": {
   "value": 346,
   "text": "346",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_chhattisgarh": {
+  "value": 429.3,
+  "text": "429",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_odisha": {
@@ -179,6 +219,11 @@
   "text": "623",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_odisha": {
+  "value": 306.8,
+  "text": "307",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_uttarakhand": {
   "value": 524.1,
   "text": "524",
@@ -192,6 +237,11 @@
  "state_pcs_uttarakhand": {
   "value": 223,
   "text": "223",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_uttarakhand": {
+  "value": 390.6,
+  "text": "391",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_madhya_pradesh": {
@@ -209,6 +259,11 @@
   "text": "1,147",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_madhya_pradesh": {
+  "value": 265.0,
+  "text": "265",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_puducherry": {
   "value": 414.0,
   "text": "414",
@@ -222,6 +277,11 @@
  "state_pcs_puducherry": {
   "value": 50,
   "text": "50",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_puducherry": {
+  "value": 257.3,
+  "text": "257",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_tamil_nadu": {
@@ -239,6 +299,11 @@
   "text": "1,781",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_tamil_nadu": {
+  "value": 241.0,
+  "text": "241",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_jharkhand": {
   "value": 402.2,
   "text": "402",
@@ -252,6 +317,11 @@
  "state_pcs_jharkhand": {
   "value": 353,
   "text": "353",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_jharkhand": {
+  "value": 254.0,
+  "text": "254",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_west_bengal": {
@@ -269,6 +339,11 @@
   "text": "903",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_west_bengal": {
+  "value": 179.9,
+  "text": "180",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_rajasthan": {
   "value": 377.9,
   "text": "378",
@@ -282,6 +357,11 @@
  "state_pcs_rajasthan": {
   "value": 1531,
   "text": "1,531",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_rajasthan": {
+  "value": 256.7,
+  "text": "257",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_andhra_pradesh": {
@@ -299,6 +379,11 @@
   "text": "793",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_andhra_pradesh": {
+  "value": 211.2,
+  "text": "211",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_gujarat": {
   "value": 348.2,
   "text": "348",
@@ -312,6 +397,11 @@
  "state_pcs_gujarat": {
   "value": 1208,
   "text": "1,208",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_gujarat": {
+  "value": 239.1,
+  "text": "239",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_telangana": {
@@ -329,6 +419,11 @@
   "text": "1,066",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_telangana": {
+  "value": 204.1,
+  "text": "204",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_kerala": {
   "value": 315.2,
   "text": "315",
@@ -342,6 +437,11 @@
  "state_pcs_kerala": {
   "value": 1392,
   "text": "1,392",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_kerala": {
+  "value": 194.9,
+  "text": "195",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_goa": {
@@ -359,6 +459,11 @@
   "text": "158",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_goa": {
+  "value": 211.8,
+  "text": "212",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_jammu_and_kashmir": {
   "value": 294.9,
   "text": "295",
@@ -372,6 +477,11 @@
  "state_pcs_jammu_and_kashmir": {
   "value": 185,
   "text": "185",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_jammu_and_kashmir": {
+  "value": 193.2,
+  "text": "193",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_maharashtra": {
@@ -389,6 +499,11 @@
   "text": "4,155",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_maharashtra": {
+  "value": 188.2,
+  "text": "188",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_delhi": {
   "value": 278.4,
   "text": "278",
@@ -402,6 +517,11 @@
  "state_pcs_delhi": {
   "value": 1967,
   "text": "1,967",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_delhi": {
+  "value": 208.3,
+  "text": "208",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_punjab": {
@@ -419,6 +539,11 @@
   "text": "717",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_punjab": {
+  "value": 167.4,
+  "text": "167",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_lakshadweep": {
   "value": 224.0,
   "text": "224",
@@ -432,6 +557,11 @@
  "state_pcs_lakshadweep": {
   "value": 1,
   "text": "1",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_lakshadweep": {
+  "value": 137.0,
+  "text": "137",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_haryana": {
@@ -449,6 +579,11 @@
   "text": "935",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_haryana": {
+  "value": 157.5,
+  "text": "158",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_mizoram": {
   "value": 207.2,
   "text": "207",
@@ -462,6 +597,11 @@
  "state_pcs_mizoram": {
   "value": 13,
   "text": "13",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_mizoram": {
+  "value": 96.7,
+  "text": "97",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_karnataka": {
@@ -479,6 +619,11 @@
   "text": "6,097",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_karnataka": {
+  "value": 99.0,
+  "text": "99",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_ut_of_dnh_and_dd": {
   "value": 149.7,
   "text": "150",
@@ -492,6 +637,11 @@
  "state_pcs_ut_of_dnh_and_dd": {
   "value": 9,
   "text": "9",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_ut_of_dnh_and_dd": {
+  "value": 104.0,
+  "text": "104",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_andaman_and_nicobar_island": {
@@ -509,6 +659,11 @@
   "text": "4",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_andaman_and_nicobar_island": {
+  "value": 86.8,
+  "text": "87",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_ladakh": {
   "value": 104.0,
   "text": "104",
@@ -522,6 +677,11 @@
  "state_pcs_ladakh": {
   "value": 1,
   "text": "1",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_ladakh": {
+  "value": 93.0,
+  "text": "93",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_manipur": {
@@ -539,6 +699,11 @@
   "text": "58",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_manipur": {
+  "value": 36.8,
+  "text": "37",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_himachal_pradesh": {
   "value": 63.8,
   "text": "64",
@@ -552,6 +717,11 @@
  "state_pcs_himachal_pradesh": {
   "value": 137,
   "text": "137",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_himachal_pradesh": {
+  "value": 42.1,
+  "text": "42",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_meghalaya": {
@@ -569,6 +739,11 @@
   "text": "62",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_meghalaya": {
+  "value": 23.3,
+  "text": "23",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_arunachal_pradesh": {
   "value": 7.0,
   "text": "7",
@@ -582,6 +757,11 @@
  "state_pcs_arunachal_pradesh": {
   "value": 47,
   "text": "47",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_arunachal_pradesh": {
+  "value": 3.3,
+  "text": "3",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "state_bev_per_pcs_sikkim": {
@@ -599,6 +779,11 @@
   "text": "12",
   "source": "eval/results/state_gap_baseline.csv"
  },
+ "state_bev_jul2025_per_pcs_sikkim": {
+  "value": 1.9,
+  "text": "2",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
  "state_bev_per_pcs_nagaland": {
   "value": 3.0,
   "text": "3",
@@ -612,6 +797,11 @@
  "state_pcs_nagaland": {
   "value": 42,
   "text": "42",
+  "source": "eval/results/state_gap_baseline.csv"
+ },
+ "state_bev_jul2025_per_pcs_nagaland": {
+  "value": 2.2,
+  "text": "2",
   "source": "eval/results/state_gap_baseline.csv"
  },
  "mh_rtos": {
@@ -703,6 +893,31 @@
   "value": false,
   "text": "fails",
   "source": "eval/results/c5_mse_summary.json"
+ },
+ "mse_nat_min_model": {
+  "value": 21339,
+  "text": "21,339",
+  "source": "eval/results/c5_mse_sensitivity.json"
+ },
+ "mse_nat_max_model": {
+  "value": 80833,
+  "text": "80,833",
+  "source": "eval/results/c5_mse_sensitivity.json"
+ },
+ "mse_sens_runs": {
+  "value": 6,
+  "text": "6",
+  "source": "eval/results/c5_mse_sensitivity.json"
+ },
+ "mse_sens_any_pass": {
+  "value": false,
+  "text": "none",
+  "source": "eval/results/c5_mse_sensitivity.json"
+ },
+ "mse_sens_cov_max": {
+  "value": 0.471,
+  "text": "47%",
+  "source": "eval/results/c5_mse_sensitivity.json"
  },
  "cg_districts": {
   "value": 28,

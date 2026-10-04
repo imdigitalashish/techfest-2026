@@ -31,6 +31,16 @@ def match(v):
     return choices[m[0]] if m and m[1] >= 80 else None
 st["pib_state"] = st.vahan_state.map(match)
 st = st.merge(pcs[["state", "pcs_total"]], left_on="pib_state", right_on="state", how="left").drop(columns="state")
+# Date-aligned variant: BEV registered up to Jul 2025 (end of the month before the official snapshot of 1 Aug 2025)
+MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+later = pd.Series(0.0, index=st.vahan_state.values)
+for y in (2025, 2026):
+    mm = pd.read_csv(f"{RAW}/nat_state_month_bev_{y}.csv").set_index("row_label")
+    for i, m in enumerate(MONTHS):
+        if (y, i + 1) > (2025, 7) and m in mm.columns:
+            later = later.add(mm[m].reindex(later.index).fillna(0), fill_value=0)
+st["bev_cum_jul2025"] = (st.bev_cum.values - later.reindex(st.vahan_state.values).values).astype(int)
+st["bev_jul2025_per_pcs"] = (st.bev_cum_jul2025 / st.pcs_total).round(1)
 st["bev_per_pcs"] = (st.bev_cum / st.pcs_total).round(1)
 st["bev2025_per_pcs"] = (st.bev_2025 / st.pcs_total).round(1)
 st["bev_share_2025_pct"] = (100 * st.bev_2025 / st.all_2025).round(2)
@@ -46,6 +56,8 @@ summary = {
   "india_bev_registrations_cy2025": int(st.bev_2025.sum()), "india_bev_share_cy2025_pct": round(100 * st.bev_2025.sum() / st.all_2025.sum(), 2),
   "official_pcs_sum_pib2151390": nat_pcs, "national_bev_per_official_pcs": round(st.bev_cum.sum() / nat_pcs, 1),
   "median_state_bev_per_pcs": float(matched.bev_per_pcs.median()),
+  "india_bev_registrations_to_jul2025": int(st.bev_cum_jul2025.sum()),
+  "national_bev_jul2025_per_official_pcs": round(st.bev_cum_jul2025.sum() / nat_pcs, 1),
   "osm_charging_features_india": osm_n, "osm_base_timestamp": osm.get("osm3s", {}).get("timestamp_osm_base"),
   "osm_coverage_vs_official_pct": round(100 * osm_n / nat_pcs, 2),
   "osm_with_operator_pct": round(100 * sum(1 for t in tags if t.get("operator")) / osm_n, 1),

@@ -9,6 +9,7 @@ $PY eval/baseline_state_gap.py > eval/results/baseline_run.log
 $PY eval/mh_district_demand.py > /dev/null
 $PY components/census_completeness/census_v0.py > /dev/null
 $PY components/census_completeness/mse.py > eval/results/c5_mse_run.log
+$PY components/census_completeness/mse_sensitivity.py > /dev/null
 $PY components/access_gap/small_area.py > eval/results/small_area_run.log
 $PY components/access_gap/mh_district_gap.py > /dev/null
 $PY components/census_completeness/autoresearch/eval.py --holdout
