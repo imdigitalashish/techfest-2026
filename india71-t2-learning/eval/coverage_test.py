@@ -46,14 +46,21 @@ def wilson(k: int, n: int, z: float = 1.96) -> tuple[float, float]:
     return float(c - h), float(c + h)
 
 
+METHOD = "v1"  # v2 = exact-pi systematic PPS + pooled double checks + assessor-error variance (pre-registered separately)
+
+
 def run_seed(seed: int, subject: str, budget: float, need_corr: float) -> tuple[pd.DataFrame, dict]:
     w = make_world(seed, {**ASER2024_GOVT_STD3, "inflation_need_corr": need_corr})
     pub = w.public_view()
     risk = forensic_flags(pub.teacher_reports, pub.schools, pub.item_responses, pub.item_bank, subject=subject)
     b = max(1, round(budget * len(pub.schools)))
-    sel = select_audit(pub.schools, risk, b, "risk_pps", seed=seed + 17)
-    aud = retest(w, sel, CHILDREN_PER_SCHOOL, subject=subject, seed=seed + 31, double_check_frac=DOUBLE_CHECK)
-    ctx, fit, iv = run_assurance(pub, risk, sel, aud, Design(budget=b, children_per_school=CHILDREN_PER_SCHOOL, double_check_frac=DOUBLE_CHECK),
+    v2 = METHOD == "v2"
+    sel = select_audit(pub.schools, risk, b, "pps_systematic" if v2 else "risk_pps", seed=seed + 17)
+    aud = retest(w, sel, CHILDREN_PER_SCHOOL, subject=subject, seed=seed + 31, double_check_frac=DOUBLE_CHECK, double_check_mode="pooled" if v2 else "per_school")
+    b = int(sel.selected_for_audit.sum())
+    design = Design(budget=b, children_per_school=CHILDREN_PER_SCHOOL, double_check_frac=DOUBLE_CHECK, design="pps_systematic" if v2 else "risk_pps",
+                    double_check_mode="pooled" if v2 else "per_school", meas_var_mode="v2" if v2 else "v1")
+    ctx, fit, iv = run_assurance(pub, risk, sel, aud, design,
                                  subject=subject, k_strata=K_STRATA, R=R_BOOT, seed=seed + 53, bias_model=BIAS_MODEL)
     goal = "read_goal" if subject == "language" else "math_goal"
     t = w.children.groupby("udise_code")[goal].sum().rename("k").to_frame().join(w.schools.set_index("udise_code")[["block_lgd", "grade3_enrolment"]])
@@ -96,8 +103,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--seeds", default="101-130"); ap.add_argument("--subject", default="language")
     ap.add_argument("--budget", type=float, default=0.10); ap.add_argument("--need-corr", type=float, default=0.0)
-    ap.add_argument("--out", default=None)
+    ap.add_argument("--out", default=None); ap.add_argument("--method", default="v1", choices=["v1", "v2"])
     a = ap.parse_args()
+    global METHOD
+    METHOD = a.method
     seeds = parse_seeds(a.seeds); t0 = time.time()
     rows, allocs = [], []
     for s in seeds:
@@ -106,7 +115,7 @@ def main() -> int:
     summ = summarise(blocks, alloc)
     res = {"synthetic": True, "seeds": a.seeds, "subject": a.subject, "budget_frac": a.budget, "inflation_need_corr": a.need_corr,
            "method": {"k_strata": K_STRATA, "bootstrap_R": R_BOOT, "bias_model": BIAS_MODEL, "children_per_school": CHILDREN_PER_SCHOOL,
-                      "double_check_frac": DOUBLE_CHECK, "design": "risk_pps"},
+                      "double_check_frac": DOUBLE_CHECK, "design": "pps_systematic" if a.method == "v2" else "risk_pps", "version": a.method},
            "primary": {"metric": "coverage of nominal 90% intervals (method fh), true block share meeting the goal", "threshold": 0.85,
                        "pass": bool(summ["fh"]["coverage90"] >= 0.85)},
            "secondary_mae_pass": bool(summ["fh"]["mae_pp"] < summ["fh"]["raw_mae_pp"]),

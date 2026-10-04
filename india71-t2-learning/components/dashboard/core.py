@@ -12,6 +12,9 @@ from pathlib import Path
 
 import pandas as pd
 
+from architecture.contracts.fln_contracts import AccessRequest, AreaLevel, Role
+from components.governance import TrustedContext, decide
+
 
 def _pct(x) -> str:
     try:
@@ -26,11 +29,33 @@ def _bar(value, lo, hi) -> str:
             f'<line x1="{l:.1f}" x2="{h:.1f}" y1="5" y2="5"/><circle cx="{v:.1f}" cy="5" r="3"/></svg>')
 
 
+def _disclosure_control(blocks: pd.DataFrame) -> pd.DataFrame:
+    """Route every published cell through C12 with server-side counts; suppressed cells lose all numbers (HTML and JSON)."""
+    b = blocks.copy()
+    counts = {str(r.block_lgd): int(r.children) for r in b.itertuples()}
+    ctx = TrustedContext(cell_counts=counts)
+    sup = []
+    for r in b.itertuples():
+        d = decide(AccessRequest(role=Role.STATE, actor_scope=str(r.block_lgd), resource="area_estimate", target_scope=str(r.block_lgd),
+                                 target_level=AreaLevel.BLOCK, purpose="planning"), ctx)
+        sup.append((not d.allowed) or d.transform == "suppress")
+    b["suppressed"] = sup
+    for c in ["raw", "estimate", "lo", "hi", "children", "n_retested_schools"]:
+        if c in b:
+            b[c] = b[c].astype(object)
+            b.loc[b.suppressed, c] = None
+    return b
+
+
 def build_dashboard(blocks: pd.DataFrame, meta: dict, out_dir: str | Path) -> Path:
     """blocks: block_lgd, raw, estimate, lo, hi, n_schools, n_retested_schools, children. meta: free-text labels."""
     out = Path(out_dir); out.mkdir(parents=True, exist_ok=True)
+    blocks = _disclosure_control(blocks)
     rows = []
     for _, r in blocks.sort_values("block_lgd").iterrows():
+        if r.suppressed:
+            rows.append(f"<tr><td>{html.escape(str(r.block_lgd))}</td><td colspan='6'>suppressed (fewer than 10 children)</td></tr>")
+            continue
         rows.append(f"<tr><td>{html.escape(str(r.block_lgd))}</td><td>{int(r.children):,}</td><td>{_pct(r.raw)}</td>"
                     f"<td><strong>{_pct(r.estimate)}</strong></td><td>{_pct(r.lo)} – {_pct(r.hi)}</td><td>{_bar(r.estimate, r.lo, r.hi)}</td>"
                     f"<td>{int(r.n_retested_schools)} of {int(r.n_schools)}</td></tr>")

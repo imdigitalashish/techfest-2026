@@ -70,7 +70,7 @@ class World:
             udise=self.udise.copy(),
             truth_school=empty_truth_school,
             truth_block=empty_truth_block,
-            cfg=self.cfg.copy(),
+            cfg={k: v for k, v in self.cfg.items() if k not in ("read_thresholds", "math_thresholds")},  # truth-derived cut-points are hidden
             seed=self.seed,
         )
 
@@ -238,8 +238,12 @@ def make_world(seed: int, cfg: Optional[dict] = None) -> World:
     truth_school = truth_school.merge(meta, on="udise_code")[["udise_code", "true_read_goal_rate", "true_math_goal_rate", "inflating_school", "inflation_q", "inflation_k", "reported_read_goal_rate", "reported_math_goal_rate"]]
     truth_school["true_read_goal_rate"] = truth_school.true_read_goal_rate.astype(float)
     truth_school["true_math_goal_rate"] = truth_school.true_math_goal_rate.astype(float)
-    truth_block = schools.merge(truth_school, on="udise_code").groupby("block_lgd").agg(
-        n_children=("grade3_enrolment", "sum"), true_read_goal_rate=("true_read_goal_rate", "mean"), true_math_goal_rate=("true_math_goal_rate", "mean"),
-        inflating_rate=("inflating_school", "mean")).reset_index()
+    tb = schools[["udise_code", "block_lgd", "grade3_enrolment"]].merge(truth_school, on="udise_code")
+    tb = tb.assign(kr=tb.true_read_goal_rate * tb.grade3_enrolment, km=tb.true_math_goal_rate * tb.grade3_enrolment)
+    truth_block = tb.groupby("block_lgd").agg(n_children=("grade3_enrolment", "sum"), kr=("kr", "sum"), km=("km", "sum"),
+                                              inflating_rate=("inflating_school", "mean")).reset_index()
+    truth_block["true_read_goal_rate"] = truth_block.kr / truth_block.n_children  # share of children (code-review issue 7)
+    truth_block["true_math_goal_rate"] = truth_block.km / truth_block.n_children
+    truth_block = truth_block[["block_lgd", "n_children", "true_read_goal_rate", "true_math_goal_rate", "inflating_rate"]]
     cfg = cfg.copy(); cfg["read_thresholds"] = read_thr.tolist(); cfg["math_thresholds"] = math_thr.tolist()
     return World(schools, children, teacher_reports, item_bank, item_responses, survey_anchor, udise, truth_school, truth_block, cfg, seed)

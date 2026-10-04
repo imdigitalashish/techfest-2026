@@ -13,7 +13,8 @@
       "raw": 0.20148110316649642,
       "n_schools": 122,
       "children": 3916,
-      "n_retested_schools": 9
+      "n_retested_schools": 9,
+      "suppressed": false
     },
     {
       "block_lgd": "B02",
@@ -23,7 +24,8 @@
       "raw": 0.350227420402859,
       "n_schools": 93,
       "children": 3078,
-      "n_retested_schools": 8
+      "n_retested_schools": 8,
+      "suppressed": false
     },
     {
       "block_lgd": "B03",
@@ -33,7 +35,8 @@
       "raw": 0.21646597591711006,
       "n_schools": 108,
       "children": 3571,
-      "n_retested_schools": 7
+      "n_retested_schools": 7,
+      "suppressed": false
     },
     {
       "block_lgd": "B04",
@@ -43,7 +46,8 @@
       "raw": 0.224962852897474,
       "n_schools": 106,
       "children": 3365,
-      "n_retested_schools": 9
+      "n_retested_schools": 9,
+      "suppressed": false
     },
     {
       "block_lgd": "B05",
@@ -53,7 +57,8 @@
       "raw": 0.2611671469740634,
       "n_schools": 84,
       "children": 2776,
-      "n_retested_schools": 16
+      "n_retested_schools": 16,
+      "suppressed": false
     },
     {
       "block_lgd": "B06",
@@ -63,7 +68,8 @@
       "raw": 0.4845814977973568,
       "n_schools": 87,
       "children": 2724,
-      "n_retested_schools": 11
+      "n_retested_schools": 11,
+      "suppressed": false
     }
   ]
 }

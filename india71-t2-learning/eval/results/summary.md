@@ -10,8 +10,9 @@ Command: `nice -n 10 python3 eval/run_eval.py` (coverage runs: see `eval/preregi
 | language_b20 | 0.939 | 0.894–0.966 | 1.76 | 4.31 | 4.24 | False |
 | language_b10_needcorr | 0.967 | 0.929–0.985 | 2.48 | 3.72 | 6.07 | False |
 
-Exploratory separation (not pre-registered): 0.55 of blocks have intervals entirely below/above the district average; 1.00 of those are on the correct side; median true within-district spread 24.9 pp.
+Post hoc: world-level bootstrap 95% CI for held-out coverage 0.967: 0.933–0.989.
+Post hoc separation (child-weighted district average): 97/180 blocks have intervals entirely below/above it; 1.00 of those on the correct side; point estimates on the correct side: moderated 0.97 vs raw 0.98; median true within-district spread 24.9 pp.
 Detection AUC (held-out): 0.777 ± 0.021.
-C4 (seeds 101-105): CAT@8 exact level accuracy 0.546; full-test Bayesian IRT 0.597; ASER rule 0.472.
-C7: Hindi WhatsApp plan 755 bytes for a class of 60; SMS 3 segments.
-C12: 36/36 policy cases pass.
+C4 (seeds 101-105): CAT@8 exact level accuracy 0.538; full-test Bayesian IRT 0.592; ASER rule 0.486.
+C7: Hindi WhatsApp plan 801 bytes for a class of 60; SMS 3 segments.
+C12: 42/42 policy cases pass.

@@ -10,6 +10,8 @@ import numpy as np
 from sklearn.metrics import accuracy_score, brier_score_loss
 
 from eval.sim.world import make_world
+from eval.sim.calibration import ASER2024_GOVT_STD3
+from components.diagnostics.cutpoints import load as load_cutpoints
 from components.diagnostics.engine import adaptive_test, aser_rule, bayes_irt
 
 SEEDS = [101, 102, 103, 104, 105]
@@ -17,7 +19,7 @@ SUBJECTS = [
     ("language", "true_read_level", "read_goal", "read_thresholds"),
     ("numeracy", "true_math_level", "math_goal", "math_thresholds"),
 ]
-WORLD_CFG = {"n_schools": 40, "n_clusters": 8}
+WORLD_CFG = {**ASER2024_GOVT_STD3, "n_schools": 40, "n_clusters": 8}
 SAMPLE_N = 300
 SECONDS_PER_ORAL_ITEM = 20
 
@@ -57,8 +59,8 @@ def evaluate_seed(seed: int) -> dict[str, dict[str, float]]:
         method_data = {m: {"pred": [], "goal_prob": [], "items": []} for m in per_method}
         for _, ch in rows.iterrows():
             d_rule = aser_rule(ch.student_raw_id, ch.udise_code, 3, subject, w.item_responses, w.item_bank)
-            d_bayes = bayes_irt(ch.student_raw_id, ch.udise_code, 3, subject, w.item_responses, w.item_bank, w.cfg[thr_key])
-            d_cat, used = adaptive_test(ch.student_raw_id, ch.udise_code, 3, subject, w.item_responses, w.item_bank, w.cfg[thr_key], max_items=8)
+            d_bayes = bayes_irt(ch.student_raw_id, ch.udise_code, 3, subject, w.item_responses, w.item_bank, load_cutpoints(subject))
+            d_cat, used = adaptive_test(ch.student_raw_id, ch.udise_code, 3, subject, w.item_responses, w.item_bank, load_cutpoints(subject), max_items=8)
             for name, d, items in [("aser_rule_full", d_rule, 16), ("bayes_irt_full", d_bayes, 16), ("adaptive_cat_8", d_cat, len(used))]:
                 method_data[name]["pred"].append(int(d.level))
                 method_data[name]["goal_prob"].append(float(d.meets_grade_goal))

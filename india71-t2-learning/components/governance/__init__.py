@@ -1,2 +1,2 @@
-from .policy import decide
-__all__ = ["decide"]
+from .policy import TrustedContext, decide
+__all__ = ["decide", "TrustedContext"]

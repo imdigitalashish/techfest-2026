@@ -33,6 +33,10 @@ from components.trust_audit.core import GOAL_LEVEL, select_audit
 BLOCK_COVARIATES = ["single_teacher", "infra_index"]
 
 
+class AssuranceUnavailable(RuntimeError):
+    """Raised instead of publishing intervals when the independent re-test did not materialise as designed."""
+
+
 @dataclass
 class Context:
     """Public, fixed inputs for one district (arrays aligned to `schools` row order)."""
@@ -127,7 +131,8 @@ def tau2_adjusted(u: np.ndarray, sv: np.ndarray) -> float:
 
 
 def estimate(ctx: Context, sel_idx: np.ndarray, pi: np.ndarray, m: np.ndarray, x_obs: np.ndarray,
-             n_double: float, n_disagree: float, p_anchor: float, var_anchor: float, bias_model: str = "linear_r") -> Fit:
+             n_double: float, n_disagree: float, p_anchor: float, var_anchor: float, bias_model: str = "linear_r",
+             meas_var_mode: str = "v1") -> Fit:
     """Steps 1-5 for one data set. sel_idx/pi/m/x_obs are aligned arrays for the audited schools."""
     K = ctx.k_strata
     eps = misclassification_rate(n_double, n_disagree)
@@ -136,7 +141,12 @@ def estimate(ctx: Context, sel_idx: np.ndarray, pi: np.ndarray, m: np.ndarray, x
     n_i = ctx.n[sel_idx]
     fpc = np.where(n_i > 1, np.clip((n_i - m) / np.maximum(n_i - 1, 1), 0, 1), 0.0)
     a_s = (x_obs + 0.5) / (m + 1.0)
-    meas_var = a_s * (1 - a_s) / np.maximum(m, 1) * fpc / (1 - 2 * eps) ** 2
+    if meas_var_mode == "v2":
+        # v2 (code-review issue 6): finite-population sampling of true status + independent assessor flips (not removed by FPC)
+        p_t = np.clip(a_s, 0.5 / (m + 1.0), 1 - 0.5 / (m + 1.0))
+        meas_var = fpc * p_t * (1 - p_t) / np.maximum(m, 1) + eps * (1 - eps) / (np.maximum(m, 1) * (1 - 2 * eps) ** 2)
+    else:
+        meas_var = a_s * (1 - a_s) / np.maximum(m, 1) * fpc / (1 - 2 * eps) ** 2
     bias = ctx.r[sel_idx] - a_hat
     v = np.minimum(1.0 / np.clip(pi, 1e-3, 1.0), 100.0) * n_i  # HT weight x enrolment: the target is children-weighted
     st = ctx.strata[sel_idx]
@@ -203,7 +213,17 @@ def estimate(ctx: Context, sel_idx: np.ndarray, pi: np.ndarray, m: np.ndarray, x
 def observed_inputs(ctx: Context, selected: pd.DataFrame, audit: pd.DataFrame, anchor: pd.DataFrame, subject: str = "language"):
     """Convert select_audit / retest / survey_anchor frames into the arrays `estimate` needs."""
     pos = {u: i for i, u in enumerate(ctx.schools["udise_code"])}
+    # Validation added after pre-registration (code-review issue 4): refuse to publish intervals when the audit did not
+    # materialise as designed. It only raises on incomplete audits, which never occurred in the registered runs.
+    planned = set(selected.loc[selected["selected_for_audit"], "udise_code"])
+    got = set(audit["udise_code"]) if len(audit) else set()
+    if not planned or got != planned:
+        raise AssuranceUnavailable(f"re-test returned {len(got)} of {len(planned)} selected schools")
+    if (audit["n_audited_children"] <= 0).any() or audit["n_double"].sum() <= 0:
+        raise AssuranceUnavailable("re-test has schools with no children or no double-assessed children")
     a = audit.merge(selected[["udise_code", "audit_inclusion_prob"]], on="udise_code", how="left")
+    if a["audit_inclusion_prob"].isna().any():
+        raise AssuranceUnavailable("missing inclusion probability for a re-tested school")
     sel_idx = np.array([pos[u] for u in a["udise_code"]], dtype=int)
     m = a["n_audited_children"].to_numpy(float)
     x_obs = a["n_meeting_goal_obs"].to_numpy(float)
@@ -216,11 +236,13 @@ def observed_inputs(ctx: Context, selected: pd.DataFrame, audit: pd.DataFrame, a
 @dataclass
 class Design:
     budget: int
-    design: str = "risk_pps"
+    design: str = "risk_pps"            # v2: "pps_systematic" (exact inclusion probabilities)
     children_per_school: int = 12
     double_check_frac: float = 0.2
     anchor_schools: int = 20
     anchor_children: int = 10
+    double_check_mode: str = "per_school"   # v2: "pooled"
+    meas_var_mode: str = "v1"               # v2: "v2"
 
 
 def bootstrap(ctx: Context, fit: Fit, design: Design, R: int = 200, seed: int = 0, bias_model: str = "linear_r") -> dict:
@@ -244,13 +266,16 @@ def bootstrap(ctx: Context, fit: Fit, design: Design, R: int = 200, seed: int = 
         m = np.minimum(design.children_per_school, n_int[chosen])
         x_true = rng.hypergeometric(K_star[chosen], n_int[chosen] - K_star[chosen], m)
         x_obs = rng.binomial(x_true, 1 - eps) + rng.binomial(m - x_true, eps)
-        nd = np.rint(design.double_check_frac * m).astype(int)
-        n_double = float(nd.sum()); n_dis = float(rng.binomial(nd, 2 * eps * (1 - eps)).sum())
+        if design.double_check_mode == "pooled":
+            n_double = float(round(design.double_check_frac * m.sum())); n_dis = float(rng.binomial(int(n_double), 2 * eps * (1 - eps)))
+        else:
+            nd = np.rint(design.double_check_frac * m).astype(int)
+            n_double = float(nd.sum()); n_dis = float(rng.binomial(nd, 2 * eps * (1 - eps)).sum())
         aj = rng.choice(N, size=min(design.anchor_schools, N), replace=False)
         kj = np.minimum(design.anchor_children, n_int[aj])
         yj = rng.hypergeometric(K_star[aj], n_int[aj] - K_star[aj], kj)
         p_a, v_a = anchor_summary(kj, yj)
-        f = estimate(ctx, chosen, pi, m.astype(float), x_obs.astype(float), n_double, n_dis, p_a, v_a, bias_model=bias_model)
+        f = estimate(ctx, chosen, pi, m.astype(float), x_obs.astype(float), n_double, n_dis, p_a, v_a, bias_model=bias_model, meas_var_mode=design.meas_var_mode)
         err_direct[rep] = f.block_direct - T_block
         err_fh[rep] = f.block_fh - T_block
     return {"direct": err_direct, "fh": err_fh}
@@ -273,7 +298,7 @@ def run_assurance(public_world, risk: pd.DataFrame, selected: pd.DataFrame, audi
                   subject: str = "language", k_strata: int = 4, R: int = 200, seed: int = 0, bias_model: str = "linear_r") -> tuple[Context, Fit, pd.DataFrame]:
     ctx = make_context(public_world.schools, risk, k_strata)
     sel_idx, pi, m, x_obs, nd, ndis, p_a, v_a = observed_inputs(ctx, selected, audit, public_world.survey_anchor, subject)
-    fit = estimate(ctx, sel_idx, pi, m, x_obs, nd, ndis, p_a, v_a, bias_model=bias_model)
+    fit = estimate(ctx, sel_idx, pi, m, x_obs, nd, ndis, p_a, v_a, bias_model=bias_model, meas_var_mode=design.meas_var_mode)
     errs = bootstrap(ctx, fit, design, R=R, seed=seed, bias_model=bias_model)
     iv = intervals(fit, errs)
     iv["block_lgd"] = [ctx.blocks[b] for b in iv["block"]]

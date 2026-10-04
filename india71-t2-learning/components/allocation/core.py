@@ -14,12 +14,17 @@ def _assessment_df(assessments: Iterable[TrustAssessment]):
 
 def allocate_camps(public_world, assessments: Iterable[TrustAssessment]|None=None, R:int|None=None, strategy="audit_adjusted", effect_pp:float=0.15, truth_school:pd.DataFrame|None=None) -> list[AllocationDecision]:
     schools=public_world.schools.copy(); R=int(R or max(1, round(0.10*len(schools))))
-    if strategy=="baseline_raw" or assessments is None:
+    # dispatch on the requested strategy first and fail closed (code-review issue 9); the oracle is evaluation-only
+    if strategy=="baseline_raw":
         est=_reported(public_world)
-    elif strategy=="oracle" and truth_school is not None:
+    elif strategy=="oracle":
+        if truth_school is None: raise ValueError("oracle strategy is evaluation-only and needs truth_school")
         est=truth_school[["udise_code","true_read_goal_rate"]].rename(columns={"true_read_goal_rate":"p_goal"})
-    else:
+    elif strategy=="audit_adjusted":
+        if not assessments: raise ValueError("audit_adjusted strategy needs assessments")
         est=_assessment_df(assessments)
+    else:
+        raise ValueError(f"unknown strategy {strategy!r}")
     df=schools.merge(est,on="udise_code",how="left"); df["p_goal"]=df.p_goal.fillna(df.p_goal.mean() if df.p_goal.notna().any() else 0.25)
     df["equity_weight"]=1.0+0.45*df.share_st.fillna(0)+0.30*df.share_sc.fillna(0)+0.20*df.single_teacher.astype(float)
     df["expected_gain"]=df.grade3_enrolment*(1-df.p_goal)*effect_pp

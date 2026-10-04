@@ -1,0 +1,15 @@
+{
+  "language": [
+    -0.1817,
+    0.4183,
+    0.9683,
+    1.1683
+  ],
+  "numeracy": [
+    -0.1568,
+    0.4432,
+    0.9932,
+    1.6932
+  ],
+  "provenance": "mean of development-world cut-points, seeds [1, 2, 3, 4, 5], ASER-calibrated simulator (SYNTHETIC)"
+}

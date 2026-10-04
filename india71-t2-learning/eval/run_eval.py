@@ -26,6 +26,7 @@ import pandas as pd
 from components.dashboard import build_dashboard
 from components.diagnostics.engine import adaptive_test
 from components.diagnostics.evaluate import evaluate_seeds
+from components.diagnostics.cutpoints import load as load_cutpoints
 from components.teacher_view.planner import make_plan, render_ivr_script, sms_segments
 from components.trust_audit.assurance import Design, run_assurance
 from components.trust_audit.core import detection_auc, forensic_flags, retest, select_audit
@@ -47,23 +48,47 @@ def coverage_results() -> dict:
     return out
 
 
+def _heldout_block_children() -> pd.DataFrame:
+    rows = []
+    for s in HELDOUT:
+        w = make_world(s, dict(ASER2024_GOVT_STD3))
+        g = w.schools.groupby("block_lgd").grade3_enrolment.sum()
+        rows += [{"seed": s, "block_lgd": b, "children": int(n)} for b, n in g.items()]
+    return pd.DataFrame(rows)
+
+
 def separation_exploratory() -> dict:
-    """EXPLORATORY (not pre-registered): can +/-6 pp intervals tell blocks apart within a district?"""
+    """POST HOC (not pre-registered): can +/-6 pp intervals tell blocks apart within a district?
+
+    District average = child-weighted share (code-review issue 11). Matched baseline (hostile-judge v1 issue):
+    share of blocks placed on the correct side of the district average by the moderated point estimate vs by raw reports.
+    """
     b = pd.read_csv(RES / "coverage_heldout.blocks.csv")
-    b = b[b.method == "fh"].copy()
-    b["dist_est"] = b.groupby("seed").estimate.transform("mean")
-    b["dist_true"] = b.groupby("seed")["true"].transform("mean")
-    below = b.hi < b.dist_est; above = b.lo > b.dist_est
-    flagged = below | above
-    correct = (below & (b["true"] < b.dist_true)) | (above & (b["true"] > b.dist_true))
+    b = b[b.method == "fh"].merge(_heldout_block_children(), on=["seed", "block_lgd"])
+    wavg = lambda col: b.groupby("seed").apply(lambda g: np.average(g[col], weights=g.children), include_groups=False)
+    b = b.join(wavg("estimate").rename("d_est"), on="seed").join(wavg("true").rename("d_true"), on="seed").join(wavg("raw").rename("d_raw"), on="seed")
+    below = b.hi < b.d_est; above = b.lo > b.d_est; flagged = below | above
+    correct = (below & (b["true"] < b.d_true)) | (above & (b["true"] > b.d_true))
+    true_below = b["true"] < b.d_true
     spread = b.groupby("seed")["true"].agg(lambda x: x.max() - x.min())
-    raw_below = b.raw < b.groupby("seed").raw.transform("mean")
-    true_below = b["true"] < b.dist_true
-    return {"n_blocks": int(len(b)), "share_flagged_below_or_above_average": float(flagged.mean()),
+    return {"label": "post hoc, not pre-registered", "n_blocks": int(len(b)), "n_flagged": int(flagged.sum()),
+            "share_flagged_below_or_above_average": float(flagged.mean()),
             "share_flags_on_correct_side": float(correct[flagged].mean()) if flagged.any() else float("nan"),
             "median_true_spread_within_district_pp": float(spread.median() * 100),
-            "raw_report_below_average_agreement": float((raw_below == true_below).mean()),
-            "moderated_below_average_agreement": float(((b.estimate < b.dist_est) == true_below).mean())}
+            "point_side_correct_moderated": float(((b.estimate < b.d_est) == true_below).mean()),
+            "point_side_correct_raw": float(((b.raw < b.d_raw) == true_below).mean())}
+
+
+def coverage_cluster_ci(reps: int = 4000, seed: int = 7) -> dict:
+    """POST HOC: world-level (cluster) bootstrap CI for held-out coverage; blocks within a district are dependent."""
+    b = pd.read_csv(RES / "coverage_heldout.blocks.csv")
+    b = b[b.method == "fh"]
+    per = b.groupby("seed").covered.agg(["sum", "size"])
+    rng = np.random.default_rng(seed); k = per["sum"].to_numpy(); n = per["size"].to_numpy(); out = []
+    for _ in range(reps):
+        i = rng.integers(0, len(per), len(per)); out.append(k[i].sum() / n[i].sum())
+    return {"label": "post hoc, world-level bootstrap over 30 held-out districts", "coverage": float(k.sum() / n.sum()),
+            "ci95": [float(np.quantile(out, 0.025)), float(np.quantile(out, 0.975))], "reps": reps}
 
 
 def demo_dashboard(seed: int = 1) -> dict:
@@ -101,7 +126,7 @@ def teacher_plan_demo(seed: int = 7) -> dict:
     kids = w.children[w.children.udise_code == code]
     diags, roster = [], {}
     for i, (_, ch) in enumerate(kids.iterrows()):
-        d, _used = adaptive_test(ch.student_raw_id, ch.udise_code, 3, "language", w.item_responses, w.item_bank, w.cfg["read_thresholds"])
+        d, _used = adaptive_test(ch.student_raw_id, ch.udise_code, 3, "language", w.item_responses, w.item_bank, load_cutpoints("language"))
         diags.append(d); roster[d.student] = f"Roll {i + 1}"
     hi = make_plan(diags, roster, date(2026, 10, 5), channel="whatsapp", language="hi")
     en = make_plan(diags, roster, date(2026, 10, 5), channel="whatsapp", language="en")
@@ -129,7 +154,7 @@ def c4() -> dict:
 def main() -> int:
     RES.mkdir(parents=True, exist_ok=True); DEMO.mkdir(parents=True, exist_ok=True)
     head = {"synthetic": True, "calibration": "ASER 2024 govt Std III: reading 0.234, subtraction 0.276 (eval/sim/calibration.py)",
-            "coverage": coverage_results(), "separation_exploratory": separation_exploratory(), "detection_auc_heldout": held_out_auc(),
+            "coverage": coverage_results(), "coverage_cluster_ci": coverage_cluster_ci(), "separation_exploratory": separation_exploratory(), "detection_auc_heldout": held_out_auc(),
             "demo_dashboard": demo_dashboard(), "teacher_plan": teacher_plan_demo(), "governance": governance(), "c4_diagnostics": c4(),
             "command": "nice -n 10 python3 eval/run_eval.py"}
     (RES / "headline.json").write_text(json.dumps(head, indent=2) + "\n")
@@ -139,8 +164,11 @@ def main() -> int:
              "|---|---:|---:|---:|---:|---:|---|"]
     for k, v in cv.items():
         lines.append(f"| {k} | {v['coverage90']:.3f} | {v['coverage_wilson95'][0]:.3f}–{v['coverage_wilson95'][1]:.3f} | {v['mae_pp']:.2f} | {v['raw_mae_pp']:.2f} | {v['mean_half_width_pp']:.2f} | {v['allocation']['gain_shown']} |")
-    lines += ["", f"Exploratory separation (not pre-registered): {sep['share_flagged_below_or_above_average']:.2f} of blocks have intervals entirely below/above the district average; "
-              f"{sep['share_flags_on_correct_side']:.2f} of those are on the correct side; median true within-district spread {sep['median_true_spread_within_district_pp']:.1f} pp.",
+    cc = head["coverage_cluster_ci"]
+    lines += ["", f"Post hoc: world-level bootstrap 95% CI for held-out coverage {cc['coverage']:.3f}: {cc['ci95'][0]:.3f}–{cc['ci95'][1]:.3f}.",
+              f"Post hoc separation (child-weighted district average): {sep['n_flagged']}/{sep['n_blocks']} blocks have intervals entirely below/above it; "
+              f"{sep['share_flags_on_correct_side']:.2f} of those on the correct side; point estimates on the correct side: moderated {sep['point_side_correct_moderated']:.2f} vs raw {sep['point_side_correct_raw']:.2f}; "
+              f"median true within-district spread {sep['median_true_spread_within_district_pp']:.1f} pp.",
               f"Detection AUC (held-out): {head['detection_auc_heldout']['mean']:.3f} ± {head['detection_auc_heldout']['sd']:.3f}.",
               f"C4 (seeds 101-105): CAT@8 exact level accuracy {c['adaptive_cat_8']['level_acc'][0]:.3f}; full-test Bayesian IRT {c['bayes_irt_full']['level_acc'][0]:.3f}; ASER rule {c['aser_rule_full']['level_acc'][0]:.3f}.",
               f"C7: Hindi WhatsApp plan {head['teacher_plan']['whatsapp_hi_bytes']} bytes for a class of {head['teacher_plan']['class_size']}; SMS {head['teacher_plan']['sms_hi_segments']} segments.",

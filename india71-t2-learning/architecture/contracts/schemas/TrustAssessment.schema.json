@@ -31,7 +31,7 @@
       "type": "number"
     },
     "risk_score": {
-      "description": "P(reported figure inflated beyond tolerance)",
+      "description": "relative risk score in [0, 1]: a rank blend of forensic features, NOT a calibrated probability of inflation",
       "maximum": 1.0,
       "minimum": 0.0,
       "title": "Risk Score",

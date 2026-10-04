@@ -19,3 +19,17 @@ def test_dashboard_writes_html_and_json_without_school_labels():
     assert len(text.encode()) < 300_000
     assert (out_dir / "block_dashboard_outputs.json").exists()
     shutil.rmtree(out_dir)
+
+
+def test_small_cells_suppressed_in_html_and_json():
+    import json, tempfile
+    b = pd.DataFrame({"block_lgd": ["B01", "B02"], "raw": [.5, .3], "estimate": [.5, .25], "lo": [.4, .2], "hi": [.6, .3],
+                      "n_schools": [1, 50], "n_retested_schools": [1, 5], "children": [8, 1500]})
+    with tempfile.TemporaryDirectory() as d:
+        p = build_dashboard(b, {}, Path(d))
+        j = json.loads((Path(d) / "block_dashboard_outputs.json").read_text())
+        html_text = p.read_text()
+    rec = {r["block_lgd"]: r for r in j["blocks"]}
+    assert rec["B01"]["estimate"] is None and rec["B01"]["children"] is None and rec["B01"]["suppressed"]
+    assert rec["B02"]["estimate"] == 0.25
+    assert "50.0%" not in html_text and "suppressed" in html_text

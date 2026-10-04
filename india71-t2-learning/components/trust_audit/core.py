@@ -120,6 +120,26 @@ def select_audit(schools: pd.DataFrame, risk: pd.DataFrame, budget_schools: int,
         elif len(chosen) < b:
             rest = [i for i in range(n) if i not in chosen]
             chosen += rng.choice(rest, size=b-len(chosen), replace=False).tolist()
+    elif design == "pps_systematic":
+        # v2 (code-review issue 5): fixed-size systematic PPS on a randomly ordered list; the recorded probabilities
+        # are the exact first-order inclusion probabilities (certainty units get pi = 1, the rest share the remainder).
+        floor = min(float(p_min), b / n * 0.5)
+        x = np.maximum(frame["risk_score"].fillna(frame["risk_score"].mean()).to_numpy(dtype=float), 0.02) + floor
+        prob = np.zeros(n); certain = np.zeros(n, dtype=bool)
+        for _ in range(n):
+            rest = ~certain; k = b - certain.sum()
+            prob[rest] = k * x[rest] / x[rest].sum()
+            new = rest & (prob >= 1.0)
+            if not new.any():
+                break
+            certain |= new
+        prob[certain] = 1.0
+        order = rng.permutation(n)
+        cum = np.concatenate([[0.0], np.cumsum(prob[order])])
+        start = rng.uniform(0, 1)
+        points = start + np.arange(int(round(prob.sum())))
+        idx = np.searchsorted(cum, points, side="right") - 1
+        chosen = sorted(set(order[np.clip(idx, 0, n - 1)].tolist()))
     else:
         floor = min(float(p_min), b / n * 0.5)
         r = frame["risk_score"].fillna(frame["risk_score"].mean()).to_numpy(dtype=float)
@@ -135,7 +155,7 @@ def select_audit(schools: pd.DataFrame, risk: pd.DataFrame, budget_schools: int,
 
 
 def retest(world, selected: pd.DataFrame, children_per_school: int = 12, subject: str = "language", seed: int | None = None,
-           double_check_frac: float = 0.2, error_rate: float = 0.03) -> pd.DataFrame:
+           double_check_frac: float = 0.2, error_rate: float = 0.03, double_check_mode: str = "per_school") -> pd.DataFrame:
     """Independent re-test simulator; intentionally the only trust/audit function using hidden truth.
 
     Each re-tested child's goal status is misrecorded with probability `error_rate` (assessor error).
@@ -144,6 +164,8 @@ def retest(world, selected: pd.DataFrame, children_per_school: int = 12, subject
     """
     rng = np.random.default_rng(seed if seed is not None else getattr(world, "seed", 0) + 1000)
     goal_col = "read_goal" if subject == "language" else "math_goal"
+    if double_check_mode == "pooled":
+        return _retest_pooled(world, selected, children_per_school, goal_col, rng, double_check_frac, error_rate)
     rows = []
     kids_by_school = world.children.groupby("udise_code")
     for u in selected.loc[selected["selected_for_audit"], "udise_code"]:
@@ -159,6 +181,27 @@ def retest(world, selected: pd.DataFrame, children_per_school: int = 12, subject
         obs2 = np.where(rng.random(nd) < error_rate, ~truth[dbl], truth[dbl])
         rows.append({"udise_code": u, "audited_pct_meeting_goal": float(obs.mean()), "n_audited_children": int(take),
                      "n_meeting_goal_obs": int(obs.sum()), "n_double": int(nd), "n_disagree": int((obs2 != obs[dbl]).sum())})
+    return pd.DataFrame(rows, columns=["udise_code", "audited_pct_meeting_goal", "n_audited_children", "n_meeting_goal_obs", "n_double", "n_disagree"])
+
+
+def _retest_pooled(world, selected, children_per_school, goal_col, rng, frac, error_rate) -> pd.DataFrame:
+    """v2 (code-review issue 10): double checks drawn at random from ALL re-tested children (realised rate = frac)."""
+    kids_by_school = world.children.groupby("udise_code"); per = []
+    for u in selected.loc[selected["selected_for_audit"], "udise_code"]:
+        if u not in kids_by_school.groups:
+            continue
+        kids = kids_by_school.get_group(u); take = min(int(children_per_school), len(kids))
+        idx = rng.choice(kids.index.to_numpy(), size=take, replace=False)
+        truth = kids.loc[idx, goal_col].astype(bool).to_numpy()
+        per.append((u, truth, np.where(rng.random(take) < error_rate, ~truth, truth)))
+    total = sum(len(t) for _, t, _ in per); nd = int(round(frac * total))
+    pick = set(rng.choice(total, size=nd, replace=False).tolist()) if nd > 0 else set()
+    rows, offset = [], 0
+    for u, truth, obs in per:
+        mine = [i - offset for i in range(offset, offset + len(truth)) if i in pick]; offset += len(truth)
+        obs2 = np.where(rng.random(len(mine)) < error_rate, ~truth[mine], truth[mine]) if mine else np.array([], dtype=bool)
+        rows.append({"udise_code": u, "audited_pct_meeting_goal": float(obs.mean()), "n_audited_children": int(len(truth)),
+                     "n_meeting_goal_obs": int(obs.sum()), "n_double": int(len(mine)), "n_disagree": int((obs2 != obs[mine]).sum()) if mine else 0})
     return pd.DataFrame(rows, columns=["udise_code", "audited_pct_meeting_goal", "n_audited_children", "n_meeting_goal_obs", "n_double", "n_disagree"])
 
 

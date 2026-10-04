@@ -213,7 +213,7 @@ class TrustAssessment(_Frozen):
     subject: Subject
     grade: int
     reported_pct_meeting_goal: Prob
-    risk_score: Prob = Field(description="P(reported figure inflated beyond tolerance)")
+    risk_score: Prob = Field(description="relative risk score in [0, 1]: a rank blend of forensic features, NOT a calibrated probability of inflation")
     flags: list[str] = Field(default_factory=list, description="forensic rules that fired")
     selected_for_audit: bool
     audit_inclusion_prob: Prob = Field(description="for Horvitz-Thompson weighting")
