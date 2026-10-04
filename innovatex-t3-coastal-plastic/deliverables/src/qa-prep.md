@@ -44,6 +44,7 @@
 - The fail-open section is *intended* to swing open before the boom backs water up beyond a set head.
 - We will measure its opening head, delay, residual obstruction and reset after jams in the tow tank (test T3), and only then state an operating envelope.
 - In the twin it changes capture by just {{r:fuse_med}}; it is a safety feature, not a capture feature.
+- The twin does not model street flooding. Its nearest measures (SIMULATED): hours with debris spilling over a full boom, {{r:ovf_p2}} site-hours under our policy vs {{r:ovf_p1}} under the fill-fraction rule and {{r:ovf_p0}} under the roster, so our policy does not reduce them; and hours with water above a boom's bypass level, {{r:byp_h}} site-hours, set by tide and flow and the same under every policy. We make no flood-reduction claim.
 
 **7. "What happens at peak rain plus high tide? Does the release dump everything?"**
 - We don't know yet; that's a test, not an answer.
@@ -146,5 +147,12 @@
 - Mostly. The detector stack (Ultralytics YOLO) is AGPL-3.0, so serving a modified version over a network obliges publishing its source. We would publish ours or swap to a permissively licensed detector.
 - Our data is CC BY 4.0 or ODbL, with attribution shown in the dashboard. Details are in the project README.
 
+**27. "How many tonnes would this keep out of the sea?"**
+- We have measured none. This is the arithmetic the pilot would test, labelled ILLUSTRATIVE ESTIMATE (`eval/impact_estimate.py`).
+- A BMC boom reportedly collects {{f:F12|2.5–3 t/day}} in the monsoon, mixed garbage rather than only plastic. If that is the {{r:fwce_p0}} our twin says a boom retains under today's assumed roster, about {{r:imp_esc}} a day gets past each boom.
+- Timing the crews alone: a median {{r:imp_disp}} less escaping per boom over a {{r:imp_days}}-day monsoon, and the range includes no gain (SIMULATED ratio).
+- Angled boom, fail-open section and pocket together: a median {{r:imp_retro}} per boom per monsoon, range {{r:imp_retro_span}} (SENSITIVITY ratio from assumed capture curves).
+- Every factor except the reported catch is assumed. The tow tank and one surveyed site exist to replace them.
+
 ## Don't say
-**Don't say:** "tamper-proof" · "blockchain" · "can't flood" · "zero leakage" · "verified plastic kilograms" without "against our evidence rules" · any absolute tonnes from the twin · "our trap is new" · "the booms have no sensors" (say "we found no public evidence") · "39 of 40 seasons" (say "parameter settings") · anything implying guilt in the Mithi investigation.
+**Don't say:** "tamper-proof" · "blockchain" · "can't flood" · "zero leakage" · "verified plastic kilograms" without "against our evidence rules" · any absolute tonnes from the twin · the illustrative per-boom tonnes as results (say "illustrative arithmetic") · "our trap is new" · "the booms have no sensors" (say "we found no public evidence") · "39 of 40 seasons" (say "parameter settings") · anything implying guilt in the Mithi investigation.

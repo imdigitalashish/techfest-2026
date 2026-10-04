@@ -21,6 +21,7 @@ FILES = {
     "detzs": "components/detection/results/metrics_zeroshot.json",
     "gron": "components/detection/results/zeroshot_groningen_eval.json",
     "flux": "components/detection/results/flux_synthetic.json",
+    "imp": "eval/impact_estimate.json",
 }
 
 _PAIR = "paired_escaped_rel_diff"
@@ -93,6 +94,13 @@ ALIASES: dict[str, tuple[str, str, str]] = {
     "ang20_hi": ("an", "boom_angle_sensitivity_P2.a_current_release.theta20.escaped_rel_vs_theta90.p95", "spct1"),
     "ang20_len": ("an", "boom_angle_sensitivity_P2.a_current_release.theta20.boom_length_factor_1_over_sin_theta", "f1"),
     "combo20_med": ("an", "boom_angle_sensitivity_P2.c_fuse_refloat_x0.5.theta20.escaped_rel_vs_current_a_theta90.median", "spct1"),
+    # --- twin: boom overtopping and bypass hours (SIMULATED; the twin does not model street flooding) ---
+    "ovf_p0": ("twin", "heldout_2024_2025.P0.overflow_site_hours_median", "f1"),
+    "ovf_p1": ("twin", "heldout_2024_2025.P1.overflow_site_hours_median", "f1"),
+    "ovf_p2": ("twin", "heldout_2024_2025.P2.overflow_site_hours_median", "f1"),
+    "byp_h": ("twin", "heldout_2024_2025.P2.bypass_site_hours_median", "int"),
+    # --- ILLUSTRATIVE ESTIMATE per boom (eval/impact_estimate.py: reported catch x twin ratios) ---
+    "imp_days": ("imp", "inputs.monsoon_days", "int"),
     # --- twin: forcing quality ---
     "tide_rmse_mithi": ("twin", "tide_fit.mithi_mahim.rmse_m", "f2"),
     "tide_var_mithi": ("twin", "tide_fit.mithi_mahim.variance_explained", "pct1"),
@@ -123,7 +131,13 @@ ALIASES: dict[str, tuple[str, str, str]] = {
     "det_gron_n": ("det", "other_splits.groningen.n_images", "int"),
     "det_zs_map50": ("detzs", "mAP50", "f3"),
     "det_lat_mac": ("det", "latency_ms_mps.median", "int"),
-    "flux_err": ("flux", "count_error_pct", "int"),
+    # SYNTHETIC line-crossing counter, pooled over clips (fixed tracker and direction, review gpt-6-sol #3)
+    "flux_err": ("flux", "headline.signed_count_error_pct", "f1"),
+    "flux_n_seq": ("flux", "headline.sequences", "int"),
+    "flux_gt": ("flux", "headline.gt_crossings", "int"),
+    "flux_false": ("flux", "headline.false", "int"),
+    "flux_dup": ("flux", "headline.false_duplicate", "int"),
+    "flux_missed": ("flux", "headline.missed", "int"),
 }
 
 
@@ -196,7 +210,28 @@ def _det_line() -> str:
             "it does not yet transfer, and Mumbai nullah film is untested.")
 
 
-COMPUTED = {"det_line": _det_line}
+def _flux_ci() -> str:
+    lo, hi = _load("flux")["headline"]["signed_count_error_ci95_pct"]
+    return f"{lo:+.1f}% to {hi:+.1f}%".replace("-", "\u2212")
+
+
+def _rng(path: str, dp: int, unit: str):
+    def f() -> str:
+        lo, hi = _get(_load("imp"), path)
+        return f"{lo:.{dp}f}–{hi:.{dp}f} {unit}"
+    return f
+
+
+def _imp_retro_span() -> str:
+    r = _load("imp")["retrofit_avoided_t_per_monsoon"]
+    return f"{min(r['p95']):.0f}–{max(r['p05']):.0f} t"
+
+
+COMPUTED = {"det_line": _det_line, "flux_ci": _flux_ci,
+            "imp_esc": _rng("escaping_t_per_day", 1, "t"),
+            "imp_disp": _rng("dispatch_avoided_t_per_monsoon.median", 1, "t"),
+            "imp_retro": _rng("retrofit_avoided_t_per_monsoon.median", 0, "t"),
+            "imp_retro_span": _imp_retro_span}
 
 
 def value(alias: str) -> str:

@@ -1,0 +1,56 @@
+{
+  "label": "ILLUSTRATIVE ESTIMATE (REPORTED catch x SIMULATED/SENSITIVITY ratios); not a result",
+  "inputs": {
+    "catch_t_per_day_monsoon": [
+      2.5,
+      3.0
+    ],
+    "catch_source": "research/fact-check.md F12",
+    "retained_share_f_P0_fwce": 0.4577,
+    "monsoon_days": 122,
+    "dispatch_rel_P2_vs_P0": {
+      "median": -0.0195,
+      "p05": -0.1254,
+      "p95": 0.0132
+    },
+    "retrofit_rel_20deg_fuse_pocket": {
+      "median": -0.2388,
+      "p05": -0.5492,
+      "p95": -0.0558
+    }
+  },
+  "escaping_t_per_day": [
+    2.96,
+    3.55
+  ],
+  "dispatch_avoided_t_per_monsoon": {
+    "median": [
+      7.0,
+      8.5
+    ],
+    "p05": [
+      45.3,
+      54.4
+    ],
+    "p95": [
+      -4.8,
+      -5.7
+    ]
+  },
+  "retrofit_avoided_t_per_monsoon": {
+    "median": [
+      86.3,
+      103.6
+    ],
+    "p05": [
+      198.5,
+      238.2
+    ],
+    "p95": [
+      20.2,
+      24.2
+    ]
+  },
+  "note": "per boom; ranges run over the catch range (2.5 to 3 t/day); negative = more escapes. Debris is mixed garbage, not only plastic.",
+  "reproduce": "python3 innovatex-t3-coastal-plastic/eval/impact_estimate.py"
+}

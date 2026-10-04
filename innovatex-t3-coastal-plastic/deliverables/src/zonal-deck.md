@@ -129,7 +129,7 @@ Decisions use only forecasts archived before the fact. DON'T SAY "tide timing sa
 
 # Evidence 2 · Retrofit levers <span class="tag">SENSITIVITY</span>
 
-<style scoped>section { font-size: 21px; }</style>
+<style scoped>section { font-size: 20px; }</style>
 
 What-if runs in the same twin (full policy; each row relative to today's boom with the same dispatch):
 - **Fail-open section alone:** {{r:fuse_med}}. Its job is flood safety, not capture, and that safety is unproven until we measure opening head, delay and reset.
@@ -137,6 +137,7 @@ What-if runs in the same twin (full policy; each row relative to today's boom wi
 - **Angling the boom** (this follows from the capture curve we assumed, so it is not a confirmation): 45° {{r:ang45_med}}, 30° {{r:ang30_med}}, 20° {{r:ang20_med}} vs square-on. At 20° the boom is {{r:ang20_len}}× the channel width.
 - 20° + fail-open section + pocket (halving re-float): {{r:combo20_med}} vs today's boom.
 - Retention and capture-vs-speed are **assumptions** the tow tank must measure. Rows are separate what-ifs: don't add them up.
+- At one BMC boom collecting {{f:F12|2.5–3 t/day}} in the monsoon, that combination would mean a median {{r:imp_retro}} less escaping per monsoon; timing the crews alone, {{r:imp_disp}} with a range that includes no gain (ILLUSTRATIVE ESTIMATE: a reported catch times these ratios).
 
 <!--
 TIME 5:30–6:25 (55 s).
@@ -231,7 +232,7 @@ Use if asked "show us the software". Walk: morning brief → first dispatch → 
 | The pocket keeps its catch | A SENSITIVITY until the tow tank measures retention under reversal |
 | The boom cannot raise flood levels | The fail-open section's opening head, delay, fouling and reset are untested |
 | The camera counts all plastic | Night, rain, glare and submerged film; fill is "unknown" when the camera is degraded |
-| Item counts are accurate | On SYNTHETIC drifting-item video, the line-crossing counter over-counts by {{r:flux_err}}% (cause not yet diagnosed); counts are not used for kilograms |
+| Item counts are accurate | On SYNTHETIC drifting-item video ({{r:flux_n_seq}} clips, {{r:flux_gt}} crossings), the line-crossing counter over-counts by +{{r:flux_err}}% (95% confidence interval {{r:flux_ci}}), mostly by counting one item twice ({{r:flux_dup}} of {{r:flux_false}} extra counts); counts are not used for kilograms |
 | Records stop fraud | Hashes make edits detectable; they cannot make inputs true; flags trigger review |
 | Drain plastic earns EPR certificates | Not found in the rules; upside only |
 
