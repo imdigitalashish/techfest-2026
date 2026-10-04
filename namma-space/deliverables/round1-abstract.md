@@ -56,14 +56,15 @@ A static page: three.js + Spark (MIT) Gaussian-splat renderer, loaded from CDNs.
 - **POIs:** labels; search by name or alias (e.g. "fireplace", "bookcase"), which plans a route and can auto-walk it.
 - **Tagging:** press `P` to tag a POI where you stand.
 
-**[public]**, Chrome on Apple M5 (shared machine), 1.0M splats:
+**[public]**, frozen protocol (`eval/results/viewer_bench_drjohnson_e2e.json`): Chrome on the Apple M5, cold cache, 1280×800, network throttled to 40 Mbit/s, scripted walk; median of 3 runs; 1.0M splats (32 MB):
 
 | Condition | Median fps | p95 frame time | Notes |
 |---|---|---|---|
-| Static view | 45 | 36.7 ms | first frame 1.05 s, all splats loaded 10.5 s (localhost) |
-| Walking | 42 | 104.7 ms | hitching: the main optimisation target (§7) |
+| Static view | 60 (vsync) | 17.5 ms | first frame 0.86 s |
+| Walking | 60 | **22.4 ms** | camera stayed on the walkable map |
+| Load | – | – | all splats visible after **7.45 s** (32 MB at 40 Mbit/s ≈ 6.4 s of transfer alone) |
 
-Frozen protocol for the next measurement: cold cache, throttled network, scripted walk — ⟨S_V⟩. **[home]:** public URL and the same measurements.
+Score S_V = max(T_visible / 5 s, p95 / 20 ms) = **1.49** (1.0 = on budget). Loading is the binding constraint, so compression and progressive loading come first (spike E). An earlier ad-hoc measurement under heavy machine load showed 104.7 ms walking p95; it isn't comparable. **[home]:** the same protocol over the public URL.
 
 ## 6. Navigation and search (Round-2 preview, measured honestly)
 - **Planner:** 8-connected A* with a clearance penalty, then line-of-sight string pulling. Contract test: the route must use the doorway and never touch the wall. A JavaScript port of the same algorithm runs in the browser (8–11 m route in 82–94 ms); its clearance field is approximated, and cross-language equivalence tests are pending.

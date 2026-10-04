@@ -1,0 +1,100 @@
+{
+ "protocol": "components/web_viewer/autoresearch/measure_viewer.mjs (frozen): Chrome via playwright-core, cold cache, 1280x800@1x, throttled 40/10 Mbit/s + 40 ms RTT, served from localhost (CDN libs over the real network)",
+ "scene": "drjohnson own-pipeline package (1.0M splats, 32 MB)",
+ "runs": [
+  {
+   "url": "http://127.0.0.1:8080/",
+   "when": "2026-10-04T09:07:46.065Z",
+   "throttle": "40/10 Mbit/s, 40 ms",
+   "chrome": "154.0.8037.97",
+   "viewport": "1280x800@1x",
+   "T_visible_ms": 8165.5,
+   "first_frame_ms": 1149.699999988079,
+   "wall_ms_to_loaded": 20861,
+   "idle": {
+    "fps_median": 59.88023956370228,
+    "frame_ms_p95": 17.5,
+    "frames": 180
+   },
+   "walk": {
+    "fps_median": 59.88023956370228,
+    "frame_ms_p95": 22.100000023841858,
+    "frames": 465,
+    "on_navigable": true
+   },
+   "route": {
+    "ok": true,
+    "ms": 13,
+    "n": 3,
+    "length_m": 8.417177082528045
+   },
+   "n_splats": 1000000,
+   "splat_bytes": 32000000,
+   "page_errors": [],
+   "S_V": 1.6331
+  },
+  {
+   "url": "http://127.0.0.1:8080/",
+   "when": "2026-10-04T09:08:07.315Z",
+   "throttle": "40/10 Mbit/s, 40 ms",
+   "chrome": "154.0.8037.97",
+   "viewport": "1280x800@1x",
+   "T_visible_ms": 7454.600000023842,
+   "first_frame_ms": 856.3999999761581,
+   "wall_ms_to_loaded": 20069,
+   "idle": {
+    "fps_median": 59.88023956370228,
+    "frame_ms_p95": 17.400000035762787,
+    "frames": 181
+   },
+   "walk": {
+    "fps_median": 59.88023956370228,
+    "frame_ms_p95": 22.400000035762787,
+    "frames": 462,
+    "on_navigable": true
+   },
+   "route": {
+    "ok": true,
+    "ms": 16.899999976158142,
+    "n": 3,
+    "length_m": 8.417177082528045
+   },
+   "n_splats": 1000000,
+   "splat_bytes": 32000000,
+   "page_errors": [],
+   "S_V": 1.4909200000047684
+  },
+  {
+   "url": "http://127.0.0.1:8080/",
+   "when": "2026-10-04T09:08:28.336Z",
+   "throttle": "40/10 Mbit/s, 40 ms",
+   "chrome": "154.0.8037.97",
+   "viewport": "1280x800@1x",
+   "T_visible_ms": 7430.299999952316,
+   "first_frame_ms": 843,
+   "wall_ms_to_loaded": 20015,
+   "idle": {
+    "fps_median": 59.88023956370228,
+    "frame_ms_p95": 17.5,
+    "frames": 180
+   },
+   "walk": {
+    "fps_median": 59.88023956370228,
+    "frame_ms_p95": 22.599999964237213,
+    "frames": 461,
+    "on_navigable": true
+   },
+   "route": {
+    "ok": true,
+    "ms": 19.80000001192093,
+    "n": 3,
+    "length_m": 8.417177082528045
+   },
+   "n_splats": 1000000,
+   "splat_bytes": 32000000,
+   "page_errors": [],
+   "S_V": 1.4860599999904633
+  }
+ ],
+ "median_S_V": 1.4909200000047684
+}
