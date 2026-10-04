@@ -94,7 +94,7 @@ class MPCPolicy(_Base):
         self.kind, self.H = kind, horizon
         self.kw = dict(c_move=c_move, c_wait=c_wait, gamma=gamma)
         self.alpha, self.delta, self.h = alpha, delta, h
-        self.name = {"ewma": "mpc-ewma", "cusum": "mpc-cusum", "oracle": "oracle"}[kind]
+        self.name = {"ewma": "mpc-ewma", "cusum": "mpc-cusum", "cusum1": "mpc-cusum-v1", "oracle": "oracle"}[kind]
 
     def reset(self, meta):
         super().reset(meta)
@@ -102,6 +102,9 @@ class MPCPolicy(_Base):
         prof, lvl = meta["profile"], meta["init_level"]
         if self.kind == "ewma":
             self.fc = EWMAForecaster(prof, lvl, alpha=self.alpha or 0.05)
+        elif self.kind == "cusum1":  # ratchet v1 (autoresearch/candidate.py), promoted for end-to-end checks
+            from components.forecasting.autoresearch.candidate import RestartMeanForecaster
+            self.fc = RestartMeanForecaster(prof, lvl, alpha=self.alpha or 0.01, delta=self.delta, h=self.h)
         elif self.kind == "cusum":
             self.fc = ChangeAwareForecaster(prof, lvl, alpha=self.alpha or 0.01, delta=self.delta, h=self.h)
         else:
@@ -122,4 +125,5 @@ class MPCPolicy(_Base):
 def make_policy(name: str, **kw):
     return {"static": StaticPolicy, "greedy": GreedyPolicy, "reactive": ReactivePolicy,
             "mpc-ewma": lambda **k: MPCPolicy("ewma", **k), "mpc-cusum": lambda **k: MPCPolicy("cusum", **k),
+            "mpc-cusum-v1": lambda **k: MPCPolicy("cusum1", **k),
             "oracle": lambda **k: MPCPolicy("oracle", **k)}[name](**kw)
