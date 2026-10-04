@@ -72,7 +72,7 @@ The theme asks us to monitor, intercept and reduce plastic leaking from Mumbai's
   - Spike 1: drop it if P2 does not beat P1 by more than the Monte Carlo spread on held-out years.
   - Spike 2: drop the "ratchet" claim if reversed-flow flume tests show no retention gain over an angled boom, or if the fuse cannot keep head rise under the cap.
 
-## Update 07:20 IST — first twin result: timing alone is a small lever (SIMULATED)
+## Update 07:15 IST — first twin result: timing alone is a small lever (SIMULATED)
 Source: [`components/twin_sim/results/metrics.json`](../../components/twin_sim/results/metrics.json). Reproduce with `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run`.
 
 **Setup.**

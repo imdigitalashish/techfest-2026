@@ -1,6 +1,6 @@
 # Zonal pitch — InnovateX Theme 3 (Delhi zonal, 10 Oct 2026, 10 minutes)
 
-> Draft v1.2 (4 Oct 2026, 07:25 IST) by the project lead. Every number carries a source key; the source list is at the end and in [`../research/`](../research/).
+> Draft v1.2 (4 Oct 2026, 07:15 IST) by the project lead. Every number carries a source key; the source list is at the end and in [`../research/`](../research/).
 > - **[V]** = lead not yet verified at a primary source. Verify it or cut it before the pitch.
 > - **SIMULATED** = output of our digital twin, not field data.
 > - **⟨FILL⟩** = to be filled from a committed run or the sourced BOM. Never invent it.

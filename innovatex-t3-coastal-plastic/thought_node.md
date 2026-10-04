@@ -19,7 +19,7 @@
 
   Details: [ADR 001](architecture/adr/001-spike.md).
 - **Doing:** child sessions — *T3 detection + flux*, *T3 digital twin + dispatch*, *T3 dashboard + MRV ledger*, *T3 research: Mumbai + policy*, *T3 research: tech + companies*. Lead: zonal-pitch.md, prototype-plan.md, then integrating results.
-- **Next:** deliverables → integrate twin, detector and dashboard numbers → landscape.md check → final push by 08:15.
+- **Next:** detector metrics → RESULTS.md → final push by 08:15 → Supervisor note. After the morning package: fill-split analysis in the twin (entrainment, overflow, bypass), ratchet sensitivity, flume test before 10 Oct.
 - **Needs from user:** decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Nothing blocks tonight's work.
 - **Risks:** (1) model-API congestion (HTTP 408) killed 13 research sub-agents overnight → work moved to resumable child sessions with small-context rules; tool round-trips take 5–8 min. (2) No public imagery of Mumbai nullahs → detector metrics are on a public proxy dataset; domain shift (black water, hyacinth, monsoon rain) is a known gap. (3) Simulator parameters are partly ASSUMPTION → we claim *relative* policy gains under Monte Carlo, not absolute tonnage.
 
@@ -54,19 +54,20 @@
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
-| C1 | Forcing (tide + rain) | site, period → `ForcingSeries` | Open-Meteo ERA5 rain; tide source TBD | – | building | tide RMSE vs gauge |
+| C1 | Forcing (tide + rain) | site, period → `ForcingSeries` | ERA5 rain + archived JMA forecasts; UTide fit to Open-Meteo Marine | – | **done (v0)** | tide fit RMSE ≈ 0.08 m (vs model sea level, not a gauge) |
 | C2 | Catchment plastic load | rain, catchment → `LoadSeries` | build-up / wash-off model | – | building | NSE vs boom catch (needs field data) |
 | C3 | Outfall hydraulics | rain, tide → `HydraulicSeries` | rational method + tidal stage | – | building | — |
-| C4 | Interceptor model | load, hydraulics → `InterceptorSeries` | fixed-efficiency boom | candidate (tide-aware trap) | building | capture efficiency vs flume |
+| C4 | Interceptor model | load, hydraulics → `InterceptorSeries` | fixed-efficiency boom | Spike 2 (ratchet + fuse, via H1) | **done (v0, SIMULATED)** | capture efficiency vs flume |
 | C5 | Vision detector | frame → `FrameDetections` | YOLO11n | candidate | building | held-out mAP50 |
 | C6 | Flux counter | detections → `FluxEstimate` | ByteTrack + line crossing | candidate | building | count error % |
 | C7 | Fill estimator | frame + range → `FillEstimate` | ultrasonic / ToF range | – | planned | fill MAE |
 | C8 | Edge telemetry | sensors → `SiteTelemetry` | MQTT over 4G / NB-IoT | – | planned | delivery rate, bytes/day |
 | C9 | Risk forecaster | rain fcst, tide, fill → `SiteForecast` | rain-threshold rule | candidate | building | Brier score |
-| C10 | Dispatch planner | states, forecasts, crews → `DispatchPlan` | fixed schedule (status quo) | candidate | building | escaped kg at equal crew-hours |
-| C11 | MRV ledger | clearance records → `LedgerEntry` | manual weighbridge slips | candidate | building | inflated-claim recall at ≤5% false flags |
-| C12 | Dashboard | `DashboardBundle` → UI | — | – | building | task time (later) |
+| C10 | Dispatch planner | states, forecasts, crews → `DispatchPlan` | fixed schedule (status quo) | Spike 1 (support) | **done (v0) + ratchet** | held-out escaped kg: −2.2% median vs P0 (SIMULATED) |
+| C11 | MRV ledger | clearance records → `LedgerEntry` | manual weighbridge slips | – (support) | **done (v0)** | recall 0.72 @ 4.7% false flags; precision 0.45 @ 5% prevalence (SYNTHETIC) |
+| C12 | Dashboard | `DashboardBundle` → UI | — | – | **done (v0)** | task time (later) |
 | C13 | Recovery & upcycling | `CatchComposition` → `RecoveryRoute` | kabadiwala + co-processing | – | planned | ₹/t, diversion rate |
+| H1 | Barrier hardware: angled boom + ratchet pocket + fail-open fuse | flow → retained catch, head rise | BMC steel-net boom | **Spike 2** | designed (flume Oct) | retention after N reversals; head rise ≤ cap |
 | C14 | Source attribution | outfall flux + catchments → `WardHotspot` | ward complaints | – | planned | rank correlation (sim) |
 
 ## Selection memo
@@ -81,7 +82,7 @@ _First version, 4 Oct 06:20 IST. Final by 7 Oct, 12:00 IST (one theme is pitched
   - report only relative gains under Monte Carlo;
   - run a flume test before 10 Oct.
 - **One-line pitch:** "Two Interceptors will cover two of Mumbai's creeks. We make the hundreds of small nullah booms accountable. Crews clear before the storm and in the gate-closed window, a fail-open pocket keeps trash in when the tide turns, and contractors are paid only for verified kilograms."
-- **Lead's recommendation (provisional, 07:30):** T3 has the strongest *local* story we found (The Ocean Cleanup's 2026 Mumbai survey; BMC's booms and O&M contract). Its software evidence is honest but modest. Pitch T3 only if (a) a teammate can run the 2-hour reversed-flow flume test before 10 Oct, so the hardware claim has a measurement behind it, or (b) the sibling memos are weaker. Otherwise defer.
+- **Lead's recommendation (provisional, 07:15):** T3 has the strongest *local* story we found (The Ocean Cleanup's 2026 Mumbai survey; BMC's booms and O&M contract). Its software evidence is honest but modest. Pitch T3 only if (a) a teammate can run the 2-hour reversed-flow flume test before 10 Oct, so the hardware claim has a measurement behind it, or (b) the sibling memos are weaker. Otherwise defer.
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -107,3 +108,21 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - Children were steered with the review findings: archived forecasts, oracle baseline, gated vs open outfalls, the FWCE metric, ledger framing, and a prior-art check for the ratchet.
 - The Supervisor declared LEAN MODE (no new agents or sessions, downloads ≤200 MB, push every 30 min). Complied: no new spawns; the detection child got the download cap.
 - Selection memo v1 written.
+
+### 2026-10-04 06:20–07:20 IST — Deliverables v1, research landed, first real numbers
+- `deliverables/zonal-pitch.md` (11 slides, speaker notes, 15 judge Q&A) and `deliverables/prototype-plan.md` written. The prototype plan covers the flume plus edge node plus cloud, tests T1–T5, and a schedule around the exams. Both were then filled from cited research:
+  - BMC runs 9 steel-net nullah booms with conveyors, 14 more planned, at ≈ ₹1 crore each, catching 1.5–3 t/day (HT). Boom O&M is ₹14.5 crore for 2 years at 6 sites (FPJ, 30 Jul 2026).
+  - Boom escape velocity is ≈ 0.35 m/s (ITOPF).
+  - NASA POWER insolation in Mumbai: July 3.79 vs May 7.09 kWh/m²/day.
+  - Sourced BOM: field node ₹82,282; flume electronics ₹33,958.
+- The tech + companies session delivered `research/landscape.md` (with "What companies ship today"), `companies.md`, `components/interception-hardware.md` and `components/sensing-edge-bom.md`.
+- **Twin, held-out 2024–25 (SIMULATED plastic; real ERA5 rain, archived JMA forecasts, UTide tide):**
+  - P2 dispatch: median −2.2% escaped vs the fixed schedule (90% interval −1.5% to +13.5%).
+  - P1 fill threshold: +3.1% escaped.
+  - Conclusion: timing is a small lever, so ADR 001 now leads with capture hardware (Spike 2). Reproduce: `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run`.
+- **Evidence ledger (SYNTHETIC records):**
+  - 100% tamper detection.
+  - 72% of inflated claims caught at 4.7% false flags; a simple ratio check catches 67%.
+  - Precision 0.45 at 5% fraud prevalence, so flags trigger review only.
+  - Reproduce: `cd innovatex-t3-coastal-plastic/components && python3 -m mrv_ledger.evaluate`.
+- `eval/collect_results.py` → `eval/RESULTS.md` collects every committed metric with its reproduce command.
