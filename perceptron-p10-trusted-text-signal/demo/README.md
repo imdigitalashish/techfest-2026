@@ -31,12 +31,12 @@ It also checks:
 - the live MiniLM score of the pump template is within 1e-4 of the committed 0.952 (it is exact on this Mac);
 - 78,000 random within-budget attacks over 26 days give 0 certified containment violations;
 - every endpoint, plus input validation;
-- in headless Chrome, the page's own `#selftest` drives the real UI and must pass:
+- in headless Chrome, the page's own `#selftest` drives the real UI, POSTs its log to `/api/selftest`, and must pass:
   - a typed post is scored and injected; one fake post breaks plain CQR while the certified band is GUARANTEED;
   - the badge turns grey past k;
   - the red-team shows 0 violations;
   - a red-team result started on one day is discarded after switching to another (regression for review M1).
-- a negative control: the same page with the API unreachable must *not* pass.
+- a negative control: the same page with the API unreachable must record no pass.
 
 ## Honesty rules the page follows
 - **Curated days are labelled as selected.** A day is *flippable* if a committed `oracle_grid(3)` attack flips plain CQR. That is 327 of 16,443 stock-days (2.0%), 207 of them with no real posts. The rule is in `export.py` and the population rate is always shown. The test period was inspected during development, so this is exploratory.
@@ -50,7 +50,7 @@ It also checks:
 | File | Role |
 |---|---|
 | `run.sh`, `setup.sh`, `smoke.sh`, `_env.sh` | one-command launch; one-time setup; headless checks; Python and memory guards |
-| `server.py` | stdlib `http.server` with JSON endpoints: `/api/{health,meta,random,day,score,trust,attack,flips,redteam,population}` |
+| `server.py` | stdlib `http.server` with JSON endpoints: `/api/{health,meta,random,day,score,trust,attack,flips,redteam,population,selftest}` |
 | `engine.py` | all computation, via committed code |
 | `scorer_worker.py` | live text scorer in a separate process (torch + LightGBM in one process segfaults on macOS) |
 | `static/index.html` | the whole UI: one file, plain SVG, no JS libraries, no CDN |

@@ -75,37 +75,43 @@ CHROME=""
 for c in "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" "$(command -v google-chrome || true)" "$(command -v chromium || true)"; do
   [ -n "$c" ] && [ -x "$c" ] && CHROME="$c" && break
 done
-chrome_dom() {  # url timeout_ms -> prints the DOM; headless Chrome may not exit by itself, so poll and kill its PID
-  local prof domf cpid
-  prof=$(mktemp -d); domf="$prof/dom.html"
+run_selftest() {  # base_url wait_s -> prints the JSON the page POSTed to /api/selftest ('' if none)
+  local prof cpid res=""
+  prof=$(mktemp -d)
   "$CHROME" --headless=new --disable-gpu --no-first-run --no-default-browser-check --user-data-dir="$prof" \
-    --timeout="$2" --dump-dom "$1" > "$domf" 2>/dev/null &
+    --remote-debugging-port=0 "$1/#selftest" > /dev/null 2>&1 &
   cpid=$!
-  for _ in $(seq 1 $(( $2 / 500 + 40 ))); do grep -q '</html>' "$domf" 2>/dev/null && break; sleep 0.5; done
+  for _ in $(seq 1 $(( $2 * 2 ))); do
+    res=$(curl -sf "$1/api/selftest" 2>/dev/null || true)
+    echo "$res" | grep -q '"status": "' && break
+    sleep 0.5
+  done
   kill $cpid 2>/dev/null || true
-  cat "$domf"; rm -rf "$prof"
+  wait $cpid 2>/dev/null || true
+  rm -rf "$prof" 2>/dev/null || true
+  echo "$res"
 }
 if [ -n "$CHROME" ]; then
-  # the page's own #selftest drives the real UI (inject a typed post, grey badge past k, red-team, stale-result
-  # regression) and sets data-status via setAttribute, so the predicate cannot match the page source
-  DOM=$(chrome_dom "$URL/#selftest" 25000)
-  echo "$DOM" | sed -n '/<pre id="selftest"/,/<\/pre>/p' | sed -e 's/<[^>]*>//g' -e 's/^/    /'
-  if echo "$DOM" | grep -q 'id="selftest" data-status="pass"'; then
+  # the page's own #selftest drives the real UI (inject a typed post, plain broken / certified guaranteed, grey badge
+  # past k, red-team, stale-result regression) and POSTs its log; a page that never boots posts nothing
+  RES=$(run_selftest "$URL" 90)
+  echo "$RES" | "$PY" -c "import json,sys; d=json.loads(sys.stdin.read() or '{}'); print('\n'.join('    '+l for l in (d.get('log') or 'no self-test result').splitlines()))" || true
+  if echo "$RES" | grep -q '"status": "pass"'; then
     echo "PASS  page self-test in headless Chrome"
   else
     echo "FAIL  page self-test in headless Chrome"; FAIL=1
   fi
-  # negative control: the same page served without the backend must NOT pass
+  # negative control: the same page served without the backend must NOT report a pass
   NPORT=$(free_port 8890)
   "$PY" -m http.server "$NPORT" --bind 127.0.0.1 --directory "$DEMO/static" > /dev/null 2>&1 &
   NSRV=$!
   sleep 1
-  NDOM=$(chrome_dom "http://127.0.0.1:$NPORT/index.html#selftest" 8000)
+  NRES=$(run_selftest "http://127.0.0.1:$NPORT" 10)
   kill $NSRV 2>/dev/null || true
-  if echo "$NDOM" | grep -q 'data-status="pass"'; then
+  if echo "$NRES" | grep -q '"status": "pass"'; then
     echo "FAIL  negative control: page self-test passed with the API unreachable"; FAIL=1
   else
-    echo "PASS  negative control: with the API unreachable the self-test does not pass"
+    echo "PASS  negative control: with the API unreachable no self-test pass is recorded"
   fi
 else
   echo "WARN  no Chrome found; page render not checked"

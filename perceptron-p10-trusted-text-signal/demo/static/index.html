@@ -261,6 +261,7 @@ details summary{cursor:pointer;color:var(--muted);font-size:13.5px}
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
+const SELFTEST = location.hash.startsWith("#selftest");
 const S = {meta:null, day:null, k:3, posts:[], attack:null, flips:null, shown:null, seed:1, scorer:null, nextId:1};
 const fmt = (x,d=2) => (x>=0?"+":"") + x.toFixed(d);
 const pct = (x,d=1) => (100*x).toFixed(d) + "%";
@@ -424,7 +425,8 @@ let tw = null, raf = null;
 function snapshot(a){ return {cl:a.clean.lo, ch:a.clean.hi, pl:a.plain.lo, ph:a.plain.hi, pm:a.plain.med, cm:a.clean.med, xl:a.certified.lo, xh:a.certified.hi, y:a.y}; }
 function animateTo(a){
   const to = snapshot(a), from = S.shown && S.shown.y===to.y ? S.shown : to;
-  const t0 = performance.now(), dur = matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 220;
+  const t0 = performance.now(), dur = (SELFTEST || matchMedia("(prefers-reduced-motion: reduce)").matches) ? 0 : 220;
+  if(!dur){ S.shown = to; drawChart(to); drawZoom(to); return; }
   cancelAnimationFrame(raf);
   const step = now => {
     const t = dur ? Math.min(1,(now-t0)/dur) : 1, e = 1 - Math.pow(1-t, 3);
@@ -660,7 +662,9 @@ $("honTog").onclick = () => { const f = document.querySelector("footer.honest"),
    Drives the real UI against the live backend and records the outcome on #selftest via setAttribute, so the
    result cannot be matched from page source. Any boot or API failure leaves it unset or "fail". */
 async function selftest(){
-  const out = [], until = async (f, ms=60000) => { const t = performance.now(); while(!f()){ if(performance.now()-t > ms) throw new Error("timeout"); await new Promise(r=>setTimeout(r,100)); } };
+  // headless --dump-dom does not run page timers, so wait with network round-trips instead of setTimeout
+  const until = async (f, n=600) => { while(!f()){ if(--n < 0) throw new Error("timeout"); try{ setScorer((await api("/api/health")).scorer); }catch(e){} } };
+  const out = [];
   const ok = (name, c) => { out.push((c ? "PASS " : "FAIL ") + name); return c; };
   let all = true;
   try{
@@ -673,13 +677,16 @@ async function selftest(){
     document.querySelector('[data-preset="bull"]').click(); document.querySelector('[data-acct="bot"]').click();
     $("copies0").value = 1;
     await inject();
+    clearTimeout(refreshTimer); await refresh(false);
     await until(() => S.attack && S.attack.n_injected === 1);
     all &= ok("typed post scored and injected", S.posts.length === 1 && Math.abs(S.posts[0].sentiment - S.meta.committed.pump_sentiment) < 1e-4);
     all &= ok("one fake post breaks plain CQR", $("vPlain").classList.contains("bad"));
     all &= ok("certified GUARANTEED within budget", $("vCert").classList.contains("good") && S.attack.certified.contains_clean);
-    S.posts[0].copies = 6; renderPosts(); await refresh(false);
+    S.posts[0].copies = 6; renderPosts(); clearTimeout(refreshTimer); await refresh(false);
+    await until(() => S.attack.n_injected === 6);
     all &= ok("badge turns grey beyond budget", $("vCert").classList.contains("none") && !!$("vCert").querySelector(".badge.n"));
-    S.posts[0].copies = 1; renderPosts(); await refresh(false);
+    S.posts[0].copies = 1; renderPosts(); clearTimeout(refreshTimer); await refresh(false);
+    await until(() => S.attack.n_injected === 1);
     await $("redBtn").onclick();
     all &= ok("red-team: 0 containment violations within budget", !!S.redKey && $("red").querySelector(".counter .c .v.ok") !== null);
     // stale-response regression (review M1): start a red-team on this day, switch day before it returns
@@ -692,8 +699,9 @@ async function selftest(){
   const el = document.createElement("pre"); el.id = "selftest"; el.textContent = out.join("\n");
   el.setAttribute("data-status", all ? "pass" : "fail");
   document.body.appendChild(el);
+  try{ await api("/api/selftest", {status: all ? "pass" : "fail", log: out.join("\n")}); }catch(e){}
 }
-boot().then(() => { if(location.hash.startsWith("#selftest")) selftest(); });
+boot().then(() => { if(SELFTEST) selftest(); });
 </script>
 </body>
 </html>

@@ -62,6 +62,7 @@ SCORER: Scorer | None = None
 ENGINE = None
 ENGINE_LOCK = threading.Lock()
 META = None
+SELFTEST = {"status": None}  # last result POSTed by the page's own #selftest (smoke.sh reads it)
 
 
 def _posts(body) -> tuple[list[float], list[float]]:
@@ -99,6 +100,13 @@ def handle(path: str, q: dict, body: dict):
     if path == "/api/health":
         return {"engine_ready": e is not None, "scorer": SCORER.status if SCORER else None,
                 "uptime_s": round(time.time() - T0, 2)}
+    if path == "/api/selftest":
+        if body:
+            st = body.get("status")
+            if st not in ("pass", "fail"):
+                raise ValueError("status must be pass or fail")
+            SELFTEST.update({"status": st, "log": str(body.get("log", ""))[:5000], "at_s": round(time.time() - T0, 2)})
+        return SELFTEST
     if e is None:
         raise RuntimeError("engine is still loading")
     if path == "/api/meta":
