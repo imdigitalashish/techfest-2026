@@ -35,6 +35,6 @@ flowchart LR
 | C6 detector | AUC-PR of "profitable at latency L" | 345,890 episodes ≥ 1 bps over fair basis |
 | C7 decay | integrated Brier (log-t), C-index | KM by pair IBS 0.109 (pooled KM 0.126), C-index 0.625; median lifetime 90.5 ms |
 | C8 decision | simulated P&L at (latency, fee) | at 1 bps/leg and 10 ms one-way: naive −$1,570 · tuned threshold +$768 · LEV +$802 |
-| C2 latency | pinball loss of quantiles | Tardis collector p50 1.8 ms (Binance perp) – 39.7 ms (Coinbase); Mac in India p05 75–110 ms |
+| C2 latency | pinball loss of quantiles | Tardis collector p50 1.8 ms (Binance perp) – 39.7 ms (Coinbase); Mac in India p05 69–107 ms |
 
 Sources: `eval/results/baseline_0901_to_1001.md`, `eval/results/live_latency.md`.
