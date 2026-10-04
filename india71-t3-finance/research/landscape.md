@@ -68,11 +68,12 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 | RBI | DEA Fund (unclaimed deposits after 10 years); KYC-based reactivation | Production | [P3] |
 | RBI | FI-Index (national composite, 0–100), first published Aug 2021 | Annual; 70.0 for March 2026 | [P5, P6] |
 | RBI | 2,421 Centres for Financial Literacy | Production (31 Mar 2025) | [P1] |
-| NPCI | UPI, UPI 123PAY (feature-phone UPI), AePS, APBS/NPCI mapper for Aadhaar-based DBT | Production | [L] UNVERIFIED tonight |
+| NPCI / RBI | UPI 123PAY — UPI for feature phones via app, missed call, IVR and proximity sound (launched with the DigiSaathi helpline) | Production; usage numbers not found on the opened page | [P10] |
+| NPCI | AePS, APBS/NPCI mapper for Aadhaar-based DBT, "Hello! UPI" voice payments | Production | [L] UNVERIFIED (npci.org.in blocked our fetchers) |
 | MoRD / DAY-NRLM | BC Sakhi (women SHG members as Business Correspondents) | Production | [L] UNVERIFIED tonight |
 | India Post Payments Bank | Doorstep banking, AePS | Production | [L] UNVERIFIED tonight |
-| Sahamati / RBI | Account Aggregator consent framework (NBFC-AA) | Production | [L] UNVERIFIED tonight |
-| RBI Innovation Hub | MuleHunter.AI (mule-account detection for banks) | Deployed at some banks | [L] UNVERIFIED tonight |
+| Sahamati / RBI | Account Aggregator consent framework (NBFC-AA) | 500 million+ consents fulfilled, 310 million+ accounts linked, 1,100+ regulated entities (as of Sept 2026) | [P11] |
+| RBI Innovation Hub | MuleHunter.AI (AI model to detect mule accounts) | Piloted with two large public-sector banks (Dec 2024); current bank count UNVERIFIED | [P12] |
 | iSPIRT / cloud providers | DEPA Training confidential clean rooms; cloud confidential clean rooms | Open source / cloud services | [L] UNVERIFIED tonight |
 
 **Where our design borrows and where it goes further.** We reuse every rail above unchanged (accounts, KYC, BCs, UPI 123PAY, AePS, alerts, campaigns, SLBC/DLCC review forums). What is missing in production — based on what the Ministry says it does not maintain [P1, P3] — is (a) a person-level, gaming-resistant usage measure, (b) targeting by *expected incremental* usage instead of by dormancy, (c) causal measurement of which outreach works for whom, and (d) usage-based accountability tables down to district and implementer level released with privacy guarantees. That is the scope of Sakriya.
@@ -102,6 +103,9 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 - **[P7]** World Bank, Global Findex Database 2025 (GlobalFindexDatabase2025.csv; indicators account_t_d, inactive_t_d). https://thedocs.worldbank.org/en/doc/be6615202d1f08a25855c8ac2d615122-0050012025/related/GlobalFindexDatabase2025.csv (download page https://www.worldbank.org/en/publication/globalfindex/download-data) — downloaded and read 2026-10-04.
 - **[P8]** Reserve Bank of India, circular RBI/2023-24/105 DOR.SOG (LEG).REC/64/09.08.024/2023-24, "Inoperative Accounts/Unclaimed Deposits in Banks – Revised Instructions", 1 Jan 2024, effective 1 Apr 2024. https://www.rbi.org.in/Scripts/NotificationUser.aspx?Id=12589&Mode=0 — opened 2026-10-04.
 - **[P9]** K. Hillstrom, MineThatData E-Mail Analytics and Data Mining Challenge dataset (64,000 customers randomised to no e-mail / men's / women's e-mail), 2008. http://www.minethatdata.com/Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv — downloaded 2026-10-04.
+- **[P10]** RBI Press Release 2021-2022/1830 on the launch of UPI 123PAY and DigiSaathi. https://rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=53385 — opened 2026-10-04 by verification agent v1 (`research/verification-rails.md`).
+- **[P11]** Sahamati, "Account Aggregator crosses 500 million consents as India marks 5th AA Foundation Day", Sept 2026. https://sahamati.org.in/media-article/account-aggregator-crosses-500-million-consents-as-india-marks-5th-aa-foundation-day/ — opened 2026-10-04 by v1.
+- **[P12]** RBI Press Release 2024-2025/1648, Statement on Developmental and Regulatory Policies, 6 Dec 2024. https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=59245 — opened 2026-10-04 by v1.
 - **[P0]** Official problem statement, The India @71/100 Challenge, Techfest 2026-27 — `_briefs/india71.pdf`.
 - **[S]** News coverage seen in search results 2026-10-04, not checked against primaries: The Hindu BusinessLine and Economic Times on RBI FI-Index FY25 = 67.0 (from 64.2) and weights Access 35% / Usage 45% / Quality 20%.
 
@@ -112,7 +116,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 3. NFHS-5 / NFHS-4: women having a bank or savings account they themselves use (national, state, district) — overnight download was truncated.
 4. ~~RBI circular on inoperative accounts~~ (done: [P8]).
 5. DPDP Act 2023 sections 7, 8, 10, 17 and the DPDP Rules commencement; Aadhaar Act s. 29; NPCI mapper consent rules.
-6. NPCI: UPI 123PAY, AePS volumes; MoRD BC Sakhi numbers; RBIH MuleHunter.AI deployment; Sahamati AA statistics; DEPA clean-room repos.
+6. Partly done ([P10]–[P12]): still UNVERIFIED — AePS volumes, NPCI mapper, Hello! UPI, BC Sakhi numbers (npci.org.in and pib.gov.in block automated fetches; use a browser), current MuleHunter.AI bank count, DEPA clean-room repos.
 7. DBT Bharat totals (FY 2024-25, 2025-26) — the dashboard is client-rendered; needs a browser.
 8. Outcomes of the Jul–Sep 2025 saturation campaign (PIB/DFS).
 9. Effect sizes from account-usage RCTs (Dupas et al. 2018; Field et al. 2021; Karlan et al. 2016; Schaner 2018; Bachas et al. 2021) to replace simulator ASSUMPTIONs.

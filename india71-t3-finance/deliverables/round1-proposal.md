@@ -1,124 +1,98 @@
-# Sakriya: making Jan Dhan accounts work — a usage-data governance, targeting and accountability layer for PMJDY
+# Sakriya — counting people, not accounts: a usage-data governance, targeting and accountability layer for Jan Dhan
 
-**India @71/100 Challenge · Theme 3: Financial Inclusion & Meaningful Banking Access · Round 1 proposal (DRAFT v0.1, 4 Oct 2026)**
+**India @71/100 Challenge · Theme 3: Financial Inclusion & Meaningful Banking Access · Round 1 proposal (DRAFT v0.2, 4 Oct 2026)**
 
-> Draft status: written for ≤ 6 A4 pages (Arial 11 pt, 1-inch margins) when rendered. Numbers marked [P*] come from official documents listed in *References*; numbers marked SYNTHETIC come from our simulator and are not field results. Items marked UNVERIFIED will be checked or removed before submission.
+> Draft status: must fit ≤ 6 A4 pages (Arial ≥ 11 pt, 1-inch margins); check with `deliverables/render_html.py`. [P*] = official or primary source in *References*; SYNTHETIC = simulator output, not field results. Remaining UNVERIFIED items are listed in `research/landscape.md` §7 and must be cited or removed before submission.
 
 **Team information.** Team name: _TBD_ · Team ID: _TBD_ · Institution(s): IIT Delhi (+ _TBD_) · Contact: _TBD_ · Members (≤ 4): _TBD_.
 
-## 1. Problem identification — the gap and who it hurts
+## 1. Problem identification
 
-India's scorecard says financial inclusion is rising: PMJDY accounts grew from 42.20 crore (March 2021) to 59.09 crore (August 2026), and the RBI Financial Inclusion Index rose from 53.9 (2018) to 70.0 (March 2026); RBI attributes the latest year's rise "mainly" to an "uptick in Usage" [P4, P6]. The administrative record moved the other way: **inoperative PMJDY accounts — no customer-induced transaction for two years — rose from 5.94 crore (14.1% of accounts, March 2021) to 15.09 crore (26.4%, Lok Sabha answer of 8 December 2025)** [P1, P3]. Accounts grew 35%; inoperative accounts grew 154%. Meanwhile the World Bank's household survey shows *person-level* inactivity falling — adults with an inactive account went from 27.4% (2021) to 14.3% (2024) [P7]. The two lenses disagree because the State counts accounts, not people: someone may use one account while an old Jan Dhan account lapses, and nobody can tell which. What both lenses agree on is **who is left behind**: in 2024, 19.6% of women account owners had an inactive account against 12.6% of men, and 23.2% of the poorest 40% against 11.6% of the richest 60% [P7, derived].
+India's scorecard says inclusion is rising. PMJDY accounts grew from 42.20 crore (March 2021) to 59.09 crore (August 2026) [P1, P4], and the RBI Financial Inclusion Index reached 70.0 in March 2026, a rise RBI attributes "mainly" to an "uptick in Usage" [P6]. The administrative record says otherwise: **inoperative PMJDY accounts — no customer-induced transaction for two years — rose from 5.94 crore (14.1%, March 2021) to 15.09 crore (26.4%, Lok Sabha answer of 8 December 2025)** [P1, P3]. Accounts grew 35%; inoperative accounts grew 154%.
 
-The people behind these accounts are overwhelmingly the scheme's intended beneficiaries: 55.7% of PMJDY accounts belong to women and 77.8% are in rural or semi-urban areas [P4]. Yet when asked in Parliament, the Ministry of Finance stated that inoperative accounts by gender and by rural/semi-urban area, the number of accounts holding less than ₹500, and credit extended to PMJDY holders are **"not centrally maintained"** [P1, P3]. The State cannot say *which* women, in *which* districts, hold an account they no longer use — so it cannot target help to them, and it cannot hold banks, Business Correspondents (BCs) or districts accountable for usage rather than openings.
+The World Bank's survey tells a third story: Indian adults with an *inactive* account fell from 27.4% (2021) to 14.3% (2024) [P7]. The lenses disagree because the State counts **accounts, not people** — someone may use one account while an old Jan Dhan account lapses — and no one can tell which. Both agree on **who is left behind**: in 2024, 19.6% of women account owners had an inactive account against 12.6% of men, and 23.2% of the poorest 40% against 11.6% of the richest 60% [P7, derived]. Yet the Ministry of Finance told Parliament that inoperative accounts by gender and by rural/semi-urban area, accounts holding under ₹500, and credit to PMJDY holders are **"not centrally maintained"** [P1, P3].
 
-**Gap statement.** One in four Jan Dhan accounts is inoperative and the share is rising; one in five women account owners — and almost one in four of the poorest 40% — has an account they did not use in a year [P7]; and the data systems that could identify, reach and count these people — bank ledgers, DBT credits, BC networks — are not governed to do so. **Community:** women, the poorest and less-educated account holders (Findex 2024: 19.6% of women owners inactive vs 12.6% of men; 23.2% of the poorest 40% vs 11.6% of the richest 60%), most of them in the rural and semi-urban areas that hold 77.8% of Jan Dhan accounts [P4, P7].
+**Gap.** One Jan Dhan account in four is inoperative and the share is rising; one woman account owner in five has not used her account in a year; and the data that could find, reach and count these people — bank ledgers, DBT credits, Business Correspondent (BC) networks — is not governed to do so. **Community:** women, the poorest and less-educated account holders, mostly in the rural and semi-urban areas that hold 77.8% of Jan Dhan accounts [P4, P7].
 
 ## 2. Evidence and context
 
 | Indicator | Value | Source |
 |---|---|---|
-| PMJDY accounts / women's accounts | 59.09 crore / 32.92 crore (19 Aug 2026) | [P4] |
-| Rural + semi-urban accounts | 45.95 crore of 59.09 crore (77.8%) | [P4] |
-| Deposits / RuPay cards issued | ₹3,16,514 crore / 41.29 crore (19 Aug 2026) | [P4] |
-| RBI FI-Index | 64.2 (Mar 2024) → 67.0 (Mar 2025) → 70.0 (Mar 2026); FY26 rise "mainly on account of uptick in Usage" | [P5, P6] |
-| Inoperative PMJDY accounts | 5.94 cr (Mar 2021) → 6.57 → 9.45 → 10.21 → 11.94 cr (Mar 2025) → 13.05 cr (Jul 2025) → 15.09 cr (Dec 2025) | [P1, P2, P3] |
-| Inoperative share, by state (31 Jul 2025) | 16.3% (West Bengal) to 39.0% (Goa); largest counts UP 2.75 cr (27.5%), Bihar 1.39 cr, MP 1.07 cr | [P2], our parse |
-| Overdraft availed | 35.99 lakh holders (≈ 0.6% of accounts), ₹393 crore outstanding (Mar 2025) | [P1] |
-| Women's / men's accounts with balance below ₹2,500 | 22.86 crore / 20.04 crore (Mar 2025) | [P1] Annexure-I |
-| Data "not centrally maintained" | inoperative by gender, by rural/semi-urban, balance ranges, accounts < ₹500, credit to PMJDY holders | [P1, P3] |
-| Adults with an inactive account (survey) | 27.4% (2021) → 14.3% (2024); of account owners: women 19.6%, men 12.6%; poorest 40% 23.2%, richest 60% 11.6% (2024, derived) | [P7] |
+| PMJDY accounts (women) | 59.09 crore (32.92 crore), 19 Aug 2026; 45.95 crore rural/semi-urban | [P4] |
+| Deposits; RuPay cards | ₹3,16,514 crore; 41.29 crore cards (19 Aug 2026) | [P4] |
+| Inoperative PMJDY accounts | 5.94 → 6.57 → 9.45 → 10.21 → 11.94 crore (Mar 2021–Mar 2025) → 13.05 (Jul 2025) → 15.09 crore (Dec 2025) | [P1–P3] |
+| Inoperative share by state (31 Jul 2025) | 12.5% (Lakshadweep) to 39.0% (Goa); among the 16 states with > 1 crore accounts, 16.3% (West Bengal) to 32.5% (Telangana); Uttar Pradesh 2.75 crore (27.5%) | [P2], our parse |
+| RBI FI-Index | 64.2 (Mar 2024) → 67.0 (Mar 2025) → 70.0 (Mar 2026) | [P5, P6] |
+| Adults with an inactive account | 27.4% (2021) → 14.3% (2024); of owners in 2024: women 19.6%, men 12.6%, poorest 40% 23.2% | [P7] |
+| Overdraft availed | 35.99 lakh holders (≈ 0.6% of accounts), Mar 2025 | [P1] |
+| "Not centrally maintained" | inoperative by gender and area, balance ranges, accounts < ₹500, credit to PMJDY holders | [P1, P3] |
 
-The trend survived a nationwide Gram Panchayat-level saturation campaign (1 July – 30 September 2025) in which re-KYC of inactive PMJDY accounts was a key focus [P1, P2]: the count reported in December 2025 was higher than in July 2025. (The two answers word the definition slightly differently, so part of the increase may be definitional — itself a data-governance problem.)
+The rise continued through a nationwide Gram Panchayat saturation campaign (1 July – 30 September 2025) that targeted re-KYC of inactive PMJDY accounts [P1, P2]. The two Parliament answers word the definition differently, so part of the late-2025 jump may be definitional — itself a governance problem.
 
-## 3. Existing ecosystem — what exists and why the gap persists
+## 3. Existing ecosystem and why the gap persists
 
-**What exists** (verified in the Ministry's answers [P1–P4]): zero-balance BSBD accounts with RuPay card, accident cover and overdraft; DBT credited directly to accounts — "even to the inactive accounts" [P2]; bank alerts before an account turns inoperative and quarterly letters/SMS to inoperative holders [P2]; RBI's revised inoperative-account instructions (in force since April 2024) — annual review, alerts a year ahead, KYC at any branch or by video, no activation charges [P8] — and reactivation by completing KYC at any time, with unclaimed balances moving to RBI's DEA Fund after ten years [P3]; saturation campaigns; 2,421 RBI Centres for Financial Literacy [P1]; and the RBI FI-Index for national monitoring [P5, P6]. The payment and access rails — UPI and feature-phone UPI 123PAY, Aadhaar-enabled Payment System (AePS), the NPCI mapper for Aadhaar-based DBT, BC and BC Sakhi networks, and the Account Aggregator consent framework — are in production (details UNVERIFIED in this draft; to be cited).
+**What exists.** Zero-balance accounts with RuPay card, accident cover and overdraft [P4]; DBT credited "even to the inactive accounts" [P2]; RBI's revised inoperative-account rules in force since April 2024 — annual review, alerts a year ahead, tracing of holders, KYC at any branch or by video, no activation charges, monitoring of reactivated accounts [P8]; unclaimed balances to RBI's DEA Fund after ten years [P3]; saturation campaigns and 2,421 Centres for Financial Literacy [P1]; feature-phone payments through UPI 123PAY (IVR, missed call, app, sound) [P10]; Account Aggregator consent rails with 310 million+ accounts linked [P11]; and the national FI-Index [P6]. BCs, AePS and the NPCI mapper for Aadhaar-based DBT carry the last mile (citations pending).
 
-**Why the gap persists** — failures of data governance, not of infrastructure:
-1. **The official flag is not a usage measure.** "Inoperative" is a fraud-control status, and accounts opened for DBT or scholarships are deliberately exempted from it [P8] — so DBT beneficiaries who never use their account can be invisible, and an account where DBT lands and is withdrawn at once counts as "operative".
-2. **Counting accounts, not people; enrolment, not use.** Review forums see openings and totals; key breakdowns are not maintained [P1, P3]. A person with three accounts, one active, appears as two "inoperative" accounts; a person who only cashes out DBT appears "active".
-3. **Blanket outreach.** Alerts and campaigns go to every dormant account [P2]. Visits are wasted on duplicates, migrants and the deceased, while persuadable holders get a generic SMS.
-4. **Reactivation friction.** Reactivation requires KYC [P3] — usually a branch or BC visit for the very people who stopped visiting.
+**Why the gap persists** — failures of data governance, not of rails:
+1. **The official flag is not a usage measure.** "Inoperative" is a fraud-control status, and accounts opened for DBT or scholarships are deliberately exempted from it [P8] — unused DBT accounts can be invisible, and an account emptied the day DBT lands counts as "operative".
+2. **Counting accounts, not people; enrolment, not use.** Forums review openings and totals; breakdowns by person, gender or area do not exist centrally [P1, P3].
+3. **Blanket outreach.** Alerts and campaigns go to every dormant account [P2, P8]; visits are spent on duplicates, migrants and the deceased while persuadable holders get a generic SMS.
+4. **Reactivation friction.** Fresh KYC at a branch or by video [P8] is hard for the people who stopped coming.
 5. **No feedback loop.** No one measures which outreach changed behaviour for whom, so programmes cannot learn and implementers cannot be credited or held to account.
-6. **Legal uncertainty about sharing.** Usage, DBT and identity data sit with banks, NPCI and scheme departments under the DPDP Act 2023 and Aadhaar rules; without an agreed pattern, each keeps its silo.
+6. **Unclear sharing rules.** Usage, DBT and identity data sit with banks, NPCI and departments under the DPDP Act 2023 and Aadhaar law; without an agreed pattern each keeps its silo.
 
 ## 4. Proposed solution — Sakriya
 
-Sakriya (सक्रिय, "active") is a **data-governance and decision layer** on top of existing rails. It adds no new financial product. It (a) measures *meaningful usage per person*, (b) decides *who should get which outreach* to maximise incremental usage per rupee, (c) measures *what worked*, and (d) publishes *usage-based accountability* tables to the forums that already review financial inclusion — with privacy built into each data flow.
+Sakriya (सक्रिय, "active") is a **data-governance and decision layer on existing rails — no new financial product**. It (a) measures meaningful usage *per person*, (b) decides who gets which outreach to maximise *incremental* usage per rupee, (c) measures what worked, and (d) publishes usage-based accountability tables to the forums that already review inclusion, with privacy built into every flow. Fourteen components sit behind typed contracts; two are the innovation spikes.
 
 ```mermaid
-flowchart LR
-  subgraph B["Each bank (data fiduciary)"]
-    CBS[(Core banking ledger<br/>+ DBT credits)] --> F[C1 Usage features] --> S[C2 Usage state +<br/>Meaningful Usage Score]
-  end
-  subgraph R["Regulated clean room (confidential computing)"]
-    L[C3 Person linkage<br/>purpose-scoped tokens]
-    T[C6 Targeting engine<br/>uplift · budget · equity]
-    E[C9 Experiments<br/>holdouts]
-    A[C10 Usage scorecard<br/>+ attribution]
-  end
-  S --> L --> T --> G[C7 Fraud gate] --> O[C8 Outreach: BC/BC Sakhi visit,<br/>IVR in local language, UPI 123PAY]
-  O --> E --> T
-  L --> A
-  E --> A --> P[C11 Differential-privacy publisher] --> D[C12 Dashboards: DFS · RBI ·<br/>SLBC · DLCC · bank · public]
-  PE{{C5 Purpose & policy engine<br/>+ tamper-evident audit log}} -.-> L & T & O & P
+flowchart TB
+  A["<b>Banks</b> · C1–C2<br/>usage state per account"] --> B["<b>Regulated clean room</b><br/>C3 count people · C6 target<br/>C9 holdouts · C10 scorecard"]
+  B -- "own-customer task lists" --> C["<b>Bank → BC / BC Sakhi,</b><br/><b>IVR, UPI 123PAY</b><br/>C7 fraud gate · C8 outreach"]
+  C -- "outcomes" --> B
+  B --> D["<b>C11 privacy publisher</b><br/>differential privacy"]
+  D --> E["<b>Forums</b>: DFS · RBI · SLBC<br/>DLCC · public"]
+  P{{"<b>C5 purpose policy</b><br/>+ audit log"}} -.-> B
 ```
 
-**4.1 Usage state and Meaningful Usage Score (C1–C2).** Each bank computes, monthly and inside its own systems, a standard record per account (customer-induced transactions by channel, DBT credits and how fast they are withdrawn, balance, KYC status, insurance/pension enrolment). A transparent rule set assigns one of five states — *inoperative*, *dormant-risk*, *DBT pass-through*, *basic*, *meaningful* — and a 0–100 score from frequency, channel diversity, retention of credited funds and protection products. Token credits (e.g. ₹1 deposits by staff) never count as use. The rules are published, so a bank, an auditor or a citizen can recompute any state.
+**4.1 Usage state, not "operative" (C1–C2).** Each bank computes monthly, inside its own systems, a standard record per account — customer-induced transactions by channel, DBT credits and how fast they are withdrawn, balance, KYC status, insurance and pension enrolment — and a published rule set assigns one of five states (*inoperative, dormant-risk, DBT pass-through, basic, meaningful*) with a 0–100 Meaningful Usage Score. Token credits never count as use; anyone can recompute any state.
 
-**4.2 Count people, not accounts (C3–C5).** Inside a regulated clean room (a confidential-computing environment operated under RBI/NPCI oversight), each account is mapped to a *purpose-scoped pseudonym* (HMAC of an identity reference such as an Aadhaar Data Vault reference key — never the Aadhaar number). Tokens issued for targeting cannot be joined with tokens issued for statistics. A **policy engine** decides every request from *role × purpose × data element × granularity × legal basis* and writes a hash-chained audit entry. Governance matrix (proposed; section-level legal mapping to be verified):
+**4.2 Count people, not accounts (C3–C5).** In a regulated confidential-computing clean room, accounts are linked to *purpose-scoped pseudonyms* (keyed hashes of an identity reference, never the Aadhaar number); tokens issued for targeting cannot be joined with tokens issued for statistics. A policy engine decides every request by role × purpose × data × granularity × legal basis and writes a hash-chained audit entry.
 
-| Data | Account-holding bank / its BC | Clean room | DFS · RBI · SLBC · DLCC | Public |
+| Data | Bank and its BC | Clean room | DFS · RBI · SLBC · DLCC | Public |
 |---|---|---|---|---|
-| Account ledger, KYC status | Own customers, full | Features only, encrypted | Never | Never |
-| Person-level usage state, target list | Own customers only (task list with reason codes) | Yes, purpose-bound, deleted after use | Never | Never |
-| District / bank / BC usage rates, gender gaps | Own units | Computed here | Differentially private, small cells suppressed | DP, district and above |
-| Effects of outreach, implementer scores | Own units | Computed here | With confidence intervals | State level |
+| Ledger, KYC status | Own customers | Encrypted features | Never | Never |
+| Person usage state, target list | Own customers, with reason codes | Purpose-bound, deleted after use | Never | Never |
+| Usage rates, gender gaps, effects | Own units | Computed | Differentially private, with CIs | State level |
 
-**4.3 Targeting engine (spike A, C6).** Inputs: person-level usage state, DBT pattern, KYC due, phone and literacy proxies a bank already holds, distance to the nearest BC, BC Sakhi presence. The engine estimates, for each person and each outreach arm — IVR/SMS in the local language (≈ ₹3), BC or BC Sakhi visit with on-the-spot re-KYC (≈ ₹100), assisted UPI 123PAY onboarding (≈ ₹120), a small first-transactions incentive (≈ ₹55) (costs are ASSUMPTIONS) — the *incremental* probability of meaningful use over six months, and allocates arms to maximise total incremental usage within the budget, with a floor on the share of women reached and a cap on tasks per BC. Every plan keeps a 10% randomised holdout. Before any allocation is used, it must beat simple rules (best single arm for all; dormancy-first) on held-out pilot data; otherwise the simple rule is used. A **fraud gate (C7)** holds reactivation where mule-account risk is high, because a reactivated dormant account is attractive to fraudsters.
+**4.3 Targeting engine (spike A, C6).** For each person and outreach arm — local-language IVR/SMS, BC or BC Sakhi visit with doorstep re-KYC, assisted UPI 123PAY onboarding, a small first-use incentive — the engine estimates the *incremental* probability of meaningful use over six months and allocates arms to maximise total gain within a rupee budget, with a floor on the share of women and a cap on tasks per BC. Every plan keeps a 10% randomised holdout, and a learned allocation is used only where it beats simple rules on held-out pilot data. A fraud gate (C7) adds verification before reactivating accounts at risk of mule use.
 
-**4.4 Learning and accountability (spike B, C9–C11).** The holdouts give unbiased monthly estimates of each arm's effect by segment and by implementer. The **usage scorecard** reports, for every district, bank, branch and BC: persons (not accounts) in meaningful use, inoperative persons, the gender gap, and *incremental usage attributable to the implementer* with a confidence interval, plus gaming flags (token credits, sudden reactivation-then-dormancy, account churn). Tables pass through a **differential-privacy publisher** with a privacy-budget ledger and go to the forums that already exist: DFS/RBI (national; complements the FI-Index), State Level Bankers' Committees (state), District Consultative Committees and Lead District Managers (district), banks and BCs (own units), and a public state-level page. This turns "accounts opened" targets into **"people actively banking" targets** that can be assigned and reviewed.
+**4.4 Learning and accountability (spike B, C9–C11).** Holdouts give unbiased monthly effects by arm, segment and implementer. The **usage scorecard** reports for each district, bank, branch and BC: persons in meaningful use, inoperative persons, the gender gap, and the implementer's *incremental* usage with a confidence interval, plus gaming flags (token credits, reactivate-then-lapse, account churn). A differential-privacy publisher with a privacy-budget ledger feeds existing forums: DFS/RBI nationally (beside the FI-Index), SLBCs, District Consultative Committees and Lead District Managers, banks and BCs for their own units, and a public state page. "Accounts opened" targets become **"people actively banking" targets**.
 
-**4.5 What the demo already shows.** A working skeleton (Python; 14 components behind typed contracts) runs end to end on a SYNTHETIC district population calibrated to the official 23% inoperative share. On held-out synthetic persons at the same budget, we compare policies by the share of the oracle's achievable incremental usage they capture (0 = random allocation, 1 = perfect knowledge):
+**4.5 What the working skeleton shows.** End to end on a SYNTHETIC population calibrated to the official 23% inoperative share, at the same budget (₹10 per eligible person), held-out persons, 3 seeds:
 
-| Policy (same budget: ₹10 per eligible person) | Share of achievable gain captured (mean ± sd, 3 seeds) | Incremental persons in meaningful use (per ~11,500 eligible) | Women's share of those reached |
-|---|---|---|---|
-| Status quo: BC visits to inoperative, then dormant, then DBT pass-through accounts | 0.04 ± 0.00 | 47 | 56% |
-| Highest predicted risk of non-use first (BC visit) | -0.07 ± 0.01 | 18 | 69% |
-| Random persons, random arm | 0.00 ± 0.00 | 38 | 58% |
-| Best average arm from the pilot, given to everyone (IVR/SMS) | 0.37 ± 0.01 | 134 | 58% |
-| Sakriya v0.1: per-arm uplift model (shrunk toward arm averages) + budgeted allocation, women ≥ their share | 0.33 ± 0.02 | 126 | 59% |
-| Oracle: true uplift + same allocation (upper bound) | 1.00 ± 0.00 | 300 | 58% |
-_SYNTHETIC. 20,000 simulated persons per seed (seeds 0–2); ~11,511 not yet in meaningful use and outside the 20% pilot are eligible; the pilot (randomised arms) trains the models. 'Share of achievable gain' = (policy − random) / (oracle − random). The best-average-arm rule spends only about a third of the budget because IVR is cheap. Reproduce: `python eval/rebaseline_c6.py exp1 0.5` → `eval/results/c6_exp1.json`._
+| Policy | Share of achievable gain | Extra persons in meaningful use (per ~11,500) |
+|---|---|---|
+| Status quo: BC visits to inoperative, then dormant, then pass-through accounts | 0.04 ± 0.00 | 47 |
+| Highest "risk of non-use" first | −0.07 ± 0.01 | 18 |
+| Best average arm (IVR) to everyone | 0.37 ± 0.01 | 134 |
+| Sakriya v0.1 (uplift, shrunk; women ≥ their share) | 0.33 ± 0.02 | 126 |
+| Oracle (true effects) | 1.00 | 300 |
 
-Interpretation: blanket, dormancy-first outreach captures little of what the budget could achieve, and ranking by "risk of non-use" is worse than random — dormancy is not persuadability. In this first version our learned allocation (0.33) does not yet beat the simple best-arm rule (0.37), which also spends only a third of the budget — which is why Sakriya deploys a learned allocation only where it beats simple rules on held-out pilot data. The large gap to the oracle (1.0) is the room our automated improvement loop works on. These are simulator results that show the mechanism, not field impact. As a reality check on real randomised data, we ran the same learner on a public 64,000-customer e-mail experiment [P9] (retail, not banking): when only 10–20% could be contacted, it produced 2.5–3.2 more responses per 1,000 customers than sending the best message to a random subset (confidence intervals include zero in two of three splits), but at full coverage it did worse than sending everyone the best message. Lesson built into the design: target *who* to contact when contacts are scarce — as they are for 15 crore inoperative accounts — and be conservative about personalising *which* intervention.
+_Share of achievable gain = (policy − random) / (oracle − random). Reproduce: `python eval/rebaseline_c6.py exp1 0.5`._ Dormancy-first outreach wastes most of the budget and risk ranking is worse than random: **dormancy is not persuadability**. Our first learner does not yet beat the simple best-arm rule — hence the rule that a learned policy must win on held-out data before use. On a real 64,000-person randomised e-mail experiment [P9] (retail, not banking), the same learner beat "best message to a random subset" by 2.5–3.2 responses per 1,000 when only 10–20% could be contacted (CIs include zero in two of three splits) but lost at full coverage: target *who* when contacts are scarce — as for 15 crore inoperative accounts — and personalise *which* intervention cautiously.
 
 ## 5. Feasibility and implementation roadmap
 
-**Owners, using existing mandates.** DFS (PMJDY mission office) — sponsor and scheme owner; RBI — usage-state definitions in the inoperative-accounts and KYC directions, oversight of the clean room, FI-Index linkage; NPCI — identity-reference tokens via the mapper, UPI 123PAY/AePS rails; banks — C1–C2 inside their systems, outreach via their BCs; SLBC/Lead Bank Scheme — review of scorecards in existing DCC/SLBC meetings; DBT Mission — DBT-credit metadata; MoRD/DAY-NRLM — BC Sakhi channel.
+**Owners, within existing mandates.** DFS (PMJDY mission) sponsors; RBI sets usage-state definitions alongside its inoperative-account and KYC directions and oversees the clean room; NPCI issues identity-reference tokens and runs UPI 123PAY/AePS; banks run C1–C2 and outreach through their BCs; SLBCs and the Lead Bank Scheme review scorecards in existing meetings; the DBT Mission supplies credit metadata; DAY-NRLM provides BC Sakhis.
 
-**Phased plan.**
-1. *Months 0–3 — Standards and sandbox.* Publish the usage-state rule set and contracts; run C1–C2 on one bank's historical data in its own environment; legal review of the governance matrix under the DPDP Act and Aadhaar rules.
-2. *Months 3–9 — One-district randomised pilot* (two to three banks, BC Sakhi presence; a district with a high inoperative share, e.g. from the state table): baseline month, then the targeting engine against blanket outreach in randomised blocks; primary outcome: persons in meaningful use at six months; secondary: cost per incremental active person, women's share, fraud incidents.
-3. *Months 9–18 — State scale-up* through the SLBC; scorecard enters DCC/SLBC agendas; DP public page.
-4. *Months 18–36 — National:* NSFI monitoring adds person-level usage indicators by district and gender beside the FI-Index.
+**Plan.** *Months 0–3:* publish the usage-state rules and contracts; run C1–C2 on one bank's history inside the bank; legal review of the governance matrix (DPDP Act, Aadhaar law). *Months 3–9:* one-district randomised pilot (two to three banks, BC Sakhi presence, high inoperative share): targeting engine vs blanket outreach in randomised blocks; primary outcome persons in meaningful use at six months; secondary cost per incremental active person, women's share, fraud incidents. *Months 9–18:* state scale-up through the SLBC; scorecards on DCC/SLBC agendas; public DP page. *Months 18–36:* national — NSFI monitoring adds person-level usage by district and gender beside the FI-Index.
 
-**Feasibility.** Compute is small (a district plan runs on a laptop in minutes in our skeleton); banks already hold every input; outreach uses existing BC commissions and IVR; the clean room and DP use mature, open techniques. **Key risks and mitigations:** legal basis for linkage (purpose-scoped tokens, data minimisation, bank-only person lists, legal review in phase 1); model opacity (published rules, reason codes, simple-rule fallback); exclusion by targeting (women's floor, holdouts, grievance channel); gaming of scorecards (customer-induced definitions, persistence, gaming flags, attribution against comparable units); fraud on reactivation (C7 gate).
+**Feasibility and risks.** A district plan runs on a laptop in minutes in our skeleton; banks already hold every input; outreach uses existing BC commissions and IVR; clean rooms and differential privacy are mature techniques. Risks and mitigations: legal basis for linkage (purpose-scoped tokens, minimisation, person lists only inside the bank, legal review first); opacity (published rules, reason codes, simple-rule fallback); exclusion by targeting (women's floor, holdouts, grievance channel); gaming (customer-induced definitions, persistence, gaming flags, comparison units); fraud on reactivation (C7).
 
 ## 6. Expected impact and scalability
 
-**Beneficiaries:** the 15.09 crore inoperative PMJDY account holders and the DBT pass-through users behind them — mainly rural women. **Outcomes:** more people (not accounts) in sustained, meaningful use; lower cost per reactivated user; the gender and district breakdowns that are "not centrally maintained" today become routine, privacy-preserving statistics; implementers are reviewed on usage. **KPIs:** persons in meaningful use (by district, gender), inoperative persons, incremental usage per ₹ lakh of outreach, women's share of incremental users, DBT pass-through share, fraud incidents per lakh reactivations, data latency (target ≤ 10 days after month-end). **Scale path:** every component runs on rails and forums that already exist nationally — bank systems, NPCI tokens, BCs, Lead Bank Scheme forums — so scaling is a matter of standards and adoption rather than new infrastructure. Impact numbers will be estimated from the pilot's randomised design, not from the simulator.
+**Beneficiaries:** the people behind 15.09 crore inoperative accounts and the DBT pass-through users — mostly rural women and the poorest. **Outcomes:** more people (not accounts) in sustained use at lower cost per reactivated user; gender and district breakdowns that are "not centrally maintained" today become routine, privacy-preserving statistics; implementers are reviewed on usage. **KPIs:** persons in meaningful use by district and gender; inoperative persons; incremental users per ₹ lakh of outreach; women's share of incremental users; DBT pass-through share; fraud per lakh reactivations; data latency ≤ 10 days after month-end. **Scale:** every component runs on systems and forums that already exist nationally, so scaling is a matter of standards and adoption, not new infrastructure. Impact will be measured from the pilot's randomised design, not the simulator.
 
 ## References
 
-- [P1] Rajya Sabha Unstarred Question 2636, Ministry of Finance (DFS), answered 12 Aug 2025, with Annexures I–II. sansad.in/getFile/annex/268/AU2636_2RfYLG.pdf
-- [P2] Lok Sabha Unstarred Question 4090, Ministry of Finance (DFS), answered 18 Aug 2025, with state-wise annexure. sansad.in/getFile/loksabhaquestions/annex/185/AU4090_LCDFLT.pdf
-- [P3] Lok Sabha Unstarred Question 1333, Ministry of Finance (DFS), answered 8 Dec 2025. sansad.in/getFile/loksabhaquestions/annex/186/AU1333_viWPuz.pdf
-- [P4] Press Information Bureau, "12 Years of PM Jan Dhan Yojana: Banking for All, Empowerment for All", 27 Aug 2026 (URL to be added).
-- [P8] Reserve Bank of India, circular RBI/2023-24/105, "Inoperative Accounts/Unclaimed Deposits in Banks – Revised Instructions", 1 Jan 2024 (effective 1 Apr 2024). rbi.org.in (NotificationUser.aspx?Id=12589)
-- [P9] K. Hillstrom, MineThatData e-mail analytics challenge dataset (64,000 randomised customers), 2008. minethatdata.com
-- [P5] Reserve Bank of India, Press Release 2025-2026/759, "Financial Inclusion Index for March 2025", 22 Jul 2025. rbi.org.in (prid=60875)
-- [P6] Reserve Bank of India, Press Release 2026-2027/686, "Financial Inclusion Index for March 2026", 16 Jul 2026. rbi.org.in (prid=63164)
-- [P7] World Bank, Global Findex Database 2025, data file GlobalFindexDatabase2025.csv (indicators account_t_d, inactive_t_d), India rows; shares of account owners derived as inactive_t_d / account_t_d.
-- Techfest 2026-27, The India @71/100 Challenge — problem statement.
+[P1] Rajya Sabha USQ 2636, Ministry of Finance (DFS), 12 Aug 2025, Annexures I–II, sansad.in · [P2] Lok Sabha USQ 4090, 18 Aug 2025, state annexure, sansad.in · [P3] Lok Sabha USQ 1333, 8 Dec 2025, sansad.in · [P4] PIB, "12 Years of PM Jan Dhan Yojana", 27 Aug 2026 · [P5] RBI Press Release 2025-2026/759, FI-Index for March 2025, 22 Jul 2025 · [P6] RBI Press Release 2026-2027/686, FI-Index for March 2026, 16 Jul 2026 · [P7] World Bank, Global Findex Database 2025, data file (account_t_d, inactive_t_d; owner shares derived) · [P8] RBI circular RBI/2023-24/105, Inoperative Accounts/Unclaimed Deposits – Revised Instructions, 1 Jan 2024 · [P9] Hillstrom, MineThatData e-mail challenge dataset, 2008 · [P10] RBI Press Release 2021-2022/1830 (UPI 123PAY launch), rbi.org.in prid=53385 · [P11] Sahamati, "Account Aggregator crosses 500 million consents", Sept 2026 · Techfest 2026-27, India @71/100 Challenge statement.
