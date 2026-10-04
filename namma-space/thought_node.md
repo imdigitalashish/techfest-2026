@@ -172,3 +172,17 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Viewer, frozen protocol** (3 cold runs, 40 Mbit/s): walking p95 22.4 ms at 60 fps, idle p95 17.5 ms, T_visible 7.45 s → S_V 1.49 (load-bound). `eval/results/viewer_bench_drjohnson_e2e.json`.
 - **Public demo:** Deichman library walkthrough (Wikimedia Commons, CC BY-SA 4.0, Asav; licence recorded in `test_data/public_demo/SOURCE.md`). The video path works (168 frames from 90 s of Theora in 10 s). Posing was **stopped by the gate**: 85/168 registered, jump fraction 0.19; it's an edited tour with cuts. Retrying with exhaustive + incremental; doesn't gate DONE.
 - **Supervisor (15:12):** agreed on Now/memo refresh and not gating on the demo. Reviews already ran at 10:50 / 11:30, so delta checks go to the same sessions. Port 8080 stays up for the user's viewer panel.
+
+### 2026-10-04 15:35 IST — Delta reviews processed → DONE for the active batch
+- **gpt-6-sol delta** (`7ae0f59`): 8 items, 7 accepted, 1 rejected as stale. The S_V timing is `performance.now()` from navigation start; the unused `T0` was removed. Fixes:
+  - (blocking) splat adoption now requires an export manifest bound to the pose model's SHA-1 + settings;
+  - posing gates: registration ≥50% and ≥20 frames, reference ATE ≤5% of extent (enforced), reference path in the cache key;
+  - `pose_sanity` collapse metric;
+  - `align.ok` requires positive scale and <20% of points below the floor;
+  - walkable rays chunked by a sample budget (identical result: 20,976,482 samples either way) + a voxel cap;
+  - held-out matching by exact stem with ≥80% of expected views.
+- **gpt-6-astra delta** (`6dd4c4c`): scores 5/2/4/4 → **6/4/6/5**. Confirmed 29.56 / 0.929, ATE 0.07%, S_V 1.49; notes that 45.8 min is the sum of successful stages, not retry-inclusive. Acted on:
+  - failed-run evidence archived (`eval/results/drjohnson_degenerate_posing_evidence.json`: ATE 33.4%, 18.26 dB);
+  - overclaims removed (README collisions, SOP per-clip processing, abstract demo line).
+  - Remaining items need the user or the next phase: exported-asset PSNR, owned capture + tape checks, the video, master Drive doc, PDF.
+- Tests: planner contract, eval v3 contract and marker tests pass; the chunking regression is identical; shipped alignment unchanged.

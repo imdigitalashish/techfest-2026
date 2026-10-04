@@ -21,7 +21,7 @@ from scipy import ndimage
 DEFAULTS = dict(cell=0.05, voxel=0.10, agent_radius=0.25, agent_height=1.70, step_height=0.15,
                 floor_tol=0.08, floor_dilate_m=0.30, min_occ_points=2, carve_beta=4.0,
                 traj_radius=0.35, close_m=0.20, traj_override=False, obstacle_inflate_m=0.0,
-                max_extent_m=150.0, max_ray_m=25.0)
+                max_extent_m=150.0, max_ray_m=25.0, ray_sample_budget=2_000_000, max_voxels=100_000_000)
 # traj_override=False kept by ratchet #1 (2026-10-04): trajectory adds connectivity but never erases
 # obstacle evidence. J_A 0.595 -> 0.659, J_B 0.550 -> 0.579 (autoresearch/results.tsv).
 
@@ -56,6 +56,8 @@ def build_grid(points, traj, rays_from=None, rays_to=None, use_carving=True, use
     vnx, vnz = -(-nx // ratio), -(-nz // ratio)
     ny = int(np.ceil((p["agent_height"] - p["step_height"]) / vox))
     size = vnx * ny * vnz
+    if size > p["max_voxels"]:
+        raise ValueError(f"voxel grid {vnx}x{ny}x{vnz} exceeds {p['max_voxels']:.0e}; check posing/alignment scale")
 
     def vflat(X):
         i = np.floor((X[:, 0] - lo[0]) / vox).astype(np.int64)
@@ -74,9 +76,14 @@ def build_grid(points, traj, rays_from=None, rays_to=None, use_carving=True, use
         short = L <= (p["max_ray_m"] if robust else np.inf)  # outlier points would explode the sample count
         A, D, L = A[short], D[short], L[short]
         step = vox * 0.5
-        for s in range(0, len(A), 20000):
-            a, d, l = A[s:s + 20000], D[s:s + 20000], L[s:s + 20000]
-            n = np.maximum(((l - 2 * vox) / step).astype(np.int64), 0)
+        n_all = np.maximum(((L - 2 * vox) / step).astype(np.int64), 0)
+        csum = np.cumsum(n_all)
+        s = 0
+        while s < len(A):  # chunks bounded by SAMPLE count (not ray count): constant memory, identical result
+            base = int(csum[s - 1]) if s else 0
+            e = max(int(np.searchsorted(csum, base + p["ray_sample_budget"], side="right")), s + 1)
+            a, d, l, n = A[s:e], D[s:e], L[s:e], n_all[s:e]
+            s = e
             tot = int(n.sum())
             if tot == 0:
                 continue

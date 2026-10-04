@@ -80,7 +80,7 @@ def main():
     rp = os.path.join(work, "report.json")
     report = json.load(open(rp)) if os.path.exists(rp) else {"name": a.name, "input": os.path.abspath(a.input), "stages": {}}
     files = sorted(os.path.join(dp, f) for dp, _, fs in os.walk(a.input) for f in fs)
-    cfg = {k: getattr(a, k) for k in ("steps", "max_splats", "package_splats", "camera_height_m", "mapper")}
+    cfg = {k: getattr(a, k) for k in ("steps", "max_splats", "package_splats", "camera_height_m", "mapper", "reference_colmap")}
     listing = "".join(f"{os.path.relpath(f, a.input)}:{os.path.getsize(f)}:{int(os.path.getmtime(f))};" for f in files)
     fp = hashlib.sha1((listing + json.dumps(cfg, sort_keys=True)).encode()).hexdigest()
     old = report.get("input_fingerprint")
@@ -116,7 +116,7 @@ def main():
     from ingest.ingest import ingest
     from posing.sfm import run_sfm
     from scene_alignment.align import estimate_alignment, load_colmap
-    from splat_training.train import finalize, train
+    from splat_training.train import finalize, model_sha1, train
     from walkable_space.walkable import build_grid, to_json
 
     def s_ingest():
@@ -132,6 +132,11 @@ def main():
         if a.reference_colmap:  # benchmark gate: trajectory error vs the dataset's reference poses
             res["ate_vs_reference"] = pose_ate(os.path.join(paths["sfm"], "model"), a.reference_colmap,
                                                os.path.join(work, "frames.json"))
+            if res["ate_vs_reference"].get("ate_rmse_pct_of_extent", 100.0) > 5.0:
+                raise RuntimeError(f"posing fails the reference gate: ATE {res['ate_vs_reference']} (> 5% of extent)")
+        if r["registration_rate"] < 0.5 or r["n_registered"] < 20:
+            raise RuntimeError(f"posing registered only {r['n_registered']}/{r['n_frames']} frames (< 50%): footage likely "
+                               "breaks the SOP (cuts, fast pans, blur, low texture); re-capture the failing part")
         if (r.get("pose_sanity") or {}).get("degenerate"):
             raise RuntimeError(f"posing looks degenerate {r['pose_sanity']}; re-capture or re-pose before training")
         return res
@@ -140,14 +145,16 @@ def main():
 
     def s_splat():
         data = os.path.join(paths["sfm"], "colmap")
-        log = os.path.join(paths["splat"], "brush.log")
-        done_export = (os.path.exists(os.path.join(paths["splat"], f"splat_{a.steps}.ply")) and os.path.exists(log)
-                       and " real" in open(log).read())
-        if done_export and "splat" not in a.force:
-            print("[splat] adopting a completed Brush export (no retraining)", flush=True)
+        man = os.path.join(paths["splat"], "export_manifest.json")
+        want = {"model_sha1": model_sha1(data), "steps": a.steps, "max_splats": a.max_splats}
+        # adopt only an export bound to THIS pose model and these settings (never a previous capture's splat)
+        if os.path.exists(man) and json.load(open(man)) == want and "splat" not in a.force:
+            print("[splat] adopting a completed Brush export bound to this pose model (no retraining)", flush=True)
             r = finalize(data, paths["splat"], a.steps, a.max_splats, adopted=True)
         else:
             r = train(data, paths["splat"], a.steps, a.max_splats)
+        if not r["accepted"]:
+            raise RuntimeError(f"splat quality unverified: {r['heldout'].get('n', 0)}/{r['heldout_expected']} held-out views matched")
         return {k: r[k] for k in ("ply_path", "n_splats", "train_seconds", "steps", "peak_memory_gb", "ply_mb", "accepted",
                                   "heldout", "adopted_existing_output")}
 

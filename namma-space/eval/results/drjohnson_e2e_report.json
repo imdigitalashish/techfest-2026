@@ -34,6 +34,9 @@
    "pose_sanity": {
     "outlier_cam_frac": 0.0,
     "spread_ratio_p75_p50": 1.252,
+    "jump_frac_10x": 0.0038,
+    "camera_extent_over_depth": 2.608,
+    "ordered": false,
     "degenerate": false
    },
    "ate_vs_reference": {

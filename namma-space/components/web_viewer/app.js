@@ -5,7 +5,6 @@ import { PointerLockControls } from "three/addons/controls/PointerLockControls.j
 import { SparkRenderer, SplatMesh } from "@sparkjsdev/spark";
 import { NavGrid, planPath, pathLength } from "./nav.js";
 
-const T0 = performance.now();
 const params = new URLSearchParams(location.search);
 const base = new URL(params.get("scene") || "scene/manifest.json", location.href);
 const $ = (id) => document.getElementById(id);

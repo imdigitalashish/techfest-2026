@@ -33,9 +33,8 @@ def eval_renders(export_dir, image_dir):
     gts = {os.path.splitext(f)[0]: os.path.join(image_dir, f) for f in os.listdir(image_dir)}
     rows = []
     for r in sorted(glob.glob(os.path.join(export_dir, "**", "*.png"), recursive=True)):
-        stem = os.path.splitext(os.path.basename(r))[0]
-        key = next((k for k in sorted(gts, key=len, reverse=True) if k in stem or stem in k), None)
-        if key is None or "gt" in stem.lower():
+        key = os.path.splitext(os.path.basename(r))[0]
+        if key not in gts:  # exact stem match only (Brush names eval renders after the source image)
             continue
         pr, gt = cv2.imread(r), cv2.imread(gts[key])
         if pr is None or gt is None:
@@ -52,6 +51,13 @@ def eval_renders(export_dir, image_dir):
             "ssim": float(np.mean([r["ssim"] for r in rows])), "per_image": rows}
 
 
+def model_sha1(data_dir):
+    """Identity of the pose model a splat was trained on (images.bin holds every camera pose)."""
+    import hashlib
+    with open(os.path.join(data_dir, "sparse", "0", "images.bin"), "rb") as f:
+        return hashlib.sha1(f.read()).hexdigest()
+
+
 def finalize(data_dir, out, steps, max_splats, eval_every_n=8, adopted=False):
     """Build the SplatModel record from a finished Brush output dir (also used to adopt a completed run
     after the orchestrator was killed, so the GPU work is never repeated)."""
@@ -65,10 +71,13 @@ def finalize(data_dir, out, steps, max_splats, eval_every_n=8, adopted=False):
         head = f.read(4096).decode("ascii", "ignore")
     nsp = int(re.search(r"element vertex (\d+)", head).group(1))
     ev = eval_renders(out, os.path.join(data_dir, "images"))
+    n_img = len([f for f in os.listdir(os.path.join(data_dir, "images")) if not f.startswith(".")])
+    expected = -(-n_img // eval_every_n)
     res = {"ply_path": ply, "frame": "colmap", "n_splats": nsp, "train_seconds": float(real.group(1)),
            "steps": steps, "max_splats": max_splats, "peak_memory_gb": round(int(peak.group(1)) / 1e9, 2) if peak else None,
            "ply_mb": round(os.path.getsize(ply) / 1e6, 1),
-           "accepted": ev.get("n", 0) > 0,  # no matched held-out renders = quality unverified = not accepted
+           # quality is verified only if (almost) every held-out view was rendered and matched exactly
+           "accepted": ev.get("n", 0) >= max(3, int(0.8 * expected)), "heldout_expected": expected,
            "heldout": {k: v for k, v in ev.items() if k != "per_image"} | {"split": f"every {eval_every_n}th image (Brush eval split)"},
            "brush": "v0.3.0 (Metal)", "adopted_existing_output": adopted}
     with open(os.path.join(out, "splat.json"), "w") as f:
@@ -88,6 +97,8 @@ def train(data_dir, out, steps=15000, max_splats=2_000_000, eval_every_n=8, seed
         p = subprocess.run(cmd, stdout=logf, stderr=subprocess.STDOUT)
     if p.returncode != 0 or not os.path.exists(os.path.join(out, f"splat_{steps}.ply")):
         raise RuntimeError(f"Brush failed (exit {p.returncode}); see {out}/brush.log")
+    with open(os.path.join(out, "export_manifest.json"), "w") as f:  # binds this export to its exact inputs
+        json.dump({"model_sha1": model_sha1(data_dir), "steps": steps, "max_splats": max_splats}, f)
     return finalize(data_dir, out, steps, max_splats, eval_every_n)
 
 

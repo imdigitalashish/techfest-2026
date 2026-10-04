@@ -53,9 +53,14 @@ def pose_sanity(rec, ordered=True):
     spread = p75 / max(p50, 1e-9)
     steps = np.linalg.norm(np.diff(C, axis=0), axis=1)
     jump = float(np.mean(steps > 10 * max(float(np.median(steps)), 1e-12))) if len(steps) else 0.0
-    degenerate = out_frac > 0.05 or (jump > 0.05 if ordered else spread > 3.5)
+    P = np.array([p.xyz for p in rec.points3D.values()]) if rec.num_points3D() else C
+    cam_extent = float(np.linalg.norm(np.percentile(C, 95, axis=0) - np.percentile(C, 5, axis=0)))
+    depth = float(np.median(np.linalg.norm(P - np.median(C, axis=0), axis=1)))
+    collapsed = cam_extent < 0.05 * max(depth, 1e-12)  # all cameras at ~one point (or a pure-rotation capture)
+    degenerate = out_frac > 0.05 or collapsed or (jump > 0.05 if ordered else spread > 3.5)
     return {"outlier_cam_frac": round(out_frac, 4), "spread_ratio_p75_p50": round(spread, 3),
-            "jump_frac_10x": round(jump, 4), "ordered": ordered, "degenerate": bool(degenerate)}
+            "jump_frac_10x": round(jump, 4), "camera_extent_over_depth": round(cam_extent / max(depth, 1e-12), 3),
+            "ordered": ordered, "degenerate": bool(degenerate)}
 
 
 def _mean_reproj(rec):

@@ -148,7 +148,7 @@ def estimate_alignment(sc: ColmapScene, camera_height_m: float | None = None,
         "points_below_floor_frac": float(np.mean(Pa[:, 1] < -0.05)),
         "n_points_used": int(len(P)), "n_cameras": int(len(sc.names)),
         "n_camera_outliers": int((~cam_ok).sum()), "n_point_outliers": int((~pt_ok).sum()),
-        "ok": bool(np.mean(np.abs(Pa[:, 1]) < 0.03) >= 0.02),  # a floor must exist; else posing/alignment failed
+        "ok": bool(np.mean(np.abs(Pa[:, 1]) < 0.03) >= 0.02 and s > 0 and np.mean(Pa[:, 1] < -0.05) < 0.2),  # floor found, upright, cameras above it
         "runtime_s": time.perf_counter() - t0,
         "frame": "y-up, floor y=0, metres (approximate if scale_source is ASSUMED)",
     }

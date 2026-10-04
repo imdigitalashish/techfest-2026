@@ -1,0 +1,44 @@
+{
+ "what": "Failed first posing on drjohnson (sequential matching on an unordered photo set) \u2014 archived evidence",
+ "posing": {
+  "n_frames": 263,
+  "n_registered": 262,
+  "registration_rate": 0.9961977186311787,
+  "n_points3D": 12316,
+  "mean_reprojection_error_px": 0.6609838543601362,
+  "mapper": "global",
+  "matcher": "sequential(overlap=20,quadratic)",
+  "timings_s": {
+   "extract_s": 219.44,
+   "match_s": 114.66,
+   "map_s": 22.95,
+   "undistort_s": 3.24
+  }
+ },
+ "pose_sanity_v2": {
+  "outlier_cam_frac": 0.1145,
+  "spread_ratio_p75_p50": 5.37,
+  "jump_frac_10x": 0.2912,
+  "camera_extent_over_depth": 391.869,
+  "ordered": false,
+  "degenerate": true
+ },
+ "ate_vs_reference": {
+  "n_matched": 262,
+  "ate_rmse_ref_units": 3.680458427707813,
+  "ate_median_ref_units": 3.439638868847381,
+  "ate_rmse_pct_of_extent": 33.436918971425236,
+  "n_ref_images": 263
+ },
+ "splat_on_these_poses": {
+  "heldout": {
+   "n": 33,
+   "psnr": 18.261151010514133,
+   "ssim": 0.6745864778824177,
+   "split": "every 8th image (Brush eval split)"
+  },
+  "n_splats": 1075805,
+  "train_seconds": 1446.2
+ },
+ "fixed_by": "exhaustive matching for photo sets + pose-sanity gate (see drjohnson_e2e_report.json)"
+}

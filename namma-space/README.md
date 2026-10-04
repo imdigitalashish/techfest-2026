@@ -1,7 +1,7 @@
 # Namma Space — phone capture → navigable 3D web twin
 
 Walk through a space once with a phone. One command turns the video into a photoreal 3D Gaussian-splat twin that anyone can explore in a browser, with no install:
-- first-person WASD + mouse movement, with collisions against walls and furniture;
+- first-person WASD + mouse movement, constrained to the walkable map (obstacle completeness is still limited);
 - click and search points of interest;
 - follow an obstacle-aware walking path on the floor.
 

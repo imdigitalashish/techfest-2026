@@ -105,7 +105,7 @@ Same paths as §4. Take one photo every half step (~30–40 cm), with each photo
 - **Two people:** a *camera operator* (follows §4) and a *navigator* (plans the route on a sketch, keeps people out of frame, notes room numbers).
 - **Spine first:** capture the corridors as one continuous "spine" clip, with voice tags at every door. Then capture each room as its own clip that **starts and ends in the corridor** (re-film the doorway on the way in and out). That overlap is what joins the rooms automatically.
 - **Prioritise:** the rooms named in the task first, then corridors and landmarks (stairs, lifts, washrooms, exits), then everything else.
-- **Upload while capturing:** after each clip, the navigator starts the upload, so reconstruction runs in parallel with capture.
+- **Upload while capturing:** after each clip, the navigator starts the upload, which saves transfer time. Processing per clip while capture continues is planned, not yet built.
 - **Budget (estimate, to be measured in rehearsal):** ~1 min of video per 10 m of corridor, ~2 min per classroom, ~4 min per large hall.
 
 ## 10. Why each rule exists (for judges and teammates)
