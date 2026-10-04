@@ -32,6 +32,21 @@ def git_commit() -> str:
         return "unknown"
 
 
+def data_provenance(data: dict, model_id: str) -> dict:
+    """Digest of the exact token blocks used (train + eval, every domain) and the cached model snapshot revision."""
+    import hashlib
+    from pathlib import Path as _P
+
+    h = hashlib.sha1()
+    for d in sorted(data):
+        for part in data[d]:
+            h.update(d.encode())
+            h.update(part.numpy().tobytes())
+    ref = _P.home() / ".cache/huggingface/hub" / f"models--{model_id.replace('/', '--')}" / "refs" / "main"
+    rev = ref.read_text().strip()[:12] if ref.exists() else "unknown"
+    return {"data_digest": h.hexdigest()[:12], "model_revision": rev}
+
+
 def code_provenance() -> dict:
     """sha1 over every .py file under components/ and eval/ (what actually ran), plus whether any differs from HEAD."""
     import hashlib
@@ -57,6 +72,7 @@ def main() -> None:
     ap.add_argument("--rounds", type=int, default=12)
     ap.add_argument("--exclude", nargs="*", default=[])
     ap.add_argument("--tag", default="v1")
+    ap.add_argument("--alpha", type=float, default=32.0, help="PEFT lora_alpha (scale = alpha / r_max)")
     ap.add_argument("--skip-existing", action="store_true",
                     help="skip (strategy, seed) pairs already present in the output jsonl")
     args = ap.parse_args()
@@ -75,14 +91,14 @@ def main() -> None:
     if not todo:
         print("nothing to run", flush=True)
         return
-    cfg0 = ExperimentConfig(scenario=args.scenario, rounds=args.rounds, exclude=tuple(args.exclude))
+    cfg0 = ExperimentConfig(scenario=args.scenario, rounds=args.rounds, exclude=tuple(args.exclude), alpha=args.alpha)
     lm, data = load_world(cfg0)
-    env = {"commit": git_commit(), **code_provenance(), "torch": torch.__version__, "device": str(lm.device),
-           "machine": platform.machine()}
+    env = {"commit": git_commit(), **code_provenance(), **data_provenance(data, cfg0.model_id),
+           "torch": torch.__version__, "device": str(lm.device), "machine": platform.machine()}
     for seed, strat in todo:
         if True:
             cfg = ExperimentConfig(strategy=strat, scenario=args.scenario, seed=seed, rounds=args.rounds,
-                                   exclude=tuple(args.exclude))
+                                   exclude=tuple(args.exclude), alpha=args.alpha)
             summary, rounds_log = run_experiment(cfg, lm, data)
             summary["env"] = env
             with out_jsonl.open("a") as f:
@@ -91,7 +107,7 @@ def main() -> None:
             log_path.write_text(json.dumps(rounds_log))
             print(f"DONE {strat} {args.scenario} s{seed}: macro {summary['base_macro_loss']:.4f}→"
                   f"{summary['final_macro_loss']:.4f} worst={summary['final_worst_loss']:.4f} "
-                  f"dom_c0={summary['dominance_c0']:.3f} err={summary['aggregation_error']:.3f} "
+                  f"dom_c0={summary['dominance_c0']:.3f} err={summary['aggregation_error']:.3f} alpha={args.alpha:g} "
                   f"wall={summary['wall_s']:.0f}s", flush=True)
 
 

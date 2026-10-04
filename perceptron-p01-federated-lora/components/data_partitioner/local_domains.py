@@ -104,7 +104,20 @@ def _blocks(tokenizer, docs: list[str], seq_len: int, max_blocks: int) -> torch.
 
 def build_domain_blocks(tokenizer, domain: str, seq_len: int = 128, max_train_blocks: int = 2400,
                         n_eval_blocks: int = 48, model_tag: str = "model") -> tuple[torch.Tensor, torch.Tensor]:
-    """Return (train_blocks [N, T], eval_blocks [M, T]) for one domain, cached in .data/."""
+    """Return (train_blocks [N, T], eval_blocks [M, T]) for one domain.
+
+    Prefers the committed archive eval/data/blocks_<tag>_T.._N.._E...npz (the exact blocks every reported run used;
+    rebuilding from source files can differ because site-packages content changes with installed packages), then the
+    .data/ cache, then a rebuild from local files.
+    """
+    import numpy as np
+
+    archive = ROOT / "eval" / "data" / f"blocks_{model_tag}_T{seq_len}_N{max_train_blocks}_E{n_eval_blocks}.npz"
+    if archive.exists():
+        z = np.load(archive)
+        if f"{domain}_train" in z:
+            return (torch.from_numpy(z[f"{domain}_train"].astype(np.int64)),
+                    torch.from_numpy(z[f"{domain}_eval"].astype(np.int64)))
     DATA_DIR.mkdir(exist_ok=True)
     cache = DATA_DIR / f"blocks_{domain}_{model_tag}_T{seq_len}_N{max_train_blocks}_E{n_eval_blocks}.pt"
     if cache.exists():

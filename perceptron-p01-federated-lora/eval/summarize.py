@@ -39,18 +39,35 @@ LABEL = {
 DATA = {p.domain: p.n_train_blocks for p in DEFAULT_PROFILES}
 
 
-def tcrit(n: int) -> float:
+def tcrit(n: int, k: int = 1) -> float:
+    """Two-sided 95 % t critical value; k > 1 applies a Bonferroni correction for k simultaneous intervals."""
     from scipy import stats
 
-    return float(stats.t.ppf(0.975, n - 1))
+    return float(stats.t.ppf(1 - 0.05 / (2 * k), n - 1))
 
 
-def ci(vals: list[float]) -> tuple[float, float | None, float | None]:
+def ci(vals: list[float], k: int = 1) -> tuple[float, float | None, float | None]:
     m = statistics.mean(vals)
     if len(vals) < 2:
         return m, None, None
-    h = tcrit(len(vals)) * statistics.stdev(vals) / len(vals) ** 0.5
+    h = tcrit(len(vals), k) * statistics.stdev(vals) / len(vals) ** 0.5
     return m, m - h, m + h
+
+
+def validate(runs: list[dict], path: Path) -> dict:
+    """Refuse to pool duplicate (strategy, seed) rows or dirty-tree runs; return the provenance table."""
+    seen, prov = set(), defaultdict(set)
+    for r in runs:
+        key = (r["strategy"], r["seed"])
+        if key in seen:
+            raise SystemExit(f"{path.name}: duplicate run {key} — refusing to pool")
+        seen.add(key)
+        env = r.get("env", {})
+        if env.get("dirty"):
+            raise SystemExit(f"{path.name}: run {key} was produced from a dirty tree — refusing to pool")
+        prov[r["strategy"]].add((env.get("commit", "n/a"), env.get("code_sha", "n/a"), env.get("data_digest", "n/a"),
+                                 env.get("model_revision", "n/a")))
+    return prov
 
 
 def micro(per_domain: dict[str, float]) -> float:
@@ -79,14 +96,23 @@ def scenario_section(tag: str, scen: str, runs: list[dict], canon: dict) -> list
     for d, v in base_dom.items():
         canon[f"base.{d}"] = v
     cfg = runs[0]["config"]
+    prov = validate(runs, OUT / f"{tag}_{scen}.jsonl")
     shas = sorted({r.get("env", {}).get("code_sha", "n/a") for r in runs})
-    dirty = any(r.get("env", {}).get("dirty", False) for r in runs)
+    dirty = False
     strats = [s for s in ORDER if s in by] + [s for s in by if s not in ORDER]
     L = [f"## Scenario `{scen}` (`{tag}_{scen}.jsonl`)", "",
          f"{cfg['model_id']}, LoRA on {', '.join(cfg['targets'])}, r_max {cfg['r_max']}, α {cfg['alpha']}, "
          f"{cfg['rounds']} rounds, batch {cfg['batch_size']}×{cfg['seq_len']}, lr {cfg['lr']}. "
          f"Untuned model: macro **{base:.4f}**, micro {micro(base_dom):.4f}. Code: `{', '.join(shas)}`"
-         f"{' (DIRTY TREE)' if dirty else ''}. Loss = next-token cross-entropy (nats/token) on held-out blocks.", "",
+         f". Loss = next-token cross-entropy (nats/token) on held-out blocks.", "",
+         "Provenance (commit · code_sha · data_digest · model_revision) per strategy: "
+         + "; ".join(f"{s}: " + ", ".join("·".join(x) for x in sorted(v)) for s, v in sorted(prov.items())) + ". "
+         "Different code hashes are accepted only because `git diff` between them touches analysis scripts and new "
+         "strategy registrations, and reruns across revisions are bit-identical (thought node 11:45).", "",
+         "Columns: macro = mean domain loss; micro = data-volume-weighted loss (the objective n_k-weighted FedAvg "
+         "optimises); c0 share (proj.) = <c_0,P>/‖P‖² (unbounded); c0 share (norm) = ‖c_0‖/Σ‖c_j‖ (bounded, fair share "
+         "0.2); agg. error = ‖P−Σc_k‖/‖Σc_k‖ of the full update; max spike = largest rise between evaluations every 3 "
+         "rounds; upload = logical fp32 uplink only.", "",
          "| Strategy | n | macro ↓ (mean ± sd) | Δ macro vs starter, 95 % CI | worst domain ↓ | micro ↓ | c0 share (proj.) | "
          "c0 share (norm) | agg. error | max spike | upload MB / device |",
          "|---|---|---|---|---|---|---|---|---|---|---|"]
@@ -103,7 +129,7 @@ def scenario_section(tag: str, scen: str, runs: list[dict], canon: dict) -> list
                       f"{k}.worst_mean": statistics.mean(r["final_worst_loss"] for r in rs),
                       f"{k}.micro_mean": statistics.mean(mic),
                       f"{k}.c0_share_mean": statistics.mean(r["dominance_c0"] for r in rs),
-                      f"{k}.c0_norm_mean": statistics.mean(r.get("dominance_c0_norm", 0.0) for r in rs),
+
                       f"{k}.agg_err_mean": statistics.mean(r["aggregation_error"] for r in rs),
                       f"{k}.max_spike_max": max(r["max_spike"] for r in rs),
                       f"{k}.upload_mb_mean": up,
@@ -112,14 +138,20 @@ def scenario_section(tag: str, scen: str, runs: list[dict], canon: dict) -> list
             canon.update({f"{k}.d_vs_starter_mean": dm})
             if dlo is not None:
                 canon.update({f"{k}.d_vs_starter_lo": dlo, f"{k}.d_vs_starter_hi": dhi})
+        nsh = [r["dominance_c0_norm"] for r in rs if "dominance_c0_norm" in r]
+        if len(nsh) == len(rs):
+            canon[f"{k}.c0_norm_mean"] = statistics.mean(nsh)
         tr = [r["truncation_error"] for r in rs if r.get("truncation_error") is not None]
         if tr:
             canon[f"{k}.trunc_err_mean"] = statistics.mean(tr)
         L.append(f"| {LABEL.get(s, s)} | {len(rs)} | {statistics.mean(mac):.4f} ± "
                  f"{(statistics.stdev(mac) if len(mac) > 1 else 0):.4f} | "
                  f"{fmt_ci(dm, dlo, dhi) if dm is not None else '—'} | {canon[f'{k}.worst_mean']:.4f} | "
-                 f"{canon[f'{k}.micro_mean']:.4f} | {canon[f'{k}.c0_share_mean']:.3f} | {canon[f'{k}.c0_norm_mean']:.3f} | "
-                 f"{100 * canon[f'{k}.agg_err_mean']:.1f} % | {canon[f'{k}.max_spike_max']:.4f} | {up:.2f} |")
+                 f"{canon[f'{k}.micro_mean']:.4f} | {canon[f'{k}.c0_share_mean']:.3f} | "
+                 f"{format(canon[f'{k}.c0_norm_mean'], '.3f') if f'{k}.c0_norm_mean' in canon else 'n/a'} | "
+                 f"{100 * canon[f'{k}.agg_err_mean']:.1f} %"
+                 f"{(' (served trunc. ' + format(100 * canon[f'{k}.trunc_err_mean'], '.1f') + ' %)') if f'{k}.trunc_err_mean' in canon else ''} | "
+                 f"{canon[f'{k}.max_spike_max']:.4f} | {up:.2f} |")
     # spike vs every published baseline, paired
     L += ["", f"**AnchorLoRA vs each baseline** (paired by seed; Δ = AnchorLoRA − baseline; negative = AnchorLoRA better):", "",
           "| Baseline | shared seeds | Δ macro, 95 % CI | Δ worst domain, 95 % CI | Δ micro, 95 % CI | Δ per seed (macro) |",
@@ -141,14 +173,20 @@ def scenario_section(tag: str, scen: str, runs: list[dict], canon: dict) -> list
                  f"{fmt_ci(*cu)} | " + ", ".join(f"s{s}: {v:+.4f}" for s, v in pm) + " |")
     # per-domain gains vs the untuned model
     doms = list(base_dom)
-    L += ["", "**Per-domain gain vs the untuned model** (untuned − final, nats/token; mean [95 % CI] over seeds; "
-              f"device data volume: {', '.join(f'{d} {DATA[d]}' for d in doms)} blocks):", "",
-          "| Strategy | " + " | ".join(doms) + " | domains with CI > 0 |", "|---" * (len(doms) + 2) + "|"]
+    L += ["", "**Per-domain gain vs the untuned model** (untuned − final, nats/token; mean [marginal 95 % CI] over seeds; "
+              f"device data volume: {', '.join(f'{d} {DATA[d]}' for d in doms)} blocks). Last column: domains whose "
+              "lower bound is > 0, marginal / Bonferroni-simultaneous over the 5 domains (exploratory; the pre-specified "
+              "primary comparison is the paired macro Δ vs the starter):", "",
+          "| Strategy | " + " | ".join(doms) + " | domains > 0 (marg. / Bonf.) |", "|---" * (len(doms) + 2) + "|"]
     for s in strats:
-        cells, pos = [], 0
+        cells, pos, posb = [], 0, 0
         for d in doms:
             g = [base_dom[d] - r["final_per_domain_loss"][d] for r in by[s]]
             m, lo, hi = ci(g)
+            _, blo, bhi = ci(g, k=len(doms))
+            if blo is not None:
+                canon[f"{scen}.{s}.{d}.gain_lo_bonf"], canon[f"{scen}.{s}.{d}.gain_hi_bonf"] = blo, bhi
+                posb += blo > 0
             canon[f"{scen}.{s}.{d}.gain_mean"] = m
             canon[f"{scen}.{s}.{d}.final_mean"] = statistics.mean(r["final_per_domain_loss"][d] for r in by[s])
             if lo is not None:
@@ -156,7 +194,9 @@ def scenario_section(tag: str, scen: str, runs: list[dict], canon: dict) -> list
                 pos += lo > 0
             cells.append(fmt_ci(m, lo, hi, nd=3))
         canon[f"{scen}.{s}.domains_ci_pos"] = pos
-        L.append(f"| {s} | " + " | ".join(cells) + f" | {pos if len(by[s]) > 1 else '—'} / {len(doms)} |")
+        canon[f"{scen}.{s}.domains_ci_pos_bonf"] = posb
+        L.append(f"| {s} | " + " | ".join(cells)
+                 + (f" | {pos} / {posb} of {len(doms)} |" if len(by[s]) > 1 else " | — |"))
     # per-domain paired difference spike vs starter
     if SPIKE in by and STARTER in by:
         L += ["", "**Per-domain paired Δ, AnchorLoRA − starter** (negative = AnchorLoRA better):", "",

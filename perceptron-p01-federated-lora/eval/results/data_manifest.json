@@ -1,0 +1,98 @@
+{
+ "tokenizer": "HuggingFaceTB/SmolLM2-135M",
+ "block_tokens": 128,
+ "domains": {
+  "wiki": {
+   "train_docs_used": 113,
+   "eval_docs_used": 3,
+   "train_blocks": 2400,
+   "eval_blocks": 48,
+   "eval_tokens": 6144,
+   "train_eval_exact_duplicates": 0,
+   "blocks_sha1": "249e635de23e",
+   "matches_cached_blocks": true,
+   "eval_doc_sha1": [
+    "149fde5ef1fdaca89131a2d838c67c95c10bac26",
+    "6d8d05d1a0b93f5cf189189ec858110d9acba0d4",
+    "9e36af48593d6eb2349c38cb5ddea1eec7014d41"
+   ]
+  },
+  "pycode": {
+   "train_docs_used": 146,
+   "eval_docs_used": 3,
+   "train_blocks": 2400,
+   "eval_blocks": 48,
+   "eval_tokens": 6144,
+   "train_eval_exact_duplicates": 0,
+   "blocks_sha1": "4aff7421185c",
+   "matches_cached_blocks": true,
+   "eval_doc_sha1": [
+    "7fb172145844f6ccece12f751400360a3735d281",
+    "3484da262d403ed42d641ee1e9eb229d8f0b841d",
+    "9baf6bff29c871ecf1078be94ba83ffc38d637ad"
+   ]
+  },
+  "cheaders": {
+   "train_docs_used": 400,
+   "eval_docs_used": 3,
+   "train_blocks": 2400,
+   "eval_blocks": 48,
+   "eval_tokens": 6144,
+   "train_eval_exact_duplicates": 0,
+   "blocks_sha1": "129bae70bf1c",
+   "matches_cached_blocks": true,
+   "eval_doc_sha1": [
+    "5a350846ab91f07750bfec975b1e91ae056e51fc",
+    "d7e01ffce4098243b1743b900dfde22847c79b92",
+    "5bb56c9927cb48096463aede3a289b2e35bf38bc"
+   ]
+  },
+  "readmes": {
+   "train_docs_used": 102,
+   "eval_docs_used": 3,
+   "train_blocks": 1530,
+   "eval_blocks": 48,
+   "eval_tokens": 6144,
+   "train_eval_exact_duplicates": 0,
+   "blocks_sha1": "3fdb8389942b",
+   "matches_cached_blocks": false,
+   "eval_doc_sha1": [
+    "50d9443b82d8bc02d623130d0a1b5618d0b3f170",
+    "26fd837d1d80ba4f7c45562a704aba6cd0e88bef",
+    "da7e34b68fdd7171fa5274fc872d2204debd7cda"
+   ]
+  },
+  "manpages": {
+   "train_docs_used": 124,
+   "eval_docs_used": 2,
+   "train_blocks": 2400,
+   "eval_blocks": 48,
+   "eval_tokens": 6144,
+   "train_eval_exact_duplicates": 0,
+   "blocks_sha1": "9dd32350b2df",
+   "matches_cached_blocks": true,
+   "eval_doc_sha1": [
+    "5030bf97fd0685475f87905fd7b39a6fc2badaf1",
+    "f05539ee6d85a724b8ce47a06ad98e95c7b95452"
+   ]
+  }
+ },
+ "cross_domain_exact_duplicates": {
+  "wiki~pycode": 0,
+  "wiki~cheaders": 0,
+  "wiki~readmes": 0,
+  "wiki~manpages": 0,
+  "pycode~cheaders": 0,
+  "pycode~readmes": 0,
+  "pycode~manpages": 0,
+  "cheaders~readmes": 0,
+  "cheaders~manpages": 0,
+  "readmes~manpages": 0
+ },
+ "note": "non-wiki split = sha1(absolute path) % 10 == 0 \u2192 eval; this manifest pins the exact documents used",
+ "committed_blocks": {
+  "path": "eval/data/blocks_smollm2-135m_T128_N2400_E48.npz",
+  "sha1_12": "c5a6afcf6d80",
+  "note": "exact blocks used by every reported run (built 06:20 IST from the then-installed packages); readmes differs from a fresh rebuild because installing flwr (07:55) added READMEs"
+ }
+}

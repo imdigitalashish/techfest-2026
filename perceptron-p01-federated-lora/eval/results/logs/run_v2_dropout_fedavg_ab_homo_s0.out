@@ -1,0 +1,5 @@
+[fedavg_ab_homo|dropout|s0] r03 macro=2.7044 worst=3.3807 share_c0=1.04 err=0.087 reporters=c0,c1,c2,c3
+[fedavg_ab_homo|dropout|s0] r06 macro=2.7427 worst=3.4059 share_c0=1.01 err=0.046 reporters=c0,c1,c3
+[fedavg_ab_homo|dropout|s0] r09 macro=2.7831 worst=3.4818 share_c0=1.00 err=0.000 reporters=c0
+[fedavg_ab_homo|dropout|s0] r12 macro=2.7346 worst=3.4183 share_c0=1.00 err=0.044 reporters=c0,c1,c2,c3
+DONE fedavg_ab_homo dropout s0: macro 2.7063→2.7346 worst=3.4183 dom_c0=1.017 err=0.055 wall=150s

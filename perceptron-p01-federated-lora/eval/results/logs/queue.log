@@ -1,0 +1,53 @@
+11:21:35 queue runner up (pid 44556), memory level 39%
+11:21:35 START ('v2', 'dropout', 'anchor_full', 0)
+11:21:55 PAUSE pid 44588: memory level 23% < 25%
+11:22:05 RESUME pid 44588: memory level 31% > 30%
+11:22:26 PAUSE pid 44588: memory level 23% < 25%
+11:22:36 RESUME pid 44588: memory level 32% > 30%
+11:23:26 PAUSE pid 44588: memory level 23% < 25%
+11:23:36 RESUME pid 44588: memory level 34% > 30%
+11:23:56 PAUSE pid 44588: memory level 23% < 25%
+11:24:06 RESUME pid 44588: memory level 42% > 30%
+11:24:16    DONE anchor_full dropout s0: macro 2.7063→2.6651 worst=3.5153 dom_c0=0.204 err=0.000 wall=135s
+11:24:16 END ('v2', 'dropout', 'anchor_full', 0) rc=0 wall=160s
+11:24:16 START ('v2', 'dropout', 'fedavg_ab_homo', 0)
+11:24:26 PAUSE pid 46168: memory level 23% < 25%
+11:24:36 RESUME pid 46168: memory level 36% > 30%
+11:24:56 PAUSE pid 46168: memory level 23% < 25%
+11:25:06 RESUME pid 46168: memory level 31% > 30%
+11:25:26 PAUSE pid 46168: memory level 22% < 25%
+11:25:36 RESUME pid 46168: memory level 31% > 30%
+11:25:56 PAUSE pid 46168: memory level 24% < 25%
+11:26:06 RESUME pid 46168: memory level 35% > 30%
+11:26:56    DONE fedavg_ab_homo dropout s0: macro 2.7063→2.7346 worst=3.4183 dom_c0=1.017 err=0.055 wall=150s
+11:26:56 END ('v2', 'dropout', 'fedavg_ab_homo', 0) rc=0 wall=160s
+11:26:56 START ('v2', 'dropout', 'ffa_lora', 0)
+11:27:26 PAUSE pid 48259: memory level 23% < 25%
+11:27:36 RESUME pid 48259: memory level 36% > 30%
+11:28:56    DONE ffa_lora dropout s0: macro 2.7063→2.7142 worst=3.4016 dom_c0=0.992 err=0.000 wall=110s
+11:28:56 END ('v2', 'dropout', 'ffa_lora', 0) rc=0 wall=120s
+11:28:56 START ('v2', 'dropout', 'flexlora', 0)
+11:30:56    DONE flexlora dropout s0: macro 2.7063→2.7363 worst=3.4089 dom_c0=0.944 err=0.000 wall=107s
+11:30:56 END ('v2', 'dropout', 'flexlora', 0) rc=0 wall=120s
+11:30:56 START ('v2', 'dropout', 'anchor_full', 1)
+11:32:46    DONE anchor_full dropout s1: macro 2.7063→2.6651 worst=3.5153 dom_c0=0.224 err=0.000 wall=98s
+11:32:46 END ('v2', 'dropout', 'anchor_full', 1) rc=0 wall=110s
+11:32:46 START ('v2', 'dropout', 'fedavg_ab_homo', 1)
+11:34:37    DONE fedavg_ab_homo dropout s1: macro 2.7063→2.7535 worst=3.4574 dom_c0=1.017 err=0.057 wall=98s
+11:34:37 END ('v2', 'dropout', 'fedavg_ab_homo', 1) rc=0 wall=110s
+11:34:37 START ('v2', 'dropout', 'ffa_lora', 1)
+11:36:27    DONE ffa_lora dropout s1: macro 2.7063→2.7186 worst=3.4065 dom_c0=0.993 err=0.000 wall=100s
+11:36:27 END ('v2', 'dropout', 'ffa_lora', 1) rc=0 wall=110s
+11:36:27 START ('v2', 'dropout', 'flexlora', 1)
+11:37:57 PAUSE pid 53266: memory level 24% < 25%
+11:38:07 RESUME pid 53266: memory level 35% > 30%
+11:38:37    DONE flexlora dropout s1: macro 2.7063→2.7533 worst=3.4445 dom_c0=0.949 err=0.000 wall=124s
+11:38:37 END ('v2', 'dropout', 'flexlora', 1) rc=0 wall=130s
+11:38:37 START ('v2', 'dropout', 'anchor_full', 2)
+11:39:47 PAUSE pid 53846: memory level 24% < 25%
+11:40:17 RESUME pid 53846: memory level 33% > 30%
+11:40:57 PAUSE pid 53846: memory level 24% < 25%
+11:41:07 RESUME pid 53846: memory level 34% > 30%
+11:41:17    DONE anchor_full dropout s2: macro 2.7063→2.6646 worst=3.5121 dom_c0=0.222 err=0.000 wall=155s
+11:41:17 END ('v2', 'dropout', 'anchor_full', 2) rc=0 wall=160s
+11:41:17 START ('v2', 'dropout', 'fedavg_ab_homo', 2)

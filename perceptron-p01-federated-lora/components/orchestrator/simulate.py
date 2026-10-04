@@ -37,6 +37,10 @@ class ExperimentConfig:
     strategy_overrides: dict = field(default_factory=dict)
 
 
+def _fmt_err(v) -> str:
+    return "n/a" if v is None else f"{v:.3f}"
+
+
 def load_world(cfg: ExperimentConfig):
     """Load the shared base model and every domain's token blocks once."""
     from transformers import AutoTokenizer
@@ -107,7 +111,7 @@ def run_experiment(cfg: ExperimentConfig, lm, data, log=print) -> tuple[dict, li
             entry["eval"] = er
             log(f"[{cfg.strategy}|{cfg.scenario}|s{cfg.seed}] r{t + 1:02d} macro={er['macro_loss']:.4f} "
                 f"worst={er['worst_loss']:.4f} share_c0={agg['influence_share'].get('c0', float('nan')):.2f} "
-                f"err={agg['aggregation_error']:.3f} reporters={','.join(agg['reporters'])}")
+                f"err={_fmt_err(agg['aggregation_error'])} reporters={','.join(agg['reporters'])}")
         rounds_log.append(entry)
 
     final = evals[-1]["per_domain_loss"]
@@ -129,7 +133,8 @@ def run_experiment(cfg: ExperimentConfig, lm, data, log=print) -> tuple[dict, li
         dominance_max=sum(max(s.values()) for s in shares) / max(1, len(shares)),
         dominance_c0_norm=sum(s.get("c0", 0.0) for s in nshares) / max(1, len(nshares)),
         weak_gain=sum(base[d] - final[d] for d in weak_domains) / len(weak_domains),
-        aggregation_error=sum(r["aggregation"]["aggregation_error"] for r in rounds_log) / len(rounds_log),
+        aggregation_error=(lambda v: sum(v) / len(v) if v else 0.0)(
+            [r["aggregation"]["aggregation_error"] for r in rounds_log if r["aggregation"]["aggregation_error"] is not None]),
         truncation_error=(sum(truncs) / len(truncs)) if truncs else None,
         upload_mb={c: b / 1e6 for c, b in upload.items()},
         wall_s=time.time() - t_start,

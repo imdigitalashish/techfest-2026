@@ -57,22 +57,25 @@ def product_space_report(layers, delta: Callable[[str], torch.Tensor], cids: lis
             sq[c] += vals[3 + len(cids) + i]
     norms = {c: math.sqrt(v) for c, v in sq.items()}
     tot = sum(norms.values())
+    resid = math.sqrt(err)
+    # relative error is undefined when the intended contributions cancel to ~0 (review 2026-10-04, item 6)
+    rel = resid / math.sqrt(cc) if cc > 1e-24 else (0.0 if resid == 0.0 else None)
     return dict(influence_share={c: (d / pp if pp > 0 else 0.0) for c, d in dots.items()},
                 norm_share={c: (v / tot if tot > 0 else 0.0) for c, v in norms.items()},
-                aggregation_error=math.sqrt(err) / math.sqrt(cc) if cc > 0 else 0.0,
+                aggregation_error=rel, aggregation_residual=resid,
                 update_norm=math.sqrt(pp))
 
 
 EMPTY_REPORT = dict(reporters=[], used_memory_for=[], weights={}, influence_share={}, norm_share={},
-                    aggregation_error=0.0, update_norm=0.0)
+                    aggregation_error=0.0, aggregation_residual=0.0, update_norm=0.0)
 
 
 def _pad_pair(pair: tuple[torch.Tensor, torch.Tensor], ref: tuple[torch.Tensor, torch.Tensor]):
-    """Zero-pad a sliced (A_k [r_k, d_in], B_k [d_out, r_k]) to the global (r_max) shapes of `ref`."""
+    """Zero-pad a sliced (A_k [r_k, d_in], B_k [d_out, r_k]) to the global (r_max) shapes and device of `ref`."""
     a, b = pair
     A_ref, B_ref = ref
     if a.shape == A_ref.shape:
-        return a, b
+        return a.to(A_ref.device), b.to(B_ref.device)  # no-op in-process; needed when payloads arrive on CPU (Flower)
     A = torch.zeros_like(A_ref)
     B = torch.zeros_like(B_ref)
     A[: a.shape[0]] = a.to(A.device)
@@ -183,7 +186,7 @@ class Anchor:
         for k, v in payload.items():
             full = ref[k]
             if v.shape[1] == full.shape[1]:
-                out[k] = v
+                out[k] = v.to(full.device)  # no-op in-process; needed when payloads arrive on CPU (Flower)
             else:
                 z = torch.zeros_like(full)
                 z[:, : v.shape[1]] = v.to(full.device)
@@ -327,6 +330,9 @@ class FlexLoRA:
 STRATEGIES: dict[str, Callable[[], object]] = {
     # literal starter baseline: PEFT LoRA r=8 on every device + FedAvg(n_k) over A and B; late devices dropped
     "fedavg_ab_homo": lambda: FedAvgAB(name="fedavg_ab_homo", homogeneous_rank=8),
+    # control (code review item 2): the starter, but it also keeps the partial work of deadline-cut devices
+    "fedavg_ab_homo_partial": lambda: FedAvgAB(name="fedavg_ab_homo_partial", homogeneous_rank=8,
+                                               accept_partial=True),
     # published: FFA-LoRA (ICLR 2024, arXiv 2403.12313) — freeze the random A, FedAvg(n_k) over B, homogeneous r=8
     "ffa_lora": lambda: Anchor(name="ffa_lora", homogeneous_rank=8),
     # published: FlexLoRA (arXiv 2402.11505) — heterogeneous ranks, n_k-weighted product average + SVD split

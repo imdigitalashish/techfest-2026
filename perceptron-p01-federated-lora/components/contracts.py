@@ -70,7 +70,9 @@ class AggregationReport(BaseModel):
     )
     norm_share: dict[str, float] = Field(default_factory=dict,
                                          description="||c_k|| / Σ_j ||c_j|| in ΔW space; bounded in [0, 1]")
-    aggregation_error: float = Field(description="||P - Σ c_k|| / ||Σ c_k||; 0 for exact aggregation")
+    aggregation_error: float | None = Field(description="||P - Σ c_k|| / ||Σ c_k||; 0 for exact aggregation; "
+                                                        "None when Σ c_k ≈ 0 makes the ratio undefined")
+    aggregation_residual: float = Field(0.0, description="||P - Σ c_k|| (absolute)")
     update_norm: float
     truncation_error: float | None = Field(None, description="FlexLoRA only: relative Frobenius norm of the "
                                                              "global ΔW discarded by the rank-r_max evaluation view")

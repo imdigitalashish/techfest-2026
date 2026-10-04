@@ -1,0 +1,5 @@
+[ffa_lora|dropout|s0] r03 macro=2.6866 worst=3.4916 share_c0=0.99 err=0.000 reporters=c0,c1,c2,c3
+[ffa_lora|dropout|s0] r06 macro=2.6962 worst=3.4411 share_c0=0.99 err=0.000 reporters=c0,c1,c3
+[ffa_lora|dropout|s0] r09 macro=2.7153 worst=3.4137 share_c0=1.00 err=0.000 reporters=c0
+[ffa_lora|dropout|s0] r12 macro=2.7142 worst=3.4016 share_c0=0.99 err=0.000 reporters=c0,c1,c2,c3
+DONE ffa_lora dropout s0: macro 2.7063→2.7142 worst=3.4016 dom_c0=0.992 err=0.000 wall=110s

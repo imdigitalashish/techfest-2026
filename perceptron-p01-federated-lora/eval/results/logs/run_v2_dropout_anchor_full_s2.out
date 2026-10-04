@@ -1,0 +1,5 @@
+[anchor_full|dropout|s2] r03 macro=2.6870 worst=3.5876 share_c0=0.22 err=0.000 reporters=c0,c1,c2,c4
+[anchor_full|dropout|s2] r06 macro=2.6753 worst=3.5555 share_c0=0.22 err=0.000 reporters=c0,c1,c2,c3
+[anchor_full|dropout|s2] r09 macro=2.6686 worst=3.5286 share_c0=0.26 err=0.000 reporters=c0,c2,c3
+[anchor_full|dropout|s2] r12 macro=2.6646 worst=3.5121 share_c0=0.18 err=0.000 reporters=c0,c1,c2,c3,c4
+DONE anchor_full dropout s2: macro 2.7063→2.6646 worst=3.5121 dom_c0=0.222 err=0.000 wall=155s

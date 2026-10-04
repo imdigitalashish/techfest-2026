@@ -17,7 +17,7 @@ So the brief's three goals are three properties of the aggregation: exact, unbia
 
 ### Proposed approach
 - **Stack:** HF PEFT LoRA on SmolLM2-135M, then Qwen2.5-0.5B and SmolLM2-1.7B; Flower `ServerApp`/`ClientApp`, one process per device; PyTorch MPS plus Azure.
-- **Shared anchor.** Every device regenerates the same frozen A from a public seed (never transmitted) and trains only the first r_k ∈ {2,…,16} columns of B, sized to its memory. Because A is shared, Σ_k w_k ΔB_k·A *is* the average of the devices' weight updates for any mix of ranks. A rank-r device uploads r·d_out numbers per layer, {{const.upload_ratio_theory|.1f}}× fewer than sending A and B.
+- **Shared anchor.** Every device regenerates the same frozen A from a public seed (never transmitted) and trains only the first r_k ∈ {2,…,16} columns of B, so its trainable parameters and uplink scale with r_k: r·d_out numbers per layer, {{const.upload_ratio_theory|.1f}}× fewer than sending A and B. Because A is shared, Σ_k w_k ΔB_k·A *is* the average of the devices' weight updates for any mix of ranks.
 - **Participation corrections:**
   - partial work cut off by the round deadline is kept and step-normalised (FedNova-style);
   - an absent device's last update is reused for ≤4 rounds (MIFA-style);
@@ -30,21 +30,21 @@ So the brief's three goals are three properties of the aggregation: exact, unbia
 ### Minimum Viable (what will exist and be demoable)
 - *Simulate 3–5 nodes with different data splits and compute budgets.* **Already running:** five device profiles (workstation to Raspberry Pi) with distinct domains, 8× quantity skew, ranks and local steps 16/8/4/2/4, and seeded dropouts.
 - *Show convergence despite heterogeneity:* per-domain, macro and worst-domain held-out loss against rounds.
-- **Pilot result** (SmolLM2-135M, 12 rounds, dropout scenario, 5 paired seeds; untuned {{base.macro|.3f}}):
+- **Pilot result** (SmolLM2-135M, 12 rounds, dropout scenario, {{dropout.anchor_full.n|d}} paired seeds; untuned macro loss {{base.macro|.3f}}):
 
-  | Method | Macro loss |
-  |---|---|
-  | **AnchorLoRA** | **{{dropout.anchor_full.macro_mean|.3f}}** |
-  | Starter | {{dropout.fedavg_ab_homo.macro_mean|.3f}} |
-  | FFA-LoRA | {{dropout.ffa_lora.macro_mean|.3f}} |
-  | FlexLoRA | {{dropout.flexlora.macro_mean|.3f}} |
+  | Method | Macro loss | AnchorLoRA − method (95% CI) |
+  |---|---|---|
+  | **AnchorLoRA** | **{{dropout.anchor_full.macro_mean|.3f}}** | — |
+  | Starter | {{dropout.fedavg_ab_homo.macro_mean|.3f}} | {{dropout.spike_vs_fedavg_ab_homo.macro_mean|.3f}} ({{dropout.spike_vs_fedavg_ab_homo.macro_lo|.3f}} to {{dropout.spike_vs_fedavg_ab_homo.macro_hi|.3f}}) |
+  | FFA-LoRA | {{dropout.ffa_lora.macro_mean|.3f}} | {{dropout.spike_vs_ffa_lora.macro_mean|.3f}} ({{dropout.spike_vs_ffa_lora.macro_lo|.3f}} to {{dropout.spike_vs_ffa_lora.macro_hi|.3f}}) |
+  | FlexLoRA | {{dropout.flexlora.macro_mean|.3f}} | {{dropout.spike_vs_flexlora.macro_mean|.3f}} ({{dropout.spike_vs_flexlora.macro_lo|.3f}} to {{dropout.spike_vs_flexlora.macro_hi|.3f}}) |
 
-  Against the starter, the paired difference is {{dropout.spike_vs_fedavg_ab_homo.macro_mean|.3f}} (95% CI {{dropout.spike_vs_fedavg_ab_homo.macro_lo|.3f}} to {{dropout.spike_vs_fedavg_ab_homo.macro_hi|.3f}}). AnchorLoRA improved all five domains, each CI above zero.
+  AnchorLoRA improved {{dropout.anchor_full.domains_ci_pos_bonf|d}} of 5 domains with Bonferroni-adjusted intervals above zero; the starter improved only the data-rich one.
 
 ### Stretch ambitions
 - **Dropout mid-training.** A five-round outage of the tablet is built into the dropout scenario.
   - Under the starter, the tablet's domain loss peaked {{dropout.fedavg_ab_homo.outage_peak_rise_mean|+.2f}} above the untuned model.
-  - Under AnchorLoRA it never rose above it (mean peak {{dropout.anchor_full.outage_peak_rise_mean|+.3f}}).
+  - Under AnchorLoRA it stayed below it at every evaluation checkpoint (every 3 rounds; mean peak {{dropout.anchor_full.outage_peak_rise_mean|+.3f}}).
   - Live demo: kill a Flower SuperNode mid-round.
 - **Smarter vs naive aggregation:** an ablation ladder from FedAvg to AnchorLoRA, one mechanism at a time.
 
@@ -77,7 +77,7 @@ To our search, no method combines a seed-generated frozen A with nested device r
   - Frozen A may cap expressiveness (RoLoRA argues for trainable A): periodic anchor refresh, larger ranks on strong devices.
   - Macro weights are Sybil-sensitive: √n weights, device registration.
   - Part of the gain may come from step-normalisation or memory replay: ablations queued.
-  - Simulation isn't hardware: a real phone or Pi via Flower.
+  - Simulation isn't hardware, and the pilot's per-domain test sets are only 6,144 tokens: measure a real phone or Pi via Flower; use FlowerTune's public test sets.
 
 ---
 *Notes for the team (not part of the submission):*

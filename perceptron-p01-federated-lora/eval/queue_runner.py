@@ -3,7 +3,8 @@
 - One training run at a time, under `nice -n 10`.
 - Pause the run (SIGSTOP) when `kern.memorystatus_level` < 25 %; resume (SIGCONT) above 30 %.
   A run only starts when the level is above 30 %.
-- Work list: eval/queue.txt, one run per line: `<tag> <scenario> <strategy> <seed>` (# comments allowed).
+- Work list: eval/queue.txt, one run per line: `<tag> <scenario> <strategy> <seed> [--flag value ...]`
+  (# comments allowed; extra flags are passed to eval.run_matrix, e.g. `--alpha 64`).
   The runner re-reads the file before every run, so lines can be added or reordered while it works;
   runs already present in eval/results/<tag>_<scenario>.jsonl are skipped (idempotent, safe to restart).
 
@@ -54,26 +55,26 @@ def done(tag: str, scenario: str, strategy: str, seed: int, rounds: int = 12) ->
     return False
 
 
-def next_run(failed: dict) -> tuple[str, str, str, int] | None:
+def next_run(failed: dict) -> tuple | None:
     for raw in QUEUE.read_text().splitlines():
         parts = raw.split("#")[0].split()
-        if len(parts) != 4:
+        if len(parts) < 4:
             continue
-        spec = (parts[0], parts[1], parts[2], int(parts[3]))
-        if failed.get(spec, 0) >= 2 or done(*spec):
+        spec = (parts[0], parts[1], parts[2], int(parts[3]), tuple(parts[4:]))
+        if failed.get(spec, 0) >= 2 or done(*spec[:4]):
             continue
         return spec
     return None
 
 
-def run(spec: tuple[str, str, str, int]) -> int:
+def run(spec: tuple) -> int:
     global CHILD
     while mem_level() <= HIGH:
         log(f"memory level {mem_level()}% ≤ {HIGH}%: waiting to start {spec}")
         time.sleep(30)
-    tag, scenario, strategy, seed = spec
+    tag, scenario, strategy, seed, extra = spec
     cmd = ["nice", "-n", "10", sys.executable, "-m", "eval.run_matrix", "--tag", tag, "--scenario", scenario,
-           "--strategies", strategy, "--seeds", str(seed), "--skip-existing"]
+           "--strategies", strategy, "--seeds", str(seed), "--skip-existing", *extra]
     t0 = time.time()
     out_path = RES / "logs" / f"run_{tag}_{scenario}_{strategy}_s{seed}.out"
     log(f"START {spec}")

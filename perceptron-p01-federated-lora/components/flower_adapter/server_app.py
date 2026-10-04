@@ -149,7 +149,7 @@ class FlowerLoraStrategy(Strategy):
         arrays, _ = layer_state_to_record(self.inner.eval_view(self.g))
         metrics = MetricRecord(
             {
-                "aggregation-error": float(agg["aggregation_error"]),
+                "aggregation-error": float("nan") if agg["aggregation_error"] is None else float(agg["aggregation_error"]),
                 "update-norm": float(agg["update_norm"]),
                 "num-reporters": len(agg["reporters"]),
             }
@@ -182,7 +182,7 @@ class FlowerLoraStrategy(Strategy):
                 f"[flower:{self.cfg.strategy}|{self.cfg.scenario}|s{self.cfg.seed}] r{server_round:02d} "
                 f"macro={report['macro_loss']:.4f} worst={report['worst_loss']:.4f} "
                 f"share_c0={agg['influence_share'].get('c0', float('nan')):.2f} "
-                f"err={agg['aggregation_error']:.3f} reporters={','.join(agg['reporters'])}"
+                f"err={'n/a' if agg['aggregation_error'] is None else format(agg['aggregation_error'], '.3f')} reporters={','.join(agg['reporters'])}"
             )
         return MetricRecord({"macro-loss": float(report["macro_loss"]), "worst-loss": float(report["worst_loss"])})
 

@@ -186,3 +186,27 @@ def test_norm_share_is_bounded_and_projection_share_can_exceed_one():
     _, rep = _round(FedAvgAB(), ranks=[8, 4, 2, 1], n=[800, 100, 100, 100])
     assert all(0.0 <= v <= 1.0 for v in rep["norm_share"].values())
     assert abs(sum(rep["norm_share"].values()) - 1.0) < 1e-6
+
+
+def test_relative_error_is_undefined_not_zero_when_contributions_cancel():
+    """Code review 2026-10-04 item 6: FedAvg on factors with cancelling products must not report 'exact'."""
+    from components.aggregator import product_space_report
+
+    one = lambda v: torch.tensor([[v]])  # noqa: E731
+    pay = {"c0": (one(1.0), one(1.0)), "c1": (one(2.0), one(-0.5))}   # B·A = 1 and -1 → Σ c_k = 0
+    w = {"c0": 0.5, "c1": 0.5}
+    P = (0.5 * 1.0 + 0.5 * -0.5) * (0.5 * 1.0 + 0.5 * 2.0)            # averaged factors: 0.25 · 1.5 = 0.375
+    rep = product_space_report(["l"], lambda k: one(P), ["c0", "c1"],
+                               lambda c, k: w[c] * pay[c][1] @ pay[c][0])
+    assert rep["aggregation_error"] is None
+    assert abs(rep["aggregation_residual"] - 0.375) < 1e-6
+
+
+def test_padding_moves_payloads_to_the_global_device():
+    """Code review item 10: full-width and sliced payloads both end up on the reference tensors' device."""
+    ref = {"l": torch.zeros(D_OUT, R)}
+    out = Anchor._pad({"l": torch.ones(D_OUT, R)}, ref)
+    assert out["l"].device == ref["l"].device
+    from components.aggregator.strategies import _pad_pair
+    a, b = _pad_pair((torch.ones(R, D_IN), torch.ones(D_OUT, R)), (torch.zeros(R, D_IN), torch.zeros(D_OUT, R)))
+    assert a.device == b.device == torch.zeros(1).device

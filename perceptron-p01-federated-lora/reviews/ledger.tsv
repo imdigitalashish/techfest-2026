@@ -1,3 +1,4 @@
 date	artifact	model	effort	issues	accepted	rejected	note
 2026-10-04	spike design (ADR 001 v1 antithesis)	claude rubber-duck (same family)	default	7	7	0	all adopted as experiments in ADR 001 synthesis table; not a cross-model review
 2026-10-04	ADR 001 + abstract v1 + implementation	claude rubber-duck (same family)	default	7	6	0	1 partly accepted (rotating masks deferred); dispositions in ADR 001 update 11:35; not a cross-model review
+2026-10-04	code + eval (strategies, harness, stats, data, Flower)	gpt-6-sol	max	14	13	1	3 BLOCKING/10 MAJOR/1 MINOR; item 7 partly rejected (clip rule change would break pairing mid-evidence); dispositions appended to the review file
