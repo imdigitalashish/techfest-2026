@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** 1–4 in parallel. Pushed: landscape (cited), components + contracts, harness code, selection memo v1. Writing next: ADR 001, Round-1 abstract, `deliverables/architecture.md`.
+- **Phase:** 1–4 in parallel. Pushed: landscape (cited), components + contracts, ADR 001, selection memo v1, Round-1 abstract (833 words), architecture diagram, harness code. **Missing: measured numbers.**
 - **Plan:** (1) ADR 001 + abstract + architecture diagram (by 08:30). (2) After 08:30, when lean mode lifts: run the harness (`eval/kvbench.py`, 4k context, 12 contexts × 4 questions) with compute staggered, then commit real numbers. (3) Autoresearch ratchet on C7 (sketch layer, block size, sketch bits) with a frozen eval. (4) Verify prior art for RoD by 12 Oct.
 - **Doing:** lead alone (lean mode). Smoke run of the harness was starved by memory pressure; it will be retried after 08:30.
 - **Next:** ADR 001 → abstract → architecture.md → harness numbers → ratchet.
@@ -88,3 +88,8 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Sources.** One background `curl` job fetched all 25 arXiv abstracts (titles verified) plus Anthropic, Gemini and vLLM docs, the gpt-oss config and the kvpress README. Landscape claims are upgraded to [OPENED] where verified; Character.AI and OpenAI stay UNVERIFIED.
 - **Worker report.** The late `res-companies-ship` report survived (`research/raw/companies-ship-today.md`, 53 sources). Headline: no production stack defaults to lossy eviction; kvpress is research tooling.
 - **Pushed so far.** `components.md` with C1–C10 and isolated metrics, `contracts.py`, and selection memo v1.
+
+### 2026-10-04 08:05 IST — ADR 001, abstract and diagram pushed; harness diagnosed
+- **Pushed.** `architecture/adr/001-spike.md` (scores, six hats, self-adversarial thesis/antithesis/synthesis, gates for 12 Oct); `deliverables/round1-abstract.md` (833 words, all 8 sections; no result claims); `deliverables/architecture.md` (mermaid diagram + tier byte table).
+- **Harness diagnosis.** The pipeline is not hung, just starved: Metal init 7.8 s, `import mlx_lm` 56 s, model load 91 s (663 MiB active), first 6-token forward done at 140 s. The cause is machine-wide swap. The smoke run (`--ctx 1024 --n 1 --needles 2`) is running in the background; the real grid waits until compute is staggered after 08:30.
+- **Gate.** Selection memo v1 written; Supervisor notified.
