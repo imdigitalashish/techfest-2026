@@ -6,14 +6,18 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (16:44 IST, 4 Oct)
-- **Mode:** batch of up to 5. The queue holds only APCTT (gated on the 10 Oct data), so 2 leads are active.
-- **Active:**
-  - P2: primary passed (+0.396 vs StreamingLLM at 25% KV). Identity checks I1–I3 pass, so the loss at 25/50% is real, not plumbing; mechanism under test. Selection memo v2.
-  - InnovateX T3: final package v1; astra review running; YOLO11n baseline on the GPU.
+## Now (17:36 IST, 4 Oct)
+- **Mode:** play to WIN. Every project gets a working demo to PLAYBOOK §11 ("what you asked + what's crazy"). At most 5 running at once.
+- **Running (5):**
+  - P2, Round 1:
+    - R1 replicated on fresh T2 contexts: RoD at 10% memory 0.69 vs full cache 0.46 (+0.23, CI +0.10 to +0.38).
+    - Asked the lead to check whether the full cache's loss is a 10-token answer cap: 17 of its 26 misses contain no number.
+    - VM chain ETA ~18:45. The demo is part of DONE.
+  - InnovateX T3: review fixes landed (tide refit with no held-out leak; calibrated MRV review cut-off). Final re-render next.
+  - Demo builders: P7, P10, P6.
+- **Demo queue:** India@71 T1 → P9 → P1 → P3 → P8 → P4 → P5 → India@71 T3. After that I check the existing demos myself: InnovateX T1–T3, EV C1/C2, India@71 T2, Namma.
 - **Completed — awaiting your review (17):** India@71 T1 · EV C2 · P7 · InnovateX T1 · P9 · P1 · P4 · P10 · P5 · P3 · EV C1 · Namma Space · India@71 T3 · P6 · InnovateX T2 · India@71 T2 · P8.
-- **Azure running now:** P2's VM `p02-kv-1` (D16ds_v5) and P8's pay-per-token OpenAI resource.
-- **Memory:** level 25–32%, swap 28–30 GB. Your VM and the open 3D-viewer panel are the big consumers.
+- **Azure running now:** P2's VM `p02-kv-1` (deallocate at P2's DONE) and P8's pay-per-token OpenAI resource.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -106,6 +110,11 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 17:36 IST — Sweep
+- Demo phase running: briefs went to P7, P10 and P6 at 17:28. Each lead spawns one demo builder.
+- P7 appended a correction listing the real commit times of its pre-registrations. Every registration still precedes its run.
+- InnovateX T3: the lead is adding a check that the committed RESULTS.md matches a fresh results run (the z_review row was stale).
+- P2: R1 passed its pre-registered non-inferiority rule. I raised a possible truncation artifact in the full-cache baseline: the answer cap is 10 tokens and 12 misses are a cut-off restated question.
 ### 2026-10-04 17:18 IST — P8 completed
 - **P8 DONE (1a2b1b4), verified on main:** check_docs 143 claims OK; 10 tests.
   - Reviews: astra 23/23, sol 12/12.
