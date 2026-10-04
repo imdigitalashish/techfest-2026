@@ -19,7 +19,7 @@
   4. Cross-model reviews as child sessions: gpt-6-astra (max) as hostile judge on abstract + spike; gpt-6-sol (max) on code/eval, reproducing the headline numbers → `reviews/` + `reviews/ledger.tsv`.
   5. Final selection memo; push; message the Supervisor "DONE — slot free".
 - **Plan:** protocol → runner (`eval/run_llm_gaps.py`; responses saved to committed JSONL so scoring reproduces offline) → runs (bounded; tokens and cost logged per part) → analysis → pitch/abstract/memo → 2 reviews → triage → DONE.
-- **Doing:** every pre-registered experiment has run (total $19.75). Final abstract, architecture, ADR revision and selection memo are written; `check_docs` passes. Next: two cross-model reviews as child sessions (gpt-6-astra max: abstract + spike; gpt-6-sol max: code + eval reproduction).
+- **Doing:** every pre-registered experiment has run (total $19.75). Final abstract, architecture, ADR revision and selection memo are written; `check_docs` passes. **Reviews running (child sessions, launched 16:44 IST):** "P8 review: abstract (astra)" (`aa201700-b32f-4785-903d-ff0c0c46fee4`; gpt-6-astra, max; hostile judge on abstract + spike + memo) and "P8 review: code+eval (sol)" (`af6ac48b-b2af-4f1c-85de-3940a3c9877d`; gpt-6-sol, max; offline reproduction + code review). After that: triage into `reviews/ledger.tsv`, revise, push, and send "DONE — slot free".
 - **Rules in force:** no `task` sub-agents; ≤2 child sessions; never `git stash`/`--autostash`; timestamps from `TZ=Asia/Kolkata date`; heavy jobs `nice -n 10`, CPU only, start only when `kern.memorystatus_level` ≥ 30; small API batches; poll long jobs ≥10 min apart; Azure keys in env only.
 - **Needs from user:**
   - Register by 15 Oct (after the 12 Oct selection).
