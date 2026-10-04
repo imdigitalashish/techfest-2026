@@ -89,7 +89,7 @@ Context from the statement: Poshan Tracker already tracks growth-monitoring and 
 | C2 | identity_linkage | IdentityRecord → LinkDecision | ID join, Fellegi–Sunter | (C) | built | F1 ids 0.513 · prob 0.945 · PPRL 0.968 — SYNTHETIC |
 | C3 | growth_standards | MeasurementEvent → AnthroZ | WHO Anthro | | built | max error 0.003 z on 87,408 WHO table points |
 | C4 | credibility_engine → measurement diagnostics (ADR 002) | events+z → RecordQuality, AWC×device×month diagnostics | SMART / WHO-UNICEF survey checks | **A** | built; ratchet started | AUROC fabricating 0.694±0.041, any non-good 1.0 — SYNTHETIC; iteration 1 (0.950) rejected by anti-gaming holdout |
-| C5 | early_warning | z, velocity, health events → RiskScore | 2-month no-gain rule | **B** | v0 built | recall@5/AWC-month 0.326 vs rule 0.253, lowest-WHZ 0.318; +health 0.325 — SYNTHETIC |
+| C5 | early_warning → weekly ranked worklist (ADR 003) | z, velocity, observed status → ranked top-K per AWC | 2-month no-gain rule | **B** | v1 eval (leakage-free) | episode recall@5: transparent lowest-WHZ rule **0.429** (CI 0.420–0.443) > logistic 0.384 ≈ +health 0.384 > no-gain rule 0.365 > random 0.269 — SYNTHETIC; v0 (0.33/0.25) retracted |
 | C6 | action_router | RiskScore/Alert → Task | monthly review | | built | ops SIMULATION: 83.6% within SLA (ladder, alerts ≤ capacity) vs 15.6% (monthly review); 14.9% when alerts exceed capacity |
 | C7 | frontline_worklist | Task → Worklist | PT home-visit scheduler | | built | payload bytes, % SMS ≤160 |
 | C8 | aggregate_publisher | events → AggregateCell | static dashboards | | contract | relative error at ε |
@@ -121,7 +121,7 @@ Pushed all component work (`31ccc35`; 19 tests pass). Verified the core gap at p
 
 ### 2026-10-04 08:00 IST — early-warning v0 (spike B) result
 Frozen evaluator `components/early_warning/eval.py` (train seeds 21–22, held-out seed 23; capacity K=5 per AWC per month; target = truly wasted within 3 months among truly non-wasted child-months). SYNTHETIC result ([`eval/results/early_warning.json`](eval/results/early_warning.json)):
-- recall@5: programme rule "no weight gain in 2 months" **0.253**; lowest current WHZ **0.318**; logistic on anthropometry **0.326**; plus linked health events **0.325**.
+- (RETRACTED 10:35: v0 evaluator had look-ahead and an oracle pool; see the 10:35 log entry and ADR 003) recall@5: programme rule "no weight gain in 2 months" **0.253**; lowest current WHZ **0.318**; logistic on anthropometry **0.326**; plus linked health events **0.325**.
 - Base rate 15.4%.
 
 Learned: (1) the v0 model beats the programme rule by +7.3 pp at equal capacity but barely beats ranking by current WHZ. (2) Linked health events add nothing *in this simulator*. This is partly by construction (illness is weakly coupled to episode onset), so linkage value must not be claimed from it. (3) The high base rate suggests many "incident" cases are threshold-hovering. Next: an evaluator v1 that weights new episodes with a real decline (kept as a separate file; v0 stays frozen), a velocity-z feature, and a ratchet loop.
