@@ -21,7 +21,7 @@
   4. Final Round-1 abstract rendered from committed results, a doc-drift check script, and the architecture diagram.
   5. Cross-model reviews as child sessions (PLAYBOOK §10, at most 2 at a time): `gpt-6-astra` (max) as hostile judge on the abstract and spike; `gpt-6-sol` (max) on code and eval, including reproducing the headline numbers. Record them in `reviews/` and `ledger.tsv`.
   6. Final selection memo, thought node current, everything pushed, then message the Supervisor.
-- **Doing:** step 1 (code + tests, light work first).
+- **Doing:** steps 1–4 done and pushed: fixes and tests, v1 reruns, pre-registered text test, abstract rendered plus drift check. Step 5: cross-model reviews running as child sessions — `P10 review · astra hostile judge` and `P10 review · sol code + repro`. Then step 6.
 - **Machine rules:** start heavy jobs only when `sysctl -n kern.memorystatus_level` ≥ 30 (pause below 25); always `nice -n 10`, one job at a time; CPU only; small requests; poll long jobs at ≥ 10-minute intervals; no FinBERT download (MiniLM is cached).
 - **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section. Optional: a Kaggle API token (`~/.kaggle/kaggle.json`).
 - **Risks:**
@@ -31,14 +31,23 @@
   - Pooled Kupiec/Christoffersen p-values are optimistic.
   - Memory and uplink constraints slow the reruns.
 
-## Key results (committed; reproduce: `bash eval/fetch_data.sh && PYTHONPATH=. .venv/bin/python eval/prepare.py && PYTHONPATH=. .venv/bin/python eval/run_baselines.py`)
-StockNet, 87 tickers, 119,641 tweets, look-ahead leaks 0; test 2015-07-01→2016-03-31 (16,443 ticker-days); α = 0.1. Full table: [`eval/results/baseline_v0.md`](eval/results/baseline_v0.md).
-- Fusion + split CP (MAPIE): coverage 81.3%, high-vol tercile 76.5%, Kupiec p < 0.001 → "present but not meaningful".
-- Fusion + CQR (MAPIE): 86.3%, width 4.71 pp; + ACI: 89.4%, width 5.22 pp.
-- Oracle injection attack (12 variants), k = 3: plain CQR 86.3% → 84.4% (its true worst case may be lower); **certified CQR 88.0%**, guaranteed ≥ 86.3% within budget; width +4.5% (clean). Pump attack: CQR 85.5% / width 4.59 vs certified 88.8% / 5.09.
-- **CR-ACI (spike): 89.5% clean / 89.7% under pump, width 5.23 / 5.25 pp (+0.3% / +0.9% vs plain ACI).** baseline_v0 used the old trust and clipped ACI → reproduce at commit 06e2d81; v1 rerun pending.
-- C3 isolated metric (macro-F1 on 2,388 labelled financial tweets, `components/text_scorer/isolated_results.json`): VADER 0.489 · MiniLM+LR 0.691 · with 20% / 40% flipped training labels 0.662 / 0.606 (noisy-label stretch). End-to-end with MiniLM (`eval/results/text_minilm_v0.md`, old trust): CR-ACI 89.4% / 89.7%, widths 5.24 / 5.28.
-- Soundness: degenerate-box error 0; clean features inside the attacked box on 100% of rows; own CQR = MAPIE symmetric CQR exactly.
+## Key results — v1 (committed; reproduce commands in each report header)
+Headline run: StockNet with the MiniLM scorer, [`eval/results/text_minilm_v1.md`](eval/results/text_minilm_v1.md). The VADER run is [`baseline_v1.md`](eval/results/baseline_v1.md). 87 tickers, 119,641 tweets, 0 look-ahead leaks; test Jul 2015 → Mar 2016 (16,443 stock-days); α = 0.1; full run ~1 min on CPU. Abstract numbers are rendered from these JSONs (`deliverables/render.py`, `deliverables/check_drift.py`).
+- **Starter baseline is not meaningful:** fusion + MAPIE split CP covers 81.6% overall and 76.9% in high volatility (Kupiec p < 0.001). CQR 86.6%. ACI (our loop) 89.5%, day-clustered 90% CI 87.5–91.2%, width 5.22 pp.
+- **Text value — none measurable:**
+  - StockNet: pinball 0.3508 fusion vs 0.3513 price-only.
+  - **Pre-registered test on unseen Kaggle DJIA news** ([result](eval/results/text_utility_djia_v1.md), registered at `dd8bcd1` before the run): **no evidence that text adds value** (Winkler +0.10%, one-sided p = 0.46, 90% CI [−0.064, +0.068]). Linear QR: text hurts (p = 0.995).
+- **Attacks, k = 3:**
+  - The 53-variant oracle takes plain CQR to 84.7%. The certified interval is guaranteed ≥ 86.7% (the clean CQR coverage) for any attack within budget.
+  - Worst fixed variant: CQR 85.7% vs certified 89.5%.
+  - CR-ACI: 89.5% clean / 89.7% under the pump, at +0.3% / +1.0% width vs plain ACI.
+  - Bursts on pre-specified days: plain ACI 89.5% vs CR-ACI 90.7% on attacked days (VADER run: 88.6% vs 91.8%).
+- **C3 scorer** (macro-F1 on 2,388 labelled financial tweets): VADER 0.489 · MiniLM+LR 0.691 · with 20% / 40% flipped labels 0.662 / 0.606.
+- **Soundness:**
+  - 59 unit tests: brute-force box exactness, tree-bound soundness, trust stability, ACI long-run bound and boundaries.
+  - Degenerate-box error 0; clean features inside the attacked box on 100% of rows; certified ⊇ clean-covered rows on every evaluated attack.
+- **Ratchet** (evaluator v2, 2014-only splits): baseline SCORE 4.565 (`components/robust_conformal/autoresearch/results.tsv`).
+- v0 numbers (old trust, clipped ACI) are kept for history in `eval/results/baseline_v0.md`.
 
 ## Phase 0 — what the judges must be able to see (lead, 4 Oct 03:00 IST)
 **The crux in our words.** Three things interact: (1) the text signal is weak and noisy, and probably says more about *how much* a price will move than *which way*; (2) daily returns are not exchangeable (volatility clustering, regime shifts), so a split-conformal interval is valid only on average and can under-cover exactly when it matters; (3) an adversary who injects or edits text moves the input at test time, which no standard conformal guarantee covers — the interval can be narrow, shifted and confidently wrong. "Meaningful" therefore has to be operationalised, not asserted.
@@ -157,3 +166,22 @@ Added `tests/` (43 pass): DST-safe 16:00 ET alignment, contract rejection, brute
   - **FinBERT:** the HF CDN measured ~30 KB/s (curl probe), so 440 MB was not viable. Used MiniLM-L6 (already cached locally) plus a logistic-regression head trained on Twitter Financial News Sentiment (HF zeroshot, MIT): macro-F1 0.691 vs VADER 0.489. Noisy-label stretch: 20% / 40% flipped labels → 0.662 / 0.606.
   - **Independent antithesis:** the rubber-duck review found 3 blocking issues — trust not deletion-stable, ACI clipping/reordering, the "per-prediction coverage" overclaim — plus evaluation flaws and a strong "drop the text" case. Saved with the lead's synthesis in `research/notes/review-adr001-rubber-duck.md`. Fixed in code: trust, ACI, contract, evaluator v1, vectorised box (43 tests pass). Fixed in the abstract: three overclaims. The rerun is the resume point.
 - Supervisor 09:40: lean mode back on. Supervisor 09:55: **PAUSE** (user's decision). No jobs running; all results saved; exact restart commands are in *Now*.
+
+### 2026-10-04 12:45–13:35 IST — Resumed: review fixes, v1 reruns, pre-registered text test, final abstract
+- **Supervisor 12:45:** RESUMED with a definition of done. Acted on: Now rewritten; steps 1–4 done; step 5 running.
+- **Fixes (59 tests pass):**
+  - pump trust from `trust_of` (fresh account → 0.101), and the pump sentiment from the deployed scorer;
+  - ACI `stats`; 53-variant oracle grid plus guaranteed floor plus burst attack;
+  - evaluator v1 adds a day-block CI;
+  - ratchet evaluator v2 (2014-only splits), re-baselined.
+- **Found a macOS segfault:** a torch forward pass followed by multithreaded LightGBM (OpenMP clash; bisected with `python -u`). Fix: MiniLM encodes uncached texts in a child process whenever LightGBM is loaded.
+- **v1 reruns:**
+  - `baseline_v1` (VADER) and `text_minilm_v1` (MiniLM), each ~1 min now that memory has recovered.
+  - The richer grid lowers plain-CQR oracle coverage (84.1% VADER / 84.7% MiniLM vs v0's 84.4% from 12 variants), as the review predicted.
+- **"Drop the text":**
+  - Pre-registered at `dd8bcd1` (12:55:28 IST) before any run on unseen Kaggle DJIA data (mirror verified by blob hash, Yahoo closes, label consistency).
+  - Result: **no evidence that text adds value.**
+  - Exploratory: the price-only IC of 0.355 comes from the overnight gap continuing into the open-to-close return (Spearman 0.40). This fits stale index opens (mechanism UNVERIFIED) and affects both arms equally.
+- **Reframed the pitch** around trust and coverage guarantees plus a text gate.
+- **Final abstract:** rendered from committed JSONs (813 words, tables included); `check_drift.py` passes. Architecture diagram, ADR 001 and components.md updated.
+- **Step 5:** launched cross-model reviewers as child sessions: gpt-6-astra (max) as hostile judge on abstract and spike; gpt-6-sol (max) on code and eval plus reproduction.
