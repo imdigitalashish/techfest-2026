@@ -2,12 +2,13 @@
 
 Needs Playwright for Python with Chromium, plus Pillow (demo/requirements-demo.txt):
     python3 -m pip install -r demo/requirements-demo.txt && python3 -m playwright install chromium
-Run from india71-t1-nutrition/:  python3 demo/capture_fallback.py
+Run from india71-t1-nutrition/:  python3 demo/capture_fallback.py   [--only 04,05,gif]
 Writes demo/fallback/NN-*.png (1280x720, the projector size) and demo/fallback/find-every-child.gif. Fails on any page error or any non-file:// request.
 """
 
 from __future__ import annotations
 
+import argparse
 import io
 import sys
 from pathlib import Path
@@ -37,6 +38,9 @@ GIF_SEQUENCE = [(1.0, 0), (0.75, 0), (0.5, 0), (0.35, 0), (0.2, 0), (0.1, 0), (0
 
 
 def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--only", default="", help="comma-separated shot number prefixes and/or 'gif' (default: everything)")
+    only = [x for x in ap.parse_args().only.split(",") if x]
     OUT.mkdir(exist_ok=True)
     errors: list[str] = []
     foreign: list[str] = []
@@ -54,19 +58,22 @@ def main() -> int:
             page.wait_for_timeout(450)
 
         for name, fragment in SHOTS:
+            if only and not any(name.startswith(o) for o in only):
+                continue
             load(fragment)
             page.screenshot(path=str(OUT / f"{name}.png"), full_page=True)
             print("wrote", f"demo/fallback/{name}.png")
 
         frames = []
-        for cov, noise in GIF_SEQUENCE:
+        for cov, noise in (GIF_SEQUENCE if not only or "gif" in only else []):
             load(f"find&cov={cov:g}&noise={noise:g}&cohort=nandurbar")
             img = Image.open(io.BytesIO(page.locator("#s-find .body > .panel").first.screenshot())).convert("RGB")
             img = img.resize((760, round(img.height * 760 / img.width)), Image.LANCZOS)
             frames.append(img.quantize(colors=96, method=Image.Quantize.MEDIANCUT))
-        durations = [900] * (len(frames) - 1) + [2600]
-        frames[0].save(OUT / "find-every-child.gif", save_all=True, append_images=frames[1:], duration=durations, loop=0, optimize=True)
-        print("wrote demo/fallback/find-every-child.gif")
+        if frames:
+            durations = [900] * (len(frames) - 1) + [2600]
+            frames[0].save(OUT / "find-every-child.gif", save_all=True, append_images=frames[1:], duration=durations, loop=0, optimize=True)
+            print("wrote demo/fallback/find-every-child.gif")
         browser.close()
     if errors:
         print("PAGE ERRORS:", *errors, sep="\n  ")

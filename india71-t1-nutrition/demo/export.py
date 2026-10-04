@@ -24,6 +24,7 @@ Every on-screen number comes from committed results or from committed code run h
 Run from india71-t1-nutrition/ (fetch REAL district data first: .venv/bin/python eval/fetch_nfhs5.py):
   nice -n 10 .venv/bin/python -m demo.export                  # every section (~20 min; memory guard between jobs)
   .venv/bin/python -m demo.export --only sim --districts amravati
+  .venv/bin/python -m demo.export --only linkage_matched        # only the precision-matched linkage entries
   .venv/bin/python -m demo.export --check                      # quick re-derivation against the data file (~1 min)
 """
 
@@ -313,37 +314,26 @@ def _counts(decisions, truth: dict, gold: set) -> dict:
     return m
 
 
-def precision_matched_threshold(low, gold: set, target: float, start: float) -> tuple[float, bool]:
-    """Lowest acceptance threshold >= start at which Bloom-filter precision reaches `target` (for decisions matched at
-    clerical_low, see pprl.accept_at). Returns (threshold, reached); if never reached, the max-precision threshold."""
-    det = [frozenset((s.value, r) for s, r in d.members) for d in low if d.method == "deterministic"]
-    prob = sorted(((d.match_probability, frozenset((s.value, r) for s, r in d.members) in gold)
-                   for d in low if d.method == "probabilistic"), key=lambda x: -x[0])
-    n_acc, n_true = len(det), sum(p in gold for p in det)
-    points = []  # (threshold, accepted, true), threshold descending
-    i = 0
-    while i < len(prob):
-        t = prob[i][0]
-        while i < len(prob) and prob[i][0] == t:
-            n_acc += 1
-            n_true += prob[i][1]
-            i += 1
-        if t >= start:
-            points.append((t, n_acc, n_true))
-    if not points:
-        return start, False
-    points[-1] = (start, points[-1][1], points[-1][2])  # the lowest point accepts exactly what threshold=start accepts
-    ok = [t for t, a, tr in points if a and tr / a >= target]
-    if ok:
-        return min(ok), True
-    best = max(points, key=lambda p: (p[2] / p[1] if p[1] else 0, -p[0]))
-    return best[0], False
+def matched_entry(enc_p: pd.DataFrame, enc_h: pd.DataFrame, truth: dict, gold: set, target: float) -> dict:
+    """Encoded linkage at the in-sample operating point whose precision reaches `target` (pooled matching's precision in
+    this cell): eval_linkage.precision_operating_point over a clerical_low run relabelled by pprl.accept_at. Candidate
+    points include the upper end that accepts shared-ID links only."""
+    from components.identity_linkage.eval_linkage import precision_operating_point
+    from components.identity_linkage.pprl import accept_at, match_encoded
+    defaults = inspect.signature(match_encoded).parameters
+    start, low_t = defaults["threshold"].default, defaults["clerical_low"].default
+    low = match_encoded(enc_p, enc_h, threshold=low_t)
+    op = precision_operating_point(low, truth, target, start)
+    pm = _counts(accept_at(low, op["threshold"]), truth, gold)
+    pm.update(threshold=op["threshold"], threshold_interval=op["interval"], threshold_display=op["display"],
+              ids_only=op["ids_only"], target_precision=target, reached=op["reached"], in_sample=True)
+    return pm
 
 
 def _grid_cell(args: tuple[float, float]) -> dict:
     from components.identity_linkage.eval_linkage import _truth_pairs
     from components.identity_linkage.link import link_from_frames
-    from components.identity_linkage.pprl import accept_at, encode_department, match_encoded
+    from components.identity_linkage.pprl import encode_department, match_encoded
     from components.identity_linkage.synth_registries import generate_benchmark
 
     cov, noise = args
@@ -361,15 +351,36 @@ def _grid_cell(args: tuple[float, float]) -> dict:
     enc_p, enc_h = encode_department(poshan, key), encode_department(health, key)  # each department, on its own side
     cell["pprl_bloom"] = _counts(match_encoded(enc_p, enc_h), truth, gold)       # the matcher sees encodings only
     cell["pprl_bloom"]["runtime_seconds"] = round(time.perf_counter() - t0, 2)
-    defaults = inspect.signature(match_encoded).parameters
-    start, low_t = defaults["threshold"].default, defaults["clerical_low"].default
-    low = match_encoded(enc_p, enc_h, threshold=low_t)
-    target = cell["plaintext_probabilistic"]["precision"]
-    t_star, reached = precision_matched_threshold(low, gold, target, start)
-    pm = _counts(accept_at(low, t_star), truth, gold)
-    pm.update(threshold=round(t_star, 4), target_precision=target, reached=reached)
-    cell["pprl_bloom_precision_matched"] = pm
+    cell["pprl_bloom_precision_matched"] = matched_entry(enc_p, enc_h, truth, gold, cell["plaintext_probabilistic"]["precision"])
     return cell
+
+
+def _matched_only(args: tuple[float, float, float]) -> tuple[str, dict]:
+    """Recompute only a cell's precision-matched entry (the other methods' results are not touched)."""
+    from components.identity_linkage.eval_linkage import _truth_pairs
+    from components.identity_linkage.pprl import encode_department
+    from components.identity_linkage.synth_registries import generate_benchmark
+    cov, noise, target = args
+    memory_guard()
+    poshan, health, truth = generate_benchmark(n=LINK_N, seed=LINK_SEED, shared_id_rate=cov, extra_noise=noise)
+    key = department_key()
+    return cell_key(cov, noise), matched_entry(encode_department(poshan, key), encode_department(health, key), truth,
+                                               _truth_pairs(truth), target)
+
+
+def section_linkage_matched(data: dict, workers: int = 2) -> dict:
+    """Re-run only the precision-matched entries (review R1) and keep every other number of the grid as exported."""
+    L = data["linkage"]
+    jobs = [(c["coverage"], c["noise"], c["plaintext_probabilistic"]["precision"]) for c in L["cells"].values()]
+    log(f"linkage (precision-matched entries only): {len(jobs)} cells, {workers} worker(s)")
+    with ProcessPoolExecutor(max_workers=workers) as pool:
+        for key, pm in pool.map(_matched_only, jobs):
+            old = L["cells"][key]["pprl_bloom_precision_matched"]
+            if old.get("reached") and not pm["ids_only"]:  # a reachable score point cannot move when a higher point is added
+                assert (old["true_links"], old["false_links"]) == (pm["true_links"], pm["false_links"]), (key, old, pm)
+            L["cells"][key]["pprl_bloom_precision_matched"] = pm
+            log(f"  {key}: {pm['threshold_display']} -> {pm['true_links']} correct / {pm['false_links']} false (reached={pm['reached']})")
+    return L
 
 
 def cell_key(cov: float, noise: float) -> str:
@@ -920,16 +931,18 @@ def main() -> int:
         print("export --check:", "FAILED" if errors else "all re-derived values match")
         return 1 if errors else 0
     only = [s for s in args.only.split(",") if s] or SECTIONS
-    unknown = set(only) - set(SECTIONS)
+    unknown = set(only) - set(SECTIONS) - {"linkage_matched"}
     if unknown:
         ap.error(f"unknown sections {sorted(unknown)}")
-    for s in SECTIONS:
+    for s in SECTIONS + ["linkage_matched"]:
         if s not in only:
             continue
         t0 = time.time()
         log(f"section {s} ...")
         if s == "linkage":
             data[s] = section_linkage(data, args.workers)
+        elif s == "linkage_matched":
+            data["linkage"] = section_linkage_matched(data, args.workers)
         elif s == "sim":
             data[s] = section_sim(data, [d for d in args.districts.split(",") if d])
         else:

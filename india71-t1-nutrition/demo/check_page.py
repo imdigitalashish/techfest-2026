@@ -28,7 +28,8 @@ EXPECT = [
     ("districts&state=MH&district=Nandurbar&cohort=nandurbar", ["in Nandurbar, 30.7%", "13.5%", "45.8%", "706 of 707 districts"]),
     ("find&cov=0&noise=0.4", ["true by definition", "3,907", "366 false", "2,456", "34 false", "2,250", "without pooling names", "Fixed illustration"]),
     ("find&cov=0.35&noise=0", ["simulation assumption", "realised 32.8%", "4,394", "151 false"]),
-    ("find&cov=1&noise=0.4", ["unchanged"]),
+    ("find&cov=1&noise=0.4", ["unchanged", "IDs only: no score-based link accepted", "reached only by accepting keyed-ID links alone", "4,531"]),
+    ("find&cov=0&noise=0.4&x=1", ["in-sample comparison", "proposed policy", "default threshold, used on screens 4–7"]),
     ("child&cohort=nandurbar", ["SIMULATED children · REAL district rates", "first wasting", "infant pathway", "correctly", "not evidence that most children are caught"]),
     ("week&cohort=nandurbar&K=5&reveal=1", ["Who gets them?", "infant pathway", "percentage points", "47.3%"]),
     ("week&cohort=nandurbar&K=1", ["Not distinguishable from zero"]),
@@ -55,6 +56,22 @@ JS_METRICS = """() => {
     led.querySelectorAll('tbody tr').forEach(t => { const r = t.getBoundingClientRect(); if (r.top < hb.bottom - 1 && r.bottom > hb.bottom + 1) partial++; }); }
   return {sh: d.scrollHeight, sw: d.scrollWidth, src: Math.min(...src), overflowing, footBottom: foot.bottom,
           labelOverlaps: pairs(labels), eventOverlaps: pairs(events), infantHits, partial};
+}"""
+
+BARS_JS = """() => {
+  const out = [];
+  document.querySelectorAll('.screen.active .bar').forEach(bar => {
+    const track = bar.querySelector('.track').getBoundingClientRect();
+    const t = bar.querySelector('.seg-true').getBoundingClientRect(), f = bar.querySelector('.seg-false');
+    const name = bar.dataset.method;
+    if (f) {
+      const fr = f.getBoundingClientRect(), n = Number(f.dataset.false);
+      if (n > 0 && fr.width < 2.9) out.push(name + ': ' + n + ' false links but red width ' + fr.width.toFixed(2) + 'px');
+      if (fr.right > track.right + 0.5) out.push(name + ': red segment outside the track');
+    }
+    if (t.right > track.right + 0.5) out.push(name + ': bar outside the track');
+  });
+  return out;
 }"""
 
 CONTRAST_JS = """() => { const vals = PS.tileValues(); let worst = 99, worstV = null;
@@ -118,6 +135,24 @@ def main() -> int:
         load("india")
         c = page.evaluate(CONTRAST_JS)
         report(c["worst"] >= 4.5, f"tile labels: worst contrast {c['worst']:.2f}:1 over {c['n']} tiles (both modes) (bar: 4.5:1)")
+
+        bar_bad = []
+        for cov in ["0", "0.1", "0.2", "0.35", "0.5", "0.75", "1"]:
+            for noise in ["0", "0.4"]:
+                load(f"find&cov={cov}&noise={noise}")
+                res = page.evaluate(BARS_JS)
+                bar_bad += [f"{cov}|{noise} {r}" for r in res]
+        report(not bar_bad, "linkage bars: every false-link count > 0 draws a visible red segment (>= 3 px), on one count axis inside the track (100% IDs included)"
+               + ("" if not bar_bad else "\n        " + "\n        ".join(bar_bad[:8])))
+
+        page.set_viewport_size({"width": 1280, "height": 720})
+        load("week&cohort=amravati&K=10&reveal=1")
+        text = page.inner_text("main")
+        page.keyboard.press("d")
+        roster = page.inner_text("#details")
+        page.keyboard.press("Escape")
+        report("not shown (full list: Details)" in text and "below" not in text and "Full list: AWC" in roster and roster.count("PT-") >= 10,
+               "K = 10 at 1280x720: unlisted-row note says 'not shown' and the full roster is in Details (review R4)")
 
         load("find&cov=0&noise=0.4")
         page.keyboard.press("d")

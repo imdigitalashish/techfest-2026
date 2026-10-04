@@ -108,7 +108,9 @@
       "<h3>Records each department keeps</h3><ul><li>" + esc(c.poshan_record.system) + " " + esc(c.poshan_record.record_id) + ": IDs " + esc(Object.values(c.poshan_record.shared_ids).join(", ")) + "</li>" +
       "<li>" + esc(c.health_record.system) + " " + esc(c.health_record.record_id) + ": IDs " + esc(Object.values(c.health_record.shared_ids).join(", ")) + "</li></ul>" +
       "<p>Encoded link: Dice " + c.link.dice.toFixed(3) + " (" + c.link.method + "), checked against simulator truth: " + (c.link.linked_correctly ? "correct" : "wrong") + ". " +
-      "Cohort linkage through the encoded boundary: recall " + PS.pct(st.linkage.pprl_bloom.recall) + ", precision " + PS.pct(st.linkage.pprl_bloom.precision) + "; shared IDs alone recall " + PS.pct(st.linkage.ids_only.recall) + ".</p>" +
+      "Cohort linkage through the encoded boundary, at the default threshold " + D.linkage.pprl_threshold + ": recall " + PS.pct(st.linkage.pprl_bloom.recall) + ", precision " +
+      PS.pct(st.linkage.pprl_bloom.precision) + "; shared IDs alone recall " + PS.pct(st.linkage.ids_only.recall) + ". This pair's Dice (" + c.link.dice.toFixed(3) +
+      ") also clears every in-sample precision-matched threshold in the grid (highest " + PS.maxMatchedThreshold().toFixed(4) + ").</p>" +
       "<h3>Health-system records</h3><ul>" + ev + "</ul>" +
       "<h3>Measurements (Poshan Tracker)</h3><table><thead><tr><th>date</th><th>age (m)</th><th>kg</th><th>cm</th><th>WHZ</th><th>status</th><th>pathway</th></tr></thead><tbody>" + meas + "</tbody></table>" +
       "<h3>Calibration</h3><p>" + esc(cal.method) + ". Simulator WLZ mean " + cal.reference.wlz_mean + " → " + cal.overrides.wlz_mean + "; LAZ at birth " + cal.reference.laz_mean_birth + " → " + cal.overrides.laz_mean_birth +
@@ -124,7 +126,8 @@
     var lead = c.lead_months;
     var side = '<div class="panel meet"><h2>How these records met</h2>' +
       '<div class="vrow"><span class="dot" style="background:#6f7888"></span><span><b>Shared-ID join: no link.</b> The Poshan Tracker record carries no RCH ID.</span></div>' +
-      '<div class="vrow"><span class="dot" style="background:#0a6c8f"></span><span><b>Encoded linkage: joined</b> (Dice ' + lk.dice.toFixed(3) + ")" + (lk.linked_correctly ? ", <b>correctly</b> (checked against simulator truth)." : ".") + "</span></div>" +
+      '<div class="vrow"><span class="dot" style="background:#0a6c8f"></span><span><b>Encoded linkage: joined</b> (Dice ' + lk.dice.toFixed(3) + " ≥ default threshold " + D.linkage.pprl_threshold + ")" +
+        (lk.linked_correctly ? ", <b>correctly</b> (checked against simulator truth)." : ".") + "</span></div>" +
       "<h3>Listed early is not the norm</h3><p class=\"note num\">In this district cohort the rule lists <b>" + PS.pct(wl.recall.lowest_observed_whz[4]) + "</b> of new wasting episodes in children 6 months or older, 1–3 months ahead (5 slots per AWC per month; reference " +
       PS.pct(ref.methods.lowest_observed_whz.episode_recall) + "). Most are missed; this child is one of the listed ones.</p>" +
       "<h3>Why link at all</h3><p class=\"note num\">Not prediction: linked health data leave the model unchanged (" + ref.methods.logistic_anthro.episode_recall.toFixed(3) + " vs " +

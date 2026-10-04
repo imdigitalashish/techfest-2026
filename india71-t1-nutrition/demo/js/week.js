@@ -20,7 +20,7 @@
     var hiddenSlots = Math.max(0, Math.min(S.K, kids.length) - n), more = kids.length - n - hiddenSlots;
     var caught = kids.filter(function (k) { return k[by] <= S.K && k.onset_in; }).length;
     return '<div class="list ' + cls + '"><h3>' + title + "</h3><ol>" + rows.join("") + "</ol>" +
-      '<p class="tally">' + (hiddenSlots ? '<span class="label">+ ' + hiddenSlots + " more slot" + (hiddenSlots === 1 ? "" : "s") + " below · </span>" : "") +
+      '<p class="tally">' + (hiddenSlots ? '<span class="label">+ ' + hiddenSlots + " more listed, not shown (full list: Details) · </span>" : "") +
       (more > 0 ? '<span class="label">' + more + " not listed · </span>" : "") +
       (S.reveal ? "listed, then wasted within 3 months: <b>" + caught + "</b>" : "") + "</p></div>";
   }
@@ -49,7 +49,20 @@
     return o.join("");
   }
 
-  function weekDetails(co, wl) {
+  function roster(ex) {
+    var kids = ex.children.slice().sort(function (a, b) { return a.rank_whz - b.rank_whz; });
+    var rows = kids.map(function (k) {
+      return "<tr" + (k.ref === ex.featured_ref ? ' style="font-weight:700"' : "") + '><td class="mono">' + esc(k.ref) + '</td><td class="num">' + k.age_m + '</td><td class="num">' + PS.fmt(k.whz, 2) +
+        '</td><td class="num">' + (k.dw1 === null ? "–" : (k.dw1 > 0 ? "+" : "") + PS.fmt(k.dw1, 1)) + "</td><td>" + (k.no_gain_2m ? "yes" : "") + '</td><td class="num">' +
+        (k.rank_rule <= S.K ? "<b>#" + k.rank_rule + "</b>" : k.rank_rule) + '</td><td class="num">' + (k.rank_whz <= S.K ? "<b>#" + k.rank_whz + "</b>" : k.rank_whz) + "</td><td>" +
+        (S.reveal ? (k.onset_in ? "wasted in " + k.onset_in + " mo" : "") : "hidden") + "</td></tr>";
+    }).join("");
+    return "<h3>Full list: AWC " + esc(ex.awc) + ", " + PS.dmy(ex.date) + " (K = " + S.K + ")</h3><table><thead><tr><th>child</th><th>age (m)</th><th>WHZ</th><th>Δ kg</th><th>no gain 2 mo</th>" +
+      "<th>programme rank</th><th>our rank</th><th>next 3 months</th></tr></thead><tbody>" + rows + "</tbody></table><p>Bold ranks are within the " + S.K +
+      " slots. Outcomes appear only after Reveal.</p>";
+  }
+
+  function weekDetails(co, wl, ex) {
     var ref = D.committed.early_warning_v2, v1 = D.committed.early_warning_v1;
     var tbl = SERIES.slice().reverse().map(function (s) {
       var ci = ref.bootstrap_95ci[s[0]];
@@ -61,7 +74,7 @@
       "<h3>Committed reference (synthetic district, eval_v2) vs this cohort at K = " + S.K + "</h3><table><thead><tr><th>method</th><th>reference K = 5</th><th>95% CI</th><th>this cohort, K = " + S.K + "</th></tr></thead><tbody>" + tbl + "</tbody></table>" +
       "<p>A transparent rule ships; any model must beat it on real pilot data first (ADR 003). Linked health data add nothing to prediction (" + PS.pct(ref.methods.logistic_anthro.episode_recall) + " vs " +
       PS.pct(ref.methods.logistic_anthro_plus_linked_health.episode_recall) + "). eval_v1 (no infant gate, " + PS.pct(v1.methods.lowest_observed_whz.episode_recall) + ") is kept as history.</p>" +
-      "<h3>Lists on the left</h3><p>" + esc(co.example_rule) + ". The first list is the example child's AWC-month.</p>";
+      "<h3>Lists on the left</h3><p>" + esc(co.example_rule) + ". The first list is the example child's AWC-month.</p>" + roster(ex);
   }
 
   PS.register("week", function () {
@@ -91,7 +104,7 @@
       body: left + right,
       caveat: "<b>Simulated monthly slots;</b> most new episodes are still missed. Infants under 6 months (" + PS.pct(wl.infant_pathway_share) + " of episodes) and measured SAM/MAM bypass ranking.",
       src: "SIMULATED. Frozen protocol <code>components/early_warning/eval_v2.py</code> (infant gate) re-run by <code>demo/export.py</code> on the calibrated simulator; the same code reproduces <code>eval/results/early_warning_v2.json</code> at K = 5.",
-      detailsTitle: "This month: definitions and reference", details: weekDetails(co, wl)
+      detailsTitle: "This month: full list, definitions, reference", details: weekDetails(co, wl, ex)
     });
   });
   PS.renderers.week.after = function (el) {

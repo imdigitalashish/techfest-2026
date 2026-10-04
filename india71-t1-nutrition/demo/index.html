@@ -109,12 +109,15 @@ svg text.halo { stroke: #ffffff; stroke-width: 4px; paint-order: stroke; stroke-
 /* screen 3 */
 .g-link { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); }
 .knob .label { display: block; margin-bottom: .2rem; color: var(--ink-2); }
-.bars { display: grid; gap: .45rem; }
-.bar { display: grid; grid-template-columns: 11.6rem minmax(0, 1fr) 3.4rem; align-items: center; column-gap: .6rem; }
+.knob .label.inline { display: inline; margin: 0; color: var(--muted); }
+.bars { display: grid; gap: .3rem; }
+.bar { display: grid; grid-template-columns: 12.6rem minmax(0, 1fr) 3.4rem; align-items: center; column-gap: .6rem; }
 .bar .name { font-weight: 700; font-size: .9rem; line-height: 1.12; }
 .bar .name small { display: block; font-weight: 400; color: var(--muted); font-size: max(12px, .76rem); }
-.bar .track { position: relative; height: 1.45rem; background: var(--paper); border-radius: 5px; overflow: hidden; }
-.bar .fillbar { position: absolute; inset: 0; border-radius: 5px; transform-origin: left center; transition: transform .45s cubic-bezier(.16,1,.3,1); }
+.bar .track { position: relative; display: flex; height: 1.25rem; background: var(--paper); border-radius: 5px; overflow: hidden; }
+.bar .seg { height: 100%; flex: none; }
+.bar .seg-false { background: var(--red); }
+.bar .gold { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--ink); }
 .bar .val { font-size: 1.35rem; font-weight: 800; text-align: right; letter-spacing: -0.02em; }
 .bar .sub { grid-column: 2 / 4; font-size: max(12px, .8rem); color: var(--ink-2); }
 .bar .sub .bad { color: var(--red); font-weight: 700; }

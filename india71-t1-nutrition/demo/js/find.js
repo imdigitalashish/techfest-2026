@@ -1,25 +1,35 @@
 /* Screen 3 (SYNTHETIC benchmark): re-join a child's records across departments; knobs for ID coverage and typos.
- * Bars show correct (method colour) and false (red) accepted links out of the children truly in both registries. */
+ * Bars show correct (method colour) and false (red) accepted links on one count axis per cell (the largest correct + false
+ * total), with a tick at the number of children truly in both registries. */
 (function () {
   "use strict";
   var PS = window.PS, D = PS.D, S = PS.S, esc = PS.esc;
   var METHODS = [
-    { id: "ids_only", name: "Shared-ID join", sub: "today: needs the RCH ID copied into Poshan Tracker", color: "#6f7888" },
-    { id: "plaintext_probabilistic", name: "Pooled name matching", sub: "names leave the department", color: "#6c4fa3" },
-    { id: "pprl_bloom", name: "Encoded linkage, threshold 0.91", sub: "names stay; most children, most false links", color: "#0a6c8f" },
-    { id: "pprl_bloom_precision_matched", name: "Encoded linkage, same precision", sub: "threshold raised to pooled matching's precision", color: "#0a6c8f", matched: true }
+    { id: "ids_only", name: "Shared-ID join", sub: "today: needs the RCH ID", color: "#6f7888" },
+    { id: "plaintext_probabilistic", name: "Pooled names", sub: "names leave the department", color: "#6c4fa3" },
+    { id: "pprl_bloom", name: "Encoded, default 0.91", sub: "names stay in each department", color: "#0a6c8f" },
+    { id: "pprl_bloom_precision_matched", name: "Encoded, same precision", sub: "threshold raised (in-sample)", color: "#0a6c8f", matched: true }
   ];
 
   function key(c, n) { return String(c) + "|" + String(n); }
   function cell(c, n) { return D.linkage.cells[key(c, n)]; }
 
-  function barRow(c, mm) {
-    var r = c[mm.id], gold = c.gold_pairs;
-    var tw = r.true_links / gold, fw = r.false_links / gold;
-    var thr = mm.matched ? " (t = " + PS.fmt(r.threshold, 3) + (r.reached ? "" : ", target not reachable") + ")" : "";
-    return '<div class="bar' + (mm.matched ? " matched" : "") + '"><div class="name">' + mm.name + "<small>" + mm.sub + "</small></div>" +
-      '<div class="track"><div class="fillbar" style="background:' + mm.color + (mm.matched ? ";opacity:.72" : "") + ";transform:scaleX(" + Math.max(0.003, tw).toFixed(4) + ')"></div>' +
-      '<div class="fillbar" style="background:#b9261a;left:' + (100 * tw).toFixed(2) + "%;transform:scaleX(" + Math.max(0, Math.min(1 - tw, fw) / Math.max(1e-9, 1 - tw)).toFixed(4) + ')"></div></div>' +
+  /* common count axis: the largest correct + false total in this cell (never clipped at the number of gold pairs) */
+  function axisOf(c) {
+    var m = c.gold_pairs;
+    METHODS.forEach(function (mm) { m = Math.max(m, c[mm.id].true_links + c[mm.id].false_links); });
+    return m;
+  }
+
+  function barRow(c, mm, axis) {
+    var r = c[mm.id];
+    var tw = 100 * r.true_links / axis, fw = 100 * r.false_links / axis, gw = 100 * c.gold_pairs / axis;
+    var thr = "";
+    if (mm.matched) thr = r.ids_only ? " (IDs only: no score-based link accepted)" : " (t ≥ " + esc(r.threshold_display) + (r.reached ? "" : ", target not reached") + ")";
+    return '<div class="bar' + (mm.matched ? " matched" : "") + '" data-method="' + mm.id + '"><div class="name">' + mm.name + "<small>" + mm.sub + "</small></div>" +
+      '<div class="track"><div class="seg seg-true" style="background:' + mm.color + (mm.matched ? ";opacity:.72" : "") + ";width:" + tw.toFixed(3) + '%"></div>' +
+      (r.false_links > 0 ? '<div class="seg seg-false" data-false="' + r.false_links + '" style="width:max(4px, ' + fw.toFixed(3) + '%)"></div>' : "") +
+      '<div class="gold" style="left:' + gw.toFixed(3) + '%" title="all ' + PS.int(c.gold_pairs) + ' children in both registries"></div></div>' +
       '<div class="val num" style="color:' + mm.color + '">' + PS.int(r.true_links) + "</div>" +
       '<div class="sub num"><span class="good">' + PS.int(r.true_links) + " correct</span> · <span class=\"bad\">" + PS.int(r.false_links) + " false</span> · precision " +
       PS.pct(r.precision) + " · F1 " + r.f1.toFixed(2) + thr + "</div></div>";
@@ -29,15 +39,18 @@
     var ids = c.ids_only, pl = c.plaintext_probabilistic, bl = c.pprl_bloom, pm = c.pprl_bloom_precision_matched;
     var out = [];
     if (S.cov === 0) out.push("With no shared IDs the ID join finds nobody: true by definition, not a finding.");
-    if (pm.reached) {
+    if (pm.reached && !pm.ids_only) {
       out.push("At pooled matching's precision (" + PS.pct(pl.precision) + "), encoded linkage re-joins <b>" + PS.int(pm.true_links) + "</b> children (" +
         PS.int(pm.false_links) + " false) without pooling names; pooled matching " + PS.int(pl.true_links) + " (" + PS.int(pl.false_links) +
         " false); shared IDs " + PS.int(ids.true_links) + ".");
+    } else if (pm.reached) {
+      out.push("Pooled matching's precision (" + PS.pct(pl.precision) + ") is reached only by accepting keyed-ID links alone: <b>" + PS.int(pm.true_links) +
+        "</b> children, " + PS.int(pm.false_links) + " false; pooled matching " + PS.int(pl.true_links) + " (" + PS.int(pl.false_links) + " false).");
     } else {
-      out.push("Pooled matching is perfect here (" + PS.int(pl.false_links) + " false links); encoded linkage cannot reach that precision (best: " +
-        PS.int(pm.false_links) + " false at threshold " + PS.fmt(pm.threshold, 3) + ").");
+      out.push("Encoded linkage does not reach pooled matching's precision here (best: " + PS.int(pm.true_links) + " correct, " + PS.int(pm.false_links) + " false).");
     }
-    out.push("Its default threshold re-joins " + PS.int(bl.true_links) + " but accepts <b>" + PS.int(bl.false_links) + " false links</b>: a wrong link misroutes care, so operation needs the higher threshold plus clerical review.");
+    out.push("Default threshold: " + PS.int(bl.true_links) + " found, <b>" + PS.int(bl.false_links) + " false</b>; a wrong link misroutes care. " +
+      "Matching is an in-sample comparison on this synthetic cell; the operating threshold is a proposed policy.");
     if (S.noise > 0) {
       var deg = function (m) { return c[m].f1 - c0[m].f1; };
       var parts = [["pooled matching", "plaintext_probabilistic"], ["encoded linkage", "pprl_bloom"]].map(function (p) {
@@ -112,23 +125,25 @@
       "<h3>F1 across the grid (35 runs, no interpolation)</h3><div class=\"row\" style=\"flex-wrap:nowrap\"><div style=\"flex:1\">" + trend("cov") + "</div><div style=\"flex:1\">" + trend("noise") + "</div></div>" +
       '<p class="num">Grey: shared IDs · purple: pooled names · blue: encoded linkage at 0.91. The 35% / +0% run reproduces <code>eval/results/identity_linkage.json</code> exactly (F1 ' +
       lk.ids_only.f1.toFixed(3) + " / " + lk.plaintext_probabilistic.f1.toFixed(3) + " / " + lk.pprl_bloom.f1.toFixed(3) + ").</p>" +
-      "<h3>Same precision</h3><p>The encoded matcher's one-to-one assignment does not depend on the acceptance threshold (<code>pprl.accept_at</code>), so raising the threshold until precision reaches pooled matching's precision is exact, not interpolated. Where pooled matching is perfect (100% coverage), encoded linkage cannot match it and the row says so.</p>";
+      "<h3>Same precision (in-sample)</h3><p>The encoded matcher's one-to-one assignment does not depend on the acceptance threshold (<code>pprl.accept_at</code>), so each candidate threshold is exact, not interpolated. <code>eval_linkage.precision_operating_point</code> picks the lowest threshold whose precision reaches pooled matching's; candidates include the upper end that accepts keyed-ID links only (at 100% coverage that is the only point with no false link). It uses this cell's gold labels: an in-sample comparison, not a validated operating threshold. The threshold shown is the shortest decimal that reproduces the same links.</p>" +
+      "<p>Screens 4–7 link the simulated cohort at the default threshold " + D.linkage.pprl_threshold + ".</p>";
   }
 
   PS.register("find", function () {
     var L = D.linkage;
     if (!L) return '<div class="panel"><h2>Linkage grid not exported</h2></div>';
-    var c = cell(S.cov, S.noise), c0 = cell(S.cov, 0);
+    var c = cell(S.cov, S.noise), c0 = cell(S.cov, 0), axis = axisOf(c);
     var covSeg = L.coverage_levels.map(function (v) {
       return '<button data-cov="' + v + '" aria-pressed="' + (v === S.cov) + '">' + Math.round(100 * v) + "%" + (v === 0.35 ? '<span class="star">*</span>' : "") + "</button>";
     }).join("");
     var noiseSeg = L.noise_levels.map(function (v) { return '<button data-noise="' + v + '" aria-pressed="' + (v === S.noise) + '">+' + Math.round(100 * v) + "%</button>"; }).join("");
     var left = '<div class="panel">' +
-      '<div class="knob"><span class="label">Children in both registries whose Poshan Tracker record has the RCH ID <span class="num">(nominal; * simulation assumption; realised ' +
+      '<div class="knob"><span class="label">RCH ID in Poshan Tracker, children in both registries <span class="num">(nominal; * simulation assumption; realised ' +
       PS.pct(c.poshan_with_rch_id / c.poshan_records) + " of all records)</span></span><span class=\"seg\" role=\"group\">" + covSeg + "</span></div>" +
-      '<div class="knob"><span class="label">Extra typing errors per name and date-of-birth field (generator parameter)</span><span class="seg" role="group">' + noiseSeg + "</span>" +
+      '<div class="knob"><span class="label">Extra typing errors per name and birth-date field (generator parameter)</span><span class="seg" role="group">' + noiseSeg + "</span>" +
       ' <span class="label" style="display:inline;margin-left:.5rem">Presets</span> <button class="btn" data-preset-l="0.35|0">As simulated</button> <button class="btn" data-preset-l="0|0.4">No IDs, +40%</button></div>' +
-      '<div class="bars">' + METHODS.map(function (mm) { return barRow(c, mm); }).join("") + "</div>" +
+      '<div class="bars">' + METHODS.map(function (mm) { return barRow(c, mm, axis); }).join("") + "</div>" +
+      '<p class="label num">One count scale; <span style="color:#b9261a;font-weight:700">red</span> = false links; | = all ' + PS.int(c.gold_pairs) + " children in both registries.</p>" +
       '<p class="callout num">' + verdict(c, c0) + "</p></div>";
     var co = PS.cohort(), right = '<div class="panel"><h2>The boundary: each department encodes on its own side</h2>';
     if (co) {
@@ -139,7 +154,7 @@
         '<div class="bitbox">' + bitGrid(lk.bits_poshan, lk.bits_health, "b") + '<div class="cap num">' + lk.set_health + " bits set; green = set in both</div>" + crossing(ch.health_encoded) + "</div>" +
         "</div>" +
         '<p class="note num">Matcher: Dice = 2 × ' + lk.set_both + " / (" + lk.set_poshan + " + " + lk.set_health + ") = <b>" + lk.dice.toFixed(3) + "</b> ≥ " + D.linkage.pprl_threshold +
-        " → linked" + (lk.linked_correctly ? ", correctly (checked against simulator truth)" : "") + ". Shared-ID join: no common ID, no link.</p>" +
+        " (default threshold, used on screens 4–7) → linked" + (lk.linked_correctly ? ", correctly (checked against simulator truth)" : "") + ". Shared-ID join: no link.</p>" +
         '<p class="label">Fixed illustration: the simulated ' + esc(co.district.district) + " child of the next screen, not the grid cell selected on the left.</p>";
     }
     right += "</div>";

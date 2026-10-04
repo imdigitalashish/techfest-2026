@@ -76,6 +76,13 @@ def main() -> int:
               c["pprl_bloom_precision_matched"]["true_links"] > c["ids_only"]["true_links"] for c in lo),
           "linkage: at pooled matching's precision, encoded linkage still beats the shared-ID join whenever coverage <= 50%")
     check(all(c["ids_only"]["true_links"] == 0 for c in cells if c["coverage"] == 0), "linkage: at 0% coverage the shared-ID join finds nobody (by definition)")
+    pms = [c["pprl_bloom_precision_matched"] for c in cells]
+    check(all(pm["reached"] and pm["precision"] >= pm["target_precision"] and pm["in_sample"] and pm["threshold_display"] for pm in pms),
+          "linkage: precision-matched point reached in all 35 cells (in-sample; precision >= target; display threshold stored)")
+    full = [c for c in cells if c["coverage"] == 1.0]
+    check(len(full) == 5 and all(c["pprl_bloom_precision_matched"]["ids_only"] and c["pprl_bloom_precision_matched"]["false_links"] == 0 and
+                                 c["pprl_bloom_precision_matched"]["true_links"] == c["gold_pairs"] for c in full),
+          "linkage: at 100% coverage the matched point is keyed-ID links only: all children, 0 false (review R1)")
     check(L["label"] == "SYNTHETIC", "linkage labelled SYNTHETIC")
 
     # SYNTHETIC: reference worklist == committed eval_v2 (infant gate) at K = 5

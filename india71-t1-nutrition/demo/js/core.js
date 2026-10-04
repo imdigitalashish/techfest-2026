@@ -37,6 +37,15 @@
   };
   PS.human = function (action) { return String(action || "").replace(/_/g, " "); };
   PS.cohort = function () { return D.sim && D.sim[PS.S.cohort]; };
+  /* highest score threshold chosen by the in-sample precision matching anywhere in the grid */
+  PS.maxMatchedThreshold = function () {
+    var m = 0;
+    Object.keys((D.linkage && D.linkage.cells) || {}).forEach(function (k) {
+      var pm = D.linkage.cells[k].pprl_bloom_precision_matched;
+      if (pm && !pm.ids_only && pm.threshold > m) m = pm.threshold;
+    });
+    return m;
+  };
 
   /* sequential wasting scale (percent): pale sand -> deep red */
   var STOPS = [[0, [251, 243, 213]], [8, [246, 210, 122]], [16, [236, 154, 60]], [24, [212, 81, 42]], [32, [143, 29, 20]]];
