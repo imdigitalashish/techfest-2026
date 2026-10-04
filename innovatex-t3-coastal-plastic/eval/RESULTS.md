@@ -1,6 +1,6 @@
 # Results — every number with its reproduce command
 
-Generated 2026-10-04 08:09 IST at commit `aee372f` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
+Generated 2026-10-04 09:51 IST at commit `d144a33` by `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`. Values are copied verbatim from each component's `results/metrics.json`. Labels such as SIMULATED and SYNTHETIC are part of the component's output; read them before quoting a number.
 
 ## detection — flux_synthetic.json
 
@@ -35,6 +35,46 @@ Reproduce: `python -m t3det.synth --out ../../.data/detection/synth/seq02 --fram
 | flux_estimate.provenance.source | component:detection/t3det.synth seed=11 |
 | flux_estimate.provenance.retrieved_at | 2026-10-04T02:24:00.379100Z |
 | flux_estimate.provenance.notes | SYNTHETIC: real TUD-GV test-split litter crops pasted on an inpainted TUD-GV water frame; mass factor is an ASSUMPTION transferred from the Saigon River (van Emmerik et al. 2019) |
+
+## detection — metrics.json
+
+Source: [`components/detection/results/metrics.json`](../components/detection/results/metrics.json)  
+Reproduce: `cd innovatex-t3-coastal-plastic && bash components/detection/data/fetch_data.sh && cd components/detection && python3.11 -m t3det.prepare && curl -sSL -o ../../.data/detection/weights/yolo11n.pt https://github.com/ultralytics/assets/releases/download/v8.3.0/yolo11n.pt && python3.11 -m t3det.zeroshot --weights ../../.data/detection/weights/yolo11n.pt --split test`
+
+| Metric | Value |
+|---|---|
+| dataset | TUD-GV floating-litter subset (Jia et al. 2024, Water Research 266:122405), doi:10.5281/zenodo.13730228, CC BY 4.0 |
+| split | test (grouped by experiment id, seed 42; components/detection/data/splits/test.txt; held out) |
+| n_test_images | 254 |
+| n_test_boxes | 1309 |
+| mAP50 | 0.3935 |
+| mAP50_95 | 0.2091 |
+| precision | 0.7562 |
+| recall | 0.1398 |
+| precision_recall_at_score | 0.25 |
+| per_class.litter.AP50 | 0.3935 |
+| per_class.litter.AP50_95 | 0.2091 |
+| latency_ms_mps.median | 1087 |
+| latency_ms_mps.p90 | 4470 |
+| latency_ms_mps.n | 251 |
+| latency_ms_mps.batch | 1 |
+| latency_ms_mps.imgsz | 640 |
+| latency_ms_mps.note | end-to-end predict() on a shared, thrashing Apple M5 (load avg 63 on 10 cores, swap full): an upper bound, not the model's real speed |
+| model_id | yolo11n.pt#sha256:0ebbc80d4a76 (COCO-pretrained, zero-shot, class-agnostic) |
+| baseline_kind | ZERO-SHOT (no training on TUD-GV): COCO-pretrained YOLO11n, class-agnostic NMS, every COCO class counted as a litter candidate. The trained YOLO11n baseline was blocked by machine thrash (README A1); its command is in README. |
+| metric_impl | frozen matcher of autoresearch/eval.py: greedy IoU match, COCO-style 101-point AP; mAP50_95 = mean AP over IoU 0.50:0.05:0.95; precision/recall at score >= 0.25 |
+| evaluated_at | 2026-10-04T02:33:22+00:00 |
+| machine | arm64 macOS 26.2 (Apple M5, MPS) |
+| ap_by_iou.0.5 | 0.3935 |
+| ap_by_iou.0.55 | 0.3763 |
+| ap_by_iou.0.6 | 0.3463 |
+| ap_by_iou.0.65 | 0.3205 |
+| ap_by_iou.0.7 | 0.2725 |
+| ap_by_iou.0.75 | 0.2026 |
+| ap_by_iou.0.8 | 0.1219 |
+| ap_by_iou.0.85 | 0.0473 |
+| ap_by_iou.0.9 | 0.0104 |
+| ap_by_iou.0.95 | 0.0001 |
 
 ## detection — zeroshot_groningen_eval.json
 

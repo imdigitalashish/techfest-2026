@@ -10,7 +10,16 @@
 - _(none)_
 
 ## Now
-- **Phase:** morning package delivered and accepted (08:22 IST, 4 Oct). Light effort until the 7 Oct selection gate; T3 is unlikely to be the zonal pick.
+- **Phase:** ⏸ **PAUSED 09:55 IST, 4 Oct** by user decision (Supervisor). Only 3 projects run at a time; the Delhi-zonal pick will be T1 or T2. Morning package delivered and accepted 08:22.
+- **Resume point (in order, when un-paused):**
+  1. **Detector baseline.** `cd innovatex-t3-coastal-plastic/components/detection && bash baseline_when_calm.sh`. It trains YOLO11n only while the 1-min load is below 20, with a ≤60 min cap. Then run `bash run_after_train.sh A <weights>` to write `results/metrics.json` (test + val + Groningen) and the flux count, then `bash run_after_train.sh B <weights>` for the ratchet. The script was queued at 08:35 and never started (load was 67); no T3 process is running.
+  2. **Twin (`components/twin_sim`):** split escape into entrainment, overflow and bypass; add a fail-open-fuse SENSITIVITY; compute a paired P2−P1 interval. Reproduce the current numbers with `cd innovatex-t3-coastal-plastic/components && python -m twin_sim.run`.
+  3. **Contracts v0.2:** optional `signature`, `signer_key_id` on `LedgerEntry` and `ledger_anchor` on `DashboardBundle`, then `python3 architecture/contracts/export_schemas.py`.
+  4. **Pitch:** fill the 6 ⟨FILL⟩ markers (team details, trained mAP ×2, flume result, retrofit cost) and resolve the 2 [V] claims. This is needed only if T3 is ever pitched.
+  5. **Flume T2/T3** (needs a teammate) — [prototype-plan](deliverables/prototype-plan.md) §3.
+  6. **C14 source attribution:** not started.
+  7. **After any change:** regenerate results with `python3 innovatex-t3-coastal-plastic/eval/collect_results.py`.
+- **Child sessions:** all idle. *T3 detection + flux* was told at 09:50 to drop its queued training. Twin, dashboard + ledger, and both research sessions are finished. None spawned since.
 - **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments, leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup's 2026 Interceptors cover the big Malad and Trombay creek mouths. NullahNet is the network layer for the rest:
   - pocket-fill sensing;
   - tide-aware dispatch (Spike 1, support: −2.1% escaped in the twin);
@@ -18,13 +27,6 @@
   - signed evidence records for pay per verified kg.
   See [ADR 001](architecture/adr/001-spike.md).
 - **Done tonight:** [landscape](research/landscape.md) · [components + contracts](architecture/components.md) · [per-component research](research/components/README.md) · [ADR 001](architecture/adr/001-spike.md) · selection memo v1 (below) · [zonal pitch](deliverables/zonal-pitch.md) · [prototype plan](deliverables/prototype-plan.md) · skeleton: twin + dispatch on real forcing, evidence ledger, dashboard, detection scaffold · [results](eval/RESULTS.md) · two autoresearch ledgers (twin, detection).
-- **Doing:** child sessions twin, dashboard + ledger, and both research sessions are done. *T3 detection + flux* is still trying to train the baseline.
-- **Next:**
-  1. Trained detector mAP on held-out data.
-  2. Twin: split escape into entrainment, overflow and bypass; ratchet/fuse SENSITIVITY; a paired P2−P1 interval.
-  3. Flume T2/T3 before 10 Oct (needs a teammate).
-  4. Prior-art write-up for the fuse retrofit.
-  5. Selection memo final by 7 Oct 12:00.
 - **Needs from user:**
   1. Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct.
   2. If T3 is chosen, name a teammate with fabrication skills. Ideally that teammate runs a ~2-hour tabletop reversed-flow flume test before 10 Oct (a box, a small pump, film pieces, phone video — see [prototype-plan](deliverables/prototype-plan.md) §3, T2/T3).
@@ -67,7 +69,7 @@
 | C2 | Catchment plastic load | rain, catchment → `LoadSeries` | build-up / wash-off model | – | building | NSE vs boom catch (needs field data) |
 | C3 | Outfall hydraulics | rain, tide → `HydraulicSeries` | rational method + tidal stage | – | building | — |
 | C4 | Interceptor model | load, hydraulics → `InterceptorSeries` | fixed-efficiency boom | Spike 2 (ratchet + fuse, via H1) | **done (v0, SIMULATED)** | capture efficiency vs flume |
-| C5 | Vision detector | frame → `FrameDetections` | YOLO11n | – (instrumentation) | zero-shot only; training pending | zero-shot COCO YOLO11n, Groningen cross-site: mAP50 0.405 ± 0.026, recall 0.01 @ conf 0.25 |
+| C5 | Vision detector | frame → `FrameDetections` | YOLO11n | – (instrumentation) | zero-shot only; training paused | zero-shot COCO YOLO11n — TUD-GV held-out test (254 img): mAP50 0.394, mAP50-95 0.209, P 0.756 / R 0.140 @ 0.25; Groningen cross-site: mAP50 0.405 ± 0.026, R 0.010 @ 0.25 |
 | C6 | Flux counter | detections → `FluxEstimate` | ByteTrack + line crossing | – | **v0** | count error 75% on a SYNTHETIC sequence (zero-shot detector) |
 | C7 | Fill estimator | frame + range → `FillEstimate` | ultrasonic / ToF range | – | planned | fill MAE |
 | C8 | Edge telemetry | sensors → `SiteTelemetry` | MQTT over 4G / NB-IoT | – | planned | delivery rate, bytes/day |
@@ -167,3 +169,9 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - No new spawns.
   - The detection child holds one queued task: train the YOLO11n baseline only while the 1-min load is under 20, stop above 40, 60-min cap.
   - The lead keeps the package current and will finalise the selection memo by 7 Oct 12:00.
+
+### 2026-10-04 09:55 IST — PAUSED (user decision via the Supervisor)
+- Only 3 projects now run at a time (Namma Space, Perceptron P7, EV C2). T3 is paused, and the Delhi-zonal pick will be T1 or T2.
+- The detection child was told to drop its queued YOLO training. Its load-guarded script had been waiting since 08:35 (load 67) and never started; ps confirms no T3 process is running.
+- Results saved: the detection child's later commit added zero-shot metrics on the TUD-GV held-out test (mAP50 0.394, mAP50-95 0.209, P 0.756 / R 0.140 @ 0.25). `eval/RESULTS.md` was regenerated and now covers 6 result files.
+- The precise resume point is under *Now*. The lead is idle.
