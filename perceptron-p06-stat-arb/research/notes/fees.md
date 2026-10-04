@@ -15,8 +15,8 @@ Scope: P6 C5 costs. Rows use only official exchange pages opened in this session
 | Bybit | Perpetual | UNVERIFIED | UNVERIFIED | https://www.bybit.com/en/help-center/article/Trading-Fee-Rates | 2026-10-04 |
 | Bitstamp | Spot | UNVERIFIED | UNVERIFIED | https://www.bitstamp.net/fee-schedule/ | 2026-10-04 |
 | Deribit | BTC perpetual | UNVERIFIED | UNVERIFIED | https://support.deribit.com/hc/en-us/articles/25944746248989-Fees | 2026-10-04 |
-| Hyperliquid | Perpetual | 0.015% / 0.045% | -0.002% maker rebate / 0.0144% taker (Tier 6 + Diamond staking discount) | https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees | 2026-10-04 |
-| Hyperliquid | Spot | 0.040% / 0.070% | -0.002% maker rebate / 0.0150% taker (Tier 6 + Diamond staking discount) | https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees | 2026-10-04 |
+| Hyperliquid | Perpetual | 0.015% / 0.045% | 0.0000% maker at top tier (−0.002% only via the separate maker-rebate table, >1.5% maker volume share) / 0.0144% taker (Tier 6 + Diamond staking discount) | https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees | 2026-10-04 |
+| Hyperliquid | Spot | 0.040% / 0.070% | 0.0000% maker at top tier (−0.002% only via the separate maker-rebate table, >1.5% maker volume share) / 0.0150% taker (Tier 6 + Diamond staking discount) | https://hyperliquid.gitbook.io/hyperliquid-docs/trading/fees | 2026-10-04 |
 | Gate.io | Spot | UNVERIFIED | UNVERIFIED | https://www.gate.com/fee | 2026-10-04 |
 | Gate.io | Futures | UNVERIFIED | UNVERIFIED | https://www.gate.com/fee | 2026-10-04 |
 | Bitget | Spot | UNVERIFIED | UNVERIFIED | https://www.bitget.com/fee | 2026-10-04 |

@@ -10,7 +10,7 @@
 - _(none)_
 
 ## Now
-- **Phase:** morning package complete (Phases 0–5 v1). Next: Phase 3/5 depth — multi-day walk-forward and falsification tests. Updated 07:20 IST.
+- **Phase:** morning package complete (Phases 0–5 v1; fact-checked). Next: Phase 3/5 depth — multi-day walk-forward and falsification tests. Updated 07:50 IST.
 - **Plan (to 12 Oct selection):** (1) download ≥12 Tardis first-of-month days (2025-10 … 2026-10) and run the walk-forward; (2) receive-time replay + ±5 ms clock-offset perturbation; (3) residual survival S(a+L)/S(a) and downside-quantile LEV; (4) compiled/linear LEV path (≤10 µs); (5) tier-3 BTC/ETH lead–lag; (6) paper-trading loop on the live recorder; (7) re-measure latency from Azure regions.
 - **Doing:** nothing running except the live recorder (`shellId recorder`, ends ≈08:17 IST on its own).
 - **Next:** walk-forward data fetch → falsification test 1 (walk-forward superiority) → selection memo v2.
@@ -116,3 +116,9 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Ratchet v1** (`components/decision/autoresearch/`, frozen `eval.py`, `results.tsv`): 9 hypotheses on the 09-01 train/val halves. Kept H0 per-pair×cell threshold ($689 val). GBM classifier +$97 and GBM regressor (LEV) +$99 were not kept because they fall within the bootstrap SE (~$150). Holdout 2026-10-01 re-check: $1,175 (H0).
 - **Antithesis** (rubber-duck): survival ≠ executable profit, λ heterogeneous, cross-venue clock skew, one day ≠ robustness; proposed direct executable-markout model. Adopted as the synthesis in ADR 001, with three falsification tests.
 - **Deliverables:** `deliverables/round1-abstract.md` (~890 words, [TEAM] placeholders), `deliverables/architecture.md` (mermaid + metric table), `architecture/adr/001-spike.md`, selection memo v1 above; figure `eval/results/baseline_0901_to_1001_frontier.png`.
+- **Self fact-check:** my own numbers checked against the results files before pushing. One error fixed: the Mac-India p05 range is 69–107 ms (Deribit 69.4), not 75–110.
+
+### 2026-10-04 07:25–07:50 IST — Supervisor sync, fact-check, README (lead)
+- Messaged the Supervisor that the selection memo gate is ready, with a cross-project warning that the saturated uplink killed agents with 408 errors. The Supervisor's 07:22 alignment note (write ADR, abstract, architecture, memo, Now/Log) crossed with my 07:25 push, which already contained all of them, so no reply was needed.
+- Independent fact-check (`research` agent) of 8 load-bearing landscape claims: 3 PASS, 5 PARTIAL, 0 FAIL. Fixes applied in `research/landscape.md` and `research/notes/fees.md`: Hyperliquid top-tier maker is 0.0000% (−0.002% is a separate rebate table); Aquilina et al. URL added; arXiv 1812.00595 authors named; per-route AWS/Avelacom numbers marked as not re-verified. A verdict table is appended to the landscape.
+- Added `README.md` with reproduce commands.
