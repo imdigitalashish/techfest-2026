@@ -56,7 +56,7 @@
 - What companies ship: urban air-quality networks and forecasting products — check recent launches and city deployments.
 
 ## Key decisions
-- 2026-10-04 — City = Delhi-NCR; pollution source = construction & demolition dust; product = DustLedger (site-level attribution, not city AQI). Evidence: blanket bans in WAP 2026-27 and GRAP, flat fines, 1.38 M construction workers on Delhi's welfare-board rolls (89,518 active), no vendor attributes a site's own increment ([landscape](research/landscape.md)).
+- 2026-10-04 — City = Delhi-NCR; pollution source = construction & demolition dust; product = DustLedger (site-level attribution, not city AQI). Evidence: blanket bans in WAP 2026-27 and GRAP, area-based fines, 1.38 M construction workers on Delhi's welfare-board rolls (89,518 active), no vendor attributes a site's own increment ([landscape](research/landscape.md)).
 - 2026-10-04 — Spike = C6 attribution + inter-node self-calibration; second spike = C8 closed-loop misting; forecasting stays best-practice ([ADR 001](architecture/adr/001-spike.md)).
 - 2026-10-04 — Real data via the OpenAQ public S3 archive (no key) + Open-Meteo (ERA5, CAMS). Everything simulated is labelled `provenance="SIMULATED"`.
 
@@ -146,3 +146,7 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **Deck:** Marp → `zonal-deck.pdf` / `.pptx`, 10 main + 6 backup slides, timed notes (9:15 + 45 s); every slide visually checked (PNG contact sheets); figures regenerated from committed results (time series now from evaluator v2.1). The old python-pptx deck was removed. Presenter card: one A4 page (`presenter-card.pdf`). Q&A: 22 questions.
 - **Memo v2:** honest case for and against T2; recommendation: pitch T1 at the zonal, keep T2 as the documented alternative.
 - Note: one Marp build started at `kern.memorystatus_level` 29 (gate is 30); short job, no harm; later builds checked the gate first.
+
+### 2026-10-04 15:57 IST — Lead re-verified the cited numbers; corrected the fine yardstick
+- Re-opened 10 agent-sourced fact rows (F3, F5–F8, F11, F12, F14, F15, F19) with curl + grep: all quotes and numbers match, except one conflation found in F6. The HT article reports CAQM's 2024 schedule as **₹1–2 lakh per construction-site violation by area** (doubled under GRAP), and the '₹5 lakh irrespective of AQI' was Delhi's *pre-standardisation* practice. Fixed in the fact table, deck slides 3 and 9, Q&A Q10, presenter card, prototype plan, landscape and ADR 001. The parts cost is now framed as 30–61 % of one fine. Added the old phrasing to check_docs' STALE list. Deck/PDF/PPTX/card rebuilt; slides 3 and 9 checked visually.
+- Reviewers launched (child sessions): gpt-6-astra max (hostile judge on the deck/pitch) and gpt-6-sol max (code/eval reproduction). They review commit 41e391e; this fine correction postdates it and will be noted in the lead response.

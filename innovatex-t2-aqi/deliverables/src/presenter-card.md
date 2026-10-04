@@ -6,7 +6,7 @@
 |---|---|---|---|
 | 1 | 0:00–0:20 | Title | "Delhi stops every site, clean or dirty, because it can't tell them apart." |
 | 2 | 0:20–1:10 | Restrictions | {{v:F1|Nov 1 – Jan 31}} restricted; {{v:F1|Dec 10 – Jan 20}} total ban; GRAP-3 {{v:F3|16 days}} in 2025. |
-| 3 | 1:10–2:00 | Monitors & fines | {{v:F5|47}} monitors at city scale; flat {{v:F6|₹5 lakh}} fine per violation; checklists, not dust. |
+| 3 | 1:10–2:00 | Monitors & fines | {{v:F5|47}} monitors at city scale; fines {{v:F6|₹1 lakh to ₹2 lakh}} by area; checklists, not dust. |
 | 4 | 2:00–3:00 | Small source, blunt tool | Construction = {{v:F9|2-5%}} of ambient PM10 (IIT Kanpur); {{v:F7|1,378,199}} workers on the rolls. |
 | 5 | 3:00–3:50 | Tools fall short | Winter PM10 ~{{v:F11|314}} µg/m³: a fence sensor mostly measures Delhi. |
 | 6 | 3:50–5:10 | DustLedger | Downwind − upwind = the site's dust; "inconclusive" never means clean. |

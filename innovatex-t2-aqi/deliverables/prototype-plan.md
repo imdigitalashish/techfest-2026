@@ -35,7 +35,7 @@
 
 **Kit parts total: ₹60,711** (4 nodes ₹40,128 · wind ₹14,810 · gateway ₹3,516 · misting ₹2,257). Single-unit retail, incl. GST. **Not included:** 5 V buck converters, cabling and glands, masts and mounting, radiation shields, SIM + data plan, gateway power supply, installation labour, reference co-location, maintenance. These are UNVERIFIED and must be priced before any "installed cost" claim. Notes: the relay listing was out of stock (any 5 V relay module works); the SX1262 module is listed for 868/915 MHz, so its suitability for India's IN865 band is UNVERIFIED; the wind sensor's stock status wasn't shown, and an in-stock alternative is listed at a higher price.
 
-**Commercial yardstick** (fact F6): one violation costs a large Delhi site a ₹5 lakh flat fine. The parts are 12% of one fine, which says nothing yet about lifetime cost.
+**Commercial yardstick** (fact F6): one construction-site violation costs ₹1 lakh to ₹2 lakh under CAQM's 2024 schedule (doubled under GRAP). The parts are 30–61% of one fine, which says nothing yet about lifetime cost.
 
 ## 3. Power budget (per node)
 | Load | W (average) |

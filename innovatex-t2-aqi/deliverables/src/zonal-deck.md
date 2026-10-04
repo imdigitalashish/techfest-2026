@@ -53,16 +53,16 @@ SAY: "Delhi's Winter Action Plan for this year prohibits dust-generating demolit
 
 - **City-scale sensing:** {{v:F5|47}} reference monitors in Delhi (going to {{v:F5|60}}); planning norm is one per {{v:F5|25-50 km²}}
 - **Site compliance = checklists:** anti-smog guns ({{v:F6|₹7,500}} fine per missing gun per {{v:F6|5,000 m²}}), CCTV, self-audit uploads
-- **Flat fines:** {{v:F6|₹5 lakh}} per violation for a large Delhi site, "irrespective of the air quality category"; doubled under GRAP
+- **Fines by area, not by dust:** CAQM's 2024 schedule sets {{v:F6|₹1 lakh to ₹2 lakh}} per construction-site violation depending on area, doubled under GRAP
 - **Trust is broken:** in Oct 2025 water tankers were filmed spraying at the Jahangirpuri reference monitor; CPCB says its data can't be manipulated
 
 **Penalties track checklists, not the dust a site actually releases.**
 
-<span class="small">Sources: Hindustan Times (2026; Feb 2024, reproducing the CAQM order of 6 Feb 2024); Newslaundry (30 Oct 2025); New Indian Express (3 Dec 2025). Fact rows F5, F6, F25.</span>
+<span class="small">Sources: Hindustan Times (2026; Feb 2024, reporting the CAQM order of 6 Feb 2024); Newslaundry (30 Oct 2025); New Indian Express (3 Dec 2025). Fact rows F5, F6, F25.</span>
 
 <!--
 TIME 1:10–2:00 (50 s).
-SAY: "Delhi measures air at city scale: forty-seven reference monitors, roughly one per twenty-five to fifty square kilometres. A monitor can tell you the air is bad; it can't tell you which of the sites around it made it bad. So compliance is a checklist — anti-smog guns, CCTV, self-audits — and fines are flat per violation, whatever the air. And when tankers are filmed spraying a reference monitor, people stop trusting the numbers."
+SAY: "Delhi measures air at city scale: forty-seven reference monitors, roughly one per twenty-five to fifty square kilometres. A monitor can tell you the air is bad; it can't tell you which of the sites around it made it bad. So compliance is a checklist — anti-smog guns, CCTV, self-audits — and fines are set by site area, not by how much dust a site actually releases. And when tankers are filmed spraying a reference monitor, people stop trusting the numbers."
 -->
 
 ---
@@ -171,13 +171,13 @@ SAY: "This is the core test. The background PM and the wind are real Delhi data;
 | 10 W panel in December (worst month) | {{n:pw_margin}}× the daily load |
 | Battery with no sun | {{n:pw_autonomy}} days |
 
-Yardstick: one violation = a {{v:F6|₹5 lakh}} flat fine for a large Delhi site. The parts are {{n:bom_kit_vs_fine_pct}}% of that — not a lifetime cost.
+Yardstick: one construction-site violation costs {{v:F6|₹1 lakh to ₹2 lakh}} under CAQM's 2024 schedule (doubled under GRAP). The parts are {{n:bom_kit_vs_fine2l_pct}}–{{n:bom_kit_vs_fine1l_pct}}% of one fine — not a lifetime cost.
 
 <span class="small">Prices seen by the lead on robu.in / amazon.in, 4 Oct 2026 (deliverables/bom/bom.csv). Datasheets: Sensirion SPS30, Espressif ESP32-S3; irradiance: NASA POWER (fact rows F20–F22).</span>
 
 <!--
 TIME 7:00–7:50 (50 s).
-SAY: "Costs come from vendor listings we opened: about sixty-one thousand rupees of parts for a four-node ring, wind sensor, gateway and misting line. That's parts only — not installation or upkeep. The wind sensor is a quarter of it. Power comes from datasheets: about ten watt-hours a day per node, so a ten-watt panel covers about twice the load even in December, and the battery lasts about twelve days without sun. Compare that with one five-lakh fine."
+SAY: "Costs come from vendor listings we opened: about sixty-one thousand rupees of parts for a four-node ring, wind sensor, gateway and misting line. That's parts only — not installation or upkeep. The wind sensor is a quarter of it. Power comes from datasheets: about ten watt-hours a day per node, so a ten-watt panel covers about twice the load even in December, and the battery lasts about twelve days without sun. Compare that with one violation: one to two lakh rupees under CAQM's schedule, doubled under GRAP."
 -->
 
 ---

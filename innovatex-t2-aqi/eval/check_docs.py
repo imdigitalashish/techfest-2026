@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from render_docs import OUT, PH, ROOT, SRC, TEMPLATES, render_all  # noqa: E402
 
 STALE = ["36.2 µg", "77.0 →", "77.0 µg", "33.8 ± 2.6", "97.8 ± 15.6", "58.0 ± 16.0", "−65 %", "-65%", "−42 %", "-42%", "65 %",
-         "tamper-proof", "can't be edited", "so clean sites can keep working", "close to its data limit", "24.1 µg/m³ (r 0.90"]
+         "tamper-proof", "can't be edited", "so clean sites can keep working", "close to its data limit", "24.1 µg/m³ (r 0.90", "₹5 lakh flat fine", "flat fine per violation", "flat ₹5 lakh"]
 CURRENT = ["research/landscape.md", "architecture/components.md"]
 NUM = re.compile(r"(?<![\w.\-/])(\d{1,3}(?:,\d{2,3})+(?:\.\d+)?|\d+\.\d+|\d{4,}|\d+(?:\.\d+)?\s?%)(?![\w])")
 SKIP_BEFORE = re.compile(r"(≥|≤|<|>|~|±|v|×|§|Table|Figure|below|above|under|over|ESP|SX|IN|SHT|PMS|SDS|SPS|SEN|A|F|B|C|S)\s*$")

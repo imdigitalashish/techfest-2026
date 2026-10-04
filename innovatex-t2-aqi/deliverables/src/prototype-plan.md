@@ -14,7 +14,7 @@
 
 **Kit parts total: ₹{{n:bom_kit}}** (4 nodes ₹{{n:bom_nodes4}} · wind ₹{{n:bom_wind}} · gateway ₹{{n:bom_gateway}} · misting ₹{{n:bom_actuator}}). Single-unit retail, incl. GST. **Not included:** 5 V buck converters, cabling and glands, masts and mounting, radiation shields, SIM + data plan, gateway power supply, installation labour, reference co-location, maintenance. These are UNVERIFIED and must be priced before any "installed cost" claim. Notes: the relay listing was out of stock (any 5 V relay module works); the SX1262 module is listed for 868/915 MHz, so its suitability for India's IN865 band is UNVERIFIED; the wind sensor's stock status wasn't shown, and an in-stock alternative is listed at a higher price.
 
-**Commercial yardstick** (fact F6): one violation costs a large Delhi site a {{v:F6|₹5 lakh}} flat fine. The parts are {{n:bom_kit_vs_fine_pct}}% of one fine, which says nothing yet about lifetime cost.
+**Commercial yardstick** (fact F6): one construction-site violation costs {{v:F6|₹1 lakh to ₹2 lakh}} under CAQM's 2024 schedule (doubled under GRAP). The parts are {{n:bom_kit_vs_fine2l_pct}}–{{n:bom_kit_vs_fine1l_pct}}% of one fine, which says nothing yet about lifetime cost.
 
 ## 3. Power budget (per node)
 {{table:power}}

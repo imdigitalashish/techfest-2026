@@ -41,7 +41,7 @@ Nothing stops it; we aim to detect it. One node reading lower than the ring whil
 ## Cost, impact and feasibility
 
 **Q10. What does it cost, and who pays?**
-Parts for one site — four nodes, a wind sensor, a gateway and a misting line — come to ₹{{n:bom_kit}} at listings we opened on 4 Oct, incl. GST. That's parts only: masts, cabling, data plan, installation and upkeep aren't in it. The wind sensor alone is ₹{{n:bom_wind}}. For scale, one violation is a {{v:F6|₹5 lakh}} flat fine for a large Delhi site. Near-term buyer case: evidence in disputes and targeted inspections. Permission to keep working through restrictions is a pilot we'd propose to CAQM, not an assumption.
+Parts for one site — four nodes, a wind sensor, a gateway and a misting line — come to ₹{{n:bom_kit}} at listings we opened on 4 Oct, incl. GST. That's parts only: masts, cabling, data plan, installation and upkeep aren't in it. The wind sensor alone is ₹{{n:bom_wind}}. For scale, one construction-site violation costs {{v:F6|₹1 lakh to ₹2 lakh}} under CAQM's 2024 schedule, doubled under GRAP. Near-term buyer case: evidence in disputes and targeted inspections. Permission to keep working through restrictions is a pilot we'd propose to CAQM, not an assumption.
 
 **Q11. How much will it reduce AQI, or deaths?**
 We don't know, and we won't extrapolate to city AQI or health. Construction is a small share of city PM, and we haven't verified how well misting suppresses dust. In the November trial we'll measure the fence-line increment with misting on and off, and the litres used.
