@@ -26,7 +26,11 @@ from eval.stats import boot_ci
 POLICIES = ["greedy", "reactive", "mpc-ewma", "mpc-cusum-v1", "oracle"]
 RULES = ["greedy", "reactive"]
 PAIRS = [("mpc_vs_rule", "mpc-ewma", None), ("detector_vs_ewma", "mpc-cusum-v1", "mpc-ewma"),
-         ("oracle_vs_ewma", "oracle", "mpc-ewma")]
+         ("oracle_vs_ewma", "oracle", "mpc-ewma"), ("queue_vs_ewma", "mpc-queue", "mpc-ewma"),
+         ("myopic_vs_ewma", "mpc-myopic", "mpc-ewma")]
+LABEL = {"mpc_vs_rule": "look-ahead vs best rule", "detector_vs_ewma": "detector vs EWMA",
+         "oracle_vs_ewma": "true-rate forecast vs EWMA", "queue_vs_ewma": "queue-only (no forecast) vs EWMA",
+         "myopic_vs_ewma": "myopic (H=L+1) vs EWMA"}
 
 
 def summarise(df: pd.DataFrame) -> pd.DataFrame:
@@ -36,8 +40,10 @@ def summarise(df: pd.DataFrame) -> pd.DataFrame:
         lo_ = g.pivot(index="seed", columns="policy", values="shock_lost").reindex(sv.index)
         rule = sv[RULES].mean().idxmax()
         r = dict(L=int(L), P=int(P), n=len(sv), best_rule=rule, rule_served=sv[rule].mean(),
-                 **{f"{p}_served": sv[p].mean() for p in POLICIES if p in sv})
+                 **{f"{p}_served": sv[p].mean() for p in sv.columns})
         for name, a, b in PAIRS:
+            if a not in sv or (b is not None and b not in sv):
+                continue
             b = b or rule
             d = (sv[a] - sv[b]).to_numpy(float)
             lo, hi = boot_ci(d)
@@ -52,17 +58,18 @@ def write_report(out: str, df: pd.DataFrame, summ: pd.DataFrame) -> None:
              f"Scenario: {df.scenario.iloc[0]} · horizon {int(df.horizon.iloc[0])} steps · units {int(df.n_agents.iloc[0])} · "
              f"seeds {sorted(df.seed.unique().tolist())} (frozen test seeds; CRN). Served-fraction differences in "
              "percentage points, mean [95% paired bootstrap CI] (seeds won / n).", "",
-             "| L | P | best rule (served) | mpc-ewma | look-ahead vs best rule | detector vs EWMA | oracle vs EWMA |",
-             "|---|---|---|---|---|---|---|"]
-    f = lambda r, k: f"{100*r[k]:+.2f} [{100*r[k+'_lo']:+.2f}, {100*r[k+'_hi']:+.2f}] ({r[k+'_wins']}/{r['n']})"
+             ]
+    keys = [k for k, _, _ in PAIRS if f"{k}_wins" in summ]
+    lines += ["| L | P | best rule (served) | mpc-ewma | " + " | ".join(LABEL[k] for k in keys) + " |",
+              "|---|---|---|---|" + "---|" * len(keys)]
+    f = lambda r, k: f"{100*r[k]:+.2f} [{100*r[k+'_lo']:+.2f}, {100*r[k+'_hi']:+.2f}] ({int(r[k+'_wins'])}/{int(r['n'])})"
     for _, r in summ.iterrows():
         lines.append(f"| {r.L} | {r.P} | {r.best_rule} ({r.rule_served:.3f}) | {r['mpc-ewma_served']:.3f} | "
-                     f"{f(r, 'mpc_vs_rule')} | {f(r, 'detector_vs_ewma')} | {f(r, 'oracle_vs_ewma')} |")
+                     + " | ".join(f(r, k) for k in keys) + " |")
     lines += ["", "Requests lost in the 120 steps after shock onset, mean paired difference (negative = fewer lost):", "",
-              "| L | P | look-ahead vs best rule | detector vs EWMA | oracle vs EWMA |", "|---|---|---|---|---|"]
+              "| L | P | " + " | ".join(LABEL[k] for k in keys) + " |", "|---|---|" + "---|" * len(keys)]
     for _, r in summ.iterrows():
-        lines.append(f"| {r.L} | {r.P} | {r.mpc_vs_rule_shock_lost:+.1f} | {r.detector_vs_ewma_shock_lost:+.1f} | "
-                     f"{r.oracle_vs_ewma_shock_lost:+.1f} |")
+        lines.append(f"| {r.L} | {r.P} | " + " | ".join(f"{r[k + '_shock_lost']:+.1f}" for k in keys) + " |")
     with open(os.path.join(out, "summary.md"), "w") as fh:
         fh.write("\n".join(lines) + "\n")
     try:
@@ -70,10 +77,10 @@ def write_report(out: str, df: pd.DataFrame, summ: pd.DataFrame) -> None:
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
         Ls, Ps = sorted(summ.L.unique()), sorted(summ.P.unique())
-        fig, axes = plt.subplots(1, 3, figsize=(13, 3.6))
-        for ax, (k, title) in zip(axes, [("mpc_vs_rule", "look-ahead MPC − best rule"),
-                                         ("detector_vs_ewma", "change detector − EWMA (spike)"),
-                                         ("oracle_vs_ewma", "clairvoyant forecast − EWMA")]):
+        keys = [k for k, _, _ in PAIRS if k in summ]
+        fig, axes = plt.subplots(1, len(keys), figsize=(4.4 * len(keys), 3.6))
+        for ax, k in zip(np.atleast_1d(axes), keys):
+            title = LABEL[k]
             M = np.full((len(Ps), len(Ls)), np.nan)
             for _, r in summ.iterrows():
                 M[Ps.index(r.P), Ls.index(r.L)] = 100 * r[k]

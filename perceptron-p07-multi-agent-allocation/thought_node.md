@@ -10,25 +10,28 @@
 - _(none)_
 
 ## Now
-_Updated 2026-10-04 08:10 IST._
-- **Phase:** 4–6. The walking skeleton and eval harness are built, and there are **held-out MVP numbers**: look-ahead beats the best rule on 10/10 seeds under shock and under shock+drift. The first ratchet is done. Abstract v0.2 is written (896 words). 6/6 contract tests pass.
-- **Plan:** PettingZoo dispatch simulator → 3 rule-based allocators vs a look-ahead MPC (EWMA or change-aware forecaster) vs a clairvoyant oracle → paired statistics on frozen seeds → spike = regime-aware forecasting, tested along the lead-time/patience axis ([ADR 001](architecture/adr/001-spike.md)).
-- **Doing:** morning package complete and pushed. P=3 test done: H1 unsupported so far (see Log, 08:05). No sub-agents (Supervisor lean mode).
-- **Next (ordered):**
-  1. Add a hop-time knob (3–5 steps per hop, multi-step LP edges) and re-test H1. If the detector still ties the EWMA, promote Spike B (price-based decentralised coordination).
-  2. Move to ≥20 frozen test seeds (n=10 caps Holm-adjusted p at 0.068). Run long sweeps on an Azure VM (subscription active) to escape local CPU contention.
-  3. Get an independent rubber-duck review of ADR 001 and the abstract once sub-agents are allowed.
-  4. Re-run the failed research threads: compute-cluster papers, social/competitions, Swiggy/Zomato, TCPD metric formulas.
-  5. Build the RL comparator (TorchRL MAPPO/IPPO on the PettingZoo env).
-  6. Continue the ratchet: spatial pooling, BOCPD, conformal-PID band.
-  7. Build the demo dashboard (click-to-shock).
-  8. Replay a real trace (NYC TLC).
-- **Needs from user:** register by 15 Oct (after the 12 Oct selection); teammates' names and skills for the team-fit section.
+_Updated 2026-10-04 10:25 IST._
+- **Phase:** active batch (Supervisor, 09:55). Working toward the DoD: MVP + both stretch goals with held-out CIs; spike end-to-end test; real-trace replay; final abstract + architecture; cross-model reviews recorded; final memo.
+- **Plan:** the hostile-judge review (48/100) drove the v2 protocol:
+  - abandonment-aware LP and same-solver ablations (myopic H=L+1; queue-only, no forecast);
+  - **pre-registration** (`eval/preregistration.md`, committed before the run): reference rules fixed on tuning seeds, 30 fresh test seeds 200–229, Holm;
+  - then the (L,P) phase diagram, the move-cost Pareto curve, NYC TLC replay, and week/month horizons.
+- **Doing:**
+  - `eval/results/mvp-v2` is running (1440 episodes).
+  - `eval/run_v2_queue.sh` will then run phase-v2 → pareto-v2 → nyc-v2 → long-week-v2 → long-month-v2, sequentially under `nice -n 10`.
+  - Cross-model reviews in flight (sub-agents started before the sessions-only directive): gpt-6-astra (spike + phase law), gpt-6-sol (code + eval correctness).
+  - The final-abstract review will run as a child session.
+- **Next:**
+  1. Read confirm.md and phase-v2; update ADR 001 with the verdict on H1.
+  2. Address the astra/sol findings; record them in `reviews/`.
+  3. Final abstract + architecture.
+  4. gpt-6-astra review session of the final abstract.
+  5. Final selection memo.
+  6. "DONE — slot free" to the Supervisor.
+- **Needs from user:** register by 15 Oct; teammates' names and skills (the abstract uses `[TEAM]` placeholders).
 - **Risks:**
-  - The detector's end-to-end value may be small when lead time ≤ patience. The pilot suggests exactly this, so the spike is framed as a falsifiable phase diagram.
-  - "MPC beats rules" alone is known (Iglesias 2018).
-  - The data is synthetic; mitigation is a real-trace replay.
-  - CPU contention on the shared Mac slows sweeps.
+  - A single-seed probe showed the queue-only LP beating forecast-MPC at L=1, P=10. If that holds across seeds, the "look-ahead" story must credit *supply-side* look-ahead (the LP over lead time) and frame demand forecasts as valuable only when L is large relative to P.
+  - CPU is shared with other active projects.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -157,3 +160,20 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
 - **H1 not supported:** the detector, EWMA and oracle forecasts tie. With 1-step hops the queue plus the units about to free up already capture the shock.
 - Next: a hop-time knob (L of 3–5 steps per hop). ADR 001 now has an update section. Innovation score lowered to 3.
 - Contract tests: 6 passed. README added. Per-component innovation scan: `research/components/innovation-scan.md`.
+
+### 2026-10-04 09:45–10:25 IST — Active batch: lead-time knob, phase-v1, hostile review, v2 protocol
+- **Supervisor:** P7 is provisionally the Perceptron pick and in the active batch. Delegation now goes through sessions; cross-model reviews use gpt-6-astra and gpt-6-sol.
+- **Lead-time knob L** (repositioning steps per hop; loaded trips unchanged). It runs through the simulator, the LP (hop edges arrive after L steps) and the rules (which count in-flight units over L).
+- **phase-v1** (legacy planner, seeds 100–109, 720 steps; `python -m eval.phase --hops 1 2 4 8 --patience 3 10 --seeds 100-109 --horizon 720 --out eval/results/phase-v1`):
+  - Detector − EWMA at P=3: L=1 −0.01 pp, L=2 +0.58 [+0.35, +0.80] (9/10), L=4 +1.36 [+1.20, +1.50] (10/10), L=8 +2.40 [+2.17, +2.64] (10/10).
+  - Detector − EWMA at P=10: null for L ≤ 4; +0.65 (10/10) at L=8.
+  - Perfect-forecast (true-rate MPC) − EWMA follows the same pattern, so the detector recovers ~51–71% of the forecast value in the cells where forecasts matter.
+  - **H1 supported qualitatively under the legacy planner.**
+- **Planner backend:** warm-started highspy, 5–9× faster than scipy-IPM, with identical objectives (contract test). Legacy reproduction verified: mvp-v1 seed 100 matches to 1e-16.
+- **NYC TLC adapter** (sub-agent):
+  - July 2025 yellow taxi data, Manhattan-internal trips (78.2% of trips kept), thinned at q ≈ 0.20.
+  - The live TLC page returned 403, so links were confirmed via Wayback.
+  - The largest observed surge is cell 3 on 4 July 22:00–22:30 at 20.7× the train-day mean; cause UNVERIFIED.
+  - `research/components/real-trace-replay.md`.
+- **Hostile-judge review** (rubber-duck): 48/100. Recorded in `reviews/` (14 accepted, 1 rejected). The biggest fixes are ablations, pre-registration, abandonment-aware LP, wording on "multi-agent" and "oracle", and the movement Pareto curve.
+- **Pre-registration** committed (10:15) before the mvp-v2 run. The tuning-seed rule run is in `eval/results/tuning-rules`.
