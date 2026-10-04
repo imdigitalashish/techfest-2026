@@ -15,7 +15,7 @@
   - Round-1 package complete (Log 15:20).
   - Demo plan approved 22:55 (crazy element: "Try to break Sakriya", a live red-team console against committed C5/C11 code, plus the certification gate and the women's-floor knob).
   - Builder child session **"T3 demo builder"** pushed `57e4a913`: C7/C8 PROTOTYPES and `demo/live_api.py`, 26/26 tests.
-  - The builder was told to stop after its current atomic step and report its exact resume point (it will be appended to the Log). Its uncommitted work stays in its worktree.
+  - **Builder PAUSED** (23:40) with **uncommitted WIP in its worktree** `.worktrees/imdigitalashish-fictional-pancake`: `demo/export.py`, `demo/check_data.py`, `demo/data/demo_data.js` (generated, 112 KB), and an averaging-baseline change to `demo/live_api.py` + `tests/test_demo_live_api.py` (tests pass; held back until the exporter is finished). Builder's next step: in `demo/export.py` add the PROTOTYPE label to ops and normalise the race winner's name in later replay ledger entries for `--check`; re-export (`nice -n 10 .venv/bin/python -m demo.export`, ~25 s); run `python3 demo/check_data.py`, `-m demo.export --check` and pytest; commit; then server → page → smoke → design-finish → fallback-docs → ship.
   - No servers or jobs of mine are running.
 - **Resume point (lead), in order:**
   1. Read the builder's PAUSED message in the Log. Resume it with a send_session_message ("continue from <next step>"). Its remaining todos follow the plan order: exporter → check-data → server/run.sh → page → smoke → design-finish → fallback-docs → ship.
@@ -190,3 +190,6 @@ Note: I used plan mode for the approval gate and then switched the builder to au
 
 ### 2026-10-04 23:38 IST — PAUSED (user directive)
 Told the demo builder to stop after its current atomic step, push only passing work, stop all servers/browsers/jobs, and report its resume point. On main: `57e4a913` (C7/C8 prototypes + live API, 26/26 tests) and `4acb962f` (C7/C8 marked PROTOTYPE in components.md). Resume point in *Now*.
+
+### 2026-10-04 23:40 IST — Builder paused
+Builder reported PAUSED: last pushed `57e4a913`; done = prototypes, live-api; uncommitted WIP = exporter, data check, generated data and an averaging-baseline change (tests pass); no servers or browsers were started; resume step recorded in *Now*.
