@@ -5,8 +5,10 @@ Sources (opened 2026-10-04):
   https://huggingface.co/datasets/Eedi/Eedi-Misconceptions-Graph (pinned revision below)
 - Kaggle "Eedi - Mining Misconceptions in Mathematics" (2024) training data, via the community Hugging Face
   mirror cdtmc/eedi-ir (IR format: queries, corpus of 2,587 misconceptions, qrels with folds). The mirror has
-  no stated licence; the data is Kaggle competition data, so we use it for non-commercial research evaluation
-  only and do not redistribute it. Fidelity to the official Kaggle files is UNVERIFIED until checked against a
+  no stated licence. The Kaggle rules (https://www.kaggle.com/competitions/eedi-mining-misconceptions-in-mathematics/rules,
+  opened 2026-10-04) make the data CC BY-NC 4.0 (non-commercial only), and §7.B forbids participants to publish or
+  redistribute it. We use it only for non-commercial research evaluation, keep it in gitignored .data/, and commit
+  no item text, only derived outcomes (item ids, codes, aggregates). Fidelity to the official Kaggle files is UNVERIFIED until checked against a
   Kaggle download (Needs from user: Kaggle account).
 Revisions and SHA-256 checksums were pinned on 4 Oct 2026 (review fix): the files used for every committed result
 match these hashes; a stale or changed local file is rejected.
