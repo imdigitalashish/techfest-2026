@@ -1,0 +1,88 @@
+{
+ "date": "2026-10-01",
+ "legs": [
+  {
+   "leg": "binance_BTCUSDT",
+   "rows": 595066,
+   "median_gap_ms": 100.058,
+   "p10_gap_ms": 99.807,
+   "min_gap_ms": 6.623,
+   "share_100ms_grid": 0.9958021392620974,
+   "share_below_10ms": 1.6804886861099208e-06
+  },
+  {
+   "leg": "binance-futures_BTCUSDT",
+   "rows": 1848343,
+   "median_gap_ms": 26.0,
+   "p10_gap_ms": 26.0,
+   "min_gap_ms": 26.0,
+   "share_100ms_grid": 0.00020883581068871453,
+   "share_below_10ms": 0.0
+  },
+  {
+   "leg": "coinbase_BTC-USD",
+   "rows": 2292710,
+   "median_gap_ms": 3.333,
+   "p10_gap_ms": 0.292,
+   "min_gap_ms": 0.001,
+   "share_100ms_grid": 0.3590903687302758,
+   "share_below_10ms": 0.6675729668382367
+  },
+  {
+   "leg": "okex_BTC-USDT",
+   "rows": 366406,
+   "median_gap_ms": 100.0,
+   "p10_gap_ms": 100.0,
+   "min_gap_ms": 20.0,
+   "share_100ms_grid": 0.9999208526084524,
+   "share_below_10ms": 0.0
+  },
+  {
+   "leg": "okex-swap_BTC-USDT-SWAP",
+   "rows": 733362,
+   "median_gap_ms": 100.0,
+   "p10_gap_ms": 100.0,
+   "min_gap_ms": 20.0,
+   "share_100ms_grid": 0.9999331843389545,
+   "share_below_10ms": 0.0
+  },
+  {
+   "leg": "bybit_BTCUSDT",
+   "rows": 1311333,
+   "median_gap_ms": 39.0,
+   "p10_gap_ms": 20.0,
+   "min_gap_ms": 4.0,
+   "share_100ms_grid": 0.0629809994722923,
+   "share_below_10ms": 1.3726500992883572e-05
+  },
+  {
+   "leg": "kraken_BTC-USD",
+   "rows": 887213,
+   "median_gap_ms": 12.768,
+   "p10_gap_ms": 0.326,
+   "min_gap_ms": 0.001,
+   "share_100ms_grid": 0.3091569871871632,
+   "share_below_10ms": 0.4762615255658005
+  },
+  {
+   "leg": "bitstamp_BTCUSD",
+   "rows": 122835,
+   "median_gap_ms": 328.01,
+   "p10_gap_ms": 325.361,
+   "min_gap_ms": 188.717,
+   "share_100ms_grid": 0.00603253170946155,
+   "share_below_10ms": 0.0
+  },
+  {
+   "leg": "deribit_BTC-PERPETUAL",
+   "rows": 1023962,
+   "median_gap_ms": 22.0,
+   "p10_gap_ms": 10.0,
+   "min_gap_ms": 1.0,
+   "share_100ms_grid": 0.013127203847854759,
+   "share_below_10ms": 0.06940384081027243
+  }
+ ],
+ "commit": "0ca23e8",
+ "command": ".venv/bin/python -m eval.update_cadence --date 2026-10-01"
+}

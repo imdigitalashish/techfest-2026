@@ -145,6 +145,9 @@ def main() -> None:
          "timestamp at which it is open. Kaplan–Meier with right-censoring at feed gaps (> 30 s). Greenwood CIs assume "
          "independent episodes; episodes cluster in time, so the **hour-block bootstrap CI** (200 resamples of the 24 hours) "
          "is the one to quote.", "",
+         "**Resolution caveat** (`eval/results/update_cadence.md`): in these samples Binance spot and OKX quotes are published on a "
+         "100 ms grid and Binance perpetual quotes every 26 ms, while Coinbase and Kraken update within milliseconds. A lifetime "
+         "cannot be resolved below the cadence of the venues involved, so sub-26 ms decay is only measurable on Coinbase/Kraken/Deribit pairs.", "",
          "| group / ordered pair (sell > buy) | n | median lifetime (ms) | 95% CI hour-block | 95% CI Greenwood | S(1 ms) | S(10 ms) | S(100 ms) |",
          "|---|---|---|---|---|---|---|---|"]
     for r in rows:

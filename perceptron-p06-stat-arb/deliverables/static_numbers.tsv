@@ -1,0 +1,21 @@
+# token	source (numbers in deliverables that are not rendered from eval/results/headline.json)
+0	fee level 0 bps per leg (zero-fee bound) — components/costs/fees.py TIERS; mermaid label "0/1/2/5 bps"
+1	1 bp detection threshold (eval/run_baseline.py --theta 1.0); 1 bp/leg fee level; list item 1; "1st of each month"; milestones 1 Dec, 1–17 Nov, 1–14 Dec; "1−S"
+2	fee level 2 bps (components/costs/fees.py); list item 2
+3	Theme 3 (official brief, _briefs/perceptron.txt); list item 3
+4	list item 4
+5	±5 ms clock offsets (eval/falsification.py clockskew); fastest 5% of messages = p05 (eval/live_latency.py); fee level 5 bps; list item 5
+6	Problem 6 (official brief); list item 6
+7	list item 7
+9	9 BTC venues on the held-out day (eval/run_baseline.py --legs)
+12	12-venue live recorder (components/feed/live_recorder.py)
+14	milestone 1–14 Dec (lead plan; finals 15–18 Dec per the brief)
+17	milestone 1–17 Nov (last teaching day 17 Nov, PLAYBOOK §8)
+19	exams 19–25 Nov (PLAYBOOK §8)
+25	exams 19–25 Nov (PLAYBOOK §8)
+31	Round-1 deadline 31 Oct (official brief)
+0.5	0.5 ms latency point of the ranking table (eval/results/baseline_0901_to_1001.json, "ranking")
+50	50 ms latency point of the ranking table (same file)
+60	60 s EWMA fair basis (components/detector/cross.py basis_tau_s); Coinbase Exchange base-tier taker fee 60 bps (research/notes/fees.md → https://help.coinbase.com/en/exchange/trading-and-funding/exchange-fees, fact-check PASS)
+95	95% confidence level
+2026	Perceptron 2026
