@@ -20,8 +20,8 @@
   - only derived per-item outcomes (item ids, codes, flags) and aggregates are committed;
   - item text is shown only when it has been fetched locally into the gitignored `.data/`;
   - names are shown only from the CC BY 4.0 Eedi Misconceptions Graph (1,757 of the 2,587 Kaggle names appear there verbatim), otherwise our own descriptions.
-  - Audit: no item text is committed today (the regexes in parser code only). `EEDI_LINKS` cites 6 short Kaggle-only label names; that is noted as a residual compliance item.
-- **Doing:** spawning one demo-builder child session (plan mode: it proposes the crazy element, I approve, it builds). Later: one gpt-6-astra demo review (≤2 children at a time).
+  - Audit: no item text is committed today (the regexes in parser code only). The 6 Kaggle-only label names in `EEDI_LINKS` were **removed** at 23:08 IST: they are now read from local `.data/` at runtime, and `diagnosis.json` reproduces byte-identically.
+- **Doing:** demo built and verified from clean clones. The gpt-6-astra demo review scored it 6/10 (9 issues, all accepted, no leak). The builder is applying the fixes; I re-verify, then send "DEMO DONE".
 - **Rules:** CPU only; `nice -n 10` + memory guard; no new API spend; no `git stash`; timestamps from `TZ=Asia/Kolkata date`.
 - **Needs from user:**
   - Perceptron pick at the 12 Oct gate (P8 memo: against).
@@ -213,3 +213,19 @@ Model API returned "408 Timed out reading request body" for most agents (network
   - honest labels: LIVE/our own questions, "certificate is evidence, not proof", conditional seal, "Post hoc … saving 6.2%";
   - numbers match committed results.
 - **Launched** the gpt-6-astra demo review (child "P8 demo review (astra)", `c70bf69a`).
+
+### 2026-10-04 23:17 IST — Demo review triaged; licence clean-up
+- **gpt-6-astra demo review** (`reviews/2026-10-04-demo-gpt-6-astra.md`): **6/10**.
+  - Checks: 20 numbers reconciled; 49/49 smoke; first paint 12.3 s (2.9 s server-ready); OCR on 15 PNGs found no Eedi item text.
+  - All 9 issues accepted:
+    1. continuation forgets the disconfirming answer;
+    2. the slider drag breaks;
+    3. certainty wording;
+    4. GPT-5.4-mini L3 effort uses the all-depth population;
+    5. post-hoc label lost;
+    6. opening qualifications;
+    7. smoke honesty;
+    8. budget boundary;
+    9. Run 3 unavailable.
+- **Done by me:** L3-only effort claims in `eval/numbers.py` (GPT-5.4-mini 3,271 tokens / $0.015 per L3 item; `6db0c9cd`). Kaggle-only names removed from committed code (`42f8aeeb`).
+- **Sent the rest to the builder,** with the reviewer's highest-impact change as the new climax: the judge disproves the first rule, and the tutor revises and asks a genuinely new question.
