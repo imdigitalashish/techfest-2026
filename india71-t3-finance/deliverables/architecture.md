@@ -88,7 +88,16 @@ sequenceDiagram
 | F5 | Clean room → forums | usage rates, gaps, incremental effects | district, bank, BC (≥ cell size) | differential privacy (ε budget), small-cell suppression | small-area noise → CIs, pooling |
 | F6 | Forums → public | state-level usage table | state | DP | — |
 
-Section-level legal mapping (DPDP Act 2023, Aadhaar Act, RBI KYC and inoperative-account directions, NPCI rules) is on the verification backlog in [`../research/landscape.md`](../research/landscape.md#7-verification-backlog-do-before-any-number-goes-into-the-pdf).
+Legal anchors (verified texts in [`../research/verification-law.md`](../research/verification-law.md); mapping is our reading, pending legal review):
+
+| Flow | Anchor | Design consequence |
+|---|---|---|
+| F1, F3, F4 (targeting) | A decision specific to a person — *not* covered by the DPDP statistics exemption (s. 17(2)(b)) | Person lists exist only inside the account-holding bank (data fiduciary for its own customers); clean-room copies purpose-bound and deleted after use |
+| F2 (identity) | Aadhaar Act s. 29; UIDAI Circular 14 of 2025 (Aadhaar Data Vault, Reference Key) | Only reference keys leave the vault, HMAC-ed per purpose; never Aadhaar numbers or biometrics |
+| F5, F6 (statistics) | DPDP s. 17(2)(b): statistical processing not used for person-specific decisions, per prescribed standards | Aggregate only, separate token key, differential privacy, small-cell suppression |
+| DBT-side data | DPDP s. 7(b): State processing to provide prescribed subsidies/benefits/services | To be examined with the DBT Mission |
+| Usage definitions | RBI/2023-24/105: DBT/scholarship accounts exempt from the inoperative flag | C2 usage states needed beside the official flag |
+| Timing | G.S.R. 843(E): DPDP substantive provisions in force ~May 2027 | Pilot built compliant from day one |
 
 ## 4. Contracts at a glance
 

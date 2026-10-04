@@ -1,0 +1,360 @@
+{
+ "config": {
+  "districts": 20,
+  "units_per_district": 10,
+  "persons_per_unit": 3000,
+  "holdout": 0.1,
+  "quarters": 4,
+  "tau_mean": 0.04,
+  "tau_sd": 0.03,
+  "gaming_share": 0.2,
+  "token_share": 0.35,
+  "dup_accounts": 400
+ },
+ "runs": {
+  "1": [
+   {
+    "seed": 0,
+    "quarters": 1,
+    "spearman_rho": {
+     "M1_enrolments": 0.04000622558480365,
+     "M2_account_operative_share": 0.1208801099259134,
+     "M3_person_meaningful_rate": 0.06020404527933211,
+     "M4_sakriya_incremental": 0.7244830457193627,
+     "M5_sakriya_incremental_EB": 0.7030698497898928
+    },
+    "share_of_gamers_in_top20": {
+     "M1_enrolments": 1.0,
+     "M2_account_operative_share": 0.5,
+     "M3_person_meaningful_rate": 0.05,
+     "M4_sakriya_incremental": 0.2,
+     "M5_sakriya_incremental_EB": 0.15
+    },
+    "gaming_flags": {
+     "true_pos": 37,
+     "false_pos": 0,
+     "gamers": 38
+    },
+    "ci95_coverage_M4": 0.955,
+    "dp_epsilon1": {
+     "unit": {
+      "mae_pp": 0.0846888517298354,
+      "persons_per_cell": 3000.0
+     },
+     "district": {
+      "mae_pp": 0.010425109480987627,
+      "persons_per_cell": 30000.0
+     }
+    }
+   },
+   {
+    "seed": 1,
+    "quarters": 1,
+    "spearman_rho": {
+     "M1_enrolments": 0.10024245592895041,
+     "M2_account_operative_share": 0.19450926978626967,
+     "M3_person_meaningful_rate": 0.14126499167942222,
+     "M4_sakriya_incremental": 0.6682182112782729,
+     "M5_sakriya_incremental_EB": 0.5846110575720159
+    },
+    "share_of_gamers_in_top20": {
+     "M1_enrolments": 1.0,
+     "M2_account_operative_share": 0.7,
+     "M3_person_meaningful_rate": 0.1,
+     "M4_sakriya_incremental": 0.2,
+     "M5_sakriya_incremental_EB": 0.25
+    },
+    "gaming_flags": {
+     "true_pos": 36,
+     "false_pos": 0,
+     "gamers": 37
+    },
+    "ci95_coverage_M4": 0.925,
+    "dp_epsilon1": {
+     "unit": {
+      "mae_pp": 0.0703669145726043,
+      "persons_per_cell": 3000.0
+     },
+     "district": {
+      "mae_pp": 0.006337440002567586,
+      "persons_per_cell": 30000.0
+     }
+    }
+   },
+   {
+    "seed": 2,
+    "quarters": 1,
+    "spearman_rho": {
+     "M1_enrolments": -0.001198589745483392,
+     "M2_account_operative_share": 0.15457633169691545,
+     "M3_person_meaningful_rate": 0.199822243889985,
+     "M4_sakriya_incremental": 0.7200927026702652,
+     "M5_sakriya_incremental_EB": 0.6885497958114711
+    },
+    "share_of_gamers_in_top20": {
+     "M1_enrolments": 1.0,
+     "M2_account_operative_share": 0.55,
+     "M3_person_meaningful_rate": 0.2,
+     "M4_sakriya_incremental": 0.15,
+     "M5_sakriya_incremental_EB": 0.2
+    },
+    "gaming_flags": {
+     "true_pos": 37,
+     "false_pos": 0,
+     "gamers": 42
+    },
+    "ci95_coverage_M4": 0.955,
+    "dp_epsilon1": {
+     "unit": {
+      "mae_pp": 0.06961205180441057,
+      "persons_per_cell": 3000.0
+     },
+     "district": {
+      "mae_pp": 0.00564715998838311,
+      "persons_per_cell": 30000.0
+     }
+    }
+   },
+   {
+    "seed": 3,
+    "quarters": 1,
+    "spearman_rho": {
+     "M1_enrolments": 0.003998523900511196,
+     "M2_account_operative_share": 0.14965650668657576,
+     "M3_person_meaningful_rate": 0.17292157387233714,
+     "M4_sakriya_incremental": 0.7113951203614204,
+     "M5_sakriya_incremental_EB": 0.6566253403420295
+    },
+    "share_of_gamers_in_top20": {
+     "M1_enrolments": 1.0,
+     "M2_account_operative_share": 0.55,
+     "M3_person_meaningful_rate": 0.2,
+     "M4_sakriya_incremental": 0.1,
+     "M5_sakriya_incremental_EB": 0.1
+    },
+    "gaming_flags": {
+     "true_pos": 43,
+     "false_pos": 0,
+     "gamers": 52
+    },
+    "ci95_coverage_M4": 0.935,
+    "dp_epsilon1": {
+     "unit": {
+      "mae_pp": 0.070095740540564,
+      "persons_per_cell": 3000.0
+     },
+     "district": {
+      "mae_pp": 0.005892324490247847,
+      "persons_per_cell": 30000.0
+     }
+    }
+   },
+   {
+    "seed": 4,
+    "quarters": 1,
+    "spearman_rho": {
+     "M1_enrolments": 0.05218527535335746,
+     "M2_account_operative_share": 0.1728590442263492,
+     "M3_person_meaningful_rate": 0.21712779640487187,
+     "M4_sakriya_incremental": 0.7140103446332998,
+     "M5_sakriya_incremental_EB": 0.666312650528853
+    },
+    "share_of_gamers_in_top20": {
+     "M1_enrolments": 1.0,
+     "M2_account_operative_share": 0.4,
+     "M3_person_meaningful_rate": 0.2,
+     "M4_sakriya_incremental": 0.2,
+     "M5_sakriya_incremental_EB": 0.2
+    },
+    "gaming_flags": {
+     "true_pos": 38,
+     "false_pos": 0,
+     "gamers": 45
+    },
+    "ci95_coverage_M4": 0.92,
+    "dp_epsilon1": {
+     "unit": {
+      "mae_pp": 0.07257336439304499,
+      "persons_per_cell": 3000.0
+     },
+     "district": {
+      "mae_pp": 0.009108206422120402,
+      "persons_per_cell": 30000.0
+     }
+    }
+   }
+  ],
+  "4": [
+   {
+    "seed": 0,
+    "quarters": 4,
+    "spearman_rho": {
+     "M1_enrolments": 0.04000622558480365,
+     "M2_account_operative_share": 0.11811017716608156,
+     "M3_person_meaningful_rate": 0.05913201048942105,
+     "M4_sakriya_incremental": 0.906404458170384,
+     "M5_sakriya_incremental_EB": 0.9076089973179402
+    },
+    "share_of_gamers_in_top20": {
+     "M1_enrolments": 1.0,
+     "M2_account_operative_share": 0.45,
+     "M3_person_meaningful_rate": 0.05,
+     "M4_sakriya_incremental": 0.4,
+     "M5_sakriya_incremental_EB": 0.35
+    },
+    "gaming_flags": {
+     "true_pos": 36,
+     "false_pos": 0,
+     "gamers": 38
+    },
+    "ci95_coverage_M4": 0.955,
+    "dp_epsilon1": {
+     "unit": {
+      "mae_pp": 0.02116551019039145,
+      "persons_per_cell": 12000.0
+     },
+     "district": {
+      "mae_pp": 0.002609693062387286,
+      "persons_per_cell": 120000.0
+     }
+    }
+   },
+   {
+    "seed": 1,
+    "quarters": 4,
+    "spearman_rho": {
+     "M1_enrolments": 0.10024245592895041,
+     "M2_account_operative_share": 0.19374857027275771,
+     "M3_person_meaningful_rate": 0.1420893883542451,
+     "M4_sakriya_incremental": 0.8929801731862582,
+     "M5_sakriya_incremental_EB": 0.8922106510624918
+    },
+    "share_of_gamers_in_top20": {
+     "M1_enrolments": 1.0,
+     "M2_account_operative_share": 0.65,
+     "M3_person_meaningful_rate": 0.1,
+     "M4_sakriya_incremental": 0.15,
+     "M5_sakriya_incremental_EB": 0.15
+    },
+    "gaming_flags": {
+     "true_pos": 36,
+     "false_pos": 0,
+     "gamers": 37
+    },
+    "ci95_coverage_M4": 0.97,
+    "dp_epsilon1": {
+     "unit": {
+      "mae_pp": 0.017591859174275318,
+      "persons_per_cell": 12000.0
+     },
+     "district": {
+      "mae_pp": 0.001586630812121376,
+      "persons_per_cell": 120000.0
+     }
+    }
+   },
+   {
+    "seed": 2,
+    "quarters": 4,
+    "spearman_rho": {
+     "M1_enrolments": -0.001198589745483392,
+     "M2_account_operative_share": 0.15303970728234625,
+     "M3_person_meaningful_rate": 0.19878728968094417,
+     "M4_sakriya_incremental": 0.9030402124124567,
+     "M5_sakriya_incremental_EB": 0.9044210021101701
+    },
+    "share_of_gamers_in_top20": {
+     "M1_enrolments": 1.0,
+     "M2_account_operative_share": 0.55,
+     "M3_person_meaningful_rate": 0.2,
+     "M4_sakriya_incremental": 0.15,
+     "M5_sakriya_incremental_EB": 0.25
+    },
+    "gaming_flags": {
+     "true_pos": 38,
+     "false_pos": 0,
+     "gamers": 42
+    },
+    "ci95_coverage_M4": 0.945,
+    "dp_epsilon1": {
+     "unit": {
+      "mae_pp": 0.01741252783108873,
+      "persons_per_cell": 12000.0
+     },
+     "district": {
+      "mae_pp": 0.001412117913620753,
+      "persons_per_cell": 120000.0
+     }
+    }
+   },
+   {
+    "seed": 3,
+    "quarters": 4,
+    "spearman_rho": {
+     "M1_enrolments": 0.003998523900511196,
+     "M2_account_operative_share": 0.15107319314340442,
+     "M3_person_meaningful_rate": 0.1751977067251823,
+     "M4_sakriya_incremental": 0.8916034771380843,
+     "M5_sakriya_incremental_EB": 0.8895214094708265
+    },
+    "share_of_gamers_in_top20": {
+     "M1_enrolments": 1.0,
+     "M2_account_operative_share": 0.55,
+     "M3_person_meaningful_rate": 0.25,
+     "M4_sakriya_incremental": 0.3,
+     "M5_sakriya_incremental_EB": 0.4
+    },
+    "gaming_flags": {
+     "true_pos": 43,
+     "false_pos": 0,
+     "gamers": 52
+    },
+    "ci95_coverage_M4": 0.93,
+    "dp_epsilon1": {
+     "unit": {
+      "mae_pp": 0.017511494035198624,
+      "persons_per_cell": 12000.0
+     },
+     "district": {
+      "mae_pp": 0.0014737666885920875,
+      "persons_per_cell": 120000.0
+     }
+    }
+   },
+   {
+    "seed": 4,
+    "quarters": 4,
+    "spearman_rho": {
+     "M1_enrolments": 0.05218527535335746,
+     "M2_account_operative_share": 0.17758211859241416,
+     "M3_person_meaningful_rate": 0.2208867436697214,
+     "M4_sakriya_incremental": 0.9068907171729688,
+     "M5_sakriya_incremental_EB": 0.9059156723206905
+    },
+    "share_of_gamers_in_top20": {
+     "M1_enrolments": 1.0,
+     "M2_account_operative_share": 0.4,
+     "M3_person_meaningful_rate": 0.2,
+     "M4_sakriya_incremental": 0.15,
+     "M5_sakriya_incremental_EB": 0.15
+    },
+    "gaming_flags": {
+     "true_pos": 38,
+     "false_pos": 0,
+     "gamers": 45
+    },
+    "ci95_coverage_M4": 0.97,
+    "dp_epsilon1": {
+     "unit": {
+      "mae_pp": 0.018164883691741143,
+      "persons_per_cell": 12000.0
+     },
+     "district": {
+      "mae_pp": 0.002277583902168534,
+      "persons_per_cell": 120000.0
+     }
+    }
+   }
+  ]
+ }
+}

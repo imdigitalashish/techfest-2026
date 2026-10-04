@@ -48,6 +48,12 @@ What is in place (verified tonight from the Ministry's answers [P1–P3]):
 - **Campaigns.** A Gram Panchayat-level saturation campaign ran 1 Jul – 30 Sep 2025 with re-KYC of inactive PMJDY accounts as a key focus [P1, P2]; financial literacy through 2,421 RBI Centres for Financial Literacy (31 Mar 2025), monthly rural-branch camps and Financial Literacy Week [P1].
 - **Products attached to the account:** RuPay card with accident cover (₹1 lakh; ₹2 lakh for accounts opened after Aug 2018), overdraft up to ₹10,000 per household, DBT, PMJJBY, PMSBY, APY, MUDRA eligibility [P4].
 
+**Legal ground rules (verified [P13]–[P16]; interpretation is ours, pending legal review).**
+- *Statistics vs decisions.* The DPDP Act does not apply to processing "necessary for research, archiving or statistical purposes if the personal data is not to be used to take any decision specific to a Data Principal", subject to prescribed standards [P13 s.17(2)(b)]. Accountability statistics can therefore be designed to fit this exemption; **person-level targeting cannot** (it is a decision about a person) and needs its own basis — in our design it stays with the account-holding bank, the data fiduciary for its own customers.
+- *State benefits.* The State may process personal data to provide a subsidy, benefit or service "as may be prescribed" where the person consented earlier or the data sits in a notified State database [P13 s.7(b)] — a possible anchor for DBT-side data, to be examined.
+- *Timing.* The DPDP Rules were notified on 14 Nov 2025; the Act's substantive provisions (incl. ss. 3–17) come into force 18 months after the 13 Nov 2025 commencement notification, i.e. from about May 2027 (derived) [P14] — before any state roll-out of our design.
+- *Identity.* Core biometrics may never be shared; other identity information only as the Aadhaar Act and its regulations allow, and requesting entities may not use it beyond the purposes stated in writing [P15 s.29]. UIDAI requires every requesting entity to keep Aadhaar numbers only in an Aadhaar Data Vault and to use a *Reference Key* in all business systems [P16]. **Our linkage therefore uses only reference keys, HMAC-ed per purpose — never Aadhaar numbers.**
+
 Why the gap persists — root-cause tree (evidence status in brackets):
 0. **The official flag is not a usage measure.** "Inoperative" is a fraud-control and unclaimed-deposit status; DBT/scholarship accounts are exempted from it [P8], so the very beneficiaries the theme targets can be invisible in inoperative statistics, and a DBT account that is credited and immediately emptied counts as "operative".
 1. **Measurement counts accounts, not people, and enrolment, not use.** Key breakdowns are "not centrally maintained" [P1, P3]; review forums therefore see openings and totals. Usage enters the national scorecard only through the composite FI-Index [P5, P6] (Usage weight 45% per [S] ET/BusinessLine — UNVERIFIED at RBI), which is national, not district- or implementer-level [L].
@@ -55,7 +61,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 3. **KYC friction.** Reactivation needs fresh KYC [P3, P8]; RBI allows any branch or V-CIP [P8], but for a rural, low-literacy holder that still means a trip or a smartphone — the same friction that caused disuse. [L: BC-based re-KYC — UNVERIFIED.]
 4. **DBT as pass-through.** Benefits land and are withdrawn in cash, so accounts are "active" without meaningful use (no saving, insurance, digital payment) [mechanism; magnitude **UNVERIFIED** — needs bank data].
 5. **Safety.** Reactivated dormant accounts can be abused as mule accounts [L: RBIH MuleHunter.AI, I4C — UNVERIFIED tonight]; a reactivation drive without a fraud gate creates risk.
-6. **Data-sharing uncertainty.** Linking bank, NPCI-mapper and DBT data touches the DPDP Act 2023 and the Aadhaar Act (s. 29) [L — section-level claims UNVERIFIED tonight]; without a clear legal pattern, each actor keeps its silo.
+6. **Data-sharing uncertainty.** Linking bank, NPCI-mapper and DBT data touches the DPDP Act 2023 and the Aadhaar Act [P13–P16]; the rules allow a workable pattern (aggregate statistics vs bank-held person decisions; reference keys only), but no actor has built it, so each keeps its silo.
 
 ## 3. What is deployed today
 
@@ -106,6 +112,10 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 - **[P10]** RBI Press Release 2021-2022/1830 on the launch of UPI 123PAY and DigiSaathi. https://rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=53385 — opened 2026-10-04 by verification agent v1 (`research/verification-rails.md`).
 - **[P11]** Sahamati, "Account Aggregator crosses 500 million consents as India marks 5th AA Foundation Day", Sept 2026. https://sahamati.org.in/media-article/account-aggregator-crosses-500-million-consents-as-india-marks-5th-aa-foundation-day/ — opened 2026-10-04 by v1.
 - **[P12]** RBI Press Release 2024-2025/1648, Statement on Developmental and Regulatory Policies, 6 Dec 2024. https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx?prid=59245 — opened 2026-10-04 by v1.
+- **[P13]** Digital Personal Data Protection Act, 2023 (No. 22 of 2023), ss. 7(b), 8(7), 10, 17(2)(b). https://www.meity.gov.in/static/uploads/2024/06/2bf1f0e9f04e6fb4f8fef35e82c42aa5.pdf — opened 2026-10-04 (verification agent v2, `research/verification-law.md`).
+- **[P14]** MeitY notification G.S.R. 843(E), 13 Nov 2025 (commencement of the DPDP Act: most substantive provisions incl. ss. 3–17 in force 18 months after publication); PIB backgrounder on the DPDP Rules 2025 notified 14 Nov 2025. https://www.meity.gov.in/static/uploads/2025/11/c56ceae6c383460ca69577428d36828b.pdf · https://pib.gov.in/PressReleasePage.aspx?PRID=2190655 — opened 2026-10-04 (v2).
+- **[P15]** Aadhaar (Targeted Delivery of Financial and Other Subsidies, Benefits and Services) Act, 2016, s. 29 (as amended). https://backend.uidai.gov.in/get/files/media/document/2026-06/Aadhaar_Act_2016_as_amended_0.pdf — opened 2026-10-04 (v2).
+- **[P16]** UIDAI Circular No. 14 of 2025 (4 Nov 2025), Aadhaar Data Vault and Reference Key. https://uidai.gov.in/images/Circular-No.14_of-2025.pdf — opened 2026-10-04 (v2).
 - **[P0]** Official problem statement, The India @71/100 Challenge, Techfest 2026-27 — `_briefs/india71.pdf`.
 - **[S]** News coverage seen in search results 2026-10-04, not checked against primaries: The Hindu BusinessLine and Economic Times on RBI FI-Index FY25 = 67.0 (from 64.2) and weights Access 35% / Usage 45% / Quality 20%.
 
@@ -115,7 +125,7 @@ Why the gap persists — root-cause tree (evidence status in brackets):
 2. ~~FI-Index values~~ (done: [P5], [P6]); still to open: the Aug 2021 methodology release (weights, 97 indicators — currently [S]).
 3. NFHS-5 / NFHS-4: women having a bank or savings account they themselves use (national, state, district) — overnight download was truncated.
 4. ~~RBI circular on inoperative accounts~~ (done: [P8]).
-5. DPDP Act 2023 sections 7, 8, 10, 17 and the DPDP Rules commencement; Aadhaar Act s. 29; NPCI mapper consent rules.
+5. ~~DPDP Act ss. 7, 8, 10, 17; Rules and commencement; Aadhaar Act s. 29; UIDAI ADV~~ (done: [P13]–[P16]); still open: NPCI mapper consent rules; the DPDP Rules' standards for s. 17(2)(b) processing.
 6. Partly done ([P10]–[P12]): still UNVERIFIED — AePS volumes, NPCI mapper, Hello! UPI, BC Sakhi numbers (npci.org.in and pib.gov.in block automated fetches; use a browser), current MuleHunter.AI bank count, DEPA clean-room repos.
 7. DBT Bharat totals (FY 2024-25, 2025-26) — the dashboard is client-rendered; needs a browser.
 8. Outcomes of the Jul–Sep 2025 saturation campaign (PIB/DFS).
