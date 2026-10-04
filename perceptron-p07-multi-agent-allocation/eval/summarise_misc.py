@@ -26,14 +26,16 @@ def _paired(sv, a, b, scale=100):
 
 def nyc(run: str) -> str:
     d = pd.read_csv(f"{run}/episodes.csv")
-    cols = ["served_frac", "lost_frac", "mean_wait", "empty_per_srv", "event_lost", "event_served", "pending_frac"]
+    cols = [c for c in ["served_frac", "lost_frac", "mean_wait", "empty_per_srv", "event_lost", "event_served", "pending_frac"]
+            if c in d]
     t = d.groupby("policy")[cols].mean()
     sv = d.pivot(index="seed", columns="policy", values="served_frac")
-    ev = d.pivot(index="seed", columns="policy", values="event_lost")
+    ev = d.pivot(index="seed", columns="policy", values="event_lost") if "event_lost" in d else None
     best = sv[[r for r in RULES if r in sv]].mean().idxmax()
+    days = {"nyc-jul03-04": "July 3–4 2025 (train July 1–2)", "nyc-jul10-11": "July 10–11 2025 (train July 8–9)"}
     out = [f"# NYC TLC real-trace replay — `{run}`", "",
-           "July 3–4 2025 yellow-taxi trips, Manhattan-internal, thinned to ~10 requests/min (q ≈ 0.20); train days "
-           f"July 1–2; {d.seed.nunique()} thinning replicates (seeds {d.seed.min()}–{d.seed.max()}); K={int(d.n_agents.iloc[0])}, "
+           f"{days.get(d.scenario.iloc[0], d.scenario.iloc[0])} yellow-taxi trips, Manhattan-internal, thinned to ~10 requests/min; "
+           f"{d.seed.nunique()} thinning replicates (seeds {d.seed.min()}–{d.seed.max()}); K={int(d.n_agents.iloc[0])}, "
            f"P={int(d.patience.iloc[0])}, L=1; mean arrivals per run {int(d.arrivals.mean())}. Event window = July 4 21:30–23:30 "
            "(the largest observed surge, 20.7x in one cell 22:00–22:30; cause UNVERIFIED). `oracle` here is a retrospective "
            "15-min centred smoother of realised demand (hindsight), not a forecast-value bound.", "",
@@ -45,9 +47,12 @@ def nyc(run: str) -> str:
             "|---|---|---|---|---|"]
     for a, b in [("mpc-ewma", best), ("mpc-queue", best), ("mpc-cusum-v1", "mpc-ewma"), ("mpc-queue", "mpc-ewma"),
                  ("oracle", "mpc-ewma")]:
-        e = (ev[a] - ev[b]).to_numpy(float)
-        lo, hi = boot_ci(e)
-        out.append(f"| {a} − {b} | {_paired(sv, a, b)} | {e.mean():+.1f} [{lo:+.1f}, {hi:+.1f}] |")
+        if ev is not None:
+            e = (ev[a] - ev[b]).to_numpy(float)
+            lo, hi = boot_ci(e)
+            out.append(f"| {a} − {b} | {_paired(sv, a, b)} | {e.mean():+.1f} [{lo:+.1f}, {hi:+.1f}] |")
+        else:
+            out.append(f"| {a} − {b} | {_paired(sv, a, b)} | — |")
     return "\n".join(out) + "\n"
 
 

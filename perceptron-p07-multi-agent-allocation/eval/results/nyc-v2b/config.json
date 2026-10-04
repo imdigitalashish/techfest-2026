@@ -1,0 +1,23 @@
+{
+ "scenarios": [
+  "nyc-jul10-11"
+ ],
+ "policies": [
+  "static",
+  "greedy",
+  "reactive",
+  "mpc-queue",
+  "mpc-ewma",
+  "mpc-cusum-v1",
+  "oracle"
+ ],
+ "seeds": "200-219",
+ "n_agents": 40,
+ "patience": 10,
+ "horizon": 0,
+ "workers": 6,
+ "out": "eval/results/nyc-v2b",
+ "legacy": false,
+ "n_jobs": 140,
+ "wall_s": 120.9951639175415
+}

@@ -32,7 +32,8 @@ from components.simulator.core import DispatchCore
 WIN, ROLL = 120, 30
 # real-trace replay (NYC TLC yellow taxi, July 2025, Manhattan-internal trips, thinned): test days, train days, event window
 NYC = {"nyc-jul03-04": (["2025-07-03", "2025-07-04"], ["2025-07-01", "2025-07-02"],
-                        (1440 + 21 * 60 + 30, 1440 + 23 * 60 + 30))}   # observed July 4 21:30-23:30 surge (cause UNVERIFIED)
+                        (1440 + 21 * 60 + 30, 1440 + 23 * 60 + 30)),   # observed July 4 21:30-23:30 surge (cause UNVERIFIED)
+       "nyc-jul10-11": (["2025-07-10", "2025-07-11"], ["2025-07-08", "2025-07-09"], None)}   # ordinary Thu-Fri (robustness)
 
 
 def episode_meta(cfg, trace):
@@ -106,7 +107,7 @@ def run_episode(job: dict) -> dict:
             rs.append(int(ok[0] + ROLL) if ok.size else WIN)
         out.update(shock_t=on[0].t, n_shocks=len(on), shock_lost=float(np.mean(sl)), shock_served=float(np.mean(ss)),
                    recover_steps=float(np.mean(rs)), recovered_frac=float(np.mean(np.array(rs) < WIN)))  # rs==WIN: censored
-    if job["scenario"] in NYC:
+    if job["scenario"] in NYC and NYC[job["scenario"]][2] is not None:
         a, b = NYC[job["scenario"]][2]
         out.update(event_lost=int(lost[a:b].sum()), event_served=served[a:b].sum() / max(1, arr[a:b].sum()))
     D = cfg.day
