@@ -181,7 +181,7 @@ DON'T SAY "AI detects all plastic". Night, rain, glare and submerged film are re
 | Monsoon surges | Fail-open fuse at a set head; the pocket sits outside the fuse path so stored catch stays |
 | Salt, silt, hyacinth | HDPE floats, SS316 fittings, node on a pole above the high-water mark (traps already use HDPE and marine-grade aluminium: {{f:F21|Bandalong}}) |
 | Monsoon power | Sized for July: {{f:F15|3.79 kWh/m²/day}} vs {{f:F15|7.09}} in May <span class="small">(NASA POWER)</span> |
-| Cost | One sensor node: {{f:F26|₹82,281.98}} of priced parts ≈ {{f:D03|0.8 %}} of one boom; boom O&M runs ≈ {{f:D02|₹1.2 crore}} per site-year (our arithmetic from the FPJ contract) |
+| Cost | One sensor node: {{f:D04|₹83,481.98}} of priced parts, enclosure included, ≈ {{f:D03|0.8 %}} of one boom; boom O&M runs ≈ {{f:D02|₹1.2 crore}} per site-year (our arithmetic from the FPJ contract) |
 
 <!--
 TIME 7:50–8:40 (50 s).

@@ -35,4 +35,9 @@
 | F27 | Clearbot lists a "Jawaharlal Nehru Port Authority (JNPA) Mumbai – Trash Removal" project (vendor claim) | Clearbot site | see [companies.md](companies.md) | "Jawaharlal Nehru Port Authority (JNPA) Mumbai – Trash Removal" | research (companies.md) |
 | D01 | The two pilot Interceptors would recover about 1.2–1.8 % of the region's estimated plastic leakage | derived: 61 ÷ 5,000 = 1.2 %; 92 ÷ 5,000 = 1.8 % (from F01, F02) | — | — | lead |
 | D02 | BMC boom O&M is about ₹1.2 crore per site-year (assumes one boom per site) | derived: ₹14.5 crore ÷ 6 sites ÷ 2 years = ₹1.21 crore (from F13) | — | — | lead |
-| D03 | One sensor node costs about 0.8 % of one boom's price | derived: ₹82,282 ÷ ₹1 crore = 0.82 % (from F12, F26) | — | — | lead |
+| D03 | One sensor node (including enclosure) costs about 0.8 % of one boom's price | derived: ₹83,481.98 ÷ ₹1,00,00,000 = 0.83 % (from F12, D04) | — | — | lead |
+| F28 | Ohmsett, the US oil-spill test tank, tows response equipment from three movable bridges at up to 6 knots, programmable to 1/100th knot, to simulate ocean and river current flow; it is 203.3 m long | TEAMER facility page | https://teamer-us.org/facility/ohmsett/ | "three movable bridges with tow speeds of up to 6 knots, programmable to 1/100th knot increments to simulate ocean and river current flow" | lead (4 Oct, ~16:15) |
+| F29 | IP66 polycarbonate junction box, 160x250x115 mm: ₹ 1,200 per piece (Mumbai supplier) | IndiaMART listing | https://www.indiamart.com/proddetail/polycarbonate-junction-box-2859133826973.html | page title "Polycarbonate Junction Box, IP66, Size: 160x250x115MM at ₹ 1200/piece in Mumbai" | lead (4 Oct, ~16:18) |
+| D04 | Field sensor node including an IP66 enclosure: ₹83,481.98 | derived: ₹82,281.98 (F26) + ₹1,200.00 (F29) | — | — | lead |
+| D05 | Tow-tank flume structure and retrofit model (BOM C, priced lines): ₹4,969.12 | derived: sum of BOM C rows in deliverables/prototype-plan.md (each row carries its URL and date) | — | — | lead |
+| D06 | Whole flume demonstrator (electronics BOM B + structure BOM C): ₹38,927.11 | derived: ₹33,957.99 (F26) + ₹4,969.12 (D05) | — | — | lead |

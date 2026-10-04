@@ -4,7 +4,8 @@
 2. Results: every {{r:alias}} resolves (eval/doc_numbers.py).
 3. Binding: every {{f:ID|text}} names a row in research/fact-check.md, and every number in `text` appears in that row.
 4. Markers: rendered deliverables contain no ⟨FILL⟩ / [V] / TODO markers (team fields use ‹…› placeholders instead).
-5. Stale: superseded numbers or phrases must not appear in rendered deliverables or in the current part of thought_node.md.
+5. Stale: superseded numbers or banned phrases must not appear in rendered deliverables (except on lines that say
+   "Don't say") or in the current part of thought_node.md.
 6. Unmarked numbers: in templates, significant numbers (≥4 digits, a decimal, a comma group or a percentage) outside
    placeholders are flagged. Scoped exceptions: URLs; years, ISO dates, year ranges and clock/slide times; lines marked
    UNVERIFIED or ASSUMPTION; Marp image directives; the phrase "90% interval"; self-cited table rows (a row that carries its own URL and a 2026-10-0x access date).
@@ -93,9 +94,12 @@ def main() -> int:
     tn_current = tn.split("## Log", 1)[0]
     for path in current:
         text = path.read_text() if path.exists() else ""
-        for s in STALE:
-            if s in text:
-                problems.append(f"stale/marker {s!r} in {path.relative_to(ROOT)}")
+        for line in text.splitlines():
+            if re.search(r"don'?t say|DON'T SAY", line, re.I):
+                continue  # a line that tells the presenter what NOT to say may quote the banned phrase
+            for s in STALE:
+                if s in line:
+                    problems.append(f"stale/marker {s!r} in {path.relative_to(ROOT)}: {line[:60]!r}")
     for s in STALE[:4]:
         if s in tn_current:
             problems.append(f"stale {s!r} in the current part of thought_node.md")
