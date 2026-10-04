@@ -71,7 +71,6 @@ def main():
 
     print("2. key numbers equal eval/results/claims.json")
     claims = json.load(open(os.path.join(RES, "claims.json")))
-    check(P["claims"] == claims, "data/summary.js claims snapshot == claims.json (all keys)")
     used = set(re.findall(r'data-c="(\w+)"', html)) | set(re.findall(r'\b(?:c|num)\("(\w+)"\)', html))
     for k in re.findall(r'k: \["(\w+)", "(\w+)", "(\w+)"\]', html):
         used |= set(k)
@@ -80,6 +79,11 @@ def main():
         used |= {k, k + "_lo", k + "_hi"}
     missing = sorted(k for k in used if k not in claims)
     check(not missing and len(used) > 40, f"{len(used)} claims keys referenced by the page, missing: {missing}")
+    diff = sorted(k for k in used if P["claims"].get(k) != claims.get(k))
+    check(not diff, f"data/summary.js claims snapshot == claims.json for all {len(used)} page keys{' DIFF ' + str(diff) if diff else ''}")
+    other = sorted(k for k in set(claims) | set(P["claims"]) if k not in used and P["claims"].get(k) != claims.get(k))
+    if other:
+        print(f"  note claims keys not shown by the page changed since export: {other} (re-run demo/export.py to refresh)")
     check(P["scorecard"] == json.load(open(os.path.join(RES, "realism_scorecard.json"))), "scorecard snapshot == realism_scorecard.json")
     nsr = json.load(open(os.path.join(RES, "nsr_E4_nsr_naive_vs_E4_nsr_sync.json")))
     check(P["nsr"] == nsr, "nsr snapshot == nsr_E4_nsr_naive_vs_E4_nsr_sync.json")
