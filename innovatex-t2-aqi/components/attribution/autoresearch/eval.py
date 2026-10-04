@@ -12,7 +12,10 @@ Truth = the site's own PM10 contribution at the most-impacted fence-line node (�
 Scalar (lower is better) = MAE over ALL hours of the held-out DEV period, abstentions scored as estimate 0.
 Also printed: TEST-period scalar (lead's holdout check), MAE on non-abstained hours, coverage, CSI for truth > 50.
 
-Run from this folder:  python eval.py [method]   (default: methods.CANDIDATE; 'all' prints every method)
+Run from this folder:  python eval.py [method|all] [n_seeds]   (default: methods.CANDIDATE, 5 seeds)
+Evaluator v1 (4 Oct 08:05): mean ± sd over seeds SEED..SEED+n-1 (each seed redraws the site, plumes and sensors);
+sensor slope drift bounded (±10 %/yr 1-sd, clipped to 0.5–1.5×); non-finite estimates count as abstentions.
+v0 (single seed, unbounded 5 %/month drift) was flawed: its TEST numbers are not comparable; see results.tsv.
 """
 import os, sys
 import numpy as np
@@ -82,7 +85,8 @@ def simulate(df, rng):
     obs = pd.DataFrame(index=idx)
     for node in GEOM:
         true_conc = df["bg"].values * (1 + rng.normal(0, 0.03, n)) + site[node] + (20.0 * traffic if node == "W" else 0.0)
-        slope = rng.uniform(0.75, 1.25) * (1 + rng.normal(0, 0.05) * t_days / 30)
+        drift = rng.normal(0, 0.10)  # fractional slope change per year (SIMULATED); bounded below
+        slope = rng.uniform(0.75, 1.25) * np.clip(1 + drift * t_days / 365, 0.5, 1.5)
         kappa = 0.05 * rng.uniform(0.8, 1.2)
         meas = slope * true_conc * (1 + kappa * rh / (100 - rh)) + rng.normal(0, 6) + rng.normal(0, 1, n) * (0.05 * true_conc + 2)
         obs[f"raw_{node}"] = np.maximum(meas, 0)
@@ -93,6 +97,8 @@ def simulate(df, rng):
 
 
 def score(est, abstain, truth, mask):
+    abstain = abstain | ~np.isfinite(est)  # non-finite estimates count as abstentions (scored 0)
+    est = np.where(np.isfinite(est), est, 0.0)
     e = np.where(abstain, 0.0, est)[mask]
     t = truth[mask]
     na = mask & ~abstain
@@ -104,18 +110,24 @@ def score(est, abstain, truth, mask):
 
 def main():
     which = sys.argv[1] if len(sys.argv) > 1 else methods.CANDIDATE
+    n_seeds = int(sys.argv[2]) if len(sys.argv) > 2 else 5
     df = load()
-    obs, truth = simulate(df, np.random.default_rng(SEED))
-    dev = (obs.index >= DEV[0]) & (obs.index <= DEV[1] + " 23:00")
-    test = (obs.index >= TEST[0]) & (obs.index <= TEST[1] + " 23:00")
     names = list(methods.METHODS) if which == "all" else [which]
-    for name in names:
-        est, abstain = methods.METHODS[name](obs, GEOM)
-        est, abstain = np.asarray(est, float), np.asarray(abstain, bool)
-        d, t = score(est, abstain, truth, dev), score(est, abstain, truth, test)
-        print(f"{name:14s} DEV scalar={d['scalar_MAE_all']:.2f}  [non-abst MAE {d['MAE_non_abstained']:.1f}, cov {d['coverage']:.2f}, CSI>50 {d['CSI_gt50']:.2f}, n={d['n']}]"
-              f" | TEST scalar={t['scalar_MAE_all']:.2f} [cov {t['coverage']:.2f}, CSI>50 {t['CSI_gt50']:.2f}, n={t['n']}]")
-    print(f"truth: mean {truth.mean():.1f} µg/m³, share of hours > {EXCEED:.0f}: {(truth > EXCEED).mean():.3f}")
+    res = {n: [] for n in names}
+    for k in range(n_seeds):
+        obs, truth = simulate(df, np.random.default_rng(SEED + k))
+        dev = (obs.index >= DEV[0]) & (obs.index <= DEV[1] + " 23:00")
+        test = (obs.index >= TEST[0]) & (obs.index <= TEST[1] + " 23:00")
+        for name in names:
+            est, abstain = methods.METHODS[name](obs, GEOM)
+            est, abstain = np.asarray(est, float), np.asarray(abstain, bool)
+            res[name].append((score(est, abstain, truth, dev), score(est, abstain, truth, test)))
+    for name, rs in res.items():
+        dv = np.array([r[0]["scalar_MAE_all"] for r in rs]); tv = np.array([r[1]["scalar_MAE_all"] for r in rs])
+        dc = np.array([r[0]["CSI_gt50"] for r in rs]); tc = np.array([r[1]["CSI_gt50"] for r in rs])
+        cov = np.mean([r[1]["coverage"] for r in rs])
+        print(f"{name:14s} DEV scalar={dv.mean():.2f} ± {dv.std():.2f} | TEST scalar={tv.mean():.2f} ± {tv.std():.2f} | "
+              f"CSI>50 dev {dc.mean():.2f} test {tc.mean():.2f} | cov {cov:.2f} | seeds={n_seeds}")
 
 
 if __name__ == "__main__":

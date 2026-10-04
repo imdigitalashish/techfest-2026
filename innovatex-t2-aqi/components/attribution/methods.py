@@ -45,13 +45,13 @@ def ring_selfcal(obs, geom, window_days=14, idle_hours=(0, 1, 2, 3, 4, 5)):
     """Ring + inter-node self-calibration: during idle night hours every node sees the same background, so fit each
     node to the ring median (ratio of medians) over a trailing window and rescale. Causal: uses only past idle hours."""
     raw = pd.DataFrame({n: obs[f"raw_{n}"] for n in NODES})
-    med = raw.median(axis=1)
+    med = raw.median(axis=1).clip(lower=1.0)
     idle = raw.index.hour.isin(idle_hours)
     cal = {}
     for n in NODES:
         ratio = (raw[n] / med).where(idle)
         # trailing median ratio over past idle hours (shifted by one row so hour t never uses itself)
-        r = ratio.rolling(f"{window_days}D", min_periods=24).median().shift(1).ffill().fillna(1.0)
+        r = ratio.rolling(f"{window_days}D", min_periods=24).median().shift(1).ffill().fillna(1.0).clip(0.2, 5.0)
         cal[n] = (raw[n] / r).values
     return _ring(cal, obs, geom)
 
