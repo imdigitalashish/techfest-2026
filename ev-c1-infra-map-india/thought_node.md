@@ -203,3 +203,14 @@ Folder, brief and journal created. The lead session starts Phase 0.
   State average 285; 17 of 35 districts have no open-data site. Matching Karnataka's density (152.4) needs +3,641 stations.
 - **Dashboard v1** (`components/dashboard_map/`; `dist/index.html` + `dist/maharashtra.html`): no third-party basemap (boundary compliance); national layers BEV/station and **open/official coverage per state** (Supervisor item 3); district drill-down with ranges and reasons. Checked in Chromium (Playwright, private pages; the shared browser was being navigated by another session): 0 console errors, both layers switch, ranking row → zoom + popup. Screenshots committed. Browser closed.
 
+### 2026-10-04 14:00 IST — Docs pipeline, Round-1 v2, reviews launched, pre-emptive robustness checks
+- **Docs pipeline:** `eval/run_all.sh` re-runs every analysis from cached data → `make_latest.py` (240 keys) → `render_docs.py` (inline markers `<!--n:key-->`) → `check_docs.py`. The check fails on marker drift, superseded numbers, or any significant number in the Round-1 docs that is neither rendered nor in `research/fact-check.md`. A negative test (fake number + drifted marker) failed as expected.
+- **Round-1 methodology and roadmap v2** written and rendered; ADR 001 addendum (spike outcome and revised decision); landscape v2 (verified timeline, policy anchors, Overture/AllThePlaces in "What companies ship today", reliability evidence); project README.
+- **Reviews launched** (child sessions, ≤ 2): gpt-6-sol max (code + eval reproduction) and gpt-6-astra max (hostile judge: ADR 001 + Round-1 docs v2).
+- **Pre-emptive checks while waiting:**
+  - **Capture–recapture sensitivity** (4 model rules × radii, 6 variants): the national estimate spans 21,339–80,833 and none passes validation. Not cherry-picking the one variant near the official count.
+  - **Date-aligned metric:** BEV registered to Jul 2025 vs stations on 1 Aug 2025 = **236 per station** nationally (360 with today's BEV). It is now primary in the docs and the dashboard default.
+  - **Registration vintage:** 95.3% of BEV registrations are from 2020 or later and 90.8% from 2022 or later, so registrations ≈ on-road fleet except ~0.5M older units.
+  - **Overture name-rule sample:** 30/30 are charging sites (one outside India, removed by the clip).
+- Dashboard re-checked in a private browser page (only a favicon 404); browser closed, server stopped.
+
