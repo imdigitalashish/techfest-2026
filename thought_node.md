@@ -6,21 +6,25 @@
 <!-- User → Supervisor. -->
 - _(empty)_
 
-## Now (20:04 IST, 4 Oct)
+## Now (20:52 IST, 4 Oct)
 - **Mode:** play to WIN. Every project gets a PLAYBOOK §11 demo, and demos open on real data. At most 5 running at once.
 - **Round 1: 19 of 20 done.** APCTT is gated on its 10 Oct data and needs your registration by 9 Oct.
-- **Demos done (2):**
+- **Demos done (3):**
   - P10 "Break the band".
-  - P2: a memory slider, with its caveats shown on screen.
+  - P2: memory slider.
+  - P6: "race the machine".
 - **Demos running (5):**
-  - P6: smoke 28/28 after its review fixes; DEMO DONE is due.
-  - P7: NYC July-4 opening; fixing its 10/10 accepted review items.
-  - India@71 T1: real NFHS-5 opening; review 12/12 accepted; eval_v2 sends infants under 6 months to the protocol pathway.
-  - P9: real τ-bench replay; an order-id laundering bypass was found and fixed, with committed decisions unchanged (991/991).
-  - P1: "unplug the tablet".
-- **Demo queue:** P3 → P8 → P4 → P5 → India@71 T3. Then I check InnovateX T1–T3, EV C1/C2, India@71 T2 and Namma myself.
+  - P7: NYC July-4 opening; review fixes.
+  - India@71 T1: real NFHS-5 opening; review fixes, including Bloom-filter linkage through the encoded boundary.
+  - P9:
+    - Real τ-bench replay. Review 12/12 accepted.
+    - Three guard fixes from demo probes; committed decisions re-verified as identical each time.
+  - P1:
+    - "Unplug the tablet": a real Flower LocalGrid.
+    - Live config pre-registered at 20:20 and passed 5/5 seeds at 20:45.
+  - P3: "the evaluator that says I don't know", on real OBD data (CC BY 4.0 verified).
+- **Demo queue:** P8 → P4 → P5 → India@71 T3. Then I check InnovateX T1–T3, EV C1/C2, India@71 T2 and Namma myself.
 - **Estimate:** all demos done around midnight–2 AM.
-- **Azure:** P8's pay-per-token OpenAI resource. P2's VM is deallocated, with its disk kept.
 ## User action items
 - [ ] **By 9 Oct — AI for Technology Readiness:** register (team 1–3, everyone ≤35 on 17 Dec 2026). The training guide + data arrive 10 Oct to registered teams only — drop them into the Inbox of `apctt-trl-assessor/thought_node.md`.
 - [ ] **By 9 Oct — InnovateX:** register for the Delhi zonal (10 Oct, South Asian University) with T1 JalSakshi. Its zonal package is complete (see the InnovateX T1 item below).
@@ -113,6 +117,9 @@
 - 2026-10-04 07:20 — `models.github.ai` returns stub "OK" responses from this machine (found by P8, confirmed by P9). Any LLM-dependent number must come from a real model (local MLX/Ollama or Azure OpenAI).
 
 ## Log
+### 2026-10-04 20:52 IST — Sweep
+- P9: three demo-driven guard changes (untrusted-text rule, format-insensitive taint, own-record exemption). Each time I verified the committed τ-bench decisions and reasons are identical (991 test / 1,027 dev).
+- P1: three demo pass criteria committed at 20:20:49; the validation runs were committed at 20:45:11. All three pass in 5/5 seeds.
 ### 2026-10-04 20:29 IST — P6 demo done (3 demos)
 - **P6 DEMO DONE (74075ed):** smoke 31/31 in my clone (42.9 s, including headless Chrome). Astra demo review plus a re-review, all items fixed.
   - Crazy element: "race the machine". The judge's measured reaction time is scored by the committed simulator against compiled LEV, timed live.
