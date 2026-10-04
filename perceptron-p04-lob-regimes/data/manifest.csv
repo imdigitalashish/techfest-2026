@@ -4,6 +4,7 @@ binance-futures,book_snapshot_5,2023-08-01,BTCUSDT,https://datasets.tardis.dev/v
 binance-futures,book_snapshot_5,2023-09-01,BTCUSDT,https://datasets.tardis.dev/v1/binance-futures/book_snapshot_5/2023/09/01/BTCUSDT.csv.gz,23225642,71a5b4a60aa5f8f9d6a6482db0b8d231
 binance-futures,book_snapshot_5,2023-11-01,BTCUSDT,https://datasets.tardis.dev/v1/binance-futures/book_snapshot_5/2023/11/01/BTCUSDT.csv.gz,26164965,561e3e40909309b0243a8abd82de9bcc
 binance-futures,book_snapshot_5,2023-12-01,BTCUSDT,https://datasets.tardis.dev/v1/binance-futures/book_snapshot_5/2023/12/01/BTCUSDT.csv.gz,26688105,ae497f5567199bd7d30c64cff9b530a6
+binance-futures,book_snapshot_5,2024-01-01,BTCUSDT,https://datasets.tardis.dev/v1/binance-futures/book_snapshot_5/2024/01/01/BTCUSDT.csv.gz,22782992,5c7ce09b428f103ee08ca1d286502346
 binance-futures,book_snapshot_5,2024-05-01,BTCUSDT,https://datasets.tardis.dev/v1/binance-futures/book_snapshot_5/2024/05/01/BTCUSDT.csv.gz,38506293,9b149d80f44d5d852a2db128486c30d3
 binance-futures,book_snapshot_5,2024-11-01,BTCUSDT,https://datasets.tardis.dev/v1/binance-futures/book_snapshot_5/2024/11/01/BTCUSDT.csv.gz,27935263,575a657ab12b49ce25cda299d96069f6
 binance-futures,book_snapshot_5,2025-08-01,BTCUSDT,https://datasets.tardis.dev/v1/binance-futures/book_snapshot_5/2025/08/01/BTCUSDT.csv.gz,32033646,2e8299432d1a022154f70d06661f2c66
