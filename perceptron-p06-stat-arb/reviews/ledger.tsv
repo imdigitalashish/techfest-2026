@@ -3,3 +3,4 @@ date	artifact	model	effort	issues	accepted	rejected	note
 2026-10-04	code/eval/reproducibility	gpt-6-sol	max	16	16	0	reproduced all 91 primary fields + raw Feb rebuild; found post-end quote reuse (erratum, 0 rows) and corrected my bit-identical claim (6.8e-13)
 2026-10-04	final Round-1 abstract	gpt-6-astra	max	8	8	0	62/100 (up from 53); A01 sensitivity-not-bound, A02 paper trading planned, A03-A06 wording fixed, A08 architecture regenerated, A07 team = user input
 2026-10-04	demo (judge watching)	gpt-6-astra	max	10	10	0	wow 3 · clarity 2 · honesty 3 · robustness 3 · fit 5; race length, script/config mismatch, denominators, live-state bug, stage view; fixes by demo builder
+2026-10-04	demo re-review	gpt-6-astra	max	2	2	0	9/10 FIXED; scores wow 4 · clarity 3 · honesty 4 · robustness 4 · fit 5; D04 residual + D11 script length sent to builder

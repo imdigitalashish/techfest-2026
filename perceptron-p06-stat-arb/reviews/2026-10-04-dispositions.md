@@ -75,3 +75,11 @@ Scores: wow 3/5 · clarity in 3 minutes 2/5 · honesty/rigour 3/5 · robustness 
 | P6-D09 | minor | ACCEPTED | Derive the abstention caption from the full-day cells; remove the band text when the band is absent. |
 | P6-D10 | minor | ACCEPTED | The offline ratio is labelled against the right quantity (committed p50 vs the 7 µs allowance). |
 | L1 (lead) | minor | — | Two naive break-even figures appear on screen, from different leg sets (9-leg 4.6 ms vs 5-leg 2–3 ms); name the leg set at each. |
+
+### Demo re-review (`gpt-6-astra`, f953719)
+Scores: wow 4 · clarity 3 · honesty 4 · robustness 4 · fit 5. Nine of ten findings verified FIXED: D01–D03, D05–D10.
+
+| ID | Severity | Disposition | Action |
+|---|---|---|---|
+| P6-D04 (residual) | major | ACCEPTED | After a passive backend loss, the completed race panel kept its live claims until δ changed. The builder relabels the race provenance on loss and asserts it before any interaction. |
+| P6-D11 | major | ACCEPTED | The script had 581 spoken words plus the race, about 3:39 at 180 wpm. Narration cut to 330–350 words; the extra detail moves to Q&A. |
