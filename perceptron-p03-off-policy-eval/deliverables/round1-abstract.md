@@ -1,46 +1,55 @@
-# Round 1 abstract — Perceptron 2026, Problem 3 (DRAFT v1, 2026-10-04)
+# Round 1 abstract — Perceptron 2026, Problem 3
 
-**Did-It-Work: counterfactual attribution of a policy switch, with error bars and a confounding tipping point**
+> Rendered by `deliverables/render.py` from `eval/results/headline.json`; every number traces to a committed result (`eval/check_docs.py`). Edit `round1-abstract.tmpl.md`, never this file.
 
-**Problem & theme.** Theme 2 (Cause and Effect in AI Decisions), Problem 3. Teams that ship a recommender, pricing rule or quoting strategy ask "did the new policy work?" and answer with a before/after dashboard, a number that mixes the policy's effect with everything else that changed. It is P&L attribution for decision systems: separate what our decision caused from what the world did anyway.
+**Did-It-Work: attributing a before/after change to the policy — with error bars, and an honest "can't tell"**
 
-**Understanding of the challenge.** The naive gap Ȳ_after − Ȳ_before equals the policy's effect *plus* the environment change: seasonality, a different user mix, novelty, and the policy's feedback on its own future data. The missing quantity is a counterfactual, the old policy's value during the after period, which is never observed. Off-policy evaluation (OPE) identifies it from logs if:
-1. the deployed policy logged its action propensities;
-2. every action the old policy would take had non-zero probability under the new one (overlap);
-3. no unlogged factor drove both actions and outcomes.
+**Problem & theme.** Theme 2 (Cause and Effect in AI Decisions), Problem 3. Teams that ship a recommender, pricing rule or quoting strategy usually judge it with a before/after dashboard. That number mixes the policy's effect with everything else that changed. We treat it like P&L attribution: separate what the decision caused from what the world did anyway, and say so when the logs cannot tell.
 
-The hard parts are the variance of large importance weights when overlap is poor, honest uncertainty on a *difference* of two policy values, and condition 3, which no data can verify.
+**Understanding of the challenge.** Ȳ_after − Ȳ_before = policy effect + environment change (season, user mix, novelty, and the policy's feedback on who shows up). The missing counterfactual, "old policy during the after period", is never observed. Off-policy evaluation (OPE) identifies it only with logged propensities, overlap, and no unlogged confounding. What is hard:
+- When the new policy is greedy, the old policy's actions are rare in the new logs: importance weights turn heavy-tailed and standard intervals under-cover.
+- The question concerns a *difference* of two policy values, needing its own honest uncertainty.
+- No-confounding cannot be tested from the data.
+- If the policy changes its audience, a single after-period log cannot identify the total effect.
 
-**Proposed approach.** A pipeline of 12 components with typed contracts (Python/pydantic, numpy, scikit-learn; CPU-only):
-1. **Ingestion** of logs into a validated schema (context, action, reward, propensity, period).
-2. **Policy adapter**: any policy as π(a|x) on the logged contexts (softmax scorers, ε-greedy, Thompson sampling via Monte Carlo).
-3. **Cross-fitted reward model.**
-4. **Estimators**: IPW, SNIPW, DM, doubly robust (Dudík et al., ICML 2011), Switch-DR and DR-shrinkage. Each returns per-round influence terms. A Δ-estimator targets V(new) − V(old) on the same traffic, sharing control variates (Δ-OPE, Jeunen & Ustimenko, RecSys 2024).
-5. **Spike 1 — Decomposer.** Naive gap = policy effect (OPE: Ȳ_after − V̂_after(old)) + environment change. The environment term is split further into user-mix shift and response drift using period-specific reward models, an Oaxaca–Blinder-style accounting.
-6. **Spike 2 — Robustness certificate.** Intervals for Δ: Wald, bootstrap and anytime-valid confidence sequences (Waudby-Smith et al., 2022). Marginal-sensitivity-model bounds with parameter Γ (Kallus & Zhou 2018; percentile bootstrap of Zhao, Small & Bhattacharya). A tipping point Γ\*: the smallest Γ at which the 95% interval for Δ contains zero. Γ\* is benchmarked against observed covariates, so it reads as "a hidden factor would need to be k× as strong as the strongest logged feature".
-7. **Report**: a verdict (worked / hurt / inconclusive) with a waterfall chart, intervals and overlap diagnostics (effective sample size, maximum weight) that can force "inconclusive".
+**Proposed approach.** Typed components (Python, numpy, scikit-learn; CPU-only):
+- A policy adapter (any policy as π(a|x) on logged contexts) and a cross-fitted reward model.
+- Estimators — IPW, SNIPW, DM, doubly robust (DR; Dudík et al. 2011) and Switch-DR — each returning per-round influence terms, so any interval or sensitivity method plugs in.
+- **Spike 1 — Decomposer.** A 2×2 Shapley attribution over {policy, environment}; OPE fills the two never-observed cells (new policy before the switch, old policy after). Output: policy effect, environment change (split into user-mix shift, via a doubly robust density-ratio estimate, and response drift) and their interaction.
+- **Spike 2 — Certificate.**
+  - (a) An *overlap gate* on ESS/n, effective number of rewarded rows, and a mean-weight test (E[w] = 1). It abstains ("can't tell from these logs") below thresholds calibrated only on simulated data.
+  - (b) Intervals for the difference.
+  - (c) Marginal-sensitivity-model bounds (Kallus & Zhou 2018; Zhao et al. 2017) with a tipping point Γ\*.
+- A report: worked / hurt / can't tell, with a waterfall chart.
 
 **Minimum Viable mapping.**
-1. *"Apply a standard OPE method"*: IPW and DR on the **Open Bandit Dataset** (ZOZOTOWN; about 26M impressions with true propensities). Random logs estimate the Thompson-sampling policy, whose on-policy CTR is real ground truth. Already running: on the 10k-row sample, every estimator's 95% interval contains the true CTR (0.0042); the full data will tighten this.
-2. *"A concrete case where the estimate differs from naive before/after"*: in our ground-truth simulator (30 seeds), a seasonal drop makes the dashboard show **−5.6 points** while the switch truly added **+7.5**. DR recovers +7.5 (RMSE 0.6 points, 93% interval coverage); the naive number had the wrong sign in every seed. The mirror case hides a harmful policy. Next: the same on real OBD clicks with injected drift.
+1. *Standard OPE.* Open Bandit Dataset (ZOZOTOWN), pre-registered: from 660,904 uniform-random impressions, DR estimates the Thompson-sampling policy's click rate within 0.1% of its on-policy truth (4.89 clicks per 1,000 impressions); IPW within 1.1%.
+2. *Estimate vs naive before/after, on real logs with real truth.* Both policies ran concurrently, so all four period × policy cells are observed.
+   - **Re-enacted switch** (Random's logs in the first half of the window, Thompson sampling's in the second): the dashboard reads +1.62 per 1,000 against a true effect of +1.26, overstating it by 29% because the old policy's own rate rose. DR gives +1.40, and its interval contains the truth.
+   - **Reverse switch:** naive is right (−1.25 vs −1.26) and DR is noisier (−1.70).
+   - **Whole-day pairs:** DR's interval missed the truth in 3/3 deploy cases (ESS/n down to 0.05%). Applied post hoc, the simulator-calibrated gate abstains on all of them and answers 6/10 cases with 0 wrong.
+   - **Simulator** (synthetic, exact truth, 30 seeds): a seasonal drop makes the dashboard read −5.6 points while the switch added +7.5. DR gives +7.5 (RMSE 0.6); naive has the wrong sign in 30/30 seeds.
 
-**Stretch ambitions.** Both official stretch goals are the core of Spike 2: coverage-tested uncertainty for Δ, and sensitivity to unobserved confounding (Γ-curves and Γ\*). A decision needs a sign, error bars and the assumption that could flip it. Further stretch: anytime-valid monitoring, and a trading-flavoured domain (a quote-skew policy with a markout reward).
+**Stretch ambitions.**
+- **Uncertainty:** Shapley intervals cover 95% in simulation. Next: anytime-valid confidence sequences (Waudby-Smith et al.) for the difference.
+- **Confounding:** in an unlogged-override scenario DR is biased by −6.9 points (coverage 0%). The MSM bounds contain the truth in 10/10 runs, and Γ\* = 1.25 flags the conclusion as fragile. Next: benchmark Γ\* against observed covariates.
 
-**Novelty / differentiation.** The starter baseline estimates V(π). We answer the decision question — did the switch *cause* the change? — in three ways:
-- we attribute the naive gap rather than replace it;
-- we certify the sign of Δ under sampling error *and* hidden confounding jointly, with a calibrated tipping point;
-- we validate every number against known counterfactuals.
+**Novelty.** The baseline estimates V(π) with Open Bandit Pipeline. We instead:
+- attribute the dashboard number, including the policy × season interaction;
+- abstain when the logs cannot answer, with thresholds fixed on simulation before being checked on real truth;
+- pre-register real-data tests in both switch directions.
 
-Related work attributes *model*-performance changes to distribution shifts (Zhang et al., ICML 2023) or forecasts a policy's future value (Shimizu et al., 2025). We found no tool that attributes a policy switch this way.
+We also found that the deployed Thompson-sampling policy drifted within the logged 84 hours: for the top item-slots, the 6-hour median logged propensity varied by a median factor of 16. The standard OBD protocol (obp's example) evaluates one static prior instead. Closest prior art: Δ-OPE (Jeunen & Ustimenko, RecSys 2024) and distribution-shift attribution (Zhang et al., ICML 2023); our arXiv search found no switch attribution with abstention.
 
 **Evaluation plan.**
-1. A **frozen scenario bank** (drift masking a gain, drift faking a gain, stationary control, hidden override, low overlap) × 100 seeds with exact ground truth. Metrics: RMSE and sign accuracy of Δ̂ versus the naive number; empirical coverage and width of 95% intervals; validity of sensitivity bounds at the true Γ.
-2. The **OBD Random→BTS** relative estimation error, following the protocol of Saito et al. (NeurIPS 2021 Datasets & Benchmarks).
-3. A **held-out scenario bank** to catch over-tuning.
+- Pre-registered OBD analyses, plus disclosed deviations.
+- A frozen simulator bank, and a 13-level drift sweep: naive has the right sign for drift ≥ −0.25 and the wrong sign at ≤ −0.75; DR's RMSE stays ≤ 0.6 points, while naive's reaches 26.2.
+- A feedback test: DR recovers the direct effect (+9.1 vs +8.9), while the total effect (+14.6) is not identified, a stated limitation.
+- A misspecification test: policy-term bias +0.09 for DR vs +1.58 for DM; doubly robust mix-term bias −0.01 vs +0.57.
+- Gate calibration on 36 configurations: coverage among answered runs 0.96; worst ungated configuration 0.65.
+- Metrics: RMSE, sign accuracy, coverage, abstention rate, confident-wrong count. Baselines: naive, DM, IPW, and the Open Bandit Pipeline estimators.
 
-Baselines: naive before/after, DM, IPW and the Open Bandit Pipeline estimators; changes are kept only if they beat seed-to-seed noise.
-
-**Feasibility and risks.** Everything runs on CPU; the walking skeleton (simulator, five estimators, intervals, MSM bounds, decomposition) already runs.
-- *Team:* Ashish (ML systems at Microsoft; pipeline and evaluation harness) plus two teammates, TBD (statistics/causal inference; visualisation and demo).
-- *Milestones:* October — estimators, Δ-estimator, harness, full OBD. 1–17 Nov — certificate and semi-synthetic OBD. 19–25 Nov — exams, no planned work. 1 Dec — midway report. 15 Dec — interactive demo.
-- *Risks:* the mix/drift split depends on the reward model (reported separately from the identified policy term); Γ can be misread (mitigation: covariate benchmarking); a simulator can look rigged (mitigation: a frozen bank that includes cases where the naive number is right).
+**Feasibility and risks.** Everything above runs today on a laptop CPU, one command per result, with contract tests.
+- *Team:* Ashish (ML systems, Microsoft; pipeline and evaluation) plus two teammates, TBD (statistics; demo).
+- *Milestones:* October — full OBD (all campaigns), confidence sequences. 1–17 November — Γ\* benchmarking and the interactive demo. 19–25 November — exams, no planned work. 1 December — midway report. 15 December — finals.
+- *Risks:* the gate may abstain often (it answers 47% of hard simulated cases); mitigation: recommend an exploration floor at logging time. Total effects under feedback stay unidentified. Click rewards are sparse.
