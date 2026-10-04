@@ -1,7 +1,7 @@
 # ADR 001 — Spike components
 
-- **Status:** accepted (v1, 4 Oct 2026 06:00 IST). Revisit at the selection gate (7 Oct) and after the first flume test.
-- **Deciders:** project lead, with an independent adversarial review (rubber-duck agent) and a first-principles review (First Principles agent), both run 05:20–05:50 IST.
+- **Status:** accepted (v1, 4 Oct 2026 05:45 IST; update 06:15 below). Revisit at the selection gate (7 Oct) and after the first flume test.
+- **Deciders:** project lead, with an independent adversarial review ([antithesis](../../research/reviews/adr001-antithesis.md), rubber-duck agent) and a [first-principles review](../../research/reviews/adr001-first-principles.md) (First Principles agent), both run 05:15–05:55 IST and stored verbatim.
 - **Context:** [components.md](../components.md) · [thought node](../../thought_node.md). Facts marked **[V]** are leads still being verified by the research sessions. Do not quote them in a pitch until they carry a citation in `research/`.
 
 ## Context
@@ -71,3 +71,19 @@ The theme asks us to monitor, intercept and reduce plastic leaking from Mumbai's
 - **Kill criteria:**
   - Spike 1: drop it if P2 does not beat P1 by more than the Monte Carlo spread on held-out years.
   - Spike 2: drop the "ratchet" claim if reversed-flow flume tests show no retention gain over an angled boom, or if the fuse cannot keep head rise under the cap.
+
+## Update 06:15 IST — The Ocean Cleanup is already in Mumbai (strengthens this decision)
+Sources: [mumbai-context.md](../../research/mumbai-context.md), [companies.md](../../research/companies.md).
+
+**The facts:**
+- **Origin of the 5,000 t/yr figure.** It comes from The Ocean Cleanup's "Smart Rivers Survey" (press release, Mumbai, 10 Feb 2026). It covers the whole metropolitan region.
+- **The brief's "Malad or Trombay" outlets.** These are Malad Creek and Trombay Creek, The Ocean Cleanup's two pilot Interceptor sites:
+  - MCGM Storm Water Drain permits and an MPCB MoU (press release, 30 Apr 2026);
+  - Plastic Fischer runs operations on the ground;
+  - the first systems are expected to recover 61–92 t/yr.
+- **Scale.** 61–92 t/yr is about 1.2–1.8% of 5,000 t/yr (derived). Mumbai has many more outfalls; a report figure of ~186 **[V]** awaits citation.
+
+**Consequences:**
+- **(a) Spike 2 must target the long tail of small nullah outfalls**, not the big creek mouths, which are now Interceptor territory. A low-cost retrofit for existing BMC booms fits that.
+- **(b) The measurement / dispatch / evidence layer is complementary** to Interceptors and Plastic Fischer's per-kg verification. It is not a competitor. Pitch it as the network layer that makes hundreds of small booms accountable.
+- **(c) Never pitch "a barrier at Malad".** That is already being done.

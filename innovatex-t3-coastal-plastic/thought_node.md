@@ -10,10 +10,16 @@
 - _(none)_
 
 ## Now
-- **Phase:** 1–4 in parallel (research fan-out + walking skeleton), since 02:10 IST 4 Oct.
-- **Plan (working hypothesis, ADR 001 pending):** target source = single-use flexible plastics (carry bags, sachets/MLP, thermocol, bottles) from dense settlements and markets that enter nullahs and leak at tidal outfalls into Mahim / Malad / Mahul creeks. System = a *measured, tide-aware interception network*: (1) flood-safe, tide-aware boom/trap at nullah outfalls; (2) solar camera node counting plastic flux + boom fill; (3) forecast- and tide-aware clearance dispatch; (4) tamper-evident MRV ledger → pay contractors per verified kg, route catch to recycling/co-processing (EPR); (5) ward hotspot feedback for source reduction. Spike candidates: vision flux sensing (C5/C6), forecast+tide-aware dispatch (C9/C10), MRV anti-fraud reconciliation (C11).
-- **Doing:** child sessions — *T3 detection + flux* (C5/C6 + autoresearch), *T3 digital twin + dispatch* (C1–C4, C9–C10 + autoresearch), *T3 dashboard + MRV ledger* (C11, C12), *T3 research: Mumbai + policy*, *T3 research: tech + companies*. Lead: contracts, components.md, ADR 001, selection memo, deliverables.
-- **Next:** push contracts → components.md → per-component research → ADR 001 (six hats + adversarial) → zonal-pitch.md + prototype-plan.md → integrate child results → push by 08:30.
+- **Phase:** 3–6 in parallel (spike chosen; skeleton building; deliverables drafting). LEAN MODE until 08:30 (Supervisor).
+- **Plan:** source = floating single-use flexible packaging (carry bags, films, sachets) from market and dense-settlement catchments leaking through Mumbai's *small* nullah outfalls. The Ocean Cleanup Interceptors cover the big creek mouths (Malad, Trombay, 2026). Our system is the network layer for the long tail:
+  - pocket-fill sensing;
+  - forecast- and gate-aware dispatch (Spike 1);
+  - a ratchet pocket with a fail-open fuse retrofitted to existing booms (Spike 2, Round 2);
+  - signed evidence records so contractors are paid per verified kg.
+
+  Details: [ADR 001](architecture/adr/001-spike.md).
+- **Doing:** child sessions — *T3 detection + flux*, *T3 digital twin + dispatch*, *T3 dashboard + MRV ledger*, *T3 research: Mumbai + policy*, *T3 research: tech + companies*. Lead: zonal-pitch.md, prototype-plan.md, then integrating results.
+- **Next:** deliverables → integrate twin, detector and dashboard numbers → landscape.md check → final push by 08:15.
 - **Needs from user:** decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Nothing blocks tonight's work.
 - **Risks:** (1) model-API congestion (HTTP 408) killed 13 research sub-agents overnight → work moved to resumable child sessions with small-context rules; tool round-trips take 5–8 min. (2) No public imagery of Mumbai nullahs → detector metrics are on a public proxy dataset; domain shift (black water, hyacinth, monsoon rain) is a known gap. (3) Simulator parameters are partly ASSUMPTION → we claim *relative* policy gains under Monte Carlo, not absolute tonnage.
 
@@ -64,14 +70,18 @@
 | C14 | Source attribution | outfall flux + catchments → `WardHotspot` | ward complaints | – | planned | rank correlation (sim) |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 7 Oct, 12:00 IST (one theme is pitched at the Delhi zonal on 10 Oct). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+_First version, 4 Oct 06:20 IST. Final by 7 Oct, 12:00 IST (one theme is pitched at the Delhi zonal on 10 Oct). Scored 1–5, one line of evidence each; **[V]** = still being verified._
+- **Winnability — 3/5.** Strong, current local story. The 5,000 t/yr figure in the brief comes from The Ocean Cleanup's 2026 Mumbai survey, and the brief's "Malad or Trombay" outlets are its two pilot Interceptor sites (MCGM permits, MPCB MoU, Plastic Fischer operating) — [mumbai-context](research/mumbai-context.md). Two cautions: Delhi judges may relate more readily to AQI (T2), and a big NGO already occupies the obvious "barrier at the creek mouth" answer.
+- **Innovation headroom — 3/5.** Spike 1: forecast- and gate-aware clearance dispatch, scored on escaped kg at equal crew-hours against a fill-threshold baseline and a perfect-foresight oracle. Spike 2: a ratchet pocket with a fail-open fuse, retrofitted to existing booms at the long tail of small outfalls. One-way flap traps are prior art; our novelty is the tidal-outfall retrofit plus operations plus verified kg — [ADR 001](architecture/adr/001-spike.md).
+- **Feasibility by the deadline — 4/5.** The software skeleton runs tonight on real ERA5 rain and real tide data on the M5 Mac. The flume prototype is a tabletop build. Prototype work fits in 10 Oct – 15 Nov, before the 19–25 Nov exams.
+- **Demo strength at the finals — 4/5.** A reversible-flow flume where the tide turns and the trash stays, the fuse opens before the water rises, and a live dashboard counts it. That is visual and memorable.
+- **Fit with the user's strengths — 3/5.** Systems, ML and data pipelines are a strong fit. Hydraulics and fabrication are not, so the flume needs a teammate with hands-on skills.
+- **Biggest risk:** evidence is simulation-only until field data exists (circularity), and "why not just The Ocean Cleanup?". Mitigations:
+  - position the work as complementary — it covers the outfalls Interceptors won't reach and makes per-kg pay verifiable;
+  - report only relative gains under Monte Carlo;
+  - run a flume test before 10 Oct.
+- **One-line pitch:** "Two Interceptors will cover two of Mumbai's creeks. We make the hundreds of small nullah booms accountable. Crews clear before the storm and in the gate-closed window, a fail-open pocket keeps trash in when the tide turns, and contractors are paid only for verified kilograms."
+- **Lead's recommendation (provisional):** pitch T3 only if the twin shows a held-out gain clearly beyond noise and someone can run the 2-hour flume test before 10 Oct. Otherwise defer to the sibling with the stronger demo.
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -82,3 +92,18 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - Launched 8 research sub-agents, then 7 narrower ones; 13 died with HTTP 408 ("timed out reading request body") as contexts grew — a machine-wide API congestion problem (sibling projects' agents failed the same way). Partial notes survived in `research/` (e.g. BRIMSTOWAD outfall counts) but lack source URLs, so they must be re-verified before use.
 - Switched to 5 resumable child sessions (detection, twin + dispatch, dashboard + MRV, two research compilers) with small-context rules and a 07:45 IST results deadline.
 - Wrote contracts v0.1 for C1–C14.
+
+### 2026-10-04 05:15–06:20 IST — ADR 001, Mumbai reality check, lean mode
+- `architecture/components.md` added: dependency graph, per-component contracts, metrics and SLOs, glossary.
+- **ADR 001 accepted.**
+  - Inputs: an independent adversarial review and a first-principles review, both stored verbatim in `research/reviews/`.
+  - Spike 1: forecast- and gate-aware dispatch, hardened with archived forecasts, a P1 baseline, an oracle upper bound and Monte Carlo.
+  - Spike 2: ratchet pocket with a fail-open fuse; hardware for Round 2, a labelled sensitivity in the twin tonight.
+  - Detection and the MRV ledger stay best-practice support.
+- **Key finding from research (cited in `research/mumbai-context.md`, `research/companies.md`).**
+  - The brief's 5,000 t/yr figure is from The Ocean Cleanup's Smart Rivers Survey (10 Feb 2026).
+  - Malad and Trombay creeks are its two pilot Interceptor sites: MCGM SWD permits, MPCB MoU (30 Apr 2026), Plastic Fischer operating, 61–92 t/yr expected.
+  - Response: reposition to the long tail of small outfalls, complementary to the Interceptors.
+- Children were steered with the review findings: archived forecasts, oracle baseline, gated vs open outfalls, the FWCE metric, ledger framing, and a prior-art check for the ratchet.
+- The Supervisor declared LEAN MODE (no new agents or sessions, downloads ≤200 MB, push every 30 min). Complied: no new spawns; the detection child got the download cap.
+- Selection memo v1 written.
