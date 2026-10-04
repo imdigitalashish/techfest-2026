@@ -10,12 +10,20 @@
 - _(none)_
 
 ## Now
-- **Phase:** 0 done → 1 (SOTA research) running in parallel with 4 (data + walking skeleton).
-- **Plan:** research fan-out (R1–R7) → landscape.md → component map + contracts → per-component innovation scan → ADR 001 spike (six hats + adversarial antithesis + first principles) → skeleton + frozen eval with real baselines on StockNet → first ratchet loop → abstract + architecture → selection memo → message Supervisor.
-- **Doing:** research agents R1 conformal-TS, R2 robust-CP prior art (retry), R3 fusion (retry), R4 manipulation, R5 companies (retry), R6 datasets, R7 social signal; lead: env + StockNet profiling.
-- **Next:** landscape.md · components.md + contracts · skeleton baselines · ADR 001 · abstract.
-- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section.
-- **Risks:** network is slow tonight (3 research agents died on 408 timeouts; pip timeouts) · FNSPID news is 5.7 GB + 23 GB (stream-filter, never store whole) · text→direction signal is weak in the literature, so the pitch must not rest on beating price-only accuracy.
+- **Phase:** morning package delivered (Phases 0–5 v0). Next: re-verify research gaps, FinBERT scorer, edit-budget certificate, FNSPID subset.
+- **Plan:** (1) 4–12 Oct: fill research gaps (social signal, SEBI/SEC, detectors, Kupiec/Christoffersen primaries) + independent rubber-duck review of ADR 001 + final selection memo by 12 Oct; (2) FinBERT/finbert-tone scorers behind the C3 contract; (3) edit-budget (replace ≤k docs) certificate; (4) FNSPID stream-filtered news subset 2018–2023 as the finals test; (5) ratchet loops on CR-ACI width.
+- **Doing:** first ratchet batch (3 hypotheses) on the frozen spike evaluator. No sub-agents (Supervisor lean mode).
+- **Next:** log ratchet results → rubber-duck review of ADR 001 when agents are allowed again → research gap pass → FinBERT weights (~440 MB) once downloads are allowed.
+- **Needs from user:** Register by 15 Oct (after the 12 Oct selection). Teammates' names and skills for the team-fit section (the abstract has TBD roles). Optional: a Kaggle API token (`~/.kaggle/kaggle.json`) if we want the organisers' "Kaggle news + price" set as an extra baseline.
+- **Risks:** text adds ~no point accuracy (measured: pinball 0.3518 fusion vs 0.3513 price-only) → pitch rests on trust/coverage, not alpha · threat model is injection-only (edits next) · split methods under-cover in the 2015–16 test regime (measured) · pooled Kupiec/Christoffersen p-values are optimistic · ADR 001 antithesis is lead-written (independent review pending) · research notes are partial (agents died on 408s; gaps listed in landscape §7).
+
+## Key results (committed; reproduce: `bash eval/fetch_data.sh && PYTHONPATH=. .venv/bin/python eval/prepare.py && PYTHONPATH=. .venv/bin/python eval/run_baselines.py`)
+StockNet, 87 tickers, 119,641 tweets, look-ahead leaks 0; test 2015-07-01→2016-03-31 (16,443 ticker-days); α = 0.1. Full table: [`eval/results/baseline_v0.md`](eval/results/baseline_v0.md).
+- Fusion + split CP (MAPIE): coverage 81.3%, high-vol tercile 76.5%, Kupiec p < 0.001 → "present but not meaningful".
+- Fusion + CQR (MAPIE): 86.3%, width 4.71 pp; + ACI: 89.4%, width 5.22 pp.
+- Oracle injection attack, k = 3: plain CQR 86.3% → 84.4%; **certified CQR 88.0%** (width +4.5%). Pump attack: CQR 85.5% vs certified 88.8%.
+- **CR-ACI (spike): 89.5% clean / 89.7% under pump, width 5.23 pp (+0.3% vs plain ACI).**
+- Soundness: degenerate-box error 0; clean features inside the attacked box on 100% of rows; own CQR = MAPIE symmetric CQR exactly.
 
 ## Phase 0 — what the judges must be able to see (lead, 4 Oct 03:00 IST)
 **The crux in our words.** Three things interact: (1) the text signal is weak and noisy, and probably says more about *how much* a price will move than *which way*; (2) daily returns are not exchangeable (volatility clustering, regime shifts), so a split-conformal interval is valid only on average and can under-cover exactly when it matters; (3) an adversary who injects or edits text moves the input at test time, which no standard conformal guarantee covers — the interval can be narrow, shifted and confidently wrong. "Meaningful" therefore has to be operationalised, not asserted.
@@ -62,22 +70,53 @@
 - What companies ship: alternative-data and news-signal products from data vendors and quant funds (public material).
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — Skeleton dataset = StockNet (tweets + user metadata + prices; MIT; the benchmark attacked by Xie et al. 2022). FNSPID news for the finals (stream-filtered). Kaggle set not used (no credentials).
+- 2026-10-04 — Target = next-day close-to-close log return (%); information cut-off 16:00 America/New_York; strictly time-ordered train 2014 / cal H1-2015 / test Jul-2015→Mar-2016.
+- 2026-10-04 — Text scorer tonight = VADER + finance lexicon (FinBERT weights >200 MB, deferred under lean mode); scorers must not be able to recall outcomes (look-ahead bias, arXiv:2512.23847).
+- 2026-10-04 — **Spike = CR-ACI** (certified manipulation-robust conformal + ACI); secondary track = text-driven width / regime-conditional conformal. [ADR 001](architecture/adr/001-spike.md).
+- 2026-10-04 — Fusion model = LightGBM quantile regression (tree ensembles make the certificate exact and cheap).
 
 ## Components
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| C1 | ingest | files → DOCS, BARS | StockNet loaders | | ✅ running | rows parsed, contract pass |
+| C2 | align | DOCS → ALIGNED_DOCS | 16:00 ET cut-off | | ✅ 0 leaks | look-ahead leaks (=0) |
+| C3 | text_scorer | → SCORED_DOCS | VADER+lexicon; FinBERT wrapper | | ✅ VADER / ⏳ FinBERT | macro-F1 on labelled tweets; IC |
+| C4 | trust_scorer | → TRUSTED_DOCS | heuristic | | ✅ | AUROC injected vs real |
+| C5 | aggregator | → TEXT_FEATURES | trimmed mean etc. | | ✅ | worst-case shift under k |
+| C6 | ts_features | BARS → TS_FEATURES | lags, RV, Parkinson | | ✅ | pinball (price-only) |
+| C7 | fusion | → PREDICTIONS | LightGBM quantiles | | ✅ | mean pinball, IC |
+| C8 | conformal | → INTERVALS | MAPIE split/CQR + ACI | | ✅ | \|cov−0.9\|, width |
+| C9 | attack | DOCS → DOCS | pump, oracle (k) | | ✅ | coverage drop, median shift |
+| C10 | robust_conformal | → INTERVALS | deletion box + tree propagation + ACI | **spike** | ✅ v0 + ratchet | width at certified coverage |
+| C11 | eval (frozen) | INTERVALS → metrics | coverage, width, Winkler, Kupiec, Christoffersen | | ✅ | — |
+| C12 | decision / demo | INTERVALS → UI | — | | ⏳ | hit rate of "interval excludes 0" |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 12 Oct (a team can submit only one of the 10 Perceptron problems; the Supervisor ranks all 10 from these memos). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+_v1, 4 Oct 07:50 IST (final by 12 Oct). Scores 1–5 with evidence._
+- **Winnability: 4** — the crux (weak text + non-exchangeable returns + test-time manipulation) is precisely identified and already measured on real data; most teams will ship FinBERT + MAPIE split CP, which our own run shows under-covers (81.3%; 76.5% in high volatility). Same theme as P9, so compare those two memos directly.
+- **Innovation headroom: 4** — CR-ACI certifies coverage against a budget of k injected documents (oracle attack k = 3: plain CQR 84.4% vs certified 88.0%; CR-ACI 89.5–89.7% at +0.3% width). Prior-art searches found robust conformal only for ℓp/smoothing noise on single inputs (closest: Zargarbashi et al. ICML 2024; VRCP NeurIPS 2024); independent novelty review still pending.
+- **Feasibility: 5** — the full pipeline already runs end-to-end on the M5 (data prep 35 s; full evaluation incl. oracle attack 10–31 min); data on disk; MAPIE/LightGBM only. Exam window needs only automated runs.
+- **Demo strength: 4** — live band per stock-day with an attack toggle and a k slider, plus "which posts could flip this forecast". Point forecasts are unimpressive (text adds ~no accuracy), so the demo must sell trust, not alpha.
+- **Fit with the user's strengths: 4** — systems + frontier models map to LLM/FinBERT scorers with look-ahead tests, streaming FNSPID, verification-style bounds; needs less quant-microstructure depth than P4–P6.
+- **Biggest risk:** judges may ask "why fuse text at all?" — measured fusion ≈ price-only on accuracy. Answer: the price-of-robustness curve shows what text costs and buys; finals data (FNSPID news) and FinBERT may raise its value. Second risk: injection-only threat model (edit budget planned).
+- **One-line pitch:** a news-plus-price signal whose 90% band stays 90% when someone floods the feed with fake posts — and that tells you how many fake posts it can survive.
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
 Folder, brief and journal created. The lead session starts Phase 0.
+
+### 2026-10-04 02:05 IST — Phase 0 + research fan-out
+Read PLAYBOOK, brief, official statement. Wrote the crux, the operational definition of "meaningful" and the evidence map (above). Launched 7 research agents (R1 conformal-TS, R2 robust CP, R3 fusion, R4 manipulation, R5 companies, R6 datasets, R7 social). Verified data access: StockNet (MIT, 68 MB repo, 664 MB on disk) cloned; FNSPID sizes read from the HF API (5.7 + 23 GB news). Disk has ~69 GB free, RAM 24 GB.
+
+### 2026-10-04 02:57–05:04 IST — Network failures
+Most agents died with "408 Timed out reading request body" and no output; relaunched R1/R2/R3/R4/R5/R6 with crash-safe incremental writing. Partial notes R1–R6 saved to `research/notes/` and committed; R7 (social signal) produced nothing.
+
+### 2026-10-04 05:49 IST — Supervisor lean mode (Inbox via message)
+Acted: no new sub-agents, small outputs, no >200 MB downloads. Stopped the FinBERT weights download (~440 MB) and switched C3 to VADER + finance lexicon. No reply needed.
+
+### 2026-10-04 06:20–07:36 IST — Walking skeleton + eval, real numbers
+Built contracts + 10 components + frozen metrics. Panel: 87 tickers, 119,641 tweets, 0 look-ahead leaks, 48,711 ticker-days. First run found one box-soundness violation of 7.5e-9 (float round-off in prefix-sum std) → widened boxes by 1e-6; rerun: 100% inside. Results in Key results above; `eval/results/baseline_v0.{json,md}`. Learned: split CP is not meaningful in the 2015–16 regime; ACI is needed; text adds ~no accuracy; the certificate costs +4.5% width alone, +0.3% when combined with ACI.
+
+### 2026-10-04 07:10–07:50 IST — Morning package
+Lead re-verified the top citations (arXiv API: 2406.16964, 2506.16553, 2601.13082 incl. "17.7 percentage points", 2512.23847, 2602.03168; AdvFinTweet README "$3200 (32%)"). Wrote `research/landscape.md`, `architecture/components.md`, `architecture/adr/001-spike.md`, `deliverables/round1-abstract.md` (831 prose words + milestone table), `deliverables/architecture.md`, ratchet scaffold (`components/robust_conformal/autoresearch/`, baseline SCORE 4.45448), selection memo v1. Supervisor 07:22 alignment message: agreed (no reply needed); no number depends on models.github.ai.
