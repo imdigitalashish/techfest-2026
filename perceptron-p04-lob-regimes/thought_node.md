@@ -229,4 +229,9 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - **No dial stop beats the regime gate.** That covers 16 naive α levels from 1e-1 to 1e-300, 3 calibrated quantiles, and off. Δ vs gate ranges from +0.0083 (quietest/off) to +0.0413, better on 0/22 days at every stop.
   - The naive test saturates at 48 alarms/day down to α≈1e-15. It goes quiet below about 1e-150, where it equals the un-adapted EWMA head.
   - **Null rejection** on the 2023 training days (each day against the other eleven; 34,080 windows): 99.4% at α=1e-3, 33.1% at 1e-30, 0.14% at 1e-100. Median Bonferroni p is 10^-22.9, and the D=1 share is 0%.
+- 22:07 **Demo core done** (builder, `dbc0c68`): `demo/run.sh` (first visual 1 s once data is present; cold replay build ~200 s), `demo/smoke.sh` (81 checks, exit 0; also from a clean clone with symlinked data), `SCRIPT.md`, 11 fallback PNGs (10-min candles), `README.md`.
+  - Smoke asserts that the live replay equals committed per-day values (|Δ|<1e-9) for 3 held-out days × 5 policies, and that the sweep anchors are exact.
+  - Lead viewed the fallback screens: replay with ✓ live=committed; dial at 1e-30; fee knob ending on "not tradable as a taker after fees". All labelled.
+  - Spawned the **gpt-6-astra demo review** on `dbc0c68`.
+  - Approved builder Act 2 (SEMI-SYNTHETIC splice), time-boxed to ~45 min, as a separate section 5 with sections 1–4 untouched and smoke still passing.
 
