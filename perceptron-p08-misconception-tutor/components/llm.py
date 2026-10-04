@@ -6,7 +6,9 @@ Backends (chosen by environment):
   (resource from AZURE_OPENAI_RESOURCE, AZURE_OPENAI_RG) and kept in memory only.
 - GitHub Models (fallback): GITHUB_TOKEN or `gh auth token`. NOTE 2026-10-04: models.github.ai returned
   HTTP 200 text/plain "OK" instead of completions from this machine, so it is not used for results.
-Cache: .cache/llm/<sha256>.json (gitignored) so reruns are free and reproducible.
+Reasoning models (gpt-5*, o*) use max_completion_tokens + reasoning_effort and api-version 2025-04-01-preview;
+non-reasoning request bodies are unchanged, so earlier cache entries stay valid.
+Cache: .cache/llm/<sha256>.json (gitignored): content, usage, finish_reason.
 """
 from __future__ import annotations
 
@@ -16,11 +18,14 @@ import os
 import pathlib
 import subprocess
 import time
+from datetime import datetime, timezone
 
 import requests
 
 GITHUB_ENDPOINT = "https://models.github.ai/inference/chat/completions"
 AZURE_API_VERSION = "2024-10-21"
+AZURE_API_VERSION_REASONING = "2025-04-01-preview"
+REASONING_PREFIXES = ("gpt-5", "o1", "o3", "o4")
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".cache" / "llm"
 _SECRETS: dict[str, str] = {}
@@ -32,6 +37,10 @@ class RateLimited(RuntimeError):
 
 def backend() -> str:
     return "azure" if os.environ.get("AZURE_OPENAI_ENDPOINT") else "github"
+
+
+def is_reasoning(model: str) -> bool:
+    return model.split("/", 1)[-1].startswith(REASONING_PREFIXES)
 
 
 def _azure_key() -> str:
@@ -55,25 +64,40 @@ def _github_token() -> str:
 
 
 def _request(body: dict, model: str) -> requests.Response:
+    timeout = 600 if is_reasoning(model) else 90
     if backend() == "azure":
         ep = os.environ["AZURE_OPENAI_ENDPOINT"].rstrip("/")
         dep = model.split("/", 1)[-1]
-        url = f"{ep}/openai/deployments/{dep}/chat/completions?api-version={AZURE_API_VERSION}"
+        ver = AZURE_API_VERSION_REASONING if is_reasoning(model) else AZURE_API_VERSION
+        url = f"{ep}/openai/deployments/{dep}/chat/completions?api-version={ver}"
         b = {k: v for k, v in body.items() if k != "model"}
-        return requests.post(url, json=b, timeout=90, headers={"api-key": _azure_key(), "Content-Type": "application/json"})
-    return requests.post(GITHUB_ENDPOINT, json=body, timeout=90,
+        return requests.post(url, json=b, timeout=timeout, headers={"api-key": _azure_key(), "Content-Type": "application/json"})
+    return requests.post(GITHUB_ENDPOINT, json=body, timeout=timeout,
                          headers={"Authorization": f"Bearer {_github_token()}", "Content-Type": "application/json"})
 
 
-def chat(messages: list[dict], model: str = "openai/gpt-4.1-mini", temperature: float = 0.0,
-         max_tokens: int = 400, json_mode: bool = False, seed: int = 0, max_wait_s: float = 120.0) -> str:
-    body = {"model": model, "messages": messages, "temperature": temperature, "max_tokens": max_tokens, "seed": seed}
+def _body(messages, model, temperature, max_tokens, json_mode, seed, reasoning_effort) -> dict:
+    if is_reasoning(model):
+        body = {"model": model, "messages": messages, "max_completion_tokens": max_tokens}
+        if reasoning_effort:
+            body["reasoning_effort"] = reasoning_effort
+    else:
+        body = {"model": model, "messages": messages, "temperature": temperature, "max_tokens": max_tokens, "seed": seed}
     if json_mode:
         body["response_format"] = {"type": "json_object"}
+    return body
+
+
+def chat_full(messages: list[dict], model: str = "openai/gpt-4.1-mini", temperature: float = 0.0,
+              max_tokens: int = 400, json_mode: bool = False, seed: int = 0, reasoning_effort: str | None = None,
+              max_wait_s: float = 120.0) -> dict:
+    """Returns {"content", "usage", "finish_reason", "cached"}; raises RateLimited / requests.HTTPError."""
+    body = _body(messages, model, temperature, max_tokens, json_mode, seed, reasoning_effort)
     key = hashlib.sha256(json.dumps({"backend": backend(), **body}, sort_keys=True).encode()).hexdigest()
     path = CACHE / f"{key}.json"
     if path.exists():
-        return json.loads(path.read_text())["content"]
+        d = json.loads(path.read_text())
+        return {"content": d["content"], "usage": d.get("usage"), "finish_reason": d.get("finish_reason"), "cached": True}
     waited = 0.0
     for attempt in range(8):
         r = _request(body, model)
@@ -86,7 +110,9 @@ def chat(messages: list[dict], model: str = "openai/gpt-4.1-mini", temperature: 
             continue
         r.raise_for_status()
         try:
-            content = r.json()["choices"][0]["message"]["content"]
+            j = r.json()
+            choice = j["choices"][0]
+            content = choice["message"]["content"]
         except (ValueError, KeyError, IndexError, TypeError):
             delay = 2 ** attempt * 2
             if waited + delay > 4 * max_wait_s:
@@ -95,7 +121,16 @@ def chat(messages: list[dict], model: str = "openai/gpt-4.1-mini", temperature: 
             waited += delay
             continue
         content = content or ""
+        usage = {k: v for k, v in (j.get("usage") or {}).items() if k != "latency_checkpoint"}
+        rec = {"backend": backend(), "model": model, "content": content, "usage": usage,
+               "finish_reason": choice.get("finish_reason"), "ts": datetime.now(timezone.utc).isoformat()}
         CACHE.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps({"backend": backend(), "model": model, "content": content}))
-        return content
+        path.write_text(json.dumps(rec))
+        return {"content": content, "usage": usage, "finish_reason": rec["finish_reason"], "cached": False}
     raise RateLimited("exhausted retries")
+
+
+def chat(messages: list[dict], model: str = "openai/gpt-4.1-mini", temperature: float = 0.0,
+         max_tokens: int = 400, json_mode: bool = False, seed: int = 0, max_wait_s: float = 120.0) -> str:
+    return chat_full(messages, model=model, temperature=temperature, max_tokens=max_tokens, json_mode=json_mode,
+                     seed=seed, max_wait_s=max_wait_s)["content"]
