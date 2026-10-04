@@ -355,3 +355,11 @@ Folder, brief and journal created. The lead session starts Phase 0.
   - headless smoke ≤ 3 min;
   - matplotlib PNG and in-page RECORDED fallback;
   - one validation batch at a time.
+
+### 2026-10-04 20:47 IST — Lead: live-config validation passed (pre-registered)
+- `demo/validation/RESULTS.md` (commit 1833303; code 5d655ba, code_sha cc9d632a1a27, clean): seeds 0–4, none picked; each run is a fresh process of the demo's live engine (Flower LocalGrid, CPU, nice 10); the tablet is unplugged in rounds 2–6.
+- **All three pre-registered checks pass in all 5 seeds**, and every round-1 rerun is bit-identical:
+  - **P1:** AnchorLoRA's manpages stays below untuned at every live evaluation (max −0.0067 to −0.0107).
+  - **P2:** at round 6 the starter's manpages is above untuned (+0.076 to +0.140) and above AnchorLoRA's (−0.026 to −0.040).
+  - **P3:** the unplug's own effect at round 6 is larger for the starter (+0.009 to +0.029 vs −0.002 to +0.008).
+- **Honest read, agreed with the builder:** most of the round-6 gap is the starter's domination, visible in the no-unplug ghost. The unplug's own effect is small but points the same way in all 5 seeds. The talk track must say exactly that.
