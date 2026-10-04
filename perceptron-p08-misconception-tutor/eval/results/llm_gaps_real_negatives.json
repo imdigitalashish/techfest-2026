@@ -1,0 +1,332 @@
+{
+ "counts": {
+  "P": 131,
+  "N": 152,
+  "S_related": 21,
+  "P_evaluable": 29
+ },
+ "methods": {
+  "EXEC": {
+   "acc_P": 0.1908,
+   "acc_P_ci": [
+    0.1296,
+    0.2595
+   ],
+   "claim_rate_P": 0.1908,
+   "fcr_N": 0.0,
+   "fcr_N_ci": [
+    0.0,
+    0.0
+   ],
+   "ba": 0.5954,
+   "claim_precision_PN": 1.0,
+   "macro_f1_PN": 0.3869,
+   "acc_P_evaluable": 0.8621,
+   "claim_precision_evaluable": 1.0,
+   "fcr_S_related": 0.0476,
+   "related_code_rate_S": 0.0476
+  },
+  "LLM:gpt-4.1-mini": {
+   "acc_P": 0.5573,
+   "acc_P_ci": [
+    0.4733,
+    0.6412
+   ],
+   "claim_rate_P": 0.6183,
+   "fcr_N": 0.1579,
+   "fcr_N_ci": [
+    0.1051,
+    0.2171
+   ],
+   "ba": 0.6997,
+   "claim_precision_PN": 0.6952,
+   "macro_f1_PN": 0.6385,
+   "acc_P_evaluable": 0.8276,
+   "claim_precision_evaluable": 0.48,
+   "fcr_S_related": 0.5714,
+   "related_code_rate_S": 0.5714
+  },
+  "GATED:gpt-4.1-mini": {
+   "acc_P": 0.5649,
+   "acc_P_ci": [
+    0.4809,
+    0.6489
+   ],
+   "claim_rate_P": 0.6107,
+   "fcr_N": 0.0,
+   "fcr_N_ci": [
+    0.0,
+    0.0
+   ],
+   "ba": 0.7824,
+   "claim_precision_PN": 0.925,
+   "macro_f1_PN": 0.7273,
+   "acc_P_evaluable": 0.8621,
+   "claim_precision_evaluable": 1.0,
+   "fcr_S_related": 0.0476,
+   "related_code_rate_S": 0.0476
+  },
+  "HYB:gpt-4.1-mini": {
+   "acc_P": 0.5878,
+   "acc_P_ci": [
+    0.5038,
+    0.6718
+   ],
+   "claim_rate_P": 0.6412,
+   "fcr_N": 0.1579,
+   "fcr_N_ci": [
+    0.1051,
+    0.2171
+   ],
+   "ba": 0.7149,
+   "claim_precision_PN": 0.713,
+   "macro_f1_PN": 0.6604,
+   "acc_P_evaluable": 0.9655,
+   "claim_precision_evaluable": 0.5283,
+   "fcr_S_related": 0.5714,
+   "related_code_rate_S": 0.5714
+  },
+  "LLM:gpt-5.4-mini": {
+   "acc_P": 0.6947,
+   "acc_P_ci": [
+    0.6181,
+    0.771
+   ],
+   "claim_rate_P": 0.6947,
+   "fcr_N": 0.0,
+   "fcr_N_ci": [
+    0.0,
+    0.0
+   ],
+   "ba": 0.8473,
+   "claim_precision_PN": 1.0,
+   "macro_f1_PN": 0.8395,
+   "acc_P_evaluable": 0.8966,
+   "claim_precision_evaluable": 1.0,
+   "fcr_S_related": 0.1429,
+   "related_code_rate_S": 0.1429
+  },
+  "GATED:gpt-5.4-mini": {
+   "acc_P": 0.687,
+   "acc_P_ci": [
+    0.6031,
+    0.7634
+   ],
+   "claim_rate_P": 0.687,
+   "fcr_N": 0.0,
+   "fcr_N_ci": [
+    0.0,
+    0.0
+   ],
+   "ba": 0.8435,
+   "claim_precision_PN": 1.0,
+   "macro_f1_PN": 0.8329,
+   "acc_P_evaluable": 0.8621,
+   "claim_precision_evaluable": 1.0,
+   "fcr_S_related": 0.0476,
+   "related_code_rate_S": 0.0476
+  },
+  "HYB:gpt-5.4-mini": {
+   "acc_P": 0.7023,
+   "acc_P_ci": [
+    0.6183,
+    0.7786
+   ],
+   "claim_rate_P": 0.7023,
+   "fcr_N": 0.0,
+   "fcr_N_ci": [
+    0.0,
+    0.0
+   ],
+   "ba": 0.8511,
+   "claim_precision_PN": 1.0,
+   "macro_f1_PN": 0.8456,
+   "acc_P_evaluable": 0.931,
+   "claim_precision_evaluable": 1.0,
+   "fcr_S_related": 0.1429,
+   "related_code_rate_S": 0.1429
+  },
+  "LLM:gpt-5.5": {
+   "acc_P": 0.7939,
+   "acc_P_ci": [
+    0.7176,
+    0.8626
+   ],
+   "claim_rate_P": 0.7939,
+   "fcr_N": 0.0,
+   "fcr_N_ci": [
+    0.0,
+    0.0
+   ],
+   "ba": 0.8969,
+   "claim_precision_PN": 1.0,
+   "macro_f1_PN": 0.9035,
+   "acc_P_evaluable": 0.931,
+   "claim_precision_evaluable": 1.0,
+   "fcr_S_related": 0.0952,
+   "related_code_rate_S": 0.0952
+  },
+  "GATED:gpt-5.5": {
+   "acc_P": 0.7786,
+   "acc_P_ci": [
+    0.7023,
+    0.8473
+   ],
+   "claim_rate_P": 0.7786,
+   "fcr_N": 0.0,
+   "fcr_N_ci": [
+    0.0,
+    0.0
+   ],
+   "ba": 0.8893,
+   "claim_precision_PN": 1.0,
+   "macro_f1_PN": 0.8907,
+   "acc_P_evaluable": 0.8621,
+   "claim_precision_evaluable": 1.0,
+   "fcr_S_related": 0.0476,
+   "related_code_rate_S": 0.0476
+  },
+  "HYB:gpt-5.5": {
+   "acc_P": 0.7939,
+   "acc_P_ci": [
+    0.7176,
+    0.8626
+   ],
+   "claim_rate_P": 0.7939,
+   "fcr_N": 0.0,
+   "fcr_N_ci": [
+    0.0,
+    0.0
+   ],
+   "ba": 0.8969,
+   "claim_precision_PN": 1.0,
+   "macro_f1_PN": 0.9035,
+   "acc_P_evaluable": 0.931,
+   "claim_precision_evaluable": 1.0,
+   "fcr_S_related": 0.0952,
+   "related_code_rate_S": 0.0952
+  }
+ },
+ "usage": {
+  "gpt-4.1-mini": {
+   "calls": 304,
+   "errors": 0,
+   "prompt_tokens": 99816,
+   "completion_tokens": 1969,
+   "reasoning_tokens": 0,
+   "cost_usd_estimate": 0.0431
+  },
+  "gpt-5.4-mini": {
+   "calls": 304,
+   "errors": 0,
+   "prompt_tokens": 99512,
+   "completion_tokens": 71311,
+   "reasoning_tokens": 65794,
+   "cost_usd_estimate": 0.3955
+  },
+  "gpt-5.5": {
+   "calls": 304,
+   "errors": 0,
+   "prompt_tokens": 99512,
+   "completion_tokens": 49304,
+   "reasoning_tokens": 43930,
+   "cost_usd_estimate": 1.9767
+  }
+ },
+ "invalid": {
+  "gpt-4.1-mini": 0,
+  "gpt-5.4-mini": 0,
+  "gpt-5.5": 0
+ },
+ "decisions": {
+  "gpt-4.1-mini": {
+   "H1_fcr_llm_minus_exec": 0.1579,
+   "H1_ci": [
+    0.0987,
+    0.2171
+   ],
+   "H1_gap": true,
+   "H2_ba_gated_minus_llm": 0.0828,
+   "H2_ci": [
+    0.0488,
+    0.1188
+   ],
+   "H2_hybrid_adds_value": true,
+   "secondary_ba_hyb_minus_llm": 0.0153,
+   "secondary_ci": [
+    0.0038,
+    0.0305
+   ]
+  },
+  "gpt-5.4-mini": {
+   "H1_fcr_llm_minus_exec": 0.0,
+   "H1_ci": [
+    0.0,
+    0.0
+   ],
+   "H1_gap": false,
+   "H2_ba_gated_minus_llm": -0.0038,
+   "H2_ci": [
+    -0.0191,
+    0.0076
+   ],
+   "H2_hybrid_adds_value": false,
+   "secondary_ba_hyb_minus_llm": 0.0038,
+   "secondary_ci": [
+    0.0,
+    0.0115
+   ]
+  },
+  "gpt-5.5": {
+   "H1_fcr_llm_minus_exec": 0.0,
+   "H1_ci": [
+    0.0,
+    0.0
+   ],
+   "H1_gap": false,
+   "H2_ba_gated_minus_llm": -0.0076,
+   "H2_ci": [
+    -0.0191,
+    0.0
+   ],
+   "H2_hybrid_adds_value": false,
+   "secondary_ba_hyb_minus_llm": 0.0,
+   "secondary_ci": [
+    0.0,
+    0.0
+   ]
+  }
+ },
+ "part": "real_negatives",
+ "protocol": "eval/llm_gap_protocol.md",
+ "price_source": "Azure Retail Prices API, serviceName 'Foundry Models', swedencentral, Global meters (gpt 4.1 mini Inp/Outp glbl; 5.4 mini Inp/Opt Gl; 5.5 ShortCo inp/opt Gl), accessed 2026-10-04. Reasoning tokens are assumed to be billed as output tokens (assumption).",
+ "gpt55_subset": "all",
+ "models": {
+  "gpt-4.1-mini": {
+   "effort": null,
+   "max_tokens": 300,
+   "price": [
+    0.4,
+    1.6
+   ]
+  },
+  "gpt-5.4-mini": {
+   "effort": "medium",
+   "max_tokens": 8000,
+   "price": [
+    0.75,
+    4.5
+   ]
+  },
+  "gpt-5.5": {
+   "effort": "high",
+   "max_tokens": 16000,
+   "price": [
+    5.0,
+    30.0
+   ]
+  }
+ },
+ "command": "python -m eval.run_llm_gaps --part real_negatives --models gpt-4.1-mini,gpt-5.4-mini,gpt-5.5",
+ "total_cost_usd_estimate": 2.4153
+}
