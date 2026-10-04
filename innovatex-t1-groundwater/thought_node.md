@@ -10,31 +10,30 @@
 - _(none)_
 
 ## Now
-- **Phase:** 1 — SOTA research (fan-out running) · Phase 2 contracts started in parallel. Phase 0 done (see *Phase 0 — what we must show*).
-- **Plan:** research fan-out → component map + typed contracts → per-component innovation scan + six hats + adversarial review + first principles → ADR 001 spike → walking skeleton (real India-WRIS/CGWB Delhi data + labelled simulated sensors) + eval harness → first auto-research loop → zonal pitch + prototype plan → selection memo v1. Morning package 08:30 IST.
-- **Doing (agents):** r1a Delhi hydrogeology · r1b1 CGWA rules & market · r1b2 Delhi rules/RWH/NGT/tariffs · r2 companies & deployments · r3 hardware/power/connectivity/prices · r4 analytics SOTA · r5 real-data access (India-WRIS, weather, USGS high-frequency, iAWE) · r6 social signal & competitions · FP first-principles detectability physics. Lead: contracts + skeleton.
-- **Next:** landscape.md synthesis → components.md → builders (sim, hydro-twin, detector, dashboard) → ADR 001 → deliverables.
-- **Needs from user:** Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct. Hardware purchases for the prototype come later (BOM in `deliverables/prototype-plan.md`).
-- **Risks:** (1) research agents slow / transient model failures (two relaunched) → incremental writing, smaller scopes; (2) real high-frequency Delhi data may not be public → USGS high-frequency wells for real-signal validation + clearly labelled simulation; (3) physics may limit hidden-pump detection to large pumps/confined aquifers → FP agent quantifying before we commit the spike.
-
-## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
-- **Competition:** InnovateX: The Future Habitats Challenge — Techfest IIT Bombay. Prize pool ₹80,000; top 3 teams per theme.
-- **Official statement:** [`_briefs/innovatex.pdf`](../_briefs/innovatex.pdf) (text: [`_briefs/innovatex.txt`](../_briefs/innovatex.txt)).
-- **Round 1 — in-person pitch at a city zonal (no online submission):** 10 minutes covering team info, the precise problem within the theme, background and why existing solutions fall short, the proposed solution and technology, impact and scalability. Top 5 teams per zonal advance. **Delhi zonal: 10 Oct at South Asian University** (registration open until the zonal date). Other zonals listed on techfest.org: Chennai 10 Oct, Gandhinagar 11 Oct, Hyderabad 11 Oct, Patna 18 Oct, Jaipur TBD.
-- **Round 2:** detailed final report + **working prototype** submitted on the website by **1 Dec** (solution description, prototype evidence, cost & market viability, implementation plan, scalability plan, impact assessment); finals **15–18 Dec** at IIT Bombay. (The web page lists a 15 Nov shortlist announcement while the PDF says Round 1 results come on the zonal day — treat as unconfirmed.)
-- **Judging:** creativity & novelty · functionality & usability (robust under real conditions) · cost & market value · technical implementation & feasibility (power, calibration, maintenance, weather) · regional scalability · environmental & socioeconomic impact · design & ergonomics · **bonus** for a deep, locally grounded understanding of the theme.
-- **Rules:** students, team ≤4 (cross-institute encouraged); **one theme per team**; original work.
-- **Gate — selection memo by 7 Oct, 12:00 IST:** the team pitches ONE theme at the Delhi zonal; the Supervisor picks from the three memos. The chosen lead then delivers the full pitch deck + speaker notes + Q&A prep by 9 Oct.
-- **Round-1 deliverable for the morning package:** `deliverables/zonal-pitch.md` (10-min deck outline + speaker notes + likely judge questions) + `deliverables/prototype-plan.md` (architecture, bill of materials with costs, build steps, and what can be simulated now).
-
-**Theme 1 — Underground Water Management.** Challenge question (verbatim): "How can IoT technologies be designed and deployed to effectively monitor, protect, and manage underground water resources in an urban city? Propose an innovative IoT-based solution that addresses a specific groundwater-related challenge such as water level monitoring, contamination detection, illegal extraction prevention, pipeline leakage detection, or aquifer recharge analysis. Your solution should detail the problem, proposed technology, impact, and feasibility within a framework."
-- **Objectives:** a specific groundwater problem (levels, quality, usage or distribution) · a comprehensive IoT solution (sensors, communications, analytics) · technical feasibility (sensor operation, data collection, network requirements, real-time monitoring) · operational challenges (underground connectivity, sensor durability, power, maintenance, data reliability) · economic analysis and a sustainable model for city-scale adoption · environmental and social impact.
-
-**Starting leads** (the Supervisor's pointers — verify each one at the primary source; go well beyond them, newest work first):
-- Data: CGWB groundwater-level monitoring and India-WRIS; CGWA's extraction-permit (NOC) regime; Atal Bhujal Yojana; CGWB assessments for Delhi.
-- Hardware: piezometers / pressure transducers, EC/TDS/nitrate/fluoride sensing, LoRaWAN or NB-IoT for underground links, low-power design.
-- Analytics: leak detection from acoustic or pressure transients, anomaly detection for illegal extraction, aquifer models (MODFLOW via FloPy).
-- What companies ship: smart-water and groundwater-monitoring startups and utility deployments — check recent launches.
+- **Phase:** 4 — walking skeleton. The real-data part is done; the recharge simulator and verifier are next. Phases 0–3 were done in lean mode (Supervisor directive 05:49: no new sub-agents).
+- **Plan:** the hero is **JalSakshi RechargeMeter**: measured, not self-declared, recharge from Delhi's rainwater-harvesting (RWH) pits. Spikes: C5 recharge-verifier + C4 ingest-qc ([ADR 001](architecture/adr/001-spike.md)). A city twin on real India-WRIS DWLR data is the outcome layer.
+- **Doing:** lead only.
+  - Still running from before lean mode: r3 hardware/prices (no output yet).
+  - Died without output: r1a, r2, r4, r6/r6a/r6b, r1b1.
+  - The first-principles physics agent never reported.
+- **Next (ordered):**
+  1. C0 simulator on real ERA5 rain, C5 baseline and a frozen evaluator, to get real numbers.
+  2. C4 QC module on real DWLR data, with fault-injection F1.
+  3. Autoresearch loop on C5's MdAPE.
+  4. Static dashboard.
+  5. Close the landscape gaps: CGWB 2024/25 Delhi assessment PDF, NAQUIM Sy/T, DJB tariffs, BOM prices.
+  6. Rehearse Q&A against a hostile judge.
+- **Needs from user:**
+  - (a) Decide whether to pitch at the Delhi zonal (10 Oct, South Asian University) and register by 9 Oct.
+  - (b) Team name, Team ID and members for slide 1.
+  - (c) A pilot site: an RWA or campus with a recharge pit for November trials (IIT Delhi campus?).
+  - (d) Later: approve the prototype purchase, about ₹6k per node (BOM prices still to be confirmed).
+- **Risks:**
+  1. No real pit data until the rig is built. Tonight's pit numbers will be simulated and labelled as such.
+  2. BOM prices are unverified; vendor pages blocked us.
+  3. Few storms in Delhi in Oct–Nov, so the rig and fill tests carry the evidence.
+  4. Owner incentive: the device can cost an owner their rebate. We pilot where incentives align.
+  5. Research gaps are listed in `research/landscape.md`.
 
 ## Phase 0 — what we must show (from the official statement, `_briefs/innovatex.txt`)
 **Hard constraints.** Team ≤4, students, one theme per team, original work (not patented/published). Round 1 = 10-min in-person pitch at the zonal, nothing submitted online; must cover team info (name, Team ID, theme no., contacts), precise problem, background + why existing solutions fall short, proposed solution + technology + how it works, impact & scalability. Top 5 per zonal advance. Round 2: report + working prototype by 1 Dec (solution description, prototype evidence, cost & market viability, implementation plan, scalability plan, impact assessment); finals 15–18 Dec at IIT Bombay. Only the team leader submits online. Queries only via the portal's Doubt section.
@@ -51,21 +50,53 @@
 | Bonus: problem-centric (local) | Delhi-specific numbers: CGWB assessment, over-exploited units, telemetric stations, NGT orders, tanker mafia, RWH mandate |
 
 ## Key decisions
-- _(none yet)_
+- 2026-10-04 — Ground the pitch in **Delhi**. The hero problem is **recharge verification for Delhi's RWH rebate/penalty regime**, under the official option "aquifer recharge analysis". Evidence: `research/landscape.md` §1 and §6.
+- 2026-10-04 — Spikes: **C5 recharge-verifier** (primary) and **C4 ingest-qc** (data integrity), chosen after six hats and an independent rubber-duck antithesis. See [ADR 001](architecture/adr/001-spike.md).
+- 2026-10-04 — Claims we will not make or pursue:
+  - no claim to identify illegal borewells from 6-hourly DWLR data;
+  - SealGuard is dropped from the pitch;
+  - we report infiltrated volume with uncertainty, never "aquifer recharge" from pit stage.
+- 2026-10-04 — Real data first: the India-WRIS dataset API (POST) and ArcGIS layer for groundwater; ERA5 via Open-Meteo for rain and pressure. Snapshots are committed under `eval/data/` with attribution.
 
 ## Components
+Full table, contracts and graph: [architecture/components.md](architecture/components.md). Contracts: `architecture/contracts/gwcontracts.py` (v0.3.0, 17 JSON schemas).
+
 | # | Component | Input → Output | Baseline (existing) | Spike? | Status | Isolated metric |
 |---|---|---|---|---|---|---|
+| C0 | twin-simulator | ERA5 rain + structure → RawSample + truth | — | test harness | next | mass-balance closure |
+| C1 | sensor-front-end | physical → RawSample | vented / ultrasonic | — | design | stage RMSE (mm) |
+| C2 | edge-firmware | RawSample → UplinkFrame | fixed-interval DWLR (2/day) | — | design | mAh/day at equal error |
+| C3 | telemetry-link | UplinkFrame → DeliveryReport | GPRS | — | design | % events ≤24 h |
+| C4 | ingest-qc | frames / WRIS JSON → Series + QCReport | range/flatline | ★2 | real-data profile done | fault F1; % usable |
+| C5 | recharge-verifier | Series + structure → RechargeEvent | self-certification | ★1 | next | event-volume MdAPE |
+| C6 | hydro-twin | Series → HeadModelFit, RechargeEstimate | Pastas TFN | — | planned | holdout NSE |
+| C7 | inspection-queue | events/QC → InspectionTicket | complaints | — | planned | precision@k |
+| C8 | dashboard | all → HTML | ThingSpeak/Blynk | — | planned | 5-task time |
 
 ## Selection memo
-_First version due in the morning package (08:30 IST, 4 Oct); final by 7 Oct, 12:00 IST (one theme is pitched at the Delhi zonal on 10 Oct). Score each 1–5 with one line of evidence._
-- **Winnability:**
-- **Innovation headroom** (the spike, and why it beats the obvious baseline):
-- **Feasibility by the deadline** on an M5 Mac (+ Azure), around the 19–25 Nov exams:
-- **Demo strength** at the finals:
-- **Fit with the user's strengths** (large-scale systems, frontier models):
-- **Biggest risk:**
-- **One-line pitch:**
+_v1, 4 Oct 2026, 07:55 IST. The final is due 7 Oct, 12:00. Scores are 1–5, with one line of evidence each. **Overall: 4.0/5** (mean of the five scores)._
+- **Winnability — 4/5.** The problem is specific and very local, with dated sources:
+  - DJB paid ₹204.46 cr in RWH rebates in 2017–24, and moved to self-certification in Apr 2026.
+  - The minister said there was "no real checking" (HT, 21 Apr 2026).
+  - 1,000 government RWH systems are non-functional (IE 2026).
+  - Our own India-WRIS run shows 23 % zero readings across 185 telemetric stations.
+
+  This hits the local-depth bonus squarely. Typical rival teams pitch ESP32 + ultrasonic sensor + dashboard.
+- **Innovation headroom — 4/5.** The spike is a per-storm pit water balance that outputs infiltrated volume with an uncertainty band, a clogging index and fake detection. It turns a rebate rule into evidence.
+  - The incumbents are self-certification or manual inspection.
+  - CGWA-style DWLRs log 2 readings a day and cost about ₹38k (Acorn).
+  - Not yet proven on real pits: simulation only tonight; the rig comes in October.
+- **Feasibility by the deadline — 4/5.**
+  - The hardware is cheap and shallow (≤3 m), and a drum-and-drain rig gives ground truth.
+  - The software runs on the M5 Mac with no GPU.
+  - Post-monsoon storms are scarce, so fill tests and the rig carry the Round-2 evidence.
+  - User work is concentrated before 17 Nov, avoiding the 19–25 Nov exams.
+- **Demo strength at the finals — 5/5.** Pour water into a pit model on stage and the event, verdict and clogging alert appear live. Pour without "rain" and it's flagged implausible. A real Delhi DWLR map sits behind it.
+- **Fit with the user's strengths — 3/5.** Systems and data engineering (ingest, QC at scale, contracts, cloud) fit well. Frontier models play only a minor role (optional QC/anomaly models).
+- **Biggest risk:** owner incentives (the device can cost an owner the rebate) and DJB adoption.
+  - Mitigation: pilot with campuses and RWAs that need proof, and position this as a verification service for DJB's restoration drive.
+  - Second risk: BOM prices are unverified tonight.
+- **One-line pitch:** *"Delhi has paid ₹204 crore for rainwater harvesting it never checked. JalSakshi puts a low-cost IoT witness in every recharge pit and turns each storm into measured, auditable recharge evidence — measured, not self-declared."*
 
 ## Log
 ### 2026-10-04 01:50 IST — Seeded by the Supervisor
@@ -76,3 +107,25 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - Launched research workers r1a, r1b, r2, r3, r4, r5 (data), r6, and a First-Principles physics agent. r6 and r1b failed with transient model errors (408, request too large); relaunched r6 and split r1b into r1b1 (CGWA) + r1b2 (Delhi rules/tariffs) with small-fetch, write-incrementally instructions.
 - Early finding (r5, live query): India-WRIS ArcGIS REST `arc.indiawris.gov.in/server/rest/services/NWIC/GroundwaterLevel_Stations/MapServer/0` returns 382 stations with `state_name='Delhi'`, from CGWB and "Delhi SW GW", some flagged telemetric (DWLR). Notes: `components/data-ingest/research_sources.md`.
 - Assumptions (no user available): ground the pitch in Delhi (zonal venue); target the user's team as ≤4 students; prototype budget unconstrained but BOM must be credible for a student build.
+
+### 2026-10-04 07:55 IST — Morning package (lean mode)
+- **Context:** the network was saturated and most sub-agents failed with 408 errors. The Supervisor declared lean mode at 05:49, so I did the work myself.
+- **Data (real).** India-WRIS dataset API + ArcGIS layer: 382 Delhi stations; 483,253 readings for 2015–2026, from 185 telemetric stations. ERA5 rain and pressure via Open-Meteo. Fetcher: `components/data-ingest/fetch_delhi.py`; snapshot in `eval/data/`.
+- **Real-data profile** (`eval/realdata_profile.py` → `eval/results/realdata_profile.json`):
+  - readings arrive every 6 h;
+  - only 46 of 185 telemetric stations reported in 2026;
+  - 23.3 % of readings are exactly zero, and 17.4 % of 6-hourly slots are missing;
+  - 76.3 % of readings are usable;
+  - median monsoon-2025 water-level rise: 2.51 m (n=79 stations);
+  - South district median depth to water: 38.4 m below ground.
+- **Written:**
+  - `research/landscape.md` (cited; what ships today; candidate comparison; component innovation scan);
+  - `architecture/components.md` and contracts v0.3.0 (17 JSON schemas);
+  - ADR 001 (six hats + independent rubber-duck antithesis);
+  - `deliverables/zonal-pitch.md` and `deliverables/prototype-plan.md` (both DRAFT v1);
+  - selection memo v1 (4.0/5).
+- **Decision:** the hero is RechargeMeter, recharge verification for Delhi's RWH rebate regime. The antithesis changed the framing in three ways:
+  - one hero, not three roles;
+  - "infiltrated volume with uncertainty", not "aquifer recharge";
+  - no claims to identify illegal borewells.
+- **Not done yet, next:** simulator, verifier and evaluator numbers; the autoresearch loop; the dashboard.
