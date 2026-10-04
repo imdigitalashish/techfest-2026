@@ -46,6 +46,6 @@ L += ["", f"Pump attack moves the median forecast by {p['median_shift_mean']:+.4
       f"- Certificate's feature recomputation matches the aggregator: max |error| = {s['feature_recompute_max_abs_err']:.2e}",
       f"- Clean features lie inside the box computed from attacked documents: {100*p['clean_features_inside_box_frac']:.2f}% of test rows",
       f"- Own symmetric CQR vs MAPIE `symmetric_correction=True`: max |diff| = {m['own_vs_mapie_symmetric_cqr_max_abs_diff']:.2e}", "",
-      "Caveats: pooled Kupiec/Christoffersen p-values ignore same-day cross-sectional correlation of misses (optimistic). The oracle adversary knows y, so its coverage is a lower bound for any real attacker within the budget. StockNet's 87-name universe is fixed (survivorship)."]
+      "Caveats: pooled Kupiec/Christoffersen p-values ignore same-day cross-sectional correlation of misses (optimistic). The oracle adversary knows y but searches only 12 extreme injection variants, so plain CQR's true worst-case coverage within the budget can be *lower* than reported; the certified interval instead covers on every row where the clean CQR interval covers, for every attack within the budget (guaranteed floor = the clean CQR coverage on the same rows), and the 12-variant number only illustrates it. StockNet's 87-name universe is fixed (survivorship)."]
 Path("eval/results/baseline_v0.md").write_text("\n".join(L) + "\n")
 print("\n".join(L[-30:]))

@@ -57,4 +57,4 @@ Pump attack moves the median forecast by +0.0415 pp on average (95th pct |shift|
 - Clean features lie inside the box computed from attacked documents: 100.00% of test rows
 - Own symmetric CQR vs MAPIE `symmetric_correction=True`: max |diff| = 0.00e+00
 
-Caveats: pooled Kupiec/Christoffersen p-values ignore same-day cross-sectional correlation of misses (optimistic). The oracle adversary knows y, so its coverage is a lower bound for any real attacker within the budget. StockNet's 87-name universe is fixed (survivorship).
+Caveats: pooled Kupiec/Christoffersen p-values ignore same-day cross-sectional correlation of misses (optimistic). The oracle adversary knows y but searches only 12 extreme injection variants, so plain CQR's true worst-case coverage within the budget can be *lower* than reported; the certified interval instead covers on every row where the clean CQR interval covers, for every attack within the budget (guaranteed floor = the clean CQR coverage on the same rows), and the 12-variant number only illustrates it. StockNet's 87-name universe is fixed (survivorship).
