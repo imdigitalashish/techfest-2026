@@ -1,0 +1,129 @@
+{
+ "dataset": "Deep Blending drjohnson via HF nvs-bench/deepblending (COLMAP poses shipped)",
+ "machine": "arm64 26.2 (shared Apple M5, 24 GB)",
+ "versions": {
+  "python": "3.11.14",
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "pycolmap": "4.2.1"
+ },
+ "n_images": 263,
+ "n_train": 230,
+ "n_test": 33,
+ "n_points3D": 80861,
+ "n_points_used": 75909,
+ "n_rays": 293563,
+ "n_splats": 2000000,
+ "n_dense_proxy_splats": 3244,
+ "timings_s": {
+  "colmap_load": 27.28566062502796,
+  "alignment": 4.343359708029311,
+  "ply_read": 359.519689208013
+ },
+ "alignment": {
+  "scale": 0.8789114653785948,
+  "scale_source": "ASSUMED median camera height 1.5 m",
+  "up_colmap": [
+   0.842843984864644,
+   -0.0028148911669608366,
+   -0.5381506234904927
+  ],
+  "up_camera_consistency": 0.6939607326753571,
+  "up_refinement_deg": 2.9440876913998446,
+  "camera_height_median_m": 1.4999999999911122,
+  "camera_height_p10_p90_m": [
+   0.7315154949740167,
+   1.8383911839667706
+  ],
+  "floor_inlier_frac": 0.597409100453892,
+  "points_below_floor_frac": 0.0014375938878030657,
+  "n_points_used": 61909,
+  "n_cameras": 263,
+  "runtime_s": 4.343359708029311,
+  "frame": "y-up, floor y=0, metres (approximate if scale_source is ASSUMED)"
+ },
+ "collision_radius_m": 0.15,
+ "variants": {
+  "points_only": {
+   "area_walkable_m2": 46.34,
+   "area_navigable_m2": 24.505000000000003,
+   "heldout_recall_walkable": 0.9696969696969697,
+   "heldout_recall_navigable": 0.7878787878787878,
+   "navigable_cells_within_15cm_of_dense_obstacle": 0.007039379718424811,
+   "pairs": 40,
+   "success_rate": 1.0,
+   "path_collision_rate": 0.175,
+   "path_samples_in_collision": 0.015068695509951944,
+   "length_ratio_median": 1.0259967366173033,
+   "plan_ms_median": 40.8405420021154,
+   "plan_ms_p95": 822.71488540864,
+   "grid_build_s": 3.8223414999665692,
+   "ray_samples": 0,
+   "grid_cells": [
+    270,
+    135
+   ]
+  },
+  "points+carving": {
+   "area_walkable_m2": 47.57000000000001,
+   "area_navigable_m2": 26.980000000000004,
+   "heldout_recall_walkable": 1.0,
+   "heldout_recall_navigable": 0.8787878787878788,
+   "navigable_cells_within_15cm_of_dense_obstacle": 0.013250555967383247,
+   "pairs": 40,
+   "success_rate": 1.0,
+   "path_collision_rate": 0.175,
+   "path_samples_in_collision": 0.014109053733934007,
+   "length_ratio_median": 1.011500590685551,
+   "plan_ms_median": 23.46072901855223,
+   "plan_ms_p95": 551.7216681153511,
+   "grid_build_s": 16.941039750003256,
+   "ray_samples": 18193787,
+   "grid_cells": [
+    270,
+    135
+   ]
+  },
+  "points+trajectory": {
+   "area_walkable_m2": 47.215,
+   "area_navigable_m2": 28.3,
+   "heldout_recall_walkable": 1.0,
+   "heldout_recall_navigable": 0.9393939393939394,
+   "navigable_cells_within_15cm_of_dense_obstacle": 0.02588339222614841,
+   "pairs": 40,
+   "success_rate": 1.0,
+   "path_collision_rate": 0.35,
+   "path_samples_in_collision": 0.05637864660829708,
+   "length_ratio_median": 1.0092535489105507,
+   "plan_ms_median": 13.460021029459313,
+   "plan_ms_p95": 621.4093059330479,
+   "grid_build_s": 0.22489549999590963,
+   "ray_samples": 0,
+   "grid_cells": [
+    270,
+    135
+   ]
+  },
+  "full(carving+trajectory)": {
+   "area_walkable_m2": 48.17000000000001,
+   "area_navigable_m2": 29.125,
+   "heldout_recall_walkable": 1.0,
+   "heldout_recall_navigable": 0.9696969696969697,
+   "navigable_cells_within_15cm_of_dense_obstacle": 0.027725321888412018,
+   "pairs": 40,
+   "success_rate": 1.0,
+   "path_collision_rate": 0.325,
+   "path_samples_in_collision": 0.05587905122894514,
+   "length_ratio_median": 1.0092535489105507,
+   "plan_ms_median": 21.08581247739494,
+   "plan_ms_p95": 477.0408002950712,
+   "grid_build_s": 38.82548466703156,
+   "ray_samples": 18193787,
+   "grid_cells": [
+    270,
+    135
+   ]
+  }
+ },
+ "reproduce": "cd namma-space && .venv/bin/python eval/run_nav_e2e.py"
+}
