@@ -5,7 +5,7 @@ Status: complete as an **alternative** to the team's chosen Delhi-zonal theme (T
 | File | What it is |
 |---|---|
 | [`zonal-deck.md`](zonal-deck.md) → [`zonal-deck.pdf`](zonal-deck.pdf) · [`zonal-deck.pptx`](zonal-deck.pptx) | 10 main slides + 4 backups. Speaker notes per slide carry timing, what to say, the line to land and what not to say. The PPTX holds the notes. |
-| [`qa-prep.md`](qa-prep.md) | Twenty likely judge questions with answers; every number is bound to a source or a committed run |
+| [`qa-prep.md`](qa-prep.md) | Twenty-one likely judge questions with answers; every number is bound to a source or a committed run |
 | [`presenter-card.md`](presenter-card.md) → [`presenter-card.pdf`](presenter-card.pdf) | One A4 page: run of show, numbers to remember, fast answers, don't-say list |
 | [`prototype-plan.md`](prototype-plan.md) | Round-2 plan: tow-tank flume, edge node, tests T1–T6, three bills of materials with URL and date per part, schedule around the exams |
 | [`figures/`](figures/) | Deck figures, drawn from committed results by [`make_figures.py`](make_figures.py) |

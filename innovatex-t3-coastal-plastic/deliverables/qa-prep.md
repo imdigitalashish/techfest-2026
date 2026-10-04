@@ -73,5 +73,8 @@ A reversed-flow flume comparing a straight boom, an angled boom and the one-way 
 **20. "Why these four sites?"**
 They are real outfalls located on OpenStreetMap: Mithi to Mahim Creek, Oshiwara to Malad Creek, the Dahisar mouth, and Trombay (approximate). They cover river mouths and creeks on both coasts. Flap-gated outfalls are not modelled yet, and we say so.
 
+**21. "Can a city actually deploy your software stack?"**
+Mostly yes. The detector stack (Ultralytics YOLO) is AGPL-3.0, which obliges anyone serving a modified version over a network to publish its source. For a municipal deployment we would publish our code or swap in a permissively licensed detector. The data we use is CC BY 4.0 or ODbL, with attribution shown in the dashboard. Details are in the project README.
+
 ## Don't say
 **Don't say:** "tamper-proof" · "blockchain" · "can't flood" · "zero leakage" · any absolute tonnes from the twin · "our trap is new" · anything implying guilt in the Mithi investigation.

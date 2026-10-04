@@ -30,6 +30,7 @@ YEARLIKE = re.compile(r"^(19|20)\d\d$")
 URL = re.compile(r"https?://\S+")
 IMG = re.compile(r"!\[[^\]]*\]")  # Marp image directives such as ![bg right:46% fit]
 INTERVAL_DEF = re.compile(r"\b90\s?% interval")
+VERSIONS = re.compile(r"\bCC BY(?:-[A-Z]+)*\s\d+(?:\.\d+)+|\b[Vv]ersion\s\d+(?:\.\d+)+")  # licence/version strings
 TIMES = re.compile(r"\b\d{1,2}:\d{2}(?:[–-]\d{1,2}:\d{2})?\b|\b\d{4}-\d{2}-\d{2}\b|\b(?:19|20)\d\d[–-](?:19|20)?\d\d\b")
 
 
@@ -83,6 +84,7 @@ def main() -> int:
             bare = URL.sub(" ", bare)
             bare = IMG.sub(" ", bare)
             bare = INTERVAL_DEF.sub(" ", bare)
+            bare = VERSIONS.sub(" ", bare)
             bare = TIMES.sub(" ", bare)
             for n in nums(bare):
                 if YEARLIKE.match(n.replace(",", "")):
