@@ -1,6 +1,8 @@
 """P7 demo engine: a thin wrapper over the COMMITTED simulator, policies and planner (nothing is re-implemented).
 
 LiveRun   two allocators on ONE shared DemandTrace (common random numbers), plus shocks injected by the judge.
+          A synthetic city mirrors the committed reference protocol it is compared with (REFERENCES: horizon,
+          onset window, one x1 shock); each injected shock is flagged in or off that reference.
 BatchRun  a whole committed episode (shock day, long week, NYC July 3-4) recomputed live, then compared with the
           committed row in eval/results/*/episodes.csv (parity).
 
@@ -33,11 +35,45 @@ RESULTS = P7 / "eval" / "results"
 NYC_EXPORT = DATA / "nyc_jul03-04_r200.npz"
 SHOCK = SCENARIOS["shock"]   # committed shock shape: shock_size^2 block, +shock_extra x zone-mean rate, shock_duration steps
 DEMO_SEED = 7000             # demo seeds 7000+ appear in no committed result or registration
-NYC_START = 1440 + 21 * 60 + 15   # the July 4th tab opens live at 21:15 on 4 July (the night window is 21:30-23:30)
+NYC_START = 1440 + 21 * 60 + 15   # the July 4th runs start at 21:15 on 4 July (the night window is 21:30-23:30)
 N_AGENTS = 40
 CELLS_L, CELLS_P = (1, 2, 4, 8), (3, 10)   # the committed (L, P) grid (eval/results/phase-v2)
 RULES = ("greedy", "reactive", "static")
 BRAINS = ("mpc-ewma", "mpc-queue", "mpc-ewma@trust=0.5", "oracle")
+
+
+def _reference(run: str, start: int) -> dict:
+    """A committed shock protocol, read from the committed run config and the committed scenario code:
+    horizon from eval/results/<run>/config.json; onset = int(U(shock_window) * horizon) in build_trace, i.e. the
+    half-open window [0.35 T, 0.55 T); one 2x2 shock of x1 size lasting shock_duration steps (truncated at T)."""
+    cfg = json.loads((RESULTS / run / "config.json").read_text())
+    T = int(cfg["horizon"])
+    a, b = (int(round(w * T)) for w in SHOCK.shock_window)
+    return dict(run=run, horizon=T, onset=[a, b], size=1.0, n_shocks=int(SHOCK.n_shocks), block=int(SHOCK.shock_size),
+                duration=int(SHOCK.shock_duration), seeds=str(cfg["seeds"]), start=int(start),
+                src=f"eval/results/{run}/config.json")
+
+
+# the live synthetic city is armed inside the onset window of the reference it is shown with
+REFERENCES = {"phase-v2": _reference("phase-v2", start=5 * 60), "mvp-v2": _reference("mvp-v2", start=10 * 60),
+              "trust-v2": _reference("trust-v2", start=10 * 60)}
+
+
+def reference_for(L: int, P: int, rule: str, brain: str, drift: bool) -> str | None:
+    """Which committed per-seed reference a live (L, P, rule, brain, drift) city is shown with, if any."""
+    if brain == "oracle":
+        return None   # the committed true-rate planner saw each shock up to H steps before onset; a click gives none
+    if not drift and brain in ("mpc-ewma", "mpc-queue") and rule in ("greedy", "reactive"):
+        return "phase-v2"
+    if L == 1 and P == 10 and brain in ("mpc-ewma", "mpc-queue"):
+        return "mvp-v2"
+    if L == 1 and P == 10 and brain == "mpc-ewma@trust=0.5":
+        return "trust-v2"
+    return None
+
+
+def hhmm(t: int) -> str:
+    return f"{(t % 1440) // 60:02d}:{t % 60:02d}"
 
 
 def best_rules() -> dict[tuple[int, int], str]:
@@ -149,13 +185,19 @@ class Panel:
 
 # ---------------------------------------------------------------- live city: the judge's shocks
 class LiveRun:
-    """scenario 'synthetic': the committed parametric city (stationary or drift), warmed up to `start` (04:00).
+    """scenario 'synthetic': the committed parametric city (stationary or drift). When a committed reference exists
+    for (L, P, rule, brain, drift), the city uses that reference's horizon and is armed inside its onset window
+    (05:00 for phase-v2, 10:00 for mvp-v2 / trust-v2); otherwise 720 steps (1440 with drift), armed at 05:00 / 10:00.
     scenario 'nyc': the committed NYC replay (replicate 200, L=1, P=10, the reactive rule = best rule on nyc-v2 by
-    mean), fast-forwarded to `start` (21:15 on 4 July) while a sparse time-lapse is kept for the UI."""
+    mean), fast-forwarded to 21:15 on 4 July. role 'reference' stays unperturbed (shocks are refused), so its night
+    window can be compared with the committed row; role 'interactive' accepts the judge's surges (live only)."""
 
     def __init__(self, L: int = 1, P: int = 10, rule: str = "auto", brain: str = "mpc-ewma", drift: bool = False,
-                 seed: int = DEMO_SEED, start: int | None = None, horizon: int = 1440, scenario: str = "synthetic"):
-        self.scenario, self.info = scenario, {}
+                 seed: int = DEMO_SEED, start: int | None = None, horizon: int | None = None, scenario: str = "synthetic",
+                 role: str = "interactive"):
+        self.scenario, self.info, self.role, self.reference = scenario, {}, role, None
+        if role not in ("reference", "interactive"):
+            raise ValueError("unknown role")
         if scenario == "nyc":
             trace, meta, self.info = load_nyc()
             L, P, drift, seed = 1, 10, False, self.info["seed"]
@@ -169,17 +211,22 @@ class LiveRun:
                 raise ValueError("L and P must be a committed grid cell")
             if rule == "auto":
                 rule = "reactive" if drift else best_rules()[(L, P)]   # drift: the pre-registered shock+drift reference
-            cfg = replace(SCENARIOS["drift" if drift else "stationary"], horizon=horizon)
+            ref = reference_for(L, P, rule, brain, bool(drift))
+            self.reference = dict(REFERENCES[ref], scenario="shock+drift" if drift else "shock") if ref else None
+            T = horizon or (self.reference["horizon"] if ref else (1440 if drift else 720))
+            cfg = replace(SCENARIOS["drift" if drift else "stationary"], horizon=int(T))
             trace = build_trace(cfg, int(seed))
             meta = episode_meta(cfg, trace)
             self.grid, self.total_rate, self.name = cfg.grid, cfg.total_rate, cfg.name
             self.valid = np.ones(cfg.grid ** 2, dtype=bool)
             self.event = None
-            start = 240 if start is None else start
+            start = start if start is not None else (self.reference["start"] if ref else (600 if drift else 300))
         else:
             raise ValueError("unknown scenario")
         if rule not in RULES or brain not in BRAINS:
             raise ValueError("unknown rule or brain")
+        if not 0 <= int(start) < trace.horizon:
+            raise ValueError("start must be inside the run")
         self.L, self.P, self.rule, self.brain, self.drift, self.seed = L, P, rule, brain, bool(drift), int(seed)
         self.trace = trace
         meta.update(hop_steps=L, patience=P)
@@ -188,19 +235,25 @@ class LiveRun:
         self.lock = threading.Lock()
         self.t, self.start = 0, int(start)
         self.warm_frames: list[dict] = []
-        self.warmed, self.error = False, None
+        self.warmed, self.error, self.polite = False, None, 0.0
 
-    def warm(self, every: int = 0) -> "LiveRun":
-        """Fast-forward to the start clock; every `every` minutes keep a time-lapse frame (units, queues, totals)."""
+    def warm(self, every: int = 0, polite=0.0) -> "LiveRun":
+        """Fast-forward to the start clock; every `every` minutes keep a time-lapse frame (units, queues, totals).
+        polite (seconds, or a function returning them, re-read every step) sleeps between steps, releasing the
+        interpreter lock so a background warm-up does not stall another session; set self.polite = 0 to finish fast."""
+        self.polite = polite
         try:
-            with self.lock:
-                cum = np.zeros((2, 3), np.int64)
-                while self.t < self.start:
+            cum = np.zeros((2, 3), np.int64)
+            while self.t < self.start:
+                with self.lock:
                     infos = self._step()
                     t = self.t - 1
                     cum += [[i.served.sum(), i.lost.sum(), i.arrivals.sum()] for i in infos]
                     if every and (t % every == every - 1 or self.t == self.start):
                         self.warm_frames.append(dict(t=t, cum=cum.tolist(), panels=[p.units() for p in self.panels]))
+                pause = self.polite() if callable(self.polite) else self.polite
+                if pause:
+                    time.sleep(pause)
         except Exception as e:
             self.error = repr(e)
         self.warmed = True
@@ -218,7 +271,8 @@ class LiveRun:
         return infos
 
     def snapshot(self) -> dict:
-        return dict(t=self.t, panels=[p.units() for p in self.panels])
+        with self.lock:
+            return dict(t=self.t, panels=[p.units() for p in self.panels])
 
     def advance(self, n: int) -> list[dict]:
         if not self.warmed:
@@ -237,7 +291,14 @@ class LiveRun:
     def shock(self, zone: int, size: float = 1.0) -> dict:
         if not self.warmed:
             raise ValueError("still fast-forwarding")
+        if self.role == "reference":
+            raise ValueError("the reference run stays unperturbed: press 'Your turn' to add your own surge")
+        if float(size) not in (0.5, 1.0, 2.0):
+            raise ValueError("size must be x0.5, x1 or x2")
         with self.lock:
+            T, t0 = self.trace.horizon, self.t
+            if t0 >= T:
+                raise ValueError("this run has ended: no time left for a surge (restart it)")
             G, s = self.grid, SHOCK.shock_size
             r, c = divmod(int(zone), G)
             r0, c0 = min(max(r, 0), G - s), min(max(c, 0), G - s)
@@ -245,25 +306,49 @@ class LiveRun:
             if not zones:
                 raise ValueError("no taxi zone in that block")
             extra = float(size) * SHOCK.shock_extra * self.total_rate / (G * G)
-            t0 = self.t
             rng = np.random.default_rng([self.seed, 99, t0, zones[0], len(self.shocks)])
             new = inject_shock(self.trace, t0, zones, extra, SHOCK.shock_duration, rng)
             for p in self.panels:
                 p.retarget(new)
             self.trace = new
-            sh = dict(t0=t0, zones=zones, size=float(size), extra_per_zone=extra,
-                      end=min(self.trace.horizon, t0 + SHOCK.shock_duration), window=WIN)
+            end = min(T, t0 + SHOCK.shock_duration)
+            sh = dict(t0=t0, zones=zones, size=float(size), extra_per_zone=extra, end=end, minutes=end - t0,
+                      full_minutes=int(SHOCK.shock_duration), truncated=end < t0 + SHOCK.shock_duration,
+                      horizon=T, window=WIN)
             self.shocks.append(sh)
-            return sh
+            return dict(sh, ref=self.ref_flags()[-1])
+
+    def ref_flags(self) -> list[dict]:
+        """Per shock: is it inside the committed reference conditions (onset window, x1, one shock, horizon)?"""
+        ref, out = self.reference, []
+        for i, sh in enumerate(self.shocks):
+            if ref is None:
+                why = ("no committed evidence for surges injected on NYC" if self.scenario == "nyc"
+                       else "no committed reference for this setting")
+                out.append(dict(status="none", reasons=[why]))
+                continue
+            reasons = []
+            a, b = ref["onset"]
+            if not a <= sh["t0"] < b:
+                reasons.append(f"onset {hhmm(sh['t0'])} is outside the reference onsets {hhmm(a)}–{hhmm(b)}")
+            if sh["size"] != ref["size"]:
+                reasons.append(f"size ×{sh['size']:g} (the reference uses ×1)")
+            if self.trace.horizon != ref["horizon"]:
+                reasons.append(f"run length {self.trace.horizon} min (the reference uses {ref['horizon']})")
+            if any((j < i and sh["t0"] < o["end"]) or (j > i and o["t0"] < sh["t0"] + WIN)
+                   for j, o in enumerate(self.shocks) if j != i):
+                reasons.append("overlaps another surge (the reference has one surge per run)")
+            out.append(dict(status="off" if reasons else "in", reasons=reasons))
+        return out
 
     def stats(self) -> dict:
         t = self.t
         out = dict(t=t, done=self.done, panels=[p.totals(t) for p in self.panels], shocks=[])
-        for sh in self.shocks:
+        for sh, rf in zip(self.shocks, self.ref_flags()):
             a, b = sh["t0"], min(t, sh["t0"] + WIN)
             out["shocks"].append(dict(sh, lost=[int(p.lost[a:b].sum()) for p in self.panels],
                                       arrivals=int(self.panels[0].arr[a:b].sum()), steps=b - a,
-                                      complete=t >= sh["t0"] + WIN))
+                                      complete=t >= sh["t0"] + WIN, ref=rf))
         if self.shocks:
             a = self.shocks[0]["t0"]
             out["lost_since_first_shock"] = [int(p.lost[a:t].sum()) for p in self.panels]
@@ -276,8 +361,9 @@ class LiveRun:
     def describe(self) -> dict:
         return dict(L=self.L, P=self.P, rule=self.rule, brain=self.brain, drift=self.drift, seed=self.seed,
                     horizon=self.trace.horizon, grid=self.grid, n_agents=N_AGENTS, scenario=self.name,
-                    start=self.start, event=self.event, info=self.info,
-                    shock=dict(size=SHOCK.shock_size, extra=SHOCK.shock_extra, duration=SHOCK.shock_duration, window=WIN))
+                    role=self.role, start=self.start, event=self.event, info=self.info, reference=self.reference,
+                    shock=dict(size=SHOCK.shock_size, extra=SHOCK.shock_extra, duration=SHOCK.shock_duration,
+                               extra_per_zone=SHOCK.shock_extra * self.total_rate / self.grid ** 2, window=WIN))
 
 
 # ---------------------------------------------------------------- whole committed episodes, recomputed live

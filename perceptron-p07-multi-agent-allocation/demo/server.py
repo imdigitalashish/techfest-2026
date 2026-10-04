@@ -3,11 +3,14 @@
     .venv/bin/python -m demo.server [--port 8707] [--no-open] [--t0 EPOCH_SECONDS]
 
 Binds 127.0.0.1 only and needs no network at run time.
-  POST /api/live/new    {scenario, L, P, rule, brain, drift, seed} -> new live city: synthetic (warmed to 04:00)
-                        or nyc (fast-forwarding to 21:15 on 4 July in the background)
-  POST /api/live/warm   {sid, from}                       -> fast-forward time-lapse frames; snapshot when done
+  POST /api/live/new    {scenario, L, P, rule, brain, drift, seed, role} -> a new city. synthetic: armed inside the
+                        onset window of its committed reference (config.reference). nyc: role 'reference' (unperturbed,
+                        fast-forwarding to 21:15 on 4 July in the background) or 'interactive' (taken from a pool that
+                        is pre-warmed to 21:15 in the background, so the judge's turn starts at once)
+  POST /api/live/warm   {sid, from, frames}               -> fast-forward time-lapse frames; snapshot when done
   POST /api/live/step   {sid, n}                          -> next n simulated minutes (frames)
-  POST /api/live/shock  {sid, zone, size}                 -> unannounced shock from the current minute
+  POST /api/live/shock  {sid, zone, size}                 -> unannounced shock from the current minute; 400 if the
+                        run has ended (no zero-length surges) or it is the unperturbed NYC reference run
   POST /api/run         {kind: week|nyc|shock-day, seed}  -> recompute a committed episode in the background
   GET  /api/run/<rid>?from=k                              -> frames so far, summary and parity when done
   GET  /api/health ;  POST /api/first_visual (time-to-first-visual report)
@@ -39,6 +42,59 @@ RUNS: dict[str, "RemoteRun"] = {}
 LOCK = threading.Lock()
 STATE = dict(t0=None, started=time.time(), first_visual_s=None)
 SHOW = {"week": ("greedy", "reactive", "mpc-ewma"), "nyc": ("reactive", "mpc-ewma"), "shock-day": ("greedy", "mpc-ewma")}
+POOL: dict = dict(run=None, filling=False)   # one interactive NYC session, pre-warmed to 21:15 in the background
+POOL_LOCK = threading.Lock()
+BUSY: dict = dict(step=0.0, warms=0)   # when a session last stepped; warm-ups someone is waiting for
+
+
+def pool_polite() -> float:
+    """The background warm-up yields while a session plays or another warm-up runs; otherwise it runs at full speed."""
+    return 0.002 if BUSY["warms"] > 0 or time.time() - BUSY["step"] < 1.0 else 0.0
+
+
+def busy_warm(run: LiveRun, **kw) -> LiveRun:
+    with POOL_LOCK:
+        BUSY["warms"] += 1
+    try:
+        return run.warm(**kw)
+    finally:
+        with POOL_LOCK:
+            BUSY["warms"] -= 1
+
+
+def pool_fill(polite=pool_polite) -> None:
+    """Pre-warm one interactive NYC session in the background, so the judge's turn starts at once without stalling
+    the session that is playing."""
+    with POOL_LOCK:
+        if POOL["run"] is not None or POOL["filling"]:
+            return
+        POOL["filling"] = True
+    try:
+        run = LiveRun(scenario="nyc", role="interactive")
+        with POOL_LOCK:
+            POOL["run"] = run
+    finally:
+        with POOL_LOCK:
+            POOL["filling"] = False
+    run.warm(polite=polite)
+
+
+def pool_take() -> LiveRun:
+    with POOL_LOCK:
+        run, POOL["run"] = POOL["run"], None
+    if run is None:   # nothing pre-warmed: warm at full speed, someone is waiting
+        run = LiveRun(scenario="nyc", role="interactive")
+        threading.Thread(target=busy_warm, args=(run,), daemon=True).start()
+    else:
+        run.polite = 0.0   # if still warming, finish at full speed
+
+    def refill() -> None:   # after this run is ready, so the two warm-ups do not compete
+        while not run.warmed:
+            time.sleep(0.25)
+        time.sleep(3.0)
+        pool_fill()
+    threading.Thread(target=refill, daemon=True).start()
+    return run
 
 
 def health() -> dict:
@@ -51,37 +107,55 @@ def health() -> dict:
                 best_rules={f"{k[0]},{k[1]}": v for k, v in best_rules().items()}, rules=RULES, brains=BRAINS)
 
 
-def live_new(b: dict) -> dict:
-    scenario = str(b.get("scenario", "synthetic"))
-    run = LiveRun(L=int(b.get("L", 1)), P=int(b.get("P", 10)), rule=str(b.get("rule", "auto")),
-                  brain=str(b.get("brain", "mpc-ewma")), drift=bool(b.get("drift", False)),
-                  seed=int(b.get("seed", DEMO_SEED)), scenario=scenario)
+def register(run: LiveRun) -> str:
     sid = secrets.token_hex(6)
     with LOCK:
         LIVE[sid] = run
         while len(LIVE) > 6:
             LIVE.popitem(last=False)
-    if scenario == "nyc":   # fast-forward to 21:15 on 4 July in the background; the page plays the time-lapse
-        threading.Thread(target=run.warm, kwargs=dict(every=10), daemon=True).start()
-        return dict(sid=sid, config=run.describe(), snapshot=run.snapshot(), warming=True)
-    run.warm()
-    return dict(sid=sid, config=run.describe(), snapshot=run.snapshot(), stats=run.stats(), warming=False)
+    return sid
+
+
+def live_new(b: dict) -> dict:
+    scenario = str(b.get("scenario", "synthetic"))
+    if scenario == "nyc":
+        role = str(b.get("role", "reference"))
+        if role == "interactive":
+            run = pool_take()
+        elif role == "reference":   # fast-forward to 21:15 on 4 July in the background; the page plays the time-lapse
+            run = LiveRun(scenario="nyc", role="reference")
+            snap = run.snapshot()   # 3 July 00:00, before the warm-up thread starts
+            threading.Thread(target=lambda: (busy_warm(run, every=10), pool_fill()), daemon=True).start()
+            return dict(sid=register(run), config=run.describe(), snapshot=snap, warming=True)
+        else:
+            raise ValueError("unknown role")
+        return dict(sid=register(run), config=run.describe(), warming=True)
+    run = LiveRun(L=int(b.get("L", 1)), P=int(b.get("P", 10)), rule=str(b.get("rule", "auto")),
+                  brain=str(b.get("brain", "mpc-ewma")), drift=bool(b.get("drift", False)),
+                  seed=int(b.get("seed", DEMO_SEED)), scenario="synthetic")
+    busy_warm(run)
+    return dict(sid=register(run), config=run.describe(), snapshot=run.snapshot(), stats=run.stats(), warming=False)
 
 
 def live_warm(b: dict) -> dict:
     run, k = live_get(b), int(b.get("from", 0))
-    fr = run.warm_frames[k:k + 300]
-    out = dict(frames=fr, next=k + len(fr), t=run.t, target=run.start, done=run.warmed and k + len(fr) >= len(run.warm_frames),
-               error=run.error)
+    want = bool(b.get("frames", True))   # False: no time-lapse (the interactive run opens armed at its start)
+    fr = run.warm_frames[k:k + 300] if want else []
+    out = dict(frames=fr, next=k + len(fr), t=run.t, target=run.start, error=run.error,
+               done=run.warmed and (not want or k + len(fr) >= len(run.warm_frames)))
     if out["done"]:
         out.update(snapshot=run.snapshot(), stats=run.stats())
     return out
 
 
+class SessionGone(Exception):
+    """The page holds a session id this server does not know (expired, or the server restarted)."""
+
+
 def live_get(b: dict) -> LiveRun:
     run = LIVE.get(str(b.get("sid")))
     if run is None:
-        raise KeyError("unknown or expired live session")
+        raise SessionGone("this session has expired (the server may have restarted)")
     return run
 
 
@@ -157,9 +231,9 @@ def run_start(b: dict, wait: bool = False) -> dict:
 
 
 def prewarm() -> None:
-    """Recompute the July 4th and week episodes in the background so those tabs play at once."""
+    """Recompute the week in the background so that tab plays at once (July 4th runs as live sessions)."""
     time.sleep(1.5)
-    for kind in ("nyc", "week"):
+    for kind in ("week",):
         try:
             run_start(dict(kind=kind, seed=200), wait=True)
         except Exception as e:  # the tab retries on demand
@@ -214,6 +288,7 @@ class Handler(BaseHTTPRequestHandler):
             if u.path == "/api/live/warm":
                 return self._json(live_warm(b))
             if u.path == "/api/live/step":
+                BUSY["step"] = time.time()
                 run = live_get(b)
                 frames = run.advance(min(256, int(b.get("n", 1))))
                 return self._json(dict(frames=frames, stats=run.stats()))
@@ -231,8 +306,10 @@ class Handler(BaseHTTPRequestHandler):
                     print(f"[P7 demo] first visual {STATE['first_visual_s']:.1f} s after {since}", flush=True)
                 return self._json(dict(first_visual_s=STATE["first_visual_s"]))
             return self._json(dict(error="not found"), 404)
+        except SessionGone as e:
+            return self._json(dict(error=str(e), code="session_gone"), 410)
         except (KeyError, ValueError) as e:
-            return self._json(dict(error=str(e)), 400)
+            return self._json(dict(error=str(e).strip("'")), 400)
         except Exception as e:
             return self._json(dict(error=repr(e)), 500)
 
@@ -253,7 +330,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8707)
     ap.add_argument("--no-open", action="store_true")
-    ap.add_argument("--no-prewarm", action="store_true", help="compute the week / July 4th runs only when asked")
+    ap.add_argument("--no-prewarm", action="store_true", help="recompute the week only when its tab asks")
     ap.add_argument("--t0", type=float, default=None, help="epoch seconds when run.sh started (time-to-first-visual)")
     a = ap.parse_args()
     STATE["t0"] = a.t0
@@ -263,6 +340,7 @@ def main() -> None:
     print(f"[P7 demo] serving {url}  ({ready:.1f} s after start; offline; Ctrl-C to stop)", flush=True)
     if not a.no_open:
         threading.Timer(0.2, webbrowser.open, (url,)).start()
+    threading.Thread(target=pool_fill, daemon=True).start()   # the judge's July 4th turn, ready before it is needed
     if not a.no_prewarm:
         threading.Thread(target=prewarm, daemon=True).start()
     try:

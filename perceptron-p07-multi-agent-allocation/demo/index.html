@@ -3,114 +3,167 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>P7 · Your surge, live</title>
+<title>P7 · Your surge vs our planner</title>
 <link rel="icon" href="data:,">
 <style>
-:root{--bg:#0b1020;--panel:#111a33;--panel2:#16213f;--line:#26335c;--text:#e8eef7;--dim:#93a0c4;--amber:#ffb020;--red:#ff4d5e;--green:#3ddc97;--blue:#4cc3ff;--orange:#ff8a3d}
+:root{--bg:#0b1020;--panel:#111a33;--panel2:#16213f;--line:#26335c;--text:#e8eef7;--dim:#9aa6c8;--amber:#ffb020;--red:#ff4d5e;--green:#3ddc97;--blue:#4cc3ff;--orange:#ff8a3d;--fs:14px}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:16px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:var(--fs)/1.3 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden}
 body{display:flex;flex-direction:column}
-header,#offline,footer{flex:none}
-button,select{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:5px 10px;cursor:pointer}
+header,.banner,footer{flex:none}
+main{flex:1;min-height:0;position:relative}
+button,select{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:3px 8px;cursor:pointer}
 button:hover{border-color:var(--dim)}
 button.on{background:#2b3a6b;border-color:var(--amber);color:#fff}
-header{display:flex;align-items:center;gap:14px;padding:8px 16px;border-bottom:1px solid var(--line);min-height:56px}
-.brand{font-size:18px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+button:disabled{opacity:.45;cursor:not-allowed}
+header{display:flex;align-items:center;gap:12px;padding:5px 14px;border-bottom:1px solid var(--line);min-height:46px}
+.brand{font-size:16px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1}
 .brand b{color:var(--amber)}
-nav{display:flex;gap:6px}
-nav button{font-size:15.5px;padding:7px 12px;white-space:nowrap}
-.badge{margin-left:auto;padding:6px 12px;border-radius:7px;font-weight:800;font-size:13.5px;letter-spacing:.05em;white-space:nowrap}
+nav{display:flex;gap:5px;flex:none}
+nav button{font-size:14px;padding:5px 10px;white-space:nowrap}
+.hdr-right{display:flex;gap:6px;align-items:center;flex:none}
+.badge{padding:4px 9px;border-radius:6px;font-weight:800;font-size:12px;letter-spacing:.05em;white-space:nowrap}
 .badge.synth{background:#3a2a05;color:var(--amber);border:1px solid var(--amber)}
 .badge.real{background:#06301f;color:var(--green);border:1px solid var(--green)}
-#offline{display:none;background:#5a0f19;color:#fff;padding:6px 16px;font-weight:700;border-bottom:1px solid var(--red)}
-main{flex:1;min-height:0}
-section{height:100%;padding:8px 16px;overflow:hidden}
+.badge.com{background:#1b2547;color:#c9d2ea;border:1px solid #5b6a96}
+.pill{padding:4px 9px;border-radius:999px;font-weight:800;font-size:12px;letter-spacing:.06em;white-space:nowrap}
+.pill.LIVE{background:#06301f;color:var(--green);border:1px solid var(--green)}
+.pill.RECORDED{background:#5a0f19;color:#fff;border:1px solid var(--red)}
+.banner{padding:5px 14px;font-weight:700;font-size:14px}
+.banner.rec{background:#5a0f19;color:#fff;border-bottom:1px solid var(--red)}
+.banner.stop{background:#7a1020;color:#fff;border-bottom:1px solid var(--red);display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:3px 14px}
+.banner.stop button{background:#fff;color:#5a0f19;font-weight:800;border-color:#fff;padding:1px 10px;font-size:13px}
+.banner[hidden]{display:none!important}
+section{height:100%;padding:6px 12px;overflow:hidden}
 section[hidden]{display:none!important}
-section.live{display:flex;flex-direction:column;gap:8px}
-.databar{background:#06301f;border:1px solid #1d6b4c;color:#c9f5e2;border-radius:9px;padding:5px 12px;font-size:14px;flex:none}
+.livetab{display:flex;flex-direction:column;gap:6px}
+.databar{background:#06301f;border:1px solid #1d6b4c;color:#c9f5e2;border-radius:8px;padding:3px 10px;font-size:12.5px;flex:none}
 .databar b{color:var(--green)}
-.lgrid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr 420px;gap:14px}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;display:flex;flex-direction:column;min-width:0;min-height:0}
-.ptitle{font-size:21px;font-weight:800;letter-spacing:.01em;white-space:nowrap}
-.ptitle .tag{font-size:13px;font-weight:700;padding:2px 7px;border-radius:5px;margin-left:6px;vertical-align:3px}
+.lgrid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr 380px;gap:10px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 10px;display:flex;flex-direction:column;min-width:0;min-height:0}
+.ptitle{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden}
+.ptitle .tag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:5px;margin-left:5px;vertical-align:2px}
 .tag.rule{background:#3b1d27;color:#ff9aa6}
 .tag.plan{background:#0f3a2c;color:var(--green)}
-.psub{color:var(--dim);font-size:14px;min-height:19px}
+.psub{color:var(--dim);font-size:12.5px}
 canvas.city{display:block;margin:4px auto 0}
-.counters{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;margin-top:6px}
-.ctr .v{font-size:36px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.05}
-.ctr .l{font-size:13px;color:var(--dim);min-height:34px}
-#nycMsLine,#synMsLine{min-height:34px}
-.ctr.big .v{font-size:46px}
+.counters{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:6px;margin-top:4px}
+.ctr .v{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.05}
+.ctr .l{font-size:11.5px;color:var(--dim);min-height:28px}
+.ctr.big .v{font-size:34px}
 .lostc .v{color:var(--red)}
 .good .v,.goodv{color:var(--green)}
-.chip{margin-top:2px;font-size:16px;font-weight:800;min-height:22px}
-.chip.good{color:var(--green)}.chip.bad{color:var(--red)}
-canvas.spark{display:block;width:100%;height:42px;margin-top:4px}
-aside{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:auto}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
-.card h3{margin:0 0 5px;font-size:13px;letter-spacing:.08em;color:var(--dim);font-weight:700;text-transform:uppercase}
-.clock{font-size:27px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
-.spd button{padding:4px 8px;font-size:14px}
-.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.hint{color:var(--dim);font-size:13px}
-.src{color:#7d89ad;font-size:12px}
-.call{font-size:16.5px;font-weight:700}
-.call.warnc{color:var(--amber)}
-.status{font-size:14px;font-weight:700;color:var(--amber)}
-.pred-big{font-size:26px;font-weight:800;color:var(--green)}
-.pred-big.na{color:var(--dim);font-size:18px}
+.badv{color:var(--red)}
+.chip{font-size:14px;font-weight:800;min-height:18px}
+.chip.good{color:var(--green)}.chip.bad{color:var(--red)}.chip.warn{color:var(--amber)}
+.msline{font-size:11.5px;color:var(--dim);min-height:15px}
+canvas.spark{display:block;width:100%;height:30px;margin-top:2px}
+aside{display:flex;flex-direction:column;gap:6px;min-height:0;overflow:hidden}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 10px}
+.card h3{margin:0 0 3px;font-size:11.5px;letter-spacing:.07em;color:var(--dim);font-weight:700;text-transform:uppercase}
+.runrow{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}
+.clock{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctl{display:flex;gap:4px;flex-wrap:wrap}
+.ctl button{padding:2px 7px;font-size:13px}
+.ctl button.play{font-size:14px;font-weight:800;padding:2px 10px}
+.ctl button.play.armed{background:var(--green);color:#062016;border-color:var(--green);animation:pulse 1.4s infinite}
+.status{font-size:12.5px;font-weight:700;margin-top:2px}
+.hint{color:var(--dim);font-size:12px}
+.call{font-size:14px;font-weight:700;color:var(--amber)}
+.turn{display:block;width:100%;margin-top:5px;padding:5px 8px;font-size:15px;font-weight:800;background:#3a2a05;color:var(--amber);border:2px solid var(--amber)}
+.turn.hot{background:var(--amber);color:#1d1400;animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,176,32,.55)}50%{box-shadow:0 0 0 7px rgba(255,176,32,0)}}
+.sizes{display:inline-flex;gap:4px;align-items:center;flex-wrap:wrap}
+.sizes button{padding:2px 8px;font-size:13px}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:4px}
+a{color:var(--amber)}
+a.small{font-size:12px;margin-left:auto}
+.pv{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.06em;padding:0 5px;border-radius:4px;margin-right:4px;vertical-align:1px}
+.pv.LIVE{background:#06301f;color:var(--green);border:1px solid #1d6b4c}
+.pv.RECORDED{background:#5a0f19;color:#fff;border:1px solid var(--red)}
+.pv.COMMITTED{background:#1b2547;color:#c9d2ea;border:1px solid #5b6a96}
+.rline{font-size:13.5px;margin:1px 0}
+.rline b{font-size:16px}
+.parity{font-weight:700;font-size:12.5px}
+.parity.ok{color:var(--green)}.parity.no{color:var(--red)}
+canvas.strip{display:block;width:100%;height:52px;margin-top:2px}
+.refchip{display:inline-block;font-size:11px;font-weight:800;padding:0 6px;border-radius:5px;margin-right:4px;letter-spacing:.04em}
+.refchip.in{background:#0f3a2c;color:var(--green);border:1px solid var(--green)}
+.refchip.off{background:#3a2a05;color:var(--amber);border:1px solid var(--amber)}
+.refchip.none{background:#1b2547;color:#c9d2ea;border:1px solid #5b6a96}
+.you{font-size:12.5px;margin-top:2px}
+.pred-big{font-size:22px;font-weight:800;color:var(--green)}
 .pred-big.worse{color:var(--red)}
-canvas.strip{display:block;width:100%;height:92px;margin-top:2px}
-.lp{display:grid;grid-template-columns:44px 1fr 1fr;gap:4px;align-items:stretch}
-.lp div.h{font-size:12px;color:var(--dim);text-align:center;align-self:end}
-.lp div.rl{font-size:13px;color:var(--dim);align-self:center}
-.lp button{padding:2px 2px;font-size:15px;font-weight:700;line-height:1.08}
-.lp button small{display:block;font-size:11px;font-weight:500;color:#d8def0}
+.pred-big.na{color:var(--dim);font-size:15px}
+.lp{display:grid;grid-template-columns:40px 1fr 1fr;gap:3px;align-items:stretch}
+.lp div.h{font-size:11px;color:var(--dim);text-align:center;align-self:end}
+.lp div.rl{font-size:12px;color:var(--dim);align-self:center}
+.lp button{padding:0 2px;font-size:13.5px;font-weight:700;line-height:1.05}
+.lp button small{display:block;font-size:10.5px;font-weight:500;color:#d8def0}
 .lp button.cur{outline:3px solid var(--amber);outline-offset:1px}
-details summary{cursor:pointer;color:var(--dim);font-size:14px}
-details .row{margin-top:6px}
-label{font-size:14px;color:var(--dim)}
-footer{border-top:1px solid var(--line);padding:6px 16px;font-size:13.5px;background:#0a0f1e}
+.drawerbtn{width:100%;font-size:13px;padding:5px 8px;background:#16213f;border-style:dashed;color:#c9d2ea;flex:none}
+#drawer{position:fixed;right:0;top:46px;bottom:0;width:450px;max-width:92vw;background:#0e1630;border-left:2px solid var(--amber);box-shadow:-12px 0 30px #000a;z-index:30;overflow:auto;padding:10px 14px}
+#drawer[hidden]{display:none}
+#drawer .dhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;font-size:15px}
+#drawer h4{margin:10px 0 4px;font-size:12px;letter-spacing:.07em;color:var(--dim);text-transform:uppercase}
+#drawer .dsec{font-size:13.5px}
+#drawer .dsec[hidden]{display:none}
+#drawer label{display:block;margin:5px 0;color:var(--dim)}
+#drawer p{margin:4px 0}
+footer{border-top:1px solid var(--line);padding:4px 12px;font-size:12px;background:#0a0f1e}
 footer .pre b{color:var(--green)}
-footer .hon{color:#c9d2ea;margin-top:3px}
 footer .hon b{color:var(--amber)}
 [data-src]{text-decoration:underline dotted #5b6a96;text-underline-offset:3px;cursor:help}
-#tip{position:fixed;pointer-events:none;background:#000e;border:1px solid var(--line);padding:6px 9px;border-radius:7px;font-size:13px;max-width:460px;display:none;z-index:20}
-.legend{display:flex;gap:4px 10px;flex-wrap:wrap;font-size:12.5px;color:var(--dim);margin-top:5px;padding-top:5px;border-top:1px solid var(--line)}
+#tip{position:fixed;pointer-events:none;background:#000e;border:1px solid var(--line);padding:6px 9px;border-radius:7px;font-size:13px;max-width:460px;display:none;z-index:40}
+#toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:#1d1400;color:var(--amber);border:2px solid var(--amber);padding:8px 14px;border-radius:9px;font-weight:700;font-size:14px;z-index:50;display:none;max-width:70vw;text-align:center}
+.legend{display:flex;gap:4px 10px;flex-wrap:wrap;font-size:12.5px;color:var(--dim)}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
 .sq{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
-.rcpt{font-size:15px;margin:2px 0}
-.rcpt b{font-size:18px}
-.parity{font-weight:700;font-size:14.5px;margin-top:5px}
-.parity.ok{color:var(--green)}.parity.no{color:var(--red)}
-#tab-week{display:grid;gap:12px;grid-template-columns:repeat(3,1fr);grid-template-rows:minmax(0,1fr) auto}
-.wkbottom{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.5fr 1.5fr;gap:14px}
-.mini .v{font-size:30px}
-canvas.bars{display:block;width:100%;height:150px}
-.big3{font-size:21px;font-weight:800}
-.tbl{border-collapse:collapse;font-size:14px;margin:4px 0 10px}
+#tab-week{display:grid;gap:10px;grid-template-columns:repeat(3,1fr);grid-template-rows:minmax(0,1fr) auto}
+.wkbottom{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.5fr 1.5fr;gap:10px}
+.mini .v{font-size:26px}
+canvas.bars{display:block;width:100%;height:130px}
+.big3{font-size:18px;font-weight:800}
+.tbl{border-collapse:collapse;font-size:13.5px;margin:4px 0 10px}
 .tbl td,.tbl th{border:1px solid var(--line);padding:3px 7px;text-align:left;vertical-align:top}
 .tbl th{background:var(--panel2);color:var(--dim);font-weight:600}
 #tab-evidence{overflow:auto}
-#tab-evidence h2{margin:12px 0 2px;font-size:20px}
+#tab-evidence h2{margin:12px 0 2px;font-size:19px}
 #tab-evidence .path{color:var(--dim);font-size:13px}
-#tab-evidence .cap{color:#c9d2ea;font-size:14px;margin-top:6px}
-.honest li{margin:4px 0;font-size:16px}
+#tab-evidence .cap{color:#c9d2ea;font-size:13.5px;margin-top:6px}
+.honest li{margin:4px 0;font-size:15px}
+.closing{font-size:16px;font-weight:700;color:#c9f5e2;background:#06301f;border:1px solid #1d6b4c;border-radius:8px;padding:8px 12px;margin:8px 0}
 .warn{color:var(--amber)}
-@media (max-height:820px){
-  header{min-height:48px;padding:4px 16px}
-  nav button{padding:5px 10px;font-size:14.5px}
-  .ptitle{font-size:18px}
-  .ctr .v{font-size:28px}
-  .ctr.big .v{font-size:36px}
-  .ctr .l{font-size:12px;min-height:30px}
-  .databar{font-size:13px;padding:3px 10px}
-  footer{font-size:12.5px;padding:4px 16px}
-  canvas.spark{height:32px}
-  section{padding:6px 14px}
-  #nycSizes .hint,#synSizes .hint{display:none}
-  #nycStrip{height:56px!important}
+.qual{color:var(--text);font-size:14px}
+@media (min-height:860px) and (min-width:1360px){
+  :root{--fs:15px}
+  header{min-height:56px;padding:7px 16px}
+  .brand{font-size:18px}
+  nav button{font-size:15.5px;padding:7px 12px}
+  section{padding:8px 16px}
+  .databar{font-size:14px;padding:5px 12px}
+  .lgrid{grid-template-columns:1fr 1fr 430px;gap:14px}
+  .ptitle{font-size:21px}
+  .psub{font-size:14px}
+  .ctr .v{font-size:34px}
+  .ctr.big .v{font-size:46px}
+  .ctr .l{font-size:13px;min-height:34px}
+  .chip{font-size:16px}
+  .msline{font-size:12.5px}
+  canvas.spark{height:40px}
+  .clock{font-size:30px}
+  .card{padding:8px 12px}
+  .card h3{font-size:12.5px}
+  .status{font-size:14px}
+  .hint{font-size:13px}
+  .rline{font-size:15px}
+  .rline b{font-size:19px}
+  canvas.strip{height:80px}
+  .pred-big{font-size:26px}
+  .lp button{font-size:15px;padding:3px 2px}
+  canvas.bars{height:160px}
+  .big3{font-size:21px}
+  footer{font-size:13.5px;padding:6px 16px}
 }
 </style>
 </head>
@@ -123,164 +176,186 @@ canvas.bars{display:block;width:100%;height:150px}
     <button data-tab="week">A week</button>
     <button data-tab="evidence">Evidence / honest panel</button>
   </nav>
-  <div id="badge" class="badge real">REAL DEMAND · NYC TLC TRIPS</div>
+  <div class="hdr-right"><span id="badge" class="badge real">REAL DEMAND · NYC TLC TRIPS</span><span id="provPill" class="pill"></span></div>
 </header>
-<div id="offline">RECORDED: no backend reachable. Replaying sessions recorded by demo/record.py (committed code). Run demo/run.sh for the live version.</div>
+<div id="offline" class="banner rec" hidden>RECORDED: no demo server reachable. Replaying sessions that demo/record.py recorded from the committed code; clicks are off. Run demo/run.sh to compute them again.</div>
+<div id="stopped" class="banner stop" hidden><span id="stoppedTitle"></span><span id="stoppedMsg"></span><button id="btnRetry">Retry</button><button id="btnRecorded">Open recorded fallback</button></div>
 <main>
 <!-- ============================== JULY 4TH, REAL TRIPS (opening scene) ============================== -->
-<section id="tab-nyc" class="live">
-  <div class="databar" title="thinning probability q in research/components/real-trace-replay.md"><b>NYC TLC Trip Record Data, July 2025 (public)</b> — real demand, simulated fleet (travel, matching, patience simulated); Manhattan-internal trips thinned to ~10 requests/min · replicate 200 · north is up</div>
+<section id="tab-nyc" class="livetab">
+  <div class="databar"><b>NYC TLC Trip Record Data, July 2025 (public)</b> — real demand, simulated fleet (travel, matching, patience simulated); Manhattan-internal trips thinned to ~10 requests/min · replicate 200</div>
   <div class="lgrid">
     <div class="panel">
       <div class="ptitle">BEST RULE <span class="tag rule">reactive</span></div>
-      <div class="psub">best rule on this replay (committed)</div>
-      <canvas class="city" id="nycCityL" data-zonetip="1"></canvas>
+      <div class="psub">best rule on this replay (committed) · north is up</div>
+      <canvas class="city" id="nycCityL"></canvas>
       <div class="counters">
-        <div class="ctr big lostc"><div class="v" id="nycLostL">–</div><div class="l" id="nycLostLbl0">lost 21:30–23:30, 4 July (live)</div></div>
-        <div class="ctr"><div class="v" id="nycSrvL">–</div><div class="l" id="nycSrvLbl0">served since 3 July (live)</div></div>
-        <div class="ctr"><div class="v" id="nycC3L">–</div><div class="l" id="nycC3Lbl0">empty hops per served</div></div>
+        <div class="ctr big lostc"><div class="v" id="nycLostL">–</div><div class="l" id="nycLostLbl0"></div></div>
+        <div class="ctr"><div class="v" id="nycSrvL">–</div><div class="l" id="nycSrvLbl0"></div></div>
+        <div class="ctr"><div class="v" id="nycC3L">–</div><div class="l" id="nycC3Lbl0"></div></div>
       </div>
       <canvas class="spark" id="nycSpark"></canvas>
     </div>
-    <div class="panel" id="nycPR">
+    <div class="panel">
       <div class="ptitle">LOOK-AHEAD PLANNER <span class="tag plan">MPC · EWMA</span></div>
       <div class="psub">trained on 1–2 July only; not told about 4 July</div>
-      <canvas class="city" id="nycCityR" data-zonetip="1"></canvas>
+      <canvas class="city" id="nycCityR"></canvas>
       <div class="counters">
-        <div class="ctr big good"><div class="v" id="nycLostR">–</div><div class="l" id="nycLostLbl1">lost 21:30–23:30, 4 July (live)</div></div>
-        <div class="ctr"><div class="v" id="nycSrvR">–</div><div class="l" id="nycSrvLbl1">served since 3 July (live)</div></div>
-        <div class="ctr"><div class="v" id="nycC3R">–</div><div class="l" id="nycC3Lbl1">empty hops per served</div></div>
+        <div class="ctr big good"><div class="v" id="nycLostR">–</div><div class="l" id="nycLostLbl1"></div></div>
+        <div class="ctr"><div class="v" id="nycSrvR">–</div><div class="l" id="nycSrvLbl1"></div></div>
+        <div class="ctr"><div class="v" id="nycC3R">–</div><div class="l" id="nycC3Lbl1"></div></div>
       </div>
       <div class="chip" id="nycChip"></div>
-      <div class="hint" id="nycMsLine"></div>
+      <div class="msline" id="nycMsLine"></div>
     </div>
     <aside>
       <div class="card">
-        <div class="row" style="justify-content:space-between;flex-wrap:wrap;row-gap:4px"><div class="clock" id="nycClock">Thu 3 Jul 00:00</div>
-          <div class="row spd" id="nycSpeeds" style="flex-wrap:nowrap"></div></div>
-        <div class="status" id="nycStatus">starting…</div>
-        <div class="call warnc" style="margin-top:3px" id="nycClickCall">Now you try: click any cell to drop a surge.</div>
-        <div class="hint">real Manhattan demand + YOUR synthetic surge: <b>live only, no committed evidence for injected shocks on NYC</b></div>
-        <div class="row" style="margin-top:4px;flex-wrap:nowrap" id="nycSizes"></div>
+        <div class="runrow"><div class="clock" id="nycClock">Thu 3 Jul 00:00</div><div class="ctl" id="nycCtl"></div></div>
+        <div class="status" id="nycStatus"></div>
+        <div class="hint" id="nycHint"></div>
+        <div class="row" id="nycSizeRow"><span class="sizes" id="nycSizes"></span></div>
+        <button class="turn" id="nycTurn">Your turn: restart at 21:15 ▶</button>
+        <div class="row"><span class="hint" id="nycTurnNote"></span><a href="#" id="nycRefLink" class="small">◂ reference run</a></div>
       </div>
       <div class="card">
-        <h3>The night window, 4 July 21:30–23:30</h3>
-        <div id="nycWin" class="rcpt"></div>
-        <div class="rcpt" id="nycRcpt"></div>
-        <canvas class="strip" id="nycStrip" style="height:72px"></canvas>
-        <div class="hint">Dots: <span data-src="csv_nyc">the 20 committed replicates</span> · rings: this live run</div>
+        <h3>Fleet-wide losses, 4 July 21:30–23:30</h3>
+        <div id="nycWin"></div>
+        <div id="nycRcpt"></div>
+        <canvas class="strip" id="nycStrip"></canvas>
+        <div class="hint" id="nycNote"></div>
       </div>
-      <div class="card">
-        <div class="rcpt" id="nycWhole"></div>
-        <div class="hint" id="nycSurge"></div>
-        <div class="parity" id="nycParity"></div>
-      </div>
+      <div class="card" id="nycQual"></div>
+      <button class="drawerbtn" data-drawer="nyc">Receipts, legend &amp; sources ▸</button>
     </aside>
   </div>
 </section>
 <!-- ============================== STRESS TEST (SYNTHETIC) ============================== -->
-<section id="tab-syn" class="live" hidden>
+<section id="tab-syn" class="livetab" hidden>
   <div class="lgrid">
     <div class="panel">
       <div class="ptitle">BEST RULE <span class="tag rule" id="synRuleName">reactive</span></div>
       <div class="psub" id="synRuleDesc"></div>
       <canvas class="city" id="synCityL"></canvas>
       <div class="counters">
-        <div class="ctr big lostc"><div class="v" id="synLostL">0</div><div class="l" id="synLostLbl0">requests lost since 04:00</div></div>
-        <div class="ctr"><div class="v" id="synSrvL">–</div><div class="l" id="synSrvLbl0">served today (live)</div></div>
-        <div class="ctr"><div class="v" id="synC3L">–</div><div class="l" id="synC3Lbl0">empty hops per served</div></div>
+        <div class="ctr big lostc"><div class="v" id="synLostL">0</div><div class="l" id="synLostLbl0"></div></div>
+        <div class="ctr"><div class="v" id="synSrvL">–</div><div class="l" id="synSrvLbl0"></div></div>
+        <div class="ctr"><div class="v" id="synC3L">–</div><div class="l" id="synC3Lbl0"></div></div>
       </div>
       <canvas class="spark" id="synSpark"></canvas>
     </div>
-    <div class="panel" id="synPR">
+    <div class="panel">
       <div class="ptitle">LOOK-AHEAD PLANNER <span class="tag plan" id="synBrainName">MPC · EWMA</span></div>
       <div class="psub" id="synBrainDesc"></div>
       <canvas class="city" id="synCityR"></canvas>
       <div class="counters">
-        <div class="ctr big good"><div class="v" id="synLostR">0</div><div class="l" id="synLostLbl1">requests lost since 04:00</div></div>
-        <div class="ctr"><div class="v" id="synSrvR">–</div><div class="l" id="synSrvLbl1">served today (live)</div></div>
-        <div class="ctr"><div class="v" id="synC3R">–</div><div class="l" id="synC3Lbl1">empty hops per served</div></div>
+        <div class="ctr big good"><div class="v" id="synLostR">0</div><div class="l" id="synLostLbl1"></div></div>
+        <div class="ctr"><div class="v" id="synSrvR">–</div><div class="l" id="synSrvLbl1"></div></div>
+        <div class="ctr"><div class="v" id="synC3R">–</div><div class="l" id="synC3Lbl1"></div></div>
       </div>
       <div class="chip" id="synChip"></div>
-      <div class="hint" id="synMsLine"></div>
+      <div class="msline" id="synMsLine"></div>
     </div>
     <aside>
       <div class="card">
-        <div class="row" style="justify-content:space-between;flex-wrap:wrap;row-gap:4px"><div class="clock" id="synClock">--:--</div>
-          <div class="row spd" id="synSpeeds" style="flex-wrap:nowrap"></div></div>
-        <div class="hint">simulated minutes per second · <span id="synTag">live · 1 run · seed 7000</span></div>
-        <div class="call" style="margin-top:5px" id="synClickCall">Click any zone to drop a surge.</div>
-        <div class="hint">Unannounced to both fleets; both get the same requests (white pings).</div>
-        <div class="row" style="margin-top:4px;flex-wrap:nowrap" id="synSizes"></div>
+        <div class="runrow"><div class="clock" id="synClock">05:00</div><div class="ctl" id="synCtl"></div></div>
+        <div class="status" id="synStatus"></div>
+        <div class="hint" id="synHint"></div>
+        <div class="row"><span class="sizes" id="synSizes"></span></div>
       </div>
       <div class="card">
-        <h3>Prediction, committed before you click</h3>
+        <h3>Committed reference · shown before you click</h3>
         <div id="synPredTxt"></div>
         <canvas class="strip" id="synStrip"></canvas>
+        <div class="you" id="synYou"></div>
         <div class="hint" id="synPredFoot"></div>
       </div>
       <div class="card">
-        <h3>Lead time L × patience P: click a cell</h3>
+        <h3>Lead time L × patience P · click a cell</h3>
         <div class="lp" id="synLP"></div>
         <div class="hint" id="synLPFoot"></div>
       </div>
-      <details class="card">
-        <summary>Advanced: rule, planner brain, drift, new city</summary>
-        <div class="row"><label>rule <select id="synSelRule"><option value="auto">best rule for this cell (committed)</option><option value="greedy">greedy (decentralised)</option><option value="reactive">reactive</option><option value="static">static</option></select></label></div>
-        <div class="row"><label>planner <select id="synSelBrain"><option value="mpc-ewma">EWMA forecast (default)</option><option value="mpc-queue">queue only (no forecast)</option><option value="mpc-ewma@trust=0.5">half-trust forecast</option><option value="oracle">true-rate forecast</option></select></label></div>
-        <div class="row"><label><input type="checkbox" id="synChkDrift"> gradual drift (the main hotspot migrates over the day)</label></div>
-        <div class="row"><label><input type="checkbox" id="chkPrice" checked> shade planner zones by LP shadow price</label></div>
-        <div class="row"><button id="synRestart" title="r">Restart (04:00)</button><button id="synNewCity">New city (next seed)</button></div>
-      </details>
+      <button class="drawerbtn" data-drawer="syn">Settings, legend &amp; reference protocol ▸</button>
     </aside>
   </div>
 </section>
 <!-- ============================== A WEEK ============================== -->
 <section id="tab-week" hidden>
-  <div class="panel"><div class="ptitle">GREEDY RULE <span class="tag rule">decentralised</span></div><div class="psub">surplus idle units hop to the neighbour with the longest unmet queue</div><canvas class="city" id="wk0"></canvas><div class="counters"><div class="ctr mini"><div class="v" id="wkd0">–</div><div class="l">served, current day</div></div><div class="ctr mini"><div class="v" id="wkr0">–</div><div class="l">served, run so far</div></div></div></div>
-  <div class="panel"><div class="ptitle">REACTIVE RULE <span class="tag rule">best rule here</span></div><div class="psub">rebalances toward the last 30 minutes of observed demand</div><canvas class="city" id="wk1"></canvas><div class="counters"><div class="ctr mini"><div class="v" id="wkd1">–</div><div class="l">served, current day</div></div><div class="ctr mini"><div class="v" id="wkr1">–</div><div class="l">served, run so far</div></div></div></div>
-  <div class="panel"><div class="ptitle">PLANNER <span class="tag plan">MPC · EWMA</span></div><div class="psub">LP over the lead time + learned daily cycle</div><canvas class="city" id="wk2"></canvas><div class="counters"><div class="ctr mini"><div class="v" id="wkd2">–</div><div class="l">served, current day</div></div><div class="ctr mini"><div class="v" id="wkr2">–</div><div class="l">served, run so far</div></div></div></div>
+  <div class="panel"><div class="ptitle">GREEDY RULE <span class="tag rule">decentralised</span></div><div class="psub">idle units hop to the neighbour with the longest queue</div><canvas class="city" id="wk0"></canvas><div class="counters"><div class="ctr mini"><div class="v" id="wkd0">–</div><div class="l" id="wkdl0"></div></div><div class="ctr mini"><div class="v" id="wkr0">–</div><div class="l" id="wkrl0"></div></div></div></div>
+  <div class="panel"><div class="ptitle">REACTIVE RULE <span class="tag rule">best rule here</span></div><div class="psub">rebalances toward the last 30 min of demand</div><canvas class="city" id="wk1"></canvas><div class="counters"><div class="ctr mini"><div class="v" id="wkd1">–</div><div class="l" id="wkdl1"></div></div><div class="ctr mini"><div class="v" id="wkr1">–</div><div class="l" id="wkrl1"></div></div></div></div>
+  <div class="panel"><div class="ptitle">PLANNER <span class="tag plan">MPC · EWMA</span></div><div class="psub">LP over the lead time + learned daily cycle</div><canvas class="city" id="wk2"></canvas><div class="counters"><div class="ctr mini"><div class="v" id="wkd2">–</div><div class="l" id="wkdl2"></div></div><div class="ctr mini"><div class="v" id="wkr2">–</div><div class="l" id="wkrl2"></div></div></div></div>
   <div class="wkbottom">
-    <div class="card"><div class="clock" id="wkClock">Day 1 · 00:00</div><div class="hint">SYNTHETIC. A week with a shock every day, a migrating hotspot and transient spikes (scenario long-week, seed 200), <b>recomputed live</b> by the committed code. L=1, P=10.</div><div class="hint" id="wkProg"></div></div>
-    <div class="card"><h3>Served per day</h3><canvas class="bars" id="wkBars"></canvas><div class="hint">Bars: this live run (seed 200). Black ticks: <span data-src="week">committed means over 10 seeds</span>.</div></div>
+    <div class="card"><div class="clock" id="wkClock">Day 1 · 00:00</div><div class="hint" id="wkAbout"></div><div class="hint" id="wkProg"></div><button class="drawerbtn" data-drawer="week" style="margin-top:5px">How to read the week ▸</button></div>
+    <div class="card"><h3>Served per day</h3><canvas class="bars" id="wkBars"></canvas><div class="hint" id="wkBarsNote"></div></div>
     <div class="card"><div class="big3" id="wkHead"></div><div class="hint" id="wkHead2"></div><div class="parity" id="wkParity"></div></div>
   </div>
 </section>
-<!-- ============================== EVIDENCE ============================== -->
+<!-- ============================== EVIDENCE / HONEST PANEL ============================== -->
 <section id="tab-evidence" hidden></section>
 </main>
+<div id="drawer" hidden>
+  <div class="dhead"><b id="drawerTitle">More</b><button id="drawerClose" title="Esc">✕ close</button></div>
+  <div class="dsec" data-for="nyc" id="drawerNyc" hidden></div>
+  <div class="dsec" data-for="syn" hidden>
+    <h4>Settings (each change restarts the city, armed)</h4>
+    <label>rule <select id="synSelRule"><option value="auto">best rule for this cell (committed)</option><option value="greedy">greedy (decentralised)</option><option value="reactive">reactive</option><option value="static">static</option></select></label>
+    <label>planner <select id="synSelBrain"><option value="mpc-ewma">EWMA forecast (default)</option><option value="mpc-queue">queue only (no forecast)</option><option value="mpc-ewma@trust=0.5">half-trust forecast</option><option value="oracle">true-rate forecast</option></select></label>
+    <label><input type="checkbox" id="synChkDrift"> gradual drift (the main hotspot migrates over the day)</label>
+    <label><input type="checkbox" id="chkPrice" checked> shade planner zones by LP shadow price</label>
+    <div class="row"><button id="synRestart">Restart (armed)</button><button id="synNewCity">New city (next seed)</button></div>
+    <div id="drawerSyn"></div>
+  </div>
+  <div class="dsec" data-for="week" id="drawerWeek" hidden></div>
+</div>
 <footer>
   <div class="pre" id="preLine"></div>
   <div class="hon" id="honLine"></div>
 </footer>
 <div id="tip"></div>
+<div id="toast"></div>
 <script src="data/evidence.js"></script>
 <script>
 'use strict';
 const EV = window.EVIDENCE;
 const G = 5, Z = 25, IDLE = 0, MOVING = 1, WIN = 120;
 const NY_EVENT = [1440 + 21 * 60 + 30, 1440 + 23 * 60 + 30];   // eval/harness.py NYC event window (4 July 21:30-23:30)
+const NY_END = 2880;
 const C = {zone: '#18223f', edge: '#2a3866', empty: '#0d1328', idle: '#f2f6ff', moving: '#ffb020', busy: '#4cc3ff',
-  lost: '#ff4d5e', queue: '#ff8a3d', amber: '#ffb020', green: '#3ddc97', dim: '#93a0c4', text: '#e8eef7', red: '#ff4d5e'};
+  lost: '#ff4d5e', queue: '#ff8a3d', amber: '#ffb020', green: '#3ddc97', dim: '#9aa6c8', text: '#e8eef7', red: '#ff4d5e'};
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
-let BACKEND = false;
+
+// ---- provenance: ONE value (MODE) drives every label; these two lines are the only place the words appear
+const PROV_WORDS = {
+  LIVE: {badge: 'LIVE', adj: 'live', ff: 'fast-forwarding, computed live', computed: 'computed live now by the committed code', ms: 'LP re-plan every minute: %s ms median (measured live on this laptop)', only: 'live only', you: 'your live intervention', sg: 'your surge', Sg: 'Your surge', me: 'you', stopped: 'LIVE COMPUTATION STOPPED.', closing: 'The interventions and simulations were computed live; the reference distributions and confidence intervals are committed results.'}, // PROV-WORDS:LIVE
+  RECORDED: {badge: 'RECORDED', adj: 'recorded', ff: 'fast-forwarding (recorded)', computed: 'recorded earlier by demo/record.py from the committed code', ms: 'solve times are not part of the recording', only: 'recorded, not committed evidence', you: 'a recorded intervention', sg: 'the recorded surge', Sg: 'The recorded surge', me: 'recorded', stopped: '', closing: 'In this recording, the interventions and simulations were computed earlier by demo/record.py from the committed code; the reference distributions and confidence intervals are committed results.'}, // PROV-WORDS:RECORDED
+};
+let MODE = 'LIVE', PW = PROV_WORDS.LIVE, BACKEND = false, STOPPED = false;
+const pvTag = (m = MODE) => `<span class="pv ${m}">${m === 'COMMITTED' ? 'COMMITTED' : PROV_WORDS[m].badge}</span>`;
+
 const RULE_DESC = {greedy: 'idle units hop to the neighbour with the longest queue (decentralised)',
   reactive: 'rebalances toward the last 30 min of demand', static: 'rebalances toward historical average demand'};
-const BRAIN = {'mpc-ewma': ['MPC · EWMA', 'LP over the lead time: units about to free up, live queues, EWMA forecast'],
-  'mpc-queue': ['MPC · queue only', 'same LP, no demand forecast: live queues and units about to free up only'],
+const BRAIN = {'mpc-ewma': ['MPC · EWMA', 'LP over the lead time: units about to free up, queues, EWMA forecast'],
+  'mpc-queue': ['MPC · queue only', 'same LP, no demand forecast: queues and units about to free up'],
   'mpc-ewma@trust=0.5': ['MPC · half trust', 'same LP, EWMA forecast multiplied by 0.5'],
   'oracle': ['MPC · true rates', 'same LP fed the true rates: your surge from its onset, never before']};
 
+class ApiError extends Error { constructor(msg, status, code) { super(msg); this.status = status; this.code = code; } }
 async function api(path, body) {
-  const r = await fetch(path, body === undefined ? {cache: 'no-store'} :
-    {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
-  const j = await r.json();
-  if (!r.ok) throw new Error(j.error || r.status);
+  let r;
+  try {
+    r = await fetch(path, body === undefined ? {cache: 'no-store'} :
+      {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+  } catch (e) { throw new ApiError('the demo server is not responding', 0, 'down'); }
+  let j = null;
+  try { j = await r.json(); } catch (e) { /* not JSON */ }
+  if (!r.ok) throw new ApiError((j && j.error) || ('HTTP ' + r.status), r.status, (j && j.code) || (r.status >= 500 ? 'server' : 'rejected'));
   return j;
 }
+const fatal = e => e instanceof ApiError && ['down', 'server', 'session_gone'].includes(e.code);
 const hhmm = t => { const m = ((t % 1440) + 1440) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
-const nycClock = t => t >= 2880 ? 'Fri 4 Jul 24:00' : (t < 1440 ? 'Thu 3 Jul ' : 'Fri 4 Jul ') + hhmm(t);
+const clockEnd = (t, end) => t >= end && end % 1440 === 0 ? '24:00' : hhmm(t);
+const nycClock = t => t >= NY_END ? 'Fri 4 Jul 24:00' : (t < 1440 ? 'Thu 3 Jul ' : 'Fri 4 Jul ') + hhmm(t);
+const dur = m => m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? ' ' + (m % 60) + ' min' : ''}` : `${m} min`;
 const pct = (x, d = 1) => isFinite(x) ? (100 * x).toFixed(d) + '%' : '–';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const sum = a => a.reduce((x, y) => x + y, 0);
@@ -306,14 +381,19 @@ function showTip(html, e) {
   tip.style.left = Math.min(window.innerWidth - 470, e.clientX + 14) + 'px'; tip.style.top = Math.min(window.innerHeight - 90, e.clientY + 16) + 'px';
 }
 document.addEventListener('mousemove', e => {   // every committed number names its source file on hover
-  if (e.target.dataset && e.target.dataset.zonetip) return;
+  if (e.target.tagName === 'CANVAS' && e.target.classList.contains('city')) return;
   const el = e.target.closest ? e.target.closest('[data-src]') : null;
   if (!el) { $('#tip').style.display = 'none'; return; }
   const k = el.getAttribute('data-src'), s = EV && EV.sources[k];
   showTip(s ? `source: <b>${esc(s.path)}</b><br>sha1 ${esc(s.sha1)} · copied by demo/export_evidence.py` : esc(k), e);
 });
+let toastTimer = null;
+function toast(msg, ms = 3500) {
+  const t = $('#toast'); t.textContent = msg; t.style.display = 'block';
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.style.display = 'none'; }, ms);
+}
 
-// ------------------------------------------------------------------ city renderer (both live tabs and the week)
+// ------------------------------------------------------------------ city renderer (both run tabs and the week)
 class City {
   constructor(cv, o = {}) {
     this.cv = cv; this.o = o; this.n = 0; this.init = false;
@@ -371,7 +451,7 @@ class City {
     x.save(); x.strokeStyle = color; x.lineWidth = dash ? 2.5 : 4; if (dash) x.setLineDash([7, 6]);
     if (!dash) { x.shadowColor = color; x.shadowBlur = 16; }
     x.strokeRect(x0 + 2, y0 + 2, x1 - x0 - 4, y1 - y0 - 4); x.restore();
-    if (label) { x.fillStyle = color; x.font = `800 ${Math.max(11, Math.round(this.cell * 0.13))}px -apple-system,Helvetica,sans-serif`; x.fillText(label, x0 + 7, y0 + Math.max(13, this.cell * 0.14)); }
+    if (label) { x.fillStyle = color; x.font = `800 ${Math.max(11, Math.round(this.cell * 0.13))}px -apple-system,Helvetica,sans-serif`; x.fillText(label, x0 + 7, y0 + Math.max(13, this.cell * 0.15)); }
   }
   draw(a, now) {
     const x = this.ctx, w = this.cell, S = this.size, ur = Math.max(3, w * 0.062);
@@ -382,26 +462,26 @@ class City {
       x.fillStyle = empty ? C.empty : C.zone; x.beginPath();
       if (x.roundRect) x.roundRect(zx + 2, zy + 2, w - 4, w - 4, 8); else x.rect(zx + 2, zy + 2, w - 4, w - 4);
       x.fill();
-      if (this.price && !empty && this.o.price && this.o.price()) {   // zones above the city median; brightest = one more idle unit worth most now
+      if (this.price && !empty && this.o.price && this.o.price()) {   // above the city median; brightest = one more idle unit worth most now
         const v = Math.min(1, (this.price[z] - this.pmed) / Math.max(0.05, this.pmax - this.pmed));
         if (v > 0.02) { x.fillStyle = `rgba(255,176,32,${(0.65 * v).toFixed(3)})`; x.fill(); }
       }
       x.strokeStyle = C.edge; x.lineWidth = 1; x.stroke();
       const lab = this.o.labels && this.o.labels[z];
       if (lab) {
-        const fs = Math.max(9, Math.round(w * 0.095));
-        x.fillStyle = '#9aa6c8'; x.font = `600 ${fs}px -apple-system,Helvetica,sans-serif`;
-        lab.slice(0, 2).forEach((s, k) => x.fillText(s, zx + 6, zy + w - 7 - (lab.length > 1 ? (1 - k) * (fs + 2) : 0), w - 12));
+        const two = w >= 74 && lab.length > 1, fs = Math.max(10, Math.round(w * (two ? 0.1 : 0.125)));
+        x.fillStyle = '#a7b2d4'; x.font = `600 ${fs}px -apple-system,Helvetica,sans-serif`;
+        (two ? lab.slice(0, 2) : lab.slice(0, 1)).forEach((s, k, arr) => x.fillText(s, zx + 6, zy + w - 7 - (arr.length - 1 - k) * (fs + 2), w - 12));
       }
       const q = this.q[z];
       if (q > 0) {
-        const sq = Math.max(3, w * 0.05), per = 10, n = Math.min(q, 20), y0 = zy + w * (lab ? 0.56 : 0.68);
+        const sq = Math.max(3, w * 0.05), per = 10, n = Math.min(q, 20), y0 = zy + w * (lab ? 0.55 : 0.68);
         x.fillStyle = C.queue;
         for (let k = 0; k < n; k++) x.fillRect(zx + w * 0.1 + (k % per) * sq * 1.45, y0 + Math.floor(k / per) * sq * 1.45, sq, sq);
         if (q > 20) { x.font = `800 ${Math.round(w * 0.12)}px -apple-system,Helvetica,sans-serif`; x.fillText('+' + (q - 20), zx + w * 0.66, y0 + sq * 2.6); }
       }
     }
-    for (const sh of this.shocks) if (this.t >= sh.t0 && this.t < sh.end) this.block(sh.zones, C.amber, !!sh.dash, sh.label || '⚡ your surge');
+    for (const sh of this.shocks) if (this.t >= sh.t0 && this.t < sh.end) this.block(sh.zones, C.amber, !!sh.dash, sh.label || (MODE === 'LIVE' ? '⚡ your surge' : '⚡ recorded surge'));
     if (this.hover) this.block(this.hover, '#ffffff', true, null);
     for (const p of this.pings) {
       const age = (now - p[2]) / 600; if (age > 1) continue;
@@ -420,101 +500,120 @@ class City {
     }
   }
 }
-function legendHTML() {
-  return `<div class="legend"><span><i class="dot" style="background:${C.idle}"></i>idle</span><span><i class="dot" style="background:${C.moving}"></i>repositioning</span>` +
-    `<span><i class="dot" style="background:${C.busy}"></i>carrying</span><span><i class="sq" style="background:${C.queue}"></i>waiting request</span>` +
-    `<span style="color:${C.red}">✕ lost request</span><span><i class="sq" style="background:${C.amber}"></i>planner heat: LP shadow price of one more idle unit (relative)</span></div>`;
-}
+const LEGEND = `<div class="legend"><span><i class="dot" style="background:${C.idle}"></i>idle unit</span><span><i class="dot" style="background:${C.moving}"></i>repositioning, empty</span>` +
+  `<span><i class="dot" style="background:${C.busy}"></i>carrying a request</span><span><i class="sq" style="background:${C.queue}"></i>waiting request</span>` +
+  `<span style="color:${C.red}">✕ lost request (waited P minutes)</span><span>white rings: new requests, the same in both cities</span>` +
+  `<span><i class="sq" style="background:${C.amber}"></i>planner heat: LP shadow price of one more idle unit (relative: zones above the city median, brightest = worth most now; a planning signal, not a market price)</span></div>`;
 function drawSpark(cv, series, shocks, t) {
-  const w = cv.clientWidth || 300, h = 42, x = sizeCanvas(cv, w, h), n = 240;
+  const w = cv.clientWidth || 300, h = cv.clientHeight || 30, x = sizeCanvas(cv, w, h), n = 240;
   x.clearRect(0, 0, w, h);
   const m = Math.max(4, ...series[0], ...series[1]);
   [[0, C.red], [1, C.green]].forEach(([i, col]) => {
     const s = series[i]; x.strokeStyle = col; x.lineWidth = 2; x.beginPath();
-    s.forEach((v, k) => { const px = w - (s.length - k) * w / n, py = h - 3 - (h - 16) * v / m; k ? x.lineTo(px, py) : x.moveTo(px, py); });
+    s.forEach((v, k) => { const px = w - (s.length - k) * w / n, py = h - 3 - (h - 14) * v / m; k ? x.lineTo(px, py) : x.moveTo(px, py); });
     x.stroke();
   });
   for (const sh of shocks) { const k = t - sh.t0; if (k >= 0 && k < n) { x.fillStyle = C.amber; x.fillRect(w - k * w / n, 0, 2, h); } }
-  x.fillStyle = C.dim; x.font = '11px -apple-system,Helvetica,sans-serif';
-  x.fillText('requests lost per minute, last 4 h: rule (red) vs planner (green)', 4, 11);
+  x.fillStyle = C.dim; x.font = '10.5px -apple-system,Helvetica,sans-serif';
+  x.fillText('lost per minute, last 4 h: rule (red), planner (green)', 3, 10);
 }
 
-// ------------------------------------------------------------------ one live city pair (used by the July 4th tab and the stress test)
+// ------------------------------------------------------------------ one pair of cities (the July 4th runs and the stress test)
+let FIRST_VISUAL = false;
 class LiveView {
   constructor(key, o) {
     this.key = key; this.o = o;
     const id = s => document.getElementById(key + s);
     this.id = id;
-    this.cfg = Object.assign({L: 1, P: 10, rule: 'auto', brain: 'mpc-ewma', drift: false, seed: 7000, ruleResolved: 'reactive'}, o.cfg || {});
-    this.size = 1; this.speed = o.speed; this.playing = true; this.gen = 0; this.started = false; this.lastDom = 0;
+    this.cfg = Object.assign({L: 1, P: 10, rule: 'auto', brain: 'mpc-ewma', drift: false, seed: 7000}, o.cfg || {});
+    this.role = o.role || 'interactive';
+    this.size = 1; this.speed = o.speed; this.playing = false; this.armed = true; this.gen = 0; this.started = false; this.lastDom = 0;
     this.cities = [new City(id('CityL'), o.city || {}), new City(id('CityR'), Object.assign({}, o.city || {}, {price: () => $('#chkPrice').checked}))];
     this.cities.forEach((c, i) => {
       c.cv.addEventListener('mousemove', e => this.hover(i, e));
       c.cv.addEventListener('mouseleave', () => { this.cities.forEach(k => { k.hover = null; }); $('#tip').style.display = 'none'; });
       c.cv.addEventListener('click', e => this.click(i, e));
     });
-    id('Sizes').insertAdjacentHTML('afterend', legendHTML());
-    id('Speeds').innerHTML = `<button class="rs" title="restart (r)">⟲</button><button class="pause" title="pause (space)">❚❚</button>` +
-      o.speeds.map(s => `<button data-speed="${s}">${s}</button>`).join('');
-    id('Speeds').querySelector('.rs').onclick = () => this.start();
-    id('Speeds').querySelector('.pause').onclick = () => this.togglePause();
-    id('Speeds').querySelectorAll('[data-speed]').forEach(b => b.onclick = () => this.setSpeed(+b.dataset.speed));
-    id('Sizes').innerHTML = [0.5, 1, 2].map(s => `<button data-size="${s}">×${s === 0.5 ? '½' : s}</button>`).join('') +
-      `<span class="hint">×1 = committed shock shape: 2×2 cells, +1.2 requests/min each, 6 h</span>`;
-    id('Sizes').querySelectorAll('[data-size]').forEach(b => b.onclick = () => { this.size = +b.dataset.size; this.marks(); if (this.o.onSize) this.o.onSize(this); });
-    this.setSpeed(this.speed);
+    id('Ctl').innerHTML = `<button class="play" title="play / pause (space)">▶</button>` +
+      o.speeds.map((s, k) => `<button data-speed="${s}" title="${s} simulated minutes per second (key ${k + 1})">${s}×</button>`).join('') +
+      `<button class="rs" title="restart this run (r)">⟲</button>`;
+    id('Ctl').querySelector('.play').onclick = () => this.togglePause();
+    id('Ctl').querySelector('.rs').onclick = () => this.start({role: this.role});
+    id('Ctl').querySelectorAll('[data-speed]').forEach(b => b.onclick = () => this.setSpeed(+b.dataset.speed));
+    if (id('Sizes')) {
+      id('Sizes').innerHTML = `<span class="hint">surge size</span>` + [0.5, 1, 2].map(s => `<button data-size="${s}">×${s === 0.5 ? '½' : s}</button>`).join('');
+      id('Sizes').querySelectorAll('[data-size]').forEach(b => b.onclick = () => { this.size = +b.dataset.size; this.marks(); if (this.o.onSize) this.o.onSize(this); });
+    }
+    this.marks();
   }
   marks() {
-    this.id('Sizes').querySelectorAll('[data-size]').forEach(b => b.classList.toggle('on', +b.dataset.size === this.size));
-    this.id('Speeds').querySelectorAll('[data-speed]').forEach(b => b.classList.toggle('on', +b.dataset.speed === this.speed));
-    this.id('Speeds').querySelector('.pause').textContent = this.playing ? '❚❚' : '▶';
+    const ctl = this.id('Ctl'), pl = ctl.querySelector('.play');
+    pl.textContent = this.playing ? '❚❚ pause' : '▶ play';
+    pl.classList.toggle('armed', !this.playing && this.armed && !this.done);
+    ctl.querySelectorAll('[data-speed]').forEach(b => b.classList.toggle('on', +b.dataset.speed === this.speed));
+    if (this.id('Sizes')) this.id('Sizes').querySelectorAll('[data-size]').forEach(b => b.classList.toggle('on', +b.dataset.size === this.size));
   }
-  setSpeed(s) { this.speed = s; this.playing = true; this.marks(); }
-  togglePause() { this.playing = !this.playing; this.marks(); }
+  setSpeed(s) { this.speed = s; this.marks(); }
+  play() {
+    if (STOPPED || this.done) return;
+    this.playing = true; this.armed = false; this.marks(); this.dom();
+  }
+  pause() { this.playing = false; this.marks(); this.dom(); }
+  togglePause() { if (this.playing) this.pause(); else this.play(); }
   reset() {
     this.gen++; this.buf = []; this.inflight = false; this.done = false; this.acc = 0; this.series = [[], []]; this.ms = []; this.err = '';
-    this.shocks = []; this.since = [0, 0]; this.sid = null; this.base = null; this.t = 0;
+    this.shocks = []; this.since = [0, 0]; this.sid = null; this.base = null; this.t = 0; this.config = null;
     this.cum = [{srv: 0, lost: 0, arr: 0, empty: 0}, {srv: 0, lost: 0, arr: 0, empty: 0}];
     this.warming = false; this.tl = []; this.tlNext = 0; this.tlPos = 0; this.tlAcc = 0; this.pendingSnap = null; this.tlCum = null;
-    this.win = [0, 0]; this.winSteps = 0; this.recPos = 0;
-    this.cities.forEach(c => { c.shocks = this.shocks; c.pings = []; c.marks = []; c.price = null; c.init = false; });
+    this.win = [0, 0]; this.winSteps = 0; this.recPos = 0; this.playing = false; this.armed = true; this.paused = '';
+    this.cities.forEach(c => { c.shocks = this.shocks; c.pings = []; c.marks = []; c.price = null; c.init = false; c.hover = null; });
     if (this.o.onReset) this.o.onReset(this);
-    this.dom();
+    this.marks(); this.dom();
   }
-  async start() {
+  async start(opts = {}) {
+    if (opts.role) this.role = opts.role;
     this.started = true; this.reset();
     const g = this.gen;
-    if (!BACKEND) return this.startRecorded();
+    if (MODE !== 'LIVE') return this.startRecorded();
     try {
-      const body = this.o.scenario === 'nyc' ? {scenario: 'nyc'} : Object.assign({scenario: 'synthetic'}, this.cfg);
+      const body = this.o.scenario === 'nyc' ? {scenario: 'nyc', role: this.role} : Object.assign({scenario: 'synthetic'}, this.cfg);
       const r = await api('/api/live/new', body);
       if (g !== this.gen) return;
-      this.sid = r.sid; this.config = r.config;
-      if (this.o.onConfig) this.o.onConfig(this, r.config);
-      if (r.warming) { this.warming = true; this.applyUnits(r.snapshot); this.pollWarm(g); }
-      else this.applySnapshot(r.snapshot, r.stats);
-    } catch (e) { this.err = 'backend error: ' + e.message; this.dom(); }
+      this.sid = r.sid; this.setConfig(r.config);
+      if (r.warming) {
+        this.warming = true;
+        if (r.snapshot) this.applyUnits(r.snapshot);
+        this.pollWarm(g);
+      } else this.applySnapshot(r.snapshot, r.stats);
+    } catch (e) { this.fail(e); }
   }
+  setConfig(cfg) { this.config = cfg; if (this.o.onConfig) this.o.onConfig(this, cfg); this.dom(); }
   startRecorded() {
-    const R = window.RECORDED && window.RECORDED[this.key];
+    const R = window.RECORDED && window.RECORDED[this.o.recKey(this)];
     if (!R) { this.err = 'no recording found (demo/data/recorded_live.js)'; this.dom(); return; }
-    this.config = R.config; if (this.o.onConfig) this.o.onConfig(this, R.config);
-    if (R.warm_frames) { this.warming = true; this.applyUnits(R.snapshot0); this.tl = R.warm_frames.slice(); this.pendingSnap = [R.snapshot, R.stats]; }
+    this.setConfig(R.config);
+    if (R.warm_frames) { this.warming = true; this.applyUnits(R.snapshot0); this.tl = R.warm_frames.slice(); this.pendingSnap = [R.snapshot, R.stats]; this.warmT = R.snapshot.t; this.warmTarget = R.snapshot.t; }
     else this.applySnapshot(R.snapshot, R.stats);
   }
   applyUnits(snap) { snap.panels.forEach((p, i) => { const c = this.cities[i]; c.setUnits(p, false); c.q = p.q; c.t = snap.t; }); this.t = snap.t; }
-  applySnapshot(snap, stats) { this.applyUnits(snap); this.base = stats.panels; this.warming = false; this.dom(); }
+  applySnapshot(snap, stats) { this.applyUnits(snap); this.base = stats.panels; this.warming = false; this.marks(); this.dom(); }
   async pollWarm(g) {
     try {
-      const r = await api('/api/live/warm', {sid: this.sid, from: this.tlNext});
+      const lapse = !this.o.timelapse || this.o.timelapse(this);   // the interactive NYC run skips the time-lapse
+      const r = await api('/api/live/warm', {sid: this.sid, from: this.tlNext, frames: lapse});
       if (g !== this.gen) return;
       this.tl.push(...r.frames); this.tlNext = r.next; this.warmT = r.t; this.warmTarget = r.target;
-      if (r.error) { this.err = 'backend error: ' + r.error; return; }
-      if (r.done) { this.pendingSnap = [r.snapshot, r.stats]; return; }
-      setTimeout(() => this.pollWarm(g), 150);
-    } catch (e) { if (g === this.gen) this.err = 'backend error: ' + e.message; }
+      if (r.error) { this.err = 'server error: ' + r.error; this.dom(); return; }
+      if (r.done) { if (lapse) this.pendingSnap = [r.snapshot, r.stats]; else this.applySnapshot(r.snapshot, r.stats); return; }
+      this.dom();
+      setTimeout(() => this.pollWarm(g), 200);
+    } catch (e) { if (g === this.gen) this.fail(e); }
   }
-  tickWarm(dt) {   // fast-forward time-lapse: one 10-minute frame every 25 ms
+  fail(e) {
+    if (fatal(e)) stopLive(e.message);
+    else { this.err = e.message; this.dom(); }
+  }
+  tickWarm(dt) {   // the fast-forward time-lapse: one 10-minute frame every 25 ms
     this.tlAcc += dt;
     while (this.tlAcc >= 25 && this.tlPos < this.tl.length) {
       const f = this.tl[this.tlPos++]; this.tlAcc -= 25;
@@ -527,18 +626,13 @@ class LiveView {
     }
   }
   pump() {   // keep a small buffer ahead of the display, so a click lands within ~0.3 s
-    if (this.done || this.inflight || !this.playing || this.warming || !this.base) return;
+    if (this.done || this.inflight || !this.playing || this.warming || !this.base || STOPPED) return;
     if (this.buf.length >= Math.max(2, Math.ceil(this.speed * 0.3))) return;
     const n = Math.max(1, Math.min(64, Math.ceil(this.speed * 0.25)));
-    if (!BACKEND) {
-      const R = window.RECORDED[this.key];
-      for (let k = 0; k < n; k++) {
-        if (this.recPos >= R.frames.length) { if (!this.buf.length) this.start(); return; }
-        const f = R.frames[this.recPos++];
-        for (const sh of R.shocks) if (sh.t0 === f.t) this.shocks.push(Object.assign({lost: [0, 0], steps: 0}, sh));
-        this.buf.push(f);
-      }
-      if (this.o.onShock && this.shocks.length) this.o.onShock(this);
+    if (MODE !== 'LIVE') {
+      const R = window.RECORDED[this.o.recKey(this)];
+      for (let k = 0; k < n && this.recPos < R.frames.length; k++) this.buf.push(R.frames[this.recPos++]);
+      if (this.recPos >= R.frames.length && !this.buf.length) this.finish();
       return;
     }
     if (!this.sid) return;
@@ -546,11 +640,20 @@ class LiveView {
     api('/api/live/step', {sid: this.sid, n}).then(r => {
       if (g !== this.gen) return;
       this.buf.push(...r.frames);
-      if (r.stats.done && !r.frames.length) { this.done = true; this.dom(); }
-    }).catch(e => { this.err = 'backend error: ' + e.message; }).finally(() => { if (g === this.gen) this.inflight = false; });
+      if (r.stats.done && !r.frames.length && !this.buf.length) this.finish();
+    }).catch(e => { if (g === this.gen) this.fail(e); }).finally(() => { if (g === this.gen) this.inflight = false; });
   }
+  finish() { this.done = true; this.playing = false; this.marks(); if (this.o.onEnd) this.o.onEnd(this); this.dom(); }
   apply(f, now) {
     this.t = f.t + 1;
+    if (MODE !== 'LIVE') {   // recorded surges appear at their recorded onset
+      const R = window.RECORDED[this.o.recKey(this)];
+      for (const sh of R.shocks) if (sh.t0 === f.t && !this.shocks.some(s => s.t0 === sh.t0)) {
+        this.shocks.push(Object.assign({lost: [0, 0], steps: 0}, sh));
+        const fin = R.final.shocks; this.shocks.forEach((s, k) => { if (fin[k]) s.ref = fin[k].ref; });
+        if (this.o.onShock) this.o.onShock(this);
+      }
+    }
     const s0 = this.shocks.length ? this.shocks[0].t0 : Infinity, ev = this.o.event;
     f.panels.forEach((p, i) => {
       const c = this.cities[i], l = sum(p.lost);
@@ -566,223 +669,307 @@ class LiveView {
     const pp = f.panels[1];
     this.cities[1].price = pp.price || null;
     if (pp.ms !== undefined) { this.ms.push(pp.ms); if (this.ms.length > 30) this.ms.shift(); }
-    if (this.shocks.some(sh => sh.steps >= WIN && !sh.done)) { this.shocks.forEach(sh => { if (sh.steps >= WIN) sh.done = true; }); if (this.o.onShock) this.o.onShock(this); }
+    for (const sh of this.shocks) if (sh.steps >= WIN && !sh.landed) { sh.landed = true; if (this.o.onLand) this.o.onLand(this, sh); }
+    if (this.o.onFrame) this.o.onFrame(this, f);
+    if (this.config && this.t >= this.config.horizon) this.finish();
   }
+  autoPause(why) { this.paused = why; this.pause(); }
   tick(dt, now) {
     if (this.warming) { if (this.playing) this.tickWarm(dt); }
     else if (this.playing) {
       this.acc += dt;
       const step = 1000 / this.speed;
-      while (this.acc >= step && this.buf.length) { this.apply(this.buf.shift(), now); this.acc -= step; }
+      while (this.playing && this.acc >= step && this.buf.length) { this.apply(this.buf.shift(), now); this.acc -= step; }
       if (!this.buf.length) this.acc = Math.min(this.acc, step);
       this.pump();
     }
     const a = (this.playing && !this.warming) ? Math.min(1, this.acc / (1000 / this.speed)) : 1;
     this.cities.forEach(c => c.draw(a, now));
     if (now - this.lastDom > 120) { this.dom(); this.lastDom = now; }
-    if (!FIRST_VISUAL && this.cities[0].init) { FIRST_VISUAL = true; if (BACKEND) api('/api/first_visual', {}).catch(() => {}); }
+    if (!FIRST_VISUAL && this.cities[0].init) { FIRST_VISUAL = true; if (MODE === 'LIVE') api('/api/first_visual', {}).catch(() => {}); }
   }
   blockOf(z) { const r0 = Math.min(Math.floor(z / G), G - 2), c0 = Math.min(z % G, G - 2); return [r0 * G + c0, r0 * G + c0 + 1, (r0 + 1) * G + c0, (r0 + 1) * G + c0 + 1]; }
+  canClick() { return MODE === 'LIVE' && !STOPPED && this.role !== 'reference' && !this.warming && this.base && !this.done; }
   hover(i, e) {
     const c = this.cities[i], r = c.cv.getBoundingClientRect(), z = c.zoneAt(e.clientX - r.left, e.clientY - r.top);
-    let zs = z < 0 ? null : this.blockOf(z);
+    let zs = z < 0 || !this.canClick() ? null : this.blockOf(z);
     if (zs && c.o.empty) zs = zs.filter(k => !c.o.empty.has(k));
     this.cities.forEach(k => { k.hover = zs && zs.length ? zs : null; });
-    c.cv.style.cursor = BACKEND && !this.warming ? 'crosshair' : 'default';
+    c.cv.style.cursor = this.canClick() ? 'crosshair' : 'default';
     if (this.o.tip && z >= 0) showTip(this.o.tip(z), e); else $('#tip').style.display = 'none';
   }
   async click(i, e) {
-    if (!BACKEND || !this.sid || this.warming) return;
     const c = this.cities[i], r = c.cv.getBoundingClientRect(), z = c.zoneAt(e.clientX - r.left, e.clientY - r.top);
     if (z < 0) return;
+    if (MODE !== 'LIVE') { toast('Recording: clicks are off. Run demo/run.sh to drop your own surge.'); return; }
+    if (STOPPED) return;
+    if (this.role === 'reference') { toast('This is the unperturbed reference run. Press “Your turn” for your own run.'); return; }
+    if (this.warming || !this.base) { toast('Still preparing this run…'); return; }
+    if (this.done) { toast('This run has ended: restart it to drop another surge.'); return; }
     const g = this.gen;
     try {
       const res = await api('/api/live/shock', {sid: this.sid, zone: z, size: this.size});
       if (g !== this.gen) return;
       this.shocks.push(Object.assign({lost: [0, 0], steps: 0}, res.shock));
+      res.stats.shocks.forEach((s, k) => { if (this.shocks[k]) this.shocks[k].ref = s.ref; });
+      if (!this.playing) this.play();   // the clock starts when you click
       if (this.o.onShock) this.o.onShock(this);
-    } catch (err) { this.err = err.message; setTimeout(() => { if (g === this.gen) this.err = ''; }, 2500); }
+    } catch (err) { if (fatal(err)) stopLive(err.message); else toast(err.message); }
   }
   hops(i) { const b = this.base[i], c = this.cum[i]; return (b.empty_per_srv * b.served + c.empty) / Math.max(1, b.served + c.srv); }
   served(i) { const b = this.base[i], c = this.cum[i]; return (b.served + c.srv) / Math.max(1, b.arrivals + c.arr); }
   dom() {
     if (!this.cum) return;
-    const id = this.id, sh0 = this.shocks[0], since = sh0 && this.t > sh0.t0;
-    if (this.base) ['L', 'R'].forEach((s, i) => { id('Srv' + s).textContent = pct(this.served(i)); });
+    const id = this.id, sh0 = this.shocks[0], since = !!(sh0 && this.t > sh0.t0);
+    ['L', 'R'].forEach((s, i) => {
+      if (this.base) id('Srv' + s).textContent = pct(this.served(i));
+      else if (this.tlCum) id('Srv' + s).textContent = pct(this.tlCum[i][0] / Math.max(1, this.tlCum[i][2]));
+    });
     if (this.o.counters) this.o.counters(this, since);
+    const A = parseFloat(id('LostL').textContent), B = parseFloat(id('LostR').textContent);   // fewer losses green, more red
+    const cls = (x, y) => 'ctr big' + (!isFinite(x) || !isFinite(y) || x === y ? '' : x > y ? ' lostc' : ' good');
+    id('LostL').parentElement.className = cls(A, B); id('LostR').parentElement.className = cls(B, A);
     if (this.ms.length) {
       const m = [...this.ms].sort((a, b) => a - b), pr = this.cities[1].price;
-      id('MsLine').textContent = `LP re-plan every minute: ${m[Math.floor(m.length / 2)].toFixed(1)} ms median (measured live on this laptop)` + (pr ? ` · top shadow price now ${Math.max(...pr).toFixed(2)}` : '');
-    } else id('MsLine').textContent = BACKEND ? '' : 'recorded session: solve times are not replayed';
-    id('Clock').textContent = this.o.clock(this.t);
+      id('MsLine').textContent = PW.ms.replace('%s', m[Math.floor(m.length / 2)].toFixed(1)) + (pr ? ` · top shadow price ${Math.max(...pr).toFixed(2)}` : '');
+    } else id('MsLine').textContent = MODE === 'LIVE' ? '' : PW.ms;
+    id('Clock').textContent = this.o.clock(this.t, this);
     const chip = id('Chip');
     if (this.err) { chip.className = 'chip bad'; chip.textContent = this.err; }
-    else if (this.done) { chip.className = 'chip'; chip.textContent = 'End of the run: press ⟲ to restart.'; }
-    else if (since) {
+    else if (since && this.o.sinceChip !== false) {
       const d = this.since[0] - this.since[1];
       chip.className = 'chip ' + (d >= 0 ? 'good' : 'bad');
-      chip.textContent = d >= 0 ? `Planner: ${d} fewer requests lost since your surge` : `Planner: ${-d} MORE requests lost since your surge`;
+      chip.textContent = d >= 0 ? `Planner: ${d} fewer requests lost since ${PW.sg}` : `Planner: ${-d} MORE requests lost since ${PW.sg}`;
     } else if (this.o.chip) this.o.chip(this, chip);
     else { chip.className = 'chip'; chip.textContent = ''; }
     if (this.o.onDom) this.o.onDom(this);
   }
 }
-let FIRST_VISUAL = false;
 
 // ------------------------------------------------------------------ July 4th (real trips): the opening scene
 const NYC_CITY = {flip: true, empty: new Set(), labels: {}};
+const NYC_TIPS = {};
+let NYC_REF = null;   // the reference run's window result once 23:30 is reached on this page
 const SURGE_WIN = (() => {   // committed note: "2025-07-04 22:00–22:30" -> simulated minutes (4 July is day 2 of the replay)
   const m = /2025-07-04 (\d\d):(\d\d)–(\d\d):(\d\d)/.exec(EV.claims.nyc_surge.window);
   return m ? [1440 + 60 * +m[1] + +m[2], 1440 + 60 * +m[3] + +m[4]] : [0, 0];
 })();
-const NYC_TIPS = {};
-function nycCells(config) {
-  const ranked = (config && config.info && config.info.cell_zones_by_train_pickups) || {}, all = EV.claims.nyc_cells;
-  for (let z = 0; z < Z; z++) {
-    const names = all[String(z)];
-    if (!names) { NYC_CITY.empty.add(z); NYC_TIPS[z] = `cell ${z}: no taxi zone (water / outside the Manhattan grid)`; continue; }
-    const r = (ranked[String(z)] || []).filter(x => x[1] > 0);
-    NYC_CITY.labels[z] = (r.length ? r.slice(0, 2).map(x => x[0]) : names.slice(0, 1)).map(s => s.split('/')[0]);
-    const list = r.length ? r.map(x => `${esc(x[0])} <span style="color:#93a0c4">(${x[1]})</span>`) : [...new Set(names)].map(esc);
-    NYC_TIPS[z] = `<b>cell ${z}</b>: ${list.join(', ')}<br><span style="color:#93a0c4">taxi zones from ${esc(srcPath('csv_cells'))}${r.length ? '; ranked by Manhattan-internal pickups on 1–2 July' : ''}</span>`;
-  }
-}
-function nycSetup() {
-  const m = EV.claims.nyc_event_lost_mean, cmp = EV.claims.nyc_cmp, b = EV.claims.nycb_cmp, s = EV.claims.nyc_surge;
-  nycCells(null);
-  $('#nycRcpt').innerHTML = `Committed mean, ${S('csv_nyc', '20 replicates')}: planner <b class="goodv">${S('csv_nyc', m['mpc-ewma'].text)}</b> vs reactive <b style="color:${C.red}">${S('csv_nyc', m.reactive.text)}</b> <span class="hint">(greedy ${S('csv_nyc', m.greedy.text)}, static ${S('csv_nyc', m.static.text)})</span>`;
-  $('#nycWhole').innerHTML = `<h3 style="margin:0 0 3px">Served, planner − reactive, 20 replicates</h3>` +
-    `<div>3–4 July (this replay): <b>${S('nyc', cmp['Δ served (pp) [95% paired CI]'])} pp</b> · ${S('nyc', cmp['replicates won'])}</div>` +
-    `<div>10–11 July (ordinary days): <b>${S('nycb', b['Δ served (pp) [95% paired CI]'])} pp</b> · ${S('nycb', b['replicates won'])}</div>` +
-    `<div class="src">eval/results/nyc-v2/summary.md · eval/results/nyc-v2b/summary.md</div>`;
-  $('#nycSurge').innerHTML = `Observed surge: ${esc(EV.claims.nyc_cells[s.cell].join(', '))}, ${S('replay', s.window.slice(11))}: ${S('replay', s.count)} pickups vs ${S('replay', s['train mean'])} on training days (${S('replay', s.ratio)}×). <b class="warn">Cause UNVERIFIED.</b> Neither allocator was told.`;
-}
-function nycStrip(v) {
-  const cv = $('#nycStrip'), w = cv.clientWidth || 380, hh = cv.clientHeight || 72, x = sizeCanvas(cv, w, hh);
-  x.clearRect(0, 0, w, hh);
-  const R = EV.seeds.nyc.reactive.event_lost, Pp = EV.seeds.nyc['mpc-ewma'].event_lost, hi = Math.max(...R, ...Pp) * 1.08 + 2;
-  const X = val => 8 + (w - 80) * val / hi;
-  x.fillStyle = C.dim; x.font = '12px -apple-system,Helvetica,sans-serif'; x.fillText('0', X(0) - 3, hh - 3); x.fillText(Math.round(hi) + ' lost', X(hi) - 30, hh - 3);
-  const y1 = 12, y2 = hh - 28;
-  [[Pp, C.green, y1, 'planner'], [R, C.red, y2, 'reactive']].forEach(([vals, col, y, lab]) => {
-    x.globalAlpha = 0.6; x.fillStyle = col; vals.forEach(val => { x.beginPath(); x.arc(X(val), y, 4.5, 0, 6.283); x.fill(); });
-    x.globalAlpha = 1; x.fillText(lab, w - 62, y + 4);
-  });
-  if (v.winSteps >= WIN) [[v.win[1], y1], [v.win[0], y2]].forEach(([val, y]) => { x.strokeStyle = C.amber; x.lineWidth = 3; x.beginPath(); x.arc(X(val), y, 9, 0, 6.283); x.stroke(); });
-}
-function nycCommittedRow() {   // committed per-replicate window losses for replicate 200
+function nycCommittedRow() {   // committed window losses of replicate 200: [reactive, planner]
   const k = p => { const s = EV.seeds.nyc[p]; return s.event_lost[s.seed.indexOf(200)]; };
   return [k('reactive'), k('mpc-ewma')];
 }
+function cellName(z) { const l = NYC_CITY.labels[z]; return l ? l[0] : 'cell ' + z; }
+function nycCells(config) {
+  const ranked = (config && config.info && config.info.cell_zones_by_train_pickups) || {}, all = EV.claims.nyc_cells;
+  NYC_CITY.empty.clear();
+  for (let z = 0; z < Z; z++) {
+    const names = all[String(z)];
+    if (!names) { NYC_CITY.empty.add(z); NYC_TIPS[z] = `cell ${z}: no taxi zone (water or outside the Manhattan grid)`; continue; }
+    const r = (ranked[String(z)] || []).filter(x => x[1] > 0);
+    NYC_CITY.labels[z] = (r.length ? r.slice(0, 2).map(x => x[0]) : names.slice(0, 1)).map(s => s.split('/')[0]);
+    const list = r.length ? r.map(x => `${esc(x[0])} <span style="color:#9aa6c8">(${x[1]})</span>`) : [...new Set(names)].map(esc);
+    NYC_TIPS[z] = `<b>cell ${z}</b>: ${list.join(', ')}<br><span style="color:#9aa6c8">taxi zones from ${esc(srcPath('csv_cells'))}${r.length ? '; ranked by Manhattan-internal pickups on 1–2 July' : ''}</span>`;
+  }
+}
+function nycSetup() {
+  const s = EV.claims.nyc_surge, m = EV.claims.nyc_event_lost_mean;
+  nycCells(null);
+  $('#nycQual').innerHTML = `<div class="hint"><b class="qual">Real demand, simulated fleet.</b> Observed anomaly, ${esc(EV.claims.nyc_cells[s.cell][0].split('/')[0])} (bottom row, 4th cell), ${S('replay', s.window.slice(11))}: <b>${S('replay', s.count)} vs ${S('replay', s['train mean'])}</b> raw TLC cell pickups, before thinning (${S('replay', s.ratio)}× the 1–2 July mean). Cause UNVERIFIED; neither fleet was told.</div>`;
+  $('#nycRcpt').innerHTML = `<div class="rline">${pvTag('COMMITTED')}mean of ${S('csv_nyc', '20 thinning replicates')}: planner <b class="goodv">${S('csv_nyc', m['mpc-ewma'].text)}</b> vs reactive <b class="badv">${S('csv_nyc', m.reactive.text)}</b> <span class="hint">(greedy ${S('csv_nyc', m.greedy.text)}, static ${S('csv_nyc', m.static.text)})</span></div>`;
+  $('#nycTurn').onclick = () => { NYCV.start({role: 'interactive'}); };
+  $('#nycRefLink').onclick = e => { e.preventDefault(); NYCV.start({role: 'reference'}); };
+}
+function nycStrip(v) {
+  const cv = $('#nycStrip'), w = cv.clientWidth || 360, hh = cv.clientHeight || 64, x = sizeCanvas(cv, w, hh);
+  x.clearRect(0, 0, w, hh);
+  const R = EV.seeds.nyc.reactive.event_lost, Pp = EV.seeds.nyc['mpc-ewma'].event_lost, hi = Math.max(...R, ...Pp) * 1.08 + 2;
+  const X = val => 8 + (w - 76) * val / hi, y1 = 11, y2 = hh - 25;
+  x.fillStyle = C.dim; x.font = '11px -apple-system,Helvetica,sans-serif'; x.fillText('0', X(0) - 3, hh - 3); x.fillText(Math.round(hi) + ' lost', X(hi) - 30, hh - 3);
+  [[Pp, C.green, y1, 'planner'], [R, C.red, y2, 'reactive']].forEach(([vals, col, y, lab]) => {
+    x.globalAlpha = 0.6; x.fillStyle = col; vals.forEach(val => { x.beginPath(); x.arc(X(val), y, 4, 0, 6.283); x.fill(); });
+    x.globalAlpha = 1; x.fillText(lab, w - 60, y + 4);
+  });
+  const res = v.role === 'reference' && v.winSteps >= WIN ? v.win : null;
+  if (res) [[res[1], y1], [res[0], y2]].forEach(([val, y]) => { x.strokeStyle = C.amber; x.lineWidth = 3; x.beginPath(); x.arc(X(val), y, 8, 0, 6.283); x.stroke(); });
+}
 const NYC_VIEW = {
-  scenario: 'nyc', speeds: [2, 4, 8, 30], speed: 4, city: NYC_CITY, event: NY_EVENT, clock: nycClock,
-  tip: z => NYC_TIPS[z] || '',
+  scenario: 'nyc', role: 'reference', speeds: [2, 4, 8, 30], speed: 4, city: NYC_CITY, event: NY_EVENT, sinceChip: true,
+  recKey: v => v.role === 'reference' ? 'nyc_reference' : 'nyc_interactive',
+  timelapse: v => v.role === 'reference',
+  clock: t => nycClock(t), tip: z => NYC_TIPS[z] || '',
   onConfig: (v, cfg) => nycCells(cfg),
+  onReset(v) {
+    const ref = v.role === 'reference';
+    $('#nycRefLink').style.display = ref ? 'none' : '';
+    $('#nycSizeRow').style.display = ref || MODE !== 'LIVE' ? 'none' : '';
+    $('#nycTurn').textContent = MODE === 'LIVE' ? (ref ? 'Your turn: restart at 21:15 ▶' : 'Restart your turn at 21:15 ⟲') : (ref ? 'Recorded turn: a surge at 21:15 ▶' : 'Replay the recorded turn ⟲');
+  },
+  onFrame(v, f) {
+    if (v.role === 'reference' && f.t === NY_EVENT[1] - 1) {
+      const com = nycCommittedRow();
+      NYC_REF = {win: v.win.slice(), match: v.win[0] === com[0] && v.win[1] === com[1], prov: MODE};
+      v.autoPause('result');
+    }
+  },
+  onLand(v, sh) { if (sh === v.shocks[0]) v.autoPause('landed'); },
+  onEnd(v) { v.paused = 'end'; },
   counters(v, since) {
-    const id = v.id, opened = v.t > NY_EVENT[0];
+    const opened = v.t > NY_EVENT[0], fin = v.winSteps >= WIN, inter = v.role === 'interactive';
     ['L', 'R'].forEach((s, i) => {
-      id('Lost' + s).textContent = opened ? v.win[i] : '–';
-      id('LostLbl' + i).textContent = opened ? (v.winSteps >= WIN ? 'lost 21:30–23:30, 4 July (live, final)' : 'lost since 21:30, 4 July (live)') : 'lost 21:30–23:30, 4 July (window opens 21:30)';
-      id('C3' + s).textContent = since ? v.since[i] : (v.base ? v.hops(i).toFixed(2) : '–');
-      id('C3Lbl' + i).textContent = since ? 'lost since YOUR surge (live only)' : 'empty hops per served';
-      if (!v.base && v.tlCum) id('Srv' + s).textContent = pct(v.tlCum[i][0] / Math.max(1, v.tlCum[i][2]));
+      v.id('Lost' + s).textContent = opened ? v.win[i] : '–';
+      v.id('LostLbl' + i).textContent = `fleet-wide losses, 21:30–23:30 (${PW.adj}${fin ? ', final' : opened ? ', so far' : ', opens 21:30'})`;
+      v.id('SrvLbl' + i).textContent = `served since 3 July (${PW.adj})`;
+      if (inter && since) { v.id('C3' + s).textContent = v.since[i]; v.id('C3Lbl' + i).textContent = `lost since ${PW.sg} (${PW.only})`; }
+      else { v.id('C3' + s).textContent = v.base ? v.hops(i).toFixed(2) : '–'; v.id('C3Lbl' + i).textContent = 'empty hops per served request'; }
     });
   },
   chip(v, chip) {
-    if (v.warming) { chip.className = 'chip'; chip.textContent = ''; return; }
-    const d = v.win[0] - v.win[1];
-    const sofar = v.winSteps >= WIN ? 'in the night window' : 'in the window so far';
-    if (v.t > NY_EVENT[0] && d !== 0) { chip.className = 'chip ' + (d > 0 ? 'good' : 'bad'); chip.textContent = d > 0 ? `Planner: ${d} fewer lost ${sofar}` : `Planner: ${-d} MORE lost ${sofar}`; }
-    else { chip.className = 'chip'; chip.textContent = v.t < NY_EVENT[0] ? 'Watch Two Bridges (bottom row, 4th cell) at 22:00.' : ''; }
+    const d = v.win[0] - v.win[1], fin = v.winSteps >= WIN;
+    if (v.t > NY_EVENT[0] && d !== 0) { chip.className = 'chip ' + (d > 0 ? 'good' : 'bad'); chip.textContent = d > 0 ? `Planner: ${d} fewer lost ${fin ? 'in the night window' : 'in the window so far'}` : `Planner: ${-d} MORE lost in the window`; }
+    else if (v.role === 'reference' && v.t <= NY_EVENT[0]) { chip.className = 'chip'; chip.textContent = v.warming || v.t < 1440 ? '' : 'Watch Two Bridges (bottom row, 4th cell) at 22:00.'; }
+    else { chip.className = 'chip'; chip.textContent = ''; }
   },
+  onShock(v) { v.dom(); },
   onDom(v) {
-    const st = $('#nycStatus');
-    if (v.warming) {
-      const tgt = v.warmTarget || (1440 + 21 * 60 + 15), p = Math.min(100, Math.round(100 * (v.t / tgt)));
-      st.textContent = `fast-forwarding, computed live: ${nycClock(Math.max(0, v.t))} → Fri 4 Jul 21:15 (${p}%)`;
-    } else st.textContent = `${BACKEND ? 'live' : 'RECORDED'} · replicate 200 · ${v.speed} simulated minutes per second`;
-    st.style.color = v.warming ? C.amber : C.green;
-    const inj = v.shocks.some(s => s.t0 < NY_EVENT[1]);
-    let h = '';
-    if (v.t > NY_EVENT[0]) {
-      h = `<div>${v.winSteps >= WIN ? 'Window over' : 'In the window now'}, live: planner <b class="goodv">${v.win[1]}</b> vs reactive <b style="color:${C.red}">${v.win[0]}</b> lost</div>`;
-      if (inj) h += `<div class="hint warn">Includes YOUR synthetic surge: live only, no committed evidence.</div>`;
-      else if (v.winSteps >= WIN) {
-        const [r, p] = nycCommittedRow(), ok = r === v.win[0] && p === v.win[1];
-        h += `<div class="parity ${ok ? 'ok' : 'no'}">${ok ? '✓' : '✗'} ${ok ? 'equals' : 'differs from'} the committed row for replicate 200 (${S('csv_nyc', `planner ${p}, reactive ${r}`)})</div>`;
+    const ref = v.role === 'reference', fin = v.winSteps >= WIN, st = $('#nycStatus'), hint = $('#nycHint');
+    let state;
+    if (v.done) state = MODE === 'LIVE' ? 'the replay ended at midnight' : 'end of the recording';
+    else if (v.warming || !v.base) {
+      const tgt = v.warmTarget || (1440 + 21 * 60 + 15);
+      state = !ref ? `preparing your run: 3 July → 21:15 on 4 July (${Math.min(100, Math.round(100 * (v.warmT || 0) / tgt))}%)`
+        : v.playing ? `${PW.ff}: ${nycClock(Math.max(0, v.t))} → Fri 4 Jul 21:15 (${Math.min(100, Math.round(100 * v.t / tgt))}%)` : 'armed: press ▶ to play the night';
+    } else if (v.paused === 'result' && !v.playing) state = 'paused at the 23:30 result';
+    else if (v.paused === 'landed' && !v.playing) state = `paused: ${PW.sg}’s first 2 hours are in`;
+    else if (v.armed && !v.playing) state = ref ? 'armed at 21:15' : MODE === 'LIVE' ? 'armed at 21:15: your click starts the clock' : 'armed at 21:15: press ▶ to replay it';
+    else state = v.playing ? `${v.speed} simulated minutes per second` : 'paused';
+    st.innerHTML = `${pvTag()}${ref ? 'REFERENCE RUN · unperturbed · replicate 200' : MODE === 'LIVE' ? `YOUR RUN · real demand + your synthetic surges (${PW.only})` : `RECORDED INTERVENTION · real demand + one synthetic surge (${PW.only})`} · ${esc(state)}`;
+    const sh = v.shocks[v.shocks.length - 1];
+    if (ref) hint.innerHTML = v.done || (v.paused === 'result' && !v.playing) ? (MODE === 'LIVE' ? '<span class="call">Result in. Hand over: press “Your turn”.</span>' : '<span class="call">Result in. Press “Recorded turn” for a recorded surge.</span>')
+      : v.armed && !v.playing ? 'Press ▶: 3–4 July fast-forward to 21:15 on 4 July, then the night window plays and pauses at 23:30.'
+      : `Unperturbed, so it can be compared with the committed row. ${MODE === 'LIVE' ? 'Your turn' : 'The recorded turn'} comes at 23:30.`;
+    else if (sh) hint.innerHTML = `${v.shocks.length > 1 ? `Surge ${v.shocks.length}` : PW.Sg}: ${esc(cellName(sh.zones[0]))} block${sh.size !== 1 ? ` ×${sh.size === 0.5 ? '½' : sh.size}` : ''} · ${nycClock(sh.t0).slice(10)} → ${clockEnd(sh.end, NY_END)} = <b>${dur(sh.minutes)}</b>${sh.truncated ? ' (up to 6 h; this replay ends at midnight)' : ''} · no committed evidence exists for surges on NYC.`;
+    else hint.innerHTML = v.warming || !v.base ? 'Preparing your run, armed at 21:15…' : v.done ? (MODE === 'LIVE' ? '<span class="call">This replay has ended: restart your turn at 21:15.</span>' : 'End of the recording.')
+      : MODE === 'LIVE' ? '<span class="call">Click any cell to drop a surge: the clock starts when you click.</span>' : 'Recording: press ▶ to replay a recorded surge (clicks are off).';
+    $('#nycTurn').classList.toggle('hot', ref ? (v.done || v.paused === 'result') : v.done);
+    $('#nycTurnNote').textContent = ref ? (MODE === 'LIVE' ? 'starts a separate run of your own' : 'replays a separate recorded run') : '';
+    // the night-window result card
+    const opened = v.t > NY_EVENT[0];
+    let h;
+    if (ref) {
+      if (!opened) h = `<div class="rline">${pvTag()}the window opens at 21:30</div>`;
+      else if (!fin) h = `<div class="rline">${pvTag()}so far: planner <b class="goodv">${v.win[1]}</b> vs reactive <b class="badv">${v.win[0]}</b></div>`;
+      else {
+        const com = nycCommittedRow(), ok = v.win[0] === com[0] && v.win[1] === com[1];
+        h = `<div class="rline">${pvTag()}result: planner <b class="goodv">${v.win[1]}</b> vs reactive <b class="badv">${v.win[0]}</b></div>` +
+          `<div class="parity ${ok ? 'ok' : 'no'}">${ok ? '✓ matches' : '✗ differs from'} the committed window losses of replicate 200 (${S('csv_nyc', `planner ${com[1]}, reactive ${com[0]}`)})</div>`;
       }
-    } else h = `<div class="hint">Opens at 21:30. Surge cell: Two Bridges (bottom row, 4th).</div>`;
+    } else {
+      const surged = v.shocks.some(s => s.t0 < NY_EVENT[1]);
+      h = `<div class="rline">${pvTag()}${MODE === 'LIVE' ? 'your run' : 'recorded run'}${opened ? `: planner <b class="goodv">${v.win[1]}</b> vs reactive <b class="badv">${v.win[0]}</b>` : ': the window opens at 21:30'}</div>` +
+        (surged ? `<div class="hint warn">includes a synthetic surge: no committed comparison</div>` : '');
+      const com = nycCommittedRow();
+      h += NYC_REF && NYC_REF.prov === MODE ? `<div class="hint">reference run on this page: planner ${NYC_REF.win[1]} vs reactive ${NYC_REF.win[0]}</div>`
+        : `<div class="hint">${pvTag('COMMITTED')}reference row, replicate 200: planner ${S('csv_nyc', com[1])} vs reactive ${S('csv_nyc', com[0])}</div>`;
+    }
     if (h !== v.lastWin) { $('#nycWin').innerHTML = h; v.lastWin = h; }
-    nycStrip(v);
+    const note = `Illustrative, retrospectively chosen window: not a causal estimate. ${pvTag('COMMITTED')}whole 3–4 July: ${S('nyc', EV.claims.nyc_cmp['Δ served (pp) [95% paired CI]'])} pp served, ${S('nyc', EV.claims.nyc_cmp['replicates won'])}.`;
+    if (note !== v.lastNote) { $('#nycNote').innerHTML = note; v.lastNote = note; }
+    $('#nycStrip').style.display = ref ? '' : 'none';   // the committed replicates are unperturbed runs: no comparison for yours
+    if (ref) nycStrip(v);
     drawSpark($('#nycSpark'), v.series, v.shocks, v.t);
-    const [a, b] = SURGE_WIN, surge = v.t >= a && v.t < b, cell = +EV.claims.nyc_surge.cell;
+    const surge = v.t >= SURGE_WIN[0] && v.t < SURGE_WIN[1], cell = +EV.claims.nyc_surge.cell;
     v.cities.forEach(c => { c.shocks = v.shocks.concat(surge ? [{t0: 0, end: 1e9, zones: [cell], dash: true, label: 'observed surge'}] : []); });
   },
 };
-function nycParity() {
-  const show = s => {
-    $('#nycParity').className = 'parity ' + (s.parity_all ? 'ok' : 'no');
-    $('#nycParity').innerHTML = s.parity_all ? `✓ engine = committed row, bit for bit (${S('csv_nyc', 'nyc-v2/episodes.csv')}, replicate 200, 4 allocators)`
-      : '✗ Parity check against the committed row failed.';
-  };
-  const poll = () => api('/api/run/nyc-200?from=1000000').then(r => { if (r.summary) show(r.summary); else if (!r.error) setTimeout(poll, 1500); }).catch(() => {});
-  api('/api/run', {kind: 'nyc', seed: 200}).then(poll).catch(() => {});
-}
 
-// ------------------------------------------------------------------ stress test (SYNTHETIC city): the committed (L, P) bridge
+// ------------------------------------------------------------------ stress test (SYNTHETIC city): committed reference runs, then your surge
 function pairDeltas(A, B, field) {   // paired by seed (common random numbers)
   if (!A || !B) return null;
   const m = new Map(A.seed.map((s, i) => [s, A[field][i]]));
   const d = []; B.seed.forEach((s, i) => { if (m.has(s)) d.push(B[field][i] - m.get(s)); });
   return d.length ? d : null;
 }
-function bridge(cfg) {
-  const {L, P, drift, brain} = cfg, rule = cfg.ruleResolved, c = EV.claims;
-  if (brain === 'oracle') return {none: 'Live only: the committed true-rate planner saw each shock up to its horizon H before onset; an unannounced click gives it none.'};
-  if (!drift && ['mpc-ewma', 'mpc-queue'].includes(brain) && ['greedy', 'reactive'].includes(rule)) {
-    const A = EV.seeds.phase[`${L}|${P}|${rule}`], B = EV.seeds.phase[`${L}|${P}|${brain}`];
-    const best = c.phase_best_rule[`${L},${P}`], row = c.phase[`${L},${P}`];
-    return {d: pairDeltas(A, B, 'shock_lost'), n: A.seed.length, src: 'csv_phase',
-      cond: `phase-v2: ${A.seed.length} test seeds, one shock at a random 2×2 block, onset 04:12–06:36`,
-      head: (brain === 'mpc-ewma' && rule === best) ? {lost: row.lost['look-ahead vs best rule'], pp: row.main['look-ahead vs best rule'], src: 'phase'} : null};
+function bridge(v) {   // the committed per-seed reference for the setting the server chose (config.reference)
+  const cfg = v.config, c = v.cfg;
+  if (!cfg) return null;
+  const ref = cfg.reference, rule = cfg.rule, brain = cfg.brain;
+  if (!ref) return {none: brain === 'oracle' ? 'No committed reference: the committed true-rate planner saw each shock up to its planning horizon before onset; an unannounced click gives it none.' : 'No committed reference runs for this exact setting.'};
+  let A, B, src, head = null;
+  if (ref.run === 'phase-v2') {
+    A = EV.seeds.phase[`${c.L}|${c.P}|${rule}`]; B = EV.seeds.phase[`${c.L}|${c.P}|${brain}`]; src = 'csv_phase';
+    const row = EV.claims.phase[`${c.L},${c.P}`];
+    if (brain === 'mpc-ewma' && rule === EV.claims.phase_best_rule[`${c.L},${c.P}`]) head = {lost: row.lost['look-ahead vs best rule'], pp: row.main['look-ahead vs best rule'], src: 'phase'};
+  } else {
+    const sc = ref.scenario, pre = EV.claims.prereg[sc];
+    A = EV.seeds.mvp[`${sc}|${rule}`]; B = ref.run === 'trust-v2' ? EV.seeds.trust[`${sc}|${brain}`] : EV.seeds.mvp[`${sc}|${brain}`];
+    src = ref.run === 'trust-v2' ? 'csv_trust' : 'csv_mvp';
+    if (brain === 'mpc-ewma' && rule === EV.claims.prereg_reference[sc]['reference rule']) head = {pp: pre['Δ served (pp) [95% paired CI]'], won: pre['seeds won'], holm: pre['Holm p'], src: 'confirm', prereg: true};
   }
-  if (L === 1 && P === 10) {
-    const sc = drift ? 'shock+drift' : 'shock';
-    const A = EV.seeds.mvp[`${sc}|${rule}`];
-    const B = brain === 'mpc-ewma@trust=0.5' ? EV.seeds.trust[`${sc}|${brain}`] : EV.seeds.mvp[`${sc}|${brain}`];
-    if (!A || !B) return null;
-    const ref = c.prereg_reference[sc]['reference rule'];
-    return {d: pairDeltas(A, B, 'shock_lost'), n: A.seed.length, src: brain.includes('trust') ? 'csv_trust' : 'csv_mvp',
-      cond: `mvp-v2 ${sc}: ${A.seed.length} fresh test seeds, onset 08:24–13:12${drift ? ', drift over the day' : ''}`,
-      head: (brain === 'mpc-ewma' && rule === ref) ? {pp: c.prereg[sc]['Δ served (pp) [95% paired CI]'], won: c.prereg[sc]['seeds won'], holm: c.prereg[sc]['Holm p'], src: 'confirm', prereg: true} : null};
-  }
-  return null;
+  return {ref, d: pairDeltas(A, B, 'shock_lost'), n: A ? A.seed.length : 0, src, head};
 }
-const SYN_VIEW = {
-  scenario: 'synthetic', speeds: [2, 8, 30, 120], speed: 8, city: {}, event: null, clock: hhmm,
-  onReset(v) {
-    const c = v.cfg;
-    if (!BACKEND && window.RECORDED && window.RECORDED.syn) Object.assign(c, window.RECORDED.syn.ui);
-    c.ruleResolved = c.rule !== 'auto' ? c.rule : (c.drift ? 'reactive' : EV.claims.phase_best_rule[`${c.L},${c.P}`]);
-    $('#synRuleName').textContent = c.ruleResolved;
-    $('#synRuleDesc').textContent = (c.rule === 'auto' ? (c.drift ? 'pre-registered reference rule for shock+drift: ' : `best rule at L=${c.L}, P=${c.P} (committed): `) : '') + RULE_DESC[c.ruleResolved];
-    $('#synBrainName').textContent = BRAIN[c.brain][0]; $('#synBrainDesc').textContent = BRAIN[c.brain][1];
-    $('#synTag').textContent = `${BACKEND ? 'live' : 'RECORDED'} · 1 run · seed ${c.seed} · L=${c.L} · P=${c.P}${c.drift ? ' · drift' : ''}`;
-    $('#synSelRule').value = c.rule; $('#synSelBrain').value = c.brain; $('#synChkDrift').checked = c.drift;
-    buildLP(v); renderPred(v);
-  },
-  counters(v, since) {
-    const sh0 = v.shocks[0];
-    ['L', 'R'].forEach((s, i) => {
-      v.id('Lost' + s).textContent = since ? v.since[i] : v.cum[i].lost;
-      v.id('LostLbl' + i).textContent = since ? `requests lost since your surge (${hhmm(sh0.t0)})` : 'requests lost since 04:00, no surge yet';
-      if (v.base) v.id('C3' + s).textContent = v.hops(i).toFixed(2);
-    });
-  },
-  onDom(v) { drawSpark($('#synSpark'), v.series, v.shocks, v.t); drawStrip(v); },
-  onShock(v) { renderPred(v); },
-  onSize(v) { renderPred(v); },
-};
+const refDesc = ref => `${ref.run}: ${ref.horizon / 60}-hour runs, one ×1 surge at a random 2×2 block, onset ${hhmm(ref.onset[0])}–${hhmm(ref.onset[1])}, seeds ${ref.seeds}`;
+function refChip(r) {
+  if (!r) return '';
+  return r.status === 'in' ? '<span class="refchip in" title="onset inside the reference window, size ×1, one surge, same run length">IN-REFERENCE</span>'
+    : r.status === 'off' ? '<span class="refchip off">OFF-REFERENCE</span>' : '<span class="refchip none">NO REFERENCE</span>';
+}
+function surgeLine(sh, end) {
+  return `${hhmm(sh.t0)} → ${clockEnd(sh.end, end)} = <b>${dur(sh.minutes)}</b>${sh.truncated ? ` (up to 6 h; this simulated run ends at ${clockEnd(end, end)})` : ''} · ×${sh.size === 0.5 ? '½' : sh.size}`;
+}
+function renderPred(v) {
+  const b = bridge(v), c = v.cfg;
+  v.pred = b;
+  if (!b) { $('#synPredTxt').innerHTML = '<div class="hint">preparing…</div>'; v.lastPredH = null; return; }
+  const rule = v.config.rule;
+  let h = `<div class="hint">L=${c.L} · P=${c.P} · ${esc(rule)} vs ${esc(BRAIN[c.brain][0])}${c.drift ? ' · drift' : ''}</div>`;
+  if (b.none) h += `<div class="pred-big na">${esc(b.none)}</div>`;
+  else if (!b.d) h += `<div class="pred-big na">No committed per-seed data for this exact setting.</div>`;
+  else {
+    const mean = sum(b.d) / b.d.length, won = b.d.filter(x => x < 0).length;
+    if (b.head && b.head.lost !== undefined) {
+      h += `<div class="pred-big${parseFloat(b.head.lost) > 0 ? ' worse' : ''}">${S(b.head.src, b.head.lost)} requests lost per surge</div><div class="hint">planner − rule, 120 min after onset, mean of ${b.n} reference runs · served pp [95% CI] (runs won): ${S(b.head.src, b.head.pp)}</div>`;
+    } else if (b.head && b.head.prereg) {
+      h += `<div class="pred-big">${S(b.head.src, b.head.pp)} pp served</div><div class="hint">pre-registered: planner − reference rule, ${S(b.head.src, b.head.won)} seeds; lost per surge, planner − rule: ${signed(mean)} (mean of the dots)</div>`;
+    } else {
+      h += `<div class="pred-big${mean > 0 ? ' worse' : ''}">${signed(mean)} requests lost per surge</div><div class="hint">planner − rule, mean of the ${b.n} reference runs (derived); planner lost fewer in ${won}/${b.n}</div>`;
+    }
+  }
+  if (h !== v.lastPredH) { $('#synPredTxt').innerHTML = h; v.lastPredH = h; }
+  const sh = v.shocks[v.shocks.length - 1], end = v.config.horizon;
+  let you;
+  const rf = v.config.reference;
+  if (!sh) you = `${v.size !== 1 ? '<span class="refchip off">OFF-REFERENCE</span> size ×' + (v.size === 0.5 ? '½' : v.size) + ' (the reference uses ×1) · ' : ''}${rf ? `Reference onsets ${hhmm(rf.onset[0])}–${hhmm(rf.onset[1])} · ` : ''}×1 = 2×2 zones, +${v.config.shock.extra_per_zone.toFixed(1)} requests/min each, up to 6 h.`;
+  else {
+    const r = sh.ref || {}, reasons = r.status === 'none' ? r.reasons : (r.reasons || []);
+    you = `${refChip(r)}${v.shocks.length > 1 ? `surge ${v.shocks.length}: ` : MODE === 'LIVE' ? 'your surge: ' : 'surge: '}${surgeLine(sh, end)}` + (reasons.length ? `<div class="hint warn">${esc(reasons.join('; '))}</div>` : '');
+  }
+  if (you !== v.lastYou) { $('#synYou').innerHTML = you; v.lastYou = you; }
+  const foot = b.d ? `Grey: ${S(b.src, `${b.n} committed reference runs`)}. Yellow: ${PW.you}, shown alongside them: not a new test seed or a calibrated prediction for this location or time.` : '';
+  if (foot !== v.lastFoot) { $('#synPredFoot').innerHTML = foot; v.lastFoot = foot; }
+  drawStrip(v);
+}
+function drawStrip(v) {
+  const cv = $('#synStrip'), w = cv.clientWidth || 360, h = cv.clientHeight || 64, x = sizeCanvas(cv, w, h), b = v.pred;
+  x.clearRect(0, 0, w, h);
+  if (!b || !b.d) return;
+  const pts = v.shocks.map(s => ({d: s.lost[1] - s.lost[0], done: s.steps >= WIN, f: s.steps / WIN, ok: s.ref && s.ref.status === 'in'}));
+  const vals = b.d.concat(pts.map(l => l.d), [0]);
+  let lo = Math.min(...vals), hi = Math.max(...vals); const pad = (hi - lo) * 0.08 + 5; lo -= pad; hi += pad;
+  const X = val => 8 + (w - 16) * (val - lo) / (hi - lo), yl = h - 22;
+  x.strokeStyle = '#5b6a96'; x.lineWidth = 1; x.beginPath(); x.moveTo(X(0), 2); x.lineTo(X(0), h - 14); x.stroke();
+  x.fillStyle = C.dim; x.font = '11px -apple-system,Helvetica,sans-serif';
+  x.fillText('← planner lost fewer', 2, h - 2); const t2 = 'rule lost fewer →'; x.fillText(t2, w - 2 - x.measureText(t2).width, h - 2);
+  b.d.forEach((val, i) => { x.fillStyle = 'rgba(200,210,235,.75)'; x.beginPath(); x.arc(X(val), 7 + (i % 5) * 5.5, 3.2, 0, 6.283); x.fill(); });
+  const mean = sum(b.d) / b.d.length; x.fillStyle = '#e8eef7'; x.fillRect(X(mean) - 1, 2, 2, 30);
+  pts.forEach((l, k) => {
+    x.strokeStyle = C.amber; x.fillStyle = C.amber; x.lineWidth = 3; x.beginPath(); x.arc(X(l.d), yl, 6, 0, 6.283);
+    if (l.done && l.ok) x.fill(); else x.stroke();
+    x.font = '800 12px -apple-system,Helvetica,sans-serif';
+    const lab = (l.done ? `${l.ok ? PW.me : PW.me + ', off-ref'}: ${l.d > 0 ? '+' : ''}${l.d}` : `${Math.round(100 * l.f)}% of 120 min`) + (pts.length > 1 ? ` (#${k + 1})` : '');
+    const tw = x.measureText(lab).width, px = X(l.d) + 10 + tw > w ? X(l.d) - 10 - tw : X(l.d) + 10;
+    x.fillText(lab, px, yl + 4);
+  });
+}
 function buildLP(v) {
   let h = '<div></div><div class="h">P = 3 min (impatient)</div><div class="h">P = 10 min</div>';
   for (const L of [1, 2, 4, 8]) {
@@ -796,66 +983,82 @@ function buildLP(v) {
     }
   }
   $('#synLP').innerHTML = h;
-  $('#synLP').querySelectorAll('button').forEach(b => b.onclick = () => { if (!BACKEND) return; v.cfg.L = +b.dataset.l; v.cfg.P = +b.dataset.p; v.start(); });
-  $('#synLPFoot').innerHTML = `Planner − best rule, served pp, ${S('phase', '20 seeds/cell')}. L: min per hop to reposition (cold start). P: min before a request is lost.`;
-}
-function renderPred(v) {
-  const b = bridge(v.cfg), c = v.cfg;
-  v.pred = b;
-  let h = `<div class="hint">L=${c.L} · P=${c.P} · ${esc(c.ruleResolved)} vs ${esc(BRAIN[c.brain][0])}${c.drift ? ' · drift' : ''}</div>`;
-  if (v.size !== 1) h += `<div class="pred-big na">Live only: no committed evidence for a ×${v.size === 0.5 ? '½' : v.size} surge.</div>`;
-  else if (b && b.none) h += `<div class="pred-big na">${esc(b.none)}</div>`;
-  else if (!b || !b.d) h += `<div class="pred-big na">Live only: no committed evidence for this exact setting.</div>`;
-  else {
-    const mean = sum(b.d) / b.d.length, won = b.d.filter(x => x < 0).length;
-    if (b.head && b.head.lost !== undefined) {
-      h += `<div class="pred-big${parseFloat(b.head.lost) > 0 ? ' worse' : ''}">${S(b.head.src, b.head.lost)} requests lost per surge</div><div class="hint">planner minus rule, in the 120 minutes after onset. Served: ${S(b.head.src, b.head.pp)} pp [95% CI] (seeds won).</div>`;
-    } else if (b.head && b.head.prereg) {
-      h += `<div class="pred-big">${S(b.head.src, b.head.pp)} pp served</div><div class="hint">PRE-REGISTERED: planner minus the reference rule, ${S(b.head.src, b.head.won)} seeds, Holm p = ${S(b.head.src, b.head.holm)}. Lost per surge, planner minus rule: ${signed(mean)} (mean of the dots).</div>`;
-    } else {
-      h += `<div class="pred-big${mean > 0 ? ' worse' : ''}">${signed(mean)} requests lost per surge</div><div class="hint">planner minus rule, mean of the ${b.n} committed seeds below (derived); planner lost fewer in ${won}/${b.n}.</div>`;
-    }
-  }
-  $('#synPredTxt').innerHTML = h;
-  $('#synPredFoot').innerHTML = b && b.d && v.size === 1 ? `Grey dots: ${S(b.src, b.cond)}. Yellow: your surge, live, after 120 simulated minutes. Your onset: ${v.shocks[0] ? hhmm(v.shocks[0].t0) : 'click a zone'}.` : '';
-  drawStrip(v);
-}
-function drawStrip(v) {
-  const cv = $('#synStrip'), w = cv.clientWidth || 360, h = 92, x = sizeCanvas(cv, w, h), b = v.pred;
-  x.clearRect(0, 0, w, h);
-  if (!b || !b.d || v.size !== 1) return;
-  const live = v.shocks.filter(s => s.size === 1).map(s => ({d: s.lost[1] - s.lost[0], done: s.steps >= WIN, f: s.steps / WIN}));
-  const vals = b.d.concat(live.map(l => l.d), [0]);
-  let lo = Math.min(...vals), hi = Math.max(...vals); const pad = (hi - lo) * 0.08 + 5; lo -= pad; hi += pad;
-  const X = val => 10 + (w - 20) * (val - lo) / (hi - lo);
-  x.strokeStyle = '#5b6a96'; x.lineWidth = 1; x.beginPath(); x.moveTo(X(0), 4); x.lineTo(X(0), h - 16); x.stroke();
-  x.fillStyle = C.dim; x.font = '12px -apple-system,Helvetica,sans-serif';
-  x.fillText('← planner lost fewer', 4, h - 3); const t2 = 'rule lost fewer →'; x.fillText(t2, w - 4 - x.measureText(t2).width, h - 3);
-  b.d.forEach((val, i) => { x.fillStyle = 'rgba(200,210,235,.75)'; x.beginPath(); x.arc(X(val), 9 + (i % 5) * 7, 3.6, 0, 6.283); x.fill(); });
-  const mean = sum(b.d) / b.d.length; x.fillStyle = '#e8eef7'; x.fillRect(X(mean) - 1, 3, 2, 38);
-  live.forEach((l, k) => {
-    const y = 56 + (k % 2) * 4;
-    x.strokeStyle = C.amber; x.fillStyle = C.amber; x.lineWidth = 3; x.beginPath(); x.arc(X(l.d), y, l.done ? 7 : 6, 0, 6.283);
-    if (l.done) x.fill(); else x.stroke();
-    x.font = '800 13px -apple-system,Helvetica,sans-serif';
-    const lab = l.done ? `you${live.length > 1 ? ' #' + (k + 1) : ''}: ${l.d > 0 ? '+' : ''}${l.d}` : `live, ${Math.round(100 * l.f)}% of 120 min`;
-    const tw = x.measureText(lab).width, px = X(l.d) + 12 + tw > w ? X(l.d) - 12 - tw : X(l.d) + 12;
-    x.fillText(lab, px, y + 5);
+  $('#synLP').querySelectorAll('button').forEach(b => b.onclick = () => {
+    if (MODE !== 'LIVE') { toast('Recording: the settings are fixed. Run demo/run.sh to change them.'); return; }
+    v.cfg.L = +b.dataset.l; v.cfg.P = +b.dataset.p; v.start();
   });
+  $('#synLPFoot').innerHTML = `Planner − best rule, served pp, ${S('phase', '20 seeds per cell')} · L: minutes per repositioning hop · P: minutes a request waits`;
 }
+const SYN_VIEW = {
+  scenario: 'synthetic', speeds: [2, 8, 30, 120], speed: 8, city: {}, event: null,
+  recKey: () => 'syn',
+  clock: (t, v) => v.config ? clockEnd(t, v.config.horizon) : hhmm(t),
+  onReset(v) {
+    const c = v.cfg;
+    if (MODE !== 'LIVE' && window.RECORDED && window.RECORDED.syn) Object.assign(c, window.RECORDED.syn.ui);
+    $('#synSizes').style.display = MODE === 'LIVE' ? '' : 'none';
+    c.ruleResolved = c.rule !== 'auto' ? c.rule : (c.drift ? 'reactive' : EV.claims.phase_best_rule[`${c.L},${c.P}`]);
+    $('#synRuleName').textContent = c.ruleResolved;
+    $('#synRuleDesc').textContent = (c.rule === 'auto' ? (c.drift ? 'pre-registered reference rule for shock+drift: ' : `best rule at L=${c.L}, P=${c.P} (committed): `) : '') + RULE_DESC[c.ruleResolved];
+    $('#synBrainName').textContent = BRAIN[c.brain][0]; $('#synBrainDesc').textContent = BRAIN[c.brain][1];
+    $('#synSelRule').value = c.rule; $('#synSelBrain').value = c.brain; $('#synChkDrift').checked = c.drift;
+    buildLP(v); renderPred(v);
+  },
+  onConfig(v, cfg) { renderPred(v); drawerSyn(v); },
+  onLand(v, sh) { v.autoPause('landed'); renderPred(v); },
+  onEnd(v) { v.paused = 'end'; renderPred(v); },
+  onShock(v) { renderPred(v); },
+  onSize(v) { renderPred(v); },
+  counters(v, since) {
+    const sh0 = v.shocks[0], start = v.config ? v.config.start : 300;
+    ['L', 'R'].forEach((s, i) => {
+      v.id('Lost' + s).textContent = since ? v.since[i] : v.cum[i].lost;
+      v.id('LostLbl' + i).textContent = since ? `requests lost since ${PW.sg} (${hhmm(sh0.t0)}, ${PW.adj})` : `requests lost since ${hhmm(start)}, no surge yet (${PW.adj})`;
+      v.id('SrvLbl' + i).textContent = `served today (${PW.adj})`;
+      if (v.base) v.id('C3' + s).textContent = v.hops(i).toFixed(2);
+      v.id('C3Lbl' + i).textContent = 'empty hops per served request';
+    });
+  },
+  onDom(v) {
+    const c = v.cfg, cfg = v.config;
+    let state;
+    if (v.done) state = MODE === 'LIVE' ? `the run ended at ${cfg ? clockEnd(cfg.horizon, cfg.horizon) : ''}` : 'end of the recording';
+    else if (!v.base) state = v.err ? 'not started' : 'preparing the city…';
+    else if (v.paused === 'landed' && !v.playing) state = 'paused';
+    else if (v.armed && !v.playing) state = `armed at ${hhmm(cfg ? cfg.start : 300)}`;
+    else state = v.playing ? `${v.speed} simulated minutes per second` : 'paused';
+    const len = cfg ? `${cfg.horizon / 60}-h run${cfg.reference ? ` as in ${cfg.reference.run}` : ''}` : '';
+    $('#synStatus').innerHTML = `${pvTag()}seed ${c.seed} · ${len} · ${esc(state)}`;
+    $('#synHint').innerHTML = !v.base ? 'Preparing the city…' : v.done ? 'This run has ended: ⟲ restarts it, armed.'
+      : v.paused === 'landed' && !v.playing ? '<span class="call">120 minutes after the surge. ▶ to continue.</span>'
+      : v.armed && !v.playing ? (MODE === 'LIVE' ? '<span class="call">Click a zone: your surge and the clock start.</span>' : 'Recording: press ▶ to replay a recorded surge (clicks are off).')
+      : 'Click again for another surge (overlapping surges are off-reference).';
+    drawSpark($('#synSpark'), v.series, v.shocks, v.t);
+    if (v.shocks.length) renderPred(v); else drawStrip(v);
+  },
+};
 
-// ------------------------------------------------------------------ a week (synthetic), recomputed live by the server
+// ------------------------------------------------------------------ a week (SYNTHETIC): recomputed by the server, or recorded
 class Replay {
   constructor(kind, seed, ids, o) {
     this.kind = kind; this.seed = seed; this.o = o; this.cities = ids.map(i => new City($(i), o.city || {}));
-    this.frames = []; this.next = 0; this.done = false; this.summary = null; this.err = null; this.started = false; this.disp = -1; this.idx = 0;
+    this.reset();
   }
+  reset() { this.frames = []; this.next = 0; this.done = false; this.summary = null; this.err = null; this.started = false; this.disp = -1; this.idx = 0; this.lastF = null; this.meta = null; }
   async start() {
-    if (this.started || !BACKEND) return; this.started = true;
+    if (this.started) return; this.started = true;
+    if (MODE !== 'LIVE') {
+      const R = window.RECORDED && window.RECORDED.week;
+      if (!R) { this.err = 'no recording found'; }
+      else { this.frames = R.frames; this.summary = R.summary; this.done = true; this.meta = {T: R.T, t: R.T}; }
+      if (this.o.onData) this.o.onData(this);
+      return;
+    }
     try { const r = await api('/api/run', {kind: this.kind, seed: this.seed}); this.rid = r.rid; this.poll(); }
-    catch (e) { this.err = e.message; this.started = false; }
+    catch (e) { this.err = e.message; this.started = false; if (fatal(e)) stopLive(e.message); if (this.o.onData) this.o.onData(this); }
   }
   async poll() {
+    if (STOPPED || MODE !== 'LIVE') return;
     try {
       const r = await api(`/api/run/${this.rid}?from=${this.next}`);
       this.frames.push(...r.frames); this.next = r.next; this.meta = r;
@@ -863,7 +1066,7 @@ class Replay {
       if (r.summary) this.summary = r.summary;
       this.done = r.done;
       if (!this.done && !this.err) setTimeout(() => this.poll(), r.frames.length >= 400 ? 10 : 250);
-    } catch (e) { this.err = e.message; }
+    } catch (e) { this.err = e.message; this.started = false; if (fatal(e)) stopLive(e.message); }
     if (this.o.onData) this.o.onData(this);
   }
   frameAt(t) {
@@ -889,25 +1092,29 @@ const WK_POL = ['greedy', 'reactive', 'mpc-ewma'];
 const Week = new Replay('week', 200, ['#wk0', '#wk1', '#wk2'], {onData: r => weekProgress(r)});
 function weekProgress(r) {
   const T = (r.meta && r.meta.T) || 10080;
-  $('#wkProg').textContent = r.err ? 'error: ' + r.err : r.done ? `Computed ${T} minutes × 3 allocators in ${r.summary ? r.summary.wall_s : '?'} s on this laptop.` : `computing… day ${Math.min(7, 1 + Math.floor(((r.meta && r.meta.t) || 0) / 1440))} of 7`;
+  $('#wkProg').textContent = r.err ? 'error: ' + r.err : !r.done ? `computing… day ${Math.min(7, 1 + Math.floor(((r.meta && r.meta.t) || 0) / 1440))} of 7`
+    : MODE === 'LIVE' ? `${T} minutes × 3 allocators computed in ${r.summary ? r.summary.wall_s : '?'} s on this laptop.` : `${T} minutes × 3 allocators, from the recording.`;
   const s = r.summary;
   if (s) {
     $('#wkParity').className = 'parity ' + (s.parity_all ? 'ok' : 'no');
-    $('#wkParity').innerHTML = s.parity_all ? `✓ This live recompute is bit-identical to the committed rows (${S('csv_week', 'long-week-v2/episodes.csv')}, seed 200: served fraction, served per day, lost per shock) for greedy, reactive and the planner.`
-      : '✗ Parity check against the committed rows failed.';
+    $('#wkParity').innerHTML = s.parity_all ? `✓ This ${PW.adj} run matches the committed served-fraction and loss metrics (${S('csv_week', 'long-week-v2/episodes.csv')}, seed 200); daily fractions match at committed precision.`
+      : '✗ The check against the committed metrics failed.';
   }
 }
 function weekStatic() {
   const d = EV.claims.week_days, cmp = EV.claims.week_cmp, m = EV.claims.month_cmp;
-  $('#wkHead').innerHTML = `Greedy ${S('week', d.greedy.d1)} → ${S('week', d.greedy.d7)} by day 7; planner ${S('week', d['mpc-ewma'].d1)} → ${S('week', d['mpc-ewma'].d7)}`;
-  $('#wkHead2').innerHTML = `Committed means over 10 seeds (served per day). Planner vs the best rule (reactive) over the week: ${S('week', cmp['Δ served (pp) [95% paired CI]'])} pp, ${S('week', cmp['seeds won'])} seeds; ${S('week', cmp['Δ lost per shock'])} requests lost per shock. A 30-day month: ${S('month', m['Δ served (pp) [95% paired CI]'])} pp, ${S('month', m['seeds won'])} seeds.`;
-  if (!BACKEND) $('#wkProg').textContent = 'Live recompute needs demo/run.sh. Ticks show the committed means.';
+  $('#wkHead').innerHTML = `Day 7: greedy ${S('week', d.greedy.d7)} · reactive ${S('week', d.reactive.d7)} · planner ${S('week', d['mpc-ewma'].d7)} <span class="hint">(${pvTag('COMMITTED')}means of 10 seeds; day 1: ${S('week', d.greedy.d1)} · ${S('week', d.reactive.d1)} · ${S('week', d['mpc-ewma'].d1)})</span>`;
+  $('#wkHead2').innerHTML = `Whole week, planner − reactive: ${S('week', cmp['Δ served (pp) [95% paired CI]'])} pp, ${S('week', cmp['seeds won'])} seeds; ${S('week', cmp['Δ lost per shock'])} requests lost per shock. A 30-day month: ${S('month', m['Δ served (pp) [95% paired CI]'])} pp, ${S('month', m['seeds won'])}, only 4 seeds.`;
+  $('#wkAbout').innerHTML = `SYNTHETIC: a week with a shock every day, a migrating hotspot and transient spikes (scenario long-week, seed 200), ${esc(PW.computed)}. L=1, P=10.`;
+  $('#wkBarsNote').innerHTML = `Bars: this ${PW.adj} run (seed 200). Black ticks: ${S('week', 'committed means over 10 seeds')}.`;
+  for (let i = 0; i < 3; i++) { $('#wkdl' + i).textContent = `served, current day (${PW.adj})`; $('#wkrl' + i).textContent = `served, run so far (${PW.adj})`; }
+  weekProgress(Week);
 }
 function weekDraw(now, dt) {
   Week.tick(dt, now, 420);
   const t = Math.max(0, Math.floor(Week.disp));
   $('#wkClock').textContent = `Day ${Math.min(7, 1 + Math.floor(t / 1440))} · ${hhmm(t)}`;
-  const cv = $('#wkBars'), w = cv.clientWidth || 400, h = 150, x = sizeCanvas(cv, w, h);
+  const cv = $('#wkBars'), w = cv.clientWidth || 400, h = cv.clientHeight || 130, x = sizeCanvas(cv, w, h);
   x.clearRect(0, 0, w, h);
   const days = [], zero = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
   if (Week.frames.length) for (let d = 0; d < 7; d++) {
@@ -915,49 +1122,51 @@ function weekDraw(now, dt) {
     const a = Week.cumAt(end), b = d ? Week.cumAt(d * 1440 - 1) : zero;
     if (a && b) days.push(a.map((v, i) => (v[0] - b[i][0]) / Math.max(1, v[2] - b[i][2])));
   }
-  const lo = 0.4, X0 = 30, bw = (w - X0 - 6) / 7, Y = v => h - 18 - (h - 34) * (Math.max(lo, v) - lo) / (1 - lo);
+  const lo = 0.4, X0 = 28, bw = (w - X0 - 6) / 7, Y = v => h - 16 - (h - 32) * (Math.max(lo, v) - lo) / (1 - lo);
   x.font = '11px -apple-system,Helvetica,sans-serif';
   [0.4, 0.6, 0.8, 1.0].forEach(v => { x.fillStyle = C.dim; x.fillText(v.toFixed(1), 2, Y(v) + 4); x.strokeStyle = '#26335c'; x.beginPath(); x.moveTo(X0, Y(v)); x.lineTo(w, Y(v)); x.stroke(); });
   const cols = [C.red, '#ff9aa6', C.green];
   for (let d = 0; d < 7; d++) {
-    x.fillStyle = C.dim; x.fillText('day ' + (d + 1), X0 + d * bw + bw / 2 - 14, h - 4);
+    x.fillStyle = C.dim; x.fillText('day ' + (d + 1), X0 + d * bw + bw / 2 - 14, h - 3);
     for (let i = 0; i < 3; i++) {
       const bx = X0 + d * bw + 4 + i * (bw - 8) / 3, bwi = (bw - 8) / 3 - 2;
-      if (days[d]) { x.fillStyle = cols[i]; x.fillRect(bx, Y(days[d][i]), bwi, h - 18 - Y(days[d][i])); }
+      if (days[d]) { x.fillStyle = cols[i]; x.fillRect(bx, Y(days[d][i]), bwi, h - 16 - Y(days[d][i])); }
       const cm = parseFloat(EV.claims.week_days[WK_POL[i]]['d' + (d + 1)]);
       x.fillStyle = '#000'; x.fillRect(bx - 1, Y(cm) - 2, bwi + 2, 4); x.fillStyle = '#fff'; x.fillRect(bx - 1, Y(cm) - 0.5, bwi + 2, 1);
     }
   }
   x.font = '12px -apple-system,Helvetica,sans-serif';
-  x.fillStyle = C.red; x.fillText('■ greedy', X0 + 4, 12); x.fillStyle = '#ff9aa6'; x.fillText('■ reactive', X0 + 72, 12); x.fillStyle = C.green; x.fillText('■ planner', X0 + 148, 12);
+  x.fillStyle = C.red; x.fillText('■ greedy', X0 + 4, 11); x.fillStyle = '#ff9aa6'; x.fillText('■ reactive', X0 + 72, 11); x.fillStyle = C.green; x.fillText('■ planner', X0 + 148, 11);
   const cur = days[days.length - 1], lastF = Week.frames.length ? Week.frameAt(t) : null;
   for (let i = 0; i < 3; i++) {
     $('#wkd' + i).textContent = cur ? pct(cur[i]) : '–';
-    if (lastF) $('#wkr' + i).textContent = pct(lastF.cum[i][0] / Math.max(1, lastF.cum[i][2]));
+    $('#wkr' + i).textContent = lastF ? pct(lastF.cum[i][0] / Math.max(1, lastF.cum[i][2])) : '–';
   }
 }
 
-// ------------------------------------------------------------------ evidence / honest panel + footer
+// ------------------------------------------------------------------ evidence / honest panel, footer, drawer
 const TITLES = {confirm: 'Pre-registered confirmatory test (mvp-v2): 30 fresh seeds, L=1, P=10', phase: 'Where look-ahead pays: the (L, P) map (phase-v2), 20 seeds per cell',
   phasec: 'Planner sensitivity on the same seeds (phase-v2c)', week: 'A week: a shock every day + drift + spikes (long-week-v2), 10 seeds',
   month: 'A month (long-month-v2), 4 seeds', nyc: 'NYC TLC real trips, July 3–4 2025 (nyc-v2), 20 thinning replicates',
   nycb: 'NYC TLC, July 10–11 2025 (nyc-v2b)', pareto: 'Service vs movement (pareto-v2)', trust: 'Forecast-trust sweep (trust-v2), exploratory'};
 function honestItems() {
-  const c = EV.claims, ph = c.phase;
+  const c = EV.claims, ph = c.phase, mo = c.month_cmp;
   return [
-    `<b>It cannot see a surge coming.</b> It wins by re-planning every minute over the lead time with the units about to free up and the live queues. It anticipates only what it has learned: the daily cycle and drift. On 4 July it was given only 1–2 July as history.`,
+    `<b>It cannot see a surge coming.</b> It wins by re-planning every minute over the lead time with the units about to free up and the current queues. It anticipates only what it has learned: the daily cycle and drift. On 4 July it had only 1–2 July as history.`,
+    `<b>${MODE === 'LIVE' ? 'Your clicks are' : 'The recorded surges are'} interventions shown alongside committed reference runs,</b> not new test seeds or calibrated predictions for that location or time. Clicks outside the reference conditions (onset window, ×1, one surge, run length) are flagged OFF-REFERENCE.`,
+    `<b>The July-4 window is illustrative and retrospectively chosen, not a causal estimate.</b> The 62 vs 3.0 anomaly is raw TLC cell pickups before thinning; the counters are fleet-wide losses over two hours. Real demand, simulated fleet (5×5 cells, same-zone matching, simulated travel and patience). Surges injected on NYC are synthetic and have no committed evidence.`,
     `<b>Under a pure shock, ignoring the forecast did better:</b> the queue-only planner served ${S('confirm', c.queue_shock_pp['Δ served (pp) [95% paired CI]'])} pp more than our EWMA planner; lost per shock ${S('confirm', c.queue_shock_lost['Δ lost per shock [95% paired CI]'])} (L=1, P=10, synthetic).`,
     `<b>A perfect forecast can hurt:</b> true rates lowered service in 3 of 4 long-lead-time cells (L=4,P=3: ${S('phase', ph['4,3'].main['true-rate forecast vs EWMA'])}; L=8,P=3: ${S('phase', ph['8,3'].main['true-rate forecast vs EWMA'])}; L=8,P=10: ${S('phase', ph['8,10'].main['true-rate forecast vs EWMA'])} pp).`,
     `<b>Where planning stops paying:</b> at L=8, P=10 the planner vs the best rule is ${S('phase', ph['8,10'].main['look-ahead vs best rule'])} pp: no reliable gain.`,
     `<b>Our pre-registered change-detector hypothesis did not replicate</b> (${S('phase', 'phase-v2, H1 family, Holm')}).`,
-    `<b>NYC is real demand on a simulated fleet:</b> 5×5 cells, same-zone matching, simulated travel and patience; trips thinned to ~10/min. The July-4 surge's cause is UNVERIFIED. Surges you inject on NYC are synthetic and have no committed evidence.`,
-    `<b>Centralised planning, per-unit execution.</b> The amber shading is the LP's dual value of one more idle unit, a planning signal, not a market price.`,
-    `<b>Live numbers are one run.</b> Committed numbers are means over seeds or replicates with paired 95% CIs.`];
+    `<b>Parity scope:</b> the NYC, week and shock-day recomputes match the committed served-fraction and loss metrics; daily fractions match at committed precision. This is not whole-row or trajectory identity.`,
+    `<b>Centralised planning, per-unit execution.</b> The amber heat is the LP's dual value of one more idle unit, a planning signal, not a market price.`,
+    `<b>One run versus committed means.</b> Committed numbers are means over seeds or replicates with paired 95% CIs. The month has only 4 seeds (${S('month', mo['seeds won'])}, Wilcoxon p = ${S('month', mo['Wilcoxon p'])}).`];
 }
 function buildEvidence() {
-  let h = `<h2>Honest limits</h2><ul class="honest">${honestItems().map(s => `<li>${s}</li>`).join('')}</ul>`;
+  let h = `<div class="closing">${esc(PW.closing)}</div><h2>Honest limits</h2><ul class="honest">${honestItems().map(s => `<li>${s}</li>`).join('')}</ul>`;
   for (const k of ['nyc', 'nycb', 'confirm', 'phase', 'week', 'month', 'pareto', 'trust', 'phasec']) {
-    h += `<h2>${esc(TITLES[k])}</h2><div class="path">${esc(srcPath(k))} · sha1 ${esc(EV.sources[k].sha1)} · cells copied verbatim</div>`;
+    h += `<h2>${esc(TITLES[k])}</h2><div class="path">${pvTag('COMMITTED')}${esc(srcPath(k))} · sha1 ${esc(EV.sources[k].sha1)} · cells copied verbatim</div>`;
     for (const t of EV.tables[k]) {
       h += `<div class="cap">${esc(t.caption || t.heading)}</div><table class="tbl"><tr>${t.header.map(c => `<th>${esc(c)}</th>`).join('')}</tr>` +
         t.rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('') + '</table>';
@@ -967,20 +1176,92 @@ function buildEvidence() {
 }
 function buildFooter() {
   const p = EV.claims.prereg, k = s => p[s]['Δ served (pp) [95% paired CI]'], c = EV.claims, ph = c.phase['8,10'].main;
-  $('#preLine').innerHTML = `<b>Pre-registered</b> (synthetic, ${S('prereg', '30 fresh seeds')}, vs the rule fixed on tuning seeds): shock ${S('confirm', k('shock'))} pp · +drift ${S('confirm', k('shock+drift'))} · +drift+spikes ${S('confirm', k('shock+drift+spikes'))} · ${S('confirm', p.shock['seeds won'])} each · Holm p = ${S('confirm', p.shock['Holm p'])}`;
-  $('#honLine').innerHTML = `<b>Honest:</b> <a href="#" id="toEv" style="color:#ffb020">all limits</a> · cannot see a surge coming · real demand, simulated fleet · pure shock: queue-only planner did better (${S('confirm', c.queue_shock_pp['Δ served (pp) [95% paired CI]'])} pp) · L=8, P=10: no reliable gain (${S('phase', ph['look-ahead vs best rule'])})`;
+  $('#preLine').innerHTML = `<b>Pre-registered</b> (synthetic, ${S('prereg', '30 fresh seeds')}, rule fixed on tuning seeds): shock ${S('confirm', k('shock'))} pp · shock+drift ${S('confirm', k('shock+drift'))} · +spikes ${S('confirm', k('shock+drift+spikes'))} · ${S('confirm', p.shock['seeds won'])} each · Holm p = ${S('confirm', p.shock['Holm p'])}`;
+  $('#honLine').innerHTML = `<b>Honest:</b> cannot see a surge coming · real demand, simulated fleet · pure shock: a queue-only planner did better (${S('confirm', c.queue_shock_pp['Δ served (pp) [95% paired CI]'])} pp) · L=8, P=10: no reliable gain (${S('phase', ph['look-ahead vs best rule'])}) · <a href="#" id="toEv">all limits</a>`;
   $('#toEv').onclick = e => { e.preventDefault(); showTab('evidence'); };
+}
+function drawerNyc() {
+  const c = EV.claims, b = c.nycb_cmp, cmp = c.nyc_cmp, m = c.nyc_event_lost_mean;
+  $('#drawerNyc').innerHTML = `<h4>Committed receipts (20 thinning replicates of each replay)</h4>` +
+    `<p>${pvTag('COMMITTED')}3–4 July, planner − reactive: <b>${S('nyc', cmp['Δ served (pp) [95% paired CI]'])} pp</b> served, ${S('nyc', cmp['replicates won'])}; night-window losses ${S('nyc', cmp['Δ event lost [95% CI]'])}.</p>` +
+    `<p>${pvTag('COMMITTED')}10–11 July (ordinary days, no event window): <b>${S('nycb', b['Δ served (pp) [95% paired CI]'])} pp</b>, ${S('nycb', b['replicates won'])}.</p>` +
+    `<p>${pvTag('COMMITTED')}window losses, mean: planner ${S('csv_nyc', m['mpc-ewma'].text)} · reactive ${S('csv_nyc', m.reactive.text)} · greedy ${S('csv_nyc', m.greedy.text)} · static ${S('csv_nyc', m.static.text)} (derived means of the committed rows; summary.md rounds them).</p>` +
+    `<p>The engine behind this tab matches the committed served-fraction and loss metrics for replicate 200 (eval/results/nyc-v2/episodes.csv; checked by demo/smoke.sh); daily fractions match at committed precision.</p>` +
+    `<h4>How to read the cities</h4>${LEGEND}` +
+    `<h4>Data</h4><p>NYC TLC yellow-taxi trips, July 2025, Manhattan-internal, thinned with q = ${S('replay', c.nyc_q.text)} (replicate 200 of seeds 200–219); policies learned their daily cycle, shares and trip map from 1–2 July only. Cells carry taxi-zone names from the committed mapping (hover a cell for all of them). The ×1 surge you add is the committed synthetic shock shape: 2×2 cells, +1.2 requests/min each, up to 6 h (cut at midnight).</p>` +
+    `<h4>Keys</h4><p>space play/pause · 1–4 speed · r restart this run · Esc close</p>`;
+}
+function drawerSyn(v) {
+  const ref = v && v.config && v.config.reference;
+  $('#drawerSyn').innerHTML = `<h4>Reference protocol of the grey dots</h4>` +
+    (ref ? `<p>${pvTag('COMMITTED')}${esc(refDesc(ref))} (from ${esc(ref.src)} and the committed shock shape). Your city uses the same run length and is armed inside the onset window; your click picks the block and time, so it is an intervention shown alongside them, not another seed.</p>` : '<p>No committed reference runs for this setting: everything shown is computed now, with nothing to compare it against.</p>') +
+    `<p>OFF-REFERENCE when: onset outside the window, size not ×1, a second overlapping surge, or a different run length.</p>` +
+    `<h4>The surge</h4><p>×1 = the committed shock shape: 2×2 zones, +1.2 requests/min each (3× the zone-average rate), for up to 6 h (cut at the end of the run). Unannounced to both fleets; both get the same requests.</p>` +
+    `<h4>How to read the cities</h4>${LEGEND}<h4>Keys</h4><p>space play/pause · 1–4 speed · r restart (armed) · Esc close</p>`;
+}
+function drawerWeek() {
+  const m = EV.claims.month_cmp;
+  $('#drawerWeek').innerHTML = `<h4>Reading the bars</h4><p>Coloured bars: served share per day in seed 200 (${esc(PW.adj)} run). Black ticks: committed means over 10 seeds (${S('week', 'long-week-v2/summary.md')}). Day means within one run share the drift, so inference uses whole seed trajectories.</p>` +
+    `<h4>The month</h4><p>${pvTag('COMMITTED')}30 days, 4 seeds only: ${S('month', m['Δ served (pp) [95% paired CI]'])} pp, ${S('month', m['seeds won'])}, Wilcoxon p = ${S('month', m['Wilcoxon p'])}. Committed, not recomputed here.</p>`;
+}
+function openDrawer(which) {
+  const d = $('#drawer');
+  d.style.top = $('header').offsetHeight + 'px';
+  $$('#drawer .dsec').forEach(s => { s.hidden = s.dataset.for !== which; });
+  $('#drawerTitle').textContent = {nyc: 'July 4th: receipts, legend & sources', syn: 'Stress test: settings, legend & reference', week: 'A week: how to read it'}[which] || 'More';
+  d.hidden = false;
+}
+const closeDrawer = () => { $('#drawer').hidden = true; };
+
+// ------------------------------------------------------------------ provenance switches: stopped server, recorded fallback
+function stopLive(msg) {
+  if (MODE !== 'LIVE' || STOPPED) return;
+  STOPPED = true;
+  [NYCV, SYNV].forEach(v => { if (v) { v.playing = false; v.marks(); v.dom(); } });
+  $('#stoppedTitle').textContent = PW.stopped;
+  $('#stoppedMsg').textContent = ` ${msg.charAt(0).toUpperCase() + msg.slice(1)}. The cities are paused.`;
+  $('#stopped').hidden = false;
+  layout();
+}
+async function retryLive() {
+  try { await api('/api/health'); } catch (e) { toast('Still not responding: ' + e.message); return; }
+  STOPPED = false; $('#stopped').hidden = true; layout();
+  let restarted = false;
+  for (const v of [NYCV, SYNV]) {
+    if (!v || !v.started) continue;
+    if (v.sid) { try { await api('/api/live/step', {sid: v.sid, n: 0}); v.err = ''; v.dom(); continue; } catch (e) { /* session gone: restart below */ } }
+    v.start({role: v.role}); restarted = true;
+  }
+  if (Week.started && (Week.err || !Week.done)) { Week.reset(); if (TAB === 'week') Week.start(); }
+  toast(restarted ? 'Reconnected. The server had restarted, so the run starts again, armed.' : 'Reconnected. Press ▶ to continue.', 5000);
+}
+async function openRecorded() {
+  if (!window.RECORDED) await loadScript('data/recorded_live.js');
+  if (!window.RECORDED) { toast('The recording is not reachable from this page: open demo/index.html directly, or play demo/fallback/p7-demo-walkthrough.mp4.', 7000); return; }
+  setMode('RECORDED'); STOPPED = false; $('#stopped').hidden = true;
+  NYCV.start({role: 'reference'}); SYNV.started = false; Week.reset();
+  if (TAB === 'syn') SYNV.start();
+  if (TAB === 'week') Week.start();
+}
+function setMode(m) {
+  MODE = m; PW = PROV_WORDS[m]; BACKEND = m === 'LIVE';
+  document.body.classList.toggle('off', m !== 'LIVE');
+  $('#offline').hidden = m === 'LIVE';
+  const pill = $('#provPill'); pill.className = 'pill ' + m; pill.textContent = PW.badge;
+  pill.title = m === 'LIVE' ? 'cities and counters are computed now by the committed code' : 'cities and counters replay a recording made by demo/record.py';
+  weekStatic(); buildEvidence(); drawerNyc(); drawerWeek(); drawerSyn(SYNV);
+  layout();
 }
 
 // ------------------------------------------------------------------ tabs, layout, main loop
 let TAB = 'nyc', NYCV = null, SYNV = null;
 function showTab(t) {
-  TAB = t;
+  TAB = t; closeDrawer();
   $$('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
   ['nyc', 'syn', 'week', 'evidence'].forEach(k => { $('#tab-' + k).hidden = k !== t; });
   const b = $('#badge');
   if (t === 'nyc') { b.className = 'badge real'; b.textContent = 'REAL DEMAND · NYC TLC TRIPS'; }
-  else if (t === 'evidence') { b.className = 'badge synth'; b.textContent = 'COMMITTED RESULTS'; }
+  else if (t === 'evidence') { b.className = 'badge com'; b.textContent = 'COMMITTED RESULTS'; }
   else { b.className = 'badge synth'; b.textContent = 'SYNTHETIC DEMAND'; }
   if (t === 'syn' && !SYNV.started) SYNV.start();
   if (t === 'nyc' && !NYCV.started) NYCV.start();
@@ -988,20 +1269,22 @@ function showTab(t) {
   layout();
 }
 function layout() {
-  const fit = (...cvs) => Math.max(150, Math.min(...cvs.map(cv => {   // the tallest sibling rows decide; nothing else shrinks
+  const fit = (...cvs) => Math.max(140, Math.min(...cvs.map(cv => {   // the other rows of the panel keep their size; the city takes the rest
     const p = cv.parentElement, other = [...p.children].filter(c => c !== cv).reduce((h, c) => h + c.offsetHeight, 0);
-    return Math.floor(Math.min(p.clientWidth - 26, p.clientHeight - other - 30));
+    return Math.floor(Math.min(p.clientWidth - 22, p.clientHeight - other - 24));
   })));
   if (TAB === 'nyc') { const s = fit($('#nycCityL'), $('#nycCityR')); NYCV.cities.forEach(c => c.setSize(s)); NYCV.dom(); }
   if (TAB === 'syn') { const s = fit($('#synCityL'), $('#synCityR')); SYNV.cities.forEach(c => c.setSize(s)); SYNV.dom(); }
   if (TAB === 'week') { const s = fit($('#wk0'), $('#wk1'), $('#wk2')); Week.cities.forEach(c => c.setSize(s)); Week.lastF = null; }
+  $('#drawer').style.top = $('header').offsetHeight + 'px';
 }
 window.addEventListener('resize', layout);
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+  if (e.key === 'Escape') { closeDrawer(); return; }
   const v = TAB === 'nyc' ? NYCV : TAB === 'syn' ? SYNV : null; if (!v) return;
   if (e.key === ' ') { e.preventDefault(); v.togglePause(); }
-  if (e.key === 'r' && BACKEND) v.start();
+  if (e.key === 'r' && MODE === 'LIVE') v.start({role: v.role});
   const sp = v.o.speeds[+e.key - 1]; if (sp) v.setSpeed(sp);
 });
 let lastNow = performance.now();
@@ -1018,24 +1301,24 @@ function loadScript(src) { return new Promise(res => { const s = document.create
 async function boot() {
   if (!EV) { document.body.innerHTML = '<h1 style="padding:30px">demo/data/evidence.js is missing: run demo/run.sh from the project folder.</h1>'; return; }
   $$('nav button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
-  try { BACKEND = location.protocol.startsWith('http') && (await api('/api/health')).ok === true; } catch (e) { BACKEND = false; }
-  if (!BACKEND) { document.body.classList.add('off'); $('#offline').style.display = 'block'; await loadScript('data/recorded_live.js'); }
+  $$('[data-drawer]').forEach(b => b.onclick = () => openDrawer(b.dataset.drawer));
+  $('#drawerClose').onclick = closeDrawer;
+  $('#btnRetry').onclick = retryLive; $('#btnRecorded').onclick = openRecorded;
+  let up = false;
+  try { up = location.protocol.startsWith('http') && (await api('/api/health')).ok === true; } catch (e) { up = false; }
+  if (!up) await loadScript('data/recorded_live.js');
   NYCV = new LiveView('nyc', NYC_VIEW);
   SYNV = new LiveView('syn', SYN_VIEW);
+  setMode(up ? 'LIVE' : 'RECORDED');
   $('#synSelRule').onchange = e => { SYNV.cfg.rule = e.target.value; SYNV.start(); };
   $('#synSelBrain').onchange = e => { SYNV.cfg.brain = e.target.value; SYNV.start(); };
   $('#synChkDrift').onchange = e => { SYNV.cfg.drift = e.target.checked; SYNV.start(); };
   $('#synRestart').onclick = () => SYNV.start();
   $('#synNewCity').onclick = () => { SYNV.cfg.seed += 1; SYNV.start(); };
-  if (!BACKEND) {
-    $('#nycClickCall').textContent = 'Recording: clicks are off. Run demo/run.sh to drop your own surge.';
-    $('#synClickCall').textContent = 'Recording: clicks are off. Run demo/run.sh to drop your own surge.';
-    $$('.ctr .l').forEach(e => { e.textContent = e.textContent.replace('(live)', '(recorded)'); });
-  }
-  nycSetup(); weekStatic(); buildEvidence(); buildFooter();
-  if (BACKEND) nycParity();
+  nycSetup(); buildFooter();
   showTab('nyc');
   requestAnimationFrame(loop);
+  if (up) setTimeout(() => { if (!window.RECORDED) loadScript('data/recorded_live.js'); }, 4000);   // ready for "Open recorded fallback"
 }
 boot();
 </script>

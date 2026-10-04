@@ -172,7 +172,7 @@ def build() -> dict:
     ref = table(T["prereg"], "Reference rule per scenario")
     c["prereg_reference"] = {r[0]: dict(zip(ref["header"], r)) for r in ref["rows"]}
 
-    # per-seed values for the "your shock is seed #21" strip (paired by seed)
+    # per-seed values for the committed reference strip (paired by seed)
     ev["seeds"] = dict(
         phase=per_seed(read_csv(CSVS["phase"]), ("hop_steps", "patience", "policy"), ("shock_lost", "served_frac")),
         mvp=per_seed([r for r in read_csv(CSVS["mvp"]) if r["scenario"] in ("shock", "shock+drift")],
