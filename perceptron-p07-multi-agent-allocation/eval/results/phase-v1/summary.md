@@ -2,7 +2,7 @@
 
 Scenario: shock · horizon 720 steps · units 40 · seeds [100, 101, 102, 103, 104, 105, 106, 107, 108, 109] (frozen test seeds; CRN). Served-fraction differences in percentage points, mean [95% paired bootstrap CI] (seeds won / n).
 
-| L | P | best rule (served) | mpc-ewma | look-ahead vs best rule | detector vs EWMA | oracle vs EWMA |
+| L | P | best rule (served) | mpc-ewma | look-ahead vs best rule | detector vs EWMA | true-rate forecast vs EWMA |
 |---|---|---|---|---|---|---|
 | 1 | 3 | greedy (0.756) | 0.849 | +9.31 [+8.02, +10.70] (10/10) | -0.01 [-0.13, +0.12] (6/10) | +0.07 [-0.12, +0.25] (5/10) |
 | 2 | 3 | reactive (0.657) | 0.730 | +7.31 [+6.85, +7.75] (10/10) | +0.58 [+0.35, +0.80] (9/10) | +0.93 [+0.63, +1.21] (10/10) |
@@ -15,7 +15,7 @@ Scenario: shock · horizon 720 steps · units 40 · seeds [100, 101, 102, 103, 1
 
 Requests lost in the 120 steps after shock onset, mean paired difference (negative = fewer lost):
 
-| L | P | look-ahead vs best rule | detector vs EWMA | oracle vs EWMA |
+| L | P | look-ahead vs best rule | detector vs EWMA | true-rate forecast vs EWMA |
 |---|---|---|---|---|
 | 1 | 3 | -281.9 | +1.7 | -2.5 |
 | 2 | 3 | -159.9 | -8.5 | -29.4 |
@@ -25,3 +25,16 @@ Requests lost in the 120 steps after shock onset, mean paired difference (negati
 | 2 | 10 | -182.6 | +3.8 | -4.8 |
 | 4 | 10 | -80.7 | +5.1 | -4.4 |
 | 8 | 10 | -10.8 | -1.8 | -8.7 |
+
+Share of the true-rate forecast's served-fraction gain over EWMA captured by an arm (ratio of mean paired gains, joint seed bootstrap 95% CI; '—' where that gain is not reliably positive, i.e. forecasting does not pay):
+
+| L | P | true-rate − EWMA (pp) | detector arm captures | matched-α EWMA captures |
+|---|---|---|---|---|
+| 1 | 3 | +0.07 | — | — |
+| 2 | 3 | +0.93 | 62% [42%, 86%] | — |
+| 4 | 3 | +2.07 | 66% [59%, 73%] | — |
+| 8 | 3 | +3.37 | 71% [66%, 77%] | — |
+| 1 | 10 | -0.21 | — | — |
+| 2 | 10 | -0.04 | — | — |
+| 4 | 10 | +0.17 | — | — |
+| 8 | 10 | +1.28 | 51% [33%, 69%] | — |

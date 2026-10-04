@@ -83,3 +83,36 @@ where Δλ is the extra demand rate, d the detection delay, L the reallocation l
 - **Reason:** lead time here is 1–3 steps and H=6, so the MPC's view of the *observed* queue plus the units about to free up already captures the shock. Forecasts only matter when L is large relative to the reaction window.
 - **Next test:** a hop-time knob of 3–5 steps per hop, which needs multi-step edges in the time-expanded LP, with H ≥ L + P.
 - **Fallback if that also ties:** promote Spike B (price-based decentralised coordination). Keep the look-ahead planner plus the measured (L, P) law as the headline.
+
+## Update 2026-10-04 10:40 IST — confirmatory evidence (mvp-v2, pre-registered) and a revised spike
+
+**Primary (pre-registered, 30 fresh seeds 200–229, L=1, P=10; `eval/results/mvp-v2/confirm.md`).** `mpc-ewma` beats the pre-registered reference rule in **6/6 scenarios, 30/30 seeds each, Holm p = 1.1e-8**:
+- shock: +3.73 pp [+3.28, +4.20]
+- shock+drift: +5.47 [+5.36, +5.59]
+- shock+drift+spikes: +5.99 [+5.82, +6.15]
+- drift: +5.83
+- spikes: +2.51
+- stationary: +2.36
+
+**Same-LP ablations (secondary S1–S3, Holm within family) — which look-ahead layer matters at L=1, P=10:**
+- **Planning horizon helps everywhere.** Myopic (H=2) vs H=6: −0.12 to −2.29 pp (0/30 seeds better anywhere), with +25 to +43 more requests lost per shock.
+- **The demand forecast is double-edged.**
+  - Under *drift*, removing it (queue-only LP) costs −2.68 pp (0/30).
+  - Under a *pure shock*, queue-only is **better**: +1.19 pp (30/30), and 62 fewer requests lost per shock (0/30 increase).
+  - A **true-rate** forecast does not help in the shock either (−0.12 pp).
+  - Interpretation: a certainty-equivalent LP over-trusts fractional expected demand in quiet zones and holds units back from the real queue at the shock.
+- **The change detector (as built) hurts at L=1, P=10:** +8.0 [+4.5, +11.5] more requests lost per shock in the shock scenario (23/30 seeds), and −0.13 to −0.22 pp served fraction. This reproduces the phase-v1 harm at (1,10), which Addendum A pre-registered as a possible failure case.
+
+**Revised spike (A′): regime-aware look-ahead.** The evidence says *what* the look-ahead plans on should depend on the regime:
+- supply-side look-ahead (horizon, known incoming units) is always on;
+- demand forecasts are trusted under drift and in quiet regimes;
+- during an abrupt shock the planner should fall back towards the observed queues (forecast trust ↓);
+- the change detector earns its place where lead time exceeds patience (phase-v1: P=3, L ≥ 2; replication phase-v2 pre-registered).
+
+The detector's job shifts from "restart the level" to "gate how much the plan trusts the forecast". The exploratory `trust` sweep (0.25/0.5/0.75; `eval/results/trust-v2`) and the phase-v2 replication decide the final form.
+
+**Limitations (from gpt-6-sol / gpt-6-astra reviews):**
+- The LP lets demand be dropped, and at τ=0 does not force "stay ⇒ serve".
+- Degenerate LP optima make trajectories solver-specific (the backend is recorded per run).
+- L slows only empty repositioning (a set-up delay), not loaded trips.
+- The stylised law G ≈ q([d_E+L−P]₊ − [d_D+L−P]₊) predicts a kink and a plateau, not unbounded growth. The mechanism test is planned.

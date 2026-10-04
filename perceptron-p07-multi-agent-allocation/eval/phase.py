@@ -21,7 +21,9 @@ import numpy as np
 import pandas as pd
 
 from eval.harness import parse_seeds, run_episode
-from eval.stats import boot_ci
+from scipy.stats import wilcoxon
+
+from eval.stats import boot_ci, holm
 
 POLICIES = ["greedy", "reactive", "mpc-ewma", "mpc-cusum-v1", "oracle"]
 RULES = ["greedy", "reactive"]
@@ -52,6 +54,17 @@ def summarise(df: pd.DataFrame) -> pd.DataFrame:
             lo, hi = boot_ci(d)
             r.update({name: d.mean(), f"{name}_lo": lo, f"{name}_hi": hi, f"{name}_wins": int((d > 0).sum()),
                       f"{name}_shock_lost": float((lo_[a] - lo_[b]).mean())})
+        # share of the true-rate forecast's gain over EWMA that an arm captures: ratio of MEAN paired gains, joint
+        # bootstrap over seeds; suppressed (NaN) unless the denominator's 95% CI is strictly positive.
+        for arm, key in (("mpc-cusum-v1", "capture"), ("mpc-ewma@alpha=0.01", "capture_matched_alpha")):
+            if {arm, "oracle", "mpc-ewma"} <= set(sv):
+                num = (sv[arm] - sv["mpc-ewma"]).to_numpy(float)
+                den = (sv["oracle"] - sv["mpc-ewma"]).to_numpy(float)
+                idx = np.random.default_rng(0).integers(0, len(num), size=(10_000, len(num)))
+                nm, dm = num[idx].mean(1), den[idx].mean(1)
+                ok = np.percentile(dm, 2.5) > 0
+                r[key] = num.mean() / den.mean() if ok else np.nan
+                r[key + "_lo"], r[key + "_hi"] = (np.percentile(nm / dm, [2.5, 97.5]) if ok else (np.nan, np.nan))
         rows.append(r)
     return pd.DataFrame(rows).sort_values(["P", "L"])
 
@@ -73,6 +86,29 @@ def write_report(out: str, df: pd.DataFrame, summ: pd.DataFrame) -> None:
               "| L | P | " + " | ".join(LABEL[k] for k in keys) + " |", "|---|---|" + "---|" * len(keys)]
     for _, r in summ.iterrows():
         lines.append(f"| {r.L} | {r.P} | " + " | ".join(f"{r[k + '_shock_lost']:+.1f}" for k in keys) + " |")
+    if {"mpc-cusum-v1", "mpc-ewma"} <= set(df.policy):  # pre-registered H1 family (eval/preregistration.md, Addendum A)
+        rows = []
+        for (L, P), g in df.groupby(["hop_steps", "patience"]):
+            pv = g.pivot(index="seed", columns="policy", values="shock_lost")
+            d = (pv["mpc-cusum-v1"] - pv["mpc-ewma"]).dropna().to_numpy(float)
+            lo, hi = boot_ci(d)
+            pval = float(wilcoxon(d).pvalue) if np.any(d != 0) else 1.0
+            rows.append((int(L), int(P), d.mean(), lo, hi, int((d < 0).sum()), len(d), pval))
+        adj = holm([r[-1] for r in rows])
+        lines += ["", "**Pre-registered H1 family** — detector (`mpc-cusum-v1`) − EWMA, requests lost in the 120 steps after "
+                  "shock onset (negative = detector loses fewer); paired bootstrap 95% CI; Wilcoxon; Holm over the 8 cells:", "",
+                  "| L | P | Δ lost per shock [95% CI] | seeds where detector lost fewer | Wilcoxon p | Holm p |",
+                  "|---|---|---|---|---|---|"]
+        for r, a in sorted(zip(rows, adj), key=lambda x: (x[0][1], x[0][0])):
+            lines.append(f"| {r[0]} | {r[1]} | {r[2]:+.1f} [{r[3]:+.1f}, {r[4]:+.1f}] | {r[5]}/{r[6]} | {r[7]:.2g} | {a:.2g} |")
+    if "capture" in summ:
+        lines += ["", "Share of the true-rate forecast's served-fraction gain over EWMA captured by an arm (ratio of mean paired "
+                  "gains, joint seed bootstrap 95% CI; '—' where that gain is not reliably positive, i.e. forecasting does not pay):",
+                  "", "| L | P | true-rate − EWMA (pp) | detector arm captures | matched-α EWMA captures |", "|---|---|---|---|---|"]
+        cap = lambda r, k: (f"{100*r[k]:.0f}% [{100*r[k+'_lo']:.0f}%, {100*r[k+'_hi']:.0f}%]"
+                            if k in r and pd.notna(r[k]) else "—")
+        for _, r in summ.iterrows():
+            lines.append(f"| {r.L} | {r.P} | {100*r.oracle_vs_ewma:+.2f} | {cap(r, 'capture')} | {cap(r, 'capture_matched_alpha')} |")
     with open(os.path.join(out, "summary.md"), "w") as fh:
         fh.write("\n".join(lines) + "\n")
     try:
