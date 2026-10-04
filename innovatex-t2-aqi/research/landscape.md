@@ -1,0 +1,78 @@
+# Landscape — construction & demolition dust in Delhi-NCR, and the tech around it
+
+*Lead synthesis, 4 Oct 2026 (IST). Sources: the raw notes in [`raw/`](raw/) (each entry there has its URL, date and a verbatim quote) plus pages the lead opened. "Secondary" = a news report quoting the primary document; we couldn't open the primary from this machine (CAQM, PIB, DPCC and EPA PDFs failed on DNS/TLS). Anything marked **UNVERIFIED** must not be used in the pitch until it's checked.*
+
+## 1. The problem in Delhi, in numbers
+
+| Fact | Source (opened) | Note |
+|---|---|---|
+| Road dust is **42 % of Delhi's PM10** load, transport 25 %; vehicle exhaust is 47 % of PM2.5 *emissions* (2024 IIT Kanpur–TERI inventory; the 2013 IIT Kanpur study had road dust at 56 % of PM10 and 38 % of PM2.5) | [Economic Times, 1 Oct 2024](https://economictimes.indiatimes.com/epaper/delhicapital/2024/oct/01/et-poli/vehicles-road-dust-industries-main-delhi-ncr-polluters-study/printarticle/113828797.cms) | Secondary; inventory under CAQM review |
+| In fair weather, local emissions are ~80 % of Delhi's pollution: "40% … transport sector, 17% by industries and 25% is re-suspended dust" | [News18, 9 Nov 2023 (SAFAR's G. Beig)](https://www.news18.com/india/stubble-burning-contribution-in-delhi-pollution-rose-to-44-on-nov-2-3-scientist-aqi-to-remain-severe-8655439.html) | Secondary |
+| Stubble smoke peaked at ~44 % of Delhi's pollution on 3 Nov 2023 | same | Regional, episodic |
+| Winter averages across Delhi-NCR sites: PM10 314 ± 77 µg/m³, PM2.5 168 ± 45 µg/m³ | [TERI–ARAI (2018) infographic](https://www.teriin.org/infographics/state-air-delhi-ncr-pollution-and-solution) | Primary page |
+| Construction/C&D's own share of Delhi PM | — | **UNVERIFIED**: not in any source we opened. To fetch: IIT Kanpur 2016 report for DPCC. Don't quote a % until then |
+| PM2.5 above WHO's 15 µg/m³ causes **11.5 % of all deaths in Delhi (~12,000 a year)**; +10 µg/m³ short-term PM2.5 → +1.42 % daily deaths | [Hindustan Times, 4 Jul 2024, on the Lancet Planetary Health 10-city study](https://www.hindustantimes.com/india-news/air-pollution-exposure-leading-to-deaths-even-when-meeting-indian-normsstudy-101720061627986.html) | Secondary, quotes the paper |
+| Lead author's caution: "we cannot remain too fixated on curbing dust. Local combustion sources … need to be curbed to see improvements in health impacts" | same | **Antithesis we must answer** (ADR 001) |
+| 2025 was called Delhi's "cleanest air in 8 years": annual PM2.5 104 → 96 µg/m³ | [The Hindu, 2 Jan 2026](https://www.thehindu.com/news/cities/Delhi/delhi-records-cleanest-air-in-8-years-2025-environment-minister-bjp-sirsa/article70461637.ece) | Official statement; still >6× WHO |
+
+## 2. How Delhi regulates construction dust today — and where it hurts
+
+- **Blanket restrictions are the main tool.** Delhi's Winter Action Plan 2026-27 (announced Sept 2026): "from November 1 to January 31, dust-generating demolition and outdoor civil works will be prohibited; a total ban on construction and demolition will apply from December 10 to January 20", plus "100% CCTV coverage at construction sites" ([The News Mill, Sept 2026](https://thenewsmill.com/2026/09/delhi-launches-winter-action-plan-2026-27-with-50-work-from-home-and-construction-bans-to-reduce-pollution/), opened by the lead). That's ~3 months of restricted work and ~6 weeks of total stoppage, applied to every site whether it is clean or not.
+- **GRAP adds emergency stops on top:** Stage 3 was invoked in Nov 2025 when AQI went from 362 to over 400; "projects are suspended only when Stage 4 … is invoked, which happens if AQI crosses 450" ([Hindustan Times, Nov 2025](https://www.hindustantimes.com/cities/delhi-news/as-delhi-s-air-turns-severe-emergency-curbs-kick-in-under-grap-stage-3-101762885233197.html)). In Dec 2025 Delhi announced ₹10,000 compensation after GRAP-3 halted construction for 16 days ([HT, Dec 2025](https://www.hindustantimes.com/cities/delhi-announces-rs-10-000-compensation-for-construction-workers-affected-by-grap-curbs-101766023643293.html), via `raw/social-signal.md`).
+- **The human cost is large and poorly mitigated:** Delhi's welfare board lists 1,378,199 registered construction workers but only 89,518 active members; in a survey of 75 workers at sites, five were registered and none had received the ₹8,000 aid ([Down To Earth, Dec 2024](https://www.downtoearth.org.in/governance/with-grap-4-enforcing-construction-ban-is-government-compensating-daily-wage-labourers)). The Supreme Court ordered assistance "immediately … upon the imposition of GRAP-4" (order of 25 Nov 2024, same source).
+- **Penalties are flat, not performance-based:** CAQM's Feb 2024 schedule — in Delhi "a fixed fine of ₹5 lakh … for construction sites" above 20,000 m² "irrespective of the air quality category"; ₹7,500 per missing anti-smog gun per 5,000 m²; ₹20,000/₹40,000 for not uploading self-audits; doubled during GRAP ([Hindustan Times, Feb 2024](https://www.hindustantimes.com/cities/delhi-news/caqm-standardises-penalties-for-pollution-violations-across-delhincr-101709058335907.html)). Compliance is about *installing* equipment and *uploading* forms, not about measured dust leaving the site.
+- **Trust is broken:** water tankers were filmed spraying right at the Jahangirpuri reference monitor ([Newslaundry, 30 Oct 2025](https://www.newslaundry.com/2025/10/30/delhi-aqi-fraud-water-sprinklers-cleaning-the-data-not-the-air)); CPCB says its pipeline is automated and manipulation impossible ([New Indian Express, 3 Dec 2025](https://www.newindianexpress.com/cities/delhi/2025/Dec/03/data-automated-human-intervention-or-manipulation-impossible-cpcb-on-allegations-of-tampering-delhi-aqi)). DPCC itself told the NGT that smog towers are ineffective ([Down To Earth](https://www.downtoearth.org.in/pollution/smog-towers-ineffective-at-least-40-000-needed-in-delhi-to-combat-toxic-air-dpcc-tells-ngt-92841)).
+- **The state wants targeted action:** Delhi signed with IIT Kanpur for AI-based source apportionment to move from "reactive and seasonal approaches" to "targeted and timely interventions" ([ET EnterpriseAI, Dec 2025](https://enterpriseai.economictimes.indiatimes.com/news/industry/delhi-government-and-iit-kanpur-collaborate-on-ai-based-pollution-control-system/126227575), via `raw/social-signal.md`). An AI-enabled Command and Control Centre went live on 1 Oct 2026 with 334 enforcement teams (The News Mill, above).
+- **Monitoring is city-scale, not site-scale:** Delhi has 47 CAAQMS reference stations going to 60; NCR went from 84 to 102 and targets 157, at "a station every 25-50 square kilometres" ([Hindustan Times, 2026](https://www.hindustantimes.com/india-news/delhi-aqi-air-quality-weather-monitoring-caqm-pollution-pm-2-5-smog-delhi-ncr-air-quality-monitoring-101788806602240.html)). No reference station can tell which of the sites around it is the polluter.
+- **National programme:** NCAP's target was revised to a 40 % PM cut by 2026; ₹10,422.73 crore allocated, ~60 % used; "no city barring Delhi, Pune, Mumbai, and Ahmedabad has a decision-support system" ([The Hindu, 2024](https://www.thehindu.com/sci-tech/energy-and-environment/national-clean-air-programme-air-quality-all-you-need-to-know/article68103402.ece)).
+
+**The pain point we target:** the regulator can't tell a clean site from a dirty one, so it stops all of them, and the people who pay are daily-wage workers. Site compliance is checked by equipment counts, CCTV and self-audits, which can be gamed and don't measure the dust that actually leaves the site.
+
+## 3. State of the art by component
+
+**Low-cost PM sensing and calibration** (`raw/papers-sensors-calibration.md`)
+- CSTEP (Bengaluru, 2025) ran a year-long test of "six particulate matter (PM) sensor models from five Indian manufacturers" for construction-dust PM10 and concluded that low-cost sensors "can be used to qualitatively assess the dust control measures at construction sites" ([CSTEP guidance](https://cstep.in/publication/guidance-for-evaluating-the-performance-and-use-of-air-quality-sensors-for-construction-dust-pm10-monitoring/)). That's the most on-point Indian source, and it sets our bar: absolute PM10 from cheap sensors isn't regulatory-grade, so our design relies on *differences* between identical co-located sensors, with reference co-location for scale.
+- US EPA performance targets for PM2.5 sensors (Feb 2021): R² > 0.70, slope 1.0 ± 0.35, intercept ±5 µg/m³, RMSE < 7 µg/m³ ([EPA NSIM report](https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=P1012RCE.txt)). PM10 targets: **UNVERIFIED** (not opened).
+- Humidity: a size-resolved κ-Köhler correction cut an optical sensor's overestimation factor from ~5× to 1.05× (Di Antonio et al. 2018, [PMC6164928](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6164928/)). Delhi's winter fog makes this mandatory.
+- Network calibration in production: Breathe London (Clarity nodes) calibrates one-minute data against "gold" sensors co-located with reference monitors and updates weekly (`raw/companies-products.md`).
+- **UNVERIFIED:** Zheng et al. 2018 (AMT, Kanpur) error figures; the Barkjohn et al. 2021 PurpleAir correction coefficients; coarse-dust under-reading of Plantower-class sensors. The pages opened but the fetch returned only reference lists.
+
+**Fence-line attribution** (`raw/papers-sensors-calibration.md`)
+- US EPA's regulatory fenceline practice (refinery rule, 40 CFR 63.658) uses a *perimeter ring* of samplers, not one upwind–downwind pair. So we use 3–4 nodes plus wind.
+- Wind-conditioned methods such as conditional probability functions and polar plots are standard in the open-source `openair` R package. We found no published low-cost-sensor construction-site study with quotable PM10 increments (two candidates were behind 403s: **UNVERIFIED**).
+
+**Forecasting** (our run plus `raw/social-signal.md`)
+- Delhi already has operational forecasting: IITM's Air Quality Early Warning System and Decision Support System. A CEEW study reported by HT says the system caught 54 of 58 "very poor or worse" days in 2024-25 but did much worse on the most severe days ([HT, ~1 Oct 2025](https://www.hindustantimes.com/cities/delhi-news/delhis-air-quality-warning-system-forecasted-over-80-of-severe-pollution-days-study-101759355207444.html)). Forecasting city AQI is crowded, and the incumbent is the state. We use forecasts as an *input* (when to schedule dusty work), not as our innovation.
+- Global ML: Microsoft Aurora (Nature, 21 May 2025) includes air-pollution prediction; Google's Air Quality API serves forecasts "up to 96 hours" at "500 x 500 meters" in "over 100 countries" (`raw/companies-products.md`).
+- Our own baseline (real CPCB/DPCC data, time-ordered split): see `eval/results/forecast_baseline.json` and the table in the thought node.
+
+**Suppression**
+- Anti-smog guns are mandated by site area (the CAQM fine schedule above), but there is no closed-loop standard. DPCC's own affidavit says smog towers don't work at city scale. The control-effectiveness numbers (wet suppression efficiency, water use per cannon) are **UNVERIFIED**: that research thread died on network errors, and it's the next research task.
+
+## 4. What companies ship today
+
+| Category | Who ships what (deployment evidence) | What we borrow | Where we go further |
+|---|---|---|---|
+| City sensor networks | **Clarity / Breathe London**: solar + cellular nodes, network calibration against reference "gold" co-locations, weekly updates. **AirQo** (Uganda): AirQalibrate calibration tool; monitors on motorcycle taxis. **Kunak**: stations built to CEN/TS and EU 2024/2881 protocols | Calibration architecture: co-location, weekly re-fit, ratified data | Site-level attribution, not city maps |
+| Fence-line dust (global) | **Aeroqual Dust Sentry**: laser nephelometer + swappable cyclone (PM10/PM2.5/TSP) for fence lines. **Envirosuite**: real-time dust networks that "pinpoint sources" and change operations (mining, industry) | The operations language: alerts, source pinpointing, compliance reports | Construction-site cost point (₹ tens of thousands, not lakhs) and a closed loop to the misting system |
+| Construction compliance (India) | **Airveda**: "9,000+ stations across India", "integration of data with the DPCC cloud". **Prana Air / Purelogic Labs**: PM2.5/PM10 + PTZ camera + cloud link at construction sites. **Oizom** Dustroid/Polludrone (pages opened, specs unverified) | Existing DPCC data-push integration path | They stream absolute PM; none of the pages we opened attributes the *site's own increment* using wind, or detects tampering |
+| Forecasting | **IITM AQEWS/DSS** (state); **Google Air Quality API** (96 h); **Microsoft Aurora** (research model); **IBM Green Horizons** (Beijing, 2015; stale) | Use as inputs: the background forecast | Turn the forecast into a site work schedule |
+| Traffic | **Google Project Green Light**: AI signal-timing advice from Maps data, piloted in Kolkata, Bengaluru and Hyderabad; claims "up to 30% reduction in stops" and up to 10 % emissions cut at optimised junctions | Software-first, uses existing infrastructure | Not our source (see alternatives) |
+| Mobile / drone | **Aclima + Google Air View** (Street View cars with reference-grade analysers); Sniffer4D drones (**UNVERIFIED**) | Drone/mobile for inspections and hotspot discovery | Continuous fixed fence-line sensing is what enforcement needs |
+
+**Gaps nobody fills (from what we opened):** (1) wind-resolved attribution of a single site's own contribution against Delhi's huge background; (2) misting that runs only when the site is the cause, saving water; (3) tamper evidence (spraying the sensor, as at the Jahangirpuri reference monitor); (4) published calibration QA from Indian compliance vendors; (5) independently measured outcomes from sensor vendors.
+
+## 5. Alternatives considered (pollution source)
+
+| Source | Why not the primary (now) | Keep as |
+|---|---|---|
+| Vehicles / adaptive traffic control | Biggest PM2.5 combustion share, but signal control needs city-system access, and Google already ships software-only Green Light | Pitch extension: idle-reduction at junctions near sites |
+| Road dust (42 % of PM10) | Diffuse with no owner, so no payer; sweeping/sprinkling is municipal | Our sensors also see track-out onto roads (wheel-wash compliance) |
+| Waste / biomass burning | Strong health case (combustion); detection by cameras and satellites is well covered; enforcement is diffuse | Same node + an AI camera could flag burning near sites (stretch) |
+| Stubble burning | Regional and episodic (≤ 44 % on peak days); outside a city solution's control | Forecast input |
+| Industry | CPCB online emission monitoring already exists | — |
+
+We chose construction & demolition dust because it is the source Delhi controls by **blanket bans** that hurt 1.38 M registered workers, has an identifiable **payer** (the site owner, facing flat fines), is **measurable at a fence line**, and leaves a gap no vendor we found fills. We answer the "dust is less harmful than combustion" objection in ADR 001.
+
+## 6. Open research (UNVERIFIED, next)
+Construction's own share of Delhi PM10/PM2.5; the exact CAQM direction text (sensor and portal requirements, the 500 m² registration threshold); BMC's 2023 Mumbai construction-sensor rules; PM10 sensor targets (EPA/CEN); suppression efficiency and water use; Indian prices for the BOM (see `deliverables/prototype-plan.md` for what's verified).
