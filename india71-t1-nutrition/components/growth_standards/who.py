@@ -182,10 +182,19 @@ def compute(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def classify(z: pd.DataFrame, muac_cm=None, oedema=None) -> pd.DataFrame:
-    """Status classes (WHZ/MUAC/oedema, WHO cut-offs) used for SAM/MAM identification."""
+def classify(z: pd.DataFrame, muac_cm=None, oedema=None, age_days=None) -> pd.DataFrame:
+    """Status classes (WHZ/MUAC/oedema, WHO cut-offs) used for SAM/MAM identification.
+
+    MUAC cut-offs (11.5 / 12.5 cm) are applied only to children aged 6-59 months and only when the
+    MUAC-for-age z is not biologically implausible; otherwise MUAC is ignored (and should be re-measured).
+    """
     n = len(z)
     muac = np.asarray(muac_cm, dtype=float) if muac_cm is not None else np.full(n, np.nan)
+    if age_days is not None:
+        a = np.asarray(age_days, dtype=float)
+        muac = np.where((a >= 183) & (a < 1826), muac, np.nan)
+    if "flag_muacz" in z:
+        muac = np.where(z["flag_muacz"].to_numpy(dtype=bool), np.nan, muac)
     oed = np.asarray(oedema, dtype=bool) if oedema is not None else np.zeros(n, bool)
     whz = z["wlhz"].where(~z["flag_wlhz"]).to_numpy()
     with np.errstate(invalid="ignore"):

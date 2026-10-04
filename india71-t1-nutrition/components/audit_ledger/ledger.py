@@ -43,7 +43,19 @@ class Ledger:
         self.entries.append(entry)
         return entry
 
-    def verify(self) -> tuple[bool, int | None]:
+    def checkpoint(self) -> tuple[int, str]:
+        """(entry count, head hash). Publish/store this outside the ledger (e.g. signed, or in the
+        district review minutes) so truncation and rollback become detectable."""
+        return len(self.entries), (self.entries[-1].hash if self.entries else ZERO_HASH)
+
+    def verify(self, checkpoint: tuple[int, str] | None = None) -> tuple[bool, int | None]:
+        """Verify the hash chain; with a trusted checkpoint, also detect truncation/rollback of the tail."""
+        if checkpoint is not None:
+            count, head = checkpoint
+            if len(self.entries) < count:
+                return False, len(self.entries)
+            if count and self.entries[count - 1].hash != head:
+                return False, count - 1
         expected_prev = ZERO_HASH
         for index, entry in enumerate(self.entries):
             if entry.seq != index or entry.prev_hash != expected_prev:
@@ -62,7 +74,8 @@ class Ledger:
 
     @classmethod
     def from_jsonl(cls, source: str | Path) -> "Ledger":
-        if isinstance(source, Path) or (isinstance(source, str) and "\n" not in source and Path(source).exists()):
+        """Accept JSONL text, or a path (Path object, or a str that does not look like JSON)."""
+        if isinstance(source, Path) or (isinstance(source, str) and not source.lstrip().startswith("{") and source.strip()):
             text = Path(source).read_text(encoding="utf-8")
         else:
             text = str(source)

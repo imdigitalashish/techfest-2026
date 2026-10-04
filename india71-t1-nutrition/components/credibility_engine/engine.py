@@ -68,6 +68,7 @@ def record_checks(mz: pd.DataFrame) -> pd.DataFrame:
     findings = [[] for _ in range(len(m))]
     rules = {
         "WHO_FLAG": (m[[f"flag_{c}" for c in ("waz", "lhaz", "wlhz")]].any(axis=1), "reject"),
+        "MUAC_IMPLAUSIBLE": (m["flag_muacz"] if "flag_muacz" in m else pd.Series(False, index=m.index), "warn"),
         "HEIGHT_DECREASE": ((prev_lh - m.lh_std) > 1.5, "reject"),
         "WEIGHT_JUMP": (((m.weight_kg - prev_w).abs() > np.maximum(1.5, 0.25 * prev_w)) & (dt <= 45), "reject"),
         "EXACT_REPEAT_3": ((m.weight_kg == prev_w) & (prev_w == prev2_w), "warn"),

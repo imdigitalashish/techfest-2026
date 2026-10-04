@@ -59,3 +59,20 @@ def evaluate_suite() -> dict:
 
 def test_metric():
     assert evaluate_suite()["tamper_detection_rate"] == 1.0
+
+
+def test_truncation_detected_with_checkpoint():
+    ledger = _filled(10)
+    cp = ledger.checkpoint()
+    ledger.entries.pop()
+    assert ledger.verify() == (True, None)  # a bare hash chain cannot see a removed tail ...
+    ok, _ = ledger.verify(checkpoint=cp)
+    assert not ok  # ... a stored checkpoint can
+
+
+def test_single_entry_jsonl_roundtrip():
+    ledger = Ledger()
+    ledger.append("a", "x", "o")
+    again = Ledger.from_jsonl(ledger.to_jsonl())
+    assert again.verify() == (True, None) and len(again.entries) == 1
+

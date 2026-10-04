@@ -1,0 +1,4 @@
+date	artifact	model	effort	issues	accepted	rejected	note
+2026-10-04	proposal-v0.2 (+ADR 002, eval results)	gpt-6-astra	max	17	16	1	blocking: EW look-ahead/oracle (fixed: eval_v1 reversed result -> ADR 003), artifacts, readiness-gate clocks; rejected: invented pilot costing
+2026-10-04	code (all components + pipeline)	gpt-6-sol	max	14	14	0	policy-gate bypasses fixed (39/39), ledger truncation checkpoint, MUAC rule, no-look-ahead test, fetch_who + requirements
+2026-10-04	proposal-v0.1 hostile judge (AWW surveillance)	claude rubber-duck (default)	default	8	8	0	top-3 accepted -> ADR 002 (no worker scoring, legal go/no-go, evidence framing); research/hostile-judge-01.md

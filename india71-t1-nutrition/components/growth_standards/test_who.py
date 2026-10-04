@@ -32,3 +32,15 @@ def test_flags_and_oedema():
     assert np.isnan(out.waz[1]) and np.isnan(out.wlhz[1]) and not np.isnan(out.lhaz[1])
     cls = who.classify(out, oedema=df.oedema)
     assert cls.nutrition_status[1] == "sam"
+
+
+def test_muac_cutoffs_only_for_plausible_values_at_6_to_59_months():
+    df = pd.DataFrame(dict(sex=["F", "F", "F"], age_days=[365, 100, 365], weight_kg=[8.9, 5.8, 8.9],
+                           length_height_cm=[74.0, 60.0, 74.0], measure_position=["recumbent"] * 3,
+                           muac_cm=[4.0, 11.0, 11.0]))
+    out = who.compute(df)
+    cls = who.classify(out, muac_cm=df.muac_cm, age_days=df.age_days)
+    assert cls.nutrition_status[0] != "sam"  # implausible MUAC (flagged) is ignored
+    assert cls.nutrition_status[1] != "sam"  # MUAC cut-offs do not apply under 6 months
+    assert cls.nutrition_status[2] == "sam"  # valid MUAC < 11.5 cm at 12 months
+

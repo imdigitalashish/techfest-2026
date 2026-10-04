@@ -39,20 +39,23 @@ The failure isn't missing data. Nobody can tell **which numbers to trust**, the 
 Poshan Setu needs **no new app and no new data entry**. It reads what Poshan Tracker and the health system already record, decides what is credible and what is urgent, and pushes **a short weekly worklist back into the apps workers already use**. Every access is checked against a purpose-bound policy and written to a tamper-evident log.
 
 ```mermaid
-flowchart LR
-  PT[Poshan Tracker] --> ING[Ingest]
-  RCH[RCH / U-WIN] --> ING
-  ABDM[ABDM consent-gated FHIR] --> ING
-  ING --> VAULT[Identity vault: privacy-preserving linkage → pseudonymous child_key]
-  ING --> Z[WHO z-scores + velocity]
-  Z --> CRED[Measurement diagnostics ★: AWC × device × month]
-  CRED --> EW[Early warning ★: 90-day risk + reason codes]
-  EW --> ROUTE[Action router: owner, due date, escalation]
-  CRED --> ROUTE
-  ROUTE --> WL[Weekly worklists in existing apps / SMS]
-  ROUTE --> DASH[Review dashboards: suppressed / DP aggregates]
-  POL[Policy gate: purpose + legal basis] -.-> VAULT & WL & DASH
-  AUD[Hash-chained audit log] -.-> POL & ROUTE
+flowchart TB
+  S["Poshan Tracker · RCH / U-WIN · ABDM<br/>existing systems, no new data entry"]
+  V["Identity vault: private linkage →<br/>pseudonymous child_key; WHO z-scores"]
+  D["★ Measurement diagnostics<br/>AWC × device × month"]
+  E["★ Early warning:<br/>90-day risk, top-k per AWC"]
+  R["Action router: owner, due date,<br/>escalation, readiness gate"]
+  G["Policy gate<br/>+ audit log"]
+  W["Weekly worklists<br/>in existing apps / SMS"]
+  A["Review dashboards<br/>suppressed / DP aggregates"]
+  S -->|nightly deltas| V
+  V --> D
+  V --> E
+  D --> R
+  E --> R
+  G -.- R
+  R --> W
+  R --> A
 ```
 
 **4.1 Interoperability and data flow (sub-area 1).**

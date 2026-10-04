@@ -1,0 +1,71 @@
+{
+ "metric": "episode_recall_at_5_per_awc_month",
+ "K": 5,
+ "train_seeds": [
+  21,
+  22
+ ],
+ "test_seeds": [
+  23,
+  24
+ ],
+ "n_train_rows": 187593,
+ "n_pool_rows": 199765,
+ "methods": {
+  "random_within_awc": {
+   "episode_recall": 0.2688,
+   "median_lead_months": 2.0,
+   "slot_precision_incident_next_3m": 0.121,
+   "slot_share_truly_wasted_now_missed_by_measurement": 0.0304,
+   "n_episodes": 10690
+  },
+  "rule_no_gain_2m": {
+   "episode_recall": 0.3651,
+   "median_lead_months": 2.0,
+   "slot_precision_incident_next_3m": 0.1778,
+   "slot_share_truly_wasted_now_missed_by_measurement": 0.1162,
+   "n_episodes": 10690
+  },
+  "lowest_observed_whz": {
+   "episode_recall": 0.429,
+   "median_lead_months": 2.0,
+   "slot_precision_incident_next_3m": 0.2214,
+   "slot_share_truly_wasted_now_missed_by_measurement": 0.1485,
+   "n_episodes": 10690
+  },
+  "logistic_anthro": {
+   "episode_recall": 0.3838,
+   "median_lead_months": 2.0,
+   "slot_precision_incident_next_3m": 0.2237,
+   "slot_share_truly_wasted_now_missed_by_measurement": 0.1489,
+   "n_episodes": 10690
+  },
+  "logistic_anthro_plus_linked_health": {
+   "episode_recall": 0.3844,
+   "median_lead_months": 2.0,
+   "slot_precision_incident_next_3m": 0.2257,
+   "slot_share_truly_wasted_now_missed_by_measurement": 0.1478,
+   "n_episodes": 10690
+  }
+ },
+ "bootstrap_95ci": {
+  "logistic_anthro": [
+   0.3741,
+   0.399
+  ],
+  "logistic_anthro_plus_linked_health": [
+   0.3742,
+   0.3977
+  ],
+  "lowest_observed_whz": [
+   0.42,
+   0.443
+  ],
+  "diff_full_vs_lowest_whz": [
+   -0.054,
+   -0.0369
+  ]
+ },
+ "value": 0.3844,
+ "synthetic": true
+}

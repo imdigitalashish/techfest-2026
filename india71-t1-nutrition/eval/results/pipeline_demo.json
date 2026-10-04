@@ -6,18 +6,19 @@
   "records_rejected_pct_all_months": 4.22,
   "awcs_low_credibility": 47,
   "alerts_by_kind": {
-    "mam": 838,
-    "sam": 123,
+    "mam": 912,
+    "sam": 126,
     "risk_high": 600,
     "data_recheck": 47
   },
-  "tasks": 1608,
+  "tasks": 1685,
   "worklists": 140,
-  "sms_messages": 1222,
+  "sms_messages": 1232,
   "sms_max_chars": 80,
   "true_incident_wasting_next_3m": 685,
-  "incident_cases_flagged_now_pct": 25.8,
-  "risk_alert_precision_pct": 41.5,
+  "incident_cases_flagged_now_pct": 23.8,
+  "risk_alert_precision_pct": 27.2,
+  "risk_alerts_on_children_already_wasted_but_measured_normal_pct": 16.2,
   "true_sam_now": 106,
   "access_decisions": [
     "aww/identified_child/service_delivery: allow",
@@ -25,8 +26,7 @@
     "aww/identified_child/service_delivery: deny",
     "public/aggregate/public_reporting: allow_transformed"
   ],
-  "audit_entries": 1612,
+  "audit_entries": 1689,
   "audit_chain_verified": true,
-  "runtime_s": 21.9,
   "synthetic": true
 }

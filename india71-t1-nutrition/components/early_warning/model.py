@@ -16,12 +16,19 @@ from sklearn.preprocessing import StandardScaler
 from components.credibility_engine import engine
 
 ANTHRO = ["wlhz", "waz", "lhaz", "d_wlz1", "dw1", "dw2", "no_gain_2m", "age_m", "infant", "prior_wasted", "awc_cred"]
+# v1: prediction-time-clean feature set (awc_cred removed: it was computed over the full history = look-ahead)
+ANTHRO_V1 = ["wlhz", "waz", "lhaz", "d_wlz1", "dw1", "dw2", "no_gain_2m", "age_m", "infant", "prior_wasted"]
 HEALTH = ["lbw", "bw_known", "recent_ill", "missed_vax_90d"]
 
 
-def features(meas: pd.DataFrame, health: pd.DataFrame, month_of: pd.DataFrame) -> pd.DataFrame:
-    """Per usable measurement: features visible to the system at that date (no look-ahead)."""
-    mz, rec, units = engine.assess(meas)
+def features(meas: pd.DataFrame, health: pd.DataFrame, month_of: pd.DataFrame, unit_cred: bool = True) -> pd.DataFrame:
+    """Per usable measurement. With unit_cred=False every feature uses only data available at that date."""
+    if unit_cred:
+        mz, rec, units = engine.assess(meas)  # v0 path: AWC credibility over the full history (look-ahead)
+    else:
+        mz = engine.add_zscores(meas)
+        rec = engine.record_checks(mz)  # record checks use only the child's earlier measurements
+        units = None
     mz = mz.merge(rec[["event_id", "usable"]], on="event_id")
     df = mz[mz.usable].merge(month_of, on=["child_key", "measured_on"], how="inner")
     df = df.sort_values(["child_key", "month_index"]).reset_index(drop=True)
@@ -34,7 +41,7 @@ def features(meas: pd.DataFrame, health: pd.DataFrame, month_of: pd.DataFrame) -
     df["prior_wasted"] = wasted_now.groupby(df.child_key).cummax().groupby(df.child_key).shift(1).fillna(0)
     df["age_m"] = df.age_days / 30.4375
     df["infant"] = (df.age_m < 6).astype(float)
-    df["awc_cred"] = df.awc_code.map(units.set_index("unit_id").credibility)
+    df["awc_cred"] = df.awc_code.map(units.set_index("unit_id").credibility) if units is not None else np.nan
 
     bw = health[health.kind == "birth_weight"].drop_duplicates("child_key").set_index("child_key").value
     df["bw_known"] = df.child_key.map(bw).notna().astype(float)
