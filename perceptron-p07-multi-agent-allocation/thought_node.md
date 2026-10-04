@@ -10,21 +10,23 @@
 - _(none)_
 
 ## Now
-_Updated 2026-10-04 17:30 IST._
-- **Phase:** winning demo (PLAYBOOK §11; Supervisor, 17:28). The Round-1 DoD is complete (11:30).
-- **Doing:**
-  - Child session [P7 demo builder](ghapp://sessions/244315d0-41b1-4804-89fd-4975e72ceaa5), in plan mode. It proposes the "crazy" element first, I approve, then it builds `demo/` (run.sh, SCRIPT.md, fallback/, smoke.sh).
-  - Starting hypothesis: "Break it yourself" — click-to-shock on a live city; rule vs planner side by side on identical demand; lead-time / patience / forecast-trust knobs; the live run bridged to the committed 20-seed (L,P) result; NYC July-4 replay; honest panel.
-- **Next:**
-  1. Approve or redirect the builder's plan.
-  2. When built, spawn the gpt-6-astra "judge watching the demo" review (≤ 2 child sessions).
-  3. Verify `demo/run.sh` and `demo/smoke.sh` from a fresh clone.
-  4. Message "DEMO DONE".
-  - October (after the 12 Oct pick): run the Addendum B/B1 trust test (seeds 300–329); mechanism test; RL comparator.
-- **Needs from user:** register by 15 Oct; teammates' names and skills (`[TEAM-1..3]` in the abstract).
+_Updated 2026-10-04 19:52 IST._
+- **Phase:** winning demo (PLAYBOOK §11). Built, verified from a fresh clone (smoke 31/31; first visual 38 s cold / 2.4 s warm), and reviewed by gpt-6-astra (7.5/10, 10 issues, all ACCEPTED).
+- **Doing:** [P7 demo builder](ghapp://sessions/244315d0-41b1-4804-89fd-4975e72ceaa5) is applying the review's fix batch:
+  - dead-knob handover;
+  - "seed #21" reworded as an intervention alongside 20 reference runs;
+  - 1280×720 stage layout;
+  - week segment in the script;
+  - LIVE / RECORDED / COMMITTED provenance;
+  - shock duration display;
+  - "bit-identical" wording;
+  - backend-loss recovery.
+  I fixed the NYC caption source bug (4356865).
+- **Next:** re-verify run.sh and smoke.sh from a fresh clone after the fixes, then message "DEMO DONE" to the Supervisor. October: the Addendum B/B1 trust test (grid tuning on seeds 0–49, test on 300–329).
+- **Needs from user:** register by 15 Oct; teammates' names and skills.
 - **Risks:**
-  - A live single run can contradict the 30-seed mean. Mitigation: label "live, 1 run" and show the committed CI beside it.
-  - Never claim pre-positioning before an unforecastable shock.
+  - A stage laptop under CPU contention showed a rolling LP median of 12.8 ms in the review (fine).
+  - A live single intervention can go against the mean; it is labelled as an intervention, not a seed.
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
@@ -289,3 +291,19 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
   - NYC, week and shock-day recomputes are bit-identical to the committed episodes.csv rows;
   - synthetic seed 7000 at L=1, P=10: rule 160 vs planner 17 lost.
 - Launched the gpt-6-astra "judge watching the demo" review session ([P7 review: demo (gpt-6-astra)](ghapp://sessions/326ddbe5-f3aa-495b-ab58-f5681fd970d5)). The README now links the demo.
+
+### 2026-10-04 19:52 IST — gpt-6-astra demo review: 7.5/10, all 10 issues accepted
+- Verdict: "would shortlist; not yet confidently top-3". Live computation was confirmed genuine; smoke 31/31 in 105 s; all 26 evidence tables (1,307 cells) match the committed sources.
+- **P1 issues:**
+  - the NYC auto-play can end before the handover, and a click after the end is accepted with zero effect (dead knob);
+  - "your surge is seed #21" overclaims, because a judge's click is not an exchangeable seed of the frozen protocol.
+- **P2 issues:**
+  - 1280×720 hides the evidence and the (8,10) cell;
+  - the script skips the week;
+  - "live" labels in recorded and committed contexts;
+  - 62 raw pickups vs 46 fleet-wide losses are different populations;
+  - the "6 h" shock label is false near midnight;
+  - **the nyc-v2b caption imported the July-4 window — my source bug, fixed**;
+  - "bit-identical" is broader than the checks;
+  - there is no backend-loss recovery.
+- Decisions are recorded in the review file and the ledger. The fix batch has been sent to the builder.
