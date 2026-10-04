@@ -21,7 +21,12 @@ def run(policy, radius, B=200):
         k = lambda m: len(M.design(m)[0])
         crit = (lambda m: fits[m][1] + (np.log(n_obs) - 2) * k(m)) if policy == "bic_all" else (lambda m: fits[m][1])
         mb = min(fits, key=crit); N = n_obs + fits[mb][0]
-        boots = [n_obs + f[0] for f in (M.fit(rng.multinomial(int(n_obs), cells / n_obs).astype(float), mb) for _ in range(B)) if f]
+        boots = []
+        for _ in range(B):  # re-select the model inside each replicate (within this policy's model set)
+            yb = rng.multinomial(int(n_obs), cells / n_obs).astype(float)
+            fb = {m: M.fit(yb, m) for m in models}; fb = {m: f for m, f in fb.items() if f}
+            if fb:
+                mbb = min(fb, key=lambda m: fb[m][1] + ((np.log(n_obs) - 2) * k(m) if policy == "bic_all" else 0)); boots.append(n_obs + fb[mbb][0])
         lo, hi = np.percentile(boots, [5, 95]) if len(boots) > 50 else (np.nan, np.nan)
         return N, lo, hi, "+".join(mb) or "indep"
     rows = []

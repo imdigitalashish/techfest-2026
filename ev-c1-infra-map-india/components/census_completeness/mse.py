@@ -35,14 +35,29 @@ ALIAS = {"up": "uttarpradesh", "utofdandnhanddandd": "dadraandnagarhavelianddama
 key = lambda s: ALIAS.get(norm(s), norm(s))  # noqa: E731
 
 
-def load_sources() -> pd.DataFrame:
+OVT_RELEASE = "2026-09-23.1"
+
+
+def load_sources(osm_file="osm_india.csv", ocm_max_created=None, use_ovt=True) -> pd.DataFrame:
+    """Records from the open lists, clipped to India; OSM access=private|no excluded (not public supply).
+    Each record keeps its licence and a source URL (review 2026-10-04, issues 3 and 10)."""
     adm = gpd.read_file(f"{R_}/.data/geo/ind_adm1.geojson")[["shapeName", "geometry"]]
-    frames = []
-    for src, path in (("osm", "osm_india.csv"), ("ocm", "ocm_india.csv"), ("ovt", "overture_india.csv")):
-        d = pd.read_csv(f"{R_}/.data/chargers/{path}").dropna(subset=["lat", "lon"])
-        d = d[["source_id", "lat", "lon", "name"]].assign(src=src)
-        frames.append(d)
-    d = pd.concat(frames, ignore_index=True)
+    osm = pd.read_csv(f"{R_}/.data/chargers/{osm_file}")
+    osm = osm[~osm.access.isin(["private", "no"])]
+    osm = osm.assign(src="osm", license="ODbL-1.0 (c) OpenStreetMap contributors",
+                     url="https://www.openstreetmap.org/" + osm.source_id.astype(str))
+    ocm = pd.read_csv(f"{R_}/.data/chargers/ocm_india.csv")
+    if ocm_max_created:
+        ocm = ocm[pd.to_datetime(ocm.date_created, utc=True, errors="coerce") <= pd.Timestamp(ocm_max_created, tz="UTC")]
+    ocm = ocm.assign(src="ocm", license="Open Charge Map, data provider id " + ocm.data_provider_id.astype(str) + " (licence per provider)",
+                     url="https://openchargemap.org/site/poi/details/" + ocm.source_id.str.replace("OCM-", "", regex=False))
+    frames = [osm, ocm]
+    if use_ovt:
+        ovt = pd.read_csv(f"{R_}/.data/chargers/overture_india.csv")
+        ovt = ovt.assign(src="ovt", license="Overture Maps places " + OVT_RELEASE + "; sources " + ovt.datasets.astype(str)
+                         + " (CDLA-Permissive-2.0 / Apache-2.0 / CC0-1.0 by source)", url="overture:" + ovt.source_id.astype(str))
+        frames.append(ovt)
+    d = pd.concat([f[["source_id", "lat", "lon", "name", "src", "license", "url"]] for f in frames], ignore_index=True).dropna(subset=["lat", "lon"])
     g = gpd.GeoDataFrame(d, geometry=gpd.points_from_xy(d.lon, d.lat), crs="EPSG:4326")
     j = gpd.sjoin(g, adm, how="inner", predicate="within").drop(columns=["geometry", "index_right"])
     j["state_key"] = j.shapeName.map(key)
@@ -56,20 +71,35 @@ def hav(a, b):
 
 
 def link(d: pd.DataFrame, radius=RADIUS_M) -> pd.DataFrame:
-    """Mutual-nearest-neighbour edges within `radius` for each source pair, then connected components = sites."""
-    rows, cols = [], []
-    for s1, s2 in itertools.combinations(["osm", "ocm", "ovt"], 2):
+    """Mutual-nearest-neighbour edges within `radius` for each source pair, then connected components = sites.
+    Constraint: a site holds at most one record per source. Components that chain two records of the same source are
+    split by removing their longest edge until the constraint holds (review 2026-10-04, issue 1)."""
+    srcs = sorted(d.src.unique())
+    edges = []  # (i, j, metres)
+    for s1, s2 in itertools.combinations(srcs, 2):
         ia, ib = np.where(d.src == s1)[0], np.where(d.src == s2)[0]
+        if len(ia) == 0 or len(ib) == 0:
+            continue
         D = hav(d.loc[ia, ["lat", "lon"]].to_numpy(), d.loc[ib, ["lat", "lon"]].to_numpy())
         nnA, nnB = D.argmin(1), D.argmin(0)
         for i, j in enumerate(nnA):
             if nnB[j] == i and D[i, j] <= radius:
-                rows.append(ia[i]); cols.append(ib[j])
-    n = len(d)
-    A = coo_matrix((np.ones(len(rows)), (rows, cols)), shape=(n, n))
-    _, lab = connected_components(A, directed=False)
-    d = d.assign(site=lab)
-    return d
+                edges.append((ia[i], ib[j], float(D[i, j])))
+    n, src = len(d), d.src.to_numpy()
+    removed = 0
+    while True:
+        A = coo_matrix((np.ones(len(edges)), ([e[0] for e in edges], [e[1] for e in edges])), shape=(n, n))
+        _, lab = connected_components(A, directed=False)
+        bad = {c for c in np.unique(lab) if len(set(src[lab == c])) < int((lab == c).sum())}
+        if not bad:
+            break
+        for c in bad:
+            ce = [k for k, e in enumerate(edges) if lab[e[0]] == c]
+            if ce:
+                edges.pop(max(ce, key=lambda k: edges[k][2])); removed += 1
+    out = d.assign(site=lab)
+    out.attrs["edges_removed_for_constraint"] = removed
+    return out
 
 
 def histories(d: pd.DataFrame) -> pd.DataFrame:
@@ -118,6 +148,7 @@ def fit(y: np.ndarray, model) -> tuple[float, float] | None:
 
 
 def mse(cells: np.ndarray, rng: np.random.Generator, B=300):
+    """AIC-selected log-linear estimate; the bootstrap re-selects the model in every replicate (model uncertainty)."""
     n_obs = int(cells.sum())
     fits = {m: fit(cells, m) for m in MODELS}
     fits = {m: f for m, f in fits.items() if f is not None}
@@ -125,16 +156,21 @@ def mse(cells: np.ndarray, rng: np.random.Generator, B=300):
         return None
     m_best = min(fits, key=lambda m: fits[m][1])
     est = n_obs + fits[m_best][0]
-    boots = []
+    aics = np.array([fits[m][1] for m in fits]); w = np.exp(-(aics - aics.min()) / 2); w /= w.sum()
+    per_model = {("+".join(m) or "indep"): round(n_obs + f[0], 1) for m, f in fits.items()}
+    avg = float(sum(wi * (n_obs + f[0]) for wi, f in zip(w, fits.values())))
+    boots, fails = [], 0
     p = cells / n_obs
     for _ in range(B):
         yb = rng.multinomial(n_obs, p).astype(float)
-        f = fit(yb, m_best)
-        if f is not None:
-            boots.append(n_obs + f[0])
+        fb = {m: fit(yb, m) for m in MODELS}; fb = {m: f for m, f in fb.items() if f is not None}
+        if not fb:
+            fails += 1; continue
+        mb = min(fb, key=lambda m: fb[m][1]); boots.append(n_obs + fb[mb][0])
     lo, hi = (np.percentile(boots, [5, 95]) if len(boots) >= 50 else (np.nan, np.nan))
     return {"n_obs": n_obs, "model": "+".join(m_best) or "indep", "N_hat": round(est, 1), "ci90_lo": round(float(lo), 1),
-            "ci90_hi": round(float(hi), 1), "n_boot_ok": len(boots)}
+            "ci90_hi": round(float(hi), 1), "n_boot_ok": len(boots), "n_boot_fail": fails, "N_aic_weighted": round(avg, 1),
+            "N_min_model": float(min(per_model.values())), "N_max_model": float(max(per_model.values())), "per_model": per_model}
 
 
 def cells_of(h: pd.DataFrame) -> np.ndarray:
@@ -147,13 +183,14 @@ def main():
     d = link(load_sources())
     h = histories(d)
     os.makedirs(OUT, exist_ok=True)
-    d[["src", "source_id", "lat", "lon", "name", "state_key", "site"]].to_csv(f"{OUT}/c5_linked_records.csv", index=False)
+    d[["src", "source_id", "lat", "lon", "name", "state_key", "site", "license", "url"]].to_csv(f"{OUT}/c5_linked_records.csv", index=False)
     pcs = pd.read_csv(f"{R_}/components/charger_ingest/data/official_pcs_statewise.csv")
     off = {key(s): int(v) for s, v in pcs[pcs.source == "pib2151390"][["state", "pcs_total"]].values}
     rows = []
     for st, g in h.groupby("state_key"):
         c = cells_of(g)
         r = mse(c, rng) or {"n_obs": int(c.sum()), "model": "none", "N_hat": np.nan, "ci90_lo": np.nan, "ci90_hi": np.nan, "n_boot_ok": 0}
+        r.pop("per_model", None)
         r.update({"state_key": st, "official_pcs_aug2025": off.get(st), "in_all3": int(c[-1]),
                   **{f"cell_{''.join(map(str, p))}": int(v) for p, v in zip(PATTERNS, c)},
                   "n_osm": int(g.osm.sum()), "n_ocm": int(g.ocm.sum()), "n_ovt": int(g.ovt.sum())})
@@ -170,6 +207,9 @@ def main():
     lu = np.log(ev.n_obs / ev.official_pcs_aug2025)
     summary = {
         "radius_m": RADIUS_M, "records": {s: int((d.src == s).sum()) for s in ("osm", "ocm", "ovt")}, "sites_linked": int(len(h)),
+        "edges_removed_for_one_record_per_source": int(d.attrs.get("edges_removed_for_constraint", 0)),
+        "osm_excluded_access_private_or_no": int(pd.read_csv(f"{R_}/.data/chargers/osm_india.csv").access.isin(["private", "no"]).sum()),
+        "states_ge100_without_estimate": int(((st.official_pcs_aug2025 >= 100) & st.N_hat.isna()).sum()),
         "national_cells": {"".join(map(str, p)): int(v) for p, v in zip(PATTERNS, nat_c)},
         "national_mse": nat, "official_national_aug2025": int(sum(off.values())), "ieefa_national_jul2026": 52718,
         "states_evaluated": int(len(ev)), "states_with_mse": int(st.N_hat.notna().sum()),

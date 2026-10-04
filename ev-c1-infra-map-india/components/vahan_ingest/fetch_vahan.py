@@ -35,12 +35,22 @@ def log(msg: str) -> None:
         f.write(line + "\n")
 
 
+def _valid_cache(path: str) -> bool:
+    """A cached table counts only if it parses, has rows, and has a matching metadata file."""
+    try:
+        return os.path.getsize(path) > 5 and len(pd.read_csv(path)) > 0 and os.path.exists(path[:-4] + ".json")
+    except Exception:
+        return False
+
+
 def cached(key: str, meta: dict, fn) -> None:
     path = os.path.join(RAW, key + ".csv")
-    if os.path.exists(path):
+    if os.path.exists(path) and _valid_cache(path):
         return
-    df = fn()
-    df.to_csv(path, index=False)
+    df = fn()  # parse_export raises on empty / non-numeric / inconsistent tables
+    tmp = path + ".tmp"
+    df.to_csv(tmp, index=False)
+    os.replace(tmp, path)  # atomic: never leave a half-written table behind
     with open(os.path.join(RAW, key + ".json"), "w") as f:
         json.dump({**meta, "title": df.attrs.get("title", ""), "fetched_at": dt.datetime.now().isoformat(timespec="seconds"),
                    "rows": len(df)}, f)

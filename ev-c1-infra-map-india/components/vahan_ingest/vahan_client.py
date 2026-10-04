@@ -181,8 +181,21 @@ def parse_export(xlsx: bytes) -> pd.DataFrame:
     body.columns = cols
     body = body[body["s_no"].map(clean).str.match(r"^\d+$")]
     body["row_label"] = body["row_label"].map(clean)
+    if body.empty:
+        raise ValueError(f"VAHAN export has no data rows ({title!r})")
     for c in cols[2:]:
-        body[c] = pd.to_numeric(body[c].astype(str).str.replace(",", "").str.strip(), errors="coerce").fillna(0).astype("int64")
+        txt = body[c].astype(str).str.replace(",", "").str.strip()
+        blank = txt.isin(["", "nan", "None", "-"])
+        num = pd.to_numeric(txt.where(~blank, "0"), errors="coerce")
+        if num.isna().any():
+            bad = txt[num.isna()].head(3).tolist()
+            raise ValueError(f"VAHAN export column {c!r} has non-numeric cells {bad} ({title!r})")
+        body[c] = num.astype("int64")
     body = body.drop(columns=["s_no"]).reset_index(drop=True)
+    if "TOTAL" in body.columns:  # every row must add up to its own TOTAL column
+        parts = body.drop(columns=["row_label", "TOTAL"]).sum(axis=1)
+        if not (parts == body["TOTAL"]).all():
+            bad = body.loc[parts != body["TOTAL"], "row_label"].head(3).tolist()
+            raise ValueError(f"VAHAN export rows do not sum to TOTAL: {bad} ({title!r})")
     body.attrs["title"] = title
     return body
