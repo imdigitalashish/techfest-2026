@@ -86,9 +86,18 @@ def ope_terms(d, pi, hidx=None, n_items=80):
 
 
 def main():
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--floor_start_to_hour", action="store_true",
+                    help="DEVIATION (disclosed, after seeing results): W starts at the hour, so 2019-11-24 counts as a whole day")
+    args = ap.parse_args()
+    suffix = "_deviation_floor" if args.floor_start_to_hour else ""
     R, B = load(S / "random" / "all" / "all.npz"), load(S / "bts" / "all" / "all.npz")
     n_items = int(max(R["item"].max(), B["item"].max())) + 1
     t0 = max(R["ts"].min(), B["ts"].min())
+    if args.floor_start_to_hour:
+        t0 = (t0 // HOUR) * HOUR
     t_end = (B["ts"].max() // HOUR) * HOUR
     R, B = sub(R, (R["ts"] >= t0) & (R["ts"] < t_end)), sub(B, (B["ts"] >= t0) & (B["ts"] < t_end))
     h0 = t0 // HOUR
@@ -102,7 +111,12 @@ def main():
                       "n_bts": int(len(B["ts"])), "n_items": n_items}}
     md = ["# Real OBD check on large slices — results (REAL data; campaign All)", "",
           "Implements [`preregistration_obd.md`](../preregistration_obd.md) (registered 2026-10-04 13:06:47 IST, before these results). "
-          "Reproduce: see the header of `eval/run_obd_slice.py`.", "",
+          "Reproduce: see the header of `eval/run_obd_slice.py`.", ""]
+    if args.floor_start_to_hour:
+        md += ["**DEVIATION RUN (`--floor_start_to_hour`, decided after seeing the pre-registered results):** the pre-registered W started at the "
+               "first BTS row, 47 ms after midnight, so 2019-11-24 was not a whole day and the secondary analysis had one day pair. Here W starts "
+               "at 00:00, which adds the 2019-11-24 pairs. Everything else is identical.", ""]
+    md += [
           f"Window W: {res['window']['start_utc']} → {res['window']['end_utc']} UTC ({H} hours; {res['window']['hours_dropped']} dropped for < 1,000 BTS rows). "
           f"Rows in W: Random {len(R['ts']):,} · BTS {len(B['ts']):,}. Items: {n_items}.", ""]
 
@@ -261,8 +275,8 @@ def main():
            " · ".join(f"{k_}: {v:.4f}" for k_, v in tvds.items()) + (" — **CAVEAT: arm assignment may not be randomised by user**" if flag else " — all ≤ 0.05 (no caveat)"), ""]
 
     out = ROOT / "eval" / "results"
-    (out / "obd_slice.json").write_text(json.dumps(res, indent=1, default=float))
-    (out / "obd_slice_summary.md").write_text("\n".join(md) + "\n")
+    (out / f"obd_slice{suffix}.json").write_text(json.dumps(res, indent=1, default=float))
+    (out / f"obd_slice{suffix}_summary.md").write_text("\n".join(md) + "\n")
     print("\n".join(md))
 
 
