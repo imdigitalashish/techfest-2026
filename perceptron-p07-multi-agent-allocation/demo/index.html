@@ -1,0 +1,864 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>P7 · Your shock is seed #21</title>
+<link rel="icon" href="data:,">
+<style>
+:root{--bg:#0b1020;--panel:#111a33;--panel2:#16213f;--line:#26335c;--text:#e8eef7;--dim:#93a0c4;--amber:#ffb020;--red:#ff4d5e;--green:#3ddc97;--blue:#4cc3ff;--orange:#ff8a3d}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:16px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden}
+button,select{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:5px 10px;cursor:pointer}
+button:hover{border-color:var(--dim)}
+button.on{background:#2b3a6b;border-color:var(--amber);color:#fff}
+header{display:flex;align-items:center;gap:16px;padding:8px 18px;border-bottom:1px solid var(--line);height:60px}
+.brand{font-size:19px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand b{color:var(--amber)}
+.brand span{color:var(--dim);font-weight:400;font-size:15px}
+nav{display:flex;gap:6px}
+nav button{font-size:16px;padding:7px 14px;white-space:nowrap}
+.badge{margin-left:auto;padding:6px 12px;border-radius:7px;font-weight:800;font-size:14px;letter-spacing:.05em;white-space:nowrap}
+.badge.synth{background:#3a2a05;color:var(--amber);border:1px solid var(--amber)}
+.badge.real{background:#06301f;color:var(--green);border:1px solid var(--green)}
+#offline{display:none;background:#5a0f19;color:#fff;padding:6px 18px;font-weight:700;border-bottom:1px solid var(--red);height:34px;white-space:nowrap;overflow:hidden}
+main{height:calc(100% - 60px - 62px)}
+body.off main{height:calc(100% - 60px - 62px - 34px)}
+section{height:100%;padding:10px 16px;overflow:hidden}
+section[hidden]{display:none!important}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px;display:flex;flex-direction:column;min-width:0;min-height:0}
+.ptitle{font-size:21px;font-weight:800;letter-spacing:.01em;white-space:nowrap}
+.ptitle .tag{font-size:13px;font-weight:700;padding:2px 7px;border-radius:5px;margin-left:6px;vertical-align:3px}
+.tag.rule{background:#3b1d27;color:#ff9aa6}
+.tag.plan{background:#0f3a2c;color:var(--green)}
+.psub{color:var(--dim);font-size:14px;min-height:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+canvas.city{display:block;margin:4px auto 0}
+#tab-live{display:grid;grid-template-columns:1fr 1fr 400px;gap:14px}
+.counters{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:8px;margin-top:6px}
+.ctr .v{font-size:36px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.05}
+.ctr .l{font-size:13px;color:var(--dim)}
+.ctr.big .v{font-size:46px}
+.lost .v{color:var(--red)}
+#pr .lost .v{color:var(--green)}
+.chip{margin-top:2px;font-size:17px;font-weight:800;min-height:22px}
+.chip.good{color:var(--green)}.chip.bad{color:var(--red)}
+canvas.spark{display:block;width:100%;height:42px;margin-top:4px}
+aside{display:flex;flex-direction:column;gap:8px;min-height:0;overflow:auto}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.card h3{margin:0 0 5px;font-size:13px;letter-spacing:.08em;color:var(--dim);font-weight:700;text-transform:uppercase}
+.clock{font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}
+.row{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.hint{color:var(--dim);font-size:13px}
+.call{font-size:17px;font-weight:700}
+.pred-big{font-size:26px;font-weight:800;color:var(--green)}
+.pred-big.na{color:var(--dim);font-size:18px}
+canvas.strip{display:block;width:100%;height:92px;margin-top:2px}
+.lp{display:grid;grid-template-columns:44px 1fr 1fr;gap:4px;align-items:stretch}
+.lp div.h{font-size:12px;color:var(--dim);text-align:center;align-self:end}
+.lp div.rl{font-size:13px;color:var(--dim);align-self:center}
+.lp button{padding:2px 2px;font-size:15px;font-weight:700;line-height:1.08}
+.lp button small{display:block;font-size:11px;font-weight:500;color:#d8def0}
+.lp button.cur{outline:3px solid var(--amber);outline-offset:1px}
+details summary{cursor:pointer;color:var(--dim);font-size:14px}
+details .row{margin-top:6px}
+label{font-size:14px;color:var(--dim)}
+footer{height:62px;border-top:1px solid var(--line);padding:7px 18px;font-size:14px;overflow:hidden;background:#0a0f1e}
+footer div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+footer .pre b{color:var(--green)}
+footer .hon{color:#c9d2ea;margin-top:3px}
+footer .hon b{color:var(--amber)}
+[data-src]{text-decoration:underline dotted #5b6a96;text-underline-offset:3px;cursor:help}
+#tip{position:fixed;pointer-events:none;background:#000e;border:1px solid var(--line);padding:6px 9px;border-radius:7px;font-size:13px;max-width:460px;display:none;z-index:20}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--dim);margin-top:3px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.sq{display:inline-block;width:9px;height:9px;margin-right:4px;vertical-align:-1px}
+#tab-week,#tab-nyc{display:grid;gap:14px}
+#tab-week{grid-template-columns:repeat(3,1fr);grid-template-rows:minmax(0,1fr) auto}
+.wkbottom{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.5fr 1.5fr;gap:14px}
+#tab-nyc{grid-template-columns:1fr 1fr 470px}
+.mini .v{font-size:30px}
+.parity{font-weight:700;font-size:15px;margin-top:6px}
+.parity.ok{color:var(--green)}.parity.no{color:var(--red)}
+canvas.bars{display:block;width:100%;height:150px}
+.big3{font-size:21px;font-weight:800}
+.tbl{border-collapse:collapse;font-size:14px;margin:4px 0 10px}
+.tbl td,.tbl th{border:1px solid var(--line);padding:3px 7px;text-align:left;vertical-align:top}
+.tbl th{background:var(--panel2);color:var(--dim);font-weight:600}
+#tab-evidence{overflow:auto}
+#tab-evidence h2{margin:12px 0 2px;font-size:20px}
+#tab-evidence .path{color:var(--dim);font-size:13px}
+#tab-evidence .cap{color:#c9d2ea;font-size:14px;margin-top:6px}
+.honest li{margin:4px 0;font-size:16px}
+.warn{color:var(--amber)}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><b>P7</b> Splitting a shared fleet when demand keeps changing <span>· 40 units · 25 zones · 1 step = 1 simulated minute</span></div>
+  <nav>
+    <button data-tab="live" class="on">Live city</button>
+    <button data-tab="week">A week</button>
+    <button data-tab="nyc">July 4th (real trips)</button>
+    <button data-tab="evidence">Evidence &amp; limits</button>
+  </nav>
+  <div id="badge" class="badge synth">SYNTHETIC DEMAND</div>
+</header>
+<div id="offline">RECORDED: no backend reachable. Replaying a session recorded by demo/record.py (seed 7000, surge at 05:00). Run demo/run.sh for the live version.</div>
+<main>
+<!-- ============================== LIVE ============================== -->
+<section id="tab-live">
+  <div class="panel" id="pl">
+    <div class="ptitle">BEST RULE <span class="tag rule" id="ruleName">reactive</span></div>
+    <div class="psub" id="ruleDesc"></div>
+    <canvas class="city" id="cityL"></canvas>
+    <div class="counters">
+      <div class="ctr big lost"><div class="v" id="lostL">0</div><div class="l" id="lostLbl0">requests lost since 04:00</div></div>
+      <div class="ctr"><div class="v" id="srvL">–</div><div class="l">served today (live)</div></div>
+      <div class="ctr"><div class="v" id="hopL">–</div><div class="l">empty hops per served</div></div>
+    </div>
+    <canvas class="spark" id="sparkL"></canvas>
+  </div>
+  <div class="panel" id="pr">
+    <div class="ptitle">LOOK-AHEAD PLANNER <span class="tag plan" id="brainName">MPC · EWMA</span></div>
+    <div class="psub" id="brainDesc"></div>
+    <canvas class="city" id="cityR"></canvas>
+    <div class="counters">
+      <div class="ctr big lost"><div class="v" id="lostR">0</div><div class="l" id="lostLbl1">requests lost since 04:00</div></div>
+      <div class="ctr"><div class="v" id="srvR">–</div><div class="l">served today (live)</div></div>
+      <div class="ctr"><div class="v" id="hopR">–</div><div class="l">empty hops per served</div></div>
+    </div>
+    <div class="chip" id="diffChip"></div>
+    <div class="hint" id="msLine"></div>
+  </div>
+  <aside>
+    <div class="card">
+      <div class="row" style="justify-content:space-between"><div class="clock" id="clock">--:--</div>
+        <div class="row"><button id="pause" title="space">❚❚</button><button data-speed="2">2</button><button data-speed="8" class="on">8</button><button data-speed="30">30</button><button data-speed="120">120</button></div></div>
+      <div class="hint">simulated minutes per second · <span id="liveTag">live · 1 run · seed 7000</span></div>
+      <div class="call" style="margin-top:6px">Click any zone to drop a surge.</div>
+      <div class="hint">Unannounced to both fleets; both get the same requests (white pings).</div>
+      <div class="row" style="margin-top:5px;flex-wrap:nowrap"><button data-size="0.5">×½</button><button data-size="1" class="on">×1</button><button data-size="2">×2</button><span class="hint" id="sizeNote"></span></div>
+    </div>
+    <div class="card" id="predCard">
+      <h3>Prediction, committed before you click</h3>
+      <div id="predTxt"></div>
+      <canvas class="strip" id="strip"></canvas>
+      <div class="hint" id="predFoot"></div>
+    </div>
+    <div class="card">
+      <h3>Lead time L × patience P: click a cell</h3>
+      <div class="lp" id="lpGrid"></div>
+      <div class="hint" id="lpFoot"></div>
+    </div>
+    <details class="card" id="adv">
+      <summary>Advanced: rule, planner brain, drift, new city</summary>
+      <div class="row"><label>rule <select id="selRule"><option value="auto">best rule for this cell (committed)</option><option value="greedy">greedy (decentralised)</option><option value="reactive">reactive</option><option value="static">static</option></select></label></div>
+      <div class="row"><label>planner <select id="selBrain"><option value="mpc-ewma">EWMA forecast (default)</option><option value="mpc-queue">queue only (no forecast)</option><option value="mpc-ewma@trust=0.5">half-trust forecast</option><option value="oracle">true-rate forecast</option></select></label></div>
+      <div class="row"><label><input type="checkbox" id="chkDrift"> gradual drift (the main hotspot migrates over the day)</label></div>
+      <div class="row"><label><input type="checkbox" id="chkPrice" checked> shade planner zones by LP shadow price</label></div>
+      <div class="row"><button id="restart" title="r">Restart (04:00)</button><button id="newCity">New city (next seed)</button></div>
+    </details>
+  </aside>
+</section>
+<!-- ============================== WEEK ============================== -->
+<section id="tab-week" hidden>
+  <div class="panel"><div class="ptitle">GREEDY RULE <span class="tag rule">decentralised</span></div><div class="psub">surplus idle units hop to the neighbour with the longest unmet queue</div><canvas class="city" id="wk0"></canvas><div class="counters"><div class="ctr mini"><div class="v" id="wkd0">–</div><div class="l">served, current day</div></div><div class="ctr mini"><div class="v" id="wkr0">–</div><div class="l">served, run so far</div></div></div></div>
+  <div class="panel"><div class="ptitle">REACTIVE RULE <span class="tag rule">best rule here</span></div><div class="psub">rebalances toward the last 30 minutes of observed demand</div><canvas class="city" id="wk1"></canvas><div class="counters"><div class="ctr mini"><div class="v" id="wkd1">–</div><div class="l">served, current day</div></div><div class="ctr mini"><div class="v" id="wkr1">–</div><div class="l">served, run so far</div></div></div></div>
+  <div class="panel"><div class="ptitle">PLANNER <span class="tag plan">MPC · EWMA</span></div><div class="psub">LP over the lead time + learned daily cycle</div><canvas class="city" id="wk2"></canvas><div class="counters"><div class="ctr mini"><div class="v" id="wkd2">–</div><div class="l">served, current day</div></div><div class="ctr mini"><div class="v" id="wkr2">–</div><div class="l">served, run so far</div></div></div></div>
+  <div class="wkbottom">
+    <div class="card"><div class="clock" id="wkClock">Day 1 · 00:00</div><div class="hint">A week with a shock every day, a migrating hotspot and transient spikes (scenario long-week, seed 200), <b>recomputed live now</b> by the committed code. L=1, P=10.</div><div class="hint" id="wkProg"></div></div>
+    <div class="card"><h3>Served per day</h3><canvas class="bars" id="wkBars"></canvas><div class="hint">Bars: this live run (seed 200). Black ticks: <span data-src="week">committed means over 10 seeds</span>.</div></div>
+    <div class="card"><div class="big3" id="wkHead"></div><div class="hint" id="wkHead2"></div><div class="parity" id="wkParity"></div></div>
+  </div>
+</section>
+<!-- ============================== NYC ============================== -->
+<section id="tab-nyc" hidden>
+  <div class="panel"><div class="ptitle">BEST RULE <span class="tag rule">reactive</span></div><div class="psub">best rule on this replay (committed)</div><canvas class="city" id="ny0"></canvas><div class="counters"><div class="ctr big lost"><div class="v" id="nyl0">–</div><div class="l">lost 21:30–23:30, 4 July (live)</div></div><div class="ctr"><div class="v" id="nys0">–</div><div class="l">served, 2 days so far</div></div></div></div>
+  <div class="panel"><div class="ptitle">PLANNER <span class="tag plan">MPC · EWMA</span></div><div class="psub">daily cycle learned from 1–2 July only</div><canvas class="city" id="ny1"></canvas><div class="counters"><div class="ctr big lost"><div class="v" id="nyl1" style="color:#3ddc97">–</div><div class="l">lost 21:30–23:30, 4 July (live)</div></div><div class="ctr"><div class="v" id="nys1">–</div><div class="l">served, 2 days so far</div></div></div></div>
+  <aside>
+    <div class="card"><div class="clock" id="nyClock">Thu 3 Jul 00:00</div><div class="hint">Real NYC TLC yellow-taxi pickups, Manhattan-internal, thinned to ~10 requests/min (q = <span id="nyQ" data-src="replay"></span>), replicate 200, <b>recomputed live now</b>. North is up; dim cells hold no taxi zone. L=1, P=10.</div>
+      <div class="row" style="margin-top:6px"><button id="nyReplay">Replay</button><button id="nySkip">Skip to 4 July 21:00</button></div></div>
+    <div class="card"><h3>The 4 July night window, 21:30–23:30</h3><div id="nyWin"></div><canvas class="strip" id="nyStrip"></canvas><div class="hint">Dots: <span data-src="csv_nyc">the 20 committed thinning replicates</span>. Rings: this live run (replicate 200).</div></div>
+    <div class="card"><div id="nyCommitted"></div><div class="hint" id="nySurge"></div><div class="parity" id="nyParity"></div><div class="hint warn">REAL demand, SIMULATED fleet: travel times, same-zone matching and patience are the simulator's.</div></div>
+  </aside>
+</section>
+<!-- ============================== EVIDENCE ============================== -->
+<section id="tab-evidence" hidden></section>
+</main>
+<footer>
+  <div class="pre" id="preLine"></div>
+  <div class="hon" id="honLine"></div>
+</footer>
+<div id="tip"></div>
+<script src="data/evidence.js"></script>
+<script>
+'use strict';
+const EV = window.EVIDENCE;
+const G = 5, Z = 25, IDLE = 0, MOVING = 1, WIN = 120;
+const C = {zone: '#18223f', edge: '#2a3866', empty: '#0d1328', idle: '#f2f6ff', moving: '#ffb020', busy: '#4cc3ff',
+  lost: '#ff4d5e', queue: '#ff8a3d', amber: '#ffb020', green: '#3ddc97', dim: '#93a0c4', text: '#e8eef7', red: '#ff4d5e'};
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+let BACKEND = false;
+const RULE_DESC = {greedy: 'surplus idle units hop to the neighbour with the longest unmet queue (decentralised)',
+  reactive: 'rebalances toward the last 30 minutes of observed demand', static: 'rebalances toward historical average demand'};
+const BRAIN = {'mpc-ewma': ['MPC · EWMA', 'LP over the lead time: units about to free up, live queues, EWMA demand forecast'],
+  'mpc-queue': ['MPC · queue only', 'same LP, no demand forecast: live queues and units about to free up only'],
+  'mpc-ewma@trust=0.5': ['MPC · half trust', 'same LP, EWMA forecast multiplied by 0.5'],
+  'oracle': ['MPC · true rates', 'same LP fed the true rates: your surge from its onset, never before']};
+
+// ------------------------------------------------------------------ helpers
+async function api(path, body) {
+  const r = await fetch(path, body === undefined ? {cache: 'no-store'} :
+    {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || r.status);
+  return j;
+}
+const hhmm = t => { const m = ((t % 1440) + 1440) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
+const pct = (x, d = 1) => isFinite(x) ? (100 * x).toFixed(d) + '%' : '–';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const sum = a => a.reduce((x, y) => x + y, 0);
+const signed = (v, d = 1) => (v > 0 ? '+' : '') + v.toFixed(d);
+function hash(a, b, c) { let h = Math.imul(a + 1, 73856093) ^ Math.imul(b + 7, 19349663) ^ Math.imul(c + 13, 83492791); h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
+function srcPath(k) { return EV && EV.sources[k] ? EV.sources[k].path : k; }
+function S(k, text) { return `<span data-src="${esc(k)}">${esc(text)}</span>`; }   // a committed value, with its source on hover
+function parseCI(s) {   // "+5.62 [+5.32, +5.93] (20/20)" -> {m, lo, hi, won, n}
+  const m = /^([+\-−]?\d+(?:\.\d+)?)\s*\[([+\-−]?\d+(?:\.\d+)?),\s*([+\-−]?\d+(?:\.\d+)?)\](?:\s*\((\d+)\/(\d+)\))?/.exec(String(s).trim());
+  if (!m) return null;
+  const f = x => parseFloat(x.replace('−', '-'));
+  return {m: f(m[1]), lo: f(m[2]), hi: f(m[3]), won: m[4] ? +m[4] : null, n: m[5] ? +m[5] : null};
+}
+function sizeCanvas(cv, w, h) {
+  const d = window.devicePixelRatio || 1;
+  if (cv.width !== Math.round(w * d) || cv.height !== Math.round(h * d)) {
+    cv.width = Math.round(w * d); cv.height = Math.round(h * d); cv.style.width = w + 'px'; cv.style.height = h + 'px';
+  }
+  const x = cv.getContext('2d'); x.setTransform(d, 0, 0, d, 0, 0); return x;
+}
+document.addEventListener('mousemove', e => {   // tooltips: every committed number names its source file
+  const tip = $('#tip'), el = e.target.closest ? e.target.closest('[data-src]') : null;
+  if (!el) { tip.style.display = 'none'; return; }
+  const k = el.getAttribute('data-src'), s = EV && EV.sources[k];
+  tip.innerHTML = s ? `source: <b>${esc(s.path)}</b><br>sha1 ${esc(s.sha1)} · copied by demo/export_evidence.py` : esc(k);
+  tip.style.display = 'block';
+  tip.style.left = Math.min(window.innerWidth - 470, e.clientX + 14) + 'px'; tip.style.top = Math.min(window.innerHeight - 60, e.clientY + 16) + 'px';
+});
+
+// ------------------------------------------------------------------ city renderer (live, week, NYC)
+class City {
+  constructor(cv, o = {}) {
+    this.cv = cv; this.o = o; this.n = 0; this.init = false;
+    this.px = []; this.py = []; this.tx = []; this.ty = []; this.st = [];
+    this.q = new Array(Z).fill(0); this.price = null; this.pings = []; this.marks = []; this.hover = null; this.shocks = []; this.t = 0;
+    this.setSize(300);
+  }
+  setSize(s) { this.size = s; this.cell = s / G; this.ctx = sizeCanvas(this.cv, s, s); this.init = false; }
+  rc(z) { let r = Math.floor(z / G); const c = z % G; if (this.o.flip) r = G - 1 - r; return [r, c]; }
+  rect(z) { const [r, c] = this.rc(z), w = this.cell; return [c * w, r * w, w]; }
+  center(z) { const [x, y, w] = this.rect(z); return [x + w / 2, y + w * 0.42]; }
+  zoneAt(px, py) {
+    const c = Math.floor(px / this.cell), r0 = Math.floor(py / this.cell);
+    if (c < 0 || c >= G || r0 < 0 || r0 >= G) return -1;
+    return (this.o.flip ? G - 1 - r0 : r0) * G + c;
+  }
+  slot(z, k) {
+    const [x, y, w] = this.rect(z), cols = 5, padx = w * 0.15, sp = (w - 2 * padx) / (cols - 1), kk = k % 15;
+    return [x + padx + (kk % cols) * sp, y + w * 0.2 + Math.floor(kk / cols) * sp * 0.85];
+  }
+  setUnits(f, animate) {
+    const n = f.zone.length;
+    if (n !== this.n) { this.n = n; this.init = false; }
+    const cnt = new Array(Z).fill(0);
+    for (let i = 0; i < n; i++) {
+      if (this.init) { this.px[i] = this.tx[i]; this.py[i] = this.ty[i]; }
+      const z = f.zone[i], s = f.status[i];
+      let x, y;
+      if (s === IDLE) [x, y] = this.slot(z, cnt[z]++);
+      else {   // en route to zone z, arriving in eta more minutes: cover 1/(eta+1) of the remaining way this minute
+        const [cx, cy] = this.center(z), a = 2 * Math.PI * hash(i, 1, 2), r = this.cell * 0.16;
+        const dx = cx + r * Math.cos(a), dy = cy + r * Math.sin(a);
+        const e = f.eta ? f.eta[i] : 0, k = (this.init && animate) ? 1 / (e + 1) : 1;
+        x = this.init ? this.px[i] + (dx - this.px[i]) * k : dx; y = this.init ? this.py[i] + (dy - this.py[i]) * k : dy;
+      }
+      this.tx[i] = x; this.ty[i] = y; this.st[i] = s;
+      if (!this.init || !animate) { this.px[i] = x; this.py[i] = y; }
+    }
+    this.init = true;
+  }
+  addPings(t, arr, now) {   // identical positions in both cities: same requests (common random numbers)
+    for (let z = 0; z < Z; z++) for (let i = 0; i < arr[z]; i++) {
+      const [x, y, w] = this.rect(z);
+      this.pings.push([x + w * (0.12 + 0.76 * hash(t, z, i)), y + w * (0.12 + 0.76 * hash(z, t, i + 50)), now]);
+    }
+    if (this.pings.length > 400) this.pings.splice(0, this.pings.length - 400);
+  }
+  addLost(lost, now) {
+    for (let z = 0; z < Z; z++) if (lost[z] > 0) { const [x, y, w] = this.rect(z); this.marks.push([x + w * 0.74, y + w * 0.3, lost[z], now]); }
+    if (this.marks.length > 200) this.marks.splice(0, this.marks.length - 200);
+  }
+  block(zones, color, dash, label) {
+    const x = this.ctx; let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    for (const z of zones) { const [a, b, w] = this.rect(z); x0 = Math.min(x0, a); y0 = Math.min(y0, b); x1 = Math.max(x1, a + w); y1 = Math.max(y1, b + w); }
+    x.save(); x.strokeStyle = color; x.lineWidth = dash ? 2 : 4; if (dash) x.setLineDash([7, 6]);
+    if (!dash) { x.shadowColor = color; x.shadowBlur = 16; }
+    x.strokeRect(x0 + 2, y0 + 2, x1 - x0 - 4, y1 - y0 - 4); x.restore();
+    if (label) { x.fillStyle = color; x.font = `800 ${Math.max(11, Math.round(this.cell * 0.14))}px -apple-system,Helvetica,sans-serif`; x.fillText(label, x0 + 7, y0 + Math.max(13, this.cell * 0.15)); }
+  }
+  draw(a, now) {
+    const x = this.ctx, w = this.cell, S = this.size, ur = Math.max(3, w * 0.062);
+    x.clearRect(0, 0, S, S);
+    if (this.price) { const sp = [...this.price].sort((a, b) => a - b); this.pmed = sp[12]; this.pmax = sp[24]; }
+    for (let z = 0; z < Z; z++) {
+      const [zx, zy] = this.rect(z), empty = this.o.empty && this.o.empty.has(z);
+      x.fillStyle = empty ? C.empty : C.zone; x.beginPath();
+      if (x.roundRect) x.roundRect(zx + 2, zy + 2, w - 4, w - 4, 8); else x.rect(zx + 2, zy + 2, w - 4, w - 4);
+      x.fill();
+      if (this.price && this.o.price && this.o.price()) {   // relative: brightest = where one more idle unit is worth most now
+        const v = Math.min(1, (this.price[z] - this.pmed) / Math.max(0.05, this.pmax - this.pmed));
+        if (v > 0.02) { x.fillStyle = `rgba(255,176,32,${(0.65 * v).toFixed(3)})`; x.fill(); }
+      }
+      x.strokeStyle = C.edge; x.lineWidth = 1; x.stroke();
+      if (this.o.labels && this.o.labels[z]) {
+        x.fillStyle = '#8590b4'; x.font = `${Math.max(9, Math.round(w * 0.1))}px -apple-system,Helvetica,sans-serif`;
+        x.fillText(this.o.labels[z], zx + 6, zy + w - 7, w - 12);
+      }
+      const q = this.q[z];
+      if (q > 0) {
+        const sq = Math.max(3, w * 0.055), per = 10, n = Math.min(q, 20);
+        x.fillStyle = C.queue;
+        for (let k = 0; k < n; k++) x.fillRect(zx + w * 0.1 + (k % per) * sq * 1.45, zy + w * 0.68 + Math.floor(k / per) * sq * 1.45, sq, sq);
+        if (q > 20) { x.font = `800 ${Math.round(w * 0.13)}px -apple-system,Helvetica,sans-serif`; x.fillText('+' + (q - 20), zx + w * 0.62, zy + w * 0.95); }
+      }
+    }
+    for (const sh of this.shocks) if (this.t >= sh.t0 && this.t < sh.end) this.block(sh.zones, C.amber, false, sh.label || '⚡ surge');
+    if (this.hover) this.block(this.hover, '#ffffff', true, null);
+    for (const p of this.pings) {
+      const age = (now - p[2]) / 600; if (age > 1) continue;
+      x.strokeStyle = `rgba(255,255,255,${(0.9 * (1 - age)).toFixed(3)})`; x.lineWidth = 1.5;
+      x.beginPath(); x.arc(p[0], p[1], 2 + 7 * age, 0, 6.283); x.stroke();
+    }
+    for (let i = 0; i < this.n; i++) {
+      const ux = this.px[i] + (this.tx[i] - this.px[i]) * a, uy = this.py[i] + (this.ty[i] - this.py[i]) * a;
+      x.fillStyle = this.st[i] === IDLE ? C.idle : this.st[i] === MOVING ? C.moving : C.busy;
+      x.beginPath(); x.arc(ux, uy, ur, 0, 6.283); x.fill();
+    }
+    for (const m of this.marks) {
+      const age = (now - m[3]) / 1100; if (age > 1) continue;
+      x.fillStyle = `rgba(255,77,94,${(1 - age).toFixed(3)})`; x.font = `800 ${Math.round(w * 0.2)}px -apple-system,Helvetica,sans-serif`;
+      x.fillText('✕' + (m[2] > 1 ? m[2] : ''), m[0] - w * 0.08, m[1] - 10 * age);
+    }
+  }
+}
+function legendHTML(price) {
+  return `<div class="legend"><span><i class="dot" style="background:${C.idle}"></i>idle unit</span><span><i class="dot" style="background:${C.moving}"></i>repositioning, empty</span>` +
+    `<span><i class="dot" style="background:${C.busy}"></i>carrying a request</span><span><i class="sq" style="background:${C.queue}"></i>waiting request</span>` +
+    `<span style="color:${C.red}">✕ lost (waited P minutes)</span>${price ? `<span><i class="sq" style="background:${C.amber}"></i>shading: LP shadow price of one more idle unit, zones above the city median (brightest = worth most now)</span>` : ''}</div>`;
+}
+
+// ------------------------------------------------------------------ committed evidence for the bridge ("your surge is seed #21")
+function pairDeltas(A, B, field) {   // paired by seed (common random numbers)
+  if (!A || !B) return null;
+  const m = new Map(A.seed.map((s, i) => [s, A[field][i]]));
+  const d = []; B.seed.forEach((s, i) => { if (m.has(s)) d.push(B[field][i] - m.get(s)); });
+  return d.length ? d : null;
+}
+function bridge(cfg) {
+  const {L, P, drift, brain} = cfg, rule = cfg.ruleResolved, c = EV.claims;
+  if (brain === 'oracle') return {none: 'Live only: the committed true-rate planner saw each shock up to its horizon H before onset; an unannounced click gives it none.'};
+  if (!drift && ['mpc-ewma', 'mpc-queue'].includes(brain) && ['greedy', 'reactive'].includes(rule)) {
+    const A = EV.seeds.phase[`${L}|${P}|${rule}`], B = EV.seeds.phase[`${L}|${P}|${brain}`];
+    const best = c.phase_best_rule[`${L},${P}`], row = c.phase[`${L},${P}`];
+    return {d: pairDeltas(A, B, 'shock_lost'), n: A.seed.length, src: 'csv_phase',
+      cond: `phase-v2: ${A.seed.length} test seeds, one shock at a random 2×2 block, onset 04:12–06:36`,
+      head: (brain === 'mpc-ewma' && rule === best) ? {lost: row.lost['look-ahead vs best rule'], pp: row.main['look-ahead vs best rule'], src: 'phase'} : null};
+  }
+  if (L === 1 && P === 10) {
+    const sc = drift ? 'shock+drift' : 'shock';
+    const A = EV.seeds.mvp[`${sc}|${rule}`];
+    const B = brain === 'mpc-ewma@trust=0.5' ? EV.seeds.trust[`${sc}|${brain}`] : EV.seeds.mvp[`${sc}|${brain}`];
+    if (!A || !B) return null;
+    const ref = c.prereg_reference[sc]['reference rule'];
+    return {d: pairDeltas(A, B, 'shock_lost'), n: A.seed.length, src: brain.includes('trust') ? 'csv_trust' : 'csv_mvp',
+      cond: `mvp-v2 ${sc}: ${A.seed.length} fresh test seeds, onset 08:24–13:12${drift ? ', drift over the day' : ''}`,
+      head: (brain === 'mpc-ewma' && rule === ref) ? {pp: c.prereg[sc]['Δ served (pp) [95% paired CI]'], won: c.prereg[sc]['seeds won'], holm: c.prereg[sc]['Holm p'], src: 'confirm', prereg: true} : null};
+  }
+  return null;
+}
+
+// ------------------------------------------------------------------ LIVE controller
+const Live = {
+  cfg: {L: 1, P: 10, rule: 'auto', brain: 'mpc-ewma', drift: false, seed: 7000, ruleResolved: 'reactive'},
+  size: 1, speed: 8, playing: true, gen: 0, sid: null, buf: [], inflight: false, done: false, acc: 0, t: 240,
+  base: null, cum: null, since: [0, 0], shocks: [], series: [[], []], ms: [], cities: [], firstVisual: false, lastDom: 0, err: '',
+  setup() {
+    this.cities = [new City($('#cityL')), new City($('#cityR'), {price: () => $('#chkPrice').checked})];
+    this.cities.forEach((c, i) => {
+      c.cv.addEventListener('mousemove', e => this.hover(i, e));
+      c.cv.addEventListener('mouseleave', () => this.cities.forEach(k => { k.hover = null; }));
+      c.cv.addEventListener('click', e => this.click(i, e));
+    });
+    $('#pr').insertAdjacentHTML('beforeend', legendHTML(true));
+    $('#pause').onclick = () => this.togglePause();
+    $$('[data-speed]').forEach(b => b.onclick = () => this.setSpeed(+b.dataset.speed));
+    $$('[data-size]').forEach(b => b.onclick = () => { this.size = +b.dataset.size; $$('[data-size]').forEach(k => k.classList.toggle('on', k === b)); this.renderPred(); });
+    $('#selRule').onchange = e => { this.cfg.rule = e.target.value; this.start(); };
+    $('#selBrain').onchange = e => { this.cfg.brain = e.target.value; this.start(); };
+    $('#chkDrift').onchange = e => { this.cfg.drift = e.target.checked; this.start(); };
+    $('#restart').onclick = () => this.start();
+    $('#newCity').onclick = () => { this.cfg.seed += 1; this.start(); };
+    $('#sizeNote').textContent = '×1 = the committed shock: 2×2 zones, +1.2 requests/min each, for 6 h';
+  },
+  setSpeed(s) { this.speed = s; this.playing = true; $('#pause').textContent = '❚❚'; $$('[data-speed]').forEach(k => k.classList.toggle('on', +k.dataset.speed === s)); },
+  togglePause() { this.playing = !this.playing; $('#pause').textContent = this.playing ? '❚❚' : '▶'; },
+  reset() {
+    this.gen++; this.buf = []; this.inflight = false; this.done = false; this.acc = 0; this.series = [[], []]; this.ms = []; this.err = '';
+    this.shocks = []; this.since = [0, 0]; this.sid = null; this.base = null;
+    this.cum = [{srv: 0, lost: 0, arr: 0, empty: 0}, {srv: 0, lost: 0, arr: 0, empty: 0}];
+    this.cities.forEach(c => { c.shocks = this.shocks; c.pings = []; c.marks = []; c.price = null; c.init = false; });
+    if (!BACKEND && window.RECORDED) Object.assign(this.cfg, window.RECORDED.ui);
+    const c = this.cfg;
+    c.ruleResolved = c.rule !== 'auto' ? c.rule : (c.drift ? 'reactive' : EV.claims.phase_best_rule[`${c.L},${c.P}`]);
+    $('#ruleName').textContent = c.ruleResolved;
+    $('#ruleDesc').textContent = (c.rule === 'auto' ? (c.drift ? 'pre-registered reference rule for shock+drift: ' : `best rule at L=${c.L}, P=${c.P} (committed): `) : '') + RULE_DESC[c.ruleResolved];
+    $('#brainName').textContent = BRAIN[c.brain][0]; $('#brainDesc').textContent = BRAIN[c.brain][1];
+    $('#liveTag').textContent = `live · 1 run · seed ${c.seed} · L=${c.L} · P=${c.P}${c.drift ? ' · drift' : ''}`;
+    $('#selRule').value = c.rule; $('#selBrain').value = c.brain; $('#chkDrift').checked = c.drift;
+    this.buildLP(); this.renderPred(); this.dom();
+  },
+  async start() {
+    this.reset();
+    const g = this.gen;
+    if (!BACKEND) return this.startRecorded();
+    try {
+      const r = await api('/api/live/new', {L: this.cfg.L, P: this.cfg.P, rule: this.cfg.rule, brain: this.cfg.brain, drift: this.cfg.drift, seed: this.cfg.seed});
+      if (g !== this.gen) return;
+      this.sid = r.sid; this.applySnapshot(r.snapshot, r.stats);
+    } catch (e) { this.err = 'backend error: ' + e.message; this.dom(); }
+  },
+  applySnapshot(snap, stats) {
+    this.t = snap.t; this.base = stats.panels;
+    snap.panels.forEach((p, i) => { this.cities[i].setUnits(p, false); this.cities[i].q = p.q; this.cities[i].t = snap.t; });
+    this.dom();
+  },
+  startRecorded() {
+    const R = window.RECORDED; if (!R) { this.err = 'no recording found (demo/data/recorded_live.js)'; return; }
+    this.recPos = 0; this.applySnapshot(R.snapshot, R.stats);
+  },
+  pump() {   // keep a small buffer ahead of the display, so a click lands within ~0.3 s
+    if (this.done || this.inflight || !this.playing) return;
+    if (this.buf.length >= Math.max(2, Math.ceil(this.speed * 0.3))) return;
+    const n = Math.max(1, Math.min(64, Math.ceil(this.speed * 0.25)));
+    if (!BACKEND) {
+      const R = window.RECORDED; if (!R || !this.base) return;
+      for (let k = 0; k < n; k++) {
+        if (this.recPos >= R.frames.length) { this.start(); return; }
+        const f = R.frames[this.recPos++];
+        for (const sh of R.shocks) if (sh.t0 === f.t) this.shocks.push(Object.assign({lost: [0, 0], steps: 0}, sh));
+        this.buf.push(f);
+      }
+      if (this.shocks.length) this.renderPred();
+      return;
+    }
+    if (!this.sid) return;
+    const g = this.gen; this.inflight = true;
+    api('/api/live/step', {sid: this.sid, n}).then(r => {
+      if (g !== this.gen) return;
+      this.buf.push(...r.frames);
+      if (r.stats.done && !r.frames.length) { this.done = true; this.dom(); }
+    }).catch(e => { this.err = 'backend error: ' + e.message; }).finally(() => { if (g === this.gen) this.inflight = false; });
+  },
+  apply(f, now) {
+    this.t = f.t + 1;
+    const s0 = this.shocks.length ? this.shocks[0].t0 : Infinity;
+    f.panels.forEach((p, i) => {
+      const c = this.cities[i], l = sum(p.lost);
+      c.setUnits(p, true); c.q = p.q; c.t = f.t; c.addLost(p.lost, now);
+      this.cum[i].srv += sum(p.srv); this.cum[i].lost += l; this.cum[i].arr += sum(f.arr); this.cum[i].empty += p.empty;
+      if (f.t >= s0) this.since[i] += l;
+      this.series[i].push(l); if (this.series[i].length > 240) this.series[i].shift();
+      for (const sh of this.shocks) if (f.t >= sh.t0 && f.t < sh.t0 + WIN) { sh.lost[i] += l; if (i === 0) sh.steps++; }
+    });
+    this.cities.forEach(c => c.addPings(f.t, f.arr, now));
+    const pp = f.panels[1];
+    this.cities[1].price = pp.price || null;
+    if (pp.ms !== undefined) { this.ms.push(pp.ms); if (this.ms.length > 30) this.ms.shift(); }
+    if (this.shocks.some(sh => sh.steps >= WIN && !sh.done)) { this.shocks.forEach(sh => { if (sh.steps >= WIN) sh.done = true; }); this.renderPred(); }
+  },
+  tick(dt, now) {
+    if (this.playing) {
+      this.acc += dt;
+      const step = 1000 / this.speed;
+      while (this.acc >= step && this.buf.length) { this.apply(this.buf.shift(), now); this.acc -= step; }
+      if (!this.buf.length) this.acc = Math.min(this.acc, step);
+      this.pump();
+    }
+    const a = this.playing ? Math.min(1, this.acc / (1000 / this.speed)) : 1;
+    this.cities.forEach(c => c.draw(a, now));
+    if (now - this.lastDom > 120) { this.dom(); this.lastDom = now; }
+    if (!this.firstVisual && this.cities[0].init && this.base) { this.firstVisual = true; if (BACKEND) api('/api/first_visual', {}).catch(() => {}); }
+  },
+  hover(i, e) {
+    const c = this.cities[i], r = c.cv.getBoundingClientRect(), z = c.zoneAt(e.clientX - r.left, e.clientY - r.top);
+    const zs = z < 0 ? null : this.blockOf(z);
+    this.cities.forEach(k => { k.hover = zs; });
+    c.cv.style.cursor = BACKEND ? 'crosshair' : 'not-allowed';
+  },
+  blockOf(z) { const r0 = Math.min(Math.floor(z / G), G - 2), c0 = Math.min(z % G, G - 2); return [r0 * G + c0, r0 * G + c0 + 1, (r0 + 1) * G + c0, (r0 + 1) * G + c0 + 1]; },
+  async click(i, e) {
+    if (!BACKEND || !this.sid) return;
+    const c = this.cities[i], r = c.cv.getBoundingClientRect(), z = c.zoneAt(e.clientX - r.left, e.clientY - r.top);
+    if (z < 0) return;
+    const g = this.gen;
+    try {
+      const res = await api('/api/live/shock', {sid: this.sid, zone: z, size: this.size});
+      if (g !== this.gen) return;
+      this.shocks.push(Object.assign({lost: [0, 0], steps: 0}, res.shock));
+      this.renderPred();
+    } catch (err) { this.err = 'backend error: ' + err.message; }
+  },
+  dom() {
+    const c = this.cum; if (!c) return;
+    const sh0 = this.shocks[0], since = sh0 && this.t > sh0.t0;
+    const lost = i => since ? this.since[i] : c[i].lost;
+    ['L', 'R'].forEach((s, i) => {
+      $('#lost' + s).textContent = lost(i);
+      $('#lostLbl' + i).textContent = since ? `requests lost since your surge (${hhmm(sh0.t0)})` : 'requests lost since 04:00, no surge yet';
+      if (this.base) {
+        const b = this.base[i], S = b.served + c[i].srv, A = b.arrivals + c[i].arr;
+        $('#srv' + s).textContent = pct(S / A);
+        $('#hop' + s).textContent = ((b.empty_per_srv * b.served + c[i].empty) / Math.max(1, S)).toFixed(2);
+      }
+    });
+    if (this.ms.length) { const m = [...this.ms].sort((a, b) => a - b); const pr = this.cities[1].price; $('#msLine').textContent = `LP re-plan every minute: ${m[Math.floor(m.length / 2)].toFixed(1)} ms median (measured live on this laptop)` + (pr ? ` · top shadow price now ${Math.max(...pr).toFixed(2)}` : ''); }
+    $('#clock').textContent = hhmm(this.t);
+    const chip = $('#diffChip');
+    if (this.err) { chip.className = 'chip bad'; chip.textContent = this.err; }
+    else if (this.done) { chip.className = 'chip'; chip.textContent = 'End of the simulated day: press Restart.'; }
+    else if (since) {
+      const d = lost(0) - lost(1);
+      chip.className = 'chip ' + (d >= 0 ? 'good' : 'bad');
+      chip.textContent = d >= 0 ? `Planner: ${d} fewer requests lost since your surge` : `Planner: ${-d} MORE requests lost since your surge`;
+    } else { chip.className = 'chip'; chip.textContent = ''; }
+    drawSpark($('#sparkL'), this.series, this.shocks, this.t);
+    this.drawStrip();
+  },
+  buildLP() {
+    const g = $('#lpGrid'); let h = '<div></div><div class="h">P = 3 min (impatient)</div><div class="h">P = 10 min</div>';
+    for (const L of [1, 2, 4, 8]) {
+      h += `<div class="rl">L = ${L}</div>`;
+      for (const P of [3, 10]) {
+        const row = EV.claims.phase[`${L},${P}`].main, ci = parseCI(row['look-ahead vs best rule']);
+        const sig = ci && (ci.lo > 0 || ci.hi < 0), v = ci ? ci.m : 0;
+        const bg = !sig ? '#3a4260' : v > 0 ? `rgba(61,220,151,${(0.25 + Math.min(0.6, v / 12)).toFixed(2)})` : 'rgba(255,77,94,.5)';
+        const cur = L === this.cfg.L && P === this.cfg.P ? 'cur' : '';
+        h += `<button class="${cur}" style="background:${bg}" data-l="${L}" data-p="${P}" title="${esc(row['look-ahead vs best rule'])} vs ${esc(row['best rule (served)'])}">${ci ? signed(ci.m, 2) : '?'} pp<small>${sig ? `${ci.won}/${ci.n} seeds` : 'no reliable gain'}</small></button>`;
+      }
+    }
+    g.innerHTML = h;
+    g.querySelectorAll('button').forEach(b => b.onclick = () => { if (!BACKEND) return; this.cfg.L = +b.dataset.l; this.cfg.P = +b.dataset.p; this.start(); });
+    $('#lpFoot').innerHTML = `Planner − best rule, served pp, ${S('phase', '20 seeds/cell')}. L: min per hop to reposition (cold start). P: min before a request is lost.`;
+  },
+  renderPred() {
+    const b = bridge(this.cfg), c = this.cfg;
+    this.pred = b;
+    let h = `<div class="hint">L=${c.L} · P=${c.P} · ${esc(c.ruleResolved)} vs ${esc(BRAIN[c.brain][0])}${c.drift ? ' · drift' : ''}</div>`;
+    if (this.size !== 1) h += `<div class="pred-big na">Live only: no committed evidence for a ×${this.size === 0.5 ? '½' : this.size} surge.</div>`;
+    else if (b && b.none) h += `<div class="pred-big na">${esc(b.none)}</div>`;
+    else if (!b || !b.d) h += `<div class="pred-big na">Live only: no committed evidence for this exact setting.</div>`;
+    else {
+      const mean = sum(b.d) / b.d.length, won = b.d.filter(x => x < 0).length;
+      if (b.head && b.head.lost !== undefined) {
+        h += `<div class="pred-big">${S(b.head.src, b.head.lost)} requests lost per surge</div><div class="hint">planner minus rule, in the 120 minutes after onset. Served: ${S(b.head.src, b.head.pp)} pp [95% CI] (seeds won).</div>`;
+      } else if (b.head && b.head.prereg) {
+        h += `<div class="pred-big">${S(b.head.src, b.head.pp)} pp served</div><div class="hint">PRE-REGISTERED: planner minus the reference rule, ${S(b.head.src, b.head.won)} seeds, Holm p = ${S(b.head.src, b.head.holm)}. Lost per surge, planner minus rule: ${signed(mean)} (mean of the dots).</div>`;
+      } else {
+        h += `<div class="pred-big">${signed(mean)} requests lost per surge</div><div class="hint">planner minus rule, mean of the ${b.n} committed seeds below (derived); planner lost fewer in ${won}/${b.n}.</div>`;
+      }
+    }
+    $('#predTxt').innerHTML = h;
+    $('#predFoot').innerHTML = b && b.d && this.size === 1 ? `Grey dots: ${S(b.src, b.cond)}. Yellow: your surge, live, after 120 simulated minutes. Your onset: ${this.shocks[0] ? hhmm(this.shocks[0].t0) : 'click a zone'}.` : '';
+    this.drawStrip();
+  },
+  drawStrip() {
+    const cv = $('#strip'), w = cv.clientWidth || 360, h = 92, x = sizeCanvas(cv, w, h), b = this.pred;
+    x.clearRect(0, 0, w, h);
+    if (!b || !b.d || this.size !== 1) return;
+    const live = this.shocks.filter(s => s.size === 1).map(s => ({d: s.lost[1] - s.lost[0], done: s.steps >= WIN, f: s.steps / WIN}));
+    const vals = b.d.concat(live.map(v => v.d), [0]);
+    let lo = Math.min(...vals), hi = Math.max(...vals); const pad = (hi - lo) * 0.08 + 5; lo -= pad; hi += pad;
+    const X = v => 10 + (w - 20) * (v - lo) / (hi - lo);
+    x.strokeStyle = '#5b6a96'; x.lineWidth = 1; x.beginPath(); x.moveTo(X(0), 4); x.lineTo(X(0), h - 16); x.stroke();
+    x.fillStyle = C.dim; x.font = '12px -apple-system,Helvetica,sans-serif';
+    x.fillText('← planner lost fewer', 4, h - 3); const t2 = 'rule lost fewer →'; x.fillText(t2, w - 4 - x.measureText(t2).width, h - 3);
+    b.d.forEach((v, i) => { x.fillStyle = 'rgba(200,210,235,.75)'; x.beginPath(); x.arc(X(v), 9 + (i % 5) * 7, 3.6, 0, 6.283); x.fill(); });
+    const mean = sum(b.d) / b.d.length; x.fillStyle = '#e8eef7'; x.fillRect(X(mean) - 1, 3, 2, 38);
+    live.forEach((v, k) => {
+      const y = 56 + (k % 2) * 4;
+      x.strokeStyle = C.amber; x.fillStyle = C.amber; x.lineWidth = 3; x.beginPath(); x.arc(X(v.d), y, v.done ? 7 : 6, 0, 6.283);
+      if (v.done) x.fill(); else x.stroke();
+      x.font = '800 13px -apple-system,Helvetica,sans-serif';
+      const lab = v.done ? `you${live.length > 1 ? ' #' + (k + 1) : ''}: ${v.d > 0 ? '+' : ''}${v.d}` : `live, ${Math.round(100 * v.f)}% of 120 min`;
+      const tw = x.measureText(lab).width, px = X(v.d) + 12 + tw > w ? X(v.d) - 12 - tw : X(v.d) + 12;
+      x.fillText(lab, px, y + 5);
+    });
+  },
+};
+function drawSpark(cv, series, shocks, t) {
+  const w = cv.clientWidth || 300, h = 42, x = sizeCanvas(cv, w, h), n = 240;
+  x.clearRect(0, 0, w, h);
+  const m = Math.max(4, ...series[0], ...series[1]);
+  [[0, C.red], [1, C.green]].forEach(([i, col]) => {
+    const s = series[i]; x.strokeStyle = col; x.lineWidth = 2; x.beginPath();
+    s.forEach((v, k) => { const px = w - (s.length - k) * w / n, py = h - 3 - (h - 16) * v / m; k ? x.lineTo(px, py) : x.moveTo(px, py); });
+    x.stroke();
+  });
+  for (const sh of shocks) { const k = t - sh.t0; if (k >= 0 && k < n) { x.fillStyle = C.amber; x.fillRect(w - k * w / n, 0, 2, h); } }
+  x.fillStyle = C.dim; x.font = '11px -apple-system,Helvetica,sans-serif';
+  x.fillText('requests lost per minute, last 4 h: rule (red) vs planner (green)', 4, 11);
+}
+
+// ------------------------------------------------------------------ batch replays (week, NYC), recomputed live by the server
+class Replay {
+  constructor(kind, seed, ids, o) {
+    this.kind = kind; this.seed = seed; this.o = o; this.cities = ids.map(id => new City($(id), o.city || {}));
+    this.frames = []; this.next = 0; this.done = false; this.summary = null; this.err = null; this.started = false; this.disp = -1; this.idx = 0;
+  }
+  async start() {
+    if (this.started || !BACKEND) return; this.started = true;
+    try { const r = await api('/api/run', {kind: this.kind, seed: this.seed}); this.rid = r.rid; this.poll(); }
+    catch (e) { this.err = e.message; this.started = false; }
+  }
+  async poll() {
+    try {
+      const r = await api(`/api/run/${this.rid}?from=${this.next}`);
+      this.frames.push(...r.frames); this.next = r.next; this.meta = r;
+      if (r.error) this.err = r.error;
+      if (r.summary) this.summary = r.summary;
+      this.done = r.done;
+      if (!this.done && !this.err) setTimeout(() => this.poll(), r.frames.length >= 400 ? 10 : 250);
+    } catch (e) { this.err = e.message; }
+    this.o.onData && this.o.onData(this);
+  }
+  restart() { this.disp = -1; this.idx = 0; this.lastF = null; }
+  frameAt(t) {
+    while (this.idx < this.frames.length - 1 && this.frames[this.idx + 1].t <= t) this.idx++;
+    while (this.idx > 0 && this.frames[this.idx].t > t) this.idx--;
+    return this.frames[this.idx];
+  }
+  cumAt(t) {
+    let lo = 0, hi = this.frames.length - 1, best = null;
+    while (lo <= hi) { const m = (lo + hi) >> 1; if (this.frames[m].t <= t) { best = this.frames[m]; lo = m + 1; } else hi = m - 1; }
+    return best ? best.cum : null;
+  }
+  tick(dt, now, rate) {
+    if (!this.frames.length) { this.cities.forEach(c => c.draw(1, now)); return; }
+    const last = this.frames[this.frames.length - 1].t;
+    this.disp = Math.min(last, this.disp + dt / 1000 * rate(this.disp));
+    const f = this.frameAt(Math.floor(this.disp));
+    if (f !== this.lastF) { this.lastF = f; f.panels.forEach((p, i) => { this.cities[i].setUnits(p, false); this.cities[i].q = p.q; this.cities[i].t = f.t; }); }
+    this.cities.forEach(c => c.draw(1, now));
+  }
+}
+
+// ---- a week
+const WK_POL = ['greedy', 'reactive', 'mpc-ewma'];
+const Week = new Replay('week', 200, ['#wk0', '#wk1', '#wk2'], {onData: r => weekProgress(r)});
+function weekProgress(r) {
+  const T = (r.meta && r.meta.T) || 10080;
+  $('#wkProg').textContent = r.err ? 'error: ' + r.err : r.done ? `Computed ${T} minutes × 3 allocators in ${r.summary ? r.summary.wall_s : '?'} s on this laptop.` : `computing… day ${Math.min(7, 1 + Math.floor(((r.meta && r.meta.t) || 0) / 1440))} of 7`;
+  const s = r.summary;
+  if (s) {
+    $('#wkParity').className = 'parity ' + (s.parity_all ? 'ok' : 'no');
+    $('#wkParity').innerHTML = s.parity_all ? `✓ This live recompute is bit-identical to the committed rows (${S('csv_week', 'long-week-v2/episodes.csv')}, seed 200: served fraction, served per day, lost per shock) for greedy, reactive and the planner.`
+      : '✗ Parity check against the committed rows failed.';
+  }
+}
+function weekStatic() {
+  const d = EV.claims.week_days, cmp = EV.claims.week_cmp, m = EV.claims.month_cmp;
+  $('#wkHead').innerHTML = `Greedy ${S('week', d.greedy.d1)} → ${S('week', d.greedy.d7)} by day 7; planner ${S('week', d['mpc-ewma'].d1)} → ${S('week', d['mpc-ewma'].d7)}`;
+  $('#wkHead2').innerHTML = `Committed means over 10 seeds (served per day). Planner vs the best rule (reactive) over the week: ${S('week', cmp['Δ served (pp) [95% paired CI]'])} pp, ${S('week', cmp['seeds won'])} seeds; ${S('week', cmp['Δ lost per shock'])} requests lost per shock. A 30-day month: ${S('month', m['Δ served (pp) [95% paired CI]'])} pp, ${S('month', m['seeds won'])} seeds.`;
+  if (!BACKEND) $('#wkProg').textContent = 'Live recompute needs demo/run.sh. Ticks show the committed means.';
+}
+function weekDraw(now, dt) {
+  Week.tick(dt, now, () => 420);
+  const t = Math.max(0, Math.floor(Week.disp));
+  $('#wkClock').textContent = `Day ${Math.min(7, 1 + Math.floor(t / 1440))} · ${hhmm(t)}`;
+  const cv = $('#wkBars'), w = cv.clientWidth || 400, h = 150, x = sizeCanvas(cv, w, h);
+  x.clearRect(0, 0, w, h);
+  const days = [], zero = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  if (Week.frames.length) for (let d = 0; d < 7; d++) {
+    const end = Math.min(t, (d + 1) * 1440 - 1); if (end < d * 1440) break;
+    const a = Week.cumAt(end), b = d ? Week.cumAt(d * 1440 - 1) : zero;
+    if (a && b) days.push(a.map((v, i) => (v[0] - b[i][0]) / Math.max(1, v[2] - b[i][2])));
+  }
+  const lo = 0.4, X0 = 30, bw = (w - X0 - 6) / 7, Y = v => h - 18 - (h - 34) * (Math.max(lo, v) - lo) / (1 - lo);
+  x.font = '11px -apple-system,Helvetica,sans-serif';
+  [0.4, 0.6, 0.8, 1.0].forEach(v => { x.fillStyle = C.dim; x.fillText(v.toFixed(1), 2, Y(v) + 4); x.strokeStyle = '#26335c'; x.beginPath(); x.moveTo(X0, Y(v)); x.lineTo(w, Y(v)); x.stroke(); });
+  const cols = [C.red, '#ff9aa6', C.green];
+  for (let d = 0; d < 7; d++) {
+    x.fillStyle = C.dim; x.fillText('day ' + (d + 1), X0 + d * bw + bw / 2 - 14, h - 4);
+    for (let i = 0; i < 3; i++) {
+      const bx = X0 + d * bw + 4 + i * (bw - 8) / 3, bwi = (bw - 8) / 3 - 2;
+      if (days[d]) { x.fillStyle = cols[i]; x.fillRect(bx, Y(days[d][i]), bwi, h - 18 - Y(days[d][i])); }
+      const cm = parseFloat(EV.claims.week_days[WK_POL[i]]['d' + (d + 1)]);
+      x.fillStyle = '#000'; x.fillRect(bx - 1, Y(cm) - 2, bwi + 2, 4); x.fillStyle = '#fff'; x.fillRect(bx - 1, Y(cm) - 0.5, bwi + 2, 1);
+    }
+  }
+  x.font = '12px -apple-system,Helvetica,sans-serif';
+  x.fillStyle = C.red; x.fillText('■ greedy', X0 + 4, 12); x.fillStyle = '#ff9aa6'; x.fillText('■ reactive', X0 + 72, 12); x.fillStyle = C.green; x.fillText('■ planner', X0 + 148, 12);
+  const cur = days[days.length - 1], lastF = Week.frames.length ? Week.frameAt(t) : null;
+  for (let i = 0; i < 3; i++) {
+    $('#wkd' + i).textContent = cur ? pct(cur[i]) : '–';
+    if (lastF) $('#wkr' + i).textContent = pct(lastF.cum[i][0] / Math.max(1, lastF.cum[i][2]));
+  }
+}
+
+// ---- NYC July 4th
+const NY = {flip: true, empty: new Set(), labels: {}};
+const Nyc = new Replay('nyc', 200, ['#ny0', '#ny1'], {city: NY, onData: r => nycData(r)});
+const NY_EVENT = [1440 + 21 * 60 + 30, 1440 + 23 * 60 + 30];
+function nycSetup() {
+  const cells = EV.claims.nyc_cells;
+  for (let z = 0; z < Z; z++) {
+    const nm = cells[String(z)];
+    if (!nm) NY.empty.add(z);
+    else NY.labels[z] = (nm.find(s => !s.startsWith('Governor')) || nm[0]).split('/')[0];
+  }
+  $('#nyQ').textContent = EV.claims.nyc_q.text;
+  const m = EV.claims.nyc_event_lost_mean, cmp = EV.claims.nyc_cmp, s = EV.claims.nyc_surge;
+  $('#nyCommitted').innerHTML = `<div class="call">Committed, 20 thinning replicates</div><div>Lost in the window, mean: planner <b style="color:${C.green}">${S('csv_nyc', m['mpc-ewma'].text)}</b> · reactive <b style="color:${C.red}">${S('csv_nyc', m.reactive.text)}</b> · greedy ${S('csv_nyc', m.greedy.text)} · static ${S('csv_nyc', m.static.text)}</div>` +
+    `<div>Whole two days, planner vs reactive: ${S('nyc', cmp['Δ served (pp) [95% paired CI]'])} pp served, ${S('nyc', cmp['replicates won'])} replicates. An ordinary Thursday–Friday (10–11 July): ${S('nycb', EV.claims.nycb_cmp['Δ served (pp) [95% paired CI]'])} pp.</div>`;
+  $('#nySurge').innerHTML = `Largest surge that night: cell ${S('replay', s.cell)} (${esc(cells[s.cell].join(', '))}), ${S('replay', s.window)}: ${S('replay', s.count)} pickups vs ${S('replay', s['train mean'])} on the training days (${S('replay', s.ratio)}×). <b class="warn">Cause UNVERIFIED.</b> The planner was not told it was coming.`;
+  $('#nyReplay').onclick = () => Nyc.restart();
+  $('#nySkip').onclick = () => { if (Nyc.frames.length) { Nyc.disp = Math.min(NY_EVENT[0] - 30, Nyc.frames[Nyc.frames.length - 1].t); Nyc.idx = 0; } };
+  if (!BACKEND) $('#nyWin').innerHTML = '<div class="hint">Live recompute needs demo/run.sh; the committed numbers are below.</div>';
+}
+function nycData(r) {
+  const s = r.summary;
+  if (s) {
+    $('#nyParity').className = 'parity ' + (s.parity_all ? 'ok' : 'no');
+    $('#nyParity').innerHTML = s.parity_all ? `✓ Live recompute bit-identical to the committed row (${S('csv_nyc', 'nyc-v2/episodes.csv')}, replicate 200: served fraction, window losses) for static, greedy, reactive and the planner.` : '✗ Parity check against the committed row failed.';
+  }
+}
+function nycRate(t) { return t < NY_EVENT[0] - 15 ? 480 : t < NY_EVENT[1] + 5 ? 12 : 120; }
+function nycDraw(now, dt) {
+  Nyc.tick(dt, now, nycRate);
+  const t = Math.max(0, Math.floor(Nyc.disp));
+  $('#nyClock').textContent = (t < 1440 ? 'Thu 3 Jul ' : 'Fri 4 Jul ') + hhmm(t);
+  const pol = (Nyc.meta && Nyc.meta.policies) || ['static', 'greedy', 'reactive', 'mpc-ewma'];
+  const iR = pol.indexOf('reactive'), iP = pol.indexOf('mpc-ewma');
+  const c0 = Nyc.cumAt(NY_EVENT[0] - 1), cT = Nyc.cumAt(Math.min(t, NY_EVENT[1] - 1)), cN = Nyc.cumAt(t);
+  const inWin = !!(c0 && cT && t >= NY_EVENT[0]), done = t >= NY_EVENT[1] - 1;
+  const win = i => inWin ? cT[i][1] - c0[i][1] : null;
+  [iR, iP].forEach((ix, k) => {
+    $('#nyl' + k).textContent = inWin ? win(ix) : '–';
+    if (cN) $('#nys' + k).textContent = pct(cN[ix][0] / Math.max(1, cN[ix][2]));
+  });
+  if (BACKEND) {
+    const h = inWin ? `<div class="call">${done ? 'Window over' : 'Inside the window now'} (live, replicate 200)</div><div>lost: planner <b style="color:${C.green}">${win(iP)}</b> · reactive <b style="color:${C.red}">${win(iR)}</b> · greedy ${win(pol.indexOf('greedy'))} · static ${win(pol.indexOf('static'))}</div>`
+      : `<div class="hint">${Nyc.frames.length ? 'Two ordinary days fly by; the 4 July night plays in slow motion.' : 'computing…'}</div>`;
+    if (h !== Nyc.lastH) { $('#nyWin').innerHTML = h; Nyc.lastH = h; }
+  }
+  const cv = $('#nyStrip'), w = cv.clientWidth || 400, hh = 96, x = sizeCanvas(cv, w, hh);
+  x.clearRect(0, 0, w, hh);
+  const R = EV.seeds.nyc.reactive.event_lost, Pp = EV.seeds.nyc['mpc-ewma'].event_lost, hi = Math.max(...R, ...Pp) * 1.08 + 2;
+  const X = v => 10 + (w - 80) * v / hi;
+  x.fillStyle = C.dim; x.font = '12px -apple-system,Helvetica,sans-serif'; x.fillText('0', X(0) - 3, hh - 4); x.fillText(Math.round(hi) + ' lost', X(hi) - 30, hh - 4);
+  [[Pp, C.green, 24, 'planner'], [R, C.red, 58, 'reactive']].forEach(([vals, col, y, lab]) => {
+    x.globalAlpha = 0.6; x.fillStyle = col; vals.forEach(v => { x.beginPath(); x.arc(X(v), y, 4.5, 0, 6.283); x.fill(); });
+    x.globalAlpha = 1; x.fillText(lab, w - 62, y + 4);
+  });
+  if (inWin && done) [[win(iP), 24], [win(iR), 58]].forEach(([v, y]) => { x.strokeStyle = C.amber; x.lineWidth = 3; x.beginPath(); x.arc(X(v), y, 9, 0, 6.283); x.stroke(); });
+  const surge = t >= 1440 + 22 * 60 && t < 1440 + 22 * 60 + 30;
+  Nyc.cities.forEach(c => { c.shocks = surge ? [{t0: 0, end: 1e9, zones: [+EV.claims.nyc_surge.cell], label: 'observed surge'}] : []; });
+}
+
+// ------------------------------------------------------------------ evidence tab + footer
+const TITLES = {confirm: 'Pre-registered confirmatory test (mvp-v2): 30 fresh seeds, L=1, P=10', phase: 'Where look-ahead pays: the (L, P) map (phase-v2), 20 seeds per cell',
+  phasec: 'Planner sensitivity on the same seeds (phase-v2c)', week: 'A week: a shock every day + drift + spikes (long-week-v2), 10 seeds',
+  month: 'A month (long-month-v2), 4 seeds', nyc: 'NYC TLC real trips, July 3–4 2025 (nyc-v2), 20 thinning replicates',
+  nycb: 'NYC TLC, July 10–11 2025 (nyc-v2b)', pareto: 'Service vs movement (pareto-v2)', trust: 'Forecast-trust sweep (trust-v2), exploratory'};
+function honestItems() {
+  const c = EV.claims, ph = c.phase;
+  return [
+    `<b>It cannot see your surge coming.</b> It wins by re-planning every minute over the lead time with the units about to free up and the live queues. It anticipates only what it has learned: the daily cycle and drift.`,
+    `<b>Under a pure shock, ignoring the forecast did better:</b> the queue-only planner served ${S('confirm', c.queue_shock_pp['Δ served (pp) [95% paired CI]'])} pp more than our EWMA planner; lost per shock ${S('confirm', c.queue_shock_lost['Δ lost per shock [95% paired CI]'])} (L=1, P=10).`,
+    `<b>A perfect forecast can hurt:</b> true rates lowered service in 3 of 4 long-lead-time cells (L=4,P=3: ${S('phase', ph['4,3'].main['true-rate forecast vs EWMA'])}; L=8,P=3: ${S('phase', ph['8,3'].main['true-rate forecast vs EWMA'])}; L=8,P=10: ${S('phase', ph['8,10'].main['true-rate forecast vs EWMA'])} pp).`,
+    `<b>Where planning stops paying:</b> at L=8, P=10 the planner vs the best rule is ${S('phase', ph['8,10'].main['look-ahead vs best rule'])} pp: no reliable gain.`,
+    `<b>Our pre-registered change-detector hypothesis did not replicate</b> (${S('phase', 'phase-v2, H1 family, Holm')}).`,
+    `<b>Centralised planning, per-unit execution.</b> The amber shading is the LP's dual value of one more idle unit, a planning signal, not a market price.`,
+    `<b>Live numbers are one run.</b> Committed numbers are means over seeds with paired 95% CIs. Demand is SYNTHETIC except on the July 4th tab (real trips, simulated fleet).`];
+}
+function buildEvidence() {
+  let h = `<h2>Honest limits</h2><ul class="honest">${honestItems().map(s => `<li>${s}</li>`).join('')}</ul>`;
+  for (const k of ['confirm', 'phase', 'week', 'month', 'nyc', 'nycb', 'pareto', 'trust', 'phasec']) {
+    h += `<h2>${esc(TITLES[k])}</h2><div class="path">${esc(srcPath(k))} · sha1 ${esc(EV.sources[k].sha1)} · cells copied verbatim</div>`;
+    for (const t of EV.tables[k]) {
+      h += `<div class="cap">${esc(t.caption || t.heading)}</div><table class="tbl"><tr>${t.header.map(c => `<th>${esc(c)}</th>`).join('')}</tr>` +
+        t.rows.map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('') + '</table>';
+    }
+  }
+  $('#tab-evidence').innerHTML = h;
+}
+function buildFooter() {
+  const p = EV.claims.prereg, k = s => p[s]['Δ served (pp) [95% paired CI]'];
+  const c = EV.claims, ph = c.phase['8,10'].main;
+  $('#preLine').innerHTML = `<b>Pre-registered</b>, ${S('prereg', '30 fresh seeds')}, planner vs the rule fixed on tuning seeds: shock ${S('confirm', k('shock'))} pp · shock+drift ${S('confirm', k('shock+drift'))} · shock+drift+spikes ${S('confirm', k('shock+drift+spikes'))} · ${S('confirm', p.shock['seeds won'])} each · Holm p = ${S('confirm', p.shock['Holm p'])}`;
+  $('#honLine').innerHTML = `<b>Honest:</b> <a href="#" id="toEv" style="color:#ffb020">all limits</a> · it cannot see your surge coming · under a pure shock a queue-only planner did better (${S('confirm', c.queue_shock_pp['Δ served (pp) [95% paired CI]'])} pp) · at L=8, P=10 no reliable gain (${S('phase', ph['look-ahead vs best rule'])})`;
+  $('#toEv').onclick = e => { e.preventDefault(); showTab('evidence'); };
+}
+
+// ------------------------------------------------------------------ layout, tabs, main loop
+let TAB = 'live';
+function showTab(t) {
+  TAB = t;
+  $$('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  ['live', 'week', 'nyc', 'evidence'].forEach(k => { $('#tab-' + k).hidden = k !== t; });
+  const b = $('#badge');
+  if (t === 'nyc') { b.className = 'badge real'; b.textContent = 'REAL DEMAND · NYC TLC TRIPS'; }
+  else if (t === 'evidence') { b.className = 'badge synth'; b.textContent = 'COMMITTED RESULTS'; }
+  else { b.className = 'badge synth'; b.textContent = 'SYNTHETIC DEMAND'; }
+  if (t === 'week') Week.start();
+  if (t === 'nyc') Nyc.start();
+  layout();
+}
+function layout() {
+  const fit = (cv, extra) => {
+    const p = cv.parentElement, wAvail = p.clientWidth - 26, hAvail = p.clientHeight - extra;
+    return Math.max(160, Math.floor(Math.min(wAvail, hAvail)));
+  };
+  if (TAB === 'live') { const s = fit($('#cityL'), 196); Live.cities.forEach(c => c.setSize(s)); Live.dom(); }
+  if (TAB === 'week') { const s = fit($('#wk0'), 128); Week.cities.forEach(c => c.setSize(s)); Week.lastF = null; }
+  if (TAB === 'nyc') { const s = fit($('#ny0'), 160); Nyc.cities.forEach(c => c.setSize(s)); Nyc.lastF = null; }
+}
+window.addEventListener('resize', layout);
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+  if (e.key === ' ') { e.preventDefault(); Live.togglePause(); }
+  if (e.key === 'r' && BACKEND) Live.start();
+  const sp = {'1': 2, '2': 8, '3': 30, '4': 120}[e.key]; if (sp) Live.setSpeed(sp);
+});
+let lastNow = performance.now();
+function loop(now) {
+  const dt = Math.min(250, now - lastNow); lastNow = now;
+  try {
+    if (TAB === 'live') Live.tick(dt, now);
+    else if (TAB === 'week') weekDraw(now, dt);
+    else if (TAB === 'nyc') nycDraw(now, dt);
+  } catch (e) { console.error(e); }
+  requestAnimationFrame(loop);
+}
+function loadScript(src) { return new Promise(res => { const s = document.createElement('script'); s.src = src; s.onload = () => res(true); s.onerror = () => res(false); document.head.appendChild(s); }); }
+async function boot() {
+  if (!EV) { document.body.innerHTML = '<h1 style="padding:30px">demo/data/evidence.js is missing: run demo/run.sh from the project folder.</h1>'; return; }
+  $$('nav button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
+  try { BACKEND = location.protocol.startsWith('http') && (await api('/api/health')).ok === true; } catch (e) { BACKEND = false; }
+  if (!BACKEND) { document.body.classList.add('off'); $('#offline').style.display = 'block'; await loadScript('data/recorded_live.js'); }
+  Live.setup(); nycSetup(); weekStatic(); buildEvidence(); buildFooter();
+  layout(); Live.start(); requestAnimationFrame(loop);
+}
+boot();
+</script>
+</body>
+</html>

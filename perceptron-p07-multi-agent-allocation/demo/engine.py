@@ -352,11 +352,40 @@ class BatchRun:
         out["parity_all"] = bool(checked) and all(all(v["checks"].values()) for v in checked)
         return out
 
+    def static(self) -> dict:
+        return dict(kind=self.kind, seed=self.seed, T=self.T, info=self.info, event=self.event,
+                    policies=list(self.policies), show=[self.policies[i] for i in self.show])
+
     def poll(self, k: int, limit: int = 400) -> dict:
         with self.lock:
             fr = self.frames[k:k + limit]
             n = len(self.frames)
-        return dict(kind=self.kind, seed=self.seed, T=self.T, t=self.t, frames=fr, next=k + len(fr),
-                    available=n, done=self.done and k + len(fr) >= n, error=self.error,
-                    summary=self.summary if self.done else None, info=self.info, event=self.event,
-                    policies=list(self.policies), show=[self.policies[i] for i in self.show])
+        return dict(self.static(), t=self.t, frames=fr, next=k + len(fr), available=n,
+                    done=self.done and k + len(fr) >= n, error=self.error, summary=self.summary if self.done else None)
+
+
+def batch_worker(kind: str, seed: int, show: tuple, q) -> None:
+    """Child-process entry point (demo/server.py): recompute one episode and stream its frames back, so the
+    live city in the server process never waits for the interpreter lock."""
+    import os
+    try:
+        os.nice(10)
+    except OSError:
+        pass
+    try:
+        r = BatchRun(kind, seed, show=show)
+    except Exception as e:
+        q.put(("done", None, repr(e), 0.0))
+        return
+    q.put(("static", r.static()))
+    th = threading.Thread(target=r.run, daemon=True)
+    th.start()
+    sent = 0
+    while th.is_alive() or sent < len(r.frames):
+        th.join(timeout=0.25)
+        with r.lock:
+            new = r.frames[sent:]
+        if new:
+            q.put(("frames", new, r.t))
+            sent += len(new)
+    q.put(("done", r.summary, r.error, r.wall))
