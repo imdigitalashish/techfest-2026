@@ -188,7 +188,7 @@ footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;mar
       <div class="stat"><b id="a2std">—</b><p><strong>Std of the twin gap at T1</strong> (20 min) across these 30 seeds, computed here from the exported paths. <span id="a2stdchk"></span></p></div>
       <div class="stat"><b><span data-c="noise_reduction"></span>×</b><p><strong>less own-impact dispersion</strong>: per-seed std <span data-c="own_std_naive"></span> → <span data-c="own_std_sync"></span> bps (E4).<br><span class="src">source: claims.json noise_reduction, own_std_naive, own_std_sync</span></p></div>
       <div class="stat"><b><span data-c="ci_tightening"></span>×</b><p><strong>tighter paired confidence intervals</strong> on the same <span data-c="e3_e5_n"></span> test seeds (E3 naive vs E5 synced).<br><span class="src">source: claims.json ci_tightening</span></p></div>
-      <div class="stat"><b><span data-c="gap_std_1200"></span>¢</b><p>Naive twin gap std at 20 min (<span data-c="gap_std_60"></span>¢ at 1 min), against a mean impact of <span data-c="gap_mean_300"></span>¢ (E1, 40 training seeds).<br><span class="src">source: claims.json gap_std_1200, gap_std_60, gap_mean_300</span></p></div>
+      <div class="stat"><b><span data-c="gap_std_1200"></span>¢</b><p>Naive twin gap std at 20 min (<span data-c="gap_std_60"></span>¢ at 1 min), against a mean impact of <span data-c="gap_mean_300"></span>¢ (E1, 40 training seeds, naive).<br><span class="src">source: claims.json gap_std_1200, gap_std_60, gap_mean_300</span></p></div>
       <div class="stat"><b>+<span data-c="e11_spread_pct"></span>%</b><p><strong>The price of the coupling:</strong> mean spreads are wider in synchronised worlds (E11); volume and trade counts stay within ±10%. Counterfactuals are conditional on this altered market.<br><span class="src">source: claims.json e11_spread_pct</span></p></div>
     </div>
   </div>
@@ -215,6 +215,7 @@ footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;mar
       <h2 style="margin-top:14px">ΔIS on every seed of this block <small>(IA − TWAP, bps)</small></h2>
       <canvas id="a3strip" style="height:120px" aria-label="per-seed difference strip"></canvas>
       <p class="fine">Seeds 100–129, part of the E8 validation block. Each dot is one seed; the selected one is ringed. Means and CIs live in Act 4.</p>
+      <div class="src">source: <code>demo/data/summary.js</code> is_bps of arms ia_4000 − sync_4000 (equal to <code>E8_ablation_val.csv</code>)</div>
     </div>
   </div>
 </section>
@@ -222,7 +223,7 @@ footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;mar
 <!-- ============ ACT 4 ============ -->
 <section class="act" id="act4">
   <div class="verdict">We do not claim to beat TWAP.</div>
-  <p class="lede">ΔIS = our implementation shortfall minus TWAP's on the same seed (bps; negative = cheaper). The impact-aware schedule looked good once. The twin made a 0.03 bp difference measurable, and it is the twin that shows the result does not replicate.</p>
+  <p class="lede">ΔIS = our implementation shortfall minus TWAP's on the same seed (bps; negative = cheaper). The impact-aware schedule looked good once. The twin made a <span data-c="h1_gain"></span> bp difference measurable, and it is the twin that shows the result does not replicate.</p>
   <div class="grid1">
     <div class="panel">
       <canvas id="a4forest" style="height:340px" aria-label="forest plot of E6, E8, E10 and pooled"></canvas>
@@ -263,7 +264,7 @@ footer{font-size:12px;color:var(--ink3);padding:0 22px 24px;max-width:1680px;mar
     </div>
     <div class="grid2">
       <div class="panel"><h2>This seed on the E7 impact-vs-size chart</h2><canvas id="lvsize" style="height:250px"></canvas><div class="src">means and CIs: <code>realism_scorecard.json</code>; ring = this live seed (TWAP, footprint at T1).</div></div>
-      <div class="panel"><h2>Cost of this seed, bps</h2><table class="cost" id="lvcost"></table>
+      <div class="panel"><h2>Cost of this seed, bps</h2><table class="cost" id="lvcost"></table><div class="src">computed live by the committed <code>tca.decompose_is</code> (1 seed: noise; aggregates in Act 4)</div>
         <h2 style="margin-top:12px">Where the shares ended up <small>(this seed, vs the ghost)</small></h2><div id="lvhold" class="fine"></div></div>
     </div>
   </template>
