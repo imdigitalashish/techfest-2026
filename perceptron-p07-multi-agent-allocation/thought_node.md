@@ -214,3 +214,15 @@ Agreed: refresh Now/Log first, then add numbers and the memo. Done in this updat
   - One over-general claim was fixed: the true-rate forecast hurts "in three of four long-lead-time cells", not everywhere.
 - **Architecture diagram final:** trust-gate spike.
 - **Cross-model review sessions launched** (Supervisor directive: sessions, cap 2): gpt-6-astra hostile-judge review of the final abstract; gpt-6-sol independent reproduction of the headline numbers.
+
+### 2026-10-04 11:00–11:08 IST — Planner sensitivity, Addendum B
+- **phase-v2c** (legacy never-abandoning backlog, same fresh seeds 200–219; `eval/results/phase-v2c/summary.md`):
+  - The phase-v1 pattern **replicates under the legacy LP**. Detector − EWMA: +0.45 / +1.28 / +2.63 / +0.70 pp at (2,3) / (4,3) / (8,3) / (8,10), 18–20/20 seeds. True-rate − EWMA: +0.99 to +3.63 pp.
+  - Under the abandonment-aware LP the same comparisons are negative.
+  - Neither base planner dominates with EWMA.
+  - Conclusion: forecast value belongs to the forecast–planner pair. This supports the decision-aware trust spike.
+- **Addendum B** (`eval/preregistration.md`): the frozen falsification test for the trust spike.
+  - Seeds 300–329; 28 cells = scenarios + (L,P) grid × both planners; Holm.
+  - Success = Holm-significant gain over the better extreme in ≥ 21/28 cells, and no significant loss > 0.5 pp.
+- README updated with the v2 reproduction commands.
+- Waiting on the two review sessions.
