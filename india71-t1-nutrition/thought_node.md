@@ -16,7 +16,6 @@
   2. Verify ABDM consent-artefact details and the CMAM protocol timelines.
   3. Evaluator v2 for spike A (audit value of diagnostics: PPV at a fixed re-measurement budget; remote-AWC false-positive rate; robustness across simulator variants).
   4. Early-warning evaluator v1 (real-decline episodes) and a ratchet loop.
-  5. Fix the action-router ops simulation.
   6. Re-run the failed research threads one at a time (≤2 concurrent agents).
 - **Doing:** lead + research agent V1 (DPDP Act/Rules verification).
 - **Needs from user:** (a) register by 15 Oct for one India@71 theme (after the 12 Oct memo); (b) teammates (≤4): names, skills, contacts; (c) any state WCD / district contact for a read-only pilot extract (on the Supervisor's list); (d) later, ideally an introduction to an Anganwadi workers' union or worker-rights NGO for co-design (ADR 002 makes this a pilot prerequisite).
@@ -89,7 +88,7 @@ Context from the statement: Poshan Tracker already tracks growth-monitoring and 
 | C3 | growth_standards | MeasurementEvent → AnthroZ | WHO Anthro | | built | max error 0.003 z on 87,408 WHO table points |
 | C4 | credibility_engine → measurement diagnostics (ADR 002) | events+z → RecordQuality, AWC×device×month diagnostics | SMART / WHO-UNICEF survey checks | **A** | built; ratchet started | AUROC fabricating 0.694±0.041, any non-good 1.0 — SYNTHETIC; iteration 1 (0.950) rejected by anti-gaming holdout |
 | C5 | early_warning | z, velocity, health events → RiskScore | 2-month no-gain rule | **B** | v0 built | recall@5/AWC-month 0.326 vs rule 0.253, lowest-WHZ 0.318; +health 0.325 — SYNTHETIC |
-| C6 | action_router | RiskScore/Alert → Task | monthly review | | built (sim invalid) | % within SLA |
+| C6 | action_router | RiskScore/Alert → Task | monthly review | | built | ops SIMULATION: 83.6% within SLA (ladder, alerts ≤ capacity) vs 15.6% (monthly review); 14.9% when alerts exceed capacity |
 | C7 | frontline_worklist | Task → Worklist | PT home-visit scheduler | | built | payload bytes, % SMS ≤160 |
 | C8 | aggregate_publisher | events → AggregateCell | static dashboards | | contract | relative error at ε |
 | C9 | policy_gate | AccessRequest → AccessDecision | RBAC | | built | 31/31 red-team (incl. employment-use denial), 0 false allows |
@@ -138,4 +137,14 @@ Rendered `deliverables/round1-proposal.md` to PDF (Playwright; A4, 1-inch margin
   - Iteration 1 (+weight-increment spread, +length-increment band) scored 0.950 on the frozen eval but **0.7287 = baseline** on a variant fabrication pattern. Its band feature copies the simulator's own band, so it was **rejected and reverted**.
   - Iteration 2 (drop `low_wasting_vs_peers`): no metric change, kept for design reasons. Ledger: `components/credibility_engine/autoresearch/results.tsv`.
 - **Hostile judge.** An independent rubber-duck agent raised 8 blocking objections; the top 3 are accepted ([research/hostile-judge-01.md](research/hostile-judge-01.md)). Wrote ADR 002. Proposal → v0.2: no "6 lakh never flagged" claim, synthetic results labelled as engineering checks, union co-design + legal opinion + pre-registered validation as pilot prerequisites, service-readiness gate. Policy gate: explicit `employment_action` deny (31/31).
+
+### 2026-10-04 09:20 IST — action-router simulation fixed; proposal at 6 pages
+- **Bug.** The old ops simulation pooled capacity per *role* (20 tasks/week for all AWWs combined, against 60 alerts/week), so the backlog never cleared (median 999 days). It also scored first action instead of completion by the due date.
+- **Fix.** `components/action_router/sim.py` now uses per-person capacity, per-sector supervisors and done-by-due timing.
+- **Result** (ILLUSTRATIVE assumptions, [`eval/results/action_router_sim.json`](eval/results/action_router_sim.json)):
+  - weekly ladder with alerts within capacity (3/AWC/week, capacity 4): **83.6%** done within the 7-day SLA, median 4 days;
+  - monthly-review status quo: **15.6%**, median 18 days;
+  - alerts above capacity (5/week, [`_overload.json`](eval/results/action_router_sim_overload.json)): **14.9%**, with 28% escalated.
+- **Learned:** escalation ladders only help if alert volume is capped at capacity. This is the quantitative case for spike B's top-k-per-AWC design.
+- **Proposal v0.2** renders to 6 A4 pages, with 29 words on page 6. Inside the limit, but trim before adding team details.
 

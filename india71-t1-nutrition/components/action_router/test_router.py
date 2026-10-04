@@ -53,6 +53,6 @@ def test_escalate_not_due_and_close():
 
 def test_simulation_metric():
     result = run_simulation(n_awcs=3, alerts_per_awc_per_week=1, weeks=4)
-    assert result["label"] == "SIMULATION — assumptions in sim.py"
+    assert result["label"].startswith("SIMULATION")
     assert result["protocol_ladder_weekly"]["pct_done_within_sla"] >= result["status_quo_monthly"]["pct_done_within_sla"]
     assert result["metric_pct_within_sla"] == result["protocol_ladder_weekly"]["pct_done_within_sla"]
