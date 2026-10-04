@@ -11,25 +11,39 @@
 - 2026-10-04 09:55 (Supervisor): **PAUSE** (user's decision; only Namma Space, P7 and EV C2 run; P7 is the Perceptron pick unless the user overrides). → Paused at 10:00 IST. No jobs were running.
 
 ## Now
-- **Phase:** 6 — **DEMO** (Supervisor, 21:12 IST, 4 Oct). Bar: PLAYBOOK §11 (`demo/run.sh`, first visual ≤60 s, real data first, baseline side by side, a judge knob, every number from committed results, `SCRIPT.md`, `fallback/`, `smoke.sh`, one gpt-6-astra demo review). Earlier batch DONE at 17:16 (selection memo: against P8).
-- **Data-licence finding (21:15):** Kaggle Eedi 2024 rules (opened 2026-10-04 via browser):
-  - data use is CC BY-NC 4.0, non-commercial only;
-  - §7.B: participants agree "not to transmit, duplicate, publish, redistribute or otherwise provide or make available the Competition Data to any party not participating in the Competition".
-- **Demo data policy** (follows from the above):
-  - no Eedi item text in any committed file, screenshot or recording;
-  - only derived per-item outcomes (item ids, codes, flags) and aggregates are committed;
-  - item text is shown only when it has been fetched locally into the gitignored `.data/`;
-  - names are shown only from the CC BY 4.0 Eedi Misconceptions Graph (1,757 of the 2,587 Kaggle names appear there verbatim), otherwise our own descriptions.
-  - Audit: no item text is committed today (the regexes in parser code only). The 6 Kaggle-only label names in `EEDI_LINKS` were **removed** at 23:08 IST: they are now read from local `.data/` at runtime, and `diagnosis.json` reproduces byte-identically.
-- **Doing:** demo built and verified from clean clones. The gpt-6-astra demo review scored it 6/10 (9 issues, all accepted, no leak). The builder is applying the fixes; I re-verify, then send "DEMO DONE".
-- **Rules:** CPU only; `nice -n 10` + memory guard; no new API spend; no `git stash`; timestamps from `TZ=Asia/Kolkata date`.
+- **Phase:** ⏸ **PAUSED for the night, 23:38 IST, 4 Oct** (Supervisor/user directive, 23:36). No DEMO DONE tonight; resume tomorrow.
+- **Demo state at pause:**
+  - **Built and verified by me from clean clones (main `69eb602e`):**
+    - `demo/run.sh` first visual 2.7 s from a fresh clone, including venv creation;
+    - `demo/smoke.sh` 49/49 PASS without `.data/` and 53/53 PASS with it;
+    - leak guard clean;
+    - 15 no-text fallback PNGs inspected (no Eedi text).
+  - **gpt-6-astra demo review:** 6/10, 9 issues, all accepted.
+  - **Fixes done and pushed by me:**
+    - L3-only effort claims (`6db0c9cd`);
+    - Kaggle-only names removed from code; `diagnosis.json` byte-identical (`42f8aeeb`).
+  - **Fixes 1–3 and 5–9 sit with the builder**, child "P8 demo builder" (`45c59b05`). It was told at 23:37 to stop after its current atomic step, push only finished work that passes smoke, and report what is pushed vs in progress. Its reply was pending at pause time; read it first.
+- **Resume point (in order):**
+  1. Read the builder's pause reply and `git log origin/main -- perceptron-p08-misconception-tutor/demo`.
+  2. Let it finish the remaining fixes:
+     - stateful continuation, plus the 3-answer falsification climax in smoke and SCRIPT;
+     - slider drag;
+     - certainty wording;
+     - bind the 4–8-operator panel to the `inv.*.L3_*` claims;
+     - persistent post-hoc note;
+     - opening wording and population note;
+     - smoke "SKIPPED" notice and image sign-off;
+     - budget boundary;
+     - Run 3 availability.
+  3. Write `reviews/2026-10-04-demo-responses.md` and add the demo row to `reviews/ledger.tsv` (issues 9, accepted 9, rejected 0).
+  4. Re-verify from a clean clone with `files/verify_demo.sh` in the session folder (smoke, both modes) and time the first visual.
+  5. Message the Supervisor "DEMO DONE".
+- **Doing:** nothing. No servers, jobs or browsers of mine are running (my Playwright page is closed). My worktree is clean.
 - **Needs from user:**
   - Perceptron pick at the 12 Oct gate (P8 memo: against).
-  - If P8 is picked: register by 15 Oct; teammates; a Kaggle login (accept the rules) to fetch the official Eedi data, which is also needed to show item text at the finals; ~30 pilot learners.
+  - If P8 is picked: register by 15 Oct; teammates; a Kaggle login (official Eedi data); ~30 pilot learners.
   - Azure `rg-tf26-p08`: delete if P8 is dropped.
-- **Risks:**
-  1. The demo must not leak Eedi text (fallback recordings especially).
-  2. No accuracy edge; the demo's honest crazy element is determinism + certificates + cost knob, not accuracy.
+- **Risks:** fallback PNGs must be regenerated after the fixes (no-text mode only).
 
 ## Brief (seeded by the Supervisor, 4 Oct 2026 — verify against the official statement)
 - **Competition:** Perceptron Hackathon 2026 — IITB-Optiver AI Innovation Lab, Techfest IIT Bombay. Prize pool ₹2,00,000 for the top 3 teams overall.
