@@ -63,6 +63,8 @@ class Vahan:
         if not m:
             raise RuntimeError("VAHAN page changed: Refresh button not found")
         self.refresh_id = m.group(1)
+        # Filter-panel Refresh buttons re-render only combTablePnl and apply the checkbox filters (fuel, VhClass, ...).
+        self.filter_ids = re.findall(r'<button id="([^"]+)"[^>]*PrimeFaces\.ab\(\{s:&quot;\1&quot;,f:&quot;masterLayout_formlogin&quot;,u:&quot;combTablePnl&quot;', self.page)
         self.form = {"masterLayout_formlogin": "masterLayout_formlogin", f"{self.type_id}_input": "A",
                      f"{self.state_id}_input": "-1", "selectedRto_input": "-1",
                      "yaxisVar_input": "State", "xaxisVar_input": "Fuel",
@@ -109,6 +111,31 @@ class Vahan:
 
     def set_rto(self, code: str) -> None:
         self._set("selectedRto_input", code, "selectedRto", "yaxisVar")
+
+    def query_filtered(self, y: str, x: str, year: str, fuels: list[str] | None = None,
+                       classes: list[str] | None = None, year_type: str = "C") -> pd.DataFrame:
+        """Like query(), but applies the left-panel checkbox filters (VAHAN fuel / vehicle-class codes) before export."""
+        self._set("yaxisVar_input", y, "yaxisVar", "xaxisVar")
+        self._set("xaxisVar_input", x, "xaxisVar", "multipleYear")
+        self._set("selectedYearType_input", year_type, "selectedYearType", "selectedYear")
+        self._set("selectedYear_input", year, "selectedYear", "selectedYear")
+        self._ajax(self.refresh_id, REFRESH_RENDER)
+        if not self.filter_ids:
+            raise RuntimeError("VAHAN page changed: filter Refresh button not found")
+        multi = [("fuel", f) for f in (fuels or [])] + [("VhClass", c) for c in (classes or [])]
+        d = list(self.form.items()) + multi + [
+            ("javax.faces.partial.ajax", "true"), ("javax.faces.source", self.filter_ids[0]),
+            ("javax.faces.partial.execute", "@all"), ("javax.faces.partial.render", "combTablePnl"),
+            (self.filter_ids[0], self.filter_ids[0]), ("javax.faces.ViewState", self.vs)]
+        t = self._req("post", BASE, data=d, headers=AJAX_HDR).text
+        mv = re.search(r'<update id="[^"]*javax.faces.ViewState[^"]*"><!\[CDATA\[([^\]]+)\]\]>', t)
+        if mv:
+            self.vs = mv.group(1)
+        d = list(self.form.items()) + multi + [("groupingTable:xls", "groupingTable:xls"), ("javax.faces.ViewState", self.vs)]
+        r = self._req("post", BASE, data=d)
+        if "spreadsheetml" not in r.headers.get("Content-Type", ""):
+            raise RuntimeError(f"export failed: {r.headers.get('Content-Type')}")
+        return parse_export(r.content)
 
     def query(self, y: str, x: str, year: str, year_type: str = "C") -> pd.DataFrame:
         """Return the pivot table (rows = y categories, columns = x categories) for the current state/RTO."""

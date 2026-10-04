@@ -1,0 +1,10 @@
+timestamp	commit	hypothesis	metric_dev_wape_12m	delta_vs_best	kept	notes
+2026-10-04T13:18:16	6d03ce8	baseline: naive12 (next 12 months = last 12 months)	0.2315		yes	dev_national_err_mean=-0.222 dev_wape_range=[0.161,0.331]
+2026-10-04T13:18:18	6d03ce8	pooled growth, national only, damped 0.5	0.1732	-0.0583	yes	dev_national_err_mean=+0.099 dev_wape_range=[0.083,0.375]
+2026-10-04T13:18:20	6d03ce8	pooled growth, 50:50 state/national, damped 0.5	0.1825	+0.0093	no	dev_national_err_mean=+0.116 dev_wape_range=[0.079,0.439]
+2026-10-04T13:18:22	6d03ce8	pooled growth, national only, undamped	0.4392	+0.2660	no	dev_national_err_mean=+0.421 dev_wape_range=[0.095,1.079]
+2026-10-04T13:18:23	6d03ce8	EV-share logit trend k=2, pooled 50:50, damped 0.5	0.1470	-0.0262	yes	dev_national_err_mean=+0.098 dev_wape_range=[0.073,0.252]
+2026-10-04T13:18:26	6d03ce8	EV-share logit trend k=2, pooled 50:50, undamped	0.4159	+0.2689	no	dev_national_err_mean=+0.401 dev_wape_range=[0.096,1.008]
+2026-10-04T13:18:28	6d03ce8	EV-share logit trend k=3, pooled 50:50, damped 0.5	0.2541	+0.1071	no	dev_national_err_mean=+0.235 dev_wape_range=[0.106,0.387]
+2026-10-04T13:18:30	6d03ce8	ensemble: pooled growth (nat, 0.5) + share-logit (k2, 50:50, 0.5)	0.1584	+0.0114	no	dev_national_err_mean=+0.099 dev_wape_range=[0.075,0.313]
+2026-10-04T13:18:32	6d03ce8	ensemble: pooled growth (nat, 1.0) + share-logit (k2, 50:50, 1.0)	0.4266	+0.2796	no	dev_national_err_mean=+0.411 dev_wape_range=[0.091,1.043]

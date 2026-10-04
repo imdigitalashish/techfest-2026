@@ -42,3 +42,44 @@ def forecast(bev, allv):
     else:
         raise ValueError(p["method"])
     return {s: float(v) for s, v in f.items()}
+
+
+# ---- v2: monthly data (VAHAN State x Month Wise) -------------------------------------------------
+PARAMS_M = {'method': 'share_logit', 'k': 2, 'w': 0.5, 'phi': 0.5}
+
+
+def _share_next(bev_m, all_m, k, w, phi):
+    """Pooled logit trend of the trailing-12-month EV share, sampled at yearly lags (k windows)."""
+    wins = [(bev_m.iloc[:, bev_m.shape[1] - 12 * (i + 1): bev_m.shape[1] - 12 * i].sum(1),
+             all_m.iloc[:, all_m.shape[1] - 12 * (i + 1): all_m.shape[1] - 12 * i].sum(1)) for i in range(k)][::-1]
+    L = np.array([_logit(((b + 0.5) / (a + 1)).to_numpy()) for b, a in wins]).T  # states x k
+    x = np.arange(k) - (k - 1) / 2
+    slope_s = (L * x).sum(1) / (x ** 2).sum()
+    nat = np.array([_logit((b.sum() + 0.5) / (a.sum() + 1)) for b, a in wins])
+    slope_n = (nat * x).sum() / (x ** 2).sum()
+    nxt = L[:, -1] + phi * (w * slope_s + (1 - w) * slope_n)
+    a_last, a_prev = wins[-1][1], wins[-2][1]
+    return pd.Series((1 / (1 + np.exp(-nxt))) * a_last.to_numpy() * (a_last.sum() / a_prev.sum()), index=bev_m.index)
+
+
+def forecast_12m(bev_m, all_m, params=None):
+    """Next-12-month BEV registrations per state from monthly history up to the origin (inclusive)."""
+    p = params or PARAMS_M
+    last12, prev12 = bev_m.iloc[:, -12:].sum(1), bev_m.iloc[:, -24:-12].sum(1)
+    m = p["method"]
+    if m == "naive12":
+        return last12
+    if m == "pooled_growth":
+        g_s = (last12 + 1) / (prev12 + 1) - 1
+        g_n = last12.sum() / prev12.sum() - 1
+        return last12 * (1 + p["phi"] * (p["w"] * g_s + (1 - p["w"]) * g_n))
+    if m == "share_logit":
+        return _share_next(bev_m, all_m, p.get("k", 2), p["w"], p["phi"])
+    if m == "ensemble":
+        fs = [forecast_12m(bev_m, all_m, q) for q in p["members"]]
+        wts = p.get("weights") or [1 / len(fs)] * len(fs)
+        return sum(wt * f for wt, f in zip(wts, fs))
+    raise ValueError(m)
+
+
+import pandas as pd  # noqa: E402  (used by the monthly functions above)

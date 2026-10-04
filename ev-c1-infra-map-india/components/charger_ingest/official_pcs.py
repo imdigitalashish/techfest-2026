@@ -8,10 +8,16 @@ Usage: python components/charger_ingest/official_pcs.py  (needs .cache/sources/*
 import html as H, os, re
 import pandas as pd
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-SRC = {"pib2118894": (".cache/sources/196a5e80cd92.html", "https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=2118894", "2025-04-01"),
+SRC = {"pib2086533": (".cache/sources/%s.html" % __import__("hashlib").sha1(b"https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=2086533").hexdigest()[:12], "https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=2086533", "2024-12-20"),
+       "pib2118894": (".cache/sources/196a5e80cd92.html", "https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=2118894", "2025-04-01"),
        "pib2151390": (".cache/sources/fdd0f25dfec5.html", "https://www.pib.gov.in/PressReleaseIframePage.aspx?PRID=2151390", "2025-08-01")}
-def rows(path):
+def rows(path, part="state"):
     h = open(os.path.join(ROOT, path), errors="ignore").read()
+    a1 = h.find("ANNEXURE-I</strong></span>")  # table headings (body text mentions the annexures first)
+    if a1 >= 0:  # PIB 2086533: Annexure-I = states, Annexure-II = Chhattisgarh districts
+        a2 = h.find("ANNEXURE-II</strong></span>", a1)
+        nxt = h.find("ANNEXURE-I", a2 + 12)
+        h = h[a1:a2] if part == "state" else h[a2:nxt if nxt > 0 else None]
     for tr in re.findall(r"(?is)<tr[^>]*>(.*?)</tr>", h):
         cells = [re.sub(r"\s+", " ", H.unescape(re.sub(r"<[^>]+>", " ", c))).strip() for c in re.findall(r"(?is)<t[dh][^>]*>(.*?)</t[dh]>", tr)]
         yield [c for c in cells]
@@ -28,6 +34,9 @@ for key, (path, url, ason) in SRC.items():
             if len(vals) == 4: rec.update(tier1=vals[0], tier2=vals[1], tier3=vals[2])
             out.append(rec)
 df = pd.DataFrame(out).drop_duplicates(["source", "state"])
+cg = [{"district": c[1], "pcs": int(c[2].replace(",", "")), "as_on": "2024-12-20", "source": "pib2086533"}
+      for c in rows(SRC["pib2086533"][0], part="district") if len(c) == 3 and c[0].strip().isdigit() and c[2].replace(",", "").isdigit()]
+pd.DataFrame(cg).drop_duplicates("district").to_csv(os.path.join(os.path.dirname(__file__), "data", "official_pcs_chhattisgarh_districts_pib2086533.csv"), index=False)
 p = os.path.join(os.path.dirname(__file__), "data", "official_pcs_statewise.csv")
 df.to_csv(p, index=False)
 print(df.groupby("source").pcs_total.agg(["count", "sum"]).to_string())

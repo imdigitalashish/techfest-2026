@@ -24,3 +24,26 @@ Both pooled models beat naive by 27–33% on the holdout. The holdout does **not
 3. Hierarchical Bayesian partial pooling (state slope ~ national slope + covariates such as income, urbanisation, state EV policy, charger density) with prediction intervals; score interval coverage.
 4. Bass diffusion on EV share with a market-potential prior from policy targets; scenario layer (BAU / policy / high) for 2030.
 5. Gaussian-process neighbourhood disaggregation (Nature Communications 2026 per `research/sota-methods.md`; UNVERIFIED until fact-checked) for RTO/district level.
+
+## v2 — monthly data (4 Oct 2026, 13:30 IST)
+- **Frozen eval:** `eval_monthly.py`. VAHAN State × Month Wise, Jan 2019 – Sep 2026, BEV = fuel filter `ELECTRIC(BOV)` + `PURE EV`; the filtered 2025 monthly totals reconcile exactly with the yearly State × Fuel table (2,356,971). Task: next-12-month BEV registrations per state from quarterly origins. DEV = 8 origins (2022-12 … 2024-09); HOLDOUT = 4 (2024-12 … 2025-09). Metric: mean WAPE. Ledger: `results_monthly.tsv`.
+- **Ratchet (9 hypotheses):** naive12 0.232 → pooled national growth (damped 0.5) 0.173 → **share-logit k = 2, pooled 50:50, damped 0.5: 0.147 (kept, −36%)**. The ensemble (pooled growth + share-logit) scored 0.158, so it was not kept. Undamped variants: 0.42–0.44.
+- **Lead holdout:**
+
+  | Model | HOLDOUT WAPE |
+  |---|---|
+  | naive12 | 0.223 |
+  | pooled growth | 0.166 |
+  | **share-logit** | **0.157** |
+  | ensemble | 0.161 |
+
+  The DEV winner is confirmed on the holdout this time (−29% vs naive). The by-origin errors grow towards 2025-09 (0.11 → 0.23) because 2026 accelerated (national error −22% at the last origin).
+- **2026 nowcast** (`../nowcast.py`): Jan–Sep actuals + completion, backtested on 2023–2025.
+
+  | Method | Mean state WAPE | Mean \|national error\| | 2026 national |
+  |---|---|---|---|
+  | **YoY scaling** | **0.072** | **3.0%** | **3,598,002** |
+  | ensemble | 0.073 | 5.3% | 3,577,786 |
+  | seasonal | 0.095 | 8.3% | 3,557,572 |
+
+  Jan–Sep 2026 = 2,533,727; CY2025 = 2,356,971.

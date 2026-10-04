@@ -101,6 +101,21 @@ def rto_level(state: str, years: list[str]) -> None:
                 v = Vahan()
 
 
+BEV_CODES = ["4", "23"]  # VAHAN fuel checkbox values: 4 = ELECTRIC(BOV), 23 = PURE EV
+
+
+def monthly(years: list[str]) -> None:
+    """State x Month tables per calendar year: BEV-only (fuel filter) and all fuels."""
+    v = Vahan()
+    for y in years:
+        cached(f"nat_state_month_bev_{y}", {"scope": "national", "state_code": "-1", "rto_code": "-1", "y_axis": "State",
+                                            "x_axis": "Month Wise", "year": y, "filter": "fuel in ELECTRIC(BOV),PURE EV"},
+               lambda: v.query_filtered("State", "Month Wise", y, fuels=BEV_CODES))
+        cached(f"nat_state_month_all_{y}", {"scope": "national", "state_code": "-1", "rto_code": "-1", "y_axis": "State",
+                                            "x_axis": "Month Wise", "year": y, "filter": "none"},
+               lambda: v.query("State", "Month Wise", y))
+
+
 def build_long() -> str:
     frames = []
     for fn in sorted(os.listdir(RAW)):
@@ -126,6 +141,8 @@ if __name__ == "__main__":
     ap.add_argument("--rto-state", default=None)
     ap.add_argument("--years", default="A,2026,2025,2024,2023,2022,2021,2020")
     ap.add_argument("--rto-years", default="A,2025")
+    ap.add_argument("--monthly", action="store_true")
+    ap.add_argument("--month-years", default="2026,2025,2024,2023,2022,2021,2020,2019")
     a = ap.parse_args()
     if a.national:
         national(a.years.split(","))
@@ -133,4 +150,6 @@ if __name__ == "__main__":
         states_class("A")
     if a.rto_state:
         rto_level(a.rto_state, a.rto_years.split(","))
+    if a.monthly:
+        monthly(a.month_years.split(","))
     build_long()

@@ -1,0 +1,46 @@
+{
+ "nowcast_backtest_by_method": {
+  "ensemble": {
+   "mean_wape": 0.073,
+   "mean_abs_nat_err": 0.0533,
+   "max_abs_nat_err": 0.1058
+  },
+  "seasonal": {
+   "mean_wape": 0.0952,
+   "mean_abs_nat_err": 0.0832,
+   "max_abs_nat_err": 0.1343
+  },
+  "yoy": {
+   "mean_wape": 0.0721,
+   "mean_abs_nat_err": 0.0301,
+   "max_abs_nat_err": 0.0773
+  }
+ },
+ "nowcast_best_method": "yoy",
+ "nowcast_2026_national": {
+  "seasonal": 3557572,
+  "yoy": 3598002,
+  "ensemble": 3577786
+ },
+ "ytd_jan_sep_2026_national": 2533727,
+ "actual_2025_national": 2356971,
+ "forecast_12m_dev_holdout": {
+  "naive12": {
+   "dev_wape": 0.2315,
+   "holdout_wape": 0.2229
+  },
+  "pooled_growth_nat_0.5": {
+   "dev_wape": 0.1732,
+   "holdout_wape": 0.1657
+  },
+  "share_logit_k2_0.5": {
+   "dev_wape": 0.147,
+   "holdout_wape": 0.1572
+  },
+  "ensemble_pg+sl": {
+   "dev_wape": 0.1584,
+   "holdout_wape": 0.161
+  }
+ },
+ "forecast_12m_selected": "share_logit_k2_0.5"
+}

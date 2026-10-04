@@ -148,3 +148,18 @@ Folder, brief and journal created. The lead session starts Phase 0.
 - **New official time point:** PIB 2086533 (20 Dec 2024) has 25,202 stations with a state annex. With BEE (Apr 2025) and MoP (Aug 2025) that is three state-wise snapshots → growth-aligned supply series for C5/C10.
 - Agent files (`sota-methods.md`, `companies-products.md`) are now headed "unverified — cite only via fact-check.md".
 
+### 2026-10-04 13:35 IST — C9 v2 on month-wise VAHAN (forecast ratchet + 2026 nowcast)
+- VAHAN client gained fuel-filtered queries (`query_filtered`, ids auto-discovered). Fetched State × Month Wise for 2019–2026, BEV-filtered and all fuels (16 tables). **Reconciliation: 2025 monthly BEV totals = yearly State × Fuel BEV for every state (0 difference; 2,356,971).**
+- **12-month forecast ratchet** (frozen `eval_monthly.py`, 8 DEV + 4 HOLDOUT quarterly origins; WAPE):
+
+  | Model | DEV | HOLDOUT |
+  |---|---|---|
+  | naive | 0.232 | 0.223 |
+  | pooled growth | 0.173 | 0.166 |
+  | **share-logit** | **0.147** | **0.157** |
+  | ensemble | 0.158 | 0.161 |
+
+  The ensemble did not beat the single model, so share-logit is kept and confirmed on the holdout (−29% vs naive).
+- **2026 nowcast:** YoY scaling, the best in the 2023–25 backtest (state WAPE 0.072, mean national error 3.0%, max 7.7%). **CY2026 ≈ 3.60 million BEV registrations** (methods span 3.56–3.60M) vs 2.36M in CY2025. Files: `eval/results/c9_nowcast_2026.csv`, `c9_nowcast_backtest.csv`, `c9_summary.json`.
+- Also parsed the third official snapshot (PIB 2086533, 20 Dec 2024: 25,202 ✓) and the Chhattisgarh district annex (31 districts, 271 ✓): the first official *district-level* counts, usable to validate district allocation.
+
