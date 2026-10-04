@@ -26,7 +26,8 @@ results:
   - {vehicle: ice_scooter, label: "ICE scooter (109.5 cc)", wtt: 12.8, ttw: 43.4, vehicle_production: 4.7, battery_production: 0.0, total: 60.9, saving_vs_ice: null}
   - {vehicle: ev_scooter_2p9kwh, label: "Electric scooter (2.9 kWh)", battery_kwh: 2.9, wtt: 31.7, ttw: 0.0, vehicle_production: 4.2, battery_production: 1.7, total: 37.5, saving_vs_ice: 0.384}
 quote: "Total g CO2 eq./km 54.2 35.7 27.1 60.9 37.5 ... Life-cycle GHG savings compared to ICE — 34.1% 50.0% — 38.4%"
-consistency_findings:
+consistency_findings:  # documentation gap, worded without blame (confirmed independently by gpt-6-sol, 4 Oct 2026)
   - "Battery row reproduces exactly: kWh x 69 / 120000 km (2.9 kWh -> 1.67 g/km, printed 1.7)."
-  - "Fuel rows imply 2.0 L/100 km for the scooter (43.4/2.17; 12.8/0.64), not the stated 2.2 (-9%)."
-  - "Electricity rows imply 4.13 kWh/100 km for the scooter (31.7/767) and 3.74 for the 3.5 kWh motorcycle (28.7/767): the stated 3.7 / 4.1 appear swapped."
+  - "Fuel rows are consistent with ~2.0 L/100 km for the scooter (43.4/2.17; 12.8/0.64), whereas footnote 9 states 2.2."
+  - "Electricity rows are consistent with ~4.13 kWh/100 km for the scooter (31.7/767) and ~3.74 for the 3.5 kWh motorcycle (28.7/767), whereas footnote 9 states 3.7 (scooter) and 4.1 (motorcycle); the 2.7 kWh motorcycle row implies ~2.83, which the footnote does not list."
+  - "Possible explanations include rounding, a motorcycle/scooter label swap, charging losses or other unstated adjustments; this is not evidence that ICCT's conclusions are wrong. We report both readings and model the spread as uncertainty."

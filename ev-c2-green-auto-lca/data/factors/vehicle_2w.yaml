@@ -81,7 +81,7 @@
   accessed: 2026-10-04
   pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 1}
   status: verified
-  notes: "Inconsistent with Table 1: TTW 43.4 g/km / 2.17 kg/L implies 2.0 L/100 km (see .table_implied)."
+  notes: "Does not reconcile with Table 1, whose TTW 43.4 g/km / 2.17 kg/L is consistent with 2.0 L/100 km (see .table_implied); documentation gap, cause unknown."
 - id: vehicle.2w.scooter_ice.fuel_l_per_100km.icct2021_table_implied
   layer: use
   name: ICE scooter fuel consumption implied by ICCT Table 1 (TTW / TTW factor)
@@ -119,7 +119,7 @@
   accessed: 2026-10-04
   pedigree: {reliability: 2, completeness: 3, temporal: 2, geographical: 1, technological: 2}
   status: verified
-  notes: "Inconsistent with Table 1: WTT 31.7 g/km / 767 g/kWh implies 4.13 kWh/100 km (motorcycle 28.7/767 = 3.74) — the two footnote values look swapped."
+  notes: "Does not reconcile with Table 1, whose WTT 31.7 g/km / 767 g/kWh is consistent with 4.13 kWh/100 km (motorcycle row: 3.74). Rounding, a label swap, charging losses or unstated adjustments may explain it; cause unknown."
 - id: vehicle.2w.scooter_ev.elec_kwh_per_100km.icct2021_table_implied
   layer: use
   name: Electric scooter electricity consumption implied by ICCT Table 1 (WTT / grid factor)
